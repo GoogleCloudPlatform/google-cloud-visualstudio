@@ -4,7 +4,7 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace GCloud
+namespace GoogleCloudExtension.GCloud
 {
     public class AccountSettings
     {

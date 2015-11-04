@@ -1,12 +1,11 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
-using System;
-using System.IO;
-using GCloud;
+using GoogleCloudExtension.GCloud;
 using Newtonsoft.Json;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
 
 namespace GoogleCloudExtension.Projects

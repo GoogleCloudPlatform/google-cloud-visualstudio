@@ -4,7 +4,7 @@
 using Newtonsoft.Json;
 using System;
 
-namespace GCloud
+namespace GoogleCloudExtension.GCloud
 {
     public class GcpProject
     {

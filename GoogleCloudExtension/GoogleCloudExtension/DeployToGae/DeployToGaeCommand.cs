@@ -1,16 +1,12 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
-using GCloud;
 using GoogleCloudExtension.DeploymentDialog;
+using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Projects;
-using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DeployToGae
 {

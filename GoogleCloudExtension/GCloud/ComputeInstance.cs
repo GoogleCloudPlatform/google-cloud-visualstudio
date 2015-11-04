@@ -3,7 +3,7 @@
 
 using Newtonsoft.Json;
 
-namespace GCloud
+namespace GoogleCloudExtension.GCloud
 {
     public class ComputeInstance
     {

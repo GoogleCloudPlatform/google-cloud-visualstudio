@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GCloud
+namespace GoogleCloudExtension.GCloud
 {
     /// <summary>
     /// Supported Asp.NET runtimes.

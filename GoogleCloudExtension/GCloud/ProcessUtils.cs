@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace GCloud
+namespace GoogleCloudExtension.GCloud
 {
     internal class ProcessOutput
     {

@@ -1,18 +1,15 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
-using System;
-using System.ComponentModel.Design;
-using System.Globalization;
+using GoogleCloudExtension.DeploymentDialog;
+using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.Projects;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio;
+using System;
+using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
-using GoogleCloudExtension.Projects;
-using System.Linq;
-using GCloud;
-using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.DeploymentDialog;
 
 namespace GoogleCloudExtension.DeployToGaeContextMenu
 {

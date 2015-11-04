@@ -4,7 +4,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace GCloud
+namespace GoogleCloudExtension.GCloud
 {
     [Serializable]
     public class GCloudException : Exception

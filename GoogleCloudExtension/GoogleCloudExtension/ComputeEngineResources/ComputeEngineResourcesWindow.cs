@@ -1,12 +1,8 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
-using GCloud;
-using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace GoogleCloudExtension.ComputeEngineResources

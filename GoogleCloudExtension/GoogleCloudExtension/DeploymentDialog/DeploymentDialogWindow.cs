@@ -1,16 +1,9 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
-using GCloud;
 using GoogleCloudExtension.Projects;
-using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.PlatformUI;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DeploymentDialog
 {
