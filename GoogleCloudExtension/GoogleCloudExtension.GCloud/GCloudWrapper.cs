@@ -13,16 +13,14 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtension.GCloud
 {
     /// <summary>
-    /// Supported Asp.NET runtimes.
+    /// Supported ASP.NET runtimes.
     /// </summary>
-    public enum AspNETRuntime
+    public enum AspNetRuntime
     {
         None,
         Mono,
         CoreCLR
     }
-
-    public delegate void OutputCallback(string line);
 
     /// <summary>
     /// This class wraps the gcloud command and offers up some of its services in a
@@ -32,40 +30,30 @@ namespace GoogleCloudExtension.GCloud
     /// </summary>
     public sealed class GCloudWrapper
     {
+        private AccountAndProjectId _currentAccountAndProject;
+
         private GCloudWrapper()
         { }
 
         /// <summary>
         /// Lazily creates the singleton instace for the class.
         /// </summary>
-        private static GCloudWrapper s_DefaultInstance;
-        public static GCloudWrapper DefaultInstance
+        private static GCloudWrapper s_Instance = new GCloudWrapper();
+        public static GCloudWrapper Instance
         {
-            get
-            {
-                if (s_DefaultInstance == null)
-                {
-                    s_DefaultInstance = new GCloudWrapper();
-                }
-                return s_DefaultInstance;
-            }
+            get { return s_Instance; }
         }
 
-        private AccountAndProjectId _currentAccountAndProject;
-
         /// <summary>
-        /// This event is raised whenever the current account or project has changed,
-        /// there's no notification of what the new values are, the caller has to call
+        /// This event is raised whenever the current account or project has changed;
+        /// there's no notification of what the new values are so the caller has to call
         /// to find out what the new values are.
         /// </summary>
         public event EventHandler AccountOrProjectChanged;
 
         private void RaiseAccountOrProjectChanged()
         {
-            if (AccountOrProjectChanged != null)
-            {
-                AccountOrProjectChanged(null, EventArgs.Empty);
-            }
+            AccountOrProjectChanged?.Invoke(null, EventArgs.Empty);
         }
 
         /// <summary>
@@ -202,7 +190,7 @@ namespace GoogleCloudExtension.GCloud
             return FormatCommand(cmd, accountAndProject, useJson);
         }
 
-        private async Task RunCmdAsync(string cmd, OutputCallback callback, AccountAndProjectId accountAndProject)
+        private async Task RunCmdAsync(string cmd, Action<string> callback, AccountAndProjectId accountAndProject)
         {
             var actualCmd = FormatCommand(cmd, accountAndProject, useJson: false);
             Debug.WriteLine($"Executing gcloud command: {actualCmd}");
@@ -213,7 +201,7 @@ namespace GoogleCloudExtension.GCloud
             }
         }
 
-        private async Task RunCmdAsync(string cmd, OutputCallback callback)
+        private async Task RunCmdAsync(string cmd, Action<string> callback)
         {
             await RunCmdAsync(cmd, callback, await GetCurrentAccountAndProjectAsync());
         }
@@ -391,9 +379,9 @@ namespace GoogleCloudExtension.GCloud
             string startupProjectPath,
             IList<string> projectPaths,
             string versionName,
-            AspNETRuntime runtime,
+            AspNetRuntime runtime,
             bool makeDefaultVersion,
-            OutputCallback callback,
+            Action<string> callback,
             AccountAndProjectId accountAndProject)
         {
             var appTempPath = GetAppStagingDirectory();
@@ -417,7 +405,7 @@ namespace GoogleCloudExtension.GCloud
             }
         }
 
-        public bool ValidateDNXInstallationForRuntime(AspNETRuntime runtime)
+        public bool ValidateDNXInstallationForRuntime(AspNetRuntime runtime)
         {
             bool result = false;
             Debug.WriteLine("Validating DNX installation.");
@@ -449,7 +437,7 @@ namespace GoogleCloudExtension.GCloud
 
         public bool ValidateEnvironment()
         {
-            var validDNXInstallation = ValidateDNXInstallationForRuntime(AspNETRuntime.CoreCLR) || ValidateDNXInstallationForRuntime(AspNETRuntime.Mono);
+            var validDNXInstallation = ValidateDNXInstallationForRuntime(AspNetRuntime.CoreCLR) || ValidateDNXInstallationForRuntime(AspNetRuntime.Mono);
             var validGCloudInstallation = ValidateGCloudInstallation();
             return validDNXInstallation && validGCloudInstallation;
         }
@@ -473,9 +461,9 @@ namespace GoogleCloudExtension.GCloud
         private const string AppYamlFilename = "app.yaml";
         private const string DockerfileFilename = "Dockerfile";
 
-        private static void CopyGaeFiles(string projectPath, string appTempPath, AspNETRuntime runtime, OutputCallback callback)
+        private static void CopyGaeFiles(string projectPath, string appTempPath, AspNetRuntime runtime, Action<string> callback)
         {
-            Debug.Assert(runtime == AspNETRuntime.Mono || runtime == AspNETRuntime.CoreCLR);
+            Debug.Assert(runtime == AspNetRuntime.Mono || runtime == AspNetRuntime.CoreCLR);
 
             var dockerfileSrc = new FileInfo(Path.Combine(projectPath, DockerfileFilename));
             var dockerfileDest = Path.Combine(appTempPath, DockerfileFilename);
@@ -488,7 +476,7 @@ namespace GoogleCloudExtension.GCloud
             else
             {
                 // Copy the template file.
-                var runtimeName = runtime == AspNETRuntime.Mono ? MonoRuntimeName : CoreCLRRuntimeName;
+                var runtimeName = runtime == AspNetRuntime.Mono ? MonoRuntimeName : CoreCLRRuntimeName;
                 var dockerFileContent = String.Format(DockerfileTemplate, DnxVersion, runtimeName);
                 callback($"Writting file [{dockerfileDest}] for runtime {runtimeName}.");
                 File.WriteAllText(dockerfileDest, dockerFileContent);
@@ -524,7 +512,7 @@ namespace GoogleCloudExtension.GCloud
                 "--server Microsoft.AspNet.Server.Kestrel " +
                 "--server.urls http://0.0.0.0:8080\n";
 
-        private void PrepareEntryPoint(string startupProjectPath, string appTempPath, OutputCallback callback)
+        private void PrepareEntryPoint(string startupProjectPath, string appTempPath, Action<string> callback)
         {
             var entryPointPath = Path.Combine(appTempPath, "gae_start");
             if (File.Exists(entryPointPath))
@@ -545,8 +533,8 @@ namespace GoogleCloudExtension.GCloud
 
         private static async Task RestoreProjects(
             IList<string> projectPaths,
-            AspNETRuntime runtime,
-            OutputCallback callback)
+            AspNetRuntime runtime,
+            Action<string> callback)
         {
             callback("Restoring projects.");
             List<Task> restoreTasks = new List<Task>();
@@ -568,7 +556,7 @@ namespace GoogleCloudExtension.GCloud
         private const string DnxClrRuntimeNameFormat = "dnx-clr-win-{0}.{1}";
         private const string DnxCoreClrRuntimeNameFormat = "dnx-coreclr-win-{0}.{1}";
 
-        private static string GetDNXPathForRuntime(AspNETRuntime runtime)
+        private static string GetDNXPathForRuntime(AspNetRuntime runtime)
         {
             var userDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string bitness = Environment.Is64BitProcess ? "x64" : "x86";
@@ -576,10 +564,10 @@ namespace GoogleCloudExtension.GCloud
             string runtimeNameFormat = null;
             switch (runtime)
             {
-                case AspNETRuntime.Mono:
+                case AspNetRuntime.Mono:
                     runtimeNameFormat = DnxClrRuntimeNameFormat;
                     break;
-                case AspNETRuntime.CoreCLR:
+                case AspNetRuntime.CoreCLR:
                     runtimeNameFormat = DnxCoreClrRuntimeNameFormat;
                     break;
                 default:
@@ -596,8 +584,8 @@ namespace GoogleCloudExtension.GCloud
 
         private static async Task RestoreProject(
             string projectPath,
-            AspNETRuntime runtime,
-            OutputCallback callback)
+            AspNetRuntime runtime,
+            Action<string> callback)
         {
             // Customize the environment by adding the path to the node_modules directory, which can be necessary for
             // the publish process.
@@ -619,8 +607,8 @@ namespace GoogleCloudExtension.GCloud
         private static async Task PrepareAppBundle(
             string projectPath,
             string appTempPath,
-            AspNETRuntime runtime,
-            OutputCallback callback)
+            AspNetRuntime runtime,
+            Action<string> callback)
         {
             // Customize the environment by adding the path to the node_modules directory, which can be necessary for
             // the publish process.
@@ -641,13 +629,13 @@ namespace GoogleCloudExtension.GCloud
             }
         }
 
-        private static string GetDNXFrameworkNameFromRuntime(AspNETRuntime runtime)
+        private static string GetDNXFrameworkNameFromRuntime(AspNetRuntime runtime)
         {
             switch (runtime)
             {
-                case AspNETRuntime.Mono:
+                case AspNetRuntime.Mono:
                     return "dnx451";
-                case AspNETRuntime.CoreCLR:
+                case AspNetRuntime.CoreCLR:
                     return "dnxcore50";
                 default:
                     return "none";
@@ -658,7 +646,7 @@ namespace GoogleCloudExtension.GCloud
             string appTempPath,
             string versionName,
             bool makeDefaultVersion,
-            OutputCallback callback,
+            Action<string> callback,
             AccountAndProjectId accountAndProject)
         {
             var makeDefault = makeDefaultVersion ? "--promote" : "--no-promote";

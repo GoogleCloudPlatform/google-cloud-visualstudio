@@ -12,7 +12,7 @@ namespace GoogleCloudExtension.UserAndProjectList
     {
         public bool IsGCloudInstalled
         {
-            get { return GCloudWrapper.DefaultInstance.ValidateGCloudInstallation(); }
+            get { return GCloudWrapper.Instance.ValidateGCloudInstallation(); }
         }
 
         public bool IsGCloudNotInstalled
@@ -46,7 +46,7 @@ namespace GoogleCloudExtension.UserAndProjectList
                 {
                     return;
                 }
-                var currentAccountAndProject = await GCloudWrapper.DefaultInstance.GetCurrentAccountAndProjectAsync();
+                var currentAccountAndProject = await GCloudWrapper.Instance.GetCurrentAccountAndProjectAsync();
                 if (newProject.Id == currentAccountAndProject.ProjectId)
                 {
                     return;
@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.UserAndProjectList
                 var newCurrentAccountAndProject = new AccountAndProjectId(
                     account: currentAccountAndProject.Account,
                     projectId: newProject.Id);
-                GCloudWrapper.DefaultInstance.UpdateUserAndProject(newCurrentAccountAndProject);
+                GCloudWrapper.Instance.UpdateUserAndProject(newCurrentAccountAndProject);
             }
             catch (GCloudException ex)
             {
@@ -93,13 +93,13 @@ namespace GoogleCloudExtension.UserAndProjectList
             {
                 // Only need to update the GCloudWrapper current account if the account
                 // is different than the current one.
-                var currentAccountAndProject = await GCloudWrapper.DefaultInstance.GetCurrentAccountAndProjectAsync();
+                var currentAccountAndProject = await GCloudWrapper.Instance.GetCurrentAccountAndProjectAsync();
                 if (currentAccountAndProject.Account != value)
                 {
                     var newAccountAndProject = new AccountAndProjectId(
                         account: value,
                         projectId: null);
-                    GCloudWrapper.DefaultInstance.UpdateUserAndProject(newAccountAndProject);
+                    GCloudWrapper.Instance.UpdateUserAndProject(newAccountAndProject);
                 }
 
                 // Since the account might be different we need to load the projects.
@@ -108,7 +108,7 @@ namespace GoogleCloudExtension.UserAndProjectList
                     try
                     {
                         this.LoadingProjects = true;
-                        var projects = await GCloudWrapper.DefaultInstance.GetProjectsAsync();
+                        var projects = await GCloudWrapper.Instance.GetProjectsAsync();
                         this.Projects = projects;
                         var candidateProject = projects?.Where(x => x.Id == currentAccountAndProject.ProjectId).FirstOrDefault();
                         if (candidateProject == null)

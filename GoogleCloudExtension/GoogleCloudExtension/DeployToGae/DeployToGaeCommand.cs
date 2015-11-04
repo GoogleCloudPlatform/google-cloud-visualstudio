@@ -111,11 +111,11 @@ namespace GoogleCloudExtension.DeployToGae
             // Enable and show the item only if there's an existing Dnx startup project.
             var startupProject = DnxSolution.CurrentSolution?.StartupProject;
             bool isDnxProject = false;
-            bool validEnvironment = GCloudWrapper.DefaultInstance.ValidateEnvironment();
+            bool validEnvironment = GCloudWrapper.Instance.ValidateEnvironment();
 
             if (startupProject != null)
             {
-                isDnxProject = startupProject.Runtime != AspNETRuntime.None && startupProject.HasWebServer;
+                isDnxProject = startupProject.Runtime != AspNetRuntime.None && startupProject.HasWebServer;
             }
 
             menuCommand.Visible = true;

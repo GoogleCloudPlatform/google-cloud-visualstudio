@@ -94,12 +94,12 @@ namespace GoogleCloudExtension.ComputeEngineResources
             StopCommand = new WeakCommand(this.OnStopInstance);
 
             var handler = new WeakHandler(this.InvalidateInstancesListAsync);
-            GCloudWrapper.DefaultInstance.AccountOrProjectChanged += handler.OnEvent;
+            GCloudWrapper.Instance.AccountOrProjectChanged += handler.OnEvent;
         }
 
         public async void LoadComputeInstancesList()
         {
-            if (!GCloudWrapper.DefaultInstance.ValidateGCloudInstallation())
+            if (!GCloudWrapper.Instance.ValidateGCloudInstallation())
             {
                 Debug.WriteLine("GCloud is not installed, disabling GCE tool window.");
                 return;
@@ -110,7 +110,7 @@ namespace GoogleCloudExtension.ComputeEngineResources
                 this.Loading = true;
                 this.LoadingMessage = "Loading instances...";
                 this.Instances = new List<ComputeInstance>();
-                this.Instances = await GCloudWrapper.DefaultInstance.GetComputeInstanceListAsync();
+                this.Instances = await GCloudWrapper.Instance.GetComputeInstanceListAsync();
             }
             catch (GCloudException ex)
             {
@@ -153,7 +153,7 @@ namespace GoogleCloudExtension.ComputeEngineResources
             {
                 this.Loading = true;
                 this.LoadingMessage = "Starting Instance...";
-                await GCloudWrapper.DefaultInstance.StartComputeInstanceAsync(instance.Name, instance.Zone);
+                await GCloudWrapper.Instance.StartComputeInstanceAsync(instance.Name, instance.Zone);
             }
             catch (GCloudException ex)
             {
@@ -187,7 +187,7 @@ namespace GoogleCloudExtension.ComputeEngineResources
             {
                 this.Loading = true;
                 this.LoadingMessage = "Stopping Instance...";
-                await GCloudWrapper.DefaultInstance.StopComputeInstanceAsync(instance.Name, instance.Zone);
+                await GCloudWrapper.Instance.StopComputeInstanceAsync(instance.Name, instance.Zone);
             }
             catch (GCloudException ex)
             {

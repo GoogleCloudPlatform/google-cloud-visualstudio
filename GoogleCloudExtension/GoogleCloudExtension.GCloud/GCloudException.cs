@@ -14,7 +14,7 @@ namespace GoogleCloudExtension.GCloud
         }
 
         public GCloudException(string message) :
-            base(message + "Please ensure that the app, preview and alpha components are installed in gcloud run the command:\n" +
+            base(message + "\nPlease ensure that the app, preview and alpha components are installed in gcloud run the command:\n" +
                     "\"gcloud components update alpha app preview\" from an administrator command line window to setup those components.\n" +
                     "Also ensure that you have gone through the initial setup with \"gcloud init\".")
 

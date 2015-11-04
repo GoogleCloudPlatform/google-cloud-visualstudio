@@ -13,42 +13,42 @@ namespace GoogleCloudExtension.Projects
         public const string ClrFrameworkName = "dnx451";
         public const string CoreClrFrameworkName = "dnxcore50";
 
-        public static string GetRuntimeName(AspNETRuntime runtime)
+        public static string GetRuntimeName(AspNetRuntime runtime)
         {
             switch (runtime)
             {
-                case AspNETRuntime.Mono:
+                case AspNetRuntime.Mono:
                     return "dnx451";
-                case AspNETRuntime.CoreCLR:
+                case AspNetRuntime.CoreCLR:
                     return "dnxcore50";
                 default:
                     return "";
             }
         }
 
-        public static string GetRuntimeDisplayName(AspNETRuntime runtime)
+        public static string GetRuntimeDisplayName(AspNetRuntime runtime)
         {
             switch (runtime)
             {
-                case AspNETRuntime.Mono:
+                case AspNetRuntime.Mono:
                     return ".NET Desktop CLR";
-                case AspNETRuntime.CoreCLR:
+                case AspNetRuntime.CoreCLR:
                     return ".NET Core CLR";
                 default:
                     return "";
             }
         }
 
-        public static AspNETRuntime GetRuntimeFromName(string name)
+        public static AspNetRuntime GetRuntimeFromName(string name)
         {
             switch (name)
             {
                 case "dnx451":
-                    return AspNETRuntime.Mono;
+                    return AspNetRuntime.Mono;
                 case "dnxcore50":
-                    return AspNETRuntime.CoreCLR;
+                    return AspNetRuntime.CoreCLR;
                 default:
-                    return AspNETRuntime.None;
+                    return AspNetRuntime.None;
             }
         }
     }

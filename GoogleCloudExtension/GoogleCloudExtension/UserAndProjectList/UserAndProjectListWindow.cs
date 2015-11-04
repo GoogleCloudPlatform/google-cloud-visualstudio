@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.UserAndProjectList
 
         private async void LoadAccountsAsync()
         {
-            if (!GCloudWrapper.DefaultInstance.ValidateGCloudInstallation())
+            if (!GCloudWrapper.Instance.ValidateGCloudInstallation())
             {
                 Debug.WriteLine("GCloud is not installed, disabling the User and Project tool window.");
                 return;
@@ -57,8 +57,8 @@ namespace GoogleCloudExtension.UserAndProjectList
             try
             {
                 _model.LoadingAccounts = true;
-                var accounts = await GCloudWrapper.DefaultInstance.GetAccountListAsync();
-                var currentAccountAndProject = await GCloudWrapper.DefaultInstance.GetCurrentAccountAndProjectAsync();
+                var accounts = await GCloudWrapper.Instance.GetAccountListAsync();
+                var currentAccountAndProject = await GCloudWrapper.Instance.GetCurrentAccountAndProjectAsync();
                 _model.Accounts = accounts;
                 _model.CurrentAccount = currentAccountAndProject.Account;
             }

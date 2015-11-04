@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.AppEngineApps
             // We also need to invalidate the list if the account or project changed.
             var handler = new WeakHandler(this.InvalidateAppEngineAppList);
             ExtensionEvents.AppEngineDeployed += handler.OnEvent;
-            GCloudWrapper.DefaultInstance.AccountOrProjectChanged += handler.OnEvent;
+            GCloudWrapper.Instance.AccountOrProjectChanged += handler.OnEvent;
         }
 
         private IList<AppEngineApp> _Apps;
@@ -110,7 +110,7 @@ namespace GoogleCloudExtension.AppEngineApps
 
         public async void LoadAppEngineAppList()
         {
-            if (!GCloudWrapper.DefaultInstance.ValidateGCloudInstallation())
+            if (!GCloudWrapper.Instance.ValidateGCloudInstallation())
             {
                 Debug.WriteLine("Cannot find GCloud, disabling the AppEngine tool window.");
                 return;
@@ -121,7 +121,7 @@ namespace GoogleCloudExtension.AppEngineApps
                 this.LoadingMessage = "Loading AppEngine app list...";
                 this.Loading = true;
                 this.Apps = new List<AppEngineApp>();
-                this.Apps = await GCloudWrapper.DefaultInstance.GetAppEngineAppListAsync();
+                this.Apps = await GCloudWrapper.Instance.GetAppEngineAppListAsync();
             }
             catch (GCloudException ex)
             {
@@ -151,7 +151,7 @@ namespace GoogleCloudExtension.AppEngineApps
                 {
                     return;
                 }
-                var accountAndProject = await GCloudWrapper.DefaultInstance.GetCurrentAccountAndProjectAsync();
+                var accountAndProject = await GCloudWrapper.Instance.GetCurrentAccountAndProjectAsync();
                 var url = $"https://{app.Version}-dot-{app.Module}-dot-{accountAndProject.ProjectId}.appspot.com/";
                 Debug.WriteLine($"Opening URL: {url}");
                 Process.Start(url);
@@ -171,7 +171,7 @@ namespace GoogleCloudExtension.AppEngineApps
             {
                 this.LoadingMessage = "Deleting version...";
                 this.Loading = true;
-                await GCloudWrapper.DefaultInstance.DeleteAppVersion(app.Module, app.Version);
+                await GCloudWrapper.Instance.DeleteAppVersion(app.Module, app.Version);
             }
             catch (GCloudException ex)
             {
@@ -199,7 +199,7 @@ namespace GoogleCloudExtension.AppEngineApps
             {
                 this.Loading = true;
                 this.LoadingMessage = "Setting default version...";
-                await GCloudWrapper.DefaultInstance.SetDefaultAppVersionAsync(app.Module, app.Version);
+                await GCloudWrapper.Instance.SetDefaultAppVersionAsync(app.Module, app.Version);
             }
             catch (GCloudException ex)
             {

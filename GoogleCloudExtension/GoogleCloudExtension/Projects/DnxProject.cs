@@ -29,14 +29,14 @@ namespace GoogleCloudExtension.Projects
             get { return Path.GetFileNameWithoutExtension(_path); }
         }
 
-        private AspNETRuntime _runtime = AspNETRuntime.None;
+        private AspNetRuntime _runtime = AspNetRuntime.None;
         private ParsedProjectJson _parsedProject;
 
-        public AspNETRuntime Runtime
+        public AspNetRuntime Runtime
         {
             get
             {
-                if (_runtime == AspNETRuntime.None)
+                if (_runtime == AspNetRuntime.None)
                 {
                     _runtime = GetProjectRuntime();
                 }
@@ -44,9 +44,9 @@ namespace GoogleCloudExtension.Projects
             }
         }
 
-        private IList<AspNETRuntime> _supportedRuntimes;
+        private IList<AspNetRuntime> _supportedRuntimes;
 
-        public IList<AspNETRuntime> SupportedRuntimes
+        public IList<AspNetRuntime> SupportedRuntimes
         {
             get
             {
@@ -55,7 +55,7 @@ namespace GoogleCloudExtension.Projects
                     var parsed = GetParsedProject();
                     _supportedRuntimes = parsed.Frameworks
                         .Select(x => DnxRuntime.GetRuntimeFromName(x.Key))
-                        .Where(x => GCloudWrapper.DefaultInstance.ValidateDNXInstallationForRuntime(x))
+                        .Where(x => GCloudWrapper.Instance.ValidateDNXInstallationForRuntime(x))
                         .ToList();
                 }
                 return _supportedRuntimes;
@@ -99,27 +99,27 @@ namespace GoogleCloudExtension.Projects
             return _parsedProject;
         }
 
-        private AspNETRuntime GetProjectRuntime()
+        private AspNetRuntime GetProjectRuntime()
         {
             var parsed = GetParsedProject();
             bool clrRuntimeTargeted = parsed.Frameworks.ContainsKey(DnxRuntime.ClrFrameworkName);
             bool coreClrRuntimeTargeted = parsed.Frameworks.ContainsKey(DnxRuntime.CoreClrFrameworkName);
 
-            bool hasCoreClrRuntimeInstalled = GCloudWrapper.DefaultInstance.ValidateDNXInstallationForRuntime(AspNETRuntime.CoreCLR);
-            bool hasClrRuntimeInstalled = GCloudWrapper.DefaultInstance.ValidateDNXInstallationForRuntime(AspNETRuntime.Mono);
+            bool hasCoreClrRuntimeInstalled = GCloudWrapper.Instance.ValidateDNXInstallationForRuntime(AspNetRuntime.CoreCLR);
+            bool hasClrRuntimeInstalled = GCloudWrapper.Instance.ValidateDNXInstallationForRuntime(AspNetRuntime.Mono);
 
             if (coreClrRuntimeTargeted && hasCoreClrRuntimeInstalled)
             {
-                return AspNETRuntime.CoreCLR;
+                return AspNetRuntime.CoreCLR;
             }
             else if (clrRuntimeTargeted && hasClrRuntimeInstalled)
             {
-                return AspNETRuntime.Mono;
+                return AspNetRuntime.Mono;
             }
             else
             {
                 Debug.WriteLine("No known runtime is being targeted.");
-                return AspNETRuntime.None;
+                return AspNetRuntime.None;
             }
         }
 

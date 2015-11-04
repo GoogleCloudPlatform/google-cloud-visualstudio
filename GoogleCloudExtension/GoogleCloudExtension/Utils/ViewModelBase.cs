@@ -9,7 +9,7 @@ namespace GoogleCloudExtension.Utils
     {
         public bool IsGCloudInstalled
         {
-            get { return GCloudWrapper.DefaultInstance.ValidateGCloudInstallation(); }
+            get { return GCloudWrapper.Instance.ValidateGCloudInstallation(); }
         }
 
         public bool IsGCloudNotInstalled

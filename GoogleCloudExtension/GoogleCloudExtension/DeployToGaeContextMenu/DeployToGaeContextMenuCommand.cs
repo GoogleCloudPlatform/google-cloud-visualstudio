@@ -158,12 +158,12 @@ namespace GoogleCloudExtension.DeployToGaeContextMenu
 
             var selectedProjectPath = GetSelectedProjectPath();
             var isDnxProject = String.IsNullOrEmpty(selectedProjectPath) ? false : DnxProject.IsDnxProject(selectedProjectPath);
-            var validEnvironment = GCloudWrapper.DefaultInstance.ValidateEnvironment();
+            var validEnvironment = GCloudWrapper.Instance.ValidateEnvironment();
 
             if (isDnxProject)
             {
                 var project = new DnxProject(selectedProjectPath);
-                isDnxProject = project.Runtime != AspNETRuntime.None && project.HasWebServer;
+                isDnxProject = project.Runtime != AspNetRuntime.None && project.HasWebServer;
             }
 
             menuCommand.Visible = isDnxProject;

@@ -51,15 +51,15 @@ namespace GoogleCloudExtension.DeploymentDialog
             }
         }
 
-        private IList<AspNETRuntime> _SupportedRuntimes;
-        public IList<AspNETRuntime> SupportedRuntimes
+        private IList<AspNetRuntime> _SupportedRuntimes;
+        public IList<AspNetRuntime> SupportedRuntimes
         {
             get { return _SupportedRuntimes; }
             set { SetValueAndRaise(ref _SupportedRuntimes, value); }
         }
 
-        private AspNETRuntime _SelectedRuntime;
-        public AspNETRuntime SelectedRuntime
+        private AspNetRuntime _SelectedRuntime;
+        public AspNetRuntime SelectedRuntime
         {
             get { return _SelectedRuntime; }
             set { SetValueAndRaise(ref _SelectedRuntime, value); }
@@ -127,9 +127,9 @@ namespace GoogleCloudExtension.DeploymentDialog
                 SelectedAccount = _loadingAccounts[0];
                 SelectedCloudProject = _loadingProjects[0];
 
-                var accounts = await GCloudWrapper.DefaultInstance.GetAccountListAsync();
-                var cloudProjects = await GCloudWrapper.DefaultInstance.GetProjectsAsync();
-                var accountAndProject = await GCloudWrapper.DefaultInstance.GetCurrentAccountAndProjectAsync();
+                var accounts = await GCloudWrapper.Instance.GetAccountListAsync();
+                var cloudProjects = await GCloudWrapper.Instance.GetProjectsAsync();
+                var accountAndProject = await GCloudWrapper.Instance.GetCurrentAccountAndProjectAsync();
 
                 Accounts = accounts;
                 _SelectedAccount = accountAndProject.Account; // Update the selected account without invalidating it.
@@ -185,7 +185,7 @@ namespace GoogleCloudExtension.DeploymentDialog
                 this.CloudProjects = null;
                 _SelectedCloudProject = null;
 
-                var cloudProjects = await GCloudWrapper.DefaultInstance.GetProjectsAsync(
+                var cloudProjects = await GCloudWrapper.Instance.GetProjectsAsync(
                     new AccountAndProjectId(account: this.SelectedAccount));
 
                 this.CloudProjects = cloudProjects;

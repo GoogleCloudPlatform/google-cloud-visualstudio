@@ -14,7 +14,7 @@ namespace GoogleCloudExtension.Utils
         public static async void DeployProjectAsync(
             DnxProject startupProject,
             IList<DnxProject> projects,
-            AspNETRuntime selectedRuntime,
+            AspNetRuntime selectedRuntime,
             string versionName,
             bool makeDefault,
             AccountAndProjectId accountAndProject)
@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.Utils
                 GoogleCloudExtensionPackage.IsDeploying = true;
 
                 StatusbarHelper.ShowDeployAnimation();
-                await GCloudWrapper.DefaultInstance.DeployApplication(
+                await GCloudWrapper.Instance.DeployApplication(
                     startupProjectPath: startupProject.Root,
                     projectPaths: projects.Select(x => x.Root).ToList(),
                     versionName: versionName,
