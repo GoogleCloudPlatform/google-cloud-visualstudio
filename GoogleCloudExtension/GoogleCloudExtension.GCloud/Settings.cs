@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace GoogleCloudExtension.GCloud
 {
-    public class CoreSettings
+    public sealed class CoreSettings
     {
         [JsonProperty("account")]
         public string Account { get; set; }
@@ -14,7 +14,7 @@ namespace GoogleCloudExtension.GCloud
         public string Project { get; set; }
     }
 
-    public class Settings
+    public sealed class Settings
     {
         [JsonProperty("core")]
         public CoreSettings CoreSettings { get; set; }

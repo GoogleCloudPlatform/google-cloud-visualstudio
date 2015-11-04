@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 namespace GoogleCloudExtension.GCloud
 {
     [Serializable]
-    public class GCloudException : Exception
+    public sealed class GCloudException : Exception
     {
         public GCloudException()
         {
@@ -22,10 +22,6 @@ namespace GoogleCloudExtension.GCloud
         }
 
         public GCloudException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected GCloudException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

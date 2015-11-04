@@ -6,7 +6,7 @@ using System;
 
 namespace GoogleCloudExtension.GCloud
 {
-    public class GcpProject
+    public sealed class GcpProject
     {
         [JsonProperty("createTime")]
         public DateTime CreationTime { get; set; }

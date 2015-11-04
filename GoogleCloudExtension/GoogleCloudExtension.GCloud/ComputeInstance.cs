@@ -5,16 +5,20 @@ using Newtonsoft.Json;
 
 namespace GoogleCloudExtension.GCloud
 {
-    public class ComputeInstance
+    public sealed class ComputeInstance
     {
         [JsonProperty("name")]
         public string Name { get; set; }
+
         [JsonProperty("cpuPlatform")]
         public string CpuPlatform { get; set; }
+
         [JsonProperty("machineType")]
         public string MachineType { get; set; }
+
         [JsonProperty("status")]
         public string Status { get; set; }
+
         [JsonProperty("zone")]
         public string Zone { get; set; }
     }

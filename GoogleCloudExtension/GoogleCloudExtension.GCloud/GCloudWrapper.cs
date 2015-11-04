@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.GCloud
     /// "current project".
     /// This class is a singleton.
     /// </summary>
-    public class GCloudWrapper
+    public sealed class GCloudWrapper
     {
         private GCloudWrapper()
         { }

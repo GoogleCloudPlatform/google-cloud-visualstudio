@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 
 namespace GoogleCloudExtension.GCloud
 {
-    public class AppEngineApp
+    public sealed class AppEngineApp
     {
         [JsonProperty("module")]
         public string Module { get; set; }

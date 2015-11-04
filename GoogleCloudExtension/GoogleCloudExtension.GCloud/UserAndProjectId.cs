@@ -3,7 +3,7 @@
 
 namespace GoogleCloudExtension.GCloud
 {
-    public class AccountAndProjectId
+    public sealed class AccountAndProjectId
     {
         public AccountAndProjectId(string account = null, string projectId = null)
         {

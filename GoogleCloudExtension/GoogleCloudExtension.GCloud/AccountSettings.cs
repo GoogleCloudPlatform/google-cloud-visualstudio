@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace GoogleCloudExtension.GCloud
 {
-    public class AccountSettings
+    public sealed class AccountSettings
     {
         [JsonProperty("accounts")]
         public IList<string> Accounts { get; set; }
