@@ -18,10 +18,5 @@ namespace GoogleCloudExtension.GCloud
 
         [JsonProperty("project")]
         public string Project { get; set; }
-
-        public string IsDefaultString
-        {
-            get { return this.IsDefault ? "(default)" : ""; }
-        }
     }
 }
