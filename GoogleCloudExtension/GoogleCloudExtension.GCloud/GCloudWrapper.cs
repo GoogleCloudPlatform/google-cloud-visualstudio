@@ -183,12 +183,6 @@ namespace GoogleCloudExtension.GCloud
             return $"/c gcloud {jsonFormatParam} {accountAndProjectParams} {command}";
         }
 
-        private async Task<string> GetActualCommandAsync(string command, bool useCurrentAccount, bool useJson = false)
-        {
-            var accountAndProject = useCurrentAccount ? await GetCurrentAccountAndProjectAsync() : null;
-            return FormatCommand(command, accountAndProject, useJson);
-        }
-
         private async Task RunCommandAsync(string command, Action<string> callback, AccountAndProjectId accountAndProject)
         {
             var actualCommand = FormatCommand(command, accountAndProject, useJson: false);
@@ -220,25 +214,6 @@ namespace GoogleCloudExtension.GCloud
         private async Task<string> GetCommandOutputAsync(string command)
         {
             return await GetCommandOutputAsync(command, await GetCurrentAccountAndProjectAsync());
-        }
-
-        private async Task<IList<T>> GetJsonArrayOutputAsync<T>(string command, AccountAndProjectId accountAndProject)
-        {
-            var actualCommand = FormatCommand(command, accountAndProject, useJson: true);
-            try
-            {
-                Debug.Write($"Executing gcloud command: {actualCommand}");
-                return await ProcessUtils.GetJsonArrayOutputAsync<T>("cmd.exe", actualCommand, GetGCloudEnvironment());
-            }
-            catch (JsonOutputException ex)
-            {
-                throw new GCloudException($"Failed to execute command {actualCommand}\nInner message:\n{ex.Message}", ex);
-            }
-        }
-
-        private async Task<IList<T>> GetJsonArrayOutputAsync<T>(string command)
-        {
-            return await GetJsonArrayOutputAsync<T>(command, await GetCurrentAccountAndProjectAsync());
         }
 
         private async Task<T> GetJsonOutputAsync<T>(string command, AccountAndProjectId accountAndProject)
@@ -276,7 +251,7 @@ namespace GoogleCloudExtension.GCloud
         /// <returns>The list of compute instances.</returns>
         public Task<IList<ComputeInstance>> GetComputeInstanceListAsync()
         {
-            return GetJsonArrayOutputAsync<ComputeInstance>("compute instances list");
+            return GetJsonOutputAsync<IList<ComputeInstance>>("compute instances list");
         }
 
         // This prefix allows us to detect the builtin services so we can avoid showing
@@ -290,7 +265,7 @@ namespace GoogleCloudExtension.GCloud
         /// <returns>The list of AppEngine apps.</returns>
         public async Task<IList<AppEngineApp>> GetAppEngineAppListAsync()
         {
-            var result = await GetJsonArrayOutputAsync<AppEngineApp>("preview app modules list") ?? new List<AppEngineApp>();
+            var result = await GetJsonOutputAsync<IList<AppEngineApp>>("preview app modules list") ?? new List<AppEngineApp>();
             return result.Where(x => !x.Version.StartsWith(BuiltinServiceVersionPrefix)).ToList();
         }
 
@@ -312,12 +287,12 @@ namespace GoogleCloudExtension.GCloud
         /// <returns>List of projects.</returns>
         public Task<IList<GcpProject>> GetProjectsAsync()
         {
-            return GetJsonArrayOutputAsync<GcpProject>("alpha projects list");
+            return GetJsonOutputAsync<IList<GcpProject>>("alpha projects list");
         }
 
         public async Task<IList<GcpProject>> GetProjectsAsync(AccountAndProjectId accountAndProject)
         {
-            return await GetJsonArrayOutputAsync<GcpProject>("alpha projects list", accountAndProject);
+            return await GetJsonOutputAsync<IList<GcpProject>>("alpha projects list", accountAndProject);
         }
 
         /// <summary>

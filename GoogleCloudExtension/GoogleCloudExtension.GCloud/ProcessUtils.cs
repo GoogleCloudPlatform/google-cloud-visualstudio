@@ -108,17 +108,6 @@ namespace GoogleCloudExtension.GCloud
             });
         }
 
-        static public async Task<IList<T>> GetJsonArrayOutputAsync<T>(string file, string args, Dictionary<string, string> environment)
-        {
-            var output = await ProcessUtils.GetCommandOutputAsync(file, args, environment);
-            if (!output.Succeeded)
-            {
-                throw new JsonOutputException($"Failed to execute command: {file} {args}\n{output.Error}");
-            }
-            var parsed = JsonConvert.DeserializeObject<List<T>>(output.Output);
-            return parsed;
-        }
-
         static public async Task<T> GetJsonOutputAsync<T>(string file, string args, Dictionary<string, string> environment)
         {
             var output = await ProcessUtils.GetCommandOutputAsync(file, args, environment);
