@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.GCloud
 
     internal static class ProcessUtils
     {
-        public static async Task<bool> RunCmdAsync(string file, string args, OutputHandler handler, Dictionary<string, string> environment)
+        public static async Task<bool> RunCommandAsync(string file, string args, OutputHandler handler, Dictionary<string, string> environment)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
@@ -73,7 +73,7 @@ namespace GoogleCloudExtension.GCloud
             });
         }
 
-        public static async Task<ProcessOutput> GetCmdOutputAsync(string file, string args, Dictionary<string, string> environment)
+        public static async Task<ProcessOutput> GetCommandOutputAsync(string file, string args, Dictionary<string, string> environment)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
@@ -110,7 +110,7 @@ namespace GoogleCloudExtension.GCloud
 
         static public async Task<IList<T>> GetJsonArrayOutputAsync<T>(string file, string args, Dictionary<string, string> environment)
         {
-            var output = await ProcessUtils.GetCmdOutputAsync(file, args, environment);
+            var output = await ProcessUtils.GetCommandOutputAsync(file, args, environment);
             if (!output.Succeeded)
             {
                 throw new JsonOutputException($"Failed to execute command: {file} {args}\n{output.Error}");
@@ -121,7 +121,7 @@ namespace GoogleCloudExtension.GCloud
 
         static public async Task<T> GetJsonOutputAsync<T>(string file, string args, Dictionary<string, string> environment)
         {
-            var output = await ProcessUtils.GetCmdOutputAsync(file, args, environment);
+            var output = await ProcessUtils.GetCommandOutputAsync(file, args, environment);
             if (!output.Succeeded)
             {
                 throw new JsonOutputException($"Failed to execute command: {file} {args}\n{output.Error}");

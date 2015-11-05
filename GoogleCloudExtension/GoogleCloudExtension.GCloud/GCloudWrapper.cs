@@ -77,7 +77,7 @@ namespace GoogleCloudExtension.GCloud
         }
 
         /// <summary>
-        /// Updates the current account and project in the instance *only* it does not
+        /// Updates the local concet of "current account and project" in the instance *only* it does not
         /// affect what gcloud thinks is the current account and project.
         /// </summary>
         /// <param name="accountAndProject">The new accountAndProject to use</param>
@@ -90,8 +90,7 @@ namespace GoogleCloudExtension.GCloud
         public void UpdateProject(string projectId)
         {
             var newAccountAndProject = new AccountAndProjectId(_currentAccountAndProject.Account, projectId);
-            _currentAccountAndProject = newAccountAndProject;
-            RaiseAccountOrProjectChanged();
+            UpdateUserAndProject(newAccountAndProject);
         }
 
         private static Dictionary<string, string> s_GCloudEnvironment;
@@ -177,40 +176,40 @@ namespace GoogleCloudExtension.GCloud
         }
 
 
-        private string FormatCommand(string cmd, AccountAndProjectId accountAndProject, bool useJson)
+        private string FormatCommand(string command, AccountAndProjectId accountAndProject, bool useJson)
         {
             var accountAndProjectParams = FormatAccountAndProjectParameters(accountAndProject);
             var jsonFormatParam = useJson ? "--format=json" : "";
-            return $"/c gcloud {jsonFormatParam} {accountAndProjectParams} {cmd}";
+            return $"/c gcloud {jsonFormatParam} {accountAndProjectParams} {command}";
         }
 
-        private async Task<string> GetActualCommandAsync(string cmd, bool useCurrentAccount, bool useJson = false)
+        private async Task<string> GetActualCommandAsync(string command, bool useCurrentAccount, bool useJson = false)
         {
             var accountAndProject = useCurrentAccount ? await GetCurrentAccountAndProjectAsync() : null;
-            return FormatCommand(cmd, accountAndProject, useJson);
+            return FormatCommand(command, accountAndProject, useJson);
         }
 
-        private async Task RunCmdAsync(string cmd, Action<string> callback, AccountAndProjectId accountAndProject)
+        private async Task RunCommandAsync(string command, Action<string> callback, AccountAndProjectId accountAndProject)
         {
-            var actualCmd = FormatCommand(cmd, accountAndProject, useJson: false);
-            Debug.WriteLine($"Executing gcloud command: {actualCmd}");
-            var result = await ProcessUtils.RunCmdAsync("cmd.exe", actualCmd, (s, e) => callback(e.Line), GetGCloudEnvironment());
+            var actualCommand = FormatCommand(command, accountAndProject, useJson: false);
+            Debug.WriteLine($"Executing gcloud command: {actualCommand}");
+            var result = await ProcessUtils.RunCommandAsync("cmd.exe", actualCommand, (s, e) => callback(e.Line), GetGCloudEnvironment());
             if (!result)
             {
-                throw new GCloudException($"Failed to execute: {actualCmd}");
+                throw new GCloudException($"Failed to execute: {actualCommand}");
             }
         }
 
-        private async Task RunCmdAsync(string cmd, Action<string> callback)
+        private async Task RunCommandAsync(string command, Action<string> callback)
         {
-            await RunCmdAsync(cmd, callback, await GetCurrentAccountAndProjectAsync());
+            await RunCommandAsync(command, callback, await GetCurrentAccountAndProjectAsync());
         }
 
-        private async Task<string> GetCommandOutputAsync(string cmd, AccountAndProjectId accountAndProject)
+        private async Task<string> GetCommandOutputAsync(string command, AccountAndProjectId accountAndProject)
         {
-            var actualCmd = FormatCommand(cmd, accountAndProject, useJson: false);
-            Debug.WriteLine($"Executing gcloud command: {actualCmd}");
-            var output = await ProcessUtils.GetCmdOutputAsync("cmd.exe", actualCmd, GetGCloudEnvironment());
+            var actualCommand = FormatCommand(command, accountAndProject, useJson: false);
+            Debug.WriteLine($"Executing gcloud command: {actualCommand}");
+            var output = await ProcessUtils.GetCommandOutputAsync("cmd.exe", actualCommand, GetGCloudEnvironment());
             if (!output.Succeeded)
             {
                 throw new GCloudException($"Failed with message: {output.Error}");
@@ -218,47 +217,47 @@ namespace GoogleCloudExtension.GCloud
             return output.Output;
         }
 
-        private async Task<string> GetCommandOutputAsync(string cmd)
+        private async Task<string> GetCommandOutputAsync(string command)
         {
-            return await GetCommandOutputAsync(cmd, await GetCurrentAccountAndProjectAsync());
+            return await GetCommandOutputAsync(command, await GetCurrentAccountAndProjectAsync());
         }
 
-        private async Task<IList<T>> GetJsonArrayOutputAsync<T>(string cmd, AccountAndProjectId accountAndProject)
+        private async Task<IList<T>> GetJsonArrayOutputAsync<T>(string command, AccountAndProjectId accountAndProject)
         {
-            var actualCmd = FormatCommand(cmd, accountAndProject, useJson: true);
+            var actualCommand = FormatCommand(command, accountAndProject, useJson: true);
             try
             {
-                Debug.Write($"Executing gcloud command: {actualCmd}");
-                return await ProcessUtils.GetJsonArrayOutputAsync<T>("cmd.exe", actualCmd, GetGCloudEnvironment());
+                Debug.Write($"Executing gcloud command: {actualCommand}");
+                return await ProcessUtils.GetJsonArrayOutputAsync<T>("cmd.exe", actualCommand, GetGCloudEnvironment());
             }
             catch (JsonOutputException ex)
             {
-                throw new GCloudException($"Failed to execute command {actualCmd}\nInner message:\n{ex.Message}", ex);
+                throw new GCloudException($"Failed to execute command {actualCommand}\nInner message:\n{ex.Message}", ex);
             }
         }
 
-        private async Task<IList<T>> GetJsonArrayOutputAsync<T>(string cmd)
+        private async Task<IList<T>> GetJsonArrayOutputAsync<T>(string command)
         {
-            return await GetJsonArrayOutputAsync<T>(cmd, await GetCurrentAccountAndProjectAsync());
+            return await GetJsonArrayOutputAsync<T>(command, await GetCurrentAccountAndProjectAsync());
         }
 
-        private async Task<T> GetJsonOutputAsync<T>(string cmd, AccountAndProjectId accountAndProject)
+        private async Task<T> GetJsonOutputAsync<T>(string command, AccountAndProjectId accountAndProject)
         {
-            var actualCmd = FormatCommand(cmd, accountAndProject, useJson: true);
+            var actualCommand = FormatCommand(command, accountAndProject, useJson: true);
             try
             {
-                Debug.Write($"Executing gcloud command: {actualCmd}");
-                return await ProcessUtils.GetJsonOutputAsync<T>("cmd.exe", actualCmd, GetGCloudEnvironment());
+                Debug.Write($"Executing gcloud command: {actualCommand}");
+                return await ProcessUtils.GetJsonOutputAsync<T>("cmd.exe", actualCommand, GetGCloudEnvironment());
             }
             catch (JsonOutputException ex)
             {
-                throw new GCloudException($"Failed to execute command {actualCmd}\nInner message:\n{ex.Message}", ex);
+                throw new GCloudException($"Failed to execute command {actualCommand}\nInner message:\n{ex.Message}", ex);
             }
         }
 
-        private async Task<T> GetJsonOutputAsync<T>(string cmd)
+        private async Task<T> GetJsonOutputAsync<T>(string command)
         {
-            return await GetJsonOutputAsync<T>(cmd, await GetCurrentAccountAndProjectAsync());
+            return await GetJsonOutputAsync<T>(command, await GetCurrentAccountAndProjectAsync());
         }
 
         /// <summary>
@@ -594,10 +593,10 @@ namespace GoogleCloudExtension.GCloud
             var newPath = $"{dnxPath};{restoreEnvironment["PATH"]}";
             restoreEnvironment["PATH"] = newPath;
 
-            var cmd = $"/c dnu restore \"{projectPath}\"";
+            var command = $"/c dnu restore \"{projectPath}\"";
             callback($"Restoring project: {projectPath}");
             // This has hard dependency on dnu bing a batch file.
-            var result = await ProcessUtils.RunCmdAsync("cmd.exe", cmd, (s, e) => callback(e.Line), restoreEnvironment);
+            var result = await ProcessUtils.RunCommandAsync("cmd.exe", command, (s, e) => callback(e.Line), restoreEnvironment);
             if (!result)
             {
                 throw new GCloudException($"Failed to restore project: {projectPath}");
@@ -620,9 +619,9 @@ namespace GoogleCloudExtension.GCloud
 
             // This is a dependency on the fact that DNU is a batch file, but it has to be launched this way.
             callback($"Preparing app bundle in {appTempPath}.");
-            string cmd = $"/c dnu publish \"{projectPath}\" --out \"{appTempPath}\" --framework {GetDNXFrameworkNameFromRuntime(runtime)} --configuration release";
-            callback($"Executing command: {cmd}");
-            var result = await ProcessUtils.RunCmdAsync("cmd.exe", cmd, (s, e) => callback(e.Line), publishEnvironment);
+            string command = $"/c dnu publish \"{projectPath}\" --out \"{appTempPath}\" --framework {GetDNXFrameworkNameFromRuntime(runtime)} --configuration release";
+            callback($"Executing command: {command}");
+            var result = await ProcessUtils.RunCommandAsync("cmd.exe", command, (s, e) => callback(e.Line), publishEnvironment);
             if (!result)
             {
                 throw new GCloudException($"Failed to prepare bundle for project: {projectPath}");
@@ -652,10 +651,10 @@ namespace GoogleCloudExtension.GCloud
             var makeDefault = makeDefaultVersion ? "--promote" : "--no-promote";
             var name = String.IsNullOrEmpty(versionName) ? "" : $"--version={versionName}";
             var appYaml = Path.Combine(appTempPath, AppYamlFilename);
-            string cmd = $"preview app deploy \"{appYaml}\" {makeDefault} {name} --docker-build=remote --verbosity=info --quiet";
-            callback($"Executing command: {cmd}");
+            string command = $"preview app deploy \"{appYaml}\" {makeDefault} {name} --docker-build=remote --verbosity=info --quiet";
+            callback($"Executing command: {command}");
             // This has a hardcoded dependency on the fact that gcloud is a batch file.
-            return RunCmdAsync(cmd, callback, accountAndProject);
+            return RunCommandAsync(command, callback, accountAndProject);
         }
 
         private static string GetAppStagingDirectory()
