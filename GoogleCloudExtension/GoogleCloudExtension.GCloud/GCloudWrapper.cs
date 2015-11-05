@@ -196,16 +196,6 @@ namespace GoogleCloudExtension.GCloud
         }
 
         /// <summary>
-        /// Returns the list of compute instances for this class' notion of current
-        /// user and project.
-        /// </summary>
-        /// <returns>The list of compute instances.</returns>
-        public Task<IList<ComputeInstance>> GetComputeInstanceListAsync()
-        {
-            return GetJsonOutputAsync<IList<ComputeInstance>>("compute instances list");
-        }
-
-        /// <summary>
         /// Returns the list of accounts registered with gcloud.
         /// </summary>
         /// <returns>List of accounts.</returns>

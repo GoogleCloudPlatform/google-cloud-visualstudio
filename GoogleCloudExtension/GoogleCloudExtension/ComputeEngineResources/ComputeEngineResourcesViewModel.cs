@@ -110,7 +110,7 @@ namespace GoogleCloudExtension.ComputeEngineResources
                 this.Loading = true;
                 this.LoadingMessage = "Loading instances...";
                 this.Instances = new List<ComputeInstance>();
-                this.Instances = await GCloudWrapper.Instance.GetComputeInstanceListAsync();
+                this.Instances = await ComputeEngineClient.GetComputeInstanceListAsync();
             }
             catch (GCloudException ex)
             {
