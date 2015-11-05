@@ -132,9 +132,9 @@ namespace GoogleCloudExtension.GCloud
             else
             {
                 // Copy the template file.
-                var runtimeName = runtime == AspNetRuntime.Mono ? DnxEnvironment.MonoImageName : DnxEnvironment.CoreClrImageName;
+                var runtimeName = DnxEnvironment.GetImageNameFromRuntime(runtime);
                 var dockerFileContent = String.Format(DockerfileTemplate, DnxEnvironment.DnxVersion, runtimeName);
-                callback($"Writting file [{dockerfileDest}] for runtime {runtimeName}.");
+                callback($"Writing file [{dockerfileDest}] for runtime {runtimeName}.");
                 File.WriteAllText(dockerfileDest, dockerFileContent);
             }
 
@@ -149,7 +149,7 @@ namespace GoogleCloudExtension.GCloud
             else
             {
                 // Copy the template file.
-                callback($"Writting file [{appYamlDest}].");
+                callback($"Writing file [{appYamlDest}].");
                 File.WriteAllText(appYamlDest, AppYamlContent);
             }
         }
@@ -179,12 +179,7 @@ namespace GoogleCloudExtension.GCloud
            Action<string> callback)
         {
             callback("Restoring projects.");
-            List<Task> restoreTasks = new List<Task>();
-            foreach (string path in projectPaths)
-            {
-                restoreTasks.Add(RestoreProject(path, runtime, callback));
-            }
-            await Task.WhenAll(restoreTasks);
+            await Task.WhenAll(projectPaths.Select(x => RestoreProject(x, runtime, callback)));
             callback("Done restoring projects.");
         }
 

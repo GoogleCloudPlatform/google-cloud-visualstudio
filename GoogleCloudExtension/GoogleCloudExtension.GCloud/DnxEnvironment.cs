@@ -109,6 +109,19 @@ namespace GoogleCloudExtension.GCloud
             }
         }
 
+        public static string GetImageNameFromRuntime(AspNetRuntime runtime)
+        {
+            switch (runtime)
+            {
+                case AspNetRuntime.Mono:
+                    return MonoImageName;
+                case AspNetRuntime.CoreClr:
+                    return CoreClrImageName;
+                default:
+                    return "";
+            }
+        }
+
         public static AspNetRuntime GetRuntimeFromName(string name)
         {
             switch (name)

@@ -42,24 +42,7 @@ namespace GoogleCloudExtension.GCloud
     {
         public static async Task<bool> RunCommandAsync(string file, string args, OutputHandler handler, Dictionary<string, string> environment)
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo
-            {
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                RedirectStandardError = true,
-                RedirectStandardOutput = true,
-                FileName = file,
-                Arguments = args,
-            };
-
-            // Customize the environment for the incoming process.
-            if (environment != null)
-            {
-                foreach (var entry in environment)
-                {
-                    startInfo.EnvironmentVariables[entry.Key] = entry.Value;
-                }
-            }
+            var startInfo = GetStartInfo(file, args, environment);
 
             return await Task.Run(async () =>
             {
@@ -75,6 +58,35 @@ namespace GoogleCloudExtension.GCloud
 
         public static async Task<ProcessOutput> GetCommandOutputAsync(string file, string args, Dictionary<string, string> environment)
         {
+            var startInfo = GetStartInfo(file, args, environment);
+
+            return await Task.Run(async () =>
+            {
+                var process = Process.Start(startInfo);
+                var readErrorsTask = process.StandardError.ReadToEndAsync();
+                var readOutputTask = process.StandardOutput.ReadToEndAsync();
+                process.WaitForExit();
+                var succeeded = process.ExitCode == 0;
+                return new ProcessOutput(
+                    succeeded: succeeded,
+                    output: await readOutputTask,
+                    error: await readErrorsTask);
+            });
+        }
+
+        public static async Task<T> GetJsonOutputAsync<T>(string file, string args, Dictionary<string, string> environment)
+        {
+            var output = await ProcessUtils.GetCommandOutputAsync(file, args, environment);
+            if (!output.Succeeded)
+            {
+                throw new JsonOutputException($"Failed to execute command: {file} {args}\n{output.Error}");
+            }
+            var parsed = JsonConvert.DeserializeObject<T>(output.Output);
+            return parsed;
+        }
+
+        private static ProcessStartInfo GetStartInfo(string file, string args, Dictionary<string, string> environment)
+        {
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 UseShellExecute = false,
@@ -94,29 +106,7 @@ namespace GoogleCloudExtension.GCloud
                 }
             }
 
-            return await Task.Run(async () =>
-            {
-                var process = Process.Start(startInfo);
-                var readErrorsTask = process.StandardError.ReadToEndAsync();
-                var readOutputTask = process.StandardOutput.ReadToEndAsync();
-                process.WaitForExit();
-                var succeeded = process.ExitCode == 0;
-                return new ProcessOutput(
-                    succeeded: succeeded,
-                    output: await readOutputTask,
-                    error: await readErrorsTask);
-            });
-        }
-
-        static public async Task<T> GetJsonOutputAsync<T>(string file, string args, Dictionary<string, string> environment)
-        {
-            var output = await ProcessUtils.GetCommandOutputAsync(file, args, environment);
-            if (!output.Succeeded)
-            {
-                throw new JsonOutputException($"Failed to execute command: {file} {args}\n{output.Error}");
-            }
-            var parsed = JsonConvert.DeserializeObject<T>(output.Output);
-            return parsed;
+            return startInfo;
         }
 
         private static async Task ReadLinesFromOutput(OutputChannel channel, StreamReader stream, OutputHandler handler)

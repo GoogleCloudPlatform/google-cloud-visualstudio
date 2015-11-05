@@ -23,13 +23,6 @@ namespace GoogleCloudExtension.GCloud
         [JsonProperty("projectNumber")]
         public string Number { get; set; }
 
-        public override string ToString()
-        {
-            if (Id == null)
-            {
-                return Name;
-            }
-            return $"{Name} : {Id}";
-        }
+        public override string ToString() => Id == null ? Name : $"{Name} : {Id}";
     }
 }
