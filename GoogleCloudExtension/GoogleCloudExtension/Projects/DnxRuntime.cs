@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.Projects
             {
                 case AspNetRuntime.Mono:
                     return "dnx451";
-                case AspNetRuntime.CoreCLR:
+                case AspNetRuntime.CoreClr:
                     return "dnxcore50";
                 default:
                     return "";
@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.Projects
             {
                 case AspNetRuntime.Mono:
                     return ".NET Desktop CLR";
-                case AspNetRuntime.CoreCLR:
+                case AspNetRuntime.CoreClr:
                     return ".NET Core CLR";
                 default:
                     return "";
@@ -46,7 +46,7 @@ namespace GoogleCloudExtension.Projects
                 case "dnx451":
                     return AspNetRuntime.Mono;
                 case "dnxcore50":
-                    return AspNetRuntime.CoreCLR;
+                    return AspNetRuntime.CoreClr;
                 default:
                     return AspNetRuntime.None;
             }

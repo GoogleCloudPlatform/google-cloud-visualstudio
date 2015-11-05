@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.GCloud
     {
         None,
         Mono,
-        CoreCLR
+        CoreClr
     }
 
     /// <summary>
@@ -265,7 +265,7 @@ namespace GoogleCloudExtension.GCloud
         /// <returns>The list of AppEngine apps.</returns>
         public async Task<IList<AppEngineApp>> GetAppEngineAppListAsync()
         {
-            var result = await GetJsonOutputAsync<IList<AppEngineApp>>("preview app modules list") ?? new List<AppEngineApp>();
+            var result = await GetJsonOutputAsync<IList<AppEngineApp>>("preview app modules list") ?? Enumerable.Empty<AppEngineApp>();
             return result.Where(x => !x.Version.StartsWith(BuiltinServiceVersionPrefix)).ToList();
         }
 
@@ -307,7 +307,7 @@ namespace GoogleCloudExtension.GCloud
         }
 
         /// <summary>
-        /// Sets the given version as the defualt version for the given module.
+        /// Sets the given version as the default version for the given module.
         /// </summary>
         /// <param name="module">The module to change.</param>
         /// <param name="version">The version to be made default.</param>
@@ -318,7 +318,7 @@ namespace GoogleCloudExtension.GCloud
         }
 
         /// <summary>
-        /// Starts the GCE instance given it's name and zone.
+        /// Starts the GCE instance given its name and zone.
         /// </summary>
         /// <param name="name">The name of the GCE instance.</param>
         /// <param name="zone">The zone where the GCE instance resides.</param>
@@ -329,7 +329,7 @@ namespace GoogleCloudExtension.GCloud
         }
 
         /// <summary>
-        /// Stops the GCE instance given it's name and zone.
+        /// Stops the GCE instance given its name and zone.
         /// </summary>
         /// <param name="name">The name of the GCE instance.</param>
         /// <param name="zone">The zone where the GCE instance resides.</param>
@@ -343,18 +343,18 @@ namespace GoogleCloudExtension.GCloud
         /// Deployes an Asp.NET application to AppEngine using a managed vm.
         /// </summary>
         /// <param name="startupProjectPath">The path to the startup project.</param>
-        /// <param name="projectPaths">The paths to all of the projects int he solution.</param>
-        /// <param name="versionName">The name, if any, of the version to deploy.</param>
-        /// <param name="runtime">The target runtime, Mono, CoreCLR, etc...</param>
-        /// <param name="makeDefaultVersion">Is this version to be made the default version.</param>
-        /// <param name="callback">The output handler that will be called with the output from the process.</param>
+        /// <param name="projectPaths">The paths to all of the projects in the solution.</param>
+        /// <param name="versionName">The name, if any, of the version to deploy, it empty or null then a default name will be chosen.</param>
+        /// <param name="runtime">The target runtime, Mono, CoreClr, etc...</param>
+        /// <param name="promoteVersion">Is this version to receive all traffic.</param>
+        /// <param name="callback">The delegate that will be called with the output from the process.</param>
         /// <returns>The task.</returns>
         public async Task DeployApplication(
             string startupProjectPath,
             IList<string> projectPaths,
             string versionName,
             AspNetRuntime runtime,
-            bool makeDefaultVersion,
+            bool promoteVersion,
             Action<string> callback,
             AccountAndProjectId accountAndProject)
         {
@@ -364,8 +364,8 @@ namespace GoogleCloudExtension.GCloud
                 await RestoreProjects(projectPaths, runtime, callback);
                 await PrepareAppBundle(startupProjectPath, appTempPath, runtime, callback);
                 PrepareEntryPoint(startupProjectPath, appTempPath, callback);
-                CopyGaeFiles(startupProjectPath, appTempPath, runtime, callback);
-                await DeployToGae(appTempPath, versionName, makeDefaultVersion, callback, accountAndProject);
+                CopyAppEngineFiles(startupProjectPath, appTempPath, runtime, callback);
+                await DeployToAppEngine(appTempPath, versionName, promoteVersion, callback, accountAndProject);
             }
             catch (Exception ex)
             {
@@ -379,7 +379,7 @@ namespace GoogleCloudExtension.GCloud
             }
         }
 
-        public bool ValidateDNXInstallationForRuntime(AspNetRuntime runtime)
+        public bool ValidateDnxInstallationForRuntime(AspNetRuntime runtime)
         {
             bool result = false;
             Debug.WriteLine("Validating DNX installation.");
@@ -391,27 +391,20 @@ namespace GoogleCloudExtension.GCloud
             return result;
         }
 
-        private bool? _validGCloudInstallation;
         public bool ValidateGCloudInstallation()
         {
-            if (_validGCloudInstallation != null)
-            {
-                return _validGCloudInstallation.Value;
-            }
-
             Debug.WriteLine("Validating GCloud installation.");
             var gcloudDirectory = GetGCloudPath();
             var gcloudPath = Path.Combine(gcloudDirectory, "gcloud.cmd");
 
             var result = File.Exists(gcloudPath);
             Debug.WriteLineIf(!result, $"GCloud cannot be found, can't find {gcloudPath}");
-            _validGCloudInstallation = new bool?(result);
             return result;
         }
 
         public bool ValidateEnvironment()
         {
-            var validDNXInstallation = ValidateDNXInstallationForRuntime(AspNetRuntime.CoreCLR) || ValidateDNXInstallationForRuntime(AspNetRuntime.Mono);
+            var validDNXInstallation = ValidateDnxInstallationForRuntime(AspNetRuntime.CoreClr) || ValidateDnxInstallationForRuntime(AspNetRuntime.Mono);
             var validGCloudInstallation = ValidateGCloudInstallation();
             return validDNXInstallation && validGCloudInstallation;
         }
@@ -435,9 +428,9 @@ namespace GoogleCloudExtension.GCloud
         private const string AppYamlFilename = "app.yaml";
         private const string DockerfileFilename = "Dockerfile";
 
-        private static void CopyGaeFiles(string projectPath, string appTempPath, AspNetRuntime runtime, Action<string> callback)
+        private static void CopyAppEngineFiles(string projectPath, string appTempPath, AspNetRuntime runtime, Action<string> callback)
         {
-            Debug.Assert(runtime == AspNetRuntime.Mono || runtime == AspNetRuntime.CoreCLR);
+            Debug.Assert(runtime == AspNetRuntime.Mono || runtime == AspNetRuntime.CoreClr);
 
             var dockerfileSrc = new FileInfo(Path.Combine(projectPath, DockerfileFilename));
             var dockerfileDest = Path.Combine(appTempPath, DockerfileFilename);
@@ -541,7 +534,7 @@ namespace GoogleCloudExtension.GCloud
                 case AspNetRuntime.Mono:
                     runtimeNameFormat = DnxClrRuntimeNameFormat;
                     break;
-                case AspNetRuntime.CoreCLR:
+                case AspNetRuntime.CoreClr:
                     runtimeNameFormat = DnxCoreClrRuntimeNameFormat;
                     break;
                 default:
@@ -609,14 +602,14 @@ namespace GoogleCloudExtension.GCloud
             {
                 case AspNetRuntime.Mono:
                     return "dnx451";
-                case AspNetRuntime.CoreCLR:
+                case AspNetRuntime.CoreClr:
                     return "dnxcore50";
                 default:
                     return "none";
             }
         }
 
-        private Task DeployToGae(
+        private Task DeployToAppEngine(
             string appTempPath,
             string versionName,
             bool makeDefaultVersion,

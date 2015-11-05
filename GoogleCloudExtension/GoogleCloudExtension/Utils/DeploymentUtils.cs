@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.Utils
                     projectPaths: projects.Select(x => x.Root).ToList(),
                     versionName: versionName,
                     runtime: selectedRuntime,
-                    makeDefaultVersion: makeDefault,
+                    promoteVersion: makeDefault,
                     callback: AppEngineOutputWindow.OutputLine,
                     accountAndProject: accountAndProject);
                 StatusbarHelper.UnFreeze();
