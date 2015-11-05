@@ -63,7 +63,6 @@
     </Compile>
     <Compile Include="DeploymentDialog\DeploymentDialogWindow.cs" />
     <Compile Include="DeploymentDialog\DeploymentDialogViewModel.cs" />
-    <Compile Include="Projects\DnxRuntime.cs" />
     <Compile Include="Projects\ParsedProjectJson.cs" />
     <Compile Include="Utils\AppEngineOutputWindow.cs" />
     <Compile Include="ComputeEngineResources\ComputeEngineResourcesViewModel.cs" />

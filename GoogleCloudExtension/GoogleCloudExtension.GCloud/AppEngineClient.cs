@@ -132,7 +132,7 @@ namespace GoogleCloudExtension.GCloud
             else
             {
                 // Copy the template file.
-                var runtimeName = runtime == AspNetRuntime.Mono ? DnxEnvironment.MonoRuntimeName : DnxEnvironment.CoreCLRRuntimeName;
+                var runtimeName = runtime == AspNetRuntime.Mono ? DnxEnvironment.MonoImageName : DnxEnvironment.CoreClrImageName;
                 var dockerFileContent = String.Format(DockerfileTemplate, DnxEnvironment.DnxVersion, runtimeName);
                 callback($"Writting file [{dockerfileDest}] for runtime {runtimeName}.");
                 File.WriteAllText(dockerfileDest, dockerFileContent);
@@ -229,7 +229,7 @@ namespace GoogleCloudExtension.GCloud
 
             // This is a dependency on the fact that DNU is a batch file, but it has to be launched this way.
             callback($"Preparing app bundle in {appTempPath}.");
-            string command = $"/c dnu publish \"{projectPath}\" --out \"{appTempPath}\" --framework {DnxEnvironment.GetDNXFrameworkNameFromRuntime(runtime)} --configuration release";
+            string command = $"/c dnu publish \"{projectPath}\" --out \"{appTempPath}\" --framework {DnxEnvironment.GetDnxFrameworkNameFromRuntime(runtime)} --configuration release";
             callback($"Executing command: {command}");
             var result = await ProcessUtils.RunCommandAsync("cmd.exe", command, (s, e) => callback(e.Line), environment);
             if (!result)

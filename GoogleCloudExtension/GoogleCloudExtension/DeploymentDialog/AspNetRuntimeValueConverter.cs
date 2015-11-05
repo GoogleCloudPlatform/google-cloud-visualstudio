@@ -14,7 +14,7 @@ namespace GoogleCloudExtension.DeploymentDialog
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var runtime = (AspNetRuntime)value;
-            return DnxRuntime.GetRuntimeDisplayName(runtime);
+            return DnxEnvironment.GetRuntimeDisplayName(runtime);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

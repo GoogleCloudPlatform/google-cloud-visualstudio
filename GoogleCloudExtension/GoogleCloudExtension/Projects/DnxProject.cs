@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.Projects
                 {
                     var parsed = GetParsedProject();
                     _supportedRuntimes = parsed.Frameworks
-                        .Select(x => DnxRuntime.GetRuntimeFromName(x.Key))
+                        .Select(x => DnxEnvironment.GetRuntimeFromName(x.Key))
                         .Where(x => DnxEnvironment.ValidateDnxInstallationForRuntime(x))
                         .ToList();
                 }
@@ -102,8 +102,8 @@ namespace GoogleCloudExtension.Projects
         private AspNetRuntime GetProjectRuntime()
         {
             var parsed = GetParsedProject();
-            bool clrRuntimeTargeted = parsed.Frameworks.ContainsKey(DnxRuntime.ClrFrameworkName);
-            bool coreClrRuntimeTargeted = parsed.Frameworks.ContainsKey(DnxRuntime.CoreClrFrameworkName);
+            bool clrRuntimeTargeted = parsed.Frameworks.ContainsKey(DnxEnvironment.ClrFrameworkName);
+            bool coreClrRuntimeTargeted = parsed.Frameworks.ContainsKey(DnxEnvironment.CoreClrFrameworkName);
 
             bool hasCoreClrRuntimeInstalled = DnxEnvironment.ValidateDnxInstallationForRuntime(AspNetRuntime.CoreClr);
             bool hasClrRuntimeInstalled = DnxEnvironment.ValidateDnxInstallationForRuntime(AspNetRuntime.Mono);

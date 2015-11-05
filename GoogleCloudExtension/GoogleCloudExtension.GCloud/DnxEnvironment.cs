@@ -22,8 +22,16 @@ namespace GoogleCloudExtension.GCloud
     public static class DnxEnvironment
     {
         public const string DnxVersion = "1.0.0-beta8";
-        public const string MonoRuntimeName = "mono";
-        public const string CoreCLRRuntimeName = "coreclr";
+
+        // Docker images names for the runtime.
+        public const string MonoImageName = "mono";
+        public const string CoreClrImageName = "coreclr";
+
+        // The names of the supported runtimes.
+        // Clr will be substituted by Mono in the container.
+        // CoreClr will be itself.
+        public const string ClrFrameworkName = "dnx451";
+        public const string CoreClrFrameworkName = "dnxcore50";
 
         // The path where the binaries for the particular runtime live.
         //   {0} the runtime name.
@@ -75,16 +83,42 @@ namespace GoogleCloudExtension.GCloud
             return Path.Combine(userDirectory, runtimeRelativePath);
         }
 
-        public static string GetDNXFrameworkNameFromRuntime(AspNetRuntime runtime)
+        public static string GetDnxFrameworkNameFromRuntime(AspNetRuntime runtime)
         {
             switch (runtime)
             {
                 case AspNetRuntime.Mono:
-                    return "dnx451";
+                    return ClrFrameworkName;
                 case AspNetRuntime.CoreClr:
-                    return "dnxcore50";
+                    return CoreClrFrameworkName;
                 default:
                     return "none";
+            }
+        }
+
+        public static string GetRuntimeDisplayName(AspNetRuntime runtime)
+        {
+            switch (runtime)
+            {
+                case AspNetRuntime.Mono:
+                    return ".NET Desktop CLR";
+                case AspNetRuntime.CoreClr:
+                    return ".NET Core CLR";
+                default:
+                    return "";
+            }
+        }
+
+        public static AspNetRuntime GetRuntimeFromName(string name)
+        {
+            switch (name)
+            {
+                case ClrFrameworkName:
+                    return AspNetRuntime.Mono;
+                case CoreClrFrameworkName:
+                    return AspNetRuntime.CoreClr;
+                default:
+                    return AspNetRuntime.None;
             }
         }
 

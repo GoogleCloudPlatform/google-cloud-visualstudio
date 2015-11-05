@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.Utils
                 AppEngineOutputWindow.Activate();
                 AppEngineOutputWindow.Clear();
                 AppEngineOutputWindow.OutputLine("Deployment to AppEngine started...");
-                AppEngineOutputWindow.OutputLine($"Deploying project {startupProject} using runtime {DnxRuntime.GetRuntimeDisplayName(selectedRuntime)}.");
+                AppEngineOutputWindow.OutputLine($"Deploying project {startupProject} using runtime {DnxEnvironment.GetRuntimeDisplayName(selectedRuntime)}.");
                 AppEngineOutputWindow.OutputLine($"Deploying to cloud project id {accountAndProject.ProjectId} for acccount {accountAndProject.Account}");
                 StatusbarHelper.Freeze();
                 GoogleCloudExtensionPackage.IsDeploying = true;
