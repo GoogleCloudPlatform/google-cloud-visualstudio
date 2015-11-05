@@ -153,7 +153,7 @@ namespace GoogleCloudExtension.ComputeEngineResources
             {
                 this.Loading = true;
                 this.LoadingMessage = "Starting Instance...";
-                await GCloudWrapper.Instance.StartComputeInstanceAsync(instance.Name, instance.Zone);
+                await ComputeEngineClient.StartComputeInstanceAsync(instance.Name, instance.Zone);
             }
             catch (GCloudException ex)
             {
@@ -187,7 +187,7 @@ namespace GoogleCloudExtension.ComputeEngineResources
             {
                 this.Loading = true;
                 this.LoadingMessage = "Stopping Instance...";
-                await GCloudWrapper.Instance.StopComputeInstanceAsync(instance.Name, instance.Zone);
+                await ComputeEngineClient.StopComputeInstanceAsync(instance.Name, instance.Zone);
             }
             catch (GCloudException ex)
             {

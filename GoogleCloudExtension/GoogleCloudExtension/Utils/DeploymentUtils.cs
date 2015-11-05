@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.Utils
                 GoogleCloudExtensionPackage.IsDeploying = true;
 
                 StatusbarHelper.ShowDeployAnimation();
-                await GCloudWrapper.Instance.DeployApplication(
+                await AppEngineClient.DeployApplication(
                     startupProjectPath: startupProject.Root,
                     projectPaths: projects.Select(x => x.Root).ToList(),
                     versionName: versionName,

@@ -7,8 +7,8 @@
     <ProjectGuid>{95EFAC7E-4F6E-46F0-BCC8-90EE1487E1E1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GCloud</RootNamespace>
-    <AssemblyName>GCloud</AssemblyName>
+    <RootNamespace>GoogleCloudExtension.GCloud</RootNamespace>
+    <AssemblyName>GoogleCloudExtension.GCloud</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -50,8 +50,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppEngineClient.cs" />
     <Compile Include="AppEngineApp.cs" />
+    <Compile Include="ComputeEngineClient.cs" />
     <Compile Include="ComputeInstance.cs" />
+    <Compile Include="DnxEnvironment.cs" />
     <Compile Include="GCloudException.cs" />
     <Compile Include="GCloudWrapper.cs" />
     <Compile Include="JsonOutputException.cs" />

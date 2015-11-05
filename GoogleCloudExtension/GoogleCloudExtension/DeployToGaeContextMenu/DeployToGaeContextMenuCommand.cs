@@ -4,6 +4,7 @@
 using GoogleCloudExtension.DeploymentDialog;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Projects;
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -158,7 +159,7 @@ namespace GoogleCloudExtension.DeployToGaeContextMenu
 
             var selectedProjectPath = GetSelectedProjectPath();
             var isDnxProject = String.IsNullOrEmpty(selectedProjectPath) ? false : DnxProject.IsDnxProject(selectedProjectPath);
-            var validEnvironment = GCloudWrapper.Instance.ValidateEnvironment();
+            var validEnvironment = CommandUtils.ValidateEnvironment();
 
             if (isDnxProject)
             {

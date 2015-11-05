@@ -72,6 +72,7 @@
     <Compile Include="ComputeEngineResources\ComputeEngineResourcesWindowControl.xaml.cs">
       <DependentUpon>ComputeEngineResourcesWindowControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utils\CommandUtils.cs" />
     <Compile Include="Utils\DeploymentUtils.cs" />
     <Compile Include="DeployToGaeContextMenu\DeployToGaeContextMenuCommand.cs" />
     <Compile Include="DeployToGae\DeployToGaeCommand.cs" />

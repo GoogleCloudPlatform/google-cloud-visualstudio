@@ -4,6 +4,7 @@
 using GoogleCloudExtension.DeploymentDialog;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Projects;
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
@@ -111,7 +112,7 @@ namespace GoogleCloudExtension.DeployToGae
             // Enable and show the item only if there's an existing Dnx startup project.
             var startupProject = DnxSolution.CurrentSolution?.StartupProject;
             bool isDnxProject = false;
-            bool validEnvironment = GCloudWrapper.Instance.ValidateEnvironment();
+            bool validEnvironment = CommandUtils.ValidateEnvironment();
 
             if (startupProject != null)
             {

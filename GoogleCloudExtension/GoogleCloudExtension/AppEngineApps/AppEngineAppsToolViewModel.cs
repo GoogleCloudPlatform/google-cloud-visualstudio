@@ -121,7 +121,7 @@ namespace GoogleCloudExtension.AppEngineApps
                 this.LoadingMessage = "Loading AppEngine app list...";
                 this.Loading = true;
                 this.Apps = new List<AppEngineApp>();
-                this.Apps = await GCloudWrapper.Instance.GetAppEngineAppListAsync();
+                this.Apps = await AppEngineClient.GetAppEngineAppListAsync();
             }
             catch (GCloudException ex)
             {
@@ -171,7 +171,7 @@ namespace GoogleCloudExtension.AppEngineApps
             {
                 this.LoadingMessage = "Deleting version...";
                 this.Loading = true;
-                await GCloudWrapper.Instance.DeleteAppVersion(app.Module, app.Version);
+                await AppEngineClient.DeleteAppVersion(app.Module, app.Version);
             }
             catch (GCloudException ex)
             {
@@ -199,7 +199,7 @@ namespace GoogleCloudExtension.AppEngineApps
             {
                 this.Loading = true;
                 this.LoadingMessage = "Setting default version...";
-                await GCloudWrapper.Instance.SetDefaultAppVersionAsync(app.Module, app.Version);
+                await AppEngineClient.SetDefaultAppVersionAsync(app.Module, app.Version);
             }
             catch (GCloudException ex)
             {
