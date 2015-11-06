@@ -10,31 +10,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.GCloud
+namespace GoogleCloudExtension.GCloud.Dnx
 {
-    /// <summary>
-    /// Supported ASP.NET runtimes.
-    /// </summary>
-    public enum AspNetRuntime
-    {
-        None,
-        Mono,
-        CoreClr
-    }
-
     public static class DnxEnvironment
     {
         public const string DnxVersion = "1.0.0-beta8";
-
-        // Docker images names for the runtime.
-        public const string MonoImageName = "mono";
-        public const string CoreClrImageName = "coreclr";
-
-        // The names of the supported runtimes.
-        // Clr will be substituted by Mono in the container.
-        // CoreClr will be itself.
-        public const string ClrFrameworkName = "dnx451";
-        public const string CoreClrFrameworkName = "dnxcore50";
 
         // The path where the binaries for the particular runtime live.
         //   {0} the runtime name.
@@ -43,8 +23,8 @@ namespace GoogleCloudExtension.GCloud
         // Names for the runtime to use depending on the runtime.
         //   {0} is the bitness of the os, x86 or x64.
         //   {1} is the version of the runtime.
-        private const string DnxClrRuntimeNameFormat = "dnx-clr-win-{0}.{1}";
-        private const string DnxCoreClrRuntimeNameFormat = "dnx-coreclr-win-{0}.{1}";
+        private const string Dnx451RuntimeNameFormat = "dnx-clr-win-{0}.{1}";
+        private const string DnxCore50RuntimeNameFormat = "dnx-coreclr-win-{0}.{1}";
 
         private static readonly List<string> s_VSKeysToCheck = new List<string>
         {
@@ -60,7 +40,7 @@ namespace GoogleCloudExtension.GCloud
 
         private static string s_VSInstallPath;
 
-        public static string GetDNXPathForRuntime(AspNetRuntime runtime)
+        public static string GetDNXPathForRuntime(DnxRuntime runtime)
         {
             var userDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string bitness = Environment.Is64BitProcess ? "x64" : "x86";
@@ -68,15 +48,14 @@ namespace GoogleCloudExtension.GCloud
             string runtimeNameFormat = null;
             switch (runtime)
             {
-                case AspNetRuntime.Mono:
-                    runtimeNameFormat = DnxClrRuntimeNameFormat;
+                case DnxRuntime.Dnx451:
+                    runtimeNameFormat = Dnx451RuntimeNameFormat;
                     break;
-                case AspNetRuntime.CoreClr:
-                    runtimeNameFormat = DnxCoreClrRuntimeNameFormat;
+                case DnxRuntime.DnxCore50:
+                    runtimeNameFormat = DnxCore50RuntimeNameFormat;
                     break;
                 default:
-                    Debug.Assert(false, "Should not get here.");
-                    break;
+                    throw new InvalidOperationException();
             }
 
             var runtimeName = String.Format(runtimeNameFormat, bitness, DnxVersion);
@@ -86,65 +65,13 @@ namespace GoogleCloudExtension.GCloud
             return Path.Combine(userDirectory, runtimeRelativePath);
         }
 
-        public static string GetDnxFrameworkNameFromRuntime(AspNetRuntime runtime)
-        {
-            switch (runtime)
-            {
-                case AspNetRuntime.Mono:
-                    return ClrFrameworkName;
-                case AspNetRuntime.CoreClr:
-                    return CoreClrFrameworkName;
-                default:
-                    return "none";
-            }
-        }
-
-        public static string GetRuntimeDisplayName(AspNetRuntime runtime)
-        {
-            switch (runtime)
-            {
-                case AspNetRuntime.Mono:
-                    return ".NET Desktop CLR";
-                case AspNetRuntime.CoreClr:
-                    return ".NET Core CLR";
-                default:
-                    return "";
-            }
-        }
-
-        public static string GetImageNameFromRuntime(AspNetRuntime runtime)
-        {
-            switch (runtime)
-            {
-                case AspNetRuntime.Mono:
-                    return MonoImageName;
-                case AspNetRuntime.CoreClr:
-                    return CoreClrImageName;
-                default:
-                    return "";
-            }
-        }
-
-        public static AspNetRuntime GetRuntimeFromName(string name)
-        {
-            switch (name)
-            {
-                case ClrFrameworkName:
-                    return AspNetRuntime.Mono;
-                case CoreClrFrameworkName:
-                    return AspNetRuntime.CoreClr;
-                default:
-                    return AspNetRuntime.None;
-            }
-        }
-
         public static string GetWebToolsPath()
         {
             var vsInstallPath = GetVSInstallPath();
             return Path.Combine(vsInstallPath, WebToolsRelativePath);
         }
 
-        public static bool ValidateDnxInstallationForRuntime(AspNetRuntime runtime)
+        public static bool ValidateDnxInstallationForRuntime(DnxRuntime runtime)
         {
             bool result = false;
             Debug.WriteLine("Validating DNX installation.");
