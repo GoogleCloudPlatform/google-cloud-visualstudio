@@ -2,6 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.GCloud.Dnx;
 using GoogleCloudExtension.Projects;
 using System;
 using System.Globalization;
@@ -13,8 +14,8 @@ namespace GoogleCloudExtension.DeploymentDialog
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var runtime = (AspNetRuntime)value;
-            return DnxEnvironment.GetRuntimeDisplayName(runtime);
+            var runtime = (DnxRuntime)value;
+            return DnxRuntimeInfo.GetRuntimeInfo(runtime).DisplayName;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

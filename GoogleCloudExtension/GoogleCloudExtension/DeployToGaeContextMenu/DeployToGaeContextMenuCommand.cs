@@ -3,6 +3,8 @@
 
 using GoogleCloudExtension.DeploymentDialog;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.GCloud.Dnx;
+using GoogleCloudExtension.GCloud.Dnx;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio;
@@ -140,7 +142,7 @@ namespace GoogleCloudExtension.DeployToGaeContextMenu
 
             var window = new DeploymentDialogWindow(new DeploymentDialogWindowOptions
             {
-                Project = new DnxProject(startupProjectPath),
+                Project = new Project(startupProjectPath),
                 ProjectsToRestore = DnxSolution.CurrentSolution.Projects,
             });
             window.ShowModal();
@@ -158,13 +160,13 @@ namespace GoogleCloudExtension.DeployToGaeContextMenu
             menuCommand.Enabled = false;
 
             var selectedProjectPath = GetSelectedProjectPath();
-            var isDnxProject = String.IsNullOrEmpty(selectedProjectPath) ? false : DnxProject.IsDnxProject(selectedProjectPath);
+            var isDnxProject = String.IsNullOrEmpty(selectedProjectPath) ? false : Project.IsDnxProject(selectedProjectPath);
             var validEnvironment = CommandUtils.ValidateEnvironment();
 
             if (isDnxProject)
             {
-                var project = new DnxProject(selectedProjectPath);
-                isDnxProject = project.Runtime != AspNetRuntime.None && project.HasWebServer;
+                var project = new Project(selectedProjectPath);
+                isDnxProject = project.Runtime != DnxRuntime.None && project.HasWebServer;
             }
 
             menuCommand.Visible = isDnxProject;

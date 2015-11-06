@@ -3,6 +3,8 @@
 
 using EnvDTE;
 using EnvDTE80;
+using GoogleCloudExtension.GCloud.Dnx.Models;
+using GoogleCloudExtension.GCloud.Dnx;
 using Microsoft.VisualStudio.Shell;
 using Newtonsoft.Json;
 using System;
@@ -29,7 +31,7 @@ namespace GoogleCloudExtension.Projects
             }
         }
 
-        public DnxProject StartupProject
+        public GCloud.Dnx.Project StartupProject
         {
             get
             {
@@ -37,7 +39,7 @@ namespace GoogleCloudExtension.Projects
             }
         }
 
-        public IList<DnxProject> Projects
+        public IList<GCloud.Dnx.Project> Projects
         {
             get
             {
@@ -59,7 +61,7 @@ namespace GoogleCloudExtension.Projects
             return new DnxSolution(dte.Solution);
         }
 
-        private DnxProject GetStartupProject()
+        private GCloud.Dnx.Project GetStartupProject()
         {
             var sb = this.SolutionBuild;
             if (sb == null)
@@ -92,7 +94,7 @@ namespace GoogleCloudExtension.Projects
             }
         }
 
-        private DnxProject GetProjectFromName(string name)
+        private GCloud.Dnx.Project GetProjectFromName(string name)
         {
             var solutionDirectory = Path.GetDirectoryName(_solution.FullName);
             var projectDirectory = Path.GetDirectoryName(name);
@@ -100,9 +102,9 @@ namespace GoogleCloudExtension.Projects
 
             // Only return a DnxProject if the project is indeed a DnxProject otherwise just return
             // null. This is for the case when a Non-Dnx project is opened in VS.
-            if (DnxProject.IsDnxProject(projectPath))
+            if (GCloud.Dnx.Project.IsDnxProject(projectPath))
             {
-                return new DnxProject(projectPath);
+                return new GCloud.Dnx.Project(projectPath);
             }
             else
             {
@@ -110,9 +112,9 @@ namespace GoogleCloudExtension.Projects
             }
         }
 
-        private IList<DnxProject> GetSolutionProjects()
+        private IList<GCloud.Dnx.Project> GetSolutionProjects()
         {
-            List<DnxProject> result = new List<DnxProject>();
+            List<GCloud.Dnx.Project> result = new List<GCloud.Dnx.Project>();
 
             var solutionDirectory = Path.GetDirectoryName(_solution.FullName);
             var globalJsonPath = Path.Combine(solutionDirectory, "global.json");
@@ -121,7 +123,7 @@ namespace GoogleCloudExtension.Projects
                 try
                 {
                     var globalJsonContents = File.ReadAllText(globalJsonPath);
-                    var globalJson = JsonConvert.DeserializeObject<DnxGlobalJson>(globalJsonContents);
+                    var globalJson = JsonConvert.DeserializeObject<GlobalModel>(globalJsonContents);
                     foreach (var dir in globalJson.Projects)
                     {
                         FindProjects(Path.Combine(solutionDirectory, dir), result);
@@ -142,7 +144,7 @@ namespace GoogleCloudExtension.Projects
             return result;
         }
 
-        private void FindProjects(string projectContainer, List<DnxProject> result)
+        private void FindProjects(string projectContainer, List<GCloud.Dnx.Project> result)
         {
             if (!Directory.Exists(projectContainer))
             {
@@ -153,12 +155,12 @@ namespace GoogleCloudExtension.Projects
             var possibleProjects = Directory.GetDirectories(projectContainer);
             foreach (var project in possibleProjects)
             {
-                if (!DnxProject.IsDnxProject(project))
+                if (!GCloud.Dnx.Project.IsDnxProject(project))
                 {
                     continue;
                 }
                 Debug.WriteLine($"Found project: {project}");
-                result.Add(new DnxProject(project));
+                result.Add(new GCloud.Dnx.Project(project));
             }
         }
     }

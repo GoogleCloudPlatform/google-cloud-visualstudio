@@ -63,7 +63,7 @@
     </Compile>
     <Compile Include="DeploymentDialog\DeploymentDialogWindow.cs" />
     <Compile Include="DeploymentDialog\DeploymentDialogViewModel.cs" />
-    <Compile Include="Projects\ParsedProjectJson.cs" />
+    <Compile Include="Projects\DnxSolution.cs" />
     <Compile Include="Utils\AppEngineOutputWindow.cs" />
     <Compile Include="ComputeEngineResources\ComputeEngineResourcesViewModel.cs" />
     <Compile Include="ComputeEngineResources\ComputeEngineResourcesWindow.cs" />
@@ -77,9 +77,6 @@
     <Compile Include="DeployToGae\DeployToGaeCommand.cs" />
     <Compile Include="GoogleCloudExtensionPackage.cs" />
     <Compile Include="ExtensionEvents.cs" />
-    <Compile Include="Projects\DnxProject.cs" />
-    <Compile Include="Projects\DnxSolution.cs" />
-    <Compile Include="Projects\DnxGlobalJson.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StatusbarHelper.cs" />
     <Compile Include="UserAndProjectList\UserAndProjectListViewModel.cs" />

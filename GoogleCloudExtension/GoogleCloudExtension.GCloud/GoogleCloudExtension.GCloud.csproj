@@ -54,7 +54,12 @@
     <Compile Include="AppEngineApp.cs" />
     <Compile Include="ComputeEngineClient.cs" />
     <Compile Include="ComputeInstance.cs" />
-    <Compile Include="DnxEnvironment.cs" />
+    <Compile Include="Dnx\DnxEnvironment.cs" />
+    <Compile Include="Dnx\DnxRuntime.cs" />
+    <Compile Include="Dnx\DnxRuntimeInfo.cs" />
+    <Compile Include="Dnx\Models\GlobalModel.cs" />
+    <Compile Include="Dnx\Project.cs" />
+    <Compile Include="Dnx\Models\ProjectModel.cs" />
     <Compile Include="GCloudException.cs" />
     <Compile Include="GCloudWrapper.cs" />
     <Compile Include="JsonOutputException.cs" />
@@ -75,6 +80,7 @@
       <Name>GoogleCloudExtension.Utils</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

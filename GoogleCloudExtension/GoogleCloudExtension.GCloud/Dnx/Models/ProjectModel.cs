@@ -4,9 +4,9 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace GoogleCloudExtension.Projects
+namespace GoogleCloudExtension.GCloud.Dnx.Models
 {
-    internal class ParsedProjectJson
+    internal class ProjectModel
     {
         [JsonProperty("dependencies")]
         public Dictionary<string, object> Dependencies { get; set; }

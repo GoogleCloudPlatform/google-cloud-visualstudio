@@ -3,6 +3,7 @@
 
 using GoogleCloudExtension.DeploymentDialog;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.GCloud.Dnx;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
@@ -116,7 +117,7 @@ namespace GoogleCloudExtension.DeployToGae
 
             if (startupProject != null)
             {
-                isDnxProject = startupProject.Runtime != AspNetRuntime.None && startupProject.HasWebServer;
+                isDnxProject = startupProject.Runtime != DnxRuntime.None && startupProject.HasWebServer;
             }
 
             menuCommand.Visible = true;

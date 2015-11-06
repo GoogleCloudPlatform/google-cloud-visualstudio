@@ -2,6 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.GCloud.Dnx;
 using GoogleCloudExtension.Utils;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -51,15 +52,15 @@ namespace GoogleCloudExtension.DeploymentDialog
             }
         }
 
-        private IList<AspNetRuntime> _SupportedRuntimes;
-        public IList<AspNetRuntime> SupportedRuntimes
+        private IList<DnxRuntime> _SupportedRuntimes;
+        public IList<DnxRuntime> SupportedRuntimes
         {
             get { return _SupportedRuntimes; }
             set { SetValueAndRaise(ref _SupportedRuntimes, value); }
         }
 
-        private AspNetRuntime _SelectedRuntime;
-        public AspNetRuntime SelectedRuntime
+        private DnxRuntime _SelectedRuntime;
+        public DnxRuntime SelectedRuntime
         {
             get { return _SelectedRuntime; }
             set { SetValueAndRaise(ref _SelectedRuntime, value); }

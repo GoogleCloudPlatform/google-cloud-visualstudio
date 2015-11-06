@@ -2,6 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.GCloud.Dnx;
 using GoogleCloudExtension.Projects;
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,9 @@ namespace GoogleCloudExtension.Utils
     public static class DeploymentUtils
     {
         public static async void DeployProjectAsync(
-            DnxProject startupProject,
-            IList<DnxProject> projects,
-            AspNetRuntime selectedRuntime,
+            Project startupProject,
+            IList<Project> projects,
+            DnxRuntime selectedRuntime,
             string versionName,
             bool makeDefault,
             AccountAndProjectId accountAndProject)
@@ -25,7 +26,8 @@ namespace GoogleCloudExtension.Utils
                 AppEngineOutputWindow.Activate();
                 AppEngineOutputWindow.Clear();
                 AppEngineOutputWindow.OutputLine("Deployment to AppEngine started...");
-                AppEngineOutputWindow.OutputLine($"Deploying project {startupProject} using runtime {DnxEnvironment.GetRuntimeDisplayName(selectedRuntime)}.");
+                var displayName = DnxRuntimeInfo.GetRuntimeInfo(selectedRuntime).DisplayName;
+                AppEngineOutputWindow.OutputLine($"Deploying project {startupProject} using runtime {displayName}.");
                 AppEngineOutputWindow.OutputLine($"Deploying to cloud project id {accountAndProject.ProjectId} for acccount {accountAndProject.Account}");
                 StatusbarHelper.Freeze();
                 GoogleCloudExtensionPackage.IsDeploying = true;

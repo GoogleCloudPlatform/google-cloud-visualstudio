@@ -2,17 +2,18 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.GCloud.Dnx.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace GoogleCloudExtension.Projects
+namespace GoogleCloudExtension.GCloud.Dnx
 {
-    public class DnxProject
+    public sealed class Project
     {
-        internal DnxProject(string path)
+        public Project(string path)
         {
             _path = path;
         }
@@ -29,14 +30,14 @@ namespace GoogleCloudExtension.Projects
             get { return Path.GetFileNameWithoutExtension(_path); }
         }
 
-        private AspNetRuntime _runtime = AspNetRuntime.None;
-        private ParsedProjectJson _parsedProject;
+        private DnxRuntime _runtime = DnxRuntime.None;
+        private ProjectModel _parsedProject;
 
-        public AspNetRuntime Runtime
+        public DnxRuntime Runtime
         {
             get
             {
-                if (_runtime == AspNetRuntime.None)
+                if (_runtime == DnxRuntime.None)
                 {
                     _runtime = GetProjectRuntime();
                 }
@@ -44,9 +45,9 @@ namespace GoogleCloudExtension.Projects
             }
         }
 
-        private IList<AspNetRuntime> _supportedRuntimes;
+        private IList<DnxRuntime> _supportedRuntimes;
 
-        public IList<AspNetRuntime> SupportedRuntimes
+        public IList<DnxRuntime> SupportedRuntimes
         {
             get
             {
@@ -54,7 +55,7 @@ namespace GoogleCloudExtension.Projects
                 {
                     var parsed = GetParsedProject();
                     _supportedRuntimes = parsed.Frameworks
-                        .Select(x => DnxEnvironment.GetRuntimeFromName(x.Key))
+                        .Select(x => DnxRuntimeInfo.GetRuntimeInfo(x.Key).Runtime)
                         .Where(x => DnxEnvironment.ValidateDnxInstallationForRuntime(x))
                         .ToList();
                 }
@@ -77,13 +78,13 @@ namespace GoogleCloudExtension.Projects
             }
         }
 
-        private ParsedProjectJson GetParsedProject()
+        private ProjectModel GetParsedProject()
         {
             if (_parsedProject == null)
             {
                 var jsonPath = Path.Combine(Root, ProjectJsonFileName);
                 var jsonContents = File.ReadAllText(jsonPath);
-                _parsedProject = JsonConvert.DeserializeObject<ParsedProjectJson>(jsonContents);
+                _parsedProject = JsonConvert.DeserializeObject<ProjectModel>(jsonContents);
 
                 // Ensure default empty dictionaries in case the project.json file does not contain the
                 // sections of interest.
@@ -99,31 +100,31 @@ namespace GoogleCloudExtension.Projects
             return _parsedProject;
         }
 
-        private AspNetRuntime GetProjectRuntime()
+        private DnxRuntime GetProjectRuntime()
         {
             var parsed = GetParsedProject();
-            bool clrRuntimeTargeted = parsed.Frameworks.ContainsKey(DnxEnvironment.ClrFrameworkName);
-            bool coreClrRuntimeTargeted = parsed.Frameworks.ContainsKey(DnxEnvironment.CoreClrFrameworkName);
+            bool clrRuntimeTargeted = parsed.Frameworks.ContainsKey(DnxRuntimeInfo.Dnx451FrameworkName);
+            bool coreClrRuntimeTargeted = parsed.Frameworks.ContainsKey(DnxRuntimeInfo.DnxCore50FrameworkName);
 
-            bool hasCoreClrRuntimeInstalled = DnxEnvironment.ValidateDnxInstallationForRuntime(AspNetRuntime.CoreClr);
-            bool hasClrRuntimeInstalled = DnxEnvironment.ValidateDnxInstallationForRuntime(AspNetRuntime.Mono);
+            bool hasCoreClrRuntimeInstalled = DnxEnvironment.ValidateDnxInstallationForRuntime(DnxRuntime.DnxCore50);
+            bool hasClrRuntimeInstalled = DnxEnvironment.ValidateDnxInstallationForRuntime(DnxRuntime.Dnx451);
 
             if (coreClrRuntimeTargeted && hasCoreClrRuntimeInstalled)
             {
-                return AspNetRuntime.CoreClr;
+                return DnxRuntime.DnxCore50;
             }
             else if (clrRuntimeTargeted && hasClrRuntimeInstalled)
             {
-                return AspNetRuntime.Mono;
+                return DnxRuntime.Dnx451;
             }
             else
             {
                 Debug.WriteLine("No known runtime is being targeted.");
-                return AspNetRuntime.None;
+                return DnxRuntime.None;
             }
         }
 
-        internal static bool IsDnxProject(string projectRoot)
+        public static bool IsDnxProject(string projectRoot)
         {
             var projectJson = Path.Combine(projectRoot, ProjectJsonFileName);
             return File.Exists(projectJson);

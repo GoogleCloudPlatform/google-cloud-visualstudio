@@ -4,20 +4,20 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace GoogleCloudExtension.Projects
+namespace GoogleCloudExtension.GCloud.Dnx.Models
 {
-    public class DnxSdk
+    public sealed class SdkModel
     {
         [JsonProperty("version")]
         public string Version { get; set; }
     }
 
-    public class DnxGlobalJson
+    public sealed class GlobalModel
     {
         [JsonProperty("projects")]
         public List<string> Projects { get; set; }
 
         [JsonProperty("sdk")]
-        public DnxSdk Sdk { get; set; }
+        public SdkModel Sdk { get; set; }
     }
 }

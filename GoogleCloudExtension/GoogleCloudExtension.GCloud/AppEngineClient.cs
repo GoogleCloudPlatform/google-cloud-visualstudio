@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.GCloud.Dnx;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -94,7 +95,7 @@ namespace GoogleCloudExtension.GCloud
             string startupProjectPath,
             IList<string> projectPaths,
             string versionName,
-            AspNetRuntime runtime,
+            DnxRuntime runtime,
             bool promoteVersion,
             Action<string> callback,
             AccountAndProjectId accountAndProject)
@@ -120,9 +121,9 @@ namespace GoogleCloudExtension.GCloud
             }
         }
 
-        private static void CopyAppEngineFiles(string projectPath, string appTempPath, AspNetRuntime runtime, Action<string> callback)
+        private static void CopyAppEngineFiles(string projectPath, string appTempPath, DnxRuntime runtime, Action<string> callback)
         {
-            Debug.Assert(runtime == AspNetRuntime.Mono || runtime == AspNetRuntime.CoreClr);
+            Debug.Assert(runtime == DnxRuntime.Dnx451 || runtime == DnxRuntime.DnxCore50);
 
             var dockerfileSrc = new FileInfo(Path.Combine(projectPath, DockerfileFilename));
             var dockerfileDest = Path.Combine(appTempPath, DockerfileFilename);
@@ -135,7 +136,7 @@ namespace GoogleCloudExtension.GCloud
             else
             {
                 // Copy the template file.
-                var runtimeName = DnxEnvironment.GetImageNameFromRuntime(runtime);
+                var runtimeName = DnxRuntimeInfo.GetRuntimeInfo(runtime).ImageName;
                 var dockerFileContent = String.Format(DockerfileTemplate, DnxEnvironment.DnxVersion, runtimeName);
                 callback($"Writing file [{dockerfileDest}] for runtime {runtimeName}.");
                 File.WriteAllText(dockerfileDest, dockerFileContent);
@@ -178,7 +179,7 @@ namespace GoogleCloudExtension.GCloud
 
         private static async Task RestoreProjects(
            IList<string> projectPaths,
-           AspNetRuntime runtime,
+           DnxRuntime runtime,
            Action<string> callback)
         {
             callback("Restoring projects.");
@@ -186,7 +187,7 @@ namespace GoogleCloudExtension.GCloud
             callback("Done restoring projects.");
         }
 
-        private static Dictionary<string, string> GetDnxEnvironmentForRuntime(AspNetRuntime runtime)
+        private static Dictionary<string, string> GetDnxEnvironmentForRuntime(DnxRuntime runtime)
         {
             var result = new Dictionary<string, string>();
             var webTools = DnxEnvironment.GetWebToolsPath();
@@ -198,7 +199,7 @@ namespace GoogleCloudExtension.GCloud
 
         private static async Task RestoreProject(
             string projectPath,
-            AspNetRuntime runtime,
+            DnxRuntime runtime,
             Action<string> callback)
         {
             var environment = GetDnxEnvironmentForRuntime(runtime);
@@ -215,7 +216,7 @@ namespace GoogleCloudExtension.GCloud
         private static async Task PrepareAppBundle(
             string projectPath,
             string appTempPath,
-            AspNetRuntime runtime,
+            DnxRuntime runtime,
             Action<string> callback)
         {
             // Customize the environment by adding the path to the node_modules directory, which can be necessary for
@@ -227,7 +228,8 @@ namespace GoogleCloudExtension.GCloud
 
             // This is a dependency on the fact that DNU is a batch file, but it has to be launched this way.
             callback($"Preparing app bundle in {appTempPath}.");
-            string command = $"/c dnu publish \"{projectPath}\" --out \"{appTempPath}\" --framework {DnxEnvironment.GetDnxFrameworkNameFromRuntime(runtime)} --configuration release";
+            var frameworkName = DnxRuntimeInfo.GetRuntimeInfo(runtime).FrameworkName;
+            string command = $"/c dnu publish \"{projectPath}\" --out \"{appTempPath}\" --framework {frameworkName} --configuration release";
             callback($"Executing command: {command}");
             var result = await ProcessUtils.RunCommandAsync("cmd.exe", command, (s, e) => callback(e.Line), environment);
             if (!result)
