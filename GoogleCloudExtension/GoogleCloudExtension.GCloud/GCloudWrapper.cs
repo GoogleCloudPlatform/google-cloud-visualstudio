@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.GCloud
         /// <summary>
         /// Lazily creates the singleton instace for the class.
         /// </summary>
-        private static GCloudWrapper s_Instance = new GCloudWrapper();
+        private static readonly GCloudWrapper s_Instance = new GCloudWrapper();
         public static GCloudWrapper Instance
         {
             get { return s_Instance; }
