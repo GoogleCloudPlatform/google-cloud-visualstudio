@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
@@ -94,6 +95,12 @@ namespace GoogleCloudExtension.ComputeEngineResources
             if ((null == window) || (null == window.Frame))
             {
                 throw new NotSupportedException("Cannot create tool window");
+            }
+
+            // Validate the environment, possibly show an error if not valid.
+            if (!CommandUtils.ValidateEnvironment(this.ServiceProvider))
+            {
+                return;
             }
 
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;

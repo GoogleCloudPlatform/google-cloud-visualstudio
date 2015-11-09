@@ -141,16 +141,9 @@ namespace GoogleCloudExtension.DeployToGaeContextMenu
         {
             var startupProjectPath = GetSelectedProjectPath();
 
-            if (!CommandUtils.ValidateEnvironment())
+            // Validate the environment, possibly show an error if not valid.
+            if (!CommandUtils.ValidateEnvironment(this.ServiceProvider))
             {
-                Debug.WriteLine("Invoked when the environment is not valid.");
-                VsShellUtilities.ShowMessageBox(
-                    this.ServiceProvider,
-                    "Please ensure that GCloud is installed.",
-                    "Error",
-                    Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_CRITICAL,
-                    Microsoft.VisualStudio.Shell.Interop.OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                    Microsoft.VisualStudio.Shell.Interop.OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
                 return;
             }
 
