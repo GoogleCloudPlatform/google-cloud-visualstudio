@@ -1,4 +1,7 @@
-﻿using System;
+﻿// Copyright 2015 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -45,7 +48,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
         /// When a new runtime is supported it's metadata should be added to this table so
         /// it can be used in the rest of the code.
         /// </summary>
-        private static IList<DnxRuntimeInfo> s_RegisteredInfos = new List<DnxRuntimeInfo>
+        private static readonly IList<DnxRuntimeInfo> s_RegisteredInfos = new List<DnxRuntimeInfo>
         {
             new DnxRuntimeInfo(
                 runtime: DnxRuntime.Dnx451,
@@ -58,7 +61,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
                 frameworkName: DnxCore50FrameworkName,
                 imageName: DnxCore50ImageName),
         };
-        private static DnxRuntimeInfo s_DefaultRuntimeInfo = new DnxRuntimeInfo(
+        private static readonly DnxRuntimeInfo s_DefaultRuntimeInfo = new DnxRuntimeInfo(
             runtime: DnxRuntime.None,
             displayName: "",
             frameworkName: "",
