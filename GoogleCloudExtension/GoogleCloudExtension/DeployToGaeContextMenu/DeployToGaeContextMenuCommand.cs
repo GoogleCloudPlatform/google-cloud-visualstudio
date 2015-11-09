@@ -156,21 +156,24 @@ namespace GoogleCloudExtension.DeployToGaeContextMenu
                 return;
             }
 
-            menuCommand.Visible = false;
-            menuCommand.Enabled = false;
-
             var selectedProjectPath = GetSelectedProjectPath();
             var isDnxProject = String.IsNullOrEmpty(selectedProjectPath) ? false : Project.IsDnxProject(selectedProjectPath);
             var validEnvironment = CommandUtils.ValidateEnvironment();
+            Project project = null;
 
             if (isDnxProject)
             {
-                var project = new Project(selectedProjectPath);
+                project = new Project(selectedProjectPath);
                 isDnxProject = project.Runtime != DnxRuntime.None && project.HasWebServer;
             }
 
+            bool isCommandEnabled = validEnvironment && !GoogleCloudExtensionPackage.IsDeploying && isDnxProject;
             menuCommand.Visible = isDnxProject;
-            menuCommand.Enabled = validEnvironment && !GoogleCloudExtensionPackage.IsDeploying && isDnxProject;
+            menuCommand.Enabled = isCommandEnabled;
+            if (isCommandEnabled)
+            {
+                menuCommand.Text = $"Deploy {project.Name} to AppEngine...";
+            }
         }
     }
 }

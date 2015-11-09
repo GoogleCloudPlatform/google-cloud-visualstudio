@@ -120,8 +120,13 @@ namespace GoogleCloudExtension.DeployToGae
                 isDnxProject = startupProject.Runtime != DnxRuntime.None && startupProject.HasWebServer;
             }
 
+            bool isComandEnabled = validEnvironment && !GoogleCloudExtensionPackage.IsDeploying && isDnxProject;
             menuCommand.Visible = true;
-            menuCommand.Enabled = validEnvironment && !GoogleCloudExtensionPackage.IsDeploying && isDnxProject;
+            menuCommand.Enabled = isComandEnabled;
+            if (isComandEnabled)
+            {
+                menuCommand.Text = $"Deploy {startupProject.Name} to AppEngine...";
+            }
         }
     }
 }
