@@ -6,6 +6,10 @@ using System.Reflection;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// Implements the weak handler pattern for events, useful for avoiding leaks in 
+    /// static (or global) event handlers.
+    /// </summary>
     public class WeakHandler
     {
         private readonly WeakReference _target;

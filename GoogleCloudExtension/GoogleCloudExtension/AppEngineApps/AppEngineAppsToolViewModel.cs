@@ -137,11 +137,7 @@ namespace GoogleCloudExtension.AppEngineApps
 
         private async void OnOpenApp(object parameter)
         {
-            using (var guard = new ScopeGuard(() =>
-            {
-                this.OpenAppEnabled = true;
-                this.OpenAppButtonTitle = "Open App";
-            }))
+            try
             {
                 this.OpenAppEnabled = false;
                 this.OpenAppButtonTitle = "Opening app...";
@@ -155,6 +151,11 @@ namespace GoogleCloudExtension.AppEngineApps
                 var url = $"https://{app.Version}-dot-{app.Module}-dot-{accountAndProject.ProjectId}.appspot.com/";
                 Debug.WriteLine($"Opening URL: {url}");
                 Process.Start(url);
+            }
+            finally
+            {
+                this.OpenAppEnabled = true;
+                this.OpenAppButtonTitle = "Open App";
             }
         }
 

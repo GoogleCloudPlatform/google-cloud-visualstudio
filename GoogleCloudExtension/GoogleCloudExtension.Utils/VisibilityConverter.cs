@@ -9,6 +9,10 @@ using System.Windows.Data;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// Converts a boolean value into a Visibility enum value. True will mean Visible and False Collapsed.
+    /// Note: Only Convert is implemented, so this is not a bidirectional converter, do not use on TwoWay bindings.
+    /// </summary>
     public class VisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
