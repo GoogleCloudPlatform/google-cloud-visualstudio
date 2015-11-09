@@ -127,6 +127,10 @@ namespace GoogleCloudExtension.DeployToGae
             {
                 menuCommand.Text = $"Deploy {startupProject.Name} to AppEngine...";
             }
+            else
+            {
+                menuCommand.Text = $"Deploy Project to AppEngine...";
+            }
         }
     }
 }
