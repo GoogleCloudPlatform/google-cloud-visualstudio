@@ -147,6 +147,8 @@ namespace GoogleCloudExtension.DeploymentDialog
                 AppEngineOutputWindow.OutputLine("Failed to load list of projects to deploy.");
                 AppEngineOutputWindow.OutputLine(ex.Message);
                 AppEngineOutputWindow.Activate();
+
+                throw ex;
             }
         }
 

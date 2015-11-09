@@ -9,6 +9,7 @@ using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 
 namespace GoogleCloudExtension.DeployToGae
 {
@@ -94,6 +95,19 @@ namespace GoogleCloudExtension.DeployToGae
                 return;
             }
 
+            if (!CommandUtils.ValidateEnvironment())
+            {
+                Debug.WriteLine("Invoked when the environment is not valid.");
+                VsShellUtilities.ShowMessageBox(
+                    this.ServiceProvider,
+                    "Please ensure that GCloud is installed.",
+                    "Error",
+                    Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_CRITICAL,
+                    Microsoft.VisualStudio.Shell.Interop.OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                    Microsoft.VisualStudio.Shell.Interop.OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                return;
+            }
+
             var window = new DeploymentDialogWindow(new DeploymentDialogWindowOptions
             {
                 Project = startupProject,
@@ -113,14 +127,13 @@ namespace GoogleCloudExtension.DeployToGae
             // Enable and show the item only if there's an existing Dnx startup project.
             var startupProject = DnxSolution.CurrentSolution?.StartupProject;
             bool isDnxProject = false;
-            bool validEnvironment = CommandUtils.ValidateEnvironment();
 
             if (startupProject != null)
             {
                 isDnxProject = startupProject.Runtime != DnxRuntime.None && startupProject.HasWebServer;
             }
 
-            bool isComandEnabled = validEnvironment && !GoogleCloudExtensionPackage.IsDeploying && isDnxProject;
+            bool isComandEnabled = !GoogleCloudExtensionPackage.IsDeploying && isDnxProject;
             menuCommand.Visible = true;
             menuCommand.Enabled = isComandEnabled;
             if (isComandEnabled)

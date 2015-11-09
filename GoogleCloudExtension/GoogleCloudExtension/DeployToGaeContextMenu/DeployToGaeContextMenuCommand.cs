@@ -12,6 +12,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace GoogleCloudExtension.DeployToGaeContextMenu
@@ -140,6 +141,19 @@ namespace GoogleCloudExtension.DeployToGaeContextMenu
         {
             var startupProjectPath = GetSelectedProjectPath();
 
+            if (!CommandUtils.ValidateEnvironment())
+            {
+                Debug.WriteLine("Invoked when the environment is not valid.");
+                VsShellUtilities.ShowMessageBox(
+                    this.ServiceProvider,
+                    "Please ensure that GCloud is installed.",
+                    "Error",
+                    Microsoft.VisualStudio.Shell.Interop.OLEMSGICON.OLEMSGICON_CRITICAL,
+                    Microsoft.VisualStudio.Shell.Interop.OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                    Microsoft.VisualStudio.Shell.Interop.OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                return;
+            }
+
             var window = new DeploymentDialogWindow(new DeploymentDialogWindowOptions
             {
                 Project = new Project(startupProjectPath),
@@ -158,7 +172,6 @@ namespace GoogleCloudExtension.DeployToGaeContextMenu
 
             var selectedProjectPath = GetSelectedProjectPath();
             var isDnxProject = String.IsNullOrEmpty(selectedProjectPath) ? false : Project.IsDnxProject(selectedProjectPath);
-            var validEnvironment = CommandUtils.ValidateEnvironment();
             Project project = null;
 
             if (isDnxProject)
@@ -167,7 +180,7 @@ namespace GoogleCloudExtension.DeployToGaeContextMenu
                 isDnxProject = project.Runtime != DnxRuntime.None && project.HasWebServer;
             }
 
-            bool isCommandEnabled = validEnvironment && !GoogleCloudExtensionPackage.IsDeploying && isDnxProject;
+            bool isCommandEnabled = !GoogleCloudExtensionPackage.IsDeploying && isDnxProject;
             menuCommand.Visible = isDnxProject;
             menuCommand.Enabled = isCommandEnabled;
             if (isCommandEnabled)
