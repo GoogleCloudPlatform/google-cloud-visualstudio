@@ -8,6 +8,10 @@ using System.Windows.Data;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// General booblean converter, converting True or False to the desired values.
+    /// Note: Only Convert is implemented, so this is not a bidirectional converter, do not use on TwoWay bindings.
+    /// </summary>
     public class BooleanConverter : IValueConverter
     {
         public object IfTrue { get; set; }

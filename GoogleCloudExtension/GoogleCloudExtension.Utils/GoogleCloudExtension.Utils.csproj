@@ -51,7 +51,6 @@
     <Compile Include="BooleanConverter.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ScopeGuard.cs" />
     <Compile Include="VisibilityConverter.cs" />
     <Compile Include="WeakCommand.cs" />
     <Compile Include="WeakHandler.cs" />
