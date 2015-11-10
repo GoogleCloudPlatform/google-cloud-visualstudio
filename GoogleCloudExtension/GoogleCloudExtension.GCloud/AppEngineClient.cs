@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.GCloud
 
         // The Dockefile to use for the Mono runtime.
         private const string DockerfileTemplate =
-            "FROM gcr.io/tryinggce/aspnet_runtime:{0}-{1}\n" +
+            "FROM b.gcr.io/images-tryinggce/aspnet_runtime:{0}-{1}\n" +
             "ADD ./ /app\n" +
             "RUN chmod +x /app/gae_start\n";
 
