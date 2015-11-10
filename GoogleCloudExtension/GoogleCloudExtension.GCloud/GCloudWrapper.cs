@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.GCloud.Models;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -211,14 +212,14 @@ namespace GoogleCloudExtension.GCloud
         /// Returns the list of projects accessible by the current account.
         /// </summary>
         /// <returns>List of projects.</returns>
-        public Task<IList<GcpProject>> GetProjectsAsync()
+        public Task<IList<CloudProject>> GetProjectsAsync()
         {
-            return GetJsonOutputAsync<IList<GcpProject>>("alpha projects list");
+            return GetJsonOutputAsync<IList<CloudProject>>("alpha projects list");
         }
 
-        public async Task<IList<GcpProject>> GetProjectsAsync(AccountAndProjectId accountAndProject)
+        public async Task<IList<CloudProject>> GetProjectsAsync(AccountAndProjectId accountAndProject)
         {
-            return await GetJsonOutputAsync<IList<GcpProject>>("alpha projects list", accountAndProject);
+            return await GetJsonOutputAsync<IList<CloudProject>>("alpha projects list", accountAndProject);
         }
 
         public bool ValidateGCloudInstallation()

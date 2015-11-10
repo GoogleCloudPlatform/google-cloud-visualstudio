@@ -2,6 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.GCloud.Dnx;
+using GoogleCloudExtension.GCloud.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -52,10 +53,10 @@ namespace GoogleCloudExtension.GCloud
         /// user and project.
         /// </summary>
         /// <returns>The list of AppEngine apps.</returns>
-        public static async Task<IList<AppEngineApp>> GetAppEngineAppListAsync()
+        public static async Task<IList<AppEngineApplication>> GetAppEngineAppListAsync()
         {
-            var result = await GCloudWrapper.Instance.GetJsonOutputAsync<IList<AppEngineApp>>("preview app modules list")
-                ?? Enumerable.Empty<AppEngineApp>();
+            var result = await GCloudWrapper.Instance.GetJsonOutputAsync<IList<AppEngineApplication>>("preview app modules list")
+                ?? Enumerable.Empty<AppEngineApplication>();
             return result.Where(x => !x.Version.StartsWith(BuiltinServiceVersionPrefix)).ToList();
         }
 

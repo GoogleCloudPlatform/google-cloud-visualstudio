@@ -51,9 +51,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppEngineClient.cs" />
-    <Compile Include="AppEngineApp.cs" />
+    <Compile Include="Models\AppEngineApplication.cs" />
     <Compile Include="ComputeEngineClient.cs" />
-    <Compile Include="ComputeInstance.cs" />
+    <Compile Include="Models\ComputeInstance.cs" />
     <Compile Include="Dnx\DnxEnvironment.cs" />
     <Compile Include="Dnx\DnxRuntime.cs" />
     <Compile Include="Dnx\DnxRuntimeInfo.cs" />
@@ -64,10 +64,10 @@
     <Compile Include="GCloudWrapper.cs" />
     <Compile Include="JsonOutputException.cs" />
     <Compile Include="ProcessUtils.cs" />
-    <Compile Include="GcpProject.cs" />
+    <Compile Include="Models\CloudProject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
-    <Compile Include="AccountSettings.cs" />
+    <Compile Include="Models\AccountSettings.cs" />
     <Compile Include="UserAndProjectId.cs" />
   </ItemGroup>
   <ItemGroup>

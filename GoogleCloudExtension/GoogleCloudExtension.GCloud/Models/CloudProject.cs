@@ -4,9 +4,13 @@
 using Newtonsoft.Json;
 using System;
 
-namespace GoogleCloudExtension.GCloud
+namespace GoogleCloudExtension.GCloud.Models
 {
-    public sealed class GcpProject
+    /// <summary>
+    /// Information about a cloud project as returned from the GCloud CLI. Used for
+    /// deserialization of the JSON output.
+    /// </summary>
+    public sealed class CloudProject
     {
         [JsonProperty("createTime")]
         public DateTime CreationTime { get; set; }

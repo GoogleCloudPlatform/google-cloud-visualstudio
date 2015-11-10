@@ -2,6 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -27,8 +28,8 @@ namespace GoogleCloudExtension.AppEngineApps
             GCloudWrapper.Instance.AccountOrProjectChanged += handler.OnEvent;
         }
 
-        private IList<AppEngineApp> _Apps;
-        public IList<AppEngineApp> Apps
+        private IList<AppEngineApplication> _Apps;
+        public IList<AppEngineApplication> Apps
         {
             get { return _Apps; }
             set
@@ -39,8 +40,8 @@ namespace GoogleCloudExtension.AppEngineApps
             }
         }
 
-        private AppEngineApp _CurrentApp;
-        public AppEngineApp CurrentApp
+        private AppEngineApplication _CurrentApp;
+        public AppEngineApplication CurrentApp
         {
             get { return _CurrentApp; }
             set
@@ -120,7 +121,7 @@ namespace GoogleCloudExtension.AppEngineApps
             {
                 this.LoadingMessage = "Loading AppEngine app list...";
                 this.Loading = true;
-                this.Apps = new List<AppEngineApp>();
+                this.Apps = new List<AppEngineApplication>();
                 this.Apps = await AppEngineClient.GetAppEngineAppListAsync();
             }
             catch (GCloudException ex)
@@ -142,7 +143,7 @@ namespace GoogleCloudExtension.AppEngineApps
                 this.OpenAppEnabled = false;
                 this.OpenAppButtonTitle = "Opening app...";
 
-                var app = parameter as AppEngineApp;
+                var app = parameter as AppEngineApplication;
                 if (app == null)
                 {
                     return;
@@ -161,7 +162,7 @@ namespace GoogleCloudExtension.AppEngineApps
 
         private async void OnDeleteVersion(object parameter)
         {
-            var app = parameter as AppEngineApp;
+            var app = parameter as AppEngineApplication;
             if (app == null)
             {
                 Debug.WriteLine($"Expected an AppEngineApp but got something else: {parameter}");
@@ -189,7 +190,7 @@ namespace GoogleCloudExtension.AppEngineApps
 
         private async void OnSetDefaultVersion(object parameter)
         {
-            var app = parameter as AppEngineApp;
+            var app = parameter as AppEngineApplication;
             if (app == null)
             {
                 Debug.WriteLine($"Expected an AppEngineApp but got something else: {parameter}");

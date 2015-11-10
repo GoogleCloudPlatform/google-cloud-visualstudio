@@ -3,9 +3,13 @@
 
 using Newtonsoft.Json;
 
-namespace GoogleCloudExtension.GCloud
+namespace GoogleCloudExtension.GCloud.Models
 {
-    public sealed class AppEngineApp
+    /// <summary>
+    /// This class represents the AppEngine application data as output from the GCloud CLI
+    /// and it is used to deserialize the JSON output.
+    /// </summary>
+    public sealed class AppEngineApplication
     {
         [JsonProperty("module")]
         public string Module { get; set; }

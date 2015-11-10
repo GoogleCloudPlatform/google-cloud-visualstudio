@@ -4,8 +4,12 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace GoogleCloudExtension.GCloud
+namespace GoogleCloudExtension.GCloud.Models
 {
+    /// <summary>
+    /// This class represents the account settings as stored in the GCloud CLI store, it is used
+    /// to deserialize the output of the CLI commands.
+    /// </summary>
     public sealed class AccountSettings
     {
         [JsonProperty("accounts")]

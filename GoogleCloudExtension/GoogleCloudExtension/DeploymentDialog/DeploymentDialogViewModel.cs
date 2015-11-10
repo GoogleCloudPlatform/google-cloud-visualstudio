@@ -3,6 +3,7 @@
 
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Dnx;
+using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -20,15 +21,15 @@ namespace GoogleCloudExtension.DeploymentDialog
             set { SetValueAndRaise(ref _Project, value); }
         }
 
-        private IList<GcpProject> _CloudProjects;
-        public IList<GcpProject> CloudProjects
+        private IList<CloudProject> _CloudProjects;
+        public IList<CloudProject> CloudProjects
         {
             get { return _CloudProjects; }
             set { SetValueAndRaise(ref _CloudProjects, value); }
         }
 
-        private GcpProject _SelectedCloudProject;
-        public GcpProject SelectedCloudProject
+        private CloudProject _SelectedCloudProject;
+        public CloudProject SelectedCloudProject
         {
             get { return _SelectedCloudProject; }
             set { SetValueAndRaise(ref _SelectedCloudProject, value); }
@@ -114,7 +115,7 @@ namespace GoogleCloudExtension.DeploymentDialog
         private readonly DeploymentDialogWindow _window;
 
         private readonly IList<string> _loadingAccounts = new List<string> { "Loading..." };
-        private readonly IList<GcpProject> _loadingProjects = new List<GcpProject> { new GcpProject { Name = "Loading..." } };
+        private readonly IList<CloudProject> _loadingProjects = new List<CloudProject> { new CloudProject { Name = "Loading..." } };
 
         public async void StartLoadingProjects()
         {

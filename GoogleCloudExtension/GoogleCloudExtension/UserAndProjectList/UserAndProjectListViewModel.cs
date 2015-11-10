@@ -2,6 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,15 +21,15 @@ namespace GoogleCloudExtension.UserAndProjectList
             get { return !this.IsGCloudInstalled; }
         }
 
-        private IList<GcpProject> _Projects;
-        public IList<GcpProject> Projects
+        private IList<CloudProject> _Projects;
+        public IList<CloudProject> Projects
         {
             get { return _Projects; }
             private set { SetValueAndRaise(ref _Projects, value); }
         }
 
-        private GcpProject _CurrentProject;
-        public GcpProject CurrentProject
+        private CloudProject _CurrentProject;
+        public CloudProject CurrentProject
         {
             get { return _CurrentProject; }
             set
@@ -38,7 +39,7 @@ namespace GoogleCloudExtension.UserAndProjectList
             }
         }
 
-        private async void UpdateCurrentProject(GcpProject newProject)
+        private async void UpdateCurrentProject(CloudProject newProject)
         {
             try
             {
