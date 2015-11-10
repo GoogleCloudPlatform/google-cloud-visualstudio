@@ -13,6 +13,10 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GCloud
 {
+    /// <summary>
+    /// This class contains the functionality to manage AppEngine applications, listing of versions,
+    /// managing the default verision, etc...
+    /// </summary>
     public static class AppEngineClient
     {
         // This prefix allows us to detect the builtin services so we can avoid showing
@@ -31,7 +35,7 @@ namespace GoogleCloudExtension.GCloud
             "threadsafe: true\n" +
             "api_version: 1\n";
 
-        private const string AppYamlFilename = "app.yaml";
+        private const string AppYamlFileName = "app.yaml";
         private const string DockerfileFilename = "Dockerfile";
 
         // The template to generate an entry point that will launch Kestrel in the port 8080 on
@@ -49,14 +53,12 @@ namespace GoogleCloudExtension.GCloud
                 "--server.urls http://0.0.0.0:8080\n";
 
         /// <summary>
-        /// Returns the list of AppEngine apps for this class' notion of current
-        /// user and project.
+        /// Returns the list of AppEngine apps for the current user.
         /// </summary>
         /// <returns>The list of AppEngine apps.</returns>
         public static async Task<IList<AppEngineApplication>> GetAppEngineAppListAsync()
         {
-            var result = await GCloudWrapper.Instance.GetJsonOutputAsync<IList<AppEngineApplication>>("preview app modules list")
-                ?? Enumerable.Empty<AppEngineApplication>();
+            var result = await GCloudWrapper.Instance.GetJsonOutputAsync<IList<AppEngineApplication>>("preview app modules list");
             return result.Where(x => !x.Version.StartsWith(BuiltinServiceVersionPrefix)).ToList();
         }
 
@@ -143,8 +145,8 @@ namespace GoogleCloudExtension.GCloud
                 File.WriteAllText(dockerfileDest, dockerFileContent);
             }
 
-            var appYamlSrc = new FileInfo(Path.Combine(projectPath, AppYamlFilename));
-            var appYamlDest = Path.Combine(appTempPath, AppYamlFilename);
+            var appYamlSrc = new FileInfo(Path.Combine(projectPath, AppYamlFileName));
+            var appYamlDest = Path.Combine(appTempPath, AppYamlFileName);
             if (appYamlSrc.Exists)
             {
                 // Copy the source file.
@@ -248,7 +250,7 @@ namespace GoogleCloudExtension.GCloud
         {
             var makeDefault = makeDefaultVersion ? "--promote" : "--no-promote";
             var name = String.IsNullOrEmpty(versionName) ? "" : $"--version={versionName}";
-            var appYaml = Path.Combine(appTempPath, AppYamlFilename);
+            var appYaml = Path.Combine(appTempPath, AppYamlFileName);
             string command = $"preview app deploy \"{appYaml}\" {makeDefault} {name} --docker-build=remote --verbosity=info --quiet";
             callback($"Executing command: {command}");
             // This has a hardcoded dependency on the fact that gcloud is a batch file.
