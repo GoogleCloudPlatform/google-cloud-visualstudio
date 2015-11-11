@@ -1,9 +1,13 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="GoogleAppEngine.Google.d3d3eeb8-3710-4bd9-97ba-1401bf2acd22" Version="0.4.20151109" Language="en-US" Publisher="Google Inc." />
-    <DisplayName>GoogleCloudExtension</DisplayName>
-    <Description xml:space="preserve">Tools to develop applications for Google Cloud Platform.Extension for Google AppEngine</Description>
+    <Identity Id="GoogleAppEngine.Google.d3d3eeb8-3710-4bd9-97ba-1401bf2acd22" Version="0.4.20151111" Language="en-US" Publisher="Google Inc." />
+    <DisplayName>Google Cloud Platform Extension for Visual Studio</DisplayName>
+    <Description xml:space="preserve">Tools to develop applications for Google Cloud Platform.</Description>
+    <MoreInfo>https://github.com/GoogleCloudPlatform/gcloud-visualstudio</MoreInfo>
+    <License>License.txt</License>
+    <Icon>logo_cloud_128.png</Icon>
+    <Tags>gcp, gcloud, google, cloud</Tags>
   </Metadata>
   <Installation>
     <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[14.0]" />
