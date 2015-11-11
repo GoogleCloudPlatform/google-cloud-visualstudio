@@ -67,7 +67,7 @@ namespace GoogleCloudExtension.GCloud
         /// </summary>
         /// <param name="module">The module to change.</param>
         /// <param name="version">The version to be made default.</param>
-        /// <returns>The task.</returns>
+        /// <returns>A task representing the asynchronous operation.</returns>
         public static async Task SetDefaultAppVersionAsync(string module, string version)
         {
             await GCloudWrapper.Instance.GetCommandOutputAsync($"preview app modules set-default {module} --version={version} --quiet");
@@ -92,9 +92,9 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="versionName">The name, if any, of the version to deploy, it empty or null then a default name will be chosen.</param>
         /// <param name="runtime">The target runtime, Mono, CoreClr, etc...</param>
         /// <param name="promoteVersion">Is this version to receive all traffic.</param>
-        /// <param name="callback">The delegate that will be called with the output from the process.</param>
-        /// <returns>The task.</returns>
-        public static async Task DeployApplication(
+        /// <param name="callback">The delegate that will be called with the output from the tools used during the deployment.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public static async Task DeployApplicationAsync(
             string startupProjectPath,
             IList<string> projectPaths,
             string versionName,
@@ -106,11 +106,11 @@ namespace GoogleCloudExtension.GCloud
             var appTempPath = GetAppStagingDirectory();
             try
             {
-                await RestoreProjects(projectPaths, runtime, callback);
-                await PrepareAppBundle(startupProjectPath, appTempPath, runtime, callback);
+                await RestoreProjectsAsync(projectPaths, runtime, callback);
+                await PrepareAppBundleAsync(startupProjectPath, appTempPath, runtime, callback);
                 PrepareEntryPoint(startupProjectPath, appTempPath, callback);
                 CopyAppEngineFiles(startupProjectPath, appTempPath, runtime, callback);
-                await DeployToAppEngine(appTempPath, versionName, promoteVersion, callback, accountAndProject);
+                await DeployToAppEngineAsync(appTempPath, versionName, promoteVersion, callback, accountAndProject);
             }
             catch (Exception ex)
             {
@@ -180,7 +180,7 @@ namespace GoogleCloudExtension.GCloud
             File.WriteAllBytes(entryPointPath, Encoding.UTF8.GetBytes(entryPointContent));
         }
 
-        private static async Task RestoreProjects(
+        private static async Task RestoreProjectsAsync(
            IList<string> projectPaths,
            DnxRuntime runtime,
            Action<string> callback)
@@ -194,7 +194,7 @@ namespace GoogleCloudExtension.GCloud
         {
             var result = new Dictionary<string, string>();
             var webTools = DnxEnvironment.GetWebToolsPath();
-            var dnxPath = DnxEnvironment.GetDNXPathForRuntime(runtime);
+            var dnxPath = DnxEnvironment.GetDnxPathForRuntime(runtime);
             var newPath = Environment.ExpandEnvironmentVariables($"{webTools};{dnxPath};%PATH%");
             result["PATH"] = newPath;
             return result;
@@ -208,7 +208,7 @@ namespace GoogleCloudExtension.GCloud
             var environment = GetDnxEnvironmentForRuntime(runtime);
             var command = $"/c dnu restore \"{projectPath}\"";
             callback($"Restoring project: {projectPath}");
-            // This has hard dependency on dnu bing a batch file.
+            // This has hard dependency on dnu being a batch file.
             var result = await ProcessUtils.RunCommandAsync("cmd.exe", command, (s, e) => callback(e.Line), environment);
             if (!result)
             {
@@ -216,7 +216,7 @@ namespace GoogleCloudExtension.GCloud
             }
         }
 
-        private static async Task PrepareAppBundle(
+        private static async Task PrepareAppBundleAsync(
             string projectPath,
             string appTempPath,
             DnxRuntime runtime,
@@ -241,7 +241,7 @@ namespace GoogleCloudExtension.GCloud
             }
         }
 
-        private static Task DeployToAppEngine(
+        private static Task DeployToAppEngineAsync(
             string appTempPath,
             string versionName,
             bool makeDefaultVersion,
@@ -253,7 +253,6 @@ namespace GoogleCloudExtension.GCloud
             var appYaml = Path.Combine(appTempPath, AppYamlFileName);
             string command = $"preview app deploy \"{appYaml}\" {makeDefault} {name} --docker-build=remote --verbosity=info --quiet";
             callback($"Executing command: {command}");
-            // This has a hardcoded dependency on the fact that gcloud is a batch file.
             return GCloudWrapper.Instance.RunCommandAsync(command, callback, accountAndProject);
         }
 
