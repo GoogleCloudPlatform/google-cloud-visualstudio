@@ -7,7 +7,7 @@
     <MoreInfo>https://github.com/GoogleCloudPlatform/gcloud-visualstudio</MoreInfo>
     <License>License.txt</License>
     <Icon>logo_cloud_128.png</Icon>
-    <PreviewImage>logo_cloud_128.png</PreviewImage>
+    <PreviewImage>logo_cloud_512.png</PreviewImage>
     <Tags>gcp, gcloud, google, cloud</Tags>
   </Metadata>
   <Installation>

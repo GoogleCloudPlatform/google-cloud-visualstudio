@@ -109,6 +109,10 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="logo_cloud_512.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="Resources\AppEngineAppsToolWindowCommand.png" />
     <Content Include="Resources\ComputeEngineResourcesCommand.png" />
     <Content Include="Resources\DeployToGae.png" />
