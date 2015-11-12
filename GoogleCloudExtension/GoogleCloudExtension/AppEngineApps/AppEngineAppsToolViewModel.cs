@@ -12,22 +12,11 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.AppEngineApps
 {
+    /// <summary>
+    /// This class contains the view specific logic for the AppEngineAppsToolWindow view.
+    /// </summary>
     internal class AppEngineAppsToolViewModel : ViewModelBase
     {
-        public AppEngineAppsToolViewModel()
-        {
-            OpenAppCommand = new WeakCommand(this.OnOpenApp);
-            DeleteVersionCommand = new WeakCommand(this.OnDeleteVersion);
-            SetDefaultVersionCommand = new WeakCommand(this.OnSetDefaultVersion);
-            RefreshCommand = new WeakCommand(this.OnRefresh);
-
-            // Add a weak event handler to receive notifications of the deployment of app engine instances.
-            // We also need to invalidate the list if the account or project changed.
-            var handler = new WeakHandler(this.InvalidateAppEngineAppList);
-            ExtensionEvents.AppEngineDeployed += handler.OnEvent;
-            GCloudWrapper.Instance.AccountOrProjectChanged += handler.OnEvent;
-        }
-
         private IList<AppEngineApplication> _Apps;
         public IList<AppEngineApplication> Apps
         {
@@ -104,10 +93,21 @@ namespace GoogleCloudExtension.AppEngineApps
             set { SetValueAndRaise(ref _OpenAppButtonTitle, value); }
         }
 
-        public bool HaveApps
+        public AppEngineAppsToolViewModel()
         {
-            get { return this.Apps != null && this.Apps.Count != 0; }
+            OpenAppCommand = new WeakCommand(this.OnOpenApp);
+            DeleteVersionCommand = new WeakCommand(this.OnDeleteVersion);
+            SetDefaultVersionCommand = new WeakCommand(this.OnSetDefaultVersion);
+            RefreshCommand = new WeakCommand(this.OnRefresh);
+
+            // Add a weak event handler to receive notifications of the deployment of app engine instances.
+            // We also need to invalidate the list if the account or project changed.
+            var handler = new WeakHandler(this.InvalidateAppEngineAppList);
+            ExtensionEvents.AppEngineDeployed += handler.OnEvent;
+            GCloudWrapper.Instance.AccountOrProjectChanged += handler.OnEvent;
         }
+
+        public bool HaveApps => Apps != null && Apps.Count != 0;
 
         public async void LoadAppEngineAppList()
         {
@@ -138,16 +138,17 @@ namespace GoogleCloudExtension.AppEngineApps
 
         private async void OnOpenApp(object parameter)
         {
+            var app = (AppEngineApplication)parameter;
+            if (app == null)
+            {
+                return;
+            }
+
             try
             {
                 this.OpenAppEnabled = false;
                 this.OpenAppButtonTitle = "Opening app...";
 
-                var app = parameter as AppEngineApplication;
-                if (app == null)
-                {
-                    return;
-                }
                 var accountAndProject = await GCloudWrapper.Instance.GetCurrentAccountAndProjectAsync();
                 var url = $"https://{app.Version}-dot-{app.Module}-dot-{accountAndProject.ProjectId}.appspot.com/";
                 Debug.WriteLine($"Opening URL: {url}");
@@ -162,10 +163,9 @@ namespace GoogleCloudExtension.AppEngineApps
 
         private async void OnDeleteVersion(object parameter)
         {
-            var app = parameter as AppEngineApplication;
+            var app = (AppEngineApplication)parameter;
             if (app == null)
             {
-                Debug.WriteLine($"Expected an AppEngineApp but got something else: {parameter}");
                 return;
             }
 
@@ -190,10 +190,9 @@ namespace GoogleCloudExtension.AppEngineApps
 
         private async void OnSetDefaultVersion(object parameter)
         {
-            var app = parameter as AppEngineApplication;
+            var app = (AppEngineApplication)parameter;
             if (app == null)
             {
-                Debug.WriteLine($"Expected an AppEngineApp but got something else: {parameter}");
                 return;
             }
 

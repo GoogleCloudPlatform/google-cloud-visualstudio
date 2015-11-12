@@ -10,7 +10,7 @@ using System.ComponentModel.Design;
 namespace GoogleCloudExtension.AppEngineApps
 {
     /// <summary>
-    /// Command handler
+    /// Command handler for the AppEngineAppsToolWindowCommand that opens the Tool Window.
     /// </summary>
     internal sealed class AppEngineAppsToolWindowCommand
     {
@@ -28,6 +28,25 @@ namespace GoogleCloudExtension.AppEngineApps
         /// VS Package that provides this command, not null.
         /// </summary>
         private readonly Package _package;
+
+        /// <summary>
+        /// Gets the instance of the command.
+        /// </summary>
+        public static AppEngineAppsToolWindowCommand Instance { get; private set; }
+
+        /// <summary>
+        /// Gets the service provider from the owner package.
+        /// </summary>
+        private IServiceProvider ServiceProvider => _package;
+
+        /// <summary>
+        /// Initializes the singleton instance of the command.
+        /// </summary>
+        /// <param name="package">Owner package, not null.</param>
+        public static void Initialize(Package package)
+        {
+            Instance = new AppEngineAppsToolWindowCommand(package);
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AppEngineAppsToolWindowCommand"/> class.
@@ -50,35 +69,6 @@ namespace GoogleCloudExtension.AppEngineApps
                 var menuItem = new MenuCommand(this.ShowToolWindow, menuCommandID);
                 commandService.AddCommand(menuItem);
             }
-        }
-
-        /// <summary>
-        /// Gets the instance of the command.
-        /// </summary>
-        public static AppEngineAppsToolWindowCommand Instance
-        {
-            get;
-            private set;
-        }
-
-        /// <summary>
-        /// Gets the service provider from the owner package.
-        /// </summary>
-        private IServiceProvider ServiceProvider
-        {
-            get
-            {
-                return _package;
-            }
-        }
-
-        /// <summary>
-        /// Initializes the singleton instance of the command.
-        /// </summary>
-        /// <param name="package">Owner package, not null.</param>
-        public static void Initialize(Package package)
-        {
-            Instance = new AppEngineAppsToolWindowCommand(package);
         }
 
         /// <summary>
