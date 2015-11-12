@@ -10,7 +10,7 @@ namespace GoogleCloudExtension.GCloud.Models
     /// This class represents the account settings as stored in the GCloud CLI store, it is used
     /// to deserialize the output of the CLI commands.
     /// </summary>
-    public sealed class AccountSettings
+    internal sealed class AccountSettings
     {
         [JsonProperty("accounts")]
         public IList<string> Accounts { get; set; }

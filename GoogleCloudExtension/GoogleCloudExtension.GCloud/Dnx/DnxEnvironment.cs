@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
 
         private const string InstallDirValue = "InstallDir";
 
-        private static Lazy<string> VSInstallPath { get; } = new Lazy<string>(CalculateVSInstallPath);
+        private static Lazy<string> VSInstallPath = new Lazy<string>(CalculateVSInstallPath);
 
         /// <summary>
         /// Determines the path to the given DNX runtime.

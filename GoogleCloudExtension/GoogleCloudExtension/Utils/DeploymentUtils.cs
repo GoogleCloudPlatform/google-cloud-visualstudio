@@ -17,7 +17,7 @@ namespace GoogleCloudExtension.Utils
             DnxRuntime selectedRuntime,
             string versionName,
             bool makeDefault,
-            AccountAndProjectId accountAndProject)
+            Credentials accountAndProject)
         {
             try
             {

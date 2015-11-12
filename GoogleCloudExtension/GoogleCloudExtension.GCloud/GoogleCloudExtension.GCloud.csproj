@@ -67,9 +67,9 @@
     <Compile Include="ProcessUtils.cs" />
     <Compile Include="Models\CloudProject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="Models\Settings.cs" />
     <Compile Include="Models\AccountSettings.cs" />
-    <Compile Include="UserAndProjectId.cs" />
+    <Compile Include="Credentials.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

@@ -64,29 +64,21 @@ namespace GoogleCloudExtension.GCloud.Dnx
             return result;
         }
 
-        private DnxRuntime GetProjectRuntime()
+        /// <summary>
+        /// This list contains the supported runtimes in order of preference, do not change
+        /// the order or it will affect the selection process for the images.
+        /// </summary>
+        static IList<DnxRuntimeInfo> s_PreferredRuntimes = new List<DnxRuntimeInfo>
         {
-            var parsed = _parsedProject.Value;
-            bool clrRuntimeTargeted = parsed.Frameworks.ContainsKey(DnxRuntimeInfo.Dnx451FrameworkName);
-            bool coreClrRuntimeTargeted = parsed.Frameworks.ContainsKey(DnxRuntimeInfo.DnxCore50FrameworkName);
+            DnxRuntimeInfo.GetRuntimeInfo(DnxRuntime.DnxCore50),
+            DnxRuntimeInfo.GetRuntimeInfo(DnxRuntime.Dnx451)
+        };
 
-            bool hasCoreClrRuntimeInstalled = DnxEnvironment.ValidateDnxInstallationForRuntime(DnxRuntime.DnxCore50);
-            bool hasClrRuntimeInstalled = DnxEnvironment.ValidateDnxInstallationForRuntime(DnxRuntime.Dnx451);
-
-            if (coreClrRuntimeTargeted && hasCoreClrRuntimeInstalled)
-            {
-                return DnxRuntime.DnxCore50;
-            }
-            else if (clrRuntimeTargeted && hasClrRuntimeInstalled)
-            {
-                return DnxRuntime.Dnx451;
-            }
-            else
-            {
-                Debug.WriteLine("No known runtime is being targeted.");
-                return DnxRuntime.None;
-            }
-        }
+        private DnxRuntime GetProjectRuntime() => s_PreferredRuntimes
+            .Where(x => _parsedProject.Value.Frameworks.ContainsKey(x.FrameworkName)
+                && DnxEnvironment.ValidateDnxInstallationForRuntime(x.Runtime))
+            .Select(x => x.Runtime)
+            .FirstOrDefault();
 
         public static bool IsDnxProject(string projectRoot)
         {

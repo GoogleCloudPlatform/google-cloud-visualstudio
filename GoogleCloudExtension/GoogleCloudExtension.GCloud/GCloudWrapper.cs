@@ -21,7 +21,7 @@ namespace GoogleCloudExtension.GCloud
         /// <summary>
         /// Maintains the currently selected account and project for the instance.
         /// </summary>
-        private AccountAndProjectId _currentAccountAndProject;
+        private Credentials _currentAccountAndProject;
 
         /// <summary>
         /// Singleton for the class.
@@ -43,7 +43,7 @@ namespace GoogleCloudExtension.GCloud
 
         private void RaiseAccountOrProjectChanged()
         {
-            AccountOrProjectChanged?.Invoke(null, EventArgs.Empty);
+            AccountOrProjectChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -52,14 +52,14 @@ namespace GoogleCloudExtension.GCloud
         /// hidden from the caller.
         /// </summary>
         /// <returns>The current AccountAndProjectId.</returns>
-        public async Task<AccountAndProjectId> GetCurrentAccountAndProjectAsync()
+        public async Task<Credentials> GetCurrentAccountAndProjectAsync()
         {
             if (_currentAccountAndProject == null)
             {
                 // Fetching the current account and project, for gcloud, does not need to use the current
                 // account.
                 var settings = await GetJsonOutputAsync<Settings>("config list", accountAndProject: null);
-                _currentAccountAndProject = new AccountAndProjectId(
+                _currentAccountAndProject = new Credentials(
                     account: settings.CoreSettings.Account,
                     projectId: settings.CoreSettings.Project);
             }
@@ -71,7 +71,7 @@ namespace GoogleCloudExtension.GCloud
         /// affect what gcloud thinks is the current account and project.
         /// </summary>
         /// <param name="accountAndProject">The new accountAndProject to use</param>
-        public void UpdateUserAndProject(AccountAndProjectId accountAndProject)
+        public void UpdateUserAndProject(Credentials accountAndProject)
         {
             _currentAccountAndProject = accountAndProject;
             RaiseAccountOrProjectChanged();
@@ -79,7 +79,7 @@ namespace GoogleCloudExtension.GCloud
 
         public void UpdateProject(string projectId)
         {
-            var newAccountAndProject = new AccountAndProjectId(_currentAccountAndProject.Account, projectId);
+            var newAccountAndProject = new Credentials(_currentAccountAndProject.Account, projectId);
             UpdateUserAndProject(newAccountAndProject);
         }
 
@@ -111,7 +111,7 @@ namespace GoogleCloudExtension.GCloud
             return Path.Combine(programFiles, @"Google\Cloud SDK\GOOGLE~1\bin");
         }
 
-        private string FormatAccountAndProjectParameters(AccountAndProjectId accountAndProject)
+        private string FormatAccountAndProjectParameters(Credentials accountAndProject)
         {
             if (accountAndProject == null)
             {
@@ -122,14 +122,14 @@ namespace GoogleCloudExtension.GCloud
             return $"{projectParam} {accountParam}";
         }
 
-        private string FormatCommand(string command, AccountAndProjectId accountAndProject, bool useJson)
+        private string FormatCommand(string command, Credentials accountAndProject, bool useJson)
         {
             var accountAndProjectParams = FormatAccountAndProjectParameters(accountAndProject);
             var jsonFormatParam = useJson ? "--format=json" : "";
             return $"/c gcloud {jsonFormatParam} {accountAndProjectParams} {command}";
         }
 
-        public async Task RunCommandAsync(string command, Action<string> callback, AccountAndProjectId accountAndProject)
+        public async Task RunCommandAsync(string command, Action<string> callback, Credentials accountAndProject)
         {
             var actualCommand = FormatCommand(command, accountAndProject, useJson: false);
             Debug.WriteLine($"Executing gcloud command: {actualCommand}");
@@ -145,7 +145,7 @@ namespace GoogleCloudExtension.GCloud
             await RunCommandAsync(command, callback, await GetCurrentAccountAndProjectAsync());
         }
 
-        public async Task<string> GetCommandOutputAsync(string command, AccountAndProjectId accountAndProject)
+        public async Task<string> GetCommandOutputAsync(string command, Credentials accountAndProject)
         {
             var actualCommand = FormatCommand(command, accountAndProject, useJson: false);
             Debug.WriteLine($"Executing gcloud command: {actualCommand}");
@@ -162,7 +162,7 @@ namespace GoogleCloudExtension.GCloud
             return await GetCommandOutputAsync(command, await GetCurrentAccountAndProjectAsync());
         }
 
-        public async Task<T> GetJsonOutputAsync<T>(string command, AccountAndProjectId accountAndProject)
+        public async Task<T> GetJsonOutputAsync<T>(string command, Credentials accountAndProject)
         {
             var actualCommand = FormatCommand(command, accountAndProject, useJson: true);
             try
@@ -191,10 +191,10 @@ namespace GoogleCloudExtension.GCloud
         }
 
         /// <summary>
-        /// Returns the list of accounts registered with gcloud.
+        /// Returns the accounts registered with gcloud.
         /// </summary>
-        /// <returns>List of accounts.</returns>
-        public async Task<IList<string>> GetAccountListAsync()
+        /// <returns>The accounts.</returns>
+        public async Task<IEnumerable<string>> GetAccountsAsync()
         {
             // Getting the list of accounts needs to not filter down by the current account
             // being used or nothing will be shown, so we don't need to use the current account.
@@ -211,7 +211,7 @@ namespace GoogleCloudExtension.GCloud
             return GetJsonOutputAsync<IList<CloudProject>>("alpha projects list");
         }
 
-        public async Task<IList<CloudProject>> GetProjectsAsync(AccountAndProjectId accountAndProject)
+        public async Task<IList<CloudProject>> GetProjectsAsync(Credentials accountAndProject)
         {
             return await GetJsonOutputAsync<IList<CloudProject>>("alpha projects list", accountAndProject);
         }

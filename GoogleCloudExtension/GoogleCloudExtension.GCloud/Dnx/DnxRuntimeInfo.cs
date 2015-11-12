@@ -51,8 +51,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
             displayName: "",
             frameworkName: "",
             imageName: "");
-
-
+        
         public DnxRuntime Runtime { get; }
 
         public string DisplayName { get; }

@@ -35,8 +35,8 @@ namespace GoogleCloudExtension.DeploymentDialog
             set { SetValueAndRaise(ref _SelectedCloudProject, value); }
         }
 
-        private IList<string> _Accounts;
-        public IList<string> Accounts
+        private IEnumerable<string> _Accounts;
+        public IEnumerable<string> Accounts
         {
             get { return _Accounts; }
             set { SetValueAndRaise(ref _Accounts, value); }
@@ -129,7 +129,7 @@ namespace GoogleCloudExtension.DeploymentDialog
                 SelectedAccount = _loadingAccounts[0];
                 SelectedCloudProject = _loadingProjects[0];
 
-                var accounts = await GCloudWrapper.Instance.GetAccountListAsync();
+                var accounts = await GCloudWrapper.Instance.GetAccountsAsync();
                 var cloudProjects = await GCloudWrapper.Instance.GetProjectsAsync();
                 var accountAndProject = await GCloudWrapper.Instance.GetCurrentAccountAndProjectAsync();
 
@@ -163,7 +163,7 @@ namespace GoogleCloudExtension.DeploymentDialog
                    selectedRuntime: SelectedRuntime,
                    versionName: VersionName,
                    makeDefault: MakeDefault,
-                   accountAndProject: new AccountAndProjectId(account: this.SelectedAccount, projectId: this.SelectedCloudProject.Id));
+                   accountAndProject: new Credentials(account: this.SelectedAccount, projectId: this.SelectedCloudProject.Id));
             _window.Close();
         }
 
@@ -190,7 +190,7 @@ namespace GoogleCloudExtension.DeploymentDialog
                 _SelectedCloudProject = null;
 
                 var cloudProjects = await GCloudWrapper.Instance.GetProjectsAsync(
-                    new AccountAndProjectId(account: this.SelectedAccount));
+                    new Credentials(account: this.SelectedAccount));
 
                 this.CloudProjects = cloudProjects;
                 this.SelectedCloudProject = cloudProjects.FirstOrDefault();

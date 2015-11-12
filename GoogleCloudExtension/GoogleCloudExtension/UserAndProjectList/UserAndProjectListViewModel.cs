@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.UserAndProjectList
                 {
                     return;
                 }
-                var newCurrentAccountAndProject = new AccountAndProjectId(
+                var newCurrentAccountAndProject = new Credentials(
                     account: currentAccountAndProject.Account,
                     projectId: newProject.Id);
                 GCloudWrapper.Instance.UpdateUserAndProject(newCurrentAccountAndProject);
@@ -65,8 +65,8 @@ namespace GoogleCloudExtension.UserAndProjectList
             }
         }
 
-        private IList<string> _Accounts;
-        public IList<string> Accounts
+        private IEnumerable<string> _Accounts;
+        public IEnumerable<string> Accounts
         {
             get { return _Accounts; }
             set { SetValueAndRaise(ref _Accounts, value); }
@@ -97,7 +97,7 @@ namespace GoogleCloudExtension.UserAndProjectList
                 var currentAccountAndProject = await GCloudWrapper.Instance.GetCurrentAccountAndProjectAsync();
                 if (currentAccountAndProject.Account != value)
                 {
-                    var newAccountAndProject = new AccountAndProjectId(
+                    var newAccountAndProject = new Credentials(
                         account: value,
                         projectId: null);
                     GCloudWrapper.Instance.UpdateUserAndProject(newAccountAndProject);

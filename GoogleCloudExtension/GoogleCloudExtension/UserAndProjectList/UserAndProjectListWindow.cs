@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.UserAndProjectList
             try
             {
                 _model.LoadingAccounts = true;
-                var accounts = await GCloudWrapper.Instance.GetAccountListAsync();
+                var accounts = await GCloudWrapper.Instance.GetAccountsAsync();
                 var currentAccountAndProject = await GCloudWrapper.Instance.GetCurrentAccountAndProjectAsync();
                 _model.Accounts = accounts;
                 _model.CurrentAccount = currentAccountAndProject.Account;

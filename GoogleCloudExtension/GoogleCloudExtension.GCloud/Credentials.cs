@@ -3,9 +3,12 @@
 
 namespace GoogleCloudExtension.GCloud
 {
-    public sealed class AccountAndProjectId
+    /// <summary>
+    /// This class holds the credentials used to perform GCloud operations.
+    /// </summary>
+    public sealed class Credentials
     {
-        public AccountAndProjectId(string account = null, string projectId = null)
+        public Credentials(string account = null, string projectId = null)
         {
             this.Account = account;
             this.ProjectId = projectId;
