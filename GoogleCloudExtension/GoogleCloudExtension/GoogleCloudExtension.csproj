@@ -63,7 +63,7 @@
     </Compile>
     <Compile Include="DeploymentDialog\DeploymentDialogWindow.cs" />
     <Compile Include="DeploymentDialog\DeploymentDialogViewModel.cs" />
-    <Compile Include="Projects\DnxSolution.cs" />
+    <Compile Include="Projects\SolutionHelper.cs" />
     <Compile Include="Utils\AppEngineOutputWindow.cs" />
     <Compile Include="ComputeEngineResources\ComputeEngineResourcesViewModel.cs" />
     <Compile Include="ComputeEngineResources\ComputeEngineResourcesWindow.cs" />

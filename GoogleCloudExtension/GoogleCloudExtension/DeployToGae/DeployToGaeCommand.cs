@@ -87,7 +87,7 @@ namespace GoogleCloudExtension.DeployToGae
 
         private void DeployHandler(object sender, EventArgs e)
         {
-            var startupProject = DnxSolution.CurrentSolution?.StartupProject;
+            var startupProject = SolutionHelper.CurrentSolution?.StartupProject;
             if (startupProject == null)
             {
                 return;
@@ -102,7 +102,7 @@ namespace GoogleCloudExtension.DeployToGae
             var window = new DeploymentDialogWindow(new DeploymentDialogWindowOptions
             {
                 Project = startupProject,
-                ProjectsToRestore = DnxSolution.CurrentSolution.Projects,
+                ProjectsToRestore = SolutionHelper.CurrentSolution.Projects,
             });
             window.ShowModal();
         }
@@ -116,7 +116,7 @@ namespace GoogleCloudExtension.DeployToGae
             }
 
             // Enable and show the item only if there's an existing Dnx startup project.
-            var startupProject = DnxSolution.CurrentSolution?.StartupProject;
+            var startupProject = SolutionHelper.CurrentSolution?.StartupProject;
             bool isDnxProject = false;
 
             if (startupProject != null)

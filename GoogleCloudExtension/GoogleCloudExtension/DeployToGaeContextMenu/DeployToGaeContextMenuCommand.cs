@@ -147,7 +147,7 @@ namespace GoogleCloudExtension.DeployToGaeContextMenu
             var window = new DeploymentDialogWindow(new DeploymentDialogWindowOptions
             {
                 Project = new Project(startupProjectPath),
-                ProjectsToRestore = DnxSolution.CurrentSolution.Projects,
+                ProjectsToRestore = SolutionHelper.CurrentSolution.Projects,
             });
             window.ShowModal();
         }

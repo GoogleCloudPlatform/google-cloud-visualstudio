@@ -89,6 +89,8 @@ namespace GoogleCloudExtension.GCloud.Dnx
             return result;
         }
 
+
+
         private static string CalculateVSInstallPath()
         {
             return s_VSKeysToCheck

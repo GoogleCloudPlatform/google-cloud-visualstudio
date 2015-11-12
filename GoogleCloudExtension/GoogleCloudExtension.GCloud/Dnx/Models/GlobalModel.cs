@@ -10,7 +10,7 @@ namespace GoogleCloudExtension.GCloud.Dnx.Models
     /// Class used for deserializing the global.json file. Only contains the properties
     /// of interest for this library.
     /// </summary>
-    public sealed class GlobalModel
+    internal sealed class GlobalModel
     {
         [JsonProperty("projects")]
         public List<string> Projects { get; set; }
