@@ -1,9 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
-using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Dnx;
-using GoogleCloudExtension.Projects;
 using System;
 using System.Globalization;
 using System.Windows.Data;

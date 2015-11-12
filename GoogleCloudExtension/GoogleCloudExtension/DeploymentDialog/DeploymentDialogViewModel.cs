@@ -107,7 +107,7 @@ namespace GoogleCloudExtension.DeploymentDialog
             this.DeployCommand = new WeakCommand(this.OnDeployHandler);
             this.CancelCommand = new WeakCommand(this.OnCancelHandler);
             this.Project = window.Options.Project.Name;
-            this.SupportedRuntimes = window.Options.Project.SupportedRuntimes;
+            this.SupportedRuntimes = window.Options.Project.SupportedRuntimes.ToList();
             this.SelectedRuntime = window.Options.Project.Runtime;
             _window = window;
         }

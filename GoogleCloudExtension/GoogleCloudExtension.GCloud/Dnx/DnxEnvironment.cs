@@ -7,8 +7,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GCloud.Dnx
 {
@@ -42,7 +40,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
 
         private const string InstallDirValue = "InstallDir";
 
-        private static string s_VSInstallPath;
+        private static Lazy<string> VSInstallPath { get; } = new Lazy<string>(CalculateVSInstallPath);
 
         /// <summary>
         /// Determines the path to the given DNX runtime.
@@ -76,8 +74,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
 
         public static string GetWebToolsPath()
         {
-            var vsInstallPath = GetVSInstallPath();
-            return Path.Combine(vsInstallPath, WebToolsRelativePath);
+            return Path.Combine(VSInstallPath.Value, WebToolsRelativePath);
         }
 
         public static bool ValidateDnxInstallationForRuntime(DnxRuntime runtime)
@@ -92,21 +89,11 @@ namespace GoogleCloudExtension.GCloud.Dnx
             return result;
         }
 
-        private static string GetVSInstallPath()
+        private static string CalculateVSInstallPath()
         {
-            if (s_VSInstallPath == null)
-            {
-                foreach (var key in s_VSKeysToCheck)
-                {
-                    var value = (string)Registry.GetValue(key, InstallDirValue, null);
-                    if (value != null)
-                    {
-                        s_VSInstallPath = value;
-                        break;
-                    }
-                }
-            }
-            return s_VSInstallPath;
+            return s_VSKeysToCheck
+                .Select(x => Registry.GetValue(x, InstallDirValue, null) as string)
+                .FirstOrDefault(x => x != null);
         }
     }
 }

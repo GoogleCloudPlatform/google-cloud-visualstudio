@@ -2,13 +2,10 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.GCloud.Models;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GCloud
@@ -21,19 +18,15 @@ namespace GoogleCloudExtension.GCloud
     /// </summary>
     public sealed class GCloudWrapper
     {
+        /// <summary>
+        /// Maintains the currently selected account and project for the instance.
+        /// </summary>
         private AccountAndProjectId _currentAccountAndProject;
 
-        private GCloudWrapper()
-        { }
-
         /// <summary>
-        /// Lazily creates the singleton instace for the class.
+        /// Singleton for the class.
         /// </summary>
-        private static readonly GCloudWrapper s_Instance = new GCloudWrapper();
-        public static GCloudWrapper Instance
-        {
-            get { return s_Instance; }
-        }
+        public static GCloudWrapper Instance { get; } = new GCloudWrapper();
 
         /// <summary>
         /// This event is raised whenever the current account or project has changed;
@@ -41,6 +34,12 @@ namespace GoogleCloudExtension.GCloud
         /// to find out what the new values are.
         /// </summary>
         public event EventHandler AccountOrProjectChanged;
+
+        /// <summary>
+        /// Private to enforce the singleton.
+        /// </summary>
+        private GCloudWrapper()
+        { }
 
         private void RaiseAccountOrProjectChanged()
         {
@@ -84,18 +83,13 @@ namespace GoogleCloudExtension.GCloud
             UpdateUserAndProject(newAccountAndProject);
         }
 
-        private static Dictionary<string, string> s_GCloudEnvironment;
-
         private static Dictionary<string, string> GetGCloudEnvironment()
         {
-            if (s_GCloudEnvironment == null)
-            {
-                s_GCloudEnvironment = new Dictionary<string, string>();
-                var gcloudPath = GetGCloudPath();
-                var newPath = Environment.ExpandEnvironmentVariables($"{gcloudPath};%PATH%");
-                s_GCloudEnvironment["PATH"] = newPath;
-            }
-            return s_GCloudEnvironment;
+            var result = new Dictionary<string, string>();
+            var gcloudPath = GetGCloudPath();
+            var newPath = Environment.ExpandEnvironmentVariables($"{gcloudPath};%PATH%");
+            result["PATH"] = newPath;
+            return result;
         }
 
         // TODO(ivann): Possibly use MSI APIs to find the location where gcloud was installed instead

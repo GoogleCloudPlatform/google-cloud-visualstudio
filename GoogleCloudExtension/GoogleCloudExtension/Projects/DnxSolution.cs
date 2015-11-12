@@ -4,7 +4,6 @@
 using EnvDTE;
 using EnvDTE80;
 using GoogleCloudExtension.GCloud.Dnx.Models;
-using GoogleCloudExtension.GCloud.Dnx;
 using Microsoft.VisualStudio.Shell;
 using Newtonsoft.Json;
 using System;

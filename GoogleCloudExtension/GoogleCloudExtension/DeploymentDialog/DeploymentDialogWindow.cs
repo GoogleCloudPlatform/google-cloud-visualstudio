@@ -2,7 +2,6 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.GCloud.Dnx;
-using GoogleCloudExtension.Projects;
 using Microsoft.VisualStudio.PlatformUI;
 using System.Collections.Generic;
 

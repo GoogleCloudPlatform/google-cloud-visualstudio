@@ -3,7 +3,6 @@
 
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Dnx;
-using GoogleCloudExtension.Projects;
 using System;
 using System.Collections.Generic;
 using System.Linq;

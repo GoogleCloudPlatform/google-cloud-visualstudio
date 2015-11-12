@@ -6,12 +6,10 @@ using System.Collections.Generic;
 
 namespace GoogleCloudExtension.GCloud.Dnx.Models
 {
-    public sealed class SdkModel
-    {
-        [JsonProperty("version")]
-        public string Version { get; set; }
-    }
-
+    /// <summary>
+    /// Class used for deserializing the global.json file. Only contains the properties
+    /// of interest for this library.
+    /// </summary>
     public sealed class GlobalModel
     {
         [JsonProperty("projects")]
