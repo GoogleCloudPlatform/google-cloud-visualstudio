@@ -119,14 +119,17 @@ namespace GoogleCloudExtension.GCloud
             }
             finally
             {
-                callback($"Performing cleanup.");
+                callback("Performing cleanup.");
                 Directory.Delete(appTempPath, true);
             }
         }
 
         private static void CopyAppEngineFiles(string projectPath, string appTempPath, DnxRuntime runtime, Action<string> callback)
         {
-            Debug.Assert(runtime == DnxRuntime.Dnx451 || runtime == DnxRuntime.DnxCore50);
+            if (!(runtime == DnxRuntime.Dnx451 || runtime == DnxRuntime.DnxCore50))
+            {
+                throw new ArgumentException("runtime");
+            }
 
             var dockerfileSrc = new FileInfo(Path.Combine(projectPath, DockerfileFilename));
             var dockerfileDest = Path.Combine(appTempPath, DockerfileFilename);
@@ -174,10 +177,7 @@ namespace GoogleCloudExtension.GCloud
             var projectName = Path.GetFileNameWithoutExtension(startupProjectPath);
             var entryPointContent = String.Format(EntryPointTemplate, projectName);
 
-            // Because the file is going to be executed inside of the Docker container it needs to have
-            // Unix line termination, not Windows. Therefore we save the string as is without going through
-            // the text conversion layer, the \n will remain as is and not converted to \r\n.
-            File.WriteAllBytes(entryPointPath, Encoding.UTF8.GetBytes(entryPointContent));
+            File.WriteAllText(entryPointPath, entryPointContent);
         }
 
         private static async Task RestoreProjectsAsync(
