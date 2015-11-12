@@ -7,11 +7,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GCloud.Dnx
 {
+    /// <summary>
+    /// This class contains the functionality to manage the DNX environment and get
+    /// information about it.
+    /// </summary>
     public static class DnxEnvironment
     {
         public const string DnxVersion = "1.0.0-beta8";
@@ -38,9 +40,14 @@ namespace GoogleCloudExtension.GCloud.Dnx
 
         private const string InstallDirValue = "InstallDir";
 
-        private static string s_VSInstallPath;
+        private static readonly Lazy<string> s_VSInstallPath = new Lazy<string>(CalculateVSInstallPath);
 
-        public static string GetDNXPathForRuntime(DnxRuntime runtime)
+        /// <summary>
+        /// Determines the path to the given DNX runtime.
+        /// </summary>
+        /// <param name="runtime"></param>
+        /// <returns></returns>
+        public static string GetDnxPathForRuntime(DnxRuntime runtime)
         {
             var userDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string bitness = Environment.Is64BitProcess ? "x64" : "x86";
@@ -67,15 +74,14 @@ namespace GoogleCloudExtension.GCloud.Dnx
 
         public static string GetWebToolsPath()
         {
-            var vsInstallPath = GetVSInstallPath();
-            return Path.Combine(vsInstallPath, WebToolsRelativePath);
+            return Path.Combine(s_VSInstallPath.Value, WebToolsRelativePath);
         }
 
         public static bool ValidateDnxInstallationForRuntime(DnxRuntime runtime)
         {
             bool result = false;
             Debug.WriteLine("Validating DNX installation.");
-            var dnxDirectory = GetDNXPathForRuntime(runtime);
+            var dnxDirectory = GetDnxPathForRuntime(runtime);
             var dnuPath = Path.Combine(dnxDirectory, "dnu.cmd");
 
             result = File.Exists(dnuPath);
@@ -83,21 +89,13 @@ namespace GoogleCloudExtension.GCloud.Dnx
             return result;
         }
 
-        private static string GetVSInstallPath()
+
+
+        private static string CalculateVSInstallPath()
         {
-            if (s_VSInstallPath == null)
-            {
-                foreach (var key in s_VSKeysToCheck)
-                {
-                    var value = (string)Registry.GetValue(key, InstallDirValue, null);
-                    if (value != null)
-                    {
-                        s_VSInstallPath = value;
-                        break;
-                    }
-                }
-            }
-            return s_VSInstallPath;
+            return s_VSKeysToCheck
+                .Select(x => Registry.GetValue(x, InstallDirValue, null) as string)
+                .FirstOrDefault(x => x != null);
         }
     }
 }

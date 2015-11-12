@@ -3,9 +3,13 @@
 
 using Newtonsoft.Json;
 
-namespace GoogleCloudExtension.GCloud
+namespace GoogleCloudExtension.GCloud.Models
 {
-    public sealed class CoreSettings
+    /// <summary>
+    /// This class is used to deserialize the core settings of GCloud from its JSON
+    /// representation.
+    /// </summary>
+    internal sealed class CoreSettings
     {
         [JsonProperty("account")]
         public string Account { get; set; }
@@ -14,7 +18,10 @@ namespace GoogleCloudExtension.GCloud
         public string Project { get; set; }
     }
 
-    public sealed class Settings
+    /// <summary>
+    /// This class is used to deserialize GCloud settings from its JSON representation.
+    /// </summary>
+    internal sealed class Settings
     {
         [JsonProperty("core")]
         public CoreSettings CoreSettings { get; set; }

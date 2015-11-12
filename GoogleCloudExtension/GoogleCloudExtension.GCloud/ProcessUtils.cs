@@ -82,8 +82,35 @@ namespace GoogleCloudExtension.GCloud
                 throw new JsonOutputException($"Failed to execute command: {file} {args}\n{output.Error}");
             }
             var parsed = JsonConvert.DeserializeObject<T>(output.Output);
-            return parsed;
+            return ValueOrDefault(parsed);
         }
+
+        /// <summary>
+        /// This method is justy a passthrough, specifically designed for non-list parameters.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="src">The value to transform</param>
+        /// <returns></returns>
+        private static T ValueOrDefault<T>(T src)
+        {
+            return src;
+        }
+
+        /// <summary>
+        /// This method will transform a null list into an empty list.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="src">The source list.</param>
+        /// <returns></returns>
+        private static IList<T> ValueOrDefault<T>(IList<T> src)
+        {
+            if (src == null)
+            {
+                return new List<T>();
+            }
+            return src;
+        }
+
 
         private static ProcessStartInfo GetStartInfo(string file, string args, Dictionary<string, string> environment)
         {

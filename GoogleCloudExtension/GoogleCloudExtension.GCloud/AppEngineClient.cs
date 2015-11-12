@@ -2,16 +2,19 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.GCloud.Dnx;
+using GoogleCloudExtension.GCloud.Models;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GCloud
 {
+    /// <summary>
+    /// This class contains the functionality to manage AppEngine applications, listing of versions,
+    /// managing the default verision, etc...
+    /// </summary>
     public static class AppEngineClient
     {
         // This prefix allows us to detect the builtin services so we can avoid showing
@@ -20,7 +23,7 @@ namespace GoogleCloudExtension.GCloud
 
         // The Dockefile to use for the Mono runtime.
         private const string DockerfileTemplate =
-            "FROM gcr.io/tryinggce/aspnet_runtime:{0}-{1}\n" +
+            "FROM b.gcr.io/images-tryinggce/aspnet_runtime:{0}-{1}\n" +
             "ADD ./ /app\n" +
             "RUN chmod +x /app/gae_start\n";
 
@@ -30,7 +33,7 @@ namespace GoogleCloudExtension.GCloud
             "threadsafe: true\n" +
             "api_version: 1\n";
 
-        private const string AppYamlFilename = "app.yaml";
+        private const string AppYamlFileName = "app.yaml";
         private const string DockerfileFilename = "Dockerfile";
 
         // The template to generate an entry point that will launch Kestrel in the port 8080 on
@@ -48,14 +51,12 @@ namespace GoogleCloudExtension.GCloud
                 "--server.urls http://0.0.0.0:8080\n";
 
         /// <summary>
-        /// Returns the list of AppEngine apps for this class' notion of current
-        /// user and project.
+        /// Returns the list of AppEngine apps for the current user.
         /// </summary>
         /// <returns>The list of AppEngine apps.</returns>
-        public static async Task<IList<AppEngineApp>> GetAppEngineAppListAsync()
+        public static async Task<IList<AppEngineApplication>> GetAppEngineAppListAsync()
         {
-            var result = await GCloudWrapper.Instance.GetJsonOutputAsync<IList<AppEngineApp>>("preview app modules list")
-                ?? Enumerable.Empty<AppEngineApp>();
+            var result = await GCloudWrapper.Instance.GetJsonOutputAsync<IList<AppEngineApplication>>("preview app modules list");
             return result.Where(x => !x.Version.StartsWith(BuiltinServiceVersionPrefix)).ToList();
         }
 
@@ -64,7 +65,7 @@ namespace GoogleCloudExtension.GCloud
         /// </summary>
         /// <param name="module">The module to change.</param>
         /// <param name="version">The version to be made default.</param>
-        /// <returns>The task.</returns>
+        /// <returns>A task representing the asynchronous operation.</returns>
         public static async Task SetDefaultAppVersionAsync(string module, string version)
         {
             await GCloudWrapper.Instance.GetCommandOutputAsync($"preview app modules set-default {module} --version={version} --quiet");
@@ -89,25 +90,25 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="versionName">The name, if any, of the version to deploy, it empty or null then a default name will be chosen.</param>
         /// <param name="runtime">The target runtime, Mono, CoreClr, etc...</param>
         /// <param name="promoteVersion">Is this version to receive all traffic.</param>
-        /// <param name="callback">The delegate that will be called with the output from the process.</param>
-        /// <returns>The task.</returns>
-        public static async Task DeployApplication(
+        /// <param name="callback">The delegate that will be called with the output from the tools used during the deployment.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public static async Task DeployApplicationAsync(
             string startupProjectPath,
             IList<string> projectPaths,
             string versionName,
             DnxRuntime runtime,
             bool promoteVersion,
             Action<string> callback,
-            AccountAndProjectId accountAndProject)
+            Credentials accountAndProject)
         {
             var appTempPath = GetAppStagingDirectory();
             try
             {
-                await RestoreProjects(projectPaths, runtime, callback);
-                await PrepareAppBundle(startupProjectPath, appTempPath, runtime, callback);
+                await RestoreProjectsAsync(projectPaths, runtime, callback);
+                await PrepareAppBundleAsync(startupProjectPath, appTempPath, runtime, callback);
                 PrepareEntryPoint(startupProjectPath, appTempPath, callback);
                 CopyAppEngineFiles(startupProjectPath, appTempPath, runtime, callback);
-                await DeployToAppEngine(appTempPath, versionName, promoteVersion, callback, accountAndProject);
+                await DeployToAppEngineAsync(appTempPath, versionName, promoteVersion, callback, accountAndProject);
             }
             catch (Exception ex)
             {
@@ -116,14 +117,17 @@ namespace GoogleCloudExtension.GCloud
             }
             finally
             {
-                callback($"Performing cleanup.");
+                callback("Performing cleanup.");
                 Directory.Delete(appTempPath, true);
             }
         }
 
         private static void CopyAppEngineFiles(string projectPath, string appTempPath, DnxRuntime runtime, Action<string> callback)
         {
-            Debug.Assert(runtime == DnxRuntime.Dnx451 || runtime == DnxRuntime.DnxCore50);
+            if (!(runtime == DnxRuntime.Dnx451 || runtime == DnxRuntime.DnxCore50))
+            {
+                throw new ArgumentException("runtime");
+            }
 
             var dockerfileSrc = new FileInfo(Path.Combine(projectPath, DockerfileFilename));
             var dockerfileDest = Path.Combine(appTempPath, DockerfileFilename);
@@ -142,8 +146,8 @@ namespace GoogleCloudExtension.GCloud
                 File.WriteAllText(dockerfileDest, dockerFileContent);
             }
 
-            var appYamlSrc = new FileInfo(Path.Combine(projectPath, AppYamlFilename));
-            var appYamlDest = Path.Combine(appTempPath, AppYamlFilename);
+            var appYamlSrc = new FileInfo(Path.Combine(projectPath, AppYamlFileName));
+            var appYamlDest = Path.Combine(appTempPath, AppYamlFileName);
             if (appYamlSrc.Exists)
             {
                 // Copy the source file.
@@ -171,13 +175,10 @@ namespace GoogleCloudExtension.GCloud
             var projectName = Path.GetFileNameWithoutExtension(startupProjectPath);
             var entryPointContent = String.Format(EntryPointTemplate, projectName);
 
-            // Because the file is going to be executed inside of the Docker container it needs to have
-            // Unix line termination, not Windows. Therefore we save the string as is without going through
-            // the text conversion layer, the \n will remain as is and not converted to \r\n.
-            File.WriteAllBytes(entryPointPath, Encoding.UTF8.GetBytes(entryPointContent));
+            File.WriteAllText(entryPointPath, entryPointContent);
         }
 
-        private static async Task RestoreProjects(
+        private static async Task RestoreProjectsAsync(
            IList<string> projectPaths,
            DnxRuntime runtime,
            Action<string> callback)
@@ -191,7 +192,7 @@ namespace GoogleCloudExtension.GCloud
         {
             var result = new Dictionary<string, string>();
             var webTools = DnxEnvironment.GetWebToolsPath();
-            var dnxPath = DnxEnvironment.GetDNXPathForRuntime(runtime);
+            var dnxPath = DnxEnvironment.GetDnxPathForRuntime(runtime);
             var newPath = Environment.ExpandEnvironmentVariables($"{webTools};{dnxPath};%PATH%");
             result["PATH"] = newPath;
             return result;
@@ -205,7 +206,7 @@ namespace GoogleCloudExtension.GCloud
             var environment = GetDnxEnvironmentForRuntime(runtime);
             var command = $"/c dnu restore \"{projectPath}\"";
             callback($"Restoring project: {projectPath}");
-            // This has hard dependency on dnu bing a batch file.
+            // This has hard dependency on dnu being a batch file.
             var result = await ProcessUtils.RunCommandAsync("cmd.exe", command, (s, e) => callback(e.Line), environment);
             if (!result)
             {
@@ -213,7 +214,7 @@ namespace GoogleCloudExtension.GCloud
             }
         }
 
-        private static async Task PrepareAppBundle(
+        private static async Task PrepareAppBundleAsync(
             string projectPath,
             string appTempPath,
             DnxRuntime runtime,
@@ -238,19 +239,18 @@ namespace GoogleCloudExtension.GCloud
             }
         }
 
-        private static Task DeployToAppEngine(
+        private static Task DeployToAppEngineAsync(
             string appTempPath,
             string versionName,
             bool makeDefaultVersion,
             Action<string> callback,
-            AccountAndProjectId accountAndProject)
+            Credentials accountAndProject)
         {
             var makeDefault = makeDefaultVersion ? "--promote" : "--no-promote";
             var name = String.IsNullOrEmpty(versionName) ? "" : $"--version={versionName}";
-            var appYaml = Path.Combine(appTempPath, AppYamlFilename);
+            var appYaml = Path.Combine(appTempPath, AppYamlFileName);
             string command = $"preview app deploy \"{appYaml}\" {makeDefault} {name} --docker-build=remote --verbosity=info --quiet";
             callback($"Executing command: {command}");
-            // This has a hardcoded dependency on the fact that gcloud is a batch file.
             return GCloudWrapper.Instance.RunCommandAsync(command, callback, accountAndProject);
         }
 

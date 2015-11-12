@@ -6,6 +6,10 @@ using System.Collections.Generic;
 
 namespace GoogleCloudExtension.GCloud.Dnx.Models
 {
+    /// <summary>
+    /// Class used to deserialize project.json, only contains the fields of interest 
+    /// for this library.
+    /// </summary>
     internal class ProjectModel
     {
         [JsonProperty("dependencies")]

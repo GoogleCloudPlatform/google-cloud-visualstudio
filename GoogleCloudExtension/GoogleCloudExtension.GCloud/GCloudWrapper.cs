@@ -1,13 +1,11 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
-using Microsoft.Win32;
+using GoogleCloudExtension.GCloud.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GCloud
@@ -20,19 +18,15 @@ namespace GoogleCloudExtension.GCloud
     /// </summary>
     public sealed class GCloudWrapper
     {
-        private AccountAndProjectId _currentAccountAndProject;
-
-        private GCloudWrapper()
-        { }
+        /// <summary>
+        /// Maintains the currently selected account and project for the instance.
+        /// </summary>
+        private Credentials _currentAccountAndProject;
 
         /// <summary>
-        /// Lazily creates the singleton instace for the class.
+        /// Singleton for the class.
         /// </summary>
-        private static readonly GCloudWrapper s_Instance = new GCloudWrapper();
-        public static GCloudWrapper Instance
-        {
-            get { return s_Instance; }
-        }
+        public static GCloudWrapper Instance { get; } = new GCloudWrapper();
 
         /// <summary>
         /// This event is raised whenever the current account or project has changed;
@@ -41,9 +35,15 @@ namespace GoogleCloudExtension.GCloud
         /// </summary>
         public event EventHandler AccountOrProjectChanged;
 
+        /// <summary>
+        /// Private to enforce the singleton.
+        /// </summary>
+        private GCloudWrapper()
+        { }
+
         private void RaiseAccountOrProjectChanged()
         {
-            AccountOrProjectChanged?.Invoke(null, EventArgs.Empty);
+            AccountOrProjectChanged?.Invoke(this, EventArgs.Empty);
         }
 
         /// <summary>
@@ -52,14 +52,14 @@ namespace GoogleCloudExtension.GCloud
         /// hidden from the caller.
         /// </summary>
         /// <returns>The current AccountAndProjectId.</returns>
-        public async Task<AccountAndProjectId> GetCurrentAccountAndProjectAsync()
+        public async Task<Credentials> GetCurrentAccountAndProjectAsync()
         {
             if (_currentAccountAndProject == null)
             {
                 // Fetching the current account and project, for gcloud, does not need to use the current
                 // account.
                 var settings = await GetJsonOutputAsync<Settings>("config list", accountAndProject: null);
-                _currentAccountAndProject = new AccountAndProjectId(
+                _currentAccountAndProject = new Credentials(
                     account: settings.CoreSettings.Account,
                     projectId: settings.CoreSettings.Project);
             }
@@ -71,7 +71,7 @@ namespace GoogleCloudExtension.GCloud
         /// affect what gcloud thinks is the current account and project.
         /// </summary>
         /// <param name="accountAndProject">The new accountAndProject to use</param>
-        public void UpdateUserAndProject(AccountAndProjectId accountAndProject)
+        public void UpdateUserAndProject(Credentials accountAndProject)
         {
             _currentAccountAndProject = accountAndProject;
             RaiseAccountOrProjectChanged();
@@ -79,22 +79,17 @@ namespace GoogleCloudExtension.GCloud
 
         public void UpdateProject(string projectId)
         {
-            var newAccountAndProject = new AccountAndProjectId(_currentAccountAndProject.Account, projectId);
+            var newAccountAndProject = new Credentials(_currentAccountAndProject.Account, projectId);
             UpdateUserAndProject(newAccountAndProject);
         }
 
-        private static Dictionary<string, string> s_GCloudEnvironment;
-
         private static Dictionary<string, string> GetGCloudEnvironment()
         {
-            if (s_GCloudEnvironment == null)
-            {
-                s_GCloudEnvironment = new Dictionary<string, string>();
-                var gcloudPath = GetGCloudPath();
-                var newPath = Environment.ExpandEnvironmentVariables($"{gcloudPath};%PATH%");
-                s_GCloudEnvironment["PATH"] = newPath;
-            }
-            return s_GCloudEnvironment;
+            var result = new Dictionary<string, string>();
+            var gcloudPath = GetGCloudPath();
+            var newPath = Environment.ExpandEnvironmentVariables($"{gcloudPath};%PATH%");
+            result["PATH"] = newPath;
+            return result;
         }
 
         // TODO(ivann): Possibly use MSI APIs to find the location where gcloud was installed instead
@@ -116,7 +111,7 @@ namespace GoogleCloudExtension.GCloud
             return Path.Combine(programFiles, @"Google\Cloud SDK\GOOGLE~1\bin");
         }
 
-        private string FormatAccountAndProjectParameters(AccountAndProjectId accountAndProject)
+        private string FormatAccountAndProjectParameters(Credentials accountAndProject)
         {
             if (accountAndProject == null)
             {
@@ -127,14 +122,14 @@ namespace GoogleCloudExtension.GCloud
             return $"{projectParam} {accountParam}";
         }
 
-        private string FormatCommand(string command, AccountAndProjectId accountAndProject, bool useJson)
+        private string FormatCommand(string command, Credentials accountAndProject, bool useJson)
         {
             var accountAndProjectParams = FormatAccountAndProjectParameters(accountAndProject);
             var jsonFormatParam = useJson ? "--format=json" : "";
             return $"/c gcloud {jsonFormatParam} {accountAndProjectParams} {command}";
         }
 
-        public async Task RunCommandAsync(string command, Action<string> callback, AccountAndProjectId accountAndProject)
+        public async Task RunCommandAsync(string command, Action<string> callback, Credentials accountAndProject)
         {
             var actualCommand = FormatCommand(command, accountAndProject, useJson: false);
             Debug.WriteLine($"Executing gcloud command: {actualCommand}");
@@ -150,7 +145,7 @@ namespace GoogleCloudExtension.GCloud
             await RunCommandAsync(command, callback, await GetCurrentAccountAndProjectAsync());
         }
 
-        public async Task<string> GetCommandOutputAsync(string command, AccountAndProjectId accountAndProject)
+        public async Task<string> GetCommandOutputAsync(string command, Credentials accountAndProject)
         {
             var actualCommand = FormatCommand(command, accountAndProject, useJson: false);
             Debug.WriteLine($"Executing gcloud command: {actualCommand}");
@@ -167,7 +162,7 @@ namespace GoogleCloudExtension.GCloud
             return await GetCommandOutputAsync(command, await GetCurrentAccountAndProjectAsync());
         }
 
-        public async Task<T> GetJsonOutputAsync<T>(string command, AccountAndProjectId accountAndProject)
+        public async Task<T> GetJsonOutputAsync<T>(string command, Credentials accountAndProject)
         {
             var actualCommand = FormatCommand(command, accountAndProject, useJson: true);
             try
@@ -196,10 +191,10 @@ namespace GoogleCloudExtension.GCloud
         }
 
         /// <summary>
-        /// Returns the list of accounts registered with gcloud.
+        /// Returns the accounts registered with gcloud.
         /// </summary>
-        /// <returns>List of accounts.</returns>
-        public async Task<IList<string>> GetAccountListAsync()
+        /// <returns>The accounts.</returns>
+        public async Task<IEnumerable<string>> GetAccountsAsync()
         {
             // Getting the list of accounts needs to not filter down by the current account
             // being used or nothing will be shown, so we don't need to use the current account.
@@ -211,14 +206,14 @@ namespace GoogleCloudExtension.GCloud
         /// Returns the list of projects accessible by the current account.
         /// </summary>
         /// <returns>List of projects.</returns>
-        public Task<IList<GcpProject>> GetProjectsAsync()
+        public Task<IList<CloudProject>> GetProjectsAsync()
         {
-            return GetJsonOutputAsync<IList<GcpProject>>("alpha projects list");
+            return GetJsonOutputAsync<IList<CloudProject>>("alpha projects list");
         }
 
-        public async Task<IList<GcpProject>> GetProjectsAsync(AccountAndProjectId accountAndProject)
+        public async Task<IList<CloudProject>> GetProjectsAsync(Credentials accountAndProject)
         {
-            return await GetJsonOutputAsync<IList<GcpProject>>("alpha projects list", accountAndProject);
+            return await GetJsonOutputAsync<IList<CloudProject>>("alpha projects list", accountAndProject);
         }
 
         public bool ValidateGCloudInstallation()
