@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.Utils
         /// that all properties in the object changed.</param>
         protected void RaisePropertyChanged(string propertyName)
         {
-            PropertyChanged?.Invoke(null, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }
