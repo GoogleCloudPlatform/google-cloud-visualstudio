@@ -22,9 +22,9 @@ namespace GoogleCloudExtension.GCloud.Dnx
         /// </summary>
         private const string ProjectJsonFileName = "project.json";
 
-        private Lazy<DnxRuntime> _runtime;
-        private Lazy<ProjectModel> _parsedProject;
-        private Lazy<IEnumerable<DnxRuntime>> _supportedRuntimes;
+        private readonly Lazy<DnxRuntime> _runtime;
+        private readonly Lazy<ProjectModel> _parsedProject;
+        private readonly Lazy<IEnumerable<DnxRuntime>> _supportedRuntimes;
 
         public string Root { get; private set; }
 
@@ -67,7 +67,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
         /// This list contains the supported runtimes in order of preference, do not change
         /// the order or it will affect the selection process for the images.
         /// </summary>
-        private static IList<DnxRuntimeInfo> s_PreferredRuntimes = new List<DnxRuntimeInfo>
+        private static readonly IList<DnxRuntimeInfo> s_PreferredRuntimes = new List<DnxRuntimeInfo>
         {
             DnxRuntimeInfo.GetRuntimeInfo(DnxRuntime.DnxCore50),
             DnxRuntimeInfo.GetRuntimeInfo(DnxRuntime.Dnx451)
