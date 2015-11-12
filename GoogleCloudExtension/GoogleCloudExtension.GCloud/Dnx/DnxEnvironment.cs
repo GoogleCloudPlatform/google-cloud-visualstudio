@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
 
         private const string InstallDirValue = "InstallDir";
 
-        private static Lazy<string> VSInstallPath = new Lazy<string>(CalculateVSInstallPath);
+        private static readonly Lazy<string> s_VSInstallPath = new Lazy<string>(CalculateVSInstallPath);
 
         /// <summary>
         /// Determines the path to the given DNX runtime.
@@ -74,7 +74,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
 
         public static string GetWebToolsPath()
         {
-            return Path.Combine(VSInstallPath.Value, WebToolsRelativePath);
+            return Path.Combine(s_VSInstallPath.Value, WebToolsRelativePath);
         }
 
         public static bool ValidateDnxInstallationForRuntime(DnxRuntime runtime)

@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
             displayName: "",
             frameworkName: "",
             imageName: "");
-        
+
         public DnxRuntime Runtime { get; }
 
         public string DisplayName { get; }
@@ -67,7 +67,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
             FrameworkName = frameworkName;
             ImageName = imageName;
         }
-       
+
         public static DnxRuntimeInfo GetRuntimeInfo(DnxRuntime runtime)
         {
             return s_KnownRuntimeInfos.FirstOrDefault(x => x.Runtime == runtime) ?? s_UnknownRuntimeInfo;

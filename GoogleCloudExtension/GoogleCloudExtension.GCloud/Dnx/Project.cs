@@ -67,7 +67,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
         /// This list contains the supported runtimes in order of preference, do not change
         /// the order or it will affect the selection process for the images.
         /// </summary>
-        static IList<DnxRuntimeInfo> s_PreferredRuntimes = new List<DnxRuntimeInfo>
+        private static IList<DnxRuntimeInfo> s_PreferredRuntimes = new List<DnxRuntimeInfo>
         {
             DnxRuntimeInfo.GetRuntimeInfo(DnxRuntime.DnxCore50),
             DnxRuntimeInfo.GetRuntimeInfo(DnxRuntime.Dnx451)
