@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.Utils
                 return (bool)value ? Visibility.Visible : Visibility.Collapsed;
             }
             Debug.WriteLine($"Value should be a boolean: {value}");
-            return value;
+            return DependencyProperty.UnsetValue;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

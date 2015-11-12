@@ -11,7 +11,7 @@ namespace GoogleCloudExtension.Utils
 
     /// <summary>
     /// Implements the ICommand interface but keeping a weak reference back to the object
-    /// that actually impelemnts the command via a delegate, useful to avoid leaks of ViewModels.
+    /// that actually implements the command via a delegate, useful to avoid leaks of ViewModels.
     /// </summary>
     public class WeakCommand : ICommand
     {

@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Raises the changed event for the given property name, useful when invalidating properties.
         /// </summary>
-        /// <param name="propertyName">The name of the proeprty that is changing. If null then the event will signify
+        /// <param name="propertyName">The name of the property that is changing. If null then the event will signify
         /// that all properties in the object changed.</param>
         protected void RaisePropertyChanged(string propertyName)
         {

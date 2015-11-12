@@ -15,7 +15,7 @@
     <UserControl.Resources>
         <utils:VisibilityConverter x:Key="visibilityConverter" />
 
-        <utils:BooleanConverter x:Key="AppIsDefaultConverter" IfTrue="(Default)" IfFalse="" />
+        <utils:BooleanConverter x:Key="AppIsDefaultConverter" TrueValue="(Default)" FalseValue="" />
     </UserControl.Resources>
     
     <Grid>
