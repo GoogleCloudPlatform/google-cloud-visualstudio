@@ -51,7 +51,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppEngineClient.cs" />
-    <Compile Include="Dnx\Models\SdkModel.cs" />
     <Compile Include="Models\AppEngineApplication.cs" />
     <Compile Include="ComputeEngineClient.cs" />
     <Compile Include="Models\ComputeInstance.cs" />

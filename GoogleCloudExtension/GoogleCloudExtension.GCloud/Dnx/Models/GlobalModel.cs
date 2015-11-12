@@ -14,8 +14,5 @@ namespace GoogleCloudExtension.GCloud.Dnx.Models
     {
         [JsonProperty("projects")]
         public List<string> Projects { get; set; }
-
-        [JsonProperty("sdk")]
-        public SdkModel Sdk { get; set; }
     }
 }
