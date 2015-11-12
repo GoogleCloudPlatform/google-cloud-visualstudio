@@ -5,7 +5,6 @@ using GoogleCloudExtension.GCloud.Dnx.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
