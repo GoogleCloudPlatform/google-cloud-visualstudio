@@ -13,6 +13,10 @@ using System.IO;
 
 namespace GoogleCloudExtension.Projects
 {
+    /// <summary>
+    /// This class wraps the visual studio solution and provices methods to interact
+    /// with the DNX project system underneath.
+    /// </summary>
     internal class SolutionHelper
     {
         private readonly Solution _solution;
@@ -24,25 +28,13 @@ namespace GoogleCloudExtension.Projects
             _dnxSolution = new GCloud.Dnx.Solution(solution.FullName);
         }
 
-        public static SolutionHelper CurrentSolution
-        {
-            get
-            {
-                return GetCurrentSolution();
-            }
-        }
+        public static SolutionHelper CurrentSolution => GetCurrentSolution();
 
         public GCloud.Dnx.Project StartupProject => GetStartupProject();
 
         public IList<GCloud.Dnx.Project> Projects => _dnxSolution.GetProjects();
 
-        private SolutionBuild2 SolutionBuild
-        {
-            get
-            {
-                return _solution.SolutionBuild as SolutionBuild2;
-            }
-        }
+        private SolutionBuild2 SolutionBuild => _solution.SolutionBuild as SolutionBuild2;
 
         private static SolutionHelper GetCurrentSolution()
         {

@@ -9,18 +9,24 @@ using System.Linq;
 
 namespace GoogleCloudExtension.UserAndProjectList
 {
+    /// <summary>
+    /// This class is the view model for the user and project list window.
+    /// </summary>
     public class UserAndProjectListViewModel : Model
     {
-        public bool IsGCloudInstalled
-        {
-            get { return GCloudWrapper.Instance.ValidateGCloudInstallation(); }
-        }
+        /// <summary>
+        /// Helper property that determines if GCloud is installed.
+        /// </summary>
+        public bool IsGCloudInstalled => GCloudWrapper.Instance.ValidateGCloudInstallation();
 
-        public bool IsGCloudNotInstalled
-        {
-            get { return !this.IsGCloudInstalled; }
-        }
+        /// <summary>
+        /// Helper property that negates the previous one, needed to simplify UI bindings.
+        /// </summary>
+        public bool IsGCloudNotInstalled => !IsGCloudInstalled;
 
+        /// <summary>
+        /// The list of cloud projects available to the selected user.
+        /// </summary>
         private IList<CloudProject> _Projects;
         public IList<CloudProject> Projects
         {
@@ -28,6 +34,10 @@ namespace GoogleCloudExtension.UserAndProjectList
             private set { SetValueAndRaise(ref _Projects, value); }
         }
 
+        /// <summary>
+        /// The selected cloud project, setting this property changes the current project for the
+        /// extension as a whole.
+        /// </summary>
         private CloudProject _CurrentProject;
         public CloudProject CurrentProject
         {
@@ -39,6 +49,67 @@ namespace GoogleCloudExtension.UserAndProjectList
             }
         }
 
+        /// <summary>
+        /// The list of registered accounts with GCloud.
+        /// </summary>
+        private IEnumerable<string> _Accounts;
+        public IEnumerable<string> Accounts
+        {
+            get { return _Accounts; }
+            set { SetValueAndRaise(ref _Accounts, value); }
+        }
+
+        /// <summary>
+        /// The selected account, setting this property changes the current account for the extension.
+        /// </summary>
+        private string _CurrentAccount;
+        public string CurrentAccount
+        {
+            get { return _CurrentAccount; }
+            set
+            {
+                SetValueAndRaise(ref _CurrentAccount, value);
+                UpdateCurrentAccount(value);
+            }
+        }
+
+        /// <summary>
+        /// Whether the view model is loading projects.
+        /// </summary>
+        private bool _LoadingProjects;
+        private bool LoadingProjects
+        {
+            get { return _LoadingProjects; }
+            set
+            {
+                _LoadingProjects = value;
+                RaisePropertyChanged(nameof(Loading));
+            }
+        }
+
+        /// <summary>
+        /// Whether the view model is loading accounts.
+        /// </summary>
+        private bool _LoadingAccounts;
+        internal bool LoadingAccounts
+        {
+            get { return _LoadingAccounts; }
+            set
+            {
+                _LoadingAccounts = value;
+                RaisePropertyChanged(nameof(Loading));
+            }
+        }
+
+        /// <summary>
+        /// Combination of both properties, used in UI bindings.
+        /// </summary>
+        public bool Loading => LoadingProjects || LoadingAccounts; 
+
+        /// <summary>
+        /// Updates the current project if it has changed.
+        /// </summary>
+        /// <param name="newProject"></param>
         private async void UpdateCurrentProject(CloudProject newProject)
         {
             try
@@ -65,24 +136,10 @@ namespace GoogleCloudExtension.UserAndProjectList
             }
         }
 
-        private IEnumerable<string> _Accounts;
-        public IEnumerable<string> Accounts
-        {
-            get { return _Accounts; }
-            set { SetValueAndRaise(ref _Accounts, value); }
-        }
-
-        private string _CurrentAccount;
-        public string CurrentAccount
-        {
-            get { return _CurrentAccount; }
-            set
-            {
-                SetValueAndRaise(ref _CurrentAccount, value);
-                UpdateCurrentAccount(value);
-            }
-        }
-
+        /// <summary>
+        /// Updates the current account if it has changed.
+        /// </summary>
+        /// <param name="value"></param>
         private async void UpdateCurrentAccount(string value)
         {
             if (value == null)
@@ -132,31 +189,6 @@ namespace GoogleCloudExtension.UserAndProjectList
             }
         }
 
-        private bool _LoadingProjects;
-        private bool LoadingProjects
-        {
-            get { return _LoadingProjects; }
-            set
-            {
-                _LoadingProjects = value;
-                RaisePropertyChanged(nameof(Loading));
-            }
-        }
 
-        private bool _LoadingAccounts;
-        internal bool LoadingAccounts
-        {
-            get { return _LoadingAccounts; }
-            set
-            {
-                _LoadingAccounts = value;
-                RaisePropertyChanged(nameof(Loading));
-            }
-        }
-
-        public bool Loading
-        {
-            get { return LoadingProjects || LoadingAccounts; }
-        }
     }
 }
