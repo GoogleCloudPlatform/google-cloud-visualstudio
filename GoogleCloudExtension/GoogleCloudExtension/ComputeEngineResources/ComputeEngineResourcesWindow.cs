@@ -33,7 +33,7 @@ namespace GoogleCloudExtension.ComputeEngineResources
             this.Content = content;
 
             // Load the model asynchronously.
-            model.LoadComputeInstancesList();
+            model.LoadComputeInstancesListAsync();
         }
     }
 }

@@ -17,11 +17,14 @@ namespace GoogleCloudExtension.AppEngineApps
     /// </summary>
     internal class AppEngineAppsToolViewModel : ViewModelBase
     {
-        private IList<AppEngineApplication> _Apps;
-        public IList<AppEngineApplication> Apps
+        /// <summary>
+        /// The list of module and version combinations for the current project.
+        /// </summary>
+        private IList<ModuleAndVersion> _Apps;
+        public IList<ModuleAndVersion> Apps
         {
             get { return _Apps; }
-            set
+            private set
             {
                 SetValueAndRaise(ref _Apps, value);
                 RaisePropertyChanged(nameof(HaveApps));
@@ -29,8 +32,11 @@ namespace GoogleCloudExtension.AppEngineApps
             }
         }
 
-        private AppEngineApplication _CurrentApp;
-        public AppEngineApplication CurrentApp
+        /// <summary>
+        /// The selected version.
+        /// </summary>
+        private ModuleAndVersion _CurrentApp;
+        public ModuleAndVersion CurrentApp
         {
             get { return _CurrentApp; }
             set
@@ -44,54 +50,57 @@ namespace GoogleCloudExtension.AppEngineApps
             }
         }
 
-        private ICommand _OpenAppCommand;
-        public ICommand OpenAppCommand
-        {
-            get { return _OpenAppCommand; }
-            set { SetValueAndRaise(ref _OpenAppCommand, value); }
-        }
+        /// <summary>
+        /// The command to invoke to open a browser on the selected app.
+        /// </summary>
+        public ICommand OpenAppCommand { get; private set; }
 
-        private ICommand _DeleteVersionCommand;
-        public ICommand DeleteVersionCommand
-        {
-            get { return _DeleteVersionCommand; }
-            set { SetValueAndRaise(ref _DeleteVersionCommand, value); }
-        }
+        /// <summary>
+        /// The command to invoke to delete the selected version.
+        /// </summary>
+        public ICommand DeleteVersionCommand { get; private set; }
 
-        private ICommand _SetDefaultVersionCommand;
-        public ICommand SetDefaultVersionCommand
-        {
-            get { return _SetDefaultVersionCommand; }
-            set { SetValueAndRaise(ref _SetDefaultVersionCommand, value); }
-        }
+        /// <summary>
+        /// The command to invoke to set the selected version as the default version.
+        /// </summary>
+        public ICommand SetDefaultVersionCommand { get; private set; }
+        
+        /// <summary>
+        /// The command to invoke to refresh the list of modules and versions.
+        /// </summary>
+        public ICommand RefreshCommand { get; private set; }
 
-        private ICommand _RefreshCommand;
-        public ICommand RefreshCommand
-        {
-            get { return _RefreshCommand; }
-            set { SetValueAndRaise(ref _RefreshCommand, value); }
-        }
-
-        private bool _OpenAppEnabled = true;
+        /// <summary>
+        ///  Whether the open app command is enabled.
+        /// </summary>
+        private bool _OpenAppEnabled;
         public bool OpenAppEnabled
         {
             get { return _OpenAppEnabled; }
             set { SetValueAndRaise(ref _OpenAppEnabled, value); }
         }
 
-        private bool _SetDefaultVersionEnabled = true;
+        /// <summary>
+        /// Wether the set default version command is enabled.
+        /// </summary>
+        private bool _SetDefaultVersionEnabled;
         public bool SetDefaultVersionEnabled
         {
             get { return _SetDefaultVersionEnabled; }
             set { SetValueAndRaise(ref _SetDefaultVersionEnabled, value); }
         }
 
+        /// <summary>
+        /// The title to use for the open app button.
+        /// </summary>
         private string _OpenAppButtonTitle = "Open App";
         public string OpenAppButtonTitle
         {
             get { return _OpenAppButtonTitle; }
-            set { SetValueAndRaise(ref _OpenAppButtonTitle, value); }
+            private set { SetValueAndRaise(ref _OpenAppButtonTitle, value); }
         }
+
+        public bool HaveApps => Apps?.Count != 0;
 
         public AppEngineAppsToolViewModel()
         {
@@ -107,9 +116,7 @@ namespace GoogleCloudExtension.AppEngineApps
             GCloudWrapper.Instance.AccountOrProjectChanged += handler.OnEvent;
         }
 
-        public bool HaveApps => Apps != null && Apps.Count != 0;
-
-        public async void LoadAppEngineAppList()
+        public async void LoadAppEngineAppListAsync()
         {
             if (!GCloudWrapper.Instance.ValidateGCloudInstallation())
             {
@@ -121,7 +128,7 @@ namespace GoogleCloudExtension.AppEngineApps
             {
                 this.LoadingMessage = "Loading AppEngine app list...";
                 this.Loading = true;
-                this.Apps = new List<AppEngineApplication>();
+                this.Apps = new List<ModuleAndVersion>();
                 this.Apps = await AppEngineClient.GetAppEngineAppListAsync();
             }
             catch (GCloudException ex)
@@ -138,7 +145,7 @@ namespace GoogleCloudExtension.AppEngineApps
 
         private async void OnOpenApp(object parameter)
         {
-            var app = (AppEngineApplication)parameter;
+            var app = (ModuleAndVersion)parameter;
             if (app == null)
             {
                 return;
@@ -163,7 +170,7 @@ namespace GoogleCloudExtension.AppEngineApps
 
         private async void OnDeleteVersion(object parameter)
         {
-            var app = (AppEngineApplication)parameter;
+            var app = (ModuleAndVersion)parameter;
             if (app == null)
             {
                 return;
@@ -185,12 +192,12 @@ namespace GoogleCloudExtension.AppEngineApps
             {
                 this.Loading = false;
             }
-            LoadAppEngineAppList();
+            LoadAppEngineAppListAsync();
         }
 
         private async void OnSetDefaultVersion(object parameter)
         {
-            var app = (AppEngineApplication)parameter;
+            var app = (ModuleAndVersion)parameter;
             if (app == null)
             {
                 return;
@@ -212,18 +219,18 @@ namespace GoogleCloudExtension.AppEngineApps
             {
                 this.Loading = false;
             }
-            LoadAppEngineAppList();
+            LoadAppEngineAppListAsync();
         }
 
         private void OnRefresh(object param)
         {
-            LoadAppEngineAppList();
+            LoadAppEngineAppListAsync();
         }
 
         private void InvalidateAppEngineAppList(object src, EventArgs args)
         {
             Debug.WriteLine("AppEngine app list invalidated.");
-            LoadAppEngineAppList();
+            LoadAppEngineAppListAsync();
         }
     }
 }

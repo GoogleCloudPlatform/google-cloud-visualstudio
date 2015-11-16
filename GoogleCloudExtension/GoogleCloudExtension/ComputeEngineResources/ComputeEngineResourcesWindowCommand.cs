@@ -55,22 +55,12 @@ namespace GoogleCloudExtension.ComputeEngineResources
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static ComputeEngineResourcesWindowCommand Instance
-        {
-            get;
-            private set;
-        }
+        public static ComputeEngineResourcesWindowCommand Instance { get; private set; }
 
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
-        private IServiceProvider ServiceProvider
-        {
-            get
-            {
-                return _package;
-            }
-        }
+        private IServiceProvider ServiceProvider => _package;
 
         /// <summary>
         /// Initializes the singleton instance of the command.

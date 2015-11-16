@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.DeploymentDialog
             var model = new DeploymentDialogViewModel(this);
             this.Content = new DeploymentDialogContent { DataContext = model };
 
-            model.StartLoadingProjects();
+            model.StartLoadingProjectsAsync();
         }
 
         public DeploymentDialogWindowOptions Options { get; private set; }

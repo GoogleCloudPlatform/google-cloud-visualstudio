@@ -9,7 +9,7 @@ namespace GoogleCloudExtension.GCloud.Models
     /// This class represents the AppEngine application data as output from the GCloud CLI
     /// and it is used to deserialize the JSON output.
     /// </summary>
-    public sealed class AppEngineApplication
+    public sealed class ModuleAndVersion
     {
         [JsonProperty("module")]
         public string Module { get; set; }

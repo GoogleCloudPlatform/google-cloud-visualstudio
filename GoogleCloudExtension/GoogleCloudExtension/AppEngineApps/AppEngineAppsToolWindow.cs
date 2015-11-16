@@ -27,16 +27,12 @@ namespace GoogleCloudExtension.AppEngineApps
         public AppEngineAppsToolWindow() : base(null)
         {
             this.Caption = "Google AppEngine";
-
-            this.Content = new AppEngineAppsToolWindowControl();
-
             var model = new AppEngineAppsToolViewModel();
             var content = new AppEngineAppsToolWindowControl { DataContext = model };
-
             this.Content = content;
 
             // Load the list of apps for the current user and project.
-            model.LoadAppEngineAppList();
+            model.LoadAppEngineAppListAsync();
         }
     }
 }

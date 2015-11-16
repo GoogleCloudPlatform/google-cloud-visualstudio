@@ -12,8 +12,15 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.ComputeEngineResources
 {
+    /// <summary>
+    /// This class is the viemodel for the Compute Engine resources tool window, containing
+    /// the model data for the tool window as well as the controller for the window.
+    /// </summary>
     public class ComputeEngineResourcesViewModel : ViewModelBase
     {
+        /// <summary>
+        /// The list of instances in the current project.
+        /// </summary>
         private IList<ComputeInstance> _Instances;
         public IList<ComputeInstance> Instances
         {
@@ -26,6 +33,9 @@ namespace GoogleCloudExtension.ComputeEngineResources
             }
         }
 
+        /// <summary>
+        /// The currently selected instance.
+        /// </summary>
         private ComputeInstance _CurrentInstance;
         public ComputeInstance CurrentInstance
         {
@@ -38,55 +48,37 @@ namespace GoogleCloudExtension.ComputeEngineResources
             }
         }
 
-        public bool CurrentInstanceIsTerminated
-        {
-            get
-            {
-                if (this.CurrentInstance != null)
-                {
-                    return this.CurrentInstance.Status == "TERMINATED";
-                }
-                return false;
-            }
-        }
+        /// <summary>
+        /// Helper property to determine whether the currently selected instance is in the
+        /// TERMINATED state.
+        /// </summary>
+        public bool CurrentInstanceIsTerminated => CurrentInstance?.Status == "TERMINATED";
 
-        public bool CurrentInstanceIsRunning
-        {
-            get
-            {
-                if (this.CurrentInstance != null)
-                {
-                    return this.CurrentInstance.Status == "RUNNING";
-                }
-                return false;
-            }
-        }
+        /// <summary>
+        /// Herlper property to determine whether the currently selected instance is in the
+        /// RUNNING state.
+        /// </summary>
+        public bool CurrentInstanceIsRunning => CurrentInstance?.Status == "RUNNING";
 
-        private ICommand _RefreshCommand;
-        public ICommand RefreshCommand
-        {
-            get { return _RefreshCommand; }
-            set { SetValueAndRaise(ref _RefreshCommand, value); }
-        }
+        /// <summary>
+        /// The command to execute to referesh the list of instances.
+        /// </summary>
+        public ICommand RefreshCommand { get; private set; }
 
-        private ICommand _StartCommand;
-        public ICommand StartCommand
-        {
-            get { return _StartCommand; }
-            set { SetValueAndRaise(ref _StartCommand, value); }
-        }
+        /// <summary>
+        /// The command to execute to start the current instance.
+        /// </summary>
+        public ICommand StartCommand { get; private set; }
 
-        private ICommand _StopCommand;
-        public ICommand StopCommand
-        {
-            get { return _StopCommand; }
-            set { SetValueAndRaise(ref _StopCommand, value); }
-        }
+        /// <summary>
+        /// The command to execute to stop the current instance.
+        /// </summary>
+        public ICommand StopCommand { get; private set; }
 
-        public bool HaveInstances
-        {
-            get { return this.Instances != null && this.Instances.Count != 0; }
-        }
+        /// <summary>
+        /// Whether there are instances or not in the list.
+        /// </summary>
+        public bool HaveInstances => Instances?.Count != 0;
 
         public ComputeEngineResourcesViewModel()
         {
@@ -98,7 +90,7 @@ namespace GoogleCloudExtension.ComputeEngineResources
             GCloudWrapper.Instance.AccountOrProjectChanged += handler.OnEvent;
         }
 
-        public async void LoadComputeInstancesList()
+        public async void LoadComputeInstancesListAsync()
         {
             if (!GCloudWrapper.Instance.ValidateGCloudInstallation())
             {
@@ -128,12 +120,12 @@ namespace GoogleCloudExtension.ComputeEngineResources
         private void InvalidateInstancesListAsync(object sender, EventArgs args)
         {
             Debug.WriteLine("Invalidating GCE list.");
-            LoadComputeInstancesList();
+            LoadComputeInstancesListAsync();
         }
 
         private void OnRefresh(object param)
         {
-            LoadComputeInstancesList();
+            LoadComputeInstancesListAsync();
         }
 
         private async void OnStartInstance(object param)
@@ -166,7 +158,7 @@ namespace GoogleCloudExtension.ComputeEngineResources
             {
                 this.Loading = false;
             }
-            LoadComputeInstancesList();
+            LoadComputeInstancesListAsync();
         }
 
         private async void OnStopInstance(object param)
@@ -200,7 +192,7 @@ namespace GoogleCloudExtension.ComputeEngineResources
             {
                 this.Loading = false;
             }
-            LoadComputeInstancesList();
+            LoadComputeInstancesListAsync();
         }
     }
 }

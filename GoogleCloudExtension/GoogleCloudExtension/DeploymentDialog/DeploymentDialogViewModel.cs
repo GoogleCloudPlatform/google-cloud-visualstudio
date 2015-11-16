@@ -12,8 +12,21 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.DeploymentDialog
 {
+    /// <summary>
+    /// This class is the view model for the deployment dialog.
+    /// </summary>
     public class DeploymentDialogViewModel : Model
     {
+        private readonly DeploymentDialogWindow _window;
+
+        // Default values to show while loading data.
+        private readonly IList<string> _loadingAccounts = new List<string> { "Loading..." };
+        private readonly IList<CloudProject> _loadingProjects = new List<CloudProject> { new CloudProject { Name = "Loading..." } };
+
+
+        /// <summary>
+        /// The project that will be deployed.
+        /// </summary>
         private string _Project;
         public string Project
         {
@@ -21,6 +34,9 @@ namespace GoogleCloudExtension.DeploymentDialog
             set { SetValueAndRaise(ref _Project, value); }
         }
 
+        /// <summary>
+        /// The list of cloud projects available to deploy the code.
+        /// </summary>
         private IList<CloudProject> _CloudProjects;
         public IList<CloudProject> CloudProjects
         {
@@ -28,6 +44,9 @@ namespace GoogleCloudExtension.DeploymentDialog
             set { SetValueAndRaise(ref _CloudProjects, value); }
         }
 
+        /// <summary>
+        /// The selected cloud project where the code is going to be deployed.
+        /// </summary>
         private CloudProject _SelectedCloudProject;
         public CloudProject SelectedCloudProject
         {
@@ -35,6 +54,9 @@ namespace GoogleCloudExtension.DeploymentDialog
             set { SetValueAndRaise(ref _SelectedCloudProject, value); }
         }
 
+        /// <summary>
+        /// The list of accounts avialabe to use as credentials for the deployment.
+        /// </summary>
         private IEnumerable<string> _Accounts;
         public IEnumerable<string> Accounts
         {
@@ -42,6 +64,9 @@ namespace GoogleCloudExtension.DeploymentDialog
             set { SetValueAndRaise(ref _Accounts, value); }
         }
 
+        /// <summary>
+        /// The selected account for deployment.
+        /// </summary>
         private string _SelectedAccount;
         public string SelectedAccount
         {
@@ -53,6 +78,9 @@ namespace GoogleCloudExtension.DeploymentDialog
             }
         }
 
+        /// <summary>
+        /// The list of supported runtimes by the project being deployed.
+        /// </summary>
         private IList<DnxRuntime> _SupportedRuntimes;
         public IList<DnxRuntime> SupportedRuntimes
         {
@@ -60,6 +88,9 @@ namespace GoogleCloudExtension.DeploymentDialog
             set { SetValueAndRaise(ref _SupportedRuntimes, value); }
         }
 
+        /// <summary>
+        /// The selected runtime to use for the deployment.
+        /// </summary>
         private DnxRuntime _SelectedRuntime;
         public DnxRuntime SelectedRuntime
         {
@@ -67,6 +98,9 @@ namespace GoogleCloudExtension.DeploymentDialog
             set { SetValueAndRaise(ref _SelectedRuntime, value); }
         }
 
+        /// <summary>
+        /// Wether all of the data is loaded and the dialog is ready to be used.
+        /// </summary>
         private bool _Loaded;
         public bool Loaded
         {
@@ -74,6 +108,9 @@ namespace GoogleCloudExtension.DeploymentDialog
             set { SetValueAndRaise(ref _Loaded, value); }
         }
 
+        /// <summary>
+        /// Whether the deployed version is to be made the default version.
+        /// </summary>
         private bool _MakeDefault;
         public bool MakeDefault
         {
@@ -81,6 +118,9 @@ namespace GoogleCloudExtension.DeploymentDialog
             set { SetValueAndRaise(ref _MakeDefault, value); }
         }
 
+        /// <summary>
+        /// The version name to use.
+        /// </summary>
         private string _VersionName;
         public string VersionName
         {
@@ -88,19 +128,15 @@ namespace GoogleCloudExtension.DeploymentDialog
             set { SetValueAndRaise(ref _VersionName, value); }
         }
 
-        private ICommand _DeployCommand;
-        public ICommand DeployCommand
-        {
-            get { return _DeployCommand; }
-            set { SetValueAndRaise(ref _DeployCommand, value); }
-        }
+        /// <summary>
+        /// The command to invoke to start the deployment.
+        /// </summary>
+        public ICommand DeployCommand { get; private set; }
 
-        private ICommand _CancelCommand;
-        public ICommand CancelCommand
-        {
-            get { return _CancelCommand; }
-            set { SetValueAndRaise(ref _CancelCommand, value); }
-        }
+        /// <summary>
+        /// The command to invoke to cancel the deployment dialog and close it.
+        /// </summary>
+        public ICommand CancelCommand { get; private set; }
 
         public DeploymentDialogViewModel(DeploymentDialogWindow window)
         {
@@ -112,12 +148,8 @@ namespace GoogleCloudExtension.DeploymentDialog
             _window = window;
         }
 
-        private readonly DeploymentDialogWindow _window;
 
-        private readonly IList<string> _loadingAccounts = new List<string> { "Loading..." };
-        private readonly IList<CloudProject> _loadingProjects = new List<CloudProject> { new CloudProject { Name = "Loading..." } };
-
-        public async void StartLoadingProjects()
+        public async void StartLoadingProjectsAsync()
         {
             Debug.WriteLine("Loading projects...");
 

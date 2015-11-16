@@ -54,9 +54,9 @@ namespace GoogleCloudExtension.GCloud
         /// Returns the list of AppEngine apps for the current user.
         /// </summary>
         /// <returns>The list of AppEngine apps.</returns>
-        public static async Task<IList<AppEngineApplication>> GetAppEngineAppListAsync()
+        public static async Task<IList<ModuleAndVersion>> GetAppEngineAppListAsync()
         {
-            var result = await GCloudWrapper.Instance.GetJsonOutputAsync<IList<AppEngineApplication>>("preview app modules list");
+            var result = await GCloudWrapper.Instance.GetJsonOutputAsync<IList<ModuleAndVersion>>("preview app modules list");
             return result.Where(x => !x.Version.StartsWith(BuiltinServiceVersionPrefix)).ToList();
         }
 
