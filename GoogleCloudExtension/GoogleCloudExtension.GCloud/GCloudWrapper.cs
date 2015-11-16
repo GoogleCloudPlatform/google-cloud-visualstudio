@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GCloud
@@ -83,32 +84,19 @@ namespace GoogleCloudExtension.GCloud
             UpdateUserAndProject(newAccountAndProject);
         }
 
-        private static Dictionary<string, string> GetGCloudEnvironment()
-        {
-            var result = new Dictionary<string, string>();
-            var gcloudPath = GetGCloudPath();
-            var newPath = Environment.ExpandEnvironmentVariables($"{gcloudPath};%PATH%");
-            result["PATH"] = newPath;
-            return result;
-        }
-
-        // TODO(ivann): Possibly use MSI APIs to find the location where gcloud was installed instead
-        // of hardcoding it to program files.
-        // If the user installs it by hand then we need to have a registry key, or environment variable, where
-        // the user can override this location.
+        /// <summary>
+        /// Finds the location of gcloud.cmd by following all of the directories in the PATH environment
+        /// variable until it finds it. With this we assume that in order to run the extension gcloud.cmd is
+        /// in the PATH.
+        /// </summary>
+        /// <returns></returns>
         private static string GetGCloudPath()
         {
-            var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
-
-            // This is where the binaries are supposed to be stored.
-            string result = Path.Combine(programFiles, @"Google\Cloud SDK\google-cloud-sdk\bin");
-            if (Directory.Exists(result))
-            {
-                return result;
-            }
-
-            // There's a bug in gcloud setup and it might be stored in this directory.
-            return Path.Combine(programFiles, @"Google\Cloud SDK\GOOGLE~1\bin");
+            return Environment.GetEnvironmentVariable("PATH")
+                .Split(';')
+                .Select(x => Path.Combine(x, "gcloud.cmd"))
+                .Where(x => File.Exists(x))
+                .FirstOrDefault();
         }
 
         private string FormatAccountAndProjectParameters(Credentials accountAndProject)
@@ -133,7 +121,7 @@ namespace GoogleCloudExtension.GCloud
         {
             var actualCommand = FormatCommand(command, accountAndProject, useJson: false);
             Debug.WriteLine($"Executing gcloud command: {actualCommand}");
-            var result = await ProcessUtils.RunCommandAsync("cmd.exe", actualCommand, (s, e) => callback(e.Line), GetGCloudEnvironment());
+            var result = await ProcessUtils.RunCommandAsync("cmd.exe", actualCommand, (s, e) => callback(e.Line), null);
             if (!result)
             {
                 throw new GCloudException($"Failed to execute: {actualCommand}");
@@ -149,7 +137,7 @@ namespace GoogleCloudExtension.GCloud
         {
             var actualCommand = FormatCommand(command, accountAndProject, useJson: false);
             Debug.WriteLine($"Executing gcloud command: {actualCommand}");
-            var output = await ProcessUtils.GetCommandOutputAsync("cmd.exe", actualCommand, GetGCloudEnvironment());
+            var output = await ProcessUtils.GetCommandOutputAsync("cmd.exe", actualCommand, null);
             if (!output.Succeeded)
             {
                 throw new GCloudException($"Failed with message: {output.Error}");
@@ -168,7 +156,7 @@ namespace GoogleCloudExtension.GCloud
             try
             {
                 Debug.Write($"Executing gcloud command: {actualCommand}");
-                return await ProcessUtils.GetJsonOutputAsync<T>("cmd.exe", actualCommand, GetGCloudEnvironment());
+                return await ProcessUtils.GetJsonOutputAsync<T>("cmd.exe", actualCommand, null);
             }
             catch (JsonOutputException ex)
             {
@@ -219,12 +207,10 @@ namespace GoogleCloudExtension.GCloud
         public bool ValidateGCloudInstallation()
         {
             Debug.WriteLine("Validating GCloud installation.");
-            var gcloudDirectory = GetGCloudPath();
-            var gcloudPath = Path.Combine(gcloudDirectory, "gcloud.cmd");
-
-            var result = File.Exists(gcloudPath);
-            Debug.WriteLineIf(!result, $"GCloud cannot be found, can't find {gcloudPath}");
-            return result;
+            var gcloudPath = GetGCloudPath();
+            Debug.WriteLineIf(gcloudPath == null, "Cannot find gcloud.cmd in the system.");
+            Debug.WriteLineIf(gcloudPath != null, $"Found gcloud.cmd at {gcloudPath}");
+            return gcloudPath != null;
         }
     }
 }
