@@ -90,7 +90,9 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="versionName">The name, if any, of the version to deploy, it empty or null then a default name will be chosen.</param>
         /// <param name="runtime">The target runtime, Mono, CoreClr, etc...</param>
         /// <param name="promoteVersion">Is this version to receive all traffic.</param>
+        /// <param name="preserveOutput">Whether to preserve the result of the publish directory.</param>
         /// <param name="callback">The delegate that will be called with the output from the tools used during the deployment.</param>
+        /// <param name="accountAndProject">The credentials to use.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
         public static async Task DeployApplicationAsync(
             string startupProjectPath,
@@ -98,6 +100,7 @@ namespace GoogleCloudExtension.GCloud
             string versionName,
             DnxRuntime runtime,
             bool promoteVersion,
+            bool preserveOutput,
             Action<string> callback,
             Credentials accountAndProject)
         {
@@ -117,8 +120,15 @@ namespace GoogleCloudExtension.GCloud
             }
             finally
             {
-                callback("Performing cleanup.");
-                Directory.Delete(appTempPath, true);
+                if (preserveOutput)
+                {
+                    callback($"Preserving the published app at {appTempPath}");
+                }
+                else
+                {
+                    callback("Performing cleanup.");
+                    Directory.Delete(appTempPath, true);
+                }
             }
         }
 

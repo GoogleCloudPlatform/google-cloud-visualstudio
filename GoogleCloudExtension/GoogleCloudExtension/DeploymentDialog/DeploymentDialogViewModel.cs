@@ -118,6 +118,16 @@ namespace GoogleCloudExtension.DeploymentDialog
             set { SetValueAndRaise(ref _MakeDefault, value); }
         }
 
+        private bool _preserveOutput;
+        /// <summary>
+        /// Whether the output should be preserved.
+        /// </summary>
+        public bool PreserveOutput
+        {
+            get { return _preserveOutput; }
+            set { SetValueAndRaise(ref _preserveOutput, value); }
+        }
+
         /// <summary>
         /// The version name to use.
         /// </summary>
@@ -195,6 +205,7 @@ namespace GoogleCloudExtension.DeploymentDialog
                    selectedRuntime: SelectedRuntime,
                    versionName: VersionName,
                    makeDefault: MakeDefault,
+                   preserveOutput: PreserveOutput,
                    accountAndProject: new Credentials(account: this.SelectedAccount, projectId: this.SelectedCloudProject.Id));
             _window.Close();
         }

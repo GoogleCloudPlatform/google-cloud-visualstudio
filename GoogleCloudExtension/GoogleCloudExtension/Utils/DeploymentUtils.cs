@@ -17,6 +17,7 @@ namespace GoogleCloudExtension.Utils
             DnxRuntime selectedRuntime,
             string versionName,
             bool makeDefault,
+            bool preserveOutput,
             Credentials accountAndProject)
         {
             try
@@ -39,6 +40,7 @@ namespace GoogleCloudExtension.Utils
                     runtime: selectedRuntime,
                     promoteVersion: makeDefault,
                     callback: AppEngineOutputWindow.OutputLine,
+                    preserveOutput: preserveOutput,
                     accountAndProject: accountAndProject);
                 StatusbarHelper.UnFreeze();
 
