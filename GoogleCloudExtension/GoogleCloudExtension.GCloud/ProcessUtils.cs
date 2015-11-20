@@ -2,6 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -132,6 +133,10 @@ namespace GoogleCloudExtension.GCloud
                     startInfo.EnvironmentVariables[entry.Key] = entry.Value;
                 }
             }
+
+            // Always start the tool in the user's home directory, avoid random directories
+            // coming from Visual Studio.
+            startInfo.WorkingDirectory = Environment.GetEnvironmentVariable("USERPROFILE");
 
             return startInfo;
         }
