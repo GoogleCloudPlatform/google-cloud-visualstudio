@@ -2,10 +2,13 @@
 **/obj/*
 **/bin/*
 *.dll
+*.kproj
 *.kproj.user
+*.xproj
 *.xproj.user
 **/.vs/*
 .dockercfg
 **/project.lock.json
 .DS_Store
-**/packages/*
+
+
