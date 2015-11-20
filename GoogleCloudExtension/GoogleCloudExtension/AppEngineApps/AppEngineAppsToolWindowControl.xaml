@@ -1,0 +1,96 @@
+﻿<UserControl x:Class="GoogleCloudExtension.AppEngineApps.AppEngineAppsToolWindowControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:Models="clr-namespace:GoogleCloudExtension.AppEngineApps"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+             Background="{DynamicResource VsBrush.Window}"
+             Foreground="{DynamicResource VsBrush.WindowText}"
+             mc:Ignorable="d"
+             d:DesignHeight="700" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance {x:Type Models:AppEngineAppsToolViewModel}}"
+             Name="MyToolWindow">
+    
+    <UserControl.Resources>
+        <utils:VisibilityConverter x:Key="visibilityConverter" />
+
+        <utils:BooleanConverter x:Key="AppIsDefaultConverter" TrueValue="(Default)" FalseValue="" />
+    </UserControl.Resources>
+    
+    <Grid>
+        <!-- This layer shows the message when GCloud is not installed. -->
+        <StackPanel VerticalAlignment="Center"
+                    Visibility="{Binding IsGCloudNotInstalled, Converter={StaticResource visibilityConverter}}">
+            <TextBlock HorizontalAlignment="Center" Text="Please install gcloud..." />
+        </StackPanel>
+                
+        <!-- This layer shows the AppEngine apps data. -->
+        <StackPanel Background="{DynamicResource VsBrush.Window}"
+                    Visibility="{Binding IsGCloudInstalled, Converter={StaticResource visibilityConverter}}">
+            <ListBox Height="212"
+                     Margin="10,10,10,0"
+                     SelectedItem="{Binding CurrentApp, Mode=TwoWay}"
+                     ItemsSource="{Binding Apps}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock>
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="Module: {0} Version: {1} {2}">
+                                        <Binding Path="Module" />
+                                        <Binding Path="Version" />
+                                        <Binding Path="IsDefault" Converter="{StaticResource AppIsDefaultConverter}"/>
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <!-- Display the currently selected version. -->
+            <TextBlock TextWrapping="Wrap"
+                       Margin="10,5,10,0"
+                       Text="{Binding CurrentApp.Module, StringFormat='Module: {0}'}"/>
+            <TextBlock TextWrapping="Wrap"
+                       Margin="10,5,10,0"
+                       Text="{Binding CurrentApp.Version, StringFormat='Version: {0}'}"/>
+
+            <!-- Action buttons. -->
+            <Button Content="{Binding OpenAppButtonTitle}"
+                    Margin="10,5,10,0"
+                    Command="{Binding OpenAppCommand}"
+                    CommandParameter="{Binding CurrentApp}"
+                    IsEnabled="{Binding OpenAppEnabled}"/>
+            <Button Content="Delete version"
+                    Margin="10,5,10,0"
+                    Command="{Binding DeleteVersionCommand}"
+                    CommandParameter="{Binding CurrentApp}" 
+                    IsEnabled="{Binding OpenAppEnabled}"/>
+            <Button Content="Set as default version"
+                    Margin="10,5,10,0"
+                    Command="{Binding SetDefaultVersionCommand}"
+                    CommandParameter="{Binding CurrentApp}" 
+                    IsEnabled="{Binding SetDefaultVersionEnabled}"/>
+            <Button Content="Refresh"
+                    Margin="10,5,10,0"
+                    Command="{Binding RefreshCommand}"/>
+        </StackPanel>
+
+        <!-- This layer hides the message. -->
+        <StackPanel Background="{DynamicResource VsBrush.Window}"
+                    Visibility="{Binding Loading, Converter={StaticResource visibilityConverter}}" />
+
+        <!-- This layer shows the loading message. -->
+        <StackPanel VerticalAlignment="Center" 
+                    Visibility="{Binding Loading, Converter={StaticResource visibilityConverter}}">
+            <ProgressBar  
+                         Margin="10" 
+                         IsIndeterminate="True"
+                         Height="27" 
+                         VerticalAlignment="Center"/>
+            <TextBlock Text="{Binding LoadingMessage}" HorizontalAlignment="Center"/>
+        </StackPanel>
+    </Grid>
+</UserControl>
