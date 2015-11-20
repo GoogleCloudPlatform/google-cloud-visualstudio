@@ -3,8 +3,8 @@
 
 using GoogleCloudExtension.AppEngineApps;
 using GoogleCloudExtension.ComputeEngineResources;
-using GoogleCloudExtension.DeployToGae;
-using GoogleCloudExtension.DeployToGaeContextMenu;
+using GoogleCloudExtension.DeployToAppEngine;
+using GoogleCloudExtension.DeployToAppEngineContextMenu;
 using GoogleCloudExtension.UserAndProjectList;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
@@ -49,7 +49,7 @@ namespace GoogleCloudExtension
         public const string PackageGuidString = "3784fd98-7fcc-40fc-be3b-b68334735af2";
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeployToGae"/> class.
+        /// Initializes a new instance of the <see cref="DeployToAppEngine"/> class.
         /// </summary>
         public GoogleCloudExtensionPackage()
         {
@@ -71,9 +71,9 @@ namespace GoogleCloudExtension
 
             AppEngineAppsToolWindowCommand.Initialize(this);
             ComputeEngineResourcesWindowCommand.Initialize(this);
-            DeployToGaeCommand.Initialize(this);
+            DeployToAppEngineCommand.Initialize(this);
             UserAndProjectListWindowCommand.Initialize(this);
-            DeployToGaeContextMenuCommand.Initialize(this);
+            DeployToAppEngineContextMenuCommand.Initialize(this);
         }
 
         #endregion

@@ -36,9 +36,9 @@ namespace GoogleCloudExtension
                 }
                 Statusbar.SetText(text);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Debug.WriteLine("Failed to write to the status bar.");
+                Debug.WriteLine($"Failed to write to the status bar: {ex.Message}");
             }
         }
 
@@ -49,9 +49,9 @@ namespace GoogleCloudExtension
                 object animation = (short)Constants.SBAI_Deploy;
                 Statusbar.Animation(1, ref animation);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Debug.WriteLine("Failed to show animation.");
+                Debug.WriteLine($"Failed to show animation: {ex.Message}");
             }
         }
 
@@ -62,9 +62,9 @@ namespace GoogleCloudExtension
                 object animation = (short)Constants.SBAI_Deploy;
                 Statusbar.Animation(0, ref animation);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                Debug.WriteLine("Failed to hide animation.");
+                Debug.WriteLine($"Failed to hide animation: {ex.Message}");
             }
         }
 
@@ -74,8 +74,10 @@ namespace GoogleCloudExtension
             {
                 Statusbar.FreezeOutput(1);
             }
-            catch (Exception)
-            { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to freeze the status bar output: {ex.Message}");
+            }
         }
 
         public static void UnFreeze()
@@ -84,8 +86,10 @@ namespace GoogleCloudExtension
             {
                 Statusbar.FreezeOutput(0);
             }
-            catch (Exception)
-            { }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to unfreeze the status bar output: {ex.Message}");
+            }
         }
     }
 }

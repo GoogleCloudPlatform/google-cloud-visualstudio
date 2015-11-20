@@ -5,6 +5,7 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace GoogleCloudExtension.UserAndProjectList
@@ -12,8 +13,15 @@ namespace GoogleCloudExtension.UserAndProjectList
     /// <summary>
     /// This class is the view model for the user and project list window.
     /// </summary>
-    public class UserAndProjectListViewModel : Model
+    public class UserAndProjectListViewModel : ViewModelBase
     {
+        private IList<CloudProject> _projects;
+        private CloudProject _currentProject;
+        private IEnumerable<string> _accounts;
+        private string _currentAccount;
+        private bool _loadingProjects;
+        private bool _loadingAccounts;
+
         /// <summary>
         /// Helper property that determines if GCloud is installed.
         /// </summary>
@@ -27,48 +35,44 @@ namespace GoogleCloudExtension.UserAndProjectList
         /// <summary>
         /// The list of cloud projects available to the selected user.
         /// </summary>
-        private IList<CloudProject> _Projects;
         public IList<CloudProject> Projects
         {
-            get { return _Projects; }
-            private set { SetValueAndRaise(ref _Projects, value); }
+            get { return _projects; }
+            private set { SetValueAndRaise(ref _projects, value); }
         }
 
         /// <summary>
         /// The selected cloud project, setting this property changes the current project for the
         /// extension as a whole.
         /// </summary>
-        private CloudProject _CurrentProject;
         public CloudProject CurrentProject
         {
-            get { return _CurrentProject; }
+            get { return _currentProject; }
             set
             {
                 UpdateCurrentProject(value);
-                SetValueAndRaise(ref _CurrentProject, value);
+                SetValueAndRaise(ref _currentProject, value);
             }
         }
 
         /// <summary>
         /// The list of registered accounts with GCloud.
         /// </summary>
-        private IEnumerable<string> _Accounts;
         public IEnumerable<string> Accounts
         {
-            get { return _Accounts; }
-            set { SetValueAndRaise(ref _Accounts, value); }
+            get { return _accounts; }
+            set { SetValueAndRaise(ref _accounts, value); }
         }
 
         /// <summary>
         /// The selected account, setting this property changes the current account for the extension.
         /// </summary>
-        private string _CurrentAccount;
         public string CurrentAccount
         {
-            get { return _CurrentAccount; }
+            get { return _currentAccount; }
             set
             {
-                SetValueAndRaise(ref _CurrentAccount, value);
+                SetValueAndRaise(ref _currentAccount, value);
                 UpdateCurrentAccount(value);
             }
         }
@@ -76,13 +80,12 @@ namespace GoogleCloudExtension.UserAndProjectList
         /// <summary>
         /// Whether the view model is loading projects.
         /// </summary>
-        private bool _LoadingProjects;
-        private bool LoadingProjects
+        public bool LoadingProjects
         {
-            get { return _LoadingProjects; }
+            get { return _loadingProjects; }
             set
             {
-                _LoadingProjects = value;
+                _loadingProjects = value;
                 RaisePropertyChanged(nameof(Loading));
             }
         }
@@ -90,13 +93,12 @@ namespace GoogleCloudExtension.UserAndProjectList
         /// <summary>
         /// Whether the view model is loading accounts.
         /// </summary>
-        private bool _LoadingAccounts;
-        internal bool LoadingAccounts
+        public bool LoadingAccounts
         {
-            get { return _LoadingAccounts; }
+            get { return _loadingAccounts; }
             set
             {
-                _LoadingAccounts = value;
+                _loadingAccounts = value;
                 RaisePropertyChanged(nameof(Loading));
             }
         }
@@ -104,7 +106,38 @@ namespace GoogleCloudExtension.UserAndProjectList
         /// <summary>
         /// Combination of both properties, used in UI bindings.
         /// </summary>
-        public bool Loading => LoadingProjects || LoadingAccounts; 
+        public bool Loading => LoadingProjects || LoadingAccounts;
+
+        /// <summary>
+        /// Loads the list of accounts for the dialog.
+        /// </summary>
+        public async void LoadAccountsAsync()
+        {
+            if (!GCloudWrapper.Instance.ValidateGCloudInstallation())
+            {
+                Debug.WriteLine("GCloud is not installed, disabling the User and Project tool window.");
+                return;
+            }
+
+            try
+            {
+                this.LoadingAccounts = true;
+                var accounts = await GCloudWrapper.Instance.GetAccountsAsync();
+                var currentAccountAndProject = await GCloudWrapper.Instance.GetCurrentAccountAndProjectAsync();
+                this.Accounts = accounts;
+                this.CurrentAccount = currentAccountAndProject.Account;
+            }
+            catch (GCloudException ex)
+            {
+                AppEngineOutputWindow.OutputLine($"Failed to load the current account and project.");
+                AppEngineOutputWindow.OutputLine(ex.Message);
+                AppEngineOutputWindow.Activate();
+            }
+            finally
+            {
+                this.LoadingAccounts = false;
+            }
+        }
 
         /// <summary>
         /// Updates the current project if it has changed.
@@ -168,7 +201,7 @@ namespace GoogleCloudExtension.UserAndProjectList
                         this.LoadingProjects = true;
                         var projects = await GCloudWrapper.Instance.GetProjectsAsync();
                         this.Projects = projects;
-                        var candidateProject = projects?.Where(x => x.Id == currentAccountAndProject.ProjectId).FirstOrDefault();
+                        var candidateProject = projects?.FirstOrDefault(x => x.Id == currentAccountAndProject.ProjectId);
                         if (candidateProject == null)
                         {
                             candidateProject = projects?.FirstOrDefault();

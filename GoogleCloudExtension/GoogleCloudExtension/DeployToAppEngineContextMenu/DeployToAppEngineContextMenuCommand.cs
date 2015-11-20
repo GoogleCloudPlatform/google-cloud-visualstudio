@@ -12,12 +12,12 @@ using System;
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 
-namespace GoogleCloudExtension.DeployToGaeContextMenu
+namespace GoogleCloudExtension.DeployToAppEngineContextMenu
 {
     /// <summary>
-    /// Command handler
+    /// Command handler for the "Deploy to AppEngine" menu item in the project's context menu.
     /// </summary>
-    internal sealed class DeployToGaeContextMenuCommand
+    internal sealed class DeployToAppEngineContextMenuCommand
     {
         /// <summary>
         /// Command ID.
@@ -35,11 +35,11 @@ namespace GoogleCloudExtension.DeployToGaeContextMenu
         private readonly Package _package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeployToGaeContextMenuCommand"/> class.
+        /// Initializes a new instance of the <see cref="DeployToAppEngineContextMenuCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private DeployToGaeContextMenuCommand(Package package)
+        private DeployToAppEngineContextMenuCommand(Package package)
         {
             if (package == null)
             {
@@ -108,7 +108,7 @@ namespace GoogleCloudExtension.DeployToGaeContextMenu
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static DeployToGaeContextMenuCommand Instance { get; private set; }
+        public static DeployToAppEngineContextMenuCommand Instance { get; private set; }
 
         /// <summary>
         /// Gets the service provider from the owner package.
@@ -121,7 +121,7 @@ namespace GoogleCloudExtension.DeployToGaeContextMenu
         /// <param name="package">Owner package, not null.</param>
         public static void Initialize(Package package)
         {
-            Instance = new DeployToGaeContextMenuCommand(package);
+            Instance = new DeployToAppEngineContextMenuCommand(package);
         }
 
         private void DeployToGaeHandler(object sender, EventArgs e)

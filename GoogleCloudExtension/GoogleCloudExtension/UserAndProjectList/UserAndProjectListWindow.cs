@@ -24,9 +24,6 @@ namespace GoogleCloudExtension.UserAndProjectList
     [Guid("170d091f-5a05-46e9-9d7b-3fdab8b413d3")]
     public class UserAndProjectListWindow : ToolWindowPane
     {
-        private readonly UserAndProjectListViewModel _model;
-        private readonly UserAndProjectListWindowControl _content;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="UserAndProjectListWindow"/> class.
         /// </summary>
@@ -34,44 +31,10 @@ namespace GoogleCloudExtension.UserAndProjectList
         {
             this.Caption = "Projects";
 
-            _model = new UserAndProjectListViewModel();
-            _content = new UserAndProjectListWindowControl();
-            _content.DataContext = _model;
+            var model = new UserAndProjectListViewModel();
+            this.Content = new UserAndProjectListWindowControl { DataContext = model };
 
-            // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
-            // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
-            // the object returned by the Content property.
-            this.Content = _content;
-
-            LoadAccountsAsync();
-        }
-
-        private async void LoadAccountsAsync()
-        {
-            if (!GCloudWrapper.Instance.ValidateGCloudInstallation())
-            {
-                Debug.WriteLine("GCloud is not installed, disabling the User and Project tool window.");
-                return;
-            }
-
-            try
-            {
-                _model.LoadingAccounts = true;
-                var accounts = await GCloudWrapper.Instance.GetAccountsAsync();
-                var currentAccountAndProject = await GCloudWrapper.Instance.GetCurrentAccountAndProjectAsync();
-                _model.Accounts = accounts;
-                _model.CurrentAccount = currentAccountAndProject.Account;
-            }
-            catch (GCloudException ex)
-            {
-                AppEngineOutputWindow.OutputLine($"Failed to load the current account and project.");
-                AppEngineOutputWindow.OutputLine(ex.Message);
-                AppEngineOutputWindow.Activate();
-            }
-            finally
-            {
-                _model.LoadingAccounts = false;
-            }
+            model.LoadAccountsAsync();
         }
     }
 }

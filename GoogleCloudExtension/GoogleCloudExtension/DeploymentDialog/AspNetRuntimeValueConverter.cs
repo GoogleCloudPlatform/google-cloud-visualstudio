@@ -16,6 +16,8 @@ namespace GoogleCloudExtension.DeploymentDialog
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            // This converter should only be called with supported runtimes, if an unsuported runtime is
+            // passed in then the None runtime info will be used, which is not probably what is desired.
             if (value is DnxRuntime)
             {
                 var runtime = (DnxRuntime)value;

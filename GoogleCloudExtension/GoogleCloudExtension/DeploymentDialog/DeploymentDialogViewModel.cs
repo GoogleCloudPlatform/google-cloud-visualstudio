@@ -15,7 +15,7 @@ namespace GoogleCloudExtension.DeploymentDialog
     /// <summary>
     /// This class is the view model for the deployment dialog.
     /// </summary>
-    public class DeploymentDialogViewModel : Model
+    public class DeploymentDialogViewModel : ViewModelBase
     {
         private readonly DeploymentDialogWindow _window;
 
@@ -23,102 +23,94 @@ namespace GoogleCloudExtension.DeploymentDialog
         private readonly IList<string> _loadingAccounts = new List<string> { "Loading..." };
         private readonly IList<CloudProject> _loadingProjects = new List<CloudProject> { new CloudProject { Name = "Loading..." } };
 
+        // Storage for the properties.
+        private IList<CloudProject> _cloudProjects;
+        private CloudProject _selectedCloudProject;
+        private IEnumerable<string> _accounts;
+        private string _selectedAccount;
+        private DnxRuntime _selectedRuntime;
+        private bool _loaded;
+        private bool _makeDefault;
+        private bool _preserveOutput;
+        private string _versionName;
 
         /// <summary>
         /// The project that will be deployed.
         /// </summary>
-        private string _Project;
-        public string Project
-        {
-            get { return _Project; }
-            set { SetValueAndRaise(ref _Project, value); }
-        }
+        public string Project { get; }
+
+        /// <summary>
+        /// The list of supported runtimes by the project being deployed.
+        /// </summary>
+        public IList<DnxRuntime> SupportedRuntimes { get; }
 
         /// <summary>
         /// The list of cloud projects available to deploy the code.
         /// </summary>
-        private IList<CloudProject> _CloudProjects;
         public IList<CloudProject> CloudProjects
         {
-            get { return _CloudProjects; }
-            set { SetValueAndRaise(ref _CloudProjects, value); }
+            get { return _cloudProjects; }
+            set { SetValueAndRaise(ref _cloudProjects, value); }
         }
 
         /// <summary>
         /// The selected cloud project where the code is going to be deployed.
         /// </summary>
-        private CloudProject _SelectedCloudProject;
         public CloudProject SelectedCloudProject
         {
-            get { return _SelectedCloudProject; }
-            set { SetValueAndRaise(ref _SelectedCloudProject, value); }
+            get { return _selectedCloudProject; }
+            set { SetValueAndRaise(ref _selectedCloudProject, value); }
         }
 
         /// <summary>
         /// The list of accounts avialabe to use as credentials for the deployment.
         /// </summary>
-        private IEnumerable<string> _Accounts;
         public IEnumerable<string> Accounts
         {
-            get { return _Accounts; }
-            set { SetValueAndRaise(ref _Accounts, value); }
+            get { return _accounts; }
+            set { SetValueAndRaise(ref _accounts, value); }
         }
 
         /// <summary>
         /// The selected account for deployment.
         /// </summary>
-        private string _SelectedAccount;
         public string SelectedAccount
         {
-            get { return _SelectedAccount; }
+            get { return _selectedAccount; }
             set
             {
-                SetValueAndRaise(ref _SelectedAccount, value);
+                SetValueAndRaise(ref _selectedAccount, value);
                 InvalidateSelectedAccount();
             }
         }
 
         /// <summary>
-        /// The list of supported runtimes by the project being deployed.
-        /// </summary>
-        private IList<DnxRuntime> _SupportedRuntimes;
-        public IList<DnxRuntime> SupportedRuntimes
-        {
-            get { return _SupportedRuntimes; }
-            set { SetValueAndRaise(ref _SupportedRuntimes, value); }
-        }
-
-        /// <summary>
         /// The selected runtime to use for the deployment.
         /// </summary>
-        private DnxRuntime _SelectedRuntime;
         public DnxRuntime SelectedRuntime
         {
-            get { return _SelectedRuntime; }
-            set { SetValueAndRaise(ref _SelectedRuntime, value); }
+            get { return _selectedRuntime; }
+            set { SetValueAndRaise(ref _selectedRuntime, value); }
         }
 
         /// <summary>
-        /// Wether all of the data is loaded and the dialog is ready to be used.
+        /// Whether all of the data is loaded and the dialog is ready to be used.
         /// </summary>
-        private bool _Loaded;
         public bool Loaded
         {
-            get { return _Loaded; }
-            set { SetValueAndRaise(ref _Loaded, value); }
+            get { return _loaded; }
+            set { SetValueAndRaise(ref _loaded, value); }
         }
 
         /// <summary>
         /// Whether the deployed version is to be made the default version.
         /// </summary>
-        private bool _MakeDefault;
         public bool MakeDefault
         {
-            get { return _MakeDefault; }
-            set { SetValueAndRaise(ref _MakeDefault, value); }
+            get { return _makeDefault; }
+            set { SetValueAndRaise(ref _makeDefault, value); }
         }
 
-        private bool _preserveOutput;
         /// <summary>
         /// Whether the output should be preserved.
         /// </summary>
@@ -131,22 +123,21 @@ namespace GoogleCloudExtension.DeploymentDialog
         /// <summary>
         /// The version name to use.
         /// </summary>
-        private string _VersionName;
         public string VersionName
         {
-            get { return _VersionName; }
-            set { SetValueAndRaise(ref _VersionName, value); }
+            get { return _versionName; }
+            set { SetValueAndRaise(ref _versionName, value); }
         }
 
         /// <summary>
         /// The command to invoke to start the deployment.
         /// </summary>
-        public ICommand DeployCommand { get; private set; }
+        public ICommand DeployCommand { get; }
 
         /// <summary>
         /// The command to invoke to cancel the deployment dialog and close it.
         /// </summary>
-        public ICommand CancelCommand { get; private set; }
+        public ICommand CancelCommand { get; }
 
         public DeploymentDialogViewModel(DeploymentDialogWindow window)
         {
@@ -157,7 +148,6 @@ namespace GoogleCloudExtension.DeploymentDialog
             this.SelectedRuntime = window.Options.Project.Runtime;
             _window = window;
         }
-
 
         public async void StartLoadingProjectsAsync()
         {
@@ -176,7 +166,7 @@ namespace GoogleCloudExtension.DeploymentDialog
                 var accountAndProject = await GCloudWrapper.Instance.GetCurrentAccountAndProjectAsync();
 
                 Accounts = accounts;
-                _SelectedAccount = accountAndProject.Account; // Update the selected account without invalidating it.
+                _selectedAccount = accountAndProject.Account; // Update the selected account without invalidating it.
                 RaisePropertyChanged(nameof(SelectedAccount));
 
                 CloudProjects = cloudProjects;
@@ -195,18 +185,18 @@ namespace GoogleCloudExtension.DeploymentDialog
             }
         }
 
-        #region Commands
+        #region Command handlers
 
         private void OnDeployHandler(object param)
         {
             DeploymentUtils.DeployProjectAsync(
-                   startupProject: _window.Options.Project,
-                   projects: _window.Options.ProjectsToRestore,
-                   selectedRuntime: SelectedRuntime,
-                   versionName: VersionName,
-                   makeDefault: MakeDefault,
-                   preserveOutput: PreserveOutput,
-                   accountAndProject: new Credentials(account: this.SelectedAccount, projectId: this.SelectedCloudProject.Id));
+                startupProject: _window.Options.Project,
+                projects: _window.Options.ProjectsToRestore,
+                selectedRuntime: SelectedRuntime,
+                versionName: VersionName,
+                makeDefault: MakeDefault,
+                preserveOutput: PreserveOutput,
+                accountAndProject: new Credentials(account: this.SelectedAccount, projectId: this.SelectedCloudProject.Id));
             _window.Close();
         }
 
@@ -216,7 +206,6 @@ namespace GoogleCloudExtension.DeploymentDialog
         }
 
         #endregion
-
 
         private async void InvalidateSelectedAccount()
         {
@@ -230,10 +219,10 @@ namespace GoogleCloudExtension.DeploymentDialog
             {
                 this.Loaded = false;
                 this.CloudProjects = null;
-                _SelectedCloudProject = null;
+                _selectedCloudProject = null;
 
-                var cloudProjects = await GCloudWrapper.Instance.GetProjectsAsync(
-                    new Credentials(account: this.SelectedAccount));
+                var credentials = new Credentials(account: this.SelectedAccount);
+                var cloudProjects = await GCloudWrapper.Instance.GetProjectsAsync(credentials);
 
                 this.CloudProjects = cloudProjects;
                 this.SelectedCloudProject = cloudProjects.FirstOrDefault();

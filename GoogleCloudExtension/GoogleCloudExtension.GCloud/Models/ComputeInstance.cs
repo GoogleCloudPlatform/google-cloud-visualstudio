@@ -11,6 +11,9 @@ namespace GoogleCloudExtension.GCloud.Models
     /// </summary>
     public sealed class ComputeInstance
     {
+        private const string RunningState = "RUNNING";
+        private const string TerminatedState = "TERMINATED";
+
         [JsonProperty("name")]
         public string Name { get; set; }
 
@@ -25,5 +28,9 @@ namespace GoogleCloudExtension.GCloud.Models
 
         [JsonProperty("zone")]
         public string Zone { get; set; }
+
+        public bool IsRunning => Status == RunningState;
+
+        public bool IsTerminated => Status == TerminatedState;
     }
 }

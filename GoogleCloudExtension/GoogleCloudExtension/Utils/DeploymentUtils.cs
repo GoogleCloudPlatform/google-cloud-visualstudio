@@ -45,11 +45,11 @@ namespace GoogleCloudExtension.Utils
                 StatusbarHelper.UnFreeze();
 
                 StatusbarHelper.SetText("Deployment Succeeded");
-                AppEngineOutputWindow.OutputLine("Deployment Succeeded!!!");
+                AppEngineOutputWindow.OutputLine("Deployment Succeeded.");
             }
             catch (GCloudException ex)
             {
-                AppEngineOutputWindow.OutputLine("Deployment Failed!!!");
+                AppEngineOutputWindow.OutputLine("Deployment Failed.");
                 AppEngineOutputWindow.OutputLine(ex.Message);
             }
             catch (Exception)

@@ -73,8 +73,8 @@
     </Compile>
     <Compile Include="Utils\CommandUtils.cs" />
     <Compile Include="Utils\DeploymentUtils.cs" />
-    <Compile Include="DeployToGaeContextMenu\DeployToGaeContextMenuCommand.cs" />
-    <Compile Include="DeployToGae\DeployToGaeCommand.cs" />
+    <Compile Include="DeployToAppEngineContextMenu\DeployToAppEngineContextMenuCommand.cs" />
+    <Compile Include="DeployToAppEngine\DeployToAppEngineCommand.cs" />
     <Compile Include="GoogleCloudExtensionPackage.cs" />
     <Compile Include="ExtensionEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -100,7 +100,6 @@
     <VSCTCompile Include="GoogleCloudExtension.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
-    <Content Include="index.html" />
     <Content Include="License.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -119,7 +118,6 @@
     <Content Include="Resources\DeployToGaeContextMenuCommand.png" />
     <Content Include="Resources\DeployToGaePackage.ico" />
     <Content Include="Resources\UserAndProjectListWindowCommand.png" />
-    <Content Include="stylesheet.css" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">

@@ -18,16 +18,18 @@ namespace GoogleCloudExtension.ComputeEngineResources
     /// </summary>
     public class ComputeEngineResourcesViewModel : ViewModelBase
     {
+        private IList<ComputeInstance> _instances;
+        private ComputeInstance _currentInstance;
+
         /// <summary>
         /// The list of instances in the current project.
         /// </summary>
-        private IList<ComputeInstance> _Instances;
         public IList<ComputeInstance> Instances
         {
-            get { return _Instances; }
-            set
+            get { return _instances; }
+            private set
             {
-                SetValueAndRaise(ref _Instances, value);
+                SetValueAndRaise(ref _instances, value);
                 RaisePropertyChanged(nameof(HaveInstances));
                 this.CurrentInstance = value?.FirstOrDefault();
             }
@@ -36,13 +38,12 @@ namespace GoogleCloudExtension.ComputeEngineResources
         /// <summary>
         /// The currently selected instance.
         /// </summary>
-        private ComputeInstance _CurrentInstance;
         public ComputeInstance CurrentInstance
         {
-            get { return _CurrentInstance; }
+            get { return _currentInstance; }
             set
             {
-                SetValueAndRaise(ref _CurrentInstance, value);
+                SetValueAndRaise(ref _currentInstance, value);
                 RaisePropertyChanged(nameof(CurrentInstanceIsRunning));
                 RaisePropertyChanged(nameof(CurrentInstanceIsTerminated));
             }
@@ -52,33 +53,33 @@ namespace GoogleCloudExtension.ComputeEngineResources
         /// Helper property to determine whether the currently selected instance is in the
         /// TERMINATED state.
         /// </summary>
-        public bool CurrentInstanceIsTerminated => CurrentInstance?.Status == "TERMINATED";
+        public bool CurrentInstanceIsTerminated => CurrentInstance?.IsTerminated ?? false;
 
         /// <summary>
         /// Herlper property to determine whether the currently selected instance is in the
         /// RUNNING state.
         /// </summary>
-        public bool CurrentInstanceIsRunning => CurrentInstance?.Status == "RUNNING";
+        public bool CurrentInstanceIsRunning => CurrentInstance?.IsRunning ?? false;
 
         /// <summary>
         /// The command to execute to referesh the list of instances.
         /// </summary>
-        public ICommand RefreshCommand { get; private set; }
+        public ICommand RefreshCommand { get; }
 
         /// <summary>
         /// The command to execute to start the current instance.
         /// </summary>
-        public ICommand StartCommand { get; private set; }
+        public ICommand StartCommand { get; }
 
         /// <summary>
         /// The command to execute to stop the current instance.
         /// </summary>
-        public ICommand StopCommand { get; private set; }
+        public ICommand StopCommand { get; }
 
         /// <summary>
         /// Whether there are instances or not in the list.
         /// </summary>
-        public bool HaveInstances => Instances?.Count != 0;
+        public bool HaveInstances => (Instances?.Count ?? 0) != 0;
 
         public ComputeEngineResourcesViewModel()
         {
@@ -90,6 +91,9 @@ namespace GoogleCloudExtension.ComputeEngineResources
             GCloudWrapper.Instance.AccountOrProjectChanged += handler.OnEvent;
         }
 
+        /// <summary>
+        /// Loads the list of compute instances for the view.
+        /// </summary>
         public async void LoadComputeInstancesListAsync()
         {
             if (!GCloudWrapper.Instance.ValidateGCloudInstallation())
@@ -123,6 +127,8 @@ namespace GoogleCloudExtension.ComputeEngineResources
             LoadComputeInstancesListAsync();
         }
 
+        #region Command handlers
+
         private void OnRefresh(object param)
         {
             LoadComputeInstancesListAsync();
@@ -130,15 +136,15 @@ namespace GoogleCloudExtension.ComputeEngineResources
 
         private async void OnStartInstance(object param)
         {
-            var instance = param as ComputeInstance;
+            var instance = (ComputeInstance)param;
             if (instance == null)
             {
-                Debug.WriteLine($"Expected ComputeEngine got: {instance}");
                 return;
             }
-            if (instance.Status != "TERMINATED")
+            if (!instance.IsTerminated)
             {
                 Debug.WriteLine($"Expected status TERMINATED got: {instance.Status}");
+                return;
             }
             Debug.WriteLine($"Starting instance {instance.Name} in zone {instance.Zone}");
 
@@ -163,18 +169,17 @@ namespace GoogleCloudExtension.ComputeEngineResources
 
         private async void OnStopInstance(object param)
         {
-            var instance = param as ComputeInstance;
+            var instance = (ComputeInstance)param;
             if (instance == null)
             {
-                Debug.WriteLine($"Expected ComputeEngine got: {instance}");
                 return;
             }
-            if (instance.Status != "RUNNING")
+            if (!instance.IsRunning)
             {
                 Debug.WriteLine($"Expected status RUNNING, got: {instance.Status}");
                 return;
             }
-            Debug.WriteLine($"Stoping instance {instance.Name} in zone {instance.Zone}");
+            Debug.WriteLine($"Stopping instance {instance.Name} in zone {instance.Zone}");
 
             try
             {
@@ -194,5 +199,7 @@ namespace GoogleCloudExtension.ComputeEngineResources
             }
             LoadComputeInstancesListAsync();
         }
+
+        #endregion
     }
 }

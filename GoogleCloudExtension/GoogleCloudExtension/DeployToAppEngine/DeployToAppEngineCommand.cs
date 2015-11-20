@@ -9,12 +9,12 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
 
-namespace GoogleCloudExtension.DeployToGae
+namespace GoogleCloudExtension.DeployToAppEngine
 {
     /// <summary>
-    /// Command handler
+    /// Command handler for the "Deploy to AppEngine" in the main menu.
     /// </summary>
-    internal sealed class DeployToGaeCommand
+    internal sealed class DeployToAppEngineCommand
     {
         /// <summary>
         /// Command ID.
@@ -32,11 +32,11 @@ namespace GoogleCloudExtension.DeployToGae
         private readonly Package _package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeployToGae"/> class.
+        /// Initializes a new instance of the <see cref="DeployToAppEngine"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private DeployToGaeCommand(Package package)
+        private DeployToAppEngineCommand(Package package)
         {
             if (package == null)
             {
@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.DeployToGae
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static DeployToGaeCommand Instance { get; private set; }
+        public static DeployToAppEngineCommand Instance { get; private set; }
 
         /// <summary>
         /// Gets the service provider from the owner package.
@@ -72,7 +72,7 @@ namespace GoogleCloudExtension.DeployToGae
         /// <param name="package">Owner package, not null.</param>
         public static void Initialize(Package package)
         {
-            Instance = new DeployToGaeCommand(package);
+            Instance = new DeployToAppEngineCommand(package);
         }
 
         private void DeployHandler(object sender, EventArgs e)
