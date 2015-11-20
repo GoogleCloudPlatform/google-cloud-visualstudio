@@ -13,9 +13,7 @@ AppEngine and GCE instances, but it is not clear if that is the way to go yet.
 
 To build and install the extension you will need to have Visual Studio 2015
 installed with the Visual Studio SDK feature installed. After that just open the
-.sln file and build it, that is really it. If you get an error during the
-restoration of the NuGet packages ensure that you have enabled nuget.org as a
-source in the NuGet Package Manager.
+.sln file and build it, that is really it.
 
 Of course in order to run the Google Cloud SDK needs to be installed, in
 particular the necessary components for gcloud need to be installed with the
