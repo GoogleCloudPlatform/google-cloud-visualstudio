@@ -3,13 +3,10 @@
 
 using EnvDTE;
 using EnvDTE80;
-using GoogleCloudExtension.GCloud.Dnx.Models;
 using Microsoft.VisualStudio.Shell;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 
 namespace GoogleCloudExtension.Projects
 {
