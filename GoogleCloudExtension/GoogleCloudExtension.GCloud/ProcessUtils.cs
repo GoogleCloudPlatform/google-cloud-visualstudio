@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.GCloud
 
     internal static class ProcessUtils
     {
-        public static async Task<bool> RunCommandAsync(string file, string args, OutputHandler handler, Dictionary<string, string> environment)
+        public static async Task<bool> RunCommandAsync(string file, string args, OutputHandler handler, IDictionary<string, string> environment)
         {
             var startInfo = GetStartInfo(file, args, environment);
 
@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.GCloud
             });
         }
 
-        public static async Task<ProcessOutput> GetCommandOutputAsync(string file, string args, Dictionary<string, string> environment)
+        public static async Task<ProcessOutput> GetCommandOutputAsync(string file, string args, IDictionary<string, string> environment)
         {
             var startInfo = GetStartInfo(file, args, environment);
 
@@ -75,7 +75,7 @@ namespace GoogleCloudExtension.GCloud
             });
         }
 
-        public static async Task<T> GetJsonOutputAsync<T>(string file, string args, Dictionary<string, string> environment)
+        public static async Task<T> GetJsonOutputAsync<T>(string file, string args, IDictionary<string, string> environment)
         {
             var output = await ProcessUtils.GetCommandOutputAsync(file, args, environment);
             if (!output.Succeeded)
@@ -113,7 +113,7 @@ namespace GoogleCloudExtension.GCloud
         }
 
 
-        private static ProcessStartInfo GetStartInfo(string file, string args, Dictionary<string, string> environment)
+        private static ProcessStartInfo GetStartInfo(string file, string args, IDictionary<string, string> environment)
         {
             ProcessStartInfo startInfo = new ProcessStartInfo
             {

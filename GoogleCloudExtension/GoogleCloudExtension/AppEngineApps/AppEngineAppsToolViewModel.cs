@@ -166,7 +166,7 @@ namespace GoogleCloudExtension.AppEngineApps
                 this.OpenAppEnabled = false;
                 this.OpenAppButtonTitle = "Opening app...";
 
-                var accountAndProject = await GCloudWrapper.Instance.GetCurrentAccountAndProjectAsync();
+                var accountAndProject = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
                 var url = $"https://{app.Version}-dot-{app.Module}-dot-{accountAndProject.ProjectId}.appspot.com/";
                 Debug.WriteLine($"Opening URL: {url}");
                 Process.Start(url);

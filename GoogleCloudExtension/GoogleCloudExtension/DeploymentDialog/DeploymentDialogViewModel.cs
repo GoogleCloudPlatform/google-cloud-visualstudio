@@ -163,7 +163,7 @@ namespace GoogleCloudExtension.DeploymentDialog
 
                 var accounts = await GCloudWrapper.Instance.GetAccountsAsync();
                 var cloudProjects = await GCloudWrapper.Instance.GetProjectsAsync();
-                var accountAndProject = await GCloudWrapper.Instance.GetCurrentAccountAndProjectAsync();
+                var accountAndProject = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
 
                 Accounts = accounts;
                 _selectedAccount = accountAndProject.Account; // Update the selected account without invalidating it.
