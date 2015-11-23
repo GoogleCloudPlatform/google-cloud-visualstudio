@@ -16,7 +16,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
     /// </summary>
     public static class DnxEnvironment
     {
-        public const string DnxVersion = "1.0.0-beta8";
+        public const string DnxVersion = "1.0.0-rc1-update1";
 
         // The path where the binaries for the particular runtime live.
         //   {0} the runtime name.
@@ -88,8 +88,6 @@ namespace GoogleCloudExtension.GCloud.Dnx
             Debug.WriteLineIf(!result, $"DNX runtime {runtime} not installed, cannot find {dnuPath}");
             return result;
         }
-
-
 
         private static string CalculateVSInstallPath()
         {
