@@ -68,7 +68,7 @@ namespace GoogleCloudExtension.AppEngineApps
         /// The command to invoke to set the selected version as the default version.
         /// </summary>
         public ICommand SetDefaultVersionCommand { get; }
-        
+
         /// <summary>
         /// The command to invoke to refresh the list of modules and versions.
         /// </summary>
@@ -166,7 +166,7 @@ namespace GoogleCloudExtension.AppEngineApps
                 this.OpenAppEnabled = false;
                 this.OpenAppButtonTitle = "Opening app...";
 
-                var accountAndProject = await GCloudWrapper.Instance.GetCurrentAccountAndProjectAsync();
+                var accountAndProject = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
                 var url = $"https://{app.Version}-dot-{app.Module}-dot-{accountAndProject.ProjectId}.appspot.com/";
                 Debug.WriteLine($"Opening URL: {url}");
                 Process.Start(url);

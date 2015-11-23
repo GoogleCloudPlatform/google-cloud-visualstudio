@@ -34,7 +34,7 @@
     <Menus>
       <!-- The Google Cloud menu. -->
       <Menu guid="guidDeployToGaePackageCmdSet" id="GcpMenu" type="Menu" priority="0x700">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS"/>
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
         <Strings>
           <ButtonText>Google Cloud</ButtonText>
           <CommandName>Google Cloud</CommandName>
@@ -50,7 +50,7 @@
 
       <!-- This group contains all of the Gcp commands in the top level menu. -->
       <Group guid="guidDeployToGaePackageCmdSet" id="GcpToolsGroup" priority="0x0000">
-        <Parent guid="guidDeployToGaePackageCmdSet" id="GcpMenu"/>
+        <Parent guid="guidDeployToGaePackageCmdSet" id="GcpMenu" />
       </Group>
     </Groups>
 
@@ -102,6 +102,14 @@
           <ButtonText>Google Cloud Projects and Users</ButtonText>
         </Strings>
       </Button>
+      
+      <!-- This command opens the browser to add a new account to the credentials store. -->
+      <Button guid="guidDeployToGaePackageCmdSet" id="cmdidAddNewAccountCommand" priority="0x500" type="Button">
+        <Parent guid="guidDeployToGaePackageCmdSet" id="GcpToolsGroup" />
+        <Strings>
+          <ButtonText>Add Account...</ButtonText>
+        </Strings>
+      </Button>
     </Buttons>
 
     <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
@@ -132,6 +140,7 @@
       <IDSymbol value="0x1060" name="GcpMenu" />
       <IDSymbol value="0x1070" name="GcpToolsGroup" />
       <IDSymbol value="4179" name="cmdidDeployToGaeContextMenuCommand" />
+      <IDSymbol value="4180" name="cmdidAddNewAccountCommand" />
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{7f45e823-c417-46b7-bcf7-eb027a474180}">
