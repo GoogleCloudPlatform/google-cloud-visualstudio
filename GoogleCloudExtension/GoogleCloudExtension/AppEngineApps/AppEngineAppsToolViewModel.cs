@@ -68,7 +68,7 @@ namespace GoogleCloudExtension.AppEngineApps
         /// The command to invoke to set the selected version as the default version.
         /// </summary>
         public ICommand SetDefaultVersionCommand { get; }
-        
+
         /// <summary>
         /// The command to invoke to refresh the list of modules and versions.
         /// </summary>

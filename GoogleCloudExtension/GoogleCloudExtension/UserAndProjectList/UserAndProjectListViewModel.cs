@@ -221,7 +221,5 @@ namespace GoogleCloudExtension.UserAndProjectList
                 AppEngineOutputWindow.Activate();
             }
         }
-
-
     }
 }
