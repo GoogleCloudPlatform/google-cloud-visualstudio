@@ -41,9 +41,21 @@ namespace GoogleCloudExtension.GCloud
 
     internal static class ProcessUtils
     {
+        /// <summary>
+        /// Runs the given binary given by <paramref name="file"/> with the passed in <paramref name="args"/> and
+        /// reads the output of the new process as it happens, calling <paramref name="handler"/> with each line being output
+        /// by the process.
+        /// Uses <paramref name="environment"/> if provided to customize the environment of the child process.
+        /// </summary>
+        /// <param name="file">The path to the binary to execute, it should not be null.</param>
+        /// <param name="args">The arguments to pass to the binary to execute, it can be null.</param>
+        /// <param name="handler">The callback to call with wach line being oput by the process, it can be called outside
+        /// of the UI thread. Must not be null.</param>
+        /// <param name="environment">Optional parameter with values for environment variables to pass on to the child process.</param>
+        /// <returns></returns>
         public static async Task<bool> RunCommandAsync(string file, string args, OutputHandler handler, IDictionary<string, string> environment)
         {
-            var startInfo = GetStartInfo(file, args, environment);
+            var startInfo = GetStartInfoForInteractiveProcess(file, args, environment);
 
             return await Task.Run(async () =>
             {
@@ -59,7 +71,7 @@ namespace GoogleCloudExtension.GCloud
 
         public static async Task<ProcessOutput> GetCommandOutputAsync(string file, string args, IDictionary<string, string> environment)
         {
-            var startInfo = GetStartInfo(file, args, environment);
+            var startInfo = GetStartInfoForInteractiveProcess(file, args, environment);
 
             return await Task.Run(async () =>
             {
@@ -72,6 +84,24 @@ namespace GoogleCloudExtension.GCloud
                     succeeded: succeeded,
                     output: await readOutputTask,
                     error: await readErrorsTask);
+            });
+        }
+
+        /// <summary>
+        /// Launches a process with the given parameters and environment, does not parse the output.
+        /// </summary>
+        /// <param name="file">The file with the process to execute.</param>
+        /// <param name="args">The arguments for the process.</param>
+        /// <param name="environment">The environment to use for executing the proces.</param>
+        /// <returns>A task that will resolve to the exit code of the process.</returns>
+        public static async Task<int> LaunchCommandAsync(string file, string args, IDictionary<string, string> environment)
+        {
+            var startInfo = GetBaseStartInfo(file, args, environment);
+            return await Task.Run(() =>
+            {
+                var process = Process.Start(startInfo);
+                process.WaitForExit();
+                return process.ExitCode;
             });
         }
 
@@ -112,17 +142,15 @@ namespace GoogleCloudExtension.GCloud
             return src;
         }
 
-
-        private static ProcessStartInfo GetStartInfo(string file, string args, IDictionary<string, string> environment)
+        private static ProcessStartInfo GetBaseStartInfo(string file, string args, IDictionary<string, string> environment)
         {
-            ProcessStartInfo startInfo = new ProcessStartInfo
+            // Always start the tool in the user's home directory, avoid random directories
+            // coming from Visual Studio.
+            ProcessStartInfo result = new ProcessStartInfo
             {
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                RedirectStandardError = true,
-                RedirectStandardOutput = true,
                 FileName = file,
                 Arguments = args,
+                WorkingDirectory = Environment.GetEnvironmentVariable("USERPROFILE"),
             };
 
             // Customize the environment for the incoming process.
@@ -130,14 +158,21 @@ namespace GoogleCloudExtension.GCloud
             {
                 foreach (var entry in environment)
                 {
-                    startInfo.EnvironmentVariables[entry.Key] = entry.Value;
+                    result.EnvironmentVariables[entry.Key] = entry.Value;
                 }
             }
 
-            // Always start the tool in the user's home directory, avoid random directories
-            // coming from Visual Studio.
-            startInfo.WorkingDirectory = Environment.GetEnvironmentVariable("USERPROFILE");
+            return result;
+        }
 
+        private static ProcessStartInfo GetStartInfoForInteractiveProcess(string file, string args, IDictionary<string, string> environment)
+        {
+            ProcessStartInfo startInfo = GetBaseStartInfo(file, args, environment);
+            startInfo.UseShellExecute = false;
+            startInfo.CreateNoWindow = true;
+            startInfo.RedirectStandardError = true;
+            startInfo.RedirectStandardOutput = true;
+            startInfo.RedirectStandardInput = true;
             return startInfo;
         }
 

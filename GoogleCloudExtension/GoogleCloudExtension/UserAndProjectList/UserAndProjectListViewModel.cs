@@ -4,6 +4,7 @@
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -106,7 +107,19 @@ namespace GoogleCloudExtension.UserAndProjectList
         /// <summary>
         /// Combination of both properties, used in UI bindings.
         /// </summary>
-        public bool Loading => LoadingProjects || LoadingAccounts;
+        new public bool Loading => LoadingProjects || LoadingAccounts;
+
+        public UserAndProjectListViewModel()
+        {
+            var handler = new WeakHandler(this.OnCredentialsChanged);
+            GCloudWrapper.Instance.AccountOrProjectChanged += handler.OnEvent;
+        }
+
+        private void OnCredentialsChanged(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Invalidating the credentials.");
+            LoadAccountsAsync();
+        }
 
         /// <summary>
         /// Loads the list of accounts for the dialog.
@@ -129,9 +142,10 @@ namespace GoogleCloudExtension.UserAndProjectList
             }
             catch (GCloudException ex)
             {
+                AppEngineOutputWindow.Activate();
+                AppEngineOutputWindow.Clear();
                 AppEngineOutputWindow.OutputLine($"Failed to load the current account and project.");
                 AppEngineOutputWindow.OutputLine(ex.Message);
-                AppEngineOutputWindow.Activate();
             }
             finally
             {
@@ -159,7 +173,7 @@ namespace GoogleCloudExtension.UserAndProjectList
                 var newCurrentAccountAndProject = new Credentials(
                     account: currentAccountAndProject.Account,
                     projectId: newProject.Id);
-                GCloudWrapper.Instance.UpdateUserAndProject(newCurrentAccountAndProject);
+                GCloudWrapper.Instance.UpdateCredentials(newCurrentAccountAndProject);
             }
             catch (GCloudException ex)
             {
@@ -190,7 +204,7 @@ namespace GoogleCloudExtension.UserAndProjectList
                     var newAccountAndProject = new Credentials(
                         account: value,
                         projectId: null);
-                    GCloudWrapper.Instance.UpdateUserAndProject(newAccountAndProject);
+                    GCloudWrapper.Instance.UpdateCredentials(newAccountAndProject);
                 }
 
                 // Since the account might be different we need to load the projects.

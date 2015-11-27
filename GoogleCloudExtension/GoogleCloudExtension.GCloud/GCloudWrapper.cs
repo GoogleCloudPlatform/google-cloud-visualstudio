@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.GCloud
         /// <summary>
         /// Maintains the currently selected account and project for the instance.
         /// </summary>
-        private Credentials _currentAccountAndProject;
+        private Credentials _currentCredentials;
 
         /// <summary>
         /// Singleton for the class.
@@ -59,33 +59,33 @@ namespace GoogleCloudExtension.GCloud
         /// <returns>The current AccountAndProjectId.</returns>
         public async Task<Credentials> GetCurrentCredentialsAsync()
         {
-            if (_currentAccountAndProject == null)
+            if (_currentCredentials == null)
             {
                 // Fetching the current account and project, for gcloud, does not need to use the current
                 // account.
                 var settings = await GetJsonOutputAsync<Settings>("config list", credentials: null);
-                _currentAccountAndProject = new Credentials(
+                _currentCredentials = new Credentials(
                     account: settings.CoreSettings.Account,
                     projectId: settings.CoreSettings.Project);
             }
-            return _currentAccountAndProject;
+            return _currentCredentials;
         }
 
         /// <summary>
         /// Updates the local concet of "current account and project" in the instance *only* it does not
         /// affect what gcloud thinks is the current account and project.
         /// </summary>
-        /// <param name="accountAndProject">The new accountAndProject to use</param>
-        public void UpdateUserAndProject(Credentials accountAndProject)
+        /// <param name="credentials">The new accountAndProject to use</param>
+        public void UpdateCredentials(Credentials credentials)
         {
-            _currentAccountAndProject = accountAndProject;
+            _currentCredentials = credentials;
             RaiseAccountOrProjectChanged();
         }
 
         public void UpdateProject(string projectId)
         {
-            var newAccountAndProject = new Credentials(_currentAccountAndProject.Account, projectId);
-            UpdateUserAndProject(newAccountAndProject);
+            var newCredentials = new Credentials(_currentCredentials.Account, projectId);
+            UpdateCredentials(newCredentials);
         }
 
         /// <summary>
@@ -157,6 +157,12 @@ namespace GoogleCloudExtension.GCloud
             return await GetCommandOutputAsync(command, await GetCurrentCredentialsAsync());
         }
 
+        public Task<int> LaunchCommandAsync(string command)
+        {
+            var actualCommand = FormatCommand(command, useJson: false);
+            return ProcessUtils.LaunchCommandAsync("cmd.exe", actualCommand, null);
+        }
+
         public async Task<T> GetJsonOutputAsync<T>(string command, Credentials credentials)
         {
             var actualCommand = FormatCommand(command, useJson: true);
@@ -184,6 +190,31 @@ namespace GoogleCloudExtension.GCloud
         public Task<string> GetAccessTokenAsync()
         {
             return GetCommandOutputAsync("auth print-access-token");
+        }
+
+        /// <summary>
+        /// Invokes the _default_ browser in the system to add a new set of credentials into
+        /// the credentials store. This will also invalidate the list of credentials to notify the various
+        /// parts in the extension that depends on the list of current credentials
+        /// </summary>
+        /// <returns></returns>
+        public async Task AddCredentialsAsync(Action<string> callback)
+        {
+            callback("Launching browser.");
+            var result = await LaunchCommandAsync("auth login --launch-browser");
+            if (result == 0)
+            {
+                // A new account was succesfully registered, invalidate the current credentials
+                // so the interface is updated.
+                _currentCredentials = null;
+                RaiseAccountOrProjectChanged();
+                var credentials = await GetCurrentCredentialsAsync();
+                callback($"Succesfully added the account: {credentials.Account}");
+            }
+            else
+            {
+                callback($"Failed to add the account with result: {result}");
+            }
         }
 
         /// <summary>

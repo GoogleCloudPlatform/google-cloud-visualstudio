@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.AddNewAccount;
 using GoogleCloudExtension.AppEngineApps;
 using GoogleCloudExtension.ComputeEngineResources;
 using GoogleCloudExtension.DeployToAppEngine;
@@ -74,6 +75,7 @@ namespace GoogleCloudExtension
             DeployToAppEngineCommand.Initialize(this);
             UserAndProjectListWindowCommand.Initialize(this);
             DeployToAppEngineContextMenuCommand.Initialize(this);
+            AddNewAccountCommand.Initialize(this);
         }
 
         #endregion

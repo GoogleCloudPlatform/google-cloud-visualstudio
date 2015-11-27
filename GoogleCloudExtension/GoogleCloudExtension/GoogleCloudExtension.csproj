@@ -51,6 +51,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="AddNewAccount\AddNewAccountCommand.cs" />
     <Compile Include="AppEngineApps\AppEngineAppsToolViewModel.cs" />
     <Compile Include="AppEngineApps\AppEngineAppsToolWindow.cs" />
     <Compile Include="AppEngineApps\AppEngineAppsToolWindowCommand.cs" />
@@ -112,6 +113,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="Resources\AddNewAccountCommand.png" />
     <Content Include="Resources\AppEngineAppsToolWindowCommand.png" />
     <Content Include="Resources\ComputeEngineResourcesCommand.png" />
     <Content Include="Resources\DeployToGae.png" />
