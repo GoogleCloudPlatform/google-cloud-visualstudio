@@ -108,16 +108,16 @@ namespace GoogleCloudExtension.AppEngineApps
 
         public AppEngineAppsToolViewModel()
         {
-            OpenAppCommand = new WeakCommand(this.OnOpenApp);
-            DeleteVersionCommand = new WeakCommand(this.OnDeleteVersion);
-            SetDefaultVersionCommand = new WeakCommand(this.OnSetDefaultVersion);
+            OpenAppCommand = new WeakCommand<ModuleAndVersion>(this.OnOpenApp);
+            DeleteVersionCommand = new WeakCommand<ModuleAndVersion>(this.OnDeleteVersion);
+            SetDefaultVersionCommand = new WeakCommand<ModuleAndVersion>(this.OnSetDefaultVersion);
             RefreshCommand = new WeakCommand(this.OnRefresh);
 
             // Add a weak event handler to receive notifications of the deployment of app engine instances.
             // We also need to invalidate the list if the account or project changed.
-            var handler = new WeakHandler(this.InvalidateAppEngineAppList);
-            ExtensionEvents.AppEngineDeployed += handler.OnEvent;
-            GCloudWrapper.Instance.AccountOrProjectChanged += handler.OnEvent;
+            var handler = new WeakDelegate<object, EventArgs>(this.InvalidateAppEngineAppList);
+            ExtensionEvents.AppEngineDeployed += handler.Invoke;
+            GCloudWrapper.Instance.AccountOrProjectChanged += handler.Invoke;
         }
 
         /// <summary>
@@ -153,14 +153,8 @@ namespace GoogleCloudExtension.AppEngineApps
 
         #region Command handlers
 
-        private async void OnOpenApp(object parameter)
+        private async void OnOpenApp(ModuleAndVersion app)
         {
-            var app = (ModuleAndVersion)parameter;
-            if (app == null)
-            {
-                return;
-            }
-
             try
             {
                 this.OpenAppEnabled = false;
@@ -178,14 +172,8 @@ namespace GoogleCloudExtension.AppEngineApps
             }
         }
 
-        private async void OnDeleteVersion(object parameter)
+        private async void OnDeleteVersion(ModuleAndVersion app)
         {
-            var app = (ModuleAndVersion)parameter;
-            if (app == null)
-            {
-                return;
-            }
-
             try
             {
                 this.LoadingMessage = "Deleting version...";
@@ -205,14 +193,8 @@ namespace GoogleCloudExtension.AppEngineApps
             LoadAppEngineAppListAsync();
         }
 
-        private async void OnSetDefaultVersion(object parameter)
+        private async void OnSetDefaultVersion(ModuleAndVersion app)
         {
-            var app = (ModuleAndVersion)parameter;
-            if (app == null)
-            {
-                return;
-            }
-
             try
             {
                 this.Loading = true;
@@ -232,7 +214,7 @@ namespace GoogleCloudExtension.AppEngineApps
             LoadAppEngineAppListAsync();
         }
 
-        private void OnRefresh(object param)
+        private void OnRefresh()
         {
             LoadAppEngineAppListAsync();
         }
