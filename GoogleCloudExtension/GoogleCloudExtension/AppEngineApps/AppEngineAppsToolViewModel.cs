@@ -115,7 +115,7 @@ namespace GoogleCloudExtension.AppEngineApps
 
             // Add a weak event handler to receive notifications of the deployment of app engine instances.
             // We also need to invalidate the list if the account or project changed.
-            var handler = new WeakDelegate<object, EventArgs>(this.InvalidateAppEngineAppList);
+            var handler = new WeakAction<object, EventArgs>(this.InvalidateAppEngineAppList);
             ExtensionEvents.AppEngineDeployed += handler.Invoke;
             GCloudWrapper.Instance.AccountOrProjectChanged += handler.Invoke;
         }

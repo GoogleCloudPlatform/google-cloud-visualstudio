@@ -87,7 +87,7 @@ namespace GoogleCloudExtension.ComputeEngineResources
             StartCommand = new WeakCommand<ComputeInstance>(this.OnStartInstance);
             StopCommand = new WeakCommand<ComputeInstance>(this.OnStopInstance);
 
-            var handler = new WeakDelegate<object, EventArgs>(this.InvalidateInstancesListAsync);
+            var handler = new WeakAction<object, EventArgs>(this.InvalidateInstancesListAsync);
             GCloudWrapper.Instance.AccountOrProjectChanged += handler.Invoke;
         }
 

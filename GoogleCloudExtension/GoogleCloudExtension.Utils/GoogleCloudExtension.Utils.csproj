@@ -53,6 +53,7 @@
     <Compile Include="Model.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VisibilityConverter.cs" />
+    <Compile Include="WeakAction.cs" />
     <Compile Include="WeakCommand.cs" />
     <Compile Include="WeakDelegate.cs" />
   </ItemGroup>

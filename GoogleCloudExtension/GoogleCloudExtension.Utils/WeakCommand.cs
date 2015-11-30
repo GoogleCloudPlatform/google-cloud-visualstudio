@@ -13,49 +13,49 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public class WeakCommand<T> : ICommand
     {
-        private readonly WeakDelegate<T> _delegate;
+        private bool _canExecuteCommand;
+        private readonly WeakAction<T> _delegate;
 
+        /// <summary>
+        /// Initializes the new instance of WeakCommand.
+        /// </summary>
+        /// <param name="handler">The action to execute when executing the command.</param>
+        /// <param name="canExecuteCommand">Whether the command is enabled or not.</param>
         public WeakCommand(Action<T> handler, bool canExecuteCommand = true)
         {
-            _delegate = new WeakDelegate<T>(handler);
+            _delegate = new WeakAction<T>(handler);
             this.CanExecuteCommand = canExecuteCommand;
         }
 
-        public event EventHandler CanExecuteChanged;
+        #region ICommand implementation.
 
-        private bool _CanExecuteCommand;
-        public bool CanExecuteCommand
-        {
-            get { return _CanExecuteCommand; }
-            set
-            {
-                if (_CanExecuteCommand != value)
-                {
-                    _CanExecuteCommand = value;
-                    if (CanExecuteChanged != null)
-                    {
-                        CanExecuteChanged(this, EventArgs.Empty);
-                    }
-                }
-            }
-        }
+        public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameter)
         {
-            return this.CanExecuteCommand;
+            return parameter != null && (parameter is T) && CanExecuteCommand;
         }
 
         public void Execute(object parameter)
         {
-            if (parameter == null)
+            _delegate.Invoke((T)parameter);
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Gets/sets whether the command can be executed.
+        /// </summary>
+        public bool CanExecuteCommand
+        {
+            get { return _canExecuteCommand; }
+            set
             {
-                // Need an object to execute the command, the parameter can be null
-                // while the bindings are being computed.
-                return;
-            }
-            if (CanExecuteCommand)
-            {
-                _delegate.Invoke((T)parameter);
+                if (_canExecuteCommand != value)
+                {
+                    _canExecuteCommand = value;
+                    CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
     }
@@ -66,37 +66,46 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public class WeakCommand : ICommand
     {
-        private bool _CanExecuteCommand;
-        private readonly WeakDelegate _delegate;
+        private bool _canExecuteCommand;
+        private readonly WeakAction _delegate;
 
+        /// <summary>
+        /// Initializes a new instance of WeakCommand.
+        /// </summary>
+        /// <param name="handler">The action to execute when the command is executed.</param>
+        /// <param name="canExecuteCommand">Whether the command is enabled or not.</param>
         public WeakCommand(Action handler, bool canExecuteCommand = true)
         {
-            _delegate = new WeakDelegate(handler);
+            _delegate = new WeakAction(handler);
             this.CanExecuteCommand = canExecuteCommand;
         }
 
-        public event EventHandler CanExecuteChanged;
+        #region ICommand implementation.
 
-        public bool CanExecuteCommand
-        {
-            get { return _CanExecuteCommand; }
-            set
-            {
-                if (_CanExecuteCommand != value)
-                {
-                    _CanExecuteCommand = value;
-                    CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-                }
-            }
-        }
+        public event EventHandler CanExecuteChanged;
 
         public bool CanExecute(object parameter) => CanExecuteCommand;
 
         public void Execute(object parameter)
         {
-            if (CanExecute(parameter))
+            _delegate.Invoke();
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Gets/sets whether the command can be executed or not.
+        /// </summary>
+        public bool CanExecuteCommand
+        {
+            get { return _canExecuteCommand; }
+            set
             {
-                _delegate.Invoke();
+                if (_canExecuteCommand != value)
+                {
+                    _canExecuteCommand = value;
+                    CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
     }
