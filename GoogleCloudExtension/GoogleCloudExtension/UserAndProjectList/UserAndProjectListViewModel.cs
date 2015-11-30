@@ -111,8 +111,8 @@ namespace GoogleCloudExtension.UserAndProjectList
 
         public UserAndProjectListViewModel()
         {
-            var handler = new WeakHandler(this.OnCredentialsChanged);
-            GCloudWrapper.Instance.AccountOrProjectChanged += handler.OnEvent;
+            var handler = new WeakAction<object, EventArgs>(this.OnCredentialsChanged);
+            GCloudWrapper.Instance.AccountOrProjectChanged += handler.Invoke;
         }
 
         private void OnCredentialsChanged(object sender, EventArgs e)

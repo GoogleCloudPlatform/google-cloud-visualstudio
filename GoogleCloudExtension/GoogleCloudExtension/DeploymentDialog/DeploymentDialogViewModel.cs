@@ -187,7 +187,7 @@ namespace GoogleCloudExtension.DeploymentDialog
 
         #region Command handlers
 
-        private void OnDeployHandler(object param)
+        private void OnDeployHandler()
         {
             DeploymentUtils.DeployProjectAsync(
                 startupProject: _window.Options.Project,
@@ -200,7 +200,7 @@ namespace GoogleCloudExtension.DeploymentDialog
             _window.Close();
         }
 
-        private void OnCancelHandler(object param)
+        private void OnCancelHandler()
         {
             _window.Close();
         }

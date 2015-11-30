@@ -84,11 +84,11 @@ namespace GoogleCloudExtension.ComputeEngineResources
         public ComputeEngineResourcesViewModel()
         {
             RefreshCommand = new WeakCommand(this.OnRefresh);
-            StartCommand = new WeakCommand(this.OnStartInstance);
-            StopCommand = new WeakCommand(this.OnStopInstance);
+            StartCommand = new WeakCommand<ComputeInstance>(this.OnStartInstance);
+            StopCommand = new WeakCommand<ComputeInstance>(this.OnStopInstance);
 
-            var handler = new WeakHandler(this.InvalidateInstancesListAsync);
-            GCloudWrapper.Instance.AccountOrProjectChanged += handler.OnEvent;
+            var handler = new WeakAction<object, EventArgs>(this.InvalidateInstancesListAsync);
+            GCloudWrapper.Instance.AccountOrProjectChanged += handler.Invoke;
         }
 
         /// <summary>
@@ -129,18 +129,13 @@ namespace GoogleCloudExtension.ComputeEngineResources
 
         #region Command handlers
 
-        private void OnRefresh(object param)
+        private void OnRefresh()
         {
             LoadComputeInstancesListAsync();
         }
 
-        private async void OnStartInstance(object param)
+        private async void OnStartInstance(ComputeInstance instance)
         {
-            var instance = (ComputeInstance)param;
-            if (instance == null)
-            {
-                return;
-            }
             if (!instance.IsTerminated)
             {
                 Debug.WriteLine($"Expected status TERMINATED got: {instance.Status}");
@@ -167,13 +162,8 @@ namespace GoogleCloudExtension.ComputeEngineResources
             LoadComputeInstancesListAsync();
         }
 
-        private async void OnStopInstance(object param)
+        private async void OnStopInstance(ComputeInstance instance)
         {
-            var instance = (ComputeInstance)param;
-            if (instance == null)
-            {
-                return;
-            }
             if (!instance.IsRunning)
             {
                 Debug.WriteLine($"Expected status RUNNING, got: {instance.Status}");
