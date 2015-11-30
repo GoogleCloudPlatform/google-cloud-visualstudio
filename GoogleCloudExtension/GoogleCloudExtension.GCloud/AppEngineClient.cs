@@ -27,11 +27,15 @@ namespace GoogleCloudExtension.GCloud
             "ADD ./ /app\n" +
             "RUN chmod +x /app/gae_start\n";
 
-        // The app.yaml to use for all apps.
+        // The app.yaml to use for all apps. The skip_files entry makes it so no local files are sent
+        // to the server, no files need to be sent because we're deploying a Docker image but gcloud
+        // will send the entire app to the server, which can take a long while.
         private const string AppYamlContent =
             "vm: true\n" +
             "threadsafe: true\n" +
-            "api_version: 1\n";
+            "api_version: 1\n" +
+            "skip_files: \n" +
+            "- ^.*$";
 
         private const string AppYamlFileName = "app.yaml";
         private const string DockerfileFilename = "Dockerfile";
