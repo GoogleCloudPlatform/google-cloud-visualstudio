@@ -23,20 +23,20 @@ namespace GoogleCloudExtension.GCloud
 
         // The Dockefile to use for the Mono runtime.
         private const string DockerfileTemplate =
-            "FROM b.gcr.io/images-tryinggce/aspnet_runtime:{0}-{1}\n" +
+            "FROM b.gcr.io/images-tryinggce/aspnet:{0}-{1}\n" +
             "ADD ./ /app\n" +
-            "RUN chmod +x /app/gae_start\n";
+            "RUN chmod +x /app/app_engine_start\n";
 
         // The app.yaml to use for all apps. The skip_files entry makes it so no local files are sent
         // to the server, no files need to be sent because we're deploying a Docker image but gcloud
         // will send the entire app to the server, which can take a long while.
         private const string AppYamlContent =
             "vm: true\n" +
-            "threadsafe: true\n" +
             "api_version: 1\n" +
             "skip_files: \n" +
             "- ^.*$";
 
+        private const string StartupScriptFileName = "app_engine_start";
         private const string AppYamlFileName = "app.yaml";
         private const string DockerfileFilename = "Dockerfile";
 
@@ -178,7 +178,7 @@ namespace GoogleCloudExtension.GCloud
 
         private static void PrepareEntryPoint(string startupProjectPath, string appTempPath, Action<string> callback)
         {
-            var entryPointPath = Path.Combine(appTempPath, "gae_start");
+            var entryPointPath = Path.Combine(appTempPath, StartupScriptFileName);
             if (File.Exists(entryPointPath))
             {
                 callback($"Entry point already found at {entryPointPath}, skipping creation.");
