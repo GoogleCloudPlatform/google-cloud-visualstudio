@@ -21,9 +21,11 @@ namespace GoogleCloudExtension.GCloud
         // them as user's versions.
         private const string BuiltinServiceVersionPrefix = "ah-";
 
-        // The Dockefile to use for the Mono runtime.
+        // The Dockefile to use for the specified runtime.
+        // {0}, the name of the runtime.
+        // {1}, the version of the runtime.
         private const string DockerfileTemplate =
-            "FROM b.gcr.io/images-tryinggce/aspnet:{0}-{1}\n" +
+            "FROM b.gcr.io/aspnet-docker/aspnet-{0}:{1}\n" +
             "ADD ./ /app\n" +
             "RUN chmod +x /app/app_engine_start\n";
 
@@ -155,7 +157,7 @@ namespace GoogleCloudExtension.GCloud
             {
                 // Copy the template file.
                 var runtimeName = DnxRuntimeInfo.GetRuntimeInfo(runtime).ImageName;
-                var dockerFileContent = String.Format(DockerfileTemplate, DnxEnvironment.DnxVersion, runtimeName);
+                var dockerFileContent = String.Format(DockerfileTemplate, runtimeName, DnxEnvironment.DnxVersion);
                 callback($"Writing file [{dockerfileDest}] for runtime {runtimeName}.");
                 File.WriteAllText(dockerfileDest, dockerFileContent);
             }
