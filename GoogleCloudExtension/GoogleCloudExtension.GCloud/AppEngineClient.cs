@@ -22,10 +22,9 @@ namespace GoogleCloudExtension.GCloud
         private const string BuiltinServiceVersionPrefix = "ah-";
 
         // The Dockefile to use for the specified runtime.
-        // {0}, the name of the runtime.
-        // {1}, the version of the runtime.
+        // {0}, the version of the runtime.
         private const string DockerfileTemplate =
-            "FROM b.gcr.io/aspnet-docker/aspnet-{0}:{1}\n" +
+            "FROM b.gcr.io/aspnet-docker/dotnet:{0}\n" +
             "ADD ./ /app\n" +
             "RUN chmod +x /app/app_engine_start\n";
 
@@ -33,7 +32,7 @@ namespace GoogleCloudExtension.GCloud
         // to the server, no files need to be sent because we're deploying a Docker image but gcloud
         // will send the entire app to the server, which can take a long while.
         private const string AppYamlContent =
-            "vm: true\n" +
+            "runtime: custom" +
             "api_version: 1\n" +
             "skip_files: \n" +
             "- ^.*$";
@@ -94,7 +93,6 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="startupProjectPath">The path to the startup project.</param>
         /// <param name="projectPaths">The paths to all of the projects in the solution.</param>
         /// <param name="versionName">The name, if any, of the version to deploy, it empty or null then a default name will be chosen.</param>
-        /// <param name="runtime">The target runtime, Mono, CoreClr, etc...</param>
         /// <param name="promoteVersion">Is this version to receive all traffic.</param>
         /// <param name="preserveOutput">Whether to preserve the result of the publish directory.</param>
         /// <param name="callback">The delegate that will be called with the output from the tools used during the deployment.</param>
@@ -104,7 +102,6 @@ namespace GoogleCloudExtension.GCloud
             string startupProjectPath,
             IList<string> projectPaths,
             string versionName,
-            DnxRuntime runtime,
             bool promoteVersion,
             bool preserveOutput,
             Action<string> callback,
@@ -113,10 +110,10 @@ namespace GoogleCloudExtension.GCloud
             var appTempPath = GetAppStagingDirectory();
             try
             {
-                await RestoreProjectsAsync(projectPaths, runtime, callback);
-                await PrepareAppBundleAsync(startupProjectPath, appTempPath, runtime, callback);
+                await RestoreProjectsAsync(projectPaths, callback);
+                await PrepareAppBundleAsync(startupProjectPath, appTempPath, callback);
                 PrepareEntryPoint(startupProjectPath, appTempPath, callback);
-                CopyAppEngineFiles(startupProjectPath, appTempPath, runtime, callback);
+                CopyAppEngineFiles(startupProjectPath, appTempPath, callback);
                 await DeployToAppEngineAsync(appTempPath, versionName, promoteVersion, callback, accountAndProject);
             }
             catch (Exception ex)
@@ -138,13 +135,8 @@ namespace GoogleCloudExtension.GCloud
             }
         }
 
-        private static void CopyAppEngineFiles(string projectPath, string appTempPath, DnxRuntime runtime, Action<string> callback)
+        private static void CopyAppEngineFiles(string projectPath, string appTempPath, Action<string> callback)
         {
-            if (!(runtime == DnxRuntime.Dnx451 || runtime == DnxRuntime.DnxCore50))
-            {
-                throw new ArgumentException("runtime");
-            }
-
             var dockerfileSrc = new FileInfo(Path.Combine(projectPath, DockerfileFilename));
             var dockerfileDest = Path.Combine(appTempPath, DockerfileFilename);
             if (dockerfileSrc.Exists)
@@ -156,9 +148,8 @@ namespace GoogleCloudExtension.GCloud
             else
             {
                 // Copy the template file.
-                var runtimeName = DnxRuntimeInfo.GetRuntimeInfo(runtime).ImageName;
-                var dockerFileContent = String.Format(DockerfileTemplate, runtimeName, DnxEnvironment.DnxVersion);
-                callback($"Writing file [{dockerfileDest}] for runtime {runtimeName}.");
+                var dockerFileContent = String.Format(DockerfileTemplate, DnxEnvironment.DnxVersion);
+                callback($"Writing file [{dockerfileDest}].");
                 File.WriteAllText(dockerfileDest, dockerFileContent);
             }
 
@@ -196,19 +187,18 @@ namespace GoogleCloudExtension.GCloud
 
         private static async Task RestoreProjectsAsync(
            IList<string> projectPaths,
-           DnxRuntime runtime,
            Action<string> callback)
         {
             callback("Restoring projects.");
-            await Task.WhenAll(projectPaths.Select(x => RestoreProject(x, runtime, callback)));
+            await Task.WhenAll(projectPaths.Select(x => RestoreProject(x, callback)));
             callback("Done restoring projects.");
         }
 
-        private static Dictionary<string, string> GetDnxEnvironmentForRuntime(DnxRuntime runtime)
+        private static Dictionary<string, string> GetDnxEnvironment()
         {
             var result = new Dictionary<string, string>();
             var webTools = DnxEnvironment.GetWebToolsPath();
-            var dnxPath = DnxEnvironment.GetDnxPathForRuntime(runtime);
+            var dnxPath = DnxEnvironment.GetDnxPath();
             var newPath = Environment.ExpandEnvironmentVariables($"{webTools};{dnxPath};%PATH%");
             result["PATH"] = newPath;
             return result;
@@ -216,10 +206,9 @@ namespace GoogleCloudExtension.GCloud
 
         private static async Task RestoreProject(
             string projectPath,
-            DnxRuntime runtime,
             Action<string> callback)
         {
-            var environment = GetDnxEnvironmentForRuntime(runtime);
+            var environment = GetDnxEnvironment();
             var command = $"/c dnu restore \"{projectPath}\"";
             callback($"Restoring project: {projectPath}");
             // This has hard dependency on dnu being a batch file.
@@ -233,19 +222,18 @@ namespace GoogleCloudExtension.GCloud
         private static async Task PrepareAppBundleAsync(
             string projectPath,
             string appTempPath,
-            DnxRuntime runtime,
             Action<string> callback)
         {
             // Customize the environment by adding the path to the node_modules directory, which can be necessary for
             // the publish process.
-            var environment = GetDnxEnvironmentForRuntime(runtime);
+            var environment = GetDnxEnvironment();
             var nodeModulesPath = Path.Combine(projectPath, "node_modules", ".bin");
             var newPath = $"{nodeModulesPath};{environment["PATH"]}";
             environment["PATH"] = newPath;
 
             // This is a dependency on the fact that DNU is a batch file, but it has to be launched this way.
             callback($"Preparing app bundle in {appTempPath}.");
-            var frameworkName = DnxRuntimeInfo.GetRuntimeInfo(runtime).FrameworkName;
+            var frameworkName = DnxRuntimeInfo.DnxCore50FrameworkName;
             string command = $"/c dnu publish \"{projectPath}\" --out \"{appTempPath}\" --framework {frameworkName} --configuration release";
             callback($"Executing command: {command}");
             var result = await ProcessUtils.RunCommandAsync("cmd.exe", command, (s, e) => callback(e.Line), environment);
