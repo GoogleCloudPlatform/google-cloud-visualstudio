@@ -17,20 +17,17 @@
     </UserControl.Resources>
 
     <Grid Margin="0" Height="369" VerticalAlignment="Top">
-        <Button Content="Deploy" HorizontalAlignment="Left" Margin="10,287,0,0" VerticalAlignment="Top" Width="181" Height="35" Command="{Binding DeployCommand}" IsDefault="True" IsEnabled="{Binding Loaded}"/>
+        <Button Content="Deploy" HorizontalAlignment="Left" Margin="10,245,0,0" VerticalAlignment="Top" Width="181" Height="35" Command="{Binding DeployCommand}" IsDefault="True" IsEnabled="{Binding Loaded}"/>
         <ComboBox HorizontalAlignment="Left" Margin="209,99,0,0" VerticalAlignment="Top" Width="181" ItemsSource="{Binding CloudProjects}" SelectedItem="{Binding SelectedCloudProject, Mode=TwoWay}" IsEnabled="{Binding Loaded}"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,99,0,0" TextWrapping="Wrap" Text="Cloud Project:" VerticalAlignment="Top"/>
-        <Button Content="Cancel" HorizontalAlignment="Left" Margin="209,287,0,0" VerticalAlignment="Top" Width="181" Height="35" Command="{Binding CancelCommand}" IsCancel="True"/>
-        <CheckBox Content="Make Default Version" HorizontalAlignment="Left" Margin="209,224,0,0" VerticalAlignment="Top" Width="178" IsChecked="{Binding MakeDefault, Mode=TwoWay}" IsEnabled="{Binding Loaded}"/>
+        <Button Content="Cancel" HorizontalAlignment="Left" Margin="209,245,0,0" VerticalAlignment="Top" Width="181" Height="35" Command="{Binding CancelCommand}" IsCancel="True"/>
+        <CheckBox Content="Make Default Version" HorizontalAlignment="Left" Margin="209,182,0,0" VerticalAlignment="Top" Width="178" IsChecked="{Binding MakeDefault, Mode=TwoWay}" IsEnabled="{Binding Loaded}"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,23,0,0" TextWrapping="Wrap" Text="Deploying project:" VerticalAlignment="Top"/>
         <TextBlock HorizontalAlignment="Left" Margin="209,23,0,0" TextWrapping="Wrap" Text="{Binding Project}" VerticalAlignment="Top" Width="181"/>
-        <TextBox HorizontalAlignment="Left" Height="23" Margin="209,175,0,0" TextWrapping="Wrap" Text="{Binding VersionName}" VerticalAlignment="Top" Width="181" IsEnabled="{Binding Loaded}"/>
-        <TextBlock HorizontalAlignment="Left" Margin="10,175,0,0" TextWrapping="Wrap" Text="Version Name:" VerticalAlignment="Top" Width="170"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="209,140,0,0" TextWrapping="Wrap" Text="{Binding VersionName}" VerticalAlignment="Top" Width="181" IsEnabled="{Binding Loaded}"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,140,0,0" TextWrapping="Wrap" Text="Version Name:" VerticalAlignment="Top" Width="170"/>
         <TextBlock HorizontalAlignment="Left" Margin="10,61,0,0" TextWrapping="Wrap" Text="Cloud Account:" VerticalAlignment="Top" Width="120"/>
         <ComboBox HorizontalAlignment="Left" Margin="209,61,0,0" VerticalAlignment="Top" Width="181" ItemsSource="{Binding Accounts}" SelectedItem="{Binding SelectedAccount}" IsEnabled="{Binding Loaded}"/>
-        <TextBlock x:Name="textBlock" HorizontalAlignment="Left" Margin="10,138,0,0" TextWrapping="Wrap" Text="Runtime:" VerticalAlignment="Top" Width="150"/>
-        <ComboBox x:Name="comboBox" HorizontalAlignment="Left" Margin="209,138,0,0" VerticalAlignment="Top" Width="181" IsEnabled="{Binding Loaded}" ItemsSource="{Binding SupportedRuntimes}" SelectedItem="{Binding SelectedRuntime, Mode=TwoWay}" ItemTemplate="{DynamicResource RuntimeTemplate}"/>
-        <CheckBox x:Name="checkBox" Content="Preserve Publish Output" HorizontalAlignment="Left" Margin="209,255,0,0" VerticalAlignment="Top" Width="178" IsChecked="{Binding PreserveOutput, Mode=TwoWay}" IsEnabled="{Binding Loaded}"/>
-
+        <CheckBox x:Name="checkBox" Content="Preserve Publish Output" HorizontalAlignment="Left" Margin="209,213,0,0" VerticalAlignment="Top" Width="178" IsChecked="{Binding PreserveOutput, Mode=TwoWay}" IsEnabled="{Binding Loaded}"/>
     </Grid>
 </UserControl>

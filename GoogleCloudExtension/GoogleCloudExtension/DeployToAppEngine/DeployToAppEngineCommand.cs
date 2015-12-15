@@ -6,6 +6,7 @@ using GoogleCloudExtension.GCloud.Dnx;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
 
@@ -89,12 +90,28 @@ namespace GoogleCloudExtension.DeployToAppEngine
                 return;
             }
 
-            var window = new DeploymentDialogWindow(new DeploymentDialogWindowOptions
+            // We only support the CoreCLR runtime.
+            if (startupProject.Runtime == DnxRuntime.DnxCore50)
             {
-                Project = startupProject,
-                ProjectsToRestore = SolutionHelper.CurrentSolution.Projects,
-            });
-            window.ShowModal();
+                var window = new DeploymentDialogWindow(new DeploymentDialogWindowOptions
+                {
+                    Project = startupProject,
+                    ProjectsToRestore = SolutionHelper.CurrentSolution.Projects,
+                });
+                window.ShowModal();
+            }
+            else
+            {
+                var runtime = DnxRuntimeInfo.GetRuntimeInfo(startupProject.Runtime);
+                AppEngineOutputWindow.OutputLine($"Runtime {runtime.DisplayName} is not supported for project {startupProject.Name}");
+                VsShellUtilities.ShowMessageBox(
+                    this.ServiceProvider,
+                    $"Runtime {runtime.DisplayName} is not supported. Project {startupProject.Name} needs to target {DnxRuntimeInfo.DnxCore50DisplayString}.",
+                    "Runtime not supported",
+                    OLEMSGICON.OLEMSGICON_INFO,
+                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            }
         }
 
         private void QueryStatusHandler(object sender, EventArgs e)
@@ -111,7 +128,7 @@ namespace GoogleCloudExtension.DeployToAppEngine
 
             if (startupProject != null)
             {
-                isDnxProject = startupProject.Runtime != DnxRuntime.None && startupProject.HasWebServer;
+                isDnxProject = startupProject.Runtime != DnxRuntime.None && startupProject.IsEntryPoint;
             }
 
             bool isComandEnabled = !GoogleCloudExtensionPackage.IsDeploying && isDnxProject;

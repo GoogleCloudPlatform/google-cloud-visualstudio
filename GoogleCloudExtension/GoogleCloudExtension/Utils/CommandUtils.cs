@@ -13,8 +13,7 @@ namespace GoogleCloudExtension.Utils
     {
         public static bool ValidateEnvironment(IServiceProvider serviceProvider)
         {
-            var validDNXInstallation = DnxEnvironment.ValidateDnxInstallationForRuntime(DnxRuntime.DnxCore50) ||
-                DnxEnvironment.ValidateDnxInstallationForRuntime(DnxRuntime.Dnx451);
+            var validDNXInstallation = DnxEnvironment.ValidateDnxInstallationForRuntime();
             var validGCloudInstallation = GCloudWrapper.Instance.ValidateGCloudInstallation();
             var validEnvironment = validDNXInstallation && validGCloudInstallation;
             if (!validEnvironment)

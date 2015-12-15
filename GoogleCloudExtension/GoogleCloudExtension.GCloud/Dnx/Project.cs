@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
 
         public IEnumerable<DnxRuntime> SupportedRuntimes => _supportedRuntimes.Value;
 
-        public bool HasWebServer => _parsedProject.Value.Dependencies.ContainsKey(KestrelFullName);
+        public bool IsEntryPoint => _parsedProject.Value.Dependencies.ContainsKey(KestrelFullName);
 
         public Project(string root)
         {
@@ -74,8 +74,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
         };
 
         private DnxRuntime GetProjectRuntime() => s_PreferredRuntimes
-            .Where(x => _parsedProject.Value.Frameworks.ContainsKey(x.FrameworkName)
-                && DnxEnvironment.ValidateDnxInstallationForRuntime(x.Runtime))
+            .Where(x => _parsedProject.Value.Frameworks.ContainsKey(x.FrameworkName))
             .Select(x => x.Runtime)
             .FirstOrDefault();
 
@@ -87,7 +86,6 @@ namespace GoogleCloudExtension.GCloud.Dnx
 
         private IEnumerable<DnxRuntime> GetSupportedRuntimes() => _parsedProject.Value.Frameworks
             .Select(x => DnxRuntimeInfo.GetRuntimeInfo(x.Key).Runtime)
-            .Where(x => x != DnxRuntime.None)
-            .Where(x => DnxEnvironment.ValidateDnxInstallationForRuntime(x));
+            .Where(x => x != DnxRuntime.None);
     }
 }

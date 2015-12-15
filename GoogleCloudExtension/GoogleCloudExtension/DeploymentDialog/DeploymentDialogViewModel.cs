@@ -2,7 +2,6 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.GCloud.Dnx;
 using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
 using System.Collections.Generic;
@@ -28,7 +27,6 @@ namespace GoogleCloudExtension.DeploymentDialog
         private CloudProject _selectedCloudProject;
         private IEnumerable<string> _accounts;
         private string _selectedAccount;
-        private DnxRuntime _selectedRuntime;
         private bool _loaded;
         private bool _makeDefault;
         private bool _preserveOutput;
@@ -38,11 +36,6 @@ namespace GoogleCloudExtension.DeploymentDialog
         /// The project that will be deployed.
         /// </summary>
         public string Project { get; }
-
-        /// <summary>
-        /// The list of supported runtimes by the project being deployed.
-        /// </summary>
-        public IList<DnxRuntime> SupportedRuntimes { get; }
 
         /// <summary>
         /// The list of cloud projects available to deploy the code.
@@ -82,15 +75,6 @@ namespace GoogleCloudExtension.DeploymentDialog
                 SetValueAndRaise(ref _selectedAccount, value);
                 InvalidateSelectedAccount();
             }
-        }
-
-        /// <summary>
-        /// The selected runtime to use for the deployment.
-        /// </summary>
-        public DnxRuntime SelectedRuntime
-        {
-            get { return _selectedRuntime; }
-            set { SetValueAndRaise(ref _selectedRuntime, value); }
         }
 
         /// <summary>
@@ -144,8 +128,6 @@ namespace GoogleCloudExtension.DeploymentDialog
             this.DeployCommand = new WeakCommand(this.OnDeployHandler);
             this.CancelCommand = new WeakCommand(this.OnCancelHandler);
             this.Project = window.Options.Project.Name;
-            this.SupportedRuntimes = window.Options.Project.SupportedRuntimes.ToList();
-            this.SelectedRuntime = window.Options.Project.Runtime;
             _window = window;
         }
 
@@ -192,7 +174,6 @@ namespace GoogleCloudExtension.DeploymentDialog
             DeploymentUtils.DeployProjectAsync(
                 startupProject: _window.Options.Project,
                 projects: _window.Options.ProjectsToRestore,
-                selectedRuntime: SelectedRuntime,
                 versionName: VersionName,
                 makeDefault: MakeDefault,
                 preserveOutput: PreserveOutput,

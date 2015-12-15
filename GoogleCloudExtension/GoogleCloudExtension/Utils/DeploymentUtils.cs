@@ -14,7 +14,6 @@ namespace GoogleCloudExtension.Utils
         public static async void DeployProjectAsync(
             Project startupProject,
             IList<Project> projects,
-            DnxRuntime selectedRuntime,
             string versionName,
             bool makeDefault,
             bool preserveOutput,
@@ -26,8 +25,7 @@ namespace GoogleCloudExtension.Utils
                 AppEngineOutputWindow.Activate();
                 AppEngineOutputWindow.Clear();
                 AppEngineOutputWindow.OutputLine("Deployment to AppEngine started...");
-                var displayName = DnxRuntimeInfo.GetRuntimeInfo(selectedRuntime).DisplayName;
-                AppEngineOutputWindow.OutputLine($"Deploying project {startupProject} using runtime {displayName}.");
+                AppEngineOutputWindow.OutputLine($"Deploying project {startupProject}.");
                 AppEngineOutputWindow.OutputLine($"Deploying to cloud project id {accountAndProject.ProjectId} for acccount {accountAndProject.Account}");
                 StatusbarHelper.Freeze();
                 GoogleCloudExtensionPackage.IsDeploying = true;
@@ -37,7 +35,6 @@ namespace GoogleCloudExtension.Utils
                     startupProjectPath: startupProject.Root,
                     projectPaths: projects.Select(x => x.Root).ToList(),
                     versionName: versionName,
-                    runtime: selectedRuntime,
                     promoteVersion: makeDefault,
                     callback: AppEngineOutputWindow.OutputLine,
                     preserveOutput: preserveOutput,

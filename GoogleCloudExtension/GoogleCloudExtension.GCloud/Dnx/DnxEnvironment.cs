@@ -25,7 +25,6 @@ namespace GoogleCloudExtension.GCloud.Dnx
         // Names for the runtime to use depending on the runtime.
         //   {0} is the bitness of the os, x86 or x64.
         //   {1} is the version of the runtime.
-        private const string Dnx451RuntimeNameFormat = "dnx-clr-win-{0}.{1}";
         private const string DnxCore50RuntimeNameFormat = "dnx-coreclr-win-{0}.{1}";
 
         private static readonly List<string> s_VSKeysToCheck = new List<string>
@@ -47,25 +46,12 @@ namespace GoogleCloudExtension.GCloud.Dnx
         /// </summary>
         /// <param name="runtime"></param>
         /// <returns></returns>
-        public static string GetDnxPathForRuntime(DnxRuntime runtime)
+        public static string GetDnxPath()
         {
             var userDirectory = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             string bitness = Environment.Is64BitProcess ? "x64" : "x86";
 
-            string runtimeNameFormat = null;
-            switch (runtime)
-            {
-                case DnxRuntime.Dnx451:
-                    runtimeNameFormat = Dnx451RuntimeNameFormat;
-                    break;
-                case DnxRuntime.DnxCore50:
-                    runtimeNameFormat = DnxCore50RuntimeNameFormat;
-                    break;
-                default:
-                    throw new InvalidOperationException();
-            }
-
-            var runtimeName = String.Format(runtimeNameFormat, bitness, DnxVersion);
+            var runtimeName = String.Format(DnxCore50RuntimeNameFormat, bitness, DnxVersion);
             var runtimeRelativePath = String.Format(DnxRuntimesBinPathFormat, runtimeName);
             Debug.WriteLine($"Using runtime path: {runtimeRelativePath}");
 
@@ -77,15 +63,15 @@ namespace GoogleCloudExtension.GCloud.Dnx
             return Path.Combine(s_VSInstallPath.Value, WebToolsRelativePath);
         }
 
-        public static bool ValidateDnxInstallationForRuntime(DnxRuntime runtime)
+        public static bool ValidateDnxInstallationForRuntime()
         {
             bool result = false;
             Debug.WriteLine("Validating DNX installation.");
-            var dnxDirectory = GetDnxPathForRuntime(runtime);
+            var dnxDirectory = GetDnxPath();
             var dnuPath = Path.Combine(dnxDirectory, "dnu.cmd");
 
             result = File.Exists(dnuPath);
-            Debug.WriteLineIf(!result, $"DNX runtime {runtime} not installed, cannot find {dnuPath}");
+            Debug.WriteLineIf(!result, $"DNX runtime not installed, cannot find {dnuPath}");
             return result;
         }
 
