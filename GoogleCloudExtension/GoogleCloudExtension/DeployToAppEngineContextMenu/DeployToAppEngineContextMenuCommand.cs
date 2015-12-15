@@ -1,9 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
-using GoogleCloudExtension.DeploymentDialog;
 using GoogleCloudExtension.GCloud.Dnx;
-using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -126,20 +124,9 @@ namespace GoogleCloudExtension.DeployToAppEngineContextMenu
 
         private void DeployToGaeHandler(object sender, EventArgs e)
         {
-            var startupProjectPath = GetSelectedProjectPath();
-
-            // Validate the environment, possibly show an error if not valid.
-            if (!CommandUtils.ValidateEnvironment(this.ServiceProvider))
-            {
-                return;
-            }
-
-            var window = new DeploymentDialogWindow(new DeploymentDialogWindowOptions
-            {
-                Project = new Project(startupProjectPath),
-                ProjectsToRestore = SolutionHelper.CurrentSolution.Projects,
-            });
-            window.ShowModal();
+            DeploymentUtils.StartProjectDeployment(
+                new Project(GetSelectedProjectPath()),
+                ServiceProvider);
         }
 
         private void QueryStatusHandler(object sender, EventArgs e)
@@ -157,7 +144,7 @@ namespace GoogleCloudExtension.DeployToAppEngineContextMenu
             if (isDnxProject)
             {
                 project = new Project(selectedProjectPath);
-                isDnxProject = project.Runtime != DnxRuntime.None && project.HasWebServer;
+                isDnxProject = project.Runtime != DnxRuntime.None && project.IsEntryPoint;
             }
 
             bool isCommandEnabled = !GoogleCloudExtensionPackage.IsDeploying && isDnxProject;
