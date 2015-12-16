@@ -33,11 +33,11 @@
 
     <Menus>
       <!-- The Google Cloud menu. -->
-      <Menu guid="guidDeployToGaePackageCmdSet" id="GcpMenu" type="Menu" priority="0x700">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_MM_TOOLSADDINS" />
+      <Menu guid="guidDeployToGaePackageCmdSet" id="GcpMenu" type="Menu" priority="0x0000">
+        <Parent guid="guidDeployToGaePackageCmdSet" id="GcpToolsGroupMenu" />
         <Strings>
-          <ButtonText>Google Cloud</ButtonText>
-          <CommandName>Google Cloud</CommandName>
+          <ButtonText>Google Cloud Tools</ButtonText>
+          <CommandName>Google Cloud Tools</CommandName>
         </Strings>
       </Menu>
     </Menus>
@@ -48,9 +48,19 @@
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE" />
       </Group>
 
-      <!-- This group contains all of the Gcp commands in the top level menu. -->
+      <!-- This group represents the GCP tools group under the Tools menu. -->
+      <Group guid="guidDeployToGaePackageCmdSet" id="GcpToolsGroupMenu" priority="0x9000">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
+      </Group>
+
+      <!-- This group contains all of the commands that go under the GCP tools submenu. -->
       <Group guid="guidDeployToGaePackageCmdSet" id="GcpToolsGroup" priority="0x0000">
         <Parent guid="guidDeployToGaePackageCmdSet" id="GcpMenu" />
+      </Group>
+
+      <!-- This group contains all of the tool window commands. -->
+      <Group guid="guidDeployToGaePackageCmdSet" id="GcpWindowsGroup" priority="0x0600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CSCD_WINDOWS" />
       </Group>
     </Groups>
 
@@ -75,39 +85,31 @@
         <CommandFlag>DynamicVisibility</CommandFlag>
         <CommandFlag>TextChanges</CommandFlag>
         <Strings>
-          <ButtonText>Deploy Project to Google AppEngine...</ButtonText>
+          <ButtonText>Deploy Project to AppEngine...</ButtonText>
         </Strings>
       </Button>
 
-      <!-- This command shows the tool window that managed AppEngine apps. -->
-      <Button guid="guidDeployToGaePackageCmdSet" id="cmdidAppEngineAppsToolWindowCommand" priority="0x0200" type="Button">
-        <Parent guid="guidDeployToGaePackageCmdSet" id="GcpToolsGroup" />
-        <Strings>
-          <ButtonText>Google AppEngine Apps</ButtonText>
-        </Strings>
-      </Button>
-
-      <!-- This command shows the tool window that managed GCE resources. -->
-      <Button guid="guidDeployToGaePackageCmdSet" id="cmdidComputeEngineResourcesCommand" priority="0x0300" type="Button">
-        <Parent guid="guidDeployToGaePackageCmdSet" id="GcpToolsGroup" />
-        <Strings>
-          <ButtonText>Google Compute Engine Resources</ButtonText>
-        </Strings>
-      </Button>
-
-      <!-- This command shows the tool window that manages the current account and project, could be a toolbar. -->
-      <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidUserAndProjectListWindowCommand" priority="0x0400" type="Button">
-        <Parent guid="guidDeployToGaePackageCmdSet" id="GcpToolsGroup" />
-        <Strings>
-          <ButtonText>Google Cloud Projects and Users</ButtonText>
-        </Strings>
-      </Button>
-      
       <!-- This command opens the browser to add a new account to the credentials store. -->
       <Button guid="guidDeployToGaePackageCmdSet" id="cmdidAddNewAccountCommand" priority="0x500" type="Button">
         <Parent guid="guidDeployToGaePackageCmdSet" id="GcpToolsGroup" />
         <Strings>
           <ButtonText>Add Account...</ButtonText>
+        </Strings>
+      </Button>
+    
+      <!-- This command shows the tool window that managed AppEngine apps. -->
+      <Button guid="guidDeployToGaePackageCmdSet" id="cmdidAppEngineAppsToolWindowCommand" priority="0x0200" type="Button">
+        <Parent guid="guidDeployToGaePackageCmdSet" id="GcpWindowsGroup" />
+        <Strings>
+          <ButtonText>Google AppEngine Apps</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- This command shows the tool window that manages the current account and project, could be a toolbar. -->
+      <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidUserAndProjectListWindowCommand" priority="0x0400" type="Button">
+        <Parent guid="guidDeployToGaePackageCmdSet" id="GcpWindowsGroup" />
+        <Strings>
+          <ButtonText>Google Cloud Projects and Users</ButtonText>
         </Strings>
       </Button>
     </Buttons>
@@ -121,7 +123,6 @@
             must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
       <Bitmap guid="guidImages" href="Resources\DeployToGae.png" usedList="bmpPic1" />
       <Bitmap guid="guidImages1" href="Resources\AppEngineAppsToolWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
-      <Bitmap guid="guidImages2" href="Resources\ComputeEngineResourcesCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
       <Bitmap guid="guidImages3" href="Resources\UserAndProjectListWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
       <Bitmap guid="guidImages4" href="Resources\DeployToGaeContextMenuCommand.png" usedList="bmpPic1" />
     </Bitmaps>
@@ -136,11 +137,12 @@
       <IDSymbol value="0x1030" name="ItemContextMenu" />
       <IDSymbol value="0x0100" name="DeployToGaeId" />
       <IDSymbol value="4129" name="cmdidAppEngineAppsToolWindowCommand" />
-      <IDSymbol value="4130" name="cmdidComputeEngineResourcesCommand" />
       <IDSymbol value="0x1060" name="GcpMenu" />
       <IDSymbol value="0x1070" name="GcpToolsGroup" />
+      <IDSymbol value="0x1080" name="GcpToolsGroupMenu" />
       <IDSymbol value="4179" name="cmdidDeployToGaeContextMenuCommand" />
       <IDSymbol value="4180" name="cmdidAddNewAccountCommand" />
+      <IDSymbol value="5000" name="GcpWindowsGroup"/>
     </GuidSymbol>
 
     <GuidSymbol name="guidImages" value="{7f45e823-c417-46b7-bcf7-eb027a474180}">

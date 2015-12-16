@@ -3,7 +3,6 @@
 
 using GoogleCloudExtension.AddNewAccount;
 using GoogleCloudExtension.AppEngineApps;
-using GoogleCloudExtension.ComputeEngineResources;
 using GoogleCloudExtension.DeployToAppEngine;
 using GoogleCloudExtension.DeployToAppEngineContextMenu;
 using GoogleCloudExtension.UserAndProjectList;
@@ -39,7 +38,6 @@ namespace GoogleCloudExtension
     [Guid(GoogleCloudExtensionPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideToolWindow(typeof(AppEngineAppsToolWindow))]
-    [ProvideToolWindow(typeof(ComputeEngineResourcesWindow))]
     [ProvideToolWindow(typeof(UserAndProjectListWindow))]
     [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
     public sealed class GoogleCloudExtensionPackage : Package
@@ -71,7 +69,6 @@ namespace GoogleCloudExtension
             base.Initialize();
 
             AppEngineAppsToolWindowCommand.Initialize(this);
-            ComputeEngineResourcesWindowCommand.Initialize(this);
             DeployToAppEngineCommand.Initialize(this);
             UserAndProjectListWindowCommand.Initialize(this);
             DeployToAppEngineContextMenuCommand.Initialize(this);

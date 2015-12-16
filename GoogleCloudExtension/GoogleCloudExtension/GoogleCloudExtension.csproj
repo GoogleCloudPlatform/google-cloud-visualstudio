@@ -66,12 +66,6 @@
     <Compile Include="DeploymentDialog\DeploymentDialogViewModel.cs" />
     <Compile Include="Projects\SolutionHelper.cs" />
     <Compile Include="Utils\AppEngineOutputWindow.cs" />
-    <Compile Include="ComputeEngineResources\ComputeEngineResourcesViewModel.cs" />
-    <Compile Include="ComputeEngineResources\ComputeEngineResourcesWindow.cs" />
-    <Compile Include="ComputeEngineResources\ComputeEngineResourcesWindowCommand.cs" />
-    <Compile Include="ComputeEngineResources\ComputeEngineResourcesWindowControl.xaml.cs">
-      <DependentUpon>ComputeEngineResourcesWindowControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Utils\CommandUtils.cs" />
     <Compile Include="Utils\DeploymentUtils.cs" />
     <Compile Include="DeployToAppEngineContextMenu\DeployToAppEngineContextMenuCommand.cs" />
@@ -240,10 +234,6 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="AppEngineApps\AppEngineAppsToolWindowControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ComputeEngineResources\ComputeEngineResourcesWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
