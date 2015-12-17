@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.GCloud.Models;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
@@ -21,18 +22,28 @@ namespace GoogleCloudExtension.AppEngineApps
     [Guid("fe34c2aa-59b3-40ad-a3b6-2743d072d2aa")]
     public class AppEngineAppsToolWindow : ToolWindowPane
     {
+        private readonly AppEngineAppsToolViewModel _model;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AppEngineAppsToolWindow"/> class.
         /// </summary>
         public AppEngineAppsToolWindow() : base(null)
         {
             this.Caption = "Google AppEngine";
-            var model = new AppEngineAppsToolViewModel();
-            var content = new AppEngineAppsToolWindowControl { DataContext = model };
+            _model = new AppEngineAppsToolViewModel();
+            var content = new AppEngineAppsToolWindowControl { DataContext = _model };
             this.Content = content;
 
             // Load the list of apps for the current user and project.
-            model.LoadAppEngineAppListAsync();
+            _model.LoadAppEngineAppListAsync();
+
+            // Add an event handler to the content so we can listen for selection changes.
+            content.SelectedItemChanged += Content_SelectedItemChanged;
+        }
+
+        private void Content_SelectedItemChanged(object sender, ModuleAndVersion e)
+        {
+            _model.CurrentApp = e;
         }
     }
 }

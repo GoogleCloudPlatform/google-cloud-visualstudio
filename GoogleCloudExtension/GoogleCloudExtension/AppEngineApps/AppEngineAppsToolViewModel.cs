@@ -94,12 +94,12 @@ namespace GoogleCloudExtension.AppEngineApps
             get { return _currentApp; }
             set
             {
+                SetValueAndRaise(ref _currentApp, value);
                 if (value != null)
                 {
                     this.SetDefaultVersionEnabled = !value.IsDefault;
                 }
                 this.OpenAppEnabled = (value != null);
-                SetValueAndRaise(ref _currentApp, value);
             }
         }
 
