@@ -3,19 +3,37 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:Models="clr-namespace:GoogleCloudExtension.AppEngineApps"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+             xmlns:Models="clr-namespace:GoogleCloudExtension.GCloud.Models;assembly=GoogleCloudExtension.GCloud"
+             xmlns:AppEngineAps="clr-namespace:GoogleCloudExtension.AppEngineApps"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance {x:Type Models:AppEngineAppsToolViewModel}}"
+             d:DataContext="{d:DesignInstance {x:Type AppEngineAps:AppEngineAppsToolViewModel}}"
              Name="MyToolWindow">
     
     <UserControl.Resources>
         <utils:VisibilityConverter x:Key="visibilityConverter" />
 
         <utils:BooleanConverter x:Key="AppIsDefaultConverter" TrueValue="(Default)" FalseValue="" />
+
+        <!-- Data template to be applied to the modules, which contain versions. -->
+        <HierarchicalDataTemplate DataType="{x:Type AppEngineAps:Module}" ItemsSource="{Binding Versions}">
+            <TextBlock Text="{Binding Name}" />
+        </HierarchicalDataTemplate>
+
+        <!-- Data template to be applied to the versions, which are the leafs. -->
+        <DataTemplate DataType="{x:Type Models:ModuleAndVersion}">
+            <TextBlock>
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0} {1}">
+                        <Binding Path="Version" />
+                        <Binding Path="IsDefault" Converter="{StaticResource AppIsDefaultConverter}" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </DataTemplate>
     </UserControl.Resources>
     
     <Grid>
@@ -28,26 +46,10 @@
         <!-- This layer shows the AppEngine apps data. -->
         <StackPanel Background="{DynamicResource VsBrush.Window}"
                     Visibility="{Binding IsGCloudInstalled, Converter={StaticResource visibilityConverter}}">
-            <ListBox Height="212"
-                     Margin="10,10,10,0"
-                     SelectedItem="{Binding CurrentApp, Mode=TwoWay}"
-                     ItemsSource="{Binding Apps}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock>
-                                <TextBlock.Text>
-                                    <MultiBinding StringFormat="Module: {0} Version: {1} {2}">
-                                        <Binding Path="Module" />
-                                        <Binding Path="Version" />
-                                        <Binding Path="IsDefault" Converter="{StaticResource AppIsDefaultConverter}"/>
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                        </StackPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <!-- Hierarchical view of the modules and versions within the modules. -->
+            <TreeView Height="212"
+                      Margin="10,10,10,0"
+                      ItemsSource="{Binding Apps}" />
 
             <!-- Display the currently selected version. -->
             <TextBlock TextWrapping="Wrap"

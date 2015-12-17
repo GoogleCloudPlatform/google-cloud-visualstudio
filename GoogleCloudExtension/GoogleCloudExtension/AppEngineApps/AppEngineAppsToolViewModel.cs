@@ -12,12 +12,25 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.AppEngineApps
 {
+    public class Module
+    {
+        public string Name { get; }
+
+        public IEnumerable<ModuleAndVersion> Versions { get; }
+
+        public Module(string name, IEnumerable<ModuleAndVersion> versions)
+        {
+            Name = name;
+            Versions = versions;
+        }
+    }
+
     /// <summary>
     /// This class contains the view specific logic for the AppEngineAppsToolWindow view.
     /// </summary>
     internal class AppEngineAppsToolViewModel : ViewModelBase
     {
-        private IList<ModuleAndVersion> _apps;
+        private IList<Module> _apps;
         private ModuleAndVersion _currentApp;
         private bool _openAppEnabled;
         private bool _setDefaultVersionEnabled;
@@ -26,14 +39,14 @@ namespace GoogleCloudExtension.AppEngineApps
         /// <summary>
         /// The list of module and version combinations for the current project.
         /// </summary>
-        public IList<ModuleAndVersion> Apps
+        public IList<Module> Apps
         {
             get { return _apps; }
             private set
             {
                 SetValueAndRaise(ref _apps, value);
                 RaisePropertyChanged(nameof(HaveApps));
-                this.CurrentApp = value?.FirstOrDefault();
+                this.CurrentApp = value?.FirstOrDefault()?.Versions?.FirstOrDefault();
             }
         }
 
@@ -137,7 +150,12 @@ namespace GoogleCloudExtension.AppEngineApps
                 this.LoadingMessage = "Loading AppEngine app list...";
                 this.Loading = true;
                 this.Apps = null;
-                this.Apps = await AppEngineClient.GetAppEngineAppListAsync();
+                var apps = await AppEngineClient.GetAppEngineAppListAsync();
+                this.Apps = apps
+                    .GroupBy(x => x.Module)
+                    .OrderBy(x => x.Key)
+                    .Select(x => new Module(x.Key, x))
+                    .ToList();
             }
             catch (GCloudException ex)
             {
