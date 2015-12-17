@@ -43,6 +43,11 @@ namespace GoogleCloudExtension.AppEngineApps
         }
     }
 
+    /// <summary>
+    /// This clas represents the group of versions for each module in the project, allows
+    /// the UI to show a hierarchical view of modules and the versions that belong to the
+    /// module.
+    /// </summary>
     public class Module
     {
         public string Name { get; }
