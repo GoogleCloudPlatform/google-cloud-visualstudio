@@ -17,29 +17,29 @@ namespace GoogleCloudExtension.AppEngineApps
     /// top of the list, followed by the rest of the versions sorted alphabetically by their
     /// names.
     /// </summary>
-    internal class VersionComparer : IComparer<ModuleAndVersion>
+    internal class VersionComparer : IComparer<ModuleAndVersionViewModel>
     {
-        public int Compare(ModuleAndVersion x, ModuleAndVersion y)
+        public int Compare(ModuleAndVersionViewModel x, ModuleAndVersionViewModel y)
         {
             // There's only one default version, so both having the default bit
             // set means is the same version.
-            if (x.IsDefault && y.IsDefault)
+            if (x.ModuleAndVersion.IsDefault && y.ModuleAndVersion.IsDefault)
             {
                 return 0;
             }
 
             // Ensure the default version is first.
-            if (x.IsDefault)
+            if (x.ModuleAndVersion.IsDefault)
             {
                 return -1;
             }
-            else if (y.IsDefault)
+            else if (y.ModuleAndVersion.IsDefault)
             {
                 return 1;
             }
 
             // No default version, compare by name.
-            return x.Version.CompareTo(y.Version);
+            return x.ModuleAndVersion.Version.CompareTo(y.ModuleAndVersion.Version);
         }
     }
 
@@ -48,13 +48,13 @@ namespace GoogleCloudExtension.AppEngineApps
     /// the UI to show a hierarchical view of modules and the versions that belong to the
     /// module.
     /// </summary>
-    public class Module
+    internal class Module
     {
         public string Name { get; }
 
-        public IEnumerable<ModuleAndVersion> Versions { get; }
+        public IEnumerable<ModuleAndVersionViewModel> Versions { get; }
 
-        public Module(string name, IEnumerable<ModuleAndVersion> versions)
+        public Module(string name, IEnumerable<ModuleAndVersionViewModel> versions)
         {
             Name = name;
             Versions = versions.OrderBy(x => x, new VersionComparer());
@@ -67,10 +67,6 @@ namespace GoogleCloudExtension.AppEngineApps
     internal class AppEngineAppsToolViewModel : ViewModelBase
     {
         private IList<Module> _apps;
-        private ModuleAndVersion _currentApp;
-        private bool _openAppEnabled;
-        private bool _setDefaultVersionEnabled;
-        private string _openAppButtonTitle = "Open App";
 
         /// <summary>
         /// The list of module and version combinations for the current project.
@@ -82,73 +78,13 @@ namespace GoogleCloudExtension.AppEngineApps
             {
                 SetValueAndRaise(ref _apps, value);
                 RaisePropertyChanged(nameof(HaveApps));
-                this.CurrentApp = value?.FirstOrDefault()?.Versions?.FirstOrDefault();
             }
         }
-
-        /// <summary>
-        /// The selected version.
-        /// </summary>
-        public ModuleAndVersion CurrentApp
-        {
-            get { return _currentApp; }
-            set
-            {
-                SetValueAndRaise(ref _currentApp, value);
-                if (value != null)
-                {
-                    this.SetDefaultVersionEnabled = !value.IsDefault;
-                }
-                this.OpenAppEnabled = (value != null);
-            }
-        }
-
-        /// <summary>
-        /// The command to invoke to open a browser on the selected app.
-        /// </summary>
-        public ICommand OpenAppCommand { get; }
-
-        /// <summary>
-        /// The command to invoke to delete the selected version.
-        /// </summary>
-        public ICommand DeleteVersionCommand { get; }
-
-        /// <summary>
-        /// The command to invoke to set the selected version as the default version.
-        /// </summary>
-        public ICommand SetDefaultVersionCommand { get; }
 
         /// <summary>
         /// The command to invoke to refresh the list of modules and versions.
         /// </summary>
         public ICommand RefreshCommand { get; }
-
-        /// <summary>
-        ///  Whether the open app command is enabled.
-        /// </summary>
-        public bool OpenAppEnabled
-        {
-            get { return _openAppEnabled; }
-            set { SetValueAndRaise(ref _openAppEnabled, value); }
-        }
-
-        /// <summary>
-        /// Wether the set default version command is enabled.
-        /// </summary>
-        public bool SetDefaultVersionEnabled
-        {
-            get { return _setDefaultVersionEnabled; }
-            set { SetValueAndRaise(ref _setDefaultVersionEnabled, value); }
-        }
-
-        /// <summary>
-        /// The title to use for the open app button.
-        /// </summary>
-        public string OpenAppButtonTitle
-        {
-            get { return _openAppButtonTitle; }
-            private set { SetValueAndRaise(ref _openAppButtonTitle, value); }
-        }
 
         /// <summary>
         /// Helper property to determine if there are apps in the list.
@@ -157,9 +93,6 @@ namespace GoogleCloudExtension.AppEngineApps
 
         public AppEngineAppsToolViewModel()
         {
-            OpenAppCommand = new WeakCommand<ModuleAndVersion>(this.OnOpenApp);
-            DeleteVersionCommand = new WeakCommand<ModuleAndVersion>(this.OnDeleteVersion);
-            SetDefaultVersionCommand = new WeakCommand<ModuleAndVersion>(this.OnSetDefaultVersion);
             RefreshCommand = new WeakCommand(this.OnRefresh);
 
             // Add a weak event handler to receive notifications of the deployment of app engine instances.
@@ -190,7 +123,7 @@ namespace GoogleCloudExtension.AppEngineApps
                 this.Apps = apps
                     .GroupBy(x => x.Module)
                     .OrderBy(x => x.Key)
-                    .Select(x => new Module(x.Key, x))
+                    .Select(x => new Module(x.Key, x.Select(y => new ModuleAndVersionViewModel(this, y))))
                     .ToList();
             }
             catch (GCloudException ex)
@@ -206,67 +139,6 @@ namespace GoogleCloudExtension.AppEngineApps
         }
 
         #region Command handlers
-
-        private async void OnOpenApp(ModuleAndVersion app)
-        {
-            try
-            {
-                this.OpenAppEnabled = false;
-                this.OpenAppButtonTitle = "Opening app...";
-
-                var accountAndProject = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
-                var url = $"https://{app.Version}-dot-{app.Module}-dot-{accountAndProject.ProjectId}.appspot.com/";
-                Debug.WriteLine($"Opening URL: {url}");
-                Process.Start(url);
-            }
-            finally
-            {
-                this.OpenAppEnabled = true;
-                this.OpenAppButtonTitle = "Open App";
-            }
-        }
-
-        private async void OnDeleteVersion(ModuleAndVersion app)
-        {
-            try
-            {
-                this.LoadingMessage = "Deleting version...";
-                this.Loading = true;
-                await AppEngineClient.DeleteAppVersion(app.Module, app.Version);
-            }
-            catch (GCloudException ex)
-            {
-                AppEngineOutputWindow.OutputLine($"Failed to delete version {app.Version} in module {app.Module}");
-                AppEngineOutputWindow.OutputLine(ex.Message);
-                AppEngineOutputWindow.Activate();
-            }
-            finally
-            {
-                this.Loading = false;
-            }
-            LoadAppEngineAppListAsync();
-        }
-
-        private async void OnSetDefaultVersion(ModuleAndVersion app)
-        {
-            try
-            {
-                this.Loading = true;
-                this.LoadingMessage = "Setting default version...";
-                await AppEngineClient.SetDefaultAppVersionAsync(app.Module, app.Version);
-            }
-            catch (GCloudException ex)
-            {
-                AppEngineOutputWindow.OutputLine("Failed to set default version.");
-                AppEngineOutputWindow.OutputLine(ex.Message);
-                AppEngineOutputWindow.Activate();
-            }
-            finally
-            {
-                this.Loading = false;
-            }
-            LoadAppEngineAppListAsync();
-        }
 
         private void OnRefresh()
         {

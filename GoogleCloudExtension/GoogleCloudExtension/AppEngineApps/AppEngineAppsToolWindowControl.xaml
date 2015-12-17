@@ -12,7 +12,7 @@
              d:DesignHeight="700" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type AppEngineAps:AppEngineAppsToolViewModel}}"
              Name="MyToolWindow">
-    
+
     <UserControl.Resources>
         <utils:VisibilityConverter x:Key="visibilityConverter" />
 
@@ -24,58 +24,49 @@
         </HierarchicalDataTemplate>
 
         <!-- Data template to be applied to the versions, which are the leafs. -->
-        <DataTemplate DataType="{x:Type Models:ModuleAndVersion}">
+        <DataTemplate DataType="{x:Type AppEngineAps:ModuleAndVersionViewModel}">
             <TextBlock>
+                <!-- The contents of the TreeItemNode -->
+                <!-- TODO: Add a suitable icon. -->
                 <TextBlock.Text>
                     <MultiBinding StringFormat="{}{0} {1}">
-                        <Binding Path="Version" />
-                        <Binding Path="IsDefault" Converter="{StaticResource AppIsDefaultConverter}" />
+                        <Binding Path="ModuleAndVersion.Version" />
+                        <Binding Path="ModuleAndVersion.IsDefault" Converter="{StaticResource AppIsDefaultConverter}" />
                     </MultiBinding>
                 </TextBlock.Text>
+
+                <!-- The context menu for the item. -->
+                <!-- TODO: Use suitable icons for the menu items. -->
+                <TextBlock.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Open in browser" 
+                                  Command="{Binding OpenAppCommand}" />
+                        <MenuItem Header="Delete"
+                                  Command="{Binding DeleteVersionCommand}" />
+                        <MenuItem Header="Set as default version"
+                                  Command="{Binding SetDefaultVersionCommand}" />
+                    </ContextMenu>
+                </TextBlock.ContextMenu>
             </TextBlock>
         </DataTemplate>
     </UserControl.Resources>
-    
+
     <Grid>
         <!-- This layer shows the message when GCloud is not installed. -->
         <StackPanel VerticalAlignment="Center"
                     Visibility="{Binding IsGCloudNotInstalled, Converter={StaticResource visibilityConverter}}">
             <TextBlock HorizontalAlignment="Center" Text="Please install gcloud..." />
         </StackPanel>
-                
+
         <!-- This layer shows the AppEngine apps data. -->
         <StackPanel Background="{DynamicResource VsBrush.Window}"
                     Visibility="{Binding IsGCloudInstalled, Converter={StaticResource visibilityConverter}}">
             <!-- Hierarchical view of the modules and versions within the modules. -->
             <TreeView Height="212"
                       Margin="10,10,10,0"
-                      ItemsSource="{Binding Apps}" 
-                      SelectedItemChanged="TreeView_SelectedItemChanged" />
-
-            <!-- Display the currently selected version. -->
-            <TextBlock TextWrapping="Wrap"
-                       Margin="10,5,10,0"
-                       Text="{Binding CurrentApp.Module, StringFormat='Module: {0}'}"/>
-            <TextBlock TextWrapping="Wrap"
-                       Margin="10,5,10,0"
-                       Text="{Binding CurrentApp.Version, StringFormat='Version: {0}'}"/>
+                      ItemsSource="{Binding Apps}" />
 
             <!-- Action buttons. -->
-            <Button Content="{Binding OpenAppButtonTitle}"
-                    Margin="10,5,10,0"
-                    Command="{Binding OpenAppCommand}"
-                    CommandParameter="{Binding CurrentApp}"
-                    IsEnabled="{Binding OpenAppEnabled}"/>
-            <Button Content="Delete version"
-                    Margin="10,5,10,0"
-                    Command="{Binding DeleteVersionCommand}"
-                    CommandParameter="{Binding CurrentApp}" 
-                    IsEnabled="{Binding OpenAppEnabled}"/>
-            <Button Content="Set as default version"
-                    Margin="10,5,10,0"
-                    Command="{Binding SetDefaultVersionCommand}"
-                    CommandParameter="{Binding CurrentApp}" 
-                    IsEnabled="{Binding SetDefaultVersionEnabled}"/>
             <Button Content="Refresh"
                     Margin="10,5,10,0"
                     Command="{Binding RefreshCommand}"/>

@@ -58,6 +58,7 @@
     <Compile Include="AppEngineApps\AppEngineAppsToolWindowControl.xaml.cs">
       <DependentUpon>AppEngineAppsToolWindowControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AppEngineApps\ModuleAndVersionViewModel.cs" />
     <Compile Include="DeploymentDialog\AspNetRuntimeValueConverter.cs" />
     <Compile Include="DeploymentDialog\DeploymentDialogContent.xaml.cs">
       <DependentUpon>DeploymentDialogContent.xaml</DependentUpon>

@@ -13,25 +13,11 @@ namespace GoogleCloudExtension.AppEngineApps
     public partial class AppEngineAppsToolWindowControl : UserControl
     {
         /// <summary>
-        /// Event raised whenever the currently selected object changes.
-        /// </summary>
-        public event EventHandler<ModuleAndVersion> SelectedItemChanged;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="AppEngineAppsToolWindowControl"/> class.
         /// </summary>
         public AppEngineAppsToolWindowControl()
         {
             this.InitializeComponent();
-        }
-
-        private void TreeView_SelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
-        {
-            var newValue = e.NewValue as ModuleAndVersion;
-            if (newValue != null)
-            {
-                SelectedItemChanged?.Invoke(this, newValue);
-            }
         }
     }
 }
