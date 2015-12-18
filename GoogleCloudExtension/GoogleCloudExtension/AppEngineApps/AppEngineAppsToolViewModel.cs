@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace GoogleCloudExtension.AppEngineApps
@@ -17,47 +18,29 @@ namespace GoogleCloudExtension.AppEngineApps
     /// top of the list, followed by the rest of the versions sorted alphabetically by their
     /// names.
     /// </summary>
-    internal class VersionComparer : IComparer<ModuleAndVersionViewModel>
+    internal class VersionComparer : IComparer<ModuleAndVersion>
     {
-        public int Compare(ModuleAndVersionViewModel x, ModuleAndVersionViewModel y)
+        public int Compare(ModuleAndVersion x, ModuleAndVersion y)
         {
             // There's only one default version, so both having the default bit
             // set means is the same version.
-            if (x.ModuleAndVersion.IsDefault && y.ModuleAndVersion.IsDefault)
+            if (x.IsDefault && y.IsDefault)
             {
                 return 0;
             }
 
             // Ensure the default version is first.
-            if (x.ModuleAndVersion.IsDefault)
+            if (x.IsDefault)
             {
                 return -1;
             }
-            else if (y.ModuleAndVersion.IsDefault)
+            else if (y.IsDefault)
             {
                 return 1;
             }
 
             // No default version, compare by name.
-            return x.ModuleAndVersion.Version.CompareTo(y.ModuleAndVersion.Version);
-        }
-    }
-
-    /// <summary>
-    /// This clas represents the group of versions for each module in the project, allows
-    /// the UI to show a hierarchical view of modules and the versions that belong to the
-    /// module.
-    /// </summary>
-    internal class Module
-    {
-        public string Name { get; }
-
-        public IEnumerable<ModuleAndVersionViewModel> Versions { get; }
-
-        public Module(string name, IEnumerable<ModuleAndVersionViewModel> versions)
-        {
-            Name = name;
-            Versions = versions.OrderBy(x => x, new VersionComparer());
+            return x.Version.CompareTo(y.Version);
         }
     }
 
@@ -66,30 +49,21 @@ namespace GoogleCloudExtension.AppEngineApps
     /// </summary>
     internal class AppEngineAppsToolViewModel : ViewModelBase
     {
-        private IList<Module> _apps;
+        private IList<TreeHierarchy> _roots;
 
         /// <summary>
         /// The list of module and version combinations for the current project.
         /// </summary>
-        public IList<Module> Apps
+        public IList<TreeHierarchy> Roots
         {
-            get { return _apps; }
-            private set
-            {
-                SetValueAndRaise(ref _apps, value);
-                RaisePropertyChanged(nameof(HaveApps));
-            }
+            get { return _roots; }
+            private set { SetValueAndRaise(ref _roots, value); }
         }
 
         /// <summary>
         /// The command to invoke to refresh the list of modules and versions.
         /// </summary>
         public ICommand RefreshCommand { get; }
-
-        /// <summary>
-        /// Helper property to determine if there are apps in the list.
-        /// </summary>
-        public bool HaveApps => (Apps?.Count ?? 0) != 0;
 
         public AppEngineAppsToolViewModel()
         {
@@ -118,12 +92,12 @@ namespace GoogleCloudExtension.AppEngineApps
             {
                 this.LoadingMessage = "Loading AppEngine app list...";
                 this.Loading = true;
-                this.Apps = null;
+                this.Roots = null;
                 var apps = await AppEngineClient.GetAppEngineAppListAsync();
-                this.Apps = apps
+                Roots = apps
                     .GroupBy(x => x.Module)
                     .OrderBy(x => x.Key)
-                    .Select(x => new Module(x.Key, x.Select(y => new ModuleAndVersionViewModel(this, y))))
+                    .Select(x => MakeModuleHierarchy(x))
                     .ToList();
             }
             catch (GCloudException ex)
@@ -136,6 +110,14 @@ namespace GoogleCloudExtension.AppEngineApps
             {
                 this.Loading = false;
             }
+        }
+
+        private TreeHierarchy MakeModuleHierarchy(IGrouping<string, ModuleAndVersion> src)
+        {
+            var versions = src
+                .OrderBy(x => x, new VersionComparer())
+                .Select(x => new ModuleAndVersionViewModel(this, x));
+            return new TreeHierarchy(versions) { Content = src.Key };
         }
 
         #region Command handlers

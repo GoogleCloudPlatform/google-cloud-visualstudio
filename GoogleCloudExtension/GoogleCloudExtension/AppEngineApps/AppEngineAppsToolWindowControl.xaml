@@ -18,37 +18,32 @@
 
         <utils:BooleanConverter x:Key="AppIsDefaultConverter" TrueValue="(Default)" FalseValue="" />
 
-        <!-- Data template to be applied to the modules, which contain versions. -->
-        <HierarchicalDataTemplate DataType="{x:Type AppEngineAps:Module}" ItemsSource="{Binding Versions}">
-            <TextBlock Text="{Binding Name}" />
+        <!-- Data template to be applied to the TreeHierarchy -->
+        <HierarchicalDataTemplate DataType="{x:Type AppEngineAps:TreeHierarchy}" ItemsSource="{Binding Children}">
+            <Grid ContextMenu="{Binding ContextMenu}">
+                <ContentPresenter Content="{Binding Content}" />
+            </Grid>
         </HierarchicalDataTemplate>
 
-        <!-- Data template to be applied to the versions, which are the leafs. -->
-        <DataTemplate DataType="{x:Type AppEngineAps:ModuleAndVersionViewModel}">
+        <!-- Data template to be applied to the TreeLeaf -->
+        <DataTemplate DataType="{x:Type AppEngineAps:TreeLeaf}">
+            <Grid ContextMenu="{Binding ContextMenu}">
+                <ContentPresenter Content="{Binding Content}" />
+            </Grid>
+        </DataTemplate>
+        
+        <!-- Data template to be applied to the ModuleAndVersion. -->
+        <DataTemplate DataType="{x:Type Models:ModuleAndVersion}">
             <TextBlock>
-                <!-- The contents of the TreeItemNode -->
-                <!-- TODO: Add a suitable icon. -->
                 <TextBlock.Text>
                     <MultiBinding StringFormat="{}{0} {1}">
-                        <Binding Path="ModuleAndVersion.Version" />
-                        <Binding Path="ModuleAndVersion.IsDefault" Converter="{StaticResource AppIsDefaultConverter}" />
+                        <Binding Path="Version" />
+                        <Binding Path="IsDefault" Converter="{StaticResource AppIsDefaultConverter}" />
                     </MultiBinding>
                 </TextBlock.Text>
-
-                <!-- The context menu for the item. -->
-                <!-- TODO: Use suitable icons for the menu items. -->
-                <TextBlock.ContextMenu>
-                    <ContextMenu>
-                        <MenuItem Header="Open in browser" 
-                                  Command="{Binding OpenAppCommand}" />
-                        <MenuItem Header="Delete"
-                                  Command="{Binding DeleteVersionCommand}" />
-                        <MenuItem Header="Set as default version"
-                                  Command="{Binding SetDefaultVersionCommand}" />
-                    </ContextMenu>
-                </TextBlock.ContextMenu>
             </TextBlock>
         </DataTemplate>
+
     </UserControl.Resources>
 
     <Grid>
@@ -58,13 +53,13 @@
             <TextBlock HorizontalAlignment="Center" Text="Please install gcloud..." />
         </StackPanel>
 
-        <!-- This layer shows the AppEngine apps data. -->
+        <!-- This layer shows the TreeView data. -->
         <StackPanel Background="{DynamicResource VsBrush.Window}"
                     Visibility="{Binding IsGCloudInstalled, Converter={StaticResource visibilityConverter}}">
             <!-- Hierarchical view of the modules and versions within the modules. -->
             <TreeView Height="212"
                       Margin="10,10,10,0"
-                      ItemsSource="{Binding Apps}" />
+                      ItemsSource="{Binding Roots}" />
 
             <!-- Action buttons. -->
             <Button Content="Refresh"

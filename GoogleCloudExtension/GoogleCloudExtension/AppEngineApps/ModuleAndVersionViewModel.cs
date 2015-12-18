@@ -7,38 +7,36 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace GoogleCloudExtension.AppEngineApps
 {
-    internal class ModuleAndVersionViewModel: Model
+    internal class ModuleAndVersionViewModel : TreeLeaf
     {
         private readonly AppEngineAppsToolViewModel _owner;
+        private readonly ModuleAndVersion _target;
+        private readonly WeakCommand _openAppCommand;
+        private readonly WeakCommand _deleteVersionCommand;
+        private readonly WeakCommand _setDefaultVersionCommand;
 
-        public ModuleAndVersion ModuleAndVersion { get; }
-
-        /// <summary>
-        /// The command to invoke to open a browser on the selected app.
-        /// </summary>
-        public WeakCommand OpenAppCommand { get; }
-
-        /// <summary>
-        /// The command to invoke to delete the selected version.
-        /// </summary>
-        public WeakCommand DeleteVersionCommand { get; }
-
-        /// <summary>
-        /// The command to invoke to set the selected version as the default version.
-        /// </summary>
-        public WeakCommand SetDefaultVersionCommand { get; }
-
-        public ModuleAndVersionViewModel(AppEngineAppsToolViewModel owner, ModuleAndVersion version)
+        public ModuleAndVersionViewModel(AppEngineAppsToolViewModel owner, ModuleAndVersion target)
         {
             _owner = owner;
-            ModuleAndVersion = version;
-            OpenAppCommand = new WeakCommand(OnOpenApp);
-            DeleteVersionCommand = new WeakCommand(OnDeleteVersion, canExecuteCommand: !version.IsDefault);
-            SetDefaultVersionCommand = new WeakCommand(OnSetDefaultVersion, canExecuteCommand: !version.IsDefault);
+            _target = target;
+            _openAppCommand = new WeakCommand(OnOpenApp);
+            _deleteVersionCommand = new WeakCommand(OnDeleteVersion, canExecuteCommand: !_target.IsDefault);
+            _setDefaultVersionCommand = new WeakCommand(OnSetDefaultVersion, canExecuteCommand: !_target.IsDefault);
+
+            // Initialize the TreeLeaf properties.
+            Content = target;
+            var menuItems = new List<MenuItem>
+            {
+                new MenuItem {Header="Open App in Browser", Command = _openAppCommand },
+                new MenuItem {Header="Set as Default", Command = _setDefaultVersionCommand },
+                new MenuItem {Header="Delete", Command = _deleteVersionCommand },
+            };
+            ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
         #region Command handlers
@@ -47,15 +45,15 @@ namespace GoogleCloudExtension.AppEngineApps
         {
             try
             {
-                OpenAppCommand.CanExecuteCommand = false;
+                _openAppCommand.CanExecuteCommand = false;
                 var accountAndProject = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
-                var url = $"https://{ModuleAndVersion.Version}-dot-{ModuleAndVersion.Module}-dot-{accountAndProject.ProjectId}.appspot.com/";
+                var url = $"https://{_target.Version}-dot-{_target.Module}-dot-{accountAndProject.ProjectId}.appspot.com/";
                 Debug.WriteLine($"Opening URL: {url}");
                 Process.Start(url);
             }
             finally
             {
-                OpenAppCommand.CanExecuteCommand = true;
+                _openAppCommand.CanExecuteCommand = true;
             }
         }
 
@@ -65,11 +63,11 @@ namespace GoogleCloudExtension.AppEngineApps
             {
                 _owner.LoadingMessage = "Deleting version...";
                 _owner.Loading = true;
-                await AppEngineClient.DeleteAppVersion(ModuleAndVersion.Module, ModuleAndVersion.Version);
+                await AppEngineClient.DeleteAppVersion(_target.Module, _target.Version);
             }
             catch (GCloudException ex)
             {
-                AppEngineOutputWindow.OutputLine($"Failed to delete version {ModuleAndVersion.Version} in module {ModuleAndVersion.Module}");
+                AppEngineOutputWindow.OutputLine($"Failed to delete version {_target.Version} in module {_target.Module}");
                 AppEngineOutputWindow.OutputLine(ex.Message);
                 AppEngineOutputWindow.Activate();
             }
@@ -86,7 +84,7 @@ namespace GoogleCloudExtension.AppEngineApps
             {
                 _owner.Loading = true;
                 _owner.LoadingMessage = "Setting default version...";
-                await AppEngineClient.SetDefaultAppVersionAsync(ModuleAndVersion.Module, ModuleAndVersion.Version);
+                await AppEngineClient.SetDefaultAppVersionAsync(_target.Module, _target.Version);
             }
             catch (GCloudException ex)
             {
@@ -100,7 +98,6 @@ namespace GoogleCloudExtension.AppEngineApps
             }
             _owner.LoadAppEngineAppListAsync();
         }
-
 
         #endregion
     }
