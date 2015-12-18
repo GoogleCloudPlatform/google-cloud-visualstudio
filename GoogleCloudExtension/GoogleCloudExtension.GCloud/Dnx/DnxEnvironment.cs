@@ -63,7 +63,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
             return Path.Combine(s_VSInstallPath.Value, WebToolsRelativePath);
         }
 
-        public static bool ValidateDnxInstallationForRuntime()
+        public static bool ValidateDnxInstallation()
         {
             bool result = false;
             Debug.WriteLine("Validating DNX installation.");

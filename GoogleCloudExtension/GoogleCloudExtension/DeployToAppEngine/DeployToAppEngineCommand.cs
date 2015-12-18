@@ -1,7 +1,6 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
-using GoogleCloudExtension.DeploymentDialog;
 using GoogleCloudExtension.GCloud.Dnx;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
@@ -83,35 +82,7 @@ namespace GoogleCloudExtension.DeployToAppEngine
             {
                 return;
             }
-
-            // Validate the environment, possibly show an error if not valid.
-            if (!CommandUtils.ValidateEnvironment(this.ServiceProvider))
-            {
-                return;
-            }
-
-            // We only support the CoreCLR runtime.
-            if (startupProject.Runtime == DnxRuntime.DnxCore50)
-            {
-                var window = new DeploymentDialogWindow(new DeploymentDialogWindowOptions
-                {
-                    Project = startupProject,
-                    ProjectsToRestore = SolutionHelper.CurrentSolution.Projects,
-                });
-                window.ShowModal();
-            }
-            else
-            {
-                var runtime = DnxRuntimeInfo.GetRuntimeInfo(startupProject.Runtime);
-                AppEngineOutputWindow.OutputLine($"Runtime {runtime.DisplayName} is not supported for project {startupProject.Name}");
-                VsShellUtilities.ShowMessageBox(
-                    this.ServiceProvider,
-                    $"Runtime {runtime.DisplayName} is not supported. Project {startupProject.Name} needs to target {DnxRuntimeInfo.DnxCore50DisplayString}.",
-                    "Runtime not supported",
-                    OLEMSGICON.OLEMSGICON_INFO,
-                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
-            }
+            DeploymentUtils.StartProjectDeployment(startupProject, ServiceProvider);
         }
 
         private void QueryStatusHandler(object sender, EventArgs e)
