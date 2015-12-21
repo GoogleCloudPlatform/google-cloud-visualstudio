@@ -52,14 +52,18 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AddNewAccount\AddNewAccountCommand.cs" />
-    <Compile Include="AppEngineApps\CloudExplorerViewModel.cs" />
-    <Compile Include="AppEngineApps\CloudExplorerToolWindow.cs" />
-    <Compile Include="AppEngineApps\CloudExplorerCommand.cs" />
-    <Compile Include="AppEngineApps\CloudExplorerToolWindowControl.xaml.cs">
+    <Compile Include="CloudExplorerSources\AppEngineRoot.cs" />
+    <Compile Include="CloudExplorerSources\AppEngineSource.cs" />
+    <Compile Include="CloudExplorerSources\VersionComparer.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerViewModel.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerToolWindow.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerCommand.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerToolWindowControl.xaml.cs">
       <DependentUpon>CloudExplorerToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AppEngineApps\ModuleAndVersionViewModel.cs" />
-    <Compile Include="AppEngineApps\TreeNode.cs" />
+    <Compile Include="CloudExplorer\ICloudExplorerSource.cs" />
+    <Compile Include="CloudExplorerSources\ModuleAndVersionViewModel.cs" />
+    <Compile Include="CloudExplorer\TreeNode.cs" />
     <Compile Include="DeploymentDialog\AspNetRuntimeValueConverter.cs" />
     <Compile Include="DeploymentDialog\DeploymentDialogContent.xaml.cs">
       <DependentUpon>DeploymentDialogContent.xaml</DependentUpon>
@@ -235,7 +239,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="AppEngineApps\CloudExplorerToolWindowControl.xaml">
+    <Page Include="CloudExplorer\CloudExplorerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,4 +1,5 @@
-﻿using GoogleCloudExtension.GCloud;
+﻿using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
 using System;
@@ -10,17 +11,17 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace GoogleCloudExtension.CloudExplorer
+namespace GoogleCloudExtension.CloudExplorerSources
 {
     internal class ModuleAndVersionViewModel : TreeLeaf
     {
-        private readonly CloudExplorerViewModel _owner;
+        private readonly AppEngineSource _owner;
         private readonly ModuleAndVersion _target;
         private readonly WeakCommand _openAppCommand;
         private readonly WeakCommand _deleteVersionCommand;
         private readonly WeakCommand _setDefaultVersionCommand;
 
-        public ModuleAndVersionViewModel(CloudExplorerViewModel owner, ModuleAndVersion target)
+        public ModuleAndVersionViewModel(AppEngineSource owner, ModuleAndVersion target)
         {
             _owner = owner;
             _target = target;
@@ -61,8 +62,6 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             try
             {
-                _owner.LoadingMessage = "Deleting version...";
-                _owner.Loading = true;
                 await AppEngineClient.DeleteAppVersion(_target.Module, _target.Version);
             }
             catch (GCloudException ex)
@@ -71,10 +70,6 @@ namespace GoogleCloudExtension.CloudExplorer
                 AppEngineOutputWindow.OutputLine(ex.Message);
                 AppEngineOutputWindow.Activate();
             }
-            finally
-            {
-                _owner.Loading = false;
-            }
             _owner.LoadAppEngineAppListAsync();
         }
 
@@ -82,8 +77,6 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             try
             {
-                _owner.Loading = true;
-                _owner.LoadingMessage = "Setting default version...";
                 await AppEngineClient.SetDefaultAppVersionAsync(_target.Module, _target.Version);
             }
             catch (GCloudException ex)
@@ -91,10 +84,6 @@ namespace GoogleCloudExtension.CloudExplorer
                 AppEngineOutputWindow.OutputLine("Failed to set default version.");
                 AppEngineOutputWindow.OutputLine(ex.Message);
                 AppEngineOutputWindow.Activate();
-            }
-            finally
-            {
-                _owner.Loading = false;
             }
             _owner.LoadAppEngineAppListAsync();
         }

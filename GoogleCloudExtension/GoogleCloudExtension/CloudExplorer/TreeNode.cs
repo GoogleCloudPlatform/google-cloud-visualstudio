@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// The children for this item.
         /// </summary>
-        public ObservableCollection<TreeNode> Children { get; }
+        public ObservableCollection<TreeNode> Children { get; } = new ObservableCollection<TreeNode>();
 
         /// <summary>
         /// Initialize the item from an <c>IEnumerable</c> source.
@@ -60,7 +60,13 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <param name="children">The children of the item.</param>
         public TreeHierarchy(IEnumerable<TreeNode> children)
         {
-            Children = new ObservableCollection<TreeNode>(children);
+            foreach (var child in children)
+            {
+                Children.Add(child);
+            }
         }
+
+        public TreeHierarchy()
+        { }
     }
 }

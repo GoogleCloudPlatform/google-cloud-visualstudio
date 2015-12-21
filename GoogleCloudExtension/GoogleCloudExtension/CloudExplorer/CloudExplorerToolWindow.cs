@@ -1,9 +1,11 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.CloudExplorerSources;
 using GoogleCloudExtension.GCloud.Models;
 using Microsoft.VisualStudio.Shell;
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace GoogleCloudExtension.CloudExplorer
@@ -28,12 +30,13 @@ namespace GoogleCloudExtension.CloudExplorer
         public CloudExplorerToolWindow() : base(null)
         {
             this.Caption = "Google AppEngine";
-            var model = new CloudExplorerViewModel();
+            var sources = new List<ICloudExplorerSource>
+            {
+                new AppEngineSource(),
+            };
+            var model = new CloudExplorerViewModel(sources);
             var content = new CloudExplorerToolWindowControl { DataContext = model };
             this.Content = content;
-
-            // Load the list of apps for the current user and project.
-            model.LoadAppEngineAppListAsync();
         }
     }
 }
