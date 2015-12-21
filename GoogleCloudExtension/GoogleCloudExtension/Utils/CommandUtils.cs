@@ -3,13 +3,12 @@
 
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Dnx;
-using System;
 
 namespace GoogleCloudExtension.Utils
 {
     internal static class CommandUtils
     {
-        public static bool ValidateEnvironment(IServiceProvider serviceProvider)
+        public static bool ValidateEnvironment()
         {
             var validDNXInstallation = DnxEnvironment.ValidateDnxInstallation();
             var validGCloudInstallation = GCloudWrapper.Instance.ValidateGCloudInstallation();

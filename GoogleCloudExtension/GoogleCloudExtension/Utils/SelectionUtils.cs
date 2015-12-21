@@ -11,14 +11,14 @@ namespace GoogleCloudExtension.Utils
 {
     internal static class SelectionUtils
     {
-        internal static void ActivatePropertiesWindow(IServiceProvider provider)
+        internal static bool ActivatePropertiesWindow(IServiceProvider provider)
         {
             IVsWindowFrame frame = null;
             var shell = provider.GetService(typeof(SVsUIShell)) as IVsUIShell;
             if (shell == null)
             {
                 Debug.WriteLine("Could not get the shell.");
-                return;
+                return false;
             }
 
             var guidPropertyBrowser = new Guid(ToolWindowGuids.PropertyBrowser);
@@ -26,16 +26,15 @@ namespace GoogleCloudExtension.Utils
             if (frame == null)
             {
                 Debug.WriteLine("Failed to get the frame.");
-                return;
+                return false;
             }
 
             frame.Show();
+            return true;
         }
 
         internal static void SelectItem(IServiceProvider provider, object item)
         {
-            ActivatePropertiesWindow(provider);
-
             var selectionTracker = provider.GetService(typeof(STrackSelection)) as ITrackSelection;
             if (selectionTracker == null)
             {

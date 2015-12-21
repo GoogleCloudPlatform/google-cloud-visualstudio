@@ -14,6 +14,7 @@ namespace GoogleCloudExtension.CloudExplorer
     public partial class CloudExplorerToolWindowControl : UserControl
     {
         private readonly IServiceProvider _provider;
+        private bool _propertiesWindowActivated = false;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CloudExplorerToolWindowControl"/> class.
@@ -33,6 +34,10 @@ namespace GoogleCloudExtension.CloudExplorer
             }
 
             var item = itemSource.Item;
+            if (!_propertiesWindowActivated)
+            {
+                _propertiesWindowActivated = SelectionUtils.ActivatePropertiesWindow(_provider);
+            }
             SelectionUtils.SelectItem(_provider, item);
         }
     }

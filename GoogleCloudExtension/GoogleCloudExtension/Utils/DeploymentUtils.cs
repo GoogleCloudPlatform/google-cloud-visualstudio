@@ -24,16 +24,16 @@ namespace GoogleCloudExtension.Utils
         /// <param name="serviceProvider"></param>
         public static void StartProjectDeployment(Project startupProject, IServiceProvider serviceProvider)
         {
-            Debug.WriteLine($"Starting the deloyment process for project {startupProject.Name}.");
+            Debug.WriteLine($"Starting the deployment process for project {startupProject.Name}.");
 
             // Validate the environment before attempting to start the deployment process.
-            if (!CommandUtils.ValidateEnvironment(serviceProvider))
+            if (!CommandUtils.ValidateEnvironment())
             {
                 Debug.WriteLine("Invoked when the environment is not valid.");
                 VsShellUtilities.ShowMessageBox(
                     serviceProvider,
-                    "Please ensure that GCloud is installed.",
-                    "Error",
+                    "Please ensure that the Google Cloud SDK is installed and available in the path and that the preview, app and alpha components are installed.",
+                    "The Google Cloud SDK command-line tool (gcloud) could not be found",
                     OLEMSGICON.OLEMSGICON_CRITICAL,
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,
                     OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);

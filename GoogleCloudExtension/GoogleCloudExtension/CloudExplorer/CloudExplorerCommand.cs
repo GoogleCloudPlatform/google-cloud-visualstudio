@@ -88,7 +88,7 @@ namespace GoogleCloudExtension.CloudExplorer
             }
 
             // Validate the environment, possibly show an error if not valid.
-            if (!CommandUtils.ValidateEnvironment(this.ServiceProvider))
+            if (!CommandUtils.ValidateEnvironment())
             {
                 return;
             }
