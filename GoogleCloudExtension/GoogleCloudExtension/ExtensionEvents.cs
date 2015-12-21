@@ -5,15 +5,22 @@ using System;
 
 namespace GoogleCloudExtension
 {
+    /// <summary>
+    /// Global events in the extension.
+    /// </summary>
     public static class ExtensionEvents
     {
+        /// <summary>
+        /// Raised when there's a new succesful deployment.
+        /// </summary>
         public static event EventHandler AppEngineDeployed;
+
+        /// <summary>
+        /// Raises the <c>AppEngineDeployed</c> event.
+        /// </summary>
         public static void RaiseAppEngineDeployed()
         {
-            if (AppEngineDeployed != null)
-            {
-                AppEngineDeployed(null, EventArgs.Empty);
-            }
+            AppEngineDeployed?.Invoke(null, EventArgs.Empty);
         }
     }
 }

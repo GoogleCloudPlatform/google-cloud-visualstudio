@@ -62,10 +62,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
         {
             try
             {
+                _deleteVersionCommand.CanExecuteCommand = false;
+                Content = $"{_target.Version} (Deleting...)";
                 await AppEngineClient.DeleteAppVersion(_target.Module, _target.Version);
             }
             catch (GCloudException ex)
             {
+                _deleteVersionCommand.CanExecuteCommand = true;
                 AppEngineOutputWindow.OutputLine($"Failed to delete version {_target.Version} in module {_target.Module}");
                 AppEngineOutputWindow.OutputLine(ex.Message);
                 AppEngineOutputWindow.Activate();
@@ -77,10 +80,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
         {
             try
             {
+                _setDefaultVersionCommand.CanExecuteCommand = false;
+                Content = $"{_target.Version} (Setting as default...)";
                 await AppEngineClient.SetDefaultAppVersionAsync(_target.Module, _target.Version);
             }
             catch (GCloudException ex)
             {
+                _setDefaultVersionCommand.CanExecuteCommand = true;
                 AppEngineOutputWindow.OutputLine("Failed to set default version.");
                 AppEngineOutputWindow.OutputLine(ex.Message);
                 AppEngineOutputWindow.Activate();

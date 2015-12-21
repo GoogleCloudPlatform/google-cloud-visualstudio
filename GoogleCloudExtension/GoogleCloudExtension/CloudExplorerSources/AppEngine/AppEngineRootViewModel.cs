@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 {
-    internal class AppEngineRoot : TreeHierarchy
+    internal class AppEngineRootViewModel : TreeHierarchy
     {
-        public AppEngineRoot()
+        public AppEngineRootViewModel()
         {
             Content = "AppEngine";
             // TODO: Set the icon for AppEngine.

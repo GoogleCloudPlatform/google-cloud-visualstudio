@@ -112,6 +112,7 @@ namespace GoogleCloudExtension.Utils
                 StatusbarHelper.UnFreeze();
                 StatusbarHelper.HideDeployAnimation();
                 GoogleCloudExtensionPackage.IsDeploying = false;
+                ExtensionEvents.RaiseAppEngineDeployed();
             }
         }
     }

@@ -52,7 +52,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AddNewAccount\AddNewAccountCommand.cs" />
-    <Compile Include="CloudExplorerSources\AppEngine\AppEngineRoot.cs" />
+    <Compile Include="CloudExplorerSources\AppEngine\AppEngineRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\AppEngineSource.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\VersionComparer.cs" />
     <Compile Include="CloudExplorer\CloudExplorerViewModel.cs" />

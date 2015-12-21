@@ -13,7 +13,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 {
     internal class AppEngineSource : ICloudExplorerSource
     {
-        private AppEngineRoot _root;
+        private readonly AppEngineRootViewModel _root = new AppEngineRootViewModel();
 
         public AppEngineSource()
         {
@@ -23,9 +23,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             ExtensionEvents.AppEngineDeployed += handler.Invoke;
             GCloudWrapper.Instance.AccountOrProjectChanged += handler.Invoke;
 
-            _root = new AppEngineRoot();
-
-            // Start loading apps.
             LoadAppEngineAppListAsync();
         }
 
@@ -53,6 +50,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             if (!GCloudWrapper.Instance.ValidateGCloudInstallation())
             {
                 Debug.WriteLine("Cannot find GCloud, disabling the AppEngine tool window.");
+                _root.Children.Clear();
+                _root.Children.Add(new TreeLeaf { Content = "Please install gcloud..." });
                 return;
             }
 
@@ -68,7 +67,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                     .ToList();
 
                 _root.Children.Clear();
-                foreach(var node in nodes)
+                foreach (var node in nodes)
                 {
                     _root.Children.Add(node);
                 }
