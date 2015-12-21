@@ -101,7 +101,7 @@
       <Button guid="guidDeployToGaePackageCmdSet" id="cmdidAppEngineAppsToolWindowCommand" priority="0x0200" type="Button">
         <Parent guid="guidDeployToGaePackageCmdSet" id="GcpWindowsGroup" />
         <Strings>
-          <ButtonText>Google AppEngine Apps</ButtonText>
+          <ButtonText>Google Cloud Explorer</ButtonText>
         </Strings>
       </Button>
 

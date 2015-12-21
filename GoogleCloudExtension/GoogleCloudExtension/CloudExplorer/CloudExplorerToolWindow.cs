@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// </summary>
         public CloudExplorerToolWindow() : base(null)
         {
-            this.Caption = "Google AppEngine";
+            this.Caption = "Google Cloud Explorer";
             var sources = new List<ICloudExplorerSource>
             {
                 new AppEngineSource(),
