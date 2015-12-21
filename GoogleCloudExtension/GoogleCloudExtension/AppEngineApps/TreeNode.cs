@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace GoogleCloudExtension.AppEngineApps
+namespace GoogleCloudExtension.CloudExplorer
 {
     public class TreeNode : Model
     {

@@ -1,16 +1,16 @@
-﻿<UserControl x:Class="GoogleCloudExtension.AppEngineApps.AppEngineAppsToolWindowControl"
+﻿<UserControl x:Class="GoogleCloudExtension.CloudExplorer.CloudExplorerToolWindowControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:Models="clr-namespace:GoogleCloudExtension.GCloud.Models;assembly=GoogleCloudExtension.GCloud"
-             xmlns:AppEngineAps="clr-namespace:GoogleCloudExtension.AppEngineApps"
+             xmlns:CloudExplorer="clr-namespace:GoogleCloudExtension.CloudExplorer"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance {x:Type AppEngineAps:AppEngineAppsToolViewModel}}"
+             d:DataContext="{d:DesignInstance {x:Type CloudExplorer:CloudExplorerViewModel}}"
              Name="MyToolWindow">
 
     <UserControl.Resources>
@@ -19,14 +19,14 @@
         <utils:BooleanConverter x:Key="AppIsDefaultConverter" TrueValue="(Default)" FalseValue="" />
 
         <!-- Data template to be applied to the TreeHierarchy -->
-        <HierarchicalDataTemplate DataType="{x:Type AppEngineAps:TreeHierarchy}" ItemsSource="{Binding Children}">
+        <HierarchicalDataTemplate DataType="{x:Type CloudExplorer:TreeHierarchy}" ItemsSource="{Binding Children}">
             <Grid ContextMenu="{Binding ContextMenu}">
                 <ContentPresenter Content="{Binding Content}" />
             </Grid>
         </HierarchicalDataTemplate>
 
         <!-- Data template to be applied to the TreeLeaf -->
-        <DataTemplate DataType="{x:Type AppEngineAps:TreeLeaf}">
+        <DataTemplate DataType="{x:Type CloudExplorer:TreeLeaf}">
             <Grid ContextMenu="{Binding ContextMenu}">
                 <ContentPresenter Content="{Binding Content}" />
             </Grid>

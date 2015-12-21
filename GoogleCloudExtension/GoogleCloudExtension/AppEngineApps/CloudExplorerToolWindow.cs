@@ -6,7 +6,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
 
-namespace GoogleCloudExtension.AppEngineApps
+namespace GoogleCloudExtension.CloudExplorer
 {
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.
@@ -20,16 +20,16 @@ namespace GoogleCloudExtension.AppEngineApps
     /// </para>
     /// </remarks>
     [Guid("fe34c2aa-59b3-40ad-a3b6-2743d072d2aa")]
-    public class AppEngineAppsToolWindow : ToolWindowPane
+    public class CloudExplorerToolWindow : ToolWindowPane
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AppEngineAppsToolWindow"/> class.
+        /// Initializes a new instance of the <see cref="CloudExplorerToolWindow"/> class.
         /// </summary>
-        public AppEngineAppsToolWindow() : base(null)
+        public CloudExplorerToolWindow() : base(null)
         {
             this.Caption = "Google AppEngine";
-            var model = new AppEngineAppsToolViewModel();
-            var content = new AppEngineAppsToolWindowControl { DataContext = model };
+            var model = new CloudExplorerViewModel();
+            var content = new CloudExplorerToolWindowControl { DataContext = model };
             this.Content = content;
 
             // Load the list of apps for the current user and project.

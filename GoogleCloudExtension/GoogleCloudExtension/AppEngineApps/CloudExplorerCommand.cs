@@ -7,12 +7,12 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
 
-namespace GoogleCloudExtension.AppEngineApps
+namespace GoogleCloudExtension.CloudExplorer
 {
     /// <summary>
-    /// Command handler for the AppEngineAppsToolWindowCommand that opens the Tool Window.
+    /// Command handler for the CloudExplorerCommand that opens the Tool Window.
     /// </summary>
-    internal sealed class AppEngineAppsToolWindowCommand
+    internal sealed class CloudExplorerCommand
     {
         /// <summary>
         /// Command ID.
@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.AppEngineApps
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static AppEngineAppsToolWindowCommand Instance { get; private set; }
+        public static CloudExplorerCommand Instance { get; private set; }
 
         /// <summary>
         /// Gets the service provider from the owner package.
@@ -45,15 +45,15 @@ namespace GoogleCloudExtension.AppEngineApps
         /// <param name="package">Owner package, not null.</param>
         public static void Initialize(Package package)
         {
-            Instance = new AppEngineAppsToolWindowCommand(package);
+            Instance = new CloudExplorerCommand(package);
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AppEngineAppsToolWindowCommand"/> class.
+        /// Initializes a new instance of the <see cref="CloudExplorerCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private AppEngineAppsToolWindowCommand(Package package)
+        private CloudExplorerCommand(Package package)
         {
             if (package == null)
             {
@@ -81,7 +81,7 @@ namespace GoogleCloudExtension.AppEngineApps
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
-            ToolWindowPane window = _package.FindToolWindow(typeof(AppEngineAppsToolWindow), 0, true);
+            ToolWindowPane window = _package.FindToolWindow(typeof(CloudExplorerToolWindow), 0, true);
             if (window?.Frame == null)
             {
                 throw new NotSupportedException("Cannot create tool window");

@@ -5,17 +5,17 @@ using GoogleCloudExtension.GCloud.Models;
 using System;
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.AppEngineApps
+namespace GoogleCloudExtension.CloudExplorer
 {
     /// <summary>
     /// Interaction logic for AppEngineAppsToolWindowControl.
     /// </summary>
-    public partial class AppEngineAppsToolWindowControl : UserControl
+    public partial class CloudExplorerToolWindowControl : UserControl
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AppEngineAppsToolWindowControl"/> class.
+        /// Initializes a new instance of the <see cref="CloudExplorerToolWindowControl"/> class.
         /// </summary>
-        public AppEngineAppsToolWindowControl()
+        public CloudExplorerToolWindowControl()
         {
             this.InitializeComponent();
         }

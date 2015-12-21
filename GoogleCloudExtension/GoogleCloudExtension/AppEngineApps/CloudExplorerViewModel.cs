@@ -11,7 +11,7 @@ using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace GoogleCloudExtension.AppEngineApps
+namespace GoogleCloudExtension.CloudExplorer
 {
     /// <summary>
     /// This comparer will ensure that the resulting order has the default version as the
@@ -47,7 +47,7 @@ namespace GoogleCloudExtension.AppEngineApps
     /// <summary>
     /// This class contains the view specific logic for the AppEngineAppsToolWindow view.
     /// </summary>
-    internal class AppEngineAppsToolViewModel : ViewModelBase
+    internal class CloudExplorerViewModel : ViewModelBase
     {
         private IList<TreeHierarchy> _roots;
 
@@ -65,7 +65,7 @@ namespace GoogleCloudExtension.AppEngineApps
         /// </summary>
         public ICommand RefreshCommand { get; }
 
-        public AppEngineAppsToolViewModel()
+        public CloudExplorerViewModel()
         {
             RefreshCommand = new WeakCommand(this.OnRefresh);
 

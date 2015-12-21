@@ -52,11 +52,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AddNewAccount\AddNewAccountCommand.cs" />
-    <Compile Include="AppEngineApps\AppEngineAppsToolViewModel.cs" />
-    <Compile Include="AppEngineApps\AppEngineAppsToolWindow.cs" />
-    <Compile Include="AppEngineApps\AppEngineAppsToolWindowCommand.cs" />
-    <Compile Include="AppEngineApps\AppEngineAppsToolWindowControl.xaml.cs">
-      <DependentUpon>AppEngineAppsToolWindowControl.xaml</DependentUpon>
+    <Compile Include="AppEngineApps\CloudExplorerViewModel.cs" />
+    <Compile Include="AppEngineApps\CloudExplorerToolWindow.cs" />
+    <Compile Include="AppEngineApps\CloudExplorerCommand.cs" />
+    <Compile Include="AppEngineApps\CloudExplorerToolWindowControl.xaml.cs">
+      <DependentUpon>CloudExplorerToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="AppEngineApps\ModuleAndVersionViewModel.cs" />
     <Compile Include="AppEngineApps\TreeNode.cs" />
@@ -235,7 +235,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="AppEngineApps\AppEngineAppsToolWindowControl.xaml">
+    <Page Include="AppEngineApps\CloudExplorerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

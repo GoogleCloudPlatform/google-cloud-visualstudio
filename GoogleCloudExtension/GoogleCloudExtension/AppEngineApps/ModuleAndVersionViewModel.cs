@@ -10,17 +10,17 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace GoogleCloudExtension.AppEngineApps
+namespace GoogleCloudExtension.CloudExplorer
 {
     internal class ModuleAndVersionViewModel : TreeLeaf
     {
-        private readonly AppEngineAppsToolViewModel _owner;
+        private readonly CloudExplorerViewModel _owner;
         private readonly ModuleAndVersion _target;
         private readonly WeakCommand _openAppCommand;
         private readonly WeakCommand _deleteVersionCommand;
         private readonly WeakCommand _setDefaultVersionCommand;
 
-        public ModuleAndVersionViewModel(AppEngineAppsToolViewModel owner, ModuleAndVersion target)
+        public ModuleAndVersionViewModel(CloudExplorerViewModel owner, ModuleAndVersion target)
         {
             _owner = owner;
             _target = target;
