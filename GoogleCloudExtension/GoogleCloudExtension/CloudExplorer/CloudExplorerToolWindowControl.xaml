@@ -16,8 +16,6 @@
     <UserControl.Resources>
         <utils:VisibilityConverter x:Key="visibilityConverter" />
 
-        <utils:BooleanConverter x:Key="AppIsDefaultConverter" TrueValue="(Default)" FalseValue="" />
-
         <!-- Data template to be applied to the TreeHierarchy -->
         <HierarchicalDataTemplate DataType="{x:Type CloudExplorer:TreeHierarchy}" ItemsSource="{Binding Children}">
             <Grid ContextMenu="{Binding ContextMenu}">
@@ -31,19 +29,6 @@
                 <ContentPresenter Content="{Binding Content}" />
             </Grid>
         </DataTemplate>
-        
-        <!-- Data template to be applied to the ModuleAndVersion. -->
-        <DataTemplate DataType="{x:Type Models:ModuleAndVersion}">
-            <TextBlock>
-                <TextBlock.Text>
-                    <MultiBinding StringFormat="{}{0} {1}">
-                        <Binding Path="Version" />
-                        <Binding Path="IsDefault" Converter="{StaticResource AppIsDefaultConverter}" />
-                    </MultiBinding>
-                </TextBlock.Text>
-            </TextBlock>
-        </DataTemplate>
-
     </UserControl.Resources>
 
     <Grid>
