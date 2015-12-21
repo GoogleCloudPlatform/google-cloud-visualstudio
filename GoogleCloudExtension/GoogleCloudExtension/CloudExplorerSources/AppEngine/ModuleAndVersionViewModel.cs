@@ -4,6 +4,7 @@ using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -13,13 +14,18 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 {
-    internal class ModuleAndVersionViewModel : TreeLeaf
+    internal class ModuleAndVersionViewModel : TreeLeaf, ICloudExplorerItem
     {
         private readonly AppEngineSource _owner;
         private readonly ModuleAndVersion _target;
         private readonly WeakCommand _openAppCommand;
         private readonly WeakCommand _deleteVersionCommand;
         private readonly WeakCommand _setDefaultVersionCommand;
+
+        public object Item
+        {
+            get { return new ModuleAndVersionItem(_target); }
+        }
 
         public ModuleAndVersionViewModel(AppEngineSource owner, ModuleAndVersion target)
         {

@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 new AppEngineSource(),
             };
             var model = new CloudExplorerViewModel(sources);
-            var content = new CloudExplorerToolWindowControl { DataContext = model };
+            var content = new CloudExplorerToolWindowControl(this) { DataContext = model };
             this.Content = content;
         }
     }
