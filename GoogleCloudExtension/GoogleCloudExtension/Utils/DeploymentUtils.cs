@@ -1,20 +1,72 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.DeploymentDialog;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Dnx;
+using GoogleCloudExtension.Projects;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
 namespace GoogleCloudExtension.Utils
 {
     public static class DeploymentUtils
     {
+        /// <summary>
+        /// Starts the deployment process for the given project, if the project doesn't target the
+        /// right runtime or the environment is not set then this becomes a NOOP.
+        /// </summary>
+        /// <param name="startupProject"></param>
+        /// <param name="serviceProvider"></param>
+        public static void StartProjectDeployment(Project startupProject, IServiceProvider serviceProvider)
+        {
+            Debug.WriteLine($"Starting the deployment process for project {startupProject.Name}.");
+
+            // Validate the environment before attempting to start the deployment process.
+            if (!CommandUtils.ValidateEnvironment())
+            {
+                Debug.WriteLine("Invoked when the environment is not valid.");
+                VsShellUtilities.ShowMessageBox(
+                    serviceProvider,
+                    "Please ensure that the Google Cloud SDK is installed and available in the path and that the preview, app and alpha components are installed.",
+                    "The Google Cloud SDK command-line tool (gcloud) could not be found",
+                    OLEMSGICON.OLEMSGICON_CRITICAL,
+                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                return;
+            }
+
+            // We only support the CoreCLR runtime.
+            if (startupProject.Runtime == DnxRuntime.DnxCore50)
+            {
+                var window = new DeploymentDialogWindow(new DeploymentDialogWindowOptions
+                {
+                    Project = startupProject,
+                    ProjectsToRestore = SolutionHelper.CurrentSolution.Projects,
+                });
+                window.ShowModal();
+            }
+            else
+            {
+                var runtime = DnxRuntimeInfo.GetRuntimeInfo(startupProject.Runtime);
+                AppEngineOutputWindow.OutputLine($"Runtime {runtime.DisplayName} is not supported for project {startupProject.Name}");
+                VsShellUtilities.ShowMessageBox(
+                    serviceProvider,
+                    $"Runtime {runtime.DisplayName} is not supported. Project {startupProject.Name} needs to target {DnxRuntimeInfo.DnxCore50DisplayString}.",
+                    "Runtime not supported",
+                    OLEMSGICON.OLEMSGICON_INFO,
+                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            }
+        }
+
         public static async void DeployProjectAsync(
             Project startupProject,
             IList<Project> projects,
-            DnxRuntime selectedRuntime,
             string versionName,
             bool makeDefault,
             bool preserveOutput,
@@ -26,8 +78,7 @@ namespace GoogleCloudExtension.Utils
                 AppEngineOutputWindow.Activate();
                 AppEngineOutputWindow.Clear();
                 AppEngineOutputWindow.OutputLine("Deployment to AppEngine started...");
-                var displayName = DnxRuntimeInfo.GetRuntimeInfo(selectedRuntime).DisplayName;
-                AppEngineOutputWindow.OutputLine($"Deploying project {startupProject} using runtime {displayName}.");
+                AppEngineOutputWindow.OutputLine($"Deploying project {startupProject}.");
                 AppEngineOutputWindow.OutputLine($"Deploying to cloud project id {accountAndProject.ProjectId} for acccount {accountAndProject.Account}");
                 StatusbarHelper.Freeze();
                 GoogleCloudExtensionPackage.IsDeploying = true;
@@ -37,7 +88,6 @@ namespace GoogleCloudExtension.Utils
                     startupProjectPath: startupProject.Root,
                     projectPaths: projects.Select(x => x.Root).ToList(),
                     versionName: versionName,
-                    runtime: selectedRuntime,
                     promoteVersion: makeDefault,
                     callback: AppEngineOutputWindow.OutputLine,
                     preserveOutput: preserveOutput,

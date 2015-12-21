@@ -11,10 +11,6 @@ namespace GoogleCloudExtension.GCloud.Dnx
     /// </summary>
     public class DnxRuntimeInfo
     {
-        // Docker images names for the runtime.
-        public const string Dnx451ImageName = "mono";
-        public const string DnxCore50ImageName = "coreclr";
-
         // The names of the supported runtimes.
         // Clr will be substituted by Mono in the container.
         // CoreClr will be itself.
@@ -34,13 +30,11 @@ namespace GoogleCloudExtension.GCloud.Dnx
             new DnxRuntimeInfo(
                 runtime: DnxRuntime.Dnx451,
                 displayName: Dnx451DisplayString,
-                frameworkName: Dnx451FrameworkName,
-                imageName: Dnx451ImageName),
+                frameworkName: Dnx451FrameworkName),
             new DnxRuntimeInfo(
                 runtime: DnxRuntime.DnxCore50,
                 displayName: DnxCore50DisplayString,
-                frameworkName: DnxCore50FrameworkName,
-                imageName: DnxCore50ImageName),
+                frameworkName: DnxCore50FrameworkName),
         };
 
         /// <summary>
@@ -49,8 +43,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
         private static readonly DnxRuntimeInfo s_UnknownRuntimeInfo = new DnxRuntimeInfo(
             runtime: DnxRuntime.None,
             displayName: "",
-            frameworkName: "",
-            imageName: "");
+            frameworkName: "");
 
         public DnxRuntime Runtime { get; }
 
@@ -58,14 +51,11 @@ namespace GoogleCloudExtension.GCloud.Dnx
 
         public string FrameworkName { get; }
 
-        public string ImageName { get; }
-
-        private DnxRuntimeInfo(DnxRuntime runtime, string displayName, string frameworkName, string imageName)
+        private DnxRuntimeInfo(DnxRuntime runtime, string displayName, string frameworkName)
         {
             Runtime = runtime;
             DisplayName = displayName;
             FrameworkName = frameworkName;
-            ImageName = imageName;
         }
 
         public static DnxRuntimeInfo GetRuntimeInfo(DnxRuntime runtime)

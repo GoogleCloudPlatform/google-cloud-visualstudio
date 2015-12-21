@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.DeploymentDialog
         {
             this.ResizeMode = System.Windows.ResizeMode.NoResize;
             this.Width = 420;
-            this.Height = 400;
+            this.Height = 350;
             this.Title = "Deploy to AppEngine";
 
             this.Options = options;
