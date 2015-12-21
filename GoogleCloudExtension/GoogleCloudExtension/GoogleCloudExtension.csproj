@@ -52,9 +52,9 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AddNewAccount\AddNewAccountCommand.cs" />
-    <Compile Include="CloudExplorerSources\AppEngineRoot.cs" />
-    <Compile Include="CloudExplorerSources\AppEngineSource.cs" />
-    <Compile Include="CloudExplorerSources\VersionComparer.cs" />
+    <Compile Include="CloudExplorerSources\AppEngine\AppEngineRoot.cs" />
+    <Compile Include="CloudExplorerSources\AppEngine\AppEngineSource.cs" />
+    <Compile Include="CloudExplorerSources\AppEngine\VersionComparer.cs" />
     <Compile Include="CloudExplorer\CloudExplorerViewModel.cs" />
     <Compile Include="CloudExplorer\CloudExplorerToolWindow.cs" />
     <Compile Include="CloudExplorer\CloudExplorerCommand.cs" />
@@ -62,7 +62,7 @@
       <DependentUpon>CloudExplorerToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="CloudExplorer\ICloudExplorerSource.cs" />
-    <Compile Include="CloudExplorerSources\ModuleAndVersionViewModel.cs" />
+    <Compile Include="CloudExplorerSources\AppEngine\ModuleAndVersionViewModel.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
     <Compile Include="DeploymentDialog\AspNetRuntimeValueConverter.cs" />
     <Compile Include="DeploymentDialog\DeploymentDialogContent.xaml.cs">

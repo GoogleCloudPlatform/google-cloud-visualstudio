@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace GoogleCloudExtension.CloudExplorerSources
+namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 {
     internal class ModuleAndVersionViewModel : TreeLeaf
     {

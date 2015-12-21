@@ -2,6 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.CloudExplorerSources;
+using GoogleCloudExtension.CloudExplorerSources.AppEngine;
 using GoogleCloudExtension.GCloud.Models;
 using Microsoft.VisualStudio.Shell;
 using System;

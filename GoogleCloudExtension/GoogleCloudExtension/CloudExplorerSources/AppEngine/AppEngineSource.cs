@@ -9,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.CloudExplorerSources
+namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 {
     internal class AppEngineSource : ICloudExplorerSource
     {
