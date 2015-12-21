@@ -32,40 +32,22 @@
     </UserControl.Resources>
 
     <Grid>
-        <!-- This layer shows the message when GCloud is not installed. -->
-        <StackPanel VerticalAlignment="Center"
-                    Visibility="{Binding IsGCloudNotInstalled, Converter={StaticResource visibilityConverter}}">
-            <TextBlock HorizontalAlignment="Center" Text="Please install gcloud..." />
-        </StackPanel>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
-        <!-- This layer shows the TreeView data. -->
-        <StackPanel Background="{DynamicResource VsBrush.Window}"
-                    Visibility="{Binding IsGCloudInstalled, Converter={StaticResource visibilityConverter}}">
-            <!-- Hierarchical view of the modules and versions within the modules. -->
-            <TreeView Height="212"
-                      Margin="10,10,10,0"
-                      ItemsSource="{Binding Roots}" 
-                      SelectedItemChanged="TreeView_SelectedItemChanged" />
-
-            <!-- Action buttons. -->
+        <!-- Action buttons. -->
+        <StackPanel Orientation="Horizontal">
             <Button Content="Refresh"
-                    Margin="10,5,10,0"
                     Command="{Binding RefreshCommand}"/>
         </StackPanel>
 
-        <!-- This layer hides the message. -->
-        <StackPanel Background="{DynamicResource VsBrush.Window}"
-                    Visibility="{Binding Loading, Converter={StaticResource visibilityConverter}}" />
+        <!-- Hierarchical view of the modules and versions within the modules. -->
+        <TreeView
+                  ItemsSource="{Binding Roots}" 
+                  SelectedItemChanged="TreeView_SelectedItemChanged" 
+                  Grid.Row="1" />
 
-        <!-- This layer shows the loading message. -->
-        <StackPanel VerticalAlignment="Center" 
-                    Visibility="{Binding Loading, Converter={StaticResource visibilityConverter}}">
-            <ProgressBar  
-                         Margin="10" 
-                         IsIndeterminate="True"
-                         Height="27" 
-                         VerticalAlignment="Center"/>
-            <TextBlock Text="{Binding LoadingMessage}" HorizontalAlignment="Center"/>
-        </StackPanel>
     </Grid>
 </UserControl>
