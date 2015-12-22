@@ -1,10 +1,9 @@
-﻿using GoogleCloudExtension.Utils;
-using System;
+﻿// Copyright 2015 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+using GoogleCloudExtension.Utils;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 

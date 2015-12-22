@@ -1,10 +1,8 @@
-﻿using GoogleCloudExtension.GCloud.Models;
-using System;
-using System.Collections.Generic;
+﻿// Copyright 2015 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+using GoogleCloudExtension.GCloud.Models;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 {
