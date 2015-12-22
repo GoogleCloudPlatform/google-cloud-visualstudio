@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
@@ -14,6 +15,8 @@ namespace GoogleCloudExtension.AddNewAccount
     /// </summary>
     internal sealed class AddNewAccountCommand
     {
+        private const string AddAccountCommand = nameof(AddAccountCommand);
+
         /// <summary>
         /// Command ID.
         /// </summary>
@@ -78,6 +81,8 @@ namespace GoogleCloudExtension.AddNewAccount
         /// <param name="e">Event args.</param>
         private async void AddNewAccountHandler(object sender, EventArgs e)
         {
+            ExtensionAnalytics.ReportStartCommand(AddAccountCommand, CommandInvocationSource.ToolsMenu);
+
             AppEngineOutputWindow.Clear();
             AppEngineOutputWindow.Activate();
             try
@@ -85,9 +90,12 @@ namespace GoogleCloudExtension.AddNewAccount
                 AppEngineOutputWindow.OutputLine("Activating browser.");
                 await GCloudWrapper.Instance.AddCredentialsAsync(AppEngineOutputWindow.OutputLine);
                 AppEngineOutputWindow.OutputLine("Done adding account.");
+
+                ExtensionAnalytics.ReportEndCommand(AddAccountCommand, succeeded: true);
             }
             catch (Exception ex)
             {
+                ExtensionAnalytics.ReportEndCommand(AddAccountCommand, succeeded: false);
                 AppEngineOutputWindow.OutputLine(ex.Message);
             }
         }

@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.Analytics;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
@@ -13,6 +14,8 @@ namespace GoogleCloudExtension.UserAndProjectList
     /// </summary>
     internal sealed class UserAndProjectListWindowCommand
     {
+        private const string ShowUserAndProjectListCommand = nameof(ShowUserAndProjectListCommand);
+
         /// <summary>
         /// Command ID.
         /// </summary>
@@ -87,17 +90,23 @@ namespace GoogleCloudExtension.UserAndProjectList
         /// <param name="e">The event args.</param>
         private void ShowToolWindow(object sender, EventArgs e)
         {
-            // Get the instance number 0 of this tool window. This window is single instance so this instance
-            // is actually the only one.
-            // The last flag is set to true so that if the tool window does not exists it will be created.
-            ToolWindowPane window = _package.FindToolWindow(typeof(UserAndProjectListWindow), 0, true);
-            if ((null == window) || (null == window.Frame))
-            {
-                throw new NotSupportedException("Cannot create tool window");
-            }
+            ExtensionAnalytics.ReportCommand(
+                ShowUserAndProjectListCommand,
+                CommandInvocationSource.ToolsMenu,
+                () =>
+                {
+                    // Get the instance number 0 of this tool window. This window is single instance so this instance
+                    // is actually the only one.
+                    // The last flag is set to true so that if the tool window does not exists it will be created.
+                    ToolWindowPane window = _package.FindToolWindow(typeof(UserAndProjectListWindow), 0, true);
+                    if ((null == window) || (null == window.Frame))
+                    {
+                        throw new NotSupportedException("Cannot create tool window");
+                    }
 
-            IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+                    IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
+                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+                });
         }
     }
 }

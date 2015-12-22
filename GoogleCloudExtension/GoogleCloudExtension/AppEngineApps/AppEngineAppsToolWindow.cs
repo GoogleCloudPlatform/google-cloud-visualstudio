@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.Analytics;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
@@ -33,6 +34,8 @@ namespace GoogleCloudExtension.AppEngineApps
 
             // Load the list of apps for the current user and project.
             model.LoadAppEngineAppListAsync();
+
+            ExtensionAnalytics.ReportWindowOpened(nameof(AppEngineAppsToolWindow));
         }
     }
 }
