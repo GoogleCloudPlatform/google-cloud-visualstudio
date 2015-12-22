@@ -16,7 +16,7 @@ using System.Windows.Media.Imaging;
 
 namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 {
-    internal class ModuleAndVersionViewModel : TreeLeaf, ICloudExplorerItem
+    internal class ModuleAndVersionViewModel : TreeLeaf, ICloudExplorerItemSource
     {
         private const string IconResourcePath = "CloudExplorerSources/AppEngine/Resources/ic_web.png";
         private static readonly Lazy<ImageSource> s_versionIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
