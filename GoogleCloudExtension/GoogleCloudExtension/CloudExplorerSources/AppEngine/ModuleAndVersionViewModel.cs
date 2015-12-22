@@ -22,10 +22,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
         private readonly WeakCommand _deleteVersionCommand;
         private readonly WeakCommand _setDefaultVersionCommand;
 
-        public object Item
-        {
-            get { return new ModuleAndVersionItem(_target); }
-        }
+        public object Item { get; }
 
         public ModuleAndVersionViewModel(AppEngineSource owner, ModuleAndVersion target)
         {
@@ -34,6 +31,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             _openAppCommand = new WeakCommand(OnOpenApp);
             _deleteVersionCommand = new WeakCommand(OnDeleteVersion, canExecuteCommand: !_target.IsDefault);
             _setDefaultVersionCommand = new WeakCommand(OnSetDefaultVersion, canExecuteCommand: !_target.IsDefault);
+
+            Item = new ModuleAndVersionItem(_target);
 
             // Initialize the TreeLeaf properties.
             Content = FormatDisplayString(target);
