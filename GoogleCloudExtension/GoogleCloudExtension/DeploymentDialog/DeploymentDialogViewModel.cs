@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
@@ -16,6 +17,9 @@ namespace GoogleCloudExtension.DeploymentDialog
     /// </summary>
     public class DeploymentDialogViewModel : ViewModelBase
     {
+        private const string DeployAppEngineAppCommand = nameof(DeployAppEngineAppCommand);
+        private const string CancelDeploymentAppEngineAppCommand = nameof(CancelDeploymentAppEngineAppCommand);
+
         private readonly DeploymentDialogWindow _window;
 
         // Default values to show while loading data.
@@ -169,21 +173,26 @@ namespace GoogleCloudExtension.DeploymentDialog
 
         #region Command handlers
 
-        private void OnDeployHandler()
+        private async void OnDeployHandler()
         {
-            DeploymentUtils.DeployProjectAsync(
+            _window.Close();
+            ExtensionAnalytics.ReportStartCommand(DeployAppEngineAppCommand, CommandInvocationSource.Button);
+            var success = await DeploymentUtils.DeployProjectAsync(
                 startupProject: _window.Options.Project,
                 projects: _window.Options.ProjectsToRestore,
                 versionName: VersionName,
                 makeDefault: MakeDefault,
                 preserveOutput: PreserveOutput,
                 accountAndProject: new Credentials(account: this.SelectedAccount, projectId: this.SelectedCloudProject.Id));
-            _window.Close();
+            ExtensionAnalytics.ReportEndCommand(DeployAppEngineAppCommand, succeeded: success);
         }
 
         private void OnCancelHandler()
         {
-            _window.Close();
+            ExtensionAnalytics.ReportCommand(
+                CancelDeploymentAppEngineAppCommand,
+                CommandInvocationSource.Button,
+                () => _window.Close());
         }
 
         #endregion
