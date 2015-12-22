@@ -8,11 +8,16 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 {
     internal class AppEngineSource : ICloudExplorerSource
     {
+        private const string IconResourcePath = "CloudExplorerSources/AppEngine/Resources/ic_view_module.png";
+        private static readonly Lazy<ImageSource> s_moduleIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
+
         private readonly AppEngineRootViewModel _root = new AppEngineRootViewModel();
 
         public AppEngineSource()
@@ -85,7 +90,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             var versions = src
                 .OrderBy(x => x, new VersionComparer())
                 .Select(x => new ModuleAndVersionViewModel(this, x));
-            return new TreeHierarchy(versions) { Content = src.Key };
+            return new TreeHierarchy(versions) { Content = src.Key, Icon = s_moduleIcon.Value };
         }
 
         #region Command handlers

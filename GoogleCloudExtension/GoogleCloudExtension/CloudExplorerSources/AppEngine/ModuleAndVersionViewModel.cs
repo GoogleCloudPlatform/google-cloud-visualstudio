@@ -11,11 +11,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 {
     internal class ModuleAndVersionViewModel : TreeLeaf, ICloudExplorerItem
     {
+        private const string IconResourcePath = "CloudExplorerSources/AppEngine/Resources/ic_web.png";
+        private static readonly Lazy<ImageSource> s_versionIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
+
         private readonly AppEngineSource _owner;
         private readonly ModuleAndVersion _target;
         private readonly WeakCommand _openAppCommand;
@@ -43,6 +48,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                 new MenuItem {Header="Delete", Command = _deleteVersionCommand },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+            Icon = s_versionIcon.Value;
         }
 
         private static string FormatDisplayString(ModuleAndVersion target)
