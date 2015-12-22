@@ -62,7 +62,7 @@
     <Compile Include="CloudExplorer\CloudExplorerToolWindowControl.xaml.cs">
       <DependentUpon>CloudExplorerToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CloudExplorer\ICloudExplorerItem.cs" />
+    <Compile Include="CloudExplorer\ICloudExplorerItemSource.cs" />
     <Compile Include="CloudExplorer\ICloudExplorerSource.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\ModuleAndVersionViewModel.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />

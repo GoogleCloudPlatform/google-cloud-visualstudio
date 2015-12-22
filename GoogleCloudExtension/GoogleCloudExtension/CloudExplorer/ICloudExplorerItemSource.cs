@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
-    public interface ICloudExplorerItem
+    public interface ICloudExplorerItemSource
     {
         object Item { get; }
     }

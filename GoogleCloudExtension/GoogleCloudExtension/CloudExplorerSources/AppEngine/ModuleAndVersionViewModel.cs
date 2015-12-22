@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 {
-    internal class ModuleAndVersionViewModel : TreeLeaf, ICloudExplorerItem
+    internal class ModuleAndVersionViewModel : TreeLeaf, ICloudExplorerItemSource
     {
         private readonly AppEngineSource _owner;
         private readonly ModuleAndVersion _target;

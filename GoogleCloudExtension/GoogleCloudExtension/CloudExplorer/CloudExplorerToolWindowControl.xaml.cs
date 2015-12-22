@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void TreeView_SelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
         {
-            var itemSource = e.NewValue as ICloudExplorerItem;
+            var itemSource = e.NewValue as ICloudExplorerItemSource;
             if (itemSource == null)
             {
                 return;
