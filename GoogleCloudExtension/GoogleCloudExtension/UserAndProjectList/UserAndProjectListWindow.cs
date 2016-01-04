@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.Analytics;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
@@ -32,6 +33,8 @@ namespace GoogleCloudExtension.UserAndProjectList
             this.Content = new UserAndProjectListWindowControl { DataContext = model };
 
             model.LoadAccountsAsync();
+
+            ExtensionAnalytics.ReportWindowOpened(nameof(UserAndProjectListWindow));
         }
     }
 }

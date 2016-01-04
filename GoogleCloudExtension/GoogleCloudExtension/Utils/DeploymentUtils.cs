@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.DeploymentDialog;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Dnx;
@@ -11,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -53,6 +55,7 @@ namespace GoogleCloudExtension.Utils
             else
             {
                 var runtime = DnxRuntimeInfo.GetRuntimeInfo(startupProject.Runtime);
+                ExtensionAnalytics.ReportEvent("RuntimeNotSupportedError", startupProject.Runtime.ToString());
                 AppEngineOutputWindow.OutputLine($"Runtime {runtime.DisplayName} is not supported for project {startupProject.Name}");
                 VsShellUtilities.ShowMessageBox(
                     serviceProvider,
@@ -64,7 +67,7 @@ namespace GoogleCloudExtension.Utils
             }
         }
 
-        public static async void DeployProjectAsync(
+        public static async Task<bool> DeployProjectAsync(
             Project startupProject,
             IList<Project> projects,
             string versionName,
@@ -72,6 +75,8 @@ namespace GoogleCloudExtension.Utils
             bool preserveOutput,
             Credentials accountAndProject)
         {
+            bool result = false;
+
             try
             {
                 StatusbarHelper.SetText("Deployment to AppEngine started...");
@@ -96,6 +101,8 @@ namespace GoogleCloudExtension.Utils
 
                 StatusbarHelper.SetText("Deployment Succeeded");
                 AppEngineOutputWindow.OutputLine("Deployment Succeeded.");
+
+                result = true;
             }
             catch (GCloudException ex)
             {
@@ -114,6 +121,8 @@ namespace GoogleCloudExtension.Utils
                 GoogleCloudExtensionPackage.IsDeploying = false;
                 ExtensionEvents.RaiseAppEngineDeployed();
             }
+
+            return result;
         }
     }
 }

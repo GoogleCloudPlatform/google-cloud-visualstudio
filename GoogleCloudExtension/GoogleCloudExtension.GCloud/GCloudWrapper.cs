@@ -2,6 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.GCloud.Models;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -238,9 +239,42 @@ namespace GoogleCloudExtension.GCloud
             return GetJsonOutputAsync<IList<CloudProject>>("alpha projects list");
         }
 
+        /// <summary>
+        /// Fetches the list of projects for the given credentials from the
+        /// gcloud store.
+        /// </summary>
+        /// <param name="credentials">The credentials to use.</param>
+        /// <returns>The task with the list of projects.</returns>
         public async Task<IList<CloudProject>> GetProjectsAsync(Credentials credentials)
         {
             return await GetJsonOutputAsync<IList<CloudProject>>("alpha projects list", credentials);
+        }
+
+        /// <summary>
+        /// Fetches the value of the property given its full name.
+        /// </summary>
+        /// <param name="group">The group that contains the property.</param>
+        /// <param name="property">The name of the property to fetch.</param>
+        /// <returns>The task with the result from reading the property.</returns>
+        public async Task<string> GetPropertyAsync(string group, string property)
+        {
+            Debug.WriteLine($"Reading property gcloud {group}/{property}");
+            var config = await GetJsonOutputAsync<JObject>($"config list {group}/{property}");
+            if (config == null)
+            {
+                // Nothing was found.
+                return null;
+            }
+
+            JObject groupObject = config[group] as JObject;
+            if (groupObject == null)
+            {
+                // No group was found.
+                return null;
+            }
+
+            JToken value = groupObject[property];
+            return (string)value;
         }
 
         public bool ValidateGCloudInstallation()

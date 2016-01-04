@@ -1,8 +1,10 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using EnvDTE;
 using GoogleCloudExtension.AddNewAccount;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.DeployToAppEngine;
 using GoogleCloudExtension.DeployToAppEngineContextMenu;
 using GoogleCloudExtension.UserAndProjectList;
@@ -73,6 +75,16 @@ namespace GoogleCloudExtension
             UserAndProjectListWindowCommand.Initialize(this);
             DeployToAppEngineContextMenuCommand.Initialize(this);
             AddNewAccountCommand.Initialize(this);
+
+            ExtensionAnalytics.ReportStartSession();
+
+            var dte = (DTE)Package.GetGlobalService(typeof(DTE));
+            dte.Events.DTEEvents.OnBeginShutdown += DTEEvents_OnBeginShutdown;
+        }
+
+        private void DTEEvents_OnBeginShutdown()
+        {
+            ExtensionAnalytics.ReportEndSession();
         }
 
         #endregion

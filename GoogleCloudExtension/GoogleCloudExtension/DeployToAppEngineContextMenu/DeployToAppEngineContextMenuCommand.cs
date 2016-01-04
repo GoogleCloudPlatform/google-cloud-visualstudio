@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.GCloud.Dnx;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio;
@@ -124,9 +125,12 @@ namespace GoogleCloudExtension.DeployToAppEngineContextMenu
 
         private void DeployToGaeHandler(object sender, EventArgs e)
         {
-            DeploymentUtils.StartProjectDeployment(
-                new Project(GetSelectedProjectPath()),
-                ServiceProvider);
+            ExtensionAnalytics.ReportCommand(
+                DeployToAppEngine.DeployToAppEngineCommand.StartDeployToAppEngineCommand,
+                CommandInvocationSource.ContextMenu,
+                () => DeploymentUtils.StartProjectDeployment(
+                        new Project(GetSelectedProjectPath()),
+                        ServiceProvider));
         }
 
         private void QueryStatusHandler(object sender, EventArgs e)

@@ -2,6 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.CloudExplorerSources.AppEngine;
+using GoogleCloudExtension.Analytics;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
@@ -36,6 +37,8 @@ namespace GoogleCloudExtension.CloudExplorer
             var model = new CloudExplorerViewModel(sources);
             var content = new CloudExplorerToolWindowControl(this) { DataContext = model };
             this.Content = content;
+
+            ExtensionAnalytics.ReportWindowOpened(nameof(CloudExplorerToolWindow));
         }
     }
 }
