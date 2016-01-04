@@ -1,11 +1,11 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.GCloud.Dnx;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
 
@@ -16,6 +16,8 @@ namespace GoogleCloudExtension.DeployToAppEngine
     /// </summary>
     internal sealed class DeployToAppEngineCommand
     {
+        public const string StartDeployToAppEngineCommand = nameof(StartDeployToAppEngineCommand);
+
         /// <summary>
         /// Command ID.
         /// </summary>
@@ -82,7 +84,10 @@ namespace GoogleCloudExtension.DeployToAppEngine
             {
                 return;
             }
-            DeploymentUtils.StartProjectDeployment(startupProject, ServiceProvider);
+            ExtensionAnalytics.ReportCommand(
+                StartDeployToAppEngineCommand,
+                CommandInvocationSource.ToolsMenu,
+                () => DeploymentUtils.StartProjectDeployment(startupProject, ServiceProvider));
         }
 
         private void QueryStatusHandler(object sender, EventArgs e)

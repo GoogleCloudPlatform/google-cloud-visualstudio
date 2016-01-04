@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
@@ -16,22 +17,15 @@ namespace GoogleCloudExtension.UserAndProjectList
     /// </summary>
     public class UserAndProjectListViewModel : ViewModelBase
     {
+        private const string UpdateCurrentProjectCommand = nameof(UpdateCurrentProjectCommand);
+        private const string UpdateCurrentAccountCommand = nameof(UpdateCurrentAccountCommand);
+
         private IList<CloudProject> _projects;
         private CloudProject _currentProject;
         private IEnumerable<string> _accounts;
         private string _currentAccount;
         private bool _loadingProjects;
         private bool _loadingAccounts;
-
-        /// <summary>
-        /// Helper property that determines if GCloud is installed.
-        /// </summary>
-        public bool IsGCloudInstalled => GCloudWrapper.Instance.ValidateGCloudInstallation();
-
-        /// <summary>
-        /// Helper property that negates the previous one, needed to simplify UI bindings.
-        /// </summary>
-        public bool IsGCloudNotInstalled => !IsGCloudInstalled;
 
         /// <summary>
         /// The list of cloud projects available to the selected user.
@@ -159,6 +153,8 @@ namespace GoogleCloudExtension.UserAndProjectList
         /// <param name="newProject"></param>
         private async void UpdateCurrentProject(CloudProject newProject)
         {
+            ExtensionAnalytics.ReportStartCommand(UpdateCurrentProjectCommand, CommandInvocationSource.None);
+
             try
             {
                 if (newProject == null)
@@ -174,12 +170,16 @@ namespace GoogleCloudExtension.UserAndProjectList
                     account: currentAccountAndProject.Account,
                     projectId: newProject.Id);
                 GCloudWrapper.Instance.UpdateCredentials(newCurrentAccountAndProject);
+
+                ExtensionAnalytics.ReportEndCommand(UpdateCurrentProjectCommand, succeeded: true);
             }
             catch (GCloudException ex)
             {
                 AppEngineOutputWindow.OutputLine($"Failed to update project to {newProject.Name}");
                 AppEngineOutputWindow.OutputLine(ex.Message);
                 AppEngineOutputWindow.Activate();
+
+                ExtensionAnalytics.ReportEndCommand(UpdateCurrentProjectCommand, succeeded: false);
             }
         }
 
@@ -193,6 +193,8 @@ namespace GoogleCloudExtension.UserAndProjectList
             {
                 return;
             }
+
+            ExtensionAnalytics.ReportStartCommand(UpdateCurrentAccountCommand, CommandInvocationSource.None);
 
             try
             {
@@ -227,12 +229,16 @@ namespace GoogleCloudExtension.UserAndProjectList
                         this.LoadingProjects = false;
                     }
                 }
+
+                ExtensionAnalytics.ReportEndCommand(UpdateCurrentAccountCommand, succeeded: true);
             }
             catch (GCloudException ex)
             {
                 AppEngineOutputWindow.OutputLine($"Failed to update current account to {value}");
                 AppEngineOutputWindow.OutputLine(ex.Message);
                 AppEngineOutputWindow.Activate();
+
+                ExtensionAnalytics.ReportEndCommand(UpdateCurrentAccountCommand, succeeded: false);
             }
         }
     }
