@@ -3,6 +3,7 @@
 
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell.Settings;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -32,9 +33,18 @@ namespace GoogleCloudExtension.Analytics
         private const string SucceededLabel = "Success";
         private const string FailedLabel = "Failed";
         private const string FalseValue = "false";
-
+        private const string GCloudExtensionPath = "GCloudVSExtension";
+        private const string ClientIdProperty = "ClientId";
         private static readonly Lazy<GoogleAnalyticsReporter> s_reporter = new Lazy<GoogleAnalyticsReporter>(CreateReporter);
         private static readonly Lazy<Task<bool>> s_isReportingEnabled = new Lazy<Task<bool>>(IsReportingEnabled);
+        private static readonly Lazy<string> s_clientId = new Lazy<string>(GetOrCreateClientId);
+
+        private static IServiceProvider s_serviceProvider;
+
+        public static void Initialize(IServiceProvider serviceProvider)
+        {
+            s_serviceProvider = serviceProvider;
+        }
 
         #region Report convenience methods.
 
@@ -163,7 +173,39 @@ namespace GoogleCloudExtension.Analytics
 #if DEBUG
             debug = true;
 #endif
-            return new GoogleAnalyticsReporter(PropertyId, appName: ApplicationName, debug: debug);
+            return new GoogleAnalyticsReporter(PropertyId,
+                clientId: s_clientId.Value,
+                appName: ApplicationName,
+                debug: debug);
+        }
+
+        private static string GetOrCreateClientId()
+        {
+            var settingsManager = new ShellSettingsManager(s_serviceProvider);
+            var clientId = GetClientId(settingsManager);
+            if (clientId != null)
+            {
+                Debug.WriteLine("Found existing client id.");
+                return clientId;
+            }
+
+            Debug.WriteLine("Creating new client id.");
+            clientId = Guid.NewGuid().ToString();
+            StoreClientId(settingsManager, clientId);
+            return clientId;
+        }
+
+        private static string GetClientId(ShellSettingsManager settingsManager)
+        {
+            var readOnlyStore = settingsManager.GetReadOnlySettingsStore(Microsoft.VisualStudio.Settings.SettingsScope.UserSettings);
+            return readOnlyStore.GetString(GCloudExtensionPath, ClientIdProperty, null);
+        }
+
+        private static void StoreClientId(ShellSettingsManager settingsManager, string clientId)
+        {
+            var store = settingsManager.GetWritableSettingsStore(Microsoft.VisualStudio.Settings.SettingsScope.UserSettings);
+            store.CreateCollection(GCloudExtensionPath);
+            store.SetString(GCloudExtensionPath, ClientIdProperty, clientId);
         }
 
         /// <summary>
