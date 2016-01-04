@@ -48,10 +48,21 @@ namespace GoogleCloudExtension.CloudExplorer
 
     public class TreeHierarchy : TreeNode
     {
+        private bool _isExpanded;
+
         /// <summary>
         /// The children for this item.
         /// </summary>
         public ObservableCollection<TreeNode> Children { get; } = new ObservableCollection<TreeNode>();
+
+        /// <summary>
+        /// Returns whether the hierarchy is expanded or not.
+        /// </summary>
+        public bool IsExpanded
+        {
+            get { return _isExpanded; }
+            set { SetValueAndRaise(ref _isExpanded, value); }
+        }
 
         /// <summary>
         /// Initialize the item from an <c>IEnumerable</c> source.

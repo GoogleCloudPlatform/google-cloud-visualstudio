@@ -47,7 +47,13 @@
         <TreeView
                   ItemsSource="{Binding Roots}" 
                   SelectedItemChanged="TreeView_SelectedItemChanged" 
-                  Grid.Row="1" />
+                  Grid.Row="1">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                </Style>
+            </TreeView.ItemContainerStyle>
+        </TreeView>
 
     </Grid>
 </UserControl>
