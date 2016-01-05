@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
@@ -17,6 +18,12 @@ namespace GoogleCloudExtension.AppEngineApps
     /// </summary>
     internal class AppEngineAppsToolViewModel : ViewModelBase
     {
+        // Command names.
+        private const string OpenAppEngineVersionCommand = nameof(OpenAppEngineVersionCommand);
+        private const string DeleteAppEngineVersionCommand = nameof(DeleteAppEngineVersionCommand);
+        private const string SetAppEngineVersionDefaultCommand = nameof(SetAppEngineVersionDefaultCommand);
+        private const string StartRefreshCommand = nameof(StartRefreshCommand);
+
         private IList<ModuleAndVersion> _apps;
         private ModuleAndVersion _currentApp;
         private bool _openAppEnabled;
@@ -155,6 +162,8 @@ namespace GoogleCloudExtension.AppEngineApps
 
         private async void OnOpenApp(ModuleAndVersion app)
         {
+            ExtensionAnalytics.ReportStartCommand(OpenAppEngineVersionCommand, CommandInvocationSource.Button);
+
             try
             {
                 this.OpenAppEnabled = false;
@@ -164,6 +173,12 @@ namespace GoogleCloudExtension.AppEngineApps
                 var url = $"https://{app.Version}-dot-{app.Module}-dot-{accountAndProject.ProjectId}.appspot.com/";
                 Debug.WriteLine($"Opening URL: {url}");
                 Process.Start(url);
+                ExtensionAnalytics.ReportEndCommand(OpenAppEngineVersionCommand, succeeded: true);
+            }
+            catch (Exception)
+            {
+                ExtensionAnalytics.ReportEndCommand(OpenAppEngineVersionCommand, succeeded: false);
+                throw;
             }
             finally
             {
@@ -174,17 +189,21 @@ namespace GoogleCloudExtension.AppEngineApps
 
         private async void OnDeleteVersion(ModuleAndVersion app)
         {
+            ExtensionAnalytics.ReportStartCommand(DeleteAppEngineVersionCommand, CommandInvocationSource.Button);
+
             try
             {
                 this.LoadingMessage = "Deleting version...";
                 this.Loading = true;
                 await AppEngineClient.DeleteAppVersion(app.Module, app.Version);
+                ExtensionAnalytics.ReportEndCommand(DeleteAppEngineVersionCommand, succeeded: true);
             }
             catch (GCloudException ex)
             {
                 AppEngineOutputWindow.OutputLine($"Failed to delete version {app.Version} in module {app.Module}");
                 AppEngineOutputWindow.OutputLine(ex.Message);
                 AppEngineOutputWindow.Activate();
+                ExtensionAnalytics.ReportEndCommand(DeleteAppEngineVersionCommand, succeeded: false);
             }
             finally
             {
@@ -195,17 +214,21 @@ namespace GoogleCloudExtension.AppEngineApps
 
         private async void OnSetDefaultVersion(ModuleAndVersion app)
         {
+            ExtensionAnalytics.ReportStartCommand(SetAppEngineVersionDefaultCommand, CommandInvocationSource.Button);
+
             try
             {
                 this.Loading = true;
                 this.LoadingMessage = "Setting default version...";
                 await AppEngineClient.SetDefaultAppVersionAsync(app.Module, app.Version);
+                ExtensionAnalytics.ReportEndCommand(SetAppEngineVersionDefaultCommand, succeeded: true);
             }
             catch (GCloudException ex)
             {
                 AppEngineOutputWindow.OutputLine("Failed to set default version.");
                 AppEngineOutputWindow.OutputLine(ex.Message);
                 AppEngineOutputWindow.Activate();
+                ExtensionAnalytics.ReportEndCommand(SetAppEngineVersionDefaultCommand, succeeded: false);
             }
             finally
             {
@@ -216,7 +239,17 @@ namespace GoogleCloudExtension.AppEngineApps
 
         private void OnRefresh()
         {
-            LoadAppEngineAppListAsync();
+            ExtensionAnalytics.ReportStartCommand(StartRefreshCommand, CommandInvocationSource.Button);
+            try
+            {
+                LoadAppEngineAppListAsync();
+                ExtensionAnalytics.ReportEndCommand(StartRefreshCommand, succeeded: true);
+            }
+            catch (Exception)
+            {
+                ExtensionAnalytics.ReportEndCommand(StartRefreshCommand, succeeded: false);
+                throw;
+            }
         }
 
         #endregion

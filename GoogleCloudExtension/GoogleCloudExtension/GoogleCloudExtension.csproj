@@ -38,7 +38,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -52,6 +52,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="AddNewAccount\AddNewAccountCommand.cs" />
+    <Compile Include="Analytics\ExtensionAnalytics.cs" />
     <Compile Include="AppEngineApps\AppEngineAppsToolViewModel.cs" />
     <Compile Include="AppEngineApps\AppEngineAppsToolWindow.cs" />
     <Compile Include="AppEngineApps\AppEngineAppsToolWindowCommand.cs" />
