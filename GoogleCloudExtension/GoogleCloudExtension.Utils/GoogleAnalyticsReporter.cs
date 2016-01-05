@@ -65,20 +65,21 @@ namespace GoogleCloudExtension.Utils
         /// The client ID being used by this reporter.
         /// Note: This ID is generated with every instance, which is why is important
         /// to share the instance.
-        /// TODO: Perhaps accept the ID from the caller.
         /// </summary>
-        public string ClientId { get; } = Guid.NewGuid().ToString();
+        public string ClientId { get; }
 
         /// <summary>
         /// Initializes the instance.
         /// </summary>
         /// <param name="propertyId">The property ID to use, string with the format US-XXXX. Must not be null.</param>
         /// <param name="appName">The name of the app for which this reporter is reporting. Must not be null.</param>
+        /// <param name="clientId">The client id to use when reporting, if null a new random Guid will be generated.</param>
         /// <param name="appVersion">Optional, the app version. Defaults to null.</param>
         /// <param name="debug">Optional, whether this reporter is in debug mode. Defaults to false.</param>
         public GoogleAnalyticsReporter(
             string propertyId,
             string appName,
+            string clientId = null,
             string appVersion = null,
             bool debug = false)
         {
@@ -87,6 +88,7 @@ namespace GoogleCloudExtension.Utils
             _appName = appName;
             _appVersion = appVersion;
             _debug = debug;
+            ClientId = clientId ?? Guid.NewGuid().ToString();
             _baseHitData = MakeBaseHitData();
         }
 
