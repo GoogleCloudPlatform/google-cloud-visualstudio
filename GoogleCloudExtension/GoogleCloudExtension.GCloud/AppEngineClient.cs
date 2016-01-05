@@ -33,6 +33,7 @@ namespace GoogleCloudExtension.GCloud
         // will send the entire app to the server, which can take a long while.
         private const string AppYamlContent =
             "runtime: custom\n" +
+            "vm: true\n" +
             "api_version: 1\n" +
             "skip_files: \n" +
             "- ^.*$";
