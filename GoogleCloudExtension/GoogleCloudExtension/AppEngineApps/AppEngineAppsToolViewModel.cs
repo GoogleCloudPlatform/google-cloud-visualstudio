@@ -162,6 +162,11 @@ namespace GoogleCloudExtension.AppEngineApps
 
         private async void OnOpenApp(ModuleAndVersion app)
         {
+            if (app == null)
+            {
+                return;
+            }
+
             ExtensionAnalytics.ReportStartCommand(OpenAppEngineVersionCommand, CommandInvocationSource.Button);
 
             try
@@ -189,6 +194,11 @@ namespace GoogleCloudExtension.AppEngineApps
 
         private async void OnDeleteVersion(ModuleAndVersion app)
         {
+            if (app == null)
+            {
+                return;
+            }
+
             ExtensionAnalytics.ReportStartCommand(DeleteAppEngineVersionCommand, CommandInvocationSource.Button);
 
             try
@@ -214,6 +224,11 @@ namespace GoogleCloudExtension.AppEngineApps
 
         private async void OnSetDefaultVersion(ModuleAndVersion app)
         {
+            if (app == null)
+            {
+                return;
+            }
+
             ExtensionAnalytics.ReportStartCommand(SetAppEngineVersionDefaultCommand, CommandInvocationSource.Button);
 
             try
