@@ -258,10 +258,17 @@ namespace GoogleCloudExtension.GCloud
         /// <returns>The task with the result from reading the property.</returns>
         public async Task<string> GetPropertyAsync(string group, string property)
         {
-            Debug.WriteLine($"Reading property gcloud {group}/{property}");
-            var config = await GetJsonOutputAsync<JObject>($"config list {group}/{property}");
-            var groupObject = config?[group];
-            return (string)groupObject?[property];
+            try
+            {
+                Debug.WriteLine($"Reading property gcloud {group}/{property}");
+                var config = await GetJsonOutputAsync<JObject>($"config list {group}/{property}");
+                var groupObject = config?[group];
+                return (string)groupObject?[property];
+            }
+            catch (GCloudException)
+            {
+                return null;
+            }
         }
 
         public bool ValidateGCloudInstallation()
