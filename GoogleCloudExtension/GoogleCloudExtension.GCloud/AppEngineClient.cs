@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.GCloud
         // The Dockefile to use for the specified runtime.
         // {0}, the version of the runtime.
         private const string DockerfileTemplate =
-            "FROM b.gcr.io/aspnet-docker/dotnet:{0}\n" +
+            "FROM b.gcr.io/aspnet-docker/aspnet-mono:{0}\n" +
             "ADD ./ /app\n" +
             "RUN chmod +x /app/app_engine_start\n";
 
@@ -234,7 +234,7 @@ namespace GoogleCloudExtension.GCloud
 
             // This is a dependency on the fact that DNU is a batch file, but it has to be launched this way.
             callback($"Preparing app bundle in {appTempPath}.");
-            var frameworkName = DnxRuntimeInfo.DnxCore50FrameworkName;
+            var frameworkName = DnxRuntimeInfo.Dnx451FrameworkName;
             string command = $"/c dnu publish \"{projectPath}\" --out \"{appTempPath}\" --framework {frameworkName} --configuration release";
             callback($"Executing command: {command}");
             var result = await ProcessUtils.RunCommandAsync("cmd.exe", command, (s, e) => callback(e.Line), environment);

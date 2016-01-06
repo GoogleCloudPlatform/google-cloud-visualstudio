@@ -69,8 +69,8 @@ namespace GoogleCloudExtension.GCloud.Dnx
         /// </summary>
         private static readonly IList<DnxRuntimeInfo> s_PreferredRuntimes = new List<DnxRuntimeInfo>
         {
+            DnxRuntimeInfo.GetRuntimeInfo(DnxRuntime.Dnx451),
             DnxRuntimeInfo.GetRuntimeInfo(DnxRuntime.DnxCore50),
-            DnxRuntimeInfo.GetRuntimeInfo(DnxRuntime.Dnx451)
         };
 
         private DnxRuntime GetProjectRuntime() => s_PreferredRuntimes

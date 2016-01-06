@@ -43,7 +43,7 @@ namespace GoogleCloudExtension.Utils
             }
 
             // We only support the CoreCLR runtime.
-            if (startupProject.Runtime == DnxRuntime.DnxCore50)
+            if (startupProject.Runtime == DnxRuntime.Dnx451)
             {
                 var window = new DeploymentDialogWindow(new DeploymentDialogWindowOptions
                 {
@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.Utils
                 AppEngineOutputWindow.OutputLine($"Runtime {runtime.DisplayName} is not supported for project {startupProject.Name}");
                 VsShellUtilities.ShowMessageBox(
                     serviceProvider,
-                    $"Runtime {runtime.DisplayName} is not supported. Project {startupProject.Name} needs to target {DnxRuntimeInfo.DnxCore50DisplayString}.",
+                    $"Runtime {runtime.DisplayName} is not supported. Project {startupProject.Name} needs to target {DnxRuntimeInfo.Dnx451DisplayString}.",
                     "Runtime not supported",
                     OLEMSGICON.OLEMSGICON_INFO,
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,
