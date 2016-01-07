@@ -66,6 +66,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             {
                 _root.Children.Clear();
                 _root.Children.Add(new TreeLeaf { Content = "Loading..." });
+                _root.IsExpanded = true;
                 var apps = await AppEngineClient.GetAppEngineAppListAsync();
                 var nodes = apps
                     .GroupBy(x => x.Module)

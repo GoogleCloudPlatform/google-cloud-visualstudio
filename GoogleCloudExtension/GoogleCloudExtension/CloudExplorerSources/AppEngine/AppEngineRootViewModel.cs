@@ -15,8 +15,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 
         public AppEngineRootViewModel()
         {
+            // TODO: Set the icon for AppEngine.
             Content = "AppEngine";
             Icon = s_icon.Value;
+            
+            // Show the items for the AppEngine hierarchy, to show first the loading message
+            // then the items once they are received.
+            IsExpanded = true; 
         }
     }
 }

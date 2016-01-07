@@ -112,8 +112,15 @@ namespace GoogleCloudExtension.GCloud
             {
                 throw new JsonOutputException($"Failed to execute command: {file} {args}\n{output.Error}");
             }
-            var parsed = JsonConvert.DeserializeObject<T>(output.Output);
-            return ValueOrDefault(parsed);
+            try
+            {
+                var parsed = JsonConvert.DeserializeObject<T>(output.Output);
+                return ValueOrDefault(parsed);
+            }
+            catch (JsonSerializationException)
+            {
+                throw new JsonOutputException($"Failed to parse output of command: {file} {args}\n{output.Output}");
+            }
         }
 
         /// <summary>
