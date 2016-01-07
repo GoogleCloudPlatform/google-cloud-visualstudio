@@ -61,7 +61,14 @@ namespace GoogleCloudExtension.CloudExplorer
         public bool IsExpanded
         {
             get { return _isExpanded; }
-            set { SetValueAndRaise(ref _isExpanded, value); }
+            set
+            {
+                if (value != _isExpanded)
+                {
+                    SetValueAndRaise(ref _isExpanded, value);
+                    OnIsExpandedChanged(value);
+                }
+            }
         }
 
         /// <summary>
@@ -77,6 +84,13 @@ namespace GoogleCloudExtension.CloudExplorer
         }
 
         public TreeHierarchy()
+        { }
+
+        /// <summary>
+        /// This method will be called every time the value of IsExpanded property changes.
+        /// </summary>
+        /// <param name="newValue">The new value of the property.</param>
+        protected virtual void OnIsExpandedChanged(bool newValue)
         { }
     }
 }
