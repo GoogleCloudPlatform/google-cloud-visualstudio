@@ -49,6 +49,8 @@ namespace GoogleCloudExtension
         /// </summary>
         public const string PackageGuidString = "3784fd98-7fcc-40fc-be3b-b68334735af2";
 
+        private DTE _dteInstance;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DeployToAppEngine"/> class.
         /// </summary>
@@ -76,10 +78,11 @@ namespace GoogleCloudExtension
             DeployToAppEngineContextMenuCommand.Initialize(this);
             AddNewAccountCommand.Initialize(this);
 
+            ExtensionAnalytics.Initialize(this);	
             ExtensionAnalytics.ReportStartSession();
 
-            var dte = (DTE)Package.GetGlobalService(typeof(DTE));
-            dte.Events.DTEEvents.OnBeginShutdown += DTEEvents_OnBeginShutdown;
+            _dteInstance = (DTE)Package.GetGlobalService(typeof(DTE));
+            _dteInstance.Events.DTEEvents.OnBeginShutdown += DTEEvents_OnBeginShutdown;
         }
 
         private void DTEEvents_OnBeginShutdown()
