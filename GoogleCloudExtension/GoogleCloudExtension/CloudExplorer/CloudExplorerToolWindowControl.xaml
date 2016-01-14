@@ -37,6 +37,12 @@
             </Grid>
         </DataTemplate>
 
+        <Style x:Key="CommandBarStyle" TargetType="{x:Type StackPanel}">
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarGradientKey}}" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
+
         <Style x:Key="FocusVisual">
             <Setter Property="Control.Template">
                 <Setter.Value>
@@ -67,9 +73,10 @@
             <Setter Property="HorizontalContentAlignment" Value="Center"/>
             <Setter Property="VerticalContentAlignment" Value="Center"/>
             <Setter Property="Padding" Value="1"/>
-            <Setter Property="Width" Value="20px" />
-            <Setter Property="Height" Value="20px" />
+            <Setter Property="Width" Value="25px" />
+            <Setter Property="Height" Value="25px" />
             <Setter Property="Margin" Value="5,0,0,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="ContentTemplate">
                 <Setter.Value>
                     <DataTemplate>
@@ -85,8 +92,8 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="true">
-                                <Setter Property="Background" TargetName="border" Value="{StaticResource Button.MouseOver.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource Button.MouseOver.Border}"/>
+                                <Setter Property="Background" TargetName="border" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarHoverOverSelectedIconKey}}"/>
+                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarHoverOverSelectedIconBorderKey}}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="true">
                                 <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
@@ -106,14 +113,12 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="25" />
+            <RowDefinition Height="30" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <!-- Action buttons. -->
-        <StackPanel Orientation="Horizontal"
-                    HorizontalAlignment="Stretch"
-                    Background="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarGradientKey}}">
+        <StackPanel Style="{StaticResource CommandBarStyle}">
             <Button Content="{Binding RefreshIcon}"
                     Command="{Binding RefreshCommand}"
                     VerticalAlignment="Center"
