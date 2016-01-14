@@ -2,8 +2,10 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.Utils;
+using System;
 using System.Collections.Generic;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
@@ -12,6 +14,9 @@ namespace GoogleCloudExtension.CloudExplorer
     /// </summary>
     internal class CloudExplorerViewModel : ViewModelBase
     {
+        private const string RefreshImagePath = "CloudExplorer/Resources/refresh.png";
+        private static readonly Lazy<ImageSource> s_refreshIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(RefreshImagePath));
+
         private readonly IList<ICloudExplorerSource> _sources;
 
         /// <summary>
@@ -26,6 +31,14 @@ namespace GoogleCloudExtension.CloudExplorer
                     yield return source.GetRoot();
                 }
             }
+        }
+
+        /// <summary>
+        /// The icon to use for the refresh action.
+        /// </summary>
+        public ImageSource RefreshIcon
+        {
+            get { return s_refreshIcon.Value;  }
         }
 
         /// <summary>

@@ -39,14 +39,22 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="50" />
+            <RowDefinition Height="20" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <!-- Action buttons. -->
         <StackPanel Orientation="Horizontal">
-            <Button Content="Refresh"
-                    Command="{Binding RefreshCommand}"/>
+            <Button Content="{Binding RefreshIcon}"
+                    Command="{Binding RefreshCommand}"
+                    Width="20px" Height="20px"
+                    ToolTip="Refresh">
+                <Button.ContentTemplate>
+                    <DataTemplate>
+                        <Image Source="{Binding}" Width="16px" Height="16px" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </DataTemplate>
+                </Button.ContentTemplate>
+            </Button>
         </StackPanel>
 
         <!-- Hierarchical view of the modules and versions within the modules. -->
