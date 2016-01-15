@@ -15,11 +15,19 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public class VisibilityConverter : IValueConverter
     {
+        /// <summary>
+        /// Determine if the value to convert should be negated before the conversion
+        /// takes place, that is, if <c>IsNegated</c> is <c>True</c> then when converting
+        /// <c>False</c> will be visible and <c>True</c> will be collapsed.
+        /// </summary>
+        public bool IsNegated { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is bool)
             {
-                return (bool)value ? Visibility.Visible : Visibility.Collapsed;
+                bool toConvert = (!IsNegated && ((bool)value)) || (IsNegated && !((bool)value));
+                return toConvert ? Visibility.Visible : Visibility.Collapsed;
             }
             Debug.WriteLine($"Value should be a boolean: {value}");
             return DependencyProperty.UnsetValue;

@@ -11,9 +11,19 @@ namespace GoogleCloudExtension.CloudExplorer
 {
     public class TreeNode : Model
     {
-        private ImageSource _icon;
         private object _content;
         private ContextMenu _contextMenu;
+        private ImageSource _icon;
+        private bool _isLoading;
+
+        /// <summary>
+        /// Whether this node is in the loading state.
+        /// </summary>
+        public bool IsLoading
+        {
+            get { return _isLoading; }
+            set { SetValueAndRaise(ref _isLoading, value); }
+        }
 
         /// <summary>
         /// The icon to use in the UI for this item.
