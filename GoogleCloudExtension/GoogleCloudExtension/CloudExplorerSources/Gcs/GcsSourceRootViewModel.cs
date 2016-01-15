@@ -15,7 +15,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/storage.png";
         private static readonly Lazy<ImageSource> s_storageIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
 
-        private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf { Content = "Loading..." };
+        private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
+        {
+            Content = "Loading buckets...",
+            IsLoading = true
+        };
 
         private bool _loaded = false;
         private bool _loading = false;

@@ -26,11 +26,20 @@ namespace GoogleCloudExtension.Controls
         static readonly Lazy<IList<ImageSource>> s_frames = new Lazy<IList<ImageSource>>(LoadAnimationFrames);
         const int FullDuration = 500;
         static readonly Duration s_animationDuration = new Duration(new TimeSpan(0, 0, 0, 0, FullDuration));
+        static readonly Lazy<ObjectAnimationUsingKeyFrames> s_animationSource = new Lazy<ObjectAnimationUsingKeyFrames>(CreateAnimation);
 
-        private readonly ObjectAnimationUsingKeyFrames _animation = CreateAnimation();
+        public static readonly DependencyProperty IsAnimatedProperty = DependencyProperty.Register(
+            nameof(IsAnimated),
+            typeof(bool),
+            typeof(ProgressIndicator));
+
         private Storyboard _storyboard;
 
-        public bool IsAnimated { get; set; }
+        public bool IsAnimated
+        {
+            get { return (bool)GetValue(IsAnimatedProperty); }
+            set { SetValue(IsAnimatedProperty, value); }
+        }
 
         public ProgressIndicator()
         {
@@ -62,6 +71,7 @@ namespace GoogleCloudExtension.Controls
                 framePoint += frameDuration;
             }
             result.KeyFrames = keyFrames;
+            result.Freeze();
 
             return result;
         }
@@ -82,11 +92,13 @@ namespace GoogleCloudExtension.Controls
 
         private void StartAnimation()
         {
-            _storyboard = new Storyboard();
-            _storyboard.Children.Add(_animation);
+            var animation = s_animationSource.Value.Clone();
 
-            Storyboard.SetTargetName(_animation, "_image");
-            Storyboard.SetTargetProperty(_animation, new PropertyPath("Source"));
+            _storyboard = new Storyboard();
+            _storyboard.Children.Add(animation);
+
+            Storyboard.SetTargetName(animation, "_image");
+            Storyboard.SetTargetProperty(animation, new PropertyPath("Source"));
 
             _storyboard.Begin(this);
         }

@@ -7,6 +7,7 @@
              xmlns:Models="clr-namespace:GoogleCloudExtension.GCloud.Models;assembly=GoogleCloudExtension.GCloud"
              xmlns:CloudExplorer="clr-namespace:GoogleCloudExtension.CloudExplorer"
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -22,6 +23,9 @@
         <HierarchicalDataTemplate DataType="{x:Type CloudExplorer:TreeHierarchy}" ItemsSource="{Binding Children}">
             <Grid ContextMenu="{Binding ContextMenu}">
                 <StackPanel Orientation="Horizontal">
+                    <controls:ProgressIndicator IsAnimated="{Binding IsLoading}"
+                                                Background="Red"
+                                                Visibility="{Binding IsLoading, Converter={StaticResource progressVisibilityConverted}}" />
                     <Image Source="{Binding Icon}"
                            Height="16" Width="16"
                            VerticalAlignment="Center"
@@ -36,6 +40,8 @@
         <DataTemplate DataType="{x:Type CloudExplorer:TreeLeaf}">
             <Grid ContextMenu="{Binding ContextMenu}">
                 <StackPanel Orientation="Horizontal">
+                    <controls:ProgressIndicator IsAnimated="{Binding IsLoading}"
+                                                Visibility="{Binding IsLoading, Converter={StaticResource progressVisibilityConverted}}" />
                     <Image Source="{Binding Icon}"
                            Height="16" Width="16"
                            Visibility="{Binding IsLoading, Converter={StaticResource iconVisibilityConverter}}"

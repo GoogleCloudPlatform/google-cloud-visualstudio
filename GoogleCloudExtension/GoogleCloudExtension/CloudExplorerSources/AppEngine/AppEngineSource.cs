@@ -19,6 +19,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
     {
         private const string IconResourcePath = "CloudExplorerSources/AppEngine/Resources/ic_view_module.png";
         private static readonly Lazy<ImageSource> s_moduleIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
+        private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
+        {
+            Content = "Loading modules...",
+            IsLoading = true
+        };
 
         private readonly AppEngineRootViewModel _root = new AppEngineRootViewModel();
 
@@ -65,7 +70,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             try
             {
                 _root.Children.Clear();
-                _root.Children.Add(new TreeLeaf { Content = "Loading..." });
+                _root.Children.Add(s_loadingPlaceholder);
                 _root.IsExpanded = true;
                 var apps = await AppEngineClient.GetAppEngineAppListAsync();
                 var nodes = apps
