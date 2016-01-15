@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         public void Refresh()
         {
-            
+            _root.Refresh();   
         }
 
         #endregion

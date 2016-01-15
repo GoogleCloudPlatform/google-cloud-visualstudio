@@ -15,6 +15,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/storage.png";
         private static readonly Lazy<ImageSource> s_storageIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
 
+        private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf { Content = "Loading..." };
+
         private bool _loaded = false;
         private bool _loading = false;
 
@@ -23,7 +25,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             Content = "Google Cloud Storage";
             Icon = s_storageIcon.Value;
             IsExpanded = false;
-            Children.Add(new TreeLeaf { Content = "Loading..." });
+            Children.Add(s_loadingPlaceholder);
         }
 
         protected override async void OnIsExpandedChanged(bool newValue)
@@ -34,26 +36,31 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             }
             if (newValue && !_loaded)
             {
-                try
+                await LoadBuckets();
+            }
+        }
+
+        private async Task LoadBuckets()
+        {
+            try
+            {
+                _loading = true;
+                Debug.WriteLine("Loading list of buckets.");
+                var buckets = await LoadBucketList();
+                Children.Clear();
+                foreach (var item in buckets)
                 {
-                    _loading = true;
-                    Debug.WriteLine("Loading list of buckets.");
-                    var buckets = await LoadBucketList();
-                    Children.Clear();
-                    foreach (var item in buckets)
-                    {
-                        Children.Add(item);
-                    }
-                    if (Children.Count == 0)
-                    {
-                        Children.Add(new TreeLeaf { Content = "No buckets" });
-                    }
-                    _loaded = true;
+                    Children.Add(item);
                 }
-                finally
+                if (Children.Count == 0)
                 {
-                    _loading = false;
+                    Children.Add(new TreeLeaf { Content = "No buckets" });
                 }
+                _loaded = true;
+            }
+            finally
+            {
+                _loading = false;
             }
         }
 
@@ -62,6 +69,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             var currentCredentials = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
             var buckets = await GcsDataSource.GetBucketListAsync(currentCredentials.ProjectId);
             return buckets.Select(x => new BucketViewModel(x)).ToList();
+        }
+
+        internal Task Refresh()
+        {
+            _loaded = false;
+            ResetChildren();
+            return LoadBuckets();
+        }
+
+        private void ResetChildren()
+        {
+            Children.Clear();
+            Children.Add(s_loadingPlaceholder);
         }
     }
 }
