@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using GoogleCloudExtension.CloudExplorerSources.Gcs;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
@@ -33,6 +34,7 @@ namespace GoogleCloudExtension.CloudExplorer
             var sources = new List<ICloudExplorerSource>
             {
                 new AppEngineSource(),
+                new GcsSource(),
             };
             var model = new CloudExplorerViewModel(sources);
             var content = new CloudExplorerToolWindowControl(this) { DataContext = model };

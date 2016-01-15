@@ -56,6 +56,13 @@
     <Compile Include="CloudExplorerSources\AppEngine\AppEngineSource.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\ModuleAndVersionItem.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\VersionComparer.cs" />
+    <Compile Include="CloudExplorerSources\Gcs\Bucket.cs" />
+    <Compile Include="CloudExplorerSources\Gcs\BucketItem.cs" />
+    <Compile Include="CloudExplorerSources\Gcs\Buckets.cs" />
+    <Compile Include="CloudExplorerSources\Gcs\BucketViewModel.cs" />
+    <Compile Include="CloudExplorerSources\Gcs\GcsDataSource.cs" />
+    <Compile Include="CloudExplorerSources\Gcs\GcsSource.cs" />
+    <Compile Include="CloudExplorerSources\Gcs\GcsSourceRootViewModel.cs" />
     <Compile Include="CloudExplorer\CloudExplorerViewModel.cs" />
     <Compile Include="CloudExplorer\CloudExplorerToolWindow.cs" />
     <Compile Include="CloudExplorer\CloudExplorerCommand.cs" />
