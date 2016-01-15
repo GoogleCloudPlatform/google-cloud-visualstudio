@@ -117,6 +117,7 @@
     <Resource Include="CloudExplorerSources\AppEngine\Resources\ic_view_module.png" />
     <Resource Include="CloudExplorerSources\AppEngine\Resources\ic_web.png" />
     <Resource Include="CloudExplorer\Resources\refresh.png" />
+    <Resource Include="CloudExplorerSources\Gcs\Resources\storage.png" />
     <Content Include="License.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

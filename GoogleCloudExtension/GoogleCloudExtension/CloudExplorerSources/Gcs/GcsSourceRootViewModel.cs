@@ -5,17 +5,23 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using GoogleCloudExtension.GCloud;
 using System.Linq;
+using System.Windows.Media;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 {
     internal class GcsSourceRootViewModel : TreeHierarchy
     {
+        private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/storage.png";
+        private static readonly Lazy<ImageSource> s_storageIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
+
         private bool _loaded = false;
         private bool _loading = false;
 
         public GcsSourceRootViewModel()
         {
             Content = "Google Cloud Storage";
+            Icon = s_storageIcon.Value;
             IsExpanded = false;
             Children.Add(new TreeLeaf { Content = "Loading..." });
         }
