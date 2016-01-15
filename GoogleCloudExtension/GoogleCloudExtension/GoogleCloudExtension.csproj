@@ -74,6 +74,9 @@
     <Compile Include="CloudExplorer\ICloudExplorerSource.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\ModuleAndVersionViewModel.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
+    <Compile Include="Controls\ProgressIndicator.xaml.cs">
+      <DependentUpon>ProgressIndicator.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DeploymentDialog\AspNetRuntimeValueConverter.cs" />
     <Compile Include="DeploymentDialog\DeploymentDialogContent.xaml.cs">
       <DependentUpon>DeploymentDialogContent.xaml</DependentUpon>
@@ -118,6 +121,18 @@
     <Resource Include="CloudExplorerSources\AppEngine\Resources\ic_web.png" />
     <Resource Include="CloudExplorer\Resources\refresh.png" />
     <Resource Include="CloudExplorerSources\Gcs\Resources\storage.png" />
+    <Resource Include="Controls\Resources\step_1.png" />
+    <Resource Include="Controls\Resources\step_10.png" />
+    <Resource Include="Controls\Resources\step_11.png" />
+    <Resource Include="Controls\Resources\step_12.png" />
+    <Resource Include="Controls\Resources\step_2.png" />
+    <Resource Include="Controls\Resources\step_3.png" />
+    <Resource Include="Controls\Resources\step_4.png" />
+    <Resource Include="Controls\Resources\step_5.png" />
+    <Resource Include="Controls\Resources\step_6.png" />
+    <Resource Include="Controls\Resources\step_7.png" />
+    <Resource Include="Controls\Resources\step_8.png" />
+    <Resource Include="Controls\Resources\step_9.png" />
     <Content Include="License.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -257,6 +272,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="CloudExplorer\CloudExplorerToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\ProgressIndicator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
