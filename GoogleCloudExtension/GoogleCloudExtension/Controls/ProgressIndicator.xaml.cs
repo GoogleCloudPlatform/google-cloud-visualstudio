@@ -23,10 +23,14 @@ namespace GoogleCloudExtension.Controls
     /// </summary>
     public partial class ProgressIndicator : UserControl, ISupportInitialize
     {
-        static readonly Lazy<IList<ImageSource>> s_frames = new Lazy<IList<ImageSource>>(LoadAnimationFrames);
+        /// <summary>
+        /// Duration of the animation in milliseconds.
+        /// </summary>
         const int FullDuration = 500;
+
         static readonly Duration s_animationDuration = new Duration(new TimeSpan(0, 0, 0, 0, FullDuration));
         static readonly Lazy<ObjectAnimationUsingKeyFrames> s_animationSource = new Lazy<ObjectAnimationUsingKeyFrames>(CreateAnimation);
+        static readonly Lazy<IList<ImageSource>> s_frames = new Lazy<IList<ImageSource>>(LoadAnimationFrames);
 
         public static readonly DependencyProperty IsAnimatedProperty = DependencyProperty.Register(
             nameof(IsAnimated),
@@ -51,9 +55,7 @@ namespace GoogleCloudExtension.Controls
             // Initialize the animation for this object.
             var result = new ObjectAnimationUsingKeyFrames
             {
-                AutoReverse = true,
                 Duration = s_animationDuration,
-                RepeatBehavior = RepeatBehavior.Forever
             };
 
             // Creates the frames for the animation.
@@ -67,6 +69,7 @@ namespace GoogleCloudExtension.Controls
                     KeyTime = new TimeSpan(0, 0, 0, 0, framePoint),
                     Value = frame,
                 };
+                keyFrames.Add(keyFrame);
 
                 framePoint += frameDuration;
             }
@@ -92,15 +95,19 @@ namespace GoogleCloudExtension.Controls
 
         private void StartAnimation()
         {
-            var animation = s_animationSource.Value.Clone();
+            if (_storyboard == null)
+            {
+                var animation = s_animationSource.Value.Clone();
 
-            _storyboard = new Storyboard();
-            _storyboard.Children.Add(animation);
+                _storyboard = new Storyboard();
+                _storyboard.Children.Add(animation);
 
-            Storyboard.SetTargetName(animation, "_image");
-            Storyboard.SetTargetProperty(animation, new PropertyPath("Source"));
+                Storyboard.SetTargetName(animation, "_image");
+                Storyboard.SetTargetProperty(animation, new PropertyPath("Source"));
 
-            _storyboard.Begin(this);
+                _storyboard.Completed += (s, e) => StartAnimation();
+            }
+            _storyboard.Begin(_root);
         }
 
         private static List<ImageSource> LoadAnimationFrames()
