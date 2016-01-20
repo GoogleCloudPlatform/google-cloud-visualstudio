@@ -28,22 +28,14 @@ namespace GoogleCloudExtension.Controls
         /// </summary>
         const int FullDuration = 500;
 
+        /// <summary>
+        /// The definition of the animation for progress.
+        /// </summary>
         static readonly Duration s_animationDuration = new Duration(new TimeSpan(0, 0, 0, 0, FullDuration));
         static readonly Lazy<ObjectAnimationUsingKeyFrames> s_animationSource = new Lazy<ObjectAnimationUsingKeyFrames>(CreateAnimation);
         static readonly Lazy<IList<ImageSource>> s_frames = new Lazy<IList<ImageSource>>(LoadAnimationFrames);
 
-        public static readonly DependencyProperty IsAnimatedProperty = DependencyProperty.Register(
-            nameof(IsAnimated),
-            typeof(bool),
-            typeof(ProgressIndicator));
-
         private Storyboard _storyboard;
-
-        public bool IsAnimated
-        {
-            get { return (bool)GetValue(IsAnimatedProperty); }
-            set { SetValue(IsAnimatedProperty, value); }
-        }
 
         public ProgressIndicator()
         {
@@ -85,10 +77,7 @@ namespace GoogleCloudExtension.Controls
         {
             base.EndInit();
 
-            if (IsAnimated)
-            {
-                StartAnimation();
-            }
+            StartAnimation();
         }
 
         #endregion
