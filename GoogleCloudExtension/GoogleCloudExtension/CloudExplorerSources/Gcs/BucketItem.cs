@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Copyright 2015 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
 using System.ComponentModel;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gcs
@@ -7,7 +9,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
     {
         private const string Category = "Bucket Properties";
 
-        private Bucket _bucket;
+        private readonly Bucket _bucket;
 
         public BucketItem(Bucket bucket)
         {

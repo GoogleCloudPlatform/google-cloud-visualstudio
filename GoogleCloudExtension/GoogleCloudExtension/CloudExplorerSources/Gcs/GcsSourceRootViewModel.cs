@@ -1,12 +1,15 @@
-﻿using System;
+﻿// Copyright 2015 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.Utils;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
-using GoogleCloudExtension.GCloud;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Media;
-using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 {

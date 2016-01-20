@@ -1,20 +1,15 @@
-﻿using GoogleCloudExtension.Utils;
+﻿// Copyright 2015 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace GoogleCloudExtension.Controls
 {
@@ -26,14 +21,14 @@ namespace GoogleCloudExtension.Controls
         /// <summary>
         /// Duration of the animation in milliseconds.
         /// </summary>
-        const int FullDuration = 500;
+        private const int FullDuration = 500;
 
         /// <summary>
         /// The definition of the animation for progress.
         /// </summary>
-        static readonly Duration s_animationDuration = new Duration(new TimeSpan(0, 0, 0, 0, FullDuration));
-        static readonly Lazy<ObjectAnimationUsingKeyFrames> s_animationSource = new Lazy<ObjectAnimationUsingKeyFrames>(CreateAnimation);
-        static readonly Lazy<IList<ImageSource>> s_frames = new Lazy<IList<ImageSource>>(LoadAnimationFrames);
+        private static readonly Duration s_animationDuration = new Duration(new TimeSpan(0, 0, 0, 0, FullDuration));
+        private static readonly Lazy<ObjectAnimationUsingKeyFrames> s_animationSource = new Lazy<ObjectAnimationUsingKeyFrames>(CreateAnimation);
+        private static readonly Lazy<IList<ImageSource>> s_frames = new Lazy<IList<ImageSource>>(LoadAnimationFrames);
 
         private Storyboard _storyboard;
 
@@ -104,7 +99,6 @@ namespace GoogleCloudExtension.Controls
             return Enumerable.Range(1, 12)
                 .Select(x => ResourceUtils.LoadResource($"Controls/Resources/step_{x}.png"))
                 .ToList();
-
         }
     }
 }

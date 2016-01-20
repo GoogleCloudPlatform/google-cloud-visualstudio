@@ -1,13 +1,13 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
-using GoogleCloudExtension.CloudExplorerSources.AppEngine;
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.CloudExplorerSources.AppEngine;
+using GoogleCloudExtension.CloudExplorerSources.Gcs;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using GoogleCloudExtension.CloudExplorerSources.Gcs;
 
 namespace GoogleCloudExtension.CloudExplorer
 {

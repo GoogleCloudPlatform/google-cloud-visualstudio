@@ -3,8 +3,8 @@
 
 using EnvDTE;
 using GoogleCloudExtension.AddNewAccount;
-using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DeployToAppEngine;
 using GoogleCloudExtension.DeployToAppEngineContextMenu;
 using GoogleCloudExtension.UserAndProjectList;
@@ -78,7 +78,7 @@ namespace GoogleCloudExtension
             DeployToAppEngineContextMenuCommand.Initialize(this);
             AddNewAccountCommand.Initialize(this);
 
-            ExtensionAnalytics.Initialize(this);	
+            ExtensionAnalytics.Initialize(this);
             ExtensionAnalytics.ReportStartSession();
 
             _dteInstance = (DTE)Package.GetGlobalService(typeof(DTE));

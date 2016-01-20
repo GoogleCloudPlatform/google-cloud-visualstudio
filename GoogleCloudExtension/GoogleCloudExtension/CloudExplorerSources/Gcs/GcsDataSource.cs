@@ -1,6 +1,8 @@
-﻿using GoogleCloudExtension.GCloud;
+﻿// Copyright 2015 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+using GoogleCloudExtension.GCloud;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
@@ -10,7 +12,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 {
     internal static class GcsDataSource
     {
-        const string ListBucketsUrl = "http://www.googleapis.com/storage/v1/b";
+        private const string ListBucketsUrl = "http://www.googleapis.com/storage/v1/b";
 
         internal static async Task<IList<Bucket>> GetBucketListAsync(string projectId)
         {

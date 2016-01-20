@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// </summary>
         public ImageSource RefreshIcon
         {
-            get { return s_refreshIcon.Value;  }
+            get { return s_refreshIcon.Value; }
         }
 
         /// <summary>

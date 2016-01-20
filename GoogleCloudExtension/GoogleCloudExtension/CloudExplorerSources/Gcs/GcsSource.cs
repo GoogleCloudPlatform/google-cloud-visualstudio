@@ -1,9 +1,7 @@
-﻿using GoogleCloudExtension.CloudExplorer;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿// Copyright 2015 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+using GoogleCloudExtension.CloudExplorer;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 {
@@ -20,7 +18,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         public void Refresh()
         {
-            _root.Refresh();   
+            _root.Refresh();
         }
 
         #endregion
