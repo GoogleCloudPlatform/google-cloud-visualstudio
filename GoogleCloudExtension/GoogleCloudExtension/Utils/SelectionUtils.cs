@@ -33,6 +33,20 @@ namespace GoogleCloudExtension.Utils
             return true;
         }
 
+        internal static void ClearSelection(IServiceProvider provider)
+        {
+            var selectionTracker = provider.GetService(typeof(STrackSelection)) as ITrackSelection;
+            if (selectionTracker == null)
+            {
+                Debug.WriteLine("Failed to find the selection tracker.");
+                return;
+            }
+
+            var selectionContainer = new SelectionContainer();
+            selectionContainer.SelectedObjects = new List<object>();
+            selectionTracker.OnSelectChange(selectionContainer);
+        }
+
         internal static void SelectItem(IServiceProvider provider, object item)
         {
             var selectionTracker = provider.GetService(typeof(STrackSelection)) as ITrackSelection;

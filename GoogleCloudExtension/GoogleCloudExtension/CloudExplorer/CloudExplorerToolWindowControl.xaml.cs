@@ -29,6 +29,7 @@ namespace GoogleCloudExtension.CloudExplorer
             var itemSource = e.NewValue as ICloudExplorerItemSource;
             if (itemSource == null)
             {
+                SelectionUtils.ClearSelection(_provider);
                 return;
             }
 
