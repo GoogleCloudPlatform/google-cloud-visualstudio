@@ -19,6 +19,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         [JsonProperty("status")]
         public string Status { get; set; }
 
+        [JsonProperty("tags")]
+        public InstanceTags Tags { get; set; }
+
         public string ZoneName { get; set; }
     }
 }

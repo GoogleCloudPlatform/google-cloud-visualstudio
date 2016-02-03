@@ -2,6 +2,7 @@
 using GoogleCloudExtension.CloudExplorer;
 using System.Windows.Media;
 using GoogleCloudExtension.Utils;
+using System.Linq;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
@@ -25,6 +26,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             {
                 return new GcsInstanceItem(_instance);
             }
+        }
+
+        private static bool IsAspnetInstance(GceInstance instance)
+        {
+            return true;
         }
     }      
 }
