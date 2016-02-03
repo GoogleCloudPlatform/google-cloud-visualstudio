@@ -6,7 +6,6 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Input;
 
@@ -137,7 +136,7 @@ namespace GoogleCloudExtension.DeploymentDialog
 
         public async void StartLoadingProjectsAsync()
         {
-            Debug.WriteLine("Loading projects...");
+            ActivityLogUtils.LogInfo("Loading projects...");
 
             try
             {
@@ -159,13 +158,14 @@ namespace GoogleCloudExtension.DeploymentDialog
                 SelectedCloudProject = cloudProjects.Where(x => x.Id == accountAndProject.ProjectId).FirstOrDefault();
 
                 Loaded = true;
-                Debug.WriteLine("Projects loaded...");
             }
             catch (GCloudException ex)
             {
-                AppEngineOutputWindow.OutputLine("Failed to load list of projects to deploy.");
-                AppEngineOutputWindow.OutputLine(ex.Message);
-                AppEngineOutputWindow.Activate();
+                ActivityLogUtils.LogError($"Failed to load list of projects: {ex.Message}");
+
+                GcpOutputWindow.OutputLine("Failed to load list of projects to deploy.");
+                GcpOutputWindow.OutputLine(ex.Message);
+                GcpOutputWindow.Activate();
 
                 throw ex;
             }
@@ -205,6 +205,8 @@ namespace GoogleCloudExtension.DeploymentDialog
                 return;
             }
 
+            ActivityLogUtils.LogInfo("Invalidated selected account.");
+
             try
             {
                 this.Loaded = false;
@@ -221,9 +223,11 @@ namespace GoogleCloudExtension.DeploymentDialog
             }
             catch (GCloudException ex)
             {
-                AppEngineOutputWindow.OutputLine("Failed to fetch list of project.");
-                AppEngineOutputWindow.OutputLine(ex.Message);
-                AppEngineOutputWindow.Activate();
+                ActivityLogUtils.LogError($"Failed to fetch list of projects: {ex.Message}");
+
+                GcpOutputWindow.OutputLine("Failed to fetch list of project.");
+                GcpOutputWindow.OutputLine(ex.Message);
+                GcpOutputWindow.Activate();
             }
         }
     }

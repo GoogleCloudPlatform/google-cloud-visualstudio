@@ -135,7 +135,7 @@ namespace GoogleCloudExtension.AppEngineApps
         {
             if (!GCloudWrapper.Instance.ValidateGCloudInstallation())
             {
-                Debug.WriteLine("Cannot find GCloud, disabling the AppEngine tool window.");
+                ActivityLogUtils.LogInfo("Cannot find GCloud, disabling the AppEngine tool window.");
                 return;
             }
 
@@ -148,9 +148,10 @@ namespace GoogleCloudExtension.AppEngineApps
             }
             catch (GCloudException ex)
             {
-                AppEngineOutputWindow.OutputLine("Failed to load the list of AppEngine apps.");
-                AppEngineOutputWindow.OutputLine(ex.Message);
-                AppEngineOutputWindow.Activate();
+                ActivityLogUtils.LogError($"Failed to load list of AppEngine apps {ex.Message}");
+                GcpOutputWindow.OutputLine("Failed to load the list of AppEngine apps.");
+                GcpOutputWindow.OutputLine(ex.Message);
+                GcpOutputWindow.Activate();
             }
             finally
             {
@@ -164,6 +165,8 @@ namespace GoogleCloudExtension.AppEngineApps
         {
             ExtensionAnalytics.ReportStartCommand(OpenAppEngineVersionCommand, CommandInvocationSource.Button);
 
+            ActivityLogUtils.LogInfo($"Opening app {app}");
+
             try
             {
                 this.OpenAppEnabled = false;
@@ -171,12 +174,13 @@ namespace GoogleCloudExtension.AppEngineApps
 
                 var accountAndProject = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
                 var url = $"https://{app.Version}-dot-{app.Module}-dot-{accountAndProject.ProjectId}.appspot.com/";
-                Debug.WriteLine($"Opening URL: {url}");
+                ActivityLogUtils.LogInfo($"Opening URL: {url}");
                 Process.Start(url);
                 ExtensionAnalytics.ReportEndCommand(OpenAppEngineVersionCommand, succeeded: true);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ActivityLogUtils.LogError($"Failed to open app: {ex.Message}");
                 ExtensionAnalytics.ReportEndCommand(OpenAppEngineVersionCommand, succeeded: false);
                 throw;
             }
@@ -191,6 +195,8 @@ namespace GoogleCloudExtension.AppEngineApps
         {
             ExtensionAnalytics.ReportStartCommand(DeleteAppEngineVersionCommand, CommandInvocationSource.Button);
 
+            ActivityLogUtils.LogInfo($"Deleting {app.Module}/{app.Version}");
+
             try
             {
                 this.LoadingMessage = "Deleting version...";
@@ -200,9 +206,10 @@ namespace GoogleCloudExtension.AppEngineApps
             }
             catch (GCloudException ex)
             {
-                AppEngineOutputWindow.OutputLine($"Failed to delete version {app.Version} in module {app.Module}");
-                AppEngineOutputWindow.OutputLine(ex.Message);
-                AppEngineOutputWindow.Activate();
+                ActivityLogUtils.LogError($"Failed to delete version {app.Module}/{app.Version}: {ex.Message}");
+                GcpOutputWindow.OutputLine($"Failed to delete version {app.Version} in module {app.Module}");
+                GcpOutputWindow.OutputLine(ex.Message);
+                GcpOutputWindow.Activate();
                 ExtensionAnalytics.ReportEndCommand(DeleteAppEngineVersionCommand, succeeded: false);
             }
             finally
@@ -216,6 +223,8 @@ namespace GoogleCloudExtension.AppEngineApps
         {
             ExtensionAnalytics.ReportStartCommand(SetAppEngineVersionDefaultCommand, CommandInvocationSource.Button);
 
+            ActivityLogUtils.LogInfo($"Setting default version {app.Module}/{app.Version}");
+
             try
             {
                 this.Loading = true;
@@ -225,9 +234,10 @@ namespace GoogleCloudExtension.AppEngineApps
             }
             catch (GCloudException ex)
             {
-                AppEngineOutputWindow.OutputLine("Failed to set default version.");
-                AppEngineOutputWindow.OutputLine(ex.Message);
-                AppEngineOutputWindow.Activate();
+                ActivityLogUtils.LogError($"Failed to set default version {app.Module}/{app.Version}: {ex.Message}");
+                GcpOutputWindow.OutputLine("Failed to set default version.");
+                GcpOutputWindow.OutputLine(ex.Message);
+                GcpOutputWindow.Activate();
                 ExtensionAnalytics.ReportEndCommand(SetAppEngineVersionDefaultCommand, succeeded: false);
             }
             finally
@@ -240,13 +250,17 @@ namespace GoogleCloudExtension.AppEngineApps
         private void OnRefresh()
         {
             ExtensionAnalytics.ReportStartCommand(StartRefreshCommand, CommandInvocationSource.Button);
+
+            ActivityLogUtils.LogInfo("Refreshing applications.");
+
             try
             {
                 LoadAppEngineAppListAsync();
                 ExtensionAnalytics.ReportEndCommand(StartRefreshCommand, succeeded: true);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                ActivityLogUtils.LogError($"Failed to refresh applications: {ex.Message}");
                 ExtensionAnalytics.ReportEndCommand(StartRefreshCommand, succeeded: false);
                 throw;
             }
@@ -256,7 +270,7 @@ namespace GoogleCloudExtension.AppEngineApps
 
         private void InvalidateAppEngineAppList(object src, EventArgs args)
         {
-            Debug.WriteLine("AppEngine app list invalidated.");
+            ActivityLogUtils.LogInfo("AppEngine app list invalidated.");
             LoadAppEngineAppListAsync();
         }
     }
