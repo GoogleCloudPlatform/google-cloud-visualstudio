@@ -56,6 +56,17 @@
     <Compile Include="CloudExplorerSources\AppEngine\AppEngineSource.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\ModuleAndVersionItem.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\VersionComparer.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GceDataSource.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GceInstance.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GceInstances.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GceSourceRootViewModel.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GceSource.cs" />
+    <Compile Include="CloudExplorerSources\Gce\Metadata.cs" />
+    <Compile Include="CloudExplorerSources\Gce\MetadataEntry.cs" />
+    <Compile Include="CloudExplorerSources\Gce\Zone.cs" />
+    <Compile Include="CloudExplorerSources\Gce\Zones.cs" />
+    <Compile Include="CloudExplorerSources\Gce\ZoneViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gcs\Bucket.cs" />
     <Compile Include="CloudExplorerSources\Gcs\BucketItem.cs" />
     <Compile Include="CloudExplorerSources\Gcs\Buckets.cs" />

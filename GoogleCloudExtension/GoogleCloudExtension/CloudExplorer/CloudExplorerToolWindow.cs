@@ -3,6 +3,7 @@
 
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorerSources.AppEngine;
+using GoogleCloudExtension.CloudExplorerSources.Gce;
 using GoogleCloudExtension.CloudExplorerSources.Gcs;
 using Microsoft.VisualStudio.Shell;
 using System;
@@ -35,6 +36,7 @@ namespace GoogleCloudExtension.CloudExplorer
             {
                 new AppEngineSource(),
                 new GcsSource(),
+                new GceSource(),
             };
             var model = new CloudExplorerViewModel(sources);
             var content = new CloudExplorerToolWindowControl(this) { DataContext = model };

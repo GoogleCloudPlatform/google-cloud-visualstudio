@@ -32,14 +32,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
                 Debug.WriteLine($"Failed to download data: {ex.Message}");
             }
             return null;
-
-            //var client = new HttpClient();
-            //var url = new Uri(ListBucketsUrl, dontEscape: true);
-            //var request = new HttpRequestMessage(HttpMethod.Get, url);
-            //request.Headers.Add("Authorization", $"Bearer {oauthToken}");
-
-            //var response = await client.SendAsync(request);
-            //var content = await response.Content.ReadAsStringAsync();
         }
     }
 }
