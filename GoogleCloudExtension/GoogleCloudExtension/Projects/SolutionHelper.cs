@@ -3,10 +3,10 @@
 
 using EnvDTE;
 using EnvDTE80;
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace GoogleCloudExtension.Projects
 {
@@ -44,21 +44,21 @@ namespace GoogleCloudExtension.Projects
             var sb = this.SolutionBuild;
             if (sb == null)
             {
-                Debug.WriteLine("No startup project, no solution loaded yet.");
+                ActivityLogUtils.LogInfo("No startup project, no solution loaded yet.");
                 return null;
             }
 
             var startupProjects = sb.StartupProjects as Array;
             if (startupProjects == null)
             {
-                Debug.WriteLine("No startup projects in solution.");
+                ActivityLogUtils.LogInfo("No startup projects in solution.");
                 return null;
             }
 
             string startupProjectName = startupProjects.GetValue(0) as string;
             if (startupProjectName == null)
             {
-                Debug.WriteLine("No startup project name.");
+                ActivityLogUtils.LogInfo("No startup project name.");
                 return null;
             }
 
@@ -68,7 +68,7 @@ namespace GoogleCloudExtension.Projects
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Failed to get startup project {ex.Message}");
+                ActivityLogUtils.LogError($"Failed to get startup project: {ex.Message}");
                 return null;
             }
         }

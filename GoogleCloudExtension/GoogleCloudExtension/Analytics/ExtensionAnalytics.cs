@@ -56,7 +56,7 @@ namespace GoogleCloudExtension.Analytics
         /// <param name="invocationSource">From where the command was invoked.</param>
         public static async void ReportStartCommand(string command, CommandInvocationSource invocationSource)
         {
-            Debug.WriteLine($"Reporting: Starting command {command} from source {invocationSource}");
+            ActivityLogUtils.LogInfo($"Reporting: Starting command {command} from source {invocationSource}");
             var reporter = await GetReporter();
             string action;
             switch (invocationSource)
@@ -87,7 +87,7 @@ namespace GoogleCloudExtension.Analytics
         /// <param name="succeeded">Did it succeed or not.</param>
         public static async void ReportEndCommand(string command, bool succeeded)
         {
-            Debug.WriteLine($"Reporting: Command {command} success: {succeeded}");
+            ActivityLogUtils.LogInfo($"Reporting: Command {command} success: {succeeded}");
             var reporter = await GetReporter();
             reporter?.ReportEvent(
                 category: CommandCategory,
@@ -122,7 +122,7 @@ namespace GoogleCloudExtension.Analytics
         /// <param name="name">The name of the window, typically <c>nameof(class)</c>. Must not be null.</param>
         public static async void ReportWindowOpened(string name)
         {
-            Debug.WriteLine($"Reporting: Window {name} is opened");
+            ActivityLogUtils.LogInfo($"Reporting: Window {name} is opened");
             var reporter = await GetReporter();
             reporter?.ReportEvent(
                 category: WindowCategory,
@@ -137,7 +137,7 @@ namespace GoogleCloudExtension.Analytics
         /// <param name="value">Optional, the value associated with the event.</param>
         public static async void ReportEvent(string name, string value = null)
         {
-            Debug.WriteLine($"Reporting: Event {name} with param {value}");
+            ActivityLogUtils.LogInfo($"Reporting: Event {name} with param {value}");
             var reporter = await GetReporter();
             reporter?.ReportEvent(
                 category: EventCategory,
@@ -150,7 +150,7 @@ namespace GoogleCloudExtension.Analytics
         /// </summary>
         public static async void ReportStartSession()
         {
-            Debug.WriteLine($"Reporting: Starting session.");
+            ActivityLogUtils.LogInfo($"Reporting: Starting session.");
             var reporter = await GetReporter();
             reporter?.ReportStartSession();
         }
@@ -160,7 +160,7 @@ namespace GoogleCloudExtension.Analytics
         /// </summary>
         public static async void ReportEndSession()
         {
-            Debug.WriteLine($"Reporting: Ending session.");
+            ActivityLogUtils.LogInfo($"Reporting: Ending session.");
             var reporter = await GetReporter();
             reporter?.ReportEndSession();
         }

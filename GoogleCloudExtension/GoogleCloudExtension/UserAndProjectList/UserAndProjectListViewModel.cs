@@ -111,7 +111,7 @@ namespace GoogleCloudExtension.UserAndProjectList
 
         private void OnCredentialsChanged(object sender, EventArgs e)
         {
-            Debug.WriteLine("Invalidating the credentials.");
+            ActivityLogUtils.LogInfo("Invalidating the credentials.");
             LoadAccountsAsync();
         }
 
@@ -122,7 +122,7 @@ namespace GoogleCloudExtension.UserAndProjectList
         {
             if (!GCloudWrapper.Instance.ValidateGCloudInstallation())
             {
-                Debug.WriteLine("GCloud is not installed, disabling the User and Project tool window.");
+                ActivityLogUtils.LogInfo("GCloud is not installed, disabling the User and Project tool window.");
                 return;
             }
 
@@ -136,10 +136,10 @@ namespace GoogleCloudExtension.UserAndProjectList
             }
             catch (GCloudException ex)
             {
-                AppEngineOutputWindow.Activate();
-                AppEngineOutputWindow.Clear();
-                AppEngineOutputWindow.OutputLine($"Failed to load the current account and project.");
-                AppEngineOutputWindow.OutputLine(ex.Message);
+                GcpOutputWindow.Activate();
+                GcpOutputWindow.Clear();
+                GcpOutputWindow.OutputLine($"Failed to load the current account and project.");
+                GcpOutputWindow.OutputLine(ex.Message);
             }
             finally
             {
@@ -175,9 +175,9 @@ namespace GoogleCloudExtension.UserAndProjectList
             }
             catch (GCloudException ex)
             {
-                AppEngineOutputWindow.OutputLine($"Failed to update project to {newProject.Name}");
-                AppEngineOutputWindow.OutputLine(ex.Message);
-                AppEngineOutputWindow.Activate();
+                GcpOutputWindow.OutputLine($"Failed to update project to {newProject.Name}");
+                GcpOutputWindow.OutputLine(ex.Message);
+                GcpOutputWindow.Activate();
 
                 ExtensionAnalytics.ReportEndCommand(UpdateCurrentProjectCommand, succeeded: false);
             }
@@ -234,9 +234,9 @@ namespace GoogleCloudExtension.UserAndProjectList
             }
             catch (GCloudException ex)
             {
-                AppEngineOutputWindow.OutputLine($"Failed to update current account to {value}");
-                AppEngineOutputWindow.OutputLine(ex.Message);
-                AppEngineOutputWindow.Activate();
+                GcpOutputWindow.OutputLine($"Failed to update current account to {value}");
+                GcpOutputWindow.OutputLine(ex.Message);
+                GcpOutputWindow.Activate();
 
                 ExtensionAnalytics.ReportEndCommand(UpdateCurrentAccountCommand, succeeded: false);
             }
