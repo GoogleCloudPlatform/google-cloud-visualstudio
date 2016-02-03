@@ -62,6 +62,7 @@
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceSourceRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceSource.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GcsInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\Metadata.cs" />
     <Compile Include="CloudExplorerSources\Gce\MetadataEntry.cs" />
     <Compile Include="CloudExplorerSources\Gce\Zone.cs" />

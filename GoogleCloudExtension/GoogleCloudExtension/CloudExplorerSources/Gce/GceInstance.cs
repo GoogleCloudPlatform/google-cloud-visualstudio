@@ -16,6 +16,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         [JsonProperty("metadata")]
         public Metadata Metadata { get; set; }
 
+        [JsonProperty("status")]
+        public string Status { get; set; }
+
         public string ZoneName { get; set; }
     }
 }
