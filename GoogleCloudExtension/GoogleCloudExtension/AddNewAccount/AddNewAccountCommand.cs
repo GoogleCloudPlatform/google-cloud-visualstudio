@@ -83,20 +83,20 @@ namespace GoogleCloudExtension.AddNewAccount
         {
             ExtensionAnalytics.ReportStartCommand(AddAccountCommand, CommandInvocationSource.ToolsMenu);
 
-            AppEngineOutputWindow.Clear();
-            AppEngineOutputWindow.Activate();
+            GcpOutputWindow.Clear();
+            GcpOutputWindow.Activate();
             try
             {
-                AppEngineOutputWindow.OutputLine("Activating browser.");
-                await GCloudWrapper.Instance.AddCredentialsAsync(AppEngineOutputWindow.OutputLine);
-                AppEngineOutputWindow.OutputLine("Done adding account.");
+                GcpOutputWindow.OutputLine("Activating browser.");
+                await GCloudWrapper.Instance.AddCredentialsAsync(GcpOutputWindow.OutputLine);
+                GcpOutputWindow.OutputLine("Done adding account.");
 
                 ExtensionAnalytics.ReportEndCommand(AddAccountCommand, succeeded: true);
             }
             catch (Exception ex)
             {
                 ExtensionAnalytics.ReportEndCommand(AddAccountCommand, succeeded: false);
-                AppEngineOutputWindow.OutputLine(ex.Message);
+                GcpOutputWindow.OutputLine(ex.Message);
             }
         }
     }

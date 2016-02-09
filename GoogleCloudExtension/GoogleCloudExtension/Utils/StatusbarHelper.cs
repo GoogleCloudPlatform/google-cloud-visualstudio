@@ -4,9 +4,8 @@
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
-using System.Diagnostics;
 
-namespace GoogleCloudExtension
+namespace GoogleCloudExtension.Utils
 {
     public static class StatusbarHelper
     {
@@ -38,7 +37,7 @@ namespace GoogleCloudExtension
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Failed to write to the status bar: {ex.Message}");
+                ActivityLogUtils.LogError($"Failed to write to the status bar: {ex.Message}");
             }
         }
 
@@ -51,7 +50,7 @@ namespace GoogleCloudExtension
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Failed to show animation: {ex.Message}");
+                ActivityLogUtils.LogError($"Failed to show animation: {ex.Message}");
             }
         }
 
@@ -64,7 +63,7 @@ namespace GoogleCloudExtension
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Failed to hide animation: {ex.Message}");
+                ActivityLogUtils.LogError($"Failed to hide animation: {ex.Message}");
             }
         }
 
@@ -76,7 +75,7 @@ namespace GoogleCloudExtension
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Failed to freeze the status bar output: {ex.Message}");
+                ActivityLogUtils.LogError($"Failed to freeze the status bar output: {ex.Message}");
             }
         }
 
@@ -88,7 +87,7 @@ namespace GoogleCloudExtension
             }
             catch (Exception ex)
             {
-                Debug.WriteLine($"Failed to unfreeze the status bar output: {ex.Message}");
+                ActivityLogUtils.LogError($"Failed to unfreeze the status bar output: {ex.Message}");
             }
         }
     }
