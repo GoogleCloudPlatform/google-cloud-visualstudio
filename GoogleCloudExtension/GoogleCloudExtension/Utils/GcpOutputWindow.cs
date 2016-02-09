@@ -15,9 +15,7 @@ namespace GoogleCloudExtension.Utils
         private const string WindowTitle = "Google Cloud Tools";
 
         private static readonly Guid s_windowGuid = new Guid("E701CE22-DDEA-418A-9E66-C5A4F3891958");
-        private static readonly Lazy<IVsOutputWindowPane> s_outputWindowPane = new Lazy<IVsOutputWindowPane>(GetWindowPane);
-
-        private static IVsOutputWindowPane GetWindowPane()
+        private static readonly Lazy<IVsOutputWindowPane> s_outputWindowPane = new Lazy<IVsOutputWindowPane>(() =>
         {
             var outputWindow = Package.GetGlobalService(typeof(SVsOutputWindow)) as IVsOutputWindow;
             outputWindow.CreatePane(s_windowGuid, WindowTitle, 1, 1);
@@ -26,7 +24,7 @@ namespace GoogleCloudExtension.Utils
             outputWindow.GetPane(s_windowGuid, out outputWindowPane);
 
             return outputWindowPane;
-        }
+        });
 
         /// <summary>
         /// Outputs a line to the GCP output window.

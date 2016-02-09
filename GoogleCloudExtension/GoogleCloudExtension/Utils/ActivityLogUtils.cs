@@ -11,7 +11,7 @@ namespace GoogleCloudExtension.Utils
     /// This utility class implements helpers to log to the activity log, which will help
     /// debug issues with the extension that only our customers can reproduce. The log is only
     /// written to if the /log parameter is passed to Visual Studio on startup, other than that
-    /// writting to the log is a noop.
+    /// writing to the log is a noop.
     /// </summary>
     internal static class ActivityLogUtils
     {
@@ -57,17 +57,14 @@ namespace GoogleCloudExtension.Utils
 
         /// <summary>
         /// This method retrieves the activity log service, as per the documentation a new interface must
-        /// be fetched everytime it is needed, which is why not catching is performed.
+        /// be fetched everytime it is needed, which is why not caching is performed.
         /// See https://msdn.microsoft.com/en-us/library/bb166359.aspx for more details.
         /// </summary>
         /// <returns>The current instance of IVsACtivityLog to use.</returns>
         private static IVsActivityLog GetActivityLog()
         {
             var log = s_serviceProvider.GetService(typeof(SVsActivityLog)) as IVsActivityLog;
-            if (log == null)
-            {
-                Debug.WriteLine("Failed to obtain IVsActivityLog interface.");
-            }
+            Debug.WriteLineIf(log == null, "Failed to obtain IVsActivityLog interface.");
             return log;
         }
     }
