@@ -6,7 +6,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
     {
         private const string Category = "Instance Properties";
 
-        private readonly GceInstance _instance;
+        protected readonly GceInstance _instance;
 
         public GceInstanceItem(GceInstance instance)
         {
@@ -31,6 +31,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         [Category(Category)]
         [Description("Whether this is an ASP.NET server")]
-        public bool IsAspNet => _instance.Tags?.Items?.Contains("aspnet") ?? false;
+        public bool IsAspNet => _instance.IsAspnetInstance();
     }
 }

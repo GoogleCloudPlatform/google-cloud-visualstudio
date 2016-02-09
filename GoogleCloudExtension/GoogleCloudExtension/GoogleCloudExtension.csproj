@@ -57,6 +57,8 @@
     <Compile Include="CloudExplorerSources\AppEngine\ModuleAndVersionItem.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\ModuleViewModel.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\VersionComparer.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GceInstanceExtensions.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceDataSource.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstance.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstances.cs" />

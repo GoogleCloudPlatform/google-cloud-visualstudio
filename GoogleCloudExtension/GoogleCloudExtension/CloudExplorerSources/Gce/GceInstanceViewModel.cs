@@ -34,7 +34,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             get
             {
-                return new GceInstanceItem(_instance);
+                if (_instance.IsGaeInstance())
+                {
+                    return new GceGaeInstanceItem(_instance);
+                }
+                else
+                {
+                    return new GceInstanceItem(_instance);
+                }
             }
         }
 
