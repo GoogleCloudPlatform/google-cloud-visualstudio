@@ -97,7 +97,8 @@
     <Compile Include="DeploymentDialog\DeploymentDialogWindow.cs" />
     <Compile Include="DeploymentDialog\DeploymentDialogViewModel.cs" />
     <Compile Include="Projects\SolutionHelper.cs" />
-    <Compile Include="Utils\AppEngineOutputWindow.cs" />
+    <Compile Include="Utils\ActivityLogUtils.cs" />
+    <Compile Include="Utils\GcpOutputWindow.cs" />
     <Compile Include="Utils\CommandUtils.cs" />
     <Compile Include="Utils\DeploymentUtils.cs" />
     <Compile Include="DeployToAppEngineContextMenu\DeployToAppEngineContextMenuCommand.cs" />
@@ -105,7 +106,7 @@
     <Compile Include="GoogleCloudExtensionPackage.cs" />
     <Compile Include="ExtensionEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="StatusbarHelper.cs" />
+    <Compile Include="Utils\StatusbarHelper.cs" />
     <Compile Include="UserAndProjectList\UserAndProjectListViewModel.cs" />
     <Compile Include="UserAndProjectList\UserAndProjectListWindow.cs" />
     <Compile Include="UserAndProjectList\UserAndProjectListWindowCommand.cs" />

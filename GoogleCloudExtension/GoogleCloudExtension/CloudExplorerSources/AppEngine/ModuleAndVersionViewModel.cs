@@ -83,9 +83,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             catch (GCloudException ex)
             {
                 _deleteVersionCommand.CanExecuteCommand = true;
-                AppEngineOutputWindow.OutputLine($"Failed to delete version {_target.Version} in module {_target.Module}");
-                AppEngineOutputWindow.OutputLine(ex.Message);
-                AppEngineOutputWindow.Activate();
+                GcpOutputWindow.OutputLine($"Failed to delete version {_target.Version} in module {_target.Module}");
+                GcpOutputWindow.OutputLine(ex.Message);
+                GcpOutputWindow.Activate();
             }
             _owner.LoadAppEngineAppListAsync();
         }
@@ -101,9 +101,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             catch (GCloudException ex)
             {
                 _setDefaultVersionCommand.CanExecuteCommand = true;
-                AppEngineOutputWindow.OutputLine("Failed to set default version.");
-                AppEngineOutputWindow.OutputLine(ex.Message);
-                AppEngineOutputWindow.Activate();
+                GcpOutputWindow.OutputLine("Failed to set default version.");
+                GcpOutputWindow.OutputLine(ex.Message);
+                GcpOutputWindow.Activate();
             }
             _owner.LoadAppEngineAppListAsync();
         }

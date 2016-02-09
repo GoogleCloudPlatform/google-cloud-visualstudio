@@ -84,9 +84,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             }
             catch (GCloudException ex)
             {
-                AppEngineOutputWindow.OutputLine("Failed to load the list of AppEngine apps.");
-                AppEngineOutputWindow.OutputLine(ex.Message);
-                AppEngineOutputWindow.Activate();
+                GcpOutputWindow.OutputLine("Failed to load the list of AppEngine apps.");
+                GcpOutputWindow.OutputLine(ex.Message);
+                GcpOutputWindow.Activate();
             }
         }
 

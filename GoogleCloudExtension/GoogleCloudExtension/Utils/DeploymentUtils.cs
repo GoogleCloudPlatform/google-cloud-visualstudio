@@ -10,7 +10,6 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -26,12 +25,12 @@ namespace GoogleCloudExtension.Utils
         /// <param name="serviceProvider"></param>
         public static void StartProjectDeployment(Project startupProject, IServiceProvider serviceProvider)
         {
-            Debug.WriteLine($"Starting the deployment process for project {startupProject.Name}.");
+            ActivityLogUtils.LogInfo($"Starting the deployment process for project {startupProject.Name}.");
 
             // Validate the environment before attempting to start the deployment process.
             if (!CommandUtils.ValidateEnvironment())
             {
-                Debug.WriteLine("Invoked when the environment is not valid.");
+                ActivityLogUtils.LogError("Deployment invoked when the environment is not valid.");
                 VsShellUtilities.ShowMessageBox(
                     serviceProvider,
                     "Please ensure that the Google Cloud SDK is installed and available in the path and that the preview, app and alpha components are installed.",
@@ -56,7 +55,7 @@ namespace GoogleCloudExtension.Utils
             {
                 var runtime = DnxRuntimeInfo.GetRuntimeInfo(startupProject.Runtime);
                 ExtensionAnalytics.ReportEvent("RuntimeNotSupportedError", startupProject.Runtime.ToString());
-                AppEngineOutputWindow.OutputLine($"Runtime {runtime.DisplayName} is not supported for project {startupProject.Name}");
+                GcpOutputWindow.OutputLine($"Runtime {runtime.DisplayName} is not supported for project {startupProject.Name}");
                 VsShellUtilities.ShowMessageBox(
                     serviceProvider,
                     $"Runtime {runtime.DisplayName} is not supported. Project {startupProject.Name} needs to target {DnxRuntimeInfo.DnxCore50DisplayString}.",
@@ -79,12 +78,13 @@ namespace GoogleCloudExtension.Utils
 
             try
             {
+                ActivityLogUtils.LogInfo("AppEngine deployment started.");
                 StatusbarHelper.SetText("Deployment to AppEngine started...");
-                AppEngineOutputWindow.Activate();
-                AppEngineOutputWindow.Clear();
-                AppEngineOutputWindow.OutputLine("Deployment to AppEngine started...");
-                AppEngineOutputWindow.OutputLine($"Deploying project {startupProject}.");
-                AppEngineOutputWindow.OutputLine($"Deploying to cloud project id {accountAndProject.ProjectId} for acccount {accountAndProject.Account}");
+                GcpOutputWindow.Activate();
+                GcpOutputWindow.Clear();
+                GcpOutputWindow.OutputLine("Deployment to AppEngine started...");
+                GcpOutputWindow.OutputLine($"Deploying project {startupProject}.");
+                GcpOutputWindow.OutputLine($"Deploying to cloud project id {accountAndProject.ProjectId} for acccount {accountAndProject.Account}");
                 StatusbarHelper.Freeze();
                 GoogleCloudExtensionPackage.IsDeploying = true;
 
@@ -94,25 +94,31 @@ namespace GoogleCloudExtension.Utils
                     projectPaths: projects.Select(x => x.Root).ToList(),
                     versionName: versionName,
                     promoteVersion: makeDefault,
-                    callback: AppEngineOutputWindow.OutputLine,
+                    callback: GcpOutputWindow.OutputLine,
                     preserveOutput: preserveOutput,
                     accountAndProject: accountAndProject);
                 StatusbarHelper.UnFreeze();
 
                 StatusbarHelper.SetText("Deployment Succeeded");
-                AppEngineOutputWindow.OutputLine("Deployment Succeeded.");
+                GcpOutputWindow.OutputLine("Deployment Succeeded.");
+
+                ActivityLogUtils.LogInfo("AppEngine deployment finished.");
 
                 result = true;
             }
             catch (GCloudException ex)
             {
-                AppEngineOutputWindow.OutputLine("Deployment Failed.");
-                AppEngineOutputWindow.OutputLine(ex.Message);
+                GcpOutputWindow.OutputLine("Deployment Failed.");
+                GcpOutputWindow.OutputLine(ex.Message);
+
+                ActivityLogUtils.LogError("AppEngine deployment failed.");
             }
             catch (Exception)
             {
-                AppEngineOutputWindow.OutputLine("Deployment Failed!!!");
+                GcpOutputWindow.OutputLine("Deployment Failed!!!");
                 StatusbarHelper.SetText("Deployment Failed");
+
+                ActivityLogUtils.LogError("AppEngine deployment failed.");
             }
             finally
             {

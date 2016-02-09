@@ -77,6 +77,10 @@ namespace GoogleCloudExtension
             UserAndProjectListWindowCommand.Initialize(this);
             DeployToAppEngineContextMenuCommand.Initialize(this);
             AddNewAccountCommand.Initialize(this);
+            ExtensionAnalytics.Initialize(this);
+            ActivityLogUtils.Initialize(this);
+
+            ActivityLogUtils.LogInfo("Starting Google Cloud Tools.");
 
             ExtensionAnalytics.Initialize(this);
             ExtensionAnalytics.ReportStartSession();
@@ -87,6 +91,7 @@ namespace GoogleCloudExtension
 
         private void DTEEvents_OnBeginShutdown()
         {
+            ActivityLogUtils.LogInfo("Shutting down Google Cloud Tools.");
             ExtensionAnalytics.ReportEndSession();
         }
 
