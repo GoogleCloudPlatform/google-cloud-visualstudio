@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             get
             {
-                return new GcsInstanceItem(_instance);
+                return new GceInstanceItem(_instance);
             }
         }
 

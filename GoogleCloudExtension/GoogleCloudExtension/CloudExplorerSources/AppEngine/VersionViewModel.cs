@@ -13,12 +13,11 @@ using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 {
-    internal class ModuleAndVersionViewModel : TreeLeaf, ICloudExplorerItemSource
+    internal class VersionViewModel : TreeLeaf, ICloudExplorerItemSource
     {
         private const string IconResourcePath = "CloudExplorerSources/AppEngine/Resources/ic_web.png";
         private static readonly Lazy<ImageSource> s_versionIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
 
-        private readonly AppEngineSource _owner;
         private readonly ModuleAndVersion _target;
         private readonly WeakCommand _openAppCommand;
         private readonly WeakCommand _deleteVersionCommand;
@@ -26,9 +25,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 
         public object Item { get; }
 
-        public ModuleAndVersionViewModel(AppEngineSource owner, ModuleAndVersion target)
+        public VersionViewModel(ModuleAndVersion target)
         {
-            _owner = owner;
             _target = target;
             _openAppCommand = new WeakCommand(OnOpenApp);
             _deleteVersionCommand = new WeakCommand(OnDeleteVersion, canExecuteCommand: !_target.IsDefault);
@@ -87,7 +85,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                 GcpOutputWindow.OutputLine(ex.Message);
                 GcpOutputWindow.Activate();
             }
-            _owner.LoadAppEngineAppListAsync();
         }
 
         private async void OnSetDefaultVersion()
@@ -105,7 +102,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                 GcpOutputWindow.OutputLine(ex.Message);
                 GcpOutputWindow.Activate();
             }
-            _owner.LoadAppEngineAppListAsync();
         }
 
         #endregion

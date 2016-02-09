@@ -55,6 +55,7 @@
     <Compile Include="CloudExplorerSources\AppEngine\AppEngineRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\AppEngineSource.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\ModuleAndVersionItem.cs" />
+    <Compile Include="CloudExplorerSources\AppEngine\ModuleViewModel.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\VersionComparer.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceDataSource.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstance.cs" />
@@ -62,7 +63,7 @@
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceSourceRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceSource.cs" />
-    <Compile Include="CloudExplorerSources\Gce\GcsInstanceItem.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GceInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\InstanceTags.cs" />
     <Compile Include="CloudExplorerSources\Gce\Metadata.cs" />
     <Compile Include="CloudExplorerSources\Gce\MetadataEntry.cs" />
@@ -85,7 +86,7 @@
     <Compile Include="Analytics\ExtensionAnalytics.cs" />
     <Compile Include="CloudExplorer\ICloudExplorerItemSource.cs" />
     <Compile Include="CloudExplorer\ICloudExplorerSource.cs" />
-    <Compile Include="CloudExplorerSources\AppEngine\ModuleAndVersionViewModel.cs" />
+    <Compile Include="CloudExplorerSources\AppEngine\VersionViewModel.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
     <Compile Include="Controls\ProgressIndicator.xaml.cs">
       <DependentUpon>ProgressIndicator.xaml</DependentUpon>

@@ -2,13 +2,13 @@
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
-    public class GcsInstanceItem
+    public class GceInstanceItem
     {
         private const string Category = "Instance Properties";
 
         private readonly GceInstance _instance;
 
-        public GcsInstanceItem(GceInstance instance)
+        public GceInstanceItem(GceInstance instance)
         {
             _instance = instance;
         }
