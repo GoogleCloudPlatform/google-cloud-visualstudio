@@ -148,6 +148,7 @@
     <Resource Include="Controls\Resources\step_7.png" />
     <Resource Include="Controls\Resources\step_8.png" />
     <Resource Include="Controls\Resources\step_9.png" />
+    <Resource Include="CloudExplorerSources\Gce\Resources\gce_logo.png" />
     <Content Include="License.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

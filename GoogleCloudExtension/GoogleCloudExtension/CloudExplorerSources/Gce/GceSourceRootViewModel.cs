@@ -5,11 +5,16 @@ using System.Collections.Generic;
 using GoogleCloudExtension.GCloud;
 using System.Collections;
 using System.Linq;
+using System.Windows.Media;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
     internal class GceSourceRootViewModel : TreeHierarchy
     {
+        const string IconResourcePath = "CloudExplorerSources/Gce/Resources/gce_logo.png";
+
+        private static readonly Lazy<ImageSource> s_gceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
             Content = "Loading instances...",
@@ -23,6 +28,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             Content = "Google Compute Engine";
             IsExpanded = false;
+            Icon = s_gceIcon.Value;
             Children.Add(s_loadingPlaceholder);
         }
 
