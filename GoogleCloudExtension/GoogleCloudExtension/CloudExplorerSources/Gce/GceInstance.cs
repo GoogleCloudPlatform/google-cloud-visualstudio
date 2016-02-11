@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
@@ -21,6 +22,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         [JsonProperty("tags")]
         public InstanceTags Tags { get; set; }
+
+        [JsonProperty("networkInterfaces")]
+        public IList<NetworkInterface> NetworkInterfaces {get; set;}
 
         public string ZoneName { get; set; }
     }

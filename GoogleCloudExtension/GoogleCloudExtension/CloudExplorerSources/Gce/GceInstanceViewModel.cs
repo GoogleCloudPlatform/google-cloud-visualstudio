@@ -2,8 +2,12 @@
 using GoogleCloudExtension.CloudExplorer;
 using System.Windows.Media;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.CloudExplorerSources.Gce;
 using System.Linq;
+using System.Xml.Linq;
 using System.Diagnostics;
+using System.Collections.Generic;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
@@ -21,13 +25,36 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             Icon = s_instanceIcon.Value;
             _instance = instance;
 
-            _getPublishSettingsCommand = new WeakCommand(OnGetPublishSettings, IsAspnetInstance(_instance));
+            _getPublishSettingsCommand = new WeakCommand(OnGetPublishSettings, _instance.IsAspnetInstance());
+            var menuItems = new List<MenuItem>
+            {
+                new MenuItem {Header="Get Publishing Settings", Command = _getPublishSettingsCommand },
+            };
+            ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
         private void OnGetPublishSettings()
         {
             Debug.WriteLine($"Generating Publishing settings for {_instance.Name}");
+            var credentials = _instance.GetServerCredentials();
+            if (credentials == null)
+            {
+                return;
+            }
 
+            var doc = new XDocument(
+                new XElement("publishData",
+                    new XElement("publishProfile",
+                        new XAttribute("profileName", "Google Cloud Profile-WebDeploy"),
+                        new XAttribute("publishMethod", "MSDeploy"),
+                        new XAttribute("publishUrl", _instance.GetPublishUrl()),
+                        new XAttribute("msdeploySite", _instance.GetPublishUrl()),
+                        new XAttribute("userName", credentials.User),
+                        new XAttribute("userPWD", credentials.Password),
+                        new XAttribute("destinationAppUri", _instance.GetDestinationAppUri()))));
+
+            var profile = doc.ToString();
+            GcpOutputWindow.OutputLine($"Generated profile: {profile}");
         }
 
         public object Item
@@ -44,10 +71,5 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 }
             }
         }
-
-        private static bool IsAspnetInstance(GceInstance instance)
-        {
-            return true;
-        }
-    }      
+    }
 }
