@@ -31,12 +31,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         public static string GetPublishUrl(this GceInstance instance)
         {
-            return "none";
+            return $"{instance.GetPublicIpAddress()}";
         }
 
         public static string GetDestinationAppUri(this GceInstance instance)
         {
-            return "none";
+            return $"http://{instance.GetPublicIpAddress()}";
         }
 
         public static string GetGaeModule(this GceInstance instance)
@@ -57,6 +57,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         public static string GetPublicIpAddress(this GceInstance instance)
         {
             return instance.NetworkInterfaces?.FirstOrDefault()?.AccessConfigs?.FirstOrDefault()?.NatIP;
+        }
+
+        public static string GetTags(this GceInstance instance)
+        {
+            return String.Join(", ", instance.Tags.Items);
         }
     }
 }

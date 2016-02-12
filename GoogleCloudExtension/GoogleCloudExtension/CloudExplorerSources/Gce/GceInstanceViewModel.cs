@@ -8,6 +8,8 @@ using System.Xml.Linq;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Windows.Controls;
+using GoogleCloudExtension.Projects;
+using System.IO;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
@@ -48,13 +50,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                         new XAttribute("profileName", "Google Cloud Profile-WebDeploy"),
                         new XAttribute("publishMethod", "MSDeploy"),
                         new XAttribute("publishUrl", _instance.GetPublishUrl()),
-                        new XAttribute("msdeploySite", _instance.GetPublishUrl()),
+                        new XAttribute("msdeploySite", "Default Web Site"),
                         new XAttribute("userName", credentials.User),
                         new XAttribute("userPWD", credentials.Password),
                         new XAttribute("destinationAppUri", _instance.GetDestinationAppUri()))));
 
             var profile = doc.ToString();
             GcpOutputWindow.OutputLine($"Generated profile: {profile}");
+
+            var solution = SolutionHelper.CurrentSolution;
+            var solutionDir = Path.GetDirectoryName(solution.Root);
+            var path = Path.Combine(solutionDir, $"{_instance.Name}.publishsettings");
+            File.WriteAllText(path, doc.ToString());
+            GcpOutputWindow.OutputLine($"Publishsettings saved to {path}");
         }
 
         public object Item

@@ -40,5 +40,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         [Category(Category)]
         [Description("The public IP address of the instance")]
         public string PublicIpAddress => _instance.GetPublicIpAddress();
+
+        [Category(Category)]
+        [Description("The tags for this instance.")]
+        public string Tags => _instance.GetTags();
     }
 }

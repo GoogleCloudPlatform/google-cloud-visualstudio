@@ -39,6 +39,8 @@ namespace GoogleCloudExtension.Projects
 
         private SolutionBuild2 SolutionBuild => _solution.SolutionBuild as SolutionBuild2;
 
+        public string Root => _solution.FullName;
+
         private GCloud.Dnx.Project GetStartupProject()
         {
             var sb = this.SolutionBuild;
