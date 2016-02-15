@@ -20,6 +20,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private readonly GceInstance _instance;
         private readonly WeakCommand _getPublishSettingsCommand;
+        private readonly WeakCommand _openWebSite;
 
         public GceInstanceViewModel(GceInstance instance)
         {
@@ -28,11 +29,21 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             _instance = instance;
 
             _getPublishSettingsCommand = new WeakCommand(OnGetPublishSettings, _instance.IsAspnetInstance());
+            _openWebSite = new WeakCommand(OnOpenWebsite, _instance.IsAspnetInstance());
+
             var menuItems = new List<MenuItem>
             {
                 new MenuItem {Header="Get Publishing Settings", Command = _getPublishSettingsCommand },
+                new MenuItem {Header="Open Web Site", Command = _openWebSite },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void OnOpenWebsite()
+        {
+            var url = _instance.GetDestinationAppUri();
+            Debug.WriteLine($"Opening Web Site: {url}");
+            Process.Start(url);
         }
 
         private void OnGetPublishSettings()
