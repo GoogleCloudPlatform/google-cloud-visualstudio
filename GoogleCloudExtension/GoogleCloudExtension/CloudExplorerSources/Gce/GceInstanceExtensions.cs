@@ -61,7 +61,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         public static string GetTags(this GceInstance instance)
         {
-            return String.Join(", ", instance.Tags.Items);
+            return String.Join(", ", instance.Tags?.Items);
         }
     }
 }
