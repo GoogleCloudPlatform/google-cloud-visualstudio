@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Windows.Controls;
 using GoogleCloudExtension.Projects;
 using System.IO;
+using Microsoft.Win32;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
@@ -69,11 +70,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             var profile = doc.ToString();
             GcpOutputWindow.OutputLine($"Generated profile: {profile}");
 
-            var solution = SolutionHelper.CurrentSolution;
-            var solutionDir = Path.GetDirectoryName(solution.Root);
-            var path = Path.Combine(solutionDir, $"{_instance.Name}.publishsettings");
-            File.WriteAllText(path, doc.ToString());
-            GcpOutputWindow.OutputLine($"Publishsettings saved to {path}");
+            var downloadsPath = GetDownloadsPath();
+            var settingsPath = Path.Combine(downloadsPath, $"{_instance.Name}.publishsettings");
+            File.WriteAllText(settingsPath, doc.ToString());
+            GcpOutputWindow.OutputLine($"Publishsettings saved to {settingsPath}");
         }
 
         public object Item
@@ -89,6 +89,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     return new GceInstanceItem(_instance);
                 }
             }
+        }
+
+        private static string GetDownloadsPath()
+        {
+            return Registry.GetValue(
+                @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders",
+                "{374DE290-123F-4565-9164-39C4925E467B}",
+                String.Empty).ToString();
         }
     }
 }
