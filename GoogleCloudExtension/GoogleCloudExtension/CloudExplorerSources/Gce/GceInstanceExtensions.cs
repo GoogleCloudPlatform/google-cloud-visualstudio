@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using GoogleCloudExtension.DataSources.Models;
+using Newtonsoft.Json;
 using System;
 using System.Linq;
 

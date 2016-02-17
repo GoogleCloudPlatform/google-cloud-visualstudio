@@ -1,4 +1,5 @@
 ﻿using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.Utils;
 using Microsoft.Win32;
 using System;

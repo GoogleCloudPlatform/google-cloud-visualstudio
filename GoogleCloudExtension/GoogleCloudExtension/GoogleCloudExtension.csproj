@@ -60,26 +60,13 @@
     <Compile Include="CloudExplorerSources\Gce\GceCredentials.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceExtensions.cs" />
-    <Compile Include="CloudExplorerSources\Gce\GceDataSource.cs" />
-    <Compile Include="CloudExplorerSources\Gce\GceInstance.cs" />
-    <Compile Include="CloudExplorerSources\Gce\GceInstances.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceSourceRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceSource.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceItem.cs" />
-    <Compile Include="CloudExplorerSources\Gce\InstanceTags.cs" />
-    <Compile Include="CloudExplorerSources\Gce\Metadata.cs" />
-    <Compile Include="CloudExplorerSources\Gce\MetadataEntry.cs" />
-    <Compile Include="CloudExplorerSources\Gce\NetworkAccessConfig.cs" />
-    <Compile Include="CloudExplorerSources\Gce\NetworkInterface.cs" />
-    <Compile Include="CloudExplorerSources\Gce\Zone.cs" />
-    <Compile Include="CloudExplorerSources\Gce\Zones.cs" />
     <Compile Include="CloudExplorerSources\Gce\ZoneViewModel.cs" />
-    <Compile Include="CloudExplorerSources\Gcs\Bucket.cs" />
     <Compile Include="CloudExplorerSources\Gcs\BucketItem.cs" />
-    <Compile Include="CloudExplorerSources\Gcs\Buckets.cs" />
     <Compile Include="CloudExplorerSources\Gcs\BucketViewModel.cs" />
-    <Compile Include="CloudExplorerSources\Gcs\GcsDataSource.cs" />
     <Compile Include="CloudExplorerSources\Gcs\GcsSource.cs" />
     <Compile Include="CloudExplorerSources\Gcs\GcsSourceRootViewModel.cs" />
     <Compile Include="CloudExplorer\CloudExplorerViewModel.cs" />
@@ -311,6 +298,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GoogleCloudExtension.DataSources\GoogleCloudExtension.DataSources.csproj">
+      <Project>{3988aac1-3b20-4ba1-9627-ed7d3c80145f}</Project>
+      <Name>GoogleCloudExtension.DataSources</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.GCloud\GoogleCloudExtension.GCloud.csproj">
       <Project>{95efac7e-4f6e-46f0-bcc8-90ee1487e1e1}</Project>
       <Name>GoogleCloudExtension.GCloud</Name>

@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace GoogleCloudExtension.CloudExplorerSources.Gce
+namespace GoogleCloudExtension.DataSources.Models
 {
     public class NetworkInterface
     {

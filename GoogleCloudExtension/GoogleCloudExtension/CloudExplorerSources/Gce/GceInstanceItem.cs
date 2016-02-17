@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using GoogleCloudExtension.DataSources.Models;
+using System.ComponentModel;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {

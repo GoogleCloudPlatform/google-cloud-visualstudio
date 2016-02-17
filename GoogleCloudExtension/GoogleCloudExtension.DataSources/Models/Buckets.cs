@@ -4,9 +4,9 @@
 using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace GoogleCloudExtension.CloudExplorerSources.Gcs
+namespace GoogleCloudExtension.DataSources.Models
 {
-    internal class Buckets
+    public class Buckets
     {
         [JsonProperty("items")]
         public IList<Bucket> Items { get; set; }

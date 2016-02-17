@@ -1,19 +1,20 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.DataSources.Models;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.CloudExplorerSources.Gcs
+namespace GoogleCloudExtension.DataSources
 {
-    internal static class GcsDataSource
+    public static class GcsDataSource
     {
         private const string ListBucketsUrl = "http://www.googleapis.com/storage/v1/b";
 
-        internal static async Task<IList<Bucket>> GetBucketListAsync(string projectId, string oauthToken)
+        public static async Task<IList<Bucket>> GetBucketListAsync(string projectId, string oauthToken)
         {
             try
             {

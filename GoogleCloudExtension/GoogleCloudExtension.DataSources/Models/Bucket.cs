@@ -4,15 +4,15 @@
 using Newtonsoft.Json;
 using System;
 
-namespace GoogleCloudExtension.CloudExplorerSources.Gcs
+namespace GoogleCloudExtension.DataSources.Models
 {
-    internal class VersioningValue
+    public class VersioningValue
     {
         [JsonProperty("enabled")]
         public bool Enabled { get; set; }
     }
 
-    internal class Bucket
+    public class Bucket
     {
         [JsonProperty("name")]
         public string Name { get; set; }
