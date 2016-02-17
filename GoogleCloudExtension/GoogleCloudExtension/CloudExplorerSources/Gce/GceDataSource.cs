@@ -1,29 +1,24 @@
-﻿using GoogleCloudExtension.GCloud;
-using Newtonsoft.Json;
-using System;
+﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
     internal class GceDataSource
     {
-        internal static async Task<IList<GceInstance>> GetInstanceListAsync(string projectId)
+        internal static async Task<IList<GceInstance>> GetInstanceListAsync(string projectId, string oauthToken)
         {
-            var accessToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
             try
             {
                 var client = new WebClient();
-                var zones = await GetZoneListAsync(client, projectId, accessToken);
+                var zones = await GetZoneListAsync(client, projectId, oauthToken);
 
                 var result = new List<GceInstance>();
                 foreach (var zone in zones)
                 {
-                    var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zone.Name}/instances?access_token={accessToken}";
+                    var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zone.Name}/instances?access_token={oauthToken}";
                     var content = await client.DownloadStringTaskAsync(url);
                     var instances = JsonConvert.DeserializeObject<GceInstances>(content);
                     if (instances.Items != null)

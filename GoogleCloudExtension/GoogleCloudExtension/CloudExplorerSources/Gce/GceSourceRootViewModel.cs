@@ -1,12 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using GoogleCloudExtension.CloudExplorer;
-using System.Collections.Generic;
+﻿using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.GCloud;
-using System.Collections;
-using System.Linq;
-using System.Windows.Media;
 using GoogleCloudExtension.Utils;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
@@ -74,7 +73,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private async Task<IList<ZoneViewModel>> LoadZones()
         {
             var currentCredentials = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
-            var instances = await GceDataSource.GetInstanceListAsync(currentCredentials.ProjectId);
+            var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
+            var instances = await GceDataSource.GetInstanceListAsync(currentCredentials.ProjectId, oauthToken);
             return instances?.GroupBy(x => x.ZoneName).Select(x => new ZoneViewModel(x.Key, x)).ToList();
         }
 

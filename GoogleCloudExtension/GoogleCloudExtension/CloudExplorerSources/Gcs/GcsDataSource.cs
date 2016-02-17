@@ -1,7 +1,6 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
-using GoogleCloudExtension.GCloud;
 using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,10 +13,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
     {
         private const string ListBucketsUrl = "http://www.googleapis.com/storage/v1/b";
 
-        internal static async Task<IList<Bucket>> GetBucketListAsync(string projectId)
+        internal static async Task<IList<Bucket>> GetBucketListAsync(string projectId, string oauthToken)
         {
-            var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
-
             try
             {
                 var client = new WebClient();

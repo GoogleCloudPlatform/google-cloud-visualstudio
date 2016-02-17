@@ -7,7 +7,6 @@ using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 
 namespace GoogleCloudExtension.UserAndProjectList

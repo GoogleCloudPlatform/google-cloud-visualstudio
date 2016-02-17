@@ -1,16 +1,13 @@
-﻿using System;
-using GoogleCloudExtension.CloudExplorer;
-using System.Windows.Media;
+﻿using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.CloudExplorerSources.Gce;
-using System.Linq;
-using System.Xml.Linq;
-using System.Diagnostics;
-using System.Collections.Generic;
-using System.Windows.Controls;
-using GoogleCloudExtension.Projects;
-using System.IO;
 using Microsoft.Win32;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Xml.Linq;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
