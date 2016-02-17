@@ -1,4 +1,7 @@
-﻿using GoogleCloudExtension.CloudExplorer;
+﻿// Copyright 2015 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
@@ -12,7 +15,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
     internal class GceSourceRootViewModel : TreeHierarchy
     {
-        const string IconResourcePath = "CloudExplorerSources/Gce/Resources/gce_logo.png";
+        private const string IconResourcePath = "CloudExplorerSources/Gce/Resources/gce_logo.png";
 
         private static readonly Lazy<ImageSource> s_gceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf

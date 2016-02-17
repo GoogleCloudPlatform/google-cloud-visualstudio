@@ -1,4 +1,7 @@
-﻿using GoogleCloudExtension.CloudExplorer;
+﻿// Copyright 2015 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.Utils;
 using Microsoft.Win32;

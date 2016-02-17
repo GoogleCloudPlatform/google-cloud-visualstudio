@@ -1,10 +1,13 @@
-﻿using GoogleCloudExtension.CloudExplorer;
+﻿// Copyright 2015 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+using GoogleCloudExtension.CloudExplorer;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
     internal class GceSource : ICloudExplorerSource
     {
-        private GceSourceRootViewModel _root = new GceSourceRootViewModel();
+        private readonly GceSourceRootViewModel _root = new GceSourceRootViewModel();
 
         public TreeHierarchy GetRoot()
         {

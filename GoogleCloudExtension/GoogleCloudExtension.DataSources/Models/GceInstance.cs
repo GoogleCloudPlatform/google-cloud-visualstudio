@@ -1,4 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿// Copyright 2015 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace GoogleCloudExtension.DataSources.Models
@@ -24,7 +27,7 @@ namespace GoogleCloudExtension.DataSources.Models
         public InstanceTags Tags { get; set; }
 
         [JsonProperty("networkInterfaces")]
-        public IList<NetworkInterface> NetworkInterfaces {get; set;}
+        public IList<NetworkInterface> NetworkInterfaces { get; set; }
 
         public string ZoneName { get; set; }
     }
