@@ -1,4 +1,6 @@
-﻿using System;
+﻿using CommandLine;
+using GoogleCloudExtension.DataSources;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,8 +10,14 @@ namespace AspnetTool.Commands
 {
     public class ListCmd : ICommand
     {
-        public class Options : ICommandOptions
+        public class Options : AuthenticatedOption, ICommandOptions
         {
+            [Option('p', "project-id", HelpText = "The project ID that contains the instances.", Required = true)]
+            public string ProjectId { get; set; }
+
+            [Option('w', "only-windows", HelpText = "Only show windows ASP.NET servers.")]
+            public bool OnlyWindows { get; set; }
+
             public ICommand CreateCommand()
             {
                 return new ListCmd(this);
@@ -25,7 +33,19 @@ namespace AspnetTool.Commands
 
         public int Execute()
         {
-            throw new NotImplementedException();
+            var instances = GceDataSource.GetInstanceListAsync(_options.ProjectId, _options.Token).Result;
+            int count = 0;
+
+            var results = _options.OnlyWindows
+                    ? instances.Where(x => x.IsAspnetInstance()) : instances;
+            foreach (var entry in results)
+            {
+                Console.WriteLine($"  Name: {entry.Name} Zone: {entry.Zone}");
+                ++count;
+            }
+            Console.WriteLine($"Instace(s): {count}");
+
+            return 0;
         }
     }
 }

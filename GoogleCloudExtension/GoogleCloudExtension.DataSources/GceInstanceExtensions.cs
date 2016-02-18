@@ -6,9 +6,9 @@ using Newtonsoft.Json;
 using System;
 using System.Linq;
 
-namespace GoogleCloudExtension.CloudExplorerSources.Gce
+namespace GoogleCloudExtension.DataSources
 {
-    internal static class GceInstanceExtensions
+    public static class GceInstanceExtensions
     {
         public static bool IsAspnetInstance(this GceInstance instance)
         {

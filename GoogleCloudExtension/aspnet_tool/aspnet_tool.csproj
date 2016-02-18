@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandNameAttribute.cs" />
+    <Compile Include="Commands\AuthenticatedOption.cs" />
     <Compile Include="Commands\DeployCmd.cs" />
     <Compile Include="Commands\ListCmd.cs" />
     <Compile Include="ICommand.cs" />
@@ -63,6 +64,12 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GoogleCloudExtension.DataSources\GoogleCloudExtension.DataSources.csproj">
+      <Project>{3988aac1-3b20-4ba1-9627-ed7d3c80145f}</Project>
+      <Name>GoogleCloudExtension.DataSources</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

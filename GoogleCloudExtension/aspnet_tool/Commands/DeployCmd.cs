@@ -10,7 +10,7 @@ namespace AspnetTool.Commands
     [CommandName("deploy")]
     class DeployCmd : ICommand
     {
-        public class Options : ICommandOptions
+        public class Options : AuthenticatedOption, ICommandOptions
         {
             [Option('i', "instance", HelpText = "The name of the instance where to deploy.", Required = true)]
             public string Instance { get; set; }

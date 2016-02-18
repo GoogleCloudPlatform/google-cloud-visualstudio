@@ -51,9 +51,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="GceDataSource.cs" />
+    <Compile Include="GceInstanceExtensions.cs" />
     <Compile Include="GcsDataSource.cs" />
     <Compile Include="Models\Bucket.cs" />
     <Compile Include="Models\Buckets.cs" />
+    <Compile Include="Models\GceCredentials.cs" />
     <Compile Include="Models\GceInstance.cs" />
     <Compile Include="Models\GceInstances.cs" />
     <Compile Include="Models\InstanceTags.cs" />
