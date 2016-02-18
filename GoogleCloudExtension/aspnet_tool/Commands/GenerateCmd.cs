@@ -13,7 +13,7 @@ namespace AspnetTool.Commands
     {
         public class Options : AuthenticatedOption, ICommandOptions
         {
-            [Option('o', "output", HelpText = "Where to save the generated file.", Required = true)]
+            [Option('o', "output", HelpText = "Where to save the generated file.")]
             public string Output { get; set; }
 
             [Option('i', "instance", HelpText = "The name of the instance for which to generate publishettings.", Required = true)]
@@ -43,7 +43,14 @@ namespace AspnetTool.Commands
             }
 
             var publishSettings = instance.GeneratePublishSettings();
-            File.WriteAllText(_options.Output, publishSettings);
+            if (String.IsNullOrEmpty(_options.Output))
+            {
+                Console.WriteLine(publishSettings);
+            }
+            else
+            {
+                File.WriteAllText(_options.Output, publishSettings);
+            }
 
             return 0;
         }
