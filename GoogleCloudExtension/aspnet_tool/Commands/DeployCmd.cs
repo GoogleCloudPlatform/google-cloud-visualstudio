@@ -23,7 +23,7 @@ namespace AspnetTool.Commands
 
         private readonly Options _options;
 
-        public DeployCmd(Options options)
+        private DeployCmd(Options options)
         {
             _options = options;
         }

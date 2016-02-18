@@ -12,9 +12,6 @@ namespace AspnetTool.Commands
     {
         public class Options : AuthenticatedOption, ICommandOptions
         {
-            [Option('p', "project-id", HelpText = "The project ID that contains the instances.", Required = true)]
-            public string ProjectId { get; set; }
-
             [Option('w', "only-windows", HelpText = "Only show windows ASP.NET servers.")]
             public bool OnlyWindows { get; set; }
 
@@ -26,7 +23,7 @@ namespace AspnetTool.Commands
 
         private readonly Options _options;
 
-        public ListCmd(Options options)
+        private ListCmd(Options options)
         {
             _options = options;
         }

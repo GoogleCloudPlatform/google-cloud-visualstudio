@@ -54,6 +54,7 @@
     <Compile Include="CommandNameAttribute.cs" />
     <Compile Include="Commands\AuthenticatedOption.cs" />
     <Compile Include="Commands\DeployCmd.cs" />
+    <Compile Include="Commands\GenerateCmd.cs" />
     <Compile Include="Commands\ListCmd.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="Options.cs" />

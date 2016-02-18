@@ -52,29 +52,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private void OnGetPublishSettings()
         {
             Debug.WriteLine($"Generating Publishing settings for {_instance.Name}");
-            var credentials = _instance.GetServerCredentials();
-            if (credentials == null)
+            var profile = _instance.GeneratePublishSettings();
+            if (profile == null)
             {
+                GcpOutputWindow.OutputLine($"No .publishsettings could be generated for {_instance.Name}");
                 return;
             }
 
-            var doc = new XDocument(
-                new XElement("publishData",
-                    new XElement("publishProfile",
-                        new XAttribute("profileName", "Google Cloud Profile-WebDeploy"),
-                        new XAttribute("publishMethod", "MSDeploy"),
-                        new XAttribute("publishUrl", _instance.GetPublishUrl()),
-                        new XAttribute("msdeploySite", "Default Web Site"),
-                        new XAttribute("userName", credentials.User),
-                        new XAttribute("userPWD", credentials.Password),
-                        new XAttribute("destinationAppUri", _instance.GetDestinationAppUri()))));
-
-            var profile = doc.ToString();
-            GcpOutputWindow.OutputLine($"Generated profile: {profile}");
-
+            GcpOutputWindow.OutputLine($"Generated .publishsettings: {profile}");
             var downloadsPath = GetDownloadsPath();
             var settingsPath = Path.Combine(downloadsPath, $"{_instance.Name}.publishsettings");
-            File.WriteAllText(settingsPath, doc.ToString());
+            File.WriteAllText(settingsPath, profile);
             GcpOutputWindow.OutputLine($"Publishsettings saved to {settingsPath}");
         }
 

@@ -5,6 +5,7 @@ using GoogleCloudExtension.DataSources.Models;
 using Newtonsoft.Json;
 using System;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace GoogleCloudExtension.DataSources
 {
@@ -63,6 +64,28 @@ namespace GoogleCloudExtension.DataSources
         public static string GetTags(this GceInstance instance)
         {
             return String.Join(", ", instance.Tags?.Items);
+        }
+
+        public static string GeneratePublishSettings(this GceInstance instance)
+        {
+            var credentials = instance.GetServerCredentials();
+            if (credentials == null)
+            {
+                return null;
+            }
+
+            var doc = new XDocument(
+                new XElement("publishData",
+                    new XElement("publishProfile",
+                        new XAttribute("profileName", "Google Cloud Profile-WebDeploy"),
+                        new XAttribute("publishMethod", "MSDeploy"),
+                        new XAttribute("publishUrl", instance.GetPublishUrl()),
+                        new XAttribute("msdeploySite", "Default Web Site"),
+                        new XAttribute("userName", credentials.User),
+                        new XAttribute("userPWD", credentials.Password),
+                        new XAttribute("destinationAppUri", instance.GetDestinationAppUri()))));
+
+            return doc.ToString();
         }
     }
 }
