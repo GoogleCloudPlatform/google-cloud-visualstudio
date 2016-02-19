@@ -30,5 +30,7 @@ namespace GoogleCloudExtension.DataSources.Models
         public IList<NetworkInterface> NetworkInterfaces { get; set; }
 
         public string ZoneName { get; set; }
+
+        public string ProjectId { get; set; }
     }
 }

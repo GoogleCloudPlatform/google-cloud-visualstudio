@@ -4,12 +4,14 @@
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
+using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Xml.Linq;
@@ -19,6 +21,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
     internal class GceInstanceViewModel : TreeLeaf, ICloudExplorerItemSource
     {
         private const string IconResourcePath = "CloudExplorerSources/AppEngine/Resources/ic_web.png";
+        private const string IisUser = "iisuser";
         private static readonly Lazy<ImageSource> s_instanceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
 
         private readonly GceInstance _instance;
@@ -49,9 +52,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             Process.Start(url);
         }
 
-        private void OnGetPublishSettings()
+        private async void OnGetPublishSettings()
         {
             Debug.WriteLine($"Generating Publishing settings for {_instance.Name}");
+            var credentials = await EnsureWindowsCredentials(_instance);
+
             var profile = _instance.GeneratePublishSettings();
             if (profile == null)
             {
@@ -64,6 +69,30 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             var settingsPath = Path.Combine(downloadsPath, $"{_instance.Name}.publishsettings");
             File.WriteAllText(settingsPath, profile);
             GcpOutputWindow.OutputLine($"Publishsettings saved to {settingsPath}");
+        }
+
+        private static async Task<GceCredentials> EnsureWindowsCredentials(GceInstance instance)
+        {
+            var existingCredentials = instance.GetServerCredentials();
+            if (existingCredentials != null)
+            {
+                return existingCredentials;
+            }
+
+            GcpOutputWindow.OutputLine($"Creating new credentials for {instance.Name}...");
+            var newCredentials = await GCloudWrapper.Instance.ResetWindowsCredentials(instance.Name, instance.ZoneName, IisUser);
+            var result = new GceCredentials
+            {
+                User = newCredentials.User,
+                Password = newCredentials.Password
+            };
+
+            GcpOutputWindow.OutputLine($"Storing new credentials for {instance.Name}...");
+            var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
+            await instance.SetServerCredentials(result, oauthToken);
+            GcpOutputWindow.OutputLine($"Credentials for {instance.Name} stored.");
+
+            return result;
         }
 
         public object Item

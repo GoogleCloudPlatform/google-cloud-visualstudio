@@ -8,6 +8,9 @@ namespace GoogleCloudExtension.DataSources.Models
 {
     public class Metadata
     {
+        [JsonProperty("fingerprint")]
+        public string Fingerprint { get; set; }
+
         [JsonProperty("items")]
         public IList<MetadataEntry> Items { get; set; }
     }

@@ -52,6 +52,7 @@
   <ItemGroup>
     <Compile Include="GceDataSource.cs" />
     <Compile Include="GceInstanceExtensions.cs" />
+    <Compile Include="GceSetMetadataRequest.cs" />
     <Compile Include="GcsDataSource.cs" />
     <Compile Include="Models\Bucket.cs" />
     <Compile Include="Models\Buckets.cs" />

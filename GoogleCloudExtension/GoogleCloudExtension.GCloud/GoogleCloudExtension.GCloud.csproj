@@ -64,6 +64,7 @@
     <Compile Include="GCloudException.cs" />
     <Compile Include="GCloudWrapper.cs" />
     <Compile Include="JsonOutputException.cs" />
+    <Compile Include="Models\WindowsInstanceCredentials.cs" />
     <Compile Include="ProcessUtils.cs" />
     <Compile Include="Models\CloudProject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -4,13 +4,18 @@
 using GoogleCloudExtension.DataSources.Models;
 using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace GoogleCloudExtension.DataSources
 {
     public static class GceInstanceExtensions
     {
+        private const string WindowsCredentialsKey = "windows-credentials";
+
         public static bool IsAspnetInstance(this GceInstance instance)
         {
             return instance.Tags?.Items?.Contains("aspnet") ?? false;
@@ -18,12 +23,38 @@ namespace GoogleCloudExtension.DataSources
 
         public static GceCredentials GetServerCredentials(this GceInstance instance)
         {
-            var credentials = instance.Metadata.Items?.FirstOrDefault(x => x.Key == "windows-credentials")?.Value;
+            var credentials = instance.Metadata.Items?.FirstOrDefault(x => x.Key == WindowsCredentialsKey)?.Value;
             if (credentials != null)
             {
                 return JsonConvert.DeserializeObject<GceCredentials>(credentials);
             }
             return null;
+        }
+
+        public static async Task SetServerCredentials(this GceInstance instance, GceCredentials credentials, string oauthToken)
+        {
+            var serializedCredentials = JsonConvert.SerializeObject(
+                credentials,
+                new JsonSerializerSettings { Formatting = Formatting.None });
+
+            Debug.WriteLine($"Writting credentials: {serializedCredentials}");
+            instance.StoreMetadata(WindowsCredentialsKey, serializedCredentials);            
+            await GceDataSource.StoreMetadata(instance, WindowsCredentialsKey, serializedCredentials, oauthToken);
+        }
+
+        private static void StoreMetadata(this GceInstance instance, string key, string value)
+        {
+            // Ensure the instance has storage for metadata entries.
+            if (instance.Metadata.Items == null)
+            {
+                instance.Metadata.Items = new List<MetadataEntry>();
+            }
+            var existingEntry = instance.Metadata.Items.FirstOrDefault(x => x.Key == key);
+            if (existingEntry != null)
+            {
+                instance.Metadata.Items.Remove(existingEntry);
+            }
+            instance.Metadata.Items.Add(new MetadataEntry { Key = key, Value = value });
         }
 
         public static bool IsGaeInstance(this GceInstance instance)
@@ -66,9 +97,13 @@ namespace GoogleCloudExtension.DataSources
             return String.Join(", ", instance.Tags?.Items);
         }
 
-        public static string GeneratePublishSettings(this GceInstance instance)
+        public static string GeneratePublishSettings(this GceInstance instance, GceCredentials credentials = null)
         {
-            var credentials = instance.GetServerCredentials();
+            if (credentials == null)
+            {
+                credentials = instance.GetServerCredentials();
+            }
+
             if (credentials == null)
             {
                 return null;

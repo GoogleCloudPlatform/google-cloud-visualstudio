@@ -250,6 +250,11 @@ namespace GoogleCloudExtension.GCloud
             return await GetJsonOutputAsync<IList<CloudProject>>("alpha projects list", credentials);
         }
 
+        public async Task<WindowsInstanceCredentials> ResetWindowsCredentials(string instance, string zone, string user)
+        {
+            return await GetJsonOutputAsync<WindowsInstanceCredentials>($"beta compute reset-windows-password {instance} --quiet --zone {zone} --user {user}");
+        }
+
         /// <summary>
         /// Fetches the value of the property given its full name.
         /// </summary>
