@@ -21,7 +21,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
     internal class GceInstanceViewModel : TreeLeaf, ICloudExplorerItemSource
     {
         private const string IconResourcePath = "CloudExplorerSources/AppEngine/Resources/ic_web.png";
-        private const string IisUser = "iisuser";
+        private const string GcpIisUser = "gcpiisuser";
         private static readonly Lazy<ImageSource> s_instanceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
 
         private readonly GceInstance _instance;
@@ -80,7 +80,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
 
             GcpOutputWindow.OutputLine($"Creating new credentials for {instance.Name}...");
-            var newCredentials = await GCloudWrapper.Instance.ResetWindowsCredentials(instance.Name, instance.ZoneName, IisUser);
+            var newCredentials = await GCloudWrapper.Instance.ResetWindowsCredentials(instance.Name, instance.ZoneName, GcpIisUser);
             var result = new GceCredentials
             {
                 User = newCredentials.User,
