@@ -37,7 +37,7 @@ namespace AspnetTool.Commands
                     ? instances.Where(x => x.IsAspnetInstance()) : instances;
             foreach (var entry in results)
             {
-                Console.WriteLine($"  Name: {entry.Name} Zone: {entry.Zone}");
+                Console.WriteLine($"  Name: {entry.Name} Ip: {entry.GetPublicIpAddress()} Zone: {entry.Zone}");
                 ++count;
             }
             Console.WriteLine($"Instace(s): {count}");
