@@ -46,17 +46,20 @@ namespace GoogleCloudExtension.DataSources
             return null;
         }
 
-        public static async Task<GceInstance> GetInstance(string projectId, string zone, string name, string oauthToken)
+        public static async Task<GceInstance> GetInstance(string projectId, string zoneName, string name, string oauthToken)
         {
-            var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zone}/instances/{name}?access_token={oauthToken}";
+            var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zoneName}/instances/{name}?access_token={oauthToken}";
             var client = new WebClient();
-            var result = await client.DownloadStringTaskAsync(url);
-            return JsonConvert.DeserializeObject<GceInstance>(result);
+            var response = await client.DownloadStringTaskAsync(url);
+            var result = JsonConvert.DeserializeObject<GceInstance>(response);
+            result.ProjectId = projectId;
+            result.ZoneName = zoneName;
+            return result;
         }
 
         public static Task<GceInstance> RefreshInstance(GceInstance instance, string oauthToken)
         {
-            return GetInstance(projectId: instance.ProjectId, zone: instance.ZoneName, name: instance.Name, oauthToken: oauthToken);
+            return GetInstance(projectId: instance.ProjectId, zoneName: instance.ZoneName, name: instance.Name, oauthToken: oauthToken);
         }
 
         /// <summary>
@@ -83,13 +86,12 @@ namespace GoogleCloudExtension.DataSources
                 }
             };
             var serializedRequest = JsonConvert.SerializeObject(request);
-            var requestBytes = Encoding.ASCII.GetBytes(value);
+
             try
             {
                 client.Headers[HttpRequestHeader.ContentType] = "application/json";
-                var result = await client.UploadDataTaskAsync(url, "POST", requestBytes);
-                var resultString = Encoding.ASCII.GetString(result);
-                var operation = JsonConvert.DeserializeObject<ZoneOperation>(resultString);
+                var result = await client.UploadStringTaskAsync(url, "POST", serializedRequest);
+                var operation = JsonConvert.DeserializeObject<ZoneOperation>(result);
                 await operation.WaitForFinish(
                     project: target.ProjectId,
                     zone: target.ZoneName,
