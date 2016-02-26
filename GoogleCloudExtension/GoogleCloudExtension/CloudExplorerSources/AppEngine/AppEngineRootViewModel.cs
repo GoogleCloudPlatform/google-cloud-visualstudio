@@ -113,6 +113,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 
         internal void Refresh()
         {
+            if (!_loaded)
+            {
+                return;
+            }
+
             ResetChildren();
             LoadAppEngineAppListAsync();
         }

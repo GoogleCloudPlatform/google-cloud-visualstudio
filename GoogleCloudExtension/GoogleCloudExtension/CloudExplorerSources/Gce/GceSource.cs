@@ -25,7 +25,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 ToolTip = "Only Windows Instances",
                 Command = new WeakCommand(OnOnlyWindowsClicked),
                 Icon = s_windowsOnlyButtonIcon.Value,
-                IsChecked = true,
             };
 
             _buttons = new List<ButtonDefinition>
@@ -37,6 +36,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private void OnOnlyWindowsClicked()
         {
             _windowsOnlyButton.IsChecked = !_windowsOnlyButton.IsChecked;
+            _root.ShowOnlyWindowsInstances = _windowsOnlyButton.IsChecked;
         }
 
         public override TreeHierarchy GetRoot()

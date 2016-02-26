@@ -80,11 +80,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             return buckets.Select(x => new BucketViewModel(x)).ToList();
         }
 
-        internal Task Refresh()
+        internal async Task Refresh()
         {
+            if (!_loaded)
+            {
+                return;
+            }
+
             _loaded = false;
             ResetChildren();
-            return LoadBuckets();
+            await LoadBuckets();
         }
 
         private void ResetChildren()

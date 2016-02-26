@@ -3,6 +3,7 @@
 
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using System;
@@ -26,6 +27,23 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private bool _loading = false;
         private bool _loaded = false;
+        private bool _showOnlyWindowsInstances = false;
+        private IList<GceInstance> _instances;
+
+        public bool ShowOnlyWindowsInstances
+        {
+            get { return _showOnlyWindowsInstances; }
+            set
+            {
+                if (value == _showOnlyWindowsInstances)
+                {
+                    return;
+                }
+                _showOnlyWindowsInstances = value;
+
+                PresentZoneViewModels();
+            }
+        }
 
         public GceSourceRootViewModel()
         {
@@ -53,19 +71,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             _loading = true;
             try
             {
-                var zones = await LoadZones();
-                Children.Clear();
-                if (zones != null)
-                {
-                    foreach (var zone in zones)
-                    {
-                        Children.Add(zone);
-                    }
-                }
-                if (Children.Count == 0)
-                {
-                    Children.Add(new TreeLeaf { Content = "No zones" });
-                }
+                _instances = await LoadGceInstances();
+                PresentZoneViewModels();
                 _loaded = true;
             }
             finally
@@ -74,16 +81,45 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
         }
 
-        private async Task<IList<ZoneViewModel>> LoadZones()
+        private void PresentZoneViewModels()
+        {
+            var zones = GetZoneViewModels();
+            Children.Clear();
+            if (zones != null)
+            {
+                foreach (var zone in zones)
+                {
+                    Children.Add(zone);
+                }
+            }
+            if (Children.Count == 0)
+            {
+                Children.Add(new TreeLeaf { Content = "No zones" });
+            }
+        }
+
+        private async Task<IList<GceInstance>> LoadGceInstances()
         {
             var currentCredentials = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
             var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
-            var instances = await GceDataSource.GetInstanceListAsync(currentCredentials.ProjectId, oauthToken);
-            return instances?.GroupBy(x => x.ZoneName).Select(x => new ZoneViewModel(x.Key, x)).ToList();
+            return await GceDataSource.GetInstanceListAsync(currentCredentials.ProjectId, oauthToken);
+        }
+
+        private IList<ZoneViewModel> GetZoneViewModels()
+        {
+            return _instances?
+                .Where(x => !_showOnlyWindowsInstances || x.IsAspnetInstance())
+                .GroupBy(x => x.ZoneName)
+                .Select(x => new ZoneViewModel(x.Key, x)).ToList();
         }
 
         internal void Refresh()
         {
+            if (!_loaded)
+            {
+                return;
+            }
+
             _loaded = false;
             ResetChildren();
             LoadInstances();
