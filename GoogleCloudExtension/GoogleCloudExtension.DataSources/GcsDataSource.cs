@@ -12,14 +12,12 @@ namespace GoogleCloudExtension.DataSources
 {
     public static class GcsDataSource
     {
-        private const string ListBucketsUrl = "http://www.googleapis.com/storage/v1/b";
-
         public static async Task<IList<Bucket>> GetBucketListAsync(string projectId, string oauthToken)
         {
             try
             {
-                var client = new WebClient();
-                var url = $"https://www.googleapis.com/storage/v1/b?project={projectId}&access_token={oauthToken}";
+                var client = new WebClient().AuthorizeClient(oauthToken);
+                var url = $"https://www.googleapis.com/storage/v1/b?project={projectId}";
                 var content = await client.DownloadStringTaskAsync(url);
 
                 var buckets = JsonConvert.DeserializeObject<Buckets>(content);

@@ -18,13 +18,13 @@ namespace GoogleCloudExtension.DataSources
         {
             try
             {
-                var client = new WebClient();
-                var zones = await GetZoneListAsync(client, projectId, oauthToken);
+                var client = new WebClient().AuthorizeClient(oauthToken);
+                var zones = await GetZoneListAsync(client, projectId);
 
                 var result = new List<GceInstance>();
                 foreach (var zone in zones)
                 {
-                    var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zone.Name}/instances?access_token={oauthToken}";
+                    var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zone.Name}/instances";
                     var content = await client.DownloadStringTaskAsync(url);
                     var instances = JsonConvert.DeserializeObject<GceInstances>(content);
                     if (instances.Items != null)
@@ -48,8 +48,8 @@ namespace GoogleCloudExtension.DataSources
 
         public static async Task<GceInstance> GetInstance(string projectId, string zoneName, string name, string oauthToken)
         {
-            var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zoneName}/instances/{name}?access_token={oauthToken}";
-            var client = new WebClient();
+            var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zoneName}/instances/{name}";
+            var client = new WebClient().AuthorizeClient(oauthToken);
             var response = await client.DownloadStringTaskAsync(url);
             var result = JsonConvert.DeserializeObject<GceInstance>(response);
             result.ProjectId = projectId;
@@ -75,8 +75,8 @@ namespace GoogleCloudExtension.DataSources
             // Refresh the instance to get the latest metadata fingerprint.
             var target = await GceDataSource.RefreshInstance(src, oauthToken);
 
-            var client = new WebClient();
-            var url = $"https://www.googleapis.com/compute/v1/projects/{target.ProjectId}/zones/{target.ZoneName}/instances/{target.Name}/setMetadata?access_token={oauthToken}";
+            var client = new WebClient().AuthorizeClient(oauthToken);
+            var url = $"https://www.googleapis.com/compute/v1/projects/{target.ProjectId}/zones/{target.ZoneName}/instances/{target.Name}/setMetadata";
             var request = new GceSetMetadataRequest
             {
                 Fingerprint = target.Metadata.Fingerprint,
@@ -112,11 +112,17 @@ namespace GoogleCloudExtension.DataSources
             return await RefreshInstance(target, oauthToken);
         }
 
-        private static async Task<IList<Zone>> GetZoneListAsync(WebClient client, string projectId, string accessToken)
+        /// <summary>
+        /// Returns the list of zones for the given project.
+        /// </summary>
+        /// <param name="client">The already authorized client to use to fetch data.</param>
+        /// <param name="projectId">The project id for which to fetch the zone data.</param>
+        /// <returns></returns>
+        private static async Task<IList<Zone>> GetZoneListAsync(WebClient client, string projectId)
         {
             try
             {
-                var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones?access_token={accessToken}";
+                var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones";
                 var content = await client.DownloadStringTaskAsync(url);
 
                 var zones = JsonConvert.DeserializeObject<Zones>(content);

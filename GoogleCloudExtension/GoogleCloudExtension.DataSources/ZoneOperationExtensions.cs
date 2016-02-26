@@ -14,9 +14,9 @@ namespace GoogleCloudExtension.DataSources
     {
         public static async Task WaitForFinish(this ZoneOperation operation, string project, string zone, string oauthToken)
         {
-            Debug.WriteLine($"Waiting on operation {operation.Id}");
-            var client = new WebClient();
-            var url = $"{operation.SelfLink}?access_token={oauthToken}";
+            Debug.WriteLine($"Waiting on operation {operation.Name}");
+            var client = new WebClient().AuthorizeClient(oauthToken);
+            var url = operation.SelfLink;
             Debug.WriteLine($"Checking operation: {url}");
             while (true)
             {
