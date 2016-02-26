@@ -80,6 +80,7 @@
     <Compile Include="CloudExplorer\ICloudExplorerSource.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\VersionViewModel.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
+    <Compile Include="Controls\PressButton.cs" />
     <Compile Include="Controls\ProgressIndicator.xaml.cs">
       <DependentUpon>ProgressIndicator.xaml</DependentUpon>
     </Compile>

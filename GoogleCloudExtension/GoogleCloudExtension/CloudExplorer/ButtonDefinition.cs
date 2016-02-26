@@ -14,6 +14,7 @@ namespace GoogleCloudExtension.CloudExplorer
         private string _toolTip;
         private ImageSource _icon;
         private ICommand _command;
+        private bool _isChecked;
 
         public string ToolTip
         {
@@ -31,6 +32,12 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             get { return _command; }
             set { SetValueAndRaise(ref _command, value); }
+        }
+
+        public bool IsChecked
+        {
+            get { return _isChecked; }
+            set { SetValueAndRaise(ref _isChecked, value); }
         }
     }
 }

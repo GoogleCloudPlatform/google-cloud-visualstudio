@@ -98,7 +98,7 @@
             </Setter>
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Button}">
+                    <ControlTemplate TargetType="{x:Type controls:PressButton}">
                         <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="true">
                             <ContentPresenter x:Name="contentPresenter" Focusable="False" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                         </Border>
@@ -106,6 +106,9 @@
                             <Trigger Property="IsMouseOver" Value="true">
                                 <Setter Property="Background" TargetName="border" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarHoverOverSelectedIconKey}}"/>
                                 <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarHoverOverSelectedIconBorderKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarSelectedBorderKey}}"/>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="true">
                                 <Setter Property="Background" TargetName="border" Value="{StaticResource Button.Pressed.Background}"/>
@@ -138,11 +141,12 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Button Content="{Binding Icon}"
+                    <controls:PressButton Content="{Binding Icon}"
                             Command="{Binding Command}"
                             VerticalAlignment="Center"
                             ToolTip="{Binding ToolTip}"
-                            Style="{DynamicResource CommandBarButtonStyle}" />
+                            IsChecked="{Binding IsChecked}"
+                            Style="{StaticResource CommandBarButtonStyle}" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
