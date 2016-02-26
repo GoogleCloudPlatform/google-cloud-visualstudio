@@ -35,8 +35,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             Icon = s_instanceIcon.Value;
             _instance = instance;
 
-            _getPublishSettingsCommand = new WeakCommand(OnGetPublishSettings, _instance.IsAspnetInstance());
-            _openWebSite = new WeakCommand(OnOpenWebsite, _instance.IsAspnetInstance());
+            _getPublishSettingsCommand = new WeakCommand(OnGetPublishSettings, _instance.IsAspnetInstance() && _instance.IsRunning());
+            _openWebSite = new WeakCommand(OnOpenWebsite, _instance.IsAspnetInstance() && _instance.IsRunning());
 
             var menuItems = new List<MenuItem>
             {

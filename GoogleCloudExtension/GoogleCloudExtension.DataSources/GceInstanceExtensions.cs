@@ -12,10 +12,26 @@ using System.Xml.Linq;
 
 namespace GoogleCloudExtension.DataSources
 {
+    public enum InstanceStatus
+    {
+        None,
+        Provisioning,
+        Staging,
+        Running,
+        Stopping,
+        Terminated,
+    }
+
     public static class GceInstanceExtensions
     {
         private const string WindowsCredentialsKey = "windows-credentials";
 
+        public const string ProvisioningStatus = "PROVISIONING";
+        public const string StagingStatus = "STAGING";
+        public const string RunningStatus = "RUNNING";
+        public const string StoppingStatus = "STOPPING";
+        public const string TerminatedStatus = "TERMINATED";
+        
         public static bool IsAspnetInstance(this GceInstance instance)
         {
             return instance.Tags?.Items?.Contains("aspnet") ?? false;
@@ -84,10 +100,7 @@ namespace GoogleCloudExtension.DataSources
             return instance.NetworkInterfaces?.FirstOrDefault()?.AccessConfigs?.FirstOrDefault()?.NatIP;
         }
 
-        public static string GetTags(this GceInstance instance)
-        {
-            return String.Join(", ", instance.Tags?.Items);
-        }
+        public static string GetTags(this GceInstance instance) => String.Join(", ", instance.Tags?.Items ?? Enumerable.Empty<string>());
 
         public static string GeneratePublishSettings(this GceInstance instance, GceCredentials credentials = null)
         {
@@ -114,5 +127,7 @@ namespace GoogleCloudExtension.DataSources
 
             return doc.ToString();
         }
+
+        public static bool IsRunning(this GceInstance instance) => instance.Status == RunningStatus;
     }
 }
