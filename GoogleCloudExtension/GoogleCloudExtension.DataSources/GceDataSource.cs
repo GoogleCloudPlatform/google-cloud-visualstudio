@@ -18,7 +18,7 @@ namespace GoogleCloudExtension.DataSources
         {
             try
             {
-                var client = new WebClient().AuthorizeClient(oauthToken);
+                var client = new WebClient().SetOauthToken(oauthToken);
                 var zones = await GetZoneListAsync(client, projectId);
 
                 var result = new List<GceInstance>();
@@ -49,7 +49,7 @@ namespace GoogleCloudExtension.DataSources
         public static async Task<GceInstance> GetInstance(string projectId, string zoneName, string name, string oauthToken)
         {
             var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zoneName}/instances/{name}";
-            var client = new WebClient().AuthorizeClient(oauthToken);
+            var client = new WebClient().SetOauthToken(oauthToken);
             var response = await client.DownloadStringTaskAsync(url);
             var result = JsonConvert.DeserializeObject<GceInstance>(response);
             result.ProjectId = projectId;
@@ -66,24 +66,20 @@ namespace GoogleCloudExtension.DataSources
         /// Stores the given metadata in the target instance and returns the udpated instance after the change.
         /// </summary>
         /// <param name="src">The instance on which to store the data.</param>
-        /// <param name="key">The key on which to store data.</param>
-        /// <param name="value">The data to store.</param>
+        /// <param name="entries">The entries to store in the metadata of the instance.</param>
         /// <param name="oauthToken">The oauth token to use.</param>
         /// <returns></returns>
-        public static async Task<GceInstance> StoreMetadata(GceInstance src, string key, string value, string oauthToken)
+        public static async Task<GceInstance> StoreMetadata(GceInstance src, IList<MetadataEntry> entries, string oauthToken)
         {
             // Refresh the instance to get the latest metadata fingerprint.
             var target = await GceDataSource.RefreshInstance(src, oauthToken);
 
-            var client = new WebClient().AuthorizeClient(oauthToken);
+            var client = new WebClient().SetOauthToken(oauthToken);
             var url = $"https://www.googleapis.com/compute/v1/projects/{target.ProjectId}/zones/{target.ZoneName}/instances/{target.Name}/setMetadata";
             var request = new GceSetMetadataRequest
             {
                 Fingerprint = target.Metadata.Fingerprint,
-                Items = new List<MetadataEntry>
-                {
-                    new MetadataEntry {Key = key, Value = value },
-                }
+                Items = entries,
             };
             var serializedRequest = JsonConvert.SerializeObject(request);
 

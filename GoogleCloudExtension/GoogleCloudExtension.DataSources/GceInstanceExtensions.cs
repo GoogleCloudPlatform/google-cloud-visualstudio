@@ -45,7 +45,8 @@ namespace GoogleCloudExtension.DataSources
                 credentials,
                 new JsonSerializerSettings { Formatting = Formatting.None });
             Debug.WriteLine($"Writting credentials: {serializedCredentials}");
-            return await GceDataSource.StoreMetadata(instance, WindowsCredentialsKey, serializedCredentials, oauthToken);
+            var newMetadataItems = instance.Metadata.Items.SetValue(WindowsCredentialsKey, serializedCredentials);
+            return await GceDataSource.StoreMetadata(instance, newMetadataItems, oauthToken);
         }
 
         public static bool IsGaeInstance(this GceInstance instance)

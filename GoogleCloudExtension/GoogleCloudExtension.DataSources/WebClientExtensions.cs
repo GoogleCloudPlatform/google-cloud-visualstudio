@@ -14,7 +14,7 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="client">The client to initialize.</param>
         /// <param name="oauthToken">The oauth token to user.</param>
-        public static WebClient AuthorizeClient(this WebClient client, string oauthToken)
+        public static WebClient SetOauthToken(this WebClient client, string oauthToken)
         {
             client.Headers[HttpRequestHeader.Authorization] = $"Bearer {oauthToken}";
             return client;

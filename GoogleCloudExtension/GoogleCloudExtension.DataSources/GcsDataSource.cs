@@ -16,7 +16,7 @@ namespace GoogleCloudExtension.DataSources
         {
             try
             {
-                var client = new WebClient().AuthorizeClient(oauthToken);
+                var client = new WebClient().SetOauthToken(oauthToken);
                 var url = $"https://www.googleapis.com/storage/v1/b?project={projectId}";
                 var content = await client.DownloadStringTaskAsync(url);
 

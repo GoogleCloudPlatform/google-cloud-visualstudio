@@ -2,7 +2,7 @@
 using GoogleCloudExtension.DataSources.Models;
 using Newtonsoft.Json;
 
-namespace GoogleCloudExtension.DataSources
+namespace GoogleCloudExtension.DataSources.Models
 {
     public sealed class GceSetMetadataRequest
     {
@@ -13,6 +13,6 @@ namespace GoogleCloudExtension.DataSources
         public string Fingerprint { get; set; }
 
         [JsonProperty("items")]
-        public List<MetadataEntry> Items { get; set; }
+        public IList<MetadataEntry> Items { get; set; }
     }
 }
