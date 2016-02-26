@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using GoogleCloudExtension.DataSources.Models;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace GoogleCloudExtension.DataSources.Models
 {

@@ -1,10 +1,10 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
-using System;
-using System.Collections.Generic;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.Utils;
+using System;
+using System.Collections.Generic;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce

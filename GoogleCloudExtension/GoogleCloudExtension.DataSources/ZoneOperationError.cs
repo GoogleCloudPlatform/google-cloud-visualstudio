@@ -1,6 +1,6 @@
-﻿using System;
+﻿using GoogleCloudExtension.DataSources.Models;
+using System;
 using System.Runtime.Serialization;
-using GoogleCloudExtension.DataSources.Models;
 
 namespace GoogleCloudExtension.DataSources
 {
