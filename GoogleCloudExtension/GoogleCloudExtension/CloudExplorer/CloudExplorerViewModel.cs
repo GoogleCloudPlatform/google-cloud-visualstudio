@@ -18,6 +18,7 @@ namespace GoogleCloudExtension.CloudExplorer
         private static readonly Lazy<ImageSource> s_refreshIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(RefreshImagePath));
 
         private readonly IList<ICloudExplorerSource> _sources;
+        private readonly List<ButtonDefinition> _buttons;
 
         /// <summary>
         /// The list of module and version combinations for the current project.
@@ -33,12 +34,12 @@ namespace GoogleCloudExtension.CloudExplorer
             }
         }
 
-        public IList<ButtonDefinition> Buttons { get; }
+        public IList<ButtonDefinition> Buttons => _buttons;
 
         public CloudExplorerViewModel(IEnumerable<ICloudExplorerSource> sources)
         {
             _sources = new List<ICloudExplorerSource>(sources);
-            Buttons = new List<ButtonDefinition>()
+            _buttons = new List<ButtonDefinition>()
             {
                 new ButtonDefinition
                 {
@@ -47,6 +48,12 @@ namespace GoogleCloudExtension.CloudExplorer
                     Command = new WeakCommand(this.OnRefresh),
                 }
             };
+
+            foreach (var source in _sources)
+            {
+                var sourceButtons = source.GetButtons();
+                _buttons.AddRange(sourceButtons);
+            }
         }
 
         private void OnRefresh()

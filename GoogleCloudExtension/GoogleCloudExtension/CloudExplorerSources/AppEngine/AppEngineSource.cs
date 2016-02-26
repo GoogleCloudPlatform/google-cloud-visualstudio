@@ -5,18 +5,18 @@ using GoogleCloudExtension.CloudExplorer;
 
 namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 {
-    internal class AppEngineSource : ICloudExplorerSource
+    internal class AppEngineSource : CloudExplorerSourceBase
     {
         private readonly AppEngineRootViewModel _root = new AppEngineRootViewModel();
 
         #region ICloudExplorerSource
 
-        public TreeHierarchy GetRoot()
+        public override TreeHierarchy GetRoot()
         {
             return _root;
         }
 
-        public void Refresh()
+        public override void Refresh()
         {
             _root.Refresh();
         }
