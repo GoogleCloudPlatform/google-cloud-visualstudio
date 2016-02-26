@@ -31,30 +31,21 @@ namespace GoogleCloudExtension.DataSources
             return null;
         }
 
-        public static async Task SetServerCredentials(this GceInstance instance, GceCredentials credentials, string oauthToken)
+        /// <summary>
+        /// Stores the new credentials for the instance, returning a new instance that has been fully
+        /// updated with the new metadata.
+        /// </summary>
+        /// <param name="instance">The instance where to store the credentials.</param>
+        /// <param name="credentials">The credentials to store.</param>
+        /// <param name="oauthToken">The oauth token to use.</param>
+        /// <returns></returns>
+        public static async Task<GceInstance> SetServerCredentials(this GceInstance instance, GceCredentials credentials, string oauthToken)
         {
             var serializedCredentials = JsonConvert.SerializeObject(
                 credentials,
                 new JsonSerializerSettings { Formatting = Formatting.None });
-
             Debug.WriteLine($"Writting credentials: {serializedCredentials}");
-            instance.StoreMetadata(WindowsCredentialsKey, serializedCredentials);            
-            await GceDataSource.StoreMetadata(instance, WindowsCredentialsKey, serializedCredentials, oauthToken);
-        }
-
-        private static void StoreMetadata(this GceInstance instance, string key, string value)
-        {
-            // Ensure the instance has storage for metadata entries.
-            if (instance.Metadata.Items == null)
-            {
-                instance.Metadata.Items = new List<MetadataEntry>();
-            }
-            var existingEntry = instance.Metadata.Items.FirstOrDefault(x => x.Key == key);
-            if (existingEntry != null)
-            {
-                instance.Metadata.Items.Remove(existingEntry);
-            }
-            instance.Metadata.Items.Add(new MetadataEntry { Key = key, Value = value });
+            return await GceDataSource.StoreMetadata(instance, WindowsCredentialsKey, serializedCredentials, oauthToken);
         }
 
         public static bool IsGaeInstance(this GceInstance instance)

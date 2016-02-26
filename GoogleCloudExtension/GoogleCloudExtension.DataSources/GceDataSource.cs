@@ -46,13 +46,37 @@ namespace GoogleCloudExtension.DataSources
             return null;
         }
 
-        public static async Task StoreMetadata(GceInstance instance, string key, string value, string oauthToken)
+        public static async Task<GceInstance> GetInstance(string projectId, string zone, string name, string oauthToken)
         {
+            var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zone}/instances/{name}?access_token={oauthToken}";
             var client = new WebClient();
-            var url = $"https://www.googleapis.com/compute/v1/projects/{instance.ProjectId}/zones/{instance.ZoneName}/instances/{instance.Name}/setMetadata?access_token={oauthToken}";
+            var result = await client.DownloadStringTaskAsync(url);
+            return JsonConvert.DeserializeObject<GceInstance>(result);
+        }
+
+        public static Task<GceInstance> RefreshInstance(GceInstance instance, string oauthToken)
+        {
+            return GetInstance(projectId: instance.ProjectId, zone: instance.ZoneName, name: instance.Name, oauthToken: oauthToken);
+        }
+
+        /// <summary>
+        /// Stores the given metadata in the target instance and returns the udpated instance after the change.
+        /// </summary>
+        /// <param name="src">The instance on which to store the data.</param>
+        /// <param name="key">The key on which to store data.</param>
+        /// <param name="value">The data to store.</param>
+        /// <param name="oauthToken">The oauth token to use.</param>
+        /// <returns></returns>
+        public static async Task<GceInstance> StoreMetadata(GceInstance src, string key, string value, string oauthToken)
+        {
+            // Refresh the instance to get the latest metadata fingerprint.
+            var target = await GceDataSource.RefreshInstance(src, oauthToken);
+
+            var client = new WebClient();
+            var url = $"https://www.googleapis.com/compute/v1/projects/{target.ProjectId}/zones/{target.ZoneName}/instances/{target.Name}/setMetadata?access_token={oauthToken}";
             var request = new GceSetMetadataRequest
             {
-                Fingerprint = instance.Metadata.Fingerprint,
+                Fingerprint = target.Metadata.Fingerprint,
                 Items = new List<MetadataEntry>
                 {
                     new MetadataEntry {Key = key, Value = value },
@@ -65,7 +89,11 @@ namespace GoogleCloudExtension.DataSources
                 client.Headers[HttpRequestHeader.ContentType] = "application/json";
                 var result = await client.UploadDataTaskAsync(url, "POST", requestBytes);
                 var resultString = Encoding.ASCII.GetString(result);
-                Debug.WriteLine($"Received output: {resultString}");
+                var operation = JsonConvert.DeserializeObject<ZoneOperation>(resultString);
+                await operation.WaitForFinish(
+                    project: target.ProjectId,
+                    zone: target.ZoneName,
+                    oauthToken: oauthToken);
             }
             catch (WebException ex)
             {
@@ -75,7 +103,11 @@ namespace GoogleCloudExtension.DataSources
                     var message = stream.ReadToEnd();
                     Debug.WriteLine($"Failed to update metadata: {message}");
                 }
+                throw;
             }
+
+            // Returns the updated instance.
+            return await RefreshInstance(target, oauthToken);
         }
 
         private static async Task<IList<Zone>> GetZoneListAsync(WebClient client, string projectId, string accessToken)
