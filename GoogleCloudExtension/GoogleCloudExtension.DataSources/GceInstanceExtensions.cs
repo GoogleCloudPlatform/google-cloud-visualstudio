@@ -24,6 +24,7 @@ namespace GoogleCloudExtension.DataSources
     public static class GceInstanceExtensions
     {
         private const string WindowsCredentialsKey = "windows-credentials";
+        private const string WindowsLicenseUrl = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-2012-r2-dc";
 
         public const string ProvisioningStatus = "PROVISIONING";
         public const string StagingStatus = "STAGING";
@@ -67,6 +68,11 @@ namespace GoogleCloudExtension.DataSources
         public static bool IsGaeInstance(this GceInstance instance)
         {
             return !string.IsNullOrEmpty(instance.GetGaeModule());
+        }
+
+        public static bool IsWindowsInstance(this GceInstance instance)
+        {
+            return instance.Disks?.Where(x => x.Licenses?.Contains(WindowsLicenseUrl) ?? false).FirstOrDefault() != null;
         }
 
         public static string GetPublishUrl(this GceInstance instance)

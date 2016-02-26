@@ -114,7 +114,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private IList<ZoneViewModel> GetZoneViewModels()
         {
             return _instances?
-                .Where(x => !_showOnlyWindowsInstances || x.IsAspnetInstance())
+                .Where(x => !_showOnlyWindowsInstances || x.IsWindowsInstance())
                 .GroupBy(x => x.ZoneName)
                 .Select(x => new ZoneViewModel(x.Key, x)).ToList();
         }

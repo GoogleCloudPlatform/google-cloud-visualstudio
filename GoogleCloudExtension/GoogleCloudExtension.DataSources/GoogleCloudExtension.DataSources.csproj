@@ -53,6 +53,7 @@
     <Compile Include="GceDataSource.cs" />
     <Compile Include="GceInstanceExtensions.cs" />
     <Compile Include="MetadataExtensions.cs" />
+    <Compile Include="Models\Disk.cs" />
     <Compile Include="Models\GceSetMetadataRequest.cs" />
     <Compile Include="GcsDataSource.cs" />
     <Compile Include="Models\Bucket.cs" />

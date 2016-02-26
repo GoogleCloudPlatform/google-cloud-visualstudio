@@ -29,6 +29,9 @@ namespace GoogleCloudExtension.DataSources.Models
         [JsonProperty("networkInterfaces")]
         public IList<NetworkInterface> NetworkInterfaces { get; set; }
 
+        [JsonProperty("disks")]
+        public IList<Disk> Disks { get; set; }
+
         public string ZoneName { get; set; }
 
         public string ProjectId { get; set; }
