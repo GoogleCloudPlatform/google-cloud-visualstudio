@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.DataSources
         public const string RunningStatus = "RUNNING";
         public const string StoppingStatus = "STOPPING";
         public const string TerminatedStatus = "TERMINATED";
-        
+
         public static bool IsAspnetInstance(this GceInstance instance)
         {
             return instance.Tags?.Items?.Contains("aspnet") ?? false;

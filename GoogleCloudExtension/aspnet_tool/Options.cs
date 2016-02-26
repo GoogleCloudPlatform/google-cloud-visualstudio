@@ -1,10 +1,13 @@
-﻿using AspnetTool.Commands;
+﻿// Copyright 2015 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+using AspnetTool.Commands;
 using CommandLine;
 using CommandLine.Text;
 
 namespace AspnetTool
 {
-    class Options
+    internal class Options
     {
         [VerbOption("deploy", HelpText = "Deploys the app")]
         public DeployCmd.Options Deploy { get; set; } = new DeployCmd.Options();

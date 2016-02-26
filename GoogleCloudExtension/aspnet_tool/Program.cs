@@ -1,11 +1,14 @@
-﻿using System;
+﻿// Copyright 2015 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+using System;
 using System.Diagnostics;
 
 namespace AspnetTool
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var options = new Options();
             if (!CommandLine.Parser.Default.ParseArguments(
