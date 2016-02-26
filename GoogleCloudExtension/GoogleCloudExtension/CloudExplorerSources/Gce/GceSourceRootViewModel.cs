@@ -24,6 +24,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             Content = "Loading instances...",
             IsLoading = true
         };
+        private static readonly TreeLeaf s_noZonesPlaceholder = new TreeLeaf { Content = "No zones" };
 
         private bool _loading = false;
         private bool _loaded = false;
@@ -72,8 +73,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             try
             {
                 _instances = await LoadGceInstances();
-                PresentZoneViewModels();
                 _loaded = true;
+                PresentZoneViewModels();
             }
             finally
             {
@@ -83,6 +84,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void PresentZoneViewModels()
         {
+            if (!_loaded)
+            {
+                return;
+            }
+
             var zones = GetZoneViewModels();
             Children.Clear();
             if (zones != null)
@@ -94,7 +100,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
             if (Children.Count == 0)
             {
-                Children.Add(new TreeLeaf { Content = "No zones" });
+                Children.Add(s_noZonesPlaceholder);
             }
         }
 
