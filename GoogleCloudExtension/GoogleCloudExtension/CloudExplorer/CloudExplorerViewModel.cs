@@ -33,23 +33,20 @@ namespace GoogleCloudExtension.CloudExplorer
             }
         }
 
-        /// <summary>
-        /// The icon to use for the refresh action.
-        /// </summary>
-        public ImageSource RefreshIcon
-        {
-            get { return s_refreshIcon.Value; }
-        }
-
-        /// <summary>
-        /// The command to invoke to refresh the list of modules and versions.
-        /// </summary>
-        public ICommand RefreshCommand { get; }
+        public IList<ButtonDefinition> Buttons { get; }
 
         public CloudExplorerViewModel(IEnumerable<ICloudExplorerSource> sources)
         {
             _sources = new List<ICloudExplorerSource>(sources);
-            RefreshCommand = new WeakCommand(this.OnRefresh);
+            Buttons = new List<ButtonDefinition>()
+            {
+                new ButtonDefinition
+                {
+                    Icon = s_refreshIcon.Value,
+                    ToolTip = "Refresh",
+                    Command = new WeakCommand(this.OnRefresh),
+                }
+            };
         }
 
         private void OnRefresh()

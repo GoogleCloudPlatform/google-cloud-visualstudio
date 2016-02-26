@@ -130,13 +130,22 @@
         </Grid.RowDefinitions>
 
         <!-- Action buttons. -->
-        <StackPanel Style="{StaticResource CommandBarStyle}">
-            <Button Content="{Binding RefreshIcon}"
-                    Command="{Binding RefreshCommand}"
-                    VerticalAlignment="Center"
-                    ToolTip="Refresh"
-                    Style="{DynamicResource CommandBarButtonStyle}" />
-        </StackPanel>
+        <ItemsControl ItemsSource="{Binding Buttons}">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Style="{StaticResource CommandBarStyle}" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <Button Content="{Binding Icon}"
+                            Command="{Binding Command}"
+                            VerticalAlignment="Center"
+                            ToolTip="{Binding ToolTip}"
+                            Style="{DynamicResource CommandBarButtonStyle}" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
 
         <!-- Hierarchical view of the modules and versions within the modules. -->
         <TreeView
