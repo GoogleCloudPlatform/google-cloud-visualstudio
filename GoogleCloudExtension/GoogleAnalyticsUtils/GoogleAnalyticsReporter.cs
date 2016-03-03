@@ -7,8 +7,9 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.Utils
+namespace GoogleAnalyticsUtils
 {
     /// <summary>
     /// <para>
@@ -20,15 +21,8 @@ namespace GoogleCloudExtension.Utils
     /// For more information, see:
     /// https://developers.google.com/analytics/devguides/collection/protocol/v1/
     /// </para>
-    ///
-    /// <para>
-    /// This class is thread hostile. You have been warned. The recommeneded way to use this class is
-    /// as a shared instance so the entire app uses the same reporter. This reporter should only be used
-    /// from one thread, typically the easiest is the UI thread, which is OK since the reporting
-    /// is done in an asynchronous manner.
-    /// </para>
     /// </summary>
-    public class GoogleAnalyticsReporter
+    public class AnalyticsReporter
     {
         private const string ProductionServerUrl = "https://ssl.google-analytics.com/collect";
         private const string DebugServerUrl = "https://ssl.google-analytics.com/debug/collect";
@@ -52,9 +46,17 @@ namespace GoogleCloudExtension.Utils
 
         private readonly bool _debug;
         private readonly string _serverUrl;
-        private readonly string _appName;
-        private readonly string _appVersion;
         private readonly Dictionary<string, string> _baseHitData;
+
+        /// <summary>
+        /// The name of the application to use when reporting data.
+        /// </summary>
+        public string ApplicationName { get; }
+
+        /// <summary>
+        /// The version to use when reporting data.
+        /// </summary>
+        public string ApplicationVersion { get; }
 
         /// <summary>
         /// The property ID being used by this reporter.
@@ -63,8 +65,6 @@ namespace GoogleCloudExtension.Utils
 
         /// <summary>
         /// The client ID being used by this reporter.
-        /// Note: This ID is generated with every instance, which is why is important
-        /// to share the instance.
         /// </summary>
         public string ClientId { get; }
 
@@ -76,19 +76,20 @@ namespace GoogleCloudExtension.Utils
         /// <param name="clientId">The client id to use when reporting, if null a new random Guid will be generated.</param>
         /// <param name="appVersion">Optional, the app version. Defaults to null.</param>
         /// <param name="debug">Optional, whether this reporter is in debug mode. Defaults to false.</param>
-        public GoogleAnalyticsReporter(
+        public AnalyticsReporter(
             string propertyId,
             string appName,
             string clientId = null,
             string appVersion = null,
             bool debug = false)
         {
-            PropertyId = propertyId;
-            _serverUrl = debug ? DebugServerUrl : ProductionServerUrl;
-            _appName = appName;
-            _appVersion = appVersion;
-            _debug = debug;
+            PropertyId = Preconditions.CheckNotNull(propertyId, nameof(propertyId));
+            ApplicationName = Preconditions.CheckNotNull(appName, nameof(appName));
             ClientId = clientId ?? Guid.NewGuid().ToString();
+            ApplicationVersion = appVersion;
+
+            _debug = debug;
+            _serverUrl = debug ? DebugServerUrl : ProductionServerUrl;
             _baseHitData = MakeBaseHitData();
         }
 
@@ -145,6 +146,11 @@ namespace GoogleCloudExtension.Utils
             SendHitData(hitData);
         }
 
+        /// <summary>
+        /// Constructs the dictionary with the common parameters that all requests must
+        /// have.
+        /// </summary>
+        /// <returns>Dictionary with the parameters for the report request.</returns>
         private Dictionary<string, string> MakeBaseHitData()
         {
             var result = new Dictionary<string, string>
@@ -152,21 +158,17 @@ namespace GoogleCloudExtension.Utils
                 { VersionParam, VersionValue },
                 { PropertyIdParam, PropertyId },
                 { ClientIdParam, ClientId },
-                { AppNameParam, _appName },
+                { AppNameParam, ApplicationName },
             };
-            if (_appVersion != null)
+            if (ApplicationVersion != null)
             {
-                result.Add(AppVersionParam, _appVersion);
+                result.Add(AppVersionParam, ApplicationVersion);
             }
             return result;
         }
 
         /// <summary>
-        /// Sens the hit data to the server.
-        /// Note: This method behaves differently in debug mode vs. normal mode. In debug mode
-        /// it will block to read the output of the debug reporting server and log that out
-        /// for verification. On normal mode (typically used in Release builds) this reporting
-        /// is done using a non-blocking method.
+        /// Sends the hit data to the server.
         /// </summary>
         /// <param name="hitData">The hit data to be sent.</param>
         private void SendHitData(Dictionary<string, string> hitData)
@@ -180,21 +182,24 @@ namespace GoogleCloudExtension.Utils
             try
             {
                 var client = new WebClient();
-                if (_debug)
-                {
-                    var result = client.UploadValues(_serverUrl, values);
-                    var decoded = Encoding.UTF8.GetString(result);
-                    Debug.WriteLine($"Output of analytics: {decoded}");
-                }
-                else
-                {
-                    client.UploadValuesAsync(new Uri(_serverUrl), values);
-                }
+                DebugPrintAnalyticsOutput(client.UploadValuesTaskAsync(_serverUrl, values));
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Failed to report analytics. {ex.Message}");
             }
+        }
+
+        /// <summary>
+        /// Debugging utility that will print out to the output window the result of the hit request.
+        /// </summary>
+        /// <param name="resultTask">The task resulting from the request.</param>
+        [Conditional("DEBUG")]
+        private async void DebugPrintAnalyticsOutput(Task<byte[]> resultTask)
+        {
+            var result = await resultTask;
+            var decoded = Encoding.UTF8.GetString(result);
+            Debug.WriteLine($"Output of analytics: {decoded}");
         }
     }
 }

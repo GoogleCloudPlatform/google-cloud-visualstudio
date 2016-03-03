@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleAnalyticsUtils;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell.Settings;
@@ -35,7 +36,7 @@ namespace GoogleCloudExtension.Analytics
         private const string FalseValue = "false";
         private const string GCloudExtensionPath = "GCloudVSExtension";
         private const string ClientIdProperty = "ClientId";
-        private static readonly Lazy<GoogleAnalyticsReporter> s_reporter = new Lazy<GoogleAnalyticsReporter>(CreateReporter);
+        private static readonly Lazy<AnalyticsReporter> s_reporter = new Lazy<AnalyticsReporter>(CreateReporter);
         private static readonly Lazy<Task<bool>> s_isReportingEnabled = new Lazy<Task<bool>>(IsReportingEnabled);
         private static readonly Lazy<string> s_clientId = new Lazy<string>(GetOrCreateClientId);
 
@@ -167,13 +168,13 @@ namespace GoogleCloudExtension.Analytics
 
         #endregion
 
-        private static GoogleAnalyticsReporter CreateReporter()
+        private static AnalyticsReporter CreateReporter()
         {
             bool debug = false;
 #if DEBUG
             debug = true;
 #endif
-            return new GoogleAnalyticsReporter(PropertyId,
+            return new AnalyticsReporter(PropertyId,
                 clientId: s_clientId.Value,
                 appName: ApplicationName,
                 debug: debug);
@@ -214,7 +215,7 @@ namespace GoogleCloudExtension.Analytics
         /// changes the setting then Visual Studio will have to be restarted.
         /// </summary>
         /// <returns>The task with the reporter to use.</returns>
-        private static async Task<GoogleAnalyticsReporter> GetReporter()
+        private static async Task<AnalyticsReporter> GetReporter()
         {
             return await s_isReportingEnabled.Value ? s_reporter.Value : null;
         }
