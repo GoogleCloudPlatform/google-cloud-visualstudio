@@ -249,6 +249,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GoogleAnalyticsUtils\GoogleAnalyticsUtils.csproj">
+      <Project>{a2d9ac4e-9621-4385-a175-316832f7bfdc}</Project>
+      <Name>GoogleAnalyticsUtils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.GCloud\GoogleCloudExtension.GCloud.csproj">
       <Project>{95efac7e-4f6e-46f0-bcc8-90ee1487e1e1}</Project>
       <Name>GoogleCloudExtension.GCloud</Name>
