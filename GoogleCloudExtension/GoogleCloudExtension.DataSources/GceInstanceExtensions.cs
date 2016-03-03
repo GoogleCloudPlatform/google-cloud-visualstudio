@@ -77,7 +77,7 @@ namespace GoogleCloudExtension.DataSources
 
         public static string GetPublishUrl(this GceInstance instance)
         {
-            return $"{instance.GetPublicIpAddress()}";
+            return instance.GetPublicIpAddress();
         }
 
         public static string GetDestinationAppUri(this GceInstance instance)
