@@ -3,10 +3,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Net;
-using System.Text;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace GoogleAnalyticsUtils
@@ -171,22 +169,13 @@ namespace GoogleAnalyticsUtils
         /// Sends the hit data to the server.
         /// </summary>
         /// <param name="hitData">The hit data to be sent.</param>
-        private void SendHitData(Dictionary<string, string> hitData)
+        private async void SendHitData(Dictionary<string, string> hitData)
         {
-            var values = new NameValueCollection();
-            foreach (var entry in hitData)
+            using (var client = new HttpClient())
+            using (var form = new FormUrlEncodedContent(hitData))
+            using (var response = await client.PostAsync(_serverUrl, form).ConfigureAwait(false))
             {
-                values.Add(entry.Key, entry.Value);
-            }
-
-            try
-            {
-                var client = new WebClient();
-                DebugPrintAnalyticsOutput(client.UploadValuesTaskAsync(_serverUrl, values));
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Failed to report analytics. {ex.Message}");
+                DebugPrintAnalyticsOutput(response.Content.ReadAsStringAsync());
             }
         }
 
@@ -195,11 +184,10 @@ namespace GoogleAnalyticsUtils
         /// </summary>
         /// <param name="resultTask">The task resulting from the request.</param>
         [Conditional("DEBUG")]
-        private async void DebugPrintAnalyticsOutput(Task<byte[]> resultTask)
+        private async void DebugPrintAnalyticsOutput(Task<string> resultTask)
         {
-            var result = await resultTask;
-            var decoded = Encoding.UTF8.GetString(result);
-            Debug.WriteLine($"Output of analytics: {decoded}");
+            var result = await resultTask.ConfigureAwait(false);
+            Debug.WriteLine($"Output of analytics: {result}");
         }
     }
 }
