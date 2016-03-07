@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
     internal class GceInstanceViewModel : TreeLeaf, ICloudExplorerItemSource
     {
-        private const string IconResourcePath = "CloudExplorerSources/AppEngine/Resources/ic_web.png";
+        private const string IconResourcePath = "CloudExplorerSources/Gce/Resources/instance_icon.png";
         private const string GcpIisUser = "gcpiisuser";
         private static readonly Lazy<ImageSource> s_instanceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
 
