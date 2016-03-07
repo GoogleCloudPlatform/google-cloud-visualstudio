@@ -113,9 +113,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 
         private TreeHierarchy MakeModuleHierarchy(IGrouping<string, ModuleAndVersion> src)
         {
-            var versions = src
-                .OrderBy(x => x, new VersionComparer())
-                .Select(x => new VersionViewModel(x));
+            var versions = from v in src
+                           orderby v.TrafficSplit descending
+                           select new VersionViewModel(v);
             return new TreeHierarchy(versions) { Content = src.Key, Icon = s_moduleIcon.Value };
         }
 

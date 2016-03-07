@@ -29,13 +29,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
         {
             _target = target;
             _openAppCommand = new WeakCommand(OnOpenApp);
-            _deleteVersionCommand = new WeakCommand(OnDeleteVersion, canExecuteCommand: !_target.IsDefault);
-            _setDefaultVersionCommand = new WeakCommand(OnSetDefaultVersion, canExecuteCommand: !_target.IsDefault);
+            _deleteVersionCommand = new WeakCommand(OnDeleteVersion);
+            _setDefaultVersionCommand = new WeakCommand(OnSetDefaultVersion, canExecuteCommand: _target.TrafficSplit != 1.0);
 
             Item = new ModuleAndVersionItem(_target);
 
             // Initialize the TreeLeaf properties.
-            Content = FormatDisplayString(target);
+            Content = target.Version;
             var menuItems = new List<MenuItem>
             {
                 new MenuItem {Header="Open App in Browser", Command = _openAppCommand },
@@ -44,12 +44,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
             Icon = s_versionIcon.Value;
-        }
-
-        private static string FormatDisplayString(ModuleAndVersion target)
-        {
-            var isDefault = target.IsDefault ? "(Default)" : "";
-            return $"{target.Version} {isDefault}";
         }
 
         #region Command handlers

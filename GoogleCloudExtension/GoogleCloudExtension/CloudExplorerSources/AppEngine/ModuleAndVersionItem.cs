@@ -25,9 +25,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
         [Category("AppEngine Properties")]
         public string Module => _target.Module;
 
-        [Description("Whether the version is the default version")]
+        [Description("The amount of traffic assigned to this version")]
         [Category("AppEngine Properties")]
-        public bool IsDefault => _target.IsDefault;
+        public string TrafficSplit => string.Format("{0:0.00}%", _target.TrafficSplit * 100.0);
 
         [Description("The version name")]
         [Category("AppEngine Properties")]

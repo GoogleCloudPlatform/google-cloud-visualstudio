@@ -14,18 +14,17 @@ namespace GoogleCloudExtension.GCloud.Models
         [JsonProperty("module")]
         public string Module { get; set; }
 
-        [JsonProperty("is_default")]
-        public bool IsDefault { get; set; }
+        [JsonProperty("traffic_split")]
+        public double TrafficSplit { get; set; }
 
         [JsonProperty("version")]
         public string Version { get; set; }
 
-        [JsonProperty("project")]
         public string Project { get; set; }
 
         public override string ToString()
         {
-            return $"{Project}/{Module}/{Version}/{IsDefault}";
+            return $"{Project}/{Module}/{Version}/{TrafficSplit}";
         }
     }
 }
