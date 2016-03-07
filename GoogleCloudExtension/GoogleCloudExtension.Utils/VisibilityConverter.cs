@@ -22,12 +22,21 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         public bool IsNegated { get; set; }
 
+        public bool LoggingEnabled { get; set; }
+
+        public string LoggingPrefix { get; set; }
+
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is bool)
             {
                 bool toConvert = (!IsNegated && ((bool)value)) || (IsNegated && !((bool)value));
-                return toConvert ? Visibility.Visible : Visibility.Collapsed;
+                var result = toConvert ? Visibility.Visible : Visibility.Collapsed;
+                if (LoggingEnabled)
+                {
+                    Debug.WriteLine($"{nameof(VisibilityConverter)}: {LoggingPrefix} converting {value} to {result}");
+                }
+                return result;
             }
             Debug.WriteLine($"Value should be a boolean: {value}");
             return DependencyProperty.UnsetValue;

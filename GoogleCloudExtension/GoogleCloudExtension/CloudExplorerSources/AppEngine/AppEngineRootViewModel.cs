@@ -24,6 +24,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             Content = "Loading modules...",
             IsLoading = true
         };
+        private static readonly TreeLeaf s_noGcloudPlaceholder = new TreeLeaf
+        {
+            Content = "Please install the Google Cloud SDK.",
+            IsError = true
+        };
+        private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
+        {
+            Content = "Failed loading AppEngine modules.",
+            IsError = true
+        };
 
         private bool _loading;
         private bool _loaded;
@@ -64,7 +74,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             {
                 Debug.WriteLine("Cannot find GCloud, disabling the AppEngine tool window.");
                 Children.Clear();
-                Children.Add(new TreeLeaf { Content = "Please install gcloud..." });
+                Children.Add(s_noGcloudPlaceholder);
                 return;
             }
 
@@ -91,6 +101,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                 GcpOutputWindow.OutputLine("Failed to load the list of AppEngine apps.");
                 GcpOutputWindow.OutputLine(ex.Message);
                 GcpOutputWindow.Activate();
+
+                Children.Clear();
+                Children.Add(s_errorPlaceholder);
             }
             finally
             {

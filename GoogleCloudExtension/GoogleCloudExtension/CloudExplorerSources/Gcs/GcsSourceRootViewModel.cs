@@ -24,6 +24,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             Content = "Loading buckets...",
             IsLoading = true
         };
+        private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
+        {
+            Content = "No buckets found."
+        };
+        private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
+        {
+            Content = "Failed to list buckets.",
+            IsError = true
+        };
 
         private bool _loaded = false;
         private bool _loading = false;
@@ -56,13 +65,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
                 Debug.WriteLine("Loading list of buckets.");
                 var buckets = await LoadBucketList();
                 Children.Clear();
-                foreach (var item in buckets)
+                if (buckets == null)
                 {
-                    Children.Add(item);
+                    Children.Add(s_errorPlaceholder);
                 }
-                if (Children.Count == 0)
+                else
                 {
-                    Children.Add(new TreeLeaf { Content = "No buckets" });
+                    foreach (var item in buckets)
+                    {
+                        Children.Add(item);
+                    }
+                    if (Children.Count == 0)
+                    {
+                        Children.Add(s_noItemsPlacehoder);
+                    }
                 }
                 _loaded = true;
             }
@@ -77,7 +93,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             var currentCredentials = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
             var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
             var buckets = await GcsDataSource.GetBucketListAsync(currentCredentials.ProjectId, oauthToken);
-            return buckets.Select(x => new BucketViewModel(x)).ToList();
+            return buckets?.Select(x => new BucketViewModel(x)).ToList();
         }
 
         internal async Task Refresh()

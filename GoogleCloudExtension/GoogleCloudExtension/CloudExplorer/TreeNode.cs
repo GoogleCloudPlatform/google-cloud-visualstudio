@@ -2,6 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.Utils;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
@@ -11,10 +12,16 @@ namespace GoogleCloudExtension.CloudExplorer
 {
     public class TreeNode : Model
     {
+        const string ErrorIconPath = "CloudExplorer/Resources/error_icon.png";
+        private readonly static Lazy<ImageSource> s_ErrorIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(ErrorIconPath));
+
         private object _content;
         private ContextMenu _contextMenu;
         private ImageSource _icon;
         private bool _isLoading;
+        private bool _isError;
+
+        public static ImageSource ErrorIcon => s_ErrorIcon.Value;
 
         /// <summary>
         /// Whether this node is in the loading state.
@@ -22,8 +29,27 @@ namespace GoogleCloudExtension.CloudExplorer
         public bool IsLoading
         {
             get { return _isLoading; }
-            set { SetValueAndRaise(ref _isLoading, value); }
+            set
+            {
+                SetValueAndRaise(ref _isLoading, value);
+                RaisePropertyChanged(nameof(IconIsVisible));
+            }
         }
+
+        /// <summary>
+        /// Whether this node is in the error state.
+        /// </summary>
+        public bool IsError
+        {
+            get { return _isError; }
+            set
+            {
+                SetValueAndRaise(ref _isError, value);
+                RaisePropertyChanged(nameof(IconIsVisible));
+            }
+        }
+
+        public bool IconIsVisible => !IsError && !IsLoading;
 
         /// <summary>
         /// The icon to use in the UI for this item.

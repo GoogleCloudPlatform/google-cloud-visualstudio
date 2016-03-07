@@ -16,18 +16,26 @@
              Name="MyToolWindow">
 
     <UserControl.Resources>
-        <utils:VisibilityConverter x:Key="iconVisibilityConverter"  IsNegated="True"/>
-        <utils:VisibilityConverter x:Key="progressVisibilityConverted"/>
+        <utils:VisibilityConverter x:Key="iconVisibilityConverter" />
+        <utils:VisibilityConverter x:Key="errorVisibilityConverter" />
+        <utils:VisibilityConverter x:Key="progressVisibilityConverted" />
+
+        <utils:LoggingConverter x:Key="loggingConverter" Prefix="ErrorImage" />
 
         <!-- Data template to be applied to the TreeHierarchy -->
         <HierarchicalDataTemplate DataType="{x:Type CloudExplorer:TreeHierarchy}" ItemsSource="{Binding Children}">
             <Grid ContextMenu="{Binding ContextMenu}">
                 <StackPanel Orientation="Horizontal">
                     <controls:ProgressIndicator Visibility="{Binding IsLoading, Converter={StaticResource progressVisibilityConverted}}" />
+                    <Image Source="{x:Static CloudExplorer:TreeHierarchy.ErrorIcon}"
+                           Height="16" Width="16"
+                           VerticalAlignment="Center"
+                           Visibility="{Binding IsError, Converter={StaticResource errorVisibilityConverter}}"
+                           Margin="0,0,5,0"/>
                     <Image Source="{Binding Icon}"
                            Height="16" Width="16"
                            VerticalAlignment="Center"
-                           Visibility="{Binding IsLoading, Converter={StaticResource iconVisibilityConverter}}"
+                           Visibility="{Binding IconIsVisible, Converter={StaticResource iconVisibilityConverter}}"
                            Margin="0,0,5,0"/>
                     <ContentPresenter Content="{Binding Content}" VerticalAlignment="Center" />
                 </StackPanel>
@@ -39,6 +47,11 @@
             <Grid ContextMenu="{Binding ContextMenu}">
                 <StackPanel Orientation="Horizontal">
                     <controls:ProgressIndicator Visibility="{Binding IsLoading, Converter={StaticResource progressVisibilityConverted}}" />
+                    <Image Source="{x:Static CloudExplorer:TreeHierarchy.ErrorIcon}"
+                           Height="16" Width="16"
+                           VerticalAlignment="Center"
+                           Visibility="{Binding IsError, Converter={StaticResource errorVisibilityConverter}}"
+                           Margin="0,0,5,0"/>
                     <Image Source="{Binding Icon}"
                            Height="16" Width="16"
                            Visibility="{Binding IsLoading, Converter={StaticResource iconVisibilityConverter}}"

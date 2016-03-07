@@ -24,6 +24,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             Content = "Loading instances...",
             IsLoading = true
         };
+        private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
+        {
+            Content = "Failed to load instances.",
+            IsError = true
+        };
         private static readonly TreeLeaf s_noZonesPlaceholder = new TreeLeaf { Content = "No zones" };
 
         private bool _loading = false;
@@ -91,16 +96,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
             var zones = GetZoneViewModels();
             Children.Clear();
-            if (zones != null)
+            if (zones == null)
+            {
+                Children.Add(s_errorPlaceholder);
+            }
+            else
             {
                 foreach (var zone in zones)
                 {
                     Children.Add(zone);
                 }
-            }
-            if (Children.Count == 0)
-            {
-                Children.Add(s_noZonesPlaceholder);
+                if (Children.Count == 0)
+                {
+                    Children.Add(s_noZonesPlaceholder);
+                }
             }
         }
 

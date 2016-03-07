@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.VSSDK.BuildTools.14.0.23107\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('..\packages\Microsoft.VSSDK.BuildTools.14.0.23107\build\Microsoft.VSSDK.BuildTools.props')" />
   <PropertyGroup>
@@ -142,6 +142,7 @@
     <Resource Include="Controls\Resources\step_8.png" />
     <Resource Include="Controls\Resources\step_9.png" />
     <Resource Include="CloudExplorerSources\Gce\Resources\gce_logo.png" />
+    <Resource Include="CloudExplorer\Resources\error_icon.png" />
     <Content Include="License.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
