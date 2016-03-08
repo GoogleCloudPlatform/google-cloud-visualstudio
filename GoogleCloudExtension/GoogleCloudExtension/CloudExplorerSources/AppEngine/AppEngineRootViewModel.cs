@@ -2,10 +2,13 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows.Media;
@@ -81,12 +84,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             try
             {
                 _loading = true;
-                var apps = await AppEngineClient.GetAppEngineAppListAsync();
-                var nodes = apps
-                    .GroupBy(x => x.Module)
-                    .OrderBy(x => x.Key)
-                    .Select(x => MakeModuleHierarchy(x))
-                    .ToList();
+
+                var credentials = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
+                var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
+
+                var services = await GaeDataSource.GetServicesAsync(credentials.ProjectId, oauthToken);
+                var servicesVersions = new List<Tuple<GaeService, IList<GaeVersion>>>();
+                foreach (var s in services)
+                {
+                    var versions = await GaeDataSource.GetServiceVersionsAsync(s.Name, oauthToken);
+                    var serviceVersion = new Tuple<GaeService, IList<GaeVersion>>(s, versions);
+                    servicesVersions.Add(serviceVersion);
+                }
+
+                var nodes = servicesVersions.OrderBy(x => x.Item1.Id).Select(MakeModuleHierarchy);
 
                 Children.Clear();
                 foreach (var node in nodes)
@@ -111,12 +122,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             }
         }
 
-        private TreeHierarchy MakeModuleHierarchy(IGrouping<string, ModuleAndVersion> src)
+        private TreeHierarchy MakeModuleHierarchy(Tuple<GaeService, IList<GaeVersion>> serviceVersions)
         {
-            var versions = from v in src
-                           orderby v.TrafficSplit descending
-                           select new VersionViewModel(v);
-            return new TreeHierarchy(versions) { Content = src.Key, Icon = s_moduleIcon.Value };
+            var versionsById = serviceVersions.Item2.ToDictionary(x => x.Id, x => x);
+            var versions = from v in serviceVersions.Item1.Split.Allocations
+                           orderby v.Value descending
+                           select new VersionViewModel(serviceVersions.Item1.Id, versionsById[v.Key], v.Value);
+
+            return new TreeHierarchy(versions) { Content = serviceVersions.Item1.Id, Icon = s_moduleIcon.Value };
         }
 
         private void InvalidateAppEngineAppList(object src, EventArgs args)

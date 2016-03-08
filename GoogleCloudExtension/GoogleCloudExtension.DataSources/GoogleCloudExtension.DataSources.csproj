@@ -50,10 +50,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="GaeDataSource.cs" />
     <Compile Include="GceDataSource.cs" />
     <Compile Include="GceInstanceExtensions.cs" />
     <Compile Include="MetadataExtensions.cs" />
     <Compile Include="Models\Disk.cs" />
+    <Compile Include="Models\GaeService.cs" />
+    <Compile Include="Models\GaeServices.cs" />
+    <Compile Include="Models\GaeVersion.cs" />
+    <Compile Include="Models\GaeVersions.cs" />
     <Compile Include="Models\GceSetMetadataRequest.cs" />
     <Compile Include="GcsDataSource.cs" />
     <Compile Include="Models\Bucket.cs" />
@@ -68,6 +73,7 @@
     <Compile Include="Models\MetadataEntry.cs" />
     <Compile Include="Models\NetworkAccessConfig.cs" />
     <Compile Include="Models\NetworkInterface.cs" />
+    <Compile Include="Models\TrafficSplit.cs" />
     <Compile Include="Models\Zone.cs" />
     <Compile Include="Models\ZoneOperation.cs" />
     <Compile Include="Models\Zones.cs" />

@@ -54,8 +54,7 @@
     <Compile Include="AddNewAccount\AddNewAccountCommand.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\AppEngineRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\AppEngineSource.cs" />
-    <Compile Include="CloudExplorerSources\AppEngine\ModuleAndVersionItem.cs" />
-    <Compile Include="CloudExplorerSources\AppEngine\ModuleViewModel.cs" />
+    <Compile Include="CloudExplorerSources\AppEngine\VersionItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceSourceRootViewModel.cs" />

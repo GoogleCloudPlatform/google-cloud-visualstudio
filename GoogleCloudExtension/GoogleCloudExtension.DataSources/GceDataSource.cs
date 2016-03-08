@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
 {
-    public class GceDataSource
+    public static class GceDataSource
     {
         public static async Task<IList<GceInstance>> GetInstanceListAsync(string projectId, string oauthToken)
         {
