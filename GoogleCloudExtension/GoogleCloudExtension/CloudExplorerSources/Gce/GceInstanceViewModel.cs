@@ -54,21 +54,28 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private async void OnGetPublishSettings()
         {
-            Debug.WriteLine($"Generating Publishing settings for {_instance.Name}");
-            var credentials = await EnsureWindowsCredentials();
-
-            var profile = _instance.GeneratePublishSettings(credentials);
-            if (profile == null)
+            try
             {
-                GcpOutputWindow.OutputLine($"No .publishsettings could be generated for {_instance.Name}");
-                return;
-            }
+                Debug.WriteLine($"Generating Publishing settings for {_instance.Name}");
+                var credentials = await EnsureWindowsCredentials();
 
-            GcpOutputWindow.OutputLine($"Generated .publishsettings: {profile}");
-            var downloadsPath = GetDownloadsPath();
-            var settingsPath = Path.Combine(downloadsPath, $"{_instance.Name}.publishsettings");
-            File.WriteAllText(settingsPath, profile);
-            GcpOutputWindow.OutputLine($"Publishsettings saved to {settingsPath}");
+                var profile = _instance.GeneratePublishSettings(credentials);
+                if (profile == null)
+                {
+                    GcpOutputWindow.OutputLine($"No .publishsettings could be generated for {_instance.Name}");
+                    return;
+                }
+
+                GcpOutputWindow.OutputLine($"Generated .publishsettings: {profile}");
+                var downloadsPath = GetDownloadsPath();
+                var settingsPath = Path.Combine(downloadsPath, $"{_instance.Name}.publishsettings");
+                File.WriteAllText(settingsPath, profile);
+                GcpOutputWindow.OutputLine($"Publishsettings saved to {settingsPath}");
+            }
+            catch (GCloudException ex)
+            {
+                GcpOutputWindow.OutputLine($"Failed to reset credentials for {_instance.Name}: {ex.Message}");
+            }
         }
 
         private async Task<GceCredentials> EnsureWindowsCredentials()
