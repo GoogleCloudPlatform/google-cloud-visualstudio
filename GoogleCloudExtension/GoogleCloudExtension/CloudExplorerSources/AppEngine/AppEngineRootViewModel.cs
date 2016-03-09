@@ -75,7 +75,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
         {
             if (!GCloudWrapper.Instance.ValidateGCloudInstallation())
             {
-                Debug.WriteLine("Cannot find GCloud, disabling the AppEngine tool window.");
+                Debug.WriteLine("Cannot find GCloud.");
                 Children.Clear();
                 Children.Add(s_noGcloudPlaceholder);
                 return;
