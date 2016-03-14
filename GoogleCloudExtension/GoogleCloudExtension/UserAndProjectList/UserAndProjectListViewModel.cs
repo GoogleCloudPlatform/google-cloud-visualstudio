@@ -119,12 +119,6 @@ namespace GoogleCloudExtension.UserAndProjectList
         /// </summary>
         public async void LoadAccountsAsync()
         {
-            if (!GCloudWrapper.Instance.ValidateGCloudInstallation())
-            {
-                ActivityLogUtils.LogInfo("GCloud is not installed, disabling the User and Project tool window.");
-                return;
-            }
-
             try
             {
                 this.LoadingAccounts = true;
