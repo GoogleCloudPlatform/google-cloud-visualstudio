@@ -19,15 +19,8 @@
     </UserControl.Resources>
     
     <Grid>
-        <!-- This layer shows the message when GCloud is not installed. -->
-        <StackPanel VerticalAlignment="Center"
-                    Visibility="{Binding IsGCloudNotInstalled, Converter={StaticResource visibilityConverter}}">
-            <TextBlock HorizontalAlignment="Center" Text="Please install gcloud..." />
-        </StackPanel>
-                
         <!-- This layer shows the AppEngine apps data. -->
-        <StackPanel Background="{DynamicResource VsBrush.Window}"
-                    Visibility="{Binding IsGCloudInstalled, Converter={StaticResource visibilityConverter}}">
+        <StackPanel Background="{DynamicResource VsBrush.Window}">
             <ListBox Height="212"
                      Margin="10,10,10,0"
                      SelectedItem="{Binding CurrentApp, Mode=TwoWay}"

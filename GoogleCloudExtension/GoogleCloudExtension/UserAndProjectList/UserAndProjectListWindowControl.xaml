@@ -27,15 +27,8 @@
     </UserControl.Resources>
 
     <Grid>
-        <!-- This layer shows the message when GCloud is not installed. -->
-        <StackPanel VerticalAlignment="Center"
-                    Visibility="{Binding IsGCloudNotInstalled, Converter={StaticResource visibilityConverter}}">
-            <TextBlock HorizontalAlignment="Center" Text="Please install gcloud..." />
-        </StackPanel>
-        
         <!-- This layer shows the list of accounts and projects per account. -->
-        <StackPanel Orientation="Vertical"
-                    Visibility="{Binding IsGCloudInstalled, Converter={StaticResource visibilityConverter}}">
+        <StackPanel Orientation="Vertical">
             <!-- The list of accounts is the master, controls what projects are to be shown. -->
             <TextBlock HorizontalAlignment="Left"
                        Margin="10,0"

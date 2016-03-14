@@ -133,12 +133,6 @@ namespace GoogleCloudExtension.AppEngineApps
         /// </summary>
         public async void LoadAppEngineAppListAsync()
         {
-            if (!GCloudWrapper.Instance.ValidateGCloudInstallation())
-            {
-                ActivityLogUtils.LogInfo("Cannot find GCloud, disabling the AppEngine tool window.");
-                return;
-            }
-
             try
             {
                 this.LoadingMessage = "Loading AppEngine app list...";

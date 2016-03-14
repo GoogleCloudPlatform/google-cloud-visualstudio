@@ -2,6 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.ErrorDialogs;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -84,8 +85,17 @@ namespace GoogleCloudExtension.AppEngineApps
             ExtensionAnalytics.ReportCommand(
                 ShowAppEngineAppsToolWindowCommand,
                 CommandInvocationSource.ToolsMenu,
-                () =>
+                async () =>
                 {
+                    var validationResult = await EnvironmentUtils.ValidateGCloudInstallationAsync();
+                    if (!validationResult.IsValidGCloudInstallation)
+                    {
+                        ActivityLogUtils.LogInfo("Cannot find GCloud, disabling the AppEngine tool window.");
+                        var errorDialog = new ValidationErrorDialogWindow(gcloudValidationResult: validationResult);
+                        errorDialog.ShowDialog();
+                        return;
+                    }
+
                     // Get the instance number 0 of this tool window. This window is single instance so this instance
                     // is actually the only one.
                     // The last flag is set to true so that if the tool window does not exists it will be created.
@@ -93,12 +103,6 @@ namespace GoogleCloudExtension.AppEngineApps
                     if (window?.Frame == null)
                     {
                         throw new NotSupportedException("Cannot create tool window");
-                    }
-
-                    // Validate the environment, possibly show an error if not valid.
-                    if (!CommandUtils.ValidateEnvironment())
-                    {
-                        return;
                     }
 
                     IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
