@@ -45,7 +45,7 @@ namespace GoogleCloudExtension.ErrorDialogs
             _gcloudValidationResult = gcloudValidationResult;
             _dnxValidationResult = dnxValidationResult;
             var missingComponentsList = String.Join(" ", _gcloudValidationResult?.MissingComponents?.Select(x => x.Id) ?? Enumerable.Empty<string>());
-            InstallComponentsCommandLine = $"gcloud components update {missingComponentsList}";
+            InstallComponentsCommandLine = $"gcloud components install {missingComponentsList}";
             OnOkCommand = new WeakCommand(() => _owner.Close());
         }
     }
