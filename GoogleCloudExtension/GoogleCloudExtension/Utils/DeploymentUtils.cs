@@ -3,6 +3,7 @@
 
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.DeploymentDialog;
+using GoogleCloudExtension.ErrorDialogs;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Dnx;
 using GoogleCloudExtension.Projects;
@@ -23,21 +24,20 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="startupProject"></param>
         /// <param name="serviceProvider"></param>
-        public static void StartProjectDeployment(Project startupProject, IServiceProvider serviceProvider)
+        public static async void StartProjectDeployment(Project startupProject, IServiceProvider serviceProvider)
         {
             ActivityLogUtils.LogInfo($"Starting the deployment process for project {startupProject.Name}.");
 
-            // Validate the environment before attempting to start the deployment process.
-            if (!CommandUtils.ValidateEnvironment())
+            // Validate the full environment.
+            var gcloudValidateResult = await EnvironmentUtils.ValidateGCloudInstallation();
+            var dnxValidateResult = EnvironmentUtils.ValidateDnxInstallation();
+            if (!gcloudValidateResult.IsValidGCloudInstallation() || !dnxValidateResult.IsValidDnxInstallation())
             {
                 ActivityLogUtils.LogError("Deployment invoked when the environment is not valid.");
-                VsShellUtilities.ShowMessageBox(
-                    serviceProvider,
-                    "Please ensure that the Google Cloud SDK is installed and available in the path and that the preview, app and alpha components are installed.",
-                    "The Google Cloud SDK command-line tool (gcloud) could not be found",
-                    OLEMSGICON.OLEMSGICON_CRITICAL,
-                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                var errorDialog = new ValidationErrorDialogWindow(
+                    gcloudValidationResult: gcloudValidateResult,
+                    dnxValidationResult: dnxValidateResult);
+                errorDialog.ShowDialog();
                 return;
             }
 
