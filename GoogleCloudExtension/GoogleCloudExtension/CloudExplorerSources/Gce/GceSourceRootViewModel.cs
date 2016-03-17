@@ -75,9 +75,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private async void LoadInstances()
         {
-            _loading = true;
             try
             {
+                _loading = true;
+
                 var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallation();
                 if (!gcloudValidationResult.IsValidGCloudInstallation())
                 {
@@ -91,6 +92,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     _loaded = true;
                     PresentZoneViewModels();
                 }
+            }
+            catch (DataSourceException ex)
+            {
+                GcpOutputWindow.OutputLine("Failed to load the list of Gce instances.");
+                GcpOutputWindow.OutputLine(ex.Message);
+                GcpOutputWindow.Activate();
+
+                Children.Clear();
+                Children.Add(s_errorPlaceholder);
             }
             finally
             {

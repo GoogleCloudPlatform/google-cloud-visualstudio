@@ -40,8 +40,8 @@ namespace GoogleCloudExtension.DataSources
             catch (WebException ex)
             {
                 Debug.WriteLine($"Request failed: {ex.Message}");
+                throw new DataSourceException(ex.Message);
             }
-            return null;
         }
 
         public static async Task<IList<GaeVersion>> GetServiceVersionsAsync(string name, string oauthToken)

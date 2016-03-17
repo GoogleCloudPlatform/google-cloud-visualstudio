@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 
             if (!_loaded && newValue)
             {
-                LoadAppEngineAppListAsync();
+                LoadAppEngineAppList();
             }
         }
 
@@ -67,7 +67,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
         /// Loads the list of app engine apps, changing the state of the properties
         /// as the process advances.
         /// </summary>
-        internal async void LoadAppEngineAppListAsync()
+        internal async void LoadAppEngineAppList()
         {
             try
             {
@@ -104,7 +104,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 
                 _loaded = true;
             }
-            catch (GCloudException ex)
+            catch (DataSourceException ex)
             {
                 GcpOutputWindow.OutputLine("Failed to load the list of AppEngine apps.");
                 GcpOutputWindow.OutputLine(ex.Message);
@@ -142,7 +142,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             }
 
             ResetChildren();
-            LoadAppEngineAppListAsync();
+            LoadAppEngineAppList();
         }
 
         private void ResetChildren()

@@ -94,6 +94,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
                 _loaded = true;
             }
+            catch (DataSourceException ex)
+            {
+                GcpOutputWindow.OutputLine("Failed to load the list of GCS buckets.");
+                GcpOutputWindow.OutputLine(ex.Message);
+                GcpOutputWindow.Activate();
+
+                Children.Clear();
+                Children.Add(s_errorPlaceholder);
+            }
             finally
             {
                 _loading = false;
