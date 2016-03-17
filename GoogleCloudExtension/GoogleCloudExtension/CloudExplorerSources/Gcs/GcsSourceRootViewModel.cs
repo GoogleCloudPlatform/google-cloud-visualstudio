@@ -2,6 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.CloudExplorerSources.Utils;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
@@ -31,11 +32,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
         {
             Content = "Failed to list buckets.",
-            IsError = true
-        };
-        private static readonly TreeLeaf s_noGcloudPlaceholder = new TreeLeaf
-        {
-            Content = "Please install the Google Cloud SDK.",
             IsError = true
         };
 
@@ -72,7 +68,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
                 if (!gcloudValidationResult.IsValidGCloudInstallation())
                 {
                     Children.Clear();
-                    Children.Add(s_noGcloudPlaceholder);
+                    Children.Add(CommonUtils.GetErrorItem(gcloudValidationResult));
                 }
                 else
                 {

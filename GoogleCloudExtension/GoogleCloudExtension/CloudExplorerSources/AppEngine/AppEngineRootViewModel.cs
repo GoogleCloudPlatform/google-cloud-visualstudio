@@ -2,6 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.CloudExplorerSources.Utils;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.GCloud;
@@ -26,11 +27,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
         {
             Content = "Loading modules...",
             IsLoading = true
-        };
-        private static readonly TreeLeaf s_noGcloudPlaceholder = new TreeLeaf
-        {
-            Content = "Please install the Google Cloud SDK.",
-            IsError = true
         };
         private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
         {
@@ -81,7 +77,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                 if (!gcloudValidationResult.IsValidGCloudInstallation())
                 {
                     Children.Clear();
-                    Children.Add(s_noGcloudPlaceholder);
+                    Children.Add(CommonUtils.GetErrorItem(gcloudValidationResult));
                 }
                 else
                 {

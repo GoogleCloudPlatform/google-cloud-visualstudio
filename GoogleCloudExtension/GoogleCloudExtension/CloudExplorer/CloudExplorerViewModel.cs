@@ -98,16 +98,9 @@ namespace GoogleCloudExtension.CloudExplorer
             }
             else
             {
-                if (!gcloudValidationResult.IsGCloudInstalled)
-                {
-                    ValidationErrorMessage = "Please install gcloud SDK";
-                    ValidationErrorActionCommand = new WeakCommand(OnInstallGCloudCommand);
-                }
-                else
-                {
-                    ValidationErrorMessage = "Please install the missing gcloud components.";
-                    ValidationErrorActionCommand = new WeakCommand(OnInstallGCloudComponentsCommand);
-                }
+                ValidationErrorMessage = gcloudValidationResult.GetDisplayString();
+                ValidationErrorActionCommand = gcloudValidationResult.IsGCloudInstalled ?
+                    new WeakCommand(OnInstallGCloudComponentsCommand) : new WeakCommand(OnInstallGCloudCommand);
                 ValidationErrorIsVisible = true;
             }
         }

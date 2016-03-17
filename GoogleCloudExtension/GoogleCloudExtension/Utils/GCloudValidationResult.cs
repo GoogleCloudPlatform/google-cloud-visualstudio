@@ -38,6 +38,18 @@ namespace GoogleCloudExtension.Utils
         /// <returns>True if the installation is fine, false otherwise.</returns>
         public bool IsValidGCloudInstallation() => IsGCloudInstalled && MissingComponents.Count == 0;
 
+        public string GetDisplayString()
+        {
+            if (!IsGCloudInstalled)
+            {
+                return "Please install GCloud SDK.";
+            }
+            else
+            {
+                return "Please install the missing gcloud components.";
+            }
+        }
+
         /// <summary>
         /// Returns a string representation of the result.
         /// </summary>
