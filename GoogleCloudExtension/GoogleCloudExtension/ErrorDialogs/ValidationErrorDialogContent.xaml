@@ -35,7 +35,7 @@
                        Visibility="{Binding ShowMissingGCloud, Converter={StaticResource visibilityConverter}}" />
 
             <!-- Show the missing gcloud components -->
-            <StackPanel Visibility="{Binding HasMissingComponents, Converter={StaticResource visibilityConverter}}">
+            <StackPanel Visibility="{Binding ShowMissingComponents, Converter={StaticResource visibilityConverter}}">
                 <TextBlock Text="There are some Google Cloud SDK components that need to be installed, please install them invoking the following command from an elevated command prompt and restart Visual Studio."
                            Style="{StaticResource captionStyle}"/>
                 <TextBox Text="{Binding InstallComponentsCommandLine, Mode=OneWay}" IsReadOnly="True"  Margin="10"/>

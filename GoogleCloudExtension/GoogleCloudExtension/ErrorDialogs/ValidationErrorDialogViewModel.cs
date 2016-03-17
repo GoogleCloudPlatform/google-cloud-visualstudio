@@ -20,10 +20,10 @@ namespace GoogleCloudExtension.ErrorDialogs
         /// <summary>
         /// Whether there are missing components to display.
         /// </summary>
-        public bool HasMissingComponents => (_gcloudValidationResult?.MissingComponents.Count ?? 0) != 0;
+        public bool ShowMissingComponents => (_gcloudValidationResult?.MissingComponents.Count ?? 0) != 0;
 
         // Whether to show the error message about missing the gcloud SDK.
-        public bool ShowMissingGCloud => !(_gcloudValidationResult?.IsValidGCloudInstallation() ?? true);
+        public bool ShowMissingGCloud => !(_gcloudValidationResult?.IsGCloudInstalled ?? true);
 
         // Whether to show the error message about missing the DNX runtime.
         public bool ShowMissingDnxRuntime => !(_dnxValidationResult?.IsValidDnxInstallation() ?? true);
