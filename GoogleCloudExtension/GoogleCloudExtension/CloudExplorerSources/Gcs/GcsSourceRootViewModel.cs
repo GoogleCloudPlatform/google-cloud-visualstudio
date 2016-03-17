@@ -33,6 +33,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             Content = "Failed to list buckets.",
             IsError = true
         };
+        private static readonly TreeLeaf s_noGcloudPlaceholder = new TreeLeaf
+        {
+            Content = "Please install the Google Cloud SDK.",
+            IsError = true
+        };
 
         private bool _loaded = false;
         private bool _loading = false;
@@ -62,24 +67,35 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             try
             {
                 _loading = true;
-                Debug.WriteLine("Loading list of buckets.");
-                var buckets = await LoadBucketList();
-                Children.Clear();
-                if (buckets == null)
+
+                var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallation();
+                if (!gcloudValidationResult.IsValidGCloudInstallation())
                 {
-                    Children.Add(s_errorPlaceholder);
+                    Children.Clear();
+                    Children.Add(s_noGcloudPlaceholder);
                 }
                 else
                 {
-                    foreach (var item in buckets)
+                    Debug.WriteLine("Loading list of buckets.");
+                    var buckets = await LoadBucketList();
+                    Children.Clear();
+                    if (buckets == null)
                     {
-                        Children.Add(item);
+                        Children.Add(s_errorPlaceholder);
                     }
-                    if (Children.Count == 0)
+                    else
                     {
-                        Children.Add(s_noItemsPlacehoder);
+                        foreach (var item in buckets)
+                        {
+                            Children.Add(item);
+                        }
+                        if (Children.Count == 0)
+                        {
+                            Children.Add(s_noItemsPlacehoder);
+                        }
                     }
                 }
+
                 _loaded = true;
             }
             finally

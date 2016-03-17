@@ -19,6 +19,7 @@
         <utils:VisibilityConverter x:Key="iconVisibilityConverter" />
         <utils:VisibilityConverter x:Key="errorVisibilityConverter" />
         <utils:VisibilityConverter x:Key="progressVisibilityConverted" />
+        <utils:VisibilityConverter x:Key="booleanPropertyConverter" />
 
         <utils:LoggingConverter x:Key="loggingConverter" Prefix="ErrorImage" />
 
@@ -65,6 +66,12 @@
         <Style x:Key="CommandBarStyle" TargetType="{x:Type StackPanel}">
             <Setter Property="Orientation" Value="Horizontal" />
             <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarGradientKey}}" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+        </Style>
+
+        <Style x:Key="ErrorBarStyle" TargetType="{x:Type StackPanel}">
+            <Setter Property="Orientation" Value="Horizontal" />
+            <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.InfoBackgroundKey}}" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
         </Style>
 
@@ -146,8 +153,19 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
+        <!-- Error banner -->
+        <StackPanel Visibility="{Binding ValidationErrorIsVisible, Converter={StaticResource booleanPropertyConverter}}"
+                    Style="{StaticResource ErrorBarStyle}">
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0">
+                <Hyperlink Command="{Binding ValidationErrorActionCommand}">
+                    <TextBlock Text="{Binding ValidationErrorMessage}" />
+                </Hyperlink>
+            </TextBlock>
+        </StackPanel>
+
         <!-- Action buttons. -->
-        <ItemsControl ItemsSource="{Binding Buttons}">
+        <ItemsControl ItemsSource="{Binding Buttons}"
+                      Visibility="{Binding IsValidInstallation, Converter={StaticResource booleanPropertyConverter}}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Style="{StaticResource CommandBarStyle}" />
@@ -160,6 +178,7 @@
                             VerticalAlignment="Center"
                             ToolTip="{Binding ToolTip}"
                             IsChecked="{Binding IsChecked}"
+                            IsEnabled="{Binding IsEnabled}"
                             Style="{StaticResource CommandBarButtonStyle}" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

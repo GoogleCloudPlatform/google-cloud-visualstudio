@@ -73,36 +73,37 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
         /// </summary>
         internal async void LoadAppEngineAppListAsync()
         {
-            if (!GCloudWrapper.Instance.ValidateGCloudInstallation())
-            {
-                Debug.WriteLine("Cannot find GCloud.");
-                Children.Clear();
-                Children.Add(s_noGcloudPlaceholder);
-                return;
-            }
-
             try
             {
                 _loading = true;
 
-                var credentials = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
-                var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
-
-                var services = await GaeDataSource.GetServicesAsync(credentials.ProjectId, oauthToken);
-                var servicesVersions = new List<Tuple<GaeService, IList<GaeVersion>>>();
-                foreach (var s in services)
+                var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallation();
+                if (!gcloudValidationResult.IsValidGCloudInstallation())
                 {
-                    var versions = await GaeDataSource.GetServiceVersionsAsync(s.Name, oauthToken);
-                    var serviceVersion = new Tuple<GaeService, IList<GaeVersion>>(s, versions);
-                    servicesVersions.Add(serviceVersion);
+                    Children.Clear();
+                    Children.Add(s_noGcloudPlaceholder);
                 }
-
-                var nodes = servicesVersions.OrderBy(x => x.Item1.Id).Select(MakeModuleHierarchy);
-
-                Children.Clear();
-                foreach (var node in nodes)
+                else
                 {
-                    Children.Add(node);
+                    var credentials = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
+                    var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
+
+                    var services = await GaeDataSource.GetServicesAsync(credentials.ProjectId, oauthToken);
+                    var servicesVersions = new List<Tuple<GaeService, IList<GaeVersion>>>();
+                    foreach (var s in services)
+                    {
+                        var versions = await GaeDataSource.GetServiceVersionsAsync(s.Name, oauthToken);
+                        var serviceVersion = new Tuple<GaeService, IList<GaeVersion>>(s, versions);
+                        servicesVersions.Add(serviceVersion);
+                    }
+
+                    var nodes = servicesVersions.OrderBy(x => x.Item1.Id).Select(MakeModuleHierarchy);
+
+                    Children.Clear();
+                    foreach (var node in nodes)
+                    {
+                        Children.Add(node);
+                    }
                 }
 
                 _loaded = true;

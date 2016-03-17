@@ -30,6 +30,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             IsError = true
         };
         private static readonly TreeLeaf s_noZonesPlaceholder = new TreeLeaf { Content = "No zones" };
+        private static readonly TreeLeaf s_noGcloudPlaceholder = new TreeLeaf
+        {
+            Content = "Please install the Google Cloud SDK.",
+            IsError = true
+        };
 
         private bool _loading = false;
         private bool _loaded = false;
@@ -77,9 +82,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             _loading = true;
             try
             {
-                _instances = await LoadGceInstances();
-                _loaded = true;
-                PresentZoneViewModels();
+                var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallation();
+                if (!gcloudValidationResult.IsValidGCloudInstallation())
+                {
+                    Children.Clear();
+                    Children.Add(s_noGcloudPlaceholder);
+                    _loaded = true;
+                }
+                else
+                {
+                    _instances = await LoadGceInstances();
+                    _loaded = true;
+                    PresentZoneViewModels();
+                }
             }
             finally
             {
