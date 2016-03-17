@@ -15,7 +15,7 @@ using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 {
-    internal class GcsSourceRootViewModel : TreeHierarchy
+    internal class GcsSourceRootViewModel : SourceRootViewModelBase
     {
         private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/storage.png";
         private static readonly Lazy<ImageSource> s_storageIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
@@ -35,35 +35,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             IsError = true
         };
 
-        private bool _loaded = false;
-        private bool _loading = false;
+        public override ImageSource RootIcon => s_storageIcon.Value;
 
-        public GcsSourceRootViewModel()
-        {
-            Content = "Google Cloud Storage";
-            Icon = s_storageIcon.Value;
-            IsExpanded = false;
-            Children.Add(s_loadingPlaceholder);
-        }
+        public override string RootCaption => "Google Cloud Storage";
 
-        protected override async void OnIsExpandedChanged(bool newValue)
-        {
-            if (_loading)
-            {
-                return;
-            }
-            if (newValue && !_loaded)
-            {
-                await LoadBuckets();
-            }
-        }
+        public override TreeLeaf ErrorPlaceholder => s_errorPlaceholder;
 
-        private async Task LoadBuckets()
+        public override TreeLeaf LoadingPlaceholder => s_loadingPlaceholder;
+
+        public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
+
+        protected override async Task LoadDataOverride()
         {
             try
             {
-                _loading = true;
-
                 var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallation();
                 if (!gcloudValidationResult.IsValidGCloudInstallation())
                 {
@@ -91,8 +76,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
                         }
                     }
                 }
-
-                _loaded = true;
             }
             catch (DataSourceException ex)
             {
@@ -100,12 +83,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
                 GcpOutputWindow.OutputLine(ex.Message);
                 GcpOutputWindow.Activate();
 
-                Children.Clear();
-                Children.Add(s_errorPlaceholder);
-            }
-            finally
-            {
-                _loading = false;
+                throw new CloudExplorerSourceException(ex.Message, ex);
             }
         }
 
@@ -115,24 +93,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
             var buckets = await GcsDataSource.GetBucketListAsync(currentCredentials.ProjectId, oauthToken);
             return buckets?.Select(x => new BucketViewModel(x)).ToList();
-        }
-
-        internal async Task Refresh()
-        {
-            if (!_loaded)
-            {
-                return;
-            }
-
-            _loaded = false;
-            ResetChildren();
-            await LoadBuckets();
-        }
-
-        private void ResetChildren()
-        {
-            Children.Clear();
-            Children.Add(s_loadingPlaceholder);
         }
     }
 }
