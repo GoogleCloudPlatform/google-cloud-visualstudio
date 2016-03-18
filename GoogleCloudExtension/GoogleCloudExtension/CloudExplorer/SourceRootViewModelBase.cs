@@ -1,4 +1,5 @@
 ﻿using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace GoogleCloudExtension.CloudExplorerSources.Utils
+namespace GoogleCloudExtension.CloudExplorer
 {
     public abstract class SourceRootViewModelBase: TreeHierarchy
     {
@@ -85,5 +86,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Utils
                 IsLoadedState = true;
             }
         }
+
+        public static TreeLeaf GetErrorItem(GCloudValidationResult gcloudValidationResult)
+        {
+            return new TreeLeaf
+            {
+                IsError = true,
+                Content = gcloudValidationResult.GetDisplayString(),
+            };
+        }
     }
 }
+

@@ -2,7 +2,6 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.CloudExplorerSources.Utils;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.GCloud;
@@ -73,7 +72,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 if (!gcloudValidationResult.IsValidGCloudInstallation())
                 {
                     Children.Clear();
-                    Children.Add(CommonUtils.GetErrorItem(gcloudValidationResult));
+                    Children.Add(GetErrorItem(gcloudValidationResult));
                     return;
                 }
 

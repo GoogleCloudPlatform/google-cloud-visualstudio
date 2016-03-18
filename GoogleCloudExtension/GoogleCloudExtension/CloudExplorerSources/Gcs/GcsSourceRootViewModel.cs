@@ -2,7 +2,6 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.CloudExplorerSources.Utils;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
@@ -53,27 +52,26 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
                 if (!gcloudValidationResult.IsValidGCloudInstallation())
                 {
                     Children.Clear();
-                    Children.Add(CommonUtils.GetErrorItem(gcloudValidationResult));
+                    Children.Add(GetErrorItem(gcloudValidationResult));
+                    return;
+                }
+
+                Debug.WriteLine("Loading list of buckets.");
+                var buckets = await LoadBucketList();
+                Children.Clear();
+                if (buckets == null)
+                {
+                    Children.Add(s_errorPlaceholder);
                 }
                 else
                 {
-                    Debug.WriteLine("Loading list of buckets.");
-                    var buckets = await LoadBucketList();
-                    Children.Clear();
-                    if (buckets == null)
+                    foreach (var item in buckets)
                     {
-                        Children.Add(s_errorPlaceholder);
+                        Children.Add(item);
                     }
-                    else
+                    if (Children.Count == 0)
                     {
-                        foreach (var item in buckets)
-                        {
-                            Children.Add(item);
-                        }
-                        if (Children.Count == 0)
-                        {
-                            Children.Add(s_noItemsPlacehoder);
-                        }
+                        Children.Add(s_noItemsPlacehoder);
                     }
                 }
             }

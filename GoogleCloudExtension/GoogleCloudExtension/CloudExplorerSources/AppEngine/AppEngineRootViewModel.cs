@@ -2,7 +2,6 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.CloudExplorerSources.Utils;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.GCloud;
@@ -61,29 +60,28 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                 if (!gcloudValidationResult.IsValidGCloudInstallation())
                 {
                     Children.Clear();
-                    Children.Add(CommonUtils.GetErrorItem(gcloudValidationResult));
+                    Children.Add(GetErrorItem(gcloudValidationResult));
+                    return;
                 }
-                else
+
+                var credentials = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
+                var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
+
+                var services = await GaeDataSource.GetServicesAsync(credentials.ProjectId, oauthToken);
+                var servicesVersions = new List<Tuple<GaeService, IList<GaeVersion>>>();
+                foreach (var s in services)
                 {
-                    var credentials = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
-                    var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
+                    var versions = await GaeDataSource.GetServiceVersionsAsync(s.Name, oauthToken);
+                    var serviceVersion = new Tuple<GaeService, IList<GaeVersion>>(s, versions);
+                    servicesVersions.Add(serviceVersion);
+                }
 
-                    var services = await GaeDataSource.GetServicesAsync(credentials.ProjectId, oauthToken);
-                    var servicesVersions = new List<Tuple<GaeService, IList<GaeVersion>>>();
-                    foreach (var s in services)
-                    {
-                        var versions = await GaeDataSource.GetServiceVersionsAsync(s.Name, oauthToken);
-                        var serviceVersion = new Tuple<GaeService, IList<GaeVersion>>(s, versions);
-                        servicesVersions.Add(serviceVersion);
-                    }
+                var nodes = servicesVersions.OrderBy(x => x.Item1.Id).Select(MakeModuleHierarchy);
 
-                    var nodes = servicesVersions.OrderBy(x => x.Item1.Id).Select(MakeModuleHierarchy);
-
-                    Children.Clear();
-                    foreach (var node in nodes)
-                    {
-                        Children.Add(node);
-                    }
+                Children.Clear();
+                foreach (var node in nodes)
+                {
+                    Children.Add(node);
                 }
             }
             catch (DataSourceException ex)

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace GoogleCloudExtension.CloudExplorerSources.Utils
+namespace GoogleCloudExtension.CloudExplorer
 {
     [Serializable]
     internal class CloudExplorerSourceException : Exception

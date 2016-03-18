@@ -65,9 +65,8 @@
     <Compile Include="CloudExplorerSources\Gcs\BucketViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gcs\GcsSource.cs" />
     <Compile Include="CloudExplorerSources\Gcs\GcsSourceRootViewModel.cs" />
-    <Compile Include="CloudExplorerSources\Utils\CloudExplorerSourceException.cs" />
-    <Compile Include="CloudExplorerSources\Utils\CommonUtils.cs" />
-    <Compile Include="CloudExplorerSources\Utils\SourceRootViewModelBase.cs" />
+    <Compile Include="CloudExplorer\CloudExplorerSourceException.cs" />
+    <Compile Include="CloudExplorer\SourceRootViewModelBase.cs" />
     <Compile Include="CloudExplorer\ButtonDefinition.cs" />
     <Compile Include="CloudExplorer\CloudExplorerSourceBase.cs" />
     <Compile Include="CloudExplorer\CloudExplorerViewModel.cs" />
