@@ -15,7 +15,7 @@ using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
-    internal class GceSourceRootViewModel : TreeHierarchy
+    internal class GceSourceRootViewModel : SourceRootViewModelBase
     {
         private const string IconResourcePath = "CloudExplorerSources/Gce/Resources/gce_logo.png";
 
@@ -36,10 +36,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         };
         private static readonly TreeLeaf s_noZonesPlaceholder = new TreeLeaf { Content = "No zones" };
 
-        private bool _loading = false;
-        private bool _loaded = false;
         private bool _showOnlyWindowsInstances = false;
         private IList<GceInstance> _instances;
+
+        public override TreeLeaf ErrorPlaceholder => s_errorPlaceholder;
+
+        public override TreeLeaf LoadingPlaceholder => s_loadingPlaceholder;
+
+        public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
+
+        public override string RootCaption => "Google Compute Engine";
+
+        public override ImageSource RootIcon => s_gceIcon.Value;
+
 
         public bool ShowOnlyWindowsInstances
         {
@@ -56,46 +65,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
         }
 
-        public GceSourceRootViewModel()
-        {
-            Content = "Google Compute Engine";
-            IsExpanded = false;
-            Icon = s_gceIcon.Value;
-            Children.Add(s_loadingPlaceholder);
-        }
-
-        protected override void OnIsExpandedChanged(bool newValue)
-        {
-            if (_loading)
-            {
-                return;
-            }
-
-            if (newValue && !_loaded)
-            {
-                LoadInstances();
-            }
-        }
-
-        private async void LoadInstances()
+        protected override async Task LoadDataOverride()
         {
             try
             {
-                _loading = true;
-
                 var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallation();
                 if (!gcloudValidationResult.IsValidGCloudInstallation())
                 {
                     Children.Clear();
                     Children.Add(CommonUtils.GetErrorItem(gcloudValidationResult));
-                    _loaded = true;
+                    return;
                 }
-                else
-                {
-                    _instances = await LoadGceInstances();
-                    _loaded = true;
-                    PresentZoneViewModels();
-                }
+
+                _instances = await LoadGceInstances();
+                PresentZoneViewModels();
             }
             catch (DataSourceException ex)
             {
@@ -103,38 +86,26 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 GcpOutputWindow.OutputLine(ex.Message);
                 GcpOutputWindow.Activate();
 
-                Children.Clear();
-                Children.Add(s_errorPlaceholder);
-            }
-            finally
-            {
-                _loading = false;
+                throw new CloudExplorerSourceException(ex.Message, ex);
             }
         }
 
         private void PresentZoneViewModels()
         {
-            if (!_loaded)
+            if (_instances == null)
             {
                 return;
             }
 
             var zones = GetZoneViewModels();
             Children.Clear();
-            if (zones == null)
+            foreach (var zone in zones)
             {
-                Children.Add(s_errorPlaceholder);
+                Children.Add(zone);
             }
-            else
+            if (Children.Count == 0)
             {
-                foreach (var zone in zones)
-                {
-                    Children.Add(zone);
-                }
-                if (Children.Count == 0)
-                {
-                    Children.Add(s_noZonesPlaceholder);
-                }
+                Children.Add(s_noZonesPlaceholder);
             }
         }
 
@@ -151,24 +122,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 .Where(x => !_showOnlyWindowsInstances || x.IsWindowsInstance())
                 .GroupBy(x => x.ZoneName)
                 .Select(x => new ZoneViewModel(x.Key, x)).ToList();
-        }
-
-        internal void Refresh()
-        {
-            if (!_loaded)
-            {
-                return;
-            }
-
-            _loaded = false;
-            ResetChildren();
-            LoadInstances();
-        }
-
-        private void ResetChildren()
-        {
-            Children.Clear();
-            Children.Add(s_loadingPlaceholder);
         }
     }
 }
