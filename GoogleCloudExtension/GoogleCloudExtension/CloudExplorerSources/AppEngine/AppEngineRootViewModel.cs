@@ -12,11 +12,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 {
-    internal class AppEngineRootViewModel : TreeHierarchy
+    internal class AppEngineRootViewModel : SourceRootViewModelBase
     {
         private const string AppEngineIconResourcePath = "CloudExplorerSources/AppEngine/Resources/app_engine.png";
         private const string ModuleIconResourcePath = "CloudExplorerSources/AppEngine/Resources/ic_view_module.png";
@@ -33,46 +34,29 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             Content = "Failed loading AppEngine modules.",
             IsError = true
         };
-
-        private bool _loading;
-        private bool _loaded;
-
-        public AppEngineRootViewModel()
+        private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
         {
-            Content = "AppEngine";
-            Icon = s_appEngineIcon.Value;
-            Children.Add(s_loadingPlaceholder);
+            Content = "No apps found."
+        };
 
-            // Add a weak event handler to receive notifications of the deployment of app engine instances.
-            // We also need to invalidate the list if the account or project changed.
-            var handler = new WeakAction<object, EventArgs>(this.InvalidateAppEngineAppList);
-            ExtensionEvents.AppEngineDeployed += handler.Invoke;
-            GCloudWrapper.Instance.AccountOrProjectChanged += handler.Invoke;
-        }
+        public override ImageSource RootIcon => s_appEngineIcon.Value;
 
-        protected override void OnIsExpandedChanged(bool newValue)
-        {
-            if (_loading)
-            {
-                return;
-            }
+        public override string RootCaption => "AppEngine";
 
-            if (!_loaded && newValue)
-            {
-                LoadAppEngineAppList();
-            }
-        }
+        public override TreeLeaf ErrorPlaceholder => s_errorPlaceholder;
+
+        public override TreeLeaf LoadingPlaceholder => s_loadingPlaceholder;
+
+        public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
 
         /// <summary>
         /// Loads the list of app engine apps, changing the state of the properties
         /// as the process advances.
         /// </summary>
-        internal async void LoadAppEngineAppList()
+        protected override async Task LoadDataOverride()
         {
             try
             {
-                _loading = true;
-
                 var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallation();
                 if (!gcloudValidationResult.IsValidGCloudInstallation())
                 {
@@ -101,8 +85,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                         Children.Add(node);
                     }
                 }
-
-                _loaded = true;
             }
             catch (DataSourceException ex)
             {
@@ -110,12 +92,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                 GcpOutputWindow.OutputLine(ex.Message);
                 GcpOutputWindow.Activate();
 
-                Children.Clear();
-                Children.Add(s_errorPlaceholder);
-            }
-            finally
-            {
-                _loading = false;
+                throw new CloudExplorerSourceException(ex.Message, ex);
             }
         }
 
@@ -127,29 +104,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                            select new VersionViewModel(serviceVersions.Item1.Id, versionsById[v.Key], v.Value);
 
             return new TreeHierarchy(versions) { Content = serviceVersions.Item1.Id, Icon = s_moduleIcon.Value };
-        }
-
-        private void InvalidateAppEngineAppList(object src, EventArgs args)
-        {
-            Refresh();
-        }
-
-        internal void Refresh()
-        {
-            if (!_loaded)
-            {
-                return;
-            }
-
-            ResetChildren();
-            LoadAppEngineAppList();
-        }
-
-        private void ResetChildren()
-        {
-            _loaded = false;
-            Children.Clear();
-            Children.Add(s_loadingPlaceholder);
         }
     }
 }

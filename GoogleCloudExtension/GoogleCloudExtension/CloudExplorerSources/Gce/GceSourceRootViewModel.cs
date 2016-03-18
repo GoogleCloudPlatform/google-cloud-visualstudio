@@ -30,6 +30,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             Content = "Failed to load instances.",
             IsError = true
         };
+        private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
+        {
+            Content = "No instances found."
+        };
         private static readonly TreeLeaf s_noZonesPlaceholder = new TreeLeaf { Content = "No zones" };
 
         private bool _loading = false;

@@ -9,16 +9,10 @@ namespace GoogleCloudExtension.CloudExplorer
 {
     public abstract class CloudExplorerSourceBase : ICloudExplorerSource
     {
-        public virtual TreeHierarchy GetRoot()
-        {
-            throw new NotFiniteNumberException();
-        }
+        public abstract TreeHierarchy GetRoot();
 
         public virtual IEnumerable<ButtonDefinition> GetButtons() => Enumerable.Empty<ButtonDefinition>();
 
-        public virtual void Refresh()
-        {
-            throw new NotImplementedException();
-        }
+        public abstract void Refresh();
     }
 }

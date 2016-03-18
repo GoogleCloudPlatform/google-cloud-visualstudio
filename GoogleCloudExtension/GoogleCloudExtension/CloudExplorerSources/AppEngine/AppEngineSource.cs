@@ -7,9 +7,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 {
     internal class AppEngineSource : CloudExplorerSourceBase
     {
-        private readonly AppEngineRootViewModel _root = new AppEngineRootViewModel();
+        private readonly AppEngineRootViewModel _root;
 
         #region ICloudExplorerSource
+
+        public AppEngineSource()
+        {
+            _root = new AppEngineRootViewModel();
+            _root.Initialize();
+        }
 
         public override TreeHierarchy GetRoot()
         {
