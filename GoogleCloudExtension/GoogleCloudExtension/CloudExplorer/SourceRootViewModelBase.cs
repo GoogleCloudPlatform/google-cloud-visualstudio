@@ -1,9 +1,4 @@
-﻿using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using GoogleCloudExtension.Utils;
 using System.Threading.Tasks;
 using System.Windows.Media;
 

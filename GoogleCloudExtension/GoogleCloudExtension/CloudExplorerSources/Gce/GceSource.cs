@@ -4,7 +4,6 @@
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.Utils;
 using System;
-using System.Collections.Generic;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce

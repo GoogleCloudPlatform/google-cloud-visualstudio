@@ -4,7 +4,6 @@
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;

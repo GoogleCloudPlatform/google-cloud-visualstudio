@@ -2,7 +2,6 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.DataSources.Models;
-using GoogleCloudExtension.GCloud.Models;
 using System;
 using System.ComponentModel;
 
