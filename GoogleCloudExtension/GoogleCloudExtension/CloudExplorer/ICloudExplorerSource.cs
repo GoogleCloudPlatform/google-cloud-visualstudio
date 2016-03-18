@@ -7,9 +7,9 @@ namespace GoogleCloudExtension.CloudExplorer
 {
     public interface ICloudExplorerSource
     {
-        TreeHierarchy GetRoot();
+        TreeHierarchy Root { get; }
 
-        IEnumerable<ButtonDefinition> GetButtons();
+        IEnumerable<ButtonDefinition> Buttons { get; }
 
         void Refresh();
     }

@@ -7,12 +7,28 @@ using System.Linq;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
-    public abstract class CloudExplorerSourceBase : ICloudExplorerSource
+    public abstract class CloudExplorerSourceBase<TRootViewModel> : ICloudExplorerSource where TRootViewModel: SourceRootViewModelBase, new()
     {
-        public abstract TreeHierarchy GetRoot();
+        private readonly TRootViewModel _root;
+        private readonly IList<ButtonDefinition> _buttons = new List<ButtonDefinition>();
 
-        public virtual IEnumerable<ButtonDefinition> GetButtons() => Enumerable.Empty<ButtonDefinition>();
+        public TreeHierarchy Root => _root;
 
-        public abstract void Refresh();
+        public IEnumerable<ButtonDefinition> Buttons => _buttons;
+
+        protected TRootViewModel ActualRoot => _root;
+
+        protected IList<ButtonDefinition> ActualButtons => _buttons;
+
+        public CloudExplorerSourceBase()
+        {
+            _root = new TRootViewModel();
+            _root.Initialize();
+        }
+
+        public void Refresh()
+        {
+            _root.Refresh();
+        }
     }
 }

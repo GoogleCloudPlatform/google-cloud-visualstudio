@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.CloudExplorer
             {
                 foreach (var source in _sources)
                 {
-                    yield return source.GetRoot();
+                    yield return source.Root;
                 }
             }
         }
@@ -82,7 +82,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
             foreach (var source in _sources)
             {
-                var sourceButtons = source.GetButtons();
+                var sourceButtons = source.Buttons;
                 _buttons.AddRange(sourceButtons);
             }
 
