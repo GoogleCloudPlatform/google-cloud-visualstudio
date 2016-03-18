@@ -1,10 +1,13 @@
-﻿using GoogleCloudExtension.Utils;
+﻿// Copyright 2015 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+using GoogleCloudExtension.Utils;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
-    public abstract class SourceRootViewModelBase: TreeHierarchy
+    public abstract class SourceRootViewModelBase : TreeHierarchy
     {
         public bool IsLoadingState { get; private set; }
 

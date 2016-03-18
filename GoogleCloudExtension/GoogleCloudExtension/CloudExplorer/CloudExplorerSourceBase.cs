@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
-    public abstract class CloudExplorerSourceBase<TRootViewModel> : ICloudExplorerSource where TRootViewModel: SourceRootViewModelBase, new()
+    public abstract class CloudExplorerSourceBase<TRootViewModel> : ICloudExplorerSource where TRootViewModel : SourceRootViewModelBase, new()
     {
         private readonly TRootViewModel _root;
         private readonly IList<ButtonDefinition> _buttons = new List<ButtonDefinition>();

@@ -86,7 +86,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 _buttons.AddRange(sourceButtons);
             }
 
-            ValidateAndShowButtons(); 
+            ValidateAndShowButtons();
         }
 
         private async void ValidateAndShowButtons()
