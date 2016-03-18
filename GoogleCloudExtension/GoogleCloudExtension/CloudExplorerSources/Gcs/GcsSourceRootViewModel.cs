@@ -48,14 +48,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         {
             try
             {
-                var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallation();
-                if (!gcloudValidationResult.IsValidGCloudInstallation())
-                {
-                    Children.Clear();
-                    Children.Add(GetErrorItem(gcloudValidationResult));
-                    return;
-                }
-
                 Debug.WriteLine("Loading list of buckets.");
                 var buckets = await LoadBucketList();
                 Children.Clear();

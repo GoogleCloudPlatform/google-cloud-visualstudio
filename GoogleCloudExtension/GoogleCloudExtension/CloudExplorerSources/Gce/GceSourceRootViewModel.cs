@@ -68,14 +68,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             try
             {
-                var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallation();
-                if (!gcloudValidationResult.IsValidGCloudInstallation())
-                {
-                    Children.Clear();
-                    Children.Add(GetErrorItem(gcloudValidationResult));
-                    return;
-                }
-
                 _instances = await LoadGceInstances();
                 PresentZoneViewModels();
             }

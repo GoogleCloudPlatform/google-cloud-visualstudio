@@ -56,14 +56,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
         {
             try
             {
-                var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallation();
-                if (!gcloudValidationResult.IsValidGCloudInstallation())
-                {
-                    Children.Clear();
-                    Children.Add(GetErrorItem(gcloudValidationResult));
-                    return;
-                }
-
                 var credentials = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
                 var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
 

@@ -69,6 +69,15 @@ namespace GoogleCloudExtension.CloudExplorer
                 IsLoadingState = true;
                 Children.Clear();
                 Children.Add(LoadingPlaceholder);
+
+                var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallation();
+                if (!gcloudValidationResult.IsValidGCloudInstallation())
+                {
+                    Children.Clear();
+                    Children.Add(GetErrorItem(gcloudValidationResult));
+                    return;
+                }
+
                 await LoadDataOverride();
                 if (Children.Count == 0)
                 {
@@ -87,7 +96,7 @@ namespace GoogleCloudExtension.CloudExplorer
             }
         }
 
-        public static TreeLeaf GetErrorItem(GCloudValidationResult gcloudValidationResult)
+        private static TreeLeaf GetErrorItem(GCloudValidationResult gcloudValidationResult)
         {
             return new TreeLeaf
             {
