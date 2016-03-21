@@ -11,8 +11,18 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
 {
+    /// <summary>
+    /// Data source that returns information about GCE instances. Calls the GCE API according 
+    /// to https://cloud.google.com/compute/docs/reference/latest/.
+    /// </summary>
     public static class GceDataSource
     {
+        /// <summary>
+        /// Returns the list of instances for the given <paramref name="projectId"/>.
+        /// </summary>
+        /// <param name="projectId">The project id that contains the instances.</param>
+        /// <param name="oauthToken">The oauth token to use to authenticate the call.</param>
+        /// <returns></returns>
         public static async Task<IList<GceInstance>> GetInstanceListAsync(string projectId, string oauthToken)
         {
             try
@@ -45,6 +55,14 @@ namespace GoogleCloudExtension.DataSources
             return null;
         }
 
+        /// <summary>
+        /// Returns information about the given instance.
+        /// </summary>
+        /// <param name="projectId">The project id that contains the instance.</param>
+        /// <param name="zoneName">The zone in which the instance lives.</param>
+        /// <param name="name">The name of the instance,</param>
+        /// <param name="oauthToken">The oauth token to use to authenticate the call.</param>
+        /// <returns></returns>
         public static async Task<GceInstance> GetInstance(string projectId, string zoneName, string name, string oauthToken)
         {
             var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zoneName}/instances/{name}";
@@ -56,6 +74,12 @@ namespace GoogleCloudExtension.DataSources
             return result;
         }
 
+        /// <summary>
+        /// Given an instance already fetched, reload it's data and return a new instance with the fresh data.
+        /// </summary>
+        /// <param name="instance">The instance to refresh.</param>
+        /// <param name="oauthToken">The oauth token to use to authenticate the call.</param>
+        /// <returns></returns>
         public static Task<GceInstance> RefreshInstance(GceInstance instance, string oauthToken)
         {
             return GetInstance(projectId: instance.ProjectId, zoneName: instance.ZoneName, name: instance.Name, oauthToken: oauthToken);

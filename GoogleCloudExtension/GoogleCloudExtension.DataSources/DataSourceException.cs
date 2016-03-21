@@ -6,22 +6,12 @@ using System.Runtime.Serialization;
 
 namespace GoogleCloudExtension.DataSources
 {
-    [Serializable]
+    /// <summary>
+    /// Exception to be thrown from the data sources in this project.
+    /// </summary>
     public class DataSourceException : Exception
     {
-        public DataSourceException()
-        {
-        }
-
         public DataSourceException(string message) : base(message)
-        {
-        }
-
-        public DataSourceException(string message, Exception innerException) : base(message, innerException)
-        {
-        }
-
-        protected DataSourceException(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
     }

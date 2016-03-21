@@ -42,7 +42,7 @@ namespace AspnetTool.Commands
                 return -1;
             }
 
-            var publishSettings = instance.GeneratePublishSettings();
+            var publishSettings = instance.GeneratePublishSettings(null);
             if (String.IsNullOrEmpty(_options.Output))
             {
                 Console.WriteLine(publishSettings);

@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         [Category(Category)]
         [Description("The interna IP address of the instance")]
-        public string IpAddress => _instance.GetIpAddress();
+        public string IpAddress => _instance.GetInternalIpAddress();
 
         [Category(Category)]
         [Description("The public IP address of the instance")]
