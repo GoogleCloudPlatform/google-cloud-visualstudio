@@ -1,4 +1,4 @@
-﻿// Copyright 2015 Google Inc. All Rights Reserved.
+﻿// Copyright 2016 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
 
@@ -13,12 +13,6 @@ namespace GoogleCloudExtension.Utils
         /// Whether the DNX runtime is installed.
         /// </summary>
         public bool IsDnxInstalled { get; }
-
-        /// <summary>
-        /// Returns whether the DNX installation is correct.
-        /// </summary>
-        /// <returns></returns>
-        public bool IsValidDnxInstallation() => IsDnxInstalled;
 
         public DnxValidationResult(bool isDnxInstalled)
         {

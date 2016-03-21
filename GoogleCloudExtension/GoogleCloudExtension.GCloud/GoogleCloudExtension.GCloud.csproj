@@ -52,8 +52,8 @@
   <ItemGroup>
     <Compile Include="AppEngineClient.cs" />
     <Compile Include="Dnx\Solution.cs" />
-    <Compile Include="Models\Component.cs" />
-    <Compile Include="Models\ComponentState.cs" />
+    <Compile Include="Models\CloudSdkComponent.cs" />
+    <Compile Include="Models\CloudSdkComponentState.cs" />
     <Compile Include="Models\ModuleAndVersion.cs" />
     <Compile Include="ComputeEngineClient.cs" />
     <Compile Include="Models\ComputeInstance.cs" />

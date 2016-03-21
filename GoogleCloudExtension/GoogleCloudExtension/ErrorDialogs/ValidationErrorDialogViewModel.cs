@@ -1,4 +1,4 @@
-﻿// Copyright 2015 Google Inc. All Rights Reserved.
+﻿// Copyright 2016 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.Utils;
@@ -14,19 +14,17 @@ namespace GoogleCloudExtension.ErrorDialogs
     public class ValidationErrorDialogViewModel : ViewModelBase
     {
         private readonly ValidationErrorDialogWindow _owner;
-        private readonly GCloudValidationResult _gcloudValidationResult;
-        private readonly DnxValidationResult _dnxValidationResult;
 
         /// <summary>
         /// Whether there are missing components to display.
         /// </summary>
-        public bool ShowMissingComponents => (_gcloudValidationResult?.MissingComponents.Count ?? 0) != 0;
+        public bool HasMissingComponents { get; }
 
         // Whether to show the error message about missing the gcloud SDK.
-        public bool ShowMissingGCloud => !(_gcloudValidationResult?.IsGCloudInstalled ?? true);
+        public bool ShowMissingGCloud { get; }
 
         // Whether to show the error message about missing the DNX runtime.
-        public bool ShowMissingDnxRuntime => !(_dnxValidationResult?.IsValidDnxInstallation() ?? true);
+        public bool ShowMissingDnxRuntime { get; }
 
         // The command line to use to isntall the missing components.
         public string InstallComponentsCommandLine { get; }
@@ -42,10 +40,22 @@ namespace GoogleCloudExtension.ErrorDialogs
             DnxValidationResult dnxValidationResult)
         {
             _owner = owner;
-            _gcloudValidationResult = gcloudValidationResult;
-            _dnxValidationResult = dnxValidationResult;
-            var missingComponentsList = String.Join(" ", _gcloudValidationResult?.MissingComponents?.Select(x => x.Id) ?? Enumerable.Empty<string>());
-            InstallComponentsCommandLine = $"gcloud components install {missingComponentsList}";
+            if (gcloudValidationResult != null && !gcloudValidationResult.IsValidGCloudInstallation)
+            {
+                ShowMissingGCloud = !gcloudValidationResult.IsGCloudInstalled;
+                if (gcloudValidationResult.MissingComponents.Count != 0)
+                {
+                    var missingComponentsList = String.Join(" ", gcloudValidationResult.MissingComponents.Select(x => x.Id));
+                    InstallComponentsCommandLine = $"gcloud components update {missingComponentsList}";
+                    HasMissingComponents = true;
+                }
+            }
+
+            if (dnxValidationResult != null && !dnxValidationResult.IsDnxInstalled)
+            {
+                ShowMissingDnxRuntime = true;
+            }
+
             OnOkCommand = new WeakCommand(() => _owner.Close());
         }
     }

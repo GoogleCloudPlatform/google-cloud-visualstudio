@@ -68,8 +68,8 @@ namespace GoogleCloudExtension.CloudExplorer
                 Children.Clear();
                 Children.Add(LoadingPlaceholder);
 
-                var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallation();
-                if (!gcloudValidationResult.IsValidGCloudInstallation())
+                var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallationAsync();
+                if (!gcloudValidationResult.IsValidGCloudInstallation)
                 {
                     Children.Clear();
                     Children.Add(GetErrorItem(gcloudValidationResult));

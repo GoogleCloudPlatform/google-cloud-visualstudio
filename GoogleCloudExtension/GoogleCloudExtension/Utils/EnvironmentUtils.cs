@@ -1,4 +1,4 @@
-﻿// Copyright 2015 Google Inc. All Rights Reserved.
+﻿// Copyright 2016 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.GCloud;
@@ -47,7 +47,7 @@ namespace GoogleCloudExtension.Utils
         /// cached. It will not change during the life of Visual Studio.
         /// </summary>
         /// <returns>A task with the result of the validation.</returns>
-        public static Task<GCloudValidationResult> ValidateGCloudInstallation() => s_CachedGCloudResult.Value;
+        public static Task<GCloudValidationResult> ValidateGCloudInstallationAsync() => s_CachedGCloudResult.Value;
 
         /// <summary>
         /// Validates that the gcloud and the dnx environments are correclty setup.
@@ -62,9 +62,8 @@ namespace GoogleCloudExtension.Utils
         /// Actually calculates the gcloud validation result.
         /// </summary>
         /// <returns></returns>
-        private static Task<GCloudValidationResult> ValidateGCloudInstallationImplAsync()
-        {
-            return Task.Run<GCloudValidationResult>(async () =>
+        private static Task<GCloudValidationResult> ValidateGCloudInstallationImplAsync() => Task.Run<GCloudValidationResult>(
+            async () =>
             {
                 var gcloudInstalled = GCloudWrapper.Instance.IsGCloudCliInstalled();
 
@@ -72,26 +71,28 @@ namespace GoogleCloudExtension.Utils
                 {
                     return new GCloudValidationResult(
                         gcloudInstalled: gcloudInstalled,
-                        missingComponents: Enumerable.Empty<Component>());
+                        missingComponents: Enumerable.Empty<CloudSdkComponent>());
                 }
 
                 // Ensure that the list of components that we need are installed.
                 var components = await GCloudWrapper.Instance.GetComponentsAsync();
                 var missingComponents = components
-                    .Where(x => s_ComponentsNeeded.Contains(x.Id) && x.State.IsNotInstalled());
+                    .Where(x => s_ComponentsNeeded.Contains(x.Id) && !x.State.IsInstalled);
                 return new GCloudValidationResult(
                     gcloudInstalled: gcloudInstalled,
                     missingComponents: missingComponents);
             });
-        }
 
         /// <summary>
-        /// Prefetches the validation information for gcloud SDK.,
+        /// This method warms up the validation result cache by validating the gcloud installation. Since
+        /// this validation actually happens in a background thread this method can be called as soon as
+        /// the extension is loaded, this way the most probably outcome is that the validation results will
+        /// be ready by the time they are needed when invoking a command.
         /// </summary>
-        public static async void PreFetchGCloudValidationState()
+        public static async void PreFetchGCloudValidationResult()
         {
-            var validationResult = await ValidateGCloudInstallation();
-            if (validationResult.IsValidGCloudInstallation())
+            var validationResult = await ValidateGCloudInstallationAsync();
+            if (validationResult.IsValidGCloudInstallation)
             {
                 Debug.WriteLine("GCloud is correctly installed.");
             }

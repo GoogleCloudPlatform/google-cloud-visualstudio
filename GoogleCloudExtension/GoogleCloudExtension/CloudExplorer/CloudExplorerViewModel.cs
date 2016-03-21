@@ -91,8 +91,8 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private async void ValidateAndShowButtons()
         {
-            var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallation();
-            if (gcloudValidationResult.IsValidGCloudInstallation())
+            var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallationAsync();
+            if (gcloudValidationResult.IsValidGCloudInstallation)
             {
                 IsValidInstallation = true;
             }
@@ -112,7 +112,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private async void OnInstallGCloudComponentsCommand()
         {
-            var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallation();
+            var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallationAsync();
             var errorDialog = new ValidationErrorDialogWindow(gcloudValidationResult: gcloudValidationResult);
             errorDialog.ShowDialog();
         }
