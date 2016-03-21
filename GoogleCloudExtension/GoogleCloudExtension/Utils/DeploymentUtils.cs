@@ -1,4 +1,4 @@
-﻿// Copyright 2015 Google Inc. All Rights Reserved.
+﻿// Copyright 2016 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.Analytics;
@@ -19,19 +19,20 @@ namespace GoogleCloudExtension.Utils
     public static class DeploymentUtils
     {
         /// <summary>
-        /// Starts the deployment process for the given project, if the project doesn't target the
-        /// right runtime or the environment is not set then this becomes a NOOP.
+        /// Starts the deployment process for the given DNX project. It validates the environment to make sure
+        /// that the dependencies are present before doing anything. This method starts an asynchronous flow but
+        /// does not need to be awaited.
         /// </summary>
         /// <param name="startupProject"></param>
         /// <param name="serviceProvider"></param>
-        public static async void StartProjectDeployment(Project startupProject, IServiceProvider serviceProvider)
+        public static async void StartProjectDeploymentFlow(Project startupProject, IServiceProvider serviceProvider)
         {
             ActivityLogUtils.LogInfo($"Starting the deployment process for project {startupProject.Name}.");
 
             // Validate the full environment.
-            var gcloudValidateResult = await EnvironmentUtils.ValidateGCloudInstallation();
+            var gcloudValidateResult = await EnvironmentUtils.ValidateGCloudInstallationAsync();
             var dnxValidateResult = EnvironmentUtils.ValidateDnxInstallation();
-            if (!gcloudValidateResult.IsValidGCloudInstallation() || !dnxValidateResult.IsValidDnxInstallation())
+            if (!gcloudValidateResult.IsValidGCloudInstallation || !dnxValidateResult.IsDnxInstalled)
             {
                 ActivityLogUtils.LogError("Deployment invoked when the environment is not valid.");
                 var errorDialog = new ValidationErrorDialogWindow(

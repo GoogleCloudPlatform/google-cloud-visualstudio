@@ -1,4 +1,4 @@
-﻿// Copyright 2015 Google Inc. All Rights Reserved.
+﻿// Copyright 2016 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
 using EnvDTE;
@@ -87,7 +87,7 @@ namespace GoogleCloudExtension
             _dteInstance = (DTE)Package.GetGlobalService(typeof(DTE));
             _dteInstance.Events.DTEEvents.OnBeginShutdown += DTEEvents_OnBeginShutdown;
 
-            EnvironmentUtils.PreFetchGCloudValidationState();
+            EnvironmentUtils.PreFetchGCloudValidationResult();
         }
 
         private void DTEEvents_OnBeginShutdown()

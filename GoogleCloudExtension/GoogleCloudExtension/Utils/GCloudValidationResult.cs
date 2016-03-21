@@ -1,4 +1,4 @@
-﻿// Copyright 2015 Google Inc. All Rights Reserved.
+﻿// Copyright 2016 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.GCloud.Models;
@@ -20,23 +20,23 @@ namespace GoogleCloudExtension.Utils
         public bool IsGCloudInstalled { get; }
 
         /// <summary>
-        /// What missing components needed from the extension are there.
+        /// The list required componets that are missing.
         /// </summary>
-        public IReadOnlyCollection<Component> MissingComponents { get; }
+        public IReadOnlyCollection<CloudSdkComponent> MissingComponents { get; }
 
         public GCloudValidationResult(
             bool gcloudInstalled,
-            IEnumerable<Component> missingComponents)
+            IEnumerable<CloudSdkComponent> missingComponents)
         {
             IsGCloudInstalled = gcloudInstalled;
-            MissingComponents = new ReadOnlyCollection<Component>(missingComponents.ToList());
+            MissingComponents = new ReadOnlyCollection<CloudSdkComponent>(missingComponents.ToList());
         }
 
         /// <summary>
         /// Returns if everything is ok with the gcloud SDK installation.
         /// </summary>
         /// <returns>True if the installation is fine, false otherwise.</returns>
-        public bool IsValidGCloudInstallation() => IsGCloudInstalled && MissingComponents.Count == 0;
+        public bool IsValidGCloudInstallation => IsGCloudInstalled && MissingComponents.Count == 0;
 
         /// <summary>
         /// Returns a string representation of the result.

@@ -1,4 +1,4 @@
-﻿// Copyright 2015 Google Inc. All Rights Reserved.
+﻿// Copyright 2016 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.GCloud.Models;
@@ -275,10 +275,10 @@ namespace GoogleCloudExtension.GCloud
         /// Returns the list of components that gcloud knows about.
         /// </summary>
         /// <returns></returns>
-        public async Task<IList<Component>> GetComponentsAsync()
+        public async Task<IList<CloudSdkComponent>> GetComponentsAsync()
         {
             Debug.WriteLine("Reading list of components.");
-            return await GetJsonOutputAsync<IList<Component>>("components list");
+            return await GetJsonOutputAsync<IList<CloudSdkComponent>>("components list");
         }
 
         /// <summary>
