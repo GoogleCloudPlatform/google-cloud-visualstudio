@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.Analytics;
@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="startupProject"></param>
         /// <param name="serviceProvider"></param>
-        public static async void StartProjectDeploymentFlow(Project startupProject, IServiceProvider serviceProvider)
+        public static async void BeginProjectDeploymentFlow(Project startupProject, IServiceProvider serviceProvider)
         {
             ActivityLogUtils.LogInfo($"Starting the deployment process for project {startupProject.Name}.");
 

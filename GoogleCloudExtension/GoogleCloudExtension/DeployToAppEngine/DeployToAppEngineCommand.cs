@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.Analytics;
@@ -87,7 +87,7 @@ namespace GoogleCloudExtension.DeployToAppEngine
             ExtensionAnalytics.ReportCommand(
                 StartDeployToAppEngineCommand,
                 CommandInvocationSource.ToolsMenu,
-                () => DeploymentUtils.StartProjectDeploymentFlow(startupProject, ServiceProvider));
+                () => DeploymentUtils.BeginProjectDeploymentFlow(startupProject, ServiceProvider));
         }
 
         private void QueryStatusHandler(object sender, EventArgs e)

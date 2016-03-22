@@ -22,14 +22,14 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// The list required componets that are missing.
         /// </summary>
-        public IReadOnlyCollection<CloudSdkComponent> MissingComponents { get; }
+        public IReadOnlyCollection<string> MissingComponents { get; }
 
         public GCloudValidationResult(
             bool gcloudInstalled,
-            IEnumerable<CloudSdkComponent> missingComponents)
+            IEnumerable<string> missingComponents)
         {
             IsGCloudInstalled = gcloudInstalled;
-            MissingComponents = new ReadOnlyCollection<CloudSdkComponent>(missingComponents.ToList());
+            MissingComponents = new ReadOnlyCollection<string>(missingComponents.ToList());
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace GoogleCloudExtension.Utils
                 resultBuilder.AppendLine("Missing components:");
                 foreach (var component in MissingComponents)
                 {
-                    resultBuilder.AppendLine($"  Component: {component.Id}");
+                    resultBuilder.AppendLine($"  Component: {component}");
                 }
             }
 
