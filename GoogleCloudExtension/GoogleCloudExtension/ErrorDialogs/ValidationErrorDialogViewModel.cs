@@ -18,7 +18,7 @@ namespace GoogleCloudExtension.ErrorDialogs
         /// <summary>
         /// Whether there are missing components to display.
         /// </summary>
-        public bool HasMissingComponents { get; }
+        public bool ShowMissingComponents { get; }
 
         // Whether to show the error message about missing the gcloud SDK.
         public bool ShowMissingGCloud { get; }
@@ -40,6 +40,7 @@ namespace GoogleCloudExtension.ErrorDialogs
             DnxValidationResult dnxValidationResult)
         {
             _owner = owner;
+
             if (gcloudValidationResult != null && !gcloudValidationResult.IsValidGCloudInstallation)
             {
                 ShowMissingGCloud = !gcloudValidationResult.IsGCloudInstalled;
@@ -47,7 +48,7 @@ namespace GoogleCloudExtension.ErrorDialogs
                 {
                     var missingComponentsList = String.Join(" ", gcloudValidationResult.MissingComponents);
                     InstallComponentsCommandLine = $"gcloud components install {missingComponentsList}";
-                    HasMissingComponents = true;
+                    ShowMissingComponents = true;
                 }
             }
 

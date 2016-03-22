@@ -18,10 +18,10 @@ namespace GoogleCloudExtension.Utils
     static public class EnvironmentUtils
     {
         /// <summary>
-        /// List of components required by the extension. This list is to be kept in sync with the
+        /// List of component names required by the extension. This list is to be kept in sync with the
         /// requirements for the extension.
         /// </summary>
-        private static readonly IList<string> s_componentsNeeded = new List<string>
+        private static readonly IList<string> s_requiredComponentNames = new List<string>
         {
             "alpha",  // For the preview app deploy command.
             "beta",   // For the beta compute reset-windows-password command.
@@ -76,7 +76,7 @@ namespace GoogleCloudExtension.Utils
 
                 // Ensure that the list of components that we need are installed.
                 var installedComponents = await GCloudWrapper.Instance.GetInstalledComponentsAsync();
-                var missingComponents = s_componentsNeeded.Where(x => !installedComponents.Contains(x));
+                var missingComponents = s_requiredComponentNames.Except(installedComponents);
                 return new GCloudValidationResult(
                     gcloudInstalled: gcloudInstalled,
                     missingComponents: missingComponents);
