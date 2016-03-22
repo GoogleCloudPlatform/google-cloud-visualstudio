@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="startupProject"></param>
         /// <param name="serviceProvider"></param>
-        public static async void StartProjectDeploymentFlow(Project startupProject, IServiceProvider serviceProvider)
+        public static async void BeginProjectDeploymentFlow(Project startupProject, IServiceProvider serviceProvider)
         {
             ActivityLogUtils.LogInfo($"Starting the deployment process for project {startupProject.Name}.");
 

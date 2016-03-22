@@ -128,7 +128,7 @@ namespace GoogleCloudExtension.DeployToAppEngineContextMenu
             ExtensionAnalytics.ReportCommand(
                 DeployToAppEngine.DeployToAppEngineCommand.StartDeployToAppEngineCommand,
                 CommandInvocationSource.ContextMenu,
-                () => DeploymentUtils.StartProjectDeploymentFlow(
+                () => DeploymentUtils.BeginProjectDeploymentFlow(
                         new Project(GetSelectedProjectPath()),
                         ServiceProvider));
         }

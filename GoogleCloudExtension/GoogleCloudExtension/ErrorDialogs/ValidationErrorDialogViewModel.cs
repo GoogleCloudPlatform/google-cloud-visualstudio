@@ -46,8 +46,8 @@ namespace GoogleCloudExtension.ErrorDialogs
                 ShowMissingGCloud = !gcloudValidationResult.IsGCloudInstalled;
                 if (gcloudValidationResult.MissingComponents.Count != 0)
                 {
-                    var missingComponentsList = String.Join(" ", gcloudValidationResult.MissingComponents.Select(x => x.Id));
-                    InstallComponentsCommandLine = $"gcloud components update {missingComponentsList}";
+                    var missingComponentsList = String.Join(" ", gcloudValidationResult.MissingComponents);
+                    InstallComponentsCommandLine = $"gcloud components install {missingComponentsList}";
                     HasMissingComponents = true;
                 }
             }

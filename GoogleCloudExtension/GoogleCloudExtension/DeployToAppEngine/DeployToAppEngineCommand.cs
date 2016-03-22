@@ -87,7 +87,7 @@ namespace GoogleCloudExtension.DeployToAppEngine
             ExtensionAnalytics.ReportCommand(
                 StartDeployToAppEngineCommand,
                 CommandInvocationSource.ToolsMenu,
-                () => DeploymentUtils.StartProjectDeploymentFlow(startupProject, ServiceProvider));
+                () => DeploymentUtils.BeginProjectDeploymentFlow(startupProject, ServiceProvider));
         }
 
         private void QueryStatusHandler(object sender, EventArgs e)
