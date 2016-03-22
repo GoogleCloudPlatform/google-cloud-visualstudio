@@ -41,7 +41,7 @@ namespace GoogleCloudExtension
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideToolWindow(typeof(AppEngineAppsToolWindow))]
     [ProvideToolWindow(typeof(UserAndProjectListWindow))]
-    [ProvideAutoLoad(UIContextGuids80.SolutionExists)]
+    [ProvideAutoLoad(UIContextGuids80.NoSolution)]
     public sealed class GoogleCloudExtensionPackage : Package
     {
         /// <summary>
@@ -86,6 +86,8 @@ namespace GoogleCloudExtension
 
             _dteInstance = (DTE)Package.GetGlobalService(typeof(DTE));
             _dteInstance.Events.DTEEvents.OnBeginShutdown += DTEEvents_OnBeginShutdown;
+
+            EnvironmentUtils.PreFetchGCloudValidationResult();
         }
 
         private void DTEEvents_OnBeginShutdown()

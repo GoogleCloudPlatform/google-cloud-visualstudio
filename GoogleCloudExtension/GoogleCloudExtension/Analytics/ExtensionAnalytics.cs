@@ -227,7 +227,7 @@ namespace GoogleCloudExtension.Analytics
         private static async Task<bool> IsReportingEnabled()
         {
             // If gcloud is not present then we have to assume that we can't report usage.
-            if (!GCloudWrapper.Instance.ValidateGCloudInstallation())
+            if (!EnvironmentUtils.IsGCloudInstalled())
             {
                 return false;
             }

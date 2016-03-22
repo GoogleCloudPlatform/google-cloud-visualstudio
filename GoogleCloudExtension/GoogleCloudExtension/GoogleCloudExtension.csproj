@@ -65,10 +65,17 @@
     </Compile>
     <Compile Include="DeploymentDialog\DeploymentDialogWindow.cs" />
     <Compile Include="DeploymentDialog\DeploymentDialogViewModel.cs" />
+    <Compile Include="ErrorDialogs\ValidationErrorDialogContent.xaml.cs">
+      <DependentUpon>ValidationErrorDialogContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ErrorDialogs\ValidationErrorDialogViewModel.cs" />
+    <Compile Include="ErrorDialogs\ValidationErrorDialogWindow.cs" />
     <Compile Include="Projects\SolutionHelper.cs" />
     <Compile Include="Utils\ActivityLogUtils.cs" />
+    <Compile Include="Utils\DnxValidationResult.cs" />
+    <Compile Include="Utils\EnvironmentUtils.cs" />
+    <Compile Include="Utils\GCloudValidationResult.cs" />
     <Compile Include="Utils\GcpOutputWindow.cs" />
-    <Compile Include="Utils\CommandUtils.cs" />
     <Compile Include="Utils\DeploymentUtils.cs" />
     <Compile Include="DeployToAppEngineContextMenu\DeployToAppEngineContextMenuCommand.cs" />
     <Compile Include="DeployToAppEngine\DeployToAppEngineCommand.cs" />
@@ -240,6 +247,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DeploymentDialog\DeploymentDialogContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ErrorDialogs\ValidationErrorDialogContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,34 +1,29 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
-using GoogleCloudExtension.GCloud;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// This class is to be used as the base class for all view models for the extension.
+    /// Provies useful properties common to almost all view models (such as a loading state) as well
+    /// as whether gcloud is installed or not.
+    /// </summary>
     public class ViewModelBase : Model
     {
-        public bool IsGCloudInstalled
-        {
-            get { return GCloudWrapper.Instance.ValidateGCloudInstallation(); }
-        }
+        private bool _loading;
+        private string _loadingMessage;
 
-        public bool IsGCloudNotInstalled
-        {
-            get { return !this.IsGCloudInstalled; }
-        }
-
-        private bool _Loading;
         public bool Loading
         {
-            get { return _Loading; }
-            set { SetValueAndRaise(ref _Loading, value); }
+            get { return _loading; }
+            set { SetValueAndRaise(ref _loading, value); }
         }
 
-        private string _LoadingMessage;
         public string LoadingMessage
         {
-            get { return _LoadingMessage; }
-            set { SetValueAndRaise(ref _LoadingMessage, value); }
+            get { return _loadingMessage; }
+            set { SetValueAndRaise(ref _loadingMessage, value); }
         }
     }
 }

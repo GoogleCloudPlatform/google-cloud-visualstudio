@@ -271,7 +271,22 @@ namespace GoogleCloudExtension.GCloud
             }
         }
 
-        public bool ValidateGCloudInstallation()
+        /// <summary>
+        /// Returns the list of components that gcloud knows about.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IList<string>> GetInstalledComponentsAsync()
+        {
+            Debug.WriteLine("Reading list of components.");
+            var components = await GetJsonOutputAsync<IList<CloudSdkComponent>>("components list");
+            return components.Where(x => x.State.IsInstalled).Select(x => x.Id).ToList();
+        }
+
+        /// <summary>
+        /// Detects if gcloud is present in the system.
+        /// </summary>
+        /// <returns></returns>
+        public bool IsGCloudCliInstalled()
         {
             Debug.WriteLine("Validating GCloud installation.");
             var gcloudPath = GetGCloudPath();
