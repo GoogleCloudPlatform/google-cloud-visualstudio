@@ -17,6 +17,9 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     static public class EnvironmentUtils
     {
+        // Event raised whenever the validation state has been invalidated.
+        public static event EventHandler ValidationStateInvalidated;
+
         /// <summary>
         /// List of component names required by the extension. This list is to be kept in sync with the
         /// requirements for the extension.
@@ -31,8 +34,8 @@ namespace GoogleCloudExtension.Utils
         /// Cache for the validation result, this ensures that this expensive operation is only
         /// performed once.
         /// </summary>
-        private static readonly Lazy<Task<GCloudValidationResult>> s_CachedGCloudResult =
-            new Lazy<Task<GCloudValidationResult>>(ValidateGCloudInstallationImplAsync);
+        private static readonly Atomic<Task<GCloudValidationResult>> s_cachedGCloudResult =
+            new Atomic<Task<GCloudValidationResult>>(ValidateGCloudInstallationImplAsync);
 
         /// <summary>
         /// Provides a very fast check to see if gcloud is present in the machine or not, useful when
@@ -47,7 +50,7 @@ namespace GoogleCloudExtension.Utils
         /// cached. It will not change during the life of Visual Studio.
         /// </summary>
         /// <returns>A task with the result of the validation.</returns>
-        public static Task<GCloudValidationResult> ValidateGCloudInstallationAsync() => s_CachedGCloudResult.Value;
+        public static Task<GCloudValidationResult> ValidateGCloudInstallationAsync() => s_cachedGCloudResult.Value;
 
         /// <summary>
         /// Validates that the gcloud and the dnx environments are correclty setup.
@@ -99,6 +102,12 @@ namespace GoogleCloudExtension.Utils
             {
                 Debug.WriteLine($"Failed validation: {validationResult}");
             }
+        }
+
+        public static void Reset()
+        {
+            s_cachedGCloudResult.Reset();
+            ValidationStateInvalidated?.Invoke(null, null);
         }
     }
 }

@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.ErrorDialogs"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:models="clr-namespace:GoogleCloudExtension.ErrorDialogs"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type models:ValidationErrorDialogViewModel}}"
              d:DesignHeight="350" d:DesignWidth="420">
@@ -27,7 +28,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
+
         <StackPanel>
             <!-- Show the missing gcloud message -->
             <TextBlock Text="Cannot find gcloud in your system, please the google cloud sdk and restart Visual Studio."
@@ -55,6 +56,16 @@
                     Command="{Binding OnOkCommand}"
                     Margin="10,5,10,10"
                     Padding="10"/>
+            <Button IsDefault="True"
+                    IsCancel="True"
+                    Command="{Binding OnRefreshCommand}"
+                    Margin="10,5,10,10"
+                    Padding="10">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Refresh" Margin="0,0,0,5" />
+                    <controls:ProgressIndicator Visibility="{Binding IsRefreshing, Converter={StaticResource visibilityConverter}}" />
+                </StackPanel>
+            </Button>
         </StackPanel>
     </Grid>
 

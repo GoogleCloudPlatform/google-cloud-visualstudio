@@ -87,6 +87,16 @@ namespace GoogleCloudExtension.CloudExplorer
             }
 
             ValidateAndShowButtons();
+            EnvironmentUtils.ValidationStateInvalidated += OnValidationStateInvalidated;
+        }
+
+        private void OnValidationStateInvalidated(object sender, EventArgs e)
+        {
+            ValidateAndShowButtons();
+            foreach (var source in _sources)
+            {
+                source.Refresh();
+            }
         }
 
         private async void ValidateAndShowButtons()
@@ -95,6 +105,7 @@ namespace GoogleCloudExtension.CloudExplorer
             if (gcloudValidationResult.IsValidGCloudInstallation)
             {
                 IsValidInstallation = true;
+                ValidationErrorIsVisible = false;
             }
             else
             {
