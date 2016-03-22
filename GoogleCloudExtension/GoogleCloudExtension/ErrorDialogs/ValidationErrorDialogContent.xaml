@@ -31,19 +31,19 @@
 
         <StackPanel>
             <!-- Show the missing gcloud message -->
-            <TextBlock Text="Cannot find gcloud in your system, please the google cloud sdk and restart Visual Studio."
+            <TextBlock Text="Cannot find gcloud in your system, please install the google cloud sdk and press the Retry button."
                        Style="{StaticResource captionStyle}"
                        Visibility="{Binding ShowMissingGCloud, Converter={StaticResource visibilityConverter}}" />
 
             <!-- Show the missing gcloud components -->
             <StackPanel Visibility="{Binding ShowMissingComponents, Converter={StaticResource visibilityConverter}}">
-                <TextBlock Text="There are some Google Cloud SDK components that need to be installed, please install them invoking the following command from an elevated command prompt and restart Visual Studio."
+                <TextBlock Text="There are some Google Cloud SDK components that need to be installed, please install them invoking the following command from an elevated command prompt and press Retry to check again."
                            Style="{StaticResource captionStyle}"/>
                 <TextBox Text="{Binding InstallComponentsCommandLine, Mode=OneWay}" IsReadOnly="True"  Margin="10"/>
             </StackPanel>
 
             <!-- Show that dnx is missing -->
-            <TextBlock Text="Need to install the .NET Core DNX runtime, please ensure that you have the ASP.NET ." 
+            <TextBlock Text="Need to install the .NET Core DNX runtime, please ensure that you have the ASP.NET tools installed and press Retry." 
                    Style="{StaticResource captionStyle}"
                    Visibility="{Binding ShowMissingDnxRuntime, Converter={StaticResource visibilityConverter}}"/>
         </StackPanel>
