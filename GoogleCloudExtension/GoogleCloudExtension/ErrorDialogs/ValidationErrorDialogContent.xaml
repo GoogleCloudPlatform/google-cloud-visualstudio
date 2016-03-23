@@ -23,6 +23,14 @@
         </Style>
     </UserControl.Resources>
 
+    <!-- General key bindings for the page. -->
+    <UserControl.InputBindings>
+        <!-- Bind Ctrl+C to the copy button to copy the command line. -->
+        <KeyBinding Modifiers="Ctrl"
+                    Key="C"
+                    Command="{Binding OnCopyCommand}" />
+    </UserControl.InputBindings>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -31,21 +39,46 @@
 
         <StackPanel>
             <!-- Show the missing gcloud message -->
-            <TextBlock Text="Cannot find gcloud in your system, please install the google cloud sdk and press the Retry button."
-                       Style="{StaticResource captionStyle}"
-                       Visibility="{Binding ShowMissingGCloud, Converter={StaticResource visibilityConverter}}" />
+            <TextBlock Style="{StaticResource captionStyle}"
+                       Visibility="{Binding ShowMissingGCloud, Converter={StaticResource visibilityConverter}}">
+                Cannot find gcloud in your system, please install the google cloud sdk and press the <Bold>Retry</Bold> button.
+            </TextBlock>
 
             <!-- Show the missing gcloud components -->
-            <StackPanel Visibility="{Binding ShowMissingComponents, Converter={StaticResource visibilityConverter}}">
-                <TextBlock Text="There are some Google Cloud SDK components that need to be installed, please install them invoking the following command from an elevated command prompt and press Retry to check again."
-                           Style="{StaticResource captionStyle}"/>
-                <TextBox Text="{Binding InstallComponentsCommandLine, Mode=OneWay}" IsReadOnly="True"  Margin="10"/>
-            </StackPanel>
+            <Grid Visibility="{Binding ShowMissingComponents, Converter={StaticResource visibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Style="{StaticResource captionStyle}"
+                           Grid.ColumnSpan="2">
+                    There are some Google Cloud SDK components that need to be installed, please install them invoking 
+                    the following command from an elevated command prompt and press the <Bold>Retry</Bold> button to check again.
+                </TextBlock>
+                <TextBox Text="{Binding InstallComponentsCommandLine, Mode=OneWay}"
+                         IsReadOnly="True"
+                         Margin="10"
+                         Grid.Row="1"
+                         Grid.ColumnSpan="2" />
+                <Button Content="Copy Command"
+                        Command="{Binding OnCopyCommand}"
+                        Margin="10,0"
+                        Grid.Row="2" />
+            </Grid>
 
             <!-- Show that dnx is missing -->
-            <TextBlock Text="Need to install the .NET Core DNX runtime, please ensure that you have the ASP.NET tools installed and press Retry." 
+            <TextBlock
                    Style="{StaticResource captionStyle}"
-                   Visibility="{Binding ShowMissingDnxRuntime, Converter={StaticResource visibilityConverter}}"/>
+                   Visibility="{Binding ShowMissingDnxRuntime, Converter={StaticResource visibilityConverter}}">
+                Need to install the .NET Core DNX runtime, please ensure that you have the ASP.NET tools installed and press <Bold>Retry</Bold>.
+            </TextBlock>
         </StackPanel>
 
         <!-- The buttons for the dialog. -->
@@ -62,7 +95,7 @@
                     Margin="10,5,10,10"
                     Padding="10">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Refresh" Margin="0,0,0,5" />
+                    <TextBlock Text="Retry" Margin="0,0,0,5" />
                     <controls:ProgressIndicator Visibility="{Binding IsRefreshing, Converter={StaticResource visibilityConverter}}" />
                 </StackPanel>
             </Button>

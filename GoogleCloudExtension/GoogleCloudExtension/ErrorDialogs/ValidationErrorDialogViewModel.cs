@@ -4,6 +4,7 @@
 using GoogleCloudExtension.Utils;
 using System;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 
 namespace GoogleCloudExtension.ErrorDialogs
@@ -68,16 +69,23 @@ namespace GoogleCloudExtension.ErrorDialogs
         /// </summary>
         public WeakCommand OnRefreshCommand { get; }
 
+        /// <summary>
+        /// The command to execute when the copy button is pressed.
+        /// </summary>
+        public WeakCommand OnCopyCommand { get; }
+
         public ValidationErrorDialogViewModel(
             ValidationErrorDialogWindow owner,
             GCloudValidationResult gcloudValidationResult,
             DnxValidationResult dnxValidationResult)
         {
             _owner = owner;
-            SetPublicProperties(gcloudValidationResult, dnxValidationResult);
 
             OnOkCommand = new WeakCommand(() => _owner.Close());
             OnRefreshCommand = new WeakCommand(OnRefreshHandler);
+            OnCopyCommand = new WeakCommand(OnCopyHandler);
+
+            SetPublicProperties(gcloudValidationResult, dnxValidationResult);
         }
 
         private void SetPublicProperties(GCloudValidationResult gcloudValidationResult, DnxValidationResult dnxValidationResult)
@@ -90,12 +98,14 @@ namespace GoogleCloudExtension.ErrorDialogs
                     var missingComponentsList = String.Join(" ", gcloudValidationResult.MissingComponents);
                     InstallComponentsCommandLine = $"gcloud components install {missingComponentsList}";
                     ShowMissingComponents = true;
+                    OnCopyCommand.CanExecuteCommand = true;
                 }
             }
             else
             {
                 ShowMissingGCloud = false;
                 ShowMissingComponents = false;
+                OnCopyCommand.CanExecuteCommand = false;
             }
 
             if (dnxValidationResult != null && !dnxValidationResult.IsDnxInstalled)
@@ -142,6 +152,11 @@ namespace GoogleCloudExtension.ErrorDialogs
             {
                 _owner.Close();
             }
+        }
+
+        private void OnCopyHandler()
+        {
+            Clipboard.SetText(InstallComponentsCommandLine);
         }
     }
 }
