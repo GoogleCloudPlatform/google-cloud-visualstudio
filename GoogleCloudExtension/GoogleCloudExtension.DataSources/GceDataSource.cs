@@ -33,17 +33,12 @@ namespace GoogleCloudExtension.DataSources
                 var result = new List<GceInstance>();
                 foreach (var zone in zones)
                 {
-                    var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zone.Name}/instances";
-                    var content = await client.DownloadStringTaskAsync(url);
-                    var instances = JsonConvert.DeserializeObject<GceInstances>(content);
-                    if (instances.Items != null)
+                    var instances = await GetInstancesInZoneListAsync(client, projectId, zone.Name, oauthToken);
+                    foreach (var instance in instances)
                     {
-                        foreach (var instance in instances.Items)
-                        {
-                            instance.ZoneName = zone.Name;
-                            instance.ProjectId = projectId;
-                            result.Add(instance);
-                        }
+                        instance.ZoneName = zone.Name;
+                        instance.ProjectId = projectId;
+                        result.Add(instance);
                     }
                 }
                 return result;
@@ -53,6 +48,20 @@ namespace GoogleCloudExtension.DataSources
                 Debug.WriteLine($"Failed to download data: {ex.Message}");
             }
             return null;
+        }
+
+        public static async Task<IList<GceInstance>> GetInstancesInZoneListAsync(
+            WebClient client,
+            string projectId,
+            string zoneName,
+            string oauthToken)
+        {
+            var baseUrl = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zoneName}/instances";
+            return await ApiHelpers.LoadPagedListAsync<GceInstance, GceInstances>(
+                client,
+                baseUrl,
+                x => x.Items,
+                x => string.IsNullOrEmpty(x.NextPageToken) ? null : $"{baseUrl}?pageToken={x.NextPageToken}");
         }
 
         /// <summary>
@@ -139,19 +148,12 @@ namespace GoogleCloudExtension.DataSources
         /// <returns></returns>
         private static async Task<IList<Zone>> GetZoneListAsync(WebClient client, string projectId)
         {
-            try
-            {
-                var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones";
-                var content = await client.DownloadStringTaskAsync(url);
-
-                var zones = JsonConvert.DeserializeObject<Zones>(content);
-                return zones.Items;
-            }
-            catch (WebException ex)
-            {
-                Debug.WriteLine($"Failed to download list of zone: {ex.Message}");
-            }
-            return null;
+            string baseUrl = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones";
+            return await ApiHelpers.LoadPagedListAsync<Zone, Zones>(
+                client,
+                baseUrl,
+                x => x.Items,
+                x => string.IsNullOrEmpty(x.NextPageToken) ? null : $"{baseUrl}?{x.NextPageToken}");
         }
     }
 }

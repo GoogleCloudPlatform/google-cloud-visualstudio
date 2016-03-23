@@ -10,5 +10,8 @@ namespace GoogleCloudExtension.DataSources.Models
     {
         [JsonProperty("items")]
         public IList<Zone> Items { get; set; }
+
+        [JsonProperty("nextPageToken")]
+        public string NextPageToken { get; set; }
     }
 }

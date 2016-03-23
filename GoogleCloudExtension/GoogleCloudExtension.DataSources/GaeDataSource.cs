@@ -26,33 +26,12 @@ namespace GoogleCloudExtension.DataSources
         public static async Task<IList<GaeService>> GetServicesAsync(string projectId, string oauthToken)
         {
             var baseUrl = $"https://appengine.googleapis.com/v1beta5/apps/{projectId}/services";
-            var url = baseUrl;
             var client = new WebClient().SetOauthToken(oauthToken);
-            try
-            {
-                var result = new List<GaeService>();
-                while (true)
-                {
-                    Debug.WriteLine($"Requesting GAE Services: {url}");
-                    var response = await client.DownloadStringTaskAsync(url);
-                    var services = JsonConvert.DeserializeObject<GaeServices>(response);
-                    result.AddRange(services.Services);
-                    if (String.IsNullOrEmpty(services.NextPageToken))
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        url = $"{baseUrl}?pageToken={services.NextPageToken}";
-                    }
-                }
-                return result;
-            }
-            catch (WebException ex)
-            {
-                Debug.WriteLine($"Request failed: {ex.Message}");
-                throw new DataSourceException(ex.Message);
-            }
+            return await ApiHelpers.LoadPagedListAsync<GaeService, GaeServices>(
+                client,
+                baseUrl,
+                x => x.Services,
+                x => String.IsNullOrEmpty(x.NextPageToken) ? null : $"{baseUrl}?pageToken={x.NextPageToken}");
         }
 
         /// <summary>
@@ -63,34 +42,14 @@ namespace GoogleCloudExtension.DataSources
         /// <returns></returns>
         public static async Task<IList<GaeVersion>> GetServiceVersionsAsync(string name, string oauthToken)
         {
-            var baseUrl = $"https://appengine.googleapis.com/v1beta5/{name}/versions";
-            var url = $"{baseUrl}?view=FULL";
+            var baseUrl = $"https://appengine.googleapis.com/v1beta5/{name}/versions?view=FULL";
             var client = new WebClient().SetOauthToken(oauthToken);
-            try
-            {
-                var result = new List<GaeVersion>();
-                while (true)
-                {
-                    Debug.WriteLine($"Requesting versions: {url}");
-                    var response = await client.DownloadStringTaskAsync(url);
-                    var versions = JsonConvert.DeserializeObject<GaeVersions>(response);
-                    result.AddRange(versions.Versions);
-                    if (String.IsNullOrEmpty(versions.NextPageToken))
-                    {
-                        break;
-                    }
-                    else
-                    {
-                        url = $"{baseUrl}?view=FULL&pageToken={versions.NextPageToken}";
-                    }
-                }
-                return result;
-            }
-            catch (WebException ex)
-            {
-                Debug.WriteLine($"Request failed: {ex.Message}");
-            }
-            return null;
+
+            return await ApiHelpers.LoadPagedListAsync<GaeVersion, GaeVersions>(
+                client,
+                baseUrl,
+                x => x.Versions,
+                x => String.IsNullOrEmpty(x.NextPageToken) ? null : $"{baseUrl}&pageToken={x.NextPageToken}");
         }
     }
 }

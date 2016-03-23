@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ApiHelpers.cs" />
     <Compile Include="DataSourceException.cs" />
     <Compile Include="GaeDataSource.cs" />
     <Compile Include="GceDataSource.cs" />
