@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -27,19 +28,18 @@ namespace GoogleCloudExtension.DataSources
         {
             try
             {
-                var client = new WebClient().SetOauthToken(oauthToken);
-                var zones = await GetZoneListAsync(client, projectId);
+                // 1) Request the list of zones for this project.
+                var zones = await GetZoneListAsync(projectId, oauthToken);
 
+                //  2) Request in parallel the instances in each zone.
                 var result = new List<GceInstance>();
-                foreach (var zone in zones)
+                var requestResults = zones
+                    .Select(x => GetInstancesInZoneListAsync(projectId, x.Name, oauthToken));
+
+                // 3) Merge the results into a single list.
+                foreach (var instancesPerZone in await Task.WhenAll(requestResults))
                 {
-                    var instances = await GetInstancesInZoneListAsync(client, projectId, zone.Name, oauthToken);
-                    foreach (var instance in instances)
-                    {
-                        instance.ZoneName = zone.Name;
-                        instance.ProjectId = projectId;
-                        result.Add(instance);
-                    }
+                    result.AddRange(instancesPerZone);
                 }
                 return result;
             }
@@ -48,20 +48,6 @@ namespace GoogleCloudExtension.DataSources
                 Debug.WriteLine($"Failed to download data: {ex.Message}");
             }
             return null;
-        }
-
-        public static async Task<IList<GceInstance>> GetInstancesInZoneListAsync(
-            WebClient client,
-            string projectId,
-            string zoneName,
-            string oauthToken)
-        {
-            var baseUrl = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zoneName}/instances";
-            return await ApiHelpers.LoadPagedListAsync<GceInstance, GceInstances>(
-                client,
-                baseUrl,
-                x => x.Items,
-                x => string.IsNullOrEmpty(x.NextPageToken) ? null : $"{baseUrl}?pageToken={x.NextPageToken}");
         }
 
         /// <summary>
@@ -141,13 +127,15 @@ namespace GoogleCloudExtension.DataSources
         }
 
         /// <summary>
-        /// Returns the list of zones for the given project.
+        /// Fetches the list of zones for the given project.
         /// </summary>
-        /// <param name="client">The already authorized client to use to fetch data.</param>
         /// <param name="projectId">The project id for which to fetch the zone data.</param>
+        /// <param name="oauthToken">The auth token to use to authenticate this call.</param>
         /// <returns></returns>
-        private static async Task<IList<Zone>> GetZoneListAsync(WebClient client, string projectId)
+        private static async Task<IList<Zone>> GetZoneListAsync(string projectId, string oauthToken)
         {
+            var client = new WebClient().SetOauthToken(oauthToken);
+
             string baseUrl = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones";
             return await ApiHelpers.LoadPagedListAsync<Zone, Zones>(
                 client,
@@ -155,5 +143,33 @@ namespace GoogleCloudExtension.DataSources
                 x => x.Items,
                 x => string.IsNullOrEmpty(x.NextPageToken) ? null : $"{baseUrl}?{x.NextPageToken}");
         }
+
+        /// <summary>
+        /// Fetches the list of instances in the given zone and project.
+        /// </summary>
+        /// <param name="projectId">The project that contains the instances to fetch.</param>
+        /// <param name="zoneName">The zone name where the instance lies.</param>
+        /// <param name="oauthToken">The auth token to use to authenticate this call.</param>
+        /// <returns></returns>
+        private static async Task<IList<GceInstance>> GetInstancesInZoneListAsync(
+            string projectId,
+            string zoneName,
+            string oauthToken)
+        {
+            var baseUrl = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zoneName}/instances";
+            var client = new WebClient().SetOauthToken(oauthToken);
+            var result = await ApiHelpers.LoadPagedListAsync<GceInstance, GceInstances>(
+                client,
+                baseUrl,
+                x => x.Items,
+                x => string.IsNullOrEmpty(x.NextPageToken) ? null : $"{baseUrl}?pageToken={x.NextPageToken}");
+            foreach (var instance in result)
+            {
+                instance.ZoneName = zoneName;
+                instance.ProjectId = projectId;
+            }
+            return result;
+        }
+
     }
 }

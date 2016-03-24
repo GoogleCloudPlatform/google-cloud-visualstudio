@@ -14,20 +14,14 @@ namespace GoogleCloudExtension.DataSources
     {
         public static async Task<IList<Bucket>> GetBucketListAsync(string projectId, string oauthToken)
         {
-            try
-            {
-                var client = new WebClient().SetOauthToken(oauthToken);
-                var url = $"https://www.googleapis.com/storage/v1/b?project={projectId}";
-                var content = await client.DownloadStringTaskAsync(url);
+            var baseUrl = $"https://www.googleapis.com/storage/v1/b?project={projectId}";
+            var client = new WebClient().SetOauthToken(oauthToken);
 
-                var buckets = JsonConvert.DeserializeObject<Buckets>(content);
-                return buckets.Items;
-            }
-            catch (WebException ex)
-            {
-                Debug.WriteLine($"Failed to download data: {ex.Message}");
-            }
-            return null;
+            return await ApiHelpers.LoadPagedListAsync<Bucket, Buckets>(
+                client,
+                baseUrl,
+                x => x.Items,
+                x => string.IsNullOrEmpty(x.NextPageToken) ? null : $"{baseUrl}&pageToken={x.NextPageToken}");
         }
     }
 }

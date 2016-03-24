@@ -27,6 +27,7 @@ namespace GoogleCloudExtension.DataSources
         {
             var baseUrl = $"https://appengine.googleapis.com/v1beta5/apps/{projectId}/services";
             var client = new WebClient().SetOauthToken(oauthToken);
+
             return await ApiHelpers.LoadPagedListAsync<GaeService, GaeServices>(
                 client,
                 baseUrl,
