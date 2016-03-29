@@ -2,6 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
@@ -92,9 +93,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             {
                 _setDefaultVersionCommand.CanExecuteCommand = false;
                 Content = $"{_version.Id} (Setting as default...)";
-                await AppEngineClient.SetDefaultAppVersionAsync(_serviceId, _version.Id);
+                var credentials = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
+                var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
+                await GaeDataSource.SetServiceTrafficAllocationAsync(
+                    credentials.ProjectId,
+                    _serviceId,
+                    new Dictionary<string, double> { { _version.Id, 1.0 } },
+                    oauthToken);
             }
-            catch (GCloudException ex)
+            catch (DataSourceException ex)
             {
                 _setDefaultVersionCommand.CanExecuteCommand = true;
                 GcpOutputWindow.OutputLine("Failed to set default version.");

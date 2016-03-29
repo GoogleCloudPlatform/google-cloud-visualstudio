@@ -52,5 +52,36 @@ namespace GoogleCloudExtension.DataSources
                 x => x.Items,
                 x => String.IsNullOrEmpty(x.NextPageToken) ? null : $"{baseUrl}&pageToken={x.NextPageToken}");
         }
+
+        /// <summary>
+        /// Sets the traffic allocation ofthe given service.
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="serviceId"></param>
+        /// <param name="allocation"></param>
+        /// <param name="oauthToken"></param>
+        /// <returns></returns>
+        public static async Task SetServiceTrafficAllocationAsync(
+            string projectId,
+            string serviceId,
+            IDictionary<string, double> allocations,
+            string oauthToken)
+        {
+            var baseUrl = $"https://appengine.googleapis.com/v1beta5/apps/{projectId}/services/{serviceId}?mask=split";
+            var client = new WebClient().SetOauthToken(oauthToken);
+            var service = new { split = new { allocations = allocations } };
+            try
+            {
+                var request = JsonConvert.SerializeObject(service);
+                var response = await client.UploadStringTaskAsync(baseUrl, "PATCH", request);
+                var operation = JsonConvert.DeserializeObject<GrpcOperation>(response);
+                await operation.WaitForFinish(oauthToken);
+            }
+            catch (WebException ex)
+            {
+                Debug.WriteLine($"Request failed: {ex.Message}");
+                throw new DataSourceException(ex.Message);
+            }
+        }
     }
 }

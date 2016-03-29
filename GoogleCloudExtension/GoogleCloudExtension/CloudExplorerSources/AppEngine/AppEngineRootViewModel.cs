@@ -92,7 +92,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             {
                 double allocation = 0.0;
                 serviceVersions.Item1.Split.Allocations.TryGetValue(version.Id, out allocation);
-                versions.Add(new VersionViewModel(version.Id, version, allocation));
+                versions.Add(new VersionViewModel(serviceVersions.Item1.Id, version, allocation));
             }
             return new TreeHierarchy(versions) { Content = serviceVersions.Item1.Id, Icon = s_moduleIcon.Value };
         }
