@@ -2,7 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.GCloud.Dnx;
+using GoogleCloudExtension.DnxSupport;
 using Microsoft.VisualStudio.PlatformUI;
 using System.Collections.Generic;
 
@@ -10,8 +10,8 @@ namespace GoogleCloudExtension.DeploymentDialog
 {
     public class DeploymentDialogWindowOptions
     {
-        public Project Project { get; set; }
-        public IList<Project> ProjectsToRestore { get; set; }
+        public DnxProject Project { get; set; }
+        public IList<DnxProject> ProjectsToRestore { get; set; }
     }
 
     public class DeploymentDialogWindow : DialogWindow

@@ -2,7 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.GCloud.Dnx;
+using GoogleCloudExtension.DnxSupport;
 using GoogleCloudExtension.Projects;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;

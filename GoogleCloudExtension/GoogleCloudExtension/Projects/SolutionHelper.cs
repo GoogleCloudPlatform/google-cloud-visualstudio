@@ -3,6 +3,7 @@
 
 using EnvDTE;
 using EnvDTE80;
+using GoogleCloudExtension.DnxSupport;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
@@ -17,12 +18,12 @@ namespace GoogleCloudExtension.Projects
     internal class SolutionHelper
     {
         private readonly Solution _solution;
-        private readonly GCloud.Dnx.Solution _dnxSolution;
+        private readonly DnxSolution _dnxSolution;
 
         internal SolutionHelper(Solution solution)
         {
             _solution = solution;
-            _dnxSolution = new GCloud.Dnx.Solution(solution.FullName);
+            _dnxSolution = new DnxSolution(solution.FullName);
         }
 
         public static SolutionHelper CurrentSolution
@@ -33,15 +34,15 @@ namespace GoogleCloudExtension.Projects
                 return new SolutionHelper(dte.Solution);
             }
         }
-        public GCloud.Dnx.Project StartupProject => GetStartupProject();
+        public DnxProject StartupProject => GetStartupProject();
 
-        public IList<GCloud.Dnx.Project> Projects => _dnxSolution.GetProjects();
+        public IList<DnxProject> Projects => _dnxSolution.GetProjects();
 
         private SolutionBuild2 SolutionBuild => _solution.SolutionBuild as SolutionBuild2;
 
         public string Root => _solution.FullName;
 
-        private GCloud.Dnx.Project GetStartupProject()
+        private DnxProject GetStartupProject()
         {
             var sb = this.SolutionBuild;
             if (sb == null)

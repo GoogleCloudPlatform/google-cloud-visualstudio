@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GCloud
 {
-    internal class ProcessOutput
+    public class ProcessOutput
     {
         public ProcessOutput(bool succeeded, string output, string error)
         {
@@ -24,22 +24,22 @@ namespace GoogleCloudExtension.GCloud
         public string Output { get; private set; }
     }
 
-    internal enum OutputChannel
+    public enum OutputChannel
     {
         None,
         StdError,
         StdOutput
     }
 
-    internal class OutputHandlerEventArgs
+    public class OutputHandlerEventArgs
     {
         public string Line { get; set; }
         public OutputChannel Channel { get; set; }
     }
 
-    internal delegate void OutputHandler(object sender, OutputHandlerEventArgs args);
+    public delegate void OutputHandler(object sender, OutputHandlerEventArgs args);
 
-    internal static class ProcessUtils
+    public static class ProcessUtils
     {
         /// <summary>
         /// Runs the given binary given by <paramref name="file"/> with the passed in <paramref name="args"/> and

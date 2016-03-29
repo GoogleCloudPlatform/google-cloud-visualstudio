@@ -7,24 +7,24 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
-namespace GoogleCloudExtension.GCloud.Dnx
+namespace GoogleCloudExtension.DnxSupport
 {
     /// <summary>
     /// This class represents a Dnx solution and understands the conventions used to be able
     /// to locate the projects within it.
     /// </summary>
-    public class Solution
+    public class DnxSolution
     {
-        private const string GlobalJsonName = "globa.json";
+        private const string GlobalJsonName = "global.json";
 
         public string Root { get; private set; }
 
-        public Solution(string root)
+        public DnxSolution(string root)
         {
             Root = root;
         }
 
-        public Project GetProjectFromName(string name)
+        public DnxProject GetProjectFromName(string name)
         {
             var solutionDirectory = Path.GetDirectoryName(Root);
             var projectDirectory = Path.GetDirectoryName(name);
@@ -32,9 +32,9 @@ namespace GoogleCloudExtension.GCloud.Dnx
 
             // Only return a DnxProject if the project is indeed a DnxProject otherwise just return
             // null. This is for the case when a Non-Dnx project is opened in VS.
-            if (Project.IsDnxProject(projectPath))
+            if (DnxProject.IsDnxProject(projectPath))
             {
-                return new Project(projectPath);
+                return new DnxProject(projectPath);
             }
             else
             {
@@ -42,9 +42,9 @@ namespace GoogleCloudExtension.GCloud.Dnx
             }
         }
 
-        public IList<Project> GetProjects()
+        public IList<DnxProject> GetProjects()
         {
-            List<Project> result = new List<Project>();
+            List<DnxProject> result = new List<DnxProject>();
 
             var solutionDirectory = Path.GetDirectoryName(Root);
             var globalJsonPath = Path.Combine(solutionDirectory, GlobalJsonName);
@@ -74,7 +74,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
             return result;
         }
 
-        private void FindProjects(string projectContainer, List<Project> result)
+        private void FindProjects(string projectContainer, List<DnxProject> result)
         {
             if (!Directory.Exists(projectContainer))
             {
@@ -85,12 +85,12 @@ namespace GoogleCloudExtension.GCloud.Dnx
             var possibleProjects = Directory.GetDirectories(projectContainer);
             foreach (var project in possibleProjects)
             {
-                if (!Project.IsDnxProject(project))
+                if (!DnxProject.IsDnxProject(project))
                 {
                     continue;
                 }
                 Debug.WriteLine($"Found project: {project}");
-                result.Add(new Project(project));
+                result.Add(new DnxProject(project));
             }
         }
     }

@@ -8,9 +8,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace GoogleCloudExtension.GCloud.Dnx
+namespace GoogleCloudExtension.DnxSupport
 {
-    public sealed class Project
+    public sealed class DnxProject
     {
         /// <summary>
         /// The full name of the webserver dependency.
@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.GCloud.Dnx
 
         public bool IsEntryPoint => _parsedProject.Value.Dependencies.ContainsKey(KestrelFullName);
 
-        public Project(string root)
+        public DnxProject(string root)
         {
             Root = root;
             _runtime = new Lazy<DnxRuntime>(GetProjectRuntime);

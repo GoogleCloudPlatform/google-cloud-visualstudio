@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace GoogleCloudExtension.GCloud.Dnx
+namespace GoogleCloudExtension.DnxSupport
 {
     /// <summary>
     /// This class contains the functionality to manage the DNX environment and get

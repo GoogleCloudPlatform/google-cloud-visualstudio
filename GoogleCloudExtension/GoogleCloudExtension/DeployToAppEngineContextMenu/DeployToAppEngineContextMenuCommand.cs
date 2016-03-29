@@ -2,6 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.DnxSupport;
 using GoogleCloudExtension.GCloud.Dnx;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio;
@@ -129,7 +130,7 @@ namespace GoogleCloudExtension.DeployToAppEngineContextMenu
                 DeployToAppEngine.DeployToAppEngineCommand.StartDeployToAppEngineCommand,
                 CommandInvocationSource.ContextMenu,
                 () => DeploymentUtils.BeginProjectDeploymentFlow(
-                        new Project(GetSelectedProjectPath()),
+                        new DnxProject(GetSelectedProjectPath()),
                         ServiceProvider));
         }
 
@@ -142,12 +143,12 @@ namespace GoogleCloudExtension.DeployToAppEngineContextMenu
             }
 
             var selectedProjectPath = GetSelectedProjectPath();
-            var isDnxProject = String.IsNullOrEmpty(selectedProjectPath) ? false : Project.IsDnxProject(selectedProjectPath);
-            Project project = null;
+            var isDnxProject = String.IsNullOrEmpty(selectedProjectPath) ? false : DnxProject.IsDnxProject(selectedProjectPath);
+            DnxProject project = null;
 
             if (isDnxProject)
             {
-                project = new Project(selectedProjectPath);
+                project = new DnxProject(selectedProjectPath);
                 isDnxProject = project.Runtime != DnxRuntime.None && project.IsEntryPoint;
             }
 

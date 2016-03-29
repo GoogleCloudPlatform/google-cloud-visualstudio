@@ -3,6 +3,7 @@
 
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.DeploymentDialog;
+using GoogleCloudExtension.DnxSupport;
 using GoogleCloudExtension.ErrorDialogs;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.GCloud.Dnx;
@@ -25,7 +26,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="startupProject"></param>
         /// <param name="serviceProvider"></param>
-        public static async void BeginProjectDeploymentFlow(Project startupProject, IServiceProvider serviceProvider)
+        public static async void BeginProjectDeploymentFlow(DnxProject startupProject, IServiceProvider serviceProvider)
         {
             ActivityLogUtils.LogInfo($"Starting the deployment process for project {startupProject.Name}.");
 
@@ -68,8 +69,8 @@ namespace GoogleCloudExtension.Utils
         }
 
         public static async Task<bool> DeployProjectAsync(
-            Project startupProject,
-            IList<Project> projects,
+            DnxProject startupProject,
+            IList<DnxProject> projects,
             string versionName,
             bool makeDefault,
             bool preserveOutput,
@@ -90,7 +91,7 @@ namespace GoogleCloudExtension.Utils
                 GoogleCloudExtensionPackage.IsDeploying = true;
 
                 StatusbarHelper.ShowDeployAnimation();
-                await AppEngineClient.DeployApplicationAsync(
+                await DnxDeployment.DeployApplicationAsync(
                     startupProjectPath: startupProject.Root,
                     projectPaths: projects.Select(x => x.Root).ToList(),
                     versionName: versionName,

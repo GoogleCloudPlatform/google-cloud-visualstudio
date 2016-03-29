@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GoogleCloudExtension.GCloud.Dnx
+namespace GoogleCloudExtension.DnxSupport
 {
     /// <summary>
     /// This class contains all of the metadata for a runtime enumeration value.

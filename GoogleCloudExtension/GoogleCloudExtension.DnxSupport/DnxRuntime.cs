@@ -2,7 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 
-namespace GoogleCloudExtension.GCloud.Dnx
+namespace GoogleCloudExtension.DnxSupport
 {
     /// <summary>
     /// Supported ASP.NET runtimes.
