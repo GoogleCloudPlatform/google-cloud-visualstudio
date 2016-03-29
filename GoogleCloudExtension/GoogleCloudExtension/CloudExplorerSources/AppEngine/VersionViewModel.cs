@@ -19,6 +19,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
         private const string IconResourcePath = "CloudExplorerSources/AppEngine/Resources/ic_web.png";
         private static readonly Lazy<ImageSource> s_versionIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
 
+        private AppEngineRootViewModel _owner;
         private readonly string _serviceId;
         private readonly GaeVersion _version;
         private readonly double _trafficSplit;
@@ -29,8 +30,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 
         public object Item { get; }
 
-        public VersionViewModel(string serviceId, GaeVersion version, double trafficSplit)
+        public VersionViewModel(AppEngineRootViewModel owner, string serviceId, GaeVersion version, double trafficSplit)
         {
+            _owner = owner;
             _serviceId = serviceId;
             _version = version;
             _trafficSplit = trafficSplit;
@@ -77,6 +79,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                 _deleteVersionCommand.CanExecuteCommand = false;
                 Content = $"{_version.Id} (Deleting...)";
                 await AppEngineClient.DeleteAppVersion(_serviceId, _version.Id);
+                _owner.Refresh();
             }
             catch (GCloudException ex)
             {
@@ -100,6 +103,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                     _serviceId,
                     new Dictionary<string, double> { { _version.Id, 1.0 } },
                     oauthToken);
+                _owner.Refresh();
             }
             catch (DataSourceException ex)
             {
