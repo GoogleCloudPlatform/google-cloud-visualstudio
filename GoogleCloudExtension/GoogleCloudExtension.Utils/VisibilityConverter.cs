@@ -37,7 +37,7 @@ namespace GoogleCloudExtension.Utils
         {
             if (value is bool)
             {
-                bool toConvert = (!IsNegated && ((bool)value)) || (IsNegated && !((bool)value));
+                bool toConvert = IsNegated ^ (bool)value;
                 var result = toConvert ? Visibility.Visible : Visibility.Collapsed;
                 if (LoggingEnabled)
                 {

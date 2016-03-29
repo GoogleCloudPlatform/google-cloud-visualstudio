@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.Utils
 
         public void Execute(object parameter)
         {
-            if (parameter != null && (parameter is T))
+            if (parameter is T)
             {
                 _delegate.Invoke((T)parameter);
             }
