@@ -33,12 +33,15 @@ namespace GoogleCloudExtension.Utils
 
         public bool CanExecute(object parameter)
         {
-            return parameter != null && (parameter is T) && CanExecuteCommand;
+            return CanExecuteCommand;
         }
 
         public void Execute(object parameter)
         {
-            _delegate.Invoke((T)parameter);
+            if (parameter is T)
+            {
+                _delegate.Invoke((T)parameter);
+            }
         }
 
         #endregion
