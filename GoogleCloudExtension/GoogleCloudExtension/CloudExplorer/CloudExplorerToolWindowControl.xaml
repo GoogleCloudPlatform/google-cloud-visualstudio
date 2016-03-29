@@ -1,4 +1,6 @@
 ﻿<UserControl x:Class="GoogleCloudExtension.CloudExplorer.CloudExplorerToolWindowControl"
+
+
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -20,8 +22,6 @@
         <utils:VisibilityConverter x:Key="errorVisibilityConverter" />
         <utils:VisibilityConverter x:Key="progressVisibilityConverted" />
         <utils:VisibilityConverter x:Key="booleanPropertyConverter" />
-
-        <utils:LoggingConverter x:Key="loggingConverter" Prefix="ErrorImage" />
 
         <!-- Data template to be applied to the TreeHierarchy -->
         <HierarchicalDataTemplate DataType="{x:Type CloudExplorer:TreeHierarchy}" ItemsSource="{Binding Children}">

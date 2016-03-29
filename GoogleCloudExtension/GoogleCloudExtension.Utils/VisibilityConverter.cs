@@ -22,8 +22,15 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         public bool IsNegated { get; set; }
 
+        /// <summary>
+        /// Whether logging the value being converted is enabled.
+        /// </summary>
         public bool LoggingEnabled { get; set; }
 
+        /// <summary>
+        /// The prefix string to use for the log messages, useful for finding the entries in the 
+        /// Output window.
+        /// </summary>
         public string LoggingPrefix { get; set; }
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
