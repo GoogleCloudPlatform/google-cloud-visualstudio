@@ -57,16 +57,6 @@ namespace GoogleCloudExtension.GCloud
                 "--server.urls http://0.0.0.0:8080\n";
 
         /// <summary>
-        /// Returns the list of AppEngine apps for the current user.
-        /// </summary>
-        /// <returns>The list of AppEngine apps.</returns>
-        public static async Task<IList<ModuleAndVersion>> GetAppEngineAppListAsync()
-        {
-            var result = await GCloudWrapper.Instance.GetJsonOutputAsync<IList<ModuleAndVersion>>("preview app modules list");
-            return result.Where(x => !x.Version.StartsWith(BuiltinServiceVersionPrefix)).ToList();
-        }
-
-        /// <summary>
         /// Sets the given version as the default version for the given module.
         /// </summary>
         /// <param name="module">The module to change.</param>

@@ -13,16 +13,6 @@ namespace GoogleCloudExtension.GCloud
     public static class ComputeEngineClient
     {
         /// <summary>
-        /// Returns the list of compute instances for this class' notion of current
-        /// user and project.
-        /// </summary>
-        /// <returns>The list of compute instances.</returns>
-        public static Task<IList<ComputeInstance>> GetComputeInstanceListAsync()
-        {
-            return GCloudWrapper.Instance.GetJsonOutputAsync<IList<ComputeInstance>>("compute instances list");
-        }
-
-        /// <summary>
         /// Starts the GCE instance given its name and zone.
         /// </summary>
         /// <param name="name">The name of the GCE instance.</param>

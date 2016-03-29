@@ -54,9 +54,7 @@
     <Compile Include="Dnx\Solution.cs" />
     <Compile Include="Models\CloudSdkComponent.cs" />
     <Compile Include="Models\CloudSdkComponentState.cs" />
-    <Compile Include="Models\ModuleAndVersion.cs" />
     <Compile Include="ComputeEngineClient.cs" />
-    <Compile Include="Models\ComputeInstance.cs" />
     <Compile Include="Dnx\DnxEnvironment.cs" />
     <Compile Include="Dnx\DnxRuntime.cs" />
     <Compile Include="Dnx\DnxRuntimeInfo.cs" />
