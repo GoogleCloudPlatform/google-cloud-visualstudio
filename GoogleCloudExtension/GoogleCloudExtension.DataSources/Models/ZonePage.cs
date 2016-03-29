@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace GoogleCloudExtension.DataSources.Models
 {
-    public class Zones
+    public class ZonePage
     {
         [JsonProperty("items")]
         public IList<Zone> Items { get; set; }

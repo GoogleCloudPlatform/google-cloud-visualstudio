@@ -6,10 +6,10 @@ using System.Collections.Generic;
 
 namespace GoogleCloudExtension.DataSources.Models
 {
-    internal class GaeVersions
+    public class BucketPage
     {
-        [JsonProperty("versions")]
-        public IEnumerable<GaeVersion> Versions { get; set; }
+        [JsonProperty("items")]
+        public IList<Bucket> Items { get; set; }
 
         [JsonProperty("nextPageToken")]
         public string NextPageToken { get; set; }

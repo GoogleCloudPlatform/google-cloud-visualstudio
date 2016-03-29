@@ -28,10 +28,10 @@ namespace GoogleCloudExtension.DataSources
             var baseUrl = $"https://appengine.googleapis.com/v1beta5/apps/{projectId}/services";
             var client = new WebClient().SetOauthToken(oauthToken);
 
-            return await ApiHelpers.LoadPagedListAsync<GaeService, GaeServices>(
+            return await ApiHelpers.LoadPagedListAsync<GaeService, GaeServicePage>(
                 client,
                 baseUrl,
-                x => x.Services,
+                x => x.Items,
                 x => String.IsNullOrEmpty(x.NextPageToken) ? null : $"{baseUrl}?pageToken={x.NextPageToken}");
         }
 
@@ -46,10 +46,10 @@ namespace GoogleCloudExtension.DataSources
             var baseUrl = $"https://appengine.googleapis.com/v1beta5/{name}/versions?view=FULL";
             var client = new WebClient().SetOauthToken(oauthToken);
 
-            return await ApiHelpers.LoadPagedListAsync<GaeVersion, GaeVersions>(
+            return await ApiHelpers.LoadPagedListAsync<GaeVersion, GaeVersionPage>(
                 client,
                 baseUrl,
-                x => x.Versions,
+                x => x.Items,
                 x => String.IsNullOrEmpty(x.NextPageToken) ? null : $"{baseUrl}&pageToken={x.NextPageToken}");
         }
     }

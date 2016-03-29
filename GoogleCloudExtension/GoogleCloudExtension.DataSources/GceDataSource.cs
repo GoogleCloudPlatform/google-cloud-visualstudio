@@ -137,7 +137,7 @@ namespace GoogleCloudExtension.DataSources
             var client = new WebClient().SetOauthToken(oauthToken);
 
             string baseUrl = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones";
-            return await ApiHelpers.LoadPagedListAsync<Zone, Zones>(
+            return await ApiHelpers.LoadPagedListAsync<Zone, ZonePage>(
                 client,
                 baseUrl,
                 x => x.Items,
@@ -158,7 +158,7 @@ namespace GoogleCloudExtension.DataSources
         {
             var baseUrl = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zoneName}/instances";
             var client = new WebClient().SetOauthToken(oauthToken);
-            var result = await ApiHelpers.LoadPagedListAsync<GceInstance, GceInstances>(
+            var result = await ApiHelpers.LoadPagedListAsync<GceInstance, GceInstancePage>(
                 client,
                 baseUrl,
                 x => x.Items,

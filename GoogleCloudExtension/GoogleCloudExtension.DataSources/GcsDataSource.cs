@@ -17,7 +17,7 @@ namespace GoogleCloudExtension.DataSources
             var baseUrl = $"https://www.googleapis.com/storage/v1/b?project={projectId}";
             var client = new WebClient().SetOauthToken(oauthToken);
 
-            return await ApiHelpers.LoadPagedListAsync<Bucket, Buckets>(
+            return await ApiHelpers.LoadPagedListAsync<Bucket, BucketPage>(
                 client,
                 baseUrl,
                 x => x.Items,
