@@ -4,10 +4,10 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace GoogleCloudExtension.GCloud
+namespace GoogleCloudExtension.Utils
 {
     [Serializable]
-    internal class JsonOutputException : Exception
+    public class JsonOutputException : Exception
     {
         public JsonOutputException()
         {

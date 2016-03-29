@@ -8,7 +8,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.GCloud
+namespace GoogleCloudExtension.Utils
 {
     public class ProcessOutput
     {

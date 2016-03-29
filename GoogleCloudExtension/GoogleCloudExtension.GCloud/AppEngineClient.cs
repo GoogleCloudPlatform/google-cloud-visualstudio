@@ -16,10 +16,6 @@ namespace GoogleCloudExtension.GCloud
     /// </summary>
     public static class AppEngineClient
     {
-        // This prefix allows us to detect the builtin services so we can avoid showing
-        // them as user's versions.
-        private const string BuiltinServiceVersionPrefix = "ah-";
-
         /// <summary>
         /// Sets the given version as the default version for the given module.
         /// </summary>
