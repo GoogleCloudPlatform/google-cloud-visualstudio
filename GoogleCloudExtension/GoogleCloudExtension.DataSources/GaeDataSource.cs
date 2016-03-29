@@ -69,7 +69,7 @@ namespace GoogleCloudExtension.DataSources
         {
             var baseUrl = $"https://appengine.googleapis.com/v1beta5/apps/{projectId}/services/{serviceId}?mask=split";
             var client = new WebClient().SetOauthToken(oauthToken);
-            var service = new { split = new { allocations = allocations } };
+            var service = new GaeService { Split = new TrafficSplit { Allocations = allocations } };
             try
             {
                 var request = JsonConvert.SerializeObject(service);
