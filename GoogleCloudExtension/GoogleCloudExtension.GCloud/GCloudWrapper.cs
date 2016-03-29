@@ -236,7 +236,7 @@ namespace GoogleCloudExtension.GCloud
         /// <returns>List of projects.</returns>
         public Task<IList<CloudProject>> GetProjectsAsync()
         {
-            return GetJsonOutputAsync<IList<CloudProject>>("alpha projects list");
+            return GetJsonOutputAsync<IList<CloudProject>>("projects list");
         }
 
         /// <summary>
@@ -247,7 +247,7 @@ namespace GoogleCloudExtension.GCloud
         /// <returns>The task with the list of projects.</returns>
         public async Task<IList<CloudProject>> GetProjectsAsync(Credentials credentials)
         {
-            return await GetJsonOutputAsync<IList<CloudProject>>("alpha projects list", credentials);
+            return await GetJsonOutputAsync<IList<CloudProject>>("projects list", credentials);
         }
 
         public async Task<WindowsInstanceCredentials> ResetWindowsCredentials(string instance, string zone, string user)
