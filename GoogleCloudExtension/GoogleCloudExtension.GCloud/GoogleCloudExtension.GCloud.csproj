@@ -53,7 +53,6 @@
     <Compile Include="AppEngineClient.cs" />
     <Compile Include="Models\CloudSdkComponent.cs" />
     <Compile Include="Models\CloudSdkComponentState.cs" />
-    <Compile Include="ComputeEngineClient.cs" />
     <Compile Include="GCloudException.cs" />
     <Compile Include="GCloudWrapper.cs" />
     <Compile Include="JsonOutputException.cs" />
