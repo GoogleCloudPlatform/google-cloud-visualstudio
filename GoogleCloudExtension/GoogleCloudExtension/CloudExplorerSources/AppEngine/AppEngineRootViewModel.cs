@@ -18,6 +18,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
     {
         private const string AppEngineIconResourcePath = "CloudExplorerSources/AppEngine/Resources/app_engine.png";
         private const string ModuleIconResourcePath = "CloudExplorerSources/AppEngine/Resources/ic_view_module.png";
+        private const string BuiltInPrefix = "ah-";
 
         private static readonly Lazy<ImageSource> s_appEngineIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(AppEngineIconResourcePath));
         private static readonly Lazy<ImageSource> s_moduleIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(ModuleIconResourcePath));
@@ -62,7 +63,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                 foreach (var s in services)
                 {
                     var versions = await GaeDataSource.GetServiceVersionsAsync(s.Name, oauthToken);
-                    var serviceVersion = new Tuple<GaeService, IList<GaeVersion>>(s, versions);
+                    var serviceVersion = new Tuple<GaeService, IList<GaeVersion>>(s, versions.Where(x => !x.Id.StartsWith(BuiltInPrefix)).ToList());
                     servicesVersions.Add(serviceVersion);
                 }
 
@@ -86,11 +87,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 
         private TreeHierarchy MakeModuleHierarchy(Tuple<GaeService, IList<GaeVersion>> serviceVersions)
         {
-            var versionsById = serviceVersions.Item2.ToDictionary(x => x.Id, x => x);
-            var versions = from v in serviceVersions.Item1.Split.Allocations
-                           orderby v.Value descending
-                           select new VersionViewModel(serviceVersions.Item1.Id, versionsById[v.Key], v.Value);
-
+            var versions = new List<VersionViewModel>();
+            foreach (var version in serviceVersions.Item2)
+            {
+                double allocation = 0.0;
+                serviceVersions.Item1.Split.Allocations.TryGetValue(version.Id, out allocation);
+                versions.Add(new VersionViewModel(version.Id, version, allocation));
+            }
             return new TreeHierarchy(versions) { Content = serviceVersions.Item1.Id, Icon = s_moduleIcon.Value };
         }
     }
