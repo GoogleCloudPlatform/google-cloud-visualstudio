@@ -28,3 +28,13 @@ Simple overloads of the generic are available with, 1, 2 ad no parameters.
 The `WeakCommand` class implements the `ICommand` interface using `WeakActions` to point back to the actual handler of the commands.
 
 There is a variang of `WeakCommand` that accept a parameter and another one that doesn't . The `WeakCommand` variant that accept commands ensures that the argument is not `null` before invoking the command, as it is expected that the command will only support non-null arguments.
+
+## ProcessUtils
+The `ProcessUtils` class provices helpers to run processes and read the `stdout` and `stderr` streams from the process.
+
+The class can run a sub-process in various modes:
+* Run the process and provide the lines of output via a callback, using the `ProcessUtils.RunCommandAsync` method. This method will return once the process exits. The resulting boolean will be `true` if the process suceeded (the exit code is 0) or false otherwise.
+* Run the process and collect all of the output from the process, using the `ProcessUtils.GetCommandOutputAsync` method. This method will run the process and collect all of the `stdout` and `stderr` output and return them, together with whether the process suceeded or not.
+* Run the process and only know if the process failed or not, using the `ProcessUtils.LaunchCommandAsync` method. This method will run the process and return whether the process failed or not but nothing else.
+
+On top of these ther eis a helper that will run the process using `ProcessUtils.GetCommandOutputAsync` and parse the `stdout` output, if the process suceeded, parse it as json output and return that, very very useful for parsing the output of running gcloud commands.
