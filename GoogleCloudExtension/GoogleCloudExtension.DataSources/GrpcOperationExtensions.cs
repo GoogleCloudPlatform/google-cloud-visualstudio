@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.DataSources
                     {
                         if (operation.Error != null)
                         {
-                            throw new OperationError(operation.Error);
+                            throw new GrpcOperationException(operation.Error);
                         }
                         return;
                     }
@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.DataSources
             catch (WebException ex)
             {
                 Debug.WriteLine($"Failed to poll: ${ex.Message}");
-                throw new OperationError(ex.Message, ex);
+                throw new GrpcOperationException(ex.Message, ex);
             }
         }
     }

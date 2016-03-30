@@ -82,6 +82,11 @@ namespace GoogleCloudExtension.DataSources
                 Debug.WriteLine($"Request failed: {ex.Message}");
                 throw new DataSourceException(ex.Message);
             }
+            catch (GrpcOperationException ex)
+            {
+                Debug.WriteLine($"Error waiting for operation failed: {ex.Message}");
+                throw new DataSourceException(ex.Message);
+            }
         }
     }
 }

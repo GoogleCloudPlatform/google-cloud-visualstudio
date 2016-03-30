@@ -81,7 +81,7 @@
     <Compile Include="Models\Zone.cs" />
     <Compile Include="Models\ZoneOperation.cs" />
     <Compile Include="Models\ZonePage.cs" />
-    <Compile Include="OperationError.cs" />
+    <Compile Include="GrpcOperationException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebClientExtensions.cs" />
     <Compile Include="ZoneOperationError.cs" />
