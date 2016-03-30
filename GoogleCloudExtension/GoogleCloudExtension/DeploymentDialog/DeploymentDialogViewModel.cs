@@ -183,7 +183,7 @@ namespace GoogleCloudExtension.DeploymentDialog
                 versionName: VersionName,
                 makeDefault: MakeDefault,
                 preserveOutput: PreserveOutput,
-                accountAndProject: new Credentials(account: this.SelectedAccount, projectId: this.SelectedCloudProject.Id));
+                accountAndProject: new Context(account: this.SelectedAccount, projectId: this.SelectedCloudProject.Id));
             ExtensionAnalytics.ReportEndCommand(DeployAppEngineAppCommand, succeeded: success);
         }
 
@@ -213,7 +213,7 @@ namespace GoogleCloudExtension.DeploymentDialog
                 this.CloudProjects = null;
                 _selectedCloudProject = null;
 
-                var credentials = new Credentials(account: this.SelectedAccount);
+                var credentials = new Context(account: this.SelectedAccount);
                 var cloudProjects = await GCloudWrapper.Instance.GetProjectsAsync(credentials);
 
                 this.CloudProjects = cloudProjects;

@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.GCloud
         /// <summary>
         /// Maintains the currently selected account and project for the instance.
         /// </summary>
-        private Credentials _currentCredentials;
+        private Context _currentCredentials;
 
         /// <summary>
         /// Singleton for the class.
@@ -59,14 +59,14 @@ namespace GoogleCloudExtension.GCloud
         /// hidden from the caller.
         /// </summary>
         /// <returns>The current AccountAndProjectId.</returns>
-        public async Task<Credentials> GetCurrentCredentialsAsync()
+        public async Task<Context> GetCurrentCredentialsAsync()
         {
             if (_currentCredentials == null)
             {
                 // Fetching the current account and project, for gcloud, does not need to use the current
                 // account.
                 var settings = await GetJsonOutputAsync<Settings>("config list", credentials: null);
-                _currentCredentials = new Credentials(
+                _currentCredentials = new Context(
                     account: settings.CoreSettings.Account,
                     projectId: settings.CoreSettings.Project);
             }
@@ -78,7 +78,7 @@ namespace GoogleCloudExtension.GCloud
         /// affect what gcloud thinks is the current account and project.
         /// </summary>
         /// <param name="credentials">The new accountAndProject to use</param>
-        public void UpdateCredentials(Credentials credentials)
+        public void UpdateCredentials(Context credentials)
         {
             _currentCredentials = credentials;
             RaiseAccountOrProjectChanged();
@@ -86,7 +86,7 @@ namespace GoogleCloudExtension.GCloud
 
         public void UpdateProject(string projectId)
         {
-            var newCredentials = new Credentials(_currentCredentials.Account, projectId);
+            var newCredentials = new Context(_currentCredentials.Account, projectId);
             UpdateCredentials(newCredentials);
         }
 
@@ -105,7 +105,7 @@ namespace GoogleCloudExtension.GCloud
                 .FirstOrDefault();
         }
 
-        private IDictionary<string, string> GetEnvironmentForCredentials(Credentials credentials)
+        private IDictionary<string, string> GetEnvironmentForCredentials(Context credentials)
         {
             if (credentials != null)
             {
@@ -124,7 +124,14 @@ namespace GoogleCloudExtension.GCloud
             return $"/c gcloud {jsonFormatParam} {command}";
         }
 
-        public async Task RunCommandAsync(string command, Action<string> callback, Credentials credentials)
+        /// <summary>
+        /// Runs a gcloud command, returns when the command is finished.
+        /// </summary>
+        /// <param name="command">The command to execute.</param>
+        /// <param name="callback">The output callback called for each line of output from the command.</param>
+        /// <param name="credentials">The credentials to use.</param>
+        /// <returns></returns>
+        public async Task RunCommandAsync(string command, Action<string> callback, Context credentials)
         {
             var actualCommand = FormatCommand(command, useJson: false);
             var envVars = GetEnvironmentForCredentials(credentials);
@@ -134,55 +141,6 @@ namespace GoogleCloudExtension.GCloud
             {
                 throw new GCloudException($"Failed to execute: {actualCommand}");
             }
-        }
-
-        public async Task RunCommandAsync(string command, Action<string> callback)
-        {
-            await RunCommandAsync(command, callback, await GetCurrentCredentialsAsync());
-        }
-
-        public async Task<string> GetCommandOutputAsync(string command, Credentials credentials)
-        {
-            var actualCommand = FormatCommand(command, useJson: false);
-            var envVars = GetEnvironmentForCredentials(credentials);
-            Debug.WriteLine($"Executing gcloud command: {actualCommand}");
-            var output = await ProcessUtils.GetCommandOutputAsync("cmd.exe", actualCommand, envVars);
-            if (!output.Succeeded)
-            {
-                throw new GCloudException($"Failed with message: {output.Error}");
-            }
-            return output.Output;
-        }
-
-        public async Task<string> GetCommandOutputAsync(string command)
-        {
-            return await GetCommandOutputAsync(command, await GetCurrentCredentialsAsync());
-        }
-
-        public Task<int> LaunchCommandAsync(string command)
-        {
-            var actualCommand = FormatCommand(command, useJson: false);
-            return ProcessUtils.LaunchCommandAsync("cmd.exe", actualCommand, null);
-        }
-
-        public async Task<T> GetJsonOutputAsync<T>(string command, Credentials credentials)
-        {
-            var actualCommand = FormatCommand(command, useJson: true);
-            var envVars = GetEnvironmentForCredentials(credentials);
-            try
-            {
-                Debug.Write($"Executing gcloud command: {actualCommand}");
-                return await ProcessUtils.GetJsonOutputAsync<T>("cmd.exe", actualCommand, envVars);
-            }
-            catch (JsonOutputException ex)
-            {
-                throw new GCloudException($"Failed to execute command {actualCommand}\nInner message:\n{ex.Message}", ex);
-            }
-        }
-
-        public async Task<T> GetJsonOutputAsync<T>(string command)
-        {
-            return await GetJsonOutputAsync<T>(command, await GetCurrentCredentialsAsync());
         }
 
         /// <summary>
@@ -246,7 +204,7 @@ namespace GoogleCloudExtension.GCloud
         /// </summary>
         /// <param name="credentials">The credentials to use.</param>
         /// <returns>The task with the list of projects.</returns>
-        public async Task<IList<CloudProject>> GetProjectsAsync(Credentials credentials)
+        public async Task<IList<CloudProject>> GetProjectsAsync(Context credentials)
         {
             return await GetJsonOutputAsync<IList<CloudProject>>("projects list", credentials);
         }
@@ -299,6 +257,50 @@ namespace GoogleCloudExtension.GCloud
             Debug.WriteLineIf(gcloudPath == null, "Cannot find gcloud.cmd in the system.");
             Debug.WriteLineIf(gcloudPath != null, $"Found gcloud.cmd at {gcloudPath}");
             return gcloudPath != null;
+        }
+
+        private async Task<string> GetCommandOutputAsync(string command, Context credentials)
+        {
+            var actualCommand = FormatCommand(command, useJson: false);
+            var envVars = GetEnvironmentForCredentials(credentials);
+            Debug.WriteLine($"Executing gcloud command: {actualCommand}");
+            var output = await ProcessUtils.GetCommandOutputAsync("cmd.exe", actualCommand, envVars);
+            if (!output.Succeeded)
+            {
+                throw new GCloudException($"Failed with message: {output.Error}");
+            }
+            return output.Output;
+        }
+
+        private async Task<string> GetCommandOutputAsync(string command)
+        {
+            return await GetCommandOutputAsync(command, await GetCurrentCredentialsAsync());
+        }
+
+        private Task<int> LaunchCommandAsync(string command)
+        {
+            var actualCommand = FormatCommand(command, useJson: false);
+            return ProcessUtils.LaunchCommandAsync("cmd.exe", actualCommand, null);
+        }
+
+        private async Task<T> GetJsonOutputAsync<T>(string command, Context credentials)
+        {
+            var actualCommand = FormatCommand(command, useJson: true);
+            var envVars = GetEnvironmentForCredentials(credentials);
+            try
+            {
+                Debug.Write($"Executing gcloud command: {actualCommand}");
+                return await ProcessUtils.GetJsonOutputAsync<T>("cmd.exe", actualCommand, envVars);
+            }
+            catch (JsonOutputException ex)
+            {
+                throw new GCloudException($"Failed to execute command {actualCommand}\nInner message:\n{ex.Message}", ex);
+            }
+        }
+
+        private async Task<T> GetJsonOutputAsync<T>(string command)
+        {
+            return await GetJsonOutputAsync<T>(command, await GetCurrentCredentialsAsync());
         }
     }
 }

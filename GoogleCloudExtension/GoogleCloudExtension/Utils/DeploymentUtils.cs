@@ -74,7 +74,7 @@ namespace GoogleCloudExtension.Utils
             string versionName,
             bool makeDefault,
             bool preserveOutput,
-            Credentials accountAndProject)
+            Context accountAndProject)
         {
             bool result = false;
 
