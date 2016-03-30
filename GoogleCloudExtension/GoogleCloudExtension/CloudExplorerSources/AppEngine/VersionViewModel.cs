@@ -6,6 +6,8 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -76,13 +78,36 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
         {
             try
             {
+                var result = VsShellUtilities.ShowMessageBox(
+                    GoogleCloudExtensionPackage.Instance,
+                    $"Are you sure you want to delete {_version.Id} in service {_serviceId}?",
+                    $"Deleting {_version.Id}",
+                    OLEMSGICON.OLEMSGICON_QUERY,
+                    OLEMSGBUTTON.OLEMSGBUTTON_YESNO,
+                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND);
+                if (result != ButtonIds.IDYES)
+                {
+                    Debug.WriteLine("The user cancelled the operation.");
+                    return;
+                }
+
                 _deleteVersionCommand.CanExecuteCommand = false;
                 Content = $"{_version.Id} (Deleting...)";
-                await AppEngineClient.DeleteAppVersion(_serviceId, _version.Id);
+                IsLoading = true;
+                var currentCredentials = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
+                var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
+                await GaeDataSource.DeleteVersionAsync(
+                    projectId: currentCredentials.ProjectId,
+                    serviceId: _serviceId,
+                    versionId: _version.Id,
+                    oauthToken: oauthToken);
                 _owner.Refresh();
             }
-            catch (GCloudException ex)
+            catch (DataSourceException ex)
             {
+                Content = _version.Id;
+                IsLoading = false;
+
                 _deleteVersionCommand.CanExecuteCommand = true;
                 GcpOutputWindow.OutputLine($"Failed to delete version {_version.Id} in service {_serviceId}");
                 GcpOutputWindow.OutputLine(ex.Message);
@@ -96,6 +121,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             {
                 _setDefaultVersionCommand.CanExecuteCommand = false;
                 Content = $"{_version.Id} (Setting as default...)";
+                IsLoading = true;
                 var credentials = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
                 var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
                 await GaeDataSource.SetServiceTrafficAllocationAsync(
@@ -107,6 +133,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             }
             catch (DataSourceException ex)
             {
+                Content = _version.Id;
+                IsLoading = false;
+
                 _setDefaultVersionCommand.CanExecuteCommand = true;
                 GcpOutputWindow.OutputLine("Failed to set default version.");
                 GcpOutputWindow.OutputLine(ex.Message);

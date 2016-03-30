@@ -14,5 +14,9 @@ namespace GoogleCloudExtension.DataSources
         public DataSourceException(string message) : base(message)
         {
         }
+
+        public DataSourceException(string message, Exception inner) : base(message, inner)
+        {
+        }
     }
 }

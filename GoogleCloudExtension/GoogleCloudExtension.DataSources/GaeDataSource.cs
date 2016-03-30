@@ -80,12 +80,46 @@ namespace GoogleCloudExtension.DataSources
             catch (WebException ex)
             {
                 Debug.WriteLine($"Request failed: {ex.Message}");
-                throw new DataSourceException(ex.Message);
+                throw new DataSourceException(ex.Message, ex);
             }
             catch (GrpcOperationException ex)
             {
-                Debug.WriteLine($"Error waiting for operation failed: {ex.Message}");
-                throw new DataSourceException(ex.Message);
+                Debug.WriteLine($"Error waiting for operation: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Deletes the given version.
+        /// </summary>
+        /// <param name="projectId">The project that contains the service and version.</param>
+        /// <param name="serviceId">The service that owns the version.</param>
+        /// <param name="versionId">The version to delete.</param>
+        /// <param name="oauthToken">The oauth token to use to authenticate the call.</param>
+        /// <returns></returns>
+        public static async Task DeleteVersionAsync(
+            string projectId,
+            string serviceId,
+            string versionId,
+            string oauthToken)
+        {
+            var baseUrl = $"https://appengine.googleapis.com/v1beta5/apps/{projectId}/services/{serviceId}/versions/{versionId}";
+            var client = new WebClient().SetOauthToken(oauthToken);
+            try
+            {
+                var response = await client.UploadStringTaskAsync(baseUrl, "DELETE", "");
+                var operation = JsonConvert.DeserializeObject<GrpcOperation>(response);
+                await operation.WaitForFinish(oauthToken);
+            }
+            catch (WebException ex)
+            {
+                Debug.WriteLine($"Request failed: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+            catch (GrpcOperationException ex)
+            {
+                Debug.WriteLine($"Error waiting for operation: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
             }
         }
     }

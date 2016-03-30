@@ -89,7 +89,11 @@ namespace GoogleCloudExtension
             _dteInstance.Events.DTEEvents.OnBeginShutdown += DTEEvents_OnBeginShutdown;
 
             EnvironmentUtils.PreFetchGCloudValidationResult();
+
+            Instance = this;
         }
+
+        public static GoogleCloudExtensionPackage Instance { get; private set; }
 
         private void DTEEvents_OnBeginShutdown()
         {

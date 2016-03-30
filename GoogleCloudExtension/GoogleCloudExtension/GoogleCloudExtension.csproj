@@ -98,6 +98,7 @@
     <Compile Include="Projects\SolutionHelper.cs" />
     <Compile Include="Utils\ActivityLogUtils.cs" />
     <Compile Include="Utils\Atomic.cs" />
+    <Compile Include="Utils\ButtonIds.cs" />
     <Compile Include="Utils\DnxValidationResult.cs" />
     <Compile Include="Utils\EnvironmentUtils.cs" />
     <Compile Include="Utils\GCloudValidationResult.cs" />
