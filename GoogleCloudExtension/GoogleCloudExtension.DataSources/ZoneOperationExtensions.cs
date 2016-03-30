@@ -11,7 +11,7 @@ namespace GoogleCloudExtension.DataSources
 {
     public static class ZoneOperationExtensions
     {
-        public static async Task WaitForFinish(this ZoneOperation operation, string project, string zone, string oauthToken)
+        public static async Task Wait(this ZoneOperation operation, string project, string zone, string oauthToken)
         {
             Debug.WriteLine($"Waiting on operation {operation.Name}");
             var client = new WebClient().SetOauthToken(oauthToken);

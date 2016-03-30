@@ -12,7 +12,7 @@ namespace GoogleCloudExtension.DataSources
 {
     internal static class GrpcOperationExtensions
     {
-        public static async Task WaitForFinish(this GrpcOperation self, string oauthToken)
+        public static async Task Wait(this GrpcOperation self, string oauthToken)
         {
             var baseUrl = $"https://appengine.googleapis.com/v1beta5/{self.Name}";
             try

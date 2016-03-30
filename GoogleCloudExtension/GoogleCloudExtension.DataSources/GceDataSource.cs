@@ -106,7 +106,7 @@ namespace GoogleCloudExtension.DataSources
                 client.Headers[HttpRequestHeader.ContentType] = "application/json";
                 var result = await client.UploadStringTaskAsync(url, "POST", serializedRequest);
                 var operation = JsonConvert.DeserializeObject<ZoneOperation>(result);
-                await operation.WaitForFinish(
+                await operation.Wait(
                     project: target.ProjectId,
                     zone: target.ZoneName,
                     oauthToken: oauthToken);

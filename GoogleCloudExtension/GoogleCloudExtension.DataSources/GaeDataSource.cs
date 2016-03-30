@@ -75,7 +75,7 @@ namespace GoogleCloudExtension.DataSources
                 var request = JsonConvert.SerializeObject(service);
                 var response = await client.UploadStringTaskAsync(baseUrl, "PATCH", request);
                 var operation = JsonConvert.DeserializeObject<GrpcOperation>(response);
-                await operation.WaitForFinish(oauthToken);
+                await operation.Wait(oauthToken);
             }
             catch (WebException ex)
             {
@@ -109,7 +109,7 @@ namespace GoogleCloudExtension.DataSources
             {
                 var response = await client.UploadStringTaskAsync(baseUrl, "DELETE", "");
                 var operation = JsonConvert.DeserializeObject<GrpcOperation>(response);
-                await operation.WaitForFinish(oauthToken);
+                await operation.Wait(oauthToken);
             }
             catch (WebException ex)
             {
