@@ -79,11 +79,24 @@ namespace GoogleCloudExtension.Utils
                 }
 
                 // Ensure that the list of components that we need are installed.
-                var installedComponents = await GCloudWrapper.Instance.GetInstalledComponentsAsync();
-                var missingComponents = s_requiredComponentNames.Except(installedComponents);
-                return new GCloudValidationResult(
-                    gcloudInstalled: gcloudInstalled,
-                    missingComponents: missingComponents);
+                try
+                {
+                    var installedComponents = await GCloudWrapper.Instance.GetInstalledComponentsAsync();
+                    var missingComponents = s_requiredComponentNames.Except(installedComponents);
+                    return new GCloudValidationResult(
+                        gcloudInstalled: gcloudInstalled,
+                        missingComponents: missingComponents);
+                }
+                catch (GCloudException ex)
+                {
+                    Debug.WriteLine($"Failed to detect components: {ex.Message}");
+                    ActivityLogUtils.LogError($"Failed to detect components, out of date gcloud.");
+                    GcpOutputWindow.OutputLine($"Failed to detect gcloud components, out of date gcloud detected.");
+                    GcpOutputWindow.Activate();
+                    return new GCloudValidationResult(
+                        gcloudInstalled: gcloudInstalled,
+                        missingComponents: s_requiredComponentNames);
+                }
             });
 
         /// <summary>

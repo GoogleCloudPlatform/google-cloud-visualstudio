@@ -121,6 +121,10 @@ namespace GoogleCloudExtension.Utils
             {
                 throw new JsonOutputException($"Failed to parse output of command: {file} {args}\n{output.Output}");
             }
+            catch (JsonReaderException ex)
+            {
+                throw new JsonOutputException($"Failed to parse output of command: {file} {args}\n{output.Output}");
+            }
         }
 
         /// <summary>
