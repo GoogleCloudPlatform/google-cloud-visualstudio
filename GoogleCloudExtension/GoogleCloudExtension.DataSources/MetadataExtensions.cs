@@ -19,19 +19,9 @@ namespace GoogleCloudExtension.DataSources
         /// <returns></returns>
         public static IList<MetadataEntry> SetValue(this IList<MetadataEntry> entries, string key, string value)
         {
-            var result = entries.ToDictionary();
+            var result = entries.ToDictionary(x => x.Key, y => y.Value);
             result[key] = value;
-            return ToEntries(result);
-        }
-
-        public static Dictionary<string, string> ToDictionary(this IList<MetadataEntry> entries)
-        {
-            return entries.ToDictionary(x => x.Key, x => x.Value);
-        }
-
-        public static IList<MetadataEntry> ToEntries(Dictionary<string, string> entries)
-        {
-            return entries.Select(x => new MetadataEntry { Key = x.Key, Value = x.Value }).ToList();
+            return result.Select(x => new MetadataEntry { Key = x.Key, Value = x.Value }).ToList();
         }
     }
 }
