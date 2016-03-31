@@ -154,12 +154,12 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="projectId">The project id for which to fetch the zone data.</param>
         /// <param name="oauthToken">The auth token to use to authenticate this call.</param>
         /// <returns></returns>
-        private static async Task<IList<Zone>> GetZoneListAsync(string projectId, string oauthToken)
+        private static Task<IList<Zone>> GetZoneListAsync(string projectId, string oauthToken)
         {
             var client = new WebClient().SetOauthToken(oauthToken);
-
             string baseUrl = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones";
-            return await ApiHelpers.LoadPagedListAsync<Zone, ZonePage>(
+
+            return ApiHelpers.LoadPagedListAsync<Zone, ZonePage>(
                 client,
                 baseUrl,
                 x => x.Items,
@@ -185,6 +185,7 @@ namespace GoogleCloudExtension.DataSources
                 baseUrl,
                 x => x.Items,
                 x => string.IsNullOrEmpty(x.NextPageToken) ? null : $"{baseUrl}?pageToken={x.NextPageToken}");
+
             foreach (var instance in result)
             {
                 instance.ZoneName = zoneName;

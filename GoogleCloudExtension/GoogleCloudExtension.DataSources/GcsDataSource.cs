@@ -22,12 +22,12 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="projectId">The id of the project that owns the buckets.</param>
         /// <param name="oauthToken">The oauth token to use to authorize the call.</param>
         /// <returns>The list of buckets.</returns>
-        public static async Task<IList<Bucket>> GetBucketListAsync(string projectId, string oauthToken)
+        public static Task<IList<Bucket>> GetBucketListAsync(string projectId, string oauthToken)
         {
             var baseUrl = $"https://www.googleapis.com/storage/v1/b?project={projectId}";
             var client = new WebClient().SetOauthToken(oauthToken);
 
-            return await ApiHelpers.LoadPagedListAsync<Bucket, BucketPage>(
+            return ApiHelpers.LoadPagedListAsync<Bucket, BucketPage>(
                 client,
                 baseUrl,
                 x => x.Items,

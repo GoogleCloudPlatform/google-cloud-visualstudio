@@ -23,12 +23,12 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="projectId">The project ID that contains the app.</param>
         /// <param name="oauthToken">The oauth token to use to authenticate the call.</param>
         /// <returns></returns>
-        public static async Task<IList<GaeService>> GetServicesAsync(string projectId, string oauthToken)
+        public static Task<IList<GaeService>> GetServicesAsync(string projectId, string oauthToken)
         {
             var baseUrl = $"https://appengine.googleapis.com/v1beta5/apps/{projectId}/services";
             var client = new WebClient().SetOauthToken(oauthToken);
 
-            return await ApiHelpers.LoadPagedListAsync<GaeService, GaeServicePage>(
+            return ApiHelpers.LoadPagedListAsync<GaeService, GaeServicePage>(
                 client,
                 baseUrl,
                 x => x.Items,
@@ -41,12 +41,12 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="name">The name of the service, in the form apps/{projetId}/services/{service}</param>
         /// <param name="oauthToken">The oauth token to use to authenticate the call.</param>
         /// <returns></returns>
-        public static async Task<IList<GaeVersion>> GetServiceVersionsAsync(string name, string oauthToken)
+        public static Task<IList<GaeVersion>> GetServiceVersionsAsync(string name, string oauthToken)
         {
             var baseUrl = $"https://appengine.googleapis.com/v1beta5/{name}/versions?view=FULL";
             var client = new WebClient().SetOauthToken(oauthToken);
 
-            return await ApiHelpers.LoadPagedListAsync<GaeVersion, GaeVersionPage>(
+            return ApiHelpers.LoadPagedListAsync<GaeVersion, GaeVersionPage>(
                 client,
                 baseUrl,
                 x => x.Items,
