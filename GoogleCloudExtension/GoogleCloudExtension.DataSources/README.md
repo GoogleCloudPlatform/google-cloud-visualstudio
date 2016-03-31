@@ -39,7 +39,7 @@ This class contains helpers for calling Google APIs, at the moment it only conta
 
 The method `LoadPagedListAsync()` lists all of the _items_ contained within the _page_ provided, and is used by all of the APIs that access paged data.
 
-### The gRPC and JSON operation helpers.
+### The gRPC and JSON operation helpers
 These two classes, `ZoneOperationExtension` and `GrpcOperationExtension` implement the same algorithm for both types of _operations_, namely waiting for the operation to complete and return a `Task` instance that will be fullfilled once the operation finishes, either in success or with an exception in the case of failure.
 
 These operations require the client to poll for the status of the operation, which these two methods do, periodically checking whether the operaiton is _done_ and checking if the operation suceeded or failed.
