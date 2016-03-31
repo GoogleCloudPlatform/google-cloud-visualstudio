@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="startupProject"></param>
         /// <param name="serviceProvider"></param>
-        public static async void BeginProjectDeploymentFlow(DnxProject startupProject, IServiceProvider serviceProvider)
+        public static async void BeginProjectDeploymentFlow(DnxProject startupProject)
         {
             ActivityLogUtils.LogInfo($"Starting the deployment process for project {startupProject.Name}.");
 
@@ -58,13 +58,9 @@ namespace GoogleCloudExtension.Utils
                 var runtime = DnxRuntimeInfo.GetRuntimeInfo(startupProject.Runtime);
                 ExtensionAnalytics.ReportEvent("RuntimeNotSupportedError", startupProject.Runtime.ToString());
                 GcpOutputWindow.OutputLine($"Runtime {runtime.DisplayName} is not supported for project {startupProject.Name}");
-                VsShellUtilities.ShowMessageBox(
-                    serviceProvider,
+                UserPromptUtils.OkPrompt(
                     $"Runtime {runtime.DisplayName} is not supported. Project {startupProject.Name} needs to target {DnxRuntimeInfo.DnxCore50DisplayString}.",
-                    "Runtime not supported",
-                    OLEMSGICON.OLEMSGICON_INFO,
-                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+                    "Runtime not supported");
             }
         }
 

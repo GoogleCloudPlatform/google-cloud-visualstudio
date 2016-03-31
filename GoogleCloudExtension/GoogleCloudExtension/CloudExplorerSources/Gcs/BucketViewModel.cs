@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         private async void OnOpenBucket()
         {
-            var currentCredentials = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
+            var currentCredentials = await GCloudWrapper.Instance.GetCurrentContextAsync();
             var url = $"https://pantheon.corp.google.com/storage/browser/{_bucket.Name}/?project={currentCredentials.ProjectId}";
             Debug.WriteLine($"Starting bucket browsing at: {url}");
             Process.Start(url);

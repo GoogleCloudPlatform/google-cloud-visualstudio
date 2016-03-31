@@ -123,7 +123,7 @@ namespace GoogleCloudExtension.UserAndProjectList
             {
                 this.LoadingAccounts = true;
                 var accounts = await GCloudWrapper.Instance.GetAccountsAsync();
-                var currentAccountAndProject = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
+                var currentAccountAndProject = await GCloudWrapper.Instance.GetCurrentContextAsync();
                 this.Accounts = accounts;
                 this.CurrentAccount = currentAccountAndProject.Account;
             }
@@ -154,7 +154,7 @@ namespace GoogleCloudExtension.UserAndProjectList
                 {
                     return;
                 }
-                var currentAccountAndProject = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
+                var currentAccountAndProject = await GCloudWrapper.Instance.GetCurrentContextAsync();
                 if (newProject.Id == currentAccountAndProject.ProjectId)
                 {
                     return;
@@ -193,7 +193,7 @@ namespace GoogleCloudExtension.UserAndProjectList
             {
                 // Only need to update the GCloudWrapper current account if the account
                 // is different than the current one.
-                var currentAccountAndProject = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
+                var currentAccountAndProject = await GCloudWrapper.Instance.GetCurrentContextAsync();
                 if (currentAccountAndProject.Account != value)
                 {
                     var newAccountAndProject = new Context(

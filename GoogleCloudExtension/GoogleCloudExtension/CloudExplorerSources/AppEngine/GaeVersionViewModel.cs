@@ -16,7 +16,7 @@ using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 {
-    internal class VersionViewModel : TreeLeaf, ICloudExplorerItemSource
+    internal class GaeVersionViewModel : TreeLeaf, ICloudExplorerItemSource
     {
         private const string IconResourcePath = "CloudExplorerSources/AppEngine/Resources/ic_web.png";
         private static readonly Lazy<ImageSource> s_versionIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 
         public object Item { get; }
 
-        public VersionViewModel(AppEngineRootViewModel owner, string serviceId, GaeVersion version, double trafficSplit)
+        public GaeVersionViewModel(AppEngineRootViewModel owner, string serviceId, GaeVersion version, double trafficSplit)
         {
             _owner = owner;
             _serviceId = serviceId;
@@ -63,7 +63,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             try
             {
                 _openAppCommand.CanExecuteCommand = false;
-                var accountAndProject = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
+                var accountAndProject = await GCloudWrapper.Instance.GetCurrentContextAsync();
                 var url = $"https://{_version.Id}-dot-{_serviceId}-dot-{accountAndProject.ProjectId}.appspot.com/";
                 Debug.WriteLine($"Opening URL: {url}");
                 Process.Start(url);
@@ -78,14 +78,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
         {
             try
             {
-                var result = VsShellUtilities.ShowMessageBox(
-                    GoogleCloudExtensionPackage.Instance,
-                    $"Are you sure you want to delete {_version.Id} in service {_serviceId}?",
-                    $"Deleting {_version.Id}",
-                    OLEMSGICON.OLEMSGICON_QUERY,
-                    OLEMSGBUTTON.OLEMSGBUTTON_YESNO,
-                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND);
-                if (result != ButtonIds.IDYES)
+                if (!UserPromptUtils.YesNoPrompt(
+                    $"Are you sure you want to delete version {_version.Id} in service {_serviceId}?",
+                    $"Deleting {_version.Id}"))
                 {
                     Debug.WriteLine("The user cancelled the operation.");
                     return;
@@ -94,7 +89,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                 _deleteVersionCommand.CanExecuteCommand = false;
                 Content = $"{_version.Id} (Deleting...)";
                 IsLoading = true;
-                var currentCredentials = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
+
+                var currentCredentials = await GCloudWrapper.Instance.GetCurrentContextAsync();
                 var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
                 await GaeDataSource.DeleteVersionAsync(
                     projectId: currentCredentials.ProjectId,
@@ -122,7 +118,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                 _setDefaultVersionCommand.CanExecuteCommand = false;
                 Content = $"{_version.Id} (Setting as default...)";
                 IsLoading = true;
-                var credentials = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
+                var credentials = await GCloudWrapper.Instance.GetCurrentContextAsync();
                 var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
                 await GaeDataSource.SetServiceTrafficAllocationAsync(
                     credentials.ProjectId,

@@ -17,11 +17,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
     internal class AppEngineRootViewModel : SourceRootViewModelBase
     {
         private const string AppEngineIconResourcePath = "CloudExplorerSources/AppEngine/Resources/app_engine.png";
-        private const string ModuleIconResourcePath = "CloudExplorerSources/AppEngine/Resources/ic_view_module.png";
+        
         private const string BuiltInPrefix = "ah-";
 
         private static readonly Lazy<ImageSource> s_appEngineIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(AppEngineIconResourcePath));
-        private static readonly Lazy<ImageSource> s_moduleIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(ModuleIconResourcePath));
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
             Content = "Loading modules...",
@@ -55,7 +54,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
         {
             try
             {
-                var credentials = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
+                var credentials = await GCloudWrapper.Instance.GetCurrentContextAsync();
                 var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
 
                 var services = await GaeDataSource.GetServicesAsync(credentials.ProjectId, oauthToken);
@@ -87,14 +86,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 
         private TreeHierarchy MakeModuleHierarchy(Tuple<GaeService, IList<GaeVersion>> serviceVersions)
         {
-            var versions = new List<VersionViewModel>();
+            var versions = new List<GaeVersionViewModel>();
             foreach (var version in serviceVersions.Item2)
             {
                 double allocation = 0.0;
                 serviceVersions.Item1.Split.Allocations.TryGetValue(version.Id, out allocation);
-                versions.Add(new VersionViewModel(this, serviceVersions.Item1.Id, version, allocation));
+                versions.Add(new GaeVersionViewModel(this, serviceVersions.Item1.Id, version, allocation));
             }
-            return new TreeHierarchy(versions) { Content = serviceVersions.Item1.Id, Icon = s_moduleIcon.Value };
+            return new GaeServiceViewModel(this, serviceVersions.Item1, versions);
         }
     }
 }

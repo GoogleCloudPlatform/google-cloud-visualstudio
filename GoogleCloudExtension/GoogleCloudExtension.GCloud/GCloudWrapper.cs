@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.GCloud
         /// hidden from the caller.
         /// </summary>
         /// <returns>The current AccountAndProjectId.</returns>
-        public async Task<Context> GetCurrentCredentialsAsync()
+        public async Task<Context> GetCurrentContextAsync()
         {
             if (_currentCredentials == null)
             {
@@ -168,7 +168,7 @@ namespace GoogleCloudExtension.GCloud
                 // so the interface is updated.
                 _currentCredentials = null;
                 RaiseAccountOrProjectChanged();
-                var credentials = await GetCurrentCredentialsAsync();
+                var credentials = await GetCurrentContextAsync();
                 callback($"Succesfully added the account: {credentials.Account}");
             }
             else
@@ -274,7 +274,7 @@ namespace GoogleCloudExtension.GCloud
 
         private async Task<string> GetCommandOutputAsync(string command)
         {
-            return await GetCommandOutputAsync(command, await GetCurrentCredentialsAsync());
+            return await GetCommandOutputAsync(command, await GetCurrentContextAsync());
         }
 
         private Task<int> LaunchCommandAsync(string command)
@@ -300,7 +300,7 @@ namespace GoogleCloudExtension.GCloud
 
         private async Task<T> GetJsonOutputAsync<T>(string command)
         {
-            return await GetJsonOutputAsync<T>(command, await GetCurrentCredentialsAsync());
+            return await GetJsonOutputAsync<T>(command, await GetCurrentContextAsync());
         }
     }
 }

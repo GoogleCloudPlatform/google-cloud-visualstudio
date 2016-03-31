@@ -132,5 +132,35 @@ namespace GoogleCloudExtension.DataSources
                 throw new DataSourceException(ex.Message, ex);
             }
         }
+
+        /// <summary>
+        /// Deletes the given service and all of its associated versions.
+        /// </summary>
+        /// <param name="projectId">The project id that owns the service.</param>
+        /// <param name="serviceId">The service id to delete.</param>
+        /// <param name="oauthToken">The oauth token to use to authenticate the call.</param>
+        /// <returns></returns>
+        public static async Task DeleteServiceAsync(string projectId, string serviceId, string oauthToken)
+        {
+            var baseUrl = $"https://appengine.googleapis.com/v1beta5/apps/{projectId}/services/{serviceId}";
+            var client = new WebClient().SetOauthToken(oauthToken);
+
+            try
+            {
+                var response = await client.UploadStringTaskAsync(baseUrl, "DELETE", "");
+                var operation = JsonConvert.DeserializeObject<GrpcOperation>(response);
+                await operation.Wait(oauthToken);
+            }
+            catch (WebException ex)
+            {
+                Debug.WriteLine($"Error waiting for operation: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+            catch (JsonException ex)
+            {
+                Debug.WriteLine($"Error parsing response: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
     }
 }

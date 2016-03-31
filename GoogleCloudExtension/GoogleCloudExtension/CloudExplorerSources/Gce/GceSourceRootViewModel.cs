@@ -102,7 +102,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private async Task<IList<GceInstance>> LoadGceInstances()
         {
-            var currentCredentials = await GCloudWrapper.Instance.GetCurrentCredentialsAsync();
+            var currentCredentials = await GCloudWrapper.Instance.GetCurrentContextAsync();
             var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
             return await GceDataSource.GetInstanceListAsync(currentCredentials.ProjectId, oauthToken);
         }
