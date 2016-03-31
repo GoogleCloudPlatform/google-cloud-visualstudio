@@ -1,7 +1,7 @@
 # GoogleCloudExtension.DataSources
 This library implements a set of very simple data sources that allow the extension to access data about Google Cloud Platform services. The library also contains a set of supporting classes used by said data sources.
 
-## Data sources supported.
+## Data sources supported
 The data sources implemented in the library are:
 
 * `GaeDataSource` which implements access to App Engine data, modules and versions.
@@ -31,3 +31,18 @@ This class gives access to the list of buckets for a particular project, using t
 
 Only one method is exposed for this class, `GetBucketListAsync()` which returns the list of all buckets in the given project.
 
+## Support classes
+The support classes cover things like paging of data, waiting for operaitons (be it gRPC or plain JSON) to finish in a way compatible with await/async.
+
+### The ApiHelpers class
+This class contains helpers for calling Google APIs, at the moment it only contains a paging helper.
+
+The method `LoadPagedListAsync()` lists all of the _items_ contained within the _page_ provided, and is used by all of the APIs that access paged data.
+
+### The gRPC and JSON operation helpers.
+These two classes, `ZoneOperationExtension` and `GrpcOperationExtension` implement the same algorithm for both types of _operations_, namely waiting for the operation to complete and return a `Task` instance that will be fullfilled once the operation finishes, either in success or with an exception in the case of failure.
+
+These operations require the client to poll for the status of the operation, which these two methods do, periodically checking whether the operaiton is _done_ and checking if the operation suceeded or failed.
+
+* The gPRC operation uses the endpoint defined [here](https://cloud.google.com/appengine/docs/admin-api/reference/rest/v1beta5/apps.operations/get).
+* The JSON operation uses the end point defined [here](https://cloud.google.com/compute/docs/reference/latest/zoneOperations/get).
