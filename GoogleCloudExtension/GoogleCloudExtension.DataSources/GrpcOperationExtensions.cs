@@ -40,6 +40,11 @@ namespace GoogleCloudExtension.DataSources
                 Debug.WriteLine($"Failed to poll: ${ex.Message}");
                 throw new GrpcOperationException(ex.Message, ex);
             }
+            catch (JsonException ex)
+            {
+                Debug.WriteLine($"Failed to parse reponse: {ex.Message}");
+                throw new GrpcOperationException(ex.Message, ex);
+            }
         }
     }
 }

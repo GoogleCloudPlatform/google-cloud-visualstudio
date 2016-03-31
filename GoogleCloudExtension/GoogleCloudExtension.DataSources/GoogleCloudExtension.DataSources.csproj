@@ -84,7 +84,7 @@
     <Compile Include="GrpcOperationException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WebClientExtensions.cs" />
-    <Compile Include="ZoneOperationError.cs" />
+    <Compile Include="ZoneOperationException.cs" />
     <Compile Include="ZoneOperationExtensions.cs" />
   </ItemGroup>
   <ItemGroup>

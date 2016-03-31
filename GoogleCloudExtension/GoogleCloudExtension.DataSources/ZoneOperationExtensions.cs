@@ -17,20 +17,33 @@ namespace GoogleCloudExtension.DataSources
             var client = new WebClient().SetOauthToken(oauthToken);
             var url = operation.SelfLink;
             Debug.WriteLine($"Checking operation: {url}");
-            while (true)
+            try
             {
-                var result = await client.DownloadStringTaskAsync(url);
-                var newOperation = JsonConvert.DeserializeObject<ZoneOperation>(result);
-                Debug.WriteLine($"Operation status: {newOperation.Status}");
-                if (newOperation.Status == "DONE")
+                while (true)
                 {
-                    if (newOperation.Error != null)
+                    var result = await client.DownloadStringTaskAsync(url);
+                    var newOperation = JsonConvert.DeserializeObject<ZoneOperation>(result);
+                    Debug.WriteLine($"Operation status: {newOperation.Status}");
+                    if (newOperation.Status == "DONE")
                     {
-                        throw new ZoneOperationError(newOperation.Error);
+                        if (newOperation.Error != null)
+                        {
+                            throw new ZoneOperationException(newOperation.Error);
+                        }
+                        return;
                     }
-                    return;
+                    await Task.Delay(500);
                 }
-                await Task.Delay(500);
+            }
+            catch (WebException ex)
+            {
+                Debug.WriteLine($"Failed to perform web request: {ex.Message}");
+                throw new ZoneOperationException(ex.Message, ex);
+            }
+            catch (JsonException ex)
+            {
+                Debug.WriteLine($"Failed to parse response: {ex.Message}");
+                throw new ZoneOperationException(ex.Message, ex);
             }
         }
     }

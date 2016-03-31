@@ -46,8 +46,13 @@ namespace GoogleCloudExtension.DataSources
             catch (WebException ex)
             {
                 Debug.WriteLine($"Failed to download data: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
             }
-            return null;
+            catch (JsonException ex)
+            {
+                Debug.WriteLine($"Failed to parse response: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
         }
 
         /// <summary>
@@ -60,13 +65,26 @@ namespace GoogleCloudExtension.DataSources
         /// <returns></returns>
         public static async Task<GceInstance> GetInstance(string projectId, string zoneName, string name, string oauthToken)
         {
-            var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zoneName}/instances/{name}";
-            var client = new WebClient().SetOauthToken(oauthToken);
-            var response = await client.DownloadStringTaskAsync(url);
-            var result = JsonConvert.DeserializeObject<GceInstance>(response);
-            result.ProjectId = projectId;
-            result.ZoneName = zoneName;
-            return result;
+            try
+            {
+                var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zoneName}/instances/{name}";
+                var client = new WebClient().SetOauthToken(oauthToken);
+                var response = await client.DownloadStringTaskAsync(url);
+                var result = JsonConvert.DeserializeObject<GceInstance>(response);
+                result.ProjectId = projectId;
+                result.ZoneName = zoneName;
+                return result;
+            }
+            catch (WebException ex)
+            {
+                Debug.WriteLine($"Failed to download data: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+            catch (JsonException ex)
+            {
+                Debug.WriteLine($"Failed to parse response: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
         }
 
         /// <summary>
@@ -94,15 +112,15 @@ namespace GoogleCloudExtension.DataSources
 
             var client = new WebClient().SetOauthToken(oauthToken);
             var url = $"https://www.googleapis.com/compute/v1/projects/{target.ProjectId}/zones/{target.ZoneName}/instances/{target.Name}/setMetadata";
-            var request = new GceSetMetadataRequest
-            {
-                Fingerprint = target.Metadata.Fingerprint,
-                Items = entries,
-            };
-            var serializedRequest = JsonConvert.SerializeObject(request);
 
             try
             {
+                var request = new GceSetMetadataRequest
+                {
+                    Fingerprint = target.Metadata.Fingerprint,
+                    Items = entries,
+                };
+                var serializedRequest = JsonConvert.SerializeObject(request);
                 client.Headers[HttpRequestHeader.ContentType] = "application/json";
                 var result = await client.UploadStringTaskAsync(url, "POST", serializedRequest);
                 var operation = JsonConvert.DeserializeObject<ZoneOperation>(result);
@@ -110,6 +128,8 @@ namespace GoogleCloudExtension.DataSources
                     project: target.ProjectId,
                     zone: target.ZoneName,
                     oauthToken: oauthToken);
+                // Returns the updated instance.
+                return await RefreshInstance(target, oauthToken);
             }
             catch (WebException ex)
             {
@@ -119,11 +139,13 @@ namespace GoogleCloudExtension.DataSources
                     var message = stream.ReadToEnd();
                     Debug.WriteLine($"Failed to update metadata: {message}");
                 }
-                throw;
+                throw new DataSourceException(ex.Message, ex);
             }
-
-            // Returns the updated instance.
-            return await RefreshInstance(target, oauthToken);
+            catch (JsonException ex)
+            {
+                Debug.WriteLine($"Failed to parse response: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
         }
 
         /// <summary>

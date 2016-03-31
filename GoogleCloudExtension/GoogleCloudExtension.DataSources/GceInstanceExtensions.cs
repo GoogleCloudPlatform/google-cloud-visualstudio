@@ -55,12 +55,20 @@ namespace GoogleCloudExtension.DataSources
         /// <returns>The credentials to use to communicate with the instance, null if not saved in the instance.</returns>
         public static GceCredentials GetServerCredentials(this GceInstance instance)
         {
-            var credentials = instance.Metadata.Items?.FirstOrDefault(x => x.Key == WindowsCredentialsKey)?.Value;
-            if (credentials != null)
+            try
             {
-                return JsonConvert.DeserializeObject<GceCredentials>(credentials);
+                var credentials = instance.Metadata.Items?.FirstOrDefault(x => x.Key == WindowsCredentialsKey)?.Value;
+                if (credentials != null)
+                {
+                    return JsonConvert.DeserializeObject<GceCredentials>(credentials);
+                }
+                return null;
             }
-            return null;
+            catch (JsonException ex)
+            {
+                Debug.WriteLine($"Failed to parse metadata: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
         }
 
         /// <summary>

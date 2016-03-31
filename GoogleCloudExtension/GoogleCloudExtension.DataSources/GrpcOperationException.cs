@@ -5,6 +5,9 @@ using System.Runtime.Serialization;
 
 namespace GoogleCloudExtension.DataSources
 {
+    /// <summary>
+    /// Exception thrown when there's an error waiting for a gRPC operation.
+    /// </summary>
     [Serializable]
     internal class GrpcOperationException : Exception
     {

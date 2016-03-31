@@ -101,7 +101,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 _instance = await _instance.SetServerCredentials(result, oauthToken);
                 GcpOutputWindow.OutputLine($"Credentials for {_instance.Name} stored.");
             }
-            catch (ZoneOperationError ex)
+            catch (ZoneOperationException ex)
             {
                 GcpOutputWindow.OutputLine($"Failed to store credentials: {ex.Error.Errors.FirstOrDefault()?.Message}");
             }

@@ -50,6 +50,11 @@ namespace GoogleCloudExtension.DataSources
                 Debug.WriteLine($"Request failed: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
+            catch (JsonException ex)
+            {
+                Debug.WriteLine($"Failed to parse response: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
         }
     }
 }

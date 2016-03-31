@@ -87,6 +87,11 @@ namespace GoogleCloudExtension.DataSources
                 Debug.WriteLine($"Error waiting for operation: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
+            catch (JsonException ex)
+            {
+                Debug.WriteLine($"Error parsing response: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
         }
 
         /// <summary>
@@ -119,6 +124,11 @@ namespace GoogleCloudExtension.DataSources
             catch (GrpcOperationException ex)
             {
                 Debug.WriteLine($"Error waiting for operation: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+            catch (JsonException ex)
+            {
+                Debug.WriteLine($"Error parsing response: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
         }
