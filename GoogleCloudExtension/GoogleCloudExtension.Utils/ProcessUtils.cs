@@ -10,35 +10,63 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Utils
 {
-    public class ProcessOutput
+    /// <summary>
+    /// This class contains the output of a running process.
+    /// </summary>
+    public sealed class ProcessOutput
     {
-        public ProcessOutput(bool succeeded, string output, string error)
-        {
-            this.Succeeded = succeeded;
-            this.Output = output;
-            this.Error = error;
-        }
+        /// <summary>
+        /// Whether the process succeeded or not.
+        /// </summary>
+        public bool Succeeded { get; }
 
-        public bool Succeeded { get; private set; }
-        public string Error { get; private set; }
-        public string Output { get; private set; }
+        /// <summary>
+        /// The complete contents of the stderr stream.
+        /// </summary>
+        public string StandardError { get; }
+
+        /// <summary>
+        /// The complete contents of the stdout stream.
+        /// </summary>
+        public string StandardOutput { get; }
+
+        public ProcessOutput(bool succeeded, string standardOutput, string standardError)
+        {
+            Succeeded = succeeded;
+            StandardOutput = standardOutput;
+            StandardError = standardError;
+        }
     }
 
-    public enum OutputChannel
+    /// <summary>
+    /// The output streams from a process.
+    /// </summary>
+    public enum OutputStream
     {
         None,
-        StdError,
-        StdOutput
+        StandardError,
+        StandardOutput
     }
 
-    public class OutputHandlerEventArgs
+    /// <summary>
+    /// Evemt args passed to the output handler of a process.
+    /// </summary>
+    public class OutputHandlerEventArgs : EventArgs
     {
-        public string Line { get; set; }
-        public OutputChannel Channel { get; set; }
+        public string Line { get; }
+        public OutputStream OutputStream { get; }
+
+        public OutputHandlerEventArgs(string line, OutputStream stream)
+        {
+            Line = line;
+            OutputStream = stream;
+        }
     }
 
-    public delegate void OutputHandler(object sender, OutputHandlerEventArgs args);
-
+    /// <summary>
+    /// This class defines helper methods for starting sub-processes and getting the output from
+    /// the processes, including a helper to parse the output as json.
+    /// </summary>
     public static class ProcessUtils
     {
         /// <summary>
@@ -53,15 +81,19 @@ namespace GoogleCloudExtension.Utils
         /// of the UI thread. Must not be null.</param>
         /// <param name="environment">Optional parameter with values for environment variables to pass on to the child process.</param>
         /// <returns></returns>
-        public static async Task<bool> RunCommandAsync(string file, string args, OutputHandler handler, IDictionary<string, string> environment)
+        public static Task<bool> RunCommandAsync(
+            string file,
+            string args,
+            EventHandler<OutputHandlerEventArgs> handler,
+            IDictionary<string, string> environment)
         {
             var startInfo = GetStartInfoForInteractiveProcess(file, args, environment);
 
-            return await Task.Run(async () =>
+            return Task.Run(async () =>
             {
                 var process = Process.Start(startInfo);
-                var readErrorsTask = ReadLinesFromOutput(OutputChannel.StdError, process.StandardError, handler);
-                var readOutputTask = ReadLinesFromOutput(OutputChannel.StdOutput, process.StandardOutput, handler);
+                var readErrorsTask = ReadLinesFromOutput(OutputStream.StandardError, process.StandardError, handler);
+                var readOutputTask = ReadLinesFromOutput(OutputStream.StandardOutput, process.StandardOutput, handler);
                 await readErrorsTask;
                 await readOutputTask;
                 process.WaitForExit();
@@ -69,11 +101,18 @@ namespace GoogleCloudExtension.Utils
             });
         }
 
-        public static async Task<ProcessOutput> GetCommandOutputAsync(string file, string args, IDictionary<string, string> environment)
+        /// <summary>
+        /// Runs a process until it exists, returns it's complete output.
+        /// </summary>
+        /// <param name="file">The path to the exectuable.</param>
+        /// <param name="args">The arguments to pass to the executable.</param>
+        /// <param name="environment">The environment variables to use for the executable.</param>
+        /// <returns></returns>
+        public static Task<ProcessOutput> GetCommandOutputAsync(string file, string args, IDictionary<string, string> environment)
         {
             var startInfo = GetStartInfoForInteractiveProcess(file, args, environment);
 
-            return await Task.Run(async () =>
+            return Task.Run(async () =>
             {
                 var process = Process.Start(startInfo);
                 var readErrorsTask = process.StandardError.ReadToEndAsync();
@@ -82,8 +121,8 @@ namespace GoogleCloudExtension.Utils
                 var succeeded = process.ExitCode == 0;
                 return new ProcessOutput(
                     succeeded: succeeded,
-                    output: await readOutputTask,
-                    error: await readErrorsTask);
+                    standardOutput: await readOutputTask,
+                    standardError: await readErrorsTask);
             });
         }
 
@@ -94,10 +133,10 @@ namespace GoogleCloudExtension.Utils
         /// <param name="args">The arguments for the process.</param>
         /// <param name="environment">The environment to use for executing the proces.</param>
         /// <returns>A task that will resolve to the exit code of the process.</returns>
-        public static async Task<int> LaunchCommandAsync(string file, string args, IDictionary<string, string> environment)
+        public static Task<int> LaunchCommandAsync(string file, string args, IDictionary<string, string> environment)
         {
             var startInfo = GetBaseStartInfo(file, args, environment);
-            return await Task.Run(() =>
+            return Task.Run(() =>
             {
                 var process = Process.Start(startInfo);
                 process.WaitForExit();
@@ -105,52 +144,29 @@ namespace GoogleCloudExtension.Utils
             });
         }
 
+        /// <summary>
+        /// Launches a process and parses its stdout stream as a json value to an instance of <typeparamref name="T"/>.
+        /// </summary>
+        /// <typeparam name="T">The type to use to deserialize the stdout stream.</typeparam>
+        /// <param name="file">The path to the exectuable.</param>
+        /// <param name="args">The arguments to pass to the executable.</param>
+        /// <param name="environment">The environment to use for the executable.</param>
+        /// <returns></returns>
         public static async Task<T> GetJsonOutputAsync<T>(string file, string args, IDictionary<string, string> environment)
         {
             var output = await ProcessUtils.GetCommandOutputAsync(file, args, environment);
             if (!output.Succeeded)
             {
-                throw new JsonOutputException($"Failed to execute command: {file} {args}\n{output.Error}");
+                throw new JsonOutputException($"Failed to execute command: {file} {args}\n{output.StandardError}");
             }
             try
             {
-                var parsed = JsonConvert.DeserializeObject<T>(output.Output);
-                return ValueOrDefault(parsed);
+                return JsonConvert.DeserializeObject<T>(output.StandardOutput);
             }
             catch (JsonSerializationException)
             {
-                throw new JsonOutputException($"Failed to parse output of command: {file} {args}\n{output.Output}");
+                throw new JsonOutputException($"Failed to parse output of command: {file} {args}\n{output.StandardOutput}");
             }
-            catch (JsonReaderException ex)
-            {
-                throw new JsonOutputException($"Failed to parse output of command: {file} {args}\n{output.Output}");
-            }
-        }
-
-        /// <summary>
-        /// This method is justy a passthrough, specifically designed for non-list parameters.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="src">The value to transform</param>
-        /// <returns></returns>
-        private static T ValueOrDefault<T>(T src)
-        {
-            return src;
-        }
-
-        /// <summary>
-        /// This method will transform a null list into an empty list.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="src">The source list.</param>
-        /// <returns></returns>
-        private static IList<T> ValueOrDefault<T>(IList<T> src)
-        {
-            if (src == null)
-            {
-                return new List<T>();
-            }
-            return src;
         }
 
         private static ProcessStartInfo GetBaseStartInfo(string file, string args, IDictionary<string, string> environment)
@@ -187,14 +203,14 @@ namespace GoogleCloudExtension.Utils
             return startInfo;
         }
 
-        private static async Task ReadLinesFromOutput(OutputChannel channel, StreamReader stream, OutputHandler handler)
+        private static Task ReadLinesFromOutput(OutputStream outputStream, StreamReader stream, EventHandler<OutputHandlerEventArgs> handler)
         {
-            await Task.Run(() =>
+            return Task.Run(() =>
             {
                 while (!stream.EndOfStream)
                 {
                     var line = stream.ReadLine();
-                    handler(null, new OutputHandlerEventArgs { Channel = channel, Line = line });
+                    handler(null, new OutputHandlerEventArgs(line, outputStream));
                 }
             });
         }

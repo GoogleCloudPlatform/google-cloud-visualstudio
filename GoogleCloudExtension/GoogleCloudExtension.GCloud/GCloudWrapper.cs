@@ -267,9 +267,9 @@ namespace GoogleCloudExtension.GCloud
             var output = await ProcessUtils.GetCommandOutputAsync("cmd.exe", actualCommand, envVars);
             if (!output.Succeeded)
             {
-                throw new GCloudException($"Failed with message: {output.Error}");
+                throw new GCloudException($"Failed with message: {output.StandardError}");
             }
-            return output.Output;
+            return output.StandardOutput;
         }
 
         private async Task<string> GetCommandOutputAsync(string command)

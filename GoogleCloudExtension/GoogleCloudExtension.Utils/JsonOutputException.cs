@@ -6,6 +6,9 @@ using System.Runtime.Serialization;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// Exception thrown when there's a problem parsing json output from a process.
+    /// </summary>
     [Serializable]
     public class JsonOutputException : Exception
     {
