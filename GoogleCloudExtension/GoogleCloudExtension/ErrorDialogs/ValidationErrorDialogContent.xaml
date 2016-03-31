@@ -43,6 +43,12 @@
                        Visibility="{Binding ShowMissingGCloud, Converter={StaticResource visibilityConverter}}">
                 Cannot find gcloud in your system, please install the google cloud sdk and press the <Bold>Retry</Bold> button.
             </TextBlock>
+            
+            <!-- Show the update gcloud message -->
+            <TextBlock Style="{StaticResource captionStyle}"
+                       Visibility="{Binding ShowMissingGCloud, Converter={StaticResource visibilityConverter}}">
+                Your Cloud SDK installation is out of date.
+            </TextBlock>
 
             <!-- Show the missing gcloud components -->
             <Grid Visibility="{Binding ShowMissingComponents, Converter={StaticResource visibilityConverter}}">

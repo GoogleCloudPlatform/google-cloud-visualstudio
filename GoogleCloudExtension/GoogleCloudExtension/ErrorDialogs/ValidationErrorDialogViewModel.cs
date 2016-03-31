@@ -17,6 +17,7 @@ namespace GoogleCloudExtension.ErrorDialogs
         private readonly ValidationErrorDialogWindow _owner;
         private bool _showMissingComponents;
         private bool _showMissingGCloud;
+        private bool _showUpdateGCloud;
         private bool _showMissingDnxRuntime;
         private string _installComponentsCommandLine;
         private bool _isRefreshing;
@@ -30,21 +31,36 @@ namespace GoogleCloudExtension.ErrorDialogs
             set { SetValueAndRaise(ref _showMissingComponents, value); }
         }
 
-        // Whether to show the error message about missing the gcloud SDK.
+        /// <summary>
+        /// Whether to show the error message about missing the gcloud SDK.
+        /// </summary>
         public bool ShowMissingGCloud
         {
             get { return _showMissingGCloud; }
             set { SetValueAndRaise(ref _showMissingGCloud, value); }
         }
 
-        // Whether to show the error message about missing the DNX runtime.
+        /// <summary>
+        /// Whether to show the update gcloud message.
+        /// </summary>
+        public bool ShowUpdateGCloud
+        {
+            get { return _showUpdateGCloud; }
+            set { SetValueAndRaise(ref _showUpdateGCloud, value); }
+        }
+
+        /// <summary>
+        /// Whether to show the error message about missing the DNX runtime.
+        /// </summary>
         public bool ShowMissingDnxRuntime
         {
             get { return _showMissingDnxRuntime; }
             set { SetValueAndRaise(ref _showMissingDnxRuntime, value); }
         }
 
-        // The command line to use to isntall the missing components.
+        /// <summary>
+        /// The command line to use to isntall the missing components.
+        /// </summary>
         public string InstallComponentsCommandLine
         {
             get { return _installComponentsCommandLine; }
@@ -93,7 +109,13 @@ namespace GoogleCloudExtension.ErrorDialogs
             if (gcloudValidationResult != null && !gcloudValidationResult.IsValidGCloudInstallation)
             {
                 ShowMissingGCloud = !gcloudValidationResult.IsGCloudInstalled;
-                if (gcloudValidationResult.MissingComponents.Count != 0)
+                ShowUpdateGCloud = gcloudValidationResult.IsGCloudOutOfDate;
+                if (gcloudValidationResult.IsGCloudOutOfDate)
+                {
+                    ShowMissingComponents = true;
+                    InstallComponentsCommandLine = $"gcloud components update";
+                }
+                else if (gcloudValidationResult.MissingComponents.Count != 0)
                 {
                     var missingComponentsList = String.Join(" ", gcloudValidationResult.MissingComponents);
                     InstallComponentsCommandLine = $"gcloud components install {missingComponentsList}";
@@ -104,6 +126,7 @@ namespace GoogleCloudExtension.ErrorDialogs
             else
             {
                 ShowMissingGCloud = false;
+                ShowUpdateGCloud = false;
                 ShowMissingComponents = false;
                 OnCopyCommand.CanExecuteCommand = false;
             }

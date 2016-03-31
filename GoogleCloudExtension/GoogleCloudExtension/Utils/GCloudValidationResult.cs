@@ -20,15 +20,22 @@ namespace GoogleCloudExtension.Utils
         public bool IsGCloudInstalled { get; }
 
         /// <summary>
+        /// Wether gcloud is out of date.
+        /// </summary>
+        public bool IsGCloudOutOfDate { get; }
+
+        /// <summary>
         /// The list required componets that are missing.
         /// </summary>
         public IReadOnlyCollection<string> MissingComponents { get; }
 
         public GCloudValidationResult(
             bool gcloudInstalled,
+            bool isGcloudOutOfDate,
             IEnumerable<string> missingComponents)
         {
             IsGCloudInstalled = gcloudInstalled;
+            IsGCloudOutOfDate = isGcloudOutOfDate;
             MissingComponents = new ReadOnlyCollection<string>(missingComponents.ToList());
         }
 
@@ -36,9 +43,8 @@ namespace GoogleCloudExtension.Utils
         /// Returns if everything is ok with the gcloud SDK installation.
         /// </summary>
         /// <returns>True if the installation is fine, false otherwise.</returns>
-        public bool IsValidGCloudInstallation => IsGCloudInstalled && MissingComponents.Count == 0;
-
-
+        public bool IsValidGCloudInstallation => IsGCloudInstalled && MissingComponents.Count == 0 && !IsGCloudOutOfDate;
+        
         public string GetDisplayString()
         {
             if (!IsGCloudInstalled)

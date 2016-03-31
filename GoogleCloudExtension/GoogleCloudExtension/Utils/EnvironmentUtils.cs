@@ -75,6 +75,7 @@ namespace GoogleCloudExtension.Utils
                 {
                     return new GCloudValidationResult(
                         gcloudInstalled: gcloudInstalled,
+                        isGcloudOutOfDate: false,
                         missingComponents: Enumerable.Empty<string>());
                 }
 
@@ -85,6 +86,7 @@ namespace GoogleCloudExtension.Utils
                     var missingComponents = s_requiredComponentNames.Except(installedComponents);
                     return new GCloudValidationResult(
                         gcloudInstalled: gcloudInstalled,
+                        isGcloudOutOfDate: false,
                         missingComponents: missingComponents);
                 }
                 catch (GCloudException ex)
@@ -95,7 +97,8 @@ namespace GoogleCloudExtension.Utils
                     GcpOutputWindow.Activate();
                     return new GCloudValidationResult(
                         gcloudInstalled: gcloudInstalled,
-                        missingComponents: s_requiredComponentNames);
+                        isGcloudOutOfDate: true,
+                        missingComponents: Enumerable.Empty<string>());
                 }
             });
 
