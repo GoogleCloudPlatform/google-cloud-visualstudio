@@ -1,11 +1,10 @@
-﻿using GoogleCloudExtension.DataSources.Models;
+﻿// Copyright 2016 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+using GoogleCloudExtension.DataSources.Models;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
