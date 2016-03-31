@@ -105,7 +105,7 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="entries">The entries to store in the metadata of the instance.</param>
         /// <param name="oauthToken">The oauth token to use.</param>
         /// <returns></returns>
-        public static async Task<GceInstance> StoreMetadata(GceInstance src, IList<MetadataEntry> entries, string oauthToken)
+        public static async Task<GceInstance> StoreMetadataAsync(GceInstance src, IList<MetadataEntry> entries, string oauthToken)
         {
             // Refresh the instance to get the latest metadata fingerprint.
             var target = await GceDataSource.RefreshInstance(src, oauthToken);
