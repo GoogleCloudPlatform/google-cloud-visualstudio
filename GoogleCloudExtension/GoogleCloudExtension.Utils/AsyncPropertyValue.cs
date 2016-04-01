@@ -14,6 +14,7 @@ namespace GoogleCloudExtension.Utils
     /// <typeparam name="T">The type of the property</typeparam>
     public class AsyncPropertyValue<T> : Model
     {
+        private readonly Task<T> _valueSource;
         private T _value;
 
         /// <summary>
@@ -26,23 +27,32 @@ namespace GoogleCloudExtension.Utils
             private set { SetValueAndRaise(ref _value, value); }
         }
 
+        public bool IsPending => !_valueSource.IsCompleted;
+
+        public bool IsCompleted => _valueSource.IsCompleted;
+
         public AsyncPropertyValue(Task<T> valueSource, T defaultValue = default(T))
         {
+            _valueSource = valueSource;
             _value = defaultValue;
-            AwaitForValue(valueSource);
+            AwaitForValue();
         }
 
-        private async void AwaitForValue(Task<T> valueSource)
+        private async void AwaitForValue()
         {
             try
             {
                 Debug.WriteLine("Waiting for value...");
-                Value = await valueSource;
+                _value = await _valueSource;
                 Debug.WriteLine("Done waiting for value...");
             }
             catch (Exception ex)
             {
                 Debug.WriteLine($"Failed to get value: {ex.Message}");
+            }
+            finally
+            {
+                RaiseAllPropertyChanged();
             }
         }
 

@@ -63,8 +63,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             try
             {
                 _openAppCommand.CanExecuteCommand = false;
-                var accountAndProject = await GCloudWrapper.Instance.GetCurrentContextAsync();
-                var url = $"https://{_version.Id}-dot-{_serviceId}-dot-{accountAndProject.ProjectId}.appspot.com/";
+                var url = $"https://{_version.Id}-dot-{_serviceId}-dot-{_owner.Owner.CurrentProject.Id}.appspot.com/";
                 Debug.WriteLine($"Opening URL: {url}");
                 Process.Start(url);
             }
@@ -90,10 +89,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                 Content = $"{_version.Id} (Deleting...)";
                 IsLoading = true;
 
-                var currentCredentials = await GCloudWrapper.Instance.GetCurrentContextAsync();
                 var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
                 await GaeDataSource.DeleteVersionAsync(
-                    projectId: currentCredentials.ProjectId,
+                    projectId: _owner.Owner.CurrentProject.Id,
                     serviceId: _serviceId,
                     versionId: _version.Id,
                     oauthToken: oauthToken);
@@ -118,10 +116,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                 _setDefaultVersionCommand.CanExecuteCommand = false;
                 Content = $"{_version.Id} (Setting as default...)";
                 IsLoading = true;
-                var credentials = await GCloudWrapper.Instance.GetCurrentContextAsync();
                 var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
                 await GaeDataSource.SetServiceTrafficAllocationAsync(
-                    credentials.ProjectId,
+                    _owner.Owner.CurrentProject.Id,
                     _serviceId,
                     new Dictionary<string, double> { { _version.Id, 1.0 } },
                     oauthToken);

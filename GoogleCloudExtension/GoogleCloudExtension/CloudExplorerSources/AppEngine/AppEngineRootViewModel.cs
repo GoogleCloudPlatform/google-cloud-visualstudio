@@ -54,10 +54,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
         {
             try
             {
-                var credentials = await GCloudWrapper.Instance.GetCurrentContextAsync();
+                if (Owner.CurrentProject == null)
+                {
+                    throw new CloudExplorerSourceException("Must have a non-null current project.");
+                }
+
                 var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
 
-                var services = await GaeDataSource.GetServicesAsync(credentials.ProjectId, oauthToken);
+                var services = await GaeDataSource.GetServicesAsync(Owner.CurrentProject.Id, oauthToken);
                 var servicesVersions = new List<Tuple<GaeService, IList<GaeVersion>>>();
                 foreach (var s in services)
                 {

@@ -1,7 +1,4 @@
-﻿<UserControl x:Class="GoogleCloudExtension.CloudExplorer.CloudExplorerToolWindowControl"
-
-
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<UserControl xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -10,33 +7,31 @@
              xmlns:CloudExplorer="clr-namespace:GoogleCloudExtension.CloudExplorer"
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
+             xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.AeroLite" x:Class="GoogleCloudExtension.CloudExplorer.CloudExplorerToolWindowControl"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
              d:DesignHeight="700" d:DesignWidth="300"
              d:DataContext="{d:DesignInstance {x:Type CloudExplorer:CloudExplorerViewModel}}"
-             Name="MyToolWindow">
+             x:Name="MyToolWindow">
 
     <UserControl.Resources>
-        <utils:VisibilityConverter x:Key="iconVisibilityConverter" />
-        <utils:VisibilityConverter x:Key="errorVisibilityConverter" />
-        <utils:VisibilityConverter x:Key="progressVisibilityConverted" />
-        <utils:VisibilityConverter x:Key="booleanPropertyConverter" />
+        <utils:VisibilityConverter x:Key="visibilityConverter" />
 
         <!-- Data template to be applied to the TreeHierarchy -->
         <HierarchicalDataTemplate DataType="{x:Type CloudExplorer:TreeHierarchy}" ItemsSource="{Binding Children}">
             <Grid ContextMenu="{Binding ContextMenu}">
                 <StackPanel Orientation="Horizontal">
-                    <controls:ProgressIndicator Visibility="{Binding IsLoading, Converter={StaticResource progressVisibilityConverted}}" />
-                    <Image Source="{x:Static CloudExplorer:TreeHierarchy.ErrorIcon}"
+                    <controls:ProgressIndicator Visibility="{Binding IsLoading, Converter={StaticResource visibilityConverter}}" />
+                    <Image Source="{x:Static CloudExplorer:TreeNode.ErrorIcon}"
                            Height="16" Width="16"
                            VerticalAlignment="Center"
-                           Visibility="{Binding IsError, Converter={StaticResource errorVisibilityConverter}}"
+                           Visibility="{Binding IsError, Converter={StaticResource visibilityConverter}}"
                            Margin="0,0,5,0"/>
                     <Image Source="{Binding Icon}"
                            Height="16" Width="16"
                            VerticalAlignment="Center"
-                           Visibility="{Binding IconIsVisible, Converter={StaticResource iconVisibilityConverter}}"
+                           Visibility="{Binding IconIsVisible, Converter={StaticResource visibilityConverter}}"
                            Margin="0,0,5,0"/>
                     <ContentPresenter Content="{Binding Content}" VerticalAlignment="Center" />
                 </StackPanel>
@@ -47,15 +42,15 @@
         <DataTemplate DataType="{x:Type CloudExplorer:TreeLeaf}">
             <Grid ContextMenu="{Binding ContextMenu}">
                 <StackPanel Orientation="Horizontal">
-                    <controls:ProgressIndicator Visibility="{Binding IsLoading, Converter={StaticResource progressVisibilityConverted}}" />
-                    <Image Source="{x:Static CloudExplorer:TreeHierarchy.ErrorIcon}"
+                    <controls:ProgressIndicator Visibility="{Binding IsLoading, Converter={StaticResource visibilityConverter}}" />
+                    <Image Source="{x:Static CloudExplorer:TreeNode.ErrorIcon}"
                            Height="16" Width="16"
                            VerticalAlignment="Center"
-                           Visibility="{Binding IsError, Converter={StaticResource errorVisibilityConverter}}"
+                           Visibility="{Binding IsError, Converter={StaticResource visibilityConverter}}"
                            Margin="0,0,5,0"/>
                     <Image Source="{Binding Icon}"
                            Height="16" Width="16"
-                           Visibility="{Binding IconIsVisible, Converter={StaticResource iconVisibilityConverter}}"
+                           Visibility="{Binding IconIsVisible, Converter={StaticResource visibilityConverter}}"
                            VerticalAlignment="Center"
                            Margin="0,0,5,0"/>
                     <ContentPresenter Content="{Binding Content}" VerticalAlignment="Center" />
@@ -145,27 +140,218 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Stule for the combo box for the project dropdown. -->
+        <SolidColorBrush x:Key="ComboBox.Static.Background" Color="#FFDDDDDD"/>
+        <SolidColorBrush x:Key="ComboBox.Static.Border" Color="#FF707070"/>
+        <SolidColorBrush x:Key="ComboBox.MouseOver.Background" Color="#FFBEE6FD"/>
+        <SolidColorBrush x:Key="ComboBox.MouseOver.Border" Color="#FF3C7FB1"/>
+        <SolidColorBrush x:Key="ComboBox.Pressed.Background" Color="#FFC4E5F6"/>
+        <SolidColorBrush x:Key="ComboBox.Pressed.Border" Color="#FF2C628B"/>
+        <SolidColorBrush x:Key="ComboBox.Disabled.Background" Color="#FFF4F4F4"/>
+        <SolidColorBrush x:Key="ComboBox.Disabled.Border" Color="#FFADB2B5"/>
+
+        <Style x:Key="ComboBoxToggleButton" TargetType="{x:Type ToggleButton}">
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="IsTabStop" Value="false"/>
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="ClickMode" Value="Press"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ToggleButton}">
+                        <Border x:Name="templateRoot" SnapsToDevicePixels="true" Background="{TemplateBinding Background}">
+                            <Border x:Name="splitBorder" Width="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Margin="0,-1,-1,-1" HorizontalAlignment="Right">
+                                <Path x:Name="arrow" VerticalAlignment="Center" HorizontalAlignment="Center" Fill="{TemplateBinding TextElement.Foreground}" Data="M 0,0 C0,0 3.5,4 3.5,4 3.5,4 7,0 7,0 7,0 0,0 0,0 z"/>
+                            </Border>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.MouseOver.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.MouseOver.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="true">
+                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.Pressed.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.Pressed.Border}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Border}"/>
+                                <Setter Property="Background" TargetName="splitBorder" Value="{StaticResource ComboBox.Disabled.Background}"/>
+                                <Setter Property="BorderBrush" TargetName="splitBorder" Value="{StaticResource ComboBox.Disabled.Border}"/>
+                                <Setter Property="Fill" TargetName="arrow" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <ControlTemplate x:Key="ComboBoxTemplate" TargetType="{x:Type ComboBox}">
+            <Border BorderThickness="1" BorderBrush="{TemplateBinding BorderBrush}">
+                <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0"/>
+                    </Grid.ColumnDefinitions>
+                    <Popup x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Margin="1" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom">
+                        <Themes:SystemDropShadowChrome x:Name="shadow" Color="Transparent" MaxHeight="{TemplateBinding MaxDropDownHeight}" MinWidth="{Binding ActualWidth, ElementName=templateRoot}">
+                            <Border x:Name="dropDownBorder" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+                                <ScrollViewer x:Name="DropDownScrollViewer">
+                                    <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
+                                        <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
+                                            <Rectangle x:Name="opaqueRect" Fill="{Binding Background, ElementName=dropDownBorder}" Height="{Binding ActualHeight, ElementName=dropDownBorder}" Width="{Binding ActualWidth, ElementName=dropDownBorder}"/>
+                                        </Canvas>
+                                        <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                    </Grid>
+                                </ScrollViewer>
+                            </Border>
+                        </Themes:SystemDropShadowChrome>
+                    </Popup>
+                    <ToggleButton x:Name="toggleButton" Background="{TemplateBinding Background}" Grid.ColumnSpan="2" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ComboBoxToggleButton}"/>
+                    <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}" ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}" Content="{TemplateBinding SelectionBoxItem}" ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" IsHitTestVisible="false" Margin="{TemplateBinding Padding}" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="true">
+                    <Setter Property="Margin" TargetName="shadow" Value="0,0,5,5"/>
+                    <Setter Property="Color" TargetName="shadow" Value="#71000000"/>
+                </Trigger>
+                <Trigger Property="HasItems" Value="false">
+                    <Setter Property="Height" TargetName="dropDownBorder" Value="95"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsGrouping" Value="true"/>
+                        <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                </MultiTrigger>
+                <Trigger Property="ScrollViewer.CanContentScroll" SourceName="DropDownScrollViewer" Value="false">
+                    <Setter Property="Canvas.Top" TargetName="opaqueRect" Value="{Binding VerticalOffset, ElementName=DropDownScrollViewer}"/>
+                    <Setter Property="Canvas.Left" TargetName="opaqueRect" Value="{Binding HorizontalOffset, ElementName=DropDownScrollViewer}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <SolidColorBrush x:Key="TextBox.Static.Background" Color="#FFFFFFFF"/>
+        <Style x:Key="ComboBoxEditableTextBox" TargetType="{x:Type TextBox}">
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="AllowDrop" Value="true"/>
+            <Setter Property="MinWidth" Value="0"/>
+            <Setter Property="MinHeight" Value="0"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <ScrollViewer x:Name="PART_ContentHost" Background="Transparent" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <ControlTemplate x:Key="ComboBoxEditableTemplate" TargetType="{x:Type ComboBox}">
+            <Grid x:Name="templateRoot" SnapsToDevicePixels="true">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition MinWidth="{DynamicResource {x:Static SystemParameters.VerticalScrollBarWidthKey}}" Width="0"/>
+                </Grid.ColumnDefinitions>
+                <Popup x:Name="PART_Popup" AllowsTransparency="true" Grid.ColumnSpan="2" IsOpen="{Binding IsDropDownOpen, RelativeSource={RelativeSource TemplatedParent}}" PopupAnimation="{DynamicResource {x:Static SystemParameters.ComboBoxPopupAnimationKey}}" Placement="Bottom">
+                    <Themes:SystemDropShadowChrome x:Name="shadow" Color="Transparent" MaxHeight="{TemplateBinding MaxDropDownHeight}" MinWidth="{Binding ActualWidth, ElementName=templateRoot}">
+                        <Border x:Name="dropDownBorder" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" BorderThickness="1" Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
+                            <ScrollViewer x:Name="DropDownScrollViewer">
+                                <Grid x:Name="grid" RenderOptions.ClearTypeHint="Enabled">
+                                    <Canvas x:Name="canvas" HorizontalAlignment="Left" Height="0" VerticalAlignment="Top" Width="0">
+                                        <Rectangle x:Name="opaqueRect" Fill="{Binding Background, ElementName=dropDownBorder}" Height="{Binding ActualHeight, ElementName=dropDownBorder}" Width="{Binding ActualWidth, ElementName=dropDownBorder}"/>
+                                    </Canvas>
+                                    <ItemsPresenter x:Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                                </Grid>
+                            </ScrollViewer>
+                        </Border>
+                    </Themes:SystemDropShadowChrome>
+                </Popup>
+                <ToggleButton x:Name="toggleButton" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Grid.ColumnSpan="2" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" Style="{StaticResource ComboBoxToggleButton}"/>
+                <Border x:Name="border" Background="{StaticResource TextBox.Static.Background}" Margin="{TemplateBinding BorderThickness}">
+                    <TextBox x:Name="PART_EditableTextBox" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" IsReadOnly="{Binding IsReadOnly, RelativeSource={RelativeSource TemplatedParent}}" Margin="{TemplateBinding Padding}" Style="{StaticResource ComboBoxEditableTextBox}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                </Border>
+            </Grid>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsEnabled" Value="false">
+                    <Setter Property="Opacity" TargetName="border" Value="0.56"/>
+                </Trigger>
+                <Trigger Property="IsKeyboardFocusWithin" Value="true">
+                    <Setter Property="Foreground" Value="Black"/>
+                </Trigger>
+                <Trigger Property="HasDropShadow" SourceName="PART_Popup" Value="true">
+                    <Setter Property="Margin" TargetName="shadow" Value="0,0,5,5"/>
+                    <Setter Property="Color" TargetName="shadow" Value="#71000000"/>
+                </Trigger>
+                <Trigger Property="HasItems" Value="false">
+                    <Setter Property="Height" TargetName="dropDownBorder" Value="95"/>
+                </Trigger>
+                <MultiTrigger>
+                    <MultiTrigger.Conditions>
+                        <Condition Property="IsGrouping" Value="true"/>
+                        <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="false"/>
+                    </MultiTrigger.Conditions>
+                    <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                </MultiTrigger>
+                <Trigger Property="ScrollViewer.CanContentScroll" SourceName="DropDownScrollViewer" Value="false">
+                    <Setter Property="Canvas.Top" TargetName="opaqueRect" Value="{Binding VerticalOffset, ElementName=DropDownScrollViewer}"/>
+                    <Setter Property="Canvas.Left" TargetName="opaqueRect" Value="{Binding HorizontalOffset, ElementName=DropDownScrollViewer}"/>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <Style x:Key="ProjectDropdownStyle" TargetType="{x:Type ComboBox}">
+            <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.DropDownBackgroundKey}}"/>
+            <Setter Property="BorderBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.DropDownBorderKey}}"/>
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.WindowTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="Padding" Value="6,3,5,3"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
+            <Setter Property="ScrollViewer.PanningMode" Value="Both"/>
+            <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+            <Setter Property="Template" Value="{StaticResource ComboBoxTemplate}"/>
+            <Style.Triggers>
+                <Trigger Property="IsEditable" Value="true">
+                    <Setter Property="IsTabStop" Value="false"/>
+                    <Setter Property="Padding" Value="2"/>
+                    <Setter Property="Template" Value="{StaticResource ComboBoxEditableTemplate}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
 
-    <Grid>
+    <Grid IsEnabled="{Binding ProjectsAsync.IsCompleted}">
         <Grid.RowDefinitions>
+            <!-- This row contains the button bar. -->
             <RowDefinition Height="30" />
+
+            <!-- This row contains the project switcher. -->
+            <RowDefinition Height="25" />
+
+            <!-- This row contains the tree. -->
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
         <!-- Error banner -->
-        <StackPanel Visibility="{Binding ValidationErrorIsVisible, Converter={StaticResource booleanPropertyConverter}}"
-                    Style="{StaticResource ErrorBarStyle}">
+        <StackPanel Visibility="{Binding ValidationErrorIsVisible, Converter={StaticResource visibilityConverter}}"
+            Style="{StaticResource ErrorBarStyle}">
             <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Margin="10,0,0,0">
                 <Hyperlink Command="{Binding ValidationErrorActionCommand}">
-                    <TextBlock Text="{Binding ValidationErrorMessage}" />
+                    <InlineUIContainer>
+                        <TextBlock Text="{Binding ValidationErrorMessage}" />
+                    </InlineUIContainer>
                 </Hyperlink>
             </TextBlock>
         </StackPanel>
 
         <!-- Action buttons. -->
         <ItemsControl ItemsSource="{Binding Buttons}"
-                      Visibility="{Binding IsValidInstallation, Converter={StaticResource booleanPropertyConverter}}">
+            Visibility="{Binding IsValidInstallation, Converter={StaticResource visibilityConverter}}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Style="{StaticResource CommandBarStyle}" />
@@ -174,21 +360,34 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <controls:PressButton Content="{Binding Icon}"
-                            Command="{Binding Command}"
-                            VerticalAlignment="Center"
-                            ToolTip="{Binding ToolTip}"
-                            IsChecked="{Binding IsChecked}"
-                            IsEnabled="{Binding IsEnabled}"
-                            Style="{StaticResource CommandBarButtonStyle}" />
+                        Command="{Binding Command}"
+                        VerticalAlignment="Center"
+                        ToolTip="{Binding ToolTip}"
+                        IsChecked="{Binding IsChecked}"
+                        IsEnabled="{Binding IsEnabled}"
+                        Style="{StaticResource CommandBarButtonStyle}" />
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
+        <!-- Project switcher. -->
+        <ComboBox ItemsSource="{Binding ProjectsAsync.Value}"
+            Visibility="{Binding ProjectsAsync.IsCompleted, Converter={StaticResource visibilityConverter}}"
+            SelectedItem="{Binding CurrentProject, Mode=OneWayToSource}"
+            DisplayMemberPath="Id"
+            SelectedIndex="0"
+            Grid.Row="1" Style="{DynamicResource ProjectDropdownStyle}"/>
+        <TextBlock Visibility="{Binding ProjectsAsync.IsPending, Converter={StaticResource visibilityConverter}}"
+                   Margin="5"
+                   Grid.Row="1">
+            Loading projects list...
+        </TextBlock>
+
         <!-- Hierarchical view of the modules and versions within the modules. -->
         <TreeView
-                  ItemsSource="{Binding Roots}" 
-                  SelectedItemChanged="TreeView_SelectedItemChanged" 
-                  Grid.Row="1">
+            ItemsSource="{Binding Roots}" 
+            SelectedItemChanged="TreeView_SelectedItemChanged" 
+            Grid.Row="2">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />

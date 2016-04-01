@@ -37,5 +37,11 @@ namespace GoogleCloudExtension.Utils
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        /// <summary>
+        /// Raises the changed event, notifying that all properties have changed, it is a short form of
+        /// RaisePropertyChanged(null).
+        /// </summary>
+        protected void RaiseAllPropertyChanged() => RaisePropertyChanged(null);
     }
 }

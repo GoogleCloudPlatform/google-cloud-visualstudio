@@ -55,6 +55,7 @@
     <Compile Include="GaeDataSource.cs" />
     <Compile Include="GceDataSource.cs" />
     <Compile Include="GceInstanceExtensions.cs" />
+    <Compile Include="Models\GcpProject.cs" />
     <Compile Include="GrpcOperationExtensions.cs" />
     <Compile Include="MetadataExtensions.cs" />
     <Compile Include="Models\Disk.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Models\GceCredentials.cs" />
     <Compile Include="Models\GceInstance.cs" />
     <Compile Include="Models\GceInstancePage.cs" />
+    <Compile Include="Models\GcpProjectPage.cs" />
     <Compile Include="Models\GrpcOperation.cs" />
     <Compile Include="Models\InstanceTags.cs" />
     <Compile Include="Models\Metadata.cs" />
@@ -83,6 +85,7 @@
     <Compile Include="Models\ZonePage.cs" />
     <Compile Include="GrpcOperationException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ResourceManagerDataSource.cs" />
     <Compile Include="WebClientExtensions.cs" />
     <Compile Include="ZoneOperationException.cs" />
     <Compile Include="ZoneOperationExtensions.cs" />

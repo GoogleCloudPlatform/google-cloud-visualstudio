@@ -51,7 +51,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 
             try
             {
-                var currentContext = await GCloudWrapper.Instance.GetCurrentContextAsync();
                 var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
 
                 _deleteCommand.CanExecuteCommand = false;
@@ -59,7 +58,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                 IsLoading = true;
 
                 await GaeDataSource.DeleteServiceAsync(
-                    projectId: currentContext.ProjectId,
+                    projectId: _owner.Owner.CurrentProject.Id,
                     serviceId: _service.Id,
                     oauthToken: oauthToken);
 

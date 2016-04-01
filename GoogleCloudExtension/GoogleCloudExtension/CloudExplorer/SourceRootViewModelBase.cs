@@ -23,10 +23,13 @@ namespace GoogleCloudExtension.CloudExplorer
 
         public abstract TreeLeaf LoadingPlaceholder { get; }
 
-        public void Initialize()
+        public ICloudExplorerSource Owner { get; private set; }
+
+        public void Initialize(ICloudExplorerSource owner)
         {
             Icon = RootIcon;
             Content = RootCaption;
+            Owner = owner;
 
             Children.Add(LoadingPlaceholder);
         }

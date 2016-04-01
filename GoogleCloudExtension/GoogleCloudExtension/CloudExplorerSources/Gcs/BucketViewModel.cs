@@ -18,6 +18,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         private const string IconResourcePath = "CloudExplorerSources/AppEngine/Resources/ic_web.png";
         private static readonly Lazy<ImageSource> s_bucketIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
 
+        private readonly GcsSourceRootViewModel _owner;
         private readonly Bucket _bucket;
         private readonly Lazy<BucketItem> _item;
         private readonly WeakCommand _openBucketCommand;
@@ -30,8 +31,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             }
         }
 
-        public BucketViewModel(Bucket bucket)
+        public BucketViewModel(GcsSourceRootViewModel owner, Bucket bucket)
         {
+            _owner = owner;
             _bucket = bucket;
             _item = new Lazy<BucketItem>(GetItem);
             _openBucketCommand = new WeakCommand(OnOpenBucket);
@@ -48,8 +50,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         private async void OnOpenBucket()
         {
-            var currentCredentials = await GCloudWrapper.Instance.GetCurrentContextAsync();
-            var url = $"https://pantheon.corp.google.com/storage/browser/{_bucket.Name}/?project={currentCredentials.ProjectId}";
+            var url = $"https://pantheon.corp.google.com/storage/browser/{_bucket.Name}/?project={_owner.Owner.CurrentProject.Id}";
             Debug.WriteLine($"Starting bucket browsing at: {url}");
             Process.Start(url);
         }

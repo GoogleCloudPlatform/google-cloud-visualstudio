@@ -1,6 +1,8 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.ErrorDialogs;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
@@ -24,11 +26,13 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private readonly IList<ICloudExplorerSource> _sources;
         private readonly List<ButtonDefinition> _buttons;
+        private AsyncPropertyValue<IEnumerable<GcpProject>> _projectsAsync;
         private bool _isValidInstallation;
         private bool _validationErrorIsVisible;
         private string _vaidationErrorMessage;
         private ICommand _validationErrorActionCommand;
-         
+        private GcpProject _currentProject;
+
         /// <summary>
         /// The list of module and version combinations for the current project.
         /// </summary>
@@ -43,9 +47,11 @@ namespace GoogleCloudExtension.CloudExplorer
             }
         }
 
-        public AsyncPropertyValue<string> ProjectIdAsync { get; }
-
-        public AsyncPropertyValue<string> UserAccountAsync{ get; }
+        public AsyncPropertyValue<IEnumerable<GcpProject>> ProjectsAsync
+        {
+            get { return _projectsAsync; }
+            set { SetValueAndRaise(ref _projectsAsync, value); }
+        }
 
         public IList<ButtonDefinition> Buttons => _buttons;
 
@@ -73,6 +79,16 @@ namespace GoogleCloudExtension.CloudExplorer
             set { SetValueAndRaise(ref _vaidationErrorMessage, value); }
         }
 
+        public GcpProject CurrentProject
+        {
+            get { return _currentProject; }
+            set
+            {
+                SetValueAndRaise(ref _currentProject, value);
+                InvalidateCurrentProject();
+            }
+        }
+
         public CloudExplorerViewModel(IEnumerable<ICloudExplorerSource> sources)
         {
             _sources = new List<ICloudExplorerSource>(sources);
@@ -86,9 +102,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 }
             };
 
-            var contextTask = GCloudWrapper.Instance.GetCurrentContextAsync();
-            ProjectIdAsync = AsyncPropertyValue<string>.CreateAsyncProperty(contextTask, x => x.ProjectId, "Loading project...");
-            UserAccountAsync = AsyncPropertyValue<string>.CreateAsyncProperty(contextTask, x => x.Account, "Loading account...");
+            ProjectsAsync = new AsyncPropertyValue<IEnumerable<GcpProject>>(LoadProjectListAsync());
 
             foreach (var source in _sources)
             {
@@ -98,6 +112,12 @@ namespace GoogleCloudExtension.CloudExplorer
 
             ValidateAndShowButtons();
             EnvironmentUtils.ValidationStateInvalidated += OnValidationStateInvalidated;
+        }
+
+        private async Task<IEnumerable<GcpProject>> LoadProjectListAsync()
+        {
+            var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
+            return await ResourceManagerDataSource.GetProjectsListAsync(oauthToken);
         }
 
         private void OnValidationStateInvalidated(object sender, EventArgs e)
@@ -140,11 +160,26 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnRefresh()
         {
+            RefreshSources();
+        }
+
+        private void RefreshSources()
+        {
             foreach (var source in _sources)
             {
                 source.Refresh();
             }
             RaisePropertyChanged(nameof(Roots));
+        }
+
+        private void InvalidateCurrentProject()
+        {
+            Debug.WriteLine($"Setting selected project to {CurrentProject?.Id ?? "null"}");
+            foreach (var source in _sources)
+            {
+                source.CurrentProject = CurrentProject;
+            }
+            RefreshSources();
         }
     }
 }
