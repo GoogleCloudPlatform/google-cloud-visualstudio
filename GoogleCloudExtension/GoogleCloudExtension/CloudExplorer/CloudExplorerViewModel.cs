@@ -2,10 +2,12 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.ErrorDialogs;
+using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -26,7 +28,7 @@ namespace GoogleCloudExtension.CloudExplorer
         private bool _validationErrorIsVisible;
         private string _vaidationErrorMessage;
         private ICommand _validationErrorActionCommand;
-
+         
         /// <summary>
         /// The list of module and version combinations for the current project.
         /// </summary>
@@ -40,6 +42,10 @@ namespace GoogleCloudExtension.CloudExplorer
                 }
             }
         }
+
+        public AsyncPropertyValue<string> ProjectIdAsync { get; }
+
+        public AsyncPropertyValue<string> UserAccountAsync{ get; }
 
         public IList<ButtonDefinition> Buttons => _buttons;
 
@@ -79,6 +85,10 @@ namespace GoogleCloudExtension.CloudExplorer
                     Command = new WeakCommand(this.OnRefresh),
                 }
             };
+
+            var contextTask = GCloudWrapper.Instance.GetCurrentContextAsync();
+            ProjectIdAsync = AsyncPropertyValue<string>.CreateAsyncProperty(contextTask, x => x.ProjectId, "Loading project...");
+            UserAccountAsync = AsyncPropertyValue<string>.CreateAsyncProperty(contextTask, x => x.Account, "Loading account...");
 
             foreach (var source in _sources)
             {
