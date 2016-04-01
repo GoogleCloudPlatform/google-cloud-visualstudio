@@ -13,7 +13,7 @@ namespace GoogleCloudExtension.Utils
     /// Resetting the value is thread-safe as well.
     /// </summary>
     /// <typeparam name="T">The type of the value.</typeparam>
-    internal class Atomic<T> where T: class
+    public class Atomic<T> where T: class
     {
         private readonly object _lock = new object();
         private readonly Func<T> _factory;
