@@ -85,6 +85,7 @@
     <Compile Include="Controls\ProgressIndicator.xaml.cs">
       <DependentUpon>ProgressIndicator.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CredentialsManagement\Models\UserCredentials.cs" />
     <Compile Include="DeploymentDialog\AspNetRuntimeValueConverter.cs" />
     <Compile Include="DeploymentDialog\DeploymentDialogContent.xaml.cs">
       <DependentUpon>DeploymentDialogContent.xaml</DependentUpon>
