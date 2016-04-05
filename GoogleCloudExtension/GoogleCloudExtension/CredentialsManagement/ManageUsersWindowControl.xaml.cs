@@ -3,17 +3,17 @@
 
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.UserAndProjectList
+namespace GoogleCloudExtension.CredentialsManagement
 {
     /// <summary>
     /// Interaction logic for UserAndProjectListWindowControl.
     /// </summary>
-    public partial class UserAndProjectListWindowControl : UserControl
+    public partial class ManageUsersWindowControl : UserControl
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserAndProjectListWindowControl"/> class.
+        /// Initializes a new instance of the <see cref="ManageUsersWindowControl"/> class.
         /// </summary>
-        public UserAndProjectListWindowControl()
+        public ManageUsersWindowControl()
         {
             this.InitializeComponent();
         }

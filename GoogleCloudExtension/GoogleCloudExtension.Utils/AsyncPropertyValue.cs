@@ -31,6 +31,8 @@ namespace GoogleCloudExtension.Utils
 
         public bool IsCompleted => _valueSource.IsCompleted;
 
+        public bool IsError => _valueSource.IsFaulted;
+
         public AsyncPropertyValue(Task<T> valueSource, T defaultValue = default(T))
         {
             _valueSource = valueSource;

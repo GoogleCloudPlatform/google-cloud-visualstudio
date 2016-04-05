@@ -7,7 +7,7 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DeployToAppEngine;
 using GoogleCloudExtension.DeployToAppEngineContextMenu;
-using GoogleCloudExtension.UserAndProjectList;
+using GoogleCloudExtension.CredentialsManagement;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -40,7 +40,7 @@ namespace GoogleCloudExtension
     [Guid(GoogleCloudExtensionPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideToolWindow(typeof(CloudExplorerToolWindow))]
-    [ProvideToolWindow(typeof(UserAndProjectListWindow))]
+    [ProvideToolWindow(typeof(ManageCredentialsWindow))]
     [ProvideAutoLoad(UIContextGuids80.NoSolution)]
     public sealed class GoogleCloudExtensionPackage : Package
     {
@@ -74,7 +74,7 @@ namespace GoogleCloudExtension
 
             CloudExplorerCommand.Initialize(this);
             DeployToAppEngineCommand.Initialize(this);
-            UserAndProjectListWindowCommand.Initialize(this);
+            ManageCredentialsCommand.Initialize(this);
             DeployToAppEngineContextMenuCommand.Initialize(this);
             AddNewAccountCommand.Initialize(this);
             ExtensionAnalytics.Initialize(this);

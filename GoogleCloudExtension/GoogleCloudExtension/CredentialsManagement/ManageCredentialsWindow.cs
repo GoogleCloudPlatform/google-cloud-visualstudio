@@ -2,11 +2,12 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.Analytics;
+using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
 
-namespace GoogleCloudExtension.UserAndProjectList
+namespace GoogleCloudExtension.CredentialsManagement
 {
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.
@@ -20,21 +21,16 @@ namespace GoogleCloudExtension.UserAndProjectList
     /// </para>
     /// </remarks>
     [Guid("170d091f-5a05-46e9-9d7b-3fdab8b413d3")]
-    public class UserAndProjectListWindow : ToolWindowPane
+    public class ManageCredentialsWindow : DialogWindow
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserAndProjectListWindow"/> class.
+        /// Initializes a new instance of the <see cref="ManageCredentialsWindow"/> class.
         /// </summary>
-        public UserAndProjectListWindow() : base(null)
+        public ManageCredentialsWindow() : base(null)
         {
-            this.Caption = "Projects";
-
-            var model = new UserAndProjectListViewModel();
-            this.Content = new UserAndProjectListWindowControl { DataContext = model };
-
-            model.LoadAccountsAsync();
-
-            ExtensionAnalytics.ReportWindowOpened(nameof(UserAndProjectListWindow));
+            Title = "Choose Users";
+            var model = new ManageCredentialsViewModel();
+            Content = new ManageUsersWindowControl { DataContext = model };
         }
     }
 }
