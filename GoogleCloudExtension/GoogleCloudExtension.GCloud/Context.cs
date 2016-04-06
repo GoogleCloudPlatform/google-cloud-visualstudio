@@ -8,13 +8,14 @@ namespace GoogleCloudExtension.GCloud
     /// </summary>
     public sealed class Context
     {
+        public string Account { get; }
+
+        public string ProjectId { get; }
+
         public Context(string account = null, string projectId = null)
         {
-            this.Account = account;
-            this.ProjectId = projectId;
+            Account = account;
+            ProjectId = projectId;
         }
-
-        public string Account { get; private set; }
-        public string ProjectId { get; private set; }
     }
 }

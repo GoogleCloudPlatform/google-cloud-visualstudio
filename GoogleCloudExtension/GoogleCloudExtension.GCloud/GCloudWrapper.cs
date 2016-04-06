@@ -19,39 +19,11 @@ namespace GoogleCloudExtension.GCloud
     /// "current project".
     /// This class is a singleton.
     /// </summary>
-    public sealed class GCloudWrapper
+    public static class GCloudWrapper
     {
         // Environment variables to specify the credentials to the Gcloud CLI.
         private const string CloudSdkCoreAccountVar = "CLOUDSDK_CORE_ACCOUNT";
         private const string CloudSdkCoreProjectVar = "CLOUDSDK_CORE_PROJECT";
-
-        /// <summary>
-        /// Maintains the currently selected account and project for the instance.
-        /// </summary>
-        private Context _currentCredentials;
-
-        /// <summary>
-        /// Singleton for the class.
-        /// </summary>
-        public static GCloudWrapper Instance { get; } = new GCloudWrapper();
-
-        /// <summary>
-        /// This event is raised whenever the current account or project has changed;
-        /// there's no notification of what the new values are so the caller has to call
-        /// to find out what the new values are.
-        /// </summary>
-        public event EventHandler AccountOrProjectChanged;
-
-        /// <summary>
-        /// Private to enforce the singleton.
-        /// </summary>
-        private GCloudWrapper()
-        { }
-
-        private void RaiseAccountOrProjectChanged()
-        {
-            AccountOrProjectChanged?.Invoke(this, EventArgs.Empty);
-        }
 
         /// <summary>
         /// Calculates what the current project and account is, it might return what "gcloud"
@@ -59,35 +31,14 @@ namespace GoogleCloudExtension.GCloud
         /// hidden from the caller.
         /// </summary>
         /// <returns>The current AccountAndProjectId.</returns>
-        public async Task<Context> GetCurrentContextAsync()
+        public static async Task<Context> GetCurrentContextAsync()
         {
-            if (_currentCredentials == null)
-            {
-                // Fetching the current account and project, for gcloud, does not need to use the current
-                // account.
-                var settings = await GetJsonOutputAsync<Settings>("config list", credentials: null);
-                _currentCredentials = new Context(
-                    account: settings.CoreSettings.Account,
-                    projectId: settings.CoreSettings.Project);
-            }
-            return _currentCredentials;
-        }
-
-        /// <summary>
-        /// Updates the local concet of "current account and project" in the instance *only* it does not
-        /// affect what gcloud thinks is the current account and project.
-        /// </summary>
-        /// <param name="credentials">The new accountAndProject to use</param>
-        public void UpdateCredentials(Context credentials)
-        {
-            _currentCredentials = credentials;
-            RaiseAccountOrProjectChanged();
-        }
-
-        public void UpdateProject(string projectId)
-        {
-            var newCredentials = new Context(_currentCredentials.Account, projectId);
-            UpdateCredentials(newCredentials);
+            // Fetching the current account and project, for gcloud, does not need to use the current
+            // account.
+            var settings = await GetJsonOutputAsync<Settings>("config list");
+            return new Context(
+                account: settings.CoreSettings.Account,
+                projectId: settings.CoreSettings.Project);
         }
 
         /// <summary>
@@ -105,20 +56,26 @@ namespace GoogleCloudExtension.GCloud
                 .FirstOrDefault();
         }
 
-        private IDictionary<string, string> GetEnvironmentForCredentials(Context credentials)
+        private static IDictionary<string, string> GetEnvironmentForCredentials(string account, string projectId)
         {
-            if (credentials != null)
+            if (account == null && projectId == null)
             {
-                return new Dictionary<string, string>
-                {
-                    { CloudSdkCoreAccountVar, credentials.Account },
-                    { CloudSdkCoreProjectVar, credentials.ProjectId }
-                };
+                return null;
             }
-            return null;
+
+            var result = new Dictionary<string, string>();
+            if (account != null)
+            {
+                result[CloudSdkCoreAccountVar] = account;
+            }
+            if (projectId != null)
+            {
+                result[CloudSdkCoreProjectVar] = projectId;
+            }
+            return result;
         }
 
-        private string FormatCommand(string command, bool useJson)
+        private static string FormatCommand(string command, bool useJson)
         {
             var jsonFormatParam = useJson ? "--format=json" : "";
             return $"/c gcloud {jsonFormatParam} {command}";
@@ -131,10 +88,10 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="callback">The output callback called for each line of output from the command.</param>
         /// <param name="credentials">The credentials to use.</param>
         /// <returns></returns>
-        public async Task RunCommandAsync(string command, Action<string> callback, Context credentials)
+        public static async Task RunCommandAsync(string command, Action<string> callback, string account = null, string projectId = null)
         {
             var actualCommand = FormatCommand(command, useJson: false);
-            var envVars = GetEnvironmentForCredentials(credentials);
+            var envVars = GetEnvironmentForCredentials(account: account, projectId: projectId);
             Debug.WriteLine($"Executing gcloud command: {actualCommand}");
             var result = await ProcessUtils.RunCommandAsync("cmd.exe", actualCommand, (s, e) => callback(e.Line), envVars);
             if (!result)
@@ -147,71 +104,29 @@ namespace GoogleCloudExtension.GCloud
         /// Returns the access token for this class' notion of current user.
         /// </summary>
         /// <returns>The string representation of the access token.</returns>
-        public Task<string> GetAccessTokenAsync()
+        public static Task<string> GetAccessTokenAsync(string account)
         {
-            return GetCommandOutputAsync("auth print-access-token");
-        }
-
-        /// <summary>
-        /// Invokes the _default_ browser in the system to add a new set of credentials into
-        /// the credentials store. This will also invalidate the list of credentials to notify the various
-        /// parts in the extension that depends on the list of current credentials
-        /// </summary>
-        /// <returns></returns>
-        public async Task AddCredentialsAsync(Action<string> callback)
-        {
-            callback("Launching browser.");
-            var result = await LaunchCommandAsync("auth login --launch-browser");
-            if (result == 0)
-            {
-                // A new account was succesfully registered, invalidate the current credentials
-                // so the interface is updated.
-                _currentCredentials = null;
-                RaiseAccountOrProjectChanged();
-                var credentials = await GetCurrentContextAsync();
-                callback($"Succesfully added the account: {credentials.Account}");
-            }
-            else
-            {
-                callback($"Failed to add the account with result: {result}");
-            }
+            return GetCommandOutputAsync("auth print-access-token", account: account);
         }
 
         /// <summary>
         /// Returns the accounts registered with gcloud.
         /// </summary>
         /// <returns>The accounts.</returns>
-        public async Task<IEnumerable<string>> GetAccountsAsync()
+        public static async Task<IEnumerable<string>> GetAccountsAsync()
         {
             // Getting the list of accounts needs to not filter down by the current account
             // being used or nothing will be shown, so we don't need to use the current account.
-            var settings = await GetJsonOutputAsync<AccountSettings>("auth list", credentials: null);
+            var settings = await GetJsonOutputAsync<AccountSettings>("auth list");
             return settings.Accounts;
         }
 
-        /// <summary>
-        /// Returns the list of projects accessible by the current account.
-        /// </summary>
-        /// <returns>List of projects.</returns>
-        public Task<IList<CloudProject>> GetProjectsAsync()
+        public static async Task<WindowsInstanceCredentials> ResetWindowsCredentials(string instance, string zone, string user, string account, string projectId)
         {
-            return GetJsonOutputAsync<IList<CloudProject>>("projects list");
-        }
-
-        /// <summary>
-        /// Fetches the list of projects for the given credentials from the
-        /// gcloud store.
-        /// </summary>
-        /// <param name="credentials">The credentials to use.</param>
-        /// <returns>The task with the list of projects.</returns>
-        public async Task<IList<CloudProject>> GetProjectsAsync(Context credentials)
-        {
-            return await GetJsonOutputAsync<IList<CloudProject>>("projects list", credentials);
-        }
-
-        public async Task<WindowsInstanceCredentials> ResetWindowsCredentials(string instance, string zone, string user)
-        {
-            return await GetJsonOutputAsync<WindowsInstanceCredentials>($"beta compute reset-windows-password {instance} --quiet --zone {zone} --user {user}");
+            return await GetJsonOutputAsync<WindowsInstanceCredentials>(
+                $"beta compute reset-windows-password {instance} --quiet --zone {zone} --user {user}",
+                account: account,
+                projectId: projectId);
         }
 
         /// <summary>
@@ -220,7 +135,7 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="group">The group that contains the property.</param>
         /// <param name="property">The name of the property to fetch.</param>
         /// <returns>The task with the result from reading the property.</returns>
-        public async Task<string> GetPropertyAsync(string group, string property)
+        public static async Task<string> GetPropertyAsync(string group, string property)
         {
             try
             {
@@ -239,7 +154,7 @@ namespace GoogleCloudExtension.GCloud
         /// Returns the list of components that gcloud knows about.
         /// </summary>
         /// <returns></returns>
-        public async Task<IList<string>> GetInstalledComponentsAsync()
+        public static async Task<IList<string>> GetInstalledComponentsAsync()
         {
             Debug.WriteLine("Reading list of components.");
             var components = await GetJsonOutputAsync<IList<CloudSdkComponent>>("components list");
@@ -250,7 +165,7 @@ namespace GoogleCloudExtension.GCloud
         /// Detects if gcloud is present in the system.
         /// </summary>
         /// <returns></returns>
-        public bool IsGCloudCliInstalled()
+        public static bool IsGCloudCliInstalled()
         {
             Debug.WriteLine("Validating GCloud installation.");
             var gcloudPath = GetGCloudPath();
@@ -259,10 +174,10 @@ namespace GoogleCloudExtension.GCloud
             return gcloudPath != null;
         }
 
-        private async Task<string> GetCommandOutputAsync(string command, Context credentials)
+        private static async Task<string> GetCommandOutputAsync(string command, string account = null, string projectId = null)
         {
             var actualCommand = FormatCommand(command, useJson: false);
-            var envVars = GetEnvironmentForCredentials(credentials);
+            var envVars = GetEnvironmentForCredentials(account: account, projectId: projectId);
             Debug.WriteLine($"Executing gcloud command: {actualCommand}");
             var output = await ProcessUtils.GetCommandOutputAsync("cmd.exe", actualCommand, envVars);
             if (!output.Succeeded)
@@ -272,21 +187,10 @@ namespace GoogleCloudExtension.GCloud
             return output.StandardOutput;
         }
 
-        private async Task<string> GetCommandOutputAsync(string command)
-        {
-            return await GetCommandOutputAsync(command, await GetCurrentContextAsync());
-        }
-
-        private Task<int> LaunchCommandAsync(string command)
-        {
-            var actualCommand = FormatCommand(command, useJson: false);
-            return ProcessUtils.LaunchCommandAsync("cmd.exe", actualCommand, null);
-        }
-
-        private async Task<T> GetJsonOutputAsync<T>(string command, Context credentials)
+        private static async Task<T> GetJsonOutputAsync<T>(string command, string account = null, string projectId = null)
         {
             var actualCommand = FormatCommand(command, useJson: true);
-            var envVars = GetEnvironmentForCredentials(credentials);
+            var envVars = GetEnvironmentForCredentials(account: account, projectId: projectId);
             try
             {
                 Debug.Write($"Executing gcloud command: {actualCommand}");
@@ -296,11 +200,6 @@ namespace GoogleCloudExtension.GCloud
             {
                 throw new GCloudException($"Failed to execute command {actualCommand}\nInner message:\n{ex.Message}", ex);
             }
-        }
-
-        private async Task<T> GetJsonOutputAsync<T>(string command)
-        {
-            return await GetJsonOutputAsync<T>(command, await GetCurrentContextAsync());
         }
     }
 }
