@@ -2,9 +2,9 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.CredentialsManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
-using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
-    internal class GceSourceRootViewModel : SourceRootViewModelBase
+    public class GceSourceRootViewModel : SourceRootViewModelBase
     {
         private const string IconResourcePath = "CloudExplorerSources/Gce/Resources/gce_logo.png";
 
@@ -102,7 +102,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private async Task<IList<GceInstance>> LoadGceInstances()
         {
-            var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
+            var oauthToken = await CredentialsManager.GetAccessTokenAsync();
             return await GceDataSource.GetInstanceListAsync(Owner.CurrentProject.Id, oauthToken);
         }
 
@@ -111,7 +111,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             return _instances?
                 .Where(x => !_showOnlyWindowsInstances || x.IsWindowsInstance())
                 .GroupBy(x => x.ZoneName)
-                .Select(x => new ZoneViewModel(x.Key, x)).ToList();
+                .Select(x => new ZoneViewModel(this, x.Key, x)).ToList();
         }
     }
 }

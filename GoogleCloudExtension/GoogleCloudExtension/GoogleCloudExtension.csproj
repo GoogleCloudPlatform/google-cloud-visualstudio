@@ -51,7 +51,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="AddNewAccount\AddNewAccountCommand.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\AppEngineRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\AppEngineSource.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\GaeServiceViewModel.cs" />
@@ -85,38 +84,18 @@
     <Compile Include="Controls\ProgressIndicator.xaml.cs">
       <DependentUpon>ProgressIndicator.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CredentialsManagement\CredentialsManager.cs" />
+    <Compile Include="CredentialsManagement\ProfileManager.cs" />
     <Compile Include="CredentialsManagement\Models\UserCredentials.cs" />
-    <Compile Include="DeploymentDialog\AspNetRuntimeValueConverter.cs" />
-    <Compile Include="DeploymentDialog\DeploymentDialogContent.xaml.cs">
-      <DependentUpon>DeploymentDialogContent.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DeploymentDialog\DeploymentDialogWindow.cs" />
-    <Compile Include="DeploymentDialog\DeploymentDialogViewModel.cs" />
-    <Compile Include="ErrorDialogs\ValidationErrorDialogContent.xaml.cs">
-      <DependentUpon>ValidationErrorDialogContent.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ErrorDialogs\ValidationErrorDialogViewModel.cs" />
-    <Compile Include="ErrorDialogs\ValidationErrorDialogWindow.cs" />
-    <Compile Include="Projects\SolutionHelper.cs" />
+    <Compile Include="CredentialsManagement\Models\UserCredentialsViewModel.cs" />
     <Compile Include="Utils\ActivityLogUtils.cs" />
     <Compile Include="Utils\ButtonIds.cs" />
     <Compile Include="Utils\DnxValidationResult.cs" />
-    <Compile Include="Utils\EnvironmentUtils.cs" />
-    <Compile Include="Utils\GCloudValidationResult.cs" />
     <Compile Include="Utils\GcpOutputWindow.cs" />
-    <Compile Include="Utils\DeploymentUtils.cs" />
-    <Compile Include="DeployToAppEngineContextMenu\DeployToAppEngineContextMenuCommand.cs" />
-    <Compile Include="DeployToAppEngine\DeployToAppEngineCommand.cs" />
     <Compile Include="GoogleCloudExtensionPackage.cs" />
     <Compile Include="ExtensionEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\StatusbarHelper.cs" />
-    <Compile Include="CredentialsManagement\ManageCredentialsViewModel.cs" />
-    <Compile Include="CredentialsManagement\ManageCredentialsWindow.cs" />
-    <Compile Include="CredentialsManagement\ManageCredentialsCommand.cs" />
-    <Compile Include="CredentialsManagement\ManageUsersWindowControl.xaml.cs">
-      <DependentUpon>ManageUsersWindowControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Utils\ResourceUtils.cs" />
     <Compile Include="Utils\SelectionUtils.cs" />
     <Compile Include="Utils\ShellUtils.cs" />
@@ -303,18 +282,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DeploymentDialog\DeploymentDialogContent.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ErrorDialogs\ValidationErrorDialogContent.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CredentialsManagement\ManageUsersWindowControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GoogleCloudExtension.DataSources\GoogleCloudExtension.DataSources.csproj">
@@ -324,14 +291,6 @@
     <ProjectReference Include="..\GoogleAnalyticsUtils\GoogleAnalyticsUtils.csproj">
       <Project>{a2d9ac4e-9621-4385-a175-316832f7bfdc}</Project>
       <Name>GoogleAnalyticsUtils</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GoogleCloudExtension.DnxSupport\GoogleCloudExtension.DnxSupport.csproj">
-      <Project>{c09a43dd-3b3a-4b5f-a131-c1d1fd3634a2}</Project>
-      <Name>GoogleCloudExtension.DnxSupport</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GoogleCloudExtension.GCloud\GoogleCloudExtension.GCloud.csproj">
-      <Project>{95efac7e-4f6e-46f0-bcc8-90ee1487e1e1}</Project>
-      <Name>GoogleCloudExtension.GCloud</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.Utils\GoogleCloudExtension.Utils.csproj">
       <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>

@@ -2,8 +2,8 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.CredentialsManagement;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -79,7 +79,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         private async Task<List<BucketViewModel>> LoadBucketList()
         {
-            var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
+            var oauthToken = await CredentialsManager.GetAccessTokenAsync();
             var buckets = await GcsDataSource.GetBucketListAsync(Owner.CurrentProject.Id, oauthToken);
             return buckets?.Select(x => new BucketViewModel(this, x)).ToList();
         }

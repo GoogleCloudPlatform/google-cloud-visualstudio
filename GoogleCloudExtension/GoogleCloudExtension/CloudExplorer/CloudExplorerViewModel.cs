@@ -1,10 +1,9 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using GoogleCloudExtension.CredentialsManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
-using GoogleCloudExtension.ErrorDialogs;
-using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -55,30 +54,6 @@ namespace GoogleCloudExtension.CloudExplorer
 
         public IList<ButtonDefinition> Buttons => _buttons;
 
-        public ICommand ValidationErrorActionCommand
-        {
-            get { return _validationErrorActionCommand; }
-            set { SetValueAndRaise(ref _validationErrorActionCommand, value); }
-        }
-
-        public bool IsValidInstallation
-        {
-            get { return _isValidInstallation; }
-            set { SetValueAndRaise(ref _isValidInstallation, value); }
-        }
-
-        public bool ValidationErrorIsVisible
-        {
-            get { return _validationErrorIsVisible; }
-            set { SetValueAndRaise(ref _validationErrorIsVisible, value); }
-        }
-
-        public string ValidationErrorMessage
-        {
-            get { return _vaidationErrorMessage; }
-            set { SetValueAndRaise(ref _vaidationErrorMessage, value); }
-        }
-
         public GcpProject CurrentProject
         {
             get { return _currentProject; }
@@ -109,53 +84,12 @@ namespace GoogleCloudExtension.CloudExplorer
                 var sourceButtons = source.Buttons;
                 _buttons.AddRange(sourceButtons);
             }
-
-            ValidateAndShowButtons();
-            EnvironmentUtils.ValidationStateInvalidated += OnValidationStateInvalidated;
         }
 
         private async Task<IEnumerable<GcpProject>> LoadProjectListAsync()
         {
-            var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
+            var oauthToken = await CredentialsManager.GetAccessTokenAsync();
             return await ResourceManagerDataSource.GetProjectsListAsync(oauthToken);
-        }
-
-        private void OnValidationStateInvalidated(object sender, EventArgs e)
-        {
-            ValidateAndShowButtons();
-            foreach (var source in _sources)
-            {
-                source.Refresh();
-            }
-        }
-
-        private async void ValidateAndShowButtons()
-        {
-            var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallationAsync();
-            if (gcloudValidationResult.IsValidGCloudInstallation)
-            {
-                IsValidInstallation = true;
-                ValidationErrorIsVisible = false;
-            }
-            else
-            {
-                ValidationErrorMessage = gcloudValidationResult.GetDisplayString();
-                ValidationErrorActionCommand = gcloudValidationResult.IsGCloudInstalled ?
-                    new WeakCommand(OnInstallGCloudComponentsCommand) : new WeakCommand(OnInstallGCloudCommand);
-                ValidationErrorIsVisible = true;
-            }
-        }
-
-        private void OnInstallGCloudCommand()
-        {
-            Process.Start("https://cloud.google.com/sdk/gcloud/");
-        }
-
-        private async void OnInstallGCloudComponentsCommand()
-        {
-            var gcloudValidationResult = await EnvironmentUtils.ValidateGCloudInstallationAsync();
-            var errorDialog = new ValidationErrorDialogWindow(gcloudValidationResult: gcloudValidationResult);
-            errorDialog.ShowDialog();
         }
 
         private void OnRefresh()

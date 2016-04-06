@@ -80,6 +80,7 @@
     <Compile Include="Models\NetworkAccessConfig.cs" />
     <Compile Include="Models\NetworkInterface.cs" />
     <Compile Include="Models\TrafficSplit.cs" />
+    <Compile Include="Models\WindowsCredentials.cs" />
     <Compile Include="Models\Zone.cs" />
     <Compile Include="Models\ZoneOperation.cs" />
     <Compile Include="Models\ZonePage.cs" />

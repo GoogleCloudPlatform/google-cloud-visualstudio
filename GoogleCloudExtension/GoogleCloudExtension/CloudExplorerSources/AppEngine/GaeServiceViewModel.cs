@@ -1,7 +1,7 @@
 ﻿using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.CredentialsManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
-using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 
             try
             {
-                var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
+                var oauthToken = await CredentialsManager.GetAccessTokenAsync();
 
                 _deleteCommand.CanExecuteCommand = false;
                 Content = $"{_service.Id} (Deleting...)";

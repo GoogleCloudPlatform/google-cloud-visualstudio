@@ -2,7 +2,6 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleAnalyticsUtils;
-using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell.Settings;
 using System;
@@ -226,23 +225,7 @@ namespace GoogleCloudExtension.Analytics
         /// <returns>The task with the result of the check.</returns>
         private static async Task<bool> IsReportingEnabled()
         {
-            // If gcloud is not present then we have to assume that we can't report usage.
-            if (!EnvironmentUtils.IsGCloudInstalled())
-            {
-                return false;
-            }
-
-            // The disable reporting state in gcloud is stored by:
-            // * If there's no property stored this means that the user never disabled reporting, so it is enabled.
-            // * If there's a property stored, use the value.
-            // Because of this the default value is true, in case there's no property stored.
             bool result = true;
-            var value = await GCloudWrapper.Instance.GetPropertyAsync("core", "disable_usage_reporting");
-            if (value != null)
-            {
-                result = value.Equals(FalseValue, StringComparison.OrdinalIgnoreCase);
-            }
-
             Debug.WriteLine($"Reporting enabled: {result}");
             return result;
         }

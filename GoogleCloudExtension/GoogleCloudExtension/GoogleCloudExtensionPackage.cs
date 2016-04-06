@@ -2,12 +2,8 @@
 // Licensed under the Apache License Version 2.0.
 
 using EnvDTE;
-using GoogleCloudExtension.AddNewAccount;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.DeployToAppEngine;
-using GoogleCloudExtension.DeployToAppEngineContextMenu;
-using GoogleCloudExtension.CredentialsManagement;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -40,7 +36,6 @@ namespace GoogleCloudExtension
     [Guid(GoogleCloudExtensionPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideToolWindow(typeof(CloudExplorerToolWindow))]
-    [ProvideToolWindow(typeof(ManageCredentialsWindow))]
     [ProvideAutoLoad(UIContextGuids80.NoSolution)]
     public sealed class GoogleCloudExtensionPackage : Package
     {
@@ -73,10 +68,6 @@ namespace GoogleCloudExtension
             base.Initialize();
 
             CloudExplorerCommand.Initialize(this);
-            DeployToAppEngineCommand.Initialize(this);
-            ManageCredentialsCommand.Initialize(this);
-            DeployToAppEngineContextMenuCommand.Initialize(this);
-            AddNewAccountCommand.Initialize(this);
             ExtensionAnalytics.Initialize(this);
             ActivityLogUtils.Initialize(this);
 
@@ -87,8 +78,6 @@ namespace GoogleCloudExtension
 
             _dteInstance = (DTE)Package.GetGlobalService(typeof(DTE));
             _dteInstance.Events.DTEEvents.OnBeginShutdown += DTEEvents_OnBeginShutdown;
-
-            EnvironmentUtils.PreFetchGCloudValidationResult();
 
             Instance = this;
         }

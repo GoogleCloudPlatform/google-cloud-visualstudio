@@ -3,7 +3,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
-             xmlns:Models="clr-namespace:GoogleCloudExtension.GCloud.Models;assembly=GoogleCloudExtension.GCloud"
              xmlns:CloudExplorer="clr-namespace:GoogleCloudExtension.CloudExplorer"
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"

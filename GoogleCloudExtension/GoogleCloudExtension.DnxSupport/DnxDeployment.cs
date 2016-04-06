@@ -63,8 +63,7 @@ namespace GoogleCloudExtension.DnxSupport
             string versionName,
             bool promoteVersion,
             bool preserveOutput,
-            Action<string> callback,
-            Context accountAndProject)
+            Action<string> callback)
         {
             var appTempPath = GetAppStagingDirectory();
             try
@@ -208,8 +207,7 @@ namespace GoogleCloudExtension.DnxSupport
             string appTempPath,
             string versionName,
             bool makeDefaultVersion,
-            Action<string> callback,
-            Context accountAndProject)
+            Action<string> callback)
         {
             var makeDefault = makeDefaultVersion ? "--promote" : "--no-promote";
             var name = String.IsNullOrEmpty(versionName) ? "" : $"--version={versionName}";

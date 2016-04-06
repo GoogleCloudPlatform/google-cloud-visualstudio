@@ -2,9 +2,9 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.CredentialsManagement;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
-using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -89,7 +89,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                 Content = $"{_version.Id} (Deleting...)";
                 IsLoading = true;
 
-                var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
+                var oauthToken = await CredentialsManager.GetAccessTokenAsync();
                 await GaeDataSource.DeleteVersionAsync(
                     projectId: _owner.Owner.CurrentProject.Id,
                     serviceId: _serviceId,
@@ -116,7 +116,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                 _setDefaultVersionCommand.CanExecuteCommand = false;
                 Content = $"{_version.Id} (Setting as default...)";
                 IsLoading = true;
-                var oauthToken = await GCloudWrapper.Instance.GetAccessTokenAsync();
+                var oauthToken = await CredentialsManager.GetAccessTokenAsync();
                 await GaeDataSource.SetServiceTrafficAllocationAsync(
                     _owner.Owner.CurrentProject.Id,
                     _serviceId,

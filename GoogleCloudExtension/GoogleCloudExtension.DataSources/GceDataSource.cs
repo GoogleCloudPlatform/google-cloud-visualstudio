@@ -3,6 +3,7 @@
 
 using GoogleCloudExtension.DataSources.Models;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -146,6 +147,25 @@ namespace GoogleCloudExtension.DataSources
                 Debug.WriteLine($"Failed to parse response: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="zoneName"></param>
+        /// <param name="name"></param>
+        /// <param name="userName"></param>
+        /// <param name="oauthToken"></param>
+        /// <returns></returns>
+        public static async Task<WindowsCredentials> ResetWindowsCredentials(
+            string projectId,
+            string zoneName,
+            string name,
+            string userName,
+            string oauthToken)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
