@@ -1,5 +1,5 @@
 ﻿using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.CredentialsManagement;
+using GoogleCloudExtension.Credentials;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.Utils;

@@ -67,18 +67,22 @@ namespace GoogleCloudExtension
         {
             base.Initialize();
 
+            // Register the command handlers.
             CloudExplorerCommand.Initialize(this);
-            ExtensionAnalytics.Initialize(this);
-            ActivityLogUtils.Initialize(this);
+            ManageCredentialsCommand.Initialize(this);
 
+            // Activity log utils, to aid in debugging.
+            ActivityLogUtils.Initialize(this);
             ActivityLogUtils.LogInfo("Starting Google Cloud Tools.");
 
+            // Analytics reporting.
             ExtensionAnalytics.Initialize(this);
             ExtensionAnalytics.ReportStartSession();
 
             _dteInstance = (DTE)Package.GetGlobalService(typeof(DTE));
             _dteInstance.Events.DTEEvents.OnBeginShutdown += DTEEvents_OnBeginShutdown;
 
+            // An d remember the package.
             Instance = this;
         }
 

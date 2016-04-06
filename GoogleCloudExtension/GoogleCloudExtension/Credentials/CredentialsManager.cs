@@ -1,11 +1,11 @@
-﻿using GoogleCloudExtension.CredentialsManagement.Models;
+﻿using GoogleCloudExtension.Credentials.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.CredentialsManagement
+namespace GoogleCloudExtension.Credentials
 {
     public static class CredentialsManager
     {

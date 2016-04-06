@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Windows.Media;
-using GoogleCloudExtension.CredentialsManagement.Models;
+using GoogleCloudExtension.Credentials.Models;
 using GoogleCloudExtension.Utils;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.CredentialsManagement
+namespace GoogleCloudExtension.Credentials
 {
     public static class ProfileManager
     {

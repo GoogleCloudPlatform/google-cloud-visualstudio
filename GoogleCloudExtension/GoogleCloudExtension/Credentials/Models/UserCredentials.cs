@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.CredentialsManagement.Models
+namespace GoogleCloudExtension.Credentials.Models
 {
     public class UserCredentials
     {

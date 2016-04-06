@@ -84,10 +84,11 @@
     <Compile Include="Controls\ProgressIndicator.xaml.cs">
       <DependentUpon>ProgressIndicator.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CredentialsManagement\CredentialsManager.cs" />
-    <Compile Include="CredentialsManagement\ProfileManager.cs" />
-    <Compile Include="CredentialsManagement\Models\UserCredentials.cs" />
-    <Compile Include="CredentialsManagement\Models\UserCredentialsViewModel.cs" />
+    <Compile Include="Credentials\ManageCredentialsCommand.cs" />
+    <Compile Include="Credentials\CredentialsManager.cs" />
+    <Compile Include="Credentials\ProfileManager.cs" />
+    <Compile Include="Credentials\Models\UserCredentials.cs" />
+    <Compile Include="Credentials\Models\UserCredentialsViewModel.cs" />
     <Compile Include="Utils\ActivityLogUtils.cs" />
     <Compile Include="Utils\ButtonIds.cs" />
     <Compile Include="Utils\DnxValidationResult.cs" />

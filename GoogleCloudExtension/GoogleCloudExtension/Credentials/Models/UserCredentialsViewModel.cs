@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace GoogleCloudExtension.CredentialsManagement.Models
+namespace GoogleCloudExtension.Credentials.Models
 {
     public class UserCredentialsViewModel : Model
     {
