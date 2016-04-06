@@ -55,6 +55,7 @@
     <Compile Include="GaeDataSource.cs" />
     <Compile Include="GceDataSource.cs" />
     <Compile Include="GceInstanceExtensions.cs" />
+    <Compile Include="GPlusDataSource.cs" />
     <Compile Include="Models\GcpProject.cs" />
     <Compile Include="GrpcOperationExtensions.cs" />
     <Compile Include="MetadataExtensions.cs" />
@@ -73,6 +74,8 @@
     <Compile Include="Models\GceInstance.cs" />
     <Compile Include="Models\GceInstancePage.cs" />
     <Compile Include="Models\GcpProjectPage.cs" />
+    <Compile Include="Models\GPlusImage.cs" />
+    <Compile Include="Models\GPlusProfile.cs" />
     <Compile Include="Models\GrpcOperation.cs" />
     <Compile Include="Models\InstanceTags.cs" />
     <Compile Include="Models\Metadata.cs" />

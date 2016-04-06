@@ -86,6 +86,11 @@
     </Compile>
     <Compile Include="Credentials\ManageCredentialsCommand.cs" />
     <Compile Include="Credentials\CredentialsManager.cs" />
+    <Compile Include="Credentials\ManageCredentialsViewModel.cs" />
+    <Compile Include="Credentials\ManageCredentialsWindow.cs" />
+    <Compile Include="Credentials\ManageCredentialsWindowContent.xaml.cs">
+      <DependentUpon>ManageCredentialsWindowContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Credentials\ProfileManager.cs" />
     <Compile Include="Credentials\Models\UserCredentials.cs" />
     <Compile Include="Credentials\Models\UserCredentialsViewModel.cs" />
@@ -283,6 +288,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Credentials\ManageCredentialsWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GoogleCloudExtension.DataSources\GoogleCloudExtension.DataSources.csproj">
@@ -292,6 +301,10 @@
     <ProjectReference Include="..\GoogleAnalyticsUtils\GoogleAnalyticsUtils.csproj">
       <Project>{a2d9ac4e-9621-4385-a175-316832f7bfdc}</Project>
       <Name>GoogleAnalyticsUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.OAuth\GoogleCloudExtension.OAuth.csproj">
+      <Project>{ad8b672d-7f0a-4c7f-9774-a9458a99a061}</Project>
+      <Name>GoogleCloudExtension.OAuth</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.Utils\GoogleCloudExtension.Utils.csproj">
       <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>
