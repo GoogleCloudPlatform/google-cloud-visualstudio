@@ -42,7 +42,7 @@ namespace GoogleCloudExtension.ManageCredentials
             NameAsync = AsyncPropertyValue<string>.CreateAsyncProperty(profileTask, x => x.DisplayName);
 
             // Commands.
-            SetAsCurrentCommand = new WeakCommand(OnSetAsCurrentCommand);
+            SetAsCurrentCommand = new WeakCommand(OnSetAsCurrentCommand, !IsCurrentAccount);
             DeleteCommand = new WeakCommand(OnDeleteCommand);
 
             // Be notified of changes in current account.

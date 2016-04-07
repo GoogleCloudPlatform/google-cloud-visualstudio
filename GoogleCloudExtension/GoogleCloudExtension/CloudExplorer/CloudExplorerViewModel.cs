@@ -26,10 +26,6 @@ namespace GoogleCloudExtension.CloudExplorer
         private readonly IList<ICloudExplorerSource> _sources;
         private readonly List<ButtonDefinition> _buttons;
         private AsyncPropertyValue<IEnumerable<GcpProject>> _projectsAsync;
-        private bool _isValidInstallation;
-        private bool _validationErrorIsVisible;
-        private string _vaidationErrorMessage;
-        private ICommand _validationErrorActionCommand;
         private GcpProject _currentProject;
 
         /// <summary>
@@ -84,6 +80,24 @@ namespace GoogleCloudExtension.CloudExplorer
                 var sourceButtons = source.Buttons;
                 _buttons.AddRange(sourceButtons);
             }
+
+            CredentialsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
+        }
+
+        private async void OnCurrentCredentialsChanged(object sender, EventArgs e)
+        {
+            if (CredentialsManager.CurrentCredentials == null)
+            {
+                ProjectsAsync = null;
+                RefreshSources();
+                return;
+            }
+
+            var projectsTask = LoadProjectListAsync();
+            ProjectsAsync = new AsyncPropertyValue<IEnumerable<GcpProject>>(projectsTask);
+
+            await projectsTask;
+            RefreshSources();
         }
 
         private async Task<IEnumerable<GcpProject>> LoadProjectListAsync()

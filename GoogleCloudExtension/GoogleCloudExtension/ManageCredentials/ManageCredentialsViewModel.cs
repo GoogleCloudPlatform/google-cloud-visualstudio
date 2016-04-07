@@ -36,8 +36,17 @@ namespace GoogleCloudExtension.ManageCredentials
         {
             _userCredentialsListAsync = new AsyncPropertyValue<IEnumerable<UserCredentialsViewModel>>(LoadUserCredentialsViewModel());
 
+            CurrentAccountName = CredentialsManager.CurrentCredentials?.AccountName;
+
             CloseCommand = new WeakCommand(owner.Close);
             AddCredentialsCommand = new WeakCommand(OnAddCredentialsCommand);
+
+            CredentialsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
+        }
+
+        private void OnCurrentCredentialsChanged(object sender, EventArgs e)
+        {
+            CurrentAccountName = CredentialsManager.CurrentCredentials?.AccountName;
         }
 
         private void OnAddCredentialsCommand()

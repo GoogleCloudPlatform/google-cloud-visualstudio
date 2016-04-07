@@ -5,6 +5,7 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorerSources.AppEngine;
 using GoogleCloudExtension.CloudExplorerSources.Gce;
 using GoogleCloudExtension.CloudExplorerSources.Gcs;
+using GoogleCloudExtension.Credentials;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// </summary>
         public CloudExplorerToolWindow() : base(null)
         {
-            this.Caption = "Google Cloud Explorer";
+            SetCaption();
             var sources = new List<ICloudExplorerSource>
             {
                 new AppEngineSource(),
@@ -43,6 +44,25 @@ namespace GoogleCloudExtension.CloudExplorer
             this.Content = content;
 
             ExtensionAnalytics.ReportWindowOpened(nameof(CloudExplorerToolWindow));
+
+            CredentialsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
+        }
+
+        private void OnCurrentCredentialsChanged(object sender, EventArgs e)
+        {
+            SetCaption();
+        }
+
+        private void SetCaption()
+        {
+            if (CredentialsManager.CurrentCredentials?.AccountName != null)
+            {
+                Caption = $"Google Cloud Explorer ({CredentialsManager.CurrentCredentials.AccountName})";
+            }
+            else
+            {
+                Caption = "Google Cloud Explorer (no credentials)";
+            }
         }
     }
 }
