@@ -4,6 +4,7 @@
 using EnvDTE;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.ManageCredentials;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;

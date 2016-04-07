@@ -1,12 +1,15 @@
-﻿using GoogleCloudExtension.Credentials.Models;
+﻿using GoogleCloudExtension.Credentials;
+using GoogleCloudExtension.Credentials.Models;
+using GoogleCloudExtension.OAuth;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
-namespace GoogleCloudExtension.Credentials
+namespace GoogleCloudExtension.ManageCredentials
 {
     public class ManageCredentialsViewModel : ViewModelBase
     {
@@ -25,9 +28,21 @@ namespace GoogleCloudExtension.Credentials
             set { SetValueAndRaise(ref _currentAccountName, value); }
         }
 
-        public ManageCredentialsViewModel()
+        public ICommand CloseCommand { get; }
+
+        public ICommand AddCredentialsCommand { get; }
+
+        public ManageCredentialsViewModel(ManageCredentialsWindow owner)
         {
             _userCredentialsListAsync = new AsyncPropertyValue<IEnumerable<UserCredentialsViewModel>>(LoadUserCredentialsViewModel());
+
+            CloseCommand = new WeakCommand(owner.Close);
+            AddCredentialsCommand = new WeakCommand(OnAddCredentialsCommand);
+        }
+
+        private void OnAddCredentialsCommand()
+        {
+            CredentialsManager.LoginFlow();
         }
 
         private async Task<IEnumerable<UserCredentialsViewModel>> LoadUserCredentialsViewModel()

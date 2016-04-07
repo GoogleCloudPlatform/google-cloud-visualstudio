@@ -1,7 +1,9 @@
 ﻿using GoogleCloudExtension.Credentials.Models;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.OAuth;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -17,6 +19,15 @@ namespace GoogleCloudExtension.Credentials
             new OAuthCredentials(
                 clientId: "622828670384-b6gc2gb8vfgvff80855u5oaubun5f6q2.apps.googleusercontent.com",
                 clientSecret: "g-0P0bpUoO9n2NtocP25HRxm");
+        private static readonly IEnumerable<string> s_extensionScopes =
+            new List<string>
+            {
+                "https://www.googleapis.com/auth/userinfo.email",
+                "https://www.googleapis.com/auth/cloud-platform",
+                "https://www.googleapis.com/auth/appengine.admin",
+                "https://www.googleapis.com/auth/compute",
+                "https://www.googleapis.com/auth/plus.me",
+            };
 
         private static UserCredentials s_currentCredentials;
         private static Lazy<string> s_userCredentialsPath = new Lazy<string>(GetCredentialsStorePath);
@@ -48,14 +59,47 @@ namespace GoogleCloudExtension.Credentials
             throw new InvalidOperationException("No current credential is set.");
         }
 
+        public static async void LoginFlow()
+        {
+            var url = OAuthManager.GetOAuthBeginFlowUrl(s_extensionCredentials, s_extensionScopes);
+            string accessCode = await GetAcessCodeAsync(url);
+            if (accessCode == null)
+            {
+                Debug.WriteLine("The user cancelled the OAUTH login flow.");
+                return;
+            }
+
+            var loginResult = await OAuthManager.EndOAuthFlow(accessCode);
+            var credentials = await GetCredentialsForLoginResultAsync(loginResult);
+
+            await StoreUserCredentialsAsync(credentials);
+            CurrentCredentials = credentials;
+        }
+
+        private static async Task<UserCredentials> GetCredentialsForLoginResultAsync(OAuthLoginResult loginResult)
+        {
+            var profile = await GPlusDataSource.GetProfileAsync(loginResult.AccessToken.Token);
+            return new UserCredentials
+            {
+                AccountName = profile.Emails.FirstOrDefault()?.Value,
+                RefreshToken = loginResult.RefreshToken,
+            };
+        }
+
+        private static Task<string> GetAcessCodeAsync(string url)
+        {
+            throw new NotImplementedException();
+        }
+
         /// <summary>
         /// Returns the access token for the given <paramref name="userCredentials"/>.
         /// </summary>
         /// <param name="userCredentials"></param>
         /// <returns></returns>
-        public static Task<string> GetAccessTokenForCredentialsAsync(UserCredentials userCredentials)
+        public static async Task<string> GetAccessTokenForCredentialsAsync(UserCredentials userCredentials)
         {
-            return OAuthManager.RefreshAccessTokenAsync(s_extensionCredentials, userCredentials.RefreshToken);
+            var accessToken = await OAuthManager.RefreshAccessTokenAsync(s_extensionCredentials, userCredentials.RefreshToken);
+            return accessToken.Token;
         }
 
         /// <summary>
@@ -84,6 +128,11 @@ namespace GoogleCloudExtension.Credentials
         {
             return Task.Run(() =>
                 {
+                    Debug.WriteLine($"Listing credentials in directory: {s_userCredentialsPath.Value}");
+                    if (!Directory.Exists(s_userCredentialsPath.Value))
+                    {
+                        return Enumerable.Empty<UserCredentials>();
+                    }
                     return Directory.EnumerateFiles(s_userCredentialsPath.Value).Select(x => UserCredentials.FromFile(x));
                 });
         }

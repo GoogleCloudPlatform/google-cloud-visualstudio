@@ -84,16 +84,16 @@
     <Compile Include="Controls\ProgressIndicator.xaml.cs">
       <DependentUpon>ProgressIndicator.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Credentials\ManageCredentialsCommand.cs" />
+    <Compile Include="ManageCredentials\ManageCredentialsCommand.cs" />
     <Compile Include="Credentials\CredentialsManager.cs" />
-    <Compile Include="Credentials\ManageCredentialsViewModel.cs" />
-    <Compile Include="Credentials\ManageCredentialsWindow.cs" />
-    <Compile Include="Credentials\ManageCredentialsWindowContent.xaml.cs">
+    <Compile Include="ManageCredentials\ManageCredentialsViewModel.cs" />
+    <Compile Include="ManageCredentials\ManageCredentialsWindow.cs" />
+    <Compile Include="ManageCredentials\ManageCredentialsWindowContent.xaml.cs">
       <DependentUpon>ManageCredentialsWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Credentials\ProfileManager.cs" />
     <Compile Include="Credentials\Models\UserCredentials.cs" />
-    <Compile Include="Credentials\Models\UserCredentialsViewModel.cs" />
+    <Compile Include="ManageCredentials\UserCredentialsViewModel.cs" />
     <Compile Include="Utils\ActivityLogUtils.cs" />
     <Compile Include="Utils\ButtonIds.cs" />
     <Compile Include="Utils\DnxValidationResult.cs" />
@@ -288,7 +288,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Credentials\ManageCredentialsWindowContent.xaml">
+    <Page Include="ManageCredentials\ManageCredentialsWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

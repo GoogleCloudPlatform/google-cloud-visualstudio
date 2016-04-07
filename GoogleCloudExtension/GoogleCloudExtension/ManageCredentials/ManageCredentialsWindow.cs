@@ -5,14 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.Credentials
+namespace GoogleCloudExtension.ManageCredentials
 {
-    class ManageCredentialsWindow : DialogWindow
+    public class ManageCredentialsWindow : DialogWindow
     {
         public ManageCredentialsWindow()
         {
             Title = "Manage Google Credentials";
-            Content = new ManageCredentialsWindowContent { DataContext = new ManageCredentialsViewModel() };
+            Content = new ManageCredentialsWindowContent { DataContext = new ManageCredentialsViewModel(this) };
         }
     }
 }

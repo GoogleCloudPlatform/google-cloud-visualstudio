@@ -12,6 +12,9 @@ namespace GoogleCloudExtension.DataSources.Models
         [JsonProperty("displayName")]
         public string DisplayName { get; set; }
 
+        [JsonProperty("emails")]
+        public IList<Email> Emails { get; set; } 
+
         [JsonProperty("image")]
         public GPlusImage Image { get; set; }
     }

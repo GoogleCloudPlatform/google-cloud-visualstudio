@@ -8,7 +8,7 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
 
-namespace GoogleCloudExtension.CloudExplorer
+namespace GoogleCloudExtension.ManageCredentials
 {
     /// <summary>
     /// Command handler for the ManageCredentialsCommand that opens the Dialog.
@@ -84,8 +84,8 @@ namespace GoogleCloudExtension.CloudExplorer
                 CommandInvocationSource.ToolsMenu,
                 () =>
                 {
-                    // Show the manage credentials dialog.
-                    UserPromptUtils.OkPrompt("Managing your cedentials since 2016", "Manage Credentials");
+                    var dialog = new ManageCredentialsWindow();
+                    dialog.ShowModal();
                 });
         }
     }
