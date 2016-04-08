@@ -41,16 +41,16 @@ namespace GoogleCloudExtension.ManageAccounts
 
                 if (AccountsManager.CurrentAccount == null)
                 {
-                    ApplyCommand.CanExecuteCommand = value != null;
+                    SetAsCurrentAcountCommand.CanExecuteCommand = value != null;
                 }
                 else
                 {
-                    ApplyCommand.CanExecuteCommand = value != null && AccountsManager.CurrentAccount.AccountName != value.AccountName;
+                    SetAsCurrentAcountCommand.CanExecuteCommand = value != null && AccountsManager.CurrentAccount.AccountName != value.AccountName;
                 }
             }
         }
 
-        public WeakCommand ApplyCommand { get; }
+        public WeakCommand SetAsCurrentAcountCommand { get; }
 
         public ICommand CloseCommand { get; }
 
@@ -63,12 +63,12 @@ namespace GoogleCloudExtension.ManageAccounts
 
             CurrentAccountName = AccountsManager.CurrentAccount?.AccountName;
 
-            ApplyCommand = new WeakCommand(OnApplyCommand, canExecuteCommand: false);
+            SetAsCurrentAcountCommand = new WeakCommand(OnSetAsCurrentAccountCommand, canExecuteCommand: false);
             CloseCommand = new WeakCommand(owner.Close);
             AddCredentialsCommand = new WeakCommand(OnAddCredentialsCommand);
         }
 
-        private void OnApplyCommand()
+        private void OnSetAsCurrentAccountCommand()
         {
             Debug.WriteLine($"Setting current account: {_currentAccountName}");
             AccountsManager.CurrentAccount = _currentUserAccount.UserAccount;
