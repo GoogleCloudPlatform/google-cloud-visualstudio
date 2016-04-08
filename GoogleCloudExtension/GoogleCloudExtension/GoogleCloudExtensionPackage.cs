@@ -4,7 +4,7 @@
 using EnvDTE;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.ManageCredentials;
+using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -70,7 +70,7 @@ namespace GoogleCloudExtension
 
             // Register the command handlers.
             CloudExplorerCommand.Initialize(this);
-            ManageCredentialsCommand.Initialize(this);
+            ManageAccountsCommand.Initialize(this);
 
             // Activity log utils, to aid in debugging.
             ActivityLogUtils.Initialize(this);

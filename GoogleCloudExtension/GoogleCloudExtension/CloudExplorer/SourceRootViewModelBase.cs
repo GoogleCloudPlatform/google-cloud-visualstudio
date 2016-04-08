@@ -1,7 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
-using GoogleCloudExtension.Credentials;
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Utils;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -78,7 +78,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 IsLoadingState = true;
                 Children.Clear();
 
-                if (CredentialsManager.CurrentCredentials == null)
+                if (AccountsManager.CurrentCredentials == null)
                 {
                     Children.Add(s_noCredentialsPlacehodler);
                     return;

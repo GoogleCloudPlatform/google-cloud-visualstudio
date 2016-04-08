@@ -1,4 +1,4 @@
-﻿using GoogleCloudExtension.Credentials.Models;
+﻿using GoogleCloudExtension.Accounts.Models;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.OAuth;
 using System;
@@ -9,11 +9,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.Credentials
+namespace GoogleCloudExtension.Accounts
 {
-    public static class CredentialsManager
+    public static class AccountsManager
     {
-        private const string CredentialsStorePath = @"googlecloudvsextension\credentials";
+        private const string CredentialsStorePath = @"googlecloudvsextension\accounts";
 
         private static readonly OAuthCredentials s_extensionCredentials =
             new OAuthCredentials(
@@ -29,12 +29,12 @@ namespace GoogleCloudExtension.Credentials
                 "https://www.googleapis.com/auth/plus.me",
             };
 
-        private static UserCredentials s_currentCredentials;
+        private static UserAccount s_currentCredentials;
         private static Lazy<string> s_userCredentialsPath = new Lazy<string>(GetCredentialsStorePath);
-        private static Lazy<Task<IEnumerable<UserCredentials>>> s_knownCredentials =
-            new Lazy<Task<IEnumerable<UserCredentials>>>(LoadKnownCredentialsAsync);
+        private static Lazy<Task<IEnumerable<UserAccount>>> s_knownCredentials =
+            new Lazy<Task<IEnumerable<UserAccount>>>(LoadKnownCredentialsAsync);
 
-        public static UserCredentials CurrentCredentials
+        public static UserAccount CurrentCredentials
         {
             get { return s_currentCredentials; }
             set
@@ -76,10 +76,10 @@ namespace GoogleCloudExtension.Credentials
             CurrentCredentials = credentials;
         }
 
-        private static async Task<UserCredentials> GetCredentialsForLoginResultAsync(OAuthLoginResult loginResult)
+        private static async Task<UserAccount> GetCredentialsForLoginResultAsync(OAuthLoginResult loginResult)
         {
             var profile = await GPlusDataSource.GetProfileAsync(loginResult.AccessToken.Token);
-            return new UserCredentials
+            return new UserAccount
             {
                 AccountName = profile.Emails.FirstOrDefault()?.Value,
                 RefreshToken = loginResult.RefreshToken,
@@ -96,7 +96,7 @@ namespace GoogleCloudExtension.Credentials
         /// </summary>
         /// <param name="userCredentials"></param>
         /// <returns></returns>
-        public static async Task<string> GetAccessTokenForCredentialsAsync(UserCredentials userCredentials)
+        public static async Task<string> GetAccessTokenForCredentialsAsync(UserAccount userCredentials)
         {
             var accessToken = await OAuthManager.RefreshAccessTokenAsync(s_extensionCredentials, userCredentials.RefreshToken);
             return accessToken.Token;
@@ -106,16 +106,16 @@ namespace GoogleCloudExtension.Credentials
         /// Returns the list of credentials known to the extension.
         /// </summary>
         /// <returns></returns>
-        public static Task<IEnumerable<UserCredentials>> GetCredentialsListAsync() => s_knownCredentials.Value;
+        public static Task<IEnumerable<UserAccount>> GetCredentialsListAsync() => s_knownCredentials.Value;
 
         /// <summary>
         /// Stores a new set of user credentials in the credentials store.
         /// </summary>
         /// <param name="userCredentials"></param>
         /// <returns></returns>
-        public static async Task StoreUserCredentialsAsync(UserCredentials userCredentials)
+        public static async Task StoreUserCredentialsAsync(UserAccount userCredentials)
         {
-            await Task.Run(() => userCredentials.SaveToStore(s_userCredentialsPath.Value));
+            await Task.Run(() => userCredentials.Save(s_userCredentialsPath.Value));
         }
 
         private static string GetCredentialsStorePath()
@@ -124,16 +124,16 @@ namespace GoogleCloudExtension.Credentials
             return Path.Combine(localAppData, CredentialsStorePath);
         }
 
-        private static Task<IEnumerable<UserCredentials>> LoadKnownCredentialsAsync()
+        private static Task<IEnumerable<UserAccount>> LoadKnownCredentialsAsync()
         {
             return Task.Run(() =>
                 {
                     Debug.WriteLine($"Listing credentials in directory: {s_userCredentialsPath.Value}");
                     if (!Directory.Exists(s_userCredentialsPath.Value))
                     {
-                        return Enumerable.Empty<UserCredentials>();
+                        return Enumerable.Empty<UserAccount>();
                     }
-                    return Directory.EnumerateFiles(s_userCredentialsPath.Value).Select(x => UserCredentials.FromFile(x));
+                    return Directory.EnumerateFiles(s_userCredentialsPath.Value).Select(x => UserAccount.FromFile(x));
                 });
         }
     }

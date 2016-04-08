@@ -1,7 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
-using GoogleCloudExtension.Credentials;
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.Utils;
@@ -81,12 +81,12 @@ namespace GoogleCloudExtension.CloudExplorer
                 _buttons.AddRange(sourceButtons);
             }
 
-            CredentialsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
+            AccountsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
         }
 
         private async void OnCurrentCredentialsChanged(object sender, EventArgs e)
         {
-            if (CredentialsManager.CurrentCredentials == null)
+            if (AccountsManager.CurrentCredentials == null)
             {
                 ProjectsAsync = null;
                 RefreshSources();
@@ -102,7 +102,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private async Task<IEnumerable<GcpProject>> LoadProjectListAsync()
         {
-            var oauthToken = await CredentialsManager.GetAccessTokenAsync();
+            var oauthToken = await AccountsManager.GetAccessTokenAsync();
             return await ResourceManagerDataSource.GetProjectsListAsync(oauthToken);
         }
 

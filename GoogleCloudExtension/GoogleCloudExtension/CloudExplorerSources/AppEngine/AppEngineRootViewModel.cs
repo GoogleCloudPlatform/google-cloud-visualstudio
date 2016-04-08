@@ -2,7 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.Credentials;
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.Utils;
@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
                     throw new CloudExplorerSourceException("Must have a non-null current project.");
                 }
 
-                var oauthToken = await CredentialsManager.GetAccessTokenAsync();
+                var oauthToken = await AccountsManager.GetAccessTokenAsync();
                 var services = await GaeDataSource.GetServicesAsync(Owner.CurrentProject.Id, oauthToken);
                 var servicesVersions = new List<Tuple<GaeService, IList<GaeVersion>>>();
                 foreach (var s in services)

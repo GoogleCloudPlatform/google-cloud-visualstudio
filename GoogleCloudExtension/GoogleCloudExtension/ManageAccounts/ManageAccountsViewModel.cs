@@ -1,5 +1,5 @@
-﻿using GoogleCloudExtension.Credentials;
-using GoogleCloudExtension.Credentials.Models;
+﻿using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Accounts.Models;
 using GoogleCloudExtension.OAuth;
 using GoogleCloudExtension.Utils;
 using System;
@@ -9,9 +9,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace GoogleCloudExtension.ManageCredentials
+namespace GoogleCloudExtension.ManageAccounts
 {
-    public class ManageCredentialsViewModel : ViewModelBase
+    public class ManageAccountsViewModel : ViewModelBase
     {
         private AsyncPropertyValue<IEnumerable<UserCredentialsViewModel>> _userCredentialsListAsync;
         private string _currentAccountName;
@@ -32,31 +32,31 @@ namespace GoogleCloudExtension.ManageCredentials
 
         public ICommand AddCredentialsCommand { get; }
 
-        public ManageCredentialsViewModel(ManageCredentialsWindow owner)
+        public ManageAccountsViewModel(ManageAccountsWindow owner)
         {
             _userCredentialsListAsync = new AsyncPropertyValue<IEnumerable<UserCredentialsViewModel>>(LoadUserCredentialsViewModel());
 
-            CurrentAccountName = CredentialsManager.CurrentCredentials?.AccountName;
+            CurrentAccountName = AccountsManager.CurrentCredentials?.AccountName;
 
             CloseCommand = new WeakCommand(owner.Close);
             AddCredentialsCommand = new WeakCommand(OnAddCredentialsCommand);
 
-            CredentialsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
+            AccountsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
         }
 
         private void OnCurrentCredentialsChanged(object sender, EventArgs e)
         {
-            CurrentAccountName = CredentialsManager.CurrentCredentials?.AccountName;
+            CurrentAccountName = AccountsManager.CurrentCredentials?.AccountName;
         }
 
         private void OnAddCredentialsCommand()
         {
-            CredentialsManager.LoginFlow();
+            AccountsManager.LoginFlow();
         }
 
         private async Task<IEnumerable<UserCredentialsViewModel>> LoadUserCredentialsViewModel()
         {
-            var userCredentials = await CredentialsManager.GetCredentialsListAsync();
+            var userCredentials = await AccountsManager.GetCredentialsListAsync();
             var result = userCredentials.Select(x => new UserCredentialsViewModel(x)).ToList();
             return result;
         }

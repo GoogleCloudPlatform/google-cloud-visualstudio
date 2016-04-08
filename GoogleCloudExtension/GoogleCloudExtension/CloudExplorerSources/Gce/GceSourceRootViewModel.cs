@@ -2,7 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.Credentials;
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.Utils;
@@ -102,7 +102,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private async Task<IList<GceInstance>> LoadGceInstances()
         {
-            var oauthToken = await CredentialsManager.GetAccessTokenAsync();
+            var oauthToken = await AccountsManager.GetAccessTokenAsync();
             return await GceDataSource.GetInstanceListAsync(Owner.CurrentProject.Id, oauthToken);
         }
 

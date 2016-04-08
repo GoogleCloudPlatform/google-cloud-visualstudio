@@ -2,7 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.Credentials;
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.Utils;
@@ -90,7 +90,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
 
             GcpOutputWindow.OutputLine($"Creating new credentials for {_instance.Name}...");
-            var oauthToken = await CredentialsManager.GetAccessTokenAsync();
+            var oauthToken = await AccountsManager.GetAccessTokenAsync();
             var newCredentials = await GceDataSource.ResetWindowsCredentials(
                 _owner.Owner.CurrentProject.Id,
                 zoneName: _instance.ZoneName,

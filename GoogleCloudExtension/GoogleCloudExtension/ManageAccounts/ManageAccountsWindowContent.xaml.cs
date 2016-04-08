@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace GoogleCloudExtension.ManageCredentials
+namespace GoogleCloudExtension.ManageAccounts
 {
     /// <summary>
     /// Interaction logic for ManageCredentialsWindowContent.xaml
     /// </summary>
-    public partial class ManageCredentialsWindowContent : UserControl
+    public partial class ManageAccountsWindowContent : UserControl
     {
-        public ManageCredentialsWindowContent()
+        public ManageAccountsWindowContent()
         {
             InitializeComponent();
         }

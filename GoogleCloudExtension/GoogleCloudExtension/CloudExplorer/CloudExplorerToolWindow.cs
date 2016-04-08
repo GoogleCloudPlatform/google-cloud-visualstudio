@@ -5,7 +5,7 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorerSources.AppEngine;
 using GoogleCloudExtension.CloudExplorerSources.Gce;
 using GoogleCloudExtension.CloudExplorerSources.Gcs;
-using GoogleCloudExtension.Credentials;
+using GoogleCloudExtension.Accounts;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
@@ -45,7 +45,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
             ExtensionAnalytics.ReportWindowOpened(nameof(CloudExplorerToolWindow));
 
-            CredentialsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
+            AccountsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
         }
 
         private void OnCurrentCredentialsChanged(object sender, EventArgs e)
@@ -55,9 +55,9 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void SetCaption()
         {
-            if (CredentialsManager.CurrentCredentials?.AccountName != null)
+            if (AccountsManager.CurrentCredentials?.AccountName != null)
             {
-                Caption = $"Google Cloud Explorer ({CredentialsManager.CurrentCredentials.AccountName})";
+                Caption = $"Google Cloud Explorer ({AccountsManager.CurrentCredentials.AccountName})";
             }
             else
             {

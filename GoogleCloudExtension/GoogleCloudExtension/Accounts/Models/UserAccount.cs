@@ -7,9 +7,9 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.Credentials.Models
+namespace GoogleCloudExtension.Accounts.Models
 {
-    public class UserCredentials
+    public class UserAccount
     {
         [JsonProperty("account")]
         public string AccountName { get; set; }
@@ -17,13 +17,13 @@ namespace GoogleCloudExtension.Credentials.Models
         [JsonProperty("refresh_token")]
         public string RefreshToken { get; set; }
 
-        internal static UserCredentials FromFile(string path)
+        internal static UserAccount FromFile(string path)
         {
             var contents = File.ReadAllText(path);
-            return JsonConvert.DeserializeObject<UserCredentials>(contents);
+            return JsonConvert.DeserializeObject<UserAccount>(contents);
         }
 
-        internal void SaveToStore(string path)
+        internal void Save(string path)
         {
             var serialized = JsonConvert.SerializeObject(this);
             var name = GetName(serialized) + ".json";

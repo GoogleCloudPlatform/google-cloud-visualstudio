@@ -1,5 +1,5 @@
-﻿using GoogleCloudExtension.Credentials;
-using GoogleCloudExtension.Credentials.Models;
+﻿using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Accounts.Models;
 using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.Utils;
 using System;
@@ -11,11 +11,11 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace GoogleCloudExtension.ManageCredentials
+namespace GoogleCloudExtension.ManageAccounts
 {
     public class UserCredentialsViewModel : Model
     {
-        private readonly UserCredentials _userCredentials;
+        private readonly UserAccount _userAccount;
 
         public AsyncPropertyValue<string> ProfilePictureAsync { get; }
 
@@ -23,19 +23,19 @@ namespace GoogleCloudExtension.ManageCredentials
 
         public string AccountName { get; }
 
-        public bool IsCurrentAccount => CredentialsManager.CurrentCredentials?.AccountName == _userCredentials.AccountName;
+        public bool IsCurrentAccount => AccountsManager.CurrentCredentials?.AccountName == _userAccount.AccountName;
 
         public WeakCommand SetAsCurrentCommand { get; }
 
         public ICommand DeleteCommand { get; }
 
-        public UserCredentialsViewModel(UserCredentials userCredentials)
+        public UserCredentialsViewModel(UserAccount userAccount)
         {
-            _userCredentials = userCredentials;
+            _userAccount = userAccount;
 
-            AccountName = userCredentials.AccountName;
+            AccountName = userAccount.AccountName;
 
-            var profileTask = ProfileManager.GetProfileForCredentialsAsync(userCredentials);
+            var profileTask = ProfileManager.GetProfileForCredentialsAsync(userAccount);
 
             // TODO: Show the default image while it is being loaded.
             ProfilePictureAsync = AsyncPropertyValue<string>.CreateAsyncProperty(profileTask, x => x.Image.Url);
@@ -46,7 +46,7 @@ namespace GoogleCloudExtension.ManageCredentials
             DeleteCommand = new WeakCommand(OnDeleteCommand);
 
             // Be notified of changes in current account.
-            CredentialsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
+            AccountsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
         }
 
         private void OnCurrentCredentialsChanged(object sender, EventArgs e)
@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.ManageCredentials
 
         private void OnSetAsCurrentCommand()
         {
-            CredentialsManager.CurrentCredentials = _userCredentials;
+            AccountsManager.CurrentCredentials = _userAccount;
         }
     }
 }

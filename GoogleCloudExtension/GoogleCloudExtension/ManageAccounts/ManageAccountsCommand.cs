@@ -8,12 +8,12 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
 
-namespace GoogleCloudExtension.ManageCredentials
+namespace GoogleCloudExtension.ManageAccounts
 {
     /// <summary>
     /// Command handler for the ManageCredentialsCommand that opens the Dialog.
     /// </summary>
-    internal sealed class ManageCredentialsCommand
+    internal sealed class ManageAccountsCommand
     {
         /// <summary>
         /// Command ID.
@@ -33,7 +33,7 @@ namespace GoogleCloudExtension.ManageCredentials
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static ManageCredentialsCommand Instance { get; private set; }
+        public static ManageAccountsCommand Instance { get; private set; }
 
         /// <summary>
         /// Gets the service provider from the owner package.
@@ -46,7 +46,7 @@ namespace GoogleCloudExtension.ManageCredentials
         /// <param name="package">Owner package, not null.</param>
         public static void Initialize(Package package)
         {
-            Instance = new ManageCredentialsCommand(package);
+            Instance = new ManageAccountsCommand(package);
         }
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.ManageCredentials
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private ManageCredentialsCommand(Package package)
+        private ManageAccountsCommand(Package package)
         {
             if (package == null)
             {
@@ -80,11 +80,11 @@ namespace GoogleCloudExtension.ManageCredentials
         private void ShowToolWindow(object sender, EventArgs e)
         {
             ExtensionAnalytics.ReportCommand(
-                nameof(ManageCredentialsCommand),
+                nameof(ManageAccountsCommand),
                 CommandInvocationSource.ToolsMenu,
                 () =>
                 {
-                    var dialog = new ManageCredentialsWindow();
+                    var dialog = new ManageAccountsWindow();
                     dialog.ShowModal();
                 });
         }

@@ -2,7 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.Credentials;
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -88,7 +88,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 CommandInvocationSource.ToolsMenu,
                 () =>
                 {
-                    if (CredentialsManager.CurrentCredentials == null)
+                    if (AccountsManager.CurrentCredentials == null)
                     {
                         Debug.WriteLine("Attempted to open cloud explorer without credentials.");
                         UserPromptUtils.OkPrompt("Plase login beore using this tool.", "Need credentials.");
