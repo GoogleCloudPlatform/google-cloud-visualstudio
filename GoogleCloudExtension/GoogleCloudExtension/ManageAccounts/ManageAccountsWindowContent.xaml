@@ -10,57 +10,63 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="40" />
+            <RowDefinition />
+            <RowDefinition Height="45" />
         </Grid.RowDefinitions>
-        
+
         <!-- Caption row -->
-        <TextBlock Margin="5">Choose account:</TextBlock>
-        
+        <TextBlock Margin="10,10,10,2">Choose account:</TextBlock>
+
         <!-- Listbox with the credentials -->
         <ListBox Grid.Row="1"
-                 Margin="5"
+                 Margin="10,2,10,5"
                  ItemsSource="{Binding UserAccountsList}"
                  SelectedItem="{Binding CurrentUserAccount, Mode=OneWayToSource}"
                  SelectedValue="{Binding CurrentAccountName}"
                  SelectedValuePath="AccountName">
+            <ListBox.ItemContainerStyle>
+                <Style TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListBox.ItemContainerStyle>
+
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Grid Height="110">
+                    <Grid Height="110" Margin="10,0,0,0" HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" MinWidth="85" />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
-                        
+
                         <!-- First show the image -->
                         <Image Source="{Binding ProfilePictureAsync.Value}"
                                Width="50"
                                Height="50"
-                               Margin="0,0,10,0"
+                               Margin="6,30,29,30"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center" />
-                        
+
                         <!-- Show the name and the account name -->
                         <StackPanel Grid.Column="1"
-                                    Margin="0,0,10,0"
-                                    VerticalAlignment="Center">
+                                    Margin="0,36,10,36"
+                                    VerticalAlignment="Center" Height="38">
                             <TextBlock Text="{Binding NameAsync.Value}" 
                                        Margin="0,0,0,5"/>
                             <TextBlock Text="{Binding AccountName, StringFormat='({0})'}" />
                         </StackPanel>
-                       
+
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
-            
+
         </ListBox>
-        
+
         <!-- Buttons row -->
-        <StackPanel Margin="5" Orientation="Horizontal" Grid.Row="2">
+        <StackPanel Margin="10,5,10,10" Orientation="Horizontal" Grid.Row="2">
             <Button Margin="0,0,5,0" Padding="5" Command="{Binding ApplyCommand}" IsDefault="True">Apply</Button>
             <Button Margin="0,0,5,0" Padding="5" Command="{Binding CloseCommand}" IsCancel="True">Close</Button>
             <Button Padding="5" Command="{Binding AddCredentialsCommand}">Add Credentials...</Button>
         </StackPanel>
-            
+
     </Grid>
 </UserControl>

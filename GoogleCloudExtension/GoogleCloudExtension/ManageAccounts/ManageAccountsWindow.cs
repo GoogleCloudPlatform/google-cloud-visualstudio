@@ -12,6 +12,9 @@ namespace GoogleCloudExtension.ManageAccounts
         public ManageAccountsWindow()
         {
             Title = "Manage Accounts";
+            Width = 400;
+            Height = 400;
+            ResizeMode = System.Windows.ResizeMode.NoResize;
             Content = new ManageAccountsWindowContent { DataContext = new ManageAccountsViewModel(this) };
         }
     }
