@@ -6,12 +6,11 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.ManageAccounts"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance {x:Type local:ManageAccountsViewModel}}"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DataContext="{d:DesignInstance {x:Type local:ManageAccountsViewModel}}" Height="300" Width="459.446">
     <UserControl.Resources>
         <utils:VisibilityConverter x:Key="visibilityConverter" />
     </UserControl.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -41,6 +40,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" MinWidth="85" />
                             <ColumnDefinition />
+                            <ColumnDefinition />
                         </Grid.ColumnDefinitions>
 
                         <!-- First show the image -->
@@ -50,7 +50,7 @@
                                Margin="6,30,29,30"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center" />
-                        
+
                         <!-- Placeholder for the loading -->
                         <Rectangle Width="50"
                                    Height="50"
@@ -68,6 +68,13 @@
                                        Margin="0,0,0,5"/>
                             <TextBlock Text="{Binding AccountName, StringFormat='({0})'}" />
                         </StackPanel>
+
+                        <!-- The label for the current account -->
+                        <TextBlock Grid.Column="2"
+                                   Visibility="{Binding IsCurrentAccount, Converter={StaticResource visibilityConverter}}"
+                                   VerticalAlignment="Center">
+                            Current Account
+                        </TextBlock>
 
                     </Grid>
                 </DataTemplate>
