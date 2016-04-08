@@ -8,6 +8,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -27,6 +28,7 @@ namespace GoogleCloudExtension.CloudExplorer
         private readonly List<ButtonDefinition> _buttons;
         private AsyncPropertyValue<IEnumerable<GcpProject>> _projectsAsync;
         private GcpProject _currentProject;
+        private bool _changingCredentials;
 
         /// <summary>
         /// The list of module and version combinations for the current project.
@@ -86,18 +88,29 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private async void OnCurrentCredentialsChanged(object sender, EventArgs e)
         {
-            if (AccountsManager.CurrentAccount == null)
+            try
             {
-                ProjectsAsync = null;
-                RefreshSources();
-                return;
+                _changingCredentials = true;
+
+                if (AccountsManager.CurrentAccount == null)
+                {
+                    ProjectsAsync = null;
+                    RefreshSources();
+                    return;
+                }
+
+                var projectsTask = LoadProjectListAsync();
+                ProjectsAsync = new AsyncPropertyValue<IEnumerable<GcpProject>>(projectsTask);
+
+                var projects = await projectsTask;
+                _changingCredentials = false;
+
+                CurrentProject = projects.FirstOrDefault();
             }
-
-            var projectsTask = LoadProjectListAsync();
-            ProjectsAsync = new AsyncPropertyValue<IEnumerable<GcpProject>>(projectsTask);
-
-            await projectsTask;
-            RefreshSources();
+            finally
+            {
+                _changingCredentials = false;
+            }
         }
 
         private async Task<IEnumerable<GcpProject>> LoadProjectListAsync()
@@ -122,6 +135,12 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void InvalidateCurrentProject()
         {
+            if (_changingCredentials)
+            {
+                Debug.WriteLine("Invalidating the current project while changing credentials.");
+                return;
+            }
+
             Debug.WriteLine($"Setting selected project to {CurrentProject?.Id ?? "null"}");
             foreach (var source in _sources)
             {

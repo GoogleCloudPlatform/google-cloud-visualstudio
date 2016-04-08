@@ -372,7 +372,7 @@
         <!-- Project switcher. -->
         <ComboBox ItemsSource="{Binding ProjectsAsync.Value}"
             Visibility="{Binding ProjectsAsync.IsCompleted, Converter={StaticResource visibilityConverter}}"
-            SelectedItem="{Binding CurrentProject, Mode=OneWayToSource}"
+            SelectedItem="{Binding CurrentProject}"
             DisplayMemberPath="Id"
             SelectedIndex="0"
             Grid.Row="1" Style="{DynamicResource ProjectDropdownStyle}"/>
