@@ -20,7 +20,7 @@
         <!-- Listbox with the credentials -->
         <ListBox Grid.Row="1"
                  Margin="5"
-                 ItemsSource="{Binding UserAccountsListAsync.Value}"
+                 ItemsSource="{Binding UserAccountsList}"
                  SelectedItem="{Binding CurrentUserAccount, Mode=OneWayToSource}"
                  SelectedValue="{Binding CurrentAccountName}"
                  SelectedValuePath="AccountName">

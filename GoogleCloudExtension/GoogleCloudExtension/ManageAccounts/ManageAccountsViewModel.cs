@@ -15,15 +15,15 @@ namespace GoogleCloudExtension.ManageAccounts
     public class ManageAccountsViewModel : ViewModelBase
     {
         private readonly ManageAccountsWindow _owner;
-        private AsyncPropertyValue<IEnumerable<UserAccountViewModel>> _userAccountsListAsync;
+        private IEnumerable<UserAccountViewModel> _userAccountsList;
         private UserAccountViewModel _currentUserAccount;
         private string _currentAccountName;
         private bool _currentAccountChanged;
 
-        public AsyncPropertyValue<IEnumerable<UserAccountViewModel>> UserAccountsListAsync
+        public IEnumerable<UserAccountViewModel> UserAccountsList
         {
-            get { return _userAccountsListAsync; }
-            set { SetValueAndRaise(ref _userAccountsListAsync, value); }
+            get { return _userAccountsList; }
+            set { SetValueAndRaise(ref _userAccountsList, value); }
         }
 
         public string CurrentAccountName
@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.ManageAccounts
         public ManageAccountsViewModel(ManageAccountsWindow owner)
         {
             _owner = owner;
-            _userAccountsListAsync = new AsyncPropertyValue<IEnumerable<UserAccountViewModel>>(LoadUserCredentialsViewModel());
+            _userAccountsList = LoadUserCredentialsViewModel();
 
             CurrentAccountName = AccountsManager.CurrentAccount?.AccountName;
 
@@ -81,9 +81,9 @@ namespace GoogleCloudExtension.ManageAccounts
             AccountsManager.LoginFlow();
         }
 
-        private async Task<IEnumerable<UserAccountViewModel>> LoadUserCredentialsViewModel()
+        private IEnumerable<UserAccountViewModel> LoadUserCredentialsViewModel()
         {
-            var userCredentials = await AccountsManager.GetCredentialsListAsync();
+            var userCredentials = AccountsManager.GetAccountsList();
             var result = userCredentials.Select(x => new UserAccountViewModel(x)).ToList();
             return result;
         }

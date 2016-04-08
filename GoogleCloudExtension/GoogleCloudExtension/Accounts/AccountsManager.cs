@@ -1,11 +1,13 @@
 ﻿using GoogleCloudExtension.Accounts.Models;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.OAuth;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,7 +15,8 @@ namespace GoogleCloudExtension.Accounts
 {
     public static class AccountsManager
     {
-        private const string CredentialsStorePath = @"googlecloudvsextension\accounts";
+        private const string AccountsStorePath = @"googlecloudvsextension\accounts";
+        private const string CurrentAccountFileName = "current_account";
 
         private static readonly OAuthCredentials s_extensionCredentials =
             new OAuthCredentials(
@@ -29,17 +32,37 @@ namespace GoogleCloudExtension.Accounts
                 "https://www.googleapis.com/auth/plus.me",
             };
 
-        private static UserAccount s_currentCredentials;
-        private static Lazy<string> s_userCredentialsPath = new Lazy<string>(GetCredentialsStorePath);
-        private static Lazy<Task<IEnumerable<UserAccount>>> s_knownCredentials =
-            new Lazy<Task<IEnumerable<UserAccount>>>(LoadKnownCredentialsAsync);
+        private static UserAccount s_currentAccount;
+        private static readonly string s_userCredentialsPath;
+        private static readonly Dictionary<string, StoredUserAccount> s_accounts;
+
+        static AccountsManager()
+        {
+            s_userCredentialsPath = GetCredentialsStorePath();
+            s_accounts = LoadAccounts();
+
+            var currentAccountFileName = GetCurrentAccountFileName();
+            if (currentAccountFileName != null)
+            {
+                s_currentAccount = s_accounts.Values.FirstOrDefault(x => x.FileName == currentAccountFileName)?.UserAccount;
+                if (s_currentAccount != null)
+                {
+                    Debug.WriteLine($"Current account found: {s_currentAccount.AccountName}");
+                }
+                else
+                {
+                    Debug.WriteLine("No current account found.");
+                }
+            }
+        }
 
         public static UserAccount CurrentAccount
         {
-            get { return s_currentCredentials; }
+            get { return s_currentAccount; }
             set
             {
-                s_currentCredentials = value;
+                s_currentAccount = value;
+                UpdateCurrentAccount(s_currentAccount);
                 CurrentCredentialsChanged?.Invoke(null, EventArgs.Empty);
             }
         }
@@ -106,7 +129,10 @@ namespace GoogleCloudExtension.Accounts
         /// Returns the list of credentials known to the extension.
         /// </summary>
         /// <returns></returns>
-        public static Task<IEnumerable<UserAccount>> GetCredentialsListAsync() => s_knownCredentials.Value;
+        public static IEnumerable<UserAccount> GetAccountsList()
+        {
+            return s_accounts.Values.Select(x => x.UserAccount);
+        }
 
         /// <summary>
         /// Stores a new set of user credentials in the credentials store.
@@ -115,26 +141,98 @@ namespace GoogleCloudExtension.Accounts
         /// <returns></returns>
         public static async Task StoreUserCredentialsAsync(UserAccount userCredentials)
         {
-            await Task.Run(() => userCredentials.Save(s_userCredentialsPath.Value));
+            await Task.Run(() => SaveUserAccount(userCredentials, s_userCredentialsPath));
         }
 
         private static string GetCredentialsStorePath()
         {
             var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            return Path.Combine(localAppData, CredentialsStorePath);
+            return Path.Combine(localAppData, AccountsStorePath);
         }
 
-        private static Task<IEnumerable<UserAccount>> LoadKnownCredentialsAsync()
+        private static Dictionary<string, StoredUserAccount> LoadAccounts()
         {
-            return Task.Run(() =>
-                {
-                    Debug.WriteLine($"Listing credentials in directory: {s_userCredentialsPath.Value}");
-                    if (!Directory.Exists(s_userCredentialsPath.Value))
-                    {
-                        return Enumerable.Empty<UserAccount>();
-                    }
-                    return Directory.EnumerateFiles(s_userCredentialsPath.Value).Select(x => UserAccount.FromFile(x));
-                });
+            Debug.WriteLine($"Listing credentials in directory: {s_userCredentialsPath}");
+            if (!Directory.Exists(s_userCredentialsPath))
+            {
+                return new Dictionary<string, StoredUserAccount>();
+            }
+            return Directory.EnumerateFiles(s_userCredentialsPath)
+                .Where(x => Path.GetExtension(x) == ".json")
+                .Select(x => new StoredUserAccount(Path.GetFileName(x), LoadUserAccount(x)))
+                .ToDictionary(x => x.UserAccount.AccountName, y => y);
+        }
+
+        private static UserAccount LoadUserAccount(string path)
+        {
+            var contents = File.ReadAllText(path);
+            return JsonConvert.DeserializeObject<UserAccount>(contents);
+        }
+
+        internal static string SaveUserAccount(UserAccount userAccount, string path)
+        {
+            var serialized = JsonConvert.SerializeObject(userAccount);
+            var name = GetName(serialized);
+            var savePath = Path.Combine(path, name);
+            Debug.WriteLine($"Saving account: {savePath}");
+            File.WriteAllText(savePath, serialized);
+            return name;
+        }
+
+        /// <summary>
+        /// Generates a unique name for the user credentials based on the hash of the contents
+        /// which guarantees a safe and unique name for the credentials file.
+        /// </summary>
+        /// <param name="serialized"></param>
+        /// <returns></returns>
+        private static string GetName(string serialized)
+        {
+            var sha1 = SHA1.Create();
+            var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(serialized));
+
+            StringBuilder sb = new StringBuilder();
+            foreach (byte b in hash)
+            {
+                sb.AppendFormat("{0:2x}", b);
+            }
+            sb.Append(".json");
+            return sb.ToString();
+        }
+
+        private static string GetName(UserAccount userAccount)
+        {
+            return GetName(JsonConvert.SerializeObject(userAccount));
+        }
+
+        private static string GetCurrentAccountMarkerPath()
+        {
+            return Path.Combine(s_userCredentialsPath, CurrentAccountFileName);
+        }
+
+        private static string GetCurrentAccountFileName()
+        {
+            string currentAccountMarkerPath = GetCurrentAccountMarkerPath();
+            if (!File.Exists(currentAccountMarkerPath))
+            {
+                return null;
+            }
+
+            Debug.WriteLine($"Reading current account name: {currentAccountMarkerPath}");
+            return File.ReadAllText(currentAccountMarkerPath);
+        }
+
+        private static void SetCurrentAccountFileName(string fileName)
+        {
+            var currentAccountMarkerPath = GetCurrentAccountMarkerPath();
+
+            Debug.WriteLine($"Updating current account: {currentAccountMarkerPath}");
+            File.WriteAllText(currentAccountMarkerPath, fileName);
+        }
+
+        private static void UpdateCurrentAccount(UserAccount userAccount)
+        {
+            var storedUserAccount = s_accounts[userAccount.AccountName];
+            SetCurrentAccountFileName(storedUserAccount.FileName);
         }
     }
 }

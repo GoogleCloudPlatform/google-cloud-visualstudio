@@ -51,6 +51,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Accounts\Models\StoredUserAccount.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\AppEngineRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\AppEngineSource.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\GaeServiceViewModel.cs" />
