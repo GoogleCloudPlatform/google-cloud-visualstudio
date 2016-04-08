@@ -55,9 +55,9 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void SetCaption()
         {
-            if (AccountsManager.CurrentCredentials?.AccountName != null)
+            if (AccountsManager.CurrentAccount?.AccountName != null)
             {
-                Caption = $"Google Cloud Explorer ({AccountsManager.CurrentCredentials.AccountName})";
+                Caption = $"Google Cloud Explorer ({AccountsManager.CurrentAccount.AccountName})";
             }
             else
             {

@@ -20,15 +20,15 @@
         <!-- Listbox with the credentials -->
         <ListBox Grid.Row="1"
                  Margin="5"
-                 ItemsSource="{Binding UserCredentialsListAsync.Value}"
+                 ItemsSource="{Binding UserAccountsListAsync.Value}"
+                 SelectedItem="{Binding CurrentUserAccount, Mode=OneWayToSource}"
                  SelectedValue="{Binding CurrentAccountName}"
                  SelectedValuePath="AccountName">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid Height="110">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="2*" />
+                            <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         
@@ -48,15 +48,7 @@
                                        Margin="0,0,0,5"/>
                             <TextBlock Text="{Binding AccountName, StringFormat='({0})'}" />
                         </StackPanel>
-                        
-                        <!-- Action buttons on the credentials -->
-                        <StackPanel Orientation="Horizontal"
-                                    Grid.Column="2"
-                                    VerticalAlignment="Center"
-                                    HorizontalAlignment="Stretch">
-                            <Button Margin="0,0,5,0" Command="{Binding SetAsCurrentCommand}">Set As Current</Button>
-                            <Button Command="{Binding DeleteCommand}">Delete</Button>
-                        </StackPanel>
+                       
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -65,10 +57,10 @@
         
         <!-- Buttons row -->
         <StackPanel Margin="5" Orientation="Horizontal" Grid.Row="2">
-            <Button Margin="0,0,5,0" Padding="5" Command="{Binding AddCredentialsCommand}">Add Credentials...</Button>
-            <Button Padding="5" Command="{Binding CloseCommand}">Close</Button>
+            <Button Margin="0,0,5,0" Padding="5" Command="{Binding ApplyCommand}" IsDefault="True">Apply</Button>
+            <Button Margin="0,0,5,0" Padding="5" Command="{Binding CloseCommand}" IsCancel="True">Close</Button>
+            <Button Padding="5" Command="{Binding AddCredentialsCommand}">Add Credentials...</Button>
         </StackPanel>
-                    
             
     </Grid>
 </UserControl>

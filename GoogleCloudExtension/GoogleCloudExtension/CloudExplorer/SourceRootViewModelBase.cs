@@ -78,7 +78,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 IsLoadingState = true;
                 Children.Clear();
 
-                if (AccountsManager.CurrentCredentials == null)
+                if (AccountsManager.CurrentAccount == null)
                 {
                     Children.Add(s_noCredentialsPlacehodler);
                     return;

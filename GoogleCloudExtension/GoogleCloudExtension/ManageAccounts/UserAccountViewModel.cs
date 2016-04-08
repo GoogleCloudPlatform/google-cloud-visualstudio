@@ -13,25 +13,19 @@ using System.Windows.Media.Imaging;
 
 namespace GoogleCloudExtension.ManageAccounts
 {
-    public class UserCredentialsViewModel : Model
+    public class UserAccountViewModel : Model
     {
-        private readonly UserAccount _userAccount;
-
         public AsyncPropertyValue<string> ProfilePictureAsync { get; }
 
         public AsyncPropertyValue<string> NameAsync { get; }
 
         public string AccountName { get; }
 
-        public bool IsCurrentAccount => AccountsManager.CurrentCredentials?.AccountName == _userAccount.AccountName;
+        public UserAccount UserAccount { get; }
 
-        public WeakCommand SetAsCurrentCommand { get; }
-
-        public ICommand DeleteCommand { get; }
-
-        public UserCredentialsViewModel(UserAccount userAccount)
+        public UserAccountViewModel(UserAccount userAccount)
         {
-            _userAccount = userAccount;
+            UserAccount = userAccount;
 
             AccountName = userAccount.AccountName;
 
@@ -40,29 +34,6 @@ namespace GoogleCloudExtension.ManageAccounts
             // TODO: Show the default image while it is being loaded.
             ProfilePictureAsync = AsyncPropertyValue<string>.CreateAsyncProperty(profileTask, x => x.Image.Url);
             NameAsync = AsyncPropertyValue<string>.CreateAsyncProperty(profileTask, x => x.DisplayName);
-
-            // Commands.
-            SetAsCurrentCommand = new WeakCommand(OnSetAsCurrentCommand, !IsCurrentAccount);
-            DeleteCommand = new WeakCommand(OnDeleteCommand);
-
-            // Be notified of changes in current account.
-            AccountsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
-        }
-
-        private void OnCurrentCredentialsChanged(object sender, EventArgs e)
-        {
-            SetAsCurrentCommand.CanExecuteCommand = !IsCurrentAccount;
-            RaisePropertyChanged(nameof(IsCurrentAccount));
-        }
-
-        private void OnDeleteCommand()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void OnSetAsCurrentCommand()
-        {
-            AccountsManager.CurrentCredentials = _userAccount;
         }
     }
 }

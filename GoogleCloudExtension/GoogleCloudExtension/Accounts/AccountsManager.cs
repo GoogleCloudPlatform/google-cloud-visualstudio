@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.Accounts
         private static Lazy<Task<IEnumerable<UserAccount>>> s_knownCredentials =
             new Lazy<Task<IEnumerable<UserAccount>>>(LoadKnownCredentialsAsync);
 
-        public static UserAccount CurrentCredentials
+        public static UserAccount CurrentAccount
         {
             get { return s_currentCredentials; }
             set
@@ -52,9 +52,9 @@ namespace GoogleCloudExtension.Accounts
         /// <returns></returns>
         public static Task<string> GetAccessTokenAsync()
         {
-            if (CurrentCredentials != null)
+            if (CurrentAccount != null)
             {
-                return GetAccessTokenForCredentialsAsync(CurrentCredentials);
+                return GetAccessTokenForCredentialsAsync(CurrentAccount);
             }
             throw new InvalidOperationException("No current credential is set.");
         }
@@ -73,7 +73,7 @@ namespace GoogleCloudExtension.Accounts
             var credentials = await GetCredentialsForLoginResultAsync(loginResult);
 
             await StoreUserCredentialsAsync(credentials);
-            CurrentCredentials = credentials;
+            CurrentAccount = credentials;
         }
 
         private static async Task<UserAccount> GetCredentialsForLoginResultAsync(OAuthLoginResult loginResult)

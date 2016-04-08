@@ -88,7 +88,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 CommandInvocationSource.ToolsMenu,
                 () =>
                 {
-                    if (AccountsManager.CurrentCredentials == null)
+                    if (AccountsManager.CurrentAccount == null)
                     {
                         Debug.WriteLine("Attempted to open cloud explorer without credentials.");
                         UserPromptUtils.OkPrompt("Plase login beore using this tool.", "Need credentials.");

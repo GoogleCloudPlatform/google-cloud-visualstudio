@@ -86,7 +86,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private async void OnCurrentCredentialsChanged(object sender, EventArgs e)
         {
-            if (AccountsManager.CurrentCredentials == null)
+            if (AccountsManager.CurrentAccount == null)
             {
                 ProjectsAsync = null;
                 RefreshSources();
