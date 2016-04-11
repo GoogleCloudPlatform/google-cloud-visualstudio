@@ -105,7 +105,7 @@ namespace GoogleCloudExtension.Accounts
                 return false;
             }
 
-            await StoreUserCredentialsAsync(credentials);
+            StoreUserCredentials(credentials);
 
             // Since we're adding a new account, just reload the accounts.
             s_accounts = LoadAccounts();
@@ -147,9 +147,9 @@ namespace GoogleCloudExtension.Accounts
         /// </summary>
         /// <param name="userCredentials"></param>
         /// <returns></returns>
-        public static async Task StoreUserCredentialsAsync(UserAccount userCredentials)
+        public static void StoreUserCredentials(UserAccount userCredentials)
         {
-            await Task.Run(() => SaveUserAccount(userCredentials, s_userCredentialsPath));
+            SaveUserAccount(userCredentials, s_userCredentialsPath);
         }
 
         private static string GetCredentialsStorePath()
