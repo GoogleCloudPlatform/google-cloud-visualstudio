@@ -19,6 +19,8 @@ namespace GoogleCloudExtension.OauthLoginFlow
         private OAuthLoginFlowWindow(string urlSource)
         {
             Title = "Log in";
+            Width = 500;
+            Height = 500;
 
             ViewModel = new OAuthLoginFlowViewModel();
             var windowContent = new OauthLoginFlowWindowContent(this)

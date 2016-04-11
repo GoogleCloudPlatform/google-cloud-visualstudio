@@ -7,17 +7,10 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type local:OAuthLoginFlowViewModel}}" d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="30" />
-        </Grid.RowDefinitions>
-        
         <!-- The main UI -->
         <WebBrowser x:Name="_webBrowser"
                     Navigating="WebBrowser_Navigating"
                     Navigated="WebBrowser_Navigated"/>
-
-        <!-- Message bar for debugging -->
-        <TextBlock Grid.Row="1" Margin="5" VerticalAlignment="Center" Text="{Binding Message}"/>
+        
     </Grid>
 </UserControl>
