@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="GoogleCloudExtension.OauthLoginFlow.OauthLoginFlowWindowContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.OauthLoginFlow"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance {x:Type local:OauthLoginFlowViewModel}}" d:DesignHeight="300" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="30" />
+        </Grid.RowDefinitions>
+        
+        <!-- The main UI -->
+        <WebBrowser x:Name="_webBrowser"
+                    Navigating="WebBrowser_Navigating"
+                    Navigated="WebBrowser_Navigated"/>
+
+        <!-- Message bar for debugging -->
+        <TextBlock Grid.Row="1" Margin="5" VerticalAlignment="Center" Text="{Binding Message}"/>
+    </Grid>
+</UserControl>

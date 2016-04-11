@@ -63,7 +63,6 @@ namespace GoogleCloudExtension.OAuth
             {
                 ["response_type"] = "code",
                 ["client_id"] = credentials.ClientId,
-                ["client_secret"] = credentials.ClientSecret,
                 ["redirect_uri"] = OAuthRedirectUrl,
                 ["scope"] = String.Join(" ", scopes),
             };

@@ -94,7 +94,13 @@
     </Compile>
     <Compile Include="Accounts\ProfileManager.cs" />
     <Compile Include="Accounts\Models\UserAccount.cs" />
+    <Compile Include="OauthLoginFlow\OauthLoginFlowResult.cs" />
+    <Compile Include="OauthLoginFlow\OauthLoginFlowViewModel.cs" />
+    <Compile Include="OauthLoginFlow\OauthLoginFlowWindow.cs" />
     <Compile Include="ManageAccounts\UserAccountViewModel.cs" />
+    <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
+      <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utils\ActivityLogUtils.cs" />
     <Compile Include="Utils\ButtonIds.cs" />
     <Compile Include="Utils\DnxValidationResult.cs" />
@@ -290,6 +296,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ManageAccounts\ManageAccountsWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

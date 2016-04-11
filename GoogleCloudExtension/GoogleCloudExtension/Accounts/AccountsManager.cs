@@ -1,6 +1,7 @@
 ﻿using GoogleCloudExtension.Accounts.Models;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.OAuth;
+using GoogleCloudExtension.OauthLoginFlow;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -85,7 +86,7 @@ namespace GoogleCloudExtension.Accounts
         public static async void LoginFlow()
         {
             var url = OAuthManager.GetOAuthBeginFlowUrl(s_extensionCredentials, s_extensionScopes);
-            string accessCode = await GetAcessCodeAsync(url);
+            string accessCode = GetAcessCodeAsync(url);
             if (accessCode == null)
             {
                 Debug.WriteLine("The user cancelled the OAUTH login flow.");
@@ -109,9 +110,11 @@ namespace GoogleCloudExtension.Accounts
             };
         }
 
-        private static Task<string> GetAcessCodeAsync(string url)
+        private static string GetAcessCodeAsync(string url)
         {
-            throw new NotImplementedException();
+            var loginDialog = new OauthLoginFlowWindow(url);
+            loginDialog.ShowModal();
+            return null;
         }
 
         /// <summary>
