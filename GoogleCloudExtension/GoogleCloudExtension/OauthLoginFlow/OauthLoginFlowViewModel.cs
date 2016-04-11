@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.OauthLoginFlow
 {
-    class OauthLoginFlowViewModel : ViewModelBase
+    class OAuthLoginFlowViewModel : ViewModelBase
     {
         private string _message;
 
@@ -16,5 +16,7 @@ namespace GoogleCloudExtension.OauthLoginFlow
             get { return _message; }
             set { SetValueAndRaise(ref _message, value); }
         }
+
+        public string AccessCode { get; set; }
     }
 }

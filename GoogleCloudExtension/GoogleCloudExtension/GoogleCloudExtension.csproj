@@ -94,7 +94,6 @@
     </Compile>
     <Compile Include="Accounts\ProfileManager.cs" />
     <Compile Include="Accounts\Models\UserAccount.cs" />
-    <Compile Include="OauthLoginFlow\OauthLoginFlowResult.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowViewModel.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindow.cs" />
     <Compile Include="ManageAccounts\UserAccountViewModel.cs" />

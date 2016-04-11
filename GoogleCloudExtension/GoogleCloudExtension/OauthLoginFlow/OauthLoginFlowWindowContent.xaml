@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.OauthLoginFlow"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance {x:Type local:OauthLoginFlowViewModel}}" d:DesignHeight="300" d:DesignWidth="300">
+             d:DataContext="{d:DesignInstance {x:Type local:OAuthLoginFlowViewModel}}" d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />

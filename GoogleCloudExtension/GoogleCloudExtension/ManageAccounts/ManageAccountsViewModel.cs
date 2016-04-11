@@ -75,10 +75,14 @@ namespace GoogleCloudExtension.ManageAccounts
             _owner.Close();
         }
 
-        private void OnAddCredentialsCommand()
+        private async void OnAddCredentialsCommand()
         {
             Debug.WriteLine("Stating the oauth login flow.");
-            AccountsManager.LoginFlow();
+            if (await AccountsManager.AddAccountFlowAsync())
+            {
+                Debug.WriteLine("The user logged in, refresh the list of accounts.");
+                UserAccountsList = LoadUserCredentialsViewModel();
+            }
         }
 
         private IEnumerable<UserAccountViewModel> LoadUserCredentialsViewModel()

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GoogleCloudExtension.OAuth.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,6 +17,12 @@ namespace GoogleCloudExtension.OAuth
         {
             RefreshToken = refreshToken;
             AccessToken = accessToken;
+        }
+
+        internal OAuthLoginResult(AccessTokenModel model)
+        {
+            RefreshToken = model.RefreshToken;
+            AccessToken = new AccessToken(model);
         }
     }
 }

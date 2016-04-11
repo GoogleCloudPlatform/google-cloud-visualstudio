@@ -2,6 +2,7 @@
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.OAuth;
 using GoogleCloudExtension.OauthLoginFlow;
+using GoogleCloudExtension.Utils;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace GoogleCloudExtension.Accounts
 
         private static UserAccount s_currentAccount;
         private static readonly string s_userCredentialsPath;
-        private static readonly Dictionary<string, StoredUserAccount> s_accounts;
+        private static Dictionary<string, StoredUserAccount> s_accounts;
 
         static AccountsManager()
         {
@@ -83,21 +84,32 @@ namespace GoogleCloudExtension.Accounts
             throw new InvalidOperationException("No current credential is set.");
         }
 
-        public static async void LoginFlow()
+        public static async Task<bool> AddAccountFlowAsync()
         {
             var url = OAuthManager.GetOAuthBeginFlowUrl(s_extensionCredentials, s_extensionScopes);
-            string accessCode = GetAcessCodeAsync(url);
+            string accessCode = OAuthLoginFlowWindow.RunOAuthFlow(url);
             if (accessCode == null)
             {
                 Debug.WriteLine("The user cancelled the OAUTH login flow.");
-                return;
+                return false;
             }
 
-            var loginResult = await OAuthManager.EndOAuthFlow(accessCode);
+            var loginResult = await OAuthManager.EndOAuthFlow(s_extensionCredentials, accessCode);
             var credentials = await GetCredentialsForLoginResultAsync(loginResult);
 
+            StoredUserAccount userAccount;
+            if (s_accounts.TryGetValue(credentials.AccountName, out userAccount))
+            {
+                Debug.WriteLine($"Duplicated account {credentials.AccountName}");
+                UserPromptUtils.OkPrompt($"The user account {credentials.AccountName} already exists.", "Duplicate Account");
+                return false;
+            }
+
             await StoreUserCredentialsAsync(credentials);
-            CurrentAccount = credentials;
+
+            // Since we're adding a new account, just reload the accounts.
+            s_accounts = LoadAccounts();
+            return true;
         }
 
         private static async Task<UserAccount> GetCredentialsForLoginResultAsync(OAuthLoginResult loginResult)
@@ -108,13 +120,6 @@ namespace GoogleCloudExtension.Accounts
                 AccountName = profile.Emails.FirstOrDefault()?.Value,
                 RefreshToken = loginResult.RefreshToken,
             };
-        }
-
-        private static string GetAcessCodeAsync(string url)
-        {
-            var loginDialog = new OauthLoginFlowWindow(url);
-            loginDialog.ShowModal();
-            return null;
         }
 
         /// <summary>
@@ -196,7 +201,7 @@ namespace GoogleCloudExtension.Accounts
             StringBuilder sb = new StringBuilder();
             foreach (byte b in hash)
             {
-                sb.AppendFormat("{0:2x}", b);
+                sb.AppendFormat("{0:x2}", b);
             }
             sb.Append(".json");
             return sb.ToString();

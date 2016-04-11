@@ -7,19 +7,29 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.OauthLoginFlow
 {
-    class OauthLoginFlowWindow : DialogWindow
+    public class OAuthLoginFlowWindow : DialogWindow
     {
-        public OauthLoginFlowWindow(string urlSource)
+        private OAuthLoginFlowViewModel ViewModel { get; }
+
+        private OAuthLoginFlowWindow(string urlSource)
         {
             Title = "Log in";
 
-            var windowContent = new OauthLoginFlowWindowContent
+            ViewModel = new OAuthLoginFlowViewModel();
+            var windowContent = new OauthLoginFlowWindowContent(this)
             {
-                DataContext = new OauthLoginFlowViewModel(),
+                DataContext = ViewModel,
             };
             windowContent.Navigate(urlSource);
 
             Content = windowContent;
+        }
+
+        internal static string RunOAuthFlow(string url)
+        {
+            var window = new OAuthLoginFlowWindow(url);
+            window.ShowModal();
+            return window.ViewModel.AccessCode;
         }
     }
 }

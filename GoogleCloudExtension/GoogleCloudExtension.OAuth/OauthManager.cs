@@ -13,7 +13,7 @@ namespace GoogleCloudExtension.OAuth
 {
     public static class OAuthManager
     {
-        const string OAuthRefreshUrl = "https://www.googleapis.com/oauth2/v3/token";
+        const string OAuthApiUrl = "https://www.googleapis.com/oauth2/v3/token";
         const string OAuthRedirectUrl = "urn:ietf:wg:oauth:2.0:oob";
 
         /// <summary>
@@ -34,14 +34,43 @@ namespace GoogleCloudExtension.OAuth
 
             try
             {
-                var result = await client.UploadValuesTaskAsync(OAuthRefreshUrl, form);
-                var decoded = Encoding.UTF8.GetString(result);
+                var response = await client.UploadValuesTaskAsync(OAuthApiUrl, form);
+                var decoded = Encoding.UTF8.GetString(response);
                 var model = JsonConvert.DeserializeObject<AccessTokenModel>(decoded);
                 return new AccessToken(model);
             }
             catch (WebException ex)
             {
                 Debug.WriteLine($"Failed to get refresh token: {ex.Message}");
+                throw new OAuthException(ex.Message, ex);
+            }
+            catch (JsonException ex)
+            {
+                Debug.WriteLine($"Failed to parse result: {ex.Message}");
+                throw new OAuthException(ex.Message, ex);
+            }
+        }
+
+        public static async Task<OAuthLoginResult> EndOAuthFlow(OAuthCredentials credentials, string accessCode)
+        {
+            var client = new WebClient();
+            var form = new NameValueCollection();
+            form.Add("code", accessCode);
+            form.Add("client_id", credentials.ClientId);
+            form.Add("client_secret", credentials.ClientSecret);
+            form.Add("redirect_uri", OAuthRedirectUrl);
+            form.Add("grant_type", "authorization_code");
+
+            try
+            {
+                var response = await client.UploadValuesTaskAsync(OAuthApiUrl, form);
+                var decoded = Encoding.UTF8.GetString(response);
+                var model = JsonConvert.DeserializeObject<AccessTokenModel>(decoded);
+                return new OAuthLoginResult(model);
+            }
+            catch (WebException ex)
+            {
+                Debug.WriteLine($"Failed to finalize oauth flow: {ex.Message}");
                 throw new OAuthException(ex.Message, ex);
             }
             catch (JsonException ex)
@@ -74,11 +103,6 @@ namespace GoogleCloudExtension.OAuth
             return String.Join(
                 "&",
                 form.Select(x => $"{x.Key}={Uri.EscapeUriString(x.Value)}"));
-        }
-
-        public static Task<OAuthLoginResult> EndOAuthFlow(string accessCode)
-        {
-            throw new NotImplementedException();
         }
     }
 }
