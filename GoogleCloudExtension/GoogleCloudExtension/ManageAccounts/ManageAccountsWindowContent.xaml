@@ -36,9 +36,9 @@
 
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Grid Height="110" Margin="10,0,0,0" HorizontalAlignment="Stretch">
+                    <Grid Height="75" Margin="10,0,0,0" HorizontalAlignment="Stretch">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" MinWidth="85" />
+                            <ColumnDefinition Width="Auto" MinWidth="75" />
                             <ColumnDefinition />
                             <ColumnDefinition />
                         </Grid.ColumnDefinitions>
@@ -47,14 +47,12 @@
                         <Image Source="{Binding ProfilePictureAsync.Value}"
                                Width="50"
                                Height="50"
-                               Margin="6,30,29,30"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center" />
 
                         <!-- Placeholder for the loading -->
                         <Rectangle Width="50"
                                    Height="50"
-                                   Margin="6,30,29,30"
                                    Fill="#FFCCE3F7"
                                    Visibility="{Binding ProfilePictureAsync.IsPending, Converter={StaticResource visibilityConverter}}"
                                    HorizontalAlignment="Center"
@@ -62,7 +60,6 @@
 
                         <!-- Show the name and the account name -->
                         <StackPanel Grid.Column="1"
-                                    Margin="0,36,10,36"
                                     VerticalAlignment="Center" Height="38">
                             <TextBlock Text="{Binding NameAsync.Value}" 
                                        Margin="0,0,0,5"/>
@@ -83,11 +80,24 @@
         </ListBox>
 
         <!-- Buttons row -->
-        <StackPanel Margin="10,5,10,10" Orientation="Horizontal" Grid.Row="2">
-            <Button Margin="0,0,5,0" Padding="5" Command="{Binding SetAsCurrentAcountCommand}" IsDefault="True">Set As Current Account</Button>
-            <Button Margin="0,0,5,0" Padding="5" Command="{Binding CloseCommand}" IsCancel="True">Close</Button>
-            <Button Padding="5" Command="{Binding AddCredentialsCommand}">Add Credentials...</Button>
-        </StackPanel>
+        <Grid Margin="10,5,10,10" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel  Orientation="Horizontal" >
+                <Button Margin="0,0,5,0" Padding="5" Command="{Binding AddCredentialsCommand}">Add Credentials...</Button>
+                <Button Padding="5" Command="{Binding SetAsCurrentAcountCommand}" IsDefault="True">Set As Current Account</Button>
+            </StackPanel>
+
+            <Button Margin="0,0,5,0"
+                    Grid.Column="1"
+                    Padding="5"
+                    Command="{Binding CloseCommand}"
+                    IsCancel="True"
+                    HorizontalAlignment="Right">Close</Button>
+        </Grid>
 
     </Grid>
 </UserControl>
