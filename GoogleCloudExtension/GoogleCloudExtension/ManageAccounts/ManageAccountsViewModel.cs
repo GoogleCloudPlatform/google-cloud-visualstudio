@@ -47,10 +47,14 @@ namespace GoogleCloudExtension.ManageAccounts
                 {
                     SetAsCurrentAcountCommand.CanExecuteCommand = value != null && AccountsManager.CurrentAccount.AccountName != value.AccountName;
                 }
+
+                DeleteAccountCommand.CanExecuteCommand = value != null;
             }
         }
 
         public WeakCommand SetAsCurrentAcountCommand { get; }
+
+        public WeakCommand DeleteAccountCommand { get; }
 
         public ICommand CloseCommand { get; }
 
@@ -64,14 +68,31 @@ namespace GoogleCloudExtension.ManageAccounts
             CurrentAccountName = AccountsManager.CurrentAccount?.AccountName;
 
             SetAsCurrentAcountCommand = new WeakCommand(OnSetAsCurrentAccountCommand, canExecuteCommand: false);
+            DeleteAccountCommand = new WeakCommand(OnDeleteAccountCommand);
             CloseCommand = new WeakCommand(owner.Close);
             AddCredentialsCommand = new WeakCommand(OnAddCredentialsCommand);
         }
 
+        private void OnDeleteAccountCommand()
+        {
+            Debug.WriteLine($"Attempting to delete account: {CurrentAccountName}");
+            if (!UserPromptUtils.YesNoPrompt($"Are you sure you want to delete the account {CurrentAccountName}", "Delete Account"))
+            {
+                Debug.WriteLine($"The user cancelled the deletion of the account.");
+                return;
+            }
+
+            if (AccountsManager.DeleteAccount(CurrentUserAccount.UserAccount))
+            {
+                // Refreshing everything.
+                UserAccountsList = LoadUserCredentialsViewModel();
+            }
+        }
+
         private void OnSetAsCurrentAccountCommand()
         {
-            Debug.WriteLine($"Setting current account: {_currentAccountName}");
-            AccountsManager.CurrentAccount = _currentUserAccount.UserAccount;
+            Debug.WriteLine($"Setting current account: {CurrentAccountName}");
+            AccountsManager.CurrentAccount = CurrentUserAccount.UserAccount;
             _owner.Close();
         }
 

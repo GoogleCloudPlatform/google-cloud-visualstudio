@@ -16,6 +16,12 @@ namespace GoogleCloudExtension.CloudExplorer
                 IsError = true,
                 Content = "No credentials, please login.",
             };
+        private static TreeLeaf s_noProjectPlaceholder =
+            new TreeLeaf
+            {
+                IsError = true,
+                Content = "No project selected.",
+            };
 
         public bool IsLoadingState { get; private set; }
 
@@ -81,6 +87,12 @@ namespace GoogleCloudExtension.CloudExplorer
                 if (AccountsManager.CurrentAccount == null)
                 {
                     Children.Add(s_noCredentialsPlacehodler);
+                    return;
+                }
+
+                if (Owner.CurrentProject == null)
+                {
+                    Children.Add(s_noProjectPlaceholder);
                     return;
                 }
 

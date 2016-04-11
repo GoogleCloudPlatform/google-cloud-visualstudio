@@ -112,6 +112,31 @@ namespace GoogleCloudExtension.Accounts
             return true;
         }
 
+        /// <summary>
+        /// Deletest the <paramref name="account"/> from the store.
+        /// </summary>
+        /// <param name="account">The accound to delete.</param>
+        public static bool DeleteAccount(UserAccount account)
+        {
+            var accountFilePath = GetUserAccountPath(account.AccountName);
+            if (accountFilePath == null)
+            {
+                Debug.WriteLine($"Unknown accout name: {account.AccountName}");
+                return false;
+            }
+
+            File.Delete(accountFilePath);
+            if (account.AccountName == CurrentAccount?.AccountName)
+            {
+                Debug.WriteLine($"Deleting current account: {account.AccountName}");
+                CurrentAccount = null;
+            }
+
+            // Refresh all accounts.
+            s_accounts = LoadAccounts();
+            return true;
+        }
+
         private static async Task<UserAccount> GetCredentialsForLoginResultAsync(OAuthLoginResult loginResult)
         {
             var profile = await GPlusDataSource.GetProfileAsync(loginResult.AccessToken.Token);
@@ -177,7 +202,7 @@ namespace GoogleCloudExtension.Accounts
             return JsonConvert.DeserializeObject<UserAccount>(contents);
         }
 
-        internal static string SaveUserAccount(UserAccount userAccount, string path)
+        private static string SaveUserAccount(UserAccount userAccount, string path)
         {
             var serialized = JsonConvert.SerializeObject(userAccount);
             var name = GetName(serialized);
@@ -185,6 +210,19 @@ namespace GoogleCloudExtension.Accounts
             Debug.WriteLine($"Saving account: {savePath}");
             File.WriteAllText(savePath, serialized);
             return name;
+        }
+
+        private static string GetUserAccountPath(string accountName)
+        {
+            Debug.WriteLine($"Deleting account: {accountName}");
+            StoredUserAccount userAccount;
+            if (!s_accounts.TryGetValue(accountName, out userAccount))
+            {
+                Debug.WriteLine($"Unknown account: {accountName}");
+                return null;
+            }
+
+            return Path.Combine(s_userCredentialsPath, userAccount.FileName);
         }
 
         /// <summary>
@@ -237,10 +275,32 @@ namespace GoogleCloudExtension.Accounts
             File.WriteAllText(currentAccountMarkerPath, fileName);
         }
 
+        private static void DeleteCurrentAccountFileName()
+        {
+            var currentAccountMarkerPath = GetCurrentAccountMarkerPath();
+
+            Debug.WriteLine("Deleting current account marker");
+            try
+            {
+                File.Delete(currentAccountMarkerPath);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to delete marker: {ex.Message}");
+            }
+        }
+
         private static void UpdateCurrentAccount(UserAccount userAccount)
         {
-            var storedUserAccount = s_accounts[userAccount.AccountName];
-            SetCurrentAccountFileName(storedUserAccount.FileName);
+            if (userAccount == null)
+            {
+                DeleteCurrentAccountFileName();
+            }
+            else
+            {
+                var storedUserAccount = s_accounts[userAccount.AccountName];
+                SetCurrentAccountFileName(storedUserAccount.FileName);
+            }
         }
     }
 }
