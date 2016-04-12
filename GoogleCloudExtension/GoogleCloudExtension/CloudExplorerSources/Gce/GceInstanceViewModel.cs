@@ -44,9 +44,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem {Header="Get Publishing Settings", Command = _getPublishSettingsCommand },
-                new MenuItem {Header="Open Terminal Server Session", Command = _openTerminalServerSessionCommand },
-                new MenuItem {Header="Open Web Site", Command = _openWebSite },
+                new MenuItem {Header="Save Publishing Settings...", Command = _getPublishSettingsCommand },
+                new MenuItem {Header="Open Terminal Server Session...", Command = _openTerminalServerSessionCommand },
+                new MenuItem {Header="Open Web Site...", Command = _openWebSite },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
@@ -63,30 +63,34 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             Process.Start(url);
         }
 
-        private async void OnGetPublishSettings()
+        private void OnGetPublishSettings()
         {
-            //try
-            //{
-            //    Debug.WriteLine($"Generating Publishing settings for {_instance.Name}");
-            //    var credentials = await EnsureWindowsCredentials();
+            Debug.WriteLine($"Generating Publishing settings for {_instance.Name}");
 
-            //    var profile = _instance.GeneratePublishSettings(credentials);
-            //    if (profile == null)
-            //    {
-            //        GcpOutputWindow.OutputLine($"No .publishsettings could be generated for {_instance.Name}");
-            //        return;
-            //    }
+            var storePath = PromptForPublishSettingsPath(_instance.Name);
+            if (storePath == null)
+            {
+                Debug.WriteLine("User canceled saving the pubish settings.");
+                return;
+            }
 
-            //    GcpOutputWindow.OutputLine($"Generated .publishsettings: {profile}");
-            //    var downloadsPath = GetDownloadsPath();
-            //    var settingsPath = Path.Combine(downloadsPath, $"{_instance.Name}.publishsettings");
-            //    File.WriteAllText(settingsPath, profile);
-            //    GcpOutputWindow.OutputLine($"Publishsettings saved to {settingsPath}");
-            //}
-            //catch (GCloudException ex)
-            //{
-            //    GcpOutputWindow.OutputLine($"Failed to reset credentials for {_instance.Name}: {ex.Message}");
-            //}
+            var profile = _instance.GeneratePublishSettings();
+            File.WriteAllText(storePath, profile);
+            GcpOutputWindow.OutputLine($"Publishsettings saved to {storePath}");
+        }
+
+        private static string PromptForPublishSettingsPath(string fileName)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            dialog.Title = "Save Publish Settings";
+            dialog.FileName = fileName;
+            dialog.DefaultExt = ".publishsettings";
+            dialog.Filter = "Publish Settings file (*.publishsettings)|*.publishsettings";
+            dialog.InitialDirectory = GetDownloadsPath();
+            dialog.OverwritePrompt = true;
+
+            var result = dialog.ShowDialog();
+            return result == true ? dialog.FileName : null;
         }
 
         private async Task<GceCredentials> EnsureWindowsCredentials()
