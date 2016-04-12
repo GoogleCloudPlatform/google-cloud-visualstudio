@@ -28,6 +28,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private GceInstance _instance;  // This is not readonly because it can change if resetting the password.
         private readonly WeakCommand _getPublishSettingsCommand;
         private readonly WeakCommand _openWebSite;
+        private readonly WeakCommand _openTerminalServerSessionCommand;
 
         public GceInstanceViewModel(GceSourceRootViewModel owner, GceInstance instance)
         {
@@ -39,13 +40,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
             _getPublishSettingsCommand = new WeakCommand(OnGetPublishSettings, _instance.IsAspnetInstance() && _instance.IsRunning());
             _openWebSite = new WeakCommand(OnOpenWebsite, _instance.IsAspnetInstance() && _instance.IsRunning());
+            _openTerminalServerSessionCommand = new WeakCommand(OnOpenTerminalServerSessionCommand, _instance.IsWindowsInstance());
 
             var menuItems = new List<MenuItem>
             {
                 new MenuItem {Header="Get Publishing Settings", Command = _getPublishSettingsCommand },
+                new MenuItem {Header="Open Terminal Server Session", Command = _openTerminalServerSessionCommand },
                 new MenuItem {Header="Open Web Site", Command = _openWebSite },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void OnOpenTerminalServerSessionCommand()
+        {
+            Process.Start("mstsc", $"/v:{_instance.GetPublicIpAddress()}");
         }
 
         private void OnOpenWebsite()
