@@ -174,7 +174,18 @@ namespace GoogleCloudExtension.Accounts
         /// <returns></returns>
         public static void StoreUserCredentials(UserAccount userCredentials)
         {
+            EnsurePathExists(s_userCredentialsPath);
             SaveUserAccount(userCredentials, s_userCredentialsPath);
+        }
+
+        private static void EnsurePathExists(string path)
+        {
+            if (Directory.Exists(path))
+            {
+                return;
+            }
+            Debug.WriteLine($"Creating directory {path}");
+            Directory.CreateDirectory(path);
         }
 
         private static string GetCredentialsStorePath()
