@@ -13,11 +13,18 @@ namespace GoogleCloudExtension.Accounts
 {
     public class CredentialsStore
     {
+        private class StoredUserAccount
+        {
+            public string FileName { get; set; }
+
+            public UserAccount UserAccount { get; set; }
+        }
+
         private const string AccountsStorePath = @"googlecloudvsextension\accounts";
         private const string CurrentAccountFileName = "current_account";
 
         private static readonly string s_credentialsStoreRoot = GetCredentialsStoreRoot();
-        private static readonly string s_currentAccountMakerPath = GetCurrentAccountMarkerPath();
+        private static readonly string s_currentAccountPath = GetCurrentAccountMarkerPath();
 
         private Dictionary<string, StoredUserAccount> _cachedCredentials;
         private UserAccount _currentAccount;
@@ -37,7 +44,7 @@ namespace GoogleCloudExtension.Accounts
         public CredentialsStore()
         {
             _cachedCredentials = LoadAccounts();
-            _currentAccount = GetCurrentAccount();
+            _currentAccount = GetPersistedCurrentAccount();
         }
 
         /// <summary>
@@ -70,19 +77,17 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// Stores a new set of user credentials in the credentials store.
         /// </summary>
-        /// <param name="account"></param>
+        /// <param name="userAccount"></param>
         /// <returns></returns>
-        public void AddAccount(UserAccount account)
+        public void AddAccount(UserAccount userAccount)
         {
             EnsureCredentialsRootExist();
-            var serialized = JsonConvert.SerializeObject(account);
-            var name = GetName(serialized);
-            var savePath = Path.Combine(s_credentialsStoreRoot, name);
-            Debug.WriteLine($"Saving account: {savePath}");
-            File.WriteAllText(savePath, serialized);
-            _cachedCredentials[account.AccountName] = new StoredUserAccount(
-                fileName: name,
-                userAccount: account);
+            var name = SaveUserAccount(userAccount);
+            _cachedCredentials[userAccount.AccountName] = new StoredUserAccount
+            {
+                FileName = name,
+                UserAccount = userAccount,
+            };
         }
 
         /// <summary>
@@ -100,12 +105,14 @@ namespace GoogleCloudExtension.Accounts
             return null;
         }
 
-        public string GetAccountCredentialsPath(string accountName)
+        public string GetDefaultCurrentAccountPath() => s_currentAccountPath;
+
+        private string GetUserAccountPath(string accountName)
         {
-            StoredUserAccount result;
-            if (_cachedCredentials.TryGetValue(accountName, out result))
+            StoredUserAccount stored;
+            if (_cachedCredentials.TryGetValue(accountName, out stored))
             {
-                return Path.Combine(s_credentialsStoreRoot, result.FileName);
+                return Path.Combine(s_credentialsStoreRoot, stored.FileName);
             }
             return null;
         }
@@ -118,27 +125,8 @@ namespace GoogleCloudExtension.Accounts
             }
             else
             {
-                SetPersistedCurrentAccountName(userAccount.AccountName);
+                SetPersistedCurrentAccount(userAccount);
             }
-        }
-
-        private UserAccount GetCurrentAccount()
-        {
-            var accountName = GetPersistedCurrentAccountName();
-            return accountName != null ? _cachedCredentials[accountName].UserAccount : null;
-        }
-
-        private string GetUserAccountPath(string accountName)
-        {
-            Debug.WriteLine($"Deleting account: {accountName}");
-            StoredUserAccount storedAccount;
-            if (!_cachedCredentials.TryGetValue(accountName, out storedAccount))
-            {
-                Debug.WriteLine($"Unknown account: {accountName}");
-                return null;
-            }
-
-            return Path.Combine(s_credentialsStoreRoot, storedAccount.FileName);
         }
 
         private static Dictionary<string, StoredUserAccount> LoadAccounts()
@@ -150,7 +138,7 @@ namespace GoogleCloudExtension.Accounts
             }
             return Directory.EnumerateFiles(s_credentialsStoreRoot)
                 .Where(x => Path.GetExtension(x) == ".json")
-                .Select(x => new StoredUserAccount(Path.GetFileName(x), LoadUserAccount(x)))
+                .Select(x => new StoredUserAccount { FileName = Path.GetFileName(x), UserAccount = LoadUserAccount(x) })
                 .ToDictionary(x => x.UserAccount.AccountName, y => y);
         }
 
@@ -176,8 +164,30 @@ namespace GoogleCloudExtension.Accounts
             return JsonConvert.DeserializeObject<UserAccount>(contents);
         }
 
-        private static string GetName(string serialized)
+        private static void SaveUserAccount(UserAccount userAccount, string path)
         {
+            try
+            {
+                var serialized = JsonConvert.SerializeObject(userAccount);
+                File.WriteAllText(path, serialized);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to save user account to {path}: {ex.Message}");
+            }
+        }
+
+        private static string SaveUserAccount(UserAccount userAccount)
+        {
+            var name = GetName(userAccount);
+            var savePath = Path.Combine(s_credentialsStoreRoot, name);
+            SaveUserAccount(userAccount, savePath);
+            return name;
+        }
+
+        private static string GetName(UserAccount userAccount)
+        {
+            var serialized = JsonConvert.SerializeObject(userAccount);
             var sha1 = SHA1.Create();
             var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(serialized));
 
@@ -195,24 +205,24 @@ namespace GoogleCloudExtension.Accounts
             return Path.Combine(s_credentialsStoreRoot, CurrentAccountFileName);
         }
 
-        private static string GetPersistedCurrentAccountName()
+        private static UserAccount GetPersistedCurrentAccount()
         {
-            if (!File.Exists(s_currentAccountMakerPath))
+            if (!File.Exists(s_currentAccountPath))
             {
-                Debug.WriteLine($"Nothing to read, no current account marker exist: {s_currentAccountMakerPath}");
+                Debug.WriteLine($"Nothing to read, no current account exist: {s_currentAccountPath}");
                 return null;
             }
 
-            Debug.WriteLine($"Reading current account name: {s_currentAccountMakerPath}");
-            return File.ReadAllText(s_currentAccountMakerPath);
+            Debug.WriteLine($"Reading current account: {s_currentAccountPath}");
+            return LoadUserAccount(s_currentAccountPath);
         }
       
-        private static void SetPersistedCurrentAccountName(string accountName)
+        private static void SetPersistedCurrentAccount(UserAccount userAccount)
         {
             try
             {
-                Debug.WriteLine($"Updating current account: {accountName} at {s_currentAccountMakerPath}");
-                File.WriteAllText(s_currentAccountMakerPath, accountName);
+                Debug.WriteLine($"Updating current account: {userAccount.AccountName} at {s_currentAccountPath}");
+                SaveUserAccount(userAccount, s_currentAccountPath);
             }
             catch (Exception ex)
             {
@@ -222,16 +232,16 @@ namespace GoogleCloudExtension.Accounts
 
         private static void DeleteCurrentAccountMarker()
         {
-            if (!File.Exists(s_currentAccountMakerPath))
+            if (!File.Exists(s_currentAccountPath))
             {
-                Debug.WriteLine($"Nothing to delete, current account marker does not exist: {s_currentAccountMakerPath}");
+                Debug.WriteLine($"Nothing to delete, current account marker does not exist: {s_currentAccountPath}");
                 return;
             }
 
             try
             {
                 Debug.WriteLine("Deleting current account marker");
-                File.Delete(s_currentAccountMakerPath);
+                File.Delete(s_currentAccountPath);
             }
             catch (Exception ex)
             {

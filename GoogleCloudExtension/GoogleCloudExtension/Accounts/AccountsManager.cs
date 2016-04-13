@@ -45,6 +45,11 @@ namespace GoogleCloudExtension.Accounts
 
         public static event EventHandler CurrentCredentialsChanged;
 
+        static AccountsManager()
+        {
+            SetCurrentCredentialsEnvironmentVariable();
+        }
+
         /// <summary>
         /// Returns the access token to use for the current user.
         /// </summary>
@@ -115,6 +120,13 @@ namespace GoogleCloudExtension.Accounts
                 ClientId = s_extensionCredentials.ClientId,
                 ClientSecret = s_extensionCredentials.ClientSecret
             };
+        }
+
+        private static void SetCurrentCredentialsEnvironmentVariable()
+        {
+            Environment.SetEnvironmentVariable(
+                "GOOGLE_APPLICATION_CREDENTIALS",
+                s_credentialsStore.GetDefaultCurrentAccountPath());
         }
     }
 }
