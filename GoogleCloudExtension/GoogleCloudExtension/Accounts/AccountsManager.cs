@@ -17,9 +17,6 @@ namespace GoogleCloudExtension.Accounts
 {
     public static class AccountsManager
     {
-        private const string AccountsStorePath = @"googlecloudvsextension\accounts";
-        private const string CurrentAccountFileName = "current_account";
-
         private static readonly OAuthCredentials s_extensionCredentials =
             new OAuthCredentials(
                 clientId: "622828670384-b6gc2gb8vfgvff80855u5oaubun5f6q2.apps.googleusercontent.com",
@@ -34,37 +31,14 @@ namespace GoogleCloudExtension.Accounts
                 "https://www.googleapis.com/auth/plus.me",
             };
 
-        private static UserAccount s_currentAccount;
-        private static readonly string s_userCredentialsPath;
-        private static Dictionary<string, StoredUserAccount> s_accounts;
-
-        static AccountsManager()
-        {
-            s_userCredentialsPath = GetCredentialsStorePath();
-            s_accounts = LoadAccounts();
-
-            var currentAccountFileName = GetCurrentAccountFileName();
-            if (currentAccountFileName != null)
-            {
-                s_currentAccount = s_accounts.Values.FirstOrDefault(x => x.FileName == currentAccountFileName)?.UserAccount;
-                if (s_currentAccount != null)
-                {
-                    Debug.WriteLine($"Current account found: {s_currentAccount.AccountName}");
-                }
-                else
-                {
-                    Debug.WriteLine("No current account found.");
-                }
-            }
-        }
+        private static CredentialsStore s_credentialsStore = new CredentialsStore();
 
         public static UserAccount CurrentAccount
         {
-            get { return s_currentAccount; }
+            get { return s_credentialsStore.CurrentAccount; }
             set
             {
-                s_currentAccount = value;
-                UpdateCurrentAccount(s_currentAccount);
+                s_credentialsStore.CurrentAccount = value;
                 CurrentCredentialsChanged?.Invoke(null, EventArgs.Empty);
             }
         }
@@ -95,57 +69,30 @@ namespace GoogleCloudExtension.Accounts
             }
 
             var loginResult = await OAuthManager.EndOAuthFlow(s_extensionCredentials, accessCode);
-            var credentials = await GetCredentialsForLoginResultAsync(loginResult);
+            var credentials = await GetUserAccountForLoginResult(loginResult);
 
-            StoredUserAccount userAccount;
-            if (s_accounts.TryGetValue(credentials.AccountName, out userAccount))
+            var existingUserAccount = s_credentialsStore.GetAccount(credentials.AccountName);
+            if (existingUserAccount != null)
             {
                 Debug.WriteLine($"Duplicated account {credentials.AccountName}");
                 UserPromptUtils.OkPrompt($"The user account {credentials.AccountName} already exists.", "Duplicate Account");
                 return false;
             }
 
-            StoreUserCredentials(credentials);
-
-            // Since we're adding a new account, just reload the accounts.
-            s_accounts = LoadAccounts();
+            s_credentialsStore.AddAccount(credentials);
             return true;
         }
 
-        /// <summary>
-        /// Deletest the <paramref name="account"/> from the store.
-        /// </summary>
-        /// <param name="account">The accound to delete.</param>
-        public static bool DeleteAccount(UserAccount account)
+        public static void DeleteAccount(UserAccount userAccount)
         {
-            var accountFilePath = GetUserAccountPath(account.AccountName);
-            if (accountFilePath == null)
+            var deletedCurrentAccount = s_credentialsStore.DeleteAccount(userAccount);
+            if (deletedCurrentAccount)
             {
-                Debug.WriteLine($"Unknown accout name: {account.AccountName}");
-                return false;
+                CurrentCredentialsChanged?.Invoke(null, EventArgs.Empty);
             }
-
-            File.Delete(accountFilePath);
-            if (account.AccountName == CurrentAccount?.AccountName)
-            {
-                Debug.WriteLine($"Deleting current account: {account.AccountName}");
-                CurrentAccount = null;
-            }
-
-            // Refresh all accounts.
-            s_accounts = LoadAccounts();
-            return true;
         }
 
-        private static async Task<UserAccount> GetCredentialsForLoginResultAsync(OAuthLoginResult loginResult)
-        {
-            var profile = await GPlusDataSource.GetProfileAsync(loginResult.AccessToken.Token);
-            return new UserAccount
-            {
-                AccountName = profile.Emails.FirstOrDefault()?.Value,
-                RefreshToken = loginResult.RefreshToken,
-            };
-        }
+        public static IEnumerable<UserAccount> GetAccountsList() => s_credentialsStore.AccountsList;
 
         /// <summary>
         /// Returns the access token for the given <paramref name="userCredentials"/>.
@@ -158,160 +105,16 @@ namespace GoogleCloudExtension.Accounts
             return accessToken.Token;
         }
 
-        /// <summary>
-        /// Returns the list of credentials known to the extension.
-        /// </summary>
-        /// <returns></returns>
-        public static IEnumerable<UserAccount> GetAccountsList()
+        private static async Task<UserAccount> GetUserAccountForLoginResult(OAuthLoginResult loginResult)
         {
-            return s_accounts.Values.Select(x => x.UserAccount);
-        }
-
-        /// <summary>
-        /// Stores a new set of user credentials in the credentials store.
-        /// </summary>
-        /// <param name="userCredentials"></param>
-        /// <returns></returns>
-        public static void StoreUserCredentials(UserAccount userCredentials)
-        {
-            EnsurePathExists(s_userCredentialsPath);
-            SaveUserAccount(userCredentials, s_userCredentialsPath);
-        }
-
-        private static void EnsurePathExists(string path)
-        {
-            if (Directory.Exists(path))
+            var profile = await GPlusDataSource.GetProfileAsync(loginResult.AccessToken.Token);
+            return new UserAccount
             {
-                return;
-            }
-            Debug.WriteLine($"Creating directory {path}");
-            Directory.CreateDirectory(path);
-        }
-
-        private static string GetCredentialsStorePath()
-        {
-            var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            return Path.Combine(localAppData, AccountsStorePath);
-        }
-
-        private static Dictionary<string, StoredUserAccount> LoadAccounts()
-        {
-            Debug.WriteLine($"Listing credentials in directory: {s_userCredentialsPath}");
-            if (!Directory.Exists(s_userCredentialsPath))
-            {
-                return new Dictionary<string, StoredUserAccount>();
-            }
-            return Directory.EnumerateFiles(s_userCredentialsPath)
-                .Where(x => Path.GetExtension(x) == ".json")
-                .Select(x => new StoredUserAccount(Path.GetFileName(x), LoadUserAccount(x)))
-                .ToDictionary(x => x.UserAccount.AccountName, y => y);
-        }
-
-        private static UserAccount LoadUserAccount(string path)
-        {
-            var contents = File.ReadAllText(path);
-            return JsonConvert.DeserializeObject<UserAccount>(contents);
-        }
-
-        private static string SaveUserAccount(UserAccount userAccount, string path)
-        {
-            var serialized = JsonConvert.SerializeObject(userAccount);
-            var name = GetName(serialized);
-            var savePath = Path.Combine(path, name);
-            Debug.WriteLine($"Saving account: {savePath}");
-            File.WriteAllText(savePath, serialized);
-            return name;
-        }
-
-        private static string GetUserAccountPath(string accountName)
-        {
-            Debug.WriteLine($"Deleting account: {accountName}");
-            StoredUserAccount userAccount;
-            if (!s_accounts.TryGetValue(accountName, out userAccount))
-            {
-                Debug.WriteLine($"Unknown account: {accountName}");
-                return null;
-            }
-
-            return Path.Combine(s_userCredentialsPath, userAccount.FileName);
-        }
-
-        /// <summary>
-        /// Generates a unique name for the user credentials based on the hash of the contents
-        /// which guarantees a safe and unique name for the credentials file.
-        /// </summary>
-        /// <param name="serialized"></param>
-        /// <returns></returns>
-        private static string GetName(string serialized)
-        {
-            var sha1 = SHA1.Create();
-            var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(serialized));
-
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in hash)
-            {
-                sb.AppendFormat("{0:x2}", b);
-            }
-            sb.Append(".json");
-            return sb.ToString();
-        }
-
-        private static string GetName(UserAccount userAccount)
-        {
-            return GetName(JsonConvert.SerializeObject(userAccount));
-        }
-
-        private static string GetCurrentAccountMarkerPath()
-        {
-            return Path.Combine(s_userCredentialsPath, CurrentAccountFileName);
-        }
-
-        private static string GetCurrentAccountFileName()
-        {
-            string currentAccountMarkerPath = GetCurrentAccountMarkerPath();
-            if (!File.Exists(currentAccountMarkerPath))
-            {
-                return null;
-            }
-
-            Debug.WriteLine($"Reading current account name: {currentAccountMarkerPath}");
-            return File.ReadAllText(currentAccountMarkerPath);
-        }
-
-        private static void SetCurrentAccountFileName(string fileName)
-        {
-            var currentAccountMarkerPath = GetCurrentAccountMarkerPath();
-
-            Debug.WriteLine($"Updating current account: {currentAccountMarkerPath}");
-            File.WriteAllText(currentAccountMarkerPath, fileName);
-        }
-
-        private static void DeleteCurrentAccountFileName()
-        {
-            var currentAccountMarkerPath = GetCurrentAccountMarkerPath();
-
-            Debug.WriteLine("Deleting current account marker");
-            try
-            {
-                File.Delete(currentAccountMarkerPath);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Failed to delete marker: {ex.Message}");
-            }
-        }
-
-        private static void UpdateCurrentAccount(UserAccount userAccount)
-        {
-            if (userAccount == null)
-            {
-                DeleteCurrentAccountFileName();
-            }
-            else
-            {
-                var storedUserAccount = s_accounts[userAccount.AccountName];
-                SetCurrentAccountFileName(storedUserAccount.FileName);
-            }
+                AccountName = profile.Emails.FirstOrDefault()?.Value,
+                RefreshToken = loginResult.RefreshToken,
+                ClientId = s_extensionCredentials.ClientId,
+                ClientSecret = s_extensionCredentials.ClientSecret
+            };
         }
     }
 }

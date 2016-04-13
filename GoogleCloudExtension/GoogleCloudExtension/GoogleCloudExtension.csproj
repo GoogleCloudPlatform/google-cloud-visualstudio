@@ -53,6 +53,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Accounts\CredentialsStore.cs" />
     <Compile Include="Accounts\Models\StoredUserAccount.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\AppEngineRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\AppEngineSource.cs" />

@@ -82,11 +82,9 @@ namespace GoogleCloudExtension.ManageAccounts
                 return;
             }
 
-            if (AccountsManager.DeleteAccount(CurrentUserAccount.UserAccount))
-            {
-                // Refreshing everything.
-                UserAccountsList = LoadUserCredentialsViewModel();
-            }
+            AccountsManager.DeleteAccount(CurrentUserAccount.UserAccount);
+            // Refreshing everything.
+            UserAccountsList = LoadUserCredentialsViewModel();
         }
 
         private void OnSetAsCurrentAccountCommand()
