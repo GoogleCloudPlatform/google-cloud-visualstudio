@@ -73,6 +73,17 @@ namespace GoogleCloudExtension.ManageAccounts
             AddCredentialsCommand = new WeakCommand(OnAddCredentialsCommand);
         }
 
+        public void DoucleClickedItem(UserAccountViewModel userAccount)
+        {
+            if (userAccount.IsCurrentAccount)
+            {
+                return;
+            }
+
+            AccountsManager.CurrentAccount = userAccount.UserAccount;
+            _owner.Close();
+        }
+
         private void OnDeleteAccountCommand()
         {
             Debug.WriteLine($"Attempting to delete account: {CurrentAccountName}");

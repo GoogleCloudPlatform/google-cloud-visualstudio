@@ -24,5 +24,14 @@ namespace GoogleCloudExtension.ManageAccounts
         {
             InitializeComponent();
         }
+
+        private void ListBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            if (_accountsListBox.SelectedItem != null)
+            {
+                var viewModel = (ManageAccountsViewModel)DataContext;
+                viewModel.DoucleClickedItem((UserAccountViewModel)_accountsListBox.SelectedItem);
+            }
+        }
     }
 }

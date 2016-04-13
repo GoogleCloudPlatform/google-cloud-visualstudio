@@ -394,7 +394,7 @@
                                   Margin="5,0">
                 <controls:PressButton.ContentTemplate>
                     <DataTemplate>
-                        <Image Source="{Binding}" Width="23px" Height="23px" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                        <Image Source="{Binding}" Width="25px" Height="25px" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                     </DataTemplate>
                 </controls:PressButton.ContentTemplate>
             </controls:PressButton>

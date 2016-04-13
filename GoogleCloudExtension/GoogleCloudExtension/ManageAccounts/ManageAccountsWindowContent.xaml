@@ -23,7 +23,9 @@
 
         <!-- Listbox with the credentials -->
         <ListBox Grid.Row="1"
+                 x:Name="_accountsListBox"
                  Margin="10,2,10,5"
+                 MouseDoubleClick="ListBox_MouseDoubleClick"
                  ItemsSource="{Binding UserAccountsList}"
                  SelectedItem="{Binding CurrentUserAccount, Mode=OneWayToSource}"
                  SelectedValue="{Binding CurrentAccountName}"
