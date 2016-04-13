@@ -349,25 +349,56 @@
         </StackPanel>
 
         <!-- Action buttons. -->
-        <ItemsControl ItemsSource="{Binding Buttons}"
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Background for the buttons -->
+            <Border Grid.ColumnSpan="2"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                    Background="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarGradientKey}}"/>
+
+            <!-- First the buttons instantiated from the sources -->
+            <ItemsControl ItemsSource="{Binding Buttons}"
             Visibility="{Binding IsValidInstallation, Converter={StaticResource visibilityConverter}}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Style="{StaticResource CommandBarStyle}" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <controls:PressButton Content="{Binding Icon}"
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Style="{StaticResource CommandBarStyle}" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <controls:PressButton Content="{Binding Icon}"
                         Command="{Binding Command}"
                         VerticalAlignment="Center"
                         ToolTip="{Binding ToolTip}"
                         IsChecked="{Binding IsChecked}"
                         IsEnabled="{Binding IsEnabled}"
                         Style="{StaticResource CommandBarButtonStyle}" />
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!-- The profile button -->
+            <controls:PressButton Grid.Column="1"
+                                  Content="{Binding ProfileImageAsync.Value}"
+                                  Command="{Binding ManageAccountsCommand}"
+                                  VerticalAlignment="Center"
+                                  Background="Azure"
+                                  ToolTip="{Binding ProfileNameAsync.Value}"
+                                  Style="{StaticResource CommandBarButtonStyle}"
+                                  HorizontalAlignment="Right"
+                                  Margin="5,0">
+                <controls:PressButton.ContentTemplate>
+                    <DataTemplate>
+                        <Image Source="{Binding}" Width="23px" Height="23px" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                    </DataTemplate>
+                </controls:PressButton.ContentTemplate>
+            </controls:PressButton>
+        </Grid>
 
         <!-- Project switcher. -->
         <ComboBox ItemsSource="{Binding ProjectsAsync.Value}"

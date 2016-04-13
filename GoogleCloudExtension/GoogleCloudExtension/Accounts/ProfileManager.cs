@@ -10,9 +10,9 @@ namespace GoogleCloudExtension.Accounts
 {
     public static class ProfileManager
     {
-        internal static async Task<GPlusProfile> GetProfileForCredentialsAsync(UserAccount userCredentials)
+        public static async Task<GPlusProfile> GetProfileForCredentialsAsync(UserAccount userAccount)
         {
-            var oauthToken = await AccountsManager.GetAccessTokenForCredentialsAsync(userCredentials);
+            var oauthToken = await AccountsManager.GetAccessTokenForCredentialsAsync(userAccount);
             return await GPlusDataSource.GetProfileAsync(oauthToken);
         }
     }

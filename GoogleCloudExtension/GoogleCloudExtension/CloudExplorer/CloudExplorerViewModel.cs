@@ -4,6 +4,7 @@
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
+using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,8 @@ namespace GoogleCloudExtension.CloudExplorer
         private readonly IList<ICloudExplorerSource> _sources;
         private readonly List<ButtonDefinition> _buttons;
         private AsyncPropertyValue<IEnumerable<GcpProject>> _projectsAsync;
+        private AsyncPropertyValue<string> _profileImageAsync;
+        private AsyncPropertyValue<string> _profileNameAsync;
         private GcpProject _currentProject;
         private bool _changingCredentials;
 
@@ -49,6 +52,20 @@ namespace GoogleCloudExtension.CloudExplorer
             get { return _projectsAsync; }
             set { SetValueAndRaise(ref _projectsAsync, value); }
         }
+
+        public AsyncPropertyValue<string> ProfileImageAsync
+        {
+            get { return _profileImageAsync; }
+            set { SetValueAndRaise(ref _profileImageAsync, value); }
+        }
+
+        public AsyncPropertyValue<string> ProfileNameAsync
+        {
+            get { return _profileNameAsync; }
+            set { SetValueAndRaise(ref _profileNameAsync, value); }
+        }
+
+        public WeakCommand ManageAccountsCommand { get; }
 
         public IList<ButtonDefinition> Buttons => _buttons;
 
@@ -83,7 +100,41 @@ namespace GoogleCloudExtension.CloudExplorer
                 _buttons.AddRange(sourceButtons);
             }
 
+            ManageAccountsCommand = new WeakCommand(OnManageAccountsCommand, canExecuteCommand: AccountsManager.CurrentAccount != null);
+            if (AccountsManager.CurrentAccount != null)
+            {
+                UpdateUserProfile();
+            }
+
             AccountsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
+        }
+
+        private void UpdateUserProfile()
+        {
+            var profileTask = ProfileManager.GetProfileForCredentialsAsync(AccountsManager.CurrentAccount);
+            ProfileImageAsync = AsyncPropertyValue<string>.CreateAsyncProperty(profileTask, GetProfilePicture);
+            ProfileNameAsync = AsyncPropertyValue<string>.CreateAsyncProperty(profileTask, GetProfileName, "Loading...");
+        }
+
+        private static string GetProfilePicture(GPlusProfile profile)
+        {
+            Debug.WriteLine($"Picture URL: {profile.Image.Url}");
+            return profile.Image.Url;
+        }
+
+        private static string GetProfileName(GPlusProfile profile)
+        {
+            if (String.IsNullOrEmpty(profile.DisplayName))
+            {
+                return profile.Emails.FirstOrDefault()?.Value;
+            }
+            return profile.DisplayName;
+        }
+
+        private void OnManageAccountsCommand()
+        {
+            var dialog = new ManageAccountsWindow();
+            dialog.ShowModal();
         }
 
         private async void OnCurrentCredentialsChanged(object sender, EventArgs e)
@@ -92,12 +143,16 @@ namespace GoogleCloudExtension.CloudExplorer
             {
                 _changingCredentials = true;
 
+                ManageAccountsCommand.CanExecuteCommand = AccountsManager.CurrentAccount != null;
+
                 if (AccountsManager.CurrentAccount == null)
                 {
                     ProjectsAsync = null;
                     RefreshSources();
                     return;
                 }
+
+                UpdateUserProfile();
 
                 var projectsTask = LoadProjectListAsync();
                 ProjectsAsync = new AsyncPropertyValue<IEnumerable<GcpProject>>(projectsTask);
