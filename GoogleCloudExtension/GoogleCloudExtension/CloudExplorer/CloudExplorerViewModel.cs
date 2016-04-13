@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.CloudExplorer
         private readonly IList<ICloudExplorerSource> _sources;
         private readonly List<ButtonDefinition> _buttons;
         private AsyncPropertyValue<IEnumerable<GcpProject>> _projectsAsync;
-        private AsyncPropertyValue<string> _profileImageAsync;
+        private AsyncPropertyValue<string> _profilePictureAsync;
         private AsyncPropertyValue<string> _profileNameAsync;
         private GcpProject _currentProject;
         private bool _changingCredentials;
@@ -53,10 +53,10 @@ namespace GoogleCloudExtension.CloudExplorer
             set { SetValueAndRaise(ref _projectsAsync, value); }
         }
 
-        public AsyncPropertyValue<string> ProfileImageAsync
+        public AsyncPropertyValue<string> ProfilePictureAsync
         {
-            get { return _profileImageAsync; }
-            set { SetValueAndRaise(ref _profileImageAsync, value); }
+            get { return _profilePictureAsync; }
+            set { SetValueAndRaise(ref _profilePictureAsync, value); }
         }
 
         public AsyncPropertyValue<string> ProfileNameAsync
@@ -112,7 +112,7 @@ namespace GoogleCloudExtension.CloudExplorer
         private void UpdateUserProfile()
         {
             var profileTask = ProfileManager.GetProfileForCredentialsAsync(AccountsManager.CurrentAccount);
-            ProfileImageAsync = AsyncPropertyValue<string>.CreateAsyncProperty(profileTask, GetProfilePicture);
+            ProfilePictureAsync = AsyncPropertyValue<string>.CreateAsyncProperty(profileTask, GetProfilePicture);
             ProfileNameAsync = AsyncPropertyValue<string>.CreateAsyncProperty(profileTask, GetProfileName, "Loading...");
         }
 

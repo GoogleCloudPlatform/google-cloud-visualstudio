@@ -384,7 +384,7 @@
 
             <!-- The profile button -->
             <controls:PressButton Grid.Column="1"
-                                  Content="{Binding ProfileImageAsync.Value}"
+                                  Content="{Binding ProfilePictureAsync.Value}"
                                   Command="{Binding ManageAccountsCommand}"
                                   VerticalAlignment="Center"
                                   Background="Azure"
