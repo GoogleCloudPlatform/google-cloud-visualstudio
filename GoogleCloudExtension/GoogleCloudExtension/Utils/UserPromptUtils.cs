@@ -34,5 +34,16 @@ namespace GoogleCloudExtension.Utils
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,
                     OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
+
+        public static void ErrorPrompt(string message, string title)
+        {
+            VsShellUtilities.ShowMessageBox(
+                    GoogleCloudExtensionPackage.Instance,
+                    message,
+                    title,
+                    OLEMSGICON.OLEMSGICON_CRITICAL,
+                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
+                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+        }
     }
 }

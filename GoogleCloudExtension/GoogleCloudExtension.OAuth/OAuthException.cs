@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace GoogleCloudExtension.OAuth
 {
     [Serializable]
-    internal class OAuthException : Exception
+    public class OAuthException : Exception
     {
         public OAuthException()
         {

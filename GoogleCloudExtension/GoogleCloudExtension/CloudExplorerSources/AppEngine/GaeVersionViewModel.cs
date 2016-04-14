@@ -101,8 +101,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             {
                 Content = _version.Id;
                 IsLoading = false;
-
                 _deleteVersionCommand.CanExecuteCommand = true;
+
                 GcpOutputWindow.OutputLine($"Failed to delete version {_version.Id} in service {_serviceId}");
                 GcpOutputWindow.OutputLine(ex.Message);
                 GcpOutputWindow.Activate();
@@ -128,8 +128,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
             {
                 Content = _version.Id;
                 IsLoading = false;
-
                 _setDefaultVersionCommand.CanExecuteCommand = true;
+
                 GcpOutputWindow.OutputLine("Failed to set default version.");
                 GcpOutputWindow.OutputLine(ex.Message);
                 GcpOutputWindow.Activate();

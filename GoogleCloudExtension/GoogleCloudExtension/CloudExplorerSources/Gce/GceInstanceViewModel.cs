@@ -15,6 +15,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
+using GoogleCloudExtension.OAuth;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
@@ -29,6 +30,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private readonly WeakCommand _getPublishSettingsCommand;
         private readonly WeakCommand _openWebSite;
         private readonly WeakCommand _openTerminalServerSessionCommand;
+        private readonly WeakCommand _startInstanceCommand;
+        private readonly WeakCommand _stopInstanceCommand;
 
         public GceInstanceViewModel(GceSourceRootViewModel owner, GceInstance instance)
         {
@@ -40,7 +43,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
             _getPublishSettingsCommand = new WeakCommand(OnGetPublishSettings, _instance.IsAspnetInstance() && _instance.IsRunning());
             _openWebSite = new WeakCommand(OnOpenWebsite, _instance.IsAspnetInstance() && _instance.IsRunning());
-            _openTerminalServerSessionCommand = new WeakCommand(OnOpenTerminalServerSessionCommand, _instance.IsWindowsInstance());
+            _openTerminalServerSessionCommand = new WeakCommand(
+                OnOpenTerminalServerSessionCommand,
+                _instance.IsWindowsInstance() && _instance.IsRunning());
+            _startInstanceCommand = new WeakCommand(OnStartInstanceCommand);
+            _stopInstanceCommand = new WeakCommand(OnStopInstanceCommand);
 
             var menuItems = new List<MenuItem>
             {
@@ -48,7 +55,93 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 new MenuItem {Header="Open Terminal Server Session...", Command = _openTerminalServerSessionCommand },
                 new MenuItem {Header="Open Web Site...", Command = _openWebSite },
             };
+
+            if (_instance.IsRunning())
+            {
+                menuItems.Add(new MenuItem { Header = "Stop instance...", Command = _stopInstanceCommand });
+            }
+            else
+            {
+                menuItems.Add(new MenuItem { Header = "Start instance...", Command = _startInstanceCommand });
+            }
+
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private async void OnStopInstanceCommand()
+        {
+            try
+            {
+                if (!UserPromptUtils.YesNoPrompt(
+                    $"Are you sure you want to stop instance {_instance.Name}?",
+                    $"Stop {_instance.Name}"))
+                {
+                    Debug.WriteLine($"The user cancelled stopping instance {_instance.Name}.");
+                    return;
+                }
+
+                _stopInstanceCommand.CanExecuteCommand = false;
+                Content = $"Stopping {_instance.Name}...";
+                IsLoading = true;
+
+                var oauthToken = await AccountsManager.GetAccessTokenAsync();
+                await GceDataSource.StopInstance(_instance, oauthToken);
+                _owner.Refresh();
+            }
+            catch (DataSourceException ex)
+            {
+                Content = _instance.Name;
+                IsLoading = false;
+                _stopInstanceCommand.CanExecuteCommand = true;
+
+                GcpOutputWindow.Activate();
+                GcpOutputWindow.OutputLine($"Failed to stop instance {_instance.Name}. {ex.Message}");
+            }
+            catch (OAuthException ex)
+            {
+                Debug.WriteLine($"Failed to fetch oauth credentials: {ex.Message}");
+                UserPromptUtils.OkPrompt(
+                    $"Failed to fetch oauth credentials for account {AccountsManager.CurrentAccount.AccountName}, please login again.",
+                    "Credentials Error");
+            }
+        }
+
+        private async void OnStartInstanceCommand()
+        {
+            try
+            {
+                if (!UserPromptUtils.YesNoPrompt(
+                    $"Are you sure you want to start instance {_instance.Name}?",
+                    $"Start {_instance.Name}"))
+                {
+                    Debug.WriteLine($"The user cancelled starting instance {_instance.Name}.");
+                    return;
+                }
+
+                _startInstanceCommand.CanExecuteCommand = false;
+                Content = $"Starting {_instance.Name}...";
+                IsLoading = true;
+
+                var oauthToken = await AccountsManager.GetAccessTokenAsync();
+                await GceDataSource.StartInstance(_instance, oauthToken);
+                _owner.Refresh();
+            }
+            catch (DataSourceException ex)
+            {
+                Content = _instance.Name;
+                IsLoading = false;
+                _startInstanceCommand.CanExecuteCommand = true;
+
+                GcpOutputWindow.Activate();
+                GcpOutputWindow.OutputLine($"Failed to start instance {_instance.Name}. {ex.Message}");
+            }
+            catch (OAuthException ex)
+            {
+                Debug.WriteLine($"Failed to fetch oauth credentials: {ex.Message}");
+                UserPromptUtils.OkPrompt(
+                    $"Failed to fetch oauth credentials for account {AccountsManager.CurrentAccount.AccountName}, please login again.",
+                    "Credentials Error");
+            }
         }
 
         private void OnOpenTerminalServerSessionCommand()

@@ -150,6 +150,111 @@ namespace GoogleCloudExtension.DataSources
         }
 
         /// <summary>
+        /// Stops the given instance, if the instance is already in the stopped state then
+        /// this method does nothing.
+        /// </summary>
+        /// <param name="instance">The instance to stop.</param>
+        /// <param name="oauthToken">The oauth token to use to authorize the call.</param>
+        /// <returns></returns>
+        public static Task StopInstance(GceInstance instance, string oauthToken)
+        {
+            return StopInstance(
+                projectId: instance.ProjectId,
+                zoneName: instance.ZoneName,
+                name: instance.Name,
+                oauthToken: oauthToken);
+        }
+
+        /// <summary>
+        /// Stops the given instance, given its identified ids, if the instance is already in the stopped
+        /// state then this method does nothing.
+        /// </summary>
+        /// <param name="projectId">The id of the project that owns the instance.</param>
+        /// <param name="zoneName">The zone where the instance belongs.</param>
+        /// <param name="name">The name of the instanc.e</param>
+        /// <param name="oauthToken">The oauth token to use to authorize the call.</param>
+        /// <returns></returns>
+        public static async Task StopInstance(string projectId, string zoneName, string name, string oauthToken)
+        {
+            var client = new WebClient().SetOauthToken(oauthToken);
+            var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zoneName}/instances/{name}/stop";
+
+            try
+            {
+                var response = await client.UploadStringTaskAsync(url, "");
+                var operation = JsonConvert.DeserializeObject<ZoneOperation>(response);
+                await operation.Wait(project: projectId, zone: zoneName, oauthToken: oauthToken);
+            }
+            catch (WebException ex)
+            {
+                Debug.WriteLine($"Failed to send request: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+            catch (JsonException ex)
+            {
+                Debug.WriteLine($"Failed to parse response: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+            catch (ZoneOperationException ex)
+            {
+                Debug.WriteLine($"Operaiton failed: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Starts the given instance, if the in the running state this method does nothing.
+        /// </summary>
+        /// <param name="instance">The instance to start.</param>
+        /// <param name="oauthToken">The oauth token to use to authorize the call.</param>
+        /// <returns></returns>
+        public static Task StartInstance(GceInstance instance, string oauthToken)
+        {
+            return StartInstance(
+                projectId: instance.ProjectId,
+                zoneName: instance.ZoneName,
+                name: instance.Name,
+                oauthToken: oauthToken);
+        }
+
+        /// <summary>
+        /// Starts the given instance, if the in the running state this method does nothing.
+        /// </summary>
+        /// <param name="projectId">The id of the project that owns the instance.</param>
+        /// <param name="zoneName">The zone where the instance belongs.</param>
+        /// <param name="name">The name of the instance.</param>
+        /// <param name="oauthToken">The oauth token to use to authorize the call.</param>
+        /// <returns></returns>
+        public static async Task StartInstance(string projectId, string zoneName, string name, string oauthToken)
+        {
+            var client = new WebClient().SetOauthToken(oauthToken);
+            var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zoneName}/instances/{name}/start";
+
+            try
+            {
+                var response = await client.UploadStringTaskAsync(url, "");
+                var operation = JsonConvert.DeserializeObject<ZoneOperation>(response);
+                await operation.Wait(project: projectId, zone: zoneName, oauthToken: oauthToken);
+            }
+            catch (WebException ex)
+            {
+                Debug.WriteLine($"Failed to send request: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+            catch (JsonException ex)
+            {
+                Debug.WriteLine($"Failed to parse response: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+            catch (ZoneOperationException ex)
+            {
+                Debug.WriteLine($"Operaiton failed: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+
+        /// <summary>
         /// Fetches the list of zones for the given project.
         /// </summary>
         /// <param name="projectId">The project id for which to fetch the zone data.</param>
