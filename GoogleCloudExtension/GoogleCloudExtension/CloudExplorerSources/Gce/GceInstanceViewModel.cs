@@ -26,12 +26,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private static readonly Lazy<ImageSource> s_instanceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
 
         private readonly GceSourceRootViewModel _owner;
-        private GceInstance _instance;  // This is not readonly because it can change if resetting the password.
-        private readonly WeakCommand _getPublishSettingsCommand;
-        private readonly WeakCommand _openWebSite;
-        private readonly WeakCommand _openTerminalServerSessionCommand;
-        private readonly WeakCommand _startInstanceCommand;
-        private readonly WeakCommand _stopInstanceCommand;
+        private GceInstance _instance;  // This is not readonly because it can change if starting/stopping.
 
         public GceInstanceViewModel(GceSourceRootViewModel owner, GceInstance instance)
         {
@@ -41,28 +36,41 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             _owner = owner;
             _instance = instance;
 
-            _getPublishSettingsCommand = new WeakCommand(OnGetPublishSettings, _instance.IsAspnetInstance() && _instance.IsRunning());
-            _openWebSite = new WeakCommand(OnOpenWebsite, _instance.IsAspnetInstance() && _instance.IsRunning());
-            _openTerminalServerSessionCommand = new WeakCommand(
+            UpdateContextMenu();
+        }
+
+        private void UpdateContextMenu()
+        {
+            // If the instance is busy, then there's no context menu.
+            // TODO(ivann): Should we have a "Cancel Operation" menu item?
+            if (IsLoading || IsError)
+            {
+                ContextMenu = null;
+                return;
+            }
+
+            var getPublishSettingsCommand = new WeakCommand(OnGetPublishSettings, _instance.IsAspnetInstance() && _instance.IsRunning());
+            var openWebSite = new WeakCommand(OnOpenWebsite, _instance.IsAspnetInstance() && _instance.IsRunning());
+            var openTerminalServerSessionCommand = new WeakCommand(
                 OnOpenTerminalServerSessionCommand,
                 _instance.IsWindowsInstance() && _instance.IsRunning());
-            _startInstanceCommand = new WeakCommand(OnStartInstanceCommand);
-            _stopInstanceCommand = new WeakCommand(OnStopInstanceCommand);
+            var startInstanceCommand = new WeakCommand(OnStartInstanceCommand);
+            var stopInstanceCommand = new WeakCommand(OnStopInstanceCommand);
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem {Header="Save Publishing Settings...", Command = _getPublishSettingsCommand },
-                new MenuItem {Header="Open Terminal Server Session...", Command = _openTerminalServerSessionCommand },
-                new MenuItem {Header="Open Web Site...", Command = _openWebSite },
+                new MenuItem {Header="Save Publishing Settings...", Command = getPublishSettingsCommand },
+                new MenuItem {Header="Open Terminal Server Session...", Command = openTerminalServerSessionCommand },
+                new MenuItem {Header="Open Web Site...", Command = openWebSite },
             };
 
             if (_instance.IsRunning())
             {
-                menuItems.Add(new MenuItem { Header = "Stop instance...", Command = _stopInstanceCommand });
+                menuItems.Add(new MenuItem { Header = "Stop instance...", Command = stopInstanceCommand });
             }
             else
             {
-                menuItems.Add(new MenuItem { Header = "Start instance...", Command = _startInstanceCommand });
+                menuItems.Add(new MenuItem { Header = "Start instance...", Command = startInstanceCommand });
             }
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
@@ -80,25 +88,39 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     return;
                 }
 
-                _stopInstanceCommand.CanExecuteCommand = false;
+                // Transition into busy state.
                 Content = $"Stopping {_instance.Name}...";
                 IsLoading = true;
-
+                UpdateContextMenu();
+                
                 var oauthToken = await AccountsManager.GetAccessTokenAsync();
+
+                // Stop the instance and wait for finish.
                 await GceDataSource.StopInstance(_instance, oauthToken);
-                _owner.Refresh();
+
+                // Refresh the instance.
+                _instance = await GceDataSource.RefreshInstance(_instance, oauthToken);
+                Content = _instance.Name;
+                IsLoading = false;
+                UpdateContextMenu();
             }
             catch (DataSourceException ex)
             {
+                // Transition back to the normal state.
                 Content = _instance.Name;
                 IsLoading = false;
-                _stopInstanceCommand.CanExecuteCommand = true;
+                UpdateContextMenu();
 
                 GcpOutputWindow.Activate();
                 GcpOutputWindow.OutputLine($"Failed to stop instance {_instance.Name}. {ex.Message}");
             }
             catch (OAuthException ex)
             {
+                // Transition into full error state.
+                Content = $"Authentication failed, {_instance.Name}";
+                IsError = true;
+                UpdateContextMenu();
+
                 Debug.WriteLine($"Failed to fetch oauth credentials: {ex.Message}");
                 UserPromptUtils.OkPrompt(
                     $"Failed to fetch oauth credentials for account {AccountsManager.CurrentAccount.AccountName}, please login again.",
@@ -118,25 +140,40 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     return;
                 }
 
-                _startInstanceCommand.CanExecuteCommand = false;
+                // Transition the state to busy.
                 Content = $"Starting {_instance.Name}...";
                 IsLoading = true;
+                UpdateContextMenu();
 
                 var oauthToken = await AccountsManager.GetAccessTokenAsync();
+
+                // Start the instance, wait for the operation to complete.
                 await GceDataSource.StartInstance(_instance, oauthToken);
-                _owner.Refresh();
+
+                // Refresh the instance, to get the new state, and update the context menu for the
+                // new state.
+                _instance = await GceDataSource.RefreshInstance(_instance, oauthToken);
+                Content = _instance.Name;
+                IsLoading = false;
+                UpdateContextMenu();
             }
             catch (DataSourceException ex)
             {
+                // Transition back to normal, the user can try again.
                 Content = _instance.Name;
                 IsLoading = false;
-                _startInstanceCommand.CanExecuteCommand = true;
+                UpdateContextMenu();
 
                 GcpOutputWindow.Activate();
                 GcpOutputWindow.OutputLine($"Failed to start instance {_instance.Name}. {ex.Message}");
             }
             catch (OAuthException ex)
             {
+                // Transition into full error state.
+                Content = $"Failed authentication, {_instance.Name}";
+                IsError = true;
+                UpdateContextMenu();
+
                 Debug.WriteLine($"Failed to fetch oauth credentials: {ex.Message}");
                 UserPromptUtils.OkPrompt(
                     $"Failed to fetch oauth credentials for account {AccountsManager.CurrentAccount.AccountName}, please login again.",
