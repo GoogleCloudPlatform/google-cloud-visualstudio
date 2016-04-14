@@ -93,42 +93,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             return result == true ? dialog.FileName : null;
         }
 
-        private async Task<GceCredentials> EnsureWindowsCredentials()
-        {
-            var existingCredentials = _instance.GetServerCredentials();
-            if (existingCredentials != null)
-            {
-                return existingCredentials;
-            }
-
-            GcpOutputWindow.OutputLine($"Creating new credentials for {_instance.Name}...");
-            var oauthToken = await AccountsManager.GetAccessTokenAsync();
-            var newCredentials = await GceDataSource.ResetWindowsCredentials(
-                _owner.Owner.CurrentProject.Id,
-                zoneName: _instance.ZoneName,
-                name: _instance.Name,
-                userName: GcpIisUser,
-                oauthToken: oauthToken);
-            var result = new GceCredentials
-            {
-                User = newCredentials.User,
-                Password = newCredentials.Password
-            };
-
-            try
-            {
-                GcpOutputWindow.OutputLine($"Storing new credentials for {_instance.Name}...");
-                _instance = await _instance.SetServerCredentials(result, oauthToken);
-                GcpOutputWindow.OutputLine($"Credentials for {_instance.Name} stored.");
-            }
-            catch (ZoneOperationException ex)
-            {
-                GcpOutputWindow.OutputLine($"Failed to store credentials: {ex.Error.Errors.FirstOrDefault()?.Message}");
-            }
-
-            return result;
-        }
-
         public object Item
         {
             get

@@ -150,25 +150,6 @@ namespace GoogleCloudExtension.DataSources
         }
 
         /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="projectId"></param>
-        /// <param name="zoneName"></param>
-        /// <param name="name"></param>
-        /// <param name="userName"></param>
-        /// <param name="oauthToken"></param>
-        /// <returns></returns>
-        public static async Task<WindowsCredentials> ResetWindowsCredentials(
-            string projectId,
-            string zoneName,
-            string name,
-            string userName,
-            string oauthToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
         /// Fetches the list of zones for the given project.
         /// </summary>
         /// <param name="projectId">The project id for which to fetch the zone data.</param>
