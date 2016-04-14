@@ -11,43 +11,43 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
     {
         private const string Category = "Instance Properties";
 
-        protected readonly GceInstance _instance;
+        protected GceInstance Instance { get; }
 
         public GceInstanceItem(GceInstance instance)
         {
-            _instance = instance;
+            Instance = instance;
         }
 
         [Category(Category)]
         [Description("The name of the instance")]
-        public string Name => _instance.Name;
+        public string Name => Instance.Name;
 
         [Category(Category)]
         [Description("The zone of the instance")]
-        public string Zone => _instance.ZoneName;
+        public string Zone => Instance.ZoneName;
 
         [Category(Category)]
         [Description("The machine type for the instance")]
-        public string MachineType => _instance.MachineType;
+        public string MachineType => Instance.MachineType;
 
         [Category(Category)]
         [Description("The current status of the instance")]
-        public string Status => _instance.Status;
+        public string Status => Instance.Status;
 
         [Category(Category)]
         [Description("Whether this is an ASP.NET server")]
-        public bool IsAspNet => _instance.IsAspnetInstance();
+        public bool IsAspNet => Instance.IsAspnetInstance();
 
         [Category(Category)]
         [Description("The interna IP address of the instance")]
-        public string IpAddress => _instance.GetInternalIpAddress();
+        public string IpAddress => Instance.GetInternalIpAddress();
 
         [Category(Category)]
         [Description("The public IP address of the instance")]
-        public string PublicIpAddress => _instance.GetPublicIpAddress();
+        public string PublicIpAddress => Instance.GetPublicIpAddress();
 
         [Category(Category)]
         [Description("The tags for this instance.")]
-        public string Tags => _instance.GetTags();
+        public string Tags => Instance.GetTags();
     }
 }

@@ -137,6 +137,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 {
                     return new GceGaeInstanceItem(_instance);
                 }
+                else if (_instance.IsSqlServer())
+                {
+                    return new AspNetInstanceItem(_instance);
+                }
                 else
                 {
                     return new GceInstanceItem(_instance);

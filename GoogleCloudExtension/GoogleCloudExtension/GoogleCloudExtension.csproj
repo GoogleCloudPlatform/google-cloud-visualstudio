@@ -58,6 +58,7 @@
     <Compile Include="CloudExplorerSources\AppEngine\AppEngineSource.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\GaeServiceViewModel.cs" />
     <Compile Include="CloudExplorerSources\AppEngine\VersionItem.cs" />
+    <Compile Include="CloudExplorerSources\Gce\AspNetInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceSourceRootViewModel.cs" />

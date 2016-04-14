@@ -31,12 +31,14 @@ namespace GoogleCloudExtension.DataSources
     {
         private const string WindowsCredentialsKey = "windows-credentials";
         private const string WindowsLicenseUrl = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-2012-r2-dc";
+        private const string SqlServerSaPassword = "c2d-property-saPassword";
 
         public const string ProvisioningStatus = "PROVISIONING";
         public const string StagingStatus = "STAGING";
         public const string RunningStatus = "RUNNING";
         public const string StoppingStatus = "STOPPING";
         public const string TerminatedStatus = "TERMINATED";
+       
 
         /// <summary>
         /// Determins if the given instance is an ASP.NET instance.
@@ -196,5 +198,9 @@ namespace GoogleCloudExtension.DataSources
         }
 
         public static bool IsRunning(this GceInstance instance) => instance.Status == RunningStatus;
+
+        public static string GetSqlServerPassword(this GceInstance instance) => instance.Metadata.GetProperty(SqlServerSaPassword);
+
+        public static bool IsSqlServer(this GceInstance instance) => instance.GetSqlServerPassword() != null;
     }
 }

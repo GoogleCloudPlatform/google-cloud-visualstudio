@@ -55,6 +55,7 @@
     <Compile Include="GaeDataSource.cs" />
     <Compile Include="GceDataSource.cs" />
     <Compile Include="GceInstanceExtensions.cs" />
+    <Compile Include="GceMetadataExtensions.cs" />
     <Compile Include="GPlusDataSource.cs" />
     <Compile Include="Models\Email.cs" />
     <Compile Include="Models\GcpProject.cs" />

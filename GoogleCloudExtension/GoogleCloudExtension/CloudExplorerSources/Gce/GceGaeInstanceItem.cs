@@ -16,10 +16,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         [Category(GaeCategory)]
         [Description("The AppEngine module for the instance.")]
-        public string Module => _instance.GetGaeModule();
+        public string Module => Instance.GetGaeModule();
 
         [Category(GaeCategory)]
         [Description("The version of the module for the instance.")]
-        public string Version => _instance.GetGaeVersion();
+        public string Version => Instance.GetGaeVersion();
     }
 }
