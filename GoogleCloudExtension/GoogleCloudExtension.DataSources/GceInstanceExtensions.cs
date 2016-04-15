@@ -72,25 +72,7 @@ namespace GoogleCloudExtension.DataSources
                 throw new DataSourceException(ex.Message, ex);
             }
         }
-
-        /// <summary>
-        /// Stores the new credentials for the instance, returning a new instance that has been fully
-        /// updated with the new metadata.
-        /// </summary>
-        /// <param name="instance">The instance where to store the credentials.</param>
-        /// <param name="credentials">The credentials to store.</param>
-        /// <param name="oauthToken">The oauth token to use.</param>
-        /// <returns></returns>
-        public static async Task<GceInstance> SetServerCredentials(this GceInstance instance, GceCredentials credentials, string oauthToken)
-        {
-            var serializedCredentials = JsonConvert.SerializeObject(
-                credentials,
-                new JsonSerializerSettings { Formatting = Formatting.None });
-            Debug.WriteLine($"Writting credentials: {serializedCredentials}");
-            var newMetadataItems = instance.Metadata.Items.SetValue(WindowsCredentialsKey, serializedCredentials);
-            return await GceDataSource.StoreMetadataAsync(instance, newMetadataItems, oauthToken);
-        }
-
+        
         /// <summary>
         /// Determines if the given instance is a ManagedVM instance.
         /// </summary>

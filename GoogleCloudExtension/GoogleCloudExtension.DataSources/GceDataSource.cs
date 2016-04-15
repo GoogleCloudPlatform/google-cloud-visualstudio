@@ -19,6 +19,8 @@ namespace GoogleCloudExtension.DataSources
     /// </summary>
     public static class GceDataSource
     {
+        private static readonly List<GceOperation> s_pendingOperations = new List<GceOperation>();
+
         /// <summary>
         /// Returns the list of instances for the given <paramref name="projectId"/>.
         /// </summary>
@@ -99,6 +101,14 @@ namespace GoogleCloudExtension.DataSources
             return GetInstance(projectId: instance.ProjectId, zoneName: instance.ZoneName, name: instance.Name, oauthToken: oauthToken);
         }
 
+        public static IEnumerable<GceOperation> GetPendingOperations() => s_pendingOperations;
+
+        public static GceOperation GetPendingOperation(string projectId, string zoneName, string name) => s_pendingOperations
+            .Where(x => !x.OperationTask.IsCompleted)
+            .FirstOrDefault(x => x.ProjectId == projectId && x.ZoneName == zoneName && x.Name == name);
+
+        public static GceOperation GetPendingOperation(GceInstance instance) => GetPendingOperation(projectId: instance.ProjectId, zoneName: instance.ZoneName, name: instance.Name);
+
         /// <summary>
         /// Stores the given metadata in the target instance and returns the udpated instance after the change.
         /// </summary>
@@ -106,57 +116,93 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="entries">The entries to store in the metadata of the instance.</param>
         /// <param name="oauthToken">The oauth token to use.</param>
         /// <returns></returns>
-        public static async Task<GceInstance> StoreMetadataAsync(GceInstance src, IList<MetadataEntry> entries, string oauthToken)
+        //public static async Task<GceInstance> StoreMetadataAsync(GceInstance src, IList<MetadataEntry> entries, string oauthToken)
+        //{
+        //    // Refresh the instance to get the latest metadata fingerprint.
+        //    var target = await GceDataSource.RefreshInstance(src, oauthToken);
+
+        //    var client = new WebClient().SetOauthToken(oauthToken);
+        //    var url = $"https://www.googleapis.com/compute/v1/projects/{target.ProjectId}/zones/{target.ZoneName}/instances/{target.Name}/setMetadata";
+
+        //    GceOperation newPendingOperation = null;
+
+        //    try
+        //    {
+        //        var request = new GceSetMetadataRequest
+        //        {
+        //            Fingerprint = target.Metadata.Fingerprint,
+        //            Items = entries,
+        //        };
+        //        var serializedRequest = JsonConvert.SerializeObject(request);
+        //        client.Headers[HttpRequestHeader.ContentType] = "application/json";
+        //        var result = await client.UploadStringTaskAsync(url, "POST", serializedRequest);
+        //        var operation = JsonConvert.DeserializeObject<ZoneOperation>(result);
+        //        var operationTask = operation.Wait(
+        //            project: target.ProjectId,
+        //            zone: target.ZoneName,
+        //            oauthToken: oauthToken);
+
+        //        // Add the pending operation to the list.
+        //        newPendingOperation = new GceOperation(
+        //           operationType: OperationType.StoreMetadata,
+        //           projectId: src.ProjectId,
+        //           zoneName: src.ZoneName,
+        //           name: src.Name,
+        //           operationTask: operationTask);
+        //        s_pendingOperations.Add(newPendingOperation);
+
+        //        // Wait for the operation to finish.
+        //        await operationTask;
+
+        //        // Returns the updated instance.
+        //        return await RefreshInstance(target, oauthToken);
+        //    }
+        //    catch (WebException ex)
+        //    {
+        //        var response = ex.Response;
+        //        using (var stream = new StreamReader(response.GetResponseStream()))
+        //        {
+        //            var message = stream.ReadToEnd();
+        //            Debug.WriteLine($"Failed to update metadata: {message}");
+        //        }
+        //        throw new DataSourceException(ex.Message, ex);
+        //    }
+        //    catch (JsonException ex)
+        //    {
+        //        Debug.WriteLine($"Failed to parse response: {ex.Message}");
+        //        throw new DataSourceException(ex.Message, ex);
+        //    }
+        //    finally
+        //    {
+        //        // Remove the pending operation if we created it.
+        //        if (newPendingOperation != null)
+        //        {
+        //            s_pendingOperations.Remove(newPendingOperation);
+        //        }
+        //    }
+        //}
+
+        public static Task StopInstanceAsync(GceInstance instance, string oauthToken)
         {
-            // Refresh the instance to get the latest metadata fingerprint.
-            var target = await GceDataSource.RefreshInstance(src, oauthToken);
-
-            var client = new WebClient().SetOauthToken(oauthToken);
-            var url = $"https://www.googleapis.com/compute/v1/projects/{target.ProjectId}/zones/{target.ZoneName}/instances/{target.Name}/setMetadata";
-
-            try
-            {
-                var request = new GceSetMetadataRequest
-                {
-                    Fingerprint = target.Metadata.Fingerprint,
-                    Items = entries,
-                };
-                var serializedRequest = JsonConvert.SerializeObject(request);
-                client.Headers[HttpRequestHeader.ContentType] = "application/json";
-                var result = await client.UploadStringTaskAsync(url, "POST", serializedRequest);
-                var operation = JsonConvert.DeserializeObject<ZoneOperation>(result);
-                await operation.Wait(
-                    project: target.ProjectId,
-                    zone: target.ZoneName,
-                    oauthToken: oauthToken);
-                // Returns the updated instance.
-                return await RefreshInstance(target, oauthToken);
-            }
-            catch (WebException ex)
-            {
-                var response = ex.Response;
-                using (var stream = new StreamReader(response.GetResponseStream()))
-                {
-                    var message = stream.ReadToEnd();
-                    Debug.WriteLine($"Failed to update metadata: {message}");
-                }
-                throw new DataSourceException(ex.Message, ex);
-            }
-            catch (JsonException ex)
-            {
-                Debug.WriteLine($"Failed to parse response: {ex.Message}");
-                throw new DataSourceException(ex.Message, ex);
-            }
+            return StopInstanceAsync(
+                projectId: instance.ProjectId,
+                zoneName: instance.ZoneName,
+                name: instance.Name,
+                oauthToken: oauthToken);
         }
 
-        /// <summary>
-        /// Stops the given instance, if the instance is already in the stopped state then
-        /// this method does nothing.
-        /// </summary>
-        /// <param name="instance">The instance to stop.</param>
-        /// <param name="oauthToken">The oauth token to use to authorize the call.</param>
-        /// <returns></returns>
-        public static Task StopInstance(GceInstance instance, string oauthToken)
+        public static Task StopInstanceAsync(string projectId, string zoneName, string name, string oauthToken)
+        {
+            var operation = new GceOperation(
+                          operationType: OperationType.StopInstance,
+                          projectId: projectId,
+                          zoneName: zoneName,
+                          name: name);
+            operation.OperationTask = StopInstanceImplAsync(operation, projectId, zoneName, name, oauthToken);
+            return operation.OperationTask;
+        }
+
+        public static GceOperation StopInstance(GceInstance instance, string oauthToken)
         {
             return StopInstance(
                 projectId: instance.ProjectId,
@@ -165,16 +211,18 @@ namespace GoogleCloudExtension.DataSources
                 oauthToken: oauthToken);
         }
 
-        /// <summary>
-        /// Stops the given instance, given its identified ids, if the instance is already in the stopped
-        /// state then this method does nothing.
-        /// </summary>
-        /// <param name="projectId">The id of the project that owns the instance.</param>
-        /// <param name="zoneName">The zone where the instance belongs.</param>
-        /// <param name="name">The name of the instanc.e</param>
-        /// <param name="oauthToken">The oauth token to use to authorize the call.</param>
-        /// <returns></returns>
-        public static async Task StopInstance(string projectId, string zoneName, string name, string oauthToken)
+        public static GceOperation StopInstance(string projectId, string zoneName, string name, string oauthToken)
+        {
+            var operation = new GceOperation(
+                          operationType: OperationType.StopInstance,
+                          projectId: projectId,
+                          zoneName: zoneName,
+                          name: name);
+            operation.OperationTask = StopInstanceImplAsync(operation, projectId, zoneName, name, oauthToken);
+            return operation;
+        }
+
+        private static async Task StopInstanceImplAsync(GceOperation pendingOperation, string projectId, string zoneName, string name, string oauthToken)
         {
             var client = new WebClient().SetOauthToken(oauthToken);
             var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zoneName}/instances/{name}/stop";
@@ -183,6 +231,9 @@ namespace GoogleCloudExtension.DataSources
             {
                 var response = await client.UploadStringTaskAsync(url, "");
                 var operation = JsonConvert.DeserializeObject<ZoneOperation>(response);
+
+                s_pendingOperations.Add(pendingOperation);
+
                 await operation.Wait(project: projectId, zone: zoneName, oauthToken: oauthToken);
             }
             catch (WebException ex)
@@ -200,15 +251,33 @@ namespace GoogleCloudExtension.DataSources
                 Debug.WriteLine($"Operaiton failed: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
+            finally
+            {
+                s_pendingOperations.Remove(pendingOperation);
+            }
         }
 
-        /// <summary>
-        /// Starts the given instance, if the in the running state this method does nothing.
-        /// </summary>
-        /// <param name="instance">The instance to start.</param>
-        /// <param name="oauthToken">The oauth token to use to authorize the call.</param>
-        /// <returns></returns>
-        public static Task StartInstance(GceInstance instance, string oauthToken)
+        public static Task StartInstanceAsync(GceInstance instance, string oauthToken)
+        {
+            return StartInstanceAsync(
+                projectId: instance.ProjectId,
+                zoneName: instance.ZoneName,
+                name: instance.Name,
+                oauthToken: oauthToken);
+        }
+
+        public static Task StartInstanceAsync(string projectId, string zoneName, string name, string oauthToken)
+        {
+            var operation = new GceOperation(
+                operationType: OperationType.StartInstance,
+                projectId: projectId,
+                zoneName: zoneName,
+                name: name);
+            operation.OperationTask = StartInstanceImplAsync(operation, projectId, zoneName, name, oauthToken);
+            return operation.OperationTask;
+        }
+
+        public static GceOperation StartInstance(GceInstance instance, string oauthToken)
         {
             return StartInstance(
                 projectId: instance.ProjectId,
@@ -217,15 +286,18 @@ namespace GoogleCloudExtension.DataSources
                 oauthToken: oauthToken);
         }
 
-        /// <summary>
-        /// Starts the given instance, if the in the running state this method does nothing.
-        /// </summary>
-        /// <param name="projectId">The id of the project that owns the instance.</param>
-        /// <param name="zoneName">The zone where the instance belongs.</param>
-        /// <param name="name">The name of the instance.</param>
-        /// <param name="oauthToken">The oauth token to use to authorize the call.</param>
-        /// <returns></returns>
-        public static async Task StartInstance(string projectId, string zoneName, string name, string oauthToken)
+        public static GceOperation StartInstance(string projectId, string zoneName, string name, string oauthToken)
+        {
+            var operation = new GceOperation(
+                operationType: OperationType.StartInstance,
+                projectId: projectId,
+                zoneName: zoneName,
+                name: name);
+            operation.OperationTask = StartInstanceImplAsync(operation, projectId, zoneName, name, oauthToken);
+            return operation;
+        }
+
+        private static async Task StartInstanceImplAsync(GceOperation pendingOperation, string projectId, string zoneName, string name, string oauthToken)
         {
             var client = new WebClient().SetOauthToken(oauthToken);
             var url = $"https://www.googleapis.com/compute/v1/projects/{projectId}/zones/{zoneName}/instances/{name}/start";
@@ -234,7 +306,11 @@ namespace GoogleCloudExtension.DataSources
             {
                 var response = await client.UploadStringTaskAsync(url, "");
                 var operation = JsonConvert.DeserializeObject<ZoneOperation>(response);
-                await operation.Wait(project: projectId, zone: zoneName, oauthToken: oauthToken);
+
+                var operationTask = operation.Wait(project: projectId, zone: zoneName, oauthToken: oauthToken);
+                s_pendingOperations.Add(pendingOperation);
+
+                await operationTask;
             }
             catch (WebException ex)
             {
@@ -250,6 +326,13 @@ namespace GoogleCloudExtension.DataSources
             {
                 Debug.WriteLine($"Operaiton failed: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
+            }
+            finally
+            {
+                if (pendingOperation != null)
+                {
+                    s_pendingOperations.Remove(pendingOperation);
+                }
             }
         }
 

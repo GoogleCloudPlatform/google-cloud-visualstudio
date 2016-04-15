@@ -30,12 +30,91 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         public GceInstanceViewModel(GceSourceRootViewModel owner, GceInstance instance)
         {
-            Content = instance.Name;
             Icon = s_instanceIcon.Value;
 
             _owner = owner;
             _instance = instance;
 
+            UpdateInstanceState();
+        }
+
+        private void UpdateInstanceState()
+        {
+            GceOperation pendingOperation = GceDataSource.GetPendingOperation(_instance);
+            UpdateInstanceState(pendingOperation);
+        }
+
+        private async void UpdateInstanceState(GceOperation pendingOperation)
+        {
+            while (pendingOperation != null && !pendingOperation.OperationTask.IsCompleted)
+            {
+                // Since there's a pending operation the loading state needs to be set to show
+                // progress ui.
+                IsLoading = true;
+
+                // Setting the content according to the operation type.
+                switch (pendingOperation.OperationType)
+                {
+                    case OperationType.StartInstance:
+                        Content = $"Starting instance {_instance.Name}";
+                        break;
+
+                    case OperationType.StopInstance:
+                        Content = $"Stoping instance {_instance.Name}";
+                        break;
+
+                    case OperationType.StoreMetadata:
+                        Content = $"Storing metadata {_instance.Name}";
+                        break;
+                }
+
+                // Update the context menu to reflect the state.
+                UpdateContextMenu();
+
+                try
+                {
+                    // Await the end of the task. We can also get here if the task is faulted, 
+                    // in which case we need to handle that case.
+                    await pendingOperation.OperationTask;
+
+                    // Refresh the instance state.
+                    var oauthToken = await AccountsManager.GetAccessTokenAsync();
+                    _instance = await GceDataSource.RefreshInstance(_instance, oauthToken);
+                }
+                catch (ZoneOperationException ex)
+                {
+                    Content = _instance.Name;
+                    IsLoading = false;
+                    IsError = true;
+                    UpdateContextMenu();
+
+                    Debug.WriteLine($"Previous operation failed.");
+                    switch (pendingOperation.OperationType)
+                    {
+                        case OperationType.StartInstance:
+                            GcpOutputWindow.OutputLine($"Start instance operation for {_instance.Name} failed. {ex.Message}");
+                            break;
+
+                        case OperationType.StopInstance:
+                            GcpOutputWindow.OutputLine($"Stop instance operation for {_instance.Name} failed. {ex.Message}");
+                            break;
+
+                        case OperationType.StoreMetadata:
+                            GcpOutputWindow.OutputLine($"Store metadata operation for {_instance.Name} failed. {ex.Message}");
+                            break;
+                    }
+
+                    // Permanent error.
+                    return;
+                }
+
+                // See if there are more operations.
+                pendingOperation = GceDataSource.GetPendingOperation(_instance);
+            }
+
+            // Normal state, no pending operations.
+            IsLoading = false;
+            Content = _instance.Name;
             UpdateContextMenu();
         }
 
@@ -88,39 +167,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     return;
                 }
 
-                // Transition into busy state.
-                Content = $"Stopping {_instance.Name}...";
-                IsLoading = true;
-                UpdateContextMenu();
-                
                 var oauthToken = await AccountsManager.GetAccessTokenAsync();
-
-                // Stop the instance and wait for finish.
-                await GceDataSource.StopInstance(_instance, oauthToken);
-
-                // Refresh the instance.
-                _instance = await GceDataSource.RefreshInstance(_instance, oauthToken);
-                Content = _instance.Name;
-                IsLoading = false;
-                UpdateContextMenu();
+                var operation = GceDataSource.StopInstance(_instance, oauthToken);
+                UpdateInstanceState(operation);
             }
             catch (DataSourceException ex)
             {
-                // Transition back to the normal state.
-                Content = _instance.Name;
-                IsLoading = false;
-                UpdateContextMenu();
-
                 GcpOutputWindow.Activate();
                 GcpOutputWindow.OutputLine($"Failed to stop instance {_instance.Name}. {ex.Message}");
             }
             catch (OAuthException ex)
             {
-                // Transition into full error state.
-                Content = $"Authentication failed, {_instance.Name}";
-                IsError = true;
-                UpdateContextMenu();
-
                 Debug.WriteLine($"Failed to fetch oauth credentials: {ex.Message}");
                 UserPromptUtils.OkPrompt(
                     $"Failed to fetch oauth credentials for account {AccountsManager.CurrentAccount.AccountName}, please login again.",
@@ -140,40 +197,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     return;
                 }
 
-                // Transition the state to busy.
-                Content = $"Starting {_instance.Name}...";
-                IsLoading = true;
-                UpdateContextMenu();
-
                 var oauthToken = await AccountsManager.GetAccessTokenAsync();
-
-                // Start the instance, wait for the operation to complete.
-                await GceDataSource.StartInstance(_instance, oauthToken);
-
-                // Refresh the instance, to get the new state, and update the context menu for the
-                // new state.
-                _instance = await GceDataSource.RefreshInstance(_instance, oauthToken);
-                Content = _instance.Name;
-                IsLoading = false;
-                UpdateContextMenu();
+                var operation = GceDataSource.StartInstance(_instance, oauthToken);
+                UpdateInstanceState(operation);
             }
             catch (DataSourceException ex)
             {
-                // Transition back to normal, the user can try again.
-                Content = _instance.Name;
-                IsLoading = false;
-                UpdateContextMenu();
-
                 GcpOutputWindow.Activate();
                 GcpOutputWindow.OutputLine($"Failed to start instance {_instance.Name}. {ex.Message}");
             }
             catch (OAuthException ex)
             {
-                // Transition into full error state.
-                Content = $"Failed authentication, {_instance.Name}";
-                IsError = true;
-                UpdateContextMenu();
-
                 Debug.WriteLine($"Failed to fetch oauth credentials: {ex.Message}");
                 UserPromptUtils.OkPrompt(
                     $"Failed to fetch oauth credentials for account {AccountsManager.CurrentAccount.AccountName}, please login again.",
