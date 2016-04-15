@@ -112,23 +112,11 @@ namespace GoogleCloudExtension.CloudExplorer
         private void UpdateUserProfile()
         {
             var profileTask = ProfileManager.GetProfileForCredentialsAsync(AccountsManager.CurrentAccount);
-            ProfilePictureAsync = AsyncPropertyValue<string>.CreateAsyncProperty(profileTask, GetProfilePicture);
-            ProfileNameAsync = AsyncPropertyValue<string>.CreateAsyncProperty(profileTask, GetProfileName, "Loading...");
-        }
-
-        private static string GetProfilePicture(GPlusProfile profile)
-        {
-            Debug.WriteLine($"Picture URL: {profile.Image.Url}");
-            return profile.Image.Url;
-        }
-
-        private static string GetProfileName(GPlusProfile profile)
-        {
-            if (String.IsNullOrEmpty(profile.DisplayName))
-            {
-                return profile.Emails.FirstOrDefault()?.Value;
-            }
-            return profile.DisplayName;
+            ProfilePictureAsync = AsyncPropertyValue<string>.CreateAsyncProperty(profileTask, x => x.Image.Url);
+            ProfileNameAsync = AsyncPropertyValue<string>.CreateAsyncProperty(
+                profileTask,
+                x => x.Emails.FirstOrDefault()?.Value,
+                "Loading...");
         }
 
         private void OnManageAccountsCommand()
