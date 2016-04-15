@@ -12,19 +12,6 @@ using System.Xml.Linq;
 namespace GoogleCloudExtension.DataSources
 {
     /// <summary>
-    /// The states of a GCE instance.
-    /// </summary>
-    public enum InstanceStatus
-    {
-        None,
-        Provisioning,
-        Staging,
-        Running,
-        Stopping,
-        Terminated,
-    }
-
-    /// <summary>
     /// This class implement extension methods which implement behaviors on top of the instance models.
     /// </summary>
     public static class GceInstanceExtensions

@@ -23,34 +23,44 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
     {
         private static readonly TimeSpan s_pollTimeout = new TimeSpan(0, 0, 10);
 
-        private const string IconResourcePath = "CloudExplorerSources/Gce/Resources/instance_icon.png";
-        private const string GcpIisUser = "gcpiisuser";
-        private static readonly Lazy<ImageSource> s_instanceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
+        private const string IconRunningResourcePath = "CloudExplorerSources/Gce/Resources/instance_icon_running.png";
+        private const string IconStopedResourcePath = "CloudExplorerSources/Gce/Resources/instance_icon_stoped.png";
+        private const string IconTransitionResourcePath = "CloudExplorerSources/Gce/Resources/instance_icon_transition.png";
+
+        private static readonly Lazy<ImageSource> s_instanceRunningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconRunningResourcePath));
+        private static readonly Lazy<ImageSource> s_instanceStopedIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconStopedResourcePath));
+        private static readonly Lazy<ImageSource> s_instanceTransitionIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconTransitionResourcePath));
 
         private readonly GceSourceRootViewModel _owner;
-        private GceInstance _instance;  // This is not readonly because it can change if starting/stopping.
+        private GceInstance _instance;
+
+        private GceInstance Instance
+        {
+            get { return _instance; }
+            set
+            {
+                _instance = value;
+                UpdateIcon();
+                ItemChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
         public object Item
         {
             get
             {
-                if (_instance.IsGaeInstance())
+                if (Instance.IsGaeInstance())
                 {
-                    return new GceGaeInstanceItem(_instance);
+                    return new GceGaeInstanceItem(Instance);
                 }
-                else if (_instance.IsSqlServer())
+                else if (Instance.IsSqlServer())
                 {
-                    return new AspNetInstanceItem(_instance);
+                    return new AspNetInstanceItem(Instance);
                 }
                 else
                 {
-                    return new GceInstanceItem(_instance);
+                    return new GceInstanceItem(Instance);
                 }
-            }
-            private set
-            {
-                _instance = (GceInstance)value;
-                ItemChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -58,17 +68,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         public GceInstanceViewModel(GceSourceRootViewModel owner, GceInstance instance)
         {
-            Icon = s_instanceIcon.Value;
-
             _owner = owner;
-            _instance = instance;
+            Instance = instance;
 
             UpdateInstanceState();
         }
 
         private void UpdateInstanceState()
         {
-            GceOperation pendingOperation = GceDataSource.GetPendingOperation(_instance);
+            GceOperation pendingOperation = GceDataSource.GetPendingOperation(Instance);
             UpdateInstanceState(pendingOperation);
         }
 
@@ -84,15 +92,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 switch (pendingOperation.OperationType)
                 {
                     case OperationType.StartInstance:
-                        Content = $"Starting instance {_instance.Name}";
+                        Content = $"Starting instance {Instance.Name}";
                         break;
 
                     case OperationType.StopInstance:
-                        Content = $"Stoping instance {_instance.Name}";
+                        Content = $"Stoping instance {Instance.Name}";
                         break;
 
                     case OperationType.StoreMetadata:
-                        Content = $"Storing metadata {_instance.Name}";
+                        Content = $"Storing metadata {Instance.Name}";
                         break;
                 }
 
@@ -108,7 +116,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     while (true)
                     {
                         // Refresh the instance before waiting for the operation to finish.
-                        Item = await GceDataSource.RefreshInstance(_instance, oauthToken);
+                        Instance = await GceDataSource.RefreshInstance(Instance, oauthToken);
 
                         // Wait for the operation to finish up to the timeout, which we will use to refresh the
                         // state of the instance.
@@ -122,11 +130,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     }
 
                     // Refresh the instance state after the operation is finished.
-                    Item = await GceDataSource.RefreshInstance(_instance, oauthToken);
+                    Instance = await GceDataSource.RefreshInstance(Instance, oauthToken);
                 }
                 catch (ZoneOperationException ex)
                 {
-                    Content = _instance.Name;
+                    Content = Instance.Name;
                     IsLoading = false;
                     IsError = true;
                     UpdateContextMenu();
@@ -135,15 +143,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     switch (pendingOperation.OperationType)
                     {
                         case OperationType.StartInstance:
-                            GcpOutputWindow.OutputLine($"Start instance operation for {_instance.Name} failed. {ex.Message}");
+                            GcpOutputWindow.OutputLine($"Start instance operation for {Instance.Name} failed. {ex.Message}");
                             break;
 
                         case OperationType.StopInstance:
-                            GcpOutputWindow.OutputLine($"Stop instance operation for {_instance.Name} failed. {ex.Message}");
+                            GcpOutputWindow.OutputLine($"Stop instance operation for {Instance.Name} failed. {ex.Message}");
                             break;
 
                         case OperationType.StoreMetadata:
-                            GcpOutputWindow.OutputLine($"Store metadata operation for {_instance.Name} failed. {ex.Message}");
+                            GcpOutputWindow.OutputLine($"Store metadata operation for {Instance.Name} failed. {ex.Message}");
                             break;
                     }
 
@@ -157,12 +165,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 }
 
                 // See if there are more operations.
-                pendingOperation = GceDataSource.GetPendingOperation(_instance);
+                pendingOperation = GceDataSource.GetPendingOperation(Instance);
             }
 
             // Normal state, no pending operations.
             IsLoading = false;
-            Content = _instance.Name;
+            Content = Instance.Name;
             UpdateContextMenu();
         }
 
@@ -176,11 +184,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 return;
             }
 
-            var getPublishSettingsCommand = new WeakCommand(OnGetPublishSettings, _instance.IsAspnetInstance() && _instance.IsRunning());
-            var openWebSite = new WeakCommand(OnOpenWebsite, _instance.IsAspnetInstance() && _instance.IsRunning());
+            var getPublishSettingsCommand = new WeakCommand(OnGetPublishSettings, Instance.IsAspnetInstance() && Instance.IsRunning());
+            var openWebSite = new WeakCommand(OnOpenWebsite, Instance.IsAspnetInstance() && Instance.IsRunning());
             var openTerminalServerSessionCommand = new WeakCommand(
                 OnOpenTerminalServerSessionCommand,
-                _instance.IsWindowsInstance() && _instance.IsRunning());
+                Instance.IsWindowsInstance() && Instance.IsRunning());
             var startInstanceCommand = new WeakCommand(OnStartInstanceCommand);
             var stopInstanceCommand = new WeakCommand(OnStopInstanceCommand);
 
@@ -191,7 +199,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 new MenuItem {Header="Open Web Site...", Command = openWebSite },
             };
 
-            if (_instance.IsRunning())
+            if (Instance.IsRunning())
             {
                 menuItems.Add(new MenuItem { Header = "Stop instance...", Command = stopInstanceCommand });
             }
@@ -208,21 +216,21 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             try
             {
                 if (!UserPromptUtils.YesNoPrompt(
-                    $"Are you sure you want to stop instance {_instance.Name}?",
-                    $"Stop {_instance.Name}"))
+                    $"Are you sure you want to stop instance {Instance.Name}?",
+                    $"Stop {Instance.Name}"))
                 {
-                    Debug.WriteLine($"The user cancelled stopping instance {_instance.Name}.");
+                    Debug.WriteLine($"The user cancelled stopping instance {Instance.Name}.");
                     return;
                 }
 
                 var oauthToken = await AccountsManager.GetAccessTokenAsync();
-                var operation = GceDataSource.StopInstance(_instance, oauthToken);
+                var operation = GceDataSource.StopInstance(Instance, oauthToken);
                 UpdateInstanceState(operation);
             }
             catch (DataSourceException ex)
             {
                 GcpOutputWindow.Activate();
-                GcpOutputWindow.OutputLine($"Failed to stop instance {_instance.Name}. {ex.Message}");
+                GcpOutputWindow.OutputLine($"Failed to stop instance {Instance.Name}. {ex.Message}");
             }
             catch (OAuthException ex)
             {
@@ -243,21 +251,21 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             try
             {
                 if (!UserPromptUtils.YesNoPrompt(
-                    $"Are you sure you want to start instance {_instance.Name}?",
-                    $"Start {_instance.Name}"))
+                    $"Are you sure you want to start instance {Instance.Name}?",
+                    $"Start {Instance.Name}"))
                 {
-                    Debug.WriteLine($"The user cancelled starting instance {_instance.Name}.");
+                    Debug.WriteLine($"The user cancelled starting instance {Instance.Name}.");
                     return;
                 }
 
                 var oauthToken = await AccountsManager.GetAccessTokenAsync();
-                var operation = GceDataSource.StartInstance(_instance, oauthToken);
+                var operation = GceDataSource.StartInstance(Instance, oauthToken);
                 UpdateInstanceState(operation);
             }
             catch (DataSourceException ex)
             {
                 GcpOutputWindow.Activate();
-                GcpOutputWindow.OutputLine($"Failed to start instance {_instance.Name}. {ex.Message}");
+                GcpOutputWindow.OutputLine($"Failed to start instance {Instance.Name}. {ex.Message}");
             }
             catch (OAuthException ex)
             {
@@ -267,28 +275,28 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnOpenTerminalServerSessionCommand()
         {
-            Process.Start("mstsc", $"/v:{_instance.GetPublicIpAddress()}");
+            Process.Start("mstsc", $"/v:{Instance.GetPublicIpAddress()}");
         }
 
         private void OnOpenWebsite()
         {
-            var url = _instance.GetDestinationAppUri();
+            var url = Instance.GetDestinationAppUri();
             Debug.WriteLine($"Opening Web Site: {url}");
             Process.Start(url);
         }
 
         private void OnGetPublishSettings()
         {
-            Debug.WriteLine($"Generating Publishing settings for {_instance.Name}");
+            Debug.WriteLine($"Generating Publishing settings for {Instance.Name}");
 
-            var storePath = PromptForPublishSettingsPath(_instance.Name);
+            var storePath = PromptForPublishSettingsPath(Instance.Name);
             if (storePath == null)
             {
                 Debug.WriteLine("User canceled saving the pubish settings.");
                 return;
             }
 
-            var profile = _instance.GeneratePublishSettings();
+            var profile = Instance.GeneratePublishSettings();
             File.WriteAllText(storePath, profile);
             GcpOutputWindow.OutputLine($"Publishsettings saved to {storePath}");
         }
@@ -313,6 +321,24 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 @"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders",
                 "{374DE290-123F-4565-9164-39C4925E467B}",
                 String.Empty).ToString();
+        }
+
+        private void UpdateIcon()
+        {
+            switch (Instance.Status)
+            {
+                case GceInstanceExtensions.RunningStatus:
+                    Icon = s_instanceRunningIcon.Value;
+                    break;
+
+                case GceInstanceExtensions.TerminatedStatus:
+                    Icon = s_instanceStopedIcon.Value;
+                    break;
+
+                default:
+                    Icon = s_instanceTransitionIcon.Value;
+                    break;
+            }
         }
     }
 }

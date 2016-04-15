@@ -140,9 +140,11 @@
     <Resource Include="Controls\Resources\step_9.png" />
     <Resource Include="CloudExplorerSources\Gce\Resources\gce_logo.png" />
     <Resource Include="CloudExplorer\Resources\error_icon.png" />
-    <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon.png" />
     <Resource Include="CloudExplorerSources\Gce\Resources\zone_icon.png" />
     <Resource Include="CloudExplorerSources\Gcs\Resources\bucket_icon.png" />
+    <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon_running.png" />
+    <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon_stoped.png" />
+    <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon_transition.png" />
     <Content Include="License.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
