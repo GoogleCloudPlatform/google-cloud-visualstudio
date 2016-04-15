@@ -32,6 +32,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.AppEngine
 
         public object Item { get; }
 
+        public event EventHandler ItemChanged;
+
         public GaeVersionViewModel(AppEngineRootViewModel owner, string serviceId, GaeVersion version, double trafficSplit)
         {
             _owner = owner;

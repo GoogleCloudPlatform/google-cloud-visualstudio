@@ -30,6 +30,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             }
         }
 
+        public event EventHandler ItemChanged;
+
         public BucketViewModel(GcsSourceRootViewModel owner, Bucket bucket)
         {
             _owner = owner;

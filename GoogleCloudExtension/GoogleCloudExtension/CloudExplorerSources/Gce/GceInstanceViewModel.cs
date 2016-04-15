@@ -28,6 +28,32 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private readonly GceSourceRootViewModel _owner;
         private GceInstance _instance;  // This is not readonly because it can change if starting/stopping.
 
+        public object Item
+        {
+            get
+            {
+                if (_instance.IsGaeInstance())
+                {
+                    return new GceGaeInstanceItem(_instance);
+                }
+                else if (_instance.IsSqlServer())
+                {
+                    return new AspNetInstanceItem(_instance);
+                }
+                else
+                {
+                    return new GceInstanceItem(_instance);
+                }
+            }
+            private set
+            {
+                _instance = (GceInstance)value;
+                ItemChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler ItemChanged;
+
         public GceInstanceViewModel(GceSourceRootViewModel owner, GceInstance instance)
         {
             Icon = s_instanceIcon.Value;
@@ -73,13 +99,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
                 try
                 {
+                    var oauthToken = await AccountsManager.GetAccessTokenAsync();
+
+                    // Refresh the instance before waiting for the operation to finish.
+                    Item = await GceDataSource.RefreshInstance(_instance, oauthToken);
+
                     // Await the end of the task. We can also get here if the task is faulted, 
                     // in which case we need to handle that case.
                     await pendingOperation.OperationTask;
 
-                    // Refresh the instance state.
-                    var oauthToken = await AccountsManager.GetAccessTokenAsync();
-                    _instance = await GceDataSource.RefreshInstance(_instance, oauthToken);
+                    // Refresh the instance state after the operation is finished.
+                    Item = await GceDataSource.RefreshInstance(_instance, oauthToken);
                 }
                 catch (ZoneOperationException ex)
                 {
@@ -255,25 +285,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
             var result = dialog.ShowDialog();
             return result == true ? dialog.FileName : null;
-        }
-
-        public object Item
-        {
-            get
-            {
-                if (_instance.IsGaeInstance())
-                {
-                    return new GceGaeInstanceItem(_instance);
-                }
-                else if (_instance.IsSqlServer())
-                {
-                    return new AspNetInstanceItem(_instance);
-                }
-                else
-                {
-                    return new GceInstanceItem(_instance);
-                }
-            }
         }
 
         private static string GetDownloadsPath()
