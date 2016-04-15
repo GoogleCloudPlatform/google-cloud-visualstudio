@@ -9,6 +9,6 @@ namespace GoogleCloudExtension.DataSources
 {
     public static class GceMetadataExtensions
     {
-        public static string GetProperty(this Metadata metadata, string key) => metadata.Items.FirstOrDefault(x => x.Key == key)?.Value;
+        public static string GetProperty(this Metadata metadata, string key) => metadata.Items?.FirstOrDefault(x => x.Key == key)?.Value;
     }
 }

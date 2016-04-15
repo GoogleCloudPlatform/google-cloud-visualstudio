@@ -52,7 +52,6 @@
   <ItemGroup>
     <Compile Include="ApiHelpers.cs" />
     <Compile Include="DataSourceException.cs" />
-    <Compile Include="GaeDataSource.cs" />
     <Compile Include="GceDataSource.cs" />
     <Compile Include="GceInstanceExtensions.cs" />
     <Compile Include="GceMetadataExtensions.cs" />
@@ -60,14 +59,8 @@
     <Compile Include="GPlusDataSource.cs" />
     <Compile Include="Models\Email.cs" />
     <Compile Include="Models\GcpProject.cs" />
-    <Compile Include="GrpcOperationExtensions.cs" />
     <Compile Include="MetadataExtensions.cs" />
     <Compile Include="Models\Disk.cs" />
-    <Compile Include="Models\GaeService.cs" />
-    <Compile Include="Models\GaeServicePage.cs" />
-    <Compile Include="Models\GaeVersion.cs" />
-    <Compile Include="Models\GaeVersionPage.cs" />
-    <Compile Include="Models\GceSetMetadataRequest.cs" />
     <Compile Include="GcsDataSource.cs" />
     <Compile Include="Models\Bucket.cs" />
     <Compile Include="Models\BucketPage.cs" />
@@ -85,12 +78,9 @@
     <Compile Include="Models\MetadataEntry.cs" />
     <Compile Include="Models\NetworkAccessConfig.cs" />
     <Compile Include="Models\NetworkInterface.cs" />
-    <Compile Include="Models\TrafficSplit.cs" />
-    <Compile Include="Models\WindowsCredentials.cs" />
     <Compile Include="Models\Zone.cs" />
     <Compile Include="Models\ZoneOperation.cs" />
     <Compile Include="Models\ZonePage.cs" />
-    <Compile Include="GrpcOperationException.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceManagerDataSource.cs" />
     <Compile Include="WebClientExtensions.cs" />

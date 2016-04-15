@@ -14,7 +14,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 {
     internal class BucketViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
-        private const string IconResourcePath = "CloudExplorerSources/AppEngine/Resources/ic_web.png";
+        private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/bucket_icon.png";
         private static readonly Lazy<ImageSource> s_bucketIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
 
         private readonly GcsSourceRootViewModel _owner;

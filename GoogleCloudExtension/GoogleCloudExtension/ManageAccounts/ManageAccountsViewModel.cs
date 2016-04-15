@@ -18,7 +18,6 @@ namespace GoogleCloudExtension.ManageAccounts
         private IEnumerable<UserAccountViewModel> _userAccountsList;
         private UserAccountViewModel _currentUserAccount;
         private string _currentAccountName;
-        private bool _currentAccountChanged;
 
         public IEnumerable<UserAccountViewModel> UserAccountsList
         {

@@ -2,7 +2,6 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.CloudExplorerSources.AppEngine;
 using GoogleCloudExtension.CloudExplorerSources.Gce;
 using GoogleCloudExtension.CloudExplorerSources.Gcs;
 using GoogleCloudExtension.Accounts;
@@ -33,17 +32,19 @@ namespace GoogleCloudExtension.CloudExplorer
         public CloudExplorerToolWindow() : base(null)
         {
             SetCaption();
+
+            // Contains the list of sources to display to the user, in the order they will
+            // be displayed.
             var sources = new List<ICloudExplorerSource>
             {
-                new AppEngineSource(),
-                new GcsSource(),
                 new GceSource(),
+                new GcsSource(),
             };
+
+
             var model = new CloudExplorerViewModel(sources);
             var content = new CloudExplorerToolWindowControl(this) { DataContext = model };
-            this.Content = content;
-
-            ExtensionAnalytics.ReportWindowOpened(nameof(CloudExplorerToolWindow));
+            Content = content;
 
             AccountsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
         }

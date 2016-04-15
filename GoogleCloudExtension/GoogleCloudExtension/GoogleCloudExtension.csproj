@@ -54,10 +54,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Accounts\CredentialsStore.cs" />
-    <Compile Include="CloudExplorerSources\AppEngine\AppEngineRootViewModel.cs" />
-    <Compile Include="CloudExplorerSources\AppEngine\AppEngineSource.cs" />
-    <Compile Include="CloudExplorerSources\AppEngine\GaeServiceViewModel.cs" />
-    <Compile Include="CloudExplorerSources\AppEngine\VersionItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\AspNetInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
@@ -82,7 +78,6 @@
     <Compile Include="Analytics\ExtensionAnalytics.cs" />
     <Compile Include="CloudExplorer\ICloudExplorerItemSource.cs" />
     <Compile Include="CloudExplorer\ICloudExplorerSource.cs" />
-    <Compile Include="CloudExplorerSources\AppEngine\GaeVersionViewModel.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
     <Compile Include="Controls\PressButton.cs" />
     <Compile Include="Controls\ProgressIndicator.xaml.cs">
@@ -129,9 +124,6 @@
     <VSCTCompile Include="GoogleCloudExtension.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
-    <Resource Include="CloudExplorerSources\AppEngine\Resources\app_engine.png" />
-    <Resource Include="CloudExplorerSources\AppEngine\Resources\ic_view_module.png" />
-    <Resource Include="CloudExplorerSources\AppEngine\Resources\ic_web.png" />
     <Resource Include="CloudExplorer\Resources\refresh.png" />
     <Resource Include="CloudExplorerSources\Gcs\Resources\storage.png" />
     <Resource Include="Controls\Resources\step_1.png" />
@@ -149,6 +141,8 @@
     <Resource Include="CloudExplorerSources\Gce\Resources\gce_logo.png" />
     <Resource Include="CloudExplorer\Resources\error_icon.png" />
     <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon.png" />
+    <Resource Include="CloudExplorerSources\Gce\Resources\zone_icon.png" />
+    <Resource Include="CloudExplorerSources\Gcs\Resources\bucket_icon.png" />
     <Content Include="License.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
