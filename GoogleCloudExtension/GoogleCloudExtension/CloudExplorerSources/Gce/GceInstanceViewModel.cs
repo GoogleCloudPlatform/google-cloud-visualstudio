@@ -21,6 +21,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
     internal class GceInstanceViewModel : TreeLeaf, ICloudExplorerItemSource
     {
+        private static readonly TimeSpan s_pollTimeout = new TimeSpan(0, 0, 10);
+
         private const string IconResourcePath = "CloudExplorerSources/Gce/Resources/instance_icon.png";
         private const string GcpIisUser = "gcpiisuser";
         private static readonly Lazy<ImageSource> s_instanceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
@@ -101,12 +103,23 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 {
                     var oauthToken = await AccountsManager.GetAccessTokenAsync();
 
-                    // Refresh the instance before waiting for the operation to finish.
-                    Item = await GceDataSource.RefreshInstance(_instance, oauthToken);
-
                     // Await the end of the task. We can also get here if the task is faulted, 
                     // in which case we need to handle that case.
-                    await pendingOperation.OperationTask;
+                    while (true)
+                    {
+                        // Refresh the instance before waiting for the operation to finish.
+                        Item = await GceDataSource.RefreshInstance(_instance, oauthToken);
+
+                        // Wait for the operation to finish up to the timeout, which we will use to refresh the
+                        // state of the instance.
+                        var result = await Task.WhenAny(pendingOperation.OperationTask, Task.Delay(s_pollTimeout));
+                        if (result == pendingOperation.OperationTask)
+                        {
+                            // Await the task again to get any possible exception.
+                            await pendingOperation.OperationTask;
+                            break;
+                        }
+                    }
 
                     // Refresh the instance state after the operation is finished.
                     Item = await GceDataSource.RefreshInstance(_instance, oauthToken);
@@ -135,6 +148,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     }
 
                     // Permanent error.
+                    return;
+                }
+                catch (OAuthException ex)
+                {
+                    ShowOAuthErrorDialog(ex);
                     return;
                 }
 
@@ -208,11 +226,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
             catch (OAuthException ex)
             {
-                Debug.WriteLine($"Failed to fetch oauth credentials: {ex.Message}");
-                UserPromptUtils.OkPrompt(
-                    $"Failed to fetch oauth credentials for account {AccountsManager.CurrentAccount.AccountName}, please login again.",
-                    "Credentials Error");
+                ShowOAuthErrorDialog(ex);
             }
+        }
+
+        private static void ShowOAuthErrorDialog(OAuthException ex)
+        {
+            Debug.WriteLine($"Failed to fetch oauth credentials: {ex.Message}");
+            UserPromptUtils.OkPrompt(
+                $"Failed to fetch oauth credentials for account {AccountsManager.CurrentAccount.AccountName}, please login again.",
+                "Credentials Error");
         }
 
         private async void OnStartInstanceCommand()
@@ -238,10 +261,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
             catch (OAuthException ex)
             {
-                Debug.WriteLine($"Failed to fetch oauth credentials: {ex.Message}");
-                UserPromptUtils.OkPrompt(
-                    $"Failed to fetch oauth credentials for account {AccountsManager.CurrentAccount.AccountName}, please login again.",
-                    "Credentials Error");
+                ShowOAuthErrorDialog(ex);
             }
         }
 
