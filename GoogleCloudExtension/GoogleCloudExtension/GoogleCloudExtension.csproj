@@ -99,7 +99,6 @@
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\ActivityLogUtils.cs" />
-    <Compile Include="Utils\ButtonIds.cs" />
     <Compile Include="Utils\DnxValidationResult.cs" />
     <Compile Include="Utils\GcpOutputWindow.cs" />
     <Compile Include="GoogleCloudExtensionPackage.cs" />
