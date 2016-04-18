@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using Google.Apis.Storage.v1.Data;
 using GoogleCloudExtension.DataSources.Models;
 using System.ComponentModel;
 
@@ -23,11 +24,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         [Category(Category)]
         [Description("The creation time stamp for the bucket")]
-        public string Created => _bucket.Created.ToShortDateString();
+        public string Created => _bucket.TimeCreated?.ToShortDateString();
 
         [Category(Category)]
         [Description("The modification time stamp for the bucket")]
-        public string Updated => _bucket.Updated.ToShortDateString();
+        public string Updated => _bucket.Updated?.ToShortDateString();
 
         [Category(Category)]
         [Description("The url to the bucket")]

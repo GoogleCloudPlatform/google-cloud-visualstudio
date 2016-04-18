@@ -79,8 +79,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         private async Task<List<BucketViewModel>> LoadBucketList()
         {
-            var oauthToken = await AccountsManager.GetAccessTokenAsync();
-            var buckets = await GcsDataSource.GetBucketListAsync(Owner.CurrentProject.Id, oauthToken);
+            var credential = AccountsManager.GetCurrentGoogleCredential();
+            var buckets = await GcsDataSource.GetBucketListAsync(Owner.CurrentProject.Id, credential);
             return buckets?.Select(x => new BucketViewModel(this, x)).ToList();
         }
     }

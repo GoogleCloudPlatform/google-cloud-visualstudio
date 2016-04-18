@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using Google.Apis.Storage.v1.Data;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.Utils;
@@ -56,9 +57,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             Process.Start(url);
         }
 
-        private BucketItem GetItem()
-        {
-            return new BucketItem(_bucket);
-        }
+        private BucketItem GetItem() => new BucketItem(_bucket);
     }
 }

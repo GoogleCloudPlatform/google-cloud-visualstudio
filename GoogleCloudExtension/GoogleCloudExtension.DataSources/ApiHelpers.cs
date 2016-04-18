@@ -15,19 +15,33 @@ namespace GoogleCloudExtension.DataSources
     internal static class ApiHelpers
     {
         /// <summary>
-        /// Implementation of the paging algorithm for all of the data sources. Uses <seealso cref="Func{T, TResult}"/> as 
-        /// a way to customize the behavior.
+        /// Loads all of the pages of a paginated data source, returning a list of the individual
+        /// items.
         /// </summary>
-        /// <typeparam name="TItem">The type if the element in the resulting collection.</typeparam>
-        /// <typeparam name="TItemsPage">The type used to deserialize a page of items.</typeparam>
-        /// <param name="client">The authenticated client to use to fetch data.</param>
-        /// <param name="firstPageUrl">The url to use for the first page of data.</param>
-        /// <param name="itemsFunc">The function that given the <typeparamref name="TItemsPage"/> instance returns the list of 
-        /// <typeparamref name="TItem"/> for that page.
-        /// </param>
-        /// <param name="nextPageUrlFunc">The function that given the <typeparamref name="TItemsPage"/> instance returns the URL for 
-        /// next page.</param>
+        /// <typeparam name="TItem">The type of the items in the pages.</typeparam>
+        /// <typeparam name="TItemsPage">The type of the pages.</typeparam>
+        /// <param name="fetchPageFunc">The func to call to fetch pages.</param>
+        /// <param name="itemsFunc">The func to call to extract the items from the page.</param>
+        /// <param name="nextPageTokenFunc">The func to call to get the next page token.</param>
         /// <returns></returns>
+        public static async Task<IList<TItem>> NewLoadPagedListAsync<TItem, TItemsPage>(
+            Func<string, Task<TItemsPage>> fetchPageFunc,
+            Func<TItemsPage, IEnumerable<TItem>> itemsFunc,
+            Func<TItemsPage, string> nextPageTokenFunc)
+        {
+            var result = new List<TItem>();
+            string nextPageToken = null;
+            do
+            {
+                var page = await fetchPageFunc(nextPageToken);
+                result.AddRange(itemsFunc(page));
+                nextPageToken = nextPageTokenFunc(page);
+            } while (!String.IsNullOrEmpty(nextPageToken));
+
+            return result;
+        }
+
+
         public static async Task<IList<TItem>> LoadPagedListAsync<TItem, TItemsPage>(
             WebClient client,
             string firstPageUrl,

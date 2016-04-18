@@ -1,4 +1,5 @@
-﻿using GoogleCloudExtension.Accounts.Models;
+﻿using Google.Apis.Auth.OAuth2;
+using GoogleCloudExtension.Accounts.Models;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.OAuth;
 using GoogleCloudExtension.OauthLoginFlow;
@@ -61,6 +62,21 @@ namespace GoogleCloudExtension.Accounts
                 return GetAccessTokenForCredentialsAsync(CurrentAccount);
             }
             throw new InvalidOperationException("No current credential is set.");
+        }
+
+        public static GoogleCredential GetCurrentGoogleCredential()
+        {
+            using (var stream = new MemoryStream())
+            {
+                using (var writer = new StreamWriter(stream, Encoding.UTF8, 100, leaveOpen: true))
+                {
+                    var serialized = JsonConvert.SerializeObject(CurrentAccount);
+                    writer.Write(serialized);
+                }
+
+                stream.Position = 0;
+                return GoogleCredential.FromStream(stream);
+            }
         }
 
         public static async Task<bool> AddAccountFlowAsync()
