@@ -1,9 +1,14 @@
 ﻿// Copyright 2016 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using Google;
+using Google.Apis.Compute.v1;
+using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.DataSources.Models;
 using Newtonsoft.Json;
+using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -11,19 +16,16 @@ namespace GoogleCloudExtension.DataSources
 {
     public static class ZoneOperationExtensions
     {
-        public static async Task Wait(this ZoneOperation operation, string project, string zone, string oauthToken)
+        public static string ZoneName(this Operation operation) => new Uri(operation.Zone).Segments.Last();
+
+        public static async Task NewWait(this Operation operation, ComputeService service, string projectId)
         {
-            Debug.WriteLine($"Waiting on operation {operation.Name}");
-            var client = new WebClient().SetOauthToken(oauthToken);
-            var url = operation.SelfLink;
-            Debug.WriteLine($"Checking operation: {url}");
             try
             {
+                Debug.WriteLine($"Waiting on operation {operation.Name}");
                 while (true)
                 {
-                    var result = await client.DownloadStringTaskAsync(url);
-                    var newOperation = JsonConvert.DeserializeObject<ZoneOperation>(result);
-                    Debug.WriteLine($"Operation status: {newOperation.Status}");
+                    var newOperation = await service.ZoneOperations.Get(projectId, operation.ZoneName(), operation.Name).ExecuteAsync();
                     if (newOperation.Status == "DONE")
                     {
                         if (newOperation.Error != null)
@@ -35,15 +37,10 @@ namespace GoogleCloudExtension.DataSources
                     await Task.Delay(500);
                 }
             }
-            catch (WebException ex)
+            catch (GoogleApiException ex)
             {
-                Debug.WriteLine($"Failed to perform web request: {ex.Message}");
-                throw new ZoneOperationException(ex.Message, ex);
-            }
-            catch (JsonException ex)
-            {
-                Debug.WriteLine($"Failed to parse response: {ex.Message}");
-                throw new ZoneOperationException(ex.Message, ex);
+                Debug.WriteLine($"Failed to read operation: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
             }
         }
     }

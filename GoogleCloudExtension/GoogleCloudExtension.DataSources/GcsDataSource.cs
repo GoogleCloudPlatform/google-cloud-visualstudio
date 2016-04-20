@@ -37,17 +37,17 @@ namespace GoogleCloudExtension.DataSources
                 return ApiHelpers.NewLoadPagedListAsync<Bucket, Buckets>(
                     (token) =>
                     {
-                        if (token != null)
+                        if (String.IsNullOrEmpty(token))
+                        {
+                            Debug.WriteLine("Loading final page.");
+                            return service.Buckets.List(projectId).ExecuteAsync();
+                        }
+                        else
                         {
                             Debug.WriteLine($"Loading page: {token}");
                             var request = service.Buckets.List(projectId);
                             request.PageToken = token;
                             return request.ExecuteAsync();
-                        }
-                        else
-                        {
-                            Debug.WriteLine("Loading final page.");
-                            return service.Buckets.List(projectId).ExecuteAsync();
                         }
                     },
                     x => x.Items,

@@ -34,23 +34,23 @@ namespace AspnetTool.Commands
 
         public int Execute()
         {
-            var instances = GceDataSource.GetInstanceListAsync(_options.ProjectId, _options.Token).Result;
-            var instance = instances.FirstOrDefault(x => x.Name == _options.Instance);
-            if (instance == null)
-            {
-                Console.WriteLine($"ERROR: Cannot find {_options.Instance}");
-                return -1;
-            }
+            //var instances = GceDataSource.GetInstanceListAsync(_options.ProjectId, _options.Token).Result;
+            //var instance = instances.FirstOrDefault(x => x.Name == _options.Instance);
+            //if (instance == null)
+            //{
+            //    Console.WriteLine($"ERROR: Cannot find {_options.Instance}");
+            //    return -1;
+            //}
 
-            var publishSettings = instance.GeneratePublishSettings();
-            if (String.IsNullOrEmpty(_options.Output))
-            {
-                Console.WriteLine(publishSettings);
-            }
-            else
-            {
-                File.WriteAllText(_options.Output, publishSettings);
-            }
+            //var publishSettings = instance.GeneratePublishSettings();
+            //if (String.IsNullOrEmpty(_options.Output))
+            //{
+            //    Console.WriteLine(publishSettings);
+            //}
+            //else
+            //{
+            //    File.WriteAllText(_options.Output, publishSettings);
+            //}
 
             return 0;
         }

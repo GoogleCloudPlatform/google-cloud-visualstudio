@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.DataSources
             do
             {
                 var page = await fetchPageFunc(nextPageToken);
-                result.AddRange(itemsFunc(page));
+                result.AddRange(itemsFunc(page) ?? Enumerable.Empty<TItem>());
                 nextPageToken = nextPageTokenFunc(page);
             } while (!String.IsNullOrEmpty(nextPageToken));
 

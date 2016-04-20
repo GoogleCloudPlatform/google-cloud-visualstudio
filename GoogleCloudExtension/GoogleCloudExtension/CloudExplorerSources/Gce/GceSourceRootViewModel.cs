@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using Google.Apis.Compute.v1.Data;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
@@ -36,7 +37,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private static readonly TreeLeaf s_noZonesPlaceholder = new TreeLeaf { Content = "No zones" };
 
         private bool _showOnlyWindowsInstances = false;
-        private IList<GceInstance> _instances;
+        private IList<Instance> _instances;
+        private Lazy<GceDataSource> _dataSource;
+
+        public GceDataSource DataSource => _dataSource.Value;
 
         public override TreeLeaf ErrorPlaceholder => s_errorPlaceholder;
 
@@ -47,7 +51,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         public override string RootCaption => "Google Compute Engine";
 
         public override ImageSource RootIcon => s_gceIcon.Value;
-
 
         public bool ShowOnlyWindowsInstances
         {
@@ -62,6 +65,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
                 PresentZoneViewModels();
             }
+        }
+
+        public GceSourceRootViewModel()
+        {
+            _dataSource = new Lazy<GceDataSource>(CreateDataSource);
+        }
+
+        public override void Refresh()
+        {
+            _dataSource = _dataSource = new Lazy<GceDataSource>(CreateDataSource);
+            base.Refresh();
         }
 
         protected override async Task LoadDataOverride()
@@ -100,18 +114,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
         }
 
-        private async Task<IList<GceInstance>> LoadGceInstances()
+        private async Task<IList<Instance>> LoadGceInstances()
         {
             var oauthToken = await AccountsManager.GetAccessTokenAsync();
-            return await GceDataSource.GetInstanceListAsync(Owner.CurrentProject.Id, oauthToken);
+            return await _dataSource.Value.GetInstanceListAsync();
         }
 
         private IList<ZoneViewModel> GetZoneViewModels()
         {
             return _instances?
                 .Where(x => !_showOnlyWindowsInstances || x.IsWindowsInstance())
-                .GroupBy(x => x.ZoneName)
+                .GroupBy(x => x.ZoneName())
                 .Select(x => new ZoneViewModel(this, x.Key, x)).ToList();
         }
+
+        private GceDataSource CreateDataSource() => new GceDataSource(Owner.CurrentProject.Id, AccountsManager.GetCurrentGoogleCredential());
     }
 }

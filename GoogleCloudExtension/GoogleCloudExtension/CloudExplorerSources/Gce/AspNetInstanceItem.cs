@@ -1,4 +1,5 @@
-﻿using GoogleCloudExtension.DataSources;
+﻿using Google.Apis.Compute.v1.Data;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
     {
         private const string AspNetCategory = "ASP.NET Properties";
 
-        public AspNetInstanceItem(GceInstance instance) : base(instance)
+        public AspNetInstanceItem(Instance instance) : base(instance)
         { }
 
         [Category(AspNetCategory)]

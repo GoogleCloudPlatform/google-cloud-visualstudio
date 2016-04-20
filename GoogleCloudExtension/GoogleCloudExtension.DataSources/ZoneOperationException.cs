@@ -14,7 +14,7 @@ namespace GoogleCloudExtension.DataSources
     [Serializable]
     public class ZoneOperationException : Exception
     {
-        public Error Error { get; }
+        public Google.Apis.Compute.v1.Data.Operation.ErrorData Error { get; }
 
         public ZoneOperationException()
         {
@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.DataSources
         {
         }
 
-        public ZoneOperationException(Error error) : base("Zone failed")
+        public ZoneOperationException(Google.Apis.Compute.v1.Data.Operation.ErrorData error) : base("Zone failed")
         {
             this.Error = error;
         }

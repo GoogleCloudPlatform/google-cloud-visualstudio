@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.CloudExplorer
             Children.Add(LoadingPlaceholder);
         }
 
-        public async void Refresh()
+        public virtual async void Refresh()
         {
             if (!IsLoadedState)
             {

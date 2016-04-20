@@ -30,17 +30,17 @@ namespace AspnetTool.Commands
 
         public int Execute()
         {
-            var instances = GceDataSource.GetInstanceListAsync(_options.ProjectId, _options.Token).Result;
-            int count = 0;
+            //var instances = GceDataSource.GetInstanceListAsync(_options.ProjectId, _options.Token).Result;
+            //int count = 0;
 
-            var results = _options.OnlyWindows
-                    ? instances.Where(x => x.IsAspnetInstance()) : instances;
-            foreach (var entry in results)
-            {
-                Console.WriteLine($"  Name: {entry.Name} Ip: {entry.GetPublicIpAddress()} Zone: {entry.Zone}");
-                ++count;
-            }
-            Console.WriteLine($"Instace(s): {count}");
+            //var results = _options.OnlyWindows
+            //        ? instances.Where(x => x.IsAspnetInstance()) : instances;
+            //foreach (var entry in results)
+            //{
+            //    Console.WriteLine($"  Name: {entry.Name} Ip: {entry.GetPublicIpAddress()} Zone: {entry.Zone}");
+            //    ++count;
+            //}
+            //Console.WriteLine($"Instace(s): {count}");
 
             return 0;
         }

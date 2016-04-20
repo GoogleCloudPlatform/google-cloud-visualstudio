@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.Utils;
@@ -18,11 +19,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private readonly GceSourceRootViewModel _owner;
 
-        public ZoneViewModel(GceSourceRootViewModel owner, string key, IEnumerable<GceInstance> instances)
+        public ZoneViewModel(GceSourceRootViewModel owner, string zoneName, IEnumerable<Instance> instances)
         {
             _owner = owner;
 
-            Content = key;
+            Content = zoneName;
             Icon = s_zoneIcon.Value;
 
             var viewModels = instances.Select(x => new GceInstanceViewModel(owner, x));
