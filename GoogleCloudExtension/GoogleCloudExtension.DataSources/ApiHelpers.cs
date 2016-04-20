@@ -2,6 +2,7 @@
 // Licensed under the Apache License Version 2.0.
 
 
+using Google;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -29,16 +30,24 @@ namespace GoogleCloudExtension.DataSources
             Func<TItemsPage, IEnumerable<TItem>> itemsFunc,
             Func<TItemsPage, string> nextPageTokenFunc)
         {
-            var result = new List<TItem>();
-            string nextPageToken = null;
-            do
+            try
             {
-                var page = await fetchPageFunc(nextPageToken);
-                result.AddRange(itemsFunc(page) ?? Enumerable.Empty<TItem>());
-                nextPageToken = nextPageTokenFunc(page);
-            } while (!String.IsNullOrEmpty(nextPageToken));
+                var result = new List<TItem>();
+                string nextPageToken = null;
+                do
+                {
+                    var page = await fetchPageFunc(nextPageToken);
+                    result.AddRange(itemsFunc(page) ?? Enumerable.Empty<TItem>());
+                    nextPageToken = nextPageTokenFunc(page);
+                } while (!String.IsNullOrEmpty(nextPageToken));
 
-            return result;
+                return result;
+            }
+            catch (GoogleApiException ex)
+            {
+                Debug.WriteLine($"Failed to get page of items: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
         }
 
 

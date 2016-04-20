@@ -1,6 +1,7 @@
 ﻿// Copyright 2016 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
@@ -61,14 +62,9 @@ namespace GoogleCloudExtension.DataSources
                 }
                 return result;
             }
-            catch (WebException ex)
+            catch (GoogleApiException ex)
             {
-                Debug.WriteLine($"Failed to download data: {ex.Message}");
-                throw new DataSourceException(ex.Message, ex);
-            }
-            catch (JsonException ex)
-            {
-                Debug.WriteLine($"Failed to parse response: {ex.Message}");
+                Debug.WriteLine($"Failed to call api: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
         }
@@ -81,7 +77,18 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="name">The name of the instance,</param>
         /// <param name="oauthToken">The oauth token to use to authenticate the call.</param>
         /// <returns></returns>
-        public Task<Instance> GetInstance(string zoneName, string name) => _service.Instances.Get(_projectId, zoneName, name).ExecuteAsync();
+        public async Task<Instance> GetInstance(string zoneName, string name)
+        {
+            try
+            {
+                return await _service.Instances.Get(_projectId, zoneName, name).ExecuteAsync();
+            }
+            catch (GoogleApiException ex)
+            {
+                Debug.WriteLine($"Failed to call api: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
 
         /// <summary>
         /// Given an instance already fetched, reload it's data and return a new instance with the fresh data.
@@ -93,27 +100,13 @@ namespace GoogleCloudExtension.DataSources
 
         public static IEnumerable<GceOperation> GetPendingOperations() => s_pendingOperations;
 
-        public GceOperation GetPendingOperation(string projectId, string zoneName, string name) => s_pendingOperations
+        public GceOperation GetPendingOperation(string projectId, string zoneName, string name) =>
+            s_pendingOperations
             .Where(x => !x.OperationTask.IsCompleted)
             .FirstOrDefault(x => x.ProjectId == projectId && x.ZoneName == zoneName && x.Name == name);
 
-        public GceOperation GetPendingOperation(Instance instance) => GetPendingOperation(projectId: _projectId, zoneName: instance.ZoneName(), name: instance.Name);
-
-        public Task StopInstanceAsync(Instance instance)
-        {
-            return StopInstanceAsync(zoneName: instance.ZoneName(), name: instance.Name);
-        }
-
-        public Task StopInstanceAsync(string zoneName, string name)
-        {
-            var operation = new GceOperation(
-                          operationType: OperationType.StopInstance,
-                          projectId: _projectId,
-                          zoneName: zoneName,
-                          name: name);
-            operation.OperationTask = StopInstanceImplAsync(operation, zoneName, name);
-            return operation.OperationTask;
-        }
+        public GceOperation GetPendingOperation(Instance instance) => 
+            GetPendingOperation(projectId: _projectId, zoneName: instance.ZoneName(), name: instance.Name);
 
         public GceOperation StopInstance(Instance instance)
         {
@@ -139,26 +132,15 @@ namespace GoogleCloudExtension.DataSources
                 s_pendingOperations.Add(pendingOperation);
                 await operation.NewWait(_service, _projectId);
             }
+            catch (GoogleApiException ex)
+            {
+                Debug.WriteLine($"Failed to call api: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
             finally
             {
                 s_pendingOperations.Remove(pendingOperation);
             }
-        }
-
-        public Task StartInstanceAsync(Instance instance)
-        {
-            return StartInstanceAsync(zoneName: instance.ZoneName(), name: instance.Name);
-        }
-
-        public Task StartInstanceAsync(string zoneName, string name)
-        {
-            var operation = new GceOperation(
-                operationType: OperationType.StartInstance,
-                projectId: _projectId,
-                zoneName: zoneName,
-                name: name);
-            operation.OperationTask = StartInstanceImplAsync(operation, zoneName, name);
-            return operation.OperationTask;
         }
 
         public GceOperation StartInstance(Instance instance)
@@ -184,6 +166,11 @@ namespace GoogleCloudExtension.DataSources
                 var operation = await _service.Instances.Start(_projectId, zoneName, name).ExecuteAsync();
                 s_pendingOperations.Add(pendingOperation);
                 await operation.NewWait(_service, _projectId);
+            }
+            catch (GoogleApiException ex)
+            {
+                Debug.WriteLine($"Failed to call api: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
             }
             finally
             {
@@ -244,6 +231,5 @@ namespace GoogleCloudExtension.DataSources
                 x => x.Items,
                 x => x.NextPageToken);
         }
-
     }
 }

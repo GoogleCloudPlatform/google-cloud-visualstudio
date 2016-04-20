@@ -9,8 +9,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.Utils"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.DataSources", "GoogleCloudExtension.DataSources\GoogleCloudExtension.DataSources.csproj", "{3988AAC1-3B20-4BA1-9627-ED7D3C80145F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aspnet_tool", "aspnet_tool\aspnet_tool.csproj", "{92F078D0-88A0-4A5A-96CB-D04CDE8BD848}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleAnalyticsUtils", "GoogleAnalyticsUtils\GoogleAnalyticsUtils.csproj", "{A2D9AC4E-9621-4385-A175-316832F7BFDC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.OAuth", "GoogleCloudExtension.OAuth\GoogleCloudExtension.OAuth.csproj", "{AD8B672D-7F0A-4C7F-9774-A9458A99A061}"
@@ -33,10 +31,6 @@ Global
 		{3988AAC1-3B20-4BA1-9627-ED7D3C80145F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3988AAC1-3B20-4BA1-9627-ED7D3C80145F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3988AAC1-3B20-4BA1-9627-ED7D3C80145F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{92F078D0-88A0-4A5A-96CB-D04CDE8BD848}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{92F078D0-88A0-4A5A-96CB-D04CDE8BD848}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{92F078D0-88A0-4A5A-96CB-D04CDE8BD848}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{92F078D0-88A0-4A5A-96CB-D04CDE8BD848}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A2D9AC4E-9621-4385-A175-316832F7BFDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A2D9AC4E-9621-4385-A175-316832F7BFDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2D9AC4E-9621-4385-A175-316832F7BFDC}.Release|Any CPU.ActiveCfg = Release|Any CPU

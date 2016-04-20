@@ -32,31 +32,24 @@ namespace GoogleCloudExtension.DataSources
                 HttpClientInitializer = credential,
             });
 
-            try
-            {
-                return ApiHelpers.NewLoadPagedListAsync<Bucket, Buckets>(
-                    (token) =>
+            return ApiHelpers.NewLoadPagedListAsync<Bucket, Buckets>(
+                (token) =>
+                {
+                    if (String.IsNullOrEmpty(token))
                     {
-                        if (String.IsNullOrEmpty(token))
-                        {
-                            Debug.WriteLine("Loading final page.");
-                            return service.Buckets.List(projectId).ExecuteAsync();
-                        }
-                        else
-                        {
-                            Debug.WriteLine($"Loading page: {token}");
-                            var request = service.Buckets.List(projectId);
-                            request.PageToken = token;
-                            return request.ExecuteAsync();
-                        }
-                    },
-                    x => x.Items,
-                    x => x.NextPageToken);
-            }
-            catch (Exception ex)
-            {
-                throw new DataSourceException(ex.Message, ex);
-            }
+                        Debug.WriteLine("Loading final page.");
+                        return service.Buckets.List(projectId).ExecuteAsync();
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"Loading page: {token}");
+                        var request = service.Buckets.List(projectId);
+                        request.PageToken = token;
+                        return request.ExecuteAsync();
+                    }
+                },
+                x => x.Items,
+                x => x.NextPageToken);
         }
     }
 }
