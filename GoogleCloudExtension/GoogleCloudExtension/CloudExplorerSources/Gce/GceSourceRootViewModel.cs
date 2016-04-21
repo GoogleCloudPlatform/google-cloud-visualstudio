@@ -85,7 +85,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             if (Owner.CurrentProject != null)
             {
-                return new GceDataSource(Owner.CurrentProject.Id, AccountsManager.GetCurrentGoogleCredential());
+                return new GceDataSource(Owner.CurrentProject.ProjectId, AccountsManager.GetCurrentGoogleCredential());
             }
             else
             {

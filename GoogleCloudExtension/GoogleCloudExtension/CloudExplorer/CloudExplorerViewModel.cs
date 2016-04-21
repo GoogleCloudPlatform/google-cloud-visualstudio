@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
@@ -27,18 +28,19 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private readonly IList<ICloudExplorerSource> _sources;
         private readonly List<ButtonDefinition> _buttons;
-        private AsyncPropertyValue<IEnumerable<GcpProject>> _projectsAsync;
+        private AsyncPropertyValue<IEnumerable<Project>> _projectsAsync;
         private AsyncPropertyValue<string> _profilePictureAsync;
         private AsyncPropertyValue<string> _profileNameAsync;
-        private GcpProject _currentProject;
+        private Project _currentProject;
         private bool _changingCredentials;
+        private Lazy<ResourceManagerDataSource> _resourceManagerDataSource;
 
         /// <summary>
         /// The list of module and version combinations for the current project.
         /// </summary>
         public IEnumerable<TreeHierarchy> Roots => _sources.Select(x => x.Root);
 
-        public AsyncPropertyValue<IEnumerable<GcpProject>> ProjectsAsync
+        public AsyncPropertyValue<IEnumerable<Project>> ProjectsAsync
         {
             get { return _projectsAsync; }
             set { SetValueAndRaise(ref _projectsAsync, value); }
@@ -60,7 +62,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
         public IList<ButtonDefinition> Buttons => _buttons;
 
-        public GcpProject CurrentProject
+        public Project CurrentProject
         {
             get { return _currentProject; }
             set
@@ -82,8 +84,9 @@ namespace GoogleCloudExtension.CloudExplorer
                     Command = new WeakCommand(this.OnRefresh),
                 }
             };
+            _resourceManagerDataSource = new Lazy<ResourceManagerDataSource>(CreateResourceManagerDataSource);
 
-            ProjectsAsync = new AsyncPropertyValue<IEnumerable<GcpProject>>(LoadProjectListAsync());
+            ProjectsAsync = new AsyncPropertyValue<IEnumerable<Project>>(LoadProjectListAsync());
 
             foreach (var source in _sources)
             {
@@ -98,6 +101,11 @@ namespace GoogleCloudExtension.CloudExplorer
             }
 
             AccountsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
+        }
+
+        private static ResourceManagerDataSource CreateResourceManagerDataSource()
+        {
+            return new ResourceManagerDataSource(AccountsManager.GetCurrentGoogleCredential());
         }
 
         private void UpdateUserProfile()
@@ -135,7 +143,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 UpdateUserProfile();
 
                 var projectsTask = LoadProjectListAsync();
-                ProjectsAsync = new AsyncPropertyValue<IEnumerable<GcpProject>>(projectsTask);
+                ProjectsAsync = new AsyncPropertyValue<IEnumerable<Project>>(projectsTask);
 
                 var projects = await projectsTask;
                 _changingCredentials = false;
@@ -148,10 +156,9 @@ namespace GoogleCloudExtension.CloudExplorer
             }
         }
 
-        private async Task<IEnumerable<GcpProject>> LoadProjectListAsync()
+        private async Task<IEnumerable<Project>> LoadProjectListAsync()
         {
-            var oauthToken = await AccountsManager.GetAccessTokenAsync();
-            return await ResourceManagerDataSource.GetProjectsListAsync(oauthToken);
+            return await _resourceManagerDataSource.Value.GetProjectsListAsync();
         }
 
         private void OnRefresh()
@@ -184,7 +191,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 return;
             }
 
-            Debug.WriteLine($"Setting selected project to {CurrentProject?.Id ?? "null"}");
+            Debug.WriteLine($"Setting selected project to {CurrentProject?.ProjectId ?? "null"}");
             foreach (var source in _sources)
             {
                 source.CurrentProject = CurrentProject;

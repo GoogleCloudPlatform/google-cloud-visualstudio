@@ -63,7 +63,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         {
             if (Owner.CurrentProject != null)
             {
-                return new GcsDataSource(Owner.CurrentProject.Id, AccountsManager.GetCurrentGoogleCredential());
+                return new GcsDataSource(Owner.CurrentProject.ProjectId, AccountsManager.GetCurrentGoogleCredential());
             }
             else
             {

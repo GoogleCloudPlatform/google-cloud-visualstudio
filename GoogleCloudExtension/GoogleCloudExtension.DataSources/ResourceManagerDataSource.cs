@@ -1,4 +1,8 @@
-﻿using GoogleCloudExtension.DataSources.Models;
+﻿using Google.Apis.Auth.OAuth2;
+using Google.Apis.CloudResourceManager.v1;
+using Google.Apis.CloudResourceManager.v1.Data;
+using Google.Apis.Services;
+using GoogleCloudExtension.DataSources.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,18 +12,37 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
 {
-    public static class ResourceManagerDataSource
+    public class ResourceManagerDataSource : DataSourceBase<CloudResourceManagerService>
     {
-        public static Task<IList<GcpProject>> GetProjectsListAsync(string oauthToken)
-        {
-            var baseUrl = $"https://cloudresourcemanager.googleapis.com/v1/projects";
-            var client = new WebClient().SetOauthToken(oauthToken);
+        public ResourceManagerDataSource(GoogleCredential credential) : base(() => CreateService(credential))
+        { }
 
-            return ApiHelpers.LoadPagedListAsync<GcpProject, GcpProjectPage>(
-                client,
-                baseUrl,
-                x => x.Items,
-                x => String.IsNullOrEmpty(x.NextPageToken) ? null : $"{baseUrl}?pageToken={x.NextPageToken}");
+        private static CloudResourceManagerService CreateService(GoogleCredential credential)
+        {
+            return new CloudResourceManagerService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credential
+            });
+        }
+
+        public Task<IList<Project>> GetProjectsListAsync()
+        {
+            return LoadPagedListAsync(
+                (token) =>
+                {
+                    if (String.IsNullOrEmpty(token))
+                    {
+                        return Service.Projects.List().ExecuteAsync();
+                    }
+                    else
+                    {
+                        var request = Service.Projects.List();
+                        request.PageToken = token;
+                        return request.ExecuteAsync();
+                    }
+                },
+                x => x.Projects,
+                x => x.NextPageToken);
         }
     }
 }

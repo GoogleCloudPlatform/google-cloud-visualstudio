@@ -52,6 +52,10 @@
       <HintPath>..\packages\Google.Apis.Auth.1.11.1\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.12.0.440, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.12.0.440\lib\portable-net45+netcore45+wpa81+wp8\Google.Apis.CloudResourceManager.v1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Google.Apis.Compute.v1, Version=1.12.0.462, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Compute.v1.1.12.0.462\lib\portable-net45+netcore45+wpa81+wp8\Google.Apis.Compute.v1.dll</HintPath>
       <Private>True</Private>
@@ -99,9 +103,7 @@
     <Compile Include="GceOperation.cs" />
     <Compile Include="GPlusDataSource.cs" />
     <Compile Include="Models\Email.cs" />
-    <Compile Include="Models\GcpProject.cs" />
     <Compile Include="GcsDataSource.cs" />
-    <Compile Include="Models\GcpProjectPage.cs" />
     <Compile Include="Models\GPlusImage.cs" />
     <Compile Include="Models\GPlusProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

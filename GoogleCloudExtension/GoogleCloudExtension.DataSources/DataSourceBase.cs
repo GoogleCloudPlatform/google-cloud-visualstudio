@@ -20,6 +20,9 @@ namespace GoogleCloudExtension.DataSources
             Service = factory();
         }
 
+        protected DataSourceBase(Func<TService> factory): this(null, factory)
+        { }
+
         protected static async Task<IList<TItem>> LoadPagedListAsync<TItem, TItemsPage>(
             Func<string, Task<TItemsPage>> fetchPageFunc,
             Func<TItemsPage, IEnumerable<TItem>> itemsFunc,

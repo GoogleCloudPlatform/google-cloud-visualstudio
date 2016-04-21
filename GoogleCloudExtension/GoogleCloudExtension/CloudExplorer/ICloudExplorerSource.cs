@@ -1,6 +1,7 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
+using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.DataSources.Models;
 using System.Collections.Generic;
 
@@ -21,7 +22,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// Set to the current project selected by the user.
         /// </summary>
-        GcpProject CurrentProject { get; set; }
+        Project CurrentProject { get; set; }
 
         /// <summary>
         /// Called when the sources need to reload their data.

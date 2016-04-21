@@ -404,9 +404,22 @@
         <ComboBox ItemsSource="{Binding ProjectsAsync.Value}"
             Visibility="{Binding ProjectsAsync.IsCompleted, Converter={StaticResource visibilityConverter}}"
             SelectedItem="{Binding CurrentProject}"
-            DisplayMemberPath="Id"
             SelectedIndex="0"
-            Grid.Row="1" Style="{DynamicResource ProjectDropdownStyle}"/>
+            Grid.Row="1" Style="{DynamicResource ProjectDropdownStyle}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock>
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} ({1}:{2})">
+                                <Binding Path="Name" />
+                                <Binding Path="ProjectId" />
+                                <Binding Path="ProjectNumber" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
         <TextBlock Visibility="{Binding ProjectsAsync.IsPending, Converter={StaticResource visibilityConverter}}"
                    Margin="5"
                    Grid.Row="1">
