@@ -1,4 +1,7 @@
-﻿using Google;
+﻿// Copyright 2016 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+using Google;
 using Google.Apis.Services;
 using System;
 using System.Collections.Generic;
