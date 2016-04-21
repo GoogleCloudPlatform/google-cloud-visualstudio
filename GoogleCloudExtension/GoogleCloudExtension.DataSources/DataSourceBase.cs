@@ -42,7 +42,7 @@ namespace GoogleCloudExtension.DataSources
         /// not require a project id.
         /// </summary>
         /// <param name="factory">The factory to use to create a service.</param>
-        protected DataSourceBase(Func<TService> factory): this(null, factory)
+        protected DataSourceBase(Func<TService> factory) : this(null, factory)
         { }
 
         /// <summary>

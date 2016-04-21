@@ -2,7 +2,7 @@
 
 namespace GoogleCloudExtension.OauthLoginFlow
 {
-    class OAuthLoginFlowViewModel : ViewModelBase
+    internal class OAuthLoginFlowViewModel : ViewModelBase
     {
         private string _message;
 

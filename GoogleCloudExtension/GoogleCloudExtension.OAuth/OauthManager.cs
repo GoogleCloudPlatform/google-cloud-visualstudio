@@ -13,8 +13,8 @@ namespace GoogleCloudExtension.OAuth
 {
     public static class OAuthManager
     {
-        const string OAuthApiUrl = "https://www.googleapis.com/oauth2/v3/token";
-        const string OAuthRedirectUrl = "urn:ietf:wg:oauth:2.0:oob";
+        private const string OAuthApiUrl = "https://www.googleapis.com/oauth2/v3/token";
+        private const string OAuthRedirectUrl = "urn:ietf:wg:oauth:2.0:oob";
 
         /// <summary>
         /// Given an app credentials and the refresh token it will create an access token by accessing the

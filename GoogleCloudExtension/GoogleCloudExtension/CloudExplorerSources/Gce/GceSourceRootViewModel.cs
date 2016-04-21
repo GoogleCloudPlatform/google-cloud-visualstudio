@@ -77,7 +77,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         public override void InvalidateCredentials()
         {
             Debug.WriteLine("New credentials, invalidating data source for GCE");
-            _dataSource = new Lazy<GceDataSource>(CreateDataSource); 
+            _dataSource = new Lazy<GceDataSource>(CreateDataSource);
         }
 
         private GceDataSource CreateDataSource()

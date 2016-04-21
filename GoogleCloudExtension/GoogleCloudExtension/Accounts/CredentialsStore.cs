@@ -215,7 +215,7 @@ namespace GoogleCloudExtension.Accounts
             Debug.WriteLine($"Reading current account: {s_currentAccountPath}");
             return LoadUserAccount(s_currentAccountPath);
         }
-      
+
         private static void SetPersistedCurrentAccount(UserAccount userAccount)
         {
             try

@@ -21,7 +21,7 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="projectId"></param>
         /// <param name="credential"></param>
-        public GcsDataSource(string projectId, GoogleCredential credential): base(projectId, () => CreateService(credential))
+        public GcsDataSource(string projectId, GoogleCredential credential) : base(projectId, () => CreateService(credential))
         { }
 
         private static StorageService CreateService(GoogleCredential credential)

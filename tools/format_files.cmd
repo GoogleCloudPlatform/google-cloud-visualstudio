@@ -19,6 +19,6 @@ set codeformatter_flags=/copyright:%workspace%\tools\copyright_notice.txt
 
 rem Go through all of the .csproj files formatting them.
 pushd "%~1"
-for /R %%i in (*.csproj) do codeformatter "%%~i" %codeformatter_rules% %codeformatter_flags%
+for /R %%i in (*.csproj) do codeformatter "%%~i" %codeformatter_rules% /nocopyright
 popd
 echo Done.

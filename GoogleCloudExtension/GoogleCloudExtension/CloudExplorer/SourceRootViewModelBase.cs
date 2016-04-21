@@ -9,13 +9,13 @@ namespace GoogleCloudExtension.CloudExplorer
 {
     public abstract class SourceRootViewModelBase : TreeHierarchy
     {
-        private static TreeLeaf s_noCredentialsPlacehodler =
+        private static readonly TreeLeaf s_noCredentialsPlacehodler =
             new TreeLeaf
             {
                 IsError = true,
                 Content = "No credentials, please login.",
             };
-        private static TreeLeaf s_noProjectPlaceholder =
+        private static readonly TreeLeaf s_noProjectPlaceholder =
             new TreeLeaf
             {
                 IsError = true,

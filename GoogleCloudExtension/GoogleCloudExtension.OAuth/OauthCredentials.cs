@@ -1,4 +1,5 @@
-﻿namespace GoogleCloudExtension.OAuth
+﻿
+namespace GoogleCloudExtension.OAuth
 {
     public class OAuthCredentials
     {

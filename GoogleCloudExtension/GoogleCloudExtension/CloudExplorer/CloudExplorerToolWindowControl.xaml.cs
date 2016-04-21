@@ -14,7 +14,7 @@ namespace GoogleCloudExtension.CloudExplorer
     {
         private readonly IServiceProvider _provider;
         private bool _propertiesWindowActivated = false;
-        private readonly WeakAction<object, EventArgs> _onItemChangedHandler; 
+        private readonly WeakAction<object, EventArgs> _onItemChangedHandler;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CloudExplorerToolWindowControl"/> class.
