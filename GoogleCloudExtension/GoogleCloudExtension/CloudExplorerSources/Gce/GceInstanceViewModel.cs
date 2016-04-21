@@ -97,10 +97,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     case OperationType.StopInstance:
                         Content = $"Stoping instance {Instance.Name}";
                         break;
-
-                    case OperationType.StoreMetadata:
-                        Content = $"Storing metadata {Instance.Name}";
-                        break;
                 }
 
                 // Update the context menu to reflect the state.
@@ -129,7 +125,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     // Refresh the instance state after the operation is finished.
                     Instance = await _owner.DataSource.RefreshInstance(Instance);
                 }
-                catch (ZoneOperationException ex)
+                catch (DataSourceException ex)
                 {
                     Content = Instance.Name;
                     IsLoading = false;
@@ -145,10 +141,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
                         case OperationType.StopInstance:
                             GcpOutputWindow.OutputLine($"Stop instance operation for {Instance.Name} failed. {ex.Message}");
-                            break;
-
-                        case OperationType.StoreMetadata:
-                            GcpOutputWindow.OutputLine($"Store metadata operation for {Instance.Name} failed. {ex.Message}");
                             break;
                     }
 

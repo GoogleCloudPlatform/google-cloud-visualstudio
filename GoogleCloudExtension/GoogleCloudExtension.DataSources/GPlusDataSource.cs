@@ -8,8 +8,15 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
 {
+    /// <summary>
+    /// This class wraps a PlusService API service.
+    /// </summary>
     public class GPlusDataSource : DataSourceBase<PlusService>
     {
+        /// <summary>
+        /// Constructor for the class.
+        /// </summary>
+        /// <param name="credential"></param>
         public GPlusDataSource(GoogleCredential credential) : base(() => CreateService(credential))
         { }
 
@@ -21,6 +28,9 @@ namespace GoogleCloudExtension.DataSources
             });
         }
 
+        /// <summary>
+        /// Fetches the profile for the authenticated user.
+        /// </summary>
         public async Task<Person> GetProfileAsync()
         {
             try

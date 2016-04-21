@@ -12,11 +12,15 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtension.DataSources
 {
     /// <summary>
-    /// Data source that returns information about Google Cloud Storage buckets. Calls the API according
-    /// to the documentation at https://cloud.google.com/storage/docs/json_api/.
+    /// Data source that returns information about Google Cloud Storage buckets for a particular project and credentials.
     /// </summary>
     public class GcsDataSource : DataSourceBase<StorageService>
     {
+        /// <summary>
+        /// Initializes a new instance of this class.
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="credential"></param>
         public GcsDataSource(string projectId, GoogleCredential credential): base(projectId, () => CreateService(credential))
         { }
 

@@ -140,7 +140,7 @@ namespace GoogleCloudExtension.DataSources
 
         public static bool IsRunning(this Instance instance) => instance.Status == RunningStatus;
 
-        public static string GetSqlServerPassword(this Instance instance) => instance.Metadata.GetProperty(SqlServerSaPassword);
+        public static string GetSqlServerPassword(this Instance instance) => instance.Metadata.Items?.FirstOrDefault(x => x.Key == SqlServerSaPassword)?.Value;
 
         public static bool IsSqlServer(this Instance instance) => instance.GetSqlServerPassword() != null;
 

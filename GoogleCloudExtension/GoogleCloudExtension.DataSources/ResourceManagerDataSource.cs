@@ -8,8 +8,16 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
 {
+    /// <summary>
+    /// This class wraps the <seealso cref="Google.Apis.CloudResourceManager.v1.CloudResourceManagerService"/> class for
+    /// a given set of credentials.
+    /// </summary>
     public class ResourceManagerDataSource : DataSourceBase<CloudResourceManagerService>
     {
+        /// <summary>
+        /// The constructor for the class.
+        /// </summary>
+        /// <param name="credential"></param>
         public ResourceManagerDataSource(GoogleCredential credential) : base(() => CreateService(credential))
         { }
 
@@ -21,6 +29,9 @@ namespace GoogleCloudExtension.DataSources
             });
         }
 
+        /// <summary>
+        /// Returns the complete list of projects for the current credentials.
+        /// </summary>
         public Task<IList<Project>> GetProjectsListAsync()
         {
             return LoadPagedListAsync(
