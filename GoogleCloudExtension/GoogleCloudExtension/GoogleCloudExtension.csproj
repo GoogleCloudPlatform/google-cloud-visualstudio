@@ -90,7 +90,6 @@
     <Compile Include="ManageAccounts\ManageAccountsWindowContent.xaml.cs">
       <DependentUpon>ManageAccountsWindowContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Accounts\ProfileManager.cs" />
     <Compile Include="Accounts\Models\UserAccount.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowViewModel.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindow.cs" />

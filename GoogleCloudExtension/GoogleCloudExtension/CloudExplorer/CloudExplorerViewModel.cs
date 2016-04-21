@@ -105,9 +105,9 @@ namespace GoogleCloudExtension.CloudExplorer
             AccountsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
         }
 
-        private static GPlusDataSource CreatePlusDataSource() => new GPlusDataSource(AccountsManager.GetCurrentGoogleCredential());
+        private static GPlusDataSource CreatePlusDataSource() => new GPlusDataSource(AccountsManager.CurrentGoogleCredential);
 
-        private static ResourceManagerDataSource CreateResourceManagerDataSource() => new ResourceManagerDataSource(AccountsManager.GetCurrentGoogleCredential());
+        private static ResourceManagerDataSource CreateResourceManagerDataSource() => new ResourceManagerDataSource(AccountsManager.CurrentGoogleCredential);
 
         private void UpdateUserProfile()
         {

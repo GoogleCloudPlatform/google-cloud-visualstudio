@@ -85,7 +85,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             if (Owner.CurrentProject != null)
             {
-                return new GceDataSource(Owner.CurrentProject.ProjectId, AccountsManager.GetCurrentGoogleCredential());
+                return new GceDataSource(Owner.CurrentProject.ProjectId, AccountsManager.CurrentGoogleCredential);
             }
             else
             {
@@ -131,7 +131,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private async Task<IList<Instance>> LoadGceInstances()
         {
-            var oauthToken = await AccountsManager.GetAccessTokenAsync();
             return await _dataSource.Value.GetInstanceListAsync();
         }
 

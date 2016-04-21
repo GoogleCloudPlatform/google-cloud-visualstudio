@@ -1,5 +1,6 @@
 ﻿using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Accounts.Models;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.Utils;
 using System;
@@ -31,11 +32,12 @@ namespace GoogleCloudExtension.ManageAccounts
 
             AccountName = userAccount.AccountName;
 
-            var profileTask = ProfileManager.GetProfileForCredentialsAsync(userAccount);
+            var dataSource = new GPlusDataSource(userAccount.GetGoogleCredential());
+            var personTask = dataSource.GetProfileAsync();
 
             // TODO: Show the default image while it is being loaded.
-            ProfilePictureAsync = AsyncPropertyValue<string>.CreateAsyncProperty(profileTask, x => x.Image.Url);
-            NameAsync = AsyncPropertyValue<string>.CreateAsyncProperty(profileTask, x => x.DisplayName, "Loading...");
+            ProfilePictureAsync = AsyncPropertyValue<string>.CreateAsyncProperty(personTask, x => x.Image.Url);
+            NameAsync = AsyncPropertyValue<string>.CreateAsyncProperty(personTask, x => x.DisplayName, "Loading...");
         }
     }
 }

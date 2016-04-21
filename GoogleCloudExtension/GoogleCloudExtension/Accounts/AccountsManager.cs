@@ -44,42 +44,13 @@ namespace GoogleCloudExtension.Accounts
             }
         }
 
+        public static GoogleCredential CurrentGoogleCredential => CurrentAccount?.GetGoogleCredential();
+
         public static event EventHandler CurrentCredentialsChanged;
 
         static AccountsManager()
         {
             SetCurrentCredentialsEnvironmentVariable();
-        }
-
-        /// <summary>
-        /// Returns the access token to use for the current user.
-        /// </summary>
-        /// <returns></returns>
-        public static Task<string> GetAccessTokenAsync()
-        {
-            if (CurrentAccount != null)
-            {
-                return GetAccessTokenForCredentialsAsync(CurrentAccount);
-            }
-            throw new InvalidOperationException("No current credential is set.");
-        }
-
-
-        public static GoogleCredential GetCurrentGoogleCredential() => GetGoogleCredential(CurrentAccount);
-
-        public static GoogleCredential GetGoogleCredential(UserAccount userAccount)
-        {
-            using (var stream = new MemoryStream())
-            {
-                using (var writer = new StreamWriter(stream, Encoding.UTF8, 100, leaveOpen: true))
-                {
-                    var serialized = JsonConvert.SerializeObject(userAccount);
-                    writer.Write(serialized);
-                }
-
-                stream.Position = 0;
-                return GoogleCredential.FromStream(stream);
-            }
         }
 
         public static async Task<bool> AddAccountFlowAsync()
@@ -118,17 +89,6 @@ namespace GoogleCloudExtension.Accounts
 
         public static IEnumerable<UserAccount> GetAccountsList() => s_credentialsStore.AccountsList;
 
-        /// <summary>
-        /// Returns the access token for the given <paramref name="userCredentials"/>.
-        /// </summary>
-        /// <param name="userCredentials"></param>
-        /// <returns></returns>
-        public static async Task<string> GetAccessTokenForCredentialsAsync(UserAccount userCredentials)
-        {
-            var accessToken = await OAuthManager.RefreshAccessTokenAsync(s_extensionCredentials, userCredentials.RefreshToken);
-            return accessToken.Token;
-        }
-
         private static async Task<UserAccount> GetUserAccountForLoginResult(OAuthLoginResult loginResult)
         {
             var result = new UserAccount
@@ -137,7 +97,7 @@ namespace GoogleCloudExtension.Accounts
                 ClientId = s_extensionCredentials.ClientId,
                 ClientSecret = s_extensionCredentials.ClientSecret
             };
-            var plusDataSource = new GPlusDataSource(GetGoogleCredential(result));
+            var plusDataSource = new GPlusDataSource(result.GetGoogleCredential());
             var person = await plusDataSource.GetProfileAsync();
             result.AccountName = person.Emails.FirstOrDefault()?.Value;
             return result;

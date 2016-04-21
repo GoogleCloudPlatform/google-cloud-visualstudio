@@ -222,7 +222,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     return;
                 }
 
-                var oauthToken = await AccountsManager.GetAccessTokenAsync();
                 var operation = _owner.DataSource.StopInstance(Instance);
                 UpdateInstanceState(operation);
             }
