@@ -21,17 +21,16 @@ namespace GoogleCloudExtension.DataSources
     /// Data source that returns information about GCE instances. Calls the GCE API according 
     /// to https://cloud.google.com/compute/docs/reference/latest/.
     /// </summary>
-    public class GceDataSource
+    public class GceDataSource : DataSourceBase<ComputeService>
     {
         private static readonly List<GceOperation> s_pendingOperations = new List<GceOperation>();
 
-        private readonly string _projectId;
-        private readonly ComputeService _service;
+        public GceDataSource(string projectId, GoogleCredential credential) : base(projectId, () => CreateService(credential))
+        { }
 
-        public GceDataSource(string projectId, GoogleCredential credential)
+        private static ComputeService CreateService(GoogleCredential credential)
         {
-            _projectId = projectId;
-            _service = new ComputeService(new Google.Apis.Services.BaseClientService.Initializer
+            return new ComputeService(new Google.Apis.Services.BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
             });
@@ -81,7 +80,7 @@ namespace GoogleCloudExtension.DataSources
         {
             try
             {
-                return await _service.Instances.Get(_projectId, zoneName, name).ExecuteAsync();
+                return await Service.Instances.Get(ProjectId, zoneName, name).ExecuteAsync();
             }
             catch (GoogleApiException ex)
             {
@@ -106,7 +105,7 @@ namespace GoogleCloudExtension.DataSources
             .FirstOrDefault(x => x.ProjectId == projectId && x.ZoneName == zoneName && x.Name == name);
 
         public GceOperation GetPendingOperation(Instance instance) => 
-            GetPendingOperation(projectId: _projectId, zoneName: instance.ZoneName(), name: instance.Name);
+            GetPendingOperation(projectId: ProjectId, zoneName: instance.ZoneName(), name: instance.Name);
 
         public GceOperation StopInstance(Instance instance)
         {
@@ -117,7 +116,7 @@ namespace GoogleCloudExtension.DataSources
         {
             var operation = new GceOperation(
                           operationType: OperationType.StopInstance,
-                          projectId: _projectId,
+                          projectId: ProjectId,
                           zoneName: zoneName,
                           name: name);
             operation.OperationTask = StopInstanceImplAsync(operation, zoneName, name);
@@ -128,9 +127,9 @@ namespace GoogleCloudExtension.DataSources
         {
             try
             {
-                var operation = await _service.Instances.Stop(_projectId, zoneName, name).ExecuteAsync();
+                var operation = await Service.Instances.Stop(ProjectId, zoneName, name).ExecuteAsync();
                 s_pendingOperations.Add(pendingOperation);
-                await operation.NewWait(_service, _projectId);
+                await operation.NewWait(Service, ProjectId);
             }
             catch (GoogleApiException ex)
             {
@@ -152,7 +151,7 @@ namespace GoogleCloudExtension.DataSources
         {
             var operation = new GceOperation(
                 operationType: OperationType.StartInstance,
-                projectId: _projectId,
+                projectId: ProjectId,
                 zoneName: zoneName,
                 name: name);
             operation.OperationTask = StartInstanceImplAsync(operation, zoneName, name);
@@ -163,9 +162,9 @@ namespace GoogleCloudExtension.DataSources
         {
             try
             {
-                var operation = await _service.Instances.Start(_projectId, zoneName, name).ExecuteAsync();
+                var operation = await Service.Instances.Start(ProjectId, zoneName, name).ExecuteAsync();
                 s_pendingOperations.Add(pendingOperation);
-                await operation.NewWait(_service, _projectId);
+                await operation.NewWait(Service, ProjectId);
             }
             catch (GoogleApiException ex)
             {
@@ -187,18 +186,18 @@ namespace GoogleCloudExtension.DataSources
         /// <returns></returns>
         private Task<IList<Zone>> GetZoneListAsync()
         {
-            return ApiHelpers.NewLoadPagedListAsync<Zone, ZoneList>(
+            return LoadPagedListAsync(
                 (token) =>
                 {
                     if (String.IsNullOrEmpty(token))
                     {
                         Debug.WriteLine("Fetching the last page.");
-                        return _service.Zones.List(_projectId).ExecuteAsync();
+                        return Service.Zones.List(ProjectId).ExecuteAsync();
                     }
                     else
                     {
                         Debug.WriteLine($"Fetching page: {token}");
-                        var request = _service.Zones.List(_projectId);
+                        var request = Service.Zones.List(ProjectId);
                         request.PageToken = token;
                         return request.ExecuteAsync();
                     }
@@ -212,18 +211,18 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         private Task<IList<Instance>> GetInstancesInZoneListAsync(string zoneName)
         {
-            return ApiHelpers.NewLoadPagedListAsync<Instance, InstanceList>(
+            return LoadPagedListAsync(
                 (token) =>
                 {
                     if (String.IsNullOrEmpty(token))
                     {
                         Debug.WriteLine("Fetching last page.");
-                        return _service.Instances.List(_projectId, zoneName).ExecuteAsync();
+                        return Service.Instances.List(ProjectId, zoneName).ExecuteAsync();
                     }
                     else
                     {
                         Debug.WriteLine($"Fetching page: {token}");
-                        var request = _service.Instances.List(_projectId, zoneName);
+                        var request = Service.Instances.List(ProjectId, zoneName);
                         request.PageToken = token;
                         return request.ExecuteAsync();
                     }

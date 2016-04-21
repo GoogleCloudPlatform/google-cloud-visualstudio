@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.DataSources
         /// <returns>The list of buckets.</returns>
         public Task<IList<Bucket>> GetBucketListAsync()
         {
-            return LoadPagedListAsync<Bucket, Buckets>(
+            return LoadPagedListAsync(
                 (token) =>
                 {
                     if (String.IsNullOrEmpty(token))
