@@ -34,6 +34,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             IsError = true
         };
 
+        private Lazy<GcsDataSource> _dataSource;
+
         public override ImageSource RootIcon => s_storageIcon.Value;
 
         public override string RootCaption => "Google Cloud Storage";
@@ -43,6 +45,31 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         public override TreeLeaf LoadingPlaceholder => s_loadingPlaceholder;
 
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
+
+        public override void Initialize(ICloudExplorerSource owner)
+        {
+            base.Initialize(owner);
+
+            InvalidateCredentials();
+        }
+
+        public override void InvalidateCredentials()
+        {
+            Debug.WriteLine("New credentials, invalidating the GCS source.");
+            _dataSource = new Lazy<GcsDataSource>(CreateDataSource);
+        }
+
+        private GcsDataSource CreateDataSource()
+        {
+            if (Owner.CurrentProject != null)
+            {
+                return new GcsDataSource(Owner.CurrentProject.Id, AccountsManager.GetCurrentGoogleCredential());
+            }
+            else
+            {
+                return null;
+            }
+        }
 
         protected override async Task LoadDataOverride()
         {
@@ -80,7 +107,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         private async Task<List<BucketViewModel>> LoadBucketList()
         {
             var credential = AccountsManager.GetCurrentGoogleCredential();
-            var buckets = await GcsDataSource.GetBucketListAsync(Owner.CurrentProject.Id, credential);
+            var buckets = await _dataSource.Value.GetBucketListAsync();
             return buckets?.Select(x => new BucketViewModel(this, x)).ToList();
         }
     }

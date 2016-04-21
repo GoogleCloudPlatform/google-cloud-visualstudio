@@ -36,16 +36,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// The list of module and version combinations for the current project.
         /// </summary>
-        public IEnumerable<TreeHierarchy> Roots
-        {
-            get
-            {
-                foreach (var source in _sources)
-                {
-                    yield return source.Root;
-                }
-            }
-        }
+        public IEnumerable<TreeHierarchy> Roots => _sources.Select(x => x.Root);
 
         public AsyncPropertyValue<IEnumerable<GcpProject>> ProjectsAsync
         {
@@ -136,6 +127,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 if (AccountsManager.CurrentAccount == null)
                 {
                     ProjectsAsync = null;
+                    InvalidateCredentials();
                     RefreshSources();
                     return;
                 }
@@ -176,6 +168,14 @@ namespace GoogleCloudExtension.CloudExplorer
             RaisePropertyChanged(nameof(Roots));
         }
 
+        private void InvalidateCredentials()
+        {
+            foreach (var source in _sources)
+            {
+                source.InvalidateCredentials();
+            }
+        }
+
         private void InvalidateCurrentProject()
         {
             if (_changingCredentials)
@@ -189,6 +189,8 @@ namespace GoogleCloudExtension.CloudExplorer
             {
                 source.CurrentProject = CurrentProject;
             }
+
+            InvalidateCredentials();
             RefreshSources();
         }
     }

@@ -91,6 +91,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ApiHelpers.cs" />
+    <Compile Include="DataSourceBase.cs" />
     <Compile Include="DataSourceException.cs" />
     <Compile Include="GceDataSource.cs" />
     <Compile Include="InstanceExtensions.cs" />

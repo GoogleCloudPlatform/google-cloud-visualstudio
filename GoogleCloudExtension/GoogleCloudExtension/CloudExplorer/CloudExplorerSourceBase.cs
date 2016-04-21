@@ -31,5 +31,10 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             _root.Refresh();
         }
+
+        public void InvalidateCredentials()
+        {
+            _root.InvalidateCredentials();
+        }
     }
 }

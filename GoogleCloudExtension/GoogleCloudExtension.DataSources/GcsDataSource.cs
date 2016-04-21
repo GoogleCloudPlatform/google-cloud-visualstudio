@@ -17,33 +17,37 @@ namespace GoogleCloudExtension.DataSources
     /// Data source that returns information about Google Cloud Storage buckets. Calls the API according
     /// to the documentation at https://cloud.google.com/storage/docs/json_api/.
     /// </summary>
-    public static class GcsDataSource
+    public class GcsDataSource : DataSourceBase<StorageService>
     {
-        /// <summary>
-        /// Fetches the list of buckets for the given project.
-        /// </summary>
-        /// <param name="projectId">The id of the project that owns the buckets.</param>
-        /// <param name="oauthToken">The oauth token to use to authorize the call.</param>
-        /// <returns>The list of buckets.</returns>
-        public static Task<IList<Bucket>> GetBucketListAsync(string projectId, GoogleCredential credential)
+        public GcsDataSource(string projectId, GoogleCredential credential): base(projectId, () => CreateService(credential))
+        { }
+
+        private static StorageService CreateService(GoogleCredential credential)
         {
-            var service = new StorageService(new Google.Apis.Services.BaseClientService.Initializer
+            return new StorageService(new Google.Apis.Services.BaseClientService.Initializer
             {
                 HttpClientInitializer = credential,
             });
+        }
 
-            return ApiHelpers.NewLoadPagedListAsync<Bucket, Buckets>(
+        /// <summary>
+        /// Fetches the list of buckets for the given project.
+        /// </summary>
+        /// <returns>The list of buckets.</returns>
+        public Task<IList<Bucket>> GetBucketListAsync()
+        {
+            return LoadPagedListAsync<Bucket, Buckets>(
                 (token) =>
                 {
                     if (String.IsNullOrEmpty(token))
                     {
                         Debug.WriteLine("Loading final page.");
-                        return service.Buckets.List(projectId).ExecuteAsync();
+                        return Service.Buckets.List(ProjectId).ExecuteAsync();
                     }
                     else
                     {
                         Debug.WriteLine($"Loading page: {token}");
-                        var request = service.Buckets.List(projectId);
+                        var request = Service.Buckets.List(ProjectId);
                         request.PageToken = token;
                         return request.ExecuteAsync();
                     }

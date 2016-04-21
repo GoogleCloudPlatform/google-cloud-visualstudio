@@ -5,6 +5,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Utils;
 using System.Threading.Tasks;
 using System.Windows.Media;
+using System;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
@@ -39,7 +40,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
         public ICloudExplorerSource Owner { get; private set; }
 
-        public void Initialize(ICloudExplorerSource owner)
+        public virtual void Initialize(ICloudExplorerSource owner)
         {
             Icon = RootIcon;
             Content = RootCaption;
@@ -58,6 +59,9 @@ namespace GoogleCloudExtension.CloudExplorer
             IsLoadedState = false;
             await LoadDataWrapper();
         }
+
+        public virtual void InvalidateCredentials()
+        { }
 
         protected override async void OnIsExpandedChanged(bool newValue)
         {

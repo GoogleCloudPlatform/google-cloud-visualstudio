@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using Google.Apis.Compute.v1.Data;
+using System.Diagnostics;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
@@ -67,15 +68,29 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
         }
 
-        public GceSourceRootViewModel()
+        public override void Initialize(ICloudExplorerSource owner)
         {
-            _dataSource = new Lazy<GceDataSource>(CreateDataSource);
+            base.Initialize(owner);
+
+            InvalidateCredentials();
         }
 
-        public override void Refresh()
+        public override void InvalidateCredentials()
         {
-            _dataSource = _dataSource = new Lazy<GceDataSource>(CreateDataSource);
-            base.Refresh();
+            Debug.WriteLine("New credentials, invalidating data source for GCE");
+            _dataSource = new Lazy<GceDataSource>(CreateDataSource); 
+        }
+
+        private GceDataSource CreateDataSource()
+        {
+            if (Owner.CurrentProject != null)
+            {
+                return new GceDataSource(Owner.CurrentProject.Id, AccountsManager.GetCurrentGoogleCredential());
+            }
+            else
+            {
+                return null;
+            }
         }
 
         protected override async Task LoadDataOverride()
@@ -127,7 +142,5 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 .GroupBy(x => x.ZoneName())
                 .Select(x => new ZoneViewModel(this, x.Key, x)).ToList();
         }
-
-        private GceDataSource CreateDataSource() => new GceDataSource(Owner.CurrentProject.Id, AccountsManager.GetCurrentGoogleCredential());
     }
 }
