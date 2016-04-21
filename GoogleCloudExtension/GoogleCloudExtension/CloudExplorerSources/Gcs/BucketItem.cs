@@ -2,7 +2,6 @@
 // Licensed under the Apache License Version 2.0.
 
 using Google.Apis.Storage.v1.Data;
-using GoogleCloudExtension.DataSources.Models;
 using System.ComponentModel;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gcs

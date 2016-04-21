@@ -2,7 +2,6 @@
 // Licensed under the Apache License Version 2.0.
 
 using Google.Apis.CloudResourceManager.v1.Data;
-using GoogleCloudExtension.DataSources.Models;
 using System.Collections.Generic;
 
 namespace GoogleCloudExtension.CloudExplorer

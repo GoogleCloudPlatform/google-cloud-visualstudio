@@ -2,12 +2,8 @@
 using Google.Apis.CloudResourceManager.v1;
 using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Services;
-using GoogleCloudExtension.DataSources.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources

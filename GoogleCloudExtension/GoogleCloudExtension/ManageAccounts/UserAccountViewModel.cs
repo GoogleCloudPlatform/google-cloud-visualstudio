@@ -1,16 +1,7 @@
 ﻿using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Accounts.Models;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.Utils;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 namespace GoogleCloudExtension.ManageAccounts
 {

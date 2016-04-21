@@ -1,10 +1,9 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
-using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorerSources.Gce;
 using GoogleCloudExtension.CloudExplorerSources.Gcs;
-using GoogleCloudExtension.Accounts;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;

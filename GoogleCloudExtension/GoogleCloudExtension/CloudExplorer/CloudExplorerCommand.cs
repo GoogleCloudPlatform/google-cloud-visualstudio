@@ -1,8 +1,8 @@
 ﻿// Copyright 2015 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;

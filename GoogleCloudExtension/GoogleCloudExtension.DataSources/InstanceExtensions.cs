@@ -2,12 +2,8 @@
 // Licensed under the Apache License Version 2.0.
 
 using Google.Apis.Compute.v1.Data;
-using GoogleCloudExtension.DataSources.Models;
-using Newtonsoft.Json;
 using System;
-using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace GoogleCloudExtension.DataSources

@@ -4,7 +4,6 @@
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.DataSources.Models;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.Utils;
 using System;
@@ -12,7 +11,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Input;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorer

@@ -2,10 +2,8 @@
 // Licensed under the Apache License Version 2.0.
 
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Utils;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using System;
 
 namespace GoogleCloudExtension.CloudExplorer
 {

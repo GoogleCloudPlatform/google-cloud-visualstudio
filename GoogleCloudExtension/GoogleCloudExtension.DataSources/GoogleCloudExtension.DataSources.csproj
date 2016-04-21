@@ -98,7 +98,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ApiHelpers.cs" />
     <Compile Include="DataSourceBase.cs" />
     <Compile Include="DataSourceException.cs" />
     <Compile Include="GceDataSource.cs" />
@@ -106,13 +105,9 @@
     <Compile Include="MetadataExtensions.cs" />
     <Compile Include="GceOperation.cs" />
     <Compile Include="GPlusDataSource.cs" />
-    <Compile Include="Models\Email.cs" />
     <Compile Include="GcsDataSource.cs" />
-    <Compile Include="Models\GPlusImage.cs" />
-    <Compile Include="Models\GPlusProfile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceManagerDataSource.cs" />
-    <Compile Include="WebClientExtensions.cs" />
     <Compile Include="ZoneOperationException.cs" />
     <Compile Include="ZoneOperationExtensions.cs" />
   </ItemGroup>

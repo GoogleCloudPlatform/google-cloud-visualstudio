@@ -5,14 +5,10 @@ using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Compute.v1;
 using Google.Apis.Compute.v1.Data;
-using GoogleCloudExtension.DataSources.Models;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
 using System.Linq;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources

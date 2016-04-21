@@ -3,7 +3,6 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.DataSources.Models;
 using System.ComponentModel;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce

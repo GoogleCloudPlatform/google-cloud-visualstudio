@@ -4,11 +4,9 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Storage.v1;
 using Google.Apis.Storage.v1.Data;
-using GoogleCloudExtension.DataSources.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Net;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
