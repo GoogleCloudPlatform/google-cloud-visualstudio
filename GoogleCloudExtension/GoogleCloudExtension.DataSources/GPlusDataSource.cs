@@ -1,4 +1,9 @@
-﻿using GoogleCloudExtension.DataSources.Models;
+﻿using Google;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Plus.v1;
+using Google.Apis.Plus.v1.Data;
+using Google.Apis.Services;
+using GoogleCloudExtension.DataSources.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -10,25 +15,28 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
 {
-    public static class GPlusDataSource
+    public class GPlusDataSource : DataSourceBase<PlusService>
     {
-        public static async Task<GPlusProfile> GetProfileAsync(string oauthToken)
+        public GPlusDataSource(GoogleCredential credential) : base(() => CreateService(credential))
+        { }
+
+        private static PlusService CreateService(GoogleCredential credentials)
         {
-            var baseUrl = $"https://www.googleapis.com/plus/v1/people/me";
+            return new PlusService(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credentials
+            });
+        }
+
+        public async Task<Person> GetProfileAsync()
+        {
             try
             {
-                var client = new WebClient().SetOauthToken(oauthToken);
-                var response = await client.DownloadStringTaskAsync(baseUrl);
-                return JsonConvert.DeserializeObject<GPlusProfile>(response);
+                return await Service.People.Get("me").ExecuteAsync();
             }
-            catch (WebException ex)
+            catch (GoogleApiException ex)
             {
-                Debug.WriteLine($"Failed to download data: {ex.Message}");
-                throw new DataSourceException(ex.Message, ex);
-            }
-            catch (JsonException ex)
-            {
-                Debug.WriteLine($"Failed to parse result: {ex.Message}");
+                Debug.WriteLine($"Failed to get person: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
         }

@@ -34,6 +34,7 @@ namespace GoogleCloudExtension.CloudExplorer
         private Project _currentProject;
         private bool _changingCredentials;
         private Lazy<ResourceManagerDataSource> _resourceManagerDataSource;
+        private Lazy<GPlusDataSource> _plusDataSource;
 
         /// <summary>
         /// The list of module and version combinations for the current project.
@@ -84,7 +85,8 @@ namespace GoogleCloudExtension.CloudExplorer
                     Command = new WeakCommand(this.OnRefresh),
                 }
             };
-            _resourceManagerDataSource = new Lazy<ResourceManagerDataSource>(CreateResourceManagerDataSource);
+
+            ResetDataSources();
 
             ProjectsAsync = new AsyncPropertyValue<IEnumerable<Project>>(LoadProjectListAsync());
 
@@ -103,14 +105,13 @@ namespace GoogleCloudExtension.CloudExplorer
             AccountsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
         }
 
-        private static ResourceManagerDataSource CreateResourceManagerDataSource()
-        {
-            return new ResourceManagerDataSource(AccountsManager.GetCurrentGoogleCredential());
-        }
+        private static GPlusDataSource CreatePlusDataSource() => new GPlusDataSource(AccountsManager.GetCurrentGoogleCredential());
+
+        private static ResourceManagerDataSource CreateResourceManagerDataSource() => new ResourceManagerDataSource(AccountsManager.GetCurrentGoogleCredential());
 
         private void UpdateUserProfile()
         {
-            var profileTask = ProfileManager.GetProfileForCredentialsAsync(AccountsManager.CurrentAccount);
+            var profileTask = _plusDataSource.Value.GetProfileAsync();
             ProfilePictureAsync = AsyncPropertyValue<string>.CreateAsyncProperty(profileTask, x => x.Image.Url);
             ProfileNameAsync = AsyncPropertyValue<string>.CreateAsyncProperty(
                 profileTask,
@@ -130,12 +131,14 @@ namespace GoogleCloudExtension.CloudExplorer
             {
                 _changingCredentials = true;
 
+                ResetDataSources();
+
                 ManageAccountsCommand.CanExecuteCommand = AccountsManager.CurrentAccount != null;
 
                 if (AccountsManager.CurrentAccount == null)
                 {
                     ProjectsAsync = null;
-                    InvalidateCredentials();
+                    InvalidateSourcesCredentials();
                     RefreshSources();
                     return;
                 }
@@ -154,6 +157,12 @@ namespace GoogleCloudExtension.CloudExplorer
             {
                 _changingCredentials = false;
             }
+        }
+
+        private void ResetDataSources()
+        {
+            _resourceManagerDataSource = new Lazy<ResourceManagerDataSource>(CreateResourceManagerDataSource);
+            _plusDataSource = new Lazy<GPlusDataSource>(CreatePlusDataSource);
         }
 
         private async Task<IEnumerable<Project>> LoadProjectListAsync()
@@ -175,7 +184,11 @@ namespace GoogleCloudExtension.CloudExplorer
             RaisePropertyChanged(nameof(Roots));
         }
 
-        private void InvalidateCredentials()
+        /// <summary>
+        /// Notifies all of the explorer sources that there are new credentials, be it a new
+        /// project selected, or a new user selected.
+        /// </summary>
+        private void InvalidateSourcesCredentials()
         {
             foreach (var source in _sources)
             {
@@ -183,6 +196,9 @@ namespace GoogleCloudExtension.CloudExplorer
             }
         }
 
+        /// <summary>
+        /// Called whenever the current project changes, updates all of the sources with the new credentials.
+        /// </summary>
         private void InvalidateCurrentProject()
         {
             if (_changingCredentials)
@@ -197,7 +213,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 source.CurrentProject = CurrentProject;
             }
 
-            InvalidateCredentials();
+            InvalidateSourcesCredentials();
             RefreshSources();
         }
     }

@@ -64,13 +64,16 @@ namespace GoogleCloudExtension.Accounts
             throw new InvalidOperationException("No current credential is set.");
         }
 
-        public static GoogleCredential GetCurrentGoogleCredential()
+
+        public static GoogleCredential GetCurrentGoogleCredential() => GetGoogleCredential(CurrentAccount);
+
+        public static GoogleCredential GetGoogleCredential(UserAccount userAccount)
         {
             using (var stream = new MemoryStream())
             {
                 using (var writer = new StreamWriter(stream, Encoding.UTF8, 100, leaveOpen: true))
                 {
-                    var serialized = JsonConvert.SerializeObject(CurrentAccount);
+                    var serialized = JsonConvert.SerializeObject(userAccount);
                     writer.Write(serialized);
                 }
 
@@ -128,14 +131,16 @@ namespace GoogleCloudExtension.Accounts
 
         private static async Task<UserAccount> GetUserAccountForLoginResult(OAuthLoginResult loginResult)
         {
-            var profile = await GPlusDataSource.GetProfileAsync(loginResult.AccessToken.Token);
-            return new UserAccount
+            var result = new UserAccount
             {
-                AccountName = profile.Emails.FirstOrDefault()?.Value,
                 RefreshToken = loginResult.RefreshToken,
                 ClientId = s_extensionCredentials.ClientId,
                 ClientSecret = s_extensionCredentials.ClientSecret
             };
+            var plusDataSource = new GPlusDataSource(GetGoogleCredential(result));
+            var person = await plusDataSource.GetProfileAsync();
+            result.AccountName = person.Emails.FirstOrDefault()?.Value;
+            return result;
         }
 
         private static void SetCurrentCredentialsEnvironmentVariable()
