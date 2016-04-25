@@ -137,7 +137,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             return _instances?
                 .Where(x => !_showOnlyWindowsInstances || x.IsWindowsInstance())
-                .GroupBy(x => x.ZoneName())
+                .GroupBy(x => x.GetZoneName())
                 .Select(x => new ZoneViewModel(this, x.Key, x)).ToList();
         }
     }

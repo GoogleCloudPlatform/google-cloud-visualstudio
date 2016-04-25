@@ -133,6 +133,6 @@ namespace GoogleCloudExtension.DataSources
         /// Returns the zone name where the instance is located.
         /// </summary>
         /// <param name="instance">The the instance to check.</param>
-        public static string ZoneName(this Instance instance) => new Uri(instance.Zone).Segments.Last();
+        public static string GetZoneName(this Instance instance) => new Uri(instance.Zone).Segments.Last();
     }
 }

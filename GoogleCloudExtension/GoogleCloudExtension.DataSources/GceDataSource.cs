@@ -90,7 +90,7 @@ namespace GoogleCloudExtension.DataSources
         /// <returns>The fresh instance.</returns>
         public Task<Instance> RefreshInstance(Instance instance) =>
             GetInstance(
-                zoneName: instance.ZoneName(),
+                zoneName: instance.GetZoneName(),
                 name: instance.Name);
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="instance">The instance for which to look an operation, it is assumed that the instance is in the same project as the current project.</param>
         /// <returns>The pending operation.</returns>
         public GceOperation GetPendingOperation(Instance instance) =>
-            GetPendingOperation(projectId: ProjectId, zoneName: instance.ZoneName(), name: instance.Name);
+            GetPendingOperation(projectId: ProjectId, zoneName: instance.GetZoneName(), name: instance.Name);
 
         /// <summary>
         /// Stops an instance in the current project.
@@ -120,7 +120,7 @@ namespace GoogleCloudExtension.DataSources
         /// <returns>The new operation in flight.</returns>
         public GceOperation StopInstance(Instance instance)
         {
-            return StopInstance(zoneName: instance.ZoneName(), name: instance.Name);
+            return StopInstance(zoneName: instance.GetZoneName(), name: instance.Name);
         }
 
         /// <summary>
@@ -174,7 +174,7 @@ namespace GoogleCloudExtension.DataSources
         /// <returns>The new pending operation.</returns>
         public GceOperation StartInstance(Instance instance)
         {
-            return StartInstance(zoneName: instance.ZoneName(), name: instance.Name);
+            return StartInstance(zoneName: instance.GetZoneName(), name: instance.Name);
         }
 
         /// <summary>

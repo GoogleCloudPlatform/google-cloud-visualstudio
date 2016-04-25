@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         [Category(Category)]
         [Description("The zone of the instance")]
-        public string Zone => Instance.ZoneName();
+        public string Zone => Instance.GetZoneName();
 
         [Category(Category)]
         [Description("The machine type for the instance")]
