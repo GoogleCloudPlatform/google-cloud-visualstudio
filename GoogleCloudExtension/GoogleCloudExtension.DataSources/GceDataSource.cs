@@ -18,6 +18,11 @@ namespace GoogleCloudExtension.DataSources
     /// </summary>
     public class GceDataSource : DataSourceBase<ComputeService>
     {
+        /// <summary>
+        /// This list is a global list of all of the operations pending created by instances of this class.
+        /// It is not synchronized, as it is assumed that it will always be access from the same thread
+        /// typically the UI thread.
+        /// </summary>
         private static readonly List<GceOperation> s_pendingOperations = new List<GceOperation>();
 
         /// <summary>
@@ -25,7 +30,7 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="projectId">The project id that contains the GCE instances to manipulate.</param>
         /// <param name="credential">The credentials to use for the call.</param>
-        public GceDataSource(string projectId, GoogleCredential credential) : base(projectId, () => CreateService(credential))
+        public GceDataSource(string projectId, GoogleCredential credential) : base(projectId, CreateService(credential))
         { }
 
         private static ComputeService CreateService(GoogleCredential credential)
@@ -47,16 +52,12 @@ namespace GoogleCloudExtension.DataSources
                 var zones = await GetZoneListAsync();
 
                 //  2) Request in parallel the instances in each zone.
-                var result = new List<Instance>();
                 var requestResults = zones
                     .Select(x => GetInstancesInZoneListAsync(x.Name));
 
-                // 3) Merge the results into a single list.
-                foreach (var instancesPerZone in await Task.WhenAll(requestResults))
-                {
-                    result.AddRange(instancesPerZone);
-                }
-                return result;
+                // Flatten to single list.
+                var results = await Task.WhenAll(requestResults);
+                return results.SelectMany(x => x).ToList();
             }
             catch (GoogleApiException ex)
             {
@@ -101,13 +102,13 @@ namespace GoogleCloudExtension.DataSources
         /// <returns>The pending operation.</returns>
         public GceOperation GetPendingOperation(string projectId, string zoneName, string name) =>
             s_pendingOperations
-            .Where(x => !x.OperationTask.IsCompleted)
-            .FirstOrDefault(x => x.ProjectId == projectId && x.ZoneName == zoneName && x.Name == name);
+                .Where(x => !x.OperationTask.IsCompleted)
+                .FirstOrDefault(x => x.ProjectId == projectId && x.ZoneName == zoneName && x.Name == name);
 
         /// <summary>
         /// Looks up a pending operation for the given <paramref name="instance"/>.
         /// </summary>
-        /// <param name="instance">The instance for which to look an operaiton, it is assumed that the instance is in the same project as the current project.</param>
+        /// <param name="instance">The instance for which to look an operation, it is assumed that the instance is in the same project as the current project.</param>
         /// <returns>The pending operation.</returns>
         public GceOperation GetPendingOperation(Instance instance) =>
             GetPendingOperation(projectId: ProjectId, zoneName: instance.ZoneName(), name: instance.Name);
@@ -227,7 +228,7 @@ namespace GoogleCloudExtension.DataSources
                 {
                     if (String.IsNullOrEmpty(token))
                     {
-                        Debug.WriteLine("Fetching the last page.");
+                        Debug.WriteLine("Fetching the first page.");
                         return Service.Zones.List(ProjectId).ExecuteAsync();
                     }
                     else
@@ -249,7 +250,7 @@ namespace GoogleCloudExtension.DataSources
                 {
                     if (String.IsNullOrEmpty(token))
                     {
-                        Debug.WriteLine("Fetching last page.");
+                        Debug.WriteLine("Fetching first page.");
                         return Service.Instances.List(ProjectId, zoneName).ExecuteAsync();
                     }
                     else
@@ -281,7 +282,7 @@ namespace GoogleCloudExtension.DataSources
                         }
                         return;
                     }
-                    await Task.Delay(500);
+                    await Task.Delay(2000);
                 }
             }
             catch (GoogleApiException ex)

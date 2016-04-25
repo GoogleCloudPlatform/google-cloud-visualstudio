@@ -7,6 +7,7 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using Google.Apis.Services;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
@@ -21,7 +22,7 @@ namespace GoogleCloudExtension.DataSources
         /// The constructor for the class.
         /// </summary>
         /// <param name="credential"></param>
-        public ResourceManagerDataSource(GoogleCredential credential) : base(() => CreateService(credential))
+        public ResourceManagerDataSource(GoogleCredential credential) : base(CreateService(credential))
         { }
 
         private static CloudResourceManagerService CreateService(GoogleCredential credential)
@@ -42,10 +43,12 @@ namespace GoogleCloudExtension.DataSources
                 {
                     if (String.IsNullOrEmpty(token))
                     {
+                        Debug.WriteLine("Fetching first page.");
                         return Service.Projects.List().ExecuteAsync();
                     }
                     else
                     {
+                        Debug.WriteLine($"Fetchin page: {token}");
                         var request = Service.Projects.List();
                         request.PageToken = token;
                         return request.ExecuteAsync();

@@ -33,19 +33,19 @@ namespace GoogleCloudExtension.DataSources
         /// create an instance of the service to wrap.
         /// </summary>
         /// <param name="projectId">The project id for this data source.</param>
-        /// <param name="factory">The factory to use to create a service.</param>
-        protected DataSourceBase(string projectId, Func<TService> factory)
+        /// <param name="service">The service for this data source.</param>
+        protected DataSourceBase(string projectId, TService service)
         {
             ProjectId = projectId;
-            Service = factory();
+            Service = service;
         }
 
         /// <summary>
         /// Initializes an instance of the data source with only a service, for those APIs that do
         /// not require a project id.
         /// </summary>
-        /// <param name="factory">The factory to use to create a service.</param>
-        protected DataSourceBase(Func<TService> factory) : this(null, factory)
+        /// <param name="service">The service for this data source.</param>
+        protected DataSourceBase(TService service) : this(null, service)
         { }
 
         /// <summary>

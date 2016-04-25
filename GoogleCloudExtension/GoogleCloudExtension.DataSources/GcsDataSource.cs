@@ -21,7 +21,7 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="projectId"></param>
         /// <param name="credential"></param>
-        public GcsDataSource(string projectId, GoogleCredential credential) : base(projectId, () => CreateService(credential))
+        public GcsDataSource(string projectId, GoogleCredential credential) : base(projectId, CreateService(credential))
         { }
 
         private static StorageService CreateService(GoogleCredential credential)
@@ -43,12 +43,12 @@ namespace GoogleCloudExtension.DataSources
                 {
                     if (String.IsNullOrEmpty(token))
                     {
-                        Debug.WriteLine("Loading final page.");
+                        Debug.WriteLine("Fetching first page.");
                         return Service.Buckets.List(ProjectId).ExecuteAsync();
                     }
                     else
                     {
-                        Debug.WriteLine($"Loading page: {token}");
+                        Debug.WriteLine($"Fetchin page: {token}");
                         var request = Service.Buckets.List(ProjectId);
                         request.PageToken = token;
                         return request.ExecuteAsync();

@@ -1,6 +1,8 @@
 # GoogleCloudExtension.DataSources
 This library implements a set of very simple data sources that allow the extension to access data about Google Cloud Platform services. The library also contains a set of supporting classes used by said data sources.
 
+None of these classes are thread safe, being designed to be used from UI applications and therefore accessed from the UI thread only. All operations are started and awaited from the UI thread only, any other use is not supported.
+
 ## Data sources supported
 The data sources implemented in the library are:
 
