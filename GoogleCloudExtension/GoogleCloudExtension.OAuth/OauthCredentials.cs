@@ -1,6 +1,9 @@
 ﻿
 namespace GoogleCloudExtension.OAuth
 {
+    /// <summary>
+    /// Contains the OAUTH credentials to use for OAUTH authentication.
+    /// </summary>
     public class OAuthCredentials
     {
         public string ClientId { get; }

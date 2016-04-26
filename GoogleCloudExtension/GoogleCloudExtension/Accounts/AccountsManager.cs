@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.Accounts
 
         public static async Task<bool> AddAccountFlowAsync()
         {
-            var url = OAuthManager.GetOAuthBeginFlowUrl(s_extensionCredentials, s_extensionScopes);
+            var url = OAuthManager.GetInitialOAuthUrl(s_extensionCredentials, s_extensionScopes);
             string accessCode = OAuthLoginFlowWindow.RunOAuthFlow(url);
             if (accessCode == null)
             {
@@ -59,14 +59,14 @@ namespace GoogleCloudExtension.Accounts
                 return false;
             }
 
-            var loginResult = await OAuthManager.EndOAuthFlow(s_extensionCredentials, accessCode);
-            var credentials = await GetUserAccountForLoginResult(loginResult);
+            var refreshToken = await OAuthManager.EndOAuthFlow(s_extensionCredentials, accessCode);
+            var credentials = await GetUserAccountForRefreshToken(refreshToken);
 
             var existingUserAccount = s_credentialsStore.GetAccount(credentials.AccountName);
             if (existingUserAccount != null)
             {
                 Debug.WriteLine($"Duplicated account {credentials.AccountName}");
-                UserPromptUtils.OkPrompt($"The user account {credentials.AccountName} already exists.", "Duplicate Account");
+                UserPromptUtils.ErrorPrompt($"The user account {credentials.AccountName} already exists.", "Duplicate Account");
                 return false;
             }
 
@@ -85,11 +85,11 @@ namespace GoogleCloudExtension.Accounts
 
         public static IEnumerable<UserAccount> GetAccountsList() => s_credentialsStore.AccountsList;
 
-        private static async Task<UserAccount> GetUserAccountForLoginResult(OAuthLoginResult loginResult)
+        private static async Task<UserAccount> GetUserAccountForRefreshToken(string refreshToken)
         {
             var result = new UserAccount
             {
-                RefreshToken = loginResult.RefreshToken,
+                RefreshToken = refreshToken,
                 ClientId = s_extensionCredentials.ClientId,
                 ClientSecret = s_extensionCredentials.ClientSecret
             };

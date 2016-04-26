@@ -50,11 +50,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccessToken.cs" />
-    <Compile Include="Models\AccessTokenModel.cs" />
+    <Compile Include="Models\RefreshTokenModel.cs" />
     <Compile Include="OAuthCredentials.cs" />
     <Compile Include="OAuthException.cs" />
-    <Compile Include="OAuthLoginResult.cs" />
     <Compile Include="OAuthManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

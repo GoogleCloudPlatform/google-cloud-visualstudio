@@ -3,6 +3,9 @@ using System.Runtime.Serialization;
 
 namespace GoogleCloudExtension.OAuth
 {
+    /// <summary>
+    /// Exception thrown when encountering issues with oauth servers.
+    /// </summary>
     [Serializable]
     public class OAuthException : Exception
     {
