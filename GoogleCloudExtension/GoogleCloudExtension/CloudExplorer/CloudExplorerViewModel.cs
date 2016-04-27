@@ -94,11 +94,8 @@ namespace GoogleCloudExtension.CloudExplorer
                 _buttons.AddRange(sourceButtons);
             }
 
-            ManageAccountsCommand = new WeakCommand(OnManageAccountsCommand, canExecuteCommand: AccountsManager.CurrentAccount != null);
-            if (AccountsManager.CurrentAccount != null)
-            {
-                UpdateUserProfile();
-            }
+            ManageAccountsCommand = new WeakCommand(OnManageAccountsCommand);
+            UpdateUserProfile();
 
             AccountsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
         }
@@ -109,12 +106,20 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void UpdateUserProfile()
         {
-            var profileTask = _plusDataSource.Value.GetProfileAsync();
-            ProfilePictureAsync = AsyncPropertyValue<string>.CreateAsyncProperty(profileTask, x => x.Image.Url);
-            ProfileNameAsync = AsyncPropertyValue<string>.CreateAsyncProperty(
-                profileTask,
-                x => x.Emails.FirstOrDefault()?.Value,
-                "Loading...");
+            if (AccountsManager.CurrentAccount == null)
+            {
+                ProfilePictureAsync = null;
+                ProfileNameAsync = AsyncPropertyValue<string>.CreateAsyncProperty("Not logged in...");
+            }
+            else
+            {
+                var profileTask = _plusDataSource.Value.GetProfileAsync();
+                ProfilePictureAsync = AsyncPropertyValue<string>.CreateAsyncProperty(profileTask, x => x.Image.Url);
+                ProfileNameAsync = AsyncPropertyValue<string>.CreateAsyncProperty(
+                    profileTask,
+                    x => x.Emails.FirstOrDefault()?.Value,
+                    "Loading...");
+            }
         }
 
         private void OnManageAccountsCommand()
@@ -131,13 +136,12 @@ namespace GoogleCloudExtension.CloudExplorer
 
                 ResetDataSources();
 
-                ManageAccountsCommand.CanExecuteCommand = AccountsManager.CurrentAccount != null;
-
                 if (AccountsManager.CurrentAccount == null)
                 {
-                    ProjectsAsync = null;
+                    ProjectsAsync = AsyncPropertyValue<IEnumerable<Project>>.CreateAsyncProperty(Enumerable.Empty<Project>());
                     InvalidateSourcesCredentials();
                     RefreshSources();
+                    UpdateUserProfile();
                     return;
                 }
 

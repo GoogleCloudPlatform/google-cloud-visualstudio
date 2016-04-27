@@ -65,7 +65,7 @@ namespace GoogleCloudExtension.Accounts
 
             if (account.AccountName == CurrentAccount?.AccountName)
             {
-                DeleteCurrentAccountMarker();
+                CurrentAccount = null;
                 result = true;
             }
 

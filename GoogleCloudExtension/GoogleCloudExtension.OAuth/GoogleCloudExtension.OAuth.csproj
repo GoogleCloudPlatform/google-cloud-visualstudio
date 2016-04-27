@@ -53,6 +53,7 @@
     <Compile Include="Models\RefreshTokenModel.cs" />
     <Compile Include="OAuthCredentials.cs" />
     <Compile Include="OAuthException.cs" />
+    <Compile Include="OAuthLoginFlow.cs" />
     <Compile Include="OAuthManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -1,4 +1,7 @@
-﻿using GoogleCloudExtension.OAuth.Models;
+﻿// Copyright 2016 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+using GoogleCloudExtension.OAuth.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -15,7 +18,7 @@ namespace GoogleCloudExtension.OAuth
     /// This is a rather small class that takes care of the OAUTH protocol to get at the refresh token for
     /// a user.
     /// </summary>
-    public static class OAuthManager
+    internal static class OAuthManager
     {
         /// <summary>
         /// The URL for the oauth service.
@@ -23,22 +26,17 @@ namespace GoogleCloudExtension.OAuth
         private const string OAuthApiUrl = "https://www.googleapis.com/oauth2/v3/token";
 
         /// <summary>
-        /// The redirect url to use in the flow to get the credentials as the title of the window.
-        /// </summary>
-        private const string OAuthRedirectUrl = "urn:ietf:wg:oauth:2.0:oob";
-
-        /// <summary>
         /// Returns the URL to use to start the OAUTH login flow.
         /// </summary>
         /// <param name="credentials"></param>
         /// <param name="scopes"></param>
-        public static string GetInitialOAuthUrl(OAuthCredentials credentials, IEnumerable<string> scopes)
+        public static string GetInitialOAuthUrl(OAuthCredentials credentials, string redirectUrl, IEnumerable<string> scopes)
         {
             var form = new Dictionary<string, string>
             {
                 ["response_type"] = "code",
                 ["client_id"] = credentials.ClientId,
-                ["redirect_uri"] = OAuthRedirectUrl,
+                ["redirect_uri"] = redirectUrl,
                 ["scope"] = String.Join(" ", scopes),
             };
             return $"https://accounts.google.com/o/oauth2/auth?{ToQueryString(form)}";
@@ -49,14 +47,14 @@ namespace GoogleCloudExtension.OAuth
         /// </summary>
         /// <param name="credentials">The oauth credentials.</param>
         /// <param name="accessCode">The access code returned from the login flow.</param>
-        public static async Task<string> EndOAuthFlow(OAuthCredentials credentials, string accessCode)
+        public static async Task<string> EndOAuthFlow(OAuthCredentials credentials, string redirectUrl, string accessCode)
         {
             var client = new WebClient();
             var form = new NameValueCollection();
             form.Add("code", accessCode);
             form.Add("client_id", credentials.ClientId);
             form.Add("client_secret", credentials.ClientSecret);
-            form.Add("redirect_uri", OAuthRedirectUrl);
+            form.Add("redirect_uri", redirectUrl);
             form.Add("grant_type", "authorization_code");
 
             try

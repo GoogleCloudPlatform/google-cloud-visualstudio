@@ -4,6 +4,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension", "GoogleCloudExtension\GoogleCloudExtension.csproj", "{BFD6AFBF-F0DB-4CE1-9681-DAE4E93F6DC5}"
+	ProjectSection(ProjectDependencies) = postProject
+		{AD8B672D-7F0A-4C7F-9774-A9458A99A061} = {AD8B672D-7F0A-4C7F-9774-A9458A99A061}
+		{A2D9AC4E-9621-4385-A175-316832F7BFDC} = {A2D9AC4E-9621-4385-A175-316832F7BFDC}
+		{3988AAC1-3B20-4BA1-9627-ED7D3C80145F} = {3988AAC1-3B20-4BA1-9627-ED7D3C80145F}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.Utils", "GoogleCloudExtension.Utils\GoogleCloudExtension.Utils.csproj", "{21501704-9D0C-442F-AD39-292B3DA4BC57}"
 EndProject

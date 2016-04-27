@@ -104,8 +104,8 @@ namespace GoogleCloudExtension.ManageAccounts
             Debug.WriteLine("Stating the oauth login flow.");
             if (await AccountsManager.AddAccountFlowAsync())
             {
-                Debug.WriteLine("The user logged in, refresh the list of accounts.");
-                UserAccountsList = LoadUserCredentialsViewModel();
+                Debug.WriteLine($"The user logged in: {AccountsManager.CurrentAccount.AccountName}");
+                _owner.Close();
             }
         }
 

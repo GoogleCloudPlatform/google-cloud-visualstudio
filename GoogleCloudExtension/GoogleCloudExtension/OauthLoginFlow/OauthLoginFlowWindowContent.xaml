@@ -6,11 +6,14 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.OauthLoginFlow"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type local:OAuthLoginFlowViewModel}}" d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-        <!-- The main UI -->
-        <WebBrowser x:Name="_webBrowser"
-                    Navigating="WebBrowser_Navigating"
-                    Navigated="WebBrowser_Navigated"/>
-        
-    </Grid>
+    <StackPanel Margin="5">
+        <TextBlock TextWrapping="Wrap">
+            A browser window has been opened for you to enter your credentials, if you wish to cancel this operation just close
+            the browser close this window. When the credentials operation is finished this window will close automatically.
+        </TextBlock>
+
+        <Button HorizontalAlignment="Left"
+                Command="{Binding CloseCommand}"
+                Margin="0,5,0,0" Padding="5">Cancel</Button>
+    </StackPanel>
 </UserControl>

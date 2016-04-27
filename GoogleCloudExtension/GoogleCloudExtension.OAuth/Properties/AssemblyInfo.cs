@@ -1,4 +1,7 @@
-﻿using System.Reflection;
+﻿// Copyright 2016 Google Inc. All Rights Reserved.
+// Licensed under the Apache License Version 2.0.
+
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 

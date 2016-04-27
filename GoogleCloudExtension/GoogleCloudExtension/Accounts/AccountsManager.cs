@@ -51,27 +51,34 @@ namespace GoogleCloudExtension.Accounts
 
         public static async Task<bool> AddAccountFlowAsync()
         {
-            var url = OAuthManager.GetInitialOAuthUrl(s_extensionCredentials, s_extensionScopes);
-            string accessCode = OAuthLoginFlowWindow.RunOAuthFlow(url);
-            if (accessCode == null)
+            try
             {
-                Debug.WriteLine("The user cancelled the OAUTH login flow.");
+                string refreshToken = OAuthLoginFlowWindow.PromptUser(s_extensionCredentials, s_extensionScopes);
+                if (refreshToken == null)
+                {
+                    Debug.WriteLine("The user cancelled the OAUTH login flow.");
+                    return false;
+                }
+                var credentials = await GetUserAccountForRefreshToken(refreshToken);
+
+                var existingUserAccount = s_credentialsStore.GetAccount(credentials.AccountName);
+                if (existingUserAccount != null)
+                {
+                    Debug.WriteLine($"Duplicated account {credentials.AccountName}");
+                    UserPromptUtils.ErrorPrompt($"The user account {credentials.AccountName} already exists.", "Duplicate Account");
+                    return false;
+                }
+
+                // Store the new account and set it as the current account.
+                s_credentialsStore.AddAccount(credentials);
+                CurrentAccount = credentials;
+                return true;
+            }
+            catch (OAuthException ex)
+            {
+                UserPromptUtils.ErrorPrompt($"Failed to perform OAUTH authentication. {ex.Message}", "OAUTH error");
                 return false;
             }
-
-            var refreshToken = await OAuthManager.EndOAuthFlow(s_extensionCredentials, accessCode);
-            var credentials = await GetUserAccountForRefreshToken(refreshToken);
-
-            var existingUserAccount = s_credentialsStore.GetAccount(credentials.AccountName);
-            if (existingUserAccount != null)
-            {
-                Debug.WriteLine($"Duplicated account {credentials.AccountName}");
-                UserPromptUtils.ErrorPrompt($"The user account {credentials.AccountName} already exists.", "Duplicate Account");
-                return false;
-            }
-
-            s_credentialsStore.AddAccount(credentials);
-            return true;
         }
 
         public static void DeleteAccount(UserAccount userAccount)
