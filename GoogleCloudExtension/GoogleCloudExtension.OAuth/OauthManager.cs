@@ -1,7 +1,6 @@
 ﻿// Copyright 2016 Google Inc. All Rights Reserved.
 // Licensed under the Apache License Version 2.0.
 
-using GoogleCloudExtension.OAuth.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -61,8 +60,8 @@ namespace GoogleCloudExtension.OAuth
             {
                 var response = await client.UploadValuesTaskAsync(OAuthApiUrl, form);
                 var decoded = Encoding.UTF8.GetString(response);
-                var model = JsonConvert.DeserializeObject<RefreshTokenModel>(decoded);
-                return model.RefreshToken;
+                var model = JsonConvert.DeserializeObject<IDictionary<string, string>>(decoded);
+                return model["refresh_token"];
             }
             catch (WebException ex)
             {

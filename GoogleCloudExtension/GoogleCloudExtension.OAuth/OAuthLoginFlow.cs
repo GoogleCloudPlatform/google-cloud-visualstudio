@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.OAuth
         /// <returns>A task that will contain the refresh token in case of login success or null if user failed to login.</returns>
         public async Task<string> RunFlowAsync(CancellationToken token)
         {
-            var selectedPort = await SelectPort();
+            var selectedPort = await SelectPortAsync();
             var redirectUrl = GetRedirectUrl(selectedPort);
             Debug.WriteLine($"Using redirect url {redirectUrl}");
 
@@ -82,7 +82,6 @@ namespace GoogleCloudExtension.OAuth
 
         private string GetRedirectUrl(object selectedPort) => $"http://localhost:{selectedPort}/";
 
-
         /// <summary>
         /// This method is designed to run on a background thread, running a most simple Httplistener
         /// waiting for the OAUTH code to come back. This method supports cancellation through the provided
@@ -100,20 +99,13 @@ namespace GoogleCloudExtension.OAuth
 
                     // Main task for waiting for the request.
                     var contextTask = listener.GetContextAsync();
+                    var cancellationTask = GetCancellationTask(token);
 
-                    // Poll the context task, waiting for it to complete, periodically checking if the
-                    // cancellation token was set.
-                    while (true)
+                    var completedTask = await Task.WhenAny(contextTask, cancellationTask);
+                    if (completedTask == cancellationTask)
                     {
-                        // Check that the task has been completed and we have a context.
-                        var completedTask = await Task.WhenAny(contextTask, Task.Delay(500));
-                        if (completedTask == contextTask)
-                        {
-                            Debug.WriteLine("Waiting for oauth code complete.");
-                            break;
-                        }
-
-                        // Check the cancellation token to see if we need to stop the operation.
+                        // Because the cancellation task is marked as cancelled this means that the cancellation token
+                        // is cancelled, propagate the cancellation to the caller.
                         token.ThrowIfCancellationRequested();
                     }
 
@@ -159,7 +151,7 @@ namespace GoogleCloudExtension.OAuth
         /// This method selects a port on which to run.
         /// </summary>
         /// <returns></returns>
-        private Task<int> SelectPort()
+        private Task<int> SelectPortAsync()
         {
             return Task.Run(() =>
             {
@@ -174,6 +166,19 @@ namespace GoogleCloudExtension.OAuth
                     listener.Stop();
                 }
             });
+        }
+
+        /// <summary>
+        /// Returns a task that will never complete succesfully, but will bet set to cancelled if the given
+        /// cancellation token is cancelled.
+        /// </summary>
+        /// <param name="token">The cancellation token to wrap in a task.</param>
+        /// <returns></returns>
+        private static Task GetCancellationTask(CancellationToken token)
+        {
+            var taskSource = new TaskCompletionSource<object>();
+            token.Register(() => taskSource.TrySetCanceled());
+            return taskSource.Task;
         }
     }
 }
