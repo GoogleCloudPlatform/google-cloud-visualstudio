@@ -25,6 +25,28 @@ namespace GoogleCloudExtension.OAuth
         private const string OAuthApiUrl = "https://www.googleapis.com/oauth2/v3/token";
 
         /// <summary>
+        /// Keys for the OAUTH 2.0 protocol.
+        /// </summary>
+        private const string ClientIdKey = "client_id";
+        private const string ClientSecretKey = "client_secret";
+        private const string GrantTypeKey = "grant_type";
+        private const string RedirectUriKey = "redirect_uri";
+        private const string RefreshTokenKey = "refresh_token";
+        private const string ResponseTypeKey = "response_type";
+        private const string ScopeKey = "scope";
+
+        /// <summary>
+        /// Values for the OAUTH 2.0 protocol.
+        /// </summary>
+        private const string AuthorizationCodeValue = "authorization_code";
+        private const string CodeValue = "code";
+
+        /// <summary>
+        /// The separator for the scopes.
+        /// </summary>
+        private const string ScopesSeparator = " ";
+
+        /// <summary>
         /// Returns the URL to use to start the OAUTH login flow.
         /// </summary>
         /// <param name="credentials"></param>
@@ -33,10 +55,10 @@ namespace GoogleCloudExtension.OAuth
         {
             var form = new Dictionary<string, string>
             {
-                ["response_type"] = "code",
-                ["client_id"] = credentials.ClientId,
-                ["redirect_uri"] = redirectUrl,
-                ["scope"] = String.Join(" ", scopes),
+                { ResponseTypeKey, CodeValue },
+                { ClientIdKey, credentials.ClientId },
+                { RedirectUriKey, redirectUrl },
+                { ScopeKey, String.Join(ScopesSeparator, scopes) },
             };
             return $"https://accounts.google.com/o/oauth2/auth?{ToQueryString(form)}";
         }
@@ -49,19 +71,21 @@ namespace GoogleCloudExtension.OAuth
         public static async Task<string> EndOAuthFlow(OAuthCredentials credentials, string redirectUrl, string accessCode)
         {
             var client = new WebClient();
-            var form = new NameValueCollection();
-            form.Add("code", accessCode);
-            form.Add("client_id", credentials.ClientId);
-            form.Add("client_secret", credentials.ClientSecret);
-            form.Add("redirect_uri", redirectUrl);
-            form.Add("grant_type", "authorization_code");
+            var form = new NameValueCollection
+            {
+                { CodeValue, accessCode },
+                { ClientIdKey, credentials.ClientId },
+                { ClientSecretKey, credentials.ClientSecret },
+                { RedirectUriKey, redirectUrl },
+                { GrantTypeKey, AuthorizationCodeValue },
+            };
 
             try
             {
                 var response = await client.UploadValuesTaskAsync(OAuthApiUrl, form);
                 var decoded = Encoding.UTF8.GetString(response);
                 var model = JsonConvert.DeserializeObject<IDictionary<string, string>>(decoded);
-                return model["refresh_token"];
+                return model[RefreshTokenKey];
             }
             catch (WebException ex)
             {
@@ -75,11 +99,9 @@ namespace GoogleCloudExtension.OAuth
             }
         }
 
-        private static string ToQueryString(IDictionary<string, string> form)
-        {
-            return String.Join(
+        private static string ToQueryString(IDictionary<string, string> form) =>
+            String.Join(
                 "&",
                 form.Select(x => $"{x.Key}={Uri.EscapeUriString(x.Value)}"));
-        }
     }
 }
