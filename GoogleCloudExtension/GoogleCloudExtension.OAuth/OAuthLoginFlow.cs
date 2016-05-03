@@ -97,18 +97,13 @@ namespace GoogleCloudExtension.OAuth
                     listener.Start();
                     Debug.WriteLine($"Starting listening for OAUTH code in url {redirectUrl}");
 
-                    // Main task for waiting for the request.
-                    var contextTask = listener.GetContextAsync();
-                    var cancellationTask = GetCancellationTask(token);
+                    // Wait for the context and possibly the cancellation of the operation.
+                    var contextTask = await GetCancellableTaskAsync(
+                        listener.GetContextAsync(),
+                        token);
 
-                    var completedTask = await Task.WhenAny(contextTask, cancellationTask);
-                    if (completedTask == cancellationTask)
-                    {
-                        // Because the cancellation task is marked as cancelled this means that the cancellation token
-                        // is cancelled, propagate the cancellation to the caller.
-                        token.ThrowIfCancellationRequested();
-                    }
-
+                    // Awaits the resulting task. If the task is the cancelled one it will throw, otherwise
+                    // it will just return the context.
                     var context = await contextTask;
                     var accessCode = context.Request.QueryString["code"];
                     var error = context.Request.QueryString["error"];
@@ -169,16 +164,21 @@ namespace GoogleCloudExtension.OAuth
         }
 
         /// <summary>
-        /// Returns a task that will never complete succesfully, but will bet set to cancelled if the given
-        /// cancellation token is cancelled.
+        /// Returns a task that can be awaited to get the task with the data. (There are two levels of await here). If
+        /// the operation completed normally then <paramref name="sourceTask"/> is returend and when awaited the result of the
+        /// operation is returned. If the operation is cancelled then a cancelled dummy task is returned, when awaited 
+        /// <seealso cref="TaskCanceledException"/> is thrown. This way any task can be made cancellable if the original 
+        /// source of the task doesn't support cancellation.
         /// </summary>
-        /// <param name="token">The cancellation token to wrap in a task.</param>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sourceTask"></param>
+        /// <param name="token"></param>
         /// <returns></returns>
-        private static Task GetCancellationTask(CancellationToken token)
+        private static Task<Task<T>> GetCancellableTaskAsync<T>(Task<T> sourceTask, CancellationToken token)
         {
-            var taskSource = new TaskCompletionSource<object>();
+            var taskSource = new TaskCompletionSource<T>();
             token.Register(() => taskSource.TrySetCanceled());
-            return taskSource.Task;
+            return Task.WhenAny<T>(sourceTask, taskSource.Task);
         }
     }
 }
