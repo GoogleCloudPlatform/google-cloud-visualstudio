@@ -4,7 +4,7 @@
 namespace GoogleCloudExtension.OAuth
 {
     /// <summary>
-    /// Contains the OAUTH credentials to use for OAUTH authentication.
+    /// Contains the OAUTH credentials to use for OAUTH 2.0 authentication.
     /// </summary>
     public class OAuthCredentials
     {

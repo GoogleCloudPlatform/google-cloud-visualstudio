@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtension.OAuth
 {
     /// <summary>
-    /// This is a rather small class that takes care of the OAUTH protocol to get at the refresh token for
+    /// This is a rather small class that takes care of the OAUTH 2.0 protocol to get at the refresh token for
     /// a user.
     /// </summary>
     internal static class OAuthManager
