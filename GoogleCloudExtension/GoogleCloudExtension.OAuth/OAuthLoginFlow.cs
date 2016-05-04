@@ -129,7 +129,6 @@ namespace GoogleCloudExtension.OAuth
                     using (var stream = response.OutputStream)
                     {
                         stream.Write(buff, 0, buff.Length);
-                        stream.Close();
                     }
 
                     return new FlowResult { AccessCode = accessCode, Error = error };
