@@ -102,6 +102,6 @@ namespace GoogleCloudExtension.OAuth
         private static string ToQueryString(IDictionary<string, string> form) =>
             String.Join(
                 "&",
-                form.Select(x => $"{x.Key}={Uri.EscapeUriString(x.Value)}"));
+                form.Select(x => $"{x.Key}={Uri.EscapeDataString(x.Value)}"));
     }
 }
