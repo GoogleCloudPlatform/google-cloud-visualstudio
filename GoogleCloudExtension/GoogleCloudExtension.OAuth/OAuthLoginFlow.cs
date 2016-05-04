@@ -169,10 +169,6 @@ namespace GoogleCloudExtension.OAuth
         /// <seealso cref="TaskCanceledException"/> is thrown. This way any task can be made cancellable if the original 
         /// source of the task doesn't support cancellation.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="sourceTask"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         private static Task<Task<T>> GetCancellableTaskAsync<T>(Task<T> sourceTask, CancellationToken token)
         {
             var taskSource = new TaskCompletionSource<T>();
