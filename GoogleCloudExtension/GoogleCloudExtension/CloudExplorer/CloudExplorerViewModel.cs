@@ -120,13 +120,13 @@ namespace GoogleCloudExtension.CloudExplorer
             if (AccountsManager.CurrentAccount == null)
             {
                 ProfilePictureAsync = null;
-                ProfileNameAsync = AsyncPropertyValue<string>.CreateAsyncProperty("Not logged in...");
+                ProfileNameAsync = new AsyncPropertyValue<string>("Not logged in...");
             }
             else
             {
                 var profileTask = _plusDataSource.Value.GetProfileAsync();
-                ProfilePictureAsync = AsyncPropertyValue<string>.CreateAsyncProperty(profileTask, x => x.Image.Url);
-                ProfileNameAsync = AsyncPropertyValue<string>.CreateAsyncProperty(
+                ProfilePictureAsync = AsyncPropertyValueUtils.CreateAsyncProperty(profileTask, x => x.Image.Url);
+                ProfileNameAsync = AsyncPropertyValueUtils.CreateAsyncProperty(
                     profileTask,
                     x => x.Emails.FirstOrDefault()?.Value,
                     "Loading...");
@@ -149,7 +149,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
                 if (AccountsManager.CurrentAccount == null)
                 {
-                    ProjectsAsync = AsyncPropertyValue<IEnumerable<Project>>.CreateAsyncProperty(Enumerable.Empty<Project>());
+                    ProjectsAsync = new AsyncPropertyValue<IEnumerable<Project>>(Enumerable.Empty<Project>());
                     InvalidateSourcesCredentials();
                     RefreshSources();
                     UpdateUserProfile();
