@@ -39,8 +39,8 @@ parser.add_argument('-v', '--verbose',
                     action='store_true')
 
 
-# The bom mark at the begining of the file.
-BOM_MARK = '\xef\xbb\xbf'
+# The bom at the begining of the file.
+BOM = '\xef\xbb\xbf'
 COMMENT_START = '//'
 
 
@@ -56,9 +56,9 @@ class SourceFile(object):
     def _process_contents(self):
         # Removes the BOM mark at the begining of the file. They will
         # be added later when serializing the file.
-        if self.contents[0].startswith(BOM_MARK):
+        if self.contents[0].startswith(BOM):
             self.has_bom = True
-            self.contents[0] = self.contents[0][len(BOM_MARK):]
+            self.contents[0] = self.contents[0][len(BOM):]
 
         # Assume that the comment at the begining of the file are
         # licenses.
@@ -102,11 +102,10 @@ class SourceFile(object):
         print ("")
 
     def update_file(self):
-        if params.verbose:
-            print ("Updating file: %s" % self.path)
+        print ("Updating file: %s" % self.path)
         with open(self.path, 'wt') as dest:
             if self.has_bom:
-                dest.write(BOM_MARK)
+                dest.write(BOM)
             for line in self.contents:
                 dest.write(line)
 
@@ -115,7 +114,7 @@ def load_all_files(dir):
     """Returns all of the csharp source files."""
     result = []
     for root, dirnames, filenames in os.walk(dir):
-        if 'obj\\' not in root:
+        if 'obj\\' not in root and 'bin\\' not in root:
             for name in fnmatch.filter(filenames, '*.cs'):
                 result.append(SourceFile(os.path.join(root, name)))
     return result

@@ -8,11 +8,13 @@ This batch script will deploy an ASP.NET 4.x application to the given Windows Se
 * The path to the .publishsettings file for the server to which to deploy.
 
 ## ensure_license.py
-This python script ensures that all .cs files under the directory given contains a license comment block at the very beginging of the file. If no license is found then the license text file provided is used as the license for the source file. 
+This python script ensures that all .cs files under the directory given contains a license comment block at the very begining of the file.
+
+If no license is found then the license text file provided is used as the license for the source file. 
 
 The script can also replace the existing license with the given license file.
 
-This script should be used before submitting a PR to ensure that all source code contains the license preabmle.
+This script should be used before submitting a PR to ensure that all source code contains the license preamble.
 
 The file [copyright_notice.txt](tools/copyright_notice.txt) is the current preamble to use of all source code.
 
