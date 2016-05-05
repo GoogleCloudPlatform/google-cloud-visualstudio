@@ -1,4 +1,17 @@
 #! /usr/bin/env python
+"""Script to ensure source code has license preamble.
+
+This script ensures that any .cs files under the root directory given
+will contain a license preamble. If one is found then the file is left
+alone, if not the given license file file is added.
+
+A license preamble is defined as a comment block at the very begining
+of the file.
+
+If the original source code had a BOM mark then the output of the
+script will also have one.
+
+"""
 
 from __future__ import print_function
 
@@ -29,16 +42,6 @@ parser.add_argument('-v', '--verbose',
 # The bom mark at the begining of the file.
 BOM_MARK = '\xef\xbb\xbf'
 COMMENT_START = '//'
-
-
-def load_all_files(dir):
-    """Returns all of the csharp source files."""
-    result = []
-    for root, dirnames, filenames in os.walk(dir):
-        if 'obj\\' not in root:
-            for name in fnmatch.filter(filenames, '*.cs'):
-                result.append(os.path.join(root, name))
-    return result
 
 
 class SourceFile(object):
@@ -108,16 +111,25 @@ class SourceFile(object):
                 dest.write(line)
 
 
+def load_all_files(dir):
+    """Returns all of the csharp source files."""
+    result = []
+    for root, dirnames, filenames in os.walk(dir):
+        if 'obj\\' not in root:
+            for name in fnmatch.filter(filenames, '*.cs'):
+                result.append(SourceFile(os.path.join(root, name)))
+    return result
+
+
 def main():
     files = load_all_files(params.directory)
     with open(params.license, 'r') as src:
         new_license = src.readlines()
     for file in files:
-        source_file = SourceFile(file)
         if params.verbose:
-            source_file.print()
-        source_file.replace_license(new_license, force=params.force)
-        source_file.update_file()
+            file.print()
+        file.replace_license(new_license, force=params.force)
+        file.update_file()
 
 
 if __name__ == "__main__":
