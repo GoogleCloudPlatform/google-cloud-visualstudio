@@ -15,7 +15,6 @@ set codeformatter_rules=^
   /rule:FormatDocument ^
   /rule:ReadonlyFields ^
   /rule:UsingLocation
-set codeformatter_flags=/copyright:%workspace%\tools\copyright_notice.txt
 
 rem Go through all of the .csproj files formatting them.
 pushd "%~1"
