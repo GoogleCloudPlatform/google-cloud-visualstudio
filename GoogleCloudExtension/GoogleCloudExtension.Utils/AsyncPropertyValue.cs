@@ -38,11 +38,11 @@ namespace GoogleCloudExtension.Utils
             private set { SetValueAndRaise(ref _value, value); }
         }
 
-        public bool IsPending => !_valueSource.IsCompleted;
+        public bool IsPending => !_valueSource?.IsCompleted ?? false;
 
-        public bool IsCompleted => _valueSource.IsCompleted;
+        public bool IsCompleted => _valueSource?.IsCompleted ?? true;
 
-        public bool IsError => _valueSource.IsFaulted;
+        public bool IsError => _valueSource?.IsFaulted ?? false;
 
         public AsyncPropertyValue(Task<T> valueSource, T defaultValue = default(T))
         {
@@ -51,32 +51,39 @@ namespace GoogleCloudExtension.Utils
             AwaitForValue();
         }
 
-        private async void AwaitForValue()
+        public AsyncPropertyValue(T value)
         {
-            try
+            _value = value;
+        }
+
+        private void AwaitForValue()
+        {
+            _valueSource.ContinueWith((t) =>
             {
-                Debug.WriteLine("Waiting for value...");
-                _value = await _valueSource;
-                Debug.WriteLine("Done waiting for value...");
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine($"Failed to get value: {ex.Message}");
-            }
-            finally
-            {
+                if (t.IsCompleted)
+                {
+                    _value = t.Result;
+                }
                 RaiseAllPropertyChanged();
-            }
+            });
         }
+    }
 
-        public static AsyncPropertyValue<T> CreateAsyncProperty<TIn>(Task<TIn> valueSource, Func<TIn, T> func, T defaultValue = default(T))
+    public static class AsyncPropertyValueUtils
+    {
+        /// <summary>
+        /// Creates an <seealso cref="AsyncPropertyValue{T}"/> from the given task. When the task competes it will
+        /// apply <paramref name="func"/> and that will be the final value of the property.
+        /// </summary>
+        /// <typeparam name="TIn">The type that the task will produce.</typeparam>
+        /// <typeparam name="T">The type that the property will produce.</typeparam>
+        /// <param name="valueSource">The task where the value comes from.</param>
+        /// <param name="func">The function to apply to the result of the task.</param>
+        /// <param name="defaultValue">The value to use while the task is executing.</param>
+        /// <returns></returns>
+        public static AsyncPropertyValue<T> CreateAsyncProperty<TIn, T>(Task<TIn> valueSource, Func<TIn, T> func, T defaultValue = default(T))
         {
-            return new AsyncPropertyValue<T>(valueSource.ContinueWith(t => func(t.Result)));
-        }
-
-        public static AsyncPropertyValue<T> CreateAsyncProperty<T>(T value)
-        {
-            return new AsyncPropertyValue<T>(Task.FromResult(value));
+            return new AsyncPropertyValue<T>(valueSource.ContinueWith(t => func(t.Result)), defaultValue);
         }
     }
 }
