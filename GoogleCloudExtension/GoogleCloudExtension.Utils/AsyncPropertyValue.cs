@@ -32,11 +32,7 @@ namespace GoogleCloudExtension.Utils
         /// The value of the property, which will be set once Task where the value comes from
         /// is completed.
         /// </summary>
-        public T Value
-        {
-            get { return _value; }
-            private set { SetValueAndRaise(ref _value, value); }
-        }
+        public T Value => _value;
 
         public bool IsPending => !_valueSource?.IsCompleted ?? false;
 

@@ -37,7 +37,7 @@ There is a variang of `WeakCommand` that accept a parameter and another one that
 ## General utils
 
 ### ProcessUtils
-The `ProcessUtils` class provices helpers to run processes and read the `stdout` and `stderr` streams from the process.
+The `ProcessUtils` class provides helpers to run processes and read the `stdout` and `stderr` streams from the process.
 
 The class can run a sub-process in various modes:
 * Run the process and provide the lines of output via a callback, using the `ProcessUtils.RunCommandAsync` method. This method will return once the process exits. The resulting boolean will be `true` if the process suceeded (the exit code is 0) or false otherwise.
