@@ -53,6 +53,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AsyncPropertyValue.cs" />
     <Compile Include="BooleanConverter.cs" />
     <Compile Include="JsonOutputException.cs" />
     <Compile Include="Model.cs" />
