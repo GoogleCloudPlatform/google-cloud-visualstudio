@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.Storage.v1.Data;
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.Utils;
 using System;
@@ -62,7 +63,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         private async void OnOpenBucket()
         {
-            var url = $"https://pantheon.corp.google.com/storage/browser/{_bucket.Name}/?project={_owner.Owner.CurrentProject.ProjectId}";
+            var url = $"https://pantheon.corp.google.com/storage/browser/{_bucket.Name}/?project={CredentialsStore.Default.CurrentProjectId}";
             Debug.WriteLine($"Starting bucket browsing at: {url}");
             Process.Start(url);
         }

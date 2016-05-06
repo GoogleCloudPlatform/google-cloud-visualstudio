@@ -72,9 +72,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         private GcsDataSource CreateDataSource()
         {
-            if (Owner.CurrentProject != null)
+            if (CredentialsStore.Default.CurrentProjectId != null)
             {
-                return new GcsDataSource(Owner.CurrentProject.ProjectId, AccountsManager.CurrentGoogleCredential);
+                return new GcsDataSource(CredentialsStore.Default.CurrentProjectId, CredentialsStore.Default.CurrentGoogleCredential);
             }
             else
             {
@@ -117,7 +117,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         private async Task<List<BucketViewModel>> LoadBucketList()
         {
-            var credential = AccountsManager.CurrentGoogleCredential;
+            var credential = CredentialsStore.Default.CurrentGoogleCredential;
             var buckets = await _dataSource.Value.GetBucketListAsync();
             return buckets?.Select(x => new BucketViewModel(this, x)).ToList();
         }

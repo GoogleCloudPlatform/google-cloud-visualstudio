@@ -93,9 +93,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private GceDataSource CreateDataSource()
         {
-            if (Owner.CurrentProject != null)
+            if (CredentialsStore.Default.CurrentProjectId != null)
             {
-                return new GceDataSource(Owner.CurrentProject.ProjectId, AccountsManager.CurrentGoogleCredential);
+                return new GceDataSource(CredentialsStore.Default.CurrentProjectId, CredentialsStore.Default.CurrentGoogleCredential);
             }
             else
             {

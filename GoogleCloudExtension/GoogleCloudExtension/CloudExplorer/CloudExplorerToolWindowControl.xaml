@@ -7,6 +7,7 @@
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              xmlns:Themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.AeroLite" x:Class="GoogleCloudExtension.CloudExplorer.CloudExplorerToolWindowControl"
+             xmlns:crm="clr-namespace:Google.Apis.CloudResourceManager.v1.Data;assembly=Google.Apis.CloudResourceManager.v1"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -322,9 +323,23 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
+
+        <!-- Data template for the GCP project. -->
+        <DataTemplate DataType="{x:Type crm:Project}">
+            <TextBlock>
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0} ({1}:{2})">
+                        <Binding Path="Name" />
+                        <Binding Path="ProjectId" />
+                        <Binding Path="ProjectNumber" />
+                    </MultiBinding>
+                </TextBlock.Text>
+            </TextBlock>
+        </DataTemplate>
+
     </UserControl.Resources>
 
-    <Grid IsEnabled="{Binding ProjectsAsync.IsCompleted}">
+    <Grid IsEnabled="{Binding IsReady}">
         <Grid.RowDefinitions>
             <!-- This row contains the button bar. -->
             <RowDefinition Height="30" />
@@ -401,30 +416,11 @@
         </Grid>
 
         <!-- Project switcher. -->
-        <ComboBox ItemsSource="{Binding ProjectsAsync.Value}"
+        <ComboBox ItemsSource="{Binding Projects}"
             Visibility="{Binding ProjectsAsync.IsCompleted, Converter={StaticResource visibilityConverter}}"
             SelectedItem="{Binding CurrentProject}"
             SelectedIndex="0"
-            Grid.Row="1" Style="{DynamicResource ProjectDropdownStyle}">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock>
-                        <TextBlock.Text>
-                            <MultiBinding StringFormat="{}{0} ({1}:{2})">
-                                <Binding Path="Name" />
-                                <Binding Path="ProjectId" />
-                                <Binding Path="ProjectNumber" />
-                            </MultiBinding>
-                        </TextBlock.Text>
-                    </TextBlock>
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-        </ComboBox>
-        <TextBlock Visibility="{Binding ProjectsAsync.IsPending, Converter={StaticResource visibilityConverter}}"
-                   Margin="5"
-                   Grid.Row="1">
-            Loading projects list...
-        </TextBlock>
+            Grid.Row="1" Style="{DynamicResource ProjectDropdownStyle}" />
 
         <!-- Hierarchical view of the modules and versions within the modules. -->
         <TreeView

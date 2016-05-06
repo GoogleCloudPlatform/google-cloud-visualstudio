@@ -47,13 +47,14 @@ namespace GoogleCloudExtension.ManageAccounts
             {
                 SetValueAndRaise(ref _currentUserAccount, value);
 
-                if (AccountsManager.CurrentAccount == null)
+                if (CredentialsStore.Default.CurrentAccount == null)
                 {
                     SetAsCurrentAcountCommand.CanExecuteCommand = value != null;
                 }
                 else
                 {
-                    SetAsCurrentAcountCommand.CanExecuteCommand = value != null && AccountsManager.CurrentAccount.AccountName != value.AccountName;
+                    SetAsCurrentAcountCommand.CanExecuteCommand = value != null 
+                        && CredentialsStore.Default.CurrentAccount.AccountName != value.AccountName;
                 }
 
                 DeleteAccountCommand.CanExecuteCommand = value != null;
@@ -73,7 +74,7 @@ namespace GoogleCloudExtension.ManageAccounts
             _owner = owner;
             _userAccountsList = LoadUserCredentialsViewModel();
 
-            CurrentAccountName = AccountsManager.CurrentAccount?.AccountName;
+            CurrentAccountName = CredentialsStore.Default.CurrentAccount?.AccountName;
 
             SetAsCurrentAcountCommand = new WeakCommand(OnSetAsCurrentAccountCommand, canExecuteCommand: false);
             DeleteAccountCommand = new WeakCommand(OnDeleteAccountCommand);
@@ -88,7 +89,7 @@ namespace GoogleCloudExtension.ManageAccounts
                 return;
             }
 
-            AccountsManager.CurrentAccount = userAccount.UserAccount;
+            CredentialsStore.Default.CurrentAccount = userAccount.UserAccount;
             _owner.Close();
         }
 
@@ -109,23 +110,23 @@ namespace GoogleCloudExtension.ManageAccounts
         private void OnSetAsCurrentAccountCommand()
         {
             Debug.WriteLine($"Setting current account: {CurrentAccountName}");
-            AccountsManager.CurrentAccount = CurrentUserAccount.UserAccount;
+            CredentialsStore.Default.CurrentAccount = CurrentUserAccount.UserAccount;
             _owner.Close();
         }
 
         private async void OnAddCredentialsCommand()
         {
             Debug.WriteLine("Stating the oauth login flow.");
-            if (await AccountsManager.AddAccountFlowAsync())
+            if (await AccountsManager.StartAddAccountFlowAsync())
             {
-                Debug.WriteLine($"The user logged in: {AccountsManager.CurrentAccount.AccountName}");
+                Debug.WriteLine($"The user logged in: {CredentialsStore.Default.CurrentAccount.AccountName}");
                 _owner.Close();
             }
         }
 
         private IEnumerable<UserAccountViewModel> LoadUserCredentialsViewModel()
         {
-            var userCredentials = AccountsManager.GetAccountsList();
+            var userCredentials = CredentialsStore.Default.AccountsList;
             var result = userCredentials.Select(x => new UserAccountViewModel(x)).ToList();
             return result;
         }

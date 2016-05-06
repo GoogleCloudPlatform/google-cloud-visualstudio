@@ -12,14 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.ComponentModel.Design;
-using System.Diagnostics;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
@@ -99,13 +96,6 @@ namespace GoogleCloudExtension.CloudExplorer
                 CommandInvocationSource.ToolsMenu,
                 () =>
                 {
-                    if (AccountsManager.CurrentAccount == null)
-                    {
-                        Debug.WriteLine("Attempted to open cloud explorer without credentials.");
-                        UserPromptUtils.OkPrompt("Plase login beore using this tool.", "Need credentials.");
-                        return;
-                    }
-
                     // Get the instance number 0 of this tool window. This window is single instance so this instance
                     // is actually the only one.
                     // The last flag is set to true so that if the tool window does not exists it will be created.

@@ -241,7 +241,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             Debug.WriteLine($"Failed to fetch oauth credentials: {ex.Message}");
             UserPromptUtils.OkPrompt(
-                $"Failed to fetch oauth credentials for account {AccountsManager.CurrentAccount.AccountName}, please login again.",
+                $"Failed to fetch oauth credentials for account {CredentialsStore.Default.CurrentAccount.AccountName}, please login again.",
                 "Credentials Error");
         }
 

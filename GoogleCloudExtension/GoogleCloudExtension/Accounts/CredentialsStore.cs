@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Auth.OAuth2;
 using GoogleCloudExtension.Accounts.Models;
 using Newtonsoft.Json;
 using System;
@@ -24,8 +25,17 @@ using System.Text;
 
 namespace GoogleCloudExtension.Accounts
 {
+    /// <summary>
+    /// This class manages the credentials store for the extension. Loading and saving the <see cref="UserAccount"/>
+    /// to the %HOME%\AppData\Local directory. This class also manages the default credentials to use when a project
+    /// doesn't specify credentials, or when Visual Studio is freshly opened. This default credentials is the last
+    /// set of credentials used by the extension.
+    /// </summary>
     public class CredentialsStore
     {
+        /// <summary>
+        /// Remembers the file name used to serialize a particular <see cref="UserAccount"/>.
+        /// </summary>
         private class StoredUserAccount
         {
             public string FileName { get; set; }
@@ -34,38 +44,83 @@ namespace GoogleCloudExtension.Accounts
         }
 
         private const string AccountsStorePath = @"googlecloudvsextension\accounts";
-        private const string CurrentAccountFileName = "current_account";
+        private const string DefaultCredentialsFileName = "default_credentials";
 
         private static readonly string s_credentialsStoreRoot = GetCredentialsStoreRoot();
-        private static readonly string s_currentAccountPath = GetCurrentAccountMarkerPath();
+        private static readonly Lazy<CredentialsStore> s_defaultCredentialsStore = new Lazy<CredentialsStore>(() => new CredentialsStore());
 
         private Dictionary<string, StoredUserAccount> _cachedCredentials;
         private UserAccount _currentAccount;
+        private string _currentProjectId;
 
+        public static CredentialsStore Default => s_defaultCredentialsStore.Value;
+
+        public event EventHandler CurrentAccountChanged;
+        public event EventHandler CurrentProjectIdChanged;
+        public event EventHandler Reset;
+
+        /// <summary>
+        /// The current <see cref="UserAccount"/> selected.S
+        /// </summary>
         public UserAccount CurrentAccount
         {
             get { return _currentAccount; }
             set
             {
-                _currentAccount = value;
-                SetCurrentAccount(value);
+                if (_currentAccount?.AccountName != value?.AccountName)
+                {
+                    _currentAccount = value;
+                    UpdateDefaultAccountProjectId();
+                    CurrentAccountChanged?.Invoke(this, EventArgs.Empty);
+                }
             }
         }
 
-        public IEnumerable<UserAccount> AccountsList => _cachedCredentials.Values.Select(x => x.UserAccount);
+        /// <summary>
+        /// The GoogleCredential for the current <see cref="UserAccount"/>.
+        /// </summary>
+        public GoogleCredential CurrentGoogleCredential => CurrentAccount?.GetGoogleCredential();
 
-        public CredentialsStore()
+        /// <summary>
+        /// The currently selected project ID.
+        /// </summary>
+        public string CurrentProjectId
         {
-            _cachedCredentials = LoadAccounts();
-            _currentAccount = GetPersistedCurrentAccount();
+            get { return _currentProjectId; }
+            set
+            {
+                if (_currentProjectId != value)
+                {
+                    _currentProjectId = value;
+                    UpdateDefaultAccountProjectId();
+                    CurrentProjectIdChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
         }
 
         /// <summary>
-        /// Deletest the <paramref name="account"/> from the store.
+        /// The list of accounts known to the store.
+        /// </summary>
+        public IEnumerable<UserAccount> AccountsList => _cachedCredentials.Values.Select(x => x.UserAccount);
+
+        private CredentialsStore()
+        {
+            _cachedCredentials = LoadAccounts();
+
+            var defaultCredentials = LoadDefaultCredentials();
+            if (defaultCredentials != null)
+            {
+                ResetCredentials(defaultCredentials.AccountName, defaultCredentials.ProjectId);
+            }
+        }
+
+        /// <summary>
+        /// Deletes the <paramref name="account"/> from the store. The account must exist in the store
+        /// or it will throw.
         /// </summary>
         /// <param name="account">The accound to delete.</param>
         /// <returns>True if the current account was deleted, false otherwise.</returns>
-        public bool DeleteAccount(UserAccount account)
+        public void DeleteAccount(UserAccount account)
         {
             var accountFilePath = GetUserAccountPath(account.AccountName);
             if (accountFilePath == null)
@@ -75,16 +130,12 @@ namespace GoogleCloudExtension.Accounts
             }
 
             File.Delete(accountFilePath);
-            bool result = false;
-
-            if (account.AccountName == CurrentAccount?.AccountName)
-            {
-                CurrentAccount = null;
-                result = true;
-            }
-
+            var isCurrentAccount = account.AccountName == CurrentAccount?.AccountName;
             _cachedCredentials = LoadAccounts();
-            return result;
+            if (isCurrentAccount)
+            {
+                ResetCredentials(null, null);
+            }
         }
 
         /// <summary>
@@ -106,10 +157,15 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// Returns the account given the account name.
         /// </summary>
-        /// <param name="accountName"></param>
-        /// <returns></returns>
+        /// <param name="accountName">The name to look.</param>
+        /// <returns>The account if found, null otherwise.</returns>
         public UserAccount GetAccount(string accountName)
         {
+            if (accountName == null)
+            {
+                return null;
+            }
+
             StoredUserAccount result;
             if (_cachedCredentials.TryGetValue(accountName, out result))
             {
@@ -118,7 +174,31 @@ namespace GoogleCloudExtension.Accounts
             return null;
         }
 
-        public string GetDefaultCurrentAccountPath() => s_currentAccountPath;
+        /// <summary>
+        /// Resets the credentials state to the account with the given <paramref name="accountName"/> and the
+        /// given <paramref name="projectId"/>. The <seealso cref="Reset"/> event will be raised to notify
+        /// listeners on this.
+        /// If <paramref name="accountName"/> cannot be found in the store then the credentials will be reset
+        /// to empty.
+        /// </summary>
+        /// <param name="accountName">The name of the account to make current.</param>
+        /// <param name="projectId">The projectId to make current.</param>
+        public void ResetCredentials(string accountName, string projectId)
+        {
+            var newCurrentAccount = GetAccount(accountName);
+            if (newCurrentAccount != null)
+            {
+                _currentAccount = newCurrentAccount;
+                _currentProjectId = projectId;
+            }
+            else
+            {
+                Debug.WriteLine($"Unknown account: {accountName}");
+                _currentAccount = null;
+                _currentProjectId = null;
+            }
+            Reset?.Invoke(this, EventArgs.Empty);
+        }
 
         private string GetUserAccountPath(string accountName)
         {
@@ -128,18 +208,6 @@ namespace GoogleCloudExtension.Accounts
                 return Path.Combine(s_credentialsStoreRoot, stored.FileName);
             }
             return null;
-        }
-
-        private void SetCurrentAccount(UserAccount userAccount)
-        {
-            if (userAccount == null)
-            {
-                DeleteCurrentAccountMarker();
-            }
-            else
-            {
-                SetPersistedCurrentAccount(userAccount);
-            }
         }
 
         private static Dictionary<string, StoredUserAccount> LoadAccounts()
@@ -173,8 +241,21 @@ namespace GoogleCloudExtension.Accounts
 
         private static UserAccount LoadUserAccount(string path)
         {
-            var contents = File.ReadAllText(path);
-            return JsonConvert.DeserializeObject<UserAccount>(contents);
+            try
+            {
+                var contents = AtomicFileRead(path);
+                return JsonConvert.DeserializeObject<UserAccount>(contents);
+            }
+            catch (JsonException ex)
+            {
+                Debug.WriteLine($"Failed to parse user account: {ex.Message}");
+                throw new CredentialsStoreException(ex.Message, ex);
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine($"Failed to read user account: {ex.Message}");
+                throw new CredentialsStoreException(ex.Message, ex);
+            }
         }
 
         private static void SaveUserAccount(UserAccount userAccount, string path)
@@ -182,23 +263,24 @@ namespace GoogleCloudExtension.Accounts
             try
             {
                 var serialized = JsonConvert.SerializeObject(userAccount);
-                File.WriteAllText(path, serialized);
+                AtomicFileWrite(path, serialized);
             }
-            catch (Exception ex)
+            catch (IOException ex)
             {
                 Debug.WriteLine($"Failed to save user account to {path}: {ex.Message}");
+                throw new CredentialsStoreException(ex.Message, ex);
             }
         }
 
         private static string SaveUserAccount(UserAccount userAccount)
         {
-            var name = GetName(userAccount);
+            var name = GetFileName(userAccount);
             var savePath = Path.Combine(s_credentialsStoreRoot, name);
             SaveUserAccount(userAccount, savePath);
             return name;
         }
 
-        private static string GetName(UserAccount userAccount)
+        private static string GetFileName(UserAccount userAccount)
         {
             var serialized = JsonConvert.SerializeObject(userAccount);
             var sha1 = SHA1.Create();
@@ -213,52 +295,98 @@ namespace GoogleCloudExtension.Accounts
             return sb.ToString();
         }
 
-        private static string GetCurrentAccountMarkerPath()
+        private void UpdateDefaultAccountProjectId()
         {
-            return Path.Combine(s_credentialsStoreRoot, CurrentAccountFileName);
+            var path = Path.Combine(s_credentialsStoreRoot, DefaultCredentialsFileName);
+
+            if (CurrentAccount?.AccountName != null)
+            {
+                var defaultCredentials = new DefaultCredentials
+                {
+                    ProjectId = CurrentProjectId,
+                    AccountName = CurrentAccount?.AccountName,
+                };
+
+                try
+                {
+                    Debug.WriteLine($"Updating default account: {path}");
+                    AtomicFileWrite(path, JsonConvert.SerializeObject(defaultCredentials));
+                }
+                catch (IOException ex)
+                {
+                    Debug.WriteLine($"Failed to update default credentials: {ex.Message}");
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"Deleting default account: {path}");
+                try
+                {
+                    File.Delete(path);
+                }
+                catch (IOException ex)
+                {
+                    Debug.WriteLine($"Failed to delete the default credentials: {ex.Message}");
+                }
+            }
         }
 
-        private static UserAccount GetPersistedCurrentAccount()
+        private DefaultCredentials LoadDefaultCredentials()
         {
-            if (!File.Exists(s_currentAccountPath))
+            var path = Path.Combine(s_credentialsStoreRoot, DefaultCredentialsFileName);
+            if (!File.Exists(path))
             {
-                Debug.WriteLine($"Nothing to read, no current account exist: {s_currentAccountPath}");
                 return null;
             }
 
-            Debug.WriteLine($"Reading current account: {s_currentAccountPath}");
-            return LoadUserAccount(s_currentAccountPath);
+            DefaultCredentials result = null;
+            try
+            {
+                var contents = AtomicFileRead(path);
+                result = JsonConvert.DeserializeObject<DefaultCredentials>(contents);
+            }
+            catch (JsonException ex)
+            {
+                Debug.WriteLine($"Failed to parse default credentials: {ex.Message}");
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine($"Failed to read default credentials: {ex.Message}");
+            }
+            return result;
         }
 
-        private static void SetPersistedCurrentAccount(UserAccount userAccount)
+        private static void AtomicFileWrite(string path, string contents)
         {
             try
             {
-                Debug.WriteLine($"Updating current account: {userAccount.AccountName} at {s_currentAccountPath}");
-                SaveUserAccount(userAccount, s_currentAccountPath);
+                using (var file = new FileStream(path, FileMode.Create, FileAccess.Write, FileShare.None))
+                using (var stream = new StreamWriter(file))
+                {
+                    stream.Write(contents);
+                }
             }
-            catch (Exception ex)
+            catch (IOException ex)
             {
-                Debug.WriteLine($"Failed to set marker: {ex.Message}");
+                Debug.WriteLine($"Failed to write the file {path}: {ex.Message}");
+                throw;
             }
         }
 
-        private static void DeleteCurrentAccountMarker()
+        private static string AtomicFileRead(string path)
         {
-            if (!File.Exists(s_currentAccountPath))
-            {
-                Debug.WriteLine($"Nothing to delete, current account marker does not exist: {s_currentAccountPath}");
-                return;
-            }
-
             try
             {
-                Debug.WriteLine("Deleting current account marker");
-                File.Delete(s_currentAccountPath);
+                using (var file = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (var stream = new StreamReader(file))
+                {
+                    return stream.ReadToEnd();
+                }
             }
-            catch (Exception ex)
+            catch (IOException ex)
             {
-                Debug.WriteLine($"Failed to delete marker: {ex.Message}");
+                Debug.WriteLine($"Failed to write the file {path}: {ex.Message}");
+                throw;
             }
         }
     }

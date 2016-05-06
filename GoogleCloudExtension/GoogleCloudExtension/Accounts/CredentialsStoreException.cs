@@ -12,22 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Runtime.Serialization;
 
-namespace GoogleCloudExtension.Utils
+namespace GoogleCloudExtension.Accounts
 {
-    /// <summary>
-    /// This class represents the result from running validation on the DNX runtime installation.
-    /// </summary>
-    public class DnxValidationResult
+    [Serializable]
+    internal class CredentialsStoreException : Exception
     {
-        /// <summary>
-        /// Whether the DNX runtime is installed.
-        /// </summary>
-        public bool IsDnxInstalled { get; }
-
-        public DnxValidationResult(bool isDnxInstalled)
+        public CredentialsStoreException()
         {
-            IsDnxInstalled = isDnxInstalled;
+        }
+
+        public CredentialsStoreException(string message) : base(message)
+        {
+        }
+
+        public CredentialsStoreException(string message, Exception innerException) : base(message, innerException)
+        {
+        }
+
+        protected CredentialsStoreException(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
         }
     }
 }

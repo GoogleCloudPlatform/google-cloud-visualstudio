@@ -97,13 +97,13 @@ namespace GoogleCloudExtension.CloudExplorer
                 IsLoadingState = true;
                 Children.Clear();
 
-                if (AccountsManager.CurrentAccount == null)
+                if (CredentialsStore.Default.CurrentAccount == null)
                 {
                     Children.Add(s_noCredentialsPlacehodler);
                     return;
                 }
 
-                if (Owner.CurrentProject == null)
+                if (CredentialsStore.Default.CurrentProjectId == null)
                 {
                     Children.Add(s_noProjectPlaceholder);
                     return;

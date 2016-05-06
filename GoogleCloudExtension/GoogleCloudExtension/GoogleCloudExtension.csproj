@@ -54,6 +54,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Accounts\CredentialsStore.cs" />
+    <Compile Include="Accounts\CredentialsStoreException.cs" />
+    <Compile Include="Accounts\Models\DefaultCredentials.cs" />
     <Compile Include="CloudExplorerSources\Gce\AspNetInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
@@ -98,7 +100,6 @@
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\ActivityLogUtils.cs" />
-    <Compile Include="Utils\DnxValidationResult.cs" />
     <Compile Include="Utils\GcpOutputWindow.cs" />
     <Compile Include="GoogleCloudExtensionPackage.cs" />
     <Compile Include="ExtensionEvents.cs" />

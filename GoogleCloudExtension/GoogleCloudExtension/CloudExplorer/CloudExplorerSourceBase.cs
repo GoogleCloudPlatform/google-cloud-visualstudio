@@ -43,7 +43,7 @@ namespace GoogleCloudExtension.CloudExplorer
             _root.Refresh();
         }
 
-        public void InvalidateCredentials()
+        public void InvalidateProjectOrAccount()
         {
             _root.InvalidateCredentials();
         }

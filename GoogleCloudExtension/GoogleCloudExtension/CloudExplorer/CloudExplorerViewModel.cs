@@ -37,49 +37,85 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private readonly IList<ICloudExplorerSource> _sources;
         private readonly List<ButtonDefinition> _buttons;
-        private AsyncPropertyValue<IEnumerable<Project>> _projectsAsync;
+        private bool _isBusy;
         private AsyncPropertyValue<string> _profilePictureAsync;
         private AsyncPropertyValue<string> _profileNameAsync;
         private Project _currentProject;
-        private bool _changingCredentials;
+        private IEnumerable<Project> _projects;
         private Lazy<ResourceManagerDataSource> _resourceManagerDataSource;
         private Lazy<GPlusDataSource> _plusDataSource;
+
+        /// <summary>
+        /// Returns whether the view model is busy performing an operation.
+        /// </summary>
+        public bool IsBusy
+        {
+            get { return _isBusy; }
+            set
+            {
+                SetValueAndRaise(ref _isBusy, value);
+                RaisePropertyChanged(nameof(IsReady));
+            }
+        }
+
+        /// <summary>
+        /// Returns whether the view model is ready for interactions. Simplifies binding.
+        /// </summary>
+        public bool IsReady => !IsBusy;
 
         /// <summary>
         /// The list of module and version combinations for the current project.
         /// </summary>
         public IEnumerable<TreeHierarchy> Roots => _sources.Select(x => x.Root);
 
-        public AsyncPropertyValue<IEnumerable<Project>> ProjectsAsync
-        {
-            get { return _projectsAsync; }
-            set { SetValueAndRaise(ref _projectsAsync, value); }
-        }
-
+        /// <summary>
+        /// Returns the profile image name to use.
+        /// </summary>
         public AsyncPropertyValue<string> ProfilePictureAsync
         {
             get { return _profilePictureAsync; }
             set { SetValueAndRaise(ref _profilePictureAsync, value); }
         }
 
+        /// <summary>
+        /// Returns the profile name to use.
+        /// </summary>
         public AsyncPropertyValue<string> ProfileNameAsync
         {
             get { return _profileNameAsync; }
             set { SetValueAndRaise(ref _profileNameAsync, value); }
         }
 
+        /// <summary>
+        /// The command to show the manage accounts dialog.
+        /// </summary>
         public WeakCommand ManageAccountsCommand { get; }
 
+        /// <summary>
+        /// The list of buttons to add to the toolbar, a concatenation of all sources buttons.
+        /// </summary>
         public IList<ButtonDefinition> Buttons => _buttons;
 
+        /// <summary>
+        /// The currently selected project.
+        /// </summary>
         public Project CurrentProject
         {
             get { return _currentProject; }
             set
             {
                 SetValueAndRaise(ref _currentProject, value);
-                InvalidateCurrentProject();
+                CredentialsStore.Default.CurrentProjectId = value?.ProjectId;
             }
+        }
+
+        /// <summary>
+        /// The list of projects accessible for the current credentials.
+        /// </summary>
+        public IEnumerable<Project> Projects
+        {
+            get { return _projects; }
+            set { SetValueAndRaise(ref _projects, value); }
         }
 
         public CloudExplorerViewModel(IEnumerable<ICloudExplorerSource> sources)
@@ -95,10 +131,6 @@ namespace GoogleCloudExtension.CloudExplorer
                 }
             };
 
-            ResetDataSources();
-
-            ProjectsAsync = new AsyncPropertyValue<IEnumerable<Project>>(LoadProjectListAsync());
-
             foreach (var source in _sources)
             {
                 var sourceButtons = source.Buttons;
@@ -106,23 +138,29 @@ namespace GoogleCloudExtension.CloudExplorer
             }
 
             ManageAccountsCommand = new WeakCommand(OnManageAccountsCommand);
-            UpdateUserProfile();
 
-            AccountsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
+            CredentialsStore.Default.CurrentAccountChanged += OnCurrentAccountChanged;
+            CredentialsStore.Default.CurrentProjectIdChanged += OnCurrentProjectIdChanged;
+            CredentialsStore.Default.Reset += OnReset;
+
+            ResetCredentials();
         }
 
-        private static GPlusDataSource CreatePlusDataSource() => new GPlusDataSource(AccountsManager.CurrentGoogleCredential);
+        private static GPlusDataSource CreatePlusDataSource()
+        {
+            var currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
+            return currentCredential != null ? new GPlusDataSource(currentCredential) : null;
+        }
 
-        private static ResourceManagerDataSource CreateResourceManagerDataSource() => new ResourceManagerDataSource(AccountsManager.CurrentGoogleCredential);
+        private static ResourceManagerDataSource CreateResourceManagerDataSource()
+        {
+            var currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
+            return currentCredential != null ? new ResourceManagerDataSource(currentCredential) : null;
+        }
 
         private void UpdateUserProfile()
         {
-            if (AccountsManager.CurrentAccount == null)
-            {
-                ProfilePictureAsync = null;
-                ProfileNameAsync = new AsyncPropertyValue<string>("Not logged in...");
-            }
-            else
+            if (_plusDataSource.Value != null)
             {
                 var profileTask = _plusDataSource.Value.GetProfileAsync();
                 ProfilePictureAsync = AsyncPropertyValueUtils.CreateAsyncProperty(profileTask, x => x.Image.Url);
@@ -130,6 +168,11 @@ namespace GoogleCloudExtension.CloudExplorer
                     profileTask,
                     x => x.Emails.FirstOrDefault()?.Value,
                     "Loading...");
+            }
+            else
+            {
+                ProfilePictureAsync = null;
+                ProfileNameAsync = new AsyncPropertyValue<string>("Select credentials...");
             }
         }
 
@@ -139,40 +182,67 @@ namespace GoogleCloudExtension.CloudExplorer
             dialog.ShowModal();
         }
 
-        private async void OnCurrentCredentialsChanged(object sender, EventArgs e)
+        private void OnCurrentAccountChanged(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Changing account.");
+            ResetCredentials();
+        }
+
+        private void OnCurrentProjectIdChanged(object sender, EventArgs e)
+        {
+            if (IsBusy)
+            {
+                return;
+            }
+
+            Debug.WriteLine("Changing project.");
+            NotifySourcesOfUpdatedAccountOrProject();
+            RefreshSources();
+        }
+
+        private void OnReset(object sender, EventArgs e)
+        {
+            Debug.WriteLine("Resetting the credentials.");
+            ResetCredentials();
+        }
+
+        private async void ResetCredentials()
         {
             try
             {
-                _changingCredentials = true;
+                IsBusy = true;
 
-                ResetDataSources();
-
-                if (AccountsManager.CurrentAccount == null)
-                {
-                    ProjectsAsync = new AsyncPropertyValue<IEnumerable<Project>>(Enumerable.Empty<Project>());
-                    InvalidateSourcesCredentials();
-                    RefreshSources();
-                    UpdateUserProfile();
-                    return;
-                }
-
+                // These data sources only depend on the current account, which will not change for now.
+                InvalidateAccountDependentDataSources();
                 UpdateUserProfile();
 
-                var projectsTask = LoadProjectListAsync();
-                ProjectsAsync = new AsyncPropertyValue<IEnumerable<Project>>(projectsTask);
+                // Load the projects and select the new current project. Preference is given to the current project
+                // as known by CredentialsStore. If it is not a valid project then the first project in the list will
+                // be used. If no project is found then null will be the value.
+                var projects = await LoadProjectListAsync();
+                var newCurrentProject = projects.FirstOrDefault(x => x.ProjectId == CredentialsStore.Default.CurrentProjectId);
+                if (newCurrentProject == null)
+                {
+                    newCurrentProject = projects.FirstOrDefault();
+                }
 
-                var projects = await projectsTask;
-                _changingCredentials = false;
+                // Set the properties in the right order. This is needed because this in turn will
+                // set the properties in the list control in the right order to preserve the current
+                // project.
+                Projects = projects;
+                CurrentProject = newCurrentProject;
 
-                CurrentProject = projects.FirstOrDefault();
+                // Update the data sources as they will depend on the project being selected.
+                NotifySourcesOfUpdatedAccountOrProject();
+                RefreshSources();
             }
             finally
             {
-                _changingCredentials = false;
+                IsBusy = false;
             }
         }
 
-        private void ResetDataSources()
+        private void InvalidateAccountDependentDataSources()
         {
             _resourceManagerDataSource = new Lazy<ResourceManagerDataSource>(CreateResourceManagerDataSource);
             _plusDataSource = new Lazy<GPlusDataSource>(CreatePlusDataSource);
@@ -180,7 +250,16 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private async Task<IEnumerable<Project>> LoadProjectListAsync()
         {
-            return await _resourceManagerDataSource.Value.GetProjectsListAsync();
+            if (_resourceManagerDataSource.Value != null)
+            {
+                var result = await _resourceManagerDataSource.Value.GetProjectsListAsync();
+                return result.OrderBy(x => x.Name);
+            }
+            else
+            {
+                // TODO: Return a dummy project that shows no project was found.
+                return Enumerable.Empty<Project>();
+            }
         }
 
         private void OnRefresh()
@@ -201,33 +280,12 @@ namespace GoogleCloudExtension.CloudExplorer
         /// Notifies all of the explorer sources that there are new credentials, be it a new
         /// project selected, or a new user selected.
         /// </summary>
-        private void InvalidateSourcesCredentials()
+        private void NotifySourcesOfUpdatedAccountOrProject()
         {
             foreach (var source in _sources)
             {
-                source.InvalidateCredentials();
+                source.InvalidateProjectOrAccount();
             }
-        }
-
-        /// <summary>
-        /// Called whenever the current project changes, updates all of the sources with the new credentials.
-        /// </summary>
-        private void InvalidateCurrentProject()
-        {
-            if (_changingCredentials)
-            {
-                Debug.WriteLine("Invalidating the current project while changing credentials.");
-                return;
-            }
-
-            Debug.WriteLine($"Setting selected project to {CurrentProject?.ProjectId ?? "null"}");
-            foreach (var source in _sources)
-            {
-                source.CurrentProject = CurrentProject;
-            }
-
-            InvalidateSourcesCredentials();
-            RefreshSources();
         }
     }
 }

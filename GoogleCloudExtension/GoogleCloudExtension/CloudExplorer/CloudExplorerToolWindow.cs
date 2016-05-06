@@ -56,23 +56,24 @@ namespace GoogleCloudExtension.CloudExplorer
             var content = new CloudExplorerToolWindowControl(this) { DataContext = model };
             Content = content;
 
-            AccountsManager.CurrentCredentialsChanged += OnCurrentCredentialsChanged;
+            CredentialsStore.Default.CurrentAccountChanged += OnCurrentAccountChanged;
+            CredentialsStore.Default.Reset += OnCurrentAccountChanged;
         }
 
-        private void OnCurrentCredentialsChanged(object sender, EventArgs e)
+        private void OnCurrentAccountChanged(object sender, EventArgs e)
         {
             SetCaption();
         }
 
         private void SetCaption()
         {
-            if (AccountsManager.CurrentAccount?.AccountName != null)
+            if (CredentialsStore.Default.CurrentAccount?.AccountName != null)
             {
-                Caption = $"Google Cloud Explorer ({AccountsManager.CurrentAccount.AccountName})";
+                Caption = $"Google Cloud Explorer ({CredentialsStore.Default.CurrentAccount.AccountName})";
             }
             else
             {
-                Caption = "Google Cloud Explorer (no credentials)";
+                Caption = "Google Cloud Explorer (select credentials)";
             }
         }
     }

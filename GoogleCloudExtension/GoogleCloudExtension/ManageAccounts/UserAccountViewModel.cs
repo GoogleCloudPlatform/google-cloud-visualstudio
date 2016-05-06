@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.ManageAccounts
 
         public UserAccount UserAccount { get; }
 
-        public bool IsCurrentAccount => AccountsManager.CurrentAccount?.AccountName == UserAccount.AccountName;
+        public bool IsCurrentAccount => CredentialsStore.Default.CurrentAccount?.AccountName == UserAccount.AccountName;
 
         public UserAccountViewModel(UserAccount userAccount)
         {

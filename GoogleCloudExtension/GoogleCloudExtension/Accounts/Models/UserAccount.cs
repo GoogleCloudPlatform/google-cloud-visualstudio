@@ -19,6 +19,13 @@ using System.Text;
 
 namespace GoogleCloudExtension.Accounts.Models
 {
+    /// <summary>
+    /// This class stores the complete data for a user account. The class can be serialize to a .json
+    /// string with an schema compatible with gcloud by design. The serialized form of this class
+    /// can be consumed by gcloud via the --credential-file-override parameter.
+    /// The serialize form can also be consumed as the "application default credentials" by apps using
+    /// Google's client NuGet packages.
+    /// </summary>
     public class UserAccount
     {
         [JsonProperty("account")]

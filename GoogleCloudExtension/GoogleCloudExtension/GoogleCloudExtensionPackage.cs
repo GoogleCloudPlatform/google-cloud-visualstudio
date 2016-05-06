@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using EnvDTE;
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.ManageAccounts;
@@ -20,7 +21,11 @@ using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace GoogleCloudExtension
@@ -56,18 +61,108 @@ namespace GoogleCloudExtension
         /// </summary>
         public const string PackageGuidString = "3784fd98-7fcc-40fc-be3b-b68334735af2";
 
-        private DTE _dteInstance;
-
         /// <summary>
-        /// Initializes a new instance of the <see cref="DeployToAppEngine"/> class.
+        /// Option keys for the extension options.
         /// </summary>
+        private const string CurrentGcpProjectKey = "google_current_gcp_project";
+        private const string CurrentGcpAccountKey = "google_current_gcp_credentials";
+        private const string NoneValue = "/none";
+
+        // The properties that are stored in the .suo file.
+        private static readonly Dictionary<string, Func<string>> s_propertySources = new Dictionary<string, Func<string>>
+        {
+            { CurrentGcpProjectKey, () => CredentialsStore.Default.CurrentProjectId },
+            { CurrentGcpAccountKey, () => CredentialsStore.Default.CurrentAccount?.AccountName },
+        };
+
+        private DTE _dteInstance;
+        private Dictionary<string, string> _properties;
+
         public GoogleCloudExtensionPackage()
         {
-            // Inside this method you can place any initialization code that does not require
-            // any Visual Studio service because at this point the package object is created but
-            // not sited yet inside Visual Studio environment. The place to do all the other
-            // initialization is the Initialize method.
+            // Register all of the properties.
+            foreach (var key in s_propertySources.Keys)
+            {
+                AddOptionKey(key);
+            }
         }
+
+        #region Persistence of options
+
+        protected override void OnLoadOptions(string key, Stream stream)
+        {
+            if (s_propertySources.Keys.Contains(key))
+            {
+                StoreLoadedProperty(key, stream);
+            }
+            else
+            {
+                base.OnLoadOptions(key, stream);
+            }
+        }
+
+        protected override void OnSaveOptions(string key, Stream stream)
+        {
+            Func<string> valueSource;
+            if (!s_propertySources.TryGetValue(key, out valueSource))
+            {
+                return;
+            }
+
+            var value = valueSource();
+            WriteOptionStream(stream, value ?? NoneValue);
+        }
+
+        private void StoreLoadedProperty(string key, Stream stream)
+        {
+            if (_properties == null)
+            {
+                _properties = new Dictionary<string, string>();
+            }
+            _properties[key] = ReadOptionStream(stream);
+
+
+            if (_properties.Count == s_propertySources.Count)
+            {
+                // All of the properties have been loaded, commit them.
+                CommitProperties();
+                _properties = null;
+            }
+        }
+
+        private void CommitProperties()
+        {
+            if (_properties[CurrentGcpAccountKey] != null)
+            {
+                Debug.WriteLine("Setting the user and project.");
+                CredentialsStore.Default.ResetCredentials(
+                    accountName: _properties[CurrentGcpAccountKey],
+                    projectId: _properties[CurrentGcpProjectKey]);
+            }
+            else
+            {
+                Debug.WriteLine("No user loaded.");
+            }
+        }
+
+        private void WriteOptionStream(Stream stream, string value)
+        {
+            using (var writer = new StreamWriter(stream))
+            {
+                writer.WriteLine(value);
+            }
+        }
+
+        private string ReadOptionStream(Stream stream)
+        {
+            using (var reader = new StreamReader(stream))
+            {
+                var value = reader.ReadLine();
+                return value == NoneValue ? null : value;
+            }
+        }
+
+        #endregion
 
         #region Package Members
 

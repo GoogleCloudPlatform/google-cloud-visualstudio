@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
 using System.Collections.Generic;
 
 namespace GoogleCloudExtension.CloudExplorer
@@ -30,11 +29,6 @@ namespace GoogleCloudExtension.CloudExplorer
         IEnumerable<ButtonDefinition> Buttons { get; }
 
         /// <summary>
-        /// Set to the current project selected by the user.
-        /// </summary>
-        Project CurrentProject { get; set; }
-
-        /// <summary>
         /// Called when the sources need to reload their data.
         /// </summary>
         void Refresh();
@@ -42,6 +36,6 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// Called when the credentials or project changes.
         /// </summary>
-        void InvalidateCredentials();
+        void InvalidateProjectOrAccount();
     }
 }

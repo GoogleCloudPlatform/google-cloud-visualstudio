@@ -12,13 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Auth.OAuth2;
 using GoogleCloudExtension.Accounts.Models;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.OAuth;
 using GoogleCloudExtension.OauthLoginFlow;
 using GoogleCloudExtension.Utils;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -26,12 +24,22 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Accounts
 {
+    /// <summary>
+    /// This class manages the OAUTH credentials created for the extension.
+    /// </summary>
     public static class AccountsManager
     {
+        /// <summary>
+        /// The OAUTH credentials to use for the VS extension.
+        /// </summary>
         private static readonly OAuthCredentials s_extensionCredentials =
             new OAuthCredentials(
                 clientId: "622828670384-b6gc2gb8vfgvff80855u5oaubun5f6q2.apps.googleusercontent.com",
                 clientSecret: "g-0P0bpUoO9n2NtocP25HRxm");
+
+        /// <summary>
+        /// The scopes that the VS extension needs.
+        /// </summary>
         private static readonly IEnumerable<string> s_extensionScopes =
             new List<string>
             {
@@ -42,28 +50,11 @@ namespace GoogleCloudExtension.Accounts
                 "https://www.googleapis.com/auth/plus.me",
             };
 
-        private static readonly CredentialsStore s_credentialsStore = new CredentialsStore();
-
-        public static UserAccount CurrentAccount
-        {
-            get { return s_credentialsStore.CurrentAccount; }
-            set
-            {
-                s_credentialsStore.CurrentAccount = value;
-                CurrentCredentialsChanged?.Invoke(null, EventArgs.Empty);
-            }
-        }
-
-        public static GoogleCredential CurrentGoogleCredential => CurrentAccount?.GetGoogleCredential();
-
-        public static event EventHandler CurrentCredentialsChanged;
-
-        static AccountsManager()
-        {
-            SetCurrentCredentialsEnvironmentVariable();
-        }
-
-        public static async Task<bool> AddAccountFlowAsync()
+        /// <summary>
+        /// Starts the flow to add a new account to the credentials store.
+        /// </summary>
+        /// <returns>Will return true if the accound was added, false if the user cancelled.</returns>
+        public static async Task<bool> StartAddAccountFlowAsync()
         {
             try
             {
@@ -73,9 +64,9 @@ namespace GoogleCloudExtension.Accounts
                     Debug.WriteLine("The user cancelled the OAUTH login flow.");
                     return false;
                 }
-                var credentials = await GetUserAccountForRefreshToken(refreshToken);
 
-                var existingUserAccount = s_credentialsStore.GetAccount(credentials.AccountName);
+                var credentials = await GetUserAccountForRefreshToken(refreshToken);
+                var existingUserAccount = CredentialsStore.Default.GetAccount(credentials.AccountName);
                 if (existingUserAccount != null)
                 {
                     Debug.WriteLine($"Duplicated account {credentials.AccountName}");
@@ -83,9 +74,10 @@ namespace GoogleCloudExtension.Accounts
                     return false;
                 }
 
-                // Store the new account and set it as the current account.
-                s_credentialsStore.AddAccount(credentials);
-                CurrentAccount = credentials;
+                // Store the new account and set it as the current account. The project is not changed so if the
+                // new account also have access to it, it remains as the current project.
+                CredentialsStore.Default.AddAccount(credentials);
+                CredentialsStore.Default.CurrentAccount = credentials;
                 return true;
             }
             catch (OAuthException ex)
@@ -95,16 +87,11 @@ namespace GoogleCloudExtension.Accounts
             }
         }
 
-        public static void DeleteAccount(UserAccount userAccount)
-        {
-            var deletedCurrentAccount = s_credentialsStore.DeleteAccount(userAccount);
-            if (deletedCurrentAccount)
-            {
-                CurrentCredentialsChanged?.Invoke(null, EventArgs.Empty);
-            }
-        }
-
-        public static IEnumerable<UserAccount> GetAccountsList() => s_credentialsStore.AccountsList;
+        /// <summary>
+        /// Deletes the given <paramref name="userAccount"/> from the store.
+        /// </summary>
+        /// <param name="userAccount"></param>
+        public static void DeleteAccount(UserAccount userAccount) => CredentialsStore.Default.DeleteAccount(userAccount);
 
         private static async Task<UserAccount> GetUserAccountForRefreshToken(string refreshToken)
         {
@@ -118,13 +105,6 @@ namespace GoogleCloudExtension.Accounts
             var person = await plusDataSource.GetProfileAsync();
             result.AccountName = person.Emails.FirstOrDefault()?.Value;
             return result;
-        }
-
-        private static void SetCurrentCredentialsEnvironmentVariable()
-        {
-            Environment.SetEnvironmentVariable(
-                "GOOGLE_APPLICATION_CREDENTIALS",
-                s_credentialsStore.GetDefaultCurrentAccountPath());
         }
     }
 }
