@@ -11,7 +11,7 @@ The data sources implemented in the library are:
 * `GPlusDataSource` which implement access to the Google Plust API.
 * `ResourceManagerDataSource` which implements access to the Resource Manager API.
 
-All of the data sources contain a set of credentials and for those that are against an API that requires a project id they will also contain one for each call. 
+All of the data sources contain a set of credentials and for those that are against an API that requires a project id they will also contain one for each call.
 
 ### GceDataSource class
 This class provides access to Google Compoute Engine instances, using the [Google Compute Engine API](https://cloud.google.com/compute/docs/reference/latest/) as the underlying data source.
@@ -34,4 +34,3 @@ This class provides access to the [Resource Manager API](https://cloud.google.co
 ## Support classes
 ### DataSourceBase class
 This class provides the base functionality for all data sources, including the `LoadPagedListAsync()` method which implements a very simple paginator for all paginated sources.
-
