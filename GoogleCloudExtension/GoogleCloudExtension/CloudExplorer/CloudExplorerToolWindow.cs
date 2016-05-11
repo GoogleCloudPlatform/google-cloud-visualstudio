@@ -47,14 +47,19 @@ namespace GoogleCloudExtension.CloudExplorer
             // be displayed.
             var sources = new List<ICloudExplorerSource>
             {
+                // The Google Compute Engine source.
                 new GceSource(),
+
+                // The Google Cloud Storage source.
                 new GcsSource(),
             };
 
 
             var model = new CloudExplorerViewModel(sources);
-            var content = new CloudExplorerToolWindowControl(this) { DataContext = model };
-            Content = content;
+            Content = new CloudExplorerToolWindowControl(this)
+            {
+                DataContext = model,
+            };
 
             CredentialsStore.Default.CurrentAccountChanged += OnCurrentAccountChanged;
             CredentialsStore.Default.Reset += OnCurrentAccountChanged;

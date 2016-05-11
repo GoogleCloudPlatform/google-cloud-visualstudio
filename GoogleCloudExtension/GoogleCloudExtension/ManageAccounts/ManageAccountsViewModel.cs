@@ -53,7 +53,7 @@ namespace GoogleCloudExtension.ManageAccounts
                 }
                 else
                 {
-                    SetAsCurrentAcountCommand.CanExecuteCommand = value != null 
+                    SetAsCurrentAcountCommand.CanExecuteCommand = value != null
                         && CredentialsStore.Default.CurrentAccount.AccountName != value.AccountName;
                 }
 

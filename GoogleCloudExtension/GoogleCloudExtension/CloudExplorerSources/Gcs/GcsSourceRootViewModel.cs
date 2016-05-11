@@ -32,16 +32,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
-            Content = "Loading buckets...",
+            Caption = "Loading buckets...",
             IsLoading = true
         };
         private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
         {
-            Content = "No buckets found."
+            Caption = "No buckets found."
         };
         private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
         {
-            Content = "Failed to list buckets.",
+            Caption = "Failed to list buckets.",
             IsError = true
         };
 
@@ -57,14 +57,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
 
-        public override void Initialize(ICloudExplorerSource owner)
+        public override void Initialize()
         {
-            base.Initialize(owner);
+            base.Initialize();
 
-            InvalidateCredentials();
+            InvalidateProjectOrAccount();
         }
 
-        public override void InvalidateCredentials()
+        public override void InvalidateProjectOrAccount()
         {
             Debug.WriteLine("New credentials, invalidating the GCS source.");
             _dataSource = new Lazy<GcsDataSource>(CreateDataSource);

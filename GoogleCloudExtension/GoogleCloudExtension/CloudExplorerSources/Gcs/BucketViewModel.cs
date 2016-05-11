@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             _item = new Lazy<BucketItem>(GetItem);
             _openBucketCommand = new WeakCommand(OnOpenBucket);
 
-            Content = _bucket.Name;
+            Caption = _bucket.Name;
             Icon = s_bucketIcon.Value;
 
             var menuItems = new List<MenuItem>

@@ -18,42 +18,66 @@ using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
+    /// <summary>
+    /// This class implements the basic behaviors for a cloud source's root view model. All source view models
+    /// _should_ derive from this class but it is not mandatory. This class offers all place holder functionality,
+    /// common credentials and project check and setting the right state depending on the results from the 
+    /// underlying data source.
+    /// </summary>
     public abstract class SourceRootViewModelBase : TreeHierarchy
     {
         private static readonly TreeLeaf s_noCredentialsPlacehodler =
             new TreeLeaf
             {
                 IsError = true,
-                Content = "No credentials, please login.",
+                Caption = "No credentials, please login.",
             };
         private static readonly TreeLeaf s_noProjectPlaceholder =
             new TreeLeaf
             {
                 IsError = true,
-                Content = "No project selected.",
+                Caption = "No project selected.",
             };
 
+        /// <summary>
+        /// Returns whether this view model is busy loading data.
+        /// </summary>
         public bool IsLoadingState { get; private set; }
 
+        /// <summary>
+        /// Returns whether this view model is already loaded with data.
+        /// </summary>
         public bool IsLoadedState { get; private set; }
 
+        /// <summary>
+        /// Returns the icon to use for the root for this data source.
+        /// </summary>
         public abstract ImageSource RootIcon { get; }
 
+        /// <summary>
+        /// Returns the caption to use for the root node for this data source.
+        /// </summary>
         public abstract string RootCaption { get; }
 
+        /// <summary>
+        /// Returns the tree node to use when there's an error loading data.
+        /// </summary>
         public abstract TreeLeaf ErrorPlaceholder { get; }
 
+        /// <summary>
+        /// Returns the tree node to use when there's no data returned by this data source.
+        /// </summary>
         public abstract TreeLeaf NoItemsPlaceholder { get; }
 
+        /// <summary>
+        /// Returns the tree node to use while loading data.
+        /// </summary>
         public abstract TreeLeaf LoadingPlaceholder { get; }
 
-        public ICloudExplorerSource Owner { get; private set; }
-
-        public virtual void Initialize(ICloudExplorerSource owner)
+        public virtual void Initialize()
         {
             Icon = RootIcon;
-            Content = RootCaption;
-            Owner = owner;
+            Caption = RootCaption;
 
             Children.Add(LoadingPlaceholder);
         }
@@ -69,7 +93,7 @@ namespace GoogleCloudExtension.CloudExplorer
             await LoadDataWrapper();
         }
 
-        public virtual void InvalidateCredentials()
+        public virtual void InvalidateProjectOrAccount()
         { }
 
         protected override async void OnIsExpandedChanged(bool newValue)

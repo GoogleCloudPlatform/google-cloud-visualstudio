@@ -16,6 +16,9 @@ using System.Collections.Generic;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
+    /// <summary>
+    /// Interface to be implemented by cloud explorer data sources.
+    /// </summary>
     public interface ICloudExplorerSource
     {
         /// <summary>

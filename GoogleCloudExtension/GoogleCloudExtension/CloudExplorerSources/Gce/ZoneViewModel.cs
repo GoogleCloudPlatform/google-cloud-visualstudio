@@ -33,7 +33,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             _owner = owner;
 
-            Content = zoneName;
+            Caption = zoneName;
             Icon = s_zoneIcon.Value;
 
             var viewModels = instances.Select(x => new GceInstanceViewModel(owner, x));

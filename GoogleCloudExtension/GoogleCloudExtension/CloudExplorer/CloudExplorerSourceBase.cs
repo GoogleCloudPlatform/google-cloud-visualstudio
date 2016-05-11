@@ -12,40 +12,57 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.CloudResourceManager.v1.Data;
 using System.Collections.Generic;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
+    /// <summary>
+    /// This is the base class for all sources of data for the Cloud Explorer. Implements all of the basic
+    /// behaviors, such as loading data, refreshing the data, etc...
+    /// </summary>
+    /// <typeparam name="TRootViewModel">The type of the root view model for the data source.</typeparam>
     public abstract class CloudExplorerSourceBase<TRootViewModel> : ICloudExplorerSource where TRootViewModel : SourceRootViewModelBase, new()
     {
-        private readonly TRootViewModel _root;
-        private readonly IList<ButtonDefinition> _buttons = new List<ButtonDefinition>();
+        /// <summary>
+        /// The root of the hierarchy for this data source.
+        /// </summary>
+        public TreeHierarchy Root => ActualRoot;
 
-        public TreeHierarchy Root => _root;
+        /// <summary>
+        /// The buttons for this data source.
+        /// </summary>
+        public IEnumerable<ButtonDefinition> Buttons => ActualButtons;
 
-        public IEnumerable<ButtonDefinition> Buttons => _buttons;
+        /// <summary>
+        /// The root view model for the source, accessible by the data sources to manipulate the tree.
+        /// </summary>
+        protected TRootViewModel ActualRoot { get; }
 
-        public Project CurrentProject { get; set; }
-
-        protected TRootViewModel ActualRoot => _root;
-
-        protected IList<ButtonDefinition> ActualButtons => _buttons;
+        /// <summary>
+        /// The modifiable collection of buttons accessible by the data sources.
+        /// </summary>
+        protected IList<ButtonDefinition> ActualButtons { get; } = new List<ButtonDefinition>();
 
         public CloudExplorerSourceBase()
         {
-            _root = new TRootViewModel();
-            _root.Initialize(this);
+            ActualRoot = new TRootViewModel();
+            ActualRoot.Initialize();
         }
 
+        /// <summary>
+        /// Refreshes the contents of this data source.
+        /// </summary>
         public void Refresh()
         {
-            _root.Refresh();
+            ActualRoot.Refresh();
         }
 
+        /// <summary>
+        /// Called when the project or current account have changed.
+        /// </summary>
         public void InvalidateProjectOrAccount()
         {
-            _root.InvalidateCredentials();
+            ActualRoot.InvalidateProjectOrAccount();
         }
     }
 }

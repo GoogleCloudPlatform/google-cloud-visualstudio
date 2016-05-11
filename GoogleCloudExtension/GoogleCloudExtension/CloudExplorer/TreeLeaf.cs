@@ -12,25 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
     /// <summary>
-    /// This interface is implemented by those classes that can provide an item to show
-    /// in the properties window.
+    /// This class represents a leaf in the UI tree. Although this class does not add anything to
+    /// <seealso cref="TreeNode"/> it is used to differentiate the UI of a node vs. the UI of a hierarchy node
+    /// in the UI tree.
     /// </summary>
-    public interface ICloudExplorerItemSource
-    {
-        /// <summary>
-        /// The object to display in the properties window. This object is expected to be annotated
-        /// with the <seealso cref="CategoryAttribute"/> and <seealso cref="DescriptionAttribute"/>.
-        /// </summary>
-        object Item { get; }
-
-        /// <summary>
-        /// Notifies the listener that the item has changed and that the UI needs to be refreshed.
-        /// </summary>
-        event EventHandler ItemChanged;
-    }
+    public class TreeLeaf : TreeNode
+    { }
 }

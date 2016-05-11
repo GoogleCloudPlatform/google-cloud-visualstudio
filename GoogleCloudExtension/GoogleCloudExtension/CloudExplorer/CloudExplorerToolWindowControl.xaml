@@ -33,7 +33,7 @@
                            VerticalAlignment="Center"
                            Visibility="{Binding IconIsVisible, Converter={StaticResource visibilityConverter}}"
                            Margin="0,0,5,0"/>
-                    <ContentPresenter Content="{Binding Content}" VerticalAlignment="Center" />
+                    <ContentPresenter Content="{Binding Caption}" VerticalAlignment="Center" />
                 </StackPanel>
             </Grid>
         </HierarchicalDataTemplate>
@@ -53,7 +53,7 @@
                            Visibility="{Binding IconIsVisible, Converter={StaticResource visibilityConverter}}"
                            VerticalAlignment="Center"
                            Margin="0,0,5,0"/>
-                    <ContentPresenter Content="{Binding Content}" VerticalAlignment="Center" />
+                    <ContentPresenter Content="{Binding Caption}" VerticalAlignment="Center" />
                 </StackPanel>
             </Grid>
         </DataTemplate>

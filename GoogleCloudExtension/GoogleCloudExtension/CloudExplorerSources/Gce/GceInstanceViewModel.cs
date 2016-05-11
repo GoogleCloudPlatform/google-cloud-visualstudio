@@ -102,11 +102,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 switch (pendingOperation.OperationType)
                 {
                     case OperationType.StartInstance:
-                        Content = $"Starting instance {Instance.Name}";
+                        Caption = $"Starting instance {Instance.Name}";
                         break;
 
                     case OperationType.StopInstance:
-                        Content = $"Stoping instance {Instance.Name}";
+                        Caption = $"Stoping instance {Instance.Name}";
                         break;
                 }
 
@@ -138,7 +138,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 }
                 catch (DataSourceException ex)
                 {
-                    Content = Instance.Name;
+                    Caption = Instance.Name;
                     IsLoading = false;
                     IsError = true;
                     UpdateContextMenu();
@@ -170,7 +170,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
             // Normal state, no pending operations.
             IsLoading = false;
-            Content = Instance.Name;
+            Caption = Instance.Name;
             UpdateContextMenu();
         }
 
