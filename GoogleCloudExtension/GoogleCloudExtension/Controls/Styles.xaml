@@ -1,0 +1,170 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+xmlns:ui="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.14.0"
+xmlns:shell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0">
+    <SolidColorBrush x:Key="PanelBackgroundBrush" Color="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowContentGridColorKey}}"/>
+    <SolidColorBrush x:Key="ContentBackgroundBrush" Color="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowBackgroundColorKey}}"/>
+
+    <ControlTemplate x:Key="TextBoxErrorTemplate">
+        <StackPanel Orientation="Horizontal">
+            <Border BorderThickness="1" BorderBrush="#FFdc000c" CornerRadius="0.7"
+                VerticalAlignment="Top"
+                    DataContext="{Binding ElementName=AdornedPlaceholder}">
+                <Border.ToolTip>
+                    <ToolTip Background="#FFdc000c" BorderBrush="#FFdc000c"
+                             MaxWidth="400" MinHeight="40">
+                        <ItemsControl ItemsSource="{Binding Path=AdornedElement.(Validation.Errors)}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding ErrorContent}"
+                                               Foreground="White" Margin="8,3,8,3" 
+                                               TextWrapping="Wrap"/>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ToolTip>
+                </Border.ToolTip>
+                <Grid>
+                    <Polygon Points="0,0 10,0, 10,10" 
+                             Stroke="#FFdc000c" Fill="#FFdc000c" 
+                             x:Name="ErrorCorner"
+                             VerticalAlignment="Top"
+                             HorizontalAlignment="Right"
+                             IsHitTestVisible="True"
+                             Grid.ZIndex="10"/>
+                    <AdornedElementPlaceholder x:Name="AdornedPlaceholder"
+                                               Margin="1,1,1,2"/>
+                </Grid>
+            </Border>
+        </StackPanel>
+    </ControlTemplate>
+
+    <Style BasedOn="{StaticResource {x:Static shell:VsResourceKeys.ButtonStyleKey}}" TargetType="Button"/>
+    <Style BasedOn="{StaticResource {x:Static shell:VsResourceKeys.CheckBoxStyleKey}}" TargetType="CheckBox"/>
+    <Style BasedOn="{StaticResource {x:Static shell:VsResourceKeys.ComboBoxStyleKey}}" TargetType="ComboBox" />
+
+    <Style TargetType="Control">
+        <Setter Property="Background" Value="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowBackgroundBrushKey}}"/>
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowTextBrushKey}}"/>
+    </Style>
+
+    <Style TargetType="Label">
+        <Setter Property="FontFamily" Value="{DynamicResource VsFont.EnvironmentFontFamily}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowTextBrushKey}}"/>
+    </Style>
+
+    <Style TargetType="TextBlock">
+        <Setter Property="FontFamily" Value="{DynamicResource VsFont.EnvironmentFontFamily}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowTextBrushKey}}"/>
+    </Style>
+
+    <Style TargetType="TextBox">
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:CommonControlsColors.TextBoxTextBrushKey}}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static ui:CommonControlsColors.TextBoxBorderBrushKey}}"/>
+        <Setter Property="Background" Value="{DynamicResource {x:Static ui:CommonControlsColors.TextBoxBackgroundBrushKey}}"/>
+        <Setter Property="Validation.ErrorTemplate" Value="{StaticResource TextBoxErrorTemplate}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" 
+                            Background="{TemplateBinding Background}" SnapsToDevicePixels="True"
+                            Padding="2">
+                        <ScrollViewer x:Name="PART_ContentHost" Focusable="False" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" TargetName="border" Value="0.56"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static ui:CommonControlsColors.TextBoxBorderBrushKey}}"/>
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True">
+                            <Setter Property="BorderBrush" TargetName="border" Value="{DynamicResource {x:Static ui:CommonControlsColors.TextBoxBorderFocusedBrushKey}}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="Validation.HasError" Value="True">
+                <Setter Property="BorderBrush" Value="Transparent"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="RadioButton">
+        <Setter Property="FontFamily" Value="{DynamicResource VsFont.EnvironmentFontFamily}" />
+        <Setter Property="Foreground" Value="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowTextBrushKey}}"/>
+        <Setter Property="Background" Value="{DynamicResource {x:Static ui:CommonControlsColors.CheckBoxBackgroundBrushKey}}"/>
+        <Setter Property="BorderBrush" Value="{DynamicResource {x:Static ui:CommonControlsColors.CheckBoxBorderBrushKey}}"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="BorderThickness"  Value="2"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RadioButton}">
+                    <Grid x:Name="templateRoot" Background="Transparent" SnapsToDevicePixels="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border x:Name="radioButtonBorder" BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                Background="{TemplateBinding Background}" 
+                                CornerRadius="100"
+                                HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                Margin="1,1,2,1" 
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <Grid x:Name="markGrid" Margin="2">
+                                <Ellipse x:Name="optionMark" Fill="{TemplateBinding Foreground}" MinWidth="8" MinHeight="8" Opacity="0"/>
+                            </Grid>
+                        </Border>
+                        <ContentPresenter x:Name="contentPresenter" ContentTemplate="{TemplateBinding ContentTemplate}" 
+                                          Content="{TemplateBinding Content}" Grid.Column="1" ContentStringFormat="{TemplateBinding ContentStringFormat}" 
+                                          Focusable="False" 
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" 
+                                          RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="HasContent" Value="True">
+                            <Setter Property="FocusVisualStyle">
+                                <Setter.Value>
+                                    <Style>
+                                        <Setter Property="Control.Template">
+                                            <Setter.Value>
+                                                <ControlTemplate>
+                                                    <Rectangle Margin="14,0,0,0" SnapsToDevicePixels="True" 
+                                                               Stroke="{DynamicResource {x:Static ui:EnvironmentColors.ToolWindowTextBrushKey}}" 
+                                                               StrokeThickness="1" StrokeDashArray="1 2"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Padding" Value="4,-1,0,0"/>
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter Property="Background" TargetName="radioButtonBorder" Value="{DynamicResourceExtension {x:StaticExtension ui:CommonControlsColors.CheckBoxBackgroundHoverBrushKey}}"/>
+                            <Setter Property="BorderBrush" TargetName="radioButtonBorder" Value="{DynamicResource {x:Static ui:CommonControlsColors.CheckBoxBorderHoverBrushKey}}"/>
+                            <Setter Property="Fill" TargetName="optionMark" Value="{DynamicResourceExtension {x:StaticExtension ui:CommonControlsColors.CheckBoxBorderHoverBrushKey}}"/>
+                        </Trigger>
+                        <Trigger Property="IsFocused" Value="True">
+                            <Setter Property="Background" TargetName="radioButtonBorder" Value="{DynamicResourceExtension {x:StaticExtension ui:CommonControlsColors.CheckBoxBackgroundHoverBrushKey}}"/>
+                            <Setter Property="BorderBrush" TargetName="radioButtonBorder" Value="{DynamicResource {x:Static ui:CommonControlsColors.CheckBoxBorderHoverBrushKey}}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" TargetName="templateRoot" Value="0.56"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Opacity" TargetName="optionMark" Value="1"/>
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="{x:Null}">
+                            <Setter Property="Opacity" TargetName="optionMark" Value="0.56"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
