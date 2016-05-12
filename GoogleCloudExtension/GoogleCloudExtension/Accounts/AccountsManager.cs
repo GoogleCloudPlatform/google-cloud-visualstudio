@@ -34,8 +34,8 @@ namespace GoogleCloudExtension.Accounts
         /// </summary>
         private static readonly OAuthCredentials s_extensionCredentials =
             new OAuthCredentials(
-                clientId: "622828670384-b6gc2gb8vfgvff80855u5oaubun5f6q2.apps.googleusercontent.com",
-                clientSecret: "g-0P0bpUoO9n2NtocP25HRxm");
+                clientId: "1072225748908-vilq5kul2gkfu75ibst47grttjv8k5k6.apps.googleusercontent.com",
+                clientSecret: "LmgDUh7hKoiEu0ZR8OOHmBOQ");
 
         /// <summary>
         /// The scopes that the VS extension needs.
