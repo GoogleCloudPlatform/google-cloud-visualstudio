@@ -55,7 +55,7 @@
   <ItemGroup>
     <Compile Include="Accounts\CredentialsStore.cs" />
     <Compile Include="Accounts\CredentialsStoreException.cs" />
-    <Compile Include="Accounts\Models\DefaultCredentials.cs" />
+    <Compile Include="Accounts\DefaultCredentials.cs" />
     <Compile Include="CloudExplorerSources\Gce\AspNetInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
@@ -94,7 +94,7 @@
     <Compile Include="ManageAccounts\ManageAccountsWindowContent.xaml.cs">
       <DependentUpon>ManageAccountsWindowContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Accounts\Models\UserAccount.cs" />
+    <Compile Include="Accounts\UserAccount.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowViewModel.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindow.cs" />
     <Compile Include="ManageAccounts\UserAccountViewModel.cs" />

@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Auth.OAuth2;
-using GoogleCloudExtension.Accounts.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

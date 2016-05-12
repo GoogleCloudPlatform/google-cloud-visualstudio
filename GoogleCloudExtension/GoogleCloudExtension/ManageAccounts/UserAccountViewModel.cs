@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Accounts.Models;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 
