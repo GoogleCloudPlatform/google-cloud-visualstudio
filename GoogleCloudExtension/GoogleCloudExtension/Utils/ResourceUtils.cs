@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="path">The path of the resource to load.</param>
         /// <returns></returns>
-        public static ImageSource LoadResource(string path)
+        public static ImageSource LoadImage(string path)
         {
             var uri = new Uri($"pack://application:,,,/{s_assemblyName.Value};component/{path}");
             Debug.WriteLine($"Loading resource: {path}");

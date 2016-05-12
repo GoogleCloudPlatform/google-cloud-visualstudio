@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
     {
         private const string IconResourcePath = "CloudExplorerSources/Gce/Resources/gce_logo.png";
 
-        private static readonly Lazy<ImageSource> s_gceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
+        private static readonly Lazy<ImageSource> s_gceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
             Caption = "Loading instances...",

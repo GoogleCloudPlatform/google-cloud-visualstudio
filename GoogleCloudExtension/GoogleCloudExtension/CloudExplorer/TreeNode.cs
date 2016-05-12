@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.CloudExplorer
     public class TreeNode : Model
     {
         private const string ErrorIconPath = "CloudExplorer/Resources/error_icon.png";
-        private readonly static Lazy<ImageSource> s_ErrorIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(ErrorIconPath));
+        private readonly static Lazy<ImageSource> s_ErrorIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(ErrorIconPath));
 
         private string _caption;
         private ContextMenu _contextMenu;

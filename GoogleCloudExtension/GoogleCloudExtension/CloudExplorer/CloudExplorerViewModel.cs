@@ -33,7 +33,7 @@ namespace GoogleCloudExtension.CloudExplorer
     {
         private const string RefreshImagePath = "CloudExplorer/Resources/refresh.png";
 
-        private static readonly Lazy<ImageSource> s_refreshIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(RefreshImagePath));
+        private static readonly Lazy<ImageSource> s_refreshIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(RefreshImagePath));
 
         private readonly IEnumerable<ICloudExplorerSource> _sources;
         private bool _isBusy;

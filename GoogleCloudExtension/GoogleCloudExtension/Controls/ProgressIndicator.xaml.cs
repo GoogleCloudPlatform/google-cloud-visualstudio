@@ -108,7 +108,7 @@ namespace GoogleCloudExtension.Controls
         private static List<ImageSource> LoadAnimationFrames()
         {
             return Enumerable.Range(1, 12)
-                .Select(x => ResourceUtils.LoadResource($"Controls/Resources/step_{x}.png"))
+                .Select(x => ResourceUtils.LoadImage($"Controls/Resources/step_{x}.png"))
                 .ToList();
         }
     }

@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
     internal class GcsSourceRootViewModel : SourceRootViewModelBase
     {
         private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/storage.png";
-        private static readonly Lazy<ImageSource> s_storageIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
+        private static readonly Lazy<ImageSource> s_storageIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
 
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
