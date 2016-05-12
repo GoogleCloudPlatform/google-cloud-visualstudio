@@ -17,7 +17,10 @@ using Microsoft.VisualStudio.Shell.Interop;
 
 namespace GoogleCloudExtension.Utils
 {
-    public static class UserPromptUtils
+    /// <summary>
+    /// This class provides helpers to show messages to the user in a uniform way.
+    /// </summary>
+    internal static class UserPromptUtils
     {
         private const int IDYES = 6;
         private const int IDNO = 7;

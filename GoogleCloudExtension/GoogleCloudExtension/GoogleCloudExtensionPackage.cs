@@ -202,23 +202,5 @@ namespace GoogleCloudExtension
         }
 
         #endregion
-
-        #region Global state of the extension
-
-        private static bool s_isDeploying;
-        public static bool IsDeploying
-        {
-            get { return s_isDeploying; }
-            set
-            {
-                if (s_isDeploying != value)
-                {
-                    s_isDeploying = value;
-                    ShellUtils.InvalidateCommandUIStatus();
-                }
-            }
-        }
-
-        #endregion
     }
 }
