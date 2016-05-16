@@ -93,23 +93,19 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             GoogleCloudExtensionPackage.Instance.EnsureAnalyticsOptIn();
 
-            ExtensionAnalytics.ReportCommand(
-                ShowCloudExplorerToolWindowCommand,
-                CommandInvocationSource.ToolsMenu,
-                () =>
-                {
-                    // Get the instance number 0 of this tool window. This window is single instance so this instance
-                    // is actually the only one.
-                    // The last flag is set to true so that if the tool window does not exists it will be created.
-                    ToolWindowPane window = _package.FindToolWindow(typeof(CloudExplorerToolWindow), 0, true);
-                    if (window?.Frame == null)
-                    {
-                        throw new NotSupportedException("Cannot create tool window");
-                    }
+            ExtensionAnalytics.ReportCommand(CommandName.OpenManageAccountsDialog, CommandInvocationSource.ToolsMenu);
 
-                    IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
-                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
-                });
+            // Get the instance number 0 of this tool window. This window is single instance so this instance
+            // is actually the only one.
+            // The last flag is set to true so that if the tool window does not exists it will be created.
+            ToolWindowPane window = _package.FindToolWindow(typeof(CloudExplorerToolWindow), 0, true);
+            if (window?.Frame == null)
+            {
+                throw new NotSupportedException("Cannot create tool window");
+            }
+
+            IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
+            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
         }
     }
 }

@@ -109,7 +109,7 @@ namespace GoogleAnalyticsUtils
         /// <param name="action">The action that took place.</param>
         /// <param name="label">The label affected by the event.</param>
         /// <param name="value">The new value.</param>
-        public void ReportEvent(string category, string action, string label, int? value = null)
+        public void ReportEvent(string category, string action, string label = null, int? value = null)
         {
             // Data we will send along with the web request. Later baked into the HTTP
             // request's payload.

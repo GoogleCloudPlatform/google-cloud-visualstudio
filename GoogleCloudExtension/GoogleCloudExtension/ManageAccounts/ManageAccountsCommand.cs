@@ -90,14 +90,10 @@ namespace GoogleCloudExtension.ManageAccounts
         {
             GoogleCloudExtensionPackage.Instance.EnsureAnalyticsOptIn();
 
-            ExtensionAnalytics.ReportCommand(
-                nameof(ManageAccountsCommand),
-                CommandInvocationSource.ToolsMenu,
-                () =>
-                {
-                    var dialog = new ManageAccountsWindow();
-                    dialog.ShowModal();
-                });
+            ExtensionAnalytics.ReportCommand(CommandName.OpenManageAccountsDialog, CommandInvocationSource.ToolsMenu);
+
+            var dialog = new ManageAccountsWindow();
+            dialog.ShowModal();
         }
     }
 }
