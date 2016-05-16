@@ -88,7 +88,7 @@ namespace GoogleCloudExtension
             }
         }
 
-        #region Persistence of options
+        #region Persistence of solution options
 
         protected override void OnLoadOptions(string key, Stream stream)
         {
@@ -200,6 +200,44 @@ namespace GoogleCloudExtension
         {
             ActivityLogUtils.LogInfo("Shutting down Google Cloud Tools.");
             ExtensionAnalytics.ReportEndSession();
+        }
+
+        #endregion
+
+        #region User Settings
+
+        public AnalyticsOptionsPage AnalyticsSettings => (AnalyticsOptionsPage)GetDialogPage(typeof(AnalyticsOptionsPage));
+
+        public bool AnalyticsOptIn => AnalyticsSettings.OptIn;
+
+        public bool AnalyticsOptInDialogShown
+        {
+            get { return AnalyticsSettings.DialogShown; }
+            set
+            {
+                var settings = AnalyticsSettings;
+                if (value != settings.DialogShown)
+                {
+                    settings.DialogShown = value;
+                    settings.SaveSettingsToStorage();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Opt in dialog
+
+        public void EnsureAnalyticsOptIn()
+        {
+            var settings = AnalyticsSettings;
+            if (!settings.DialogShown)
+            {
+                Debug.WriteLine("Showing the opt-in dialog.");
+                settings.OptIn = UserPromptUtils.YesNoPrompt("Do you want to help Google by reporting usage statics?", "Usage Statistics");
+                settings.DialogShown = true;
+                settings.SaveSettingsToStorage();
+            }
         }
 
         #endregion
