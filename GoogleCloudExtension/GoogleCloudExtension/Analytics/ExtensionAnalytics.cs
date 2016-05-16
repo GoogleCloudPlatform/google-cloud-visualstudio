@@ -46,16 +46,8 @@ namespace GoogleCloudExtension.Analytics
         private const string FalseValue = "false";
         private const string GCloudExtensionPath = "GCloudVSExtension";
         private const string ClientIdProperty = "ClientId";
-        private static readonly Lazy<AnalyticsReporter> s_reporter = new Lazy<AnalyticsReporter>(CreateReporter);
-        private static readonly Lazy<Task<bool>> s_isReportingEnabled = new Lazy<Task<bool>>(IsReportingEnabled);
-        private static readonly Lazy<string> s_clientId = new Lazy<string>(GetOrCreateClientId);
 
-        private static IServiceProvider s_serviceProvider;
-
-        public static void Initialize(IServiceProvider serviceProvider)
-        {
-            s_serviceProvider = serviceProvider;
-        }
+        private static Lazy<AnalyticsReporter> s_reporter = new Lazy<AnalyticsReporter>(CreateReporter);
 
         #region Report convenience methods.
 
@@ -65,10 +57,10 @@ namespace GoogleCloudExtension.Analytics
         /// </summary>
         /// <param name="command">The name of the command. Must not be null.</param>
         /// <param name="invocationSource">From where the command was invoked.</param>
-        public static async void ReportStartCommand(string command, CommandInvocationSource invocationSource)
+        public static void ReportStartCommand(string command, CommandInvocationSource invocationSource)
         {
             ActivityLogUtils.LogInfo($"Reporting: Starting command {command} from source {invocationSource}");
-            var reporter = await GetReporter();
+
             string action;
             switch (invocationSource)
             {
@@ -85,7 +77,8 @@ namespace GoogleCloudExtension.Analytics
                     action = "StartCommand";
                     break;
             }
-            reporter?.ReportEvent(
+
+            s_reporter.Value?.ReportEvent(
                 category: CommandCategory,
                 action: action,
                 label: invocationSource.ToString());
@@ -96,11 +89,11 @@ namespace GoogleCloudExtension.Analytics
         /// </summary>
         /// <param name="command">The command completed. Must not be null.</param>
         /// <param name="succeeded">Did it succeed or not.</param>
-        public static async void ReportEndCommand(string command, bool succeeded)
+        public static void ReportEndCommand(string command, bool succeeded)
         {
             ActivityLogUtils.LogInfo($"Reporting: Command {command} success: {succeeded}");
-            var reporter = await GetReporter();
-            reporter?.ReportEvent(
+
+            s_reporter.Value?.ReportEvent(
                 category: CommandCategory,
                 action: EndCommandAction,
                 label: succeeded ? SucceededLabel : FailedLabel);
@@ -131,11 +124,11 @@ namespace GoogleCloudExtension.Analytics
         /// Reports what tool window from the extension has been opened.
         /// </summary>
         /// <param name="name">The name of the window, typically <c>nameof(class)</c>. Must not be null.</param>
-        public static async void ReportWindowOpened(string name)
+        public static void ReportWindowOpened(string name)
         {
             ActivityLogUtils.LogInfo($"Reporting: Window {name} is opened");
-            var reporter = await GetReporter();
-            reporter?.ReportEvent(
+
+            s_reporter.Value?.ReportEvent(
                 category: WindowCategory,
                 action: OpenWindowAction,
                 label: name);
@@ -146,11 +139,11 @@ namespace GoogleCloudExtension.Analytics
         /// </summary>
         /// <param name="name">The name of the event. Must not be null.</param>
         /// <param name="value">Optional, the value associated with the event.</param>
-        public static async void ReportEvent(string name, string value = null)
+        public static void ReportEvent(string name, string value = null)
         {
             ActivityLogUtils.LogInfo($"Reporting: Event {name} with param {value}");
-            var reporter = await GetReporter();
-            reporter?.ReportEvent(
+
+            s_reporter.Value?.ReportEvent(
                 category: EventCategory,
                 action: name,
                 label: value);
@@ -159,86 +152,51 @@ namespace GoogleCloudExtension.Analytics
         /// <summary>
         /// Reports the begining of the session, to be called when the extension is loaded.
         /// </summary>
-        public static async void ReportStartSession()
+        public static void ReportStartSession()
         {
             ActivityLogUtils.LogInfo($"Reporting: Starting session.");
-            var reporter = await GetReporter();
-            reporter?.ReportStartSession();
+
+            s_reporter.Value?.ReportStartSession();
         }
 
         /// <summary>
         /// Reports the end of the session, to be called when the extension is unloaded.
         /// </summary>
-        public static async void ReportEndSession()
+        public static void ReportEndSession()
         {
             ActivityLogUtils.LogInfo($"Reporting: Ending session.");
-            var reporter = await GetReporter();
-            reporter?.ReportEndSession();
+
+            s_reporter.Value?.ReportEndSession();
         }
 
         #endregion
 
+        public static void AnalyticsOptInStateChanged()
+        {
+            s_reporter = new Lazy<AnalyticsReporter>(CreateReporter);
+        }
+
         private static AnalyticsReporter CreateReporter()
         {
-            bool debug = false;
-#if DEBUG
-            debug = true;
-#endif
-            return new AnalyticsReporter(PropertyId,
-                clientId: s_clientId.Value,
-                appName: ApplicationName,
-                debug: debug);
-        }
+            var settings = GoogleCloudExtensionPackage.Instance.AnalyticsSettings;
 
-        private static string GetOrCreateClientId()
-        {
-            var settingsManager = new ShellSettingsManager(s_serviceProvider);
-            var clientId = GetClientId(settingsManager);
-            if (clientId != null)
+            if (settings.OptIn)
             {
-                Debug.WriteLine("Found existing client id.");
-                return clientId;
+                Debug.WriteLine("Analytics report enabled.");
+                bool debug = false;
+#if DEBUG
+                debug = true;
+#endif
+                return new AnalyticsReporter(PropertyId,
+                    clientId: settings.ClientId,
+                    appName: ApplicationName,
+                    debug: debug);
             }
-
-            Debug.WriteLine("Creating new client id.");
-            clientId = Guid.NewGuid().ToString();
-            StoreClientId(settingsManager, clientId);
-            return clientId;
-        }
-
-        private static string GetClientId(ShellSettingsManager settingsManager)
-        {
-            var readOnlyStore = settingsManager.GetReadOnlySettingsStore(Microsoft.VisualStudio.Settings.SettingsScope.UserSettings);
-            return readOnlyStore.GetString(GCloudExtensionPath, ClientIdProperty, null);
-        }
-
-        private static void StoreClientId(ShellSettingsManager settingsManager, string clientId)
-        {
-            var store = settingsManager.GetWritableSettingsStore(Microsoft.VisualStudio.Settings.SettingsScope.UserSettings);
-            store.CreateCollection(GCloudExtensionPath);
-            store.SetString(GCloudExtensionPath, ClientIdProperty, clientId);
-        }
-
-        /// <summary>
-        /// Returns the reporter to use for reporting data, or null if no reporting is to be done.
-        /// Note: The check for whether reporting data is enabled is done once per session, if the user
-        /// changes the setting then Visual Studio will have to be restarted.
-        /// </summary>
-        /// <returns>The task with the reporter to use.</returns>
-        private static async Task<AnalyticsReporter> GetReporter()
-        {
-            return await s_isReportingEnabled.Value ? s_reporter.Value : null;
-        }
-
-        /// <summary>
-        /// Checks with gcloud to see if usage reporting is enabled or not. Only checks once per session.
-        /// </summary>
-        /// <returns>The task with the result of the check.</returns>
-        private static async Task<bool> IsReportingEnabled()
-        {
-            bool result = true;
-            Debug.WriteLine($"Reporting enabled: {result}");
-            return result;
+            else
+            {
+                Debug.WriteLine("Analytics report disabled.");
+                return null;
+            }
         }
     }
 }

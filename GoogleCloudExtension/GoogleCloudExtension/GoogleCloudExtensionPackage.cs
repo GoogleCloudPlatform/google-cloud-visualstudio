@@ -175,6 +175,9 @@ namespace GoogleCloudExtension
         {
             base.Initialize();
 
+            // An remember the package.
+            Instance = this;
+
             // Register the command handlers.
             CloudExplorerCommand.Initialize(this);
             ManageAccountsCommand.Initialize(this);
@@ -184,14 +187,10 @@ namespace GoogleCloudExtension
             ActivityLogUtils.LogInfo("Starting Google Cloud Tools.");
 
             // Analytics reporting.
-            ExtensionAnalytics.Initialize(this);
             ExtensionAnalytics.ReportStartSession();
 
             _dteInstance = (DTE)Package.GetGlobalService(typeof(DTE));
             _dteInstance.Events.DTEEvents.OnBeginShutdown += DTEEvents_OnBeginShutdown;
-
-            // An d remember the package.
-            Instance = this;
         }
 
         public static GoogleCloudExtensionPackage Instance { get; private set; }
@@ -207,22 +206,6 @@ namespace GoogleCloudExtension
         #region User Settings
 
         public AnalyticsOptionsPage AnalyticsSettings => (AnalyticsOptionsPage)GetDialogPage(typeof(AnalyticsOptionsPage));
-
-        public bool AnalyticsOptIn => AnalyticsSettings.OptIn;
-
-        public bool AnalyticsOptInDialogShown
-        {
-            get { return AnalyticsSettings.DialogShown; }
-            set
-            {
-                var settings = AnalyticsSettings;
-                if (value != settings.DialogShown)
-                {
-                    settings.DialogShown = value;
-                    settings.SaveSettingsToStorage();
-                }
-            }
-        }
 
         #endregion
 
