@@ -54,6 +54,7 @@ namespace GoogleCloudExtension
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideToolWindow(typeof(CloudExplorerToolWindow))]
     [ProvideAutoLoad(UIContextGuids80.NoSolution)]
+    [ProvideOptionPage(typeof(AnalyticsOptionsPage), "Google Cloud Tools", "Usage Report", 0, 0, false)]
     public sealed class GoogleCloudExtensionPackage : Package
     {
         /// <summary>

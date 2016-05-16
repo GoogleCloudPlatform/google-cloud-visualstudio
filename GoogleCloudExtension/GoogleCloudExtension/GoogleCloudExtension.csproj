@@ -101,6 +101,9 @@
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AnalyticsOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Utils\ActivityLogUtils.cs" />
     <Compile Include="Utils\GcpOutputWindow.cs" />
     <Compile Include="GoogleCloudExtensionPackage.cs" />
