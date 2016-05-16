@@ -262,6 +262,8 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnRefresh()
         {
+            ExtensionAnalytics.ReportCommand(CommandName.RefreshDataSource, CommandInvocationSource.Button);
+
             RefreshSources();
         }
 

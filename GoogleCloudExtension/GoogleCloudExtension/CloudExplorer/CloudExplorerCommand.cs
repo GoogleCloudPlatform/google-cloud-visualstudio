@@ -93,7 +93,7 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             GoogleCloudExtensionPackage.Instance.EnsureAnalyticsOptIn();
 
-            ExtensionAnalytics.ReportCommand(CommandName.OpenManageAccountsDialog, CommandInvocationSource.ToolsMenu);
+            ExtensionAnalytics.ReportCommand(CommandName.OpenCloudExplorerToolWindow, CommandInvocationSource.ToolsMenu);
 
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.

@@ -14,6 +14,7 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.OAuth;
@@ -273,11 +274,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnOpenTerminalServerSessionCommand()
         {
+            ExtensionAnalytics.ReportCommand(CommandName.OpenTerminalServerSessionForGceInstanceCommand, CommandInvocationSource.Button);
+
             Process.Start("mstsc", $"/v:{Instance.GetPublicIpAddress()}");
         }
 
         private void OnOpenWebsite()
         {
+            ExtensionAnalytics.ReportCommand(CommandName.OpenWebsiteForGceInstanceCommand, CommandInvocationSource.Button);
+
             var url = Instance.GetDestinationAppUri();
             Debug.WriteLine($"Opening Web Site: {url}");
             Process.Start(url);
@@ -285,6 +290,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnGetPublishSettings()
         {
+            ExtensionAnalytics.ReportCommand(CommandName.GetPublishSettingsForGceInstance, CommandInvocationSource.Button);
+
             Debug.WriteLine($"Generating Publishing settings for {Instance.Name}");
 
             var storePath = PromptForPublishSettingsPath(Instance.Name);

@@ -45,6 +45,11 @@ namespace GoogleCloudExtension.Analytics
                 action: invocationSource.ToString());
         }
 
+        /// <summary>
+        /// Reports an interesting event to Google Analytics.
+        /// </summary>
+        /// <param name="category">The event category.</param>
+        /// <param name="action">The action being taken place.</param>
         public static void ReportEvent(string category, string action)
         {
             s_reporter.Value?.ReportEvent(category, action);
