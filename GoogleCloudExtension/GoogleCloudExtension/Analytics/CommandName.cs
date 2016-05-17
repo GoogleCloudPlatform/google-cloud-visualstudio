@@ -12,6 +12,7 @@ namespace GoogleCloudExtension.Analytics
         ToolsMenu,
         ContextMenu,
         Button,
+        ListItem,
     }
 
     /// <summary>
@@ -21,13 +22,8 @@ namespace GoogleCloudExtension.Analytics
     /// </summary>
     internal enum CommandName
     {
-        // For the case no command is selected.
         None,
-
-        // The command for opening the ManageAccounts dialog.
         OpenManageAccountsDialog,
-
-        // The command for opening the cloud explorer.
         OpenCloudExplorerToolWindow,
         RefreshDataSource,
         ShowAllGceInstancesCommand,
@@ -36,5 +32,10 @@ namespace GoogleCloudExtension.Analytics
         OpenWebsiteForGceInstanceCommand,
         GetPublishSettingsForGceInstance,
         OpenWebsiteForGcsBucket,
+        OAuthFlowCancel,
+        DoubleClickedAccountCommand,
+        DeleteAccountCommand,
+        SetCurrentAccountCommand,
+        AddAccountCommand,
     }
 }
