@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GoogleCloudExtension.Analytics
+﻿namespace GoogleCloudExtension.Analytics
 {
     /// <summary>
     /// This enum specifies how a command is invoked.

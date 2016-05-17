@@ -14,10 +14,8 @@
 
 using GoogleAnalyticsUtils;
 using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Shell.Settings;
 using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Analytics
 {
