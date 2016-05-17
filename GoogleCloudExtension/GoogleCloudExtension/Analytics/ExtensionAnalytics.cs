@@ -54,6 +54,11 @@ namespace GoogleCloudExtension.Analytics
         {
             s_reporter.Value?.ReportEvent(category, action);
         }
+
+        public static void ReportScreen(string name)
+        {
+            s_reporter.Value?.ReportScreen(name);
+        }
     
         /// <summary>
         /// Reports the begining of the session, to be called when the extension is loaded.

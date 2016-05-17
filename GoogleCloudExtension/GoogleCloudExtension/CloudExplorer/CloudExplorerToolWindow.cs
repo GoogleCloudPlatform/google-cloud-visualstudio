@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorerSources.Gce;
 using GoogleCloudExtension.CloudExplorerSources.Gcs;
 using Microsoft.VisualStudio.Shell;
@@ -41,6 +42,8 @@ namespace GoogleCloudExtension.CloudExplorer
         /// </summary>
         public CloudExplorerToolWindow() : base(null)
         {
+            ExtensionAnalytics.ReportScreen(nameof(CloudExplorerToolWindow));
+
             SetCaption();
 
             // Contains the list of sources to display to the user, in the order they will
