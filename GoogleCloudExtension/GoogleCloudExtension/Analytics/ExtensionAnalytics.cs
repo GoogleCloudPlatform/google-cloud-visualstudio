@@ -23,7 +23,7 @@ namespace GoogleCloudExtension.Analytics
     {
         private const string PropertyId = "UA-71653866-1";
         private const string ApplicationName = "Google Cloud Tools for Visual Studio";
-                
+
         private static Lazy<AnalyticsReporter> s_reporter = new Lazy<AnalyticsReporter>(CreateReporter);
 
         #region Report convenience methods.
@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.Analytics
         {
             s_reporter.Value?.ReportScreen(name);
         }
-    
+
         /// <summary>
         /// Reports the begining of the session, to be called when the extension is loaded.
         /// </summary>
