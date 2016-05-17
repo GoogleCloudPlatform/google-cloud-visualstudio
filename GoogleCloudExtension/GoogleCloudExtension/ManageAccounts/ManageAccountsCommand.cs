@@ -88,14 +88,12 @@ namespace GoogleCloudExtension.ManageAccounts
         /// <param name="e">The event args.</param>
         private void ShowToolWindow(object sender, EventArgs e)
         {
-            ExtensionAnalytics.ReportCommand(
-                nameof(ManageAccountsCommand),
-                CommandInvocationSource.ToolsMenu,
-                () =>
-                {
-                    var dialog = new ManageAccountsWindow();
-                    dialog.ShowModal();
-                });
+            ExtensionAnalytics.EnsureAnalyticsOptIn();
+
+            ExtensionAnalytics.ReportCommand(CommandName.OpenManageAccountsDialog, CommandInvocationSource.ToolsMenu);
+
+            var dialog = new ManageAccountsWindow();
+            dialog.ShowModal();
         }
     }
 }

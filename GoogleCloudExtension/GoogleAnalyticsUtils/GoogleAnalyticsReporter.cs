@@ -47,11 +47,13 @@ namespace GoogleAnalyticsUtils
         private const string ClientIdParam = "cid";
         private const string AppNameParam = "an";
         private const string AppVersionParam = "av";
+        private const string ScreenNameParam = "cd";
 
         private const string VersionValue = "1";
         private const string EventTypeValue = "event";
         private const string SessionStartValue = "start";
         private const string SessionEndValue = "end";
+        private const string ScreenViewValue = "screenview";
 
         private readonly bool _debug;
         private readonly string _serverUrl;
@@ -109,11 +111,15 @@ namespace GoogleAnalyticsUtils
         /// <param name="action">The action that took place.</param>
         /// <param name="label">The label affected by the event.</param>
         /// <param name="value">The new value.</param>
-        public void ReportEvent(string category, string action, string label, int? value = null)
+        public void ReportEvent(string category, string action, string label = null, int? value = null)
         {
+            Preconditions.CheckNotNull(category, nameof(category));
+            Preconditions.CheckNotNull(action, nameof(action));
+
             // Data we will send along with the web request. Later baked into the HTTP
             // request's payload.
-            var hitData = new Dictionary<string, string>(_baseHitData) {
+            var hitData = new Dictionary<string, string>(_baseHitData)
+            {
                 { HitTypeParam, EventTypeValue },
                 { EventCategoryParam, category },
                 { EventActionParam, action },
@@ -126,6 +132,22 @@ namespace GoogleAnalyticsUtils
             {
                 hitData[EventValueParam] = value.ToString();
             }
+            SendHitData(hitData);
+        }
+
+        /// <summary>
+        /// Reports a window view.
+        /// </summary>
+        /// <param name="name">The name of the window. Must not be null.</param>
+        public void ReportScreen(string name)
+        {
+            Preconditions.CheckNotNull(name, nameof(name));
+
+            var hitData = new Dictionary<string, string>(_baseHitData)
+            {
+                { HitTypeParam, ScreenViewValue },
+                { ScreenNameParam, name },
+            };
             SendHitData(hitData);
         }
 

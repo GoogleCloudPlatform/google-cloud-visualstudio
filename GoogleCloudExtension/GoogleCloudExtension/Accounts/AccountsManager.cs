@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.OAuth;
 using GoogleCloudExtension.OauthLoginFlow;
@@ -28,6 +29,8 @@ namespace GoogleCloudExtension.Accounts
     /// </summary>
     public static class AccountsManager
     {
+        private const string OAuthEventCategory = "OAUTH";
+
         /// <summary>
         /// The OAUTH credentials to use for the VS extension.
         /// </summary>
@@ -57,14 +60,18 @@ namespace GoogleCloudExtension.Accounts
         {
             try
             {
+                ExtensionAnalytics.ReportEvent(OAuthEventCategory, "FlowStarted");
                 string refreshToken = OAuthLoginFlowWindow.PromptUser(s_extensionCredentials, s_extensionScopes);
                 if (refreshToken == null)
                 {
+                    ExtensionAnalytics.ReportEvent(OAuthEventCategory, "FlowCancelled");
                     Debug.WriteLine("The user cancelled the OAUTH login flow.");
                     return false;
                 }
 
                 var credentials = await GetUserAccountForRefreshToken(refreshToken);
+                ExtensionAnalytics.ReportEvent(OAuthEventCategory, "FlowFinished");
+
                 var existingUserAccount = CredentialsStore.Default.GetAccount(credentials.AccountName);
                 if (existingUserAccount != null)
                 {
@@ -81,6 +88,7 @@ namespace GoogleCloudExtension.Accounts
             }
             catch (OAuthException ex)
             {
+                ExtensionAnalytics.ReportEvent(OAuthEventCategory, "FlowFailed");
                 UserPromptUtils.ErrorPrompt($"Failed to perform OAUTH authentication. {ex.Message}", "OAUTH error");
                 return false;
             }
