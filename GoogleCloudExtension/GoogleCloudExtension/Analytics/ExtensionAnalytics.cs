@@ -19,12 +19,30 @@ using System.Diagnostics;
 
 namespace GoogleCloudExtension.Analytics
 {
+    /// <summary>
+    /// Helper class to deal with reporting intereting statistcs to Google Analytics.
+    /// </summary>
     internal static class ExtensionAnalytics
     {
         private const string PropertyId = "UA-71653866-1";
         private const string ApplicationName = "Google Cloud Tools for Visual Studio";
 
         private static Lazy<AnalyticsReporter> s_reporter = new Lazy<AnalyticsReporter>(CreateReporter);
+
+        /// <summary>
+        /// Ensures that the opt-in dialog is shown to the user.
+        /// </summary>
+        public static void EnsureAnalyticsOptIn()
+        {
+            var settings = GoogleCloudExtensionPackage.Instance.AnalyticsSettings;
+            if (!settings.DialogShown)
+            {
+                Debug.WriteLine("Showing the opt-in dialog.");
+                settings.OptIn = UserPromptUtils.YesNoPrompt("Do you want to help Google by reporting usage statics?", "Usage Statistics");
+                settings.DialogShown = true;
+                settings.SaveSettingsToStorage();
+            }
+        }
 
         #region Report convenience methods.
 

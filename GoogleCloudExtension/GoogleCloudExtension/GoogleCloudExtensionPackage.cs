@@ -208,21 +208,5 @@ namespace GoogleCloudExtension
         public AnalyticsOptionsPage AnalyticsSettings => (AnalyticsOptionsPage)GetDialogPage(typeof(AnalyticsOptionsPage));
 
         #endregion
-
-        #region Opt in dialog
-
-        public void EnsureAnalyticsOptIn()
-        {
-            var settings = AnalyticsSettings;
-            if (!settings.DialogShown)
-            {
-                Debug.WriteLine("Showing the opt-in dialog.");
-                settings.OptIn = UserPromptUtils.YesNoPrompt("Do you want to help Google by reporting usage statics?", "Usage Statistics");
-                settings.DialogShown = true;
-                settings.SaveSettingsToStorage();
-            }
-        }
-
-        #endregion
     }
 }

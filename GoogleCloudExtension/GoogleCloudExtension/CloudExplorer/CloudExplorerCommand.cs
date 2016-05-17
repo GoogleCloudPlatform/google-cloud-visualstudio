@@ -91,7 +91,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <param name="e">The event args.</param>
         private void ShowToolWindow(object sender, EventArgs e)
         {
-            GoogleCloudExtensionPackage.Instance.EnsureAnalyticsOptIn();
+            ExtensionAnalytics.EnsureAnalyticsOptIn();
 
             ExtensionAnalytics.ReportCommand(CommandName.OpenCloudExplorerToolWindow, CommandInvocationSource.ToolsMenu);
 

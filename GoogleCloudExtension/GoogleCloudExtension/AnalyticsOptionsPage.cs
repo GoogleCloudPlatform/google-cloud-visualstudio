@@ -20,19 +20,34 @@ using System.Diagnostics;
 
 namespace GoogleCloudExtension
 {
+    /// <summary>
+    /// This class represents the extension's analytics settings.
+    /// </summary>
     public class AnalyticsOptionsPage : DialogPage
     {
+        /// <summary>
+        /// Whether the user is opt-in or not into report usage statistics. By default is false.
+        /// </summary>
         [Category("Usage Report")]
         [DisplayName("Report Usage Statistics Enabled")]
         [Description("Whether to report usage statistics to Google")]
         public bool OptIn { get; set; }
 
+        /// <summary>
+        /// Whether the analitics dialog has been shown to the user, as it will only be shown once.
+        /// </summary>
         [Browsable(false)]
         public bool DialogShown { get; set; }
 
+        /// <summary>
+        /// The client id to use to report usage statistics.
+        /// </summary>
         [Browsable(false)]
         public string ClientId { get; set; }
 
+        /// <summary>
+        /// Reset all the settings to their default values.
+        /// </summary>
         public override void ResetSettings()
         {
             OptIn = false;

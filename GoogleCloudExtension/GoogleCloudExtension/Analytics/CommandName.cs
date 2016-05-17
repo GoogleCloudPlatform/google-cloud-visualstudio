@@ -17,7 +17,7 @@ namespace GoogleCloudExtension.Analytics
     /// <summary>
     /// This enum specifies how a command is invoked.
     /// </summary>
-    public enum CommandInvocationSource
+    internal enum CommandInvocationSource
     {
         // No source.
         None,
