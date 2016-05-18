@@ -22,19 +22,6 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public partial class ViewModelBase : Model
     {
-        private bool _isLoading;
-        private string _loadingMessage;
 
-        public bool IsLoading
-        {
-            get { return _isLoading; }
-            set { SetValueAndRaise(ref _isLoading, value); }
-        }
-
-        public string LoadingMessage
-        {
-            get { return _loadingMessage; }
-            set { SetValueAndRaise(ref _loadingMessage, value); }
-        }
     }
 }
