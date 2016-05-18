@@ -114,6 +114,7 @@
     <Compile Include="Utils\SelectionUtils.cs" />
     <Compile Include="Utils\UserPromptUtils.cs" />
     <Compile Include="Utils\ViewModelBase.cs" />
+    <Compile Include="Utils\ViewModelBase.Validation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
@@ -316,6 +317,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
@@ -341,6 +343,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ProgressIndicator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Styles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
