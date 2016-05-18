@@ -16,10 +16,21 @@ using System;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
+    /// <summary>
+    /// This interface is implemented by those classes that can provide an item to show
+    /// in the properties window.
+    /// </summary>
     public interface ICloudExplorerItemSource
     {
+        /// <summary>
+        /// The object to display in the properties window. This object is expected to be annotated
+        /// with the <seealso cref="CategoryAttribute"/> and <seealso cref="DescriptionAttribute"/>.
+        /// </summary>
         object Item { get; }
 
+        /// <summary>
+        /// Notifies the listener that the item has changed and that the UI needs to be refreshed.
+        /// </summary>
         event EventHandler ItemChanged;
     }
 }

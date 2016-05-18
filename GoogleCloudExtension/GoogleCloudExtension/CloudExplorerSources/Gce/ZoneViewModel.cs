@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
     public class ZoneViewModel : TreeHierarchy
     {
         private const string IconResourcePath = "CloudExplorerSources/Gce/Resources/zone_icon.png";
-        private static readonly Lazy<ImageSource> s_zoneIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
+        private static readonly Lazy<ImageSource> s_zoneIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
 
         private readonly GceSourceRootViewModel _owner;
 
@@ -33,7 +33,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             _owner = owner;
 
-            Content = zoneName;
+            Caption = zoneName;
             Icon = s_zoneIcon.Value;
 
             var viewModels = instances.Select(x => new GceInstanceViewModel(owner, x));

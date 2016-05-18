@@ -20,9 +20,17 @@ using System.Diagnostics;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// This class provides helpers to update the properties window, manage the currently selected "item".
+    /// </summary>
     internal static class SelectionUtils
     {
-        internal static bool ActivatePropertiesWindow(IServiceProvider provider)
+        /// <summary>
+        /// Activates the properties window, ensuring it is visible to the user.
+        /// </summary>
+        /// <param name="provider">The <seealso cref="IServiceProvider"/> to use to get services.</param>
+        /// <returns>True if the window as activated, false otherwise.</returns>
+        public static bool ActivatePropertiesWindow(IServiceProvider provider)
         {
             IVsWindowFrame frame = null;
             var shell = provider.GetService(typeof(SVsUIShell)) as IVsUIShell;
@@ -44,7 +52,11 @@ namespace GoogleCloudExtension.Utils
             return true;
         }
 
-        internal static void ClearSelection(IServiceProvider provider)
+        /// <summary>
+        /// Clears the selection, making the property window empty.
+        /// </summary>
+        /// <param name="provider">The <seealso cref="IServiceProvider"/> to use to get services.</param>
+        public static void ClearSelection(IServiceProvider provider)
         {
             var selectionTracker = provider.GetService(typeof(STrackSelection)) as ITrackSelection;
             if (selectionTracker == null)
@@ -58,7 +70,12 @@ namespace GoogleCloudExtension.Utils
             selectionTracker.OnSelectChange(selectionContainer);
         }
 
-        internal static void SelectItem(IServiceProvider provider, object item)
+        /// <summary>
+        /// Selects the given item, showing it in the properties window.
+        /// </summary>
+        /// <param name="provider">The <seealso cref="IServiceProvider"/> to use to get services.</param>
+        /// <param name="item">The item to be selected.</param>
+        public static void SelectItem(IServiceProvider provider, object item)
         {
             var selectionTracker = provider.GetService(typeof(STrackSelection)) as ITrackSelection;
             if (selectionTracker == null)

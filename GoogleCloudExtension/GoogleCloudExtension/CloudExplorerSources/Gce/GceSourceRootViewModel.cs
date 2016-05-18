@@ -30,22 +30,22 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
     {
         private const string IconResourcePath = "CloudExplorerSources/Gce/Resources/gce_logo.png";
 
-        private static readonly Lazy<ImageSource> s_gceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconResourcePath));
+        private static readonly Lazy<ImageSource> s_gceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
-            Content = "Loading instances...",
+            Caption = "Loading instances...",
             IsLoading = true
         };
         private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
         {
-            Content = "Failed to load instances.",
+            Caption = "Failed to load instances.",
             IsError = true
         };
         private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
         {
-            Content = "No instances found."
+            Caption = "No instances found."
         };
-        private static readonly TreeLeaf s_noZonesPlaceholder = new TreeLeaf { Content = "No zones" };
+        private static readonly TreeLeaf s_noZonesPlaceholder = new TreeLeaf { Caption = "No zones" };
 
         private bool _showOnlyWindowsInstances = false;
         private IList<Instance> _instances;
@@ -78,14 +78,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
         }
 
-        public override void Initialize(ICloudExplorerSource owner)
+        public override void Initialize()
         {
-            base.Initialize(owner);
+            base.Initialize();
 
-            InvalidateCredentials();
+            InvalidateProjectOrAccount();
         }
 
-        public override void InvalidateCredentials()
+        public override void InvalidateProjectOrAccount()
         {
             Debug.WriteLine("New credentials, invalidating data source for GCE");
             _dataSource = new Lazy<GceDataSource>(CreateDataSource);

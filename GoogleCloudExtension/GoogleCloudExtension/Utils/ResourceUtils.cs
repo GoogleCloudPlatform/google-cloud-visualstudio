@@ -14,20 +14,31 @@
 
 using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace GoogleCloudExtension.Utils
 {
-    public static class ResourceUtils
+    /// <summary>
+    /// This class contains helpers to access resources in the assembly.
+    /// </summary>
+    internal static class ResourceUtils
     {
-        private const string AssemblyName = "GoogleCloudExtension";
+        private static readonly Lazy<string> s_assemblyName = new Lazy<string>(GetAssemblyName);
 
-        public static ImageSource LoadResource(string path)
+        /// <summary>
+        /// Loads an image resource given its relative path in the resources.
+        /// </summary>
+        /// <param name="path">The path of the resource to load.</param>
+        /// <returns></returns>
+        public static ImageSource LoadImage(string path)
         {
-            var uri = new Uri($"pack://application:,,,/{AssemblyName};component/{path}");
+            var uri = new Uri($"pack://application:,,,/{s_assemblyName.Value};component/{path}");
             Debug.WriteLine($"Loading resource: {path}");
             return new BitmapImage(uri);
         }
+
+        private static string GetAssemblyName() => Assembly.GetExecutingAssembly().GetName().Name;
     }
 }

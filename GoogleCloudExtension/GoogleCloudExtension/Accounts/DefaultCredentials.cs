@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GoogleCloudExtension.Accounts.Models
+namespace GoogleCloudExtension.Accounts
 {
     /// <summary>
     /// This class is used to serialize and deserialize the default credentials for VS.

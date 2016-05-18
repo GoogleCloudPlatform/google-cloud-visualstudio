@@ -54,6 +54,7 @@ namespace GoogleCloudExtension
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideToolWindow(typeof(CloudExplorerToolWindow))]
     [ProvideAutoLoad(UIContextGuids80.NoSolution)]
+    [ProvideOptionPage(typeof(AnalyticsOptionsPage), "Google Cloud Tools", "Usage Report", 0, 0, false)]
     public sealed class GoogleCloudExtensionPackage : Package
     {
         /// <summary>
@@ -87,7 +88,7 @@ namespace GoogleCloudExtension
             }
         }
 
-        #region Persistence of options
+        #region Persistence of solution options
 
         protected override void OnLoadOptions(string key, Stream stream)
         {
@@ -174,6 +175,9 @@ namespace GoogleCloudExtension
         {
             base.Initialize();
 
+            // An remember the package.
+            Instance = this;
+
             // Register the command handlers.
             CloudExplorerCommand.Initialize(this);
             ManageAccountsCommand.Initialize(this);
@@ -183,14 +187,10 @@ namespace GoogleCloudExtension
             ActivityLogUtils.LogInfo("Starting Google Cloud Tools.");
 
             // Analytics reporting.
-            ExtensionAnalytics.Initialize(this);
             ExtensionAnalytics.ReportStartSession();
 
             _dteInstance = (DTE)Package.GetGlobalService(typeof(DTE));
             _dteInstance.Events.DTEEvents.OnBeginShutdown += DTEEvents_OnBeginShutdown;
-
-            // An d remember the package.
-            Instance = this;
         }
 
         public static GoogleCloudExtensionPackage Instance { get; private set; }
@@ -203,21 +203,9 @@ namespace GoogleCloudExtension
 
         #endregion
 
-        #region Global state of the extension
+        #region User Settings
 
-        private static bool s_isDeploying;
-        public static bool IsDeploying
-        {
-            get { return s_isDeploying; }
-            set
-            {
-                if (s_isDeploying != value)
-                {
-                    s_isDeploying = value;
-                    ShellUtils.InvalidateCommandUIStatus();
-                }
-            }
-        }
+        public AnalyticsOptionsPage AnalyticsSettings => (AnalyticsOptionsPage)GetDialogPage(typeof(AnalyticsOptionsPage));
 
         #endregion
     }

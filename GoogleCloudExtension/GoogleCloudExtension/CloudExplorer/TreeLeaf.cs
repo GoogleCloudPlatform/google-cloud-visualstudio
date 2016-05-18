@@ -12,22 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 
-namespace GoogleCloudExtension.Utils
+namespace GoogleCloudExtension.CloudExplorer
 {
-    public static class ShellUtils
-    {
-        public static void InvalidateCommandUIStatus()
-        {
-            // Invalidate the commands status.
-            var shell = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
-            if (shell == null)
-            {
-                return;
-            }
-            shell.UpdateCommandUI(0);
-        }
-    }
+    /// <summary>
+    /// This class represents a leaf in the UI tree. Although this class does not add anything to
+    /// <seealso cref="TreeNode"/> it is used to differentiate the UI of a node vs. the UI of a hierarchy node
+    /// in the UI tree.
+    /// </summary>
+    public class TreeLeaf : TreeNode
+    { }
 }

@@ -45,17 +45,18 @@ namespace GoogleCloudExtension.CloudExplorer
                 oldItemSource.ItemChanged -= OnItemChanged;
             }
 
-            var itemSource = e.NewValue as ICloudExplorerItemSource;
-            if (itemSource == null)
+            var newItemSource = e.NewValue as ICloudExplorerItemSource;
+            if (newItemSource == null)
             {
                 SelectionUtils.ClearSelection(_provider);
                 return;
             }
-            itemSource.ItemChanged += OnItemChanged;
+            newItemSource.ItemChanged += OnItemChanged;
 
-            var item = itemSource.Item;
+            var item = newItemSource.Item;
             if (!_propertiesWindowActivated)
             {
+                // The properties window can only be activated once, to avoid it stealing focus continously.
                 _propertiesWindowActivated = SelectionUtils.ActivatePropertiesWindow(_provider);
             }
             SelectionUtils.SelectItem(_provider, item);

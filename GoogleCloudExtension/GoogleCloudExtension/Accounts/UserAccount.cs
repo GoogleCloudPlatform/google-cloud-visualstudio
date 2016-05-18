@@ -17,7 +17,7 @@ using Newtonsoft.Json;
 using System.IO;
 using System.Text;
 
-namespace GoogleCloudExtension.Accounts.Models
+namespace GoogleCloudExtension.Accounts
 {
     /// <summary>
     /// This class stores the complete data for a user account. The class can be serialize to a .json

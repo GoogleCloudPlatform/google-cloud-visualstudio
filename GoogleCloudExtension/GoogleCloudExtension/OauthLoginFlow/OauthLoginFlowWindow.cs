@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.OAuth;
 using Microsoft.VisualStudio.PlatformUI;
 using System;
@@ -33,6 +34,8 @@ namespace GoogleCloudExtension.OauthLoginFlow
 
         private OAuthLoginFlowWindow(OAuthCredentials credentials, IEnumerable<string> scopes)
         {
+            ExtensionAnalytics.ReportScreen(nameof(OAuthLoginFlowWindow));
+
             _flow = new OAuthLoginFlow(credentials, scopes);
 
             Title = "Provide Credentials";

@@ -18,6 +18,9 @@ using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
+    /// <summary>
+    /// This class represents a button in the action bar in the Cloud Explorer UI.
+    /// </summary>
     public class ButtonDefinition : Model
     {
         private string _toolTip;
@@ -25,24 +28,37 @@ namespace GoogleCloudExtension.CloudExplorer
         private ICommand _command;
         private bool _isChecked;
 
+        /// <summary>
+        /// The text for the tooltip for the button in the command bar.
+        /// </summary>
         public string ToolTip
         {
             get { return _toolTip; }
             set { SetValueAndRaise(ref _toolTip, value); }
         }
 
+        /// <summary>
+        /// The icon for the button.
+        /// </summary>
         public ImageSource Icon
         {
             get { return _icon; }
             set { SetValueAndRaise(ref _icon, value); }
         }
 
+        /// <summary>
+        /// The command to execute when the button is pressed.
+        /// </summary>
         public ICommand Command
         {
             get { return _command; }
             set { SetValueAndRaise(ref _command, value); }
         }
 
+        /// <summary>
+        /// Whether the button is in the checked state or not. This is independent on the pressed state;
+        /// it applies to buttons that toggle state.
+        /// </summary>
         public bool IsChecked
         {
             get { return _isChecked; }

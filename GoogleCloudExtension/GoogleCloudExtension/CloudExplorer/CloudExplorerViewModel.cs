@@ -14,6 +14,7 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.Utils;
@@ -27,16 +28,15 @@ using System.Windows.Media;
 namespace GoogleCloudExtension.CloudExplorer
 {
     /// <summary>
-    /// This class contains the view specific logic for the AppEngineAppsToolWindow view.
+    /// This class is the view model for the Cloud Explore tool window.
     /// </summary>
     internal class CloudExplorerViewModel : ViewModelBase
     {
         private const string RefreshImagePath = "CloudExplorer/Resources/refresh.png";
 
-        private static readonly Lazy<ImageSource> s_refreshIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(RefreshImagePath));
+        private static readonly Lazy<ImageSource> s_refreshIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(RefreshImagePath));
 
-        private readonly IList<ICloudExplorerSource> _sources;
-        private readonly List<ButtonDefinition> _buttons;
+        private readonly IEnumerable<ICloudExplorerSource> _sources;
         private bool _isBusy;
         private AsyncPropertyValue<string> _profilePictureAsync;
         private AsyncPropertyValue<string> _profileNameAsync;
@@ -64,12 +64,13 @@ namespace GoogleCloudExtension.CloudExplorer
         public bool IsReady => !IsBusy;
 
         /// <summary>
-        /// The list of module and version combinations for the current project.
+        /// The list list of roots for the hieratchical view, each root contains all of the data
+        /// from a given source.
         /// </summary>
         public IEnumerable<TreeHierarchy> Roots => _sources.Select(x => x.Root);
 
         /// <summary>
-        /// Returns the profile image name to use.
+        /// Returns the profile image URL.
         /// </summary>
         public AsyncPropertyValue<string> ProfilePictureAsync
         {
@@ -78,7 +79,7 @@ namespace GoogleCloudExtension.CloudExplorer
         }
 
         /// <summary>
-        /// Returns the profile name to use.
+        /// Returns the profile name.
         /// </summary>
         public AsyncPropertyValue<string> ProfileNameAsync
         {
@@ -94,7 +95,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// The list of buttons to add to the toolbar, a concatenation of all sources buttons.
         /// </summary>
-        public IList<ButtonDefinition> Buttons => _buttons;
+        public IEnumerable<ButtonDefinition> Buttons { get; }
 
         /// <summary>
         /// The currently selected project.
@@ -110,7 +111,7 @@ namespace GoogleCloudExtension.CloudExplorer
         }
 
         /// <summary>
-        /// The list of projects accessible for the current credentials.
+        /// The list of projects for the current account.
         /// </summary>
         public IEnumerable<Project> Projects
         {
@@ -120,8 +121,8 @@ namespace GoogleCloudExtension.CloudExplorer
 
         public CloudExplorerViewModel(IEnumerable<ICloudExplorerSource> sources)
         {
-            _sources = new List<ICloudExplorerSource>(sources);
-            _buttons = new List<ButtonDefinition>()
+            _sources = sources;
+            var refreshButtonEnumerable = new ButtonDefinition[]
             {
                 new ButtonDefinition
                 {
@@ -130,12 +131,7 @@ namespace GoogleCloudExtension.CloudExplorer
                     Command = new WeakCommand(this.OnRefresh),
                 }
             };
-
-            foreach (var source in _sources)
-            {
-                var sourceButtons = source.Buttons;
-                _buttons.AddRange(sourceButtons);
-            }
+            Buttons = Enumerable.Concat(refreshButtonEnumerable, _sources.SelectMany(x => x.Buttons));
 
             ManageAccountsCommand = new WeakCommand(OnManageAccountsCommand);
 
@@ -178,6 +174,8 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnManageAccountsCommand()
         {
+            ExtensionAnalytics.ReportCommand(CommandName.OpenManageAccountsDialog, CommandInvocationSource.Button);
+
             var dialog = new ManageAccountsWindow();
             dialog.ShowModal();
         }
@@ -264,6 +262,8 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnRefresh()
         {
+            ExtensionAnalytics.ReportCommand(CommandName.RefreshDataSource, CommandInvocationSource.Button);
+
             RefreshSources();
         }
 

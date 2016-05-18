@@ -14,6 +14,7 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.OAuth;
@@ -37,9 +38,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private const string IconStopedResourcePath = "CloudExplorerSources/Gce/Resources/instance_icon_stoped.png";
         private const string IconTransitionResourcePath = "CloudExplorerSources/Gce/Resources/instance_icon_transition.png";
 
-        private static readonly Lazy<ImageSource> s_instanceRunningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconRunningResourcePath));
-        private static readonly Lazy<ImageSource> s_instanceStopedIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconStopedResourcePath));
-        private static readonly Lazy<ImageSource> s_instanceTransitionIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadResource(IconTransitionResourcePath));
+        private static readonly Lazy<ImageSource> s_instanceRunningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconRunningResourcePath));
+        private static readonly Lazy<ImageSource> s_instanceStopedIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconStopedResourcePath));
+        private static readonly Lazy<ImageSource> s_instanceTransitionIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconTransitionResourcePath));
 
         private readonly GceSourceRootViewModel _owner;
         private Instance _instance;
@@ -102,11 +103,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 switch (pendingOperation.OperationType)
                 {
                     case OperationType.StartInstance:
-                        Content = $"Starting instance {Instance.Name}";
+                        Caption = $"Starting instance {Instance.Name}";
                         break;
 
                     case OperationType.StopInstance:
-                        Content = $"Stoping instance {Instance.Name}";
+                        Caption = $"Stoping instance {Instance.Name}";
                         break;
                 }
 
@@ -138,7 +139,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 }
                 catch (DataSourceException ex)
                 {
-                    Content = Instance.Name;
+                    Caption = Instance.Name;
                     IsLoading = false;
                     IsError = true;
                     UpdateContextMenu();
@@ -170,7 +171,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
             // Normal state, no pending operations.
             IsLoading = false;
-            Content = Instance.Name;
+            Caption = Instance.Name;
             UpdateContextMenu();
         }
 
@@ -273,11 +274,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnOpenTerminalServerSessionCommand()
         {
+            ExtensionAnalytics.ReportCommand(CommandName.OpenTerminalServerSessionForGceInstanceCommand, CommandInvocationSource.Button);
+
             Process.Start("mstsc", $"/v:{Instance.GetPublicIpAddress()}");
         }
 
         private void OnOpenWebsite()
         {
+            ExtensionAnalytics.ReportCommand(CommandName.OpenWebsiteForGceInstanceCommand, CommandInvocationSource.Button);
+
             var url = Instance.GetDestinationAppUri();
             Debug.WriteLine($"Opening Web Site: {url}");
             Process.Start(url);
@@ -285,6 +290,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnGetPublishSettings()
         {
+            ExtensionAnalytics.ReportCommand(CommandName.GetPublishSettingsForGceInstance, CommandInvocationSource.Button);
+
             Debug.WriteLine($"Generating Publishing settings for {Instance.Name}");
 
             var storePath = PromptForPublishSettingsPath(Instance.Name);
