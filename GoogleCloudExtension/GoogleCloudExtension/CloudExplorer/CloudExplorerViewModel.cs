@@ -176,8 +176,7 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             ExtensionAnalytics.ReportCommand(CommandName.OpenManageAccountsDialog, CommandInvocationSource.Button);
 
-            var dialog = new ManageAccountsWindow();
-            dialog.ShowModal();
+            ManageAccountsWindow.PromptUser();
         }
 
         private void OnCurrentAccountChanged(object sender, EventArgs e)

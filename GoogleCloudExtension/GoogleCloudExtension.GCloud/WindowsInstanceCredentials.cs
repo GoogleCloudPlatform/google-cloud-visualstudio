@@ -14,27 +14,17 @@
 
 using Newtonsoft.Json;
 
-namespace GoogleCloudExtension.GCloud.Models
+namespace GoogleCloudExtension.GCloud
 {
     /// <summary>
-    /// This class is used to deserialize the core settings of GCloud from its JSON
-    /// representation.
+    /// This class contains the credentials for a Windows VM.
     /// </summary>
-    internal sealed class CoreSettings
+    public sealed class WindowsInstanceCredentials
     {
-        [JsonProperty("account")]
-        public string Account { get; set; }
+        [JsonProperty("username")]
+        public string User { get; set; }
 
-        [JsonProperty("project")]
-        public string Project { get; set; }
-    }
-
-    /// <summary>
-    /// This class is used to deserialize GCloud settings from its JSON representation.
-    /// </summary>
-    internal sealed class Settings
-    {
-        [JsonProperty("core")]
-        public CoreSettings CoreSettings { get; set; }
+        [JsonProperty("password")]
+        public string Password { get; set; }
     }
 }

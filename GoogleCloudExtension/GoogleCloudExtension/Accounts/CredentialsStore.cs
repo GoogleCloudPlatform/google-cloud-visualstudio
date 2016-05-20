@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.Accounts
         public event EventHandler Reset;
 
         /// <summary>
-        /// The current <see cref="UserAccount"/> selected.S
+        /// The current <see cref="UserAccount"/> selected.
         /// </summary>
         public UserAccount CurrentAccount
         {
@@ -74,6 +74,11 @@ namespace GoogleCloudExtension.Accounts
                 }
             }
         }
+
+        /// <summary>
+        /// Returns the path for the current account.
+        /// </summary>
+        public string CurrentAccountPath => GetUserAccountPath(CurrentAccount.AccountName);
 
         /// <summary>
         /// The GoogleCredential for the current <see cref="UserAccount"/>.

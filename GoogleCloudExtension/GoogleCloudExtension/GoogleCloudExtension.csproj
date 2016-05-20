@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.VSSDK.BuildTools.14.0.23107\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('..\packages\Microsoft.VSSDK.BuildTools.14.0.23107\build\Microsoft.VSSDK.BuildTools.props')" />
   <PropertyGroup>
@@ -102,6 +102,16 @@
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ResetPassword\ResetPasswordViewModel.cs" />
+    <Compile Include="ResetPassword\ResetPasswordWindow.cs" />
+    <Compile Include="ResetPassword\ResetPasswordWindowContent.xaml.cs">
+      <DependentUpon>ResetPasswordWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ShowPassword\ShowPasswordViewModel.cs" />
+    <Compile Include="ShowPassword\ShowPasswordWindow.cs" />
+    <Compile Include="ShowPassword\ShowPasswordWindowContent.xaml.cs">
+      <DependentUpon>ShowPasswordWindowContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AnalyticsOptionsPage.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -124,6 +134,8 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="ShowPassword\Resources\visibility_off.png" />
+    <Resource Include="ShowPassword\Resources\visibility.png" />
     <VSCTCompile Include="GoogleCloudExtension.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
@@ -352,6 +364,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ResetPassword\ResetPasswordWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ShowPassword\ShowPasswordWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GoogleCloudExtension.DataSources\GoogleCloudExtension.DataSources.csproj">
@@ -361,6 +381,10 @@
     <ProjectReference Include="..\GoogleAnalyticsUtils\GoogleAnalyticsUtils.csproj">
       <Project>{a2d9ac4e-9621-4385-a175-316832f7bfdc}</Project>
       <Name>GoogleAnalyticsUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.GCloud\GoogleCloudExtension.GCloud.csproj">
+      <Project>{95efac7e-4f6e-46f0-bcc8-90ee1487e1e1}</Project>
+      <Name>GoogleCloudExtension.GCloud</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.OAuth\GoogleCloudExtension.OAuth.csproj">
       <Project>{ad8b672d-7f0a-4c7f-9774-a9458a99a061}</Project>

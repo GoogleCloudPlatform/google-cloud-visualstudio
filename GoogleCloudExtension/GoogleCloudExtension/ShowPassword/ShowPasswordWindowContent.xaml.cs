@@ -12,16 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Newtonsoft.Json;
+using System.Windows.Controls;
 
-namespace GoogleCloudExtension.GCloud.Models
+namespace GoogleCloudExtension.ShowPassword
 {
-    public sealed class WindowsInstanceCredentials
+    /// <summary>
+    /// Interaction logic for ShowPasswordWindowContent.xaml
+    /// </summary>
+    public partial class ShowPasswordWindowContent : UserControl
     {
-        [JsonProperty("username")]
-        public string User { get; set; }
-
-        [JsonProperty("password")]
-        public string Password { get; set; }
+        public ShowPasswordWindowContent(ShowPasswordViewModel viewModel)
+        {
+            InitializeComponent();
+            DataContext = viewModel;
+            _passwordBox.Password = viewModel.Password;
+        }
     }
 }

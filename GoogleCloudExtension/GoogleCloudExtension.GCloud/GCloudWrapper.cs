@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,140 +25,43 @@ namespace GoogleCloudExtension.GCloud
 {
     /// <summary>
     /// This class wraps the gcloud command and offers up some of its services in a
-    /// as async methods. It also manages the its own notion of "current user" and 
-    /// "current project".
-    /// This class is a singleton.
+    /// as async methods. 
     /// </summary>
     public static class GCloudWrapper
     {
-        // Environment variables to specify the credentials to the Gcloud CLI.
-        private const string CloudSdkCoreAccountVar = "CLOUDSDK_CORE_ACCOUNT";
-        private const string CloudSdkCoreProjectVar = "CLOUDSDK_CORE_PROJECT";
-
-        /// <summary>
-        /// Calculates what the current project and account is, it might return what "gcloud"
-        /// things is the current account and project or what this instance override is. This is
-        /// hidden from the caller.
-        /// </summary>
-        /// <returns>The current AccountAndProjectId.</returns>
-        public static async Task<Context> GetCurrentContextAsync()
-        {
-            // Fetching the current account and project, for gcloud, does not need to use the current
-            // account.
-            var settings = await GetJsonOutputAsync<Settings>("config list");
-            return new Context(
-                account: settings.CoreSettings.Account,
-                projectId: settings.CoreSettings.Project);
-        }
-
         /// <summary>
         /// Finds the location of gcloud.cmd by following all of the directories in the PATH environment
         /// variable until it finds it. With this we assume that in order to run the extension gcloud.cmd is
         /// in the PATH.
         /// </summary>
         /// <returns></returns>
-        private static string GetGCloudPath()
-        {
-            return Environment.GetEnvironmentVariable("PATH")
+        public static string GetGCloudPath() =>
+            Environment.GetEnvironmentVariable("PATH")
                 .Split(';')
-                .Select(x => Path.Combine(x, "gcloud.cmd"))
-                .Where(x => File.Exists(x))
-                .FirstOrDefault();
-        }
-
-        private static IDictionary<string, string> GetEnvironmentForCredentials(string account, string projectId)
-        {
-            if (account == null && projectId == null)
-            {
-                return null;
-            }
-
-            var result = new Dictionary<string, string>();
-            if (account != null)
-            {
-                result[CloudSdkCoreAccountVar] = account;
-            }
-            if (projectId != null)
-            {
-                result[CloudSdkCoreProjectVar] = projectId;
-            }
-            return result;
-        }
-
-        private static string FormatCommand(string command, bool useJson)
-        {
-            var jsonFormatParam = useJson ? "--format=json" : "";
-            return $"/c gcloud {jsonFormatParam} {command}";
-        }
+                .FirstOrDefault(x => File.Exists(Path.Combine(x, "gcloud.cmd")));
 
         /// <summary>
-        /// Runs a gcloud command, returns when the command is finished.
+        /// Resets, or creates, the password for the given <paramref name="userName"/> in the given instance.
         /// </summary>
-        /// <param name="command">The command to execute.</param>
-        /// <param name="callback">The output callback called for each line of output from the command.</param>
-        /// <param name="credentials">The credentials to use.</param>
+        /// <param name="instanceName"></param>
+        /// <param name="zoneName"></param>
+        /// <param name="userName"></param>
         /// <returns></returns>
-        public static async Task RunCommandAsync(string command, Action<string> callback, string account = null, string projectId = null)
-        {
-            var actualCommand = FormatCommand(command, useJson: false);
-            var envVars = GetEnvironmentForCredentials(account: account, projectId: projectId);
-            Debug.WriteLine($"Executing gcloud command: {actualCommand}");
-            var result = await ProcessUtils.RunCommandAsync("cmd.exe", actualCommand, (s, e) => callback(e.Line), envVars);
-            if (!result)
-            {
-                throw new GCloudException($"Failed to execute: {actualCommand}");
-            }
-        }
+        public static Task<WindowsInstanceCredentials> ResetWindowsCredentialsAsync(
+            string instanceName,
+            string zoneName,
+            string userName,
+            Context context) =>
+            GetJsonOutputAsync<WindowsInstanceCredentials>(
+                $"beta compute reset-windows-password {instanceName} --zone={zoneName} --user={userName} --quiet ",
+                context);
 
         /// <summary>
-        /// Returns the access token for this class' notion of current user.
+        /// Returns true if the <seealso cref="ResetWindowsCredentialsAsync(string, string, string, Context)"/> method can
+        /// be used safely.
         /// </summary>
-        /// <returns>The string representation of the access token.</returns>
-        public static Task<string> GetAccessTokenAsync(string account)
-        {
-            return GetCommandOutputAsync("auth print-access-token", account: account);
-        }
-
-        /// <summary>
-        /// Returns the accounts registered with gcloud.
-        /// </summary>
-        /// <returns>The accounts.</returns>
-        public static async Task<IEnumerable<string>> GetAccountsAsync()
-        {
-            // Getting the list of accounts needs to not filter down by the current account
-            // being used or nothing will be shown, so we don't need to use the current account.
-            var settings = await GetJsonOutputAsync<AccountSettings>("auth list");
-            return settings.Accounts;
-        }
-
-        public static async Task<WindowsInstanceCredentials> ResetWindowsCredentials(string instance, string zone, string user, string account, string projectId)
-        {
-            return await GetJsonOutputAsync<WindowsInstanceCredentials>(
-                $"beta compute reset-windows-password {instance} --quiet --zone {zone} --user {user}",
-                account: account,
-                projectId: projectId);
-        }
-
-        /// <summary>
-        /// Fetches the value of the property given its full name.
-        /// </summary>
-        /// <param name="group">The group that contains the property.</param>
-        /// <param name="property">The name of the property to fetch.</param>
-        /// <returns>The task with the result from reading the property.</returns>
-        public static async Task<string> GetPropertyAsync(string group, string property)
-        {
-            try
-            {
-                Debug.WriteLine($"Reading property gcloud {group}/{property}");
-                var config = await GetJsonOutputAsync<JObject>($"config list {group}/{property}");
-                var groupObject = config?[group];
-                return (string)groupObject?[property];
-            }
-            catch (GCloudException)
-            {
-                return null;
-            }
-        }
+        /// <returns>A task that will be fullfilled to true if the method can be called, false otherwise.</returns>
+        public static Task<bool> CanUseResetWindowsCredentialsAsync() => IsComponentInstalledAsync("beta");
 
         /// <summary>
         /// Returns the list of components that gcloud knows about.
@@ -185,27 +87,36 @@ namespace GoogleCloudExtension.GCloud
             return gcloudPath != null;
         }
 
-        private static async Task<string> GetCommandOutputAsync(string command, string account = null, string projectId = null)
+        /// <summary>
+        /// Determines if the given gcloud component is installed.
+        /// </summary>
+        /// <param name="component">The component to check.</param>
+        /// <returns>A task that will be fullfilled to true if the component is installed, false otherwise.</returns>
+        public static async Task<bool> IsComponentInstalledAsync(string component)
         {
-            var actualCommand = FormatCommand(command, useJson: false);
-            var envVars = GetEnvironmentForCredentials(account: account, projectId: projectId);
-            Debug.WriteLine($"Executing gcloud command: {actualCommand}");
-            var output = await ProcessUtils.GetCommandOutputAsync("cmd.exe", actualCommand, envVars);
-            if (!output.Succeeded)
+            if (!IsGCloudCliInstalled())
             {
-                throw new GCloudException($"Failed with message: {output.StandardError}");
+                return false;
             }
-            return output.StandardOutput;
+            var installedComponents = await GetInstalledComponentsAsync();
+            return installedComponents.Contains(component);
         }
 
-        private static async Task<T> GetJsonOutputAsync<T>(string command, string account = null, string projectId = null)
+        private static string FormatCommand(string command, Context context)
         {
-            var actualCommand = FormatCommand(command, useJson: true);
-            var envVars = GetEnvironmentForCredentials(account: account, projectId: projectId);
+            var projectId = context?.ProjectId != null ? $"--project={context.ProjectId}" : "";
+            var credentialsPath = context?.CredentialsPath != null ? $"--credential-file-override={context.CredentialsPath}" : "";
+            return $"gcloud {command} {projectId} {credentialsPath} --format=json";
+        }
+
+        private static async Task<T> GetJsonOutputAsync<T>(string command, Context context = null)
+        {
+            var actualCommand = FormatCommand(command, context);
             try
             {
+                // This code depends on the fact that gcloud.cmd is a batch file.
                 Debug.Write($"Executing gcloud command: {actualCommand}");
-                return await ProcessUtils.GetJsonOutputAsync<T>("cmd.exe", actualCommand, envVars);
+                return await ProcessUtils.GetJsonOutputAsync<T>("cmd.exe", $"/c {actualCommand}");
             }
             catch (JsonOutputException ex)
             {

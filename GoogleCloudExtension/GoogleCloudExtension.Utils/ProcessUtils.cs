@@ -96,7 +96,7 @@ namespace GoogleCloudExtension.Utils
             string file,
             string args,
             EventHandler<OutputHandlerEventArgs> handler,
-            IDictionary<string, string> environment)
+            IDictionary<string, string> environment = null)
         {
             var startInfo = GetStartInfoForInteractiveProcess(file, args, environment);
 
@@ -119,7 +119,7 @@ namespace GoogleCloudExtension.Utils
         /// <param name="args">The arguments to pass to the executable.</param>
         /// <param name="environment">The environment variables to use for the executable.</param>
         /// <returns></returns>
-        public static Task<ProcessOutput> GetCommandOutputAsync(string file, string args, IDictionary<string, string> environment)
+        public static Task<ProcessOutput> GetCommandOutputAsync(string file, string args, IDictionary<string, string> environment = null)
         {
             var startInfo = GetStartInfoForInteractiveProcess(file, args, environment);
 
@@ -163,7 +163,7 @@ namespace GoogleCloudExtension.Utils
         /// <param name="args">The arguments to pass to the executable.</param>
         /// <param name="environment">The environment to use for the executable.</param>
         /// <returns></returns>
-        public static async Task<T> GetJsonOutputAsync<T>(string file, string args, IDictionary<string, string> environment)
+        public static async Task<T> GetJsonOutputAsync<T>(string file, string args, IDictionary<string, string> environment = null)
         {
             var output = await ProcessUtils.GetCommandOutputAsync(file, args, environment);
             if (!output.Succeeded)

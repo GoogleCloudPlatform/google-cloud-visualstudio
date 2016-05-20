@@ -12,28 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Analytics;
+using Google.Apis.Compute.v1.Data;
 using Microsoft.VisualStudio.PlatformUI;
 
-namespace GoogleCloudExtension.ManageAccounts
+namespace GoogleCloudExtension.ResetPassword
 {
-    public class ManageAccountsWindow : DialogWindow
+    public class ResetPasswordWindow : DialogWindow
     {
-        private ManageAccountsWindow()
+        private ResetPasswordWindow(Instance instance, string projectId)
         {
-            ExtensionAnalytics.ReportScreen(nameof(ManageAccountsWindow));
-
-            Title = "Manage Accounts";
-            Width = 500;
-            Height = 400;
+            Title = $"Reset Password for {instance.Name}";
+            Width = 350;
+            Height = 160;
             ResizeMode = System.Windows.ResizeMode.NoResize;
             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
-            Content = new ManageAccountsWindowContent { DataContext = new ManageAccountsViewModel(this) };
+
+            Content = new ResetPasswordWindowContent
+            {
+                DataContext = new ResetPasswordViewModel(this, instance, projectId)
+            };
         }
 
-        public static void PromptUser()
+        public static void PromptUser(Instance instance, string projectId)
         {
-            var dialog = new ManageAccountsWindow();
+            var dialog = new ResetPasswordWindow(instance, projectId);
             dialog.ShowModal();
         }
     }

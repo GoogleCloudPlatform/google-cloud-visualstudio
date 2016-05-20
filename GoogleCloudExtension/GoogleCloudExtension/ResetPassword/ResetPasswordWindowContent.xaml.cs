@@ -12,21 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Newtonsoft.Json;
-using System.Collections.Generic;
+using System.Windows.Controls;
 
-namespace GoogleCloudExtension.GCloud.Models
+namespace GoogleCloudExtension.ResetPassword
 {
     /// <summary>
-    /// This class represents the account settings as stored in the GCloud CLI store, it is used
-    /// to deserialize the output of the CLI commands.
+    /// Interaction logic for ResetPasswordWindowContent.xaml
     /// </summary>
-    internal sealed class AccountSettings
+    public partial class ResetPasswordWindowContent : UserControl
     {
-        [JsonProperty("accounts")]
-        public IList<string> Accounts { get; set; }
-
-        [JsonProperty("active_account")]
-        public string ActiveAccount { get; set; }
+        public ResetPasswordWindowContent()
+        {
+            InitializeComponent();
+        }
     }
 }

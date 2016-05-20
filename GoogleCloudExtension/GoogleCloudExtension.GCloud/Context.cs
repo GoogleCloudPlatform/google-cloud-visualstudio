@@ -19,14 +19,15 @@ namespace GoogleCloudExtension.GCloud
     /// </summary>
     public sealed class Context
     {
-        public string Account { get; }
+        /// <summary>
+        /// The path to the credentials .json file to use for the call. The .json file should be a
+        /// format accetable by gcloud's --credential-file-override parameter. Typically an authorize_user kind.
+        /// </summary>
+        public string CredentialsPath { get; set; }
 
-        public string ProjectId { get; }
-
-        public Context(string account = null, string projectId = null)
-        {
-            Account = account;
-            ProjectId = projectId;
-        }
+        /// <summary>
+        /// The project id of the project to use for the invokation of gcloud.
+        /// </summary>
+        public string ProjectId { get; set; }
     }
 }

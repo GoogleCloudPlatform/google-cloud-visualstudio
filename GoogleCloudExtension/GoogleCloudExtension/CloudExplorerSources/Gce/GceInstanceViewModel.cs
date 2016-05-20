@@ -18,6 +18,7 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.OAuth;
+using GoogleCloudExtension.ResetPassword;
 using GoogleCloudExtension.Utils;
 using Microsoft.Win32;
 using System;
@@ -192,12 +193,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 Instance.IsWindowsInstance() && Instance.IsRunning());
             var startInstanceCommand = new WeakCommand(OnStartInstanceCommand);
             var stopInstanceCommand = new WeakCommand(OnStopInstanceCommand);
+            var resetInstancePasswordCommand = new WeakCommand(OnResentInstancePasswordCommand, Instance.IsWindowsInstance() && Instance.IsRunning());
 
             var menuItems = new List<MenuItem>
             {
                 new MenuItem {Header="Save Publishing Settings...", Command = getPublishSettingsCommand },
                 new MenuItem {Header="Open Terminal Server Session...", Command = openTerminalServerSessionCommand },
                 new MenuItem {Header="Open Web Site...", Command = openWebSite },
+                new MenuItem { Header = "Reset Instance Password...", Command = resetInstancePasswordCommand },
             };
 
             if (Instance.IsRunning())
@@ -212,7 +215,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
-        private async void OnStopInstanceCommand()
+        private async void OnResentInstancePasswordCommand()
+        {
+            ResetPasswordWindow.PromptUser(_instance, CredentialsStore.Default.CurrentProjectId);
+        }
+
+        private void OnStopInstanceCommand()
         {
             try
             {
@@ -246,7 +254,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 "Credentials Error");
         }
 
-        private async void OnStartInstanceCommand()
+        private void OnStartInstanceCommand()
         {
             try
             {
