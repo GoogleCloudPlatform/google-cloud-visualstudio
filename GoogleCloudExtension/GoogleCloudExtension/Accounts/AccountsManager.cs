@@ -75,7 +75,7 @@ namespace GoogleCloudExtension.Accounts
                 var existingUserAccount = CredentialsStore.Default.GetAccount(credentials.AccountName);
                 if (existingUserAccount != null)
                 {
-                    Debug.WriteLine($"Duplicated account {credentials.AccountName}");
+                    Debug.WriteLine($"Duplicate account {credentials.AccountName}");
                     UserPromptUtils.ErrorPrompt($"The user account {credentials.AccountName} already exists.", "Duplicate Account");
                     return false;
                 }
