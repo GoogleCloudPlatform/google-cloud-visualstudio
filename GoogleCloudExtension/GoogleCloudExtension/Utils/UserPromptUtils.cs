@@ -22,6 +22,9 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     internal static class UserPromptUtils
     {
+        /// <summary>
+        /// These values come from a comment on https://msdn.microsoft.com/en-us/library/microsoft.visualstudio.shell.vsshellutilities.showmessagebox(v=vs.100).aspx.
+        /// </summary>
         private const int IDYES = 6;
         private const int IDNO = 7;
 
