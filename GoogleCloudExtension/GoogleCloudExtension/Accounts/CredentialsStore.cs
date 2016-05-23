@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.Accounts
         public event EventHandler Reset;
 
         /// <summary>
-        /// The current <see cref="UserAccount"/> selected.S
+        /// The current <see cref="UserAccount"/> selected.
         /// </summary>
         public UserAccount CurrentAccount
         {
@@ -69,11 +69,16 @@ namespace GoogleCloudExtension.Accounts
                 if (_currentAccount?.AccountName != value?.AccountName)
                 {
                     _currentAccount = value;
-                    UpdateDefaultAccountProjectId();
+                    UpdateDefaultCredentials();
                     CurrentAccountChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
+
+        /// <summary>
+        /// Returns the path for the current account.
+        /// </summary>
+        public string CurrentAccountPath => GetUserAccountPath(CurrentAccount.AccountName);
 
         /// <summary>
         /// The GoogleCredential for the current <see cref="UserAccount"/>.
@@ -91,7 +96,7 @@ namespace GoogleCloudExtension.Accounts
                 if (_currentProjectId != value)
                 {
                     _currentProjectId = value;
-                    UpdateDefaultAccountProjectId();
+                    UpdateDefaultCredentials();
                     CurrentProjectIdChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
@@ -124,8 +129,8 @@ namespace GoogleCloudExtension.Accounts
             var accountFilePath = GetUserAccountPath(account.AccountName);
             if (accountFilePath == null)
             {
-                Debug.WriteLine($"Should not be here, unkonwn account anme: {account.AccountName}");
-                throw new InvalidOperationException($"Unknown accout name: {account.AccountName}");
+                Debug.WriteLine($"Should not be here, unknown account name: {account.AccountName}");
+                throw new InvalidOperationException($"Unknown account name: {account.AccountName}");
             }
 
             File.Delete(accountFilePath);
@@ -160,17 +165,9 @@ namespace GoogleCloudExtension.Accounts
         /// <returns>The account if found, null otherwise.</returns>
         public UserAccount GetAccount(string accountName)
         {
-            if (accountName == null)
-            {
-                return null;
-            }
-
-            StoredUserAccount result;
-            if (_cachedCredentials.TryGetValue(accountName, out result))
-            {
-                return result.UserAccount;
-            }
-            return null;
+            StoredUserAccount result = null;
+            _cachedCredentials.TryGetValue(accountName, out result);
+            return result?.UserAccount;
         }
 
         /// <summary>
@@ -219,7 +216,7 @@ namespace GoogleCloudExtension.Accounts
             return Directory.EnumerateFiles(s_credentialsStoreRoot)
                 .Where(x => Path.GetExtension(x) == ".json")
                 .Select(x => new StoredUserAccount { FileName = Path.GetFileName(x), UserAccount = LoadUserAccount(x) })
-                .ToDictionary(x => x.UserAccount.AccountName, y => y);
+                .ToDictionary(x => x.UserAccount.AccountName);
         }
 
         private static void EnsureCredentialsRootExist()
@@ -294,7 +291,7 @@ namespace GoogleCloudExtension.Accounts
             return sb.ToString();
         }
 
-        private void UpdateDefaultAccountProjectId()
+        private void UpdateDefaultCredentials()
         {
             var path = Path.Combine(s_credentialsStoreRoot, DefaultCredentialsFileName);
 
@@ -384,7 +381,7 @@ namespace GoogleCloudExtension.Accounts
             }
             catch (IOException ex)
             {
-                Debug.WriteLine($"Failed to write the file {path}: {ex.Message}");
+                Debug.WriteLine($"Failed to read the file {path}: {ex.Message}");
                 throw;
             }
         }
