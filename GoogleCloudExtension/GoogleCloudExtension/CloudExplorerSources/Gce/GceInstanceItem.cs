@@ -14,17 +14,21 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Utils;
 using System.ComponentModel;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
-    public class GceInstanceItem
+    /// <summary>
+    /// This class represents a GCE instance in the Properties Window.
+    /// </summary>
+    public class GceInstanceItem : PropertyWindowItemBase
     {
         private const string Category = "Instance Properties";
 
         protected Instance Instance { get; }
 
-        public GceInstanceItem(Instance instance)
+        public GceInstanceItem(Instance instance) : base(className: "Instance Properties", componentName: instance.Name)
         {
             Instance = instance;
         }
@@ -39,6 +43,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         [Category(Category)]
         [Description("The machine type for the instance")]
+        [DisplayName("Machine Type")]
         public string MachineType => Instance.MachineType;
 
         [Category(Category)]
@@ -47,14 +52,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         [Category(Category)]
         [Description("Whether this is an ASP.NET server")]
+        [DisplayName("Is ASP.NET")]
         public bool IsAspNet => Instance.IsAspnetInstance();
 
         [Category(Category)]
         [Description("The interna IP address of the instance")]
+        [DisplayName("Internal IP Address")]
         public string IpAddress => Instance.GetInternalIpAddress();
 
         [Category(Category)]
         [Description("The public IP address of the instance")]
+        [DisplayName("External IP Address")]
         public string PublicIpAddress => Instance.GetPublicIpAddress();
 
         [Category(Category)]

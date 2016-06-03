@@ -18,6 +18,10 @@ using System.ComponentModel;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
+    /// <summary>
+    /// This class represents a GCE instance that is running the ASP.NET image in the
+    /// Properties window.
+    /// </summary>
     public class AspNetInstanceItem : GceInstanceItem
     {
         private const string AspNetCategory = "ASP.NET Properties";
@@ -27,6 +31,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         [Category(AspNetCategory)]
         [Description("The password for the sa user in the SQL Server installed in the instance.")]
+        [DisplayName("SQL Server Password")]
         public string SqlServerPassword => Instance.GetSqlServerPassword();
     }
 }

@@ -18,6 +18,10 @@ using System.ComponentModel;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
+    /// <summary>
+    /// This class represents a GCE instance that is serving App Engine traffic in the 
+    /// Properties window.
+    /// </summary>
     public class GceGaeInstanceItem : GceInstanceItem
     {
         private const string GaeCategory = "AppEngine Properties";
@@ -32,5 +36,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         [Category(GaeCategory)]
         [Description("The version of the module for the instance.")]
         public string Version => Instance.GetGaeVersion();
+
+        public override string ToString() => Instance.Name;
     }
 }
