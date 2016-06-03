@@ -215,7 +215,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
-        private async void OnResentInstancePasswordCommand()
+        private void OnResentInstancePasswordCommand()
         {
             ResetPasswordWindow.PromptUser(_instance, CredentialsStore.Default.CurrentProjectId);
         }

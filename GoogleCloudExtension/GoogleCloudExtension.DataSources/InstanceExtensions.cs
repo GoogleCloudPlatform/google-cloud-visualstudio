@@ -113,7 +113,7 @@ namespace GoogleCloudExtension.DataSources
             var doc = new XDocument(
                 new XElement("publishData",
                     new XElement("publishProfile",
-                        new XAttribute("profileName", "Google Cloud Profile-WebDeploy"),
+                        new XAttribute("profileName", instance.Name),
                         new XAttribute("publishMethod", "MSDeploy"),
                         new XAttribute("publishUrl", instance.GetPublishUrl()),
                         new XAttribute("msdeploySite", "Default Web Site"),
