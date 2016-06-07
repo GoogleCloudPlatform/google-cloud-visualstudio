@@ -108,41 +108,56 @@ namespace GoogleCloudExtension.OAuth
                     listener.Start();
                     Debug.WriteLine($"Starting listening for OAUTH code in url {redirectUrl}");
 
-                    // Wait for the context and possibly the cancellation of the operation.
-                    var contextTask = await GetCancellableTaskAsync(
-                        listener.GetContextAsync(),
-                        token);
-
-                    // Awaits the resulting task. If the task is the cancelled one it will throw, otherwise
-                    // it will just return the context.
-                    var context = await contextTask;
-                    var accessCode = context.Request.QueryString["code"];
-                    var error = context.Request.QueryString["error"];
-
-                    // Creates an appropiate response for success or failure.
-                    // TODO(ivann): Redirect to an appropiate page.
-                    var response = context.Response;
-                    response.StatusCode = 200;
-                    response.ContentType = "text/html";
-                    byte[] buff;
-                    if (!String.IsNullOrEmpty(accessCode))
+                    while (true)
                     {
-                        // Success path.
-                        buff = Encoding.UTF8.GetBytes("<html><title>Done</title><body>You are done, thank you.</body></html>");
-                    }
-                    else
-                    {
-                        // Error path.
-                        buff = Encoding.UTF8.GetBytes("<html><title>Error</title><body>You are not authenticated.</body></html>");
-                    }
 
-                    response.ContentLength64 = buff.Length;
-                    using (var stream = response.OutputStream)
-                    {
-                        stream.Write(buff, 0, buff.Length);
-                    }
+                        // Wait for the context and possibly the cancellation of the operation.
+                        var contextTask = await GetCancellableTaskAsync(
+                            listener.GetContextAsync(),
+                            token);
 
-                    return new FlowResult { AccessCode = accessCode, Error = error };
+                        // Awaits the resulting task. If the task is the cancelled one it will throw, otherwise
+                        // it will just return the context.
+                        var context = await contextTask;
+
+                        // Ensure that this is the URL that we expect, Internet Explorer, and possibly other browsers,
+                        // might ask for the favicon or other metadata pages before actually redirecting with the code.
+                        if (context.Request.Url.AbsolutePath != "/")
+                        {
+                            Debug.WriteLine($"Got request for path {context.Request.Url}");
+                            context.Response.StatusCode = 404;
+                            context.Response.OutputStream.Close();
+                            continue;
+                        }
+
+                        var accessCode = context.Request.QueryString["code"];
+                        var error = context.Request.QueryString["error"];
+
+                        // Creates an appropiate response for success or failure.
+                        // TODO(ivann): Redirect to an appropiate page.
+                        var response = context.Response;
+                        response.StatusCode = 200;
+                        response.ContentType = "text/html";
+                        byte[] buff;
+                        if (!String.IsNullOrEmpty(accessCode))
+                        {
+                            // Success path.
+                            buff = Encoding.UTF8.GetBytes("<html><title>Done</title><body>You are done, thank you.</body></html>");
+                        }
+                        else
+                        {
+                            // Error path.
+                            buff = Encoding.UTF8.GetBytes("<html><title>Error</title><body>You are not authenticated.</body></html>");
+                        }
+
+                        response.ContentLength64 = buff.Length;
+                        using (var stream = response.OutputStream)
+                        {
+                            stream.Write(buff, 0, buff.Length);
+                        }
+
+                        return new FlowResult { AccessCode = accessCode, Error = error };
+                    }
                 }
                 finally
                 {

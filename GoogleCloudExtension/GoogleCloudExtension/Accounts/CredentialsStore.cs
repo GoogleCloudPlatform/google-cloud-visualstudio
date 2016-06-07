@@ -165,6 +165,11 @@ namespace GoogleCloudExtension.Accounts
         /// <returns>The account if found, null otherwise.</returns>
         public UserAccount GetAccount(string accountName)
         {
+            if (accountName == null)
+            {
+                return null;
+            }
+
             StoredUserAccount result = null;
             _cachedCredentials.TryGetValue(accountName, out result);
             return result?.UserAccount;
