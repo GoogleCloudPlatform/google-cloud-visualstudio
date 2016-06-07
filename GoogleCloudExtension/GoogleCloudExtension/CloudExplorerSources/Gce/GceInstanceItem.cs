@@ -44,16 +44,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         [Category(Category)]
         [Description("The machine type for the instance")]
         [DisplayName("Machine Type")]
-        public string MachineType => Instance.MachineType;
+        public string MachineType => Instance.GetMachineType();
 
         [Category(Category)]
         [Description("The current status of the instance")]
         public string Status => Instance.Status;
-
-        [Category(Category)]
-        [Description("Whether this is an ASP.NET server")]
-        [DisplayName("Is ASP.NET")]
-        public bool IsAspNet => Instance.IsAspnetInstance();
 
         [Category(Category)]
         [Description("The interna IP address of the instance")]

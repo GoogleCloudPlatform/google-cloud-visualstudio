@@ -83,6 +83,13 @@ namespace GoogleCloudExtension.DataSources
         public static string GetGaeVersion(this Instance instance) => instance.Metadata.Items?.FirstOrDefault(x => x.Key == "gae_backend_version")?.Value;
 
         /// <summary>
+        /// Retruns the machine type based on the GCE machine type URL.
+        /// </summary>
+        /// <param name="instance">The instance to inspect.</param>
+        /// <returns></returns>
+        public static string GetMachineType(this Instance instance) => new Uri(instance.MachineType).Segments.Last();
+
+        /// <summary>
         /// Returns the internal IP address for the instance.
         /// </summary>
         /// <param name="instance">The instance to inspect.</param>
@@ -135,10 +142,10 @@ namespace GoogleCloudExtension.DataSources
         public static string GetSqlServerPassword(this Instance instance) => instance.Metadata.Items?.FirstOrDefault(x => x.Key == SqlServerSaPasswordKey)?.Value;
 
         /// <summary>
-        /// Returns whether the given instance is a SQL server instance or not.
+        /// Returns whether the given instance has SQL server password defined or not.
         /// </summary>
         /// <param name="instance">The the instance to check.</param>
-        public static bool IsSqlServer(this Instance instance) => instance.GetSqlServerPassword() != null;
+        public static bool HasSqlServerPassword(this Instance instance) => instance.GetSqlServerPassword() != null;
 
         /// <summary>
         /// Returns the zone name where the instance is located.

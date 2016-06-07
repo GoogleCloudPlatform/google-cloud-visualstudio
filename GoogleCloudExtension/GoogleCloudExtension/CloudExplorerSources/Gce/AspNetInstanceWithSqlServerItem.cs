@@ -22,11 +22,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
     /// This class represents a GCE instance that is running the ASP.NET image in the
     /// Properties window.
     /// </summary>
-    public class AspNetInstanceItem : GceInstanceItem
+    public class AspNetInstanceWithSqlServerItem : GceInstanceItem
     {
         private const string AspNetCategory = "ASP.NET Properties";
 
-        public AspNetInstanceItem(Instance instance) : base(instance)
+        public AspNetInstanceWithSqlServerItem(Instance instance) : base(instance)
         { }
 
         [Category(AspNetCategory)]
