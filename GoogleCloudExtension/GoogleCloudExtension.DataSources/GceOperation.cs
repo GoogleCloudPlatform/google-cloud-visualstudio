@@ -23,6 +23,8 @@ namespace GoogleCloudExtension.DataSources
     {
         StopInstance,
         StartInstance,
+        SettingTags,
+        ModifyingFirewall,
     }
 
     /// <summary>

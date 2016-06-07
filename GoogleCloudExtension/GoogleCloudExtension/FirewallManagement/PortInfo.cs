@@ -13,25 +13,21 @@
 // limitations under the License.
 
 using Google.Apis.Compute.v1.Data;
-using GoogleCloudExtension.DataSources;
-using System.ComponentModel;
 
-namespace GoogleCloudExtension.CloudExplorerSources.Gce
+namespace GoogleCloudExtension.FirewallManagement
 {
-    public class WindowsInstanceItem : GceInstanceItem
+    public class PortInfo
     {
-        const string Category = "Windows Properties";
+        public string Name { get; }
 
-        private readonly WindowsInstanceInfo _info;
+        public int Port { get; }
 
-        public WindowsInstanceItem(Instance instance) : base(instance)
+        public PortInfo(string name, int port)
         {
-            _info = instance.GetWindowsInstanceInfo();
+            Name = name;
+            Port = port;
         }
 
-        [Category(Category)]
-        [DisplayName("Windows Version")]
-        [Description("The version of Windows installed on this instance.")]
-        public string WindowsDisplayName => _info.DisplayName;
+        public string GetTag(Instance instance) => $"{instance.Name}-tcp-{Port}";
     }
 }

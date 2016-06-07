@@ -15,9 +15,9 @@
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.ShowPassword;
 using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.GCloud;
 using System;
 using System.Diagnostics;
 

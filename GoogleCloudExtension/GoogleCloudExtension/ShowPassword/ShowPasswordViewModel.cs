@@ -13,9 +13,9 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils;
+using System;
 using System.Windows;
 using System.Windows.Input;
-using System;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.ShowPassword

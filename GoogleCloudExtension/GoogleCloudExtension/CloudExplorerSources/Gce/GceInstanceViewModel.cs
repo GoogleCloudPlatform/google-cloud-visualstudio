@@ -17,6 +17,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.FirewallManagement;
 using GoogleCloudExtension.OAuth;
 using GoogleCloudExtension.ResetPassword;
 using GoogleCloudExtension.Utils;
@@ -117,6 +118,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     case OperationType.StopInstance:
                         Caption = $"Stoping instance {Instance.Name}";
                         break;
+
+                    case OperationType.SettingTags:
+                        Caption = $"Setting tags for instance {Instance.Name}";
+                        break;
+
+                    case OperationType.ModifyingFirewall:
+                        Caption = $"Modifying Firewall for instance {Instance.Name}";
+                        break;
                 }
 
                 // Update the context menu to reflect the state.
@@ -201,13 +210,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             var startInstanceCommand = new WeakCommand(OnStartInstanceCommand);
             var stopInstanceCommand = new WeakCommand(OnStopInstanceCommand);
             var resetInstancePasswordCommand = new WeakCommand(OnResentInstancePasswordCommand, Instance.IsWindowsInstance() && Instance.IsRunning());
+            var manageFirewallPorts = new WeakCommand(OnManageFirewallPortsCommand);
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem {Header="Save Publishing Settings...", Command = getPublishSettingsCommand },
-                new MenuItem {Header="Open Terminal Server Session...", Command = openTerminalServerSessionCommand },
-                new MenuItem {Header="Open Web Site...", Command = openWebSite },
+                new MenuItem { Header="Save Publishing Settings...", Command = getPublishSettingsCommand },
+                new MenuItem { Header="Open Terminal Server Session...", Command = openTerminalServerSessionCommand },
+                new MenuItem { Header="Open Web Site...", Command = openWebSite },
                 new MenuItem { Header = "Reset Instance Password...", Command = resetInstancePasswordCommand },
+                new MenuItem { Header = "Manage Firewall Ports...", Command = manageFirewallPorts },
             };
 
             if (Instance.IsRunning())
@@ -222,9 +233,29 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
+        private void OnManageFirewallPortsCommand()
+        {
+            try
+            {
+                var changes = PortManagerWindow.PromptUser(Instance, _owner.DataSource);
+                if (changes?.HasChanges ?? false)
+                {
+                    var operation = _owner.DataSource.UpdateInstancePorts(
+                        Instance,
+                        portsToEnable: changes.PortsToEnable,
+                        portsToDisable: changes.PortsToDisable);
+                    UpdateInstanceState(operation);
+                }
+            }
+            catch (DataSourceException ex)
+            {
+                UserPromptUtils.ErrorPrompt("Failed to update Firewall rules for instance.", "Error Updating Firewall");
+            }
+        }
+
         private void OnResentInstancePasswordCommand()
         {
-            ResetPasswordWindow.PromptUser(_instance, CredentialsStore.Default.CurrentProjectId);
+            ResetPasswordWindow.PromptUser(Instance, CredentialsStore.Default.CurrentProjectId);
         }
 
         private void OnStopInstanceCommand()

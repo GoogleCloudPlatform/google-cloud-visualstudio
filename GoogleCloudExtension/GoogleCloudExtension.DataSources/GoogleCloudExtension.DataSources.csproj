@@ -100,6 +100,7 @@
   <ItemGroup>
     <Compile Include="DataSourceBase.cs" />
     <Compile Include="DataSourceException.cs" />
+    <Compile Include="FirewallPort.cs" />
     <Compile Include="GceDataSource.cs" />
     <Compile Include="InstanceExtensions.cs" />
     <Compile Include="GceOperation.cs" />

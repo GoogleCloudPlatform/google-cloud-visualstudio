@@ -151,6 +151,7 @@ namespace GoogleCloudExtension.DataSources
             return operation;
         }
 
+
         /// <summary>
         /// Stores the given operation in the pending operations list as the operation for this API call
         /// and performs the API call to stop the instance.
@@ -232,6 +233,142 @@ namespace GoogleCloudExtension.DataSources
             }
         }
 
+        public Task<IList<Firewall>> GetFirewallListAsync()
+        {
+            return LoadPagedListAsync(
+                (token) =>
+                {
+                    if (token == null)
+                    {
+                        return Service.Firewalls.List(ProjectId).ExecuteAsync();
+                    }
+                    else
+                    {
+                        var request = Service.Firewalls.List(ProjectId);
+                        request.PageToken = token;
+                        return request.ExecuteAsync();
+                    }
+                },
+                x => x.Items,
+                x => x.NextPageToken);
+        }
+
+        public async Task CreateFirewall(string name, int port)
+        {
+            try
+            {
+                var newFirewall = new Firewall
+                {
+                    Name = name,
+                    Allowed = AllowTcpPorts(port),
+                    TargetTags = new List<string> { name },
+                };
+
+                var operation = await Service.Firewalls.Insert(newFirewall, ProjectId).ExecuteAsync();
+                await WaitAsync(operation);
+            }
+            catch (GoogleApiException ex)
+            {
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        private IList<Firewall.AllowedData> AllowTcpPorts(params int[] port)
+        {
+            var allowedData = new Firewall.AllowedData
+            {
+                IPProtocol = "tcp",
+                Ports = port.Select(x => x.ToString()).ToList(),
+            };
+            return new List<Firewall.AllowedData> { allowedData };
+        }
+
+        public GceOperation SetInstanceTags(Instance instance, IList<string> tags)
+        {
+            var operation = new GceOperation(
+                operationType: OperationType.SettingTags,
+                projectId: ProjectId,
+                zoneName: instance.GetZoneName(),
+                name: instance.Name);
+            operation.OperationTask = SetInstanceTagsAsyncImpl(operation, instance, tags);
+            return operation;
+        }
+
+        private async Task SetInstanceTagsAsyncImpl(GceOperation pendingOperation, Instance instance, IList<string> tags)
+        {
+            try
+            {
+                var newTags = new Tags
+                {
+                    Items = tags,
+                    Fingerprint = instance.Tags.Fingerprint,
+                };
+                var operation = await Service.Instances.SetTags(newTags, ProjectId, instance.GetZoneName(), instance.Name).ExecuteAsync();
+                s_pendingOperations.Add(pendingOperation);
+                await WaitAsync(operation);
+            }
+            catch (GoogleApiException ex)
+            {
+                throw new DataSourceException(ex.Message, ex);
+            }
+            finally
+            {
+                s_pendingOperations.Remove(pendingOperation);
+            }
+        }
+
+        public GceOperation UpdateInstancePorts(
+            Instance instance,
+            IList<FirewallPort> portsToEnable,
+            IList<FirewallPort> portsToDisable)
+        {
+            var operation = new GceOperation(
+                OperationType.ModifyingFirewall,
+                ProjectId,
+                instance.GetZoneName(),
+                instance.Name);
+            operation.OperationTask = UpdateInstancePortsAsyncImpl(operation, instance, portsToEnable, portsToDisable);
+            return operation;
+        }
+
+        private async Task UpdateInstancePortsAsyncImpl(
+            GceOperation pendingOperation,
+            Instance instance,
+            IList<FirewallPort> portsToEnable,
+            IList<FirewallPort> portsToDisable)
+        {
+            try
+            {
+                s_pendingOperations.Add(pendingOperation);
+
+                // 1) Ensure that the firewall rules for the ports to be enabled are present.
+                await EnsureFirewallRules(portsToEnable);
+
+                // 2) Update the tags for the instance.
+                var tagsToAdd = portsToEnable.Select(x => x.Name);
+                var tagsToRemove = portsToDisable.Select(x => x.Name);
+                var tagsOperation = SetInstanceTags(
+                    instance,
+                    instance.Tags.Items.Except(tagsToRemove).Union(tagsToAdd).ToList());
+                await tagsOperation.OperationTask;
+            }
+            finally
+            {
+                s_pendingOperations.Remove(pendingOperation);
+            }
+        }
+
+        private async Task EnsureFirewallRules(IEnumerable<FirewallPort> portsToEnable)
+        {
+            var firewalls = await GetFirewallListAsync();
+            var firewallNames = firewalls.Select(x => x.Name).ToList();
+            var tasks = from port in portsToEnable
+                        where !firewallNames.Contains(port.Name)
+                        select CreateFirewall(port.Name, port.Port);
+
+            await Task.WhenAll(tasks);
+        }
+
         private Task<IList<Zone>> GetZoneListAsync()
         {
             return LoadPagedListAsync(
@@ -281,10 +418,26 @@ namespace GoogleCloudExtension.DataSources
             try
             {
                 Debug.WriteLine($"Waiting on operation {operation.Name}");
-                var zoneName = new Uri(operation.Zone).Segments.Last();
+                string zoneName = null;
+
+                if (operation.Zone != null)
+                {
+                    zoneName = new Uri(operation.Zone).Segments.Last();
+                }
+
                 while (true)
                 {
-                    var newOperation = await Service.ZoneOperations.Get(ProjectId, zoneName, operation.Name).ExecuteAsync();
+                    Operation newOperation;
+
+                    if (zoneName != null)
+                    {
+                        newOperation = await Service.ZoneOperations.Get(ProjectId, zoneName, operation.Name).ExecuteAsync();
+                    }
+                    else
+                    {
+                        newOperation = await Service.GlobalOperations.Get(ProjectId, operation.Name).ExecuteAsync();
+                    }
+
                     if (newOperation.Status == "DONE")
                     {
                         if (newOperation.Error != null)
@@ -293,6 +446,7 @@ namespace GoogleCloudExtension.DataSources
                         }
                         return;
                     }
+
                     await Task.Delay(2000);
                 }
             }

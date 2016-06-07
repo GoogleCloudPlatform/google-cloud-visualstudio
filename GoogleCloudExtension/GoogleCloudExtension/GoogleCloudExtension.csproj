@@ -89,6 +89,13 @@
     <Compile Include="Controls\ProgressIndicator.xaml.cs">
       <DependentUpon>ProgressIndicator.xaml</DependentUpon>
     </Compile>
+    <Compile Include="FirewallManagement\PortInfo.cs" />
+    <Compile Include="FirewallManagement\PortManagerViewModel.cs" />
+    <Compile Include="FirewallManagement\PortManagerWindow.cs" />
+    <Compile Include="FirewallManagement\PortManagerWindowContent.xaml.cs">
+      <DependentUpon>PortManagerWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="FirewallManagement\PortModel.cs" />
     <Compile Include="ManageAccounts\ManageAccountsCommand.cs" />
     <Compile Include="Accounts\AccountsManager.cs" />
     <Compile Include="ManageAccounts\ManageAccountsViewModel.cs" />
@@ -363,6 +370,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\ProgressIndicator.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FirewallManagement\PortManagerWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
