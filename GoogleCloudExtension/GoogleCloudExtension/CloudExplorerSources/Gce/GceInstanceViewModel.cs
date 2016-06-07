@@ -65,9 +65,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 {
                     return new GceGaeInstanceItem(Instance);
                 }
-                else if (Instance.IsAspnetInstance() && Instance.HasSqlServerPassword())
+                else if (Instance.IsWindowsInstance())
                 {
-                    return new AspNetInstanceWithSqlServerItem(Instance);
+                    if (Instance.IsAspnetInstance() && Instance.HasSqlServerPassword())
+                    {
+                        return new AspNetInstanceWithSqlServerItem(Instance);
+                    }
+                    else
+                    {
+                        return new WindowsInstanceItem(Instance);
+                    }
                 }
                 else
                 {

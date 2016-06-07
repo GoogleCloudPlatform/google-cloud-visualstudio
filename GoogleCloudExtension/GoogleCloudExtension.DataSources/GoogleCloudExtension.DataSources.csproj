@@ -107,6 +107,7 @@
     <Compile Include="GcsDataSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceManagerDataSource.cs" />
+    <Compile Include="WindowsInstanceInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

@@ -14,6 +14,7 @@
 
 using Google.Apis.Compute.v1.Data;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -24,8 +25,15 @@ namespace GoogleCloudExtension.DataSources
     /// </summary>
     public static class InstanceExtensions
     {
-        private const string WindowsLicenseUrl = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-2012-r2-dc";
+        private const string WindowsServer2012License = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-2012-r2-dc";
+        private const string WindowsServer2008License = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-2008-r2-dc";
         private const string SqlServerSaPasswordKey = "c2d-property-saPassword";
+
+        private static readonly Dictionary<string, WindowsInstanceInfo> s_windowsLicenses = new Dictionary<string, WindowsInstanceInfo>
+        {
+            { WindowsServer2008License, new WindowsInstanceInfo(displayName: "Windows Server 2008 R2 Datacenter Edition", version: "2008", subVersion: "RC2") },
+            { WindowsServer2012License, new WindowsInstanceInfo(displayName: "Windows Server 2012 R2 Datacenter Edition", version: "2012", subVersion: "RC2") },
+        };
 
         public const string ProvisioningStatus = "PROVISIONING";
         public const string StagingStatus = "STAGING";
@@ -52,7 +60,38 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="instance">The instance to check.</param>
         /// <returns>True if the instance is a Windows instance, false otherwise.</returns>
-        public static bool IsWindowsInstance(this Instance instance) => instance.Disks?.FirstOrDefault(x => x.Licenses?.Contains(WindowsLicenseUrl) ?? false) != null;
+        public static bool IsWindowsInstance(this Instance instance)
+        {
+            var bootDisk = instance.Disks?.FirstOrDefault(x => x.Boot ?? false);
+            if (bootDisk == null || bootDisk.Licenses == null)
+            {
+                return false;
+            }
+
+            return bootDisk.Licenses.Intersect(s_windowsLicenses.Keys).Count() != 0;
+        }
+
+        /// <summary>
+        /// Returns the instance information for this instance, if it is a Windows instance.
+        /// </summary>
+        /// <param name="instance">The instance to inspect.</param>
+        /// <returns>If the instance is a Windows instance the <seealso cref="WindowsInstanceInfo"/> for 
+        /// the instance, null otherwise</returns>
+        public static WindowsInstanceInfo GetWindowsInstanceInfo(this Instance instance)
+        {
+            var bootDisk = instance.Disks?.FirstOrDefault(x => x.Boot ?? false);
+            if (bootDisk == null || bootDisk.Licenses == null)
+            {
+                return null;
+            }
+
+            var license = bootDisk.Licenses.Intersect(s_windowsLicenses.Keys).FirstOrDefault();
+            if (license == null)
+            {
+                return null;
+            }
+            return s_windowsLicenses[license];
+        }
 
         /// <summary>
         /// Determines the URL to use to publish to this server. Typically used for ASP.NET 4.x apps.
