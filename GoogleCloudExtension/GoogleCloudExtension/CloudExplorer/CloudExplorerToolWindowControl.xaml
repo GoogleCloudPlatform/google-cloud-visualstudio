@@ -422,10 +422,30 @@
             SelectedIndex="0"
             Grid.Row="1" Style="{DynamicResource ProjectDropdownStyle}" />
 
+        <!-- Message for the empty state -->
+        <Grid HorizontalAlignment="Stretch"
+              VerticalAlignment="Stretch"
+              Visibility="{Binding IsEmptyState, Converter={utils:BooleanConverter}}"
+              Grid.Row="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20*" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="80*" />
+            </Grid.RowDefinitions>
+            
+            <StackPanel Grid.Row="1"
+                    Visibility="Visible"
+                    HorizontalAlignment="Center" VerticalAlignment="Center">
+                <TextBlock>Add a new account, or select and exiting one.</TextBlock>
+                <Button Width="160" Command="{Binding ManageAccountsCommand}">Select Account</Button>
+            </StackPanel>
+        </Grid>
+
         <!-- Hierarchical view of the modules and versions within the modules. -->
         <TreeView
             ItemsSource="{Binding Roots}" 
-            SelectedItemChanged="TreeView_SelectedItemChanged" 
+            SelectedItemChanged="TreeView_SelectedItemChanged"
+            Visibility="{Binding IsEmptyState, Converter={utils:VisibilityConverter IsNegated=True}}"
             Grid.Row="2">
             <TreeView.ItemContainerStyle>
                 <Style TargetType="{x:Type TreeViewItem}">

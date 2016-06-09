@@ -51,12 +51,17 @@ namespace GoogleCloudExtension.CloudExplorer
         public bool IsBusy
         {
             get { return _isBusy; }
-            set
+            private set
             {
                 SetValueAndRaise(ref _isBusy, value);
                 RaisePropertyChanged(nameof(IsReady));
             }
         }
+
+        /// <summary>
+        /// Stores whether the cloud explorer is in zero state.
+        /// </summary>
+        public bool IsEmptyState => CredentialsStore.Default.CurrentAccount == null;
 
         /// <summary>
         /// Returns whether the view model is ready for interactions. Simplifies binding.
@@ -75,7 +80,7 @@ namespace GoogleCloudExtension.CloudExplorer
         public AsyncPropertyValue<string> ProfilePictureAsync
         {
             get { return _profilePictureAsync; }
-            set { SetValueAndRaise(ref _profilePictureAsync, value); }
+            private set { SetValueAndRaise(ref _profilePictureAsync, value); }
         }
 
         /// <summary>
@@ -84,7 +89,7 @@ namespace GoogleCloudExtension.CloudExplorer
         public AsyncPropertyValue<string> ProfileNameAsync
         {
             get { return _profileNameAsync; }
-            set { SetValueAndRaise(ref _profileNameAsync, value); }
+            private set { SetValueAndRaise(ref _profileNameAsync, value); }
         }
 
         /// <summary>
@@ -116,7 +121,7 @@ namespace GoogleCloudExtension.CloudExplorer
         public IEnumerable<Project> Projects
         {
             get { return _projects; }
-            set { SetValueAndRaise(ref _projects, value); }
+            private set { SetValueAndRaise(ref _projects, value); }
         }
 
         public CloudExplorerViewModel(IEnumerable<ICloudExplorerSource> sources)
@@ -232,6 +237,9 @@ namespace GoogleCloudExtension.CloudExplorer
                 // Update the data sources as they will depend on the project being selected.
                 NotifySourcesOfUpdatedAccountOrProject();
                 RefreshSources();
+
+                // Notify of changes of the empty state.
+                RaisePropertyChanged(nameof(IsEmptyState));
             }
             finally
             {
