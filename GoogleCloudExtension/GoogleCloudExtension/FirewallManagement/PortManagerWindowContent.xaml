@@ -38,14 +38,9 @@
             </ItemsControl>
         </StackPanel>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal">
-            <Button Margin="0,5,0,0" Width="50" Padding="5" IsDefault="True" Command="{Binding OkCommand}">
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock>Ok</TextBlock>
-                    <controls:ProgressIndicator Visibility="{Binding SavingChanges, Converter={utils:VisibilityConverter}}" />
-                </StackPanel>
-            </Button>
-            <Button Margin="5,5,0,0" Width="50" Padding="5" IsCancel="True">Cancel</Button>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Margin="0,5,0,0" Width="80" Padding="5" IsDefault="True" Command="{Binding OkCommand}">Ok</Button>
+            <Button Margin="5,5,0,0" Width="80" Padding="5" IsCancel="True">Cancel</Button>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -233,6 +233,9 @@ namespace GoogleCloudExtension.DataSources
             }
         }
 
+        /// <summary>
+        /// Returns the list of all firewall rules for the current project.
+        /// </summary>
         public Task<IList<Firewall>> GetFirewallListAsync()
         {
             return LoadPagedListAsync(
@@ -253,15 +256,21 @@ namespace GoogleCloudExtension.DataSources
                 x => x.NextPageToken);
         }
 
-        public async Task CreateFirewall(string name, int port)
+        /// <summary>
+        /// Creates a firewall rule with the given name that opens up the given port, targetting the very same
+        /// name as the target tag. GCE instances with that tag will be affected by this rule.
+        /// </summary>
+        /// <param name="port">The port to open.</param>
+        /// <returns>The task that will be fullfilled once the operation is completed.</returns>
+        public async Task CreateFirewall(FirewallPort port)
         {
             try
             {
                 var newFirewall = new Firewall
                 {
-                    Name = name,
-                    Allowed = AllowTcpPorts(port),
-                    TargetTags = new List<string> { name },
+                    Name = port.Name,
+                    Allowed = EnablePort(port),
+                    TargetTags = new List<string> { port.Name },
                 };
 
                 var operation = await Service.Firewalls.Insert(newFirewall, ProjectId).ExecuteAsync();
@@ -269,20 +278,28 @@ namespace GoogleCloudExtension.DataSources
             }
             catch (GoogleApiException ex)
             {
+                Debug.WriteLine($"Failed to create firewall: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
         }
 
-        private IList<Firewall.AllowedData> AllowTcpPorts(params int[] port)
+        private IList<Firewall.AllowedData> EnablePort(FirewallPort port)
         {
             var allowedData = new Firewall.AllowedData
             {
-                IPProtocol = "tcp",
-                Ports = port.Select(x => x.ToString()).ToList(),
+                IPProtocol = port.ProtocolString,
+                Ports = new List<string> { port.Port.ToString() },
             };
             return new List<Firewall.AllowedData> { allowedData };
         }
 
+        /// <summary>
+        /// Sets the tags for a GCE instance to <paramref name="tags"/>. The task wrapped by the operation will throw
+        /// if the list of tags was modified already, and the fingerprint for the tags doesn't match.
+        /// </summary>
+        /// <param name="instance">The instance to modify.</param>
+        /// <param name="tags">The tags to set.</param>
+        /// <returns>The operation.</returns>
         public GceOperation SetInstanceTags(Instance instance, IList<string> tags)
         {
             var operation = new GceOperation(
@@ -317,6 +334,14 @@ namespace GoogleCloudExtension.DataSources
             }
         }
 
+        /// <summary>
+        /// Updates the instance ports, enables the <paramref name="portsToEnable"/> and disables the
+        /// ports in <paramref name="portsToDisable"/>.
+        /// </summary>
+        /// <param name="instance">The instance to modify.</param>
+        /// <param name="portsToEnable">The list of ports to enable.</param>
+        /// <param name="portsToDisable">The list of ports to disable.</param>
+        /// <returns>The operation.</returns>
         public GceOperation UpdateInstancePorts(
             Instance instance,
             IList<FirewallPort> portsToEnable,
@@ -364,7 +389,7 @@ namespace GoogleCloudExtension.DataSources
             var firewallNames = firewalls.Select(x => x.Name).ToList();
             var tasks = from port in portsToEnable
                         where !firewallNames.Contains(port.Name)
-                        select CreateFirewall(port.Name, port.Port);
+                        select CreateFirewall(port);
 
             await Task.WhenAll(tasks);
         }
@@ -442,7 +467,7 @@ namespace GoogleCloudExtension.DataSources
                     {
                         if (newOperation.Error != null)
                         {
-                            throw new DataSourceException($"Operation {operation.Name} failed.");
+                            throw new DataSourceException($"Operation {operation.Name} failed: {newOperation.Error}.");
                         }
                         return;
                     }

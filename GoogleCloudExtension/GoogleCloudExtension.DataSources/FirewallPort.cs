@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace GoogleCloudExtension.DataSources
 {
     /// <summary>
@@ -42,6 +44,24 @@ namespace GoogleCloudExtension.DataSources
         /// The port protocol.
         /// </summary>
         public PortProtocol Protocol { get; }
+
+        internal string ProtocolString
+        {
+            get
+            {
+                switch (Protocol)
+                {
+                    case PortProtocol.Tcp:
+                        return "tcp";
+
+                    case PortProtocol.Udp:
+                        return "udp";
+
+                    default:
+                        throw new InvalidOperationException($"Unknown protocol {Protocol}");
+                }
+            }
+        }
 
         public FirewallPort(string name, int port, PortProtocol protocol = PortProtocol.Tcp)
         {
