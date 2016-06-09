@@ -21,12 +21,24 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.FirewallManagement
 {
+    /// <summary>
+    /// The changes selected by the user in the <seealso cref="PortManagerWindow"/> dialog.
+    /// </summary>
     public class PortChanges
     {
+        /// <summary>
+        /// The list of ports to open.
+        /// </summary>
         public IList<FirewallPort> PortsToEnable { get; }
 
+        /// <summary>
+        /// The list of ports to close.
+        /// </summary>
         public IList<FirewallPort> PortsToDisable { get; }
 
+        /// <summary>
+        /// Whether the are changes stored in this instance.
+        /// </summary>
         public bool HasChanges => PortsToEnable.Count != 0 || PortsToDisable.Count != 0;
 
         public PortChanges(IList<FirewallPort> portsToEnable, IList<FirewallPort> portsToDisable)
@@ -36,8 +48,15 @@ namespace GoogleCloudExtension.FirewallManagement
         }
     }
 
+    /// <summary>
+    /// This class is the view model for the <seealso cref="PortManagerWindow"/> dialog.
+    /// </summary>
     public class PortManagerViewModel : ViewModelBase
     {
+        /// <summary>
+        /// The list of supported ports in the dialog, in the same order that they will be
+        /// offered to the user.
+        /// </summary>
         private static readonly IList<PortInfo> s_supportedPorts = new List<PortInfo>
         {
             new PortInfo("HTTP", 80),
@@ -48,38 +67,33 @@ namespace GoogleCloudExtension.FirewallManagement
 
         private readonly PortManagerWindow _owner;
         private readonly Instance _instance;
-        private readonly GceDataSource _dataSource;
-        private bool _savingChanges;
 
+        /// <summary>
+        /// The list of ports.
+        /// </summary>
         public IList<PortModel> Ports { get; }
 
-        public bool SavingChanges
-        {
-            get { return _savingChanges; }
-            set
-            {
-                SetValueAndRaise(ref _savingChanges, value);
-                RaisePropertyChanged(nameof(NotSavingChanges));
-            }
-        }
-
-        public bool NotSavingChanges => !SavingChanges;
-
+        /// <summary>
+        /// The command to execute when the Ok button is pressed.
+        /// </summary>
         public ICommand OkCommand { get; }
 
+        /// <summary>
+        /// The changes that were selected by the user. This property will be null if the user
+        /// cancelled the operation.
+        /// </summary>
         public PortChanges Result { get; private set; }
 
-        public PortManagerViewModel(PortManagerWindow owner, Instance instance, GceDataSource dataSource)
+        public PortManagerViewModel(PortManagerWindow owner, Instance instance)
         {
             _owner = owner;
             _instance = instance;
-            _dataSource = dataSource;
 
             Ports = CreatePortModels();
             OkCommand = new WeakCommand(OnOkCommand);
         }
 
-        private async void OnOkCommand()
+        private void OnOkCommand()
         {
             var portsToEnable = new List<FirewallPort>();
             var portsToDisable = new List<FirewallPort>();
@@ -99,25 +113,6 @@ namespace GoogleCloudExtension.FirewallManagement
 
             Result = new PortChanges(portsToEnable: portsToEnable, portsToDisable: portsToDisable);
 
-            _owner.Close();
-        }
-
-        
-
-        private GceOperation UpdateInstanceTags(
-            IEnumerable<PortInfo> portsToEnable,
-            IEnumerable<PortInfo> portsToDisable)
-        {
-            var tagsToAdd = portsToEnable.Select(x => x.GetTag(_instance));
-            var tagsToRemove = portsToDisable.Select(x => x.GetTag(_instance));
-
-            return _dataSource.SetInstanceTags(
-                _instance,
-                _instance.Tags.Items.Except(tagsToRemove).Union(tagsToAdd).ToList());
-        }
-
-        private void OnCancelCommand()
-        {
             _owner.Close();
         }
 

@@ -10,7 +10,7 @@
              d:DataContext="{d:DesignInstance {x:Type local:PortManagerViewModel}}"
              d:DesignHeight="300" d:DesignWidth="300">
     
-    <Grid Margin="5" IsEnabled="{Binding NotSavingChanges}">
+    <Grid Margin="5">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition />

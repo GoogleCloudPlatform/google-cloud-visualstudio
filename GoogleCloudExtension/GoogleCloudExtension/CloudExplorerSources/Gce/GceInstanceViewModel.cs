@@ -237,7 +237,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             try
             {
-                var changes = PortManagerWindow.PromptUser(Instance, _owner.DataSource);
+                var changes = PortManagerWindow.PromptUser(Instance);
                 if (changes?.HasChanges ?? false)
                 {
                     var operation = _owner.DataSource.UpdateInstancePorts(

@@ -16,11 +16,19 @@ using Google.Apis.Compute.v1.Data;
 
 namespace GoogleCloudExtension.FirewallManagement
 {
-
+    /// <summary>
+    /// This class contains the information about a firewall port.
+    /// </summary>
     public class PortInfo
     {
+        /// <summary>
+        /// The display name for the user.
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// The port number.
+        /// </summary>
         public int Port { get; }
 
         public PortInfo(string name, int port)
@@ -29,6 +37,11 @@ namespace GoogleCloudExtension.FirewallManagement
             Port = port;
         }
 
+        /// <summary>
+        /// Returns the tag to be used for the port for the given <paramref name="instance"/>.
+        /// </summary>
+        /// <param name="instance">The instance that is going to be affected by the port.</param>
+        /// <returns></returns>
         public string GetTag(Instance instance) => $"{instance.Name}-tcp-{Port}";
     }
 }

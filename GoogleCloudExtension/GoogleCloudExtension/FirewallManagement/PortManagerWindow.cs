@@ -18,11 +18,14 @@ using Microsoft.VisualStudio.PlatformUI;
 
 namespace GoogleCloudExtension.FirewallManagement
 {
+    /// <summary>
+    /// This class is the dialog to use to prompt the user for firewall changes for the given instance.
+    /// </summary>
     public class PortManagerWindow : DialogWindow
     {
-        public PortManagerViewModel ViewModel => (PortManagerViewModel)((PortManagerWindowContent)Content).DataContext;
+        private PortManagerViewModel ViewModel => (PortManagerViewModel)((PortManagerWindowContent)Content).DataContext;
 
-        private PortManagerWindow(Instance instance, GceDataSource dataSource)
+        private PortManagerWindow(Instance instance)
         {
             Title = "Manage Open Ports";
             Width = 320;
@@ -30,16 +33,21 @@ namespace GoogleCloudExtension.FirewallManagement
             ResizeMode = System.Windows.ResizeMode.NoResize;
             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
 
-            var viewModel = new PortManagerViewModel(this, instance, dataSource);
+            var viewModel = new PortManagerViewModel(this, instance);
             Content = new PortManagerWindowContent
             {
                 DataContext = viewModel,
             };
         }
 
-        public static PortChanges PromptUser(Instance instance, GceDataSource dataSource)
+        /// <summary>
+        /// Shows the dialog to the user and returns the changes requested.
+        /// </summary>
+        /// <param name="instance">The instance on which open/close ports.</param>
+        /// <returns></returns>
+        public static PortChanges PromptUser(Instance instance)
         {
-            var window = new PortManagerWindow(instance, dataSource);
+            var window = new PortManagerWindow(instance);
             window.ShowModal();
             return window.ViewModel.Result;
         }
