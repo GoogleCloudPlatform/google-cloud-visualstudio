@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.Utils
     /// General boolean converter, converting True or False to the desired values.
     /// Note: Only Convert is implemented, so this is not a bidirectional converter, do not use on TwoWay bindings.
     /// </summary>
-    public class BooleanConverter :  MarkupExtension, IValueConverter
+    public class BooleanConverter : MarkupExtension, IValueConverter
     {
         public object TrueValue { get; set; }
         public object FalseValue { get; set; }

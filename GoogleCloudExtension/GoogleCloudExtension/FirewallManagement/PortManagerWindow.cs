@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Compute.v1.Data;
-using GoogleCloudExtension.DataSources;
 using Microsoft.VisualStudio.PlatformUI;
 
 namespace GoogleCloudExtension.FirewallManagement

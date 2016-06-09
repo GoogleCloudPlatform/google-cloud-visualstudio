@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         private readonly Bucket _bucket;
 
-        public BucketItem(Bucket bucket): base(className: "Bucket Properties", componentName: bucket.Name)
+        public BucketItem(Bucket bucket) : base(className: "Bucket Properties", componentName: bucket.Name)
         {
             _bucket = bucket;
         }

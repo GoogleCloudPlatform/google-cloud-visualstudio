@@ -110,7 +110,6 @@ namespace GoogleCloudExtension.OAuth
 
                     while (true)
                     {
-
                         // Wait for the context and possibly the cancellation of the operation.
                         var contextTask = await GetCancellableTaskAsync(
                             listener.GetContextAsync(),

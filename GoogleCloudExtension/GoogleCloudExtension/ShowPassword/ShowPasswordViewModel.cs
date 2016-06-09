@@ -61,7 +61,7 @@ namespace GoogleCloudExtension.ShowPassword
         public bool HidePassword => !RevealPassword;
 
         public ImageSource ShowPasswordIcon => RevealPassword ? s_hidePasswordIcon.Value : s_showPasswordIcon.Value;
-      
+
         /// <summary>
         /// The name of the instance for which the credentials are valid.
         /// </summary>

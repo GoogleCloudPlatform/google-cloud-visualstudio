@@ -247,7 +247,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     UpdateInstanceState(operation);
                 }
             }
-            catch (DataSourceException ex)
+            catch (DataSourceException)
             {
                 UserPromptUtils.ErrorPrompt("Failed to update Firewall rules for instance.", "Error Updating Firewall");
             }

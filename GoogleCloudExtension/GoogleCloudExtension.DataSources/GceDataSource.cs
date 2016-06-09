@@ -78,6 +78,30 @@ namespace GoogleCloudExtension.DataSources
         }
 
         /// <summary>
+        /// Returns all of the zones, and the instances within the zone, for the project.
+        /// </summary>
+        /// <returns></returns>
+        public async Task<IList<InstancesPerZone>> GetAllInstancesPerZonesAsync()
+        {
+            try
+            {
+                // 1) Request the list of zones for this project.
+                var zones = await GetZoneListAsync();
+
+                //  2) Request in parallel the instances in each zone.
+                var requestResults = zones
+                    .Select(async (x) => new InstancesPerZone(await GetInstancesInZoneListAsync(x.Name), x));
+
+                return await Task.WhenAll(requestResults);
+            }
+            catch (GoogleApiException ex)
+            {
+                Debug.WriteLine($"Failed to get instances and zones: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
         /// Returns information about the given instance.
         /// </summary>
         /// <param name="zoneName">The zone in which the instance lives.</param>

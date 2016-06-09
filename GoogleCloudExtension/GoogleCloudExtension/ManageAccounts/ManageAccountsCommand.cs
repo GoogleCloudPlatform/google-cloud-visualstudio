@@ -92,7 +92,7 @@ namespace GoogleCloudExtension.ManageAccounts
 
             ExtensionAnalytics.ReportCommand(CommandName.OpenManageAccountsDialog, CommandInvocationSource.ToolsMenu);
 
-	    ManageAccountsWindow.PromptUser();
+            ManageAccountsWindow.PromptUser();
         }
     }
 }

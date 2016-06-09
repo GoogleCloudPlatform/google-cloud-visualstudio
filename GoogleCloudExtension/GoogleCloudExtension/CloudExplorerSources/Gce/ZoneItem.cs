@@ -13,25 +13,37 @@
 // limitations under the License.
 
 using Google.Apis.Compute.v1.Data;
-using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Utils;
 using System.ComponentModel;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
-    public class WindowsInstanceItem : GceInstanceItem
+    public class ZoneItem : PropertyWindowItemBase
     {
-        private const string Category = "Windows Properties";
+        private const string Category = "Zone Properties";
 
-        private readonly WindowsInstanceInfo _info;
+        private readonly Zone _zone;
 
-        public WindowsInstanceItem(Instance instance) : base(instance)
+        public ZoneItem(Zone zone) : base(className: Category, componentName: zone.Name)
         {
-            _info = instance.GetWindowsInstanceInfo();
+            _zone = zone;
         }
 
+
         [Category(Category)]
-        [DisplayName("Windows Version")]
-        [Description("The version of Windows installed on this instance.")]
-        public string WindowsDisplayName => _info.DisplayName;
+        [Description("The name of the zone.")]
+        public string Name => _zone.Name;
+
+        [Category(Category)]
+        [Description("The description of the zone.")]
+        public string Description => _zone.Description;
+
+        [Category(Category)]
+        [Description("The region for the zone.")]
+        public string Region => _zone.Region;
+
+        [Category(Category)]
+        [Description("The status of the zone.")]
+        public string Status => _zone.Status;
     }
 }

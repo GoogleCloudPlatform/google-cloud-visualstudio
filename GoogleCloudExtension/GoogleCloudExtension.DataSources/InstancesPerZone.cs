@@ -13,25 +13,29 @@
 // limitations under the License.
 
 using Google.Apis.Compute.v1.Data;
-using GoogleCloudExtension.DataSources;
-using System.ComponentModel;
+using System.Collections.Generic;
 
-namespace GoogleCloudExtension.CloudExplorerSources.Gce
+namespace GoogleCloudExtension.DataSources
 {
-    public class WindowsInstanceItem : GceInstanceItem
+    /// <summary>
+    /// This class stores all of the instances for a particular GCE zone.
+    /// </summary>
+    public class InstancesPerZone
     {
-        private const string Category = "Windows Properties";
+        /// <summary>
+        /// The instances in the zone.
+        /// </summary>
+        public IList<Instance> Instances { get; }
 
-        private readonly WindowsInstanceInfo _info;
+        /// <summary>
+        /// The zone itself.
+        /// </summary>
+        public Zone Zone { get; }
 
-        public WindowsInstanceItem(Instance instance) : base(instance)
+        public InstancesPerZone(IList<Instance> instances, Zone zone)
         {
-            _info = instance.GetWindowsInstanceInfo();
+            Instances = instances;
+            Zone = zone;
         }
-
-        [Category(Category)]
-        [DisplayName("Windows Version")]
-        [Description("The version of Windows installed on this instance.")]
-        public string WindowsDisplayName => _info.DisplayName;
     }
 }

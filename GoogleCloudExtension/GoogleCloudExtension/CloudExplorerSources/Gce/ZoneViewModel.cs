@@ -12,34 +12,62 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
-    public class ZoneViewModel : TreeHierarchy
+    public class ZoneViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
         private const string IconResourcePath = "CloudExplorerSources/Gce/Resources/zone_icon.png";
+
         private static readonly Lazy<ImageSource> s_zoneIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
+        private static readonly TreeLeaf s_noInstancesPlaceholder = new TreeLeaf
+        {
+            Caption = "No instances in this zone",
+        };
+        private static readonly TreeLeaf s_noWindowsInstancesPlaceholder = new TreeLeaf
+        {
+            Caption = "No Windows instances in this zone",
+        };
 
         private readonly GceSourceRootViewModel _owner;
+        private readonly InstancesPerZone _instancesPerZone;
 
-        public ZoneViewModel(GceSourceRootViewModel owner, string zoneName, IEnumerable<Instance> instances)
+        public event EventHandler ItemChanged;
+
+        public object Item => new ZoneItem(_instancesPerZone.Zone);
+
+        public ZoneViewModel(GceSourceRootViewModel owner, InstancesPerZone instancesPerZone, bool onlyWindowsInstances)
         {
             _owner = owner;
+            _instancesPerZone = instancesPerZone;
 
-            Caption = zoneName;
+            var instancesToShow = instancesPerZone.Instances.Where(x => !onlyWindowsInstances || x.IsWindowsInstance()).ToList();
+
+            Caption = $"{instancesPerZone.Zone.Name} ({instancesToShow.Count})";
             Icon = s_zoneIcon.Value;
 
-            var viewModels = instances.Select(x => new GceInstanceViewModel(owner, x));
+            var viewModels = instancesToShow.Select(x => new GceInstanceViewModel(owner, x));
             foreach (var viewModel in viewModels)
             {
                 Children.Add(viewModel);
+            }
+
+            if (Children.Count == 0)
+            {
+                if (onlyWindowsInstances)
+                {
+                    Children.Add(s_noWindowsInstancesPlaceholder);
+                }
+                else
+                {
+                    Children.Add(s_noInstancesPlaceholder);
+                }
             }
         }
     }

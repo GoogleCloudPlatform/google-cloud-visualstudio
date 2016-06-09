@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
@@ -48,7 +47,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private static readonly TreeLeaf s_noZonesPlaceholder = new TreeLeaf { Caption = "No zones" };
 
         private bool _showOnlyWindowsInstances = false;
-        private IList<Instance> _instances;
+        private IList<InstancesPerZone> _instancesPerZone;
         private Lazy<GceDataSource> _dataSource;
 
         public GceDataSource DataSource => _dataSource.Value;
@@ -107,7 +106,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             try
             {
-                _instances = await LoadGceInstances();
+                _instancesPerZone = await _dataSource.Value.GetAllInstancesPerZonesAsync();
                 PresentZoneViewModels();
             }
             catch (DataSourceException ex)
@@ -122,7 +121,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void PresentZoneViewModels()
         {
-            if (_instances == null)
+            if (_instancesPerZone == null)
             {
                 return;
             }
@@ -139,17 +138,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
         }
 
-        private async Task<IList<Instance>> LoadGceInstances()
-        {
-            return await _dataSource.Value.GetInstanceListAsync();
-        }
-
         private IList<ZoneViewModel> GetZoneViewModels()
         {
-            return _instances?
-                .Where(x => !_showOnlyWindowsInstances || x.IsWindowsInstance())
-                .GroupBy(x => x.GetZoneName())
-                .Select(x => new ZoneViewModel(this, x.Key, x)).ToList();
+            return _instancesPerZone?
+                .OrderBy(x => x.Zone.Name)
+                .Select(x => new ZoneViewModel(this, x, _showOnlyWindowsInstances)).ToList();
         }
     }
 }
