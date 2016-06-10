@@ -209,7 +209,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 Instance.IsWindowsInstance() && Instance.IsRunning());
             var startInstanceCommand = new WeakCommand(OnStartInstanceCommand);
             var stopInstanceCommand = new WeakCommand(OnStopInstanceCommand);
-            var resetInstancePasswordCommand = new WeakCommand(OnResentInstancePasswordCommand, Instance.IsWindowsInstance() && Instance.IsRunning());
+            var resetInstancePasswordCommand = new WeakCommand(OnResetInstancePasswordCommand, Instance.IsWindowsInstance() && Instance.IsRunning());
             var manageFirewallPorts = new WeakCommand(OnManageFirewallPortsCommand);
 
             var menuItems = new List<MenuItem>
@@ -253,7 +253,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
         }
 
-        private void OnResentInstancePasswordCommand()
+        private void OnResetInstancePasswordCommand()
         {
             ResetPasswordWindow.PromptUser(Instance, CredentialsStore.Default.CurrentProjectId);
         }
