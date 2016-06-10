@@ -258,7 +258,7 @@ namespace GoogleCloudExtension.CloudExplorer
             if (_resourceManagerDataSource.Value != null)
             {
                 var result = await _resourceManagerDataSource.Value.GetProjectsListAsync();
-                return result.OrderBy(x => x.Name);
+                return result.Where(x => x.LifecycleState == "ACTIVE").OrderBy(x => x.Name);
             }
             else
             {
