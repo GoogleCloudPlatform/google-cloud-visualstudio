@@ -32,17 +32,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private static readonly Lazy<ImageSource> s_gceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
-            Caption = "Loading instances...",
+            Caption = "Loading zones...",
             IsLoading = true
         };
         private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
         {
-            Caption = "Failed to load instances.",
+            Caption = "Failed to load zones.",
             IsError = true
         };
         private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
         {
-            Caption = "No instances found."
+            Caption = "No zones found."
         };
         private static readonly TreeLeaf s_noZonesPlaceholder = new TreeLeaf { Caption = "No zones" };
 
