@@ -12,26 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Theming;
 
-namespace GoogleCloudExtension.ResetPassword
+namespace GoogleCloudExtension.LinkPrompt
 {
-    public class ResetPasswordWindow : CommonDialogWindowBase
+    public class LinkPromptDialogWindow : CommonDialogWindowBase
     {
-        private ResetPasswordWindow(Instance instance, string projectId)
-            : base($"Reset Password for {instance.Name}", width: 350, height: 160)
+        private LinkPromptDialogWindow(string title, string text, LinkInfo link) : base(title, width: 320, height: 200)
         {
-            Content = new ResetPasswordWindowContent
+            var viewModel = new LinkPromptDialogWindowViewModel(text, link);
+            Content = new LinkPromptDialogWindowContent
             {
-                DataContext = new ResetPasswordViewModel(this, instance, projectId)
+                DataContext = viewModel,
             };
         }
 
-        public static void PromptUser(Instance instance, string projectId)
+        public static void PromptUser(string title, string text, LinkInfo link)
         {
-            var dialog = new ResetPasswordWindow(instance, projectId);
-            dialog.ShowModal();
+            var window = new LinkPromptDialogWindow(title, text, link);
+            window.ShowModal();
         }
     }
 }

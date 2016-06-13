@@ -16,6 +16,7 @@ using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.LinkPrompt;
 using GoogleCloudExtension.ShowPassword;
 using GoogleCloudExtension.Utils;
 using System;
@@ -118,15 +119,18 @@ namespace GoogleCloudExtension.ResetPassword
                     // TODO: Have a custom dialog with a link to the cloud sdk installation page.
                     if (!GCloudWrapper.IsGCloudCliInstalled())
                     {
-                        UserPromptUtils.ErrorPrompt(
+                        LinkPromptDialogWindow.PromptUser(
+                            "Missing Cloud SDK",
                             @"Ensure that the Cloud SDK is installed and available in the path, and that the ""beta"" component is installed.",
-                            "Missing Cloud SDK");
+                            new LinkInfo(link: "https://www.google.com", caption: "Install Cloud SDK"));
                     }
                     else
                     {
-                        UserPromptUtils.ErrorPrompt(
+                        LinkPromptDialogWindow.PromptUser(
+                            "Missing Cloud SDK",
                             @"Please ensure that the ""beta"" is component installed, using ""gcloud components install beta"".",
-                            "Missing Cloud SDK Component");
+                            new LinkInfo(link: "https://www.google.com", caption: "Install Cloud SDK"));
+
                     }
                     return;
                 }

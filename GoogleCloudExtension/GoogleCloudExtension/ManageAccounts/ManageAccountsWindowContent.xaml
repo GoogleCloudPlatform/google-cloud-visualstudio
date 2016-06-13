@@ -5,102 +5,96 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.ManageAccounts"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+             xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance {x:Type local:ManageAccountsViewModel}}" Height="300" Width="459.446">
+             d:DataContext="{d:DesignInstance {x:Type local:ManageAccountsViewModel}}">
     <UserControl.Resources>
         <utils:VisibilityConverter x:Key="visibilityConverter" />
-    </UserControl.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="30"/>
-            <RowDefinition />
-            <RowDefinition Height="45" />
-        </Grid.RowDefinitions>
+        <Grid x:Key="content">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+            
+            <!-- Caption row -->
+            <TextBlock Margin="3,3,3,2">Choose account:</TextBlock>
 
-        <!-- Caption row -->
-        <TextBlock Margin="10,10,10,2">Choose account:</TextBlock>
-
-        <!-- Listbox with the credentials -->
-        <ListBox Grid.Row="1"
+            <!-- Listbox with the credentials -->
+            <ListBox Grid.Row="1"
                  x:Name="_accountsListBox"
-                 Margin="10,2,10,5"
+                 Margin="3,2,3,5"
                  MouseDoubleClick="ListBox_MouseDoubleClick"
                  ItemsSource="{Binding UserAccountsList}"
                  SelectedItem="{Binding CurrentUserAccount, Mode=OneWayToSource}"
                  SelectedValue="{Binding CurrentAccountName}"
                  SelectedValuePath="AccountName">
-            <ListBox.ItemContainerStyle>
-                <Style TargetType="{x:Type ListBoxItem}">
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                </Style>
-            </ListBox.ItemContainerStyle>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
 
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Grid Height="75" Margin="10,0,0,0" HorizontalAlignment="Stretch">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" MinWidth="75" />
-                            <ColumnDefinition />
-                            <ColumnDefinition />
-                        </Grid.ColumnDefinitions>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Height="75" Margin="10,0,0,0" HorizontalAlignment="Stretch">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" MinWidth="75" />
+                                <ColumnDefinition />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
 
-                        <!-- First show the image -->
-                        <Image Source="{Binding ProfilePictureAsync.Value}"
+                            <!-- First show the image -->
+                            <Image Source="{Binding ProfilePictureAsync.Value}"
                                Width="50"
                                Height="50"
                                HorizontalAlignment="Center"
                                VerticalAlignment="Center" />
 
-                        <!-- Placeholder for the loading -->
-                        <Rectangle Width="50"
+                            <!-- Placeholder for the loading -->
+                            <Rectangle Width="50"
                                    Height="50"
                                    Fill="#FFCCE3F7"
                                    Visibility="{Binding ProfilePictureAsync.IsPending, Converter={StaticResource visibilityConverter}}"
                                    HorizontalAlignment="Center"
                                    VerticalAlignment="Center" />
 
-                        <!-- Show the name and the account name -->
-                        <StackPanel Grid.Column="1"
+                            <!-- Show the name and the account name -->
+                            <StackPanel Grid.Column="1"
                                     VerticalAlignment="Center" Height="38">
-                            <TextBlock Text="{Binding NameAsync.Value}" 
+                                <TextBlock Text="{Binding NameAsync.Value}" 
                                        Margin="0,0,0,5"/>
-                            <TextBlock Text="{Binding AccountName, StringFormat='({0})'}" />
-                        </StackPanel>
+                                <TextBlock Text="{Binding AccountName, StringFormat='({0})'}" />
+                            </StackPanel>
 
-                        <!-- The label for the current account -->
-                        <TextBlock Grid.Column="2"
+                            <!-- The label for the current account -->
+                            <TextBlock Grid.Column="2"
                                    Visibility="{Binding IsCurrentAccount, Converter={StaticResource visibilityConverter}}"
                                    VerticalAlignment="Center">
                             Current Account
-                        </TextBlock>
+                            </TextBlock>
 
-                    </Grid>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
 
-        </ListBox>
-
-        <!-- Buttons row -->
-        <Grid Margin="10,5,10,10" Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
-            
-            <StackPanel  Orientation="Horizontal" >
-                <Button Margin="0,0,5,0" Padding="5" Command="{Binding AddCredentialsCommand}">Add Credentials...</Button>
-                <Button Margin="0,0,5,0" Padding="5" Command="{Binding SetAsCurrentAcountCommand}" IsDefault="True">Set As Current Account</Button>
-                <Button Padding="5" Command="{Binding DeleteAccountCommand}">Delete</Button>
-            </StackPanel>
-
-            <Button Margin="0"
-                    Grid.Column="1"
-                    Padding="5"
-                    Command="{Binding CloseCommand}"
-                    IsCancel="True"
-                    HorizontalAlignment="Right">Close</Button>
+            </ListBox>
         </Grid>
+        
+    </UserControl.Resources>
 
-    </Grid>
+    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="Add..."
+                                      Command="{Binding DataContext.AddAccountCommand, Source={StaticResource content}}" />
+            <theming:DialogButtonInfo Caption="Set As Current"
+                                      Command="{Binding DataContext.SetAsCurrentAccountCommand, Source={StaticResource content}}" />
+            <theming:DialogButtonInfo Caption="Delete"
+                                      Command="{Binding DataContext.DeleteAccountCommand, Source={StaticResource content}}"/>
+            <theming:DialogButtonInfo Caption="Close"
+                                      IsCancel="True"
+                                      Command="{Binding DataContext.CloseAccountCommand, Source={StaticResource content}}"/>
+        </theming:CommonDialogWindowBaseContent.Buttons>
+    </theming:CommonDialogWindowBaseContent>
+    
 </UserControl>

@@ -13,7 +13,9 @@
 // limitations under the License.
 
 using GoogleAnalyticsUtils;
+using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Diagnostics;
 
@@ -71,9 +73,16 @@ namespace GoogleCloudExtension.Analytics
             s_reporter.Value?.ReportEvent(category, action);
         }
 
-        public static void ReportScreen(string name)
+        public static void ReportScreenView(ToolWindowPane pane)
         {
-            s_reporter.Value?.ReportScreen(name);
+            Debug.WriteLine($"Opening tool pane {pane.Caption}");
+            s_reporter.Value?.ReportScreen(pane.GetType().Name);
+        }
+
+        public static void ReportScreenView(CommonDialogWindowBase dialog)
+        {
+            Debug.WriteLine($"Opening window {dialog.Title}");
+            s_reporter.Value?.ReportScreen(dialog.GetType().Name);
         }
 
         /// <summary>

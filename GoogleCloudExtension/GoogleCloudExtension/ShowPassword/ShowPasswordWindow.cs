@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.PlatformUI;
+using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.ShowPassword
 {
@@ -20,16 +20,11 @@ namespace GoogleCloudExtension.ShowPassword
     /// This class represents the dialog that will show the user the Windows credentials
     /// obtained after a password reset.
     /// </summary>
-    public class ShowPasswordWindow : DialogWindow
+    public class ShowPasswordWindow : CommonDialogWindowBase
     {
         private ShowPasswordWindow(string userName, string password, string instanceName)
+            : base($"Password for {instanceName}", width: 300, height: 200)
         {
-            Title = $"Password for {instanceName}";
-            Width = 300;
-            Height = 200;
-            ResizeMode = System.Windows.ResizeMode.NoResize;
-            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
-
             Content = new ShowPasswordWindowContent(new ShowPasswordViewModel(
                     this,
                     userName: userName,

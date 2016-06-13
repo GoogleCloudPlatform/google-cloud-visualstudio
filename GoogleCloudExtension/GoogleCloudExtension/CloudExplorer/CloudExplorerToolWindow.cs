@@ -42,8 +42,6 @@ namespace GoogleCloudExtension.CloudExplorer
         /// </summary>
         public CloudExplorerToolWindow() : base(null)
         {
-            ExtensionAnalytics.ReportScreen(nameof(CloudExplorerToolWindow));
-
             SetCaption();
 
             // Contains the list of sources to display to the user, in the order they will
@@ -66,6 +64,8 @@ namespace GoogleCloudExtension.CloudExplorer
 
             CredentialsStore.Default.CurrentAccountChanged += OnCurrentAccountChanged;
             CredentialsStore.Default.Reset += OnCurrentAccountChanged;
+
+            ExtensionAnalytics.ReportScreenView(this);
         }
 
         private void OnCurrentAccountChanged(object sender, EventArgs e)

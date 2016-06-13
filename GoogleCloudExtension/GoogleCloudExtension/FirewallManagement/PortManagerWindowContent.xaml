@@ -6,41 +6,43 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.FirewallManagement"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+             xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type local:PortManagerViewModel}}"
              d:DesignHeight="300" d:DesignWidth="300">
-    
-    <Grid Margin="5">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition />
-            <RowDefinition Height="35"/>
-        </Grid.RowDefinitions>
 
-        <TextBlock TextWrapping="Wrap" Margin="0,0,0,5">Set Firewall rules and tags to enable traffic for the instance:</TextBlock>
+    <UserControl.Resources>
+        <StackPanel x:Key="content">
+            <TextBlock TextWrapping="Wrap" Margin="3,0,3,5">Set Firewall rules and tags to enable traffic for the instance:</TextBlock>
 
-        <StackPanel Grid.Row="1">
-            <ItemsControl ItemsSource="{Binding Ports}">
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <CheckBox IsChecked="{Binding IsEnabled}">
-                            <TextBlock>
-                                <TextBlock.Text>
-                                    <MultiBinding StringFormat="{}{0} ({1})">
-                                        <Binding Path="Name" />
-                                        <Binding Path="Port" />
-                                    </MultiBinding>
-                                </TextBlock.Text>
-                            </TextBlock>
-                        </CheckBox>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+            <StackPanel Margin="3,0">
+                <ItemsControl ItemsSource="{Binding Ports}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsEnabled}">
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} ({1})">
+                                            <Binding Path="Name" />
+                                            <Binding Path="Port" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </CheckBox>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
         </StackPanel>
+    </UserControl.Resources>
 
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Margin="0,5,0,0" Width="80" Padding="5" IsDefault="True" Command="{Binding OkCommand}">Ok</Button>
-            <Button Margin="5,5,0,0" Width="80" Padding="5" IsCancel="True">Cancel</Button>
-        </StackPanel>
-    </Grid>
+    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="Ok"
+                                      IsDefault="True"
+                                      Command="{Binding DataContext.OkCommand, Source={StaticResource content}}"/>
+            <theming:DialogButtonInfo Caption="Cancel" IsCancel="True" />
+        </theming:CommonDialogWindowBaseContent.Buttons>
+    </theming:CommonDialogWindowBaseContent>
+
 </UserControl>

@@ -111,6 +111,17 @@
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="LinkPrompt\LinkInfo.cs" />
+    <Compile Include="LinkPrompt\LinkPromptDialogWindow.cs" />
+    <Compile Include="LinkPrompt\LinkPromptDialogWindowContent.xaml.cs">
+      <DependentUpon>LinkPromptDialogWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LinkPrompt\LinkPromptDialogWindowViewModel.cs" />
+    <Compile Include="Theming\CommonDialogWindowBase.cs" />
+    <Compile Include="Theming\DialogButtonInfo.cs" />
+    <Compile Include="Theming\CommonDialogWindowBaseContent.xaml.cs">
+      <DependentUpon>CommonDialogWindowBaseContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ResetPassword\ResetPasswordViewModel.cs" />
     <Compile Include="ResetPassword\ResetPasswordWindow.cs" />
     <Compile Include="ResetPassword\ResetPasswordWindowContent.xaml.cs">
@@ -383,6 +394,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LinkPrompt\LinkPromptDialogWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Theming\CommonDialogWindowBaseContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
