@@ -151,6 +151,9 @@ namespace GoogleCloudExtension.OAuth
                             response.RedirectLocation = String.IsNullOrEmpty(accessCode) ? _failureUrl : _successUrl;
                         }
 
+                        // Wait for a bit for the reponse to be sent.
+                        await Task.Delay(500);
+
                         return new FlowResult { AccessCode = accessCode, Error = error };
                     }
                 }
