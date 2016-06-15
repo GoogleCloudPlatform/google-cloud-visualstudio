@@ -63,6 +63,8 @@ namespace GoogleCloudExtension.CloudExplorer
         /// </summary>
         public bool IsEmptyState => CredentialsStore.Default.CurrentAccount == null;
 
+        public bool IsNotEmptyState => !IsEmptyState;
+
         /// <summary>
         /// Returns whether the view model is ready for interactions. Simplifies binding.
         /// </summary>
@@ -240,6 +242,13 @@ namespace GoogleCloudExtension.CloudExplorer
 
                 // Notify of changes of the empty state.
                 RaisePropertyChanged(nameof(IsEmptyState));
+                RaisePropertyChanged(nameof(IsNotEmptyState));
+
+                // Update the enabled state of the buttons, to match the empty state.
+                foreach (var button in Buttons)
+                {
+                    button.IsEnabled = IsNotEmptyState;
+                }
             }
             finally
             {

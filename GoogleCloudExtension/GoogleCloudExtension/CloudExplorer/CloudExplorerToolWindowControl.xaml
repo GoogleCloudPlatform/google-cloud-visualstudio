@@ -175,9 +175,6 @@
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="false">
                                 <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Border}"/>
-                                <Setter Property="Background" TargetName="splitBorder" Value="{StaticResource ComboBox.Disabled.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="splitBorder" Value="{StaticResource ComboBox.Disabled.Border}"/>
                                 <Setter Property="Fill" TargetName="arrow" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -345,7 +342,7 @@
             <RowDefinition Height="30" />
 
             <!-- This row contains the project switcher. -->
-            <RowDefinition Height="25" />
+            <RowDefinition Height="Auto" />
 
             <!-- This row contains the tree. -->
             <RowDefinition Height="*" />
@@ -417,10 +414,12 @@
 
         <!-- Project switcher. -->
         <ComboBox ItemsSource="{Binding Projects}"
-            Visibility="{Binding ProjectsAsync.IsCompleted, Converter={StaticResource visibilityConverter}}"
-            SelectedItem="{Binding CurrentProject}"
-            SelectedIndex="0"
-            Grid.Row="1" Style="{DynamicResource ProjectDropdownStyle}" />
+                  Visibility="{Binding ProjectsAsync.IsCompleted, Converter={StaticResource visibilityConverter}}"
+                  IsEnabled="{Binding IsNotEmptyState}"
+                  SelectedItem="{Binding CurrentProject}"
+                  SelectedIndex="0"
+                  Grid.Row="1"
+                  Style="{DynamicResource ProjectDropdownStyle}" />
 
         <!-- Message for the empty state -->
         <Grid HorizontalAlignment="Stretch"

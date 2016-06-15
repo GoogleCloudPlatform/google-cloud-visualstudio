@@ -27,6 +27,7 @@ namespace GoogleCloudExtension.CloudExplorer
         private ImageSource _icon;
         private ICommand _command;
         private bool _isChecked;
+        private bool _isEnabled = true;
 
         /// <summary>
         /// The text for the tooltip for the button in the command bar.
@@ -63,6 +64,15 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             get { return _isChecked; }
             set { SetValueAndRaise(ref _isChecked, value); }
+        }
+
+        /// <summary>
+        /// Override if the button needs to be enabled or disabled.
+        /// </summary>
+        public bool IsEnabled
+        {
+            get { return _isEnabled; }
+            set { SetValueAndRaise(ref _isEnabled, value); }
         }
     }
 }
