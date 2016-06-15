@@ -23,7 +23,11 @@ namespace GoogleCloudExtension.OauthLoginFlow
 {
     public class OAuthLoginFlowWindow : CommonDialogWindowBase
     {
-        // The amount of time to wait for the code to come back, if the user doesn't do anything.
+        // Success and failure URLs.
+        private const string SucessUrl = "https://cloud.google.com/tools/visual-studio/auth_success";
+        private const string FailureUrl = "https://cloud.google.com/tools/visual-studio/auth_failure";
+
+        // The amount of time to wait for the code to come back, if the user doesn't do anything (15 mins).
         private static readonly TimeSpan s_accessTokenTimeout = new TimeSpan(0, 15, 0);
 
         private readonly OAuthLoginFlow _flow;
@@ -34,7 +38,11 @@ namespace GoogleCloudExtension.OauthLoginFlow
         private OAuthLoginFlowWindow(OAuthCredentials credentials, IEnumerable<string> scopes)
             : base("Provide Credentials", width: 300, height: 300)
         {
-            _flow = new OAuthLoginFlow(credentials, scopes);
+            _flow = new OAuthLoginFlow(
+                credentials,
+                scopes,
+                successUrl: SucessUrl,
+                failureUrl: FailureUrl);
 
             ViewModel = new OAuthLoginFlowViewModel(this);
             var windowContent = new OauthLoginFlowWindowContent

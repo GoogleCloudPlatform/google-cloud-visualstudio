@@ -46,11 +46,19 @@ namespace GoogleCloudExtension.OAuth
 
         private readonly OAuthCredentials _credentials;
         private readonly IEnumerable<string> _scopes;
+        private readonly string _successUrl;
+        private readonly string _failureUrl;
 
-        public OAuthLoginFlow(OAuthCredentials credentials, IEnumerable<string> scopes)
+        public OAuthLoginFlow(
+            OAuthCredentials credentials,
+            IEnumerable<string> scopes,
+            string successUrl,
+            string failureUrl)
         {
             _credentials = credentials;
             _scopes = scopes;
+            _successUrl = successUrl;
+            _failureUrl = failureUrl;
         }
 
         /// <summary>
@@ -124,35 +132,23 @@ namespace GoogleCloudExtension.OAuth
                         if (context.Request.Url.AbsolutePath != "/")
                         {
                             Debug.WriteLine($"Got request for path {context.Request.Url}");
-                            context.Response.StatusCode = 404;
-                            context.Response.OutputStream.Close();
+                            using (var response = context.Response)
+                            {
+                                response.StatusCode = 404;
+                            }
                             continue;
                         }
 
                         var accessCode = context.Request.QueryString["code"];
                         var error = context.Request.QueryString["error"];
 
-                        // Creates an appropiate response for success or failure.
-                        // TODO(ivann): Redirect to an appropiate page.
-                        var response = context.Response;
-                        response.StatusCode = 200;
-                        response.ContentType = "text/html";
-                        byte[] buff;
-                        if (!String.IsNullOrEmpty(accessCode))
+                        // Redirect to the appropiate website depending on success or failure of the login
+                        // operation.
+                        using (var response = context.Response)
                         {
-                            // Success path.
-                            buff = Encoding.UTF8.GetBytes("<html><title>Done</title><body>You are done, thank you.</body></html>");
-                        }
-                        else
-                        {
-                            // Error path.
-                            buff = Encoding.UTF8.GetBytes("<html><title>Error</title><body>You are not authenticated.</body></html>");
-                        }
-
-                        response.ContentLength64 = buff.Length;
-                        using (var stream = response.OutputStream)
-                        {
-                            stream.Write(buff, 0, buff.Length);
+                            Debug.WriteLineIf(String.IsNullOrEmpty(accessCode), $"Failed to authenticate the user OAUTH login flow.");
+                            response.StatusCode = 303;
+                            response.RedirectLocation = String.IsNullOrEmpty(accessCode) ? _failureUrl : _successUrl;
                         }
 
                         return new FlowResult { AccessCode = accessCode, Error = error };
