@@ -130,7 +130,6 @@ namespace GoogleCloudExtension.ResetPassword
                             "Missing Cloud SDK",
                             @"Please ensure that the ""beta"" is component installed, using ""gcloud components install beta"".",
                             new LinkInfo(link: "https://www.google.com", caption: "Install Cloud SDK"));
-
                     }
                     return;
                 }

@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.Theming
             Title = title;
             Width = width;
             Height = height;
-            
+
             // Common settings to all dialogs.
             ResizeMode = System.Windows.ResizeMode.NoResize;
             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
