@@ -16,6 +16,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorerSources.Gce;
 using GoogleCloudExtension.CloudExplorerSources.Gcs;
+using GoogleCloudExtension.CloudExplorerSources.CloudSQL;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
@@ -55,6 +56,9 @@ namespace GoogleCloudExtension.CloudExplorer
 
                 // The Google Cloud Storage source.
                 new GcsSource(),
+
+                // The Google Cloud SQL source.
+                new CloudSQLSource(),
             };
 
 
