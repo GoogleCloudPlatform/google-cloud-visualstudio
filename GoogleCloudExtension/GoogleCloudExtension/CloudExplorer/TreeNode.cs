@@ -25,18 +25,27 @@ namespace GoogleCloudExtension.CloudExplorer
     public class TreeNode : Model
     {
         private const string ErrorIconPath = "CloudExplorer/Resources/error_icon.png";
-        private readonly static Lazy<ImageSource> s_ErrorIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(ErrorIconPath));
+        private const string WarningIconPath = "CloudExplorer/Resources/warning_icon.png";
+
+        private readonly static Lazy<ImageSource> s_errorIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(ErrorIconPath));
+        private readonly static Lazy<ImageSource> s_warningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
 
         private string _caption;
         private ContextMenu _contextMenu;
         private ImageSource _icon;
         private bool _isLoading;
         private bool _isError;
+        private bool _isWarning;
 
         /// <summary>
         /// The icon to use when a node is in the error state.
         /// </summary>
-        public static ImageSource ErrorIcon => s_ErrorIcon.Value;
+        public static ImageSource ErrorIcon => s_errorIcon.Value;
+
+        /// <summary>
+        /// The icon to use when a nide is in the warning state.
+        /// </summary>
+        public static ImageSource WarningIcon => s_warningIcon.Value;
 
         /// <summary>
         /// Whether this node is in the loading state.
@@ -65,9 +74,22 @@ namespace GoogleCloudExtension.CloudExplorer
         }
 
         /// <summary>
+        /// Whether this node is in the warning state.
+        /// </summary>
+        public bool IsWarning
+        {
+            get { return _isWarning; }
+            set
+            {
+                SetValueAndRaise(ref _isWarning, value);
+                RaisePropertyChanged(nameof(IconIsVisible));
+            }
+        }
+
+        /// <summary>
         /// Whether the custom node icon is to be used or not, only in normal mode.
         /// </summary>
-        public bool IconIsVisible => !IsError && !IsLoading;
+        public bool IconIsVisible => !IsError && !IsLoading && !IsWarning;
 
         /// <summary>
         /// The icon to use in the UI for this item.

@@ -17,45 +17,46 @@
 
     <UserControl.Resources>
         <utils:VisibilityConverter x:Key="visibilityConverter" />
-
-        <!-- Data template to be applied to the TreeHierarchy -->
-        <HierarchicalDataTemplate DataType="{x:Type CloudExplorer:TreeHierarchy}" ItemsSource="{Binding Children}">
+        
+        <!-- Common node template, defines the UI for all nodes. -->
+        <DataTemplate x:Key="nodeTemplate">
             <Grid ContextMenu="{Binding ContextMenu}">
                 <StackPanel Orientation="Horizontal">
                     <controls:ProgressIndicator Visibility="{Binding IsLoading, Converter={StaticResource visibilityConverter}}" />
+
+                    <!-- Message icons, warning and error. -->
                     <Image Source="{x:Static CloudExplorer:TreeNode.ErrorIcon}"
                            Height="16" Width="16"
                            VerticalAlignment="Center"
                            Visibility="{Binding IsError, Converter={StaticResource visibilityConverter}}"
                            Margin="0,0,5,0"/>
+                    <Image Source="{x:Static CloudExplorer:TreeNode.WarningIcon}"
+                           Height="16" Width="16"
+                           VerticalAlignment="Center"
+                           Visibility="{Binding IsWarning, Converter={StaticResource visibilityConverter}}"
+                           Margin="0,0,5,0"/>
+
+                    <!-- Custom icon for the node. -->
                     <Image Source="{Binding Icon}"
                            Height="16" Width="16"
                            VerticalAlignment="Center"
                            Visibility="{Binding IconIsVisible, Converter={StaticResource visibilityConverter}}"
                            Margin="0,0,5,0"/>
+
+                    <!-- The actual caption. -->
                     <ContentPresenter Content="{Binding Caption}" VerticalAlignment="Center" />
                 </StackPanel>
             </Grid>
+        </DataTemplate>
+        
+        <!-- Data template to be applied to the TreeHierarchy, which are the nodes that have children. -->
+        <HierarchicalDataTemplate DataType="{x:Type CloudExplorer:TreeHierarchy}" ItemsSource="{Binding Children}">
+            <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource nodeTemplate}" />
         </HierarchicalDataTemplate>
 
-        <!-- Data template to be applied to the TreeLeaf -->
+        <!-- Data template to be applied to the TreeLeaf, which terminate the hierarchy as they don't have children. -->
         <DataTemplate DataType="{x:Type CloudExplorer:TreeLeaf}">
-            <Grid ContextMenu="{Binding ContextMenu}">
-                <StackPanel Orientation="Horizontal">
-                    <controls:ProgressIndicator Visibility="{Binding IsLoading, Converter={StaticResource visibilityConverter}}" />
-                    <Image Source="{x:Static CloudExplorer:TreeNode.ErrorIcon}"
-                           Height="16" Width="16"
-                           VerticalAlignment="Center"
-                           Visibility="{Binding IsError, Converter={StaticResource visibilityConverter}}"
-                           Margin="0,0,5,0"/>
-                    <Image Source="{Binding Icon}"
-                           Height="16" Width="16"
-                           Visibility="{Binding IconIsVisible, Converter={StaticResource visibilityConverter}}"
-                           VerticalAlignment="Center"
-                           Margin="0,0,5,0"/>
-                    <ContentPresenter Content="{Binding Caption}" VerticalAlignment="Center" />
-                </StackPanel>
-            </Grid>
+            <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource nodeTemplate}" />
         </DataTemplate>
 
         <Style x:Key="CommandBarStyle" TargetType="{x:Type StackPanel}">
@@ -435,12 +436,12 @@
             <StackPanel Grid.Row="1"
                     Visibility="Visible"
                     HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock>Add a new account, or select and exiting one.</TextBlock>
-                <Button Width="160" Command="{Binding ManageAccountsCommand}">Select Account</Button>
+                <TextBlock>Add a new account, or select and existing one.</TextBlock>
+                <Button Width="160" Command="{Binding ManageAccountsCommand}">Select Account...</Button>
             </StackPanel>
         </Grid>
 
-        <!-- Hierarchical view of the modules and versions within the modules. -->
+        <!-- Hierarchical view of the items, with the subitems inside. -->
         <TreeView
             ItemsSource="{Binding Roots}" 
             SelectedItemChanged="TreeView_SelectedItemChanged"

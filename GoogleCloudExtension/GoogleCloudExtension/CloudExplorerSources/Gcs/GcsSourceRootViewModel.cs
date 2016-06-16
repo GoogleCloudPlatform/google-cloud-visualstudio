@@ -37,7 +37,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         };
         private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
         {
-            Caption = "No buckets found."
+            Caption = "No buckets found.",
+            IsWarning = true
         };
         private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
         {
