@@ -17,7 +17,7 @@
 
     <UserControl.Resources>
         <utils:VisibilityConverter x:Key="visibilityConverter" />
-        
+
         <!-- Common node template, defines the UI for all nodes. -->
         <DataTemplate x:Key="nodeTemplate">
             <Grid ContextMenu="{Binding ContextMenu}">
@@ -48,7 +48,7 @@
                 </StackPanel>
             </Grid>
         </DataTemplate>
-        
+
         <!-- Data template to be applied to the TreeHierarchy, which are the nodes that have children. -->
         <HierarchicalDataTemplate DataType="{x:Type CloudExplorer:TreeHierarchy}" ItemsSource="{Binding Children}">
             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource nodeTemplate}" />
@@ -335,6 +335,11 @@
             </TextBlock>
         </DataTemplate>
 
+        <!-- Data template for a placeholder message. -->
+        <DataTemplate DataType="{x:Type utils:PlaceholderMessage}">
+            <TextBlock Text="{Binding Message}" />
+        </DataTemplate>
+
     </UserControl.Resources>
 
     <Grid IsEnabled="{Binding IsReady}">
@@ -414,8 +419,7 @@
         </Grid>
 
         <!-- Project switcher. -->
-        <ComboBox ItemsSource="{Binding Projects}"
-                  Visibility="{Binding ProjectsAsync.IsCompleted, Converter={StaticResource visibilityConverter}}"
+        <ComboBox ItemsSource="{Binding EffectiveProjects}"
                   IsEnabled="{Binding IsNotEmptyState}"
                   SelectedItem="{Binding CurrentProject}"
                   SelectedIndex="0"
@@ -425,19 +429,24 @@
         <!-- Message for the empty state -->
         <Grid HorizontalAlignment="Stretch"
               VerticalAlignment="Stretch"
-              Visibility="{Binding IsEmptyState, Converter={utils:BooleanConverter}}"
+              Visibility="{Binding IsEmptyState, Converter={utils:VisibilityConverter}}"
               Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="20*" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="80*" />
             </Grid.RowDefinitions>
-            
+
             <StackPanel Grid.Row="1"
                     Visibility="Visible"
-                    HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock>Add a new account, or select and existing one.</TextBlock>
-                <Button Width="160" Command="{Binding ManageAccountsCommand}">Select Account...</Button>
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <TextBlock Text="{Binding EmptyStateMessage}"  HorizontalAlignment="Center"/>
+                <TextBlock HorizontalAlignment="Center">
+                    <Hyperlink Command="{Binding EmptyStateCommand}">
+                        <TextBlock Text="{Binding EmptyStateButtonCaption}" />
+                    </Hyperlink>
+                </TextBlock>
             </StackPanel>
         </Grid>
 
