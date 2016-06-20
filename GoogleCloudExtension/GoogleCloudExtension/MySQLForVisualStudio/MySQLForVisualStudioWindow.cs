@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Analytics;
 using Microsoft.VisualStudio.PlatformUI;
 
 namespace GoogleCloudExtension.MySQLForVisualStudio
@@ -20,7 +21,7 @@ namespace GoogleCloudExtension.MySQLForVisualStudio
     {
         private MySQLForVisualStudioWindow()
         {
-            //ExtensionAnalytics.ReportScreen(nameof(ManageAccountsWindow));
+            ExtensionAnalytics.ReportScreen(nameof(MySQLForVisualStudioWindow));
 
             Title = "Download MySQL for Visual Studio";
             Width = 300;
