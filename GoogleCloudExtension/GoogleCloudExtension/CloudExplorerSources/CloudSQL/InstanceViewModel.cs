@@ -15,7 +15,6 @@
 using Google.Apis.SQLAdmin.v1beta4.Data;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.MySQLForVisualStudio;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Data;
@@ -60,7 +59,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
-        private async void OpenDataConnectionDialog()
+        private void OpenDataConnectionDialog()
         {
             ExtensionAnalytics.ReportCommand(CommandName.OpenMySQLDataConnectionDialog, CommandInvocationSource.Button);
 
