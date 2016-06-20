@@ -13,13 +13,17 @@
 // limitations under the License.
 
 using Google.Apis.SQLAdmin.v1beta4.Data;
+using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.MySQLForVisualStudio;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Data;
+using Microsoft.VisualStudio.Shell;
+using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
@@ -30,24 +34,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/bucket_icon.png";
         private static readonly Lazy<ImageSource> s_instanceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
 
-        private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
-        {
-            Caption = "Loading databases...",
-            IsLoading = true
-        };
-        private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
-        {
-            Caption = "No databases found."
-        };
-        private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
-        {
-            Caption = "Failed to list databases.",
-            IsError = true
-        };
-
         private readonly CloudSQLSourceRootViewModel _owner;
         private readonly DatabaseInstance _instance;
         private readonly Lazy<InstanceItem> _item;
+        private readonly WeakCommand _openAddDataConnectionDialog;
 
         public event EventHandler ItemChanged;
 
@@ -58,37 +48,61 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             _owner = owner;
             _instance = instance;
             _item = new Lazy<InstanceItem>(GetItem);
+            _openAddDataConnectionDialog = new WeakCommand(OpenDataConnectionDialog);
 
             Caption = _instance.Name;
             Icon = s_instanceIcon.Value;
 
-            Initialize();
+            var menuItems = new List<MenuItem>
+            {
+                new MenuItem { Header = "Add Data Connection", Command = _openAddDataConnectionDialog },
+            };
+            ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
-        private async void Initialize()
+        private async void OpenDataConnectionDialog()
         {
-            try
+            ExtensionAnalytics.ReportCommand(CommandName.OpenMySQLDataConnectionDialog, CommandInvocationSource.Button);
+
+            // Create a data connection dialog and add all possible data sources to it.
+            DataConnectionDialogFactory factory = (DataConnectionDialogFactory)Package.GetGlobalService(typeof(DataConnectionDialogFactory));
+            DataConnectionDialog dialog = factory.CreateConnectionDialog();
+            dialog.AddAllSources();
+
+            // Check if the MySQL data source exists.
+            if (dialog.AvailableSources.Contains(MySQLUtils.MySQLDataSource))
             {
-                Children.Add(s_loadingPlaceholder);
-                var databases = await _owner.DataSource.Value.GetDatabaseListAsync(_instance.Name);
-                Children.Clear();
-                foreach (var database in databases)
+                // Pre select the MySQL data source.
+                dialog.SelectedSource = MySQLUtils.MySQLDataSource;
+
+                // Create the connection string to pre populate the server address in the dialog.
+                MySqlConnectionStringBuilder builderPrePopulate = new MySqlConnectionStringBuilder();
+                InstanceItem instance = _item.Value;
+                builderPrePopulate.Server = String.IsNullOrEmpty(instance.IpAddress) ? instance.Ipv6Address : instance.IpAddress;
+                dialog.DisplayConnectionString = builderPrePopulate.GetConnectionString(false);
+
+                bool addDataConnection = dialog.ShowDialog();
+                if (addDataConnection)
                 {
-                    Children.Add(new DatabaseViewModel(this, database));
-                }
-                if (Children.Count == 0)
-                {
-                    Children.Add(s_noItemsPlacehoder);
+                    ExtensionAnalytics.ReportCommand(CommandName.AddMySQLDataConnection, CommandInvocationSource.Button);
+
+                    // Create a name for the data connection
+                    MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder(dialog.DisplayConnectionString);
+                    string database = $"{builder.Server}({builder.Database})";
+
+                    // Add the MySQL data connection to the data explorer
+                    DataExplorerConnectionManager manager = (DataExplorerConnectionManager)Package.GetGlobalService(typeof(DataExplorerConnectionManager));
+                    manager.AddConnection(database, MySQLUtils.MySQLDataProvider, dialog.EncryptedConnectionString, true);
                 }
             }
-            catch (DataSourceException ex)
+            else
             {
-                Debug.WriteLine($"Failed to call api: {ex.Message}");
-                Children.Clear();
-                Children.Add(s_errorPlaceholder);
+                // MySQL for Visual Studio isn't installed, prompt the user to install it.
+                ExtensionAnalytics.ReportEvent("MySQLForVisualStudio", "Missing");
+                MySQLForVisualStudioWindow.PromptUser();
             }
         }
 
-        private InstanceItem GetItem() => new InstanceItem(_instance);
+        public InstanceItem GetItem() => new InstanceItem(_instance);
     }
 }
