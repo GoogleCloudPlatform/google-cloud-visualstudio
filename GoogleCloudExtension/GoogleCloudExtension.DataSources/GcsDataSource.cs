@@ -32,13 +32,16 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="projectId"></param>
         /// <param name="credential"></param>
-        public GcsDataSource(string projectId, GoogleCredential credential) : base(projectId, CreateService(credential))
+        /// <param name="appName"></param>
+        public GcsDataSource(string projectId, GoogleCredential credential, string appName)
+            : base(projectId, CreateService(credential, appName), appName)
         { }
 
-        private static StorageService CreateService(GoogleCredential credential)
+        private static StorageService CreateService(GoogleCredential credential, string appName)
         {
             return new StorageService(new Google.Apis.Services.BaseClientService.Initializer
             {
+                ApplicationName = appName,
                 HttpClientInitializer = credential,
             });
         }

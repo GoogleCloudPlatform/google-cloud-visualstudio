@@ -29,5 +29,15 @@ namespace GoogleCloudExtension.GCloud
         /// The project id of the project to use for the invokation of gcloud.
         /// </summary>
         public string ProjectId { get; set; }
+
+        /// <summary>
+        /// The application name to use when reporting metrics to the server side.
+        /// </summary>
+        public string AppName { get; set; }
+
+        /// <summary>
+        /// The application name to use when reporting metrics to the server side.
+        /// </summary>
+        public string AppVersion { get; set; }
     }
 }

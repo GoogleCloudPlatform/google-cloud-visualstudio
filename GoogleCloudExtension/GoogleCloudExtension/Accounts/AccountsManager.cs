@@ -108,7 +108,7 @@ namespace GoogleCloudExtension.Accounts
                 ClientId = s_extensionCredentials.ClientId,
                 ClientSecret = s_extensionCredentials.ClientSecret
             };
-            var plusDataSource = new GPlusDataSource(result.GetGoogleCredential());
+            var plusDataSource = new GPlusDataSource(result.GetGoogleCredential(), GoogleCloudExtensionPackage.ApplicationName);
             var person = await plusDataSource.GetProfileAsync();
             result.AccountName = person.Emails.FirstOrDefault()?.Value;
             return result;

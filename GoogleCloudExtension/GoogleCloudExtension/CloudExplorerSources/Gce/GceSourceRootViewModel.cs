@@ -88,7 +88,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             if (CredentialsStore.Default.CurrentProjectId != null)
             {
-                return new GceDataSource(CredentialsStore.Default.CurrentProjectId, CredentialsStore.Default.CurrentGoogleCredential);
+                return new GceDataSource(
+                    CredentialsStore.Default.CurrentProjectId,
+                    CredentialsStore.Default.CurrentGoogleCredential,
+                    GoogleCloudExtensionPackage.ApplicationName);
             }
             else
             {

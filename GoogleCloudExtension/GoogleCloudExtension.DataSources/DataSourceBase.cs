@@ -40,15 +40,22 @@ namespace GoogleCloudExtension.DataSources
         protected TService Service { get; }
 
         /// <summary>
+        /// The application name.
+        /// </summary>
+        protected string AppName { get; }
+
+        /// <summary>
         /// Initializes this class with the <paramref name="projectId"/> and uses <paramref name="factory"/> to
         /// create an instance of the service to wrap.
         /// </summary>
         /// <param name="projectId">The project id for this data source.</param>
         /// <param name="service">The service for this data source.</param>
-        protected DataSourceBase(string projectId, TService service)
+        /// <param name="appName">The name of the application.</param>
+        protected DataSourceBase(string projectId, TService service, string appName)
         {
             ProjectId = projectId;
             Service = service;
+            AppName = appName;
         }
 
         /// <summary>
@@ -56,7 +63,7 @@ namespace GoogleCloudExtension.DataSources
         /// not require a project id.
         /// </summary>
         /// <param name="service">The service for this data source.</param>
-        protected DataSourceBase(TService service) : this(null, service)
+        protected DataSourceBase(TService service, string appName) : this(null, service, appName)
         { }
 
         /// <summary>

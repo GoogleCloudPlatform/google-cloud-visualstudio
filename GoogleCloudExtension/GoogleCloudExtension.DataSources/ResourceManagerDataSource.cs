@@ -33,7 +33,8 @@ namespace GoogleCloudExtension.DataSources
         /// The constructor for the class.
         /// </summary>
         /// <param name="credential"></param>
-        public ResourceManagerDataSource(GoogleCredential credential) : base(CreateService(credential))
+        public ResourceManagerDataSource(GoogleCredential credential, string appName)
+            : base(CreateService(credential), appName)
         { }
 
         private static CloudResourceManagerService CreateService(GoogleCredential credential)

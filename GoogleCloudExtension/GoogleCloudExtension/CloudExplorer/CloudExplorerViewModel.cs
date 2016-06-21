@@ -202,13 +202,13 @@ namespace GoogleCloudExtension.CloudExplorer
         private static GPlusDataSource CreatePlusDataSource()
         {
             var currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
-            return currentCredential != null ? new GPlusDataSource(currentCredential) : null;
+            return currentCredential != null ? new GPlusDataSource(currentCredential, GoogleCloudExtensionPackage.ApplicationName) : null;
         }
 
         private static ResourceManagerDataSource CreateResourceManagerDataSource()
         {
             var currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
-            return currentCredential != null ? new ResourceManagerDataSource(currentCredential) : null;
+            return currentCredential != null ? new ResourceManagerDataSource(currentCredential, GoogleCloudExtensionPackage.ApplicationName) : null;
         }
 
         private void UpdateUserProfile()

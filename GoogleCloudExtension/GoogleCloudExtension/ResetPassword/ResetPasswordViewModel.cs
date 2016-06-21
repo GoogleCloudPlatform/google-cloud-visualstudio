@@ -138,6 +138,8 @@ namespace GoogleCloudExtension.ResetPassword
                 {
                     CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
                     ProjectId = _projectId,
+                    AppName = GoogleCloudExtensionPackage.ApplicationName,
+                    AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
                 };
                 var newCredentials = await GCloudWrapper.ResetWindowsCredentialsAsync(
                     instanceName: _instance.Name,
