@@ -27,9 +27,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 {
     internal class GcsSourceRootViewModel : SourceRootViewModelBase
     {
-        private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/storage.png";
-        private static readonly Lazy<ImageSource> s_storageIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
-
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
             Caption = "Loading buckets...",
@@ -47,8 +44,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         };
 
         private Lazy<GcsDataSource> _dataSource;
-
-        public override ImageSource RootIcon => s_storageIcon.Value;
 
         public override string RootCaption => "Google Cloud Storage";
 
