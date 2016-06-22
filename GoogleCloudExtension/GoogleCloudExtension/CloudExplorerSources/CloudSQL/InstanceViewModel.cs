@@ -87,7 +87,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 
                     // Create a name for the data connection
                     MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder(dialog.DisplayConnectionString);
-                    string database = $"{builder.Server}({builder.Database})";
+                    string database = $"{_instance.Project}[{builder.Server}][{builder.Database}]";
 
                     // Add the MySQL data connection to the data explorer
                     DataExplorerConnectionManager manager = (DataExplorerConnectionManager)Package.GetGlobalService(typeof(DataExplorerConnectionManager));
