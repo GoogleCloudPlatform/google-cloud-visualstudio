@@ -70,6 +70,7 @@
     <Compile Include="CloudExplorerSources\Gcs\BucketViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gcs\GcsSource.cs" />
     <Compile Include="CloudExplorerSources\Gcs\GcsSourceRootViewModel.cs" />
+    <Compile Include="CloudExplorer\CloudConsoleNode.cs" />
     <Compile Include="CloudExplorer\CloudExplorerSourceException.cs" />
     <Compile Include="CloudExplorer\SourceRootViewModelBase.cs" />
     <Compile Include="CloudExplorer\ButtonDefinition.cs" />
@@ -85,6 +86,7 @@
     <Compile Include="CloudExplorer\ICloudExplorerSource.cs" />
     <Compile Include="CloudExplorer\TreeHierarchy.cs" />
     <Compile Include="CloudExplorer\TreeLeaf.cs" />
+    <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
     <Compile Include="Controls\PressButton.cs" />
     <Compile Include="Controls\ProgressIndicator.xaml.cs">
@@ -111,7 +113,7 @@
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="LinkPrompt\LinkInfo.cs" />
+    <Compile Include="Utils\LinkInfo.cs" />
     <Compile Include="LinkPrompt\LinkPromptDialogWindow.cs" />
     <Compile Include="LinkPrompt\LinkPromptDialogWindowContent.xaml.cs">
       <DependentUpon>LinkPromptDialogWindowContent.xaml</DependentUpon>

@@ -93,7 +93,8 @@ namespace GoogleCloudExtension.CloudExplorer
         /// The list list of roots for the hieratchical view, each root contains all of the data
         /// from a given source.
         /// </summary>
-        public IEnumerable<TreeHierarchy> Roots => _sources.Select(x => x.Root);
+        public IEnumerable<TreeHierarchy> Roots =>
+            Enumerable.Concat<TreeHierarchy>(_sources.Select(x => x.Root), new[] { new CloudConsoleNode() });
 
         /// <summary>
         /// Returns the profile image URL.

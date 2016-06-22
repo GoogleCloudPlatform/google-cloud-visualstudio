@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Theming;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.LinkPrompt
 {

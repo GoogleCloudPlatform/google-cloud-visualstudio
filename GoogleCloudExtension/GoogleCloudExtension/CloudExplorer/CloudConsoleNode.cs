@@ -12,18 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GoogleCloudExtension.LinkPrompt
+using GoogleCloudExtension.Utils;
+
+namespace GoogleCloudExtension.CloudExplorer
 {
-    public class LinkInfo
+    /// <summary>
+    /// This class represents the node in the Cloud Explorer that points the users towards
+    /// the Cloud Console for more services.
+    /// </summary>
+    public class CloudConsoleNode : TreeLeafLink
     {
-        public string NavigateUrl { get; }
+        private static readonly LinkInfo s_consoleLink = new LinkInfo(
+            link: "https://console.cloud.google.com",
+            caption: "See cloud console for other services");
 
-        public string Caption { get; }
-
-        public LinkInfo(string link, string caption)
-        {
-            NavigateUrl = link;
-            Caption = caption;
-        }
+        public CloudConsoleNode()
+            : base(s_consoleLink)
+        { }
     }
 }

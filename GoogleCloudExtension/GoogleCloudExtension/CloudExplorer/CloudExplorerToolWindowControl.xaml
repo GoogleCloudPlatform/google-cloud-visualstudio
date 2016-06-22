@@ -58,6 +58,15 @@
         <DataTemplate DataType="{x:Type CloudExplorer:TreeLeaf}">
             <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource nodeTemplate}" />
         </DataTemplate>
+        
+        <!-- Data template to be applied to the link leaf, which terminate the nodes and shows a link. -->
+        <DataTemplate DataType="{x:Type CloudExplorer:TreeLeafLink}">
+            <TextBlock>
+                <Hyperlink Command="{Binding NavigateCommand}">
+                    <TextBlock Text="{Binding Caption}" />
+                </Hyperlink>
+            </TextBlock>
+        </DataTemplate>
 
         <Style x:Key="CommandBarStyle" TargetType="{x:Type StackPanel}">
             <Setter Property="Orientation" Value="Horizontal" />
