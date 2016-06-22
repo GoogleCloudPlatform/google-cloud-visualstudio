@@ -5,7 +5,7 @@
     The Version attribute of the Identity element *must* match the version number in Properties\AssemblyInfo.cs, to ensure 
     accurate metrics.
     -->
-    <Identity Id="GoogleAppEngine.Google.d3d3eeb8-3710-4bd9-97ba-1401bf2acd22" Version="0.6.1.0" Language="en-US" Publisher="Google Inc." />
+    <Identity Id="GoogleAppEngine.Google.d3d3eeb8-3710-4bd9-97ba-1401bf2acd22" Version="0.6.2.0" Language="en-US" Publisher="Google Inc." />
     <DisplayName>Google Cloud Platform Extension for Visual Studio</DisplayName>
     <Description xml:space="preserve">Tools to develop applications for Google Cloud Platform.</Description>
     <MoreInfo>https://github.com/GoogleCloudPlatform/gcloud-visualstudio</MoreInfo>
