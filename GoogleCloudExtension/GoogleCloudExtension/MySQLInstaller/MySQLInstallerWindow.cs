@@ -21,8 +21,6 @@ namespace GoogleCloudExtension.MySQLInstaller
     {
         private MySQLInstallerWindow()
         {
-            ExtensionAnalytics.ReportScreen(nameof(MySQLInstallerWindow));
-
             Title = "Download MySQL for Visual Studio";
             Width = 300;
             Height = 300;

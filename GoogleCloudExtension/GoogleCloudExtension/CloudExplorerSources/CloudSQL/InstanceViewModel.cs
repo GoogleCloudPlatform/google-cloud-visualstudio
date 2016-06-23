@@ -29,9 +29,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 {
     class InstanceViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
-        // TODO(talarico): Create an icon for instances.
-        private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/bucket_icon.png";
-        private static readonly Lazy<ImageSource> s_instanceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
+        // TODO(talarico): Create an icon for instances
 
         private readonly CloudSQLSourceRootViewModel _owner;
         private readonly DatabaseInstance _instance;
@@ -50,7 +48,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             _openAddDataConnectionDialog = new WeakCommand(OpenDataConnectionDialog);
 
             Caption = _instance.Name;
-            Icon = s_instanceIcon.Value;
 
             var menuItems = new List<MenuItem>
             {

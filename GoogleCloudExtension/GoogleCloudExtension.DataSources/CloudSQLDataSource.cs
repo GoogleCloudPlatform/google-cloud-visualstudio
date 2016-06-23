@@ -34,13 +34,15 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="projectId"></param>
         /// <param name="credential"></param>
-        public CloudSQLDataSource(string projectId, GoogleCredential credential) : base(projectId, CreateService(credential))
+        public CloudSQLDataSource(string projectId, GoogleCredential credential, string appName)
+            : base(projectId, CreateService(credential, appName), appName)
         { }
 
-        private static SQLAdminService CreateService(GoogleCredential credential)
+        private static SQLAdminService CreateService(GoogleCredential credential, string appName)
         {
             return new SQLAdminService(new Google.Apis.Services.BaseClientService.Initializer
             {
+                ApplicationName = appName,
                 HttpClientInitializer = credential,
             });
         }

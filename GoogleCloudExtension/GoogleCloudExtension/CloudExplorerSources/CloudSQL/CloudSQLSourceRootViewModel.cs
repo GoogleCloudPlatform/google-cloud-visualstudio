@@ -27,10 +27,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 {
     internal class CloudSQLSourceRootViewModel : SourceRootViewModelBase
     {
-        // TODO(talarico): Create a Cloud SQL Icon.
-        private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/storage.png";
-        private static readonly Lazy<ImageSource> s_storageIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
-
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
             Caption = "Loading instances...",
@@ -47,8 +43,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         };
 
         public Lazy<CloudSQLDataSource> DataSource;
-
-        public override ImageSource RootIcon => s_storageIcon.Value;
 
         public override string RootCaption => "Google Cloud SQL";
 
@@ -75,7 +69,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         {
             if (CredentialsStore.Default.CurrentProjectId != null)
             {
-                return new CloudSQLDataSource(CredentialsStore.Default.CurrentProjectId, CredentialsStore.Default.CurrentGoogleCredential);
+                return new CloudSQLDataSource(
+                    CredentialsStore.Default.CurrentProjectId, 
+                    CredentialsStore.Default.CurrentGoogleCredential,
+                    GoogleCloudExtensionPackage.ApplicationName);
             }
             else
             {
