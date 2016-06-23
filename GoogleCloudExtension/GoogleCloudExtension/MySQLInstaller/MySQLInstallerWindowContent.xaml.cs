@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace GoogleCloudExtension.MySQLForVisualStudio
+namespace GoogleCloudExtension.MySQLInstaller
 {
     /// <summary>
-    /// Interaction logic for MySQLForVisualStudio.xaml
+    /// Interaction logic for MySQLInstaller.xaml
     /// </summary>
-    public partial class MySQLForVisualStudioWindowContent : UserControl
+    public partial class MySQLInstallerWindowContent : UserControl
     {
-        public MySQLForVisualStudioWindowContent()
+        public MySQLInstallerWindowContent()
         {
             InitializeComponent();
         }

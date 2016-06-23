@@ -17,17 +17,17 @@ using GoogleCloudExtension.Utils;
 using System.Diagnostics;
 using System.Windows.Input;
 
-namespace GoogleCloudExtension.MySQLForVisualStudio
+namespace GoogleCloudExtension.MySQLInstaller
 {
-    class MySQLForVisualStudioViewModel : ViewModelBase
+    class MySQLInstallerViewModel : ViewModelBase
     {
-        private MySQLForVisualStudioWindow _owner;
+        private MySQLInstallerWindow _owner;
 
         public ICommand CloseCommand { get; }
 
         public ICommand DownloadCommand { get; }
 
-        public MySQLForVisualStudioViewModel(MySQLForVisualStudioWindow owner)
+        public MySQLInstallerViewModel(MySQLInstallerWindow owner)
         {
             _owner = owner;
 
@@ -37,10 +37,10 @@ namespace GoogleCloudExtension.MySQLForVisualStudio
 
         private void OpenDownload()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.OpenMySQLForVisualStudioDownload, CommandInvocationSource.Button);
+            ExtensionAnalytics.ReportCommand(CommandName.OpenMySQLInstallerDownload, CommandInvocationSource.Button);
 
-            var url = $"https://dev.mysql.com/downloads/windows/visualstudio/";
-            Debug.WriteLine($"Opening page to download MySQL for Visual Studio: {url}");
+            var url = $"https://dev.mysql.com/downloads/installer/";
+            Debug.WriteLine($"Opening page to download MySQL Installer: {url}");
             Process.Start(url);
             _owner.Close();
         }

@@ -15,7 +15,7 @@
 using Google.Apis.SQLAdmin.v1beta4.Data;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.MySQLForVisualStudio;
+using GoogleCloudExtension.MySQLInstaller;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Data;
 using Microsoft.VisualStudio.Shell;
@@ -69,6 +69,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             dialog.AddAllSources();
 
             // Check if the MySQL data source exists.
+            // TODO(talarico): This is added when the user has MySQL for Visual Studio installed.  We should also
+            // probably check for the needed pieces in the MySQL Connector/Net.
             if (dialog.AvailableSources.Contains(MySQLUtils.MySQLDataSource))
             {
                 // Pre select the MySQL data source.
@@ -98,7 +100,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             {
                 // MySQL for Visual Studio isn't installed, prompt the user to install it.
                 ExtensionAnalytics.ReportEvent("MySQLForVisualStudio", "Missing");
-                MySQLForVisualStudioWindow.PromptUser();
+                MySQLInstallerWindow.PromptUser();
             }
         }
 

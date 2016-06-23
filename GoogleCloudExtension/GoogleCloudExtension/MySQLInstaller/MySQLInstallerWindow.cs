@@ -15,25 +15,25 @@
 using GoogleCloudExtension.Analytics;
 using Microsoft.VisualStudio.PlatformUI;
 
-namespace GoogleCloudExtension.MySQLForVisualStudio
+namespace GoogleCloudExtension.MySQLInstaller
 {
-    class MySQLForVisualStudioWindow : DialogWindow
+    class MySQLInstallerWindow : DialogWindow
     {
-        private MySQLForVisualStudioWindow()
+        private MySQLInstallerWindow()
         {
-            ExtensionAnalytics.ReportScreen(nameof(MySQLForVisualStudioWindow));
+            ExtensionAnalytics.ReportScreen(nameof(MySQLInstallerWindow));
 
             Title = "Download MySQL for Visual Studio";
             Width = 300;
-            Height = 200;
+            Height = 300;
             ResizeMode = System.Windows.ResizeMode.NoResize;
             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
-            Content = new MySQLForVisualStudioWindowContent { DataContext = new MySQLForVisualStudioViewModel(this) };
+            Content = new MySQLInstallerWindowContent { DataContext = new MySQLInstallerViewModel(this) };
         }
 
         public static void PromptUser()
         {
-            var dialog = new MySQLForVisualStudioWindow();
+            var dialog = new MySQLInstallerWindow();
             dialog.ShowModal();
         }
     }

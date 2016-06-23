@@ -101,8 +101,8 @@
       <DependentUpon>PortManagerWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="FirewallManagement\PortModel.cs" />
-    <Compile Include="MySQLForVisualStudio\MySQLForVisualStudioWindowContent.xaml.cs">
-      <DependentUpon>MySQLForVisualStudioWindowContent.xaml</DependentUpon>
+    <Compile Include="MySQLInstaller\MySQLInstallerWindowContent.xaml.cs">
+      <DependentUpon>MySQLInstallerWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="ManageAccounts\ManageAccountsCommand.cs" />
     <Compile Include="Accounts\AccountsManager.cs" />
@@ -112,8 +112,8 @@
       <DependentUpon>ManageAccountsWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Accounts\UserAccount.cs" />
-    <Compile Include="MySQLForVisualStudio\MySQLForVisualStudioViewModel.cs" />
-    <Compile Include="MySQLForVisualStudio\MySQLForVisualStudioWindow.cs" />
+    <Compile Include="MySQLInstaller\MySQLInstallerViewModel.cs" />
+    <Compile Include="MySQLInstaller\MySQLInstallerWindow.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowViewModel.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindow.cs" />
     <Compile Include="ManageAccounts\UserAccountViewModel.cs" />
@@ -402,7 +402,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="MySQLForVisualStudio\MySQLForVisualStudioWindowContent.xaml">
+    <Page Include="MySQLInstaller\MySQLInstallerWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
