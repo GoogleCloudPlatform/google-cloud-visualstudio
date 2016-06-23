@@ -29,10 +29,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private static readonly TreeLeaf s_noInstancesPlaceholder = new TreeLeaf
         {
             Caption = "No instances in this zone",
+            IsWarning = true
         };
         private static readonly TreeLeaf s_noWindowsInstancesPlaceholder = new TreeLeaf
         {
             Caption = "No Windows instances in this zone",
+            IsWarning = true
         };
 
         private readonly GceSourceRootViewModel _owner;

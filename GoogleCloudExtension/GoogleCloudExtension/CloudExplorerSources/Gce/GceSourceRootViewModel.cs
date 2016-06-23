@@ -21,15 +21,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
     public class GceSourceRootViewModel : SourceRootViewModelBase
     {
-        private const string IconResourcePath = "CloudExplorerSources/Gce/Resources/gce_logo.png";
-
-        private static readonly Lazy<ImageSource> s_gceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
             Caption = "Loading zones...",
@@ -59,8 +55,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
 
         public override string RootCaption => "Google Compute Engine";
-
-        public override ImageSource RootIcon => s_gceIcon.Value;
 
         public bool ShowOnlyWindowsInstances
         {
@@ -94,7 +88,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             if (CredentialsStore.Default.CurrentProjectId != null)
             {
-                return new GceDataSource(CredentialsStore.Default.CurrentProjectId, CredentialsStore.Default.CurrentGoogleCredential);
+                return new GceDataSource(
+                    CredentialsStore.Default.CurrentProjectId,
+                    CredentialsStore.Default.CurrentGoogleCredential,
+                    GoogleCloudExtensionPackage.ApplicationName);
             }
             else
             {

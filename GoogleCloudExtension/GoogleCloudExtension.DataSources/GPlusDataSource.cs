@@ -31,7 +31,8 @@ namespace GoogleCloudExtension.DataSources
         /// Constructor for the class.
         /// </summary>
         /// <param name="credential"></param>
-        public GPlusDataSource(GoogleCredential credential) : base(CreateService(credential))
+        public GPlusDataSource(GoogleCredential credential, string appName)
+            : base(CreateService(credential), appName)
         { }
 
         private static PlusService CreateService(GoogleCredential credentials)

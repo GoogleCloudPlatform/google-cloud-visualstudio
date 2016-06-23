@@ -12,21 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Theming;
-
-namespace GoogleCloudExtension.ManageAccounts
+namespace GoogleCloudExtension.Utils
 {
-    public class ManageAccountsWindow : CommonDialogWindowBase
+    public class PlaceholderMessage : Model
     {
-        private ManageAccountsWindow() : base("Manage Accounts", width: 500, height: 400)
-        {
-            Content = new ManageAccountsWindowContent { DataContext = new ManageAccountsViewModel(this) };
-        }
+        private string _message;
 
-        public static void PromptUser()
+        public string Message
         {
-            var dialog = new ManageAccountsWindow();
-            dialog.ShowModal();
+            get { return _message; }
+            set { SetValueAndRaise(ref _message, value); }
         }
     }
 }

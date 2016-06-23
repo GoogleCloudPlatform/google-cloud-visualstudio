@@ -117,6 +117,6 @@ namespace GoogleCloudExtension.FirewallManagement
         }
 
         private IList<PortModel> CreatePortModels() =>
-            s_supportedPorts.Select((x) => new PortModel(x, _instance.Tags?.Items.Contains(x.GetTag(_instance)) ?? false)).ToList();
+            s_supportedPorts.Select((x) => new PortModel(x, _instance.Tags?.Items?.Contains(x.GetTag(_instance)) ?? false)).ToList();
     }
 }

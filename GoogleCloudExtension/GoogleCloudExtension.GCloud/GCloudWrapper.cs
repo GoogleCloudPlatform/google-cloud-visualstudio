@@ -29,6 +29,9 @@ namespace GoogleCloudExtension.GCloud
     /// </summary>
     public static class GCloudWrapper
     {
+        private const string GCloudMetricsVariable = "CLOUDSDK_METRICS_ENVIRONMENT";
+        private const string GCloudMetricsVersionVariable = "CLOUDSDK_METRICS_ENVIRONMENT_VERSION";
+
         /// <summary>
         /// Finds the location of gcloud.cmd by following all of the directories in the PATH environment
         /// variable until it finds it. With this we assume that in order to run the extension gcloud.cmd is
@@ -114,9 +117,19 @@ namespace GoogleCloudExtension.GCloud
             var actualCommand = FormatCommand(command, context);
             try
             {
+                Dictionary<string, string> environment = null;
+                if (context?.AppName != null)
+                {
+                    environment = new Dictionary<string, string> { { GCloudMetricsVariable, context?.AppName } };
+                    if (context?.AppVersion != null)
+                    {
+                        environment[GCloudMetricsVersionVariable] = context?.AppVersion;
+                    }
+                }
+
                 // This code depends on the fact that gcloud.cmd is a batch file.
                 Debug.Write($"Executing gcloud command: {actualCommand}");
-                return await ProcessUtils.GetJsonOutputAsync<T>("cmd.exe", $"/c {actualCommand}");
+                return await ProcessUtils.GetJsonOutputAsync<T>("cmd.exe", $"/c {actualCommand}", environment);
             }
             catch (JsonOutputException ex)
             {

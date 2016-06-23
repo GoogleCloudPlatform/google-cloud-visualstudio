@@ -21,15 +21,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 {
     internal class GcsSourceRootViewModel : SourceRootViewModelBase
     {
-        private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/storage.png";
-        private static readonly Lazy<ImageSource> s_storageIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
-
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
             Caption = "Loading buckets...",
@@ -37,7 +33,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         };
         private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
         {
-            Caption = "No buckets found."
+            Caption = "No buckets found.",
+            IsWarning = true
         };
         private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
         {
@@ -46,8 +43,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         };
 
         private Lazy<GcsDataSource> _dataSource;
-
-        public override ImageSource RootIcon => s_storageIcon.Value;
 
         public override string RootCaption => "Google Cloud Storage";
 
@@ -74,7 +69,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         {
             if (CredentialsStore.Default.CurrentProjectId != null)
             {
-                return new GcsDataSource(CredentialsStore.Default.CurrentProjectId, CredentialsStore.Default.CurrentGoogleCredential);
+                return new GcsDataSource(
+                    CredentialsStore.Default.CurrentProjectId,
+                    CredentialsStore.Default.CurrentGoogleCredential,
+                    GoogleCloudExtensionPackage.ApplicationName);
             }
             else
             {

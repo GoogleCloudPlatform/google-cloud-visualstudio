@@ -74,6 +74,7 @@
     <Compile Include="CloudExplorerSources\CloudSQL\CloudSQLSourceRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\CloudSQL\InstanceItem.cs" />
     <Compile Include="CloudExplorerSources\CloudSQL\InstanceViewModel.cs" />
+    <Compile Include="CloudExplorer\CloudConsoleNode.cs" />
     <Compile Include="CloudExplorer\CloudExplorerSourceException.cs" />
     <Compile Include="CloudExplorer\SourceRootViewModelBase.cs" />
     <Compile Include="CloudExplorer\ButtonDefinition.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="CloudExplorer\ICloudExplorerSource.cs" />
     <Compile Include="CloudExplorer\TreeHierarchy.cs" />
     <Compile Include="CloudExplorer\TreeLeaf.cs" />
+    <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
     <Compile Include="Controls\PressButton.cs" />
     <Compile Include="Controls\ProgressIndicator.xaml.cs">
@@ -119,6 +121,17 @@
     <Compile Include="ManageAccounts\UserAccountViewModel.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Utils\LinkInfo.cs" />
+    <Compile Include="LinkPrompt\LinkPromptDialogWindow.cs" />
+    <Compile Include="LinkPrompt\LinkPromptDialogWindowContent.xaml.cs">
+      <DependentUpon>LinkPromptDialogWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LinkPrompt\LinkPromptDialogWindowViewModel.cs" />
+    <Compile Include="Theming\CommonDialogWindowBase.cs" />
+    <Compile Include="Theming\DialogButtonInfo.cs" />
+    <Compile Include="Theming\CommonDialogWindowBaseContent.xaml.cs">
+      <DependentUpon>CommonDialogWindowBaseContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="ResetPassword\ResetPasswordViewModel.cs" />
     <Compile Include="ResetPassword\ResetPasswordWindow.cs" />
@@ -151,6 +164,9 @@
     </None>
     <None Include="Key.snk" />
     <None Include="packages.config" />
+    <Resource Include="CloudExplorerSources\Gce\Resources\filter.png" />
+    <Resource Include="CloudExplorer\Resources\warning_icon.png" />
+    <Resource Include="CloudExplorer\Resources\logo_cloud.png" />
     <Content Include="ProjectTemplates\Google Cloud Platform\GoogleAspnetMvc.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -170,7 +186,6 @@
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
     <Resource Include="CloudExplorer\Resources\refresh.png" />
-    <Resource Include="CloudExplorerSources\Gcs\Resources\storage.png" />
     <Resource Include="Controls\Resources\step_1.png" />
     <Resource Include="Controls\Resources\step_10.png" />
     <Resource Include="Controls\Resources\step_11.png" />
@@ -183,7 +198,6 @@
     <Resource Include="Controls\Resources\step_7.png" />
     <Resource Include="Controls\Resources\step_8.png" />
     <Resource Include="Controls\Resources\step_9.png" />
-    <Resource Include="CloudExplorerSources\Gce\Resources\gce_logo.png" />
     <Resource Include="CloudExplorer\Resources\error_icon.png" />
     <Resource Include="CloudExplorerSources\Gce\Resources\zone_icon.png" />
     <Resource Include="CloudExplorerSources\Gcs\Resources\bucket_icon.png" />
@@ -411,6 +425,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="LinkPrompt\LinkPromptDialogWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Theming\CommonDialogWindowBaseContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

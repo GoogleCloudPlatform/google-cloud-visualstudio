@@ -13,7 +13,9 @@
 // limitations under the License.
 
 using GoogleAnalyticsUtils;
+using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Diagnostics;
 
@@ -24,8 +26,7 @@ namespace GoogleCloudExtension.Analytics
     /// </summary>
     internal static class ExtensionAnalytics
     {
-        private const string PropertyId = "UA-71653866-1";
-        private const string ApplicationName = "Google Cloud Tools for Visual Studio";
+        private const string PropertyId = "UA-36037335-1";
 
         private static Lazy<AnalyticsReporter> s_reporter = new Lazy<AnalyticsReporter>(CreateReporter);
 
@@ -71,9 +72,16 @@ namespace GoogleCloudExtension.Analytics
             s_reporter.Value?.ReportEvent(category, action);
         }
 
-        public static void ReportScreen(string name)
+        public static void ReportScreenView(ToolWindowPane pane)
         {
-            s_reporter.Value?.ReportScreen(name);
+            Debug.WriteLine($"Opening tool pane {pane.Caption}");
+            s_reporter.Value?.ReportScreen(pane.GetType().Name);
+        }
+
+        public static void ReportScreenView(CommonDialogWindowBase dialog)
+        {
+            Debug.WriteLine($"Opening window {dialog.Title}");
+            s_reporter.Value?.ReportScreen(dialog.GetType().Name);
         }
 
         /// <summary>
@@ -116,7 +124,8 @@ namespace GoogleCloudExtension.Analytics
 #endif
                 return new AnalyticsReporter(PropertyId,
                     clientId: settings.ClientId,
-                    appName: ApplicationName,
+                    appName: GoogleCloudExtensionPackage.ApplicationName,
+                    appVersion: GoogleCloudExtensionPackage.ApplicationVersion,
                     debug: debug);
             }
             else

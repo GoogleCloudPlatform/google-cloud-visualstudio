@@ -50,11 +50,11 @@ namespace GoogleCloudExtension.ManageAccounts
 
                 if (CredentialsStore.Default.CurrentAccount == null)
                 {
-                    SetAsCurrentAcountCommand.CanExecuteCommand = value != null;
+                    SetAsCurrentAccountCommand.CanExecuteCommand = value != null;
                 }
                 else
                 {
-                    SetAsCurrentAcountCommand.CanExecuteCommand = value != null
+                    SetAsCurrentAccountCommand.CanExecuteCommand = value != null
                         && CredentialsStore.Default.CurrentAccount.AccountName != value.AccountName;
                 }
 
@@ -62,13 +62,13 @@ namespace GoogleCloudExtension.ManageAccounts
             }
         }
 
-        public WeakCommand SetAsCurrentAcountCommand { get; }
+        public WeakCommand SetAsCurrentAccountCommand { get; }
 
         public WeakCommand DeleteAccountCommand { get; }
 
         public ICommand CloseCommand { get; }
 
-        public ICommand AddCredentialsCommand { get; }
+        public ICommand AddAccountCommand { get; }
 
         public ManageAccountsViewModel(ManageAccountsWindow owner)
         {
@@ -77,10 +77,10 @@ namespace GoogleCloudExtension.ManageAccounts
 
             CurrentAccountName = CredentialsStore.Default.CurrentAccount?.AccountName;
 
-            SetAsCurrentAcountCommand = new WeakCommand(OnSetAsCurrentAccountCommand, canExecuteCommand: false);
+            SetAsCurrentAccountCommand = new WeakCommand(OnSetAsCurrentAccountCommand, canExecuteCommand: false);
             DeleteAccountCommand = new WeakCommand(OnDeleteAccountCommand);
             CloseCommand = new WeakCommand(owner.Close);
-            AddCredentialsCommand = new WeakCommand(OnAddCredentialsCommand);
+            AddAccountCommand = new WeakCommand(OnAddAccountCommand);
         }
 
         public void DoucleClickedItem(UserAccountViewModel userAccount)
@@ -122,7 +122,7 @@ namespace GoogleCloudExtension.ManageAccounts
             _owner.Close();
         }
 
-        private async void OnAddCredentialsCommand()
+        private async void OnAddAccountCommand()
         {
             ExtensionAnalytics.ReportCommand(CommandName.AddAccountCommand, CommandInvocationSource.Button);
 

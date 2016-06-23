@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.InteropServices;
 
 namespace GoogleCloudExtension
@@ -57,6 +58,8 @@ namespace GoogleCloudExtension
     [ProvideOptionPage(typeof(AnalyticsOptionsPage), "Google Cloud Tools", "Usage Report", 0, 0, false)]
     public sealed class GoogleCloudExtensionPackage : Package
     {
+        private static readonly Lazy<string> s_appVersion = new Lazy<string>(() => Assembly.GetExecutingAssembly().GetName().Version.ToString());
+
         /// <summary>
         /// DeployToGaePackage GUID string.
         /// </summary>
@@ -78,6 +81,16 @@ namespace GoogleCloudExtension
 
         private DTE _dteInstance;
         private Dictionary<string, string> _properties;
+
+        /// <summary>
+        /// The application name to use everywhere one is needed. Analytics, data sources, etc...
+        /// </summary>
+        public static string ApplicationName => "Google Cloud Tools for Visual Studio";
+
+        /// <summary>
+        /// The version of the extension's main assembly.
+        /// </summary>
+        public static string ApplicationVersion => s_appVersion.Value;
 
         public GoogleCloudExtensionPackage()
         {

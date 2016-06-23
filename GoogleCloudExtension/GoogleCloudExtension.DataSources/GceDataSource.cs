@@ -41,13 +41,15 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="projectId">The project id that contains the GCE instances to manipulate.</param>
         /// <param name="credential">The credentials to use for the call.</param>
-        public GceDataSource(string projectId, GoogleCredential credential) : base(projectId, CreateService(credential))
+        public GceDataSource(string projectId, GoogleCredential credential, string appName)
+            : base(projectId, CreateService(credential, appName), appName)
         { }
 
-        private static ComputeService CreateService(GoogleCredential credential)
+        private static ComputeService CreateService(GoogleCredential credential, string appName)
         {
             return new ComputeService(new Google.Apis.Services.BaseClientService.Initializer
             {
+                ApplicationName = appName,
                 HttpClientInitializer = credential,
             });
         }

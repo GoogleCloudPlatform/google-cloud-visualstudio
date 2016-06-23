@@ -12,21 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Theming;
+using GoogleCloudExtension.Utils;
 
-namespace GoogleCloudExtension.ManageAccounts
+namespace GoogleCloudExtension.CloudExplorer
 {
-    public class ManageAccountsWindow : CommonDialogWindowBase
+    /// <summary>
+    /// This class represents the node in the Cloud Explorer that points the users towards
+    /// the Cloud Console for more services.
+    /// </summary>
+    public class CloudConsoleNode : TreeLeafLink
     {
-        private ManageAccountsWindow() : base("Manage Accounts", width: 500, height: 400)
-        {
-            Content = new ManageAccountsWindowContent { DataContext = new ManageAccountsViewModel(this) };
-        }
+        private static readonly LinkInfo s_consoleLink = new LinkInfo(
+            link: "https://console.cloud.google.com",
+            caption: "See cloud console for other services");
 
-        public static void PromptUser()
-        {
-            var dialog = new ManageAccountsWindow();
-            dialog.ShowModal();
-        }
+        public CloudConsoleNode()
+            : base(s_consoleLink)
+        { }
     }
 }

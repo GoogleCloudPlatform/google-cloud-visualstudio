@@ -13,25 +13,19 @@
 // limitations under the License.
 
 using Google.Apis.Compute.v1.Data;
-using Microsoft.VisualStudio.PlatformUI;
+using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.FirewallManagement
 {
     /// <summary>
     /// This class is the dialog to use to prompt the user for firewall changes for the given instance.
     /// </summary>
-    public class PortManagerWindow : DialogWindow
+    public class PortManagerWindow : CommonDialogWindowBase
     {
         private PortManagerViewModel ViewModel => (PortManagerViewModel)((PortManagerWindowContent)Content).DataContext;
 
-        private PortManagerWindow(Instance instance)
+        private PortManagerWindow(Instance instance) : base("Manage Open Ports", width: 320, height: 300)
         {
-            Title = "Manage Open Ports";
-            Width = 320;
-            Height = 300;
-            ResizeMode = System.Windows.ResizeMode.NoResize;
-            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
-
             var viewModel = new PortManagerViewModel(this, instance);
             Content = new PortManagerWindowContent
             {

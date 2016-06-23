@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.ManageAccounts
 
             AccountName = userAccount.AccountName;
 
-            var dataSource = new GPlusDataSource(userAccount.GetGoogleCredential());
+            var dataSource = new GPlusDataSource(userAccount.GetGoogleCredential(), GoogleCloudExtensionPackage.ApplicationName);
             var personTask = dataSource.GetProfileAsync();
 
             // TODO: Show the default image while it is being loaded.

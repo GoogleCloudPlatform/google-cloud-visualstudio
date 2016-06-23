@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.OAuth;
-using Microsoft.VisualStudio.PlatformUI;
+using GoogleCloudExtension.Theming;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,9 +21,13 @@ using System.Threading;
 
 namespace GoogleCloudExtension.OauthLoginFlow
 {
-    public class OAuthLoginFlowWindow : DialogWindow
+    public class OAuthLoginFlowWindow : CommonDialogWindowBase
     {
-        // The amount of time to wait for the code to come back, if the user doesn't do anything.
+        // Success and failure URLs.
+        private const string SucessUrl = "https://cloud.google.com/tools/visual-studio/auth_success";
+        private const string FailureUrl = "https://cloud.google.com/tools/visual-studio/auth_failure";
+
+        // The amount of time to wait for the code to come back, if the user doesn't do anything (15 mins).
         private static readonly TimeSpan s_accessTokenTimeout = new TimeSpan(0, 15, 0);
 
         private readonly OAuthLoginFlow _flow;
@@ -33,14 +36,13 @@ namespace GoogleCloudExtension.OauthLoginFlow
         private OAuthLoginFlowViewModel ViewModel { get; }
 
         private OAuthLoginFlowWindow(OAuthCredentials credentials, IEnumerable<string> scopes)
+            : base("Provide Credentials", width: 300, height: 300)
         {
-            ExtensionAnalytics.ReportScreen(nameof(OAuthLoginFlowWindow));
-
-            _flow = new OAuthLoginFlow(credentials, scopes);
-
-            Title = "Provide Credentials";
-            Width = 300;
-            Height = 300;
+            _flow = new OAuthLoginFlow(
+                credentials,
+                scopes,
+                successUrl: SucessUrl,
+                failureUrl: FailureUrl);
 
             ViewModel = new OAuthLoginFlowViewModel(this);
             var windowContent = new OauthLoginFlowWindowContent
@@ -79,9 +81,14 @@ namespace GoogleCloudExtension.OauthLoginFlow
         public void CancelOperation()
         {
             Debug.WriteLine("The user cancelled the operation.");
-            _tokenSource.Cancel();
             ViewModel.RefreshCode = null;
             Close();
+        }
+
+        protected override void OnClosed(EventArgs e)
+        {
+            base.OnClosed(e);
+            _tokenSource.Cancel();
         }
     }
 }

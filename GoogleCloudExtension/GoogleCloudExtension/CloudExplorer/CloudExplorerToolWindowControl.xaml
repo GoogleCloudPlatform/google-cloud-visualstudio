@@ -18,44 +18,54 @@
     <UserControl.Resources>
         <utils:VisibilityConverter x:Key="visibilityConverter" />
 
-        <!-- Data template to be applied to the TreeHierarchy -->
-        <HierarchicalDataTemplate DataType="{x:Type CloudExplorer:TreeHierarchy}" ItemsSource="{Binding Children}">
+        <!-- Common node template, defines the UI for all nodes. -->
+        <DataTemplate x:Key="nodeTemplate">
             <Grid ContextMenu="{Binding ContextMenu}">
                 <StackPanel Orientation="Horizontal">
                     <controls:ProgressIndicator Visibility="{Binding IsLoading, Converter={StaticResource visibilityConverter}}" />
+
+                    <!-- Message icons, warning and error. -->
                     <Image Source="{x:Static CloudExplorer:TreeNode.ErrorIcon}"
                            Height="16" Width="16"
                            VerticalAlignment="Center"
                            Visibility="{Binding IsError, Converter={StaticResource visibilityConverter}}"
                            Margin="0,0,5,0"/>
+                    <Image Source="{x:Static CloudExplorer:TreeNode.WarningIcon}"
+                           Height="16" Width="16"
+                           VerticalAlignment="Center"
+                           Visibility="{Binding IsWarning, Converter={StaticResource visibilityConverter}}"
+                           Margin="0,0,5,0"/>
+
+                    <!-- Custom icon for the node. -->
                     <Image Source="{Binding Icon}"
                            Height="16" Width="16"
                            VerticalAlignment="Center"
                            Visibility="{Binding IconIsVisible, Converter={StaticResource visibilityConverter}}"
                            Margin="0,0,5,0"/>
+
+                    <!-- The actual caption. -->
                     <ContentPresenter Content="{Binding Caption}" VerticalAlignment="Center" />
                 </StackPanel>
             </Grid>
+        </DataTemplate>
+
+        <!-- Data template to be applied to the TreeHierarchy, which are the nodes that have children. -->
+        <HierarchicalDataTemplate DataType="{x:Type CloudExplorer:TreeHierarchy}" ItemsSource="{Binding Children}">
+            <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource nodeTemplate}" />
         </HierarchicalDataTemplate>
 
-        <!-- Data template to be applied to the TreeLeaf -->
+        <!-- Data template to be applied to the TreeLeaf, which terminate the hierarchy as they don't have children. -->
         <DataTemplate DataType="{x:Type CloudExplorer:TreeLeaf}">
-            <Grid ContextMenu="{Binding ContextMenu}">
-                <StackPanel Orientation="Horizontal">
-                    <controls:ProgressIndicator Visibility="{Binding IsLoading, Converter={StaticResource visibilityConverter}}" />
-                    <Image Source="{x:Static CloudExplorer:TreeNode.ErrorIcon}"
-                           Height="16" Width="16"
-                           VerticalAlignment="Center"
-                           Visibility="{Binding IsError, Converter={StaticResource visibilityConverter}}"
-                           Margin="0,0,5,0"/>
-                    <Image Source="{Binding Icon}"
-                           Height="16" Width="16"
-                           Visibility="{Binding IconIsVisible, Converter={StaticResource visibilityConverter}}"
-                           VerticalAlignment="Center"
-                           Margin="0,0,5,0"/>
-                    <ContentPresenter Content="{Binding Caption}" VerticalAlignment="Center" />
-                </StackPanel>
-            </Grid>
+            <ContentPresenter Content="{Binding}" ContentTemplate="{StaticResource nodeTemplate}" />
+        </DataTemplate>
+        
+        <!-- Data template to be applied to the link leaf, which terminate the nodes and shows a link. -->
+        <DataTemplate DataType="{x:Type CloudExplorer:TreeLeafLink}">
+            <TextBlock>
+                <Hyperlink Command="{Binding NavigateCommand}">
+                    <TextBlock Text="{Binding Caption}" />
+                </Hyperlink>
+            </TextBlock>
         </DataTemplate>
 
         <Style x:Key="CommandBarStyle" TargetType="{x:Type StackPanel}">
@@ -175,9 +185,6 @@
                             </Trigger>
                             <Trigger Property="IsEnabled" Value="false">
                                 <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource ComboBox.Disabled.Border}"/>
-                                <Setter Property="Background" TargetName="splitBorder" Value="{StaticResource ComboBox.Disabled.Background}"/>
-                                <Setter Property="BorderBrush" TargetName="splitBorder" Value="{StaticResource ComboBox.Disabled.Border}"/>
                                 <Setter Property="Fill" TargetName="arrow" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
@@ -337,6 +344,11 @@
             </TextBlock>
         </DataTemplate>
 
+        <!-- Data template for a placeholder message. -->
+        <DataTemplate DataType="{x:Type utils:PlaceholderMessage}">
+            <TextBlock Text="{Binding Message}" />
+        </DataTemplate>
+
     </UserControl.Resources>
 
     <Grid IsEnabled="{Binding IsReady}">
@@ -345,7 +357,7 @@
             <RowDefinition Height="30" />
 
             <!-- This row contains the project switcher. -->
-            <RowDefinition Height="25" />
+            <RowDefinition Height="Auto" />
 
             <!-- This row contains the tree. -->
             <RowDefinition Height="*" />
@@ -416,32 +428,38 @@
         </Grid>
 
         <!-- Project switcher. -->
-        <ComboBox ItemsSource="{Binding Projects}"
-            Visibility="{Binding ProjectsAsync.IsCompleted, Converter={StaticResource visibilityConverter}}"
-            SelectedItem="{Binding CurrentProject}"
-            SelectedIndex="0"
-            Grid.Row="1" Style="{DynamicResource ProjectDropdownStyle}" />
+        <ComboBox ItemsSource="{Binding EffectiveProjects}"
+                  IsEnabled="{Binding IsNotEmptyState}"
+                  SelectedItem="{Binding CurrentProject}"
+                  SelectedIndex="0"
+                  Grid.Row="1"
+                  Style="{DynamicResource ProjectDropdownStyle}" />
 
         <!-- Message for the empty state -->
         <Grid HorizontalAlignment="Stretch"
               VerticalAlignment="Stretch"
-              Visibility="{Binding IsEmptyState, Converter={utils:BooleanConverter}}"
+              Visibility="{Binding IsEmptyState, Converter={utils:VisibilityConverter}}"
               Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="20*" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="80*" />
             </Grid.RowDefinitions>
-            
+
             <StackPanel Grid.Row="1"
                     Visibility="Visible"
-                    HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock>Add a new account, or select and exiting one.</TextBlock>
-                <Button Width="160" Command="{Binding ManageAccountsCommand}">Select Account</Button>
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                <TextBlock Text="{Binding EmptyStateMessage}"  HorizontalAlignment="Center"/>
+                <TextBlock HorizontalAlignment="Center">
+                    <Hyperlink Command="{Binding EmptyStateCommand}">
+                        <TextBlock Text="{Binding EmptyStateButtonCaption}" />
+                    </Hyperlink>
+                </TextBlock>
             </StackPanel>
         </Grid>
 
-        <!-- Hierarchical view of the modules and versions within the modules. -->
+        <!-- Hierarchical view of the items, with the subitems inside. -->
         <TreeView
             ItemsSource="{Binding Roots}" 
             SelectedItemChanged="TreeView_SelectedItemChanged"

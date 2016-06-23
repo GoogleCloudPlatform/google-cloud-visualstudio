@@ -12,21 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Theming;
+using GoogleCloudExtension.Utils;
+using System.Diagnostics;
+using System.Windows.Input;
 
-namespace GoogleCloudExtension.ManageAccounts
+namespace GoogleCloudExtension.LinkPrompt
 {
-    public class ManageAccountsWindow : CommonDialogWindowBase
+    public class LinkPromptDialogWindowViewModel : ViewModelBase
     {
-        private ManageAccountsWindow() : base("Manage Accounts", width: 500, height: 400)
+        private readonly LinkInfo _link;
+
+        public string Text { get; }
+
+        public string LinkCaption => _link.Caption;
+
+        public ICommand NavigateCommand { get; }
+
+        public LinkPromptDialogWindowViewModel(string text, LinkInfo link)
         {
-            Content = new ManageAccountsWindowContent { DataContext = new ManageAccountsViewModel(this) };
+            Text = text;
+            NavigateCommand = new WeakCommand(OnNavigateCommand);
+
+            _link = link;
         }
 
-        public static void PromptUser()
+        private void OnNavigateCommand()
         {
-            var dialog = new ManageAccountsWindow();
-            dialog.ShowModal();
+            Process.Start(_link.NavigateUrl);
         }
     }
 }
