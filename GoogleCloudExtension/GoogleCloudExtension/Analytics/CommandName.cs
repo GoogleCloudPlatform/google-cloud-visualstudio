@@ -86,14 +86,5 @@ namespace GoogleCloudExtension.Analytics
 
         // Command to add a new account.
         AddAccountCommand,
-
-        // Command to open the webpage to download MySQL for Visual Studio
-        OpenMySQLInstallerDownload,
-
-        // Command to open the Add Data connection dialog.
-        OpenMySQLDataConnectionDialog,
-
-        // Command to add a MySQL Data Connection.
-        AddMySQLDataConnection
     }
 }
