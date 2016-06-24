@@ -34,7 +34,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         };
         private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
         {
-            Caption = "No instances found."
+            Caption = "No instances found.",
+            IsWarning = true
         };
         private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
         {

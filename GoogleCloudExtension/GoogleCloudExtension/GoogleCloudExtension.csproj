@@ -199,6 +199,9 @@
     <Resource Include="Controls\Resources\step_8.png" />
     <Resource Include="Controls\Resources\step_9.png" />
     <Resource Include="CloudExplorer\Resources\error_icon.png" />
+    <Resource Include="CloudExplorerSources\CloudSQL\Resources\instance_icon_offline.png" />
+    <Resource Include="CloudExplorerSources\CloudSQL\Resources\instance_icon_running.png" />
+    <Resource Include="CloudExplorerSources\CloudSQL\Resources\instance_icon_unknown.png" />
     <Resource Include="CloudExplorerSources\Gce\Resources\zone_icon.png" />
     <Resource Include="CloudExplorerSources\Gcs\Resources\bucket_icon.png" />
     <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon_running.png" />

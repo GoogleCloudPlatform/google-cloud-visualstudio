@@ -15,6 +15,7 @@
 using Google.Apis.SQLAdmin.v1beta4.Data;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.MySQLInstaller;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Data;
@@ -29,7 +30,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 {
     class InstanceViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
-        // TODO(talarico): Create an icon for instances
+        private const string IconRunningResourcePath = "CloudExplorerSources/CloudSQL/Resources/instance_icon_running.png";
+        private const string IconOfflineResourcePath = "CloudExplorerSources/CloudSQL/Resources/instance_icon_offline.png";
+        private const string IconUnknownResourcePath = "CloudExplorerSources/CloudSQL/Resources/instance_icon_unknown.png";
+
+        private static readonly Lazy<ImageSource> s_instanceRunningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconRunningResourcePath));
+        private static readonly Lazy<ImageSource> s_instanceOfflineIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconOfflineResourcePath));
+        private static readonly Lazy<ImageSource> s_instanceUnknownIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconUnknownResourcePath));
 
         private readonly CloudSQLSourceRootViewModel _owner;
         private readonly DatabaseInstance _instance;
@@ -54,6 +61,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 new MenuItem { Header = "Add Data Connection", Command = _openAddDataConnectionDialog },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+
+            UpdateIcon();
         }
 
         private void OpenDataConnectionDialog()
@@ -98,6 +107,26 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 // MySQL for Visual Studio isn't installed, prompt the user to install it.
                 ExtensionAnalytics.ReportEvent("MySQLForVisualStudio", "Missing");
                 MySQLInstallerWindow.PromptUser();
+            }
+        }
+
+        private void UpdateIcon()
+        {
+            switch (_instance.State)
+            {
+                case DatabaseInstanceExtensions.RunnableState:
+                case DatabaseInstanceExtensions.PendingCreateState:
+                    Icon = s_instanceRunningIcon.Value;
+                    break;
+
+                case DatabaseInstanceExtensions.SuspendedState:
+                case DatabaseInstanceExtensions.MaintenanceState:
+                    Icon = s_instanceOfflineIcon.Value;
+                    break;
+
+                default:
+                    Icon = s_instanceUnknownIcon.Value;
+                    break;
             }
         }
 
