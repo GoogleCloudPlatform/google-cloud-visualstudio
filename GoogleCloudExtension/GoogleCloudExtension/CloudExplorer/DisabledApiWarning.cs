@@ -19,14 +19,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.CloudExplorerSources.Gce
+namespace GoogleCloudExtension.CloudExplorer
 {
     internal class DisabledApiWarning : TreeLeaf
     {
+        private readonly string _apiName;
         private readonly Project _project;
 
-        public DisabledApiWarning(Project project)
+        public DisabledApiWarning(string apiName, Project project)
         {
+            _apiName = apiName;
             _project = project;
 
             IsWarning = true;
@@ -42,7 +44,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnEnableApiCommand()
         {
-            var url = $"https://console.developers.google.com/apis/api/compute_component/overview?project={_project.ProjectNumber}";
+            var url = $"https://console.developers.google.com/apis/api/{_apiName}/overview?project={_project.ProjectNumber}";
             Process.Start(url);
         }
     }

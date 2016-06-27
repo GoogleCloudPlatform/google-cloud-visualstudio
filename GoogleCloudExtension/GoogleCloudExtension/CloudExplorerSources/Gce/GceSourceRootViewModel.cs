@@ -28,6 +28,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
     public class GceSourceRootViewModel : SourceRootViewModelBase
     {
+        private const string ComputeApiName = "compute_component";
+
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
             Caption = "Loading zones...",
@@ -137,7 +139,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
                     // Show the node that notifies users that the API is disabled.
                     Children.Clear();
-                    Children.Add(new DisabledApiWarning(Context.CurrentProject));
+                    Children.Add(new DisabledApiWarning(ComputeApiName, Context.CurrentProject));
                     return;
                 }
 

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
@@ -27,6 +28,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 {
     internal class GcsSourceRootViewModel : SourceRootViewModelBase
     {
+        private const string ComponentApiName = "storage_component";
+
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
             Caption = "Loading buckets...",
@@ -112,6 +115,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             }
             catch (DataSourceException ex)
             {
+                var innerEx = ex.InnerException as GoogleApiException;
+                if (innerEx != null && innerEx.HttpStatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    Debug.WriteLine("GCS API is not enabled.");
+
+                    Children.Clear();
+                    Children.Add(new DisabledApiWarning(ComponentApiName, Context.CurrentProject));
+                    return;
+                }
+
                 throw new CloudExplorerSourceException(ex.Message, ex);
             }
         }

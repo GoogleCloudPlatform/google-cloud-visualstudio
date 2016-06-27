@@ -58,7 +58,7 @@
     <Compile Include="Accounts\DefaultCredentials.cs" />
     <Compile Include="Analytics\CommandName.cs" />
     <Compile Include="CloudExplorerSources\Gce\AspNetInstanceWithSqlServerItem.cs" />
-    <Compile Include="CloudExplorerSources\Gce\DisabledApiWarning.cs" />
+    <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceSourceRootViewModel.cs" />
