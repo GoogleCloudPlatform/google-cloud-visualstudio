@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private readonly ButtonDefinition _windowsOnlyButton;
 
-        public GceSource()
+        public GceSource(ICloudSourceContext context) : base(context)
         {
             _windowsOnlyButton = new ButtonDefinition
             {

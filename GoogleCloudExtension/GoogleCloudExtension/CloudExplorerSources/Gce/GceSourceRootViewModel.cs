@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -71,9 +71,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
         }
 
-        public override void Initialize()
+        public override void Initialize(ICloudSourceContext context)
         {
-            base.Initialize();
+            base.Initialize(context);
 
             InvalidateProjectOrAccount();
         }
@@ -108,9 +108,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
             catch (DataSourceException ex)
             {
-                GcpOutputWindow.OutputLine("Failed to load the list of Gce instances.");
-                GcpOutputWindow.OutputLine(ex.Message);
-                GcpOutputWindow.Activate();
+                var innerEx = ex.InnerException as GoogleApiException;
+                if (innerEx != null && innerEx.HttpStatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    Debug.WriteLine("The GCE API is not enabled.");
+
+                    // Show the node that notifies users that the API is disabled.
+                    Children.Clear();
+                    Children.Add(new DisabledApiWarning(Context.CurrentProject));
+                    return;
+                }
 
                 throw new CloudExplorerSourceException(ex.Message, ex);
             }

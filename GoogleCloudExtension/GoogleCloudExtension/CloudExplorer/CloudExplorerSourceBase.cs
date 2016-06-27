@@ -43,10 +43,16 @@ namespace GoogleCloudExtension.CloudExplorer
         /// </summary>
         protected IList<ButtonDefinition> ActualButtons { get; } = new List<ButtonDefinition>();
 
-        public CloudExplorerSourceBase()
+        /// <summary>
+        /// The context in which this source is being used.
+        /// </summary>
+        protected ICloudSourceContext Context { get; }
+
+        public CloudExplorerSourceBase(ICloudSourceContext context)
         {
+            Context = context;
             ActualRoot = new TRootViewModel();
-            ActualRoot.Initialize();
+            ActualRoot.Initialize(context);
         }
 
         /// <summary>

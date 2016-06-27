@@ -15,6 +15,8 @@
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.CloudExplorerSources.Gce;
+using GoogleCloudExtension.CloudExplorerSources.Gcs;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.Utils;
@@ -32,7 +34,7 @@ namespace GoogleCloudExtension.CloudExplorer
     /// <summary>
     /// This class is the view model for the Cloud Explore tool window.
     /// </summary>
-    public class CloudExplorerViewModel : ViewModelBase
+    public class CloudExplorerViewModel : ViewModelBase, ICloudSourceContext
     {
         private const string RefreshImagePath = "CloudExplorer/Resources/refresh.png";
 
@@ -93,8 +95,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// The list list of roots for the hieratchical view, each root contains all of the data
         /// from a given source.
         /// </summary>
-        public IEnumerable<TreeHierarchy> Roots =>
-            Enumerable.Concat<TreeHierarchy>(_sources.Select(x => x.Root), new[] { new CloudConsoleNode() });
+        public IEnumerable<TreeHierarchy> Roots => _sources.Select(x => x.Root);
 
         /// <summary>
         /// Returns the profile image URL.
@@ -177,9 +178,31 @@ namespace GoogleCloudExtension.CloudExplorer
             set { SetValueAndRaise(ref _emptyStateCommand, value); }
         }
 
-        public CloudExplorerViewModel(IEnumerable<ICloudExplorerSource> sources)
+        #region ICloudSourceContext implementation.
+
+        Project ICloudSourceContext.CurrentProject => _currentProject as Project;
+
+        IEnumerable<Project> ICloudSourceContext.Projects => _projects;
+
+        #endregion
+
+        public CloudExplorerViewModel()
         {
-            _sources = sources;
+            // Contains the list of sources to display to the user, in the order they will
+            // be displayed.
+
+            _sources = new List<ICloudExplorerSource>
+            {
+                // The Google Compute Engine source.
+                new GceSource(this),
+
+                // The Google Cloud Storage source.
+                new GcsSource(this),
+
+                // The source to navigate to the cloud console.
+                new CloudConsoleSource(),
+            };
+
             var refreshButtonEnumerable = new ButtonDefinition[]
             {
                 new ButtonDefinition
