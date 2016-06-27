@@ -16,7 +16,10 @@ using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
@@ -60,6 +63,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 Children.Add(viewModel);
             }
 
+            var menuItems = new List<MenuItem>
+            {
+                new MenuItem { Header = "New instance", Command = new WeakCommand(OnNewInstanceCommand) },
+            };
+            ContextMenu = new ContextMenu { ItemsSource = menuItems };
+
             if (Children.Count == 0)
             {
                 if (onlyWindowsInstances)
@@ -71,6 +80,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     Children.Add(s_noInstancesPlaceholder);
                 }
             }
+        }
+
+        private void OnNewInstanceCommand()
+        {
+            var url = $"https://console.cloud.google.com/compute/instancesAdd?project={_owner.Context.CurrentProject.Name}&zone={_instancesPerZone.Zone.Name}";
+            Process.Start(url);
         }
     }
 }

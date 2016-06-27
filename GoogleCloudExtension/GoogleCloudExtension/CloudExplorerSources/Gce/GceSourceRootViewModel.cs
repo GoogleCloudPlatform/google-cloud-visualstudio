@@ -16,11 +16,13 @@ using Google;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
@@ -76,6 +78,26 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             base.Initialize(context);
 
             InvalidateProjectOrAccount();
+
+            var menuItems = new List<MenuItem>
+            {
+                new MenuItem { Header = "Status", Command = new WeakCommand(OnStatusCommand) },
+                new MenuItem { Header = "New ASP.NET Instance", Command = new WeakCommand(OnNewAspNetInstanceCommand) },
+                new MenuItem { Header = "New Instance", Command = new WeakCommand(OnNewInstanceCommand) },
+            };
+            ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void OnNewAspNetInstanceCommand()
+        {
+            var url = $"https://console.cloud.google.com/launcher/details/click-to-deploy-images/aspnet?project={Context.CurrentProject.Name}";
+            Process.Start(url);
+        }
+
+        private void OnNewInstanceCommand()
+        {
+            var url = $"https://console.cloud.google.com/compute/instancesAdd?project={Context.CurrentProject.Name}";
+            Process.Start(url);
         }
 
         public override void InvalidateProjectOrAccount()
@@ -147,6 +169,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             return _instancesPerZone?
                 .OrderBy(x => x.Zone.Name)
                 .Select(x => new ZoneViewModel(this, x, _showOnlyWindowsInstances)).ToList();
+        }
+
+        private void OnStatusCommand()
+        {
+            Process.Start("https://status.cloud.google.com/");
         }
     }
 }

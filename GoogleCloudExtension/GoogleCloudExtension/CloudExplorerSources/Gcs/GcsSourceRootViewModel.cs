@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 {
@@ -55,6 +56,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         public override void Initialize(ICloudSourceContext context)
         {
             base.Initialize(context);
+
+            var menuItems = new List<MenuItem>
+            {
+                new MenuItem { Header = "Status", Command = new WeakCommand(OnStatusCommand) },
+            };
+            ContextMenu = new ContextMenu { ItemsSource = menuItems };
 
             InvalidateProjectOrAccount();
         }
@@ -105,10 +112,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             }
             catch (DataSourceException ex)
             {
-                GcpOutputWindow.OutputLine("Failed to load the list of GCS buckets.");
-                GcpOutputWindow.OutputLine(ex.Message);
-                GcpOutputWindow.Activate();
-
                 throw new CloudExplorerSourceException(ex.Message, ex);
             }
         }
@@ -118,6 +121,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             var credential = CredentialsStore.Default.CurrentGoogleCredential;
             var buckets = await _dataSource.Value.GetBucketListAsync();
             return buckets?.Select(x => new BucketViewModel(this, x)).ToList();
+        }
+
+        private void OnStatusCommand()
+        {
+            Process.Start("https://status.cloud.google.com/");
         }
     }
 }

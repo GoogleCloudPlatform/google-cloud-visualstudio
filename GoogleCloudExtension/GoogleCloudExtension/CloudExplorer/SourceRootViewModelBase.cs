@@ -84,7 +84,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// Returns the context in which this source root view model is working.
         /// </summary>
-        protected ICloudSourceContext Context { get; private set; }
+        public ICloudSourceContext Context { get; private set; }
 
         public virtual void Initialize(ICloudSourceContext context)
         {
