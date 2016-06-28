@@ -25,10 +25,17 @@ using Google;
 namespace GoogleCloudExtension.DataSources
 {
     /// <summary>
-    /// Data source that returns information about Google Cloud SQL instances and databases for a particular project and credentials.
+    /// Data source that returns information about Google Cloud SQL instances and databases for a
+    /// particular project and credentials.
     /// </summary>
     public class CloudSQLDataSource : DataSourceBase<SQLAdminService>
     {
+        public const string RunnableState = "RUNNABLE";
+        public const string SuspendedState = "SUSPENDED";
+        public const string PendingCreateState = "PENDING_CREATE";
+        public const string MaintenanceState = "MAINTENANCE";
+        public const string UnknownState = "UNKNOWN_STATE";
+
         /// <summary>
         /// Initializes a new instance of this class.
         /// </summary>
@@ -67,7 +74,6 @@ namespace GoogleCloudExtension.DataSources
                         Debug.WriteLine("Fetching first page.");
                     }
                     return request.ExecuteAsync();
-
                 },
                 x => x.Items,
                 x => x.NextPageToken);

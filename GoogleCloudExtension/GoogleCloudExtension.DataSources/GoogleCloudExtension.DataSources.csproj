@@ -103,7 +103,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CloudSQLDataSource.cs" />
-    <Compile Include="DatabaseInstanceExtensions.cs" />
     <Compile Include="DataSourceBase.cs" />
     <Compile Include="DataSourceException.cs" />
     <Compile Include="FirewallPort.cs" />
