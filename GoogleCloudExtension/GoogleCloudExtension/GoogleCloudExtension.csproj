@@ -58,6 +58,7 @@
     <Compile Include="Accounts\DefaultCredentials.cs" />
     <Compile Include="Analytics\CommandName.cs" />
     <Compile Include="CloudExplorerSources\Gce\AspNetInstanceWithSqlServerItem.cs" />
+    <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceSourceRootViewModel.cs" />
@@ -74,8 +75,9 @@
     <Compile Include="CloudExplorerSources\CloudSQL\CloudSQLSourceRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\CloudSQL\InstanceItem.cs" />
     <Compile Include="CloudExplorerSources\CloudSQL\InstanceViewModel.cs" />
-    <Compile Include="CloudExplorer\CloudConsoleNode.cs" />
+    <Compile Include="CloudExplorer\CloudConsoleSource.cs" />
     <Compile Include="CloudExplorer\CloudExplorerSourceException.cs" />
+    <Compile Include="CloudExplorer\ICloudSourceContext.cs" />
     <Compile Include="CloudExplorer\SourceRootViewModelBase.cs" />
     <Compile Include="CloudExplorer\ButtonDefinition.cs" />
     <Compile Include="CloudExplorer\CloudExplorerSourceBase.cs" />

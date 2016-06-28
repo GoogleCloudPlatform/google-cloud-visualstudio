@@ -12,13 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.CloudExplorer;
+using Google.Apis.CloudResourceManager.v1.Data;
+using System.Collections.Generic;
 
-namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
+namespace GoogleCloudExtension.CloudExplorer
 {
-    internal class CloudSQLSource : CloudExplorerSourceBase<CloudSQLSourceRootViewModel>
+    /// <summary>
+    /// The context information for a Cloud Explorer source.
+    /// </summary>
+    public interface ICloudSourceContext
     {
-        public CloudSQLSource(ICloudSourceContext context) : base(context)
-        { }
+        /// <summary>
+        /// The currently selected project.
+        /// </summary>
+        Project CurrentProject { get; }
+
+        /// <summary>
+        /// The current list of projects loaded.
+        /// </summary>
+        IEnumerable<Project> Projects { get; }
     }
 }

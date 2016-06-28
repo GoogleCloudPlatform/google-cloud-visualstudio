@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
@@ -20,14 +22,25 @@ namespace GoogleCloudExtension.CloudExplorer
     /// This class represents the node in the Cloud Explorer that points the users towards
     /// the Cloud Console for more services.
     /// </summary>
-    public class CloudConsoleNode : TreeLeafLink
+    public class CloudConsoleSource : ICloudExplorerSource
     {
         private static readonly LinkInfo s_consoleLink = new LinkInfo(
             link: "https://console.cloud.google.com",
             caption: "See cloud console for other services");
 
-        public CloudConsoleNode()
-            : base(s_consoleLink)
+        public CloudConsoleSource()
+        {
+            Root = new TreeLeafLink(s_consoleLink);
+        }
+
+        public IEnumerable<ButtonDefinition> Buttons => Enumerable.Empty<ButtonDefinition>();
+
+        public TreeHierarchy Root { get; }
+
+        public void InvalidateProjectOrAccount()
+        { }
+
+        public void Refresh()
         { }
     }
 }

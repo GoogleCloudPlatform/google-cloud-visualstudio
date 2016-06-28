@@ -29,6 +29,11 @@ namespace GoogleCloudExtension.CloudExplorer
         public TreeHierarchy Root => ActualRoot;
 
         /// <summary>
+        /// The context in which this source is being used.
+        /// </summary>
+        public ICloudSourceContext Context { get; }
+
+        /// <summary>
         /// The buttons for this data source.
         /// </summary>
         public IEnumerable<ButtonDefinition> Buttons => ActualButtons;
@@ -43,10 +48,11 @@ namespace GoogleCloudExtension.CloudExplorer
         /// </summary>
         protected IList<ButtonDefinition> ActualButtons { get; } = new List<ButtonDefinition>();
 
-        public CloudExplorerSourceBase()
+        public CloudExplorerSourceBase(ICloudSourceContext context)
         {
+            Context = context;
             ActualRoot = new TRootViewModel();
-            ActualRoot.Initialize();
+            ActualRoot.Initialize(context);
         }
 
         /// <summary>

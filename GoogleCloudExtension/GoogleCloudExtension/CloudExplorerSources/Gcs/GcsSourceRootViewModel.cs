@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
@@ -21,11 +22,14 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 {
     internal class GcsSourceRootViewModel : SourceRootViewModelBase
     {
+        private const string ComponentApiName = "storage_component";
+
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
             Caption = "Loading buckets...",
@@ -52,9 +56,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
 
-        public override void Initialize()
+        public override void Initialize(ICloudSourceContext context)
         {
-            base.Initialize();
+            base.Initialize(context);
+
+            var menuItems = new List<MenuItem>
+            {
+                new MenuItem { Header = "Status", Command = new WeakCommand(OnStatusCommand) },
+            };
+            ContextMenu = new ContextMenu { ItemsSource = menuItems };
 
             InvalidateProjectOrAccount();
         }
@@ -105,9 +115,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             }
             catch (DataSourceException ex)
             {
-                GcpOutputWindow.OutputLine("Failed to load the list of GCS buckets.");
-                GcpOutputWindow.OutputLine(ex.Message);
-                GcpOutputWindow.Activate();
+                var innerEx = ex.InnerException as GoogleApiException;
+                if (innerEx != null && innerEx.HttpStatusCode == System.Net.HttpStatusCode.Forbidden)
+                {
+                    Debug.WriteLine("GCS API is not enabled.");
+
+                    Children.Clear();
+                    Children.Add(new DisabledApiWarning(ComponentApiName, Context.CurrentProject));
+                    return;
+                }
 
                 throw new CloudExplorerSourceException(ex.Message, ex);
             }
@@ -118,6 +134,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             var credential = CredentialsStore.Default.CurrentGoogleCredential;
             var buckets = await _dataSource.Value.GetBucketListAsync();
             return buckets?.Select(x => new BucketViewModel(this, x)).ToList();
+        }
+
+        private void OnStatusCommand()
+        {
+            Process.Start("https://status.cloud.google.com/");
         }
     }
 }

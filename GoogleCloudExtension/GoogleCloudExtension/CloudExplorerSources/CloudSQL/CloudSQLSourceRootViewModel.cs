@@ -52,9 +52,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
 
-        public override void Initialize()
+        public override void Initialize(ICloudSourceContext context)
         {
-            base.Initialize();
+            base.Initialize(context);
 
             InvalidateProjectOrAccount();
         }

@@ -217,7 +217,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 new MenuItem { Header="Save Publishing Settings...", Command = getPublishSettingsCommand },
                 new MenuItem { Header="Open Terminal Server Session...", Command = openTerminalServerSessionCommand },
                 new MenuItem { Header="Open Web Site...", Command = openWebSite },
-                new MenuItem { Header = "Reset Instance Password...", Command = resetInstancePasswordCommand },
+                new MenuItem { Header = "Create or Reset Password...", Command = resetInstancePasswordCommand },
                 new MenuItem { Header = "Manage Firewall Ports...", Command = manageFirewallPorts },
             };
 

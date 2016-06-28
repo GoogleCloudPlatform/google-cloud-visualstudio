@@ -18,5 +18,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 {
     internal class GcsSource : CloudExplorerSourceBase<GcsSourceRootViewModel>
     {
+        public GcsSource(ICloudSourceContext context) : base(context)
+        { }
     }
 }

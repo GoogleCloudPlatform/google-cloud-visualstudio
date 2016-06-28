@@ -14,12 +14,8 @@
 
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.CloudExplorerSources.Gce;
-using GoogleCloudExtension.CloudExplorerSources.Gcs;
-using GoogleCloudExtension.CloudExplorerSources.CloudSQL;
 using Microsoft.VisualStudio.Shell;
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace GoogleCloudExtension.CloudExplorer
@@ -45,22 +41,7 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             SetCaption();
 
-            // Contains the list of sources to display to the user, in the order they will
-            // be displayed.
-            var sources = new List<ICloudExplorerSource>
-            {
-                // The Google Compute Engine source.
-                new GceSource(),
-
-                // The Google Cloud Storage source.
-                new GcsSource(),
-
-                // The Google Cloud SQL source.
-                new CloudSQLSource(),
-            };
-
-
-            var model = new CloudExplorerViewModel(sources);
+            var model = new CloudExplorerViewModel();
             Content = new CloudExplorerToolWindowControl(this)
             {
                 DataContext = model,
