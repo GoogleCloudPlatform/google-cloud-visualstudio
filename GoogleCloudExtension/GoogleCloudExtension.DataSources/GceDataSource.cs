@@ -398,9 +398,10 @@ namespace GoogleCloudExtension.DataSources
                 // 2) Update the tags for the instance.
                 var tagsToAdd = portsToEnable.Select(x => x.Name);
                 var tagsToRemove = portsToDisable.Select(x => x.Name);
+                var instanceTags = instance.Tags?.Items ?? Enumerable.Empty<string>();
                 var tagsOperation = SetInstanceTags(
                     instance,
-                    instance.Tags.Items.Except(tagsToRemove).Union(tagsToAdd).ToList());
+                    instanceTags.Except(tagsToRemove).Union(tagsToAdd).ToList());
                 await tagsOperation.OperationTask;
             }
             finally
