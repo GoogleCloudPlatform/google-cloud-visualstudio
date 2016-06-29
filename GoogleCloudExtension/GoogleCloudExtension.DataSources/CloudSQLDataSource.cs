@@ -20,7 +20,6 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.SQLAdmin.v1beta4.Data;
 using System.Diagnostics;
-using Google;
 
 namespace GoogleCloudExtension.DataSources
 {
@@ -77,25 +76,6 @@ namespace GoogleCloudExtension.DataSources
                 },
                 x => x.Items,
                 x => x.NextPageToken);
-        }
-
-        /// <summary>
-        /// Fetches the list of databases for a MySQL instance.
-        /// </summary>
-        /// <param name="instance"></param>
-        public async Task<IList<Database>> GetDatabaseListAsync(string instance)
-        {
-            try
-            {
-                Debug.WriteLine($"Fetching databases for {instance}");
-                var response = await Service.Databases.List(ProjectId, instance).ExecuteAsync();
-                return response.Items;
-            }
-            catch (GoogleApiException ex)
-            {
-                Debug.WriteLine($"Failed to call api: {ex.Message}");
-                throw new DataSourceException(ex.Message, ex);
-            }
         }
     }
 }
