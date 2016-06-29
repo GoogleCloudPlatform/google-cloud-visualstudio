@@ -28,7 +28,10 @@ using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 {
-    class InstanceViewModel : TreeHierarchy, ICloudExplorerItemSource
+    /// <summary>
+    /// This class represents a view of a Cloud SQL instance (MySQL instance) in the Properties Window.
+    /// </summary>
+    internal class InstanceViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
         private const string IconRunningResourcePath = "CloudExplorerSources/CloudSQL/Resources/instance_icon_running.png";
         private const string IconOfflineResourcePath = "CloudExplorerSources/CloudSQL/Resources/instance_icon_offline.png";

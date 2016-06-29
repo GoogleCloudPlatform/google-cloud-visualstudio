@@ -19,6 +19,9 @@ using System.Linq;
 
 namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 {
+    /// <summary>
+    /// This class represents a Cloud SQL instance (MySQL instance) in the Properties Window.
+    /// </summary>
     internal class InstanceItem : PropertyWindowItemBase
     {
         private const string Category = "Instance Properties";

@@ -24,6 +24,9 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 {
+    /// <summary>
+    /// The root view for Cloud SQL for the Cloud Explorer.
+    /// </summary>
     internal class CloudSQLSourceRootViewModel : SourceRootViewModelBase
     {
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
