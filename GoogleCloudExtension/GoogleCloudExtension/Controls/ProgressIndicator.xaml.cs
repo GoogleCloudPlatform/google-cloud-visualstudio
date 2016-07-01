@@ -46,7 +46,7 @@ namespace GoogleCloudExtension.Controls
 
         private Storyboard _storyboard;
         private VsTheme _forceTheme;
-        private bool _initializing;
+        private readonly bool _initializing;
 
         /// <summary>
         /// Sets the theme to use instead of trying to detect the theme. The default value is <see cref="VsTheme.Unknown"/>

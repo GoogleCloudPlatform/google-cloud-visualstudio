@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.CloudResourceManager.v1.Data;
-using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.Utils;
 using System.Collections.Generic;
 using System.Diagnostics;

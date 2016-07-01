@@ -19,7 +19,7 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.MySQLInstaller
 {
-    class MySQLInstallerViewModel : ViewModelBase
+    internal class MySQLInstallerViewModel : ViewModelBase
     {
         private MySQLInstallerWindow _owner;
 

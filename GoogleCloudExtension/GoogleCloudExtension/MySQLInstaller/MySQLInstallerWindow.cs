@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Analytics;
 using Microsoft.VisualStudio.PlatformUI;
 
 namespace GoogleCloudExtension.MySQLInstaller
 {
-    class MySQLInstallerWindow : DialogWindow
+    internal class MySQLInstallerWindow : DialogWindow
     {
         private MySQLInstallerWindow()
         {
