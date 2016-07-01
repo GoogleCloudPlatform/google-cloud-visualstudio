@@ -4,37 +4,29 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.MySQLInstaller"
+             xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              mc:Ignorable="d" 
              d:DesignHeight="225" d:DesignWidth="300">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition Height="75" />
-            <RowDefinition Height="50" />
-        </Grid.RowDefinitions>
-
-        <Grid Grid.Row="0">
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Margin="10">
+    
+    <UserControl.Resources>
+        <StackPanel x:Key="content">
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Margin="5">
                 To add a Google Cloud SQL database as a Data Connection "MySQL for Visual Studio" must be installed.
                 It is highly recommended that the "MySQL Connector/Net" also be installed to be able to properly interact with the database.
             </TextBlock>
-        </Grid>
-
-        <Grid Grid.Row="1">
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Margin="10">
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Margin="5">
                 Download and install the MySQL Installer which will guide you through installing the needed extensions.
                 After they are installed restart Visual Studio.
             </TextBlock>
-        </Grid>
+        </StackPanel>
+    </UserControl.Resources>
 
-        <Grid Grid.Row="2">
-            <StackPanel  Orientation="Horizontal">
-                <Grid Margin="10" Grid.Row="2">
-                    <Button Width="75" Padding="5" Margin="40,0,-40,0" Command="{Binding DownloadCommand}">Download</Button>
-                    <Button Width="75" Padding="5" Margin="175,0,-175,0" Command="{Binding CloseCommand}">Close</Button>
-                </Grid>
-            </StackPanel>
-        </Grid>
-
-    </Grid>
+    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="Download"
+                                      IsDefault="True"
+                                      Command="{Binding DataContext.DownloadCommand, Source={StaticResource content}}"/>
+            <theming:DialogButtonInfo Caption="Cancel" IsCancel="True" />
+        </theming:CommonDialogWindowBaseContent.Buttons>
+    </theming:CommonDialogWindowBaseContent>
 </UserControl>

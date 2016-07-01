@@ -12,23 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Analytics;
-using Microsoft.VisualStudio.PlatformUI;
+using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.MySQLInstaller
 {
-    class MySQLInstallerWindow : DialogWindow
+
+    /// <summary>
+    /// This class is the dialog to use to prompt the user to install MySQL for Visual Studio and other
+    /// needed extensions.
+    /// </summary>
+    class MySQLInstallerWindow : CommonDialogWindowBase
     {
-        private MySQLInstallerWindow()
+        private MySQLInstallerWindow() : base("Download MySQL for Visual Studio", width: 300, height: 250)
         {
-            Title = "Download MySQL for Visual Studio";
-            Width = 300;
-            Height = 300;
-            ResizeMode = System.Windows.ResizeMode.NoResize;
-            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
-            Content = new MySQLInstallerWindowContent { DataContext = new MySQLInstallerViewModel(this) };
+            Content = new MySQLInstallerWindowContent {
+                DataContext = new MySQLInstallerViewModel(this)
+            };
         }
 
+        /// <summary>
+        /// Shows the dialog to the user.
+        /// </summary>
         public static void PromptUser()
         {
             var dialog = new MySQLInstallerWindow();
