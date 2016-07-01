@@ -124,6 +124,7 @@
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Theming\ThemeManager.cs" />
     <Compile Include="Utils\LinkInfo.cs" />
     <Compile Include="LinkPrompt\LinkPromptDialogWindow.cs" />
     <Compile Include="LinkPrompt\LinkPromptDialogWindowContent.xaml.cs">
@@ -169,6 +170,18 @@
     <Resource Include="CloudExplorerSources\Gce\Resources\filter.png" />
     <Resource Include="CloudExplorer\Resources\warning_icon.png" />
     <Resource Include="CloudExplorer\Resources\logo_cloud.png" />
+    <Resource Include="Controls\Resources\step_10_dark.png" />
+    <Resource Include="Controls\Resources\step_11_dark.png" />
+    <Resource Include="Controls\Resources\step_12_dark.png" />
+    <Resource Include="Controls\Resources\step_1_dark.png" />
+    <Resource Include="Controls\Resources\step_2_dark.png" />
+    <Resource Include="Controls\Resources\step_3_dark.png" />
+    <Resource Include="Controls\Resources\step_4_dark.png" />
+    <Resource Include="Controls\Resources\step_5_dark.png" />
+    <Resource Include="Controls\Resources\step_6_dark.png" />
+    <Resource Include="Controls\Resources\step_7_dark.png" />
+    <Resource Include="Controls\Resources\step_8_dark.png" />
+    <Resource Include="Controls\Resources\step_9_dark.png" />
     <Content Include="ProjectTemplates\Google Cloud Platform\GoogleAspnetMvc.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>

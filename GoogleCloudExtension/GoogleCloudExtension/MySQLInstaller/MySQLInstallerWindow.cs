@@ -21,7 +21,7 @@ namespace GoogleCloudExtension.MySQLInstaller
     /// This class is the dialog to use to prompt the user to install MySQL for Visual Studio and other
     /// needed extensions.
     /// </summary>
-    class MySQLInstallerWindow : CommonDialogWindowBase
+    internal class MySQLInstallerWindow : CommonDialogWindowBase
     {
         private MySQLInstallerWindow() : base("Download MySQL for Visual Studio", width: 300, height: 250)
         {

@@ -23,7 +23,7 @@ namespace GoogleCloudExtension.MySQLInstaller
     /// <summary>
     /// This class is the view model for the <seealso cref="MySQLInstallerWindow"/> dialog.
     /// </summary>
-    class MySQLInstallerViewModel : ViewModelBase
+    internal class MySQLInstallerViewModel : ViewModelBase
     {
         private MySQLInstallerWindow _owner;
 

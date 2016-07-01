@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -38,17 +39,39 @@ namespace GoogleCloudExtension.Controls
         /// The definition of the animation for progress.
         /// </summary>
         private static readonly Duration s_animationDuration = new Duration(new TimeSpan(0, 0, 0, 0, FullDuration));
-        private static readonly Lazy<ObjectAnimationUsingKeyFrames> s_animationSource = new Lazy<ObjectAnimationUsingKeyFrames>(CreateAnimation);
-        private static readonly Lazy<IList<ImageSource>> s_frames = new Lazy<IList<ImageSource>>(LoadAnimationFrames);
+
+        // The frames for the light, blue and dark themes.
+        private static readonly Lazy<IList<ImageSource>> s_lightFrames = new Lazy<IList<ImageSource>>(LoadLightFrames);
+        private static readonly Lazy<IList<ImageSource>> s_darkFrames = new Lazy<IList<ImageSource>>(LoadDarkFrames);
 
         private Storyboard _storyboard;
+        private VsTheme _forceTheme;
+        private readonly bool _initializing;
+
+        /// <summary>
+        /// Sets the theme to use instead of trying to detect the theme. The default value is <see cref="VsTheme.Unknown"/>
+        /// which means detect the theme.
+        /// </summary>
+        public VsTheme ForceTheme
+        {
+            get { return _forceTheme; }
+            set { _forceTheme = value; }
+        }
 
         public ProgressIndicator()
         {
-            InitializeComponent();
+            try
+            {
+                _initializing = true;
+                InitializeComponent();
+            }
+            finally
+            {
+                _initializing = false;
+            }
         }
 
-        private static ObjectAnimationUsingKeyFrames CreateAnimation()
+        private static ObjectAnimationUsingKeyFrames CreateAnimation(IList<ImageSource> imageFrames)
         {
             // Initialize the animation for this object.
             var result = new ObjectAnimationUsingKeyFrames
@@ -57,10 +80,10 @@ namespace GoogleCloudExtension.Controls
             };
 
             // Creates the frames for the animation.
-            var frameDuration = FullDuration / s_frames.Value.Count;
+            var frameDuration = FullDuration / s_lightFrames.Value.Count;
             int framePoint = 0;
             var keyFrames = new ObjectKeyFrameCollection();
-            foreach (var frame in s_frames.Value)
+            foreach (var frame in imageFrames)
             {
                 var keyFrame = new DiscreteObjectKeyFrame
                 {
@@ -72,9 +95,20 @@ namespace GoogleCloudExtension.Controls
                 framePoint += frameDuration;
             }
             result.KeyFrames = keyFrames;
-            result.Freeze();
 
             return result;
+        }
+
+        private ObjectAnimationUsingKeyFrames CreateAnimationForTheme()
+        {
+            var theme = ForceTheme != VsTheme.Unknown ? ForceTheme : ThemeManager.GetCurrentTheme();
+            switch (theme)
+            {
+                case VsTheme.Dark:
+                    return CreateAnimation(s_darkFrames.Value);
+                default:
+                    return CreateAnimation(s_lightFrames.Value);
+            }
         }
 
         #region ISupportInitialize
@@ -82,6 +116,12 @@ namespace GoogleCloudExtension.Controls
         public override void EndInit()
         {
             base.EndInit();
+
+            // Avoid doing any initializaiton until the constructor is finished.
+            if (_initializing)
+            {
+                return;
+            }
 
             StartAnimation();
         }
@@ -92,7 +132,7 @@ namespace GoogleCloudExtension.Controls
         {
             if (_storyboard == null)
             {
-                var animation = s_animationSource.Value.Clone();
+                var animation = CreateAnimationForTheme();
 
                 _storyboard = new Storyboard();
                 _storyboard.Children.Add(animation);
@@ -105,11 +145,18 @@ namespace GoogleCloudExtension.Controls
             _storyboard.Begin(_root);
         }
 
-        private static List<ImageSource> LoadAnimationFrames()
+        private static List<ImageSource> LoadLightFrames()
         {
             return Enumerable.Range(1, 12)
                 .Select(x => ResourceUtils.LoadImage($"Controls/Resources/step_{x}.png"))
                 .ToList();
+        }
+
+        private static IList<ImageSource> LoadDarkFrames()
+        {
+            return Enumerable.Range(1, 12)
+               .Select(x => ResourceUtils.LoadImage($"Controls/Resources/step_{x}_dark.png"))
+               .ToList();
         }
     }
 }
