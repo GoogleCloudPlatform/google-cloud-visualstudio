@@ -32,19 +32,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
-            Caption = "Loading zones...",
+            Caption = Resources.CloudExplorerGceSourceLoadingZonesCaption,
             IsLoading = true
         };
         private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
         {
-            Caption = "Failed to load zones.",
+            Caption = Resources.CloudExplorerGceSourceFailedLoadingZonesCaption,
             IsError = true
         };
         private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
         {
-            Caption = "No zones found."
+            Caption = Resources.CloudExplorerGceSourceNoZonesCaption
         };
-        private static readonly TreeLeaf s_noZonesPlaceholder = new TreeLeaf { Caption = "No zones" };
+        private static readonly TreeLeaf s_noZonesPlaceholder = new TreeLeaf { Caption = Resources.CloudExplorerGceSourceNoZonesCaption };
 
         private bool _showOnlyWindowsInstances = false;
         private IList<InstancesPerZone> _instancesPerZone;
@@ -58,7 +58,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
 
-        public override string RootCaption => "Google Compute Engine";
+        public override string RootCaption => Resources.CloudExplorerGceRootNodeCaption;
 
         public bool ShowOnlyWindowsInstances
         {
@@ -83,9 +83,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = "Status", Command = new WeakCommand(OnStatusCommand) },
-                new MenuItem { Header = "New ASP.NET Instance", Command = new WeakCommand(OnNewAspNetInstanceCommand) },
-                new MenuItem { Header = "New Instance", Command = new WeakCommand(OnNewInstanceCommand) },
+                new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new WeakCommand(OnStatusCommand) },
+                new MenuItem { Header = Resources.CloudExplorerGceNewAspNetInstanceMenuHeader, Command = new WeakCommand(OnNewAspNetInstanceCommand) },
+                new MenuItem { Header = Resources.CloudExplorerGceNewInstanceMenuHeader, Command = new WeakCommand(OnNewInstanceCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
@@ -139,7 +139,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
                     // Show the node that notifies users that the API is disabled.
                     Children.Clear();
-                    Children.Add(new DisabledApiWarning(ComputeApiName, Context.CurrentProject));
+                    Children.Add(new DisabledApiWarning(
+                        apiName: ComputeApiName,
+                        caption: Resources.CloudExplorerGceSourceApiDisabledMessage,
+                        project: Context.CurrentProject));
                     return;
                 }
 

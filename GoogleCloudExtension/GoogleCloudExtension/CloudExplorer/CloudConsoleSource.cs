@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.CloudExplorer
     {
         private static readonly LinkInfo s_consoleLink = new LinkInfo(
             link: "https://console.cloud.google.com",
-            caption: "See cloud console for other services");
+            caption: Resources.CloudExplorerConsoleLinkCaption);
 
         public CloudConsoleSource()
         {

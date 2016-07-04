@@ -68,14 +68,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 }
                 else if (Instance.IsWindowsInstance())
                 {
-                    if (Instance.IsAspnetInstance() && Instance.HasSqlServerPassword())
-                    {
-                        return new AspNetInstanceWithSqlServerItem(Instance);
-                    }
-                    else
-                    {
-                        return new WindowsInstanceItem(Instance);
-                    }
+                    return new WindowsInstanceItem(Instance);
                 }
                 else
                 {
@@ -112,19 +105,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 switch (pendingOperation.OperationType)
                 {
                     case OperationType.StartInstance:
-                        Caption = $"Starting instance {Instance.Name}";
+                        Caption = String.Format(Resources.CloudExplorerGceInstanceStartingCaption, Instance.Name);
                         break;
 
                     case OperationType.StopInstance:
-                        Caption = $"Stoping instance {Instance.Name}";
+                        Caption = String.Format(Resources.CloudExplorerGceInstanceStoppingCaption, Instance.Name);
                         break;
 
                     case OperationType.SettingTags:
-                        Caption = $"Setting tags for instance {Instance.Name}";
+                        Caption = String.Format(Resources.CloudExplorerGceInstanceSettingTagsCaption, Instance.Name);
                         break;
 
                     case OperationType.ModifyingFirewall:
-                        Caption = $"Modifying Firewall for instance {Instance.Name}";
+                        Caption = String.Format(Resources.CloudExplorerGceInstanceUpdatingFirewallCaption, Instance.Name);
                         break;
                 }
 
@@ -165,11 +158,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     switch (pendingOperation.OperationType)
                     {
                         case OperationType.StartInstance:
-                            GcpOutputWindow.OutputLine($"Start instance operation for {Instance.Name} failed. {ex.Message}");
+                            GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGceStartOperationFailedMessage, Instance.Name, ex.Message));
                             break;
 
                         case OperationType.StopInstance:
-                            GcpOutputWindow.OutputLine($"Stop instance operation for {Instance.Name} failed. {ex.Message}");
+                            GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGceStopOperationFailedMessage, Instance.Name, ex.Message));
                             break;
                     }
 
@@ -214,20 +207,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header="Save Publishing Settings...", Command = getPublishSettingsCommand },
-                new MenuItem { Header="Open Terminal Server Session...", Command = openTerminalServerSessionCommand },
-                new MenuItem { Header="Open Web Site...", Command = openWebSite },
-                new MenuItem { Header = "Create or Reset Password...", Command = resetInstancePasswordCommand },
-                new MenuItem { Header = "Manage Firewall Ports...", Command = manageFirewallPorts },
+                new MenuItem { Header = Resources.CloudExplorerGceSavePublishSettingsMenuHeader, Command = getPublishSettingsCommand },
+                new MenuItem { Header = Resources.CloudExplorerGceOpenTerminalSessionMenuHeader, Command = openTerminalServerSessionCommand },
+                new MenuItem { Header = Resources.CloudExplorerGceOpenWebSiteMenuHeader, Command = openWebSite },
+                new MenuItem { Header = Resources.CloudExplorerGceCreateOrResetPasswordMenuHeader, Command = resetInstancePasswordCommand },
+                new MenuItem { Header = Resources.CloudExplorerGceManageFirewallPortsMenuHeader, Command = manageFirewallPorts },
             };
 
             if (Instance.IsRunning())
             {
-                menuItems.Add(new MenuItem { Header = "Stop instance...", Command = stopInstanceCommand });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceStopInstanceMenuHeader, Command = stopInstanceCommand });
             }
             else
             {
-                menuItems.Add(new MenuItem { Header = "Start instance...", Command = startInstanceCommand });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceStartInstanceMenuHeader, Command = startInstanceCommand });
             }
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
@@ -249,7 +242,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
             catch (DataSourceException)
             {
-                UserPromptUtils.ErrorPrompt("Failed to update Firewall rules for instance.", "Error Updating Firewall");
+                UserPromptUtils.ErrorPrompt(Resources.CloudExplorerGceFailedToUpdateFirewallMessage, Resources.CloudExplorerGceFailedToUpdateFirewallCaption);
             }
         }
 
@@ -263,8 +256,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             try
             {
                 if (!UserPromptUtils.YesNoPrompt(
-                    $"Are you sure you want to stop instance {Instance.Name}?",
-                    $"Stop {Instance.Name}"))
+                    String.Format(Resources.CloudExplorerGceStopInstanceConfirmationPrompt, Instance.Name),
+                    String.Format(Resources.CloudExplorerGceStopInstanceConfirmationPromptCaption, Instance.Name)))
                 {
                     Debug.WriteLine($"The user cancelled stopping instance {Instance.Name}.");
                     return;
@@ -276,7 +269,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             catch (DataSourceException ex)
             {
                 GcpOutputWindow.Activate();
-                GcpOutputWindow.OutputLine($"Failed to stop instance {Instance.Name}. {ex.Message}");
+                GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGceFailedToStopInstanceMessage, Instance.Name, ex.Message));
             }
             catch (OAuthException ex)
             {
@@ -288,8 +281,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             Debug.WriteLine($"Failed to fetch oauth credentials: {ex.Message}");
             UserPromptUtils.OkPrompt(
-                $"Failed to fetch oauth credentials for account {CredentialsStore.Default.CurrentAccount.AccountName}, please login again.",
-                "Credentials Error");
+                String.Format(Resources.CloudExplorerGceFailedToGetOauthCredentialsMessage, CredentialsStore.Default.CurrentAccount.AccountName),
+                Resources.CloudExplorerGceFailedToGetOauthCredentialsCaption);
         }
 
         private void OnStartInstanceCommand()
@@ -297,8 +290,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             try
             {
                 if (!UserPromptUtils.YesNoPrompt(
-                    $"Are you sure you want to start instance {Instance.Name}?",
-                    $"Start {Instance.Name}"))
+                    String.Format(Resources.CloudExplorerGceStartInstanceConfirmationPrompt, Instance.Name),
+                    String.Format(Resources.CloudExplorerGceStartInstanceConfirmationPromptCaption, Instance.Name)))
                 {
                     Debug.WriteLine($"The user cancelled starting instance {Instance.Name}.");
                     return;
@@ -310,7 +303,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             catch (DataSourceException ex)
             {
                 GcpOutputWindow.Activate();
-                GcpOutputWindow.OutputLine($"Failed to start instance {Instance.Name}. {ex.Message}");
+                GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGceFailedToStartInstanceMessage, Instance.Name, ex.Message));
             }
             catch (OAuthException ex)
             {
@@ -349,16 +342,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
             var profile = Instance.GeneratePublishSettings();
             File.WriteAllText(storePath, profile);
-            GcpOutputWindow.OutputLine($"Publishsettings saved to {storePath}");
+            GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGcePublishingSettingsSavedMessage, storePath));
         }
 
         private static string PromptForPublishSettingsPath(string fileName)
         {
             SaveFileDialog dialog = new SaveFileDialog();
-            dialog.Title = "Save Publish Settings";
+            dialog.Title = Resources.CloudExplorerGceSavePublishSettingsDialogCaption;
             dialog.FileName = fileName;
             dialog.DefaultExt = ".publishsettings";
-            dialog.Filter = "Publish Settings file (*.publishsettings)|*.publishsettings";
+            dialog.Filter = Resources.CloudExplorerGceSavePublishSettingsExtensions;
             dialog.InitialDirectory = GetDownloadsPath();
             dialog.OverwritePrompt = true;
 

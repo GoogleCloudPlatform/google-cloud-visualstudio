@@ -17,6 +17,7 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.OAuth;
 using GoogleCloudExtension.OauthLoginFlow;
 using GoogleCloudExtension.Utils;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -76,7 +77,9 @@ namespace GoogleCloudExtension.Accounts
                 if (existingUserAccount != null)
                 {
                     Debug.WriteLine($"Duplicate account {credentials.AccountName}");
-                    UserPromptUtils.ErrorPrompt($"The user account {credentials.AccountName} already exists.", "Duplicate Account");
+                    UserPromptUtils.ErrorPrompt(
+                        string.Format(Resources.ManageAccountsAccountAlreadyExistsPromptMessage, credentials.AccountName),
+                        Resources.ManageAccountsAccountAlreadyExistsPromptTitle);
                     return false;
                 }
 
@@ -89,7 +92,9 @@ namespace GoogleCloudExtension.Accounts
             catch (OAuthException ex)
             {
                 ExtensionAnalytics.ReportEvent(OAuthEventCategory, "FlowFailed");
-                UserPromptUtils.ErrorPrompt($"Failed to perform OAUTH authentication. {ex.Message}", "OAUTH error");
+                UserPromptUtils.ErrorPrompt(
+                    String.Format(Resources.CloudExplorerGceFailedToGetOauthCredentialsMessage, ex.Message),
+                    Resources.CloudExplorerGceFailedToGetOauthCredentialsCaption);
                 return false;
             }
         }

@@ -57,7 +57,6 @@
     <Compile Include="Accounts\CredentialsStoreException.cs" />
     <Compile Include="Accounts\DefaultCredentials.cs" />
     <Compile Include="Analytics\CommandName.cs" />
-    <Compile Include="CloudExplorerSources\Gce\AspNetInstanceWithSqlServerItem.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
@@ -124,6 +123,11 @@
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Theming\ThemeManager.cs" />
     <Compile Include="Utils\LinkInfo.cs" />
     <Compile Include="LinkPrompt\LinkPromptDialogWindow.cs" />
@@ -154,6 +158,9 @@
     <Compile Include="GoogleCloudExtensionPackage.cs" />
     <Compile Include="ExtensionEvents.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\LocalizedCategoryAttribute.cs" />
+    <Compile Include="Utils\LocalizedDescriptionAttribute.cs" />
+    <Compile Include="Utils\LocalizedDisplayNameAttribute.cs" />
     <Compile Include="Utils\MySQLUtils.cs" />
     <Compile Include="Utils\PropertyWindowItemBase.cs" />
     <Compile Include="Utils\ResourceUtils.cs" />
@@ -416,6 +423,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>VSPackage</ManifestResourceName>

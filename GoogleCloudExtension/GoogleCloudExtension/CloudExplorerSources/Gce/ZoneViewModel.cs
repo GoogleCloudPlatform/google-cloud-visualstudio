@@ -31,12 +31,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private static readonly Lazy<ImageSource> s_zoneIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
         private static readonly TreeLeaf s_noInstancesPlaceholder = new TreeLeaf
         {
-            Caption = "No instances in this zone",
+            Caption = Resources.CloudExplorerGceNoInstancesInZoneCaption,
             IsWarning = true
         };
         private static readonly TreeLeaf s_noWindowsInstancesPlaceholder = new TreeLeaf
         {
-            Caption = "No Windows instances in this zone",
+            Caption = Resources.CloudExplorerGceNoWindowsInstancesInZoneCaption,
             IsWarning = true
         };
 
@@ -65,7 +65,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = "New instance", Command = new WeakCommand(OnNewInstanceCommand) },
+                new MenuItem { Header = Resources.CloudExplorerGceNewInstanceMenuHeader, Command = new WeakCommand(OnNewInstanceCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
 

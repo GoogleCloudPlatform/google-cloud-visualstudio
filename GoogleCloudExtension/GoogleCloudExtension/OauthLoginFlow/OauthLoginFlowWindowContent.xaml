@@ -5,20 +5,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.OauthLoginFlow"
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type local:OAuthLoginFlowViewModel}}" d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Resources>
-        <TextBlock TextWrapping="Wrap" Margin="3,0" x:Key="content">
-            A browser window has been open to enter your credentials. To cancel this operation close
-            the browser window and press Cancel to close this window.
-            When the login finishes this window will close automatically.
-        </TextBlock>
+        <TextBlock TextWrapping="Wrap" Margin="3,0" x:Key="content" Text="{x:Static ext:Resources.OAuthFlowWindowMessage}" />
+
     </UserControl.Resources>
 
     <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
         <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Caption="Cancel"
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
                                       Command="{Binding DataContext.CloseCommand, Source={StaticResource content}}"
                                       IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>

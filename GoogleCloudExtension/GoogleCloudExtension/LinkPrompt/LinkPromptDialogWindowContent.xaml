@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.LinkPrompt"
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type local:LinkPromptDialogWindowViewModel}}"
              d:DesignHeight="300" d:DesignWidth="300">
@@ -20,7 +21,7 @@
 
     <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
         <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Caption="Ok" IsDefault="True" IsCancel="True"/>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}" IsDefault="True" IsCancel="True"/>
         </theming:CommonDialogWindowBaseContent.Buttons>
     </theming:CommonDialogWindowBaseContent>
 

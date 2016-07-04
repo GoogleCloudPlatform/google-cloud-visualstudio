@@ -57,12 +57,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = "Browse Bucket", Command = _openBucketCommand },
+                new MenuItem { Header = Resources.CloudExplorerGcsBrowseMenuHeader, Command = _openBucketCommand },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
-        private async void OnOpenBucket()
+        private void OnOpenBucket()
         {
             ExtensionAnalytics.ReportCommand(CommandName.OpenWebsiteForGcsBucket, CommandInvocationSource.Button);
 

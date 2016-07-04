@@ -23,7 +23,7 @@ namespace GoogleCloudExtension.MySQLInstaller
     /// </summary>
     internal class MySQLInstallerWindow : CommonDialogWindowBase
     {
-        private MySQLInstallerWindow() : base("Download MySQL for Visual Studio", width: 300, height: 250)
+        private MySQLInstallerWindow() : base(GoogleCloudExtension.Resources.MySqlInstallerWindowTitle, width: 300, height: 250)
         {
             Content = new MySQLInstallerWindowContent {
                 DataContext = new MySQLInstallerViewModel(this)

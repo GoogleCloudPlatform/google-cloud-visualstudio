@@ -31,23 +31,23 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
     {
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
-            Caption = "Loading instances...",
+            Caption = Resources.CloudExplorerSqlLoadingInstancesCaption,
             IsLoading = true
         };
         private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
         {
-            Caption = "No instances found.",
+            Caption = Resources.CloudExplorerSqlNoInstancesFoundCaption,
             IsWarning = true
         };
         private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
         {
-            Caption = "Failed to list instances.",
+            Caption = Resources.CloudExplorerSqlFailedToLoadInstancesCaption,
             IsError = true
         };
 
         public Lazy<CloudSQLDataSource> DataSource;
 
-        public override string RootCaption => "Google Cloud SQL";
+        public override string RootCaption => Resources.CloudExplorerSqlRootNodeCaption;
 
         public override TreeLeaf ErrorPlaceholder => s_errorPlaceholder;
 
@@ -108,7 +108,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             }
             catch (DataSourceException ex)
             {
-                GcpOutputWindow.OutputLine("Failed to load the list of Google Cloud SQL instances.");
+                GcpOutputWindow.OutputLine(Resources.CloudExplorerSqlFailedMessage);
                 GcpOutputWindow.OutputLine(ex.Message);
                 GcpOutputWindow.Activate();
 

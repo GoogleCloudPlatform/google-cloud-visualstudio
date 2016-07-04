@@ -1,0 +1,656 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AnalyticsPromptMessage" xml:space="preserve">
+    <value>Do you want to help Google by reporting usage statics?</value>
+    <comment>Message for the analytics prompt.</comment>
+  </data>
+  <data name="AnalyticsPromptTitle" xml:space="preserve">
+    <value>Usage Statistics</value>
+    <comment>Title for the analytics prompt.</comment>
+  </data>
+  <data name="CloudExploreDisabledApiEnableApiMenuHeader" xml:space="preserve">
+    <value>Enable API</value>
+    <comment>Menu header for the Enable API command.</comment>
+  </data>
+  <data name="CloudExploreNoProjectMessage" xml:space="preserve">
+    <value>No projects found, to create a project navigate to the Google Cloud Console.</value>
+    <comment>Message shwon int he Cloud Explorer when no project is found.</comment>
+  </data>
+  <data name="CloudExplorerConsoleLinkCaption" xml:space="preserve">
+    <value>Go to the Google Cloud Console for other services</value>
+    <comment>The caption for the console link in the cloud source.</comment>
+  </data>
+  <data name="CloudExplorerGceCreateOrResetPasswordMenuHeader" xml:space="preserve">
+    <value>Create or Reset Password...</value>
+    <comment>Header for the create or reset password menu item.</comment>
+  </data>
+  <data name="CloudExplorerGceFailedToGetOauthCredentialsCaption" xml:space="preserve">
+    <value>Credentials Error</value>
+    <comment>Caption for the prompt.</comment>
+  </data>
+  <data name="CloudExplorerGceFailedToGetOauthCredentialsMessage" xml:space="preserve">
+    <value>Failed to fetch OAUTH credentials for account {0}, please login again.</value>
+    <comment>Message shown when failed to get OAUTH credentials for account. {0} is the account's email address.</comment>
+  </data>
+  <data name="CloudExplorerGceFailedToStartInstanceMessage" xml:space="preserve">
+    <value>Failed to start instance {0}. {1}</value>
+    <comment>Message shown when failed to start an instance. {0} is the instance name, {1} is the error message.</comment>
+  </data>
+  <data name="CloudExplorerGceFailedToStopInstanceMessage" xml:space="preserve">
+    <value>Failed to stop instance {0}. {1}</value>
+    <comment>Message shown when failed to stop an instance. {0} is the instance name, {1} is the error message.</comment>
+  </data>
+  <data name="CloudExplorerGceFailedToUpdateFirewallCaption" xml:space="preserve">
+    <value>Error Updating Firewall</value>
+    <comment>Caption for the message shown when failed to update firewall.</comment>
+  </data>
+  <data name="CloudExplorerGceFailedToUpdateFirewallMessage" xml:space="preserve">
+    <value>Failed to update Firewall rules for instance.</value>
+    <comment>Message shown when failed to update firewall.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceAppEngineCategory" xml:space="preserve">
+    <value>App Engine Properties</value>
+    <comment>The category for App Engine properties for a GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceCategory" xml:space="preserve">
+    <value>Instance Properties</value>
+    <comment>The category for the properties window for the GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceInternalIpDescription" xml:space="preserve">
+    <value>The internal IP address of the instance</value>
+    <comment>The description of the internal IP property for a GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceInternalIpDisplayName" xml:space="preserve">
+    <value>Internal IP Address</value>
+    <comment>The display name for the internal IP property for a GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceMachineTypeDescription" xml:space="preserve">
+    <value>The machine type for the instance</value>
+    <comment>The description of the machine type for a GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceMachineTypeDisplayName" xml:space="preserve">
+    <value>Machine Type</value>
+    <comment>The display name for the machine type of a GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceModuleDescription" xml:space="preserve">
+    <value>The App Engine module for the instance.</value>
+    <comment>The description for the module of a GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceNameDescription" xml:space="preserve">
+    <value>The name of the instance</value>
+    <comment>The description of the name property for a GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstancePublicIpDescription" xml:space="preserve">
+    <value>The public IP address of the instance</value>
+    <comment>The  description for the public IP property for a GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstancePublicIpDisplayName" xml:space="preserve">
+    <value>External IP Address</value>
+    <comment>The display name for the public IP property for a GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceSettingTagsCaption" xml:space="preserve">
+    <value>Setting tags for {0}</value>
+    <comment>Caption used when setting tags for a GCE VM, {0} is the name of the instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceStartingCaption" xml:space="preserve">
+    <value>Starting {0}</value>
+    <comment>Caption used when starting a GCE VM, {0} is the name of the instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceStatusDescription" xml:space="preserve">
+    <value>The current status of the instance</value>
+    <comment>The description of the status property for a GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceStoppingCaption" xml:space="preserve">
+    <value>Stopping {0}</value>
+    <comment>Caption used when stopping a GCE VM, {0} is the name of the instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceTagsDescription" xml:space="preserve">
+    <value>The tags for the instance.</value>
+    <comment>The description for the tags property for a GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceUpdatingFirewallCaption" xml:space="preserve">
+    <value>Updating firewall for {0}</value>
+    <comment>Caption used when updating the forewall for a GCE VM, {0} is the name of the instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceVersionDescription" xml:space="preserve">
+    <value>The version of the module for the instance.</value>
+    <comment>The description for the version of a GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceWindowsCategory" xml:space="preserve">
+    <value>Windows Properties</value>
+    <comment>The category for Windows properties for a GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceWindowsVersionDescription" xml:space="preserve">
+    <value>The version of Windows installed on the instance.</value>
+    <comment>The description for the Windows version property for a GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceWindowsVersionDisplayName" xml:space="preserve">
+    <value>Windows Version</value>
+    <comment>The display name for the Windows version in a GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceZoneDescription" xml:space="preserve">
+    <value>The zone of the instance</value>
+    <comment>The description of the zone property for a GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceManageFirewallPortsMenuHeader" xml:space="preserve">
+    <value>Manage Firewall Ports...</value>
+    <comment>Header for the manage firewall ports menu item.</comment>
+  </data>
+  <data name="CloudExplorerGceNewAspNetInstanceMenuHeader" xml:space="preserve">
+    <value>New ASP.NET Instance</value>
+    <comment>Header for the new ASP.NET instance menu item.</comment>
+  </data>
+  <data name="CloudExplorerGceNewInstanceMenuHeader" xml:space="preserve">
+    <value>New Instance</value>
+    <comment>Header for the new instance menu item.</comment>
+  </data>
+  <data name="CloudExplorerGceNoInstancesInZoneCaption" xml:space="preserve">
+    <value>No instances in this zone</value>
+    <comment>The caption to show when there are no instances in a GCE zone.</comment>
+  </data>
+  <data name="CloudExplorerGceNoWindowsInstancesInZoneCaption" xml:space="preserve">
+    <value>No Windows instances in this zone</value>
+    <comment>The caption to show when there are no Windows instances in a GCE zone.</comment>
+  </data>
+  <data name="CloudExplorerGceOnlyWindowsButtonToolTip" xml:space="preserve">
+    <value>Only Windows Instances</value>
+    <comment>The tooltip for the filter button.</comment>
+  </data>
+  <data name="CloudExplorerGceOpenTerminalSessionMenuHeader" xml:space="preserve">
+    <value>Open Terminal Server Session...</value>
+    <comment>Header for the open terminal session menu item.</comment>
+  </data>
+  <data name="CloudExplorerGceOpenWebSiteMenuHeader" xml:space="preserve">
+    <value>Open Web Site...</value>
+    <comment>Header for the open website menu item.</comment>
+  </data>
+  <data name="CloudExplorerGcePublishingSettingsSavedMessage" xml:space="preserve">
+    <value>Publish settings saved to {0}</value>
+    <comment>Message shown after saving publishing settings. {0} is the path where the settings where saved.</comment>
+  </data>
+  <data name="CloudExplorerGceRootNodeCaption" xml:space="preserve">
+    <value>Google Compute Engine</value>
+    <comment>Caption for the root node of the GCE source.</comment>
+  </data>
+  <data name="CloudExplorerGceSavePublishSettingsDialogCaption" xml:space="preserve">
+    <value>Save Publish Settings</value>
+    <comment>Caption for the save dialog.</comment>
+  </data>
+  <data name="CloudExplorerGceSavePublishSettingsExtensions" xml:space="preserve">
+    <value>Publish settings file (*.publishsettings)|*.publishsettings</value>
+    <comment>Extension for the save dialog. Format defined as part of the Save Dialog spec, do not over translate.</comment>
+  </data>
+  <data name="CloudExplorerGceSavePublishSettingsMenuHeader" xml:space="preserve">
+    <value>Save Publishing Settings...</value>
+    <comment>Header for the save publish settings menu item.</comment>
+  </data>
+  <data name="CloudExplorerGceSourceApiDisabledMessage" xml:space="preserve">
+    <value>The Google Compute Engine API is not enabled for this project.</value>
+    <comment>Message shown when the GCE API is disabled.</comment>
+  </data>
+  <data name="CloudExplorerGceSourceFailedLoadingZonesCaption" xml:space="preserve">
+    <value>Failed to load zones.</value>
+    <comment>Caption shown in the node when failed to load GCE zones.</comment>
+  </data>
+  <data name="CloudExplorerGceSourceLoadingZonesCaption" xml:space="preserve">
+    <value>Loading zones...</value>
+    <comment>Caption shown in the node when loading GCE zones.</comment>
+  </data>
+  <data name="CloudExplorerGceSourceNoZonesCaption" xml:space="preserve">
+    <value>No zones found.</value>
+    <comment>Caption shown in the node when no GCE zones are found.</comment>
+  </data>
+  <data name="CloudExplorerGceStartInstanceConfirmationPrompt" xml:space="preserve">
+    <value>Are you sure you want to start {0}?</value>
+    <comment>Prompt shown to the user to confirm start of instance. {0} is the name of the instance.</comment>
+  </data>
+  <data name="CloudExplorerGceStartInstanceConfirmationPromptCaption" xml:space="preserve">
+    <value>Start {0}</value>
+    <comment>Caption for the prompt shown to confirm start of instance. {0} is the name of the instance.</comment>
+  </data>
+  <data name="CloudExplorerGceStartInstanceMenuHeader" xml:space="preserve">
+    <value>Start instance</value>
+    <comment>Header for the start instance menu item.</comment>
+  </data>
+  <data name="CloudExplorerGceStartOperationFailedMessage" xml:space="preserve">
+    <value>Start instance operation for {0} failed. {1}</value>
+    <comment>Message shown when the start operation fails. {0} is the name of the instance, {1} is the error message.</comment>
+  </data>
+  <data name="CloudExplorerGceStopInstanceConfirmationPrompt" xml:space="preserve">
+    <value>Are you sure you want to stop {0}?</value>
+    <comment>Prompt shown to the user to confirm stop of instance. {0} is the name of the instance.</comment>
+  </data>
+  <data name="CloudExplorerGceStopInstanceConfirmationPromptCaption" xml:space="preserve">
+    <value>Stop {0}</value>
+    <comment>Caption for the prompt shown to confirm stop of instance. {0} is the name of the instance.</comment>
+  </data>
+  <data name="CloudExplorerGceStopInstanceMenuHeader" xml:space="preserve">
+    <value>Stop instance</value>
+    <comment>Header for the stop instance menu item.</comment>
+  </data>
+  <data name="CloudExplorerGceStopOperationFailedMessage" xml:space="preserve">
+    <value>Stop instance operation for {0} failed. {1}</value>
+    <comment>Message shown when the stop operation fails. {0} is the name of the instance, {1} is the error message.</comment>
+  </data>
+  <data name="CloudExplorerGceZoneCategory" xml:space="preserve">
+    <value>Zone Properties</value>
+    <comment>The category for the zone properties.</comment>
+  </data>
+  <data name="CloudExplorerGceZoneDescriptionDescription" xml:space="preserve">
+    <value>The description of the zone.</value>
+    <comment>The description of the description property of a GCE zone.</comment>
+  </data>
+  <data name="CloudExplorerGceZoneNameDescription" xml:space="preserve">
+    <value>The name of the zone.</value>
+    <comment>The description of the name property of a GCE zone.</comment>
+  </data>
+  <data name="CloudExplorerGceZoneRegionDescription" xml:space="preserve">
+    <value>The region for the zone.</value>
+    <comment>The description of the region proeprty of a GCE zone.</comment>
+  </data>
+  <data name="CloudExplorerGceZoneStatusDescription" xml:space="preserve">
+    <value>The status of the zone.</value>
+    <comment>The description of the status property of a GCE zone.</comment>
+  </data>
+  <data name="CloudExplorerGcsBrowseMenuHeader" xml:space="preserve">
+    <value>Browse Bucket</value>
+    <comment>The menu header for the browse command on the GCS bucket.</comment>
+  </data>
+  <data name="CloudExplorerGcsBucketCategory" xml:space="preserve">
+    <value>Bucket Properties</value>
+    <comment>The category for GCS bucket properties.</comment>
+  </data>
+  <data name="CloudExplorerGcsBucketCreatedDescription" xml:space="preserve">
+    <value>The creation time stamp for the bucket</value>
+    <comment>The description of the created property of a GCS bucket.</comment>
+  </data>
+  <data name="CloudExplorerGcsBucketModifiedDescription" xml:space="preserve">
+    <value>The modification time stamp for the bucket</value>
+    <comment>The description of the updated property of a GCS bucket.</comment>
+  </data>
+  <data name="CloudExplorerGcsBucketNameDescription" xml:space="preserve">
+    <value>The name of the bucket</value>
+    <comment>The description of the name property of a GCS bucket.</comment>
+  </data>
+  <data name="CloudExplorerGcsBucketStorageClassDescription" xml:space="preserve">
+    <value>The storage class for the bucket</value>
+    <comment>The description of the storage class property of a GCS bucket.</comment>
+  </data>
+  <data name="CloudExplorerGcsBucketStorageClassDisplayName" xml:space="preserve">
+    <value>Storage Class</value>
+    <comment>The display name of the storage class property of a GCS bucket.</comment>
+  </data>
+  <data name="CloudExplorerGcsBucketVersioningEnabledDescription" xml:space="preserve">
+    <value>Whether versioning is enabled for the bucket</value>
+    <comment>The description of the versioning enabled property of a GCS bucket.</comment>
+  </data>
+  <data name="CloudExplorerGcsBucketVersioningEnabledDisplayName" xml:space="preserve">
+    <value>Is Versioning Enabled</value>
+    <comment>The display name of the versioning enabled property of a GCS bucket.</comment>
+  </data>
+  <data name="CloudExplorerGcsFailedToListBucketsCaption" xml:space="preserve">
+    <value>Failed to list buckets.</value>
+    <comment>Caption shown when failed to load GCS buckets.</comment>
+  </data>
+  <data name="CloudExplorerGcsLoadingBucketsCaption" xml:space="preserve">
+    <value>Loading buckets...</value>
+    <comment>Caption shown while loading the GCS buckets.</comment>
+  </data>
+  <data name="CloudExplorerGcsNoBucketsFoundCaption" xml:space="preserve">
+    <value>No buckets found.</value>
+    <comment>Caption shown when no GCS buckets are found.</comment>
+  </data>
+  <data name="CloudExplorerGcsRootNodeCaption" xml:space="preserve">
+    <value>Google Cloud Storage</value>
+    <comment>The caption for the root node of the GCS source.</comment>
+  </data>
+  <data name="CloudExplorerGcsSourceApiDisabledMessage" xml:space="preserve">
+    <value>The Google Cloud Storage API is not enabled for this project.</value>
+    <comment>Message shown when the GCS API is disabled.</comment>
+  </data>
+  <data name="CloudExplorerLoadingMessage" xml:space="preserve">
+    <value>Loading...</value>
+    <comment>General loading message.</comment>
+  </data>
+  <data name="CloudExplorerNoAccountButtonCaption" xml:space="preserve">
+    <value>Select or Create Account</value>
+    <comment>Caption for the button, or link, in the Cloud Exlorer shown when there's no account selected.</comment>
+  </data>
+  <data name="CloudExplorerNoAccountMessage" xml:space="preserve">
+    <value>Add a new account or select and existing one.</value>
+    <comment>Message shown in the Cloud Exlorer when there's no account selected.</comment>
+  </data>
+  <data name="CloudExplorerNoProjectButtonCaption" xml:space="preserve">
+    <value>Navigate to Cloud Console</value>
+    <comment>Caption for the button, or link, shown in the Cloud Explorer when no project is found.</comment>
+  </data>
+  <data name="CloudExplorerNoProjectsFoundPlaceholderMessage" xml:space="preserve">
+    <value>No projects found</value>
+    <comment>Message for the placeholder element displayed when no projects are found.</comment>
+  </data>
+  <data name="CloudExplorerRefreshButtonToolTip" xml:space="preserve">
+    <value>Refresh</value>
+    <comment>The tooltip for the refresh button.</comment>
+  </data>
+  <data name="CloudExplorerSelectAccountMessage" xml:space="preserve">
+    <value>Select account...</value>
+    <comment>General select account message.</comment>
+  </data>
+  <data name="CloudExplorerSqlBackendTypeDisplayName" xml:space="preserve">
+    <value>Backend Type</value>
+    <comment>The display name for the backend type property for SQL instances.</comment>
+  </data>
+  <data name="CloudExplorerSqlDatabaseVersionDisplayName" xml:space="preserve">
+    <value>Database Version</value>
+    <comment>The display name for the database version proeprty for SQL instances.</comment>
+  </data>
+  <data name="CloudExplorerSqlFailedMessage" xml:space="preserve">
+    <value>Failed to load the list of Google Cloud SQL instances.</value>
+    <comment>Message shown in the output window when failed to load list of SQL instances.</comment>
+  </data>
+  <data name="CloudExplorerSqlFailedToLoadInstancesCaption" xml:space="preserve">
+    <value>Failed to list instances.</value>
+    <comment>Caption shown when failed to load SQL instances.</comment>
+  </data>
+  <data name="CloudExplorerSqlInstanceCategory" xml:space="preserve">
+    <value>Instance Properties</value>
+    <comment>Category for the SQL instance properties.</comment>
+  </data>
+  <data name="CloudExplorerSqlInstanceIp6AddressDisplayName" xml:space="preserve">
+    <value>IPv6 Address (First Gen)</value>
+    <comment>The display name for the IP v6 address.</comment>
+  </data>
+  <data name="CloudExplorerSqlInstanceIpAddressDisplayName" xml:space="preserve">
+    <value>IP Address</value>
+    <comment>The display name for the instance IP address.</comment>
+  </data>
+  <data name="CloudExplorerSqlInstanceTypeDisplayName" xml:space="preserve">
+    <value>Instance Type</value>
+    <comment>The display name for the instance type property for SQL instances.</comment>
+  </data>
+  <data name="CloudExplorerSqlLoadingInstancesCaption" xml:space="preserve">
+    <value>Loading instances...</value>
+    <comment>Caption shown when loading SQL instances.</comment>
+  </data>
+  <data name="CloudExplorerSqlNoInstancesFoundCaption" xml:space="preserve">
+    <value>No instances found.</value>
+    <comment>Caption shown when no SQL instances are found.</comment>
+  </data>
+  <data name="CloudExplorerSqlOpenAddDataConnectionMenuHeader" xml:space="preserve">
+    <value>Add Data Connection</value>
+    <comment>Menu header for the open add data connection dialog menu item.</comment>
+  </data>
+  <data name="CloudExplorerSqlRootNodeCaption" xml:space="preserve">
+    <value>Google Cloud SQL</value>
+    <comment>Caption for the root node in the SQL source.</comment>
+  </data>
+  <data name="CloudExplorerStatusMenuHeader" xml:space="preserve">
+    <value>Status</value>
+    <comment>Header for the status menu item.</comment>
+  </data>
+  <data name="CloudExplorerToolWindowCaption" xml:space="preserve">
+    <value>Google Cloud Explorer ({0})</value>
+    <comment>Cloud Explorer caption used with an account. {0} is the account's email address.</comment>
+  </data>
+  <data name="CloudExplorerToolWindowCaptionNoAccount" xml:space="preserve">
+    <value>Google Cloud Explorer (select account)</value>
+    <comment>Cloud Explorer caption used when no account is selected.</comment>
+  </data>
+  <data name="ManageAccountsAccountAlreadyExistsPromptMessage" xml:space="preserve">
+    <value>The user account {0} already exists.</value>
+    <comment>The message for the prompt indicating the account already exists.</comment>
+  </data>
+  <data name="ManageAccountsAccountAlreadyExistsPromptTitle" xml:space="preserve">
+    <value>Duplicate Account</value>
+    <comment>The title for the prompt indicating the account already exists.</comment>
+  </data>
+  <data name="ManageAccountsAddAccountButtonCaption" xml:space="preserve">
+    <value>Add...</value>
+    <comment>Caption for the add account button.</comment>
+  </data>
+  <data name="ManageAccountsChooseAccountMessage" xml:space="preserve">
+    <value>Choose account:</value>
+    <comment>The message at the top of the manage accounts window.</comment>
+  </data>
+  <data name="ManageAccountsCurrentAccountMessage" xml:space="preserve">
+    <value>Current Account</value>
+    <comment>Message shown in the current account.</comment>
+  </data>
+  <data name="ManageAccountsDeleteAccountButtonCaption" xml:space="preserve">
+    <value>Delete</value>
+    <comment>Caption for the delete account button.</comment>
+  </data>
+  <data name="ManageAccountsDeleteAccountPromptMessage" xml:space="preserve">
+    <value>Are you sure you want to delete the account {0}?</value>
+    <comment>Message for the confirmation prompt for deleting an account.</comment>
+  </data>
+  <data name="ManageAccountsDeleteAccountPromptTitle" xml:space="preserve">
+    <value>Delete Account</value>
+    <comment>Title for the confirmation prompt for deleting an account.</comment>
+  </data>
+  <data name="ManageAccountsSetAsCurrentAccountButtonCaption" xml:space="preserve">
+    <value>Set As Current</value>
+    <comment>Caption for the set as current account button.</comment>
+  </data>
+  <data name="ManageAccountsWindowTitle" xml:space="preserve">
+    <value>Manage Accounts</value>
+    <comment>The title for the manage accounts window.</comment>
+  </data>
+  <data name="MySqlInstallerWindowBottomMessage" xml:space="preserve">
+    <value>Download and install the MySQL Installer which will guide you through installing the needed extensions. After they are installed restart Visual Studio.</value>
+    <comment>Bottom message for the MySql installer window.</comment>
+  </data>
+  <data name="MySqlInstallerWindowTitle" xml:space="preserve">
+    <value>Download MySQL for Visual Studio</value>
+    <comment>Title for the MySql isntaller window.</comment>
+  </data>
+  <data name="MySqlInstallerWindowTopMessage" xml:space="preserve">
+    <value>To add a Google Cloud SQL database as a Data Connection "MySQL for Visual Studio" must be installed. It is highly recommended that the "MySQL Connector/Net" also be installed to be able to properly interact with the database.</value>
+    <comment>Top message for the MySql installer window.</comment>
+  </data>
+  <data name="OAuthFlowWindowMessage" xml:space="preserve">
+    <value>A browser window has been open to login into your account. To cancel this operation close the browser window and press Cancel to close this window. When the login finishes this window will close automatically.</value>
+    <comment>OAUTH flow window message.</comment>
+  </data>
+  <data name="OAuthFlowWindowTitle" xml:space="preserve">
+    <value>Provide Account</value>
+    <comment>OAUTH flow window title.</comment>
+  </data>
+  <data name="PortManagerWindowCaption" xml:space="preserve">
+    <value>Manage Firewall Ports</value>
+    <comment>Caption for the port manager dialog.</comment>
+  </data>
+  <data name="PortManagerWindowMessage" xml:space="preserve">
+    <value>Set Firewall rules and tags to enable traffic for the instance</value>
+    <comment>Main message in the port manager dialog.</comment>
+  </data>
+  <data name="ResetPasswordConfirmationPromptMessage" xml:space="preserve">
+    <value>Are you sure you want to reset the password for the user {0} in instance {1}? This operation cannot be cancelled.</value>
+    <comment>The message for the confirmation prompt for resetting or creating a password. {0) is the user name, {1} is the instance name.</comment>
+  </data>
+  <data name="ResetPasswordConfirmationPromptTitle" xml:space="preserve">
+    <value>Reset Password</value>
+    <comment>The title for the confirmation prompt for resetting or creating a password. {0) is the user name, {1} is the instance name.</comment>
+  </data>
+  <data name="ResetPasswordFailedPromptMessage" xml:space="preserve">
+    <value>Failed to reset password for {0}. {1}</value>
+    <comment>Message shown when the reset operation fails. {0} is the instance name, {1} is the error message.</comment>
+  </data>
+  <data name="ResetPasswordGcloudLinkCaption" xml:space="preserve">
+    <value>Install Google Cloud SDK</value>
+    <comment>Caption for the link for Gcloud.</comment>
+  </data>
+  <data name="ResetPasswordGcloudMissingBetaMessage" xml:space="preserve">
+    <value>Please ensure that the "beta" is component installed, using "gcloud components install beta".</value>
+    <comment>Message shown when the beta component is missing.</comment>
+  </data>
+  <data name="ResetPasswordGcloudMissingMessage" xml:space="preserve">
+    <value>Ensure that the Google Cloud SDK is installed and available in the path, and that the "beta" component is installed. Please restart Visual Studio after the Google Cloud SDK has finished installing.</value>
+    <comment>Message shown when gcloud is not installed.</comment>
+  </data>
+  <data name="ResetPasswordMissingGcloudTitle" xml:space="preserve">
+    <value>Missing Gloogle Cloud SDK</value>
+    <comment>Title for the prompts shown when gcloud is not installed.</comment>
+  </data>
+  <data name="ResetPasswordUserNameCaption" xml:space="preserve">
+    <value>User name:</value>
+    <comment>Caption for the user name textbox.</comment>
+  </data>
+  <data name="ResetPasswordWindowTitle" xml:space="preserve">
+    <value>Reset Password for {0}</value>
+    <comment>The title for the reset password dialog. {0} is the instance name.</comment>
+  </data>
+  <data name="ShowPasswordCopyPasswordButtonCaption" xml:space="preserve">
+    <value>Copy Password</value>
+    <comment>Caption for the copy password button.</comment>
+  </data>
+  <data name="ShowPasswordHidePasswordTooltip" xml:space="preserve">
+    <value>Hide password</value>
+    <comment>The tooltip shown to hide the password.</comment>
+  </data>
+  <data name="ShowPasswordMessage" xml:space="preserve">
+    <value>The password for user {0} in instance {1} is:</value>
+    <comment>The message shown for the password textblock. {0} is the user name, {1} is the instance name.</comment>
+  </data>
+  <data name="ShowPasswordShowPasswordTooltip" xml:space="preserve">
+    <value>Show password</value>
+    <comment>The tooltip shown to show the password.</comment>
+  </data>
+  <data name="ShowPasswordWindowTitle" xml:space="preserve">
+    <value>Password for {0}</value>
+    <comment>The title for the show password window. {0} is the name of the instance.</comment>
+  </data>
+  <data name="UiCancelButtonCaption" xml:space="preserve">
+    <value>Cancel</value>
+    <comment>Caption for Cancel buttons.</comment>
+  </data>
+  <data name="UiCloseButtonCaption" xml:space="preserve">
+    <value>Close</value>
+    <comment>Caption for the close window button.</comment>
+  </data>
+  <data name="UiDownloadButtonCaption" xml:space="preserve">
+    <value>Download</value>
+    <comment>The caption for the general download button.</comment>
+  </data>
+  <data name="UiOkButtonCaption" xml:space="preserve">
+    <value>Ok</value>
+    <comment>Caption for Ok buttons.</comment>
+  </data>
+</root>

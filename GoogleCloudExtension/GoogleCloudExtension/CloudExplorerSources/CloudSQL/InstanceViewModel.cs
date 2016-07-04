@@ -61,7 +61,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = "Add Data Connection", Command = _openAddDataConnectionDialog },
+                new MenuItem { Header = Resources.CloudExplorerSqlOpenAddDataConnectionMenuHeader, Command = _openAddDataConnectionDialog },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
 

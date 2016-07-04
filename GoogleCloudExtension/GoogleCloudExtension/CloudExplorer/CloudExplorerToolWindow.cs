@@ -62,11 +62,11 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             if (CredentialsStore.Default.CurrentAccount?.AccountName != null)
             {
-                Caption = $"Google Cloud Explorer ({CredentialsStore.Default.CurrentAccount.AccountName})";
+                Caption = String.Format(Resources.CloudExplorerToolWindowCaption, CredentialsStore.Default.CurrentAccount.AccountName);
             }
             else
             {
-                Caption = "Google Cloud Explorer (select credentials)";
+                Caption = Resources.CloudExplorerToolWindowCaptionNoAccount;
             }
         }
     }
