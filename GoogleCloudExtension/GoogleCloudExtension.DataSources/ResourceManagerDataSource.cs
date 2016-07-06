@@ -34,16 +34,8 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="credential"></param>
         public ResourceManagerDataSource(GoogleCredential credential, string appName)
-            : base(CreateService(credential), appName)
+            : base(credential, init => new CloudResourceManagerService(init), appName)
         { }
-
-        private static CloudResourceManagerService CreateService(GoogleCredential credential)
-        {
-            return new CloudResourceManagerService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credential
-            });
-        }
 
         /// <summary>
         /// Returns the complete list of projects for the current credentials.

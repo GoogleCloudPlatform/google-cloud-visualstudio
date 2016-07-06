@@ -21,9 +21,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("GoogleAnalyticsUtils")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Google Inc.")]
 [assembly: AssemblyProduct("GoogleAnalyticsUtils")]
-[assembly: AssemblyCopyright("Copyright \u00A9  2016")]
+[assembly: AssemblyCopyright("Copyright \u00A9 Google Inc. 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

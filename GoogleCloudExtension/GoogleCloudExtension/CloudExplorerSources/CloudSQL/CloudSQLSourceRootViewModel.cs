@@ -45,7 +45,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             IsError = true
         };
 
-        public Lazy<CloudSQLDataSource> DataSource;
+        public Lazy<CloudSqlDataSource> DataSource;
 
         public override string RootCaption => Resources.CloudExplorerSqlRootNodeCaption;
 
@@ -65,14 +65,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         public override void InvalidateProjectOrAccount()
         {
             Debug.WriteLine("New credentials, invalidating the Google Cloud SQL source.");
-            DataSource = new Lazy<CloudSQLDataSource>(CreateDataSource);
+            DataSource = new Lazy<CloudSqlDataSource>(CreateDataSource);
         }
 
-        private CloudSQLDataSource CreateDataSource()
+        private CloudSqlDataSource CreateDataSource()
         {
             if (CredentialsStore.Default.CurrentProjectId != null)
             {
-                return new CloudSQLDataSource(
+                return new CloudSqlDataSource(
                     CredentialsStore.Default.CurrentProjectId,
                     CredentialsStore.Default.CurrentGoogleCredential,
                     GoogleCloudExtensionPackage.ApplicationName);

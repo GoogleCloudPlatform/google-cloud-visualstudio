@@ -21,7 +21,7 @@ using System.Xml.Linq;
 namespace GoogleCloudExtension.DataSources
 {
     /// <summary>
-    /// This class implement extension methods which implement behaviors on top of the instance models.
+    /// This class implements extension methods which implement behaviors on top of the instance models.
     /// </summary>
     public static class InstanceExtensions
     {
@@ -31,8 +31,8 @@ namespace GoogleCloudExtension.DataSources
 
         private static readonly Dictionary<string, WindowsInstanceInfo> s_windowsLicenses = new Dictionary<string, WindowsInstanceInfo>
         {
-            { WindowsServer2008License, new WindowsInstanceInfo(displayName: "Windows Server 2008 R2 Datacenter Edition", version: "2008", subVersion: "RC2") },
-            { WindowsServer2012License, new WindowsInstanceInfo(displayName: "Windows Server 2012 R2 Datacenter Edition", version: "2012", subVersion: "RC2") },
+            { WindowsServer2008License, new WindowsInstanceInfo(displayName: "Windows Server 2008 R2 Datacenter Edition", version: "2008", subversion: "RC2") },
+            { WindowsServer2012License, new WindowsInstanceInfo(displayName: "Windows Server 2012 R2 Datacenter Edition", version: "2012", subversion: "RC2") },
         };
 
         public const string ProvisioningStatus = "PROVISIONING";
@@ -42,34 +42,25 @@ namespace GoogleCloudExtension.DataSources
         public const string TerminatedStatus = "TERMINATED";
 
         /// <summary>
-        /// Determins if the given instance is an ASP.NET instance.
+        /// Determines if the given instance is an ASP.NET instance.
         /// </summary>
         /// <param name="instance">The instance to check.</param>
         /// <returns>True if the instance is an ASP.NET instance.</returns>
         public static bool IsAspnetInstance(this Instance instance) => instance.Tags?.Items?.Contains("aspnet") ?? false;
 
         /// <summary>
-        /// Determines if the given instance is a ManagedVM instance.
+        /// Determines if the given instance is an App Engine Flex instance.
         /// </summary>
         /// <param name="instance">The instance to check.</param>
-        /// <returns>True if the instance is a GAE instance, false otherwise.</returns>
-        public static bool IsGaeInstance(this Instance instance) => !String.IsNullOrEmpty(instance.GetGaeModule());
+        /// <returns>True if the instance is a App Engine Flex instance, false otherwise.</returns>
+        public static bool IsAppEngineFlexInstance(this Instance instance) => !String.IsNullOrEmpty(instance.GetAppEngineFlexService());
 
         /// <summary>
         /// Determines if the given instance is a Windows instance.
         /// </summary>
         /// <param name="instance">The instance to check.</param>
         /// <returns>True if the instance is a Windows instance, false otherwise.</returns>
-        public static bool IsWindowsInstance(this Instance instance)
-        {
-            var bootDisk = instance.Disks?.FirstOrDefault(x => x.Boot ?? false);
-            if (bootDisk == null || bootDisk.Licenses == null)
-            {
-                return false;
-            }
-
-            return bootDisk.Licenses.Intersect(s_windowsLicenses.Keys).Count() != 0;
-        }
+        public static bool IsWindowsInstance(this Instance instance) => GetWindowsInstanceInfo(instance) != null;
 
         /// <summary>
         /// Returns the instance information for this instance, if it is a Windows instance.
@@ -97,35 +88,37 @@ namespace GoogleCloudExtension.DataSources
         /// Determines the URL to use to publish to this server. Typically used for ASP.NET 4.x apps.
         /// </summary>
         /// <param name="instance">The instance to check.</param>
-        /// <returns>The URL.</returns>
+        /// <returns>The publish URL, null otherwise.</returns>
         public static string GetPublishUrl(this Instance instance) => instance.GetPublicIpAddress();
 
         /// <summary>
         /// Determines the URL to use to see the ASP.NET app that runs on the given instance.
         /// </summary>
         /// <param name="instance">The instance to check.</param>
-        /// <returns>The URL.</returns>
+        /// <returns>The destination URL, null otherwise.</returns>
         public static string GetDestinationAppUri(this Instance instance) => $"http://{instance.GetPublicIpAddress()}";
 
         /// <summary>
-        /// Returns the GAE module for a GCE instance if it part of an AppEngine app.
+        /// Returns the App Engine Flex service for a GCE instance if it part of an App Engine Flex app.
         /// </summary>
         /// <param name="instance">The instance to inspect.</param>
-        /// <returns>The module.</returns>
-        public static string GetGaeModule(this Instance instance) => instance.Metadata.Items?.FirstOrDefault(x => x.Key == "gae_backend_name")?.Value;
+        /// <returns>The module, null if not applicable.</returns>
+        public static string GetAppEngineFlexService(this Instance instance) =>
+            instance.Metadata.Items?.FirstOrDefault(x => x.Key == "gae_backend_name")?.Value;
 
         /// <summary>
-        /// Returns the GAE version for a GCE instance that is part of an AppEngine app.
+        /// Returns the App Engine Flex version for a GCE instance that is part of an App Engine Flex app.
         /// </summary>
         /// <param name="instance">The instance to inspect.</param>
-        /// <returns>The version.</returns>
-        public static string GetGaeVersion(this Instance instance) => instance.Metadata.Items?.FirstOrDefault(x => x.Key == "gae_backend_version")?.Value;
+        /// <returns>The version, null if not applicable.</returns>
+        public static string GetAppEngineFlexVersion(this Instance instance) =>
+            instance.Metadata.Items?.FirstOrDefault(x => x.Key == "gae_backend_version")?.Value;
 
         /// <summary>
         /// Retruns the machine type based on the GCE machine type URL.
         /// </summary>
         /// <param name="instance">The instance to inspect.</param>
-        /// <returns></returns>
+        /// <returns>The machine type.</returns>
         public static string GetMachineType(this Instance instance) => new Uri(instance.MachineType).Segments.Last();
 
         /// <summary>
@@ -133,21 +126,24 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="instance">The instance to inspect.</param>
         /// <returns>The IP address in string form.</returns>
-        public static string GetInternalIpAddress(this Instance instance) => instance.NetworkInterfaces?.FirstOrDefault()?.NetworkIP;
+        public static string GetInternalIpAddress(this Instance instance) =>
+            instance.NetworkInterfaces?.FirstOrDefault()?.NetworkIP;
 
         /// <summary>
         /// Returns the public IP address, if it exists, for the instance.
         /// </summary>
         /// <param name="instance">The instance to inspect.</param>
         /// <returns>The IP address in string form.</returns>
-        public static string GetPublicIpAddress(this Instance instance) => instance.NetworkInterfaces?.FirstOrDefault()?.AccessConfigs?.FirstOrDefault()?.NatIP;
+        public static string GetPublicIpAddress(this Instance instance) =>
+            instance.NetworkInterfaces?.FirstOrDefault()?.AccessConfigs?.FirstOrDefault()?.NatIP;
 
         /// <summary>
         /// Returns a string with all of the tags for the instance.
         /// </summary>
         /// <param name="instance">The instance to inspect.</param>
         /// <returns>The tags.</returns>
-        public static string GetTags(this Instance instance) => String.Join(", ", instance.Tags?.Items ?? Enumerable.Empty<string>());
+        public static string GetTags(this Instance instance) =>
+            String.Join(", ", instance.Tags?.Items ?? Enumerable.Empty<string>());
 
         /// <summary>
         /// Generates the publishsettings information for a given GCE instance.

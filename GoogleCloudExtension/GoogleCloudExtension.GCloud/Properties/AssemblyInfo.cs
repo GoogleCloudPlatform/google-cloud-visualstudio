@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("GoogleCloudExtension.GCloud")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Google Inc.")]
 [assembly: AssemblyProduct("GoogleCloudExtension.GCloud")]
 [assembly: AssemblyCopyright("Copyright \u00A9 Google Inc. 2015")]
 [assembly: AssemblyTrademark("")]

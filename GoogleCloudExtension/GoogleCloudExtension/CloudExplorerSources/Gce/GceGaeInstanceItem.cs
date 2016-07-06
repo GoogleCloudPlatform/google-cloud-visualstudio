@@ -30,11 +30,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         [LocalizedCategory(nameof(Resources.CloudExplorerGceInstanceAppEngineCategory))]
         [LocalizedDescription(nameof(Resources.CloudExplorerGceInstanceModuleDescription))]
-        public string Module => Instance.GetGaeModule();
+        public string Module => Instance.GetAppEngineFlexService();
 
         [LocalizedCategory(nameof(Resources.CloudExplorerGceInstanceAppEngineCategory))]
         [LocalizedDescription(nameof(Resources.CloudExplorerGceInstanceVersionDescription))]
-        public string Version => Instance.GetGaeVersion();
+        public string Version => Instance.GetAppEngineFlexVersion();
 
         public override string ToString() => Instance.Name;
     }

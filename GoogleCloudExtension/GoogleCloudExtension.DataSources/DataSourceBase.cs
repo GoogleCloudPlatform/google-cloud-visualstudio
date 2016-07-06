@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using System;
 using System.Collections.Generic;
@@ -49,12 +50,21 @@ namespace GoogleCloudExtension.DataSources
         /// create an instance of the service to wrap.
         /// </summary>
         /// <param name="projectId">The project id for this data source.</param>
-        /// <param name="service">The service for this data source.</param>
+        /// <param name="credentials">The credentials to use for the service.</param>
+        /// <param name="serviceFactory">The service factory for this data source.</param>
         /// <param name="appName">The name of the application.</param>
-        protected DataSourceBase(string projectId, TService service, string appName)
+        protected DataSourceBase(
+            string projectId,
+            GoogleCredential credentials,
+            Func<BaseClientService.Initializer, TService> serviceFactory,
+            string appName)
         {
             ProjectId = projectId;
-            Service = service;
+            Service = serviceFactory(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credentials,
+                ApplicationName = appName,
+            });
             AppName = appName;
         }
 
@@ -63,7 +73,10 @@ namespace GoogleCloudExtension.DataSources
         /// not require a project id.
         /// </summary>
         /// <param name="service">The service for this data source.</param>
-        protected DataSourceBase(TService service, string appName) : this(null, service, appName)
+        protected DataSourceBase(
+            GoogleCredential credential,
+            Func<BaseClientService.Initializer, TService> serviceFactory,
+            string appName) : this(null, credential, serviceFactory, appName)
         { }
 
         /// <summary>

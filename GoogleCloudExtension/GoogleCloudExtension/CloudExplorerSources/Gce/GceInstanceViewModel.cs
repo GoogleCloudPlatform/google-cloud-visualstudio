@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             get
             {
-                if (Instance.IsGaeInstance())
+                if (Instance.IsAppEngineFlexInstance())
                 {
                     return new GceGaeInstanceItem(Instance);
                 }

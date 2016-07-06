@@ -117,13 +117,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         {
             switch (_instance.State)
             {
-                case CloudSQLDataSource.RunnableState:
-                case CloudSQLDataSource.PendingCreateState:
+                case CloudSqlDataSource.RunnableState:
+                case CloudSqlDataSource.PendingCreateState:
                     Icon = s_instanceRunningIcon.Value;
                     break;
 
-                case CloudSQLDataSource.SuspendedState:
-                case CloudSQLDataSource.MaintenanceState:
+                case CloudSqlDataSource.SuspendedState:
+                case CloudSqlDataSource.MaintenanceState:
                     Icon = s_instanceOfflineIcon.Value;
                     break;
 
