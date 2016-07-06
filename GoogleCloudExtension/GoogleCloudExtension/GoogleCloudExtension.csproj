@@ -241,13 +241,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="Resources\AddNewAccountCommand.png" />
-    <Content Include="Resources\AppEngineAppsToolWindowCommand.png" />
-    <Content Include="Resources\ComputeEngineResourcesCommand.png" />
-    <Content Include="Resources\DeployToGae.png" />
-    <Content Include="Resources\DeployToGaeContextMenuCommand.png" />
-    <Content Include="Resources\DeployToGaePackage.ico" />
-    <Content Include="Resources\UserAndProjectListWindowCommand.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.7.4137.9688, Culture=neutral, PublicKeyToken=a4292a325f69b123, processorArchitecture=MSIL">
@@ -430,6 +423,7 @@
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
       <ManifestResourceName>VSPackage</ManifestResourceName>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
