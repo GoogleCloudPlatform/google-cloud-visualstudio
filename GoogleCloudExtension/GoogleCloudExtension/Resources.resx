@@ -617,6 +617,14 @@
     <value>Reset Password for {0}</value>
     <comment>The title for the reset password dialog. {0} is the instance name.</comment>
   </data>
+  <data name="ShowPasswordCopyFailedMessage" xml:space="preserve">
+    <value>The copy operation failed, this might happen if another program has the Windows Clipboard open, such as a virtual machine agent.</value>
+    <comment>Message shown when the copy operation fails.</comment>
+  </data>
+  <data name="ShowPasswordCopyFailedTitle" xml:space="preserve">
+    <value>Copy Failed</value>
+    <comment>Title of the prompt shown when the copy operation fails.</comment>
+  </data>
   <data name="ShowPasswordCopyPasswordButtonCaption" xml:space="preserve">
     <value>Copy Password</value>
     <comment>Caption for the copy password button.</comment>

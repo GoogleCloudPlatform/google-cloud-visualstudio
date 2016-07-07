@@ -1186,6 +1186,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The copy operation failed, this might happen if another program has the Windows Clipboard open, such as a virtual machine agent..
+        /// </summary>
+        public static string ShowPasswordCopyFailedMessage {
+            get {
+                return ResourceManager.GetString("ShowPasswordCopyFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy Failed.
+        /// </summary>
+        public static string ShowPasswordCopyFailedTitle {
+            get {
+                return ResourceManager.GetString("ShowPasswordCopyFailedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy Password.
         /// </summary>
         public static string ShowPasswordCopyPasswordButtonCaption {
