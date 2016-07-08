@@ -62,10 +62,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = Resources.CloudExplorerSqlOpenAddDataConnectionMenuHeader, Command = _openAddDataConnectionDialog },
+                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
 
             UpdateIcon();
+        }
+
+        private void OnPropertiesCommand()
+        {
+            _owner.Context.ShowPropertiesWindow(Item);
         }
 
         private void OpenDataConnectionDialog()

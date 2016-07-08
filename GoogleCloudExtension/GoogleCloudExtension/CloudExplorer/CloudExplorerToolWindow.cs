@@ -14,7 +14,9 @@
 
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Runtime.InteropServices;
 
@@ -34,6 +36,8 @@ namespace GoogleCloudExtension.CloudExplorer
     [Guid("fe34c2aa-59b3-40ad-a3b6-2743d072d2aa")]
     public class CloudExplorerToolWindow : ToolWindowPane
     {
+        private readonly SelectionUtils _selectionUtils;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="CloudExplorerToolWindow"/> class.
         /// </summary>
@@ -41,8 +45,10 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             SetCaption();
 
-            var model = new CloudExplorerViewModel();
-            Content = new CloudExplorerToolWindowControl(this)
+            _selectionUtils = new SelectionUtils(this);
+
+            var model = new CloudExplorerViewModel(_selectionUtils);
+            Content = new CloudExplorerToolWindowControl(_selectionUtils)
             {
                 DataContext = model,
             };

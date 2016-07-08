@@ -23,18 +23,17 @@ namespace GoogleCloudExtension.CloudExplorer
     /// </summary>
     public partial class CloudExplorerToolWindowControl : UserControl
     {
-        private readonly IServiceProvider _provider;
-        private bool _propertiesWindowActivated = false;
+        private readonly SelectionUtils _selectionUtils;
         private readonly WeakAction<object, EventArgs> _onItemChangedHandler;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CloudExplorerToolWindowControl"/> class.
         /// </summary>
-        public CloudExplorerToolWindowControl(IServiceProvider provider)
+        public CloudExplorerToolWindowControl(SelectionUtils selectionUtils)
         {
             this.InitializeComponent();
-            _provider = provider;
             _onItemChangedHandler = new WeakAction<object, EventArgs>(OnItemChanged);
+            _selectionUtils = selectionUtils;
         }
 
         private void TreeView_SelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
@@ -48,24 +47,18 @@ namespace GoogleCloudExtension.CloudExplorer
             var newItemSource = e.NewValue as ICloudExplorerItemSource;
             if (newItemSource == null)
             {
-                SelectionUtils.ClearSelection(_provider);
+                _selectionUtils.ClearSelection();
                 return;
             }
             newItemSource.ItemChanged += OnItemChanged;
 
-            var item = newItemSource.Item;
-            if (!_propertiesWindowActivated)
-            {
-                // The properties window can only be activated once, to avoid it stealing focus continously.
-                _propertiesWindowActivated = SelectionUtils.ActivatePropertiesWindow(_provider);
-            }
-            SelectionUtils.SelectItem(_provider, item);
+            _selectionUtils.SelectItem(newItemSource.Item);
         }
 
         private void OnItemChanged(object sender, EventArgs e)
         {
             var itemSource = (ICloudExplorerItemSource)sender;
-            SelectionUtils.SelectItem(_provider, itemSource.Item);
+            _selectionUtils.SelectItem(itemSource.Item);
         }
     }
 }

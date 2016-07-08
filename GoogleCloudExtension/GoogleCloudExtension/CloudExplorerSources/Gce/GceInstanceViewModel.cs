@@ -223,7 +223,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceStartInstanceMenuHeader, Command = startInstanceCommand });
             }
 
+            menuItems.Add(new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) });
+
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void OnPropertiesWindowCommand()
+        {
+            _owner.Context.ShowPropertiesWindow(Item);
         }
 
         private void OnManageFirewallPortsCommand()

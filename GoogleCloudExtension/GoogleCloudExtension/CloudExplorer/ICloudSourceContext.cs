@@ -31,5 +31,11 @@ namespace GoogleCloudExtension.CloudExplorer
         /// The current list of projects loaded.
         /// </summary>
         IEnumerable<Project> Projects { get; }
+
+        /// <summary>
+        /// Shows the properties window for the provided item.
+        /// </summary>
+        /// <param name="item"></param>
+        void ShowPropertiesWindow(object item);
     }
 }

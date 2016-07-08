@@ -66,6 +66,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = Resources.CloudExplorerGceNewInstanceMenuHeader, Command = new WeakCommand(OnNewInstanceCommand) },
+                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
 
@@ -80,6 +81,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     Children.Add(s_noInstancesPlaceholder);
                 }
             }
+        }
+
+        private void OnPropertiesCommand()
+        {
+            _owner.Context.ShowPropertiesWindow(Item);
         }
 
         private void OnNewInstanceCommand()

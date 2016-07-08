@@ -661,4 +661,8 @@
     <value>Ok</value>
     <comment>Caption for Ok buttons.</comment>
   </data>
+  <data name="UiPropertiesMenuHeader" xml:space="preserve">
+    <value>Properties</value>
+    <comment>Header for the generic properties menu item, to show the properties window.</comment>
+  </data>
 </root>

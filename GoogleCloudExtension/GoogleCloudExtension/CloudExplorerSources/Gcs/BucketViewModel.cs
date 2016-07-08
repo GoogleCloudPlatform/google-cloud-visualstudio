@@ -58,8 +58,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = Resources.CloudExplorerGcsBrowseMenuHeader, Command = _openBucketCommand },
+                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void OnPropertiesCommand()
+        {
+            _owner.Context.ShowPropertiesWindow(Item);
         }
 
         private void OnOpenBucket()

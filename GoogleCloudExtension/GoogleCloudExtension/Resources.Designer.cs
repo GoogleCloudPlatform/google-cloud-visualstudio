@@ -1283,5 +1283,14 @@ namespace GoogleCloudExtension {
                 return ResourceManager.GetString("UiOkButtonCaption", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Properties.
+        /// </summary>
+        public static string UiPropertiesMenuHeader {
+            get {
+                return ResourceManager.GetString("UiPropertiesMenuHeader", resourceCulture);
+            }
+        }
     }
 }

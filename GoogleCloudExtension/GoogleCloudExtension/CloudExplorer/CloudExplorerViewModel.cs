@@ -43,6 +43,7 @@ namespace GoogleCloudExtension.CloudExplorer
         private static readonly PlaceholderMessage s_projectPlaceholder = new PlaceholderMessage { Message = Resources.CloudExplorerNoProjectsFoundPlaceholderMessage };
         private static readonly IList<PlaceholderMessage> s_projectsWithPlaceholder = new List<PlaceholderMessage> { s_projectPlaceholder };
 
+        private readonly SelectionUtils _selectionUtils;
         private readonly IEnumerable<ICloudExplorerSource> _sources;
         private bool _isBusy;
         private AsyncPropertyValue<string> _profilePictureAsync;
@@ -177,10 +178,18 @@ namespace GoogleCloudExtension.CloudExplorer
 
         IEnumerable<Project> ICloudSourceContext.Projects => _projects;
 
+        void ICloudSourceContext.ShowPropertiesWindow(object item)
+        {
+            _selectionUtils.ActivatePropertiesWindow();
+            _selectionUtils.SelectItem(item);
+        }
+
         #endregion
 
-        public CloudExplorerViewModel()
+        public CloudExplorerViewModel(SelectionUtils selectionUtils)
         {
+            _selectionUtils = selectionUtils;
+
             // Contains the list of sources to display to the user, in the order they will
             // be displayed.
 
