@@ -355,8 +355,10 @@
 
         <!-- Hierarchical view of the items, with the subitems inside. -->
         <TreeView
+            x:Name="_treeView"
             ItemsSource="{Binding Roots}"
             SelectedItemChanged="TreeView_SelectedItemChanged"
+            KeyDown="TreeView_KeyDown"
             Visibility="{Binding IsEmptyState, Converter={utils:VisibilityConverter IsNegated=True}}"
             Grid.Row="2"
             Style="{StaticResource CloudExplorerTreeViewStyle}" />

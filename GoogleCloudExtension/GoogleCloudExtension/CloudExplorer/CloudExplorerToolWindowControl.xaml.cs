@@ -15,6 +15,7 @@
 using GoogleCloudExtension.Utils;
 using System;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace GoogleCloudExtension.CloudExplorer
 {
@@ -59,6 +60,21 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             var itemSource = (ICloudExplorerItemSource)sender;
             _selectionUtils.SelectItem(itemSource.Item);
+        }
+
+        private void TreeView_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Detect that Shift+F10 is pressed, open up the context menu.
+            if (e.Key == Key.F10 && (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift)
+            {
+                var item = _treeView.SelectedItem as TreeHierarchy;
+                if (item != null)
+                {
+                    var contextMenu = item.ContextMenu;
+                    contextMenu.IsOpen = true;
+                    e.Handled = true;
+                }
+            }
         }
     }
 }
