@@ -102,12 +102,12 @@
         <Style x:Key="CommandBarButtonStyle"
                TargetType="{x:Type Button}"
                BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ButtonStyleKey}}">
-            <Setter Property="Padding" Value="1"/>
-            <Setter Property="Width" Value="25px" />
-            <Setter Property="Height" Value="25px" />
-            <Setter Property="MinWidth" Value="25px" />
-            <Setter Property="MinHeight" Value="25px" />
-            <Setter Property="Margin" Value="5,0,0,0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Width" Value="20px" />
+            <Setter Property="Height" Value="20px" />
+            <Setter Property="MinWidth" Value="20px" />
+            <Setter Property="MinHeight" Value="20px" />
+            <Setter Property="Margin" Value="2.5,0,0,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
@@ -261,7 +261,7 @@
     <Grid IsEnabled="{Binding IsReady}">
         <Grid.RowDefinitions>
             <!-- This row contains the button bar. -->
-            <RowDefinition Height="30" />
+            <RowDefinition Height="25" />
 
             <!-- This row contains the project switcher. -->
             <RowDefinition Height="Auto" />
