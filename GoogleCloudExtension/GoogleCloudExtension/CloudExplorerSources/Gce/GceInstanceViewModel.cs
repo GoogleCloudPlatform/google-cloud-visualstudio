@@ -223,9 +223,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceStartInstanceMenuHeader, Command = startInstanceCommand });
             }
 
+            menuItems.Add(new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) });
             menuItems.Add(new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) });
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void OnOpenOnCloudConsoleCommand()
+        {
+            var url = $"https://console.cloud.google.com/compute/instancesDetail/zones/{_instance.GetZoneName()}/instances/{_instance.Name}?project={_owner.Context.CurrentProject.ProjectId}";
+            Process.Start(url);
         }
 
         private void OnPropertiesWindowCommand()

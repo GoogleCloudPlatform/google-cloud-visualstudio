@@ -369,10 +369,6 @@
     <value>The status of the zone.</value>
     <comment>The description of the status property of a GCE zone.</comment>
   </data>
-  <data name="CloudExplorerGcsBrowseMenuHeader" xml:space="preserve">
-    <value>Browse Bucket</value>
-    <comment>The menu header for the browse command on the GCS bucket.</comment>
-  </data>
   <data name="CloudExplorerGcsBucketCategory" xml:space="preserve">
     <value>Bucket Properties</value>
     <comment>The category for GCS bucket properties.</comment>
@@ -660,6 +656,10 @@
   <data name="UiOkButtonCaption" xml:space="preserve">
     <value>Ok</value>
     <comment>Caption for Ok buttons.</comment>
+  </data>
+  <data name="UiOpenOnCloudConsoleMenuHeader" xml:space="preserve">
+    <value>Open on Cloud Console</value>
+    <comment>Header for the menu that opens the item in the cloud console.</comment>
   </data>
   <data name="UiPropertiesMenuHeader" xml:space="preserve">
     <value>Properties</value>

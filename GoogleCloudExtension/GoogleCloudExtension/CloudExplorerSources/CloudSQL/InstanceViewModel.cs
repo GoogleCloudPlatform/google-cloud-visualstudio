@@ -23,6 +23,7 @@ using Microsoft.VisualStudio.Shell;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -62,11 +63,18 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = Resources.CloudExplorerSqlOpenAddDataConnectionMenuHeader, Command = _openAddDataConnectionDialog },
+                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) },
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
 
             UpdateIcon();
+        }
+
+        private void OnOpenOnCloudConsoleCommand()
+        {
+            var url = $"https://console.cloud.google.com/sql/instances/{_instance.Name}/overview?project={_owner.Context.CurrentProject.Name}";
+            Process.Start(url);
         }
 
         private void OnPropertiesCommand()

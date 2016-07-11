@@ -628,15 +628,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Browse Bucket.
-        /// </summary>
-        public static string CloudExplorerGcsBrowseMenuHeader {
-            get {
-                return ResourceManager.GetString("CloudExplorerGcsBrowseMenuHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Bucket Properties.
         /// </summary>
         public static string CloudExplorerGcsBucketCategory {
@@ -1281,6 +1272,15 @@ namespace GoogleCloudExtension {
         public static string UiOkButtonCaption {
             get {
                 return ResourceManager.GetString("UiOkButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open on Cloud Console.
+        /// </summary>
+        public static string UiOpenOnCloudConsoleMenuHeader {
+            get {
+                return ResourceManager.GetString("UiOpenOnCloudConsoleMenuHeader", resourceCulture);
             }
         }
         
