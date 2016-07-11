@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 {
@@ -60,12 +61,24 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             base.Initialize(context);
 
             InvalidateProjectOrAccount();
+
+            var menuItems = new List<MenuItem>
+            {
+                new MenuItem { Header = "Status", Command = new WeakCommand(OnStatusCommand) },
+            };
+            ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
         public override void InvalidateProjectOrAccount()
         {
             Debug.WriteLine("New credentials, invalidating the Google Cloud SQL source.");
             DataSource = new Lazy<CloudSQLDataSource>(CreateDataSource);
+        }
+
+        // TODO(talarico): Make a util function for this it is used in multiple places.
+        private void OnStatusCommand()
+        {
+            Process.Start("https://status.cloud.google.com/");
         }
 
         private CloudSQLDataSource CreateDataSource()
