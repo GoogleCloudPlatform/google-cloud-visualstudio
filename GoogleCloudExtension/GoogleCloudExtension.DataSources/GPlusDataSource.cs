@@ -16,7 +16,6 @@ using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Plus.v1;
 using Google.Apis.Plus.v1.Data;
-using Google.Apis.Services;
 using System.Diagnostics;
 using System.Threading.Tasks;
 

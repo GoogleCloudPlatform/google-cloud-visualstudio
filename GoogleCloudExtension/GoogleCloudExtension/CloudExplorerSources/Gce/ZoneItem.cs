@@ -14,7 +14,6 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Utils;
-using System.ComponentModel;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {

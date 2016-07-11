@@ -14,7 +14,6 @@
 
 using Google.Apis.SQLAdmin.v1beta4.Data;
 using GoogleCloudExtension.Utils;
-using System.ComponentModel;
 using System.Linq;
 
 namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL

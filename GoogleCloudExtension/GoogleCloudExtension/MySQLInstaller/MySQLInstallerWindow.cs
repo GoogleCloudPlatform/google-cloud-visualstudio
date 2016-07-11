@@ -16,7 +16,6 @@ using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.MySQLInstaller
 {
-
     /// <summary>
     /// This class is the dialog to use to prompt the user to install MySQL for Visual Studio and other
     /// needed extensions.
@@ -25,7 +24,8 @@ namespace GoogleCloudExtension.MySQLInstaller
     {
         private MySQLInstallerWindow() : base(GoogleCloudExtension.Resources.MySqlInstallerWindowTitle, width: 300, height: 250)
         {
-            Content = new MySQLInstallerWindowContent {
+            Content = new MySQLInstallerWindowContent
+            {
                 DataContext = new MySQLInstallerViewModel(this)
             };
         }
