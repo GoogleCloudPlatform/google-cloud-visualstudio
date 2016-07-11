@@ -22,7 +22,7 @@
 
         <!-- Common node template, defines the UI for all nodes. -->
         <DataTemplate x:Key="nodeTemplate">
-            <Grid ContextMenu="{Binding ContextMenu}">
+            <Grid>
                 <StackPanel Orientation="Horizontal">
                     <controls:ProgressIndicator Visibility="{Binding IsLoading, Converter={StaticResource visibilityConverter}}" />
 
@@ -173,6 +173,7 @@
         <Style x:Key="CloudExlorerTreeItemViewStyle" TargetType="{x:Type TreeViewItem}">
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
             <Setter Property="Foreground" Value="{DynamicResource VsBrush.WindowText}"/>
+            <Setter Property="ContextMenu" Value="{Binding Header.ContextMenu, RelativeSource={RelativeSource Self}}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TreeViewItem}">
