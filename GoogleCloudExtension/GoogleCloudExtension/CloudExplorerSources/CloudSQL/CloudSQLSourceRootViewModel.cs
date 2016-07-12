@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 {
@@ -60,6 +61,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             base.Initialize(context);
 
             InvalidateProjectOrAccount();
+
+            var menuItems = new List<MenuItem>
+            {
+                new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new WeakCommand(OnStatusCommand) },
+            };
+            ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void OnStatusCommand()
+        {
+            Process.Start("https://status.cloud.google.com/");
         }
 
         public override void InvalidateProjectOrAccount()
