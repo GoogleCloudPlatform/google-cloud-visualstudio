@@ -187,7 +187,7 @@ namespace GoogleCloudExtension.DataSources
         /// <summary>
         ///  Starts an instance in the current project, given its <paramref name="zoneName"/> and <paramref name="name"/>.
         /// </summary>
-        /// <param name="zoneName">The zone where the instnace is lcoated.</param>
+        /// <param name="zoneName">The zone where the instance is located.</param>
         /// <param name="name">The name of the instance.</param>
         /// <returns>The new pending operation.</returns>
         public GceOperation StartInstance(string zoneName, string name)
@@ -240,7 +240,7 @@ namespace GoogleCloudExtension.DataSources
         /// name as the target tag. GCE instances with that tag will be affected by this rule.
         /// </summary>
         /// <param name="port">The port to open.</param>
-        /// <returns>The task that will be fullfilled once the operation is completed.</returns>
+        /// <returns>The task that will be fulfilled once the operation is completed.</returns>
         public async Task CreateFirewall(FirewallPort port)
         {
             try

@@ -63,7 +63,7 @@ namespace GoogleCloudExtension.GCloud
         /// Returns true if the <seealso cref="ResetWindowsCredentialsAsync(string, string, string, Context)"/> method can
         /// be used safely.
         /// </summary>
-        /// <returns>A task that will be fullfilled to true if the method can be called, false otherwise.</returns>
+        /// <returns>A task that will be fulfilled to true if the method can be called, false otherwise.</returns>
         public static Task<bool> CanUseResetWindowsCredentialsAsync() => IsComponentInstalledAsync("beta");
 
         /// <summary>

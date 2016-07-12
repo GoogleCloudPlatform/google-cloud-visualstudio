@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.GCloud
         public string AppName { get; set; }
 
         /// <summary>
-        /// The application name to use when reporting metrics to the server side.
+        /// The application version to use when reporting metrics to the server side.
         /// </summary>
         public string AppVersion { get; set; }
     }

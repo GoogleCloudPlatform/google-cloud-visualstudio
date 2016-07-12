@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.DataSources
     }
 
     /// <summary>
-    /// This class represents a TCP port that needs to be opened in the firewall.
+    /// This class represents a port that needs to be opened in the firewall.
     /// </summary>
     public class FirewallPort
     {

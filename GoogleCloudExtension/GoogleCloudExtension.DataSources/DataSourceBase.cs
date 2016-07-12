@@ -46,7 +46,7 @@ namespace GoogleCloudExtension.DataSources
         protected string AppName { get; }
 
         /// <summary>
-        /// Initializes this class with the <paramref name="projectId"/> and uses <paramref name="factory"/> to
+        /// Initializes this class with the <paramref name="projectId"/> and uses <paramref name="serviceFactory"/> to
         /// create an instance of the service to wrap.
         /// </summary>
         /// <param name="projectId">The project id for this data source.</param>
@@ -72,7 +72,9 @@ namespace GoogleCloudExtension.DataSources
         /// Initializes an instance of the data source with only a service, for those APIs that do
         /// not require a project id.
         /// </summary>
-        /// <param name="service">The service for this data source.</param>
+        /// <param name="credentials">The credentials to use for the service.</param>
+        /// <param name="serviceFactory">The service factory for this data source.</param>
+        /// <param name="appName">The name of the application.</param>
         protected DataSourceBase(
             GoogleCredential credential,
             Func<BaseClientService.Initializer, TService> serviceFactory,

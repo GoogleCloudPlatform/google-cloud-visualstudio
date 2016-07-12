@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.DataSources
     }
 
     /// <summary>
-    /// This class represents a an operation on a Google Compute Engine VM instance.
+    /// This class represents an operation on a Google Compute Engine VM instance.
     /// </summary>
     public class GceOperation
     {
