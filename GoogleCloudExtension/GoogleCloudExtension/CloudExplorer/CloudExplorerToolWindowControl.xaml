@@ -174,6 +174,7 @@
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
             <Setter Property="Foreground" Value="{DynamicResource VsBrush.WindowText}"/>
             <Setter Property="ContextMenu" Value="{Binding Header.ContextMenu, RelativeSource={RelativeSource Self}}" />
+            <EventSetter Event="TreeViewItem.PreviewMouseRightButtonDown" Handler="TreeViewItem_PreviewMouseRightButtonDown" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TreeViewItem}">

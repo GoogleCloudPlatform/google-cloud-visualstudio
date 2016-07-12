@@ -76,5 +76,14 @@ namespace GoogleCloudExtension.CloudExplorer
                 }
             }
         }
+
+        private void TreeViewItem_PreviewMouseRightButtonDown(object sender, MouseEventArgs e)
+        {
+            var item = sender as TreeViewItem;
+            if (item != null)
+            {
+                item.IsSelected = true;
+            }
+        }
     }
 }
