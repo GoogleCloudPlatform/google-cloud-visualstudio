@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
     /// </summary>
     internal class InstanceViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
-        private static readonly TimeSpan s_pollTimeout = new TimeSpan(0, 0, 1);
+        private static readonly TimeSpan s_pollInterval = new TimeSpan(0, 0, 1);
 
         private const string IconRunningResourcePath = "CloudExplorerSources/CloudSQL/Resources/instance_icon_running.png";
         private const string IconOfflineResourcePath = "CloudExplorerSources/CloudSQL/Resources/instance_icon_offline.png";
@@ -46,9 +46,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         private static readonly Lazy<ImageSource> s_instanceUnknownIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconUnknownResourcePath));
 
         private readonly CloudSQLSourceRootViewModel _owner;
-        private readonly WeakCommand _openAddDataConnectionDialog;
-        private readonly WeakCommand _authorizeMachine;
-        private readonly WeakCommand _unauthorizeMachine;
 
         private DatabaseInstance _instance;
 
@@ -71,10 +68,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         {
             _owner = owner;
             _instance = instance;
-
-            _openAddDataConnectionDialog = new WeakCommand(OpenDataConnectionDialog);
-            _authorizeMachine = new WeakCommand(AuthorizeMachine);
-            _unauthorizeMachine = new WeakCommand(UnauthorizeMachine);
 
             Caption = Instance.Name;
 
@@ -116,7 +109,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                     {
                         break;
                     }
-                    await System.Threading.Tasks.Task.Delay(s_pollTimeout);
+                    await System.Threading.Tasks.Task.Delay(s_pollInterval);
                     operation = await dataSource.GetOperationAsync(operation.Name);
                 }
                 // Be sure to update the instance when finished to ensure we have
