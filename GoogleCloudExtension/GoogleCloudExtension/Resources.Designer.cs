@@ -808,6 +808,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Granting machine access to instance....
+        /// </summary>
+        public static string CloudExplorerSqlAthorizeMachineCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerSqlAthorizeMachineCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Grant Machine Instance Access.
+        /// </summary>
+        public static string CloudExplorerSqlAthorizeMachineMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerSqlAthorizeMachineMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Backend Type.
         /// </summary>
         public static string CloudExplorerSqlBackendTypeDisplayName {
@@ -912,6 +930,24 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerSqlRootNodeCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerSqlRootNodeCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Revoking machine&apos;s access to instance....
+        /// </summary>
+        public static string CloudExplorerSqlUnathorizeMachineCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerSqlUnathorizeMachineCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Revoke Machine&apos;s Instance Access.
+        /// </summary>
+        public static string CloudExplorerSqlUnathorizeMachineMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerSqlUnathorizeMachineMenuHeader", resourceCulture);
             }
         }
         

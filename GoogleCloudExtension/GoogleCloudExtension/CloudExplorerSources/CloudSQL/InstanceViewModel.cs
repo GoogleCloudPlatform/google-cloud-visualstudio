@@ -86,7 +86,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         {
             DatabaseInstanceExtensions.AddAuthorizedNetwork(Instance, DnsUtils.MachineIpAddress);
             Task<Operation> operation = _owner.DataSource.Value.UpdateInstanceAsync(Instance);
-            string action = "Granting machine access to database...";         
+            string action = Resources.CloudExplorerSqlAthorizeMachineCaption;
             PollOperation(operation, action);
         }
 
@@ -94,7 +94,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         {
             DatabaseInstanceExtensions.RemoveAuthorizedNetwork(Instance, DnsUtils.MachineIpAddress);
             Task<Operation> operation = _owner.DataSource.Value.UpdateInstanceAsync(Instance);
-            string action = "Revoking machine's access to database...";
+            string action = Resources.CloudExplorerSqlUnathorizeMachineCaption;
             PollOperation(operation, action);
         }
 
@@ -204,7 +204,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = "Add Data Connection", Command = new WeakCommand(OpenDataConnectionDialog) },
+                new MenuItem { Header = Resources.CloudExplorerSqlOpenAddDataConnectionMenuHeader, Command = new WeakCommand(OpenDataConnectionDialog) },
                 new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) },
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesCommand) },
             };
@@ -215,11 +215,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             {
                 if (DatabaseInstanceExtensions.IpAddressAuthorized(Instance, DnsUtils.MachineIpAddress))
                 {
-                    menuItems.Add(new MenuItem {Header = "Revoke Machine's Database Access", Command = new WeakCommand(UnauthorizeMachine) });
+                    menuItems.Add(new MenuItem {Header = Resources.CloudExplorerSqlUnathorizeMachineMenuHeader, Command = new WeakCommand(UnauthorizeMachine) });
                 }
                 else
                 {
-                    menuItems.Add(new MenuItem {Header = "Grant Machine Database Access", Command = new WeakCommand(AuthorizeMachine) });
+                    menuItems.Add(new MenuItem {Header = Resources.CloudExplorerSqlAthorizeMachineMenuHeader, Command = new WeakCommand(AuthorizeMachine) });
                 }
             }
 
