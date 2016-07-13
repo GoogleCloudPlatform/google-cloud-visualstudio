@@ -99,7 +99,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             PollOperation(operation, action);
         }
 
-        // TODO(talarico): Add common polling class that will handle cancelations and timeouts
         /// <summary>
         /// Poll the status of a pending operation until it is complete.
         /// </summary>
@@ -115,22 +114,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 
             try
             {
-                // Poll for the operation to be complete.
-                Operation operation = await task;
-                while (true)
-                {
-                    if (CloudSqlDataSource.OperationStateDone.Equals(operation.Status))
-                    {
-                        break;
-                    }
-                    await System.Threading.Tasks.Task.Delay(s_pollInterval);
-                    operation = await dataSource.GetOperationAsync(operation.Name);
-                }
+                // Poll until the update to completes.
+                Polling<Operation>.Fetch fetch = (o) => dataSource.GetOperationAsync(o.Name);
+                Polling<Operation>.StopPolling stopPolling = (o) => CloudSqlDataSource.OperationStateDone.Equals(o.Status);
+                Operation operation = await Polling<Operation>.Poll(task, fetch, stopPolling);
+
                 // Be sure to update the instance when finished to ensure we have
                 // the most up to date version.
                 Instance = await dataSource.GetInstanceAsync(Instance.Name);
             }
-            catch (DataSourceException ex)
+            catch (Exception ex) when (ex is DataSourceException || ex is TimeoutException)
             {
                 // TODO(talarico): Handle error messages properly
                 IsError = true;
