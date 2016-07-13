@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
     /// </summary>
     internal class InstanceViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
-        private static readonly TimeSpan s_pollInterval = new TimeSpan(0, 0, 1);
+        private static readonly TimeSpan s_pollInterval = TimeSpan.FromSeconds(1);
 
         private const string IconRunningResourcePath = "CloudExplorerSources/CloudSQL/Resources/instance_icon_running.png";
         private const string IconOfflineResourcePath = "CloudExplorerSources/CloudSQL/Resources/instance_icon_offline.png";
@@ -75,6 +75,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             UpdateIcon();
         }
 
+        /// <summary>
+        /// Add the current machine's IP address as an authorized network of the database instance and
+        /// shows status for the operation while it is in progress.
+        /// </summary>
         private void AuthorizeMachine()
         {
             DatabaseInstanceExtensions.AddAuthorizedNetwork(Instance, DnsUtils.MachineIpAddress);
@@ -83,6 +87,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             PollOperation(operation, action);
         }
 
+        /// <summary>
+        /// Remove the current machine's IP address as an authorized network of the database instance and
+        /// shows status for the operation while it is in progress.
+        /// </summary>
         private void UnauthorizeMachine()
         {
             DatabaseInstanceExtensions.RemoveAuthorizedNetwork(Instance, DnsUtils.MachineIpAddress);
@@ -91,6 +99,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             PollOperation(operation, action);
         }
 
+        // TODO(talarico): Add common polling class that will handle cancelations and timeouts
+        /// <summary>
+        /// Poll the status of a pending operation until it is complete.
+        /// </summary>
+        /// <param name="task">The current operation to watch and poll</param>
+        /// <param name="action">A string representation of what the operation is doing for user display</param>
         private async void PollOperation(Task<Operation> task, string action)
         {
             // Update the user display and menu.
@@ -141,6 +155,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             _owner.Context.ShowPropertiesWindow(Item);
         }
 
+        /// <summary>
+        /// Opens the Add Data Connection Dialog with the data source being a MySQL database and the server field
+        /// set to the ip of the intance.  If the proper dependencies are not installed (for the MySQL database)
+        /// the user will be prompted to install them before they can continue.
+        /// </summary>
         private void OpenDataConnectionDialog()
         {
             ExtensionAnalytics.ReportCommand(CommandName.OpenMySQLDataConnectionDialog, CommandInvocationSource.Button);
@@ -186,6 +205,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             }
         }
 
+        /// <summary>
+        /// Update the context menu based on the current state of the instance.
+        /// </summary>
         private void UpdateMenu()
         {
             // Do not allow actions when the instance is loading or in an error state.
@@ -219,6 +241,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
+        /// <summary>
+        /// Update the icon menu based on the current state of the instance.
+        /// </summary>
         private void UpdateIcon()
         {
             switch (Instance.State)

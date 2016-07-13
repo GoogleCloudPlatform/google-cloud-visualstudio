@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.SQLAdmin.v1beta4;
 using Google.Apis.SQLAdmin.v1beta4.Data;
@@ -19,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Google;
+
 
 namespace GoogleCloudExtension.DataSources
 {
@@ -34,8 +35,6 @@ namespace GoogleCloudExtension.DataSources
         /// <summary>
         /// Initializes a new instance of this class.
         /// </summary>
-        /// <param name="projectId"></param>
-        /// <param name="credential"></param>
         public CloudSqlDataSource(string projectId, GoogleCredential credential, string appName)
             : base(projectId, credential, init => new SQLAdminService(init), appName)
         { }
@@ -68,7 +67,6 @@ namespace GoogleCloudExtension.DataSources
         /// <summary>
         /// Gets the Cloud SQL instances for the given project and name.
         /// </summary>
-        /// <param name="name"></param>
         /// <returns>The Cloud SQL instance.</returns>
         public Task<DatabaseInstance> GetInstanceAsync(string name)
         {
@@ -87,7 +85,6 @@ namespace GoogleCloudExtension.DataSources
         /// <summary>
         /// Updates the Cloud SQL instance.
         /// </summary>
-        /// <param name="instance"></param>
         /// <returns>The Cloud SQL operation with the status of the update.</returns>
         public Task<Operation> UpdateInstanceAsync(DatabaseInstance instance)
         {

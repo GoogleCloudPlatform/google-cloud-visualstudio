@@ -26,9 +26,9 @@ namespace GoogleCloudExtension.DataSources
         public const string MaintenanceState = "MAINTENANCE";
         public const string UnknownState = "UNKNOWN_STATE";
 
-        /// <param name="instance"></param>
-        /// <param name="ipAddress"></param>
-        /// <returns>True if IP address is an authorized network of the instance</returns>
+        /// <summary>
+        /// True if IP address is an authorized network of the instance
+        /// </summary>
         public static bool IpAddressAuthorized(DatabaseInstance instance, string ipAddress)
         {
             IList<AclEntry> networks = instance?.Settings?.IpConfiguration?.AuthorizedNetworks;
@@ -38,8 +38,6 @@ namespace GoogleCloudExtension.DataSources
         /// <summary>
         /// Removes the given IP address from the instance's authorized networks if it exists.
         /// </summary>
-        /// <param name="instance"></param>
-        /// <param name="ipAddress"></param>
         public static void RemoveAuthorizedNetwork(DatabaseInstance instance, string ipAddress)
         {
             IList<AclEntry> networks = instance?.Settings?.IpConfiguration?.AuthorizedNetworks;
@@ -54,8 +52,6 @@ namespace GoogleCloudExtension.DataSources
         /// Adds the given IP address to the instance's authorized networks.
         /// Makes no check that the IP address is or is not already an authorized network.
         /// </summary>
-        /// <param name="instance"></param>
-        /// <param name="ipAddress"></param>
         public static void AddAuthorizedNetwork(DatabaseInstance instance, string ipAddress)
         {
             // Ensure that all nested objects are initilaized.
