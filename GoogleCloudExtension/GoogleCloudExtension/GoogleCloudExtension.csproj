@@ -125,6 +125,7 @@
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Theming\ThemeManager.cs" />
+    <Compile Include="Utils\DnsUtils.cs" />
     <Compile Include="Utils\LinkInfo.cs" />
     <Compile Include="LinkPrompt\LinkPromptDialogWindow.cs" />
     <Compile Include="LinkPrompt\LinkPromptDialogWindowContent.xaml.cs">
