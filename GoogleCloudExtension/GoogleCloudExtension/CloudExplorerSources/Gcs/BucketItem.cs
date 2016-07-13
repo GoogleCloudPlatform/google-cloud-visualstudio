@@ -14,46 +14,38 @@
 
 using Google.Apis.Storage.v1.Data;
 using GoogleCloudExtension.Utils;
-using System.ComponentModel;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 {
     internal class BucketItem : PropertyWindowItemBase
     {
-        private const string Category = "Bucket Properties";
-
         private readonly Bucket _bucket;
 
-        public BucketItem(Bucket bucket) : base(className: "Bucket Properties", componentName: bucket.Name)
+        public BucketItem(Bucket bucket) : base(className: Resources.CloudExplorerGcsBucketCategory, componentName: bucket.Name)
         {
             _bucket = bucket;
         }
 
-        [Category(Category)]
-        [Description("The name of the bucket")]
+        [LocalizedCategory(nameof(Resources.CloudExplorerGcsBucketCategory))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGcsBucketNameDescription))]
         public string Name => _bucket.Name;
 
-        [Category(Category)]
-        [Description("The creation time stamp for the bucket")]
+        [LocalizedCategory(nameof(Resources.CloudExplorerGcsBucketCategory))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGcsBucketCreatedDescription))]
         public string Created => _bucket.TimeCreated?.ToShortDateString();
 
-        [Category(Category)]
-        [Description("The modification time stamp for the bucket")]
+        [LocalizedCategory(nameof(Resources.CloudExplorerGcsBucketCategory))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGcsBucketModifiedDescription))]
         public string Updated => _bucket.Updated?.ToShortDateString();
 
-        [Category(Category)]
-        [Description("The url to the bucket")]
-        [DisplayName("Link")]
-        public string SelfLink => _bucket.SelfLink;
-
-        [Category(Category)]
-        [Description("Whether versioning is enabled for the bucket")]
-        [DisplayName("Is Versioning Enabled")]
+        [LocalizedCategory(nameof(Resources.CloudExplorerGcsBucketCategory))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGcsBucketVersioningEnabledDescription))]
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerGcsBucketVersioningEnabledDisplayName))]
         public bool VersioningEnabled => _bucket?.Versioning?.Enabled ?? false;
 
-        [Category(Category)]
-        [Description("The storage class for the bucket")]
-        [DisplayName("Storage Class")]
+        [LocalizedCategory(nameof(Resources.CloudExplorerGcsBucketCategory))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGcsBucketStorageClassDescription))]
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerGcsBucketStorageClassDisplayName))]
         public string StorageClass => _bucket.StorageClass;
 
         public override string ToString() => _bucket.Name;

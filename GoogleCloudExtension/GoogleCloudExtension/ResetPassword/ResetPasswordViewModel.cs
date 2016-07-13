@@ -94,8 +94,8 @@ namespace GoogleCloudExtension.ResetPassword
         private async void OnOkCommand()
         {
             if (!UserPromptUtils.YesNoPrompt(
-                    $"Are you sure you want to reset the password for the user {UserName} in instance {_instance.Name}? This operation cannot be cancelled.",
-                    "Reset Password"))
+                    String.Format(Resources.ResetPasswordConfirmationPromptMessage, UserName, _instance.Name),
+                    Resources.ResetPasswordConfirmationPromptTitle))
             {
                 Debug.WriteLine("The user cancelled resetting the password.");
                 return;
@@ -120,16 +120,16 @@ namespace GoogleCloudExtension.ResetPassword
                     if (!GCloudWrapper.IsGCloudCliInstalled())
                     {
                         LinkPromptDialogWindow.PromptUser(
-                            "Missing Cloud SDK",
-                            @"Ensure that the Cloud SDK is installed and available in the path, and that the ""beta"" component is installed.",
-                            new LinkInfo(link: "https://www.google.com", caption: "Install Cloud SDK"));
+                            Resources.ResetPasswordMissingGcloudTitle,
+                            Resources.ResetPasswordGcloudMissingMessage,
+                            new LinkInfo(link: "https://cloud.google.com/sdk/", caption: Resources.ResetPasswordGcloudLinkCaption));
                     }
                     else
                     {
                         LinkPromptDialogWindow.PromptUser(
-                            "Missing Cloud SDK",
-                            @"Please ensure that the ""beta"" is component installed, using ""gcloud components install beta"".",
-                            new LinkInfo(link: "https://www.google.com", caption: "Install Cloud SDK"));
+                            Resources.ResetPasswordMissingGcloudTitle,
+                            Resources.ResetPasswordGcloudMissingBetaMessage,
+                            new LinkInfo(link: "https://cloud.google.com/sdk/", caption: Resources.ResetPasswordGcloudLinkCaption));
                     }
                     return;
                 }
@@ -156,7 +156,9 @@ namespace GoogleCloudExtension.ResetPassword
             }
             catch (GCloudException ex)
             {
-                UserPromptUtils.ErrorPrompt($"Failed to reset password for {_instance.Name}. {ex.Message}", "Reset Password");
+                UserPromptUtils.ErrorPrompt(
+                    String.Format(Resources.ResetPasswordFailedPromptMessage, _instance.Name, ex.Message),
+                    Resources.ResetPasswordConfirmationPromptTitle);
             }
             finally
             {

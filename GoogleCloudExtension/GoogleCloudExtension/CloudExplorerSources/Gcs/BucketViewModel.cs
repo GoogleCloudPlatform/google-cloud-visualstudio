@@ -33,7 +33,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         private readonly GcsSourceRootViewModel _owner;
         private readonly Bucket _bucket;
         private readonly Lazy<BucketItem> _item;
-        private readonly WeakCommand _openBucketCommand;
+        private readonly WeakCommand _openOnCloudConsoleCommand;
 
         public object Item
         {
@@ -50,19 +50,25 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             _owner = owner;
             _bucket = bucket;
             _item = new Lazy<BucketItem>(GetItem);
-            _openBucketCommand = new WeakCommand(OnOpenBucket);
+            _openOnCloudConsoleCommand = new WeakCommand(OnOpenConCloudConsoleCommand);
 
             Caption = _bucket.Name;
             Icon = s_bucketIcon.Value;
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = "Browse Bucket", Command = _openBucketCommand },
+                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = _openOnCloudConsoleCommand },
+                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
-        private async void OnOpenBucket()
+        private void OnPropertiesCommand()
+        {
+            _owner.Context.ShowPropertiesWindow(Item);
+        }
+
+        private void OnOpenConCloudConsoleCommand()
         {
             ExtensionAnalytics.ReportCommand(CommandName.OpenWebsiteForGcsBucket, CommandInvocationSource.Button);
 

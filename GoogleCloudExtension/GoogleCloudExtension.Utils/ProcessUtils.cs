@@ -86,9 +86,9 @@ namespace GoogleCloudExtension.Utils
         /// by the process.
         /// Uses <paramref name="environment"/> if provided to customize the environment of the child process.
         /// </summary>
-        /// <param name="file">The path to the binary to execute, it should not be null.</param>
+        /// <param name="file">The path to the binary to execute, it must not be null.</param>
         /// <param name="args">The arguments to pass to the binary to execute, it can be null.</param>
-        /// <param name="handler">The callback to call with wach line being oput by the process, it can be called outside
+        /// <param name="handler">The callback to call with the line being oput by the process, it can be called outside
         /// of the UI thread. Must not be null.</param>
         /// <param name="environment">Optional parameter with values for environment variables to pass on to the child process.</param>
         /// <returns></returns>

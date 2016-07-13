@@ -23,51 +23,37 @@ namespace GoogleCloudExtension.Utils
     /// <summary>
     /// This class provides helpers to update the properties window, manage the currently selected "item".
     /// </summary>
-    internal static class SelectionUtils
+    public class SelectionUtils
     {
-        /// <summary>
-        /// Activates the properties window, ensuring it is visible to the user.
-        /// </summary>
-        /// <param name="provider">The <seealso cref="IServiceProvider"/> to use to get services.</param>
-        /// <returns>True if the window as activated, false otherwise.</returns>
-        public static bool ActivatePropertiesWindow(IServiceProvider provider)
+        private readonly ToolWindowPane _owner;
+        private readonly Lazy<ITrackSelection> _selectionTracker;
+        private bool _propertiesWindowTickled = false;
+
+        private IVsWindowFrame OwnerFrame => (IVsWindowFrame)_owner.Frame;
+
+        public SelectionUtils(ToolWindowPane owner)
         {
-            IVsWindowFrame frame = null;
-            var shell = provider.GetService(typeof(SVsUIShell)) as IVsUIShell;
-            if (shell == null)
-            {
-                Debug.WriteLine("Could not get the shell.");
-                return false;
-            }
+            _owner = owner;
+            _selectionTracker = new Lazy<ITrackSelection>(() => CreateTrackSelection(_owner));
+        }
 
-            var guidPropertyBrowser = new Guid(ToolWindowGuids.PropertyBrowser);
-            shell.FindToolWindow((uint)__VSFINDTOOLWIN.FTW_fForceCreate, ref guidPropertyBrowser, out frame);
-            if (frame == null)
-            {
-                Debug.WriteLine("Failed to get the frame.");
-                return false;
-            }
-
-            frame.Show();
-            return true;
+        public void ActivatePropertiesWindow()
+        {
+            var frame = GetPropertiesWindow(_owner, forceCreate: true);
+            frame?.Show();
         }
 
         /// <summary>
         /// Clears the selection, making the property window empty.
         /// </summary>
         /// <param name="provider">The <seealso cref="IServiceProvider"/> to use to get services.</param>
-        public static void ClearSelection(IServiceProvider provider)
+        public void ClearSelection()
         {
-            var selectionTracker = provider.GetService(typeof(STrackSelection)) as ITrackSelection;
-            if (selectionTracker == null)
-            {
-                Debug.WriteLine("Failed to find the selection tracker.");
-                return;
-            }
-
             var selectionContainer = new SelectionContainer();
             selectionContainer.SelectedObjects = new List<object>();
-            selectionTracker.OnSelectChange(selectionContainer);
+            _selectionTracker.Value?.OnSelectChange(selectionContainer);
+
+            TicklePropertiesWindow();
         }
 
         /// <summary>
@@ -75,20 +61,83 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="provider">The <seealso cref="IServiceProvider"/> to use to get services.</param>
         /// <param name="item">The item to be selected.</param>
-        public static void SelectItem(IServiceProvider provider, object item)
+        public void SelectItem(object item)
         {
-            var selectionTracker = provider.GetService(typeof(STrackSelection)) as ITrackSelection;
+            var selectionContainer = new SelectionContainer(true, false);
+            var list = new List<object> { item };
+            selectionContainer.SelectedObjects = list;
+            selectionContainer.SelectableObjects = list;
+
+            Debug.WriteLine($"Update/d selected object: {item}");
+            _selectionTracker.Value?.OnSelectChange(selectionContainer);
+
+            TicklePropertiesWindow();
+        }
+
+        private static ITrackSelection CreateTrackSelection(IServiceProvider serviceProvider)
+        {
+            var selectionTracker = serviceProvider.GetService(typeof(STrackSelection)) as ITrackSelection;
             if (selectionTracker == null)
             {
                 Debug.WriteLine("Failed to find the selection tracker.");
+            }
+            return selectionTracker;
+        }
+
+        /// <summary>
+        /// Returns the properties window if it already exists.
+        /// </summary>
+        /// <param name="serviceProvider">The service provide to use.</param>
+        /// <param name="forceCreate">If true the properties window will be created if not present already.</param>
+        /// <returns>The poroperties window object if it exists, null if it is yet to be created.</returns>
+        private static IVsWindowFrame GetPropertiesWindow(IServiceProvider serviceProvider, bool forceCreate = false)
+        {
+            IVsWindowFrame frame = null;
+            var shell = serviceProvider.GetService(typeof(SVsUIShell)) as IVsUIShell;
+            if (shell == null)
+            {
+                Debug.WriteLine("Could not get the shell.");
+                return null;
+            }
+
+            uint flags = forceCreate ? (uint)__VSFINDTOOLWIN.FTW_fForceCreate : (uint)__VSFINDTOOLWIN.FTW_fFindFirst;
+            var guidPropertyBrowser = new Guid(ToolWindowGuids.PropertyBrowser);
+            shell.FindToolWindow(flags, ref guidPropertyBrowser, out frame);
+            if (forceCreate && frame == null)
+            {
+                Debug.WriteLine("Failed to create properties window.");
+            }
+
+            return frame;
+        }
+
+        /// <summary>
+        /// This method implements a workaround for a bug in VS 2015 in which the properties window
+        /// will not update the very first time is opened until it gains and loses focus. This method
+        /// forces the focus to change to the properties window and then back to the owner frame to force
+        /// this behavior.
+        /// </summary>
+        private async void TicklePropertiesWindow()
+        {
+            if (_propertiesWindowTickled)
+            {
                 return;
             }
 
-            var selectionContainer = new SelectionContainer();
-            selectionContainer.SelectedObjects = new List<object> { item };
+            // Tickle the properties window, change the focus to force the 
+            // properties window to update. This apparently only needs to be done once.
+            await System.Threading.Tasks.Task.Delay(1);
+            var frame = GetPropertiesWindow(_owner);
+            if (frame == null || frame.IsVisible() != Microsoft.VisualStudio.VSConstants.S_OK)
+            {
+                // If there's no properties frame, or it is not visible, then there's nothing todo.
+                return;
+            }
 
-            Debug.WriteLine($"Updated selected object: {item}");
-            selectionTracker.OnSelectChange(selectionContainer);
+            frame?.Show();
+            await System.Threading.Tasks.Task.Delay(1);
+            OwnerFrame?.Show();
+            _propertiesWindowTickled = true;
         }
     }
 }

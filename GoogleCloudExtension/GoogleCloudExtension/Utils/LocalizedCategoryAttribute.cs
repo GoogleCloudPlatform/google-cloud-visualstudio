@@ -13,25 +13,14 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel;
 
-namespace GoogleCloudExtension
+namespace GoogleCloudExtension.Utils
 {
-    /// <summary>
-    /// Global events in the extension.
-    /// </summary>
-    public static class ExtensionEvents
+    [AttributeUsage(AttributeTargets.All)]
+    public class LocalizedCategoryAttribute : CategoryAttribute
     {
-        /// <summary>
-        /// Raised when there's a new succesful deployment.
-        /// </summary>
-        public static event EventHandler AppEngineDeployed;
-
-        /// <summary>
-        /// Raises the <c>AppEngineDeployed</c> event.
-        /// </summary>
-        public static void RaiseAppEngineDeployed()
-        {
-            AppEngineDeployed?.Invoke(null, EventArgs.Empty);
-        }
+        public LocalizedCategoryAttribute(string key) : base(Resources.ResourceManager.GetString(key))
+        { }
     }
 }

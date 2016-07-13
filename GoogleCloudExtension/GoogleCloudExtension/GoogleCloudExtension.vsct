@@ -22,7 +22,7 @@
 
   <!--The Commands section is where commands, menus, and menu groups are defined.
       This section uses a Guid to identify the package that provides the command defined inside it. -->
-  <Commands package="guidDeployToGaePackage">
+  <Commands package="guidGoogleCloudExtensionPackage">
     <!-- Inside this section we have different sub-sections: one for the menus, another
     for the menu groups, one for the buttons (the actual commands), one for the combos
     and the last one for the bitmaps used. Each element is identified by a command id that
@@ -33,8 +33,8 @@
 
     <Menus>
       <!-- Defines the menu entry to show under the "Tools > Google Cloud Tools" menu. -->
-      <Menu guid="guidDeployToGaePackageCmdSet" id="GcpMenu" type="Menu" priority="0x0000">
-        <Parent guid="guidDeployToGaePackageCmdSet" id="GcpToolsGroupMenu" />
+      <Menu guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpMenu" type="Menu" priority="0x0000">
+        <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroupMenu" />
         <Strings>
           <ButtonText>Google Cloud Tools</ButtonText>
           <CommandName>Google Cloud Tools</CommandName>
@@ -44,117 +44,48 @@
 
     <Groups>
       <!-- This group represents the GCP tools group under the Tools menu. -->
-      <Group guid="guidDeployToGaePackageCmdSet" id="GcpToolsGroupMenu" priority="0x9000">
+      <Group guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroupMenu" priority="0x9000">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_MENU_TOOLS" />
       </Group>
 
       <!-- This group contains all of the commands that go under the GCP tools submenu. -->
-      <Group guid="guidDeployToGaePackageCmdSet" id="GcpToolsGroup" priority="0x0000">
-        <Parent guid="guidDeployToGaePackageCmdSet" id="GcpMenu" />
-      </Group>
-
-      <!-- This group contains all of the tool window commands. -->
-      <Group guid="guidDeployToGaePackageCmdSet" id="GcpWindowsGroup" priority="0x0600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CSCD_WINDOWS" />
+      <Group guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" priority="0x0000">
+        <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpMenu" />
       </Group>
     </Groups>
 
     <Buttons> 
       <!-- This command shows the tool window that manages the current account and project, could be a toolbar. -->
       <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidManageCredentialsCommand" priority="0x0400" type="Button">
-        <Parent guid="guidDeployToGaePackageCmdSet" id="GcpToolsGroup" />
+        <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" />
         <Strings>
           <ButtonText>Manage Credentials...</ButtonText>
         </Strings>
       </Button>
 
       <!-- This command shows the tool window that managed AppEngine apps. -->
-      <Button guid="guidDeployToGaePackageCmdSet" id="cmdidAppEngineAppsToolWindowCommand" priority="0x0200" type="Button">
-        <Parent guid="guidDeployToGaePackageCmdSet" id="GcpToolsGroup" />
+      <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidCloudExplorerToolWindowCommand" priority="0x0200" type="Button">
+        <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" />
         <Strings>
           <ButtonText>Show Google Cloud Explorer</ButtonText>
         </Strings>
       </Button>
     </Buttons>
 
-    <!--The bitmaps section is used to define the bitmaps that are used for the commands.-->
-    <Bitmaps>
-      <!--  The bitmap id is defined in a way that is a little bit different from the others:
-            the declaration starts with a guid for the bitmap strip, then there is the resource id of the
-            bitmap strip containing the bitmaps and then there are the numeric ids of the elements used
-            inside a button definition. An important aspect of this declaration is that the element id
-            must be the actual index (1-based) of the bitmap inside the bitmap strip. -->
-      <Bitmap guid="guidImages" href="Resources\DeployToGae.png" usedList="bmpPic1" />
-      <Bitmap guid="guidImages1" href="Resources\AppEngineAppsToolWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
-      <Bitmap guid="guidImages3" href="Resources\UserAndProjectListWindowCommand.png" usedList="bmpPic1, bmpPic2, bmpPicSearch, bmpPicX, bmpPicArrows, bmpPicStrikethrough" />
-      <Bitmap guid="guidImages4" href="Resources\DeployToGaeContextMenuCommand.png" usedList="bmpPic1" />
-    </Bitmaps>
   </Commands>
 
   <Symbols>
     <!-- This is the package guid. -->
-    <GuidSymbol name="guidDeployToGaePackage" value="{3784fd98-7fcc-40fc-be3b-b68334735af2}" />
+    <GuidSymbol name="guidGoogleCloudExtensionPackage" value="{3784fd98-7fcc-40fc-be3b-b68334735af2}" />
 
     <!-- This is the guid used to group the menu commands together -->
-    <GuidSymbol name="guidDeployToGaePackageCmdSet" value="{266caee5-128b-4fdd-a22d-d7a7c8017794}">
-      <IDSymbol value="0x1030" name="ItemContextMenu" />
-      <IDSymbol value="0x0100" name="DeployToGaeId" />
-      <IDSymbol value="4129" name="cmdidAppEngineAppsToolWindowCommand" />
+    <GuidSymbol name="guidGoogleCloudExtensionPackageCmdSet" value="{a7435138-27e2-410c-9d28-dffc5aa3fe80}">
+      <IDSymbol value="256" name="cmdidManageCredentialsCommand" />
+      <IDSymbol value="4129" name="cmdidCloudExplorerToolWindowCommand" />
       <IDSymbol value="0x1060" name="GcpMenu" />
       <IDSymbol value="0x1070" name="GcpToolsGroup" />
       <IDSymbol value="0x1080" name="GcpToolsGroupMenu" />
-      <IDSymbol value="4179" name="cmdidDeployToGaeContextMenuCommand" />
-      <IDSymbol value="4180" name="cmdidAddNewAccountCommand" />
-      <IDSymbol value="5000" name="GcpWindowsGroup"/>
     </GuidSymbol>
 
-    <GuidSymbol name="guidImages" value="{7f45e823-c417-46b7-bcf7-eb027a474180}">
-      <IDSymbol name="bmpPic1" value="1" />
-      <IDSymbol name="bmpPic2" value="2" />
-      <IDSymbol name="bmpPicSearch" value="3" />
-      <IDSymbol name="bmpPicX" value="4" />
-      <IDSymbol name="bmpPicArrows" value="5" />
-      <IDSymbol name="bmpPicStrikethrough" value="6" />
-    </GuidSymbol>
-
-    <GuidSymbol value="{e3d9bb6a-af3c-47a2-805e-1966e2c3463c}" name="guidImages1">
-      <IDSymbol name="bmpPic1" value="1" />
-      <IDSymbol name="bmpPic2" value="2" />
-      <IDSymbol name="bmpPicSearch" value="3" />
-      <IDSymbol name="bmpPicX" value="4" />
-      <IDSymbol name="bmpPicArrows" value="5" />
-      <IDSymbol name="bmpPicStrikethrough" value="6" />
-    </GuidSymbol>
-
-    <GuidSymbol value="{867e1b87-8327-484c-9ca7-7803582c54e3}" name="guidImages2">
-      <IDSymbol name="bmpPic1" value="1" />
-      <IDSymbol name="bmpPic2" value="2" />
-      <IDSymbol name="bmpPicSearch" value="3" />
-      <IDSymbol name="bmpPicX" value="4" />
-      <IDSymbol name="bmpPicArrows" value="5" />
-      <IDSymbol name="bmpPicStrikethrough" value="6" />
-    </GuidSymbol>
-
-    <GuidSymbol value="{a7435138-27e2-410c-9d28-dffc5aa3fe80}" name="guidGoogleCloudExtensionPackageCmdSet">
-      <IDSymbol value="256" name="cmdidManageCredentialsCommand" />
-    </GuidSymbol>
-
-    <GuidSymbol value="{7260a22b-2a43-4fff-aa65-a2b4a04cacad}" name="guidImages3">
-      <IDSymbol name="bmpPic1" value="1" />
-      <IDSymbol name="bmpPic2" value="2" />
-      <IDSymbol name="bmpPicSearch" value="3" />
-      <IDSymbol name="bmpPicX" value="4" />
-      <IDSymbol name="bmpPicArrows" value="5" />
-      <IDSymbol name="bmpPicStrikethrough" value="6" />
-    </GuidSymbol>
-
-    <GuidSymbol value="{31756600-ecce-4194-b8ae-c95ff90c50f7}" name="guidImages4">
-      <IDSymbol name="bmpPic1" value="1" />
-      <IDSymbol name="bmpPic2" value="2" />
-      <IDSymbol name="bmpPicSearch" value="3" />
-      <IDSymbol name="bmpPicX" value="4" />
-      <IDSymbol name="bmpPicArrows" value="5" />
-      <IDSymbol name="bmpPicStrikethrough" value="6" />
-    </GuidSymbol>
   </Symbols>
 </CommandTable>

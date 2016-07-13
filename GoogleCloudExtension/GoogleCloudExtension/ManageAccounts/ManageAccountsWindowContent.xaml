@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.ManageAccounts"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type local:ManageAccountsViewModel}}">
     <UserControl.Resources>
@@ -18,7 +19,7 @@
             </Grid.RowDefinitions>
             
             <!-- Caption row -->
-            <TextBlock Margin="3,3,3,2">Choose account:</TextBlock>
+            <TextBlock Margin="3,3,3,2" Text="{x:Static ext:Resources.ManageAccountsChooseAccountMessage}"/>
 
             <!-- Listbox with the credentials -->
             <ListBox Grid.Row="1"
@@ -70,9 +71,8 @@
                             <!-- The label for the current account -->
                             <TextBlock Grid.Column="2"
                                    Visibility="{Binding IsCurrentAccount, Converter={StaticResource visibilityConverter}}"
-                                   VerticalAlignment="Center">
-                            Current Account
-                            </TextBlock>
+                                   VerticalAlignment="Center"
+                                   Text="{x:Static ext:Resources.ManageAccountsCurrentAccountMessage}" />
 
                         </Grid>
                     </DataTemplate>
@@ -85,13 +85,13 @@
 
     <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
         <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Caption="Add..."
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.ManageAccountsAddAccountButtonCaption}"
                                       Command="{Binding DataContext.AddAccountCommand, Source={StaticResource content}}" />
-            <theming:DialogButtonInfo Caption="Set As Current"
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.ManageAccountsSetAsCurrentAccountButtonCaption}"
                                       Command="{Binding DataContext.SetAsCurrentAccountCommand, Source={StaticResource content}}" />
-            <theming:DialogButtonInfo Caption="Delete"
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.ManageAccountsDeleteAccountButtonCaption}"
                                       Command="{Binding DataContext.DeleteAccountCommand, Source={StaticResource content}}"/>
-            <theming:DialogButtonInfo Caption="Close"
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCloseButtonCaption}"
                                       IsCancel="True"
                                       Command="{Binding DataContext.CloseAccountCommand, Source={StaticResource content}}"/>
         </theming:CommonDialogWindowBaseContent.Buttons>

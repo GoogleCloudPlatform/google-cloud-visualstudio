@@ -22,3 +22,13 @@ The file [copyright_notice.txt](tools/copyright_notice.txt) is the current pream
 This batch script uses the .NET [codeformatter](https://github.com/dotnet/codeformatter) to format the code. The script defines the set of formatting rules to apply to the source code.
 
 This script should be used before submitting a PR to ensure uniform code formatting and coding style.
+
+## publish_template.sh
+This shell script publishes the given Visual Studio template project to the right directory under the [GoogleCloudExtension](../GoogleCloudExtension/GoogleCloudExtension) directory. This makes it possible to pick up the template when building the extension.
+
+This script is a shell script to be run from a bash shell, like the Git bash shell.
+
+## publish_all_templates.sh
+This shell script lists all of the templates under the [ProjectTemplates](../GoogleCloudExtension/ProjectTemplates) directory and publish them to the right directory under the [GoogleCloudExtension](../GoogleCloudExtension/GoogleCloudExtension) directory in the main directory for the extension.
+
+This script is a shell script to be run from a bash shell, like the Git bash shell.

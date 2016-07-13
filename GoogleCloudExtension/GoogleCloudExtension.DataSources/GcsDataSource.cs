@@ -34,17 +34,8 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="credential"></param>
         /// <param name="appName"></param>
         public GcsDataSource(string projectId, GoogleCredential credential, string appName)
-            : base(projectId, CreateService(credential, appName), appName)
+            : base(projectId, credential, init => new StorageService(init), appName)
         { }
-
-        private static StorageService CreateService(GoogleCredential credential, string appName)
-        {
-            return new StorageService(new Google.Apis.Services.BaseClientService.Initializer
-            {
-                ApplicationName = appName,
-                HttpClientInitializer = credential,
-            });
-        }
 
         /// <summary>
         /// Fetches the list of buckets for the given project.
@@ -57,12 +48,12 @@ namespace GoogleCloudExtension.DataSources
                 {
                     if (String.IsNullOrEmpty(token))
                     {
-                        Debug.WriteLine("Fetching first page.");
+                        Debug.WriteLine($"{nameof(GcsDataSource)}, {nameof(GetBucketListAsync)}: Fetching first page.");
                         return Service.Buckets.List(ProjectId).ExecuteAsync();
                     }
                     else
                     {
-                        Debug.WriteLine($"Fetchin page: {token}");
+                        Debug.WriteLine($"{nameof(GcsDataSource)}, {nameof(GetBucketListAsync)}: Fetching page: {token}");
                         var request = Service.Buckets.List(ProjectId);
                         request.PageToken = token;
                         return request.ExecuteAsync();

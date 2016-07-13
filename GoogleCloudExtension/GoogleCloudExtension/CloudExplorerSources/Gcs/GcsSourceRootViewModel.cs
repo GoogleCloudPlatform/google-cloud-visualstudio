@@ -32,23 +32,23 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
-            Caption = "Loading buckets...",
+            Caption = Resources.CloudExplorerGcsLoadingBucketsCaption,
             IsLoading = true
         };
         private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
         {
-            Caption = "No buckets found.",
+            Caption = Resources.CloudExplorerGcsNoBucketsFoundCaption,
             IsWarning = true
         };
         private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
         {
-            Caption = "Failed to list buckets.",
+            Caption = Resources.CloudExplorerGcsFailedToListBucketsCaption,
             IsError = true
         };
 
         private Lazy<GcsDataSource> _dataSource;
 
-        public override string RootCaption => "Google Cloud Storage";
+        public override string RootCaption => Resources.CloudExplorerGcsRootNodeCaption;
 
         public override TreeLeaf ErrorPlaceholder => s_errorPlaceholder;
 
@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = "Status", Command = new WeakCommand(OnStatusCommand) },
+                new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new WeakCommand(OnStatusCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
 
@@ -121,7 +121,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
                     Debug.WriteLine("GCS API is not enabled.");
 
                     Children.Clear();
-                    Children.Add(new DisabledApiWarning(ComponentApiName, Context.CurrentProject));
+                    Children.Add(new DisabledApiWarning(
+                        apiName: ComponentApiName,
+                        caption: Resources.CloudExplorerGcsSourceApiDisabledMessage,
+                        project: Context.CurrentProject));
                     return;
                 }
 

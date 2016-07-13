@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.FirewallManagement
     {
         private PortManagerViewModel ViewModel => (PortManagerViewModel)((PortManagerWindowContent)Content).DataContext;
 
-        private PortManagerWindow(Instance instance) : base("Manage Open Ports", width: 320, height: 300)
+        private PortManagerWindow(Instance instance) : base(GoogleCloudExtension.Resources.PortManagerWindowCaption, width: 320, height: 300)
         {
             var viewModel = new PortManagerViewModel(this, instance);
             Content = new PortManagerWindowContent

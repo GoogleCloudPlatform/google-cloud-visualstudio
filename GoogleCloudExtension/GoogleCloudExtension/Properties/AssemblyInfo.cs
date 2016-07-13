@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("GoogleCloudExtension")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Google Inc.")]
 [assembly: AssemblyProduct("GoogleCloudExtension")]
 [assembly: AssemblyCopyright("Copyright \u00A9 Google Inc. 2015")]
 [assembly: AssemblyTrademark("")]
@@ -34,5 +34,5 @@ using System.Runtime.InteropServices;
 
 // This version number matches the version in the .vsixmanifest. Please update both versions at the
 // same time.
-[assembly: AssemblyVersion("0.7.1.0")]
+[assembly: AssemblyVersion("0.8.2.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]

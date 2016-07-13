@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.Utils;
 using System;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -94,7 +95,15 @@ namespace GoogleCloudExtension.ShowPassword
 
         private void OnCopyCommand()
         {
-            Clipboard.SetText(Password);
+            try
+            {
+                Clipboard.SetText(Password);
+            }
+            catch
+            {
+                Debug.WriteLine("Failed to copy the string to the clipboard.");
+                UserPromptUtils.ErrorPrompt(Resources.ShowPasswordCopyFailedMessage, Resources.ShowPasswordCopyFailedTitle);
+            }
         }
 
         private void OnTogglePasswordCommand()

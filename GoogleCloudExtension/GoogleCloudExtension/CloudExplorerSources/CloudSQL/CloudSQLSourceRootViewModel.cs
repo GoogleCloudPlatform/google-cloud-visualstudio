@@ -32,23 +32,23 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
     {
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
-            Caption = "Loading instances...",
+            Caption = Resources.CloudExplorerSqlLoadingInstancesCaption,
             IsLoading = true
         };
         private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
         {
-            Caption = "No instances found.",
+            Caption = Resources.CloudExplorerSqlNoInstancesFoundCaption,
             IsWarning = true
         };
         private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
         {
-            Caption = "Failed to list instances.",
+            Caption = Resources.CloudExplorerSqlFailedToLoadInstancesCaption,
             IsError = true
         };
 
-        public Lazy<CloudSQLDataSource> DataSource;
+        public Lazy<CloudSqlDataSource> DataSource;
 
-        public override string RootCaption => "Google Cloud SQL";
+        public override string RootCaption => Resources.CloudExplorerSqlRootNodeCaption;
 
         public override TreeLeaf ErrorPlaceholder => s_errorPlaceholder;
 
@@ -64,28 +64,27 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = "Status", Command = new WeakCommand(OnStatusCommand) },
+                new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new WeakCommand(OnStatusCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
-        public override void InvalidateProjectOrAccount()
-        {
-            Debug.WriteLine("New credentials, invalidating the Google Cloud SQL source.");
-            DataSource = new Lazy<CloudSQLDataSource>(CreateDataSource);
-        }
-
-        // TODO(talarico): Make a util function for this it is used in multiple places.
         private void OnStatusCommand()
         {
             Process.Start("https://status.cloud.google.com/");
         }
 
-        private CloudSQLDataSource CreateDataSource()
+        public override void InvalidateProjectOrAccount()
+        {
+            Debug.WriteLine("New credentials, invalidating the Google Cloud SQL source.");
+            DataSource = new Lazy<CloudSqlDataSource>(CreateDataSource);
+        }
+
+        private CloudSqlDataSource CreateDataSource()
         {
             if (CredentialsStore.Default.CurrentProjectId != null)
             {
-                return new CloudSQLDataSource(
+                return new CloudSqlDataSource(
                     CredentialsStore.Default.CurrentProjectId,
                     CredentialsStore.Default.CurrentGoogleCredential,
                     GoogleCloudExtensionPackage.ApplicationName);
@@ -121,7 +120,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             }
             catch (DataSourceException ex)
             {
-                GcpOutputWindow.OutputLine("Failed to load the list of Google Cloud SQL instances.");
+                GcpOutputWindow.OutputLine(Resources.CloudExplorerSqlFailedMessage);
                 GcpOutputWindow.OutputLine(ex.Message);
                 GcpOutputWindow.Activate();
 

@@ -42,17 +42,8 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="projectId">The project id that contains the GCE instances to manipulate.</param>
         /// <param name="credential">The credentials to use for the call.</param>
         public GceDataSource(string projectId, GoogleCredential credential, string appName)
-            : base(projectId, CreateService(credential, appName), appName)
+            : base(projectId, credential, init => new ComputeService(init), appName)
         { }
-
-        private static ComputeService CreateService(GoogleCredential credential, string appName)
-        {
-            return new ComputeService(new Google.Apis.Services.BaseClientService.Initializer
-            {
-                ApplicationName = appName,
-                HttpClientInitializer = credential,
-            });
-        }
 
         /// <summary>
         /// Returns the list of instances in all the zones for the project.
@@ -122,7 +113,7 @@ namespace GoogleCloudExtension.DataSources
         }
 
         /// <summary>
-        /// Given an instance already fetched, reload it's data and return a new instance with the fresh data.
+        /// Given an instance already fetched, reload its data and return a new instance with the fresh data.
         /// </summary>
         /// <returns>The fresh instance.</returns>
         public Task<Instance> RefreshInstance(Instance instance) =>
@@ -137,7 +128,7 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="zoneName">The zone name where the instance is located.</param>
         /// <param name="name">The name of the instance.</param>
         /// <returns>The pending operation.</returns>
-        public GceOperation GetPendingOperation(string projectId, string zoneName, string name) =>
+        public static GceOperation GetPendingOperation(string projectId, string zoneName, string name) =>
             s_pendingOperations
                 .Where(x => !x.OperationTask.IsCompleted)
                 .FirstOrDefault(x => x.ProjectId == projectId && x.ZoneName == zoneName && x.Name == name);
@@ -155,10 +146,7 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="instance">The instance to stop.</param>
         /// <returns>The new operation in flight.</returns>
-        public GceOperation StopInstance(Instance instance)
-        {
-            return StopInstance(zoneName: instance.GetZoneName(), name: instance.Name);
-        }
+        public GceOperation StopInstance(Instance instance) => StopInstance(zoneName: instance.GetZoneName(), name: instance.Name);
 
         /// <summary>
         /// Stops an instance in the current project, given its <paramref name="zoneName"/> and <paramref name="name"/>.
@@ -186,39 +174,20 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="zoneName">The zone where the instance is localed.</param>
         /// <param name="name">The name of the instance.</param>
         /// <returns>The task that will be completed when the API call is complete, including the cleanup.</returns>
-        private async Task StopInstanceImplAsync(GceOperation pendingOperation, string zoneName, string name)
-        {
-            try
-            {
-                var operation = await Service.Instances.Stop(ProjectId, zoneName, name).ExecuteAsync();
-                s_pendingOperations.Add(pendingOperation);
-                await WaitAsync(operation);
-            }
-            catch (GoogleApiException ex)
-            {
-                Debug.WriteLine($"Failed to call api: {ex.Message}");
-                throw new DataSourceException(ex.Message, ex);
-            }
-            finally
-            {
-                s_pendingOperations.Remove(pendingOperation);
-            }
-        }
+        private Task StopInstanceImplAsync(GceOperation pendingOperation, string zoneName, string name) =>
+            RegisterPendingOperation(pendingOperation, () => Service.Instances.Stop(ProjectId, zoneName, name).ExecuteAsync());
 
         /// <summary>
         /// Starts an instance in the given project.
         /// </summary>
         /// <param name="instance">The instance to start.</param>
         /// <returns>The new pending operation.</returns>
-        public GceOperation StartInstance(Instance instance)
-        {
-            return StartInstance(zoneName: instance.GetZoneName(), name: instance.Name);
-        }
+        public GceOperation StartInstance(Instance instance) => StartInstance(zoneName: instance.GetZoneName(), name: instance.Name);
 
         /// <summary>
         ///  Starts an instance in the current project, given its <paramref name="zoneName"/> and <paramref name="name"/>.
         /// </summary>
-        /// <param name="zoneName">The zone where the instnace is lcoated.</param>
+        /// <param name="zoneName">The zone where the instance is located.</param>
         /// <param name="name">The name of the instance.</param>
         /// <returns>The new pending operation.</returns>
         public GceOperation StartInstance(string zoneName, string name)
@@ -240,24 +209,8 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="zoneName">The zone where the instance is localed.</param>
         /// <param name="name">The name of the instance.</param>
         /// <returns>The task that will be completed when the API call is complete, including the cleanup.</returns>
-        private async Task StartInstanceImplAsync(GceOperation pendingOperation, string zoneName, string name)
-        {
-            try
-            {
-                var operation = await Service.Instances.Start(ProjectId, zoneName, name).ExecuteAsync();
-                s_pendingOperations.Add(pendingOperation);
-                await WaitAsync(operation);
-            }
-            catch (GoogleApiException ex)
-            {
-                Debug.WriteLine($"Failed to call api: {ex.Message}");
-                throw new DataSourceException(ex.Message, ex);
-            }
-            finally
-            {
-                s_pendingOperations.Remove(pendingOperation);
-            }
-        }
+        private Task StartInstanceImplAsync(GceOperation pendingOperation, string zoneName, string name) =>
+            RegisterPendingOperation(pendingOperation, () => Service.Instances.Start(ProjectId, zoneName, name).ExecuteAsync());
 
         /// <summary>
         /// Returns the list of all firewall rules for the current project.
@@ -287,7 +240,7 @@ namespace GoogleCloudExtension.DataSources
         /// name as the target tag. GCE instances with that tag will be affected by this rule.
         /// </summary>
         /// <param name="port">The port to open.</param>
-        /// <returns>The task that will be fullfilled once the operation is completed.</returns>
+        /// <returns>The task that will be fulfilled once the operation is completed.</returns>
         public async Task CreateFirewall(FirewallPort port)
         {
             try
@@ -337,28 +290,16 @@ namespace GoogleCloudExtension.DataSources
             return operation;
         }
 
-        private async Task SetInstanceTagsAsyncImpl(GceOperation pendingOperation, Instance instance, IList<string> tags)
-        {
-            try
+        private Task SetInstanceTagsAsyncImpl(GceOperation pendingOperation, Instance instance, IList<string> tags) =>
+            RegisterPendingOperation(pendingOperation, () =>
             {
                 var newTags = new Tags
                 {
                     Items = tags,
                     Fingerprint = instance.Tags.Fingerprint,
                 };
-                var operation = await Service.Instances.SetTags(newTags, ProjectId, instance.GetZoneName(), instance.Name).ExecuteAsync();
-                s_pendingOperations.Add(pendingOperation);
-                await WaitAsync(operation);
-            }
-            catch (GoogleApiException ex)
-            {
-                throw new DataSourceException(ex.Message, ex);
-            }
-            finally
-            {
-                s_pendingOperations.Remove(pendingOperation);
-            }
-        }
+                return Service.Instances.SetTags(newTags, ProjectId, instance.GetZoneName(), instance.Name).ExecuteAsync();
+            });
 
         /// <summary>
         /// Updates the instance ports, enables the <paramref name="portsToEnable"/> and disables the
@@ -428,12 +369,12 @@ namespace GoogleCloudExtension.DataSources
                 {
                     if (String.IsNullOrEmpty(token))
                     {
-                        Debug.WriteLine("Fetching the first page.");
+                        Debug.WriteLine($"{nameof(GceDataSource)}, {nameof(GetZoneListAsync)}: Fetching the first page.");
                         return Service.Zones.List(ProjectId).ExecuteAsync();
                     }
                     else
                     {
-                        Debug.WriteLine($"Fetching page: {token}");
+                        Debug.WriteLine($"{nameof(GceDataSource)}, {nameof(GetZoneListAsync)}: Fetching page: {token}");
                         var request = Service.Zones.List(ProjectId);
                         request.PageToken = token;
                         return request.ExecuteAsync();
@@ -450,12 +391,12 @@ namespace GoogleCloudExtension.DataSources
                 {
                     if (String.IsNullOrEmpty(token))
                     {
-                        Debug.WriteLine("Fetching first page.");
+                        Debug.WriteLine($"{nameof(GceDataSource)}, {nameof(GetInstancesInZoneListAsync)}: Fetching first page.");
                         return Service.Instances.List(ProjectId, zoneName).ExecuteAsync();
                     }
                     else
                     {
-                        Debug.WriteLine($"Fetching page: {token}");
+                        Debug.WriteLine($"{nameof(GceDataSource)}, {nameof(GetInstancesInZoneListAsync)}: Fetching page: {token}");
                         var request = Service.Instances.List(ProjectId, zoneName);
                         request.PageToken = token;
                         return request.ExecuteAsync();
@@ -463,6 +404,25 @@ namespace GoogleCloudExtension.DataSources
                 },
                 x => x.Items,
                 x => x.NextPageToken);
+        }
+
+        private async Task RegisterPendingOperation(GceOperation pendingOperation, Func<Task<Operation>> operationFactory)
+        {
+            try
+            {
+                var operation = await operationFactory();
+                s_pendingOperations.Add(pendingOperation);
+                await WaitAsync(operation);
+            }
+            catch (GoogleApiException ex)
+            {
+                Debug.WriteLine($"Failed to call api: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+            finally
+            {
+                s_pendingOperations.Remove(pendingOperation);
+            }
         }
 
         private async Task WaitAsync(Operation operation)

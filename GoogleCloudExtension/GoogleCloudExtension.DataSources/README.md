@@ -10,6 +10,7 @@ The data sources implemented in the library are:
 * `GcsDataSource` which implements access to Google Storage buckets.
 * `GPlusDataSource` which implement access to the Google Plust API.
 * `ResourceManagerDataSource` which implements access to the Resource Manager API.
+* `CloudSqlDataSource` which implement access to the Clour SQL admin API.
 
 All of the data sources contain a set of credentials and for those that are against an API that requires a project id they will also contain one for each call.
 

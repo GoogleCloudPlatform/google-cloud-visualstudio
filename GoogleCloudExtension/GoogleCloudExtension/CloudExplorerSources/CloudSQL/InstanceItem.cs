@@ -14,7 +14,6 @@
 
 using Google.Apis.SQLAdmin.v1beta4.Data;
 using GoogleCloudExtension.Utils;
-using System.ComponentModel;
 using System.Linq;
 
 namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
@@ -24,40 +23,38 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
     /// </summary>
     internal class InstanceItem : PropertyWindowItemBase
     {
-        private const string Category = "Instance Properties";
-
         private readonly DatabaseInstance _instance;
 
-        public InstanceItem(DatabaseInstance instance) : base(className: Category, componentName: instance.Name)
+        public InstanceItem(DatabaseInstance instance) : base(className: Resources.CloudExplorerSqlInstanceCategory, componentName: instance.Name)
         {
             _instance = instance;
         }
 
-        [Category(Category)]
+        [LocalizedCategory(nameof(Resources.CloudExplorerSqlInstanceCategory))]
         public string Name => _instance.Name;
 
-        [Category(Category)]
-        [DisplayName("Backend Type")]
+        [LocalizedCategory(nameof(Resources.CloudExplorerSqlInstanceCategory))]
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerSqlBackendTypeDisplayName))]
         public string BackendType => _instance.BackendType;
 
-        [Category(Category)]
-        [DisplayName("Database Version")]
+        [LocalizedCategory(nameof(Resources.CloudExplorerSqlInstanceCategory))]
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerSqlDatabaseVersionDisplayName))]
         public string DatabaseVersion => _instance.DatabaseVersion;
 
-        [Category(Category)]
-        [DisplayName("Instance Type")]
+        [LocalizedCategory(nameof(Resources.CloudExplorerSqlInstanceCategory))]
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerSqlInstanceTypeDisplayName))]
         public string InstanceType => _instance.InstanceType;
 
         // TODO(talarico): Support multiple IP  addresses.
-        [Category(Category)]
-        [DisplayName("IP Address")]
+        [LocalizedCategory(nameof(Resources.CloudExplorerSqlInstanceCategory))]
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerSqlInstanceIpAddressDisplayName))]
         public string IpAddress => _instance.IpAddresses?.First().IpAddress;
 
-        [Category(Category)]
-        [DisplayName("IPv6 Address (First Gen)")]
+        [LocalizedCategory(nameof(Resources.CloudExplorerSqlInstanceCategory))]
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerSqlInstanceIp6AddressDisplayName))]
         public string Ipv6Address => _instance.Ipv6Address;
 
-        [Category(Category)]
+        [LocalizedCategory(nameof(Resources.CloudExplorerSqlInstanceCategory))]
         public string State => _instance.State;
 
         public override string ToString() => _instance.Name;

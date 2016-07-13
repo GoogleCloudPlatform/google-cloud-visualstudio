@@ -105,9 +105,9 @@ namespace GoogleAnalyticsUtils
         }
 
         /// <summary>
-        /// Convenience method to report a singe event to Google Analytics.
+        /// Convenience method to report a single event to Google Analytics.
         /// </summary>
-        /// <param name="category">The category for the even.</param>
+        /// <param name="category">The category for the event.</param>
         /// <param name="action">The action that took place.</param>
         /// <param name="label">The label affected by the event.</param>
         /// <param name="value">The new value.</param>

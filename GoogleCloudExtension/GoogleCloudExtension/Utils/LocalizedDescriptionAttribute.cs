@@ -12,21 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Theming;
+using System;
+using System.ComponentModel;
 
-namespace GoogleCloudExtension.ManageAccounts
+namespace GoogleCloudExtension.Utils
 {
-    public class ManageAccountsWindow : CommonDialogWindowBase
+    [AttributeUsage(AttributeTargets.All)]
+    public class LocalizedDescriptionAttribute : DescriptionAttribute
     {
-        private ManageAccountsWindow() : base(GoogleCloudExtension.Resources.ManageAccountsWindowTitle, width: 500, height: 400)
-        {
-            Content = new ManageAccountsWindowContent { DataContext = new ManageAccountsViewModel(this) };
-        }
-
-        public static void PromptUser()
-        {
-            var dialog = new ManageAccountsWindow();
-            dialog.ShowModal();
-        }
+        public LocalizedDescriptionAttribute(string key) : base(Resources.ResourceManager.GetString(key))
+        { }
     }
 }

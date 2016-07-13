@@ -22,7 +22,7 @@
 
         <!-- Common node template, defines the UI for all nodes. -->
         <DataTemplate x:Key="nodeTemplate">
-            <Grid ContextMenu="{Binding ContextMenu}">
+            <Grid>
                 <StackPanel Orientation="Horizontal">
                     <controls:ProgressIndicator Visibility="{Binding IsLoading, Converter={StaticResource visibilityConverter}}" />
 
@@ -64,9 +64,9 @@
 
         <!-- Data template to be applied to the link leaf, which terminate the nodes and shows a link. -->
         <DataTemplate DataType="{x:Type CloudExplorer:TreeLeafLink}">
-            <TextBlock>
-                <Hyperlink Command="{Binding NavigateCommand}">
-                    <TextBlock Text="{Binding Caption}" />
+            <TextBlock Focusable="False">
+                <Hyperlink Focusable="False" Command="{Binding NavigateCommand}">
+                    <TextBlock Focusable="False" Text="{Binding Caption}" />
                 </Hyperlink>
             </TextBlock>
         </DataTemplate>
@@ -102,12 +102,12 @@
         <Style x:Key="CommandBarButtonStyle"
                TargetType="{x:Type Button}"
                BasedOn="{StaticResource {x:Static vsshell:VsResourceKeys.ButtonStyleKey}}">
-            <Setter Property="Padding" Value="1"/>
-            <Setter Property="Width" Value="25px" />
-            <Setter Property="Height" Value="25px" />
-            <Setter Property="MinWidth" Value="25px" />
-            <Setter Property="MinHeight" Value="25px" />
-            <Setter Property="Margin" Value="5,0,0,0" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Width" Value="20px" />
+            <Setter Property="Height" Value="20px" />
+            <Setter Property="MinWidth" Value="20px" />
+            <Setter Property="MinHeight" Value="20px" />
+            <Setter Property="Margin" Value="2.5,0,0,0" />
             <Setter Property="VerticalAlignment" Value="Center" />
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="BorderBrush" Value="Transparent" />
@@ -173,6 +173,8 @@
         <Style x:Key="CloudExlorerTreeItemViewStyle" TargetType="{x:Type TreeViewItem}">
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
             <Setter Property="Foreground" Value="{DynamicResource VsBrush.WindowText}"/>
+            <Setter Property="ContextMenu" Value="{Binding Header.ContextMenu, RelativeSource={RelativeSource Self}}" />
+            <EventSetter Event="TreeViewItem.PreviewMouseRightButtonDown" Handler="TreeViewItem_PreviewMouseRightButtonDown" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type TreeViewItem}">
@@ -261,7 +263,7 @@
     <Grid IsEnabled="{Binding IsReady}">
         <Grid.RowDefinitions>
             <!-- This row contains the button bar. -->
-            <RowDefinition Height="30" />
+            <RowDefinition Height="25" />
 
             <!-- This row contains the project switcher. -->
             <RowDefinition Height="Auto" />
@@ -354,8 +356,10 @@
 
         <!-- Hierarchical view of the items, with the subitems inside. -->
         <TreeView
+            x:Name="_treeView"
             ItemsSource="{Binding Roots}"
             SelectedItemChanged="TreeView_SelectedItemChanged"
+            KeyDown="TreeView_KeyDown"
             Visibility="{Binding IsEmptyState, Converter={utils:VisibilityConverter IsNegated=True}}"
             Grid.Row="2"
             Style="{StaticResource CloudExplorerTreeViewStyle}" />

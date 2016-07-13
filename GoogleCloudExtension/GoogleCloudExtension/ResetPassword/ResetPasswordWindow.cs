@@ -14,13 +14,14 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Theming;
+using System;
 
 namespace GoogleCloudExtension.ResetPassword
 {
     public class ResetPasswordWindow : CommonDialogWindowBase
     {
         private ResetPasswordWindow(Instance instance, string projectId)
-            : base($"Reset Password for {instance.Name}", width: 350, height: 160)
+            : base(String.Format(GoogleCloudExtension.Resources.ResetPasswordWindowTitle, instance.Name), width: 350, height: 160)
         {
             Content = new ResetPasswordWindowContent
             {

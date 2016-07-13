@@ -14,14 +14,12 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.DataSources;
-using System.ComponentModel;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
     public class WindowsInstanceItem : GceInstanceItem
     {
-        private const string Category = "Windows Properties";
-
         private readonly WindowsInstanceInfo _info;
 
         public WindowsInstanceItem(Instance instance) : base(instance)
@@ -29,9 +27,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             _info = instance.GetWindowsInstanceInfo();
         }
 
-        [Category(Category)]
-        [DisplayName("Windows Version")]
-        [Description("The version of Windows installed on this instance.")]
+        [LocalizedCategory(nameof(Resources.CloudExplorerGceInstanceWindowsCategory))]
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerGceInstanceWindowsVersionDisplayName))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGceInstanceWindowsVersionDescription))]
         public string WindowsDisplayName => _info.DisplayName;
     }
 }

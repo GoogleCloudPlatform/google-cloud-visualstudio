@@ -23,8 +23,8 @@ using Microsoft.VisualStudio.Shell;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Threading.Tasks;
+using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -104,7 +104,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             IsLoading = true;
             UpdateMenu();
             Caption = action;
-            CloudSQLDataSource dataSource = _owner.DataSource.Value;
+            CloudSqlDataSource dataSource = _owner.DataSource.Value;
 
             try
             {
@@ -112,7 +112,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 Operation operation = await task;
                 while (true)
                 {
-                    if (CloudSQLDataSource.OperationStateDone.Equals(operation.Status))
+                    if (CloudSqlDataSource.OperationStateDone.Equals(operation.Status))
                     {
                         break;
                     }
@@ -135,6 +135,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 UpdateMenu();
                 Caption = Instance.Name;
             }
+        }
+
+        private void OnOpenOnCloudConsoleCommand()
+        {
+            var url = $"https://console.cloud.google.com/sql/instances/{_instance.Name}/overview?project={_owner.Context.CurrentProject.Name}";
+            Process.Start(url);
+        }
+
+        private void OnPropertiesCommand()
+        {
+            _owner.Context.ShowPropertiesWindow(Item);
         }
 
         private void OpenDataConnectionDialog()
@@ -193,7 +204,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = "Add Data Connection", Command = _openAddDataConnectionDialog },
+                new MenuItem { Header = "Add Data Connection", Command = new WeakCommand(OpenDataConnectionDialog) },
+                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) },
+                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesCommand) },
             };
 
 
@@ -202,11 +215,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             {
                 if (DatabaseInstanceExtensions.IpAddressAuthorized(Instance, DnsUtils.MachineIpAddress))
                 {
-                    menuItems.Add(new MenuItem {Header = "Revoke Machine's Database Access", Command = _unauthorizeMachine});
+                    menuItems.Add(new MenuItem {Header = "Revoke Machine's Database Access", Command = new WeakCommand(UnauthorizeMachine) });
                 }
                 else
                 {
-                    menuItems.Add(new MenuItem {Header = "Grant Machine Database Access", Command = _authorizeMachine});
+                    menuItems.Add(new MenuItem {Header = "Grant Machine Database Access", Command = new WeakCommand(AuthorizeMachine) });
                 }
             }
 

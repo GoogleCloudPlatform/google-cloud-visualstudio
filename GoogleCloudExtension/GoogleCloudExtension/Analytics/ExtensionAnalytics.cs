@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.Analytics
             if (!settings.DialogShown)
             {
                 Debug.WriteLine("Showing the opt-in dialog.");
-                settings.OptIn = UserPromptUtils.YesNoPrompt("Do you want to help Google by reporting usage statics?", "Usage Statistics");
+                settings.OptIn = UserPromptUtils.YesNoPrompt(Resources.AnalyticsPromptMessage, Resources.AnalyticsPromptTitle);
                 settings.DialogShown = true;
                 settings.SaveSettingsToStorage();
             }

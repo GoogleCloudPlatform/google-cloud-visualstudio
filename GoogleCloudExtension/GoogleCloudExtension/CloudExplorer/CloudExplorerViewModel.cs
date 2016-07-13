@@ -39,18 +39,11 @@ namespace GoogleCloudExtension.CloudExplorer
     {
         private const string RefreshImagePath = "CloudExplorer/Resources/refresh.png";
 
-        // Message and caption for the empty state when there's no account.
-        private const string NoAccountMessage = "Add a new account, or select and existing one.";
-        private const string NoAccountButtonCaption = "Select or Create Account";
-
-        // Message and caption for the emtpy state when there's no projects for the account.
-        private const string NoProjectMessage = "No projects found, create a project on the Cloud Console.";
-        private const string NoProjectButtonCaption = "Navigate to Cloud Console";
-
         private static readonly Lazy<ImageSource> s_refreshIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(RefreshImagePath));
-        private static readonly PlaceholderMessage s_projectPlaceholder = new PlaceholderMessage { Message = "No projects found" };
+        private static readonly PlaceholderMessage s_projectPlaceholder = new PlaceholderMessage { Message = Resources.CloudExplorerNoProjectsFoundPlaceholderMessage };
         private static readonly IList<PlaceholderMessage> s_projectsWithPlaceholder = new List<PlaceholderMessage> { s_projectPlaceholder };
 
+        private readonly SelectionUtils _selectionUtils;
         private readonly IEnumerable<ICloudExplorerSource> _sources;
         private bool _isBusy;
         private AsyncPropertyValue<string> _profilePictureAsync;
@@ -185,10 +178,18 @@ namespace GoogleCloudExtension.CloudExplorer
 
         IEnumerable<Project> ICloudSourceContext.Projects => _projects;
 
+        void ICloudSourceContext.ShowPropertiesWindow(object item)
+        {
+            _selectionUtils.ActivatePropertiesWindow();
+            _selectionUtils.SelectItem(item);
+        }
+
         #endregion
 
-        public CloudExplorerViewModel()
+        public CloudExplorerViewModel(SelectionUtils selectionUtils)
         {
+            _selectionUtils = selectionUtils;
+
             // Contains the list of sources to display to the user, in the order they will
             // be displayed.
 
@@ -212,7 +213,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 new ButtonDefinition
                 {
                     Icon = s_refreshIcon.Value,
-                    ToolTip = "Refresh",
+                    ToolTip = Resources.CloudExplorerRefreshButtonToolTip,
                     Command = new WeakCommand(this.OnRefresh),
                 }
             };
@@ -248,12 +249,12 @@ namespace GoogleCloudExtension.CloudExplorer
                 ProfileNameAsync = AsyncPropertyValueUtils.CreateAsyncProperty(
                     profileTask,
                     x => x.Emails.FirstOrDefault()?.Value,
-                    "Loading...");
+                    Resources.CloudExplorerLoadingMessage);
             }
             else
             {
                 ProfilePictureAsync = null;
-                ProfileNameAsync = new AsyncPropertyValue<string>("Select credentials...");
+                ProfileNameAsync = new AsyncPropertyValue<string>(Resources.CloudExplorerSelectAccountMessage);
             }
         }
 
@@ -359,14 +360,14 @@ namespace GoogleCloudExtension.CloudExplorer
             // Prepare the message and button for the empty state.
             if (CredentialsStore.Default.CurrentAccount == null)
             {
-                EmptyStateMessage = NoAccountMessage;
-                EmptyStateButtonCaption = NoAccountButtonCaption;
+                EmptyStateMessage = Resources.CloudExplorerNoAccountMessage;
+                EmptyStateButtonCaption = Resources.CloudExplorerNoAccountButtonCaption;
                 EmptyStateCommand = ManageAccountsCommand;
             }
             else if (_projects == null || _projects.Count == 0)
             {
-                EmptyStateMessage = NoProjectMessage;
-                EmptyStateButtonCaption = NoProjectButtonCaption;
+                EmptyStateMessage = Resources.CloudExploreNoProjectMessage;
+                EmptyStateButtonCaption = Resources.CloudExplorerNoProjectButtonCaption;
                 EmptyStateCommand = new WeakCommand(OnNavigateToCloudConsole);
             }
         }

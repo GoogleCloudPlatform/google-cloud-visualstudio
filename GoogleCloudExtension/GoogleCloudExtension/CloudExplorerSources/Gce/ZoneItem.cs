@@ -14,36 +14,33 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Utils;
-using System.ComponentModel;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
     public class ZoneItem : PropertyWindowItemBase
     {
-        private const string Category = "Zone Properties";
-
         private readonly Zone _zone;
 
-        public ZoneItem(Zone zone) : base(className: Category, componentName: zone.Name)
+        public ZoneItem(Zone zone) : base(className: Resources.CloudExplorerGceZoneCategory, componentName: zone.Name)
         {
             _zone = zone;
         }
 
 
-        [Category(Category)]
-        [Description("The name of the zone.")]
+        [LocalizedCategory(nameof(Resources.CloudExplorerGceZoneCategory))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGceZoneNameDescription))]
         public string Name => _zone.Name;
 
-        [Category(Category)]
-        [Description("The description of the zone.")]
+        [LocalizedCategory(nameof(Resources.CloudExplorerGceZoneCategory))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGceZoneDescriptionDescription))]
         public string Description => _zone.Description;
 
-        [Category(Category)]
-        [Description("The region for the zone.")]
+        [LocalizedCategory(nameof(Resources.CloudExplorerGceZoneCategory))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGceZoneRegionDescription))]
         public string Region => _zone.Region;
 
-        [Category(Category)]
-        [Description("The status of the zone.")]
+        [LocalizedCategory(nameof(Resources.CloudExplorerGceZoneCategory))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGceZoneStatusDescription))]
         public string Status => _zone.Status;
     }
 }

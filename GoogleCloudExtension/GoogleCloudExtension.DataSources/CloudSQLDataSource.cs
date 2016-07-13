@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.DataSources
     /// Data source that returns information about Google Cloud SQL instances and databases for a
     /// particular project and credentials.
     /// </summary>
-    public class CloudSQLDataSource : DataSourceBase<SQLAdminService>
+    public class CloudSqlDataSource : DataSourceBase<SQLAdminService>
     {
         public const string OperationStateDone = "DONE";
 
@@ -36,18 +36,9 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="projectId"></param>
         /// <param name="credential"></param>
-        public CloudSQLDataSource(string projectId, GoogleCredential credential, string appName)
-            : base(projectId, CreateService(credential, appName), appName)
+        public CloudSqlDataSource(string projectId, GoogleCredential credential, string appName)
+            : base(projectId, credential, init => new SQLAdminService(init), appName)
         { }
-
-        private static SQLAdminService CreateService(GoogleCredential credential, string appName)
-        {
-            return new SQLAdminService(new Google.Apis.Services.BaseClientService.Initializer
-            {
-                ApplicationName = appName,
-                HttpClientInitializer = credential,
-            });
-        }
 
         /// <summary>
         /// Fetches the list of Cloud SQL instances for the given project.
@@ -61,12 +52,12 @@ namespace GoogleCloudExtension.DataSources
                     var request = Service.Instances.List(ProjectId);
                     if (!String.IsNullOrEmpty(token))
                     {
-                        Debug.WriteLine($"Fetching page: {token}");
+                        Debug.WriteLine($"{nameof(CloudSqlDataSource)}, {nameof(GetInstanceListAsync)}: Fetching page: {token}");
                         request.PageToken = token;
                     }
                     else
                     {
-                        Debug.WriteLine("Fetching first page.");
+                        Debug.WriteLine($"{nameof(CloudSqlDataSource)}, {nameof(GetInstanceListAsync)}: Fetching first page.");
                     }
                     return request.ExecuteAsync();
                 },

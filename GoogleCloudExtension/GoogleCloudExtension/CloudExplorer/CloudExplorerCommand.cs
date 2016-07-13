@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        public static readonly Guid CommandSet = new Guid("266caee5-128b-4fdd-a22d-d7a7c8017794");
+        public static readonly Guid CommandSet = new Guid("a7435138-27e2-410c-9d28-dffc5aa3fe80");
 
         /// <summary>
         /// VS Package that provides this command, not null.

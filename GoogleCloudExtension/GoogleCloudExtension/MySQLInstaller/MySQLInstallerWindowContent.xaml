@@ -5,28 +5,26 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.MySQLInstaller"
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
              d:DesignHeight="225" d:DesignWidth="300">
     
     <UserControl.Resources>
         <StackPanel x:Key="content">
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Margin="5">
-                To add a Google Cloud SQL database as a Data Connection "MySQL for Visual Studio" must be installed.
-                It is highly recommended that the "MySQL Connector/Net" also be installed to be able to properly interact with the database.
-            </TextBlock>
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Margin="5">
-                Download and install the MySQL Installer which will guide you through installing the needed extensions.
-                After they are installed restart Visual Studio.
-            </TextBlock>
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Margin="5" Text="{x:Static ext:Resources.MySqlInstallerWindowTopMessage}" />
+
+
+            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Margin="5" Text="{x:Static ext:Resources.MySqlInstallerWindowBottomMessage}" />
+
         </StackPanel>
     </UserControl.Resources>
 
     <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
         <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Caption="Download"
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiDownloadButtonCaption}"
                                       IsDefault="True"
                                       Command="{Binding DataContext.DownloadCommand, Source={StaticResource content}}"/>
-            <theming:DialogButtonInfo Caption="Cancel" IsCancel="True" />
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
     </theming:CommonDialogWindowBaseContent>
 </UserControl>

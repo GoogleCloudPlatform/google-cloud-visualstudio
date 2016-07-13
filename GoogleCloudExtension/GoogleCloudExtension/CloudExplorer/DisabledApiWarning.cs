@@ -25,17 +25,17 @@ namespace GoogleCloudExtension.CloudExplorer
         private readonly string _apiName;
         private readonly Project _project;
 
-        public DisabledApiWarning(string apiName, Project project)
+        public DisabledApiWarning(string apiName, string caption, Project project)
         {
             _apiName = apiName;
             _project = project;
 
             IsWarning = true;
-            Caption = "The Google Compute API is not enabled for this project.";
+            Caption = caption;
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = "Enable API", Command=new WeakCommand(OnEnableApiCommand) },
+                new MenuItem { Header = Resources.CloudExploreDisabledApiEnableApiMenuHeader, Command=new WeakCommand(OnEnableApiCommand) },
             };
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };

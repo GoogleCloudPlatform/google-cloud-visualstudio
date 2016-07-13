@@ -19,13 +19,12 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.MySQLInstaller
 {
-
     /// <summary>
     /// This class is the view model for the <seealso cref="MySQLInstallerWindow"/> dialog.
     /// </summary>
     internal class MySQLInstallerViewModel : ViewModelBase
     {
-        private MySQLInstallerWindow _owner;
+        private readonly MySQLInstallerWindow _owner;
 
         /// <summary>
         /// The command to execute when the Download button is pressed.

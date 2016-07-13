@@ -22,7 +22,8 @@ gcloud components install beta
 
 To get help on using the Visual Studio Extension, please log an issue with this
 project. While we will eventually be able to offer support on Stack Overflow or
-a Google+ community, for now your best bet is to contact the dev team directly.
+a Google+ community, for now your best bet is to report issues in this Github
+project.
 
 Patches are encouraged, and may be submitted by forking this project and
 submitting a Pull Request. See [CONTRIBUTING.md](CONTRIBUTING.md) for more

@@ -16,32 +16,20 @@ using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Plus.v1;
 using Google.Apis.Plus.v1.Data;
-using Google.Apis.Services;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
 {
     /// <summary>
-    /// This class wraps a PlusService API service.
+    /// This class wraps a PlusService API service, which can be used to find information
+    /// from the user's profile.
     /// </summary>
     public class GPlusDataSource : DataSourceBase<PlusService>
     {
-        /// <summary>
-        /// Constructor for the class.
-        /// </summary>
-        /// <param name="credential"></param>
         public GPlusDataSource(GoogleCredential credential, string appName)
-            : base(CreateService(credential), appName)
+            : base(credential, init => new PlusService(init), appName)
         { }
-
-        private static PlusService CreateService(GoogleCredential credentials)
-        {
-            return new PlusService(new BaseClientService.Initializer
-            {
-                HttpClientInitializer = credentials
-            });
-        }
 
         /// <summary>
         /// Fetches the profile for the authenticated user.

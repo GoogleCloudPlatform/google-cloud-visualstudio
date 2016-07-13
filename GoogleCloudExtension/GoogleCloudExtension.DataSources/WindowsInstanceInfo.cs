@@ -16,17 +16,26 @@ namespace GoogleCloudExtension.DataSources
 {
     public class WindowsInstanceInfo
     {
+        /// <summary>
+        /// The display name for the Windows OS installed in the instance.
+        /// </summary>
         public string DisplayName { get; }
 
+        /// <summary>
+        /// The major version for the Windows OS isntalled in the instance, for example 2012.
+        /// </summary>
         public string Version { get; }
 
-        public string SubVersion { get; }
+        /// <summary>
+        /// The subversion for the Windows OS installed in the instance, for example RC2.
+        /// </summary>
+        public string Subversion { get; }
 
-        public WindowsInstanceInfo(string displayName, string version, string subVersion)
+        public WindowsInstanceInfo(string displayName, string version, string subversion)
         {
             DisplayName = displayName;
             Version = version;
-            SubVersion = subVersion;
+            Subversion = subversion;
         }
     }
 }

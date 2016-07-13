@@ -14,7 +14,7 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.DataSources;
-using System.ComponentModel;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
@@ -24,18 +24,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
     /// </summary>
     public class GceGaeInstanceItem : GceInstanceItem
     {
-        private const string GaeCategory = "AppEngine Properties";
-
         public GceGaeInstanceItem(Instance instance) : base(instance)
         { }
 
-        [Category(GaeCategory)]
-        [Description("The AppEngine module for the instance.")]
-        public string Module => Instance.GetGaeModule();
+        [LocalizedCategory(nameof(Resources.CloudExplorerGceInstanceAppEngineCategory))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGceInstanceModuleDescription))]
+        public string Module => Instance.GetAppEngineFlexService();
 
-        [Category(GaeCategory)]
-        [Description("The version of the module for the instance.")]
-        public string Version => Instance.GetGaeVersion();
+        [LocalizedCategory(nameof(Resources.CloudExplorerGceInstanceAppEngineCategory))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGceInstanceVersionDescription))]
+        public string Version => Instance.GetAppEngineFlexVersion();
 
         public override string ToString() => Instance.Name;
     }

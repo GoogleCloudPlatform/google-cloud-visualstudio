@@ -15,6 +15,7 @@
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Utils;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -101,7 +102,9 @@ namespace GoogleCloudExtension.ManageAccounts
             ExtensionAnalytics.ReportCommand(CommandName.DeleteAccountCommand, CommandInvocationSource.Button);
 
             Debug.WriteLine($"Attempting to delete account: {CurrentAccountName}");
-            if (!UserPromptUtils.YesNoPrompt($"Are you sure you want to delete the account {CurrentAccountName}", "Delete Account"))
+            if (!UserPromptUtils.YesNoPrompt(
+                String.Format(Resources.ManageAccountsDeleteAccountPromptMessage, CurrentAccountName),
+                Resources.ManageAccountsDeleteAccountPromptTitle))
             {
                 ExtensionAnalytics.ReportEvent("DeleteAccountCommandCancelled", "Cancelled");
                 Debug.WriteLine($"The user cancelled the deletion of the account.");
