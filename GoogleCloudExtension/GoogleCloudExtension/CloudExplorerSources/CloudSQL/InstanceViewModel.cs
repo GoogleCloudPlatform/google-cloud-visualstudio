@@ -108,7 +108,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         /// </summary>
         /// <param name="task">The current operation to watch and poll</param>
         /// <param name="action">A string representation of what the operation is doing for user display</param>
-        /// <param name="errorMessage">A user friendly error message to show to users if an failure occurs</param>
+        /// <param name="errorMessage">A user friendly error message to show to users if a failure occurs</param>
         private async void PollOperation(Task<Operation> task, string action, string errorMessage)
         {
             UserPromptUtils.ErrorPrompt(

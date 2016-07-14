@@ -97,7 +97,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The operation took to long to complete and timed out..
+        ///   Looks up a localized string similar to The operation took too long to complete and timed out..
         /// </summary>
         public static string CloudExploreOperationTimeoutMessage {
             get {

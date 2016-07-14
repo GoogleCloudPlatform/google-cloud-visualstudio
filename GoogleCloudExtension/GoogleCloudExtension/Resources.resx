@@ -126,7 +126,7 @@
     <comment>Title for the analytics prompt.</comment>
   </data>
   <data name="CloudExploreOperationTimeoutMessage" xml:space="preserve">
-    <value>The operation took to long to complete and timed out.</value>
+    <value>The operation took too long to complete and timed out.</value>
     <comment>A message denoting the operation took too long.</comment>
   </data>
   <data name="CloudExploreDisabledApiEnableApiMenuHeader" xml:space="preserve">
