@@ -81,10 +81,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         /// </summary>
         private void AuthorizeMachine()
         {
+            ExtensionAnalytics.ReportCommand(CommandName.GrantMachineDatabaseAccess, CommandInvocationSource.ContextMenu);
             DatabaseInstanceExtensions.AddAuthorizedNetwork(Instance, DnsUtils.MachineIpAddress);
             Task<Operation> operation = _owner.DataSource.Value.UpdateInstanceAsync(Instance);
             string action = Resources.CloudExplorerSqlAthorizeMachineCaption;
-            PollOperation(operation, action);
+            string errorMessage = Resources.CloudExplorerSqlAthorizeMachineErrorMessage;
+            PollOperation(operation, action, errorMessage);
         }
 
         /// <summary>
@@ -93,10 +95,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         /// </summary>
         private void UnauthorizeMachine()
         {
+            ExtensionAnalytics.ReportCommand(CommandName.RevokeMachineDatabaseAccess, CommandInvocationSource.ContextMenu);
             DatabaseInstanceExtensions.RemoveAuthorizedNetwork(Instance, DnsUtils.MachineIpAddress);
             Task<Operation> operation = _owner.DataSource.Value.UpdateInstanceAsync(Instance);
             string action = Resources.CloudExplorerSqlUnathorizeMachineCaption;
-            PollOperation(operation, action);
+            string errorMessage = Resources.CloudExplorerSqlUnathorizeMachinerrorMessage;
+            PollOperation(operation, action, errorMessage);
         }
 
         /// <summary>
@@ -104,7 +108,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         /// </summary>
         /// <param name="task">The current operation to watch and poll</param>
         /// <param name="action">A string representation of what the operation is doing for user display</param>
-        private async void PollOperation(Task<Operation> task, string action)
+        /// <param name="errorMessage">A user friendly error message to show to users if a failure occurs</param>
+        private async void PollOperation(Task<Operation> task, string action, string errorMessage)
         {
             // Update the user display and menu.
             IsLoading = true;
@@ -116,17 +121,23 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             {
                 // Poll until the update to completes.
                 Polling<Operation>.Fetch fetch = (o) => dataSource.GetOperationAsync(o.Name);
-                Polling<Operation>.StopPolling stopPolling = (o) => CloudSqlDataSource.OperationStateDone.Equals(o.Status);
+                Polling<Operation>.StopPolling stopPolling =
+                    (o) => CloudSqlDataSource.OperationStateDone.Equals(o.Status);
                 Operation operation = await Polling<Operation>.Poll(task, fetch, stopPolling);
 
                 // Be sure to update the instance when finished to ensure we have
                 // the most up to date version.
                 Instance = await dataSource.GetInstanceAsync(Instance.Name);
             }
-            catch (Exception ex) when (ex is DataSourceException || ex is TimeoutException)
+            catch  (DataSourceException ex)
             {
-                // TODO(talarico): Handle error messages properly
                 IsError = true;
+                UserPromptUtils.ErrorPrompt(ex.Message, errorMessage);
+            }
+            catch (TimeoutException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(Resources.CloudExploreOperationTimeoutMessage, errorMessage);
             }
             finally
             {
