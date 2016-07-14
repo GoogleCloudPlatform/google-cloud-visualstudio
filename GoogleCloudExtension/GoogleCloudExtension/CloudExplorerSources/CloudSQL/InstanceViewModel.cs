@@ -111,8 +111,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         /// <param name="errorMessage">A user friendly error message to show to users if a failure occurs</param>
         private async void PollOperation(Task<Operation> task, string action, string errorMessage)
         {
-            UserPromptUtils.ErrorPrompt(
-                    "message", "title");
             // Update the user display and menu.
             IsLoading = true;
             UpdateMenu();
