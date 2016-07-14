@@ -94,6 +94,12 @@ namespace GoogleCloudExtension.Analytics
         OpenMySQLDataConnectionDialog,
 
         // Command to add a MySQL Data Connection.
-        AddMySQLDataConnection
+        AddMySQLDataConnection,
+
+        // Command to grant the current machine access to a Cloud SQL database.
+        GrantMachineDatabaseAccess,
+
+        // Command to revoke the current machine's access to a Cloud SQL database.
+        RevokeMachineDatabaseAccess,
     }
 }

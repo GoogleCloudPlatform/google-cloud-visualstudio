@@ -125,6 +125,10 @@
     <value>Usage Statistics</value>
     <comment>Title for the analytics prompt.</comment>
   </data>
+  <data name="CloudExploreOperationTimeoutMessage" xml:space="preserve">
+    <value>The operation took to long to complete and timed out.</value>
+    <comment>A message denoting the operation took too long.</comment>
+  </data>
   <data name="CloudExploreDisabledApiEnableApiMenuHeader" xml:space="preserve">
     <value>Enable API</value>
     <comment>Menu header for the Enable API command.</comment>
@@ -460,6 +464,15 @@
   <data name="CloudExplorerSqlFailedMessage" xml:space="preserve">
     <value>Failed to load the list of Google Cloud SQL instances.</value>
     <comment>Message shown in the output window when failed to load list of SQL instances.</comment>
+  </data>
+  <data name="CloudExplorerSqlUnathorizeMachinerrorMessage" xml:space="preserve">
+    <value>Failed to revoke the machine's access to the instance.</value>
+    <comment>Message shown when an attempt to revoke a machine's access to an instance fails.</comment>
+  </data>
+
+  <data name="CloudExplorerSqlAthorizeMachineErrorMessage" xml:space="preserve">
+    <value>Failed to grant the machine's access to the instance.</value>
+    <comment>Message shown when an attempt to grant a machine access to an instance fails.</comment>
   </data>
   <data name="CloudExplorerSqlFailedToLoadInstancesCaption" xml:space="preserve">
     <value>Failed to list instances.</value>

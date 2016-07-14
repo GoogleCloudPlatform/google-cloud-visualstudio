@@ -97,6 +97,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The operation took to long to complete and timed out..
+        /// </summary>
+        public static string CloudExploreOperationTimeoutMessage {
+            get {
+                return ResourceManager.GetString("CloudExploreOperationTimeoutMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Go to the Google Cloud Console for other services.
         /// </summary>
         public static string CloudExplorerConsoleLinkCaption {
@@ -817,6 +826,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to grant the machine&apos;s access to the instance..
+        /// </summary>
+        public static string CloudExplorerSqlAthorizeMachineErrorMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerSqlAthorizeMachineErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Grant Machine Instance Access.
         /// </summary>
         public static string CloudExplorerSqlAthorizeMachineMenuHeader {
@@ -948,6 +966,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerSqlUnathorizeMachineMenuHeader {
             get {
                 return ResourceManager.GetString("CloudExplorerSqlUnathorizeMachineMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to revoke the machine&apos;s access to the instance..
+        /// </summary>
+        public static string CloudExplorerSqlUnathorizeMachinerrorMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerSqlUnathorizeMachinerrorMessage", resourceCulture);
             }
         }
         
