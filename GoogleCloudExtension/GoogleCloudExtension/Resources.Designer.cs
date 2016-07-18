@@ -1132,7 +1132,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please ensure that the &quot;beta&quot; is component installed, using &quot;gcloud components install beta&quot;..
+        ///   Looks up a localized string similar to To use this feature you need to have the &quot;beta&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta..
         /// </summary>
         public static string ResetPasswordGcloudMissingBetaMessage {
             get {
@@ -1141,7 +1141,16 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ensure that the Google Cloud SDK is installed and available in the path, and that the &quot;beta&quot; component is installed. Please restart Visual Studio after the Google Cloud SDK has finished installing..
+        ///   Looks up a localized string similar to Missing Google Cloud SDK Component.
+        /// </summary>
+        public static string ResetPasswordGcloudMissingComponentTitle {
+            get {
+                return ResourceManager.GetString("ResetPasswordGcloudMissingComponentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To use this feature you need to have the Google Cloud SDK is installed and available in the path, and that the &quot;beta&quot; component is installed. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link..
         /// </summary>
         public static string ResetPasswordGcloudMissingMessage {
             get {
@@ -1150,7 +1159,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Missing Gloogle Cloud SDK.
+        ///   Looks up a localized string similar to Missing Google Cloud SDK.
         /// </summary>
         public static string ResetPasswordMissingGcloudTitle {
             get {
