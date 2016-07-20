@@ -42,6 +42,11 @@
       </Folder>
       <ProjectItem ReplaceParameters="true" TargetFileName="Global.asax">Global.asax</ProjectItem>
       <ProjectItem ReplaceParameters="true" TargetFileName="Global.asax.cs">Global.asax.cs</ProjectItem>
+      <Folder Name="Migrations" TargetFolderName="Migrations">
+        <ProjectItem ReplaceParameters="true" TargetFileName="Configuration.cs">Configuration.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="MySqlHistoryContext.cs">MySqlHistoryContext.cs</ProjectItem>
+        <ProjectItem ReplaceParameters="true" TargetFileName="MySqlInitializer.cs">MySqlInitializer.cs</ProjectItem>
+      </Folder>
       <Folder Name="Models" TargetFolderName="Models">
         <ProjectItem ReplaceParameters="true" TargetFileName="AccountViewModels.cs">AccountViewModels.cs</ProjectItem>
         <ProjectItem ReplaceParameters="true" TargetFileName="IdentityModels.cs">IdentityModels.cs</ProjectItem>
