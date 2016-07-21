@@ -136,6 +136,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         /// </summary>
         private void OnManageAuthorizedNetworks()
         {
+            ExtensionAnalytics.ReportCommand(
+                CommandName.OpenUpdateCloudSqlAuthorizedNetworksDialog, CommandInvocationSource.Button);
             // Get the changes to the networks and check if any changes have occured (or the results is
             // null if the user canceled the dialog).
             AuthorizedNetworkChange networkChange = AuthorizedNetworksWindow.PromptUser(Instance);
@@ -144,6 +146,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 return;
             }
 
+            ExtensionAnalytics.ReportCommand(
+                CommandName.UpdateCloudSqlAuthorizedNetworks, CommandInvocationSource.Button);
             IList<AclEntry> updatedNetworks = networkChange.AuthorizedNetworks;
             DatabaseInstanceExtensions.UpdateAuthorizedNetworks(Instance, updatedNetworks);
             Task<Operation> operation = _owner.DataSource.Value.UpdateInstanceAsync(Instance);
