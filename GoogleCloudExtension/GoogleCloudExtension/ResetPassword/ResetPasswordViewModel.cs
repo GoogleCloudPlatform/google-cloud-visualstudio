@@ -116,7 +116,6 @@ namespace GoogleCloudExtension.ResetPassword
                 // Check that gcloud is in the right state to invoke the reset credentials method.
                 if (!await GCloudWrapper.CanUseResetWindowsCredentialsAsync())
                 {
-                    // TODO: Have a custom dialog with a link to the cloud sdk installation page.
                     if (!GCloudWrapper.IsGCloudCliInstalled())
                     {
                         LinkPromptDialogWindow.PromptUser(
@@ -126,10 +125,9 @@ namespace GoogleCloudExtension.ResetPassword
                     }
                     else
                     {
-                        LinkPromptDialogWindow.PromptUser(
-                            Resources.ResetPasswordMissingGcloudTitle,
-                            Resources.ResetPasswordGcloudMissingBetaMessage,
-                            new LinkInfo(link: "https://cloud.google.com/sdk/", caption: Resources.ResetPasswordGcloudLinkCaption));
+                        UserPromptUtils.ErrorPrompt(
+                            message: Resources.ResetPasswordGcloudMissingBetaMessage,
+                            title: Resources.ResetPasswordGcloudMissingComponentTitle);
                     }
                     return;
                 }
