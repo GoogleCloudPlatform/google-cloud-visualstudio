@@ -79,6 +79,69 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Authorized Network.
+        /// </summary>
+        public static string AuthorizedNetworksWindowAddNetworkButton {
+            get {
+                return ResourceManager.GetString("AuthorizedNetworksWindowAddNetworkButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Authorized Networks.
+        /// </summary>
+        public static string AuthorizedNetworksWindowCaption {
+            get {
+                return ResourceManager.GetString("AuthorizedNetworksWindowCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter IPv4 in CIDR notation (e.g. 192.168.2.0/24)..
+        /// </summary>
+        public static string AuthorizedNetworksWindowInvalidCidrFormatErrorMessage {
+            get {
+                return ResourceManager.GetString("AuthorizedNetworksWindowInvalidCidrFormatErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Subnet..
+        /// </summary>
+        public static string AuthorizedNetworksWindowInvalidCidrFormatErrorTitle {
+            get {
+                return ResourceManager.GetString("AuthorizedNetworksWindowInvalidCidrFormatErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage authorized networks that can connect to your instance..
+        /// </summary>
+        public static string AuthorizedNetworksWindowMessage {
+            get {
+                return ResourceManager.GetString("AuthorizedNetworksWindowMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name (Optional):.
+        /// </summary>
+        public static string AuthorizedNetworksWindowNameTextBoxTitle {
+            get {
+                return ResourceManager.GetString("AuthorizedNetworksWindowNameTextBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Network (CIDR Notation):.
+        /// </summary>
+        public static string AuthorizedNetworksWindowValueTextBoxTitle {
+            get {
+                return ResourceManager.GetString("AuthorizedNetworksWindowValueTextBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable API.
         /// </summary>
         public static string CloudExploreDisabledApiEnableApiMenuHeader {
@@ -817,33 +880,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Granting machine access to instance....
-        /// </summary>
-        public static string CloudExplorerSqlAthorizeMachineCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlAthorizeMachineCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to grant the machine&apos;s access to the instance..
-        /// </summary>
-        public static string CloudExplorerSqlAthorizeMachineErrorMessage {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlAthorizeMachineErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Grant Machine Instance Access.
-        /// </summary>
-        public static string CloudExplorerSqlAthorizeMachineMenuHeader {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlAthorizeMachineMenuHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Backend Type.
         /// </summary>
         public static string CloudExplorerSqlBackendTypeDisplayName {
@@ -925,6 +961,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage Authorized Networks.
+        /// </summary>
+        public static string CloudExplorerSqlManageAuthorizedNetworksMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerSqlManageAuthorizedNetworksMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No instances found..
         /// </summary>
         public static string CloudExplorerSqlNoInstancesFoundCaption {
@@ -952,29 +997,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Revoking machine&apos;s access to instance....
+        ///   Looks up a localized string similar to Failed to updated authorized networks..
         /// </summary>
-        public static string CloudExplorerSqlUnathorizeMachineCaption {
+        public static string CloudExplorerSqlUpdateAthorizedNetworksErrorMessage {
             get {
-                return ResourceManager.GetString("CloudExplorerSqlUnathorizeMachineCaption", resourceCulture);
+                return ResourceManager.GetString("CloudExplorerSqlUpdateAthorizedNetworksErrorMessage", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Revoke Machine&apos;s Instance Access.
+        ///   Looks up a localized string similar to Updating authorized networks....
         /// </summary>
-        public static string CloudExplorerSqlUnathorizeMachineMenuHeader {
+        public static string CloudExplorerSqlUpdatedAthorizedNetworksCaption {
             get {
-                return ResourceManager.GetString("CloudExplorerSqlUnathorizeMachineMenuHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to revoke the machine&apos;s access to the instance..
-        /// </summary>
-        public static string CloudExplorerSqlUnathorizeMachinerrorMessage {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlUnathorizeMachinerrorMessage", resourceCulture);
+                return ResourceManager.GetString("CloudExplorerSqlUpdatedAthorizedNetworksCaption", resourceCulture);
             }
         }
         
@@ -1321,6 +1357,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string UiDeleteButtonCaption {
+            get {
+                return ResourceManager.GetString("UiDeleteButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download.
         /// </summary>
         public static string UiDownloadButtonCaption {
@@ -1353,6 +1398,24 @@ namespace GoogleCloudExtension {
         public static string UiPropertiesMenuHeader {
             get {
                 return ResourceManager.GetString("UiPropertiesMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string UiSaveButtonCaption {
+            get {
+                return ResourceManager.GetString("UiSaveButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undo.
+        /// </summary>
+        public static string UiUndoButtonCaption {
+            get {
+                return ResourceManager.GetString("UiUndoButtonCaption", resourceCulture);
             }
         }
     }

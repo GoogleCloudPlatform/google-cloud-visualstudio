@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Media;
+using GoogleCloudExtension.AuthorizedNetworkManagement;
 
 namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 {
@@ -35,8 +36,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
     /// </summary>
     internal class InstanceViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
-        private static readonly TimeSpan s_pollInterval = TimeSpan.FromSeconds(1);
-
         private const string IconRunningResourcePath = "CloudExplorerSources/CloudSQL/Resources/instance_icon_running.png";
         private const string IconOfflineResourcePath = "CloudExplorerSources/CloudSQL/Resources/instance_icon_offline.png";
         private const string IconUnknownResourcePath = "CloudExplorerSources/CloudSQL/Resources/instance_icon_unknown.png";
@@ -73,34 +72,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 
             UpdateMenu();
             UpdateIcon();
-        }
-
-        /// <summary>
-        /// Add the current machine's IP address as an authorized network of the database instance and
-        /// shows status for the operation while it is in progress.
-        /// </summary>
-        private void AuthorizeMachine()
-        {
-            ExtensionAnalytics.ReportCommand(CommandName.GrantMachineDatabaseAccess, CommandInvocationSource.ContextMenu);
-            DatabaseInstanceExtensions.AddAuthorizedNetwork(Instance, DnsUtils.MachineIpAddress);
-            Task<Operation> operation = _owner.DataSource.Value.UpdateInstanceAsync(Instance);
-            string action = Resources.CloudExplorerSqlAthorizeMachineCaption;
-            string errorMessage = Resources.CloudExplorerSqlAthorizeMachineErrorMessage;
-            PollOperation(operation, action, errorMessage);
-        }
-
-        /// <summary>
-        /// Remove the current machine's IP address as an authorized network of the database instance and
-        /// shows status for the operation while it is in progress.
-        /// </summary>
-        private void UnauthorizeMachine()
-        {
-            ExtensionAnalytics.ReportCommand(CommandName.RevokeMachineDatabaseAccess, CommandInvocationSource.ContextMenu);
-            DatabaseInstanceExtensions.RemoveAuthorizedNetwork(Instance, DnsUtils.MachineIpAddress);
-            Task<Operation> operation = _owner.DataSource.Value.UpdateInstanceAsync(Instance);
-            string action = Resources.CloudExplorerSqlUnathorizeMachineCaption;
-            string errorMessage = Resources.CloudExplorerSqlUnathorizeMachinerrorMessage;
-            PollOperation(operation, action, errorMessage);
         }
 
         /// <summary>
@@ -158,6 +129,29 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         {
             _owner.Context.ShowPropertiesWindow(Item);
         }
+
+        /// <summary>
+        /// Opens the a dialog to manage authorized networks for the instance.  This will allow
+        /// the user to add and remove authorized networks and then save the changes they have made.
+        /// </summary>
+        private void OnManageAuthorizedNetworks()
+        {
+            // Get the changes to the networks and check if any changes have occured (or the results is
+            // null if the user canceled the dialog).
+            AuthorizedNetworkChange networkChange = AuthorizedNetworksWindow.PromptUser(Instance);
+            if (networkChange == null || !networkChange.HasChanges)
+            {
+                return;
+            }
+
+            IList<AclEntry> updatedNetworks = networkChange.AuthorizedNetworks;
+            DatabaseInstanceExtensions.UpdateAuthorizedNetworks(Instance, updatedNetworks);
+            Task<Operation> operation = _owner.DataSource.Value.UpdateInstanceAsync(Instance);
+            string action = Resources.CloudExplorerSqlUpdatedAthorizedNetworksCaption;
+            string errorMessage = Resources.CloudExplorerSqlUpdateAthorizedNetworksErrorMessage;
+            PollOperation(operation, action, errorMessage);
+        }
+
 
         /// <summary>
         /// Opens the Add Data Connection Dialog with the data source being a MySQL database and the server field
@@ -224,24 +218,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = Resources.CloudExplorerSqlOpenAddDataConnectionMenuHeader, Command = new WeakCommand(OpenDataConnectionDialog) },
+                new MenuItem { Header = Resources.CloudExplorerSqlManageAuthorizedNetworksMenuHeader, Command = new WeakCommand(OnManageAuthorizedNetworks) },
                 new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) },
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesCommand) },
             };
-
-
-            // If the machine address could be found allow the user to grant and remove access for the current machine
-            if (DnsUtils.MachineIpAddress != null)
-            {
-                if (DatabaseInstanceExtensions.IpAddressAuthorized(Instance, DnsUtils.MachineIpAddress))
-                {
-                    menuItems.Add(new MenuItem {Header = Resources.CloudExplorerSqlUnathorizeMachineMenuHeader, Command = new WeakCommand(UnauthorizeMachine) });
-                }
-                else
-                {
-                    menuItems.Add(new MenuItem {Header = Resources.CloudExplorerSqlAthorizeMachineMenuHeader, Command = new WeakCommand(AuthorizeMachine) });
-                }
-            }
-
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 

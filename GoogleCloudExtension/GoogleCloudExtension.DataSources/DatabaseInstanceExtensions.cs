@@ -27,32 +27,19 @@ namespace GoogleCloudExtension.DataSources
         public const string UnknownState = "UNKNOWN_STATE";
 
         /// <summary>
-        /// True if IP address is an authorized network of the instance
+        /// Update the authorized networks of a instance.  This completely replaces the current 
+        /// list of networks with the new list.
         /// </summary>
-        public static bool IpAddressAuthorized(DatabaseInstance instance, string ipAddress)
+        public static void UpdateAuthorizedNetworks(DatabaseInstance instance, IList<AclEntry> acls)
         {
-            IList<AclEntry> networks = instance?.Settings?.IpConfiguration?.AuthorizedNetworks;
-            return networks != null && networks.Any(x => x.Value.Equals(ipAddress));
+            EnsureAuthorizedNetworksInitialized(instance);
+            instance.Settings.IpConfiguration.AuthorizedNetworks = acls;
         }
 
         /// <summary>
-        /// Removes the given IP address from the instance's authorized networks if it exists.
+        /// Ensure the Authorized Networks field and all of its parents are initialized for an instance.
         /// </summary>
-        public static void RemoveAuthorizedNetwork(DatabaseInstance instance, string ipAddress)
-        {
-            IList<AclEntry> networks = instance?.Settings?.IpConfiguration?.AuthorizedNetworks;
-            AclEntry entry = networks?.FirstOrDefault(x => x.Value.Equals(ipAddress));
-            if (networks != null && entry != null)
-            {
-                networks.Remove(entry);
-            }
-        }
-
-        /// <summary>
-        /// Adds the given IP address to the instance's authorized networks.
-        /// Makes no check that the IP address is or is not already an authorized network.
-        /// </summary>
-        public static void AddAuthorizedNetwork(DatabaseInstance instance, string ipAddress)
+        private static void EnsureAuthorizedNetworksInitialized(DatabaseInstance instance)
         {
             // Ensure that all nested objects are initilaized.
             if (instance.Settings == null)
@@ -69,13 +56,6 @@ namespace GoogleCloudExtension.DataSources
             {
                 instance.Settings.IpConfiguration.AuthorizedNetworks = new List<AclEntry>();
             }
-
-            // Add the new authorized network.
-            AclEntry acl = new AclEntry
-            {
-                Value = ipAddress
-            };
-            instance.Settings.IpConfiguration.AuthorizedNetworks.Add(acl);
         }
     }
 }
