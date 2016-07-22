@@ -1,0 +1,133 @@
+﻿<!--
+    Copyright 2016 Google, Inc
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <link rel="shortcut icon" href="https://cloud.google.com/_static/bd1d68766c/images/cloud/icons/favicons/favicon.ico">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Google Cloud Platform - Cloud SQL</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+        <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js"></script>
+    </head>
+    <body>
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="https://cloud.google.com/sql/">Google Cloud SQL</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a href="https://cloud.google.com/dotnet/" target="_blank" title=".NET on the Google Cloud Platform">.NET on Google Cloud</a></li>
+                        <li><a href="https://cloud.google.com/dotnet/getting-started/hello-world" target="_blank" title="Create and deploy a .NET Hello World application">Quickstart</a></li>
+                        <li><a href="https://cloud.google.com/dotnet/getting-started/using-cloud-sql" target="_blank" title="Tutorial demonstrating using Google Cloud SQL with an ASP.NET web application">Using Cloud SQL</a></li>
+                    </ul>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a href="https://cloud.google.com/dotnet/tutorials" target="_blank" title=".NET Google Cloud Platform Tutorials">Tutorials</a></li>
+                        <li><a href="https://cloud.google.com/dotnet/samples" target="_blank" title=".NET Google Cloud Platform Code Samples">Code Samples</a></li>
+                        <li><a href="https://cloud.google.com/dotnet/apis" target="_blank" title=".NET Google Cloud Platform APIs & .NET Libraries">APIs & .NET Libraries</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="container body-content">
+            <div class="jumbotron">
+                <h1>Google Cloud SQL</h1>
+                <p class="lead">
+                    <a href="https://cloud.google.com/sql/" target="_blank">Google Cloud SQL</a>
+                    is a fully-managed database service that makes it easy to set-up, maintain,
+                    manage and administer your relational MySQL databases in the cloud.
+                    Hosted on Google Cloud Platform, Cloud SQL provides a database infrastructure
+                    for applications running anywhere.
+                </p>
+                <p>
+                    <a href="https://cloud.google.com/sql/" class="btn btn-primary btn-lg" target="_blank">Learn more »</a>
+                </p>
+            </div>
+            <div class="alert alert-danger">
+                <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                There seems to be a problem connecting to your Google Cloud SQL database.
+                See below for instructions.
+            </div>
+            <p>This ASP.NET template uses the Google Cloud SQL relational MySQL database.</p>
+            <p>
+                To configure this application to use Cloud SQL, edit the <code>Web.config</code>
+                file found at the root of this application and update the database connection string
+                to reflect the username, password, IP, and database of your Cloud SQL database.
+            </p>
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Web.config
+                </div>
+                <div class="panel-body">
+                    <pre class="prettyprint">&lt;connectionStrings&gt;
+    &lt;!--
+      Google Cloud SQL database configuration
+
+      To configure this application to use Cloud SQL, change the connectionString attribute and
+      replace the placeholders to reflect the username, password, IP, and database of your Cloud SQL database.
+
+      For example, suppose your IPv4 address is 173.194.230.44, your database is dotnetdb, your username
+      is dotnetuser, and your password is secret123. Then the connectionString attribute would look like this:
+
+        connectionString="Server=[IP Address];Database=dotnetdb;Uid=dotnetuser;Pwd=secret123"
+    --&gt;
+    &lt;add name="DefaultConnection"
+     connectionString="Server=[IPv4 IP Address];Database=[Database name];Uid=[User name];Pwd=[User password]"
+     providerName="MySql.Data.MySqlClient" /&gt;
+&lt;/connectionStrings&gt;</pre>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <h3>
+                        <span class="glyphicon glyphicon-time" aria-hidden="true"></span>
+                        Quickstart
+                    </h3>
+                    <p>Create a .NET Hello World app</p>
+                    <p><a class="btn btn-default" href="https://cloud.google.com/dotnet/getting-started/hello-world" target="_blank">Learn more &raquo;</a></p>
+                </div>
+                <div class="col-md-4">
+                    <h3>
+                        <span class="glyphicon glyphicon-cloud" aria-hidden="true"></span>
+                        .NET on Google Cloud
+                    </h3>
+                    <p>Tutorials, Code Samples, and resources for using .NET with the Google Cloud Platform</p>
+                    <p><a class="btn btn-default" href="https://cloud.google.com/dotnet/" target="_blank">Learn more &raquo;</a></p>
+                </div>
+                <div class="col-md-4">
+                    <h3>
+                        <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                        Using Cloud SQL
+                    </h3>
+                    <p>Tutorial demonstrating using Cloud SQL in an ASP.NET web application</p>
+                    <p><a class="btn btn-default" target="_blank">Learn more &raquo;</a></p>
+                </div>
+            </div>
+            <hr>
+            <footer>
+                &copy; 2016 - Google, Inc
+            </footer>
+        </div>
+    </body>
+</html>
