@@ -13,19 +13,6 @@ namespace $safeprojectname$.Controllers
     {
         public ActionResult Index()
         {
-            var dbContext = HttpContext.GetOwinContext().Get<ApplicationDbContext>();
-
-            try
-            {
-                dbContext.Database.Connection.Open();
-                ViewBag.DatabaseError = false;
-            }
-            catch (MySqlException ex)
-            {
-                ViewBag.DatabaseError = true;
-                ViewBag.DatabaseErrorMessage = $"{ex.GetType().Name} - {ex.Message}";
-            }
-
             return View();
         }
 
