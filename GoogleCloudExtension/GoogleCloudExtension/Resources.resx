@@ -489,9 +489,25 @@
     <value>No instances found.</value>
     <comment>Caption shown when no SQL instances are found.</comment>
   </data>
+  <data name="CloudExplorerSqlUnathorizeMachineCaption" xml:space="preserve">
+    <value>Revoking machine's access to instance...</value>
+    <comment>Caption shown when the machine's access to the instance is being revoked.</comment>
+  </data>
+  <data name="CloudExplorerSqlAthorizeMachineCaption" xml:space="preserve">
+    <value>Granting machine access to instance...</value>
+    <comment>Caption shown when the machine's access to the instance is being granted.</comment>
+  </data>
   <data name="CloudExplorerSqlOpenAddDataConnectionMenuHeader" xml:space="preserve">
     <value>Add Data Connection</value>
     <comment>Menu header for the open add data connection dialog menu item.</comment>
+  </data>
+  <data name="CloudExplorerSqlUnathorizeMachineMenuHeader" xml:space="preserve">
+    <value>Revoke Machine's Instance Access</value>
+    <comment>Menu header for the option to revoke the machine's access to the database instance.</comment>
+  </data>
+  <data name="CloudExplorerSqlAthorizeMachineMenuHeader" xml:space="preserve">
+    <value>Grant Machine Instance Access</value>
+    <comment>Menu header for the option to grant the machine access to the database instance.</comment>
   </data>
   <data name="CloudExplorerSqlRootNodeCaption" xml:space="preserve">
     <value>Google Cloud SQL</value>
