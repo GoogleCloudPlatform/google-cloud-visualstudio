@@ -1,5 +1,16 @@
-﻿// Copyright 2015 Google Inc. All Rights Reserved.
-// Licensed under the Apache License Version 2.0.
+﻿// Copyright 2016 Google Inc. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 using System;
 using System.Collections.Generic;
@@ -36,11 +47,13 @@ namespace GoogleAnalyticsUtils
         private const string ClientIdParam = "cid";
         private const string AppNameParam = "an";
         private const string AppVersionParam = "av";
+        private const string ScreenNameParam = "cd";
 
         private const string VersionValue = "1";
         private const string EventTypeValue = "event";
         private const string SessionStartValue = "start";
         private const string SessionEndValue = "end";
+        private const string ScreenViewValue = "screenview";
 
         private readonly bool _debug;
         private readonly string _serverUrl;
@@ -92,17 +105,21 @@ namespace GoogleAnalyticsUtils
         }
 
         /// <summary>
-        /// Convenience method to report a singe event to Google Analytics.
+        /// Convenience method to report a single event to Google Analytics.
         /// </summary>
-        /// <param name="category">The category for the even.</param>
+        /// <param name="category">The category for the event.</param>
         /// <param name="action">The action that took place.</param>
         /// <param name="label">The label affected by the event.</param>
         /// <param name="value">The new value.</param>
-        public void ReportEvent(string category, string action, string label, int? value = null)
+        public void ReportEvent(string category, string action, string label = null, int? value = null)
         {
+            Preconditions.CheckNotNull(category, nameof(category));
+            Preconditions.CheckNotNull(action, nameof(action));
+
             // Data we will send along with the web request. Later baked into the HTTP
             // request's payload.
-            var hitData = new Dictionary<string, string>(_baseHitData) {
+            var hitData = new Dictionary<string, string>(_baseHitData)
+            {
                 { HitTypeParam, EventTypeValue },
                 { EventCategoryParam, category },
                 { EventActionParam, action },
@@ -115,6 +132,22 @@ namespace GoogleAnalyticsUtils
             {
                 hitData[EventValueParam] = value.ToString();
             }
+            SendHitData(hitData);
+        }
+
+        /// <summary>
+        /// Reports a window view.
+        /// </summary>
+        /// <param name="name">The name of the window. Must not be null.</param>
+        public void ReportScreen(string name)
+        {
+            Preconditions.CheckNotNull(name, nameof(name));
+
+            var hitData = new Dictionary<string, string>(_baseHitData)
+            {
+                { HitTypeParam, ScreenViewValue },
+                { ScreenNameParam, name },
+            };
             SendHitData(hitData);
         }
 

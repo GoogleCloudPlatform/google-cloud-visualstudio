@@ -5,6 +5,11 @@ are of general use.
 
 ## Converters for WPF development.
 
+### Model
+The `Model` class is the base class for all Binding models. It implementes `INotifyPropertyChanged` is the right way and exposes protected methods to raise property changed events manually if necessary.
+
+The most important method in the class is `SetValueAndRaise<T>()` which takes care of updating the storage field and raising the property changed event, using the name of the caller as the name of the property. This method should only be called from a property setter.
+
 ### BooleanConverter
 The `BooleanConverter` class implements a value converter incoming boolean values to either the value of the `TrueValue` or `FalseValue` properties.
 
@@ -29,8 +34,10 @@ The `WeakCommand` class implements the `ICommand` interface using `WeakActions` 
 
 There is a variang of `WeakCommand` that accept a parameter and another one that doesn't . The `WeakCommand` variant that accept commands ensures that the argument is not `null` before invoking the command, as it is expected that the command will only support non-null arguments.
 
-## ProcessUtils
-The `ProcessUtils` class provices helpers to run processes and read the `stdout` and `stderr` streams from the process.
+## General utils
+
+### ProcessUtils
+The `ProcessUtils` class provides helpers to run processes and read the `stdout` and `stderr` streams from the process.
 
 The class can run a sub-process in various modes:
 * Run the process and provide the lines of output via a callback, using the `ProcessUtils.RunCommandAsync` method. This method will return once the process exits. The resulting boolean will be `true` if the process suceeded (the exit code is 0) or false otherwise.
@@ -38,3 +45,9 @@ The class can run a sub-process in various modes:
 * Run the process and only know if the process failed or not, using the `ProcessUtils.LaunchCommandAsync` method. This method will run the process and return whether the process failed or not but nothing else.
 
 On top of these ther eis a helper that will run the process using `ProcessUtils.GetCommandOutputAsync` and parse the `stdout` output, if the process suceeded, parse it as json output and return that, very very useful for parsing the output of running gcloud commands.
+
+### AsyncPropertyValue<T>
+The `AsyncPropertyValue<T>` class enables binding to the result of the `Task<T>` it wraps. It exposes various properties about the state of the `Task<T>` so bindings to that state can be created.
+
+There are also helper methods to create instances of `AsynPropertyValue<T>` from `Task<T>` and even from just a `T`.
+

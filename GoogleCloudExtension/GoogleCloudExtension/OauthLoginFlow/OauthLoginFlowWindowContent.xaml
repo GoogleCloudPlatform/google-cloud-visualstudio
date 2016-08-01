@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="GoogleCloudExtension.OauthLoginFlow.OauthLoginFlowWindowContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.OauthLoginFlow"
+             xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance {x:Type local:OAuthLoginFlowViewModel}}" d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <TextBlock TextWrapping="Wrap" Margin="3,0" x:Key="content" Text="{x:Static ext:Resources.OAuthFlowWindowMessage}" />
+
+    </UserControl.Resources>
+
+    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
+                                      Command="{Binding DataContext.CloseCommand, Source={StaticResource content}}"
+                                      IsCancel="True" />
+        </theming:CommonDialogWindowBaseContent.Buttons>
+    </theming:CommonDialogWindowBaseContent>
+   
+</UserControl>

@@ -1,7 +1,19 @@
 ﻿// Copyright 2016 Google Inc. All Rights Reserved.
-// Licensed under the Apache License Version 2.0.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 using Google;
+using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using System;
 using System.Collections.Generic;
@@ -29,23 +41,44 @@ namespace GoogleCloudExtension.DataSources
         protected TService Service { get; }
 
         /// <summary>
-        /// Initializes this class with the <paramref name="projectId"/> and uses <paramref name="factory"/> to
+        /// The application name.
+        /// </summary>
+        protected string AppName { get; }
+
+        /// <summary>
+        /// Initializes this class with the <paramref name="projectId"/> and uses <paramref name="serviceFactory"/> to
         /// create an instance of the service to wrap.
         /// </summary>
         /// <param name="projectId">The project id for this data source.</param>
-        /// <param name="service">The service for this data source.</param>
-        protected DataSourceBase(string projectId, TService service)
+        /// <param name="credentials">The credentials to use for the service.</param>
+        /// <param name="serviceFactory">The service factory for this data source.</param>
+        /// <param name="appName">The name of the application.</param>
+        protected DataSourceBase(
+            string projectId,
+            GoogleCredential credentials,
+            Func<BaseClientService.Initializer, TService> serviceFactory,
+            string appName)
         {
             ProjectId = projectId;
-            Service = service;
+            Service = serviceFactory(new BaseClientService.Initializer
+            {
+                HttpClientInitializer = credentials,
+                ApplicationName = appName,
+            });
+            AppName = appName;
         }
 
         /// <summary>
         /// Initializes an instance of the data source with only a service, for those APIs that do
         /// not require a project id.
         /// </summary>
-        /// <param name="service">The service for this data source.</param>
-        protected DataSourceBase(TService service) : this(null, service)
+        /// <param name="credentials">The credentials to use for the service.</param>
+        /// <param name="serviceFactory">The service factory for this data source.</param>
+        /// <param name="appName">The name of the application.</param>
+        protected DataSourceBase(
+            GoogleCredential credential,
+            Func<BaseClientService.Initializer, TService> serviceFactory,
+            string appName) : this(null, credential, serviceFactory, appName)
         { }
 
         /// <summary>

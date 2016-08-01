@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="GoogleCloudExtension.FirewallManagement.PortManagerWindowContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.FirewallManagement"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+             xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance {x:Type local:PortManagerViewModel}}"
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <StackPanel x:Key="content">
+            <TextBlock TextWrapping="Wrap" Margin="3,0,3,5" Text="{x:Static ext:Resources.PortManagerWindowMessage}"/>
+
+            <StackPanel Margin="3,0">
+                <ItemsControl ItemsSource="{Binding Ports}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsEnabled}">
+                                <TextBlock>
+                                    <TextBlock.Text>
+                                        <MultiBinding StringFormat="{}{0} ({1})">
+                                            <Binding Path="Name" />
+                                            <Binding Path="Port" />
+                                        </MultiBinding>
+                                    </TextBlock.Text>
+                                </TextBlock>
+                            </CheckBox>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </StackPanel>
+    </UserControl.Resources>
+
+    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}"
+                                      IsDefault="True"
+                                      Command="{Binding DataContext.OkCommand, Source={StaticResource content}}"/>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
+        </theming:CommonDialogWindowBaseContent.Buttons>
+    </theming:CommonDialogWindowBaseContent>
+
+</UserControl>

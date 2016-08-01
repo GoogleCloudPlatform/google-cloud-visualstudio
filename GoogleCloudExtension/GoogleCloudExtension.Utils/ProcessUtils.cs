@@ -1,5 +1,16 @@
-﻿// Copyright 2015 Google Inc. All Rights Reserved.
-// Licensed under the Apache License Version 2.0.
+﻿// Copyright 2016 Google Inc. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 using Newtonsoft.Json;
 using System;
@@ -75,9 +86,9 @@ namespace GoogleCloudExtension.Utils
         /// by the process.
         /// Uses <paramref name="environment"/> if provided to customize the environment of the child process.
         /// </summary>
-        /// <param name="file">The path to the binary to execute, it should not be null.</param>
+        /// <param name="file">The path to the binary to execute, it must not be null.</param>
         /// <param name="args">The arguments to pass to the binary to execute, it can be null.</param>
-        /// <param name="handler">The callback to call with wach line being oput by the process, it can be called outside
+        /// <param name="handler">The callback to call with the line being oput by the process, it can be called outside
         /// of the UI thread. Must not be null.</param>
         /// <param name="environment">Optional parameter with values for environment variables to pass on to the child process.</param>
         /// <returns></returns>
@@ -85,7 +96,7 @@ namespace GoogleCloudExtension.Utils
             string file,
             string args,
             EventHandler<OutputHandlerEventArgs> handler,
-            IDictionary<string, string> environment)
+            IDictionary<string, string> environment = null)
         {
             var startInfo = GetStartInfoForInteractiveProcess(file, args, environment);
 
@@ -108,7 +119,7 @@ namespace GoogleCloudExtension.Utils
         /// <param name="args">The arguments to pass to the executable.</param>
         /// <param name="environment">The environment variables to use for the executable.</param>
         /// <returns></returns>
-        public static Task<ProcessOutput> GetCommandOutputAsync(string file, string args, IDictionary<string, string> environment)
+        public static Task<ProcessOutput> GetCommandOutputAsync(string file, string args, IDictionary<string, string> environment = null)
         {
             var startInfo = GetStartInfoForInteractiveProcess(file, args, environment);
 
@@ -152,7 +163,7 @@ namespace GoogleCloudExtension.Utils
         /// <param name="args">The arguments to pass to the executable.</param>
         /// <param name="environment">The environment to use for the executable.</param>
         /// <returns></returns>
-        public static async Task<T> GetJsonOutputAsync<T>(string file, string args, IDictionary<string, string> environment)
+        public static async Task<T> GetJsonOutputAsync<T>(string file, string args, IDictionary<string, string> environment = null)
         {
             var output = await ProcessUtils.GetCommandOutputAsync(file, args, environment);
             if (!output.Succeeded)
@@ -163,7 +174,7 @@ namespace GoogleCloudExtension.Utils
             {
                 return JsonConvert.DeserializeObject<T>(output.StandardOutput);
             }
-            catch (JsonSerializationException)
+            catch (JsonException)
             {
                 throw new JsonOutputException($"Failed to parse output of command: {file} {args}\n{output.StandardOutput}");
             }
