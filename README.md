@@ -20,6 +20,9 @@ install the `beta` command group as follows:
 gcloud components install beta
 ```
 
+## Builds
+We use appveyor to build on every push to this branch, the latest release build of the extension for the master branch can be found [here](https://ci.appveyor.com/api/projects/ivannaranjo/google-cloud-visualstudio/artifacts/GoogleCloudExtension/GoogleCloudExtension/bin/Release/GoogleCloudExtension.vsix?branch=master).
+
 ## Support
 
 To get help on using the Visual Studio Extension, please log an issue with this
