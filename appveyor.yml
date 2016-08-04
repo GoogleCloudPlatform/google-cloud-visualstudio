@@ -1,0 +1,16 @@
+# Configuration for the build for the Visual Studio extension for Google Cloud.
+
+# Version for the build.
+version: 1.0.{build}-{branch}
+
+# We're using Visual Studio 2015
+image: Visual Studio 2015
+
+# Perform the build.
+# TODO: Fetch the output of the build and publish it.
+build_script:
+  - nuget restore .\GoogleCloudExtension
+  - msbuild .\GoogleCloudExtension\GoogleCloudExtension.sln
+
+# The tests are run as part of the build.
+test: off
