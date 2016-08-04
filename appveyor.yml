@@ -12,5 +12,6 @@ build_script:
   - nuget restore .\GoogleCloudExtension
   - msbuild .\GoogleCloudExtension\GoogleCloudExtension.sln
 
-# The tests are run as part of the build.
+# No tests are defined as of now.
+# TODO: Enable when we have tests.
 test: off
