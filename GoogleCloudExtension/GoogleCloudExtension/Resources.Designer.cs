@@ -403,7 +403,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Instances instead of Zones.
+        ///   Looks up a localized string similar to Show instances instead of zones.
         /// </summary>
         public static string CloudExplorerGceOnlyInstancesButtonToolTip {
             get {
@@ -412,7 +412,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Filter to Only Windows Instances.
+        ///   Looks up a localized string similar to Show only Windows instances.
         /// </summary>
         public static string CloudExplorerGceOnlyWindowsButtonToolTip {
             get {

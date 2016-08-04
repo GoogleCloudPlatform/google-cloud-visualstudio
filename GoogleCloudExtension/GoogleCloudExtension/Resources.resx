@@ -270,11 +270,11 @@
     <comment>The caption to show when there are no Windows instances in a GCE zone.</comment>
   </data>
   <data name="CloudExplorerGceOnlyInstancesButtonToolTip" xml:space="preserve">
-    <value>Show Instances instead of Zones</value>
+    <value>Show instances instead of zones</value>
     <comment>The tooltip for the button to show instances, not zones in gce.</comment>
   </data>
   <data name="CloudExplorerGceOnlyWindowsButtonToolTip" xml:space="preserve">
-    <value>Filter to Only Windows Instances</value>
+    <value>Show only Windows instances</value>
     <comment>The tooltip for the filter button.</comment>
   </data>
   <data name="CloudExplorerGceOpenTerminalSessionMenuHeader" xml:space="preserve">
