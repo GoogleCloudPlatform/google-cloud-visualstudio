@@ -36,6 +36,12 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         public static readonly TimeSpan DefaultPollTimeout = TimeSpan.FromMinutes(5);
 
+        /// <summary>
+        /// The default fetch timeout.  This is the max amount of time spent waiting for a 
+        /// single fetch operation to complete.
+        /// Default is 10 second.
+        /// </summary>
+        public static readonly TimeSpan DefaultFetchTimeout = TimeSpan.FromSeconds(10);
 
         /// <summary>
         /// The delay between poll requests.
@@ -49,14 +55,21 @@ namespace GoogleCloudExtension.Utils
         public TimeSpan Timeout;
 
         /// <summary>
+        /// The  max amount of time spent waiting for a single fetch operation to complete.
+        /// </summary>
+        public TimeSpan FetchTimeout;
+
+        /// <summary>
         /// Create a new polling configuration.
         /// </summary>
         /// <param name="interval">Optional, The interval, defaults to <see cref="DefaultPollInterval"/> when unset or null</param>
         /// <param name="timeout">Optional, The timeout, defaults to <see cref="DefaultPollTimeout"/> when unset or null</param>
-        public PollingConfiguration(TimeSpan? interval = null, TimeSpan? timeout = null)
+        /// <param name="fetchTimeout">Optional, The fetchTimeout, defaults to <see cref="DefaultFetchTimeout"/> when unset or null</param>
+        public PollingConfiguration(TimeSpan? interval = null, TimeSpan? timeout = null, TimeSpan? fetchTimeout = null)
         {
             Interval= interval ?? DefaultPollInterval;
             Timeout = timeout ?? DefaultPollTimeout;
+            FetchTimeout = fetchTimeout ?? DefaultFetchTimeout;
         }
     }
 
@@ -83,34 +96,32 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Poll for a resource.
         /// </summary>
-        /// <param name="task">The origional task to start from.</param>
+        /// <param name="resource">The origional resource to start from.</param>
         /// <param name="fetch">A delegate to fetch an updated resource.</param>
         /// <param name="stopPolling">A delegate to determine if polling should stop.</param>
         /// <param name="config">Optional, A polling configuration or the default if unset or null.</param>
         /// <param name="token">Optional, A cancelation token used to stop polling manually.</param>
         /// <exception cref="TimeoutException">If the polling passes the timeout threshold.</exception>>
         /// <returns></returns>
-        public static async Task<T> Poll(Task<T> task, Fetch fetch, StopPolling stopPolling,
-            PollingConfiguration config = null, CancellationToken? token = null)
+        public static async Task<T> Poll(T resource, Fetch fetch, StopPolling stopPolling,
+            PollingConfiguration config = null, CancellationToken token = default(CancellationToken))
         {
             // If no configuration is given use the default configuration.
             config = config ?? new PollingConfiguration();
 
-            // Wait for the initial task to complete before polling.
-            T result = await task;
             TimeSpan elapsed = TimeSpan.Zero;
 
             // Start polling for the resource.
             while (true)
             {
                 // Check if the current result is in a stopable state.
-                if (stopPolling.Invoke(result))
+                if (stopPolling.Invoke(resource))
                 {
                     break;
                 }
 
                 // If a cancellation token is present and a cancelation has been requested stop polling.
-                if (token.HasValue && token.Value.IsCancellationRequested)
+                if (token.IsCancellationRequested)
                 {
                     break;
                 }
@@ -124,9 +135,19 @@ namespace GoogleCloudExtension.Utils
                 // Wait and then poll.
                 await Task.Delay(config.Interval);
                 elapsed += config.Interval;
-                result = await fetch.Invoke(result);
+
+                // Fetch the next resource.
+                Task<T> task = fetch.Invoke(resource);
+                if (await Task.WhenAny(task, Task.Delay(config.FetchTimeout)) == task)
+                {
+                    resource = await task;
+                }
+                else
+                {
+                    throw new TimeoutException();
+                }
             }
-            return result;
+            return resource;
         }
     }
 }

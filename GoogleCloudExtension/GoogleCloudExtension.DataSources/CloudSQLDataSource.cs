@@ -43,9 +43,9 @@ namespace GoogleCloudExtension.DataSources
         /// Fetches the list of Cloud SQL instances for the given project.
         /// </summary>
         /// <returns>The list of Cloud SQL instances.</returns>
-        public Task<IList<DatabaseInstance>> GetInstanceListAsync()
+        public async Task<IList<DatabaseInstance>> GetInstanceListAsync()
         {
-            return LoadPagedListAsync(
+            return await LoadPagedListAsync(
                 (token) =>
                 {
                     var request = Service.Instances.List(ProjectId);
@@ -68,12 +68,12 @@ namespace GoogleCloudExtension.DataSources
         /// Gets the Cloud SQL instances for the given project and name.
         /// </summary>
         /// <returns>The Cloud SQL instance.</returns>
-        public Task<DatabaseInstance> GetInstanceAsync(string name)
+        public async Task<DatabaseInstance> GetInstanceAsync(string name)
         {
             try
             {
                 InstancesResource.GetRequest request = Service.Instances.Get(ProjectId, name);
-                return request.ExecuteAsync();
+                return await request.ExecuteAsync();
             }
             catch (GoogleApiException ex)
             {
@@ -86,12 +86,12 @@ namespace GoogleCloudExtension.DataSources
         /// Updates the Cloud SQL instance.
         /// </summary>
         /// <returns>The Cloud SQL operation with the status of the update.</returns>
-        public Task<Operation> UpdateInstanceAsync(DatabaseInstance instance)
+        public async Task<Operation> UpdateInstanceAsync(DatabaseInstance instance)
         {
             try
             {
                 InstancesResource.UpdateRequest request = Service.Instances.Update(instance, ProjectId, instance.Name);
-                return request.ExecuteAsync();
+                return await request.ExecuteAsync();
             }
             catch (GoogleApiException ex)
             {
@@ -105,12 +105,12 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="id">The unique operation id.</param>
         /// <returns>The Cloud SQL operation.</returns>
-        public Task<Operation> GetOperationAsync(string id)
+        public async Task<Operation> GetOperationAsync(string id)
         {
             try
             {
                 OperationsResource.GetRequest request = Service.Operations.Get(ProjectId, id);
-                return request.ExecuteAsync();
+                return await request.ExecuteAsync();
             }
             catch (GoogleApiException ex)
             {
