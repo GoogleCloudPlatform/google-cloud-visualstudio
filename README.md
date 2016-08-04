@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/0s0wo324dmv18uo9/branch/master?svg=true)](https://ci.appveyor.com/project/ivannaranjo/google-cloud-visualstudio-bnnrp/branch/master)
+
 # Visual Studio Extension for Google Cloud Platform
 
 This repo contains the source code for the Visual Studio Extension for Google
