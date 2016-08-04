@@ -10,7 +10,14 @@ image: Visual Studio 2015
 # TODO: Fetch the output of the build and publish it.
 build_script:
   - nuget restore .\GoogleCloudExtension
+  - msbuild .\GoogleCloudExtension\GoogleCloudExtension.sln /p:Configuration=Debug
   - msbuild .\GoogleCloudExtension\GoogleCloudExtension.sln /p:Configuration=Release
+
+# Defines the artifacts to be saved.
+artifacts:
+  - path: GoogleCloudExtension\GoogleCloudExtension\bin\Release\GoogleCloudExtension.vsix
+
+  - path: GoogleCloudExtension\GoogleCloudExtension\bin\Debug\GoogleCloudExtension.vsix
 
 # No tests are defined as of now.
 # TODO: Enable when we have tests.
