@@ -10,7 +10,7 @@ image: Visual Studio 2015
 # TODO: Fetch the output of the build and publish it.
 build_script:
   - nuget restore .\GoogleCloudExtension
-  - msbuild .\GoogleCloudExtension\GoogleCloudExtension.sln
+  - msbuild .\GoogleCloudExtension\GoogleCloudExtension.sln /p:Configuration=Release
 
 # No tests are defined as of now.
 # TODO: Enable when we have tests.
