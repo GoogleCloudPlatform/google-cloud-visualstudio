@@ -37,13 +37,6 @@ namespace GoogleCloudExtension.Utils
         public static readonly TimeSpan DefaultPollTimeout = TimeSpan.FromMinutes(5);
 
         /// <summary>
-        /// The default fetch timeout.  This is the max amount of time spent waiting for a 
-        /// single fetch operation to complete.
-        /// Default is 10 second.
-        /// </summary>
-        public static readonly TimeSpan DefaultFetchTimeout = TimeSpan.FromSeconds(10);
-
-        /// <summary>
         /// The delay between poll requests.
         /// </summary>
         public TimeSpan Interval;
@@ -55,21 +48,14 @@ namespace GoogleCloudExtension.Utils
         public TimeSpan Timeout;
 
         /// <summary>
-        /// The  max amount of time spent waiting for a single fetch operation to complete.
-        /// </summary>
-        public TimeSpan FetchTimeout;
-
-        /// <summary>
         /// Create a new polling configuration.
         /// </summary>
         /// <param name="interval">Optional, The interval, defaults to <see cref="DefaultPollInterval"/> when unset or null</param>
         /// <param name="timeout">Optional, The timeout, defaults to <see cref="DefaultPollTimeout"/> when unset or null</param>
-        /// <param name="fetchTimeout">Optional, The fetchTimeout, defaults to <see cref="DefaultFetchTimeout"/> when unset or null</param>
-        public PollingConfiguration(TimeSpan? interval = null, TimeSpan? timeout = null, TimeSpan? fetchTimeout = null)
+        public PollingConfiguration(TimeSpan? interval = null, TimeSpan? timeout = null)
         {
             Interval= interval ?? DefaultPollInterval;
             Timeout = timeout ?? DefaultPollTimeout;
-            FetchTimeout = fetchTimeout ?? DefaultFetchTimeout;
         }
     }
 
@@ -78,21 +64,6 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public class Polling<T>
     {
-
-        /// <summary>
-        /// Delegate to fetch an updated resource.
-        /// </summary>
-        /// <param name="item">The current resource.</param>
-        /// <returns>The updated resource.</returns>
-        public delegate Task<T> Fetch(T item);
-
-        /// <summary>
-        /// Delegate to determine if polling should stop.
-        /// </summary>
-        /// <param name="item">The current resource.</param>
-        /// <returns>True if the polling should stop.</returns>
-        public delegate bool StopPolling(T item);
-
         /// <summary>
         /// Poll for a resource.
         /// </summary>
@@ -103,7 +74,7 @@ namespace GoogleCloudExtension.Utils
         /// <param name="token">Optional, A cancelation token used to stop polling manually.</param>
         /// <exception cref="TimeoutException">If the polling passes the timeout threshold.</exception>>
         /// <returns></returns>
-        public static async Task<T> Poll(T resource, Fetch fetch, StopPolling stopPolling,
+        public static async Task<T> Poll(T resource, Func<T, Task<T>> fetch, Predicate<T> stopPolling,
             PollingConfiguration config = null, CancellationToken token = default(CancellationToken))
         {
             // If no configuration is given use the default configuration.
@@ -138,7 +109,7 @@ namespace GoogleCloudExtension.Utils
 
                 // Fetch the next resource.
                 Task<T> task = fetch.Invoke(resource);
-                if (await Task.WhenAny(task, Task.Delay(config.FetchTimeout)) == task)
+                if (await Task.WhenAny(task, Task.Delay(config.Timeout - elapsed)) == task)
                 {
                     resource = await task;
                 }

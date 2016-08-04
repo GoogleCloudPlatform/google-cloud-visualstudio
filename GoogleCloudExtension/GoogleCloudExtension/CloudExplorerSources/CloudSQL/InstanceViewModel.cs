@@ -91,9 +91,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             try
             {
                 // Poll until the update to completes.
-                Polling<Operation>.Fetch fetch = (o) => dataSource.GetOperationAsync(o.Name);
-                Polling<Operation>.StopPolling stopPolling =
-                    (o) => CloudSqlDataSource.OperationStateDone.Equals(o.Status);
+                Func<Operation, Task<Operation>> fetch = (o) => dataSource.GetOperationAsync(o.Name);
+                Predicate<Operation> stopPolling = (o) => CloudSqlDataSource.OperationStateDone.Equals(o.Status);
                 Operation operation = await Polling<Operation>.Poll(await task, fetch, stopPolling);
 
                 // Be sure to update the instance when finished to ensure we have

@@ -45,7 +45,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
 
             // Get a list of all of the networks that weren't deleted.
             AuthorizedNetworks = authorizedNetworks.Where(x => !x.Deleted)
-                .Select(x => new AclEntry() { Name = x.Name, Value = x.Value }).ToList();
+                .Select(x => new AclEntry { Name = x.Name, Value = x.Value }).ToList();
         }
     }
 
@@ -56,15 +56,18 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
     {
         private readonly AuthorizedNetworksWindow _owner;
 
+        private IList<AuthorizedNetworkModel> _networks;
+        private string _networkName;
+        private string _networkValue;
+
         /// <summary>
         /// The list of authorized networks.
         /// </summary>
-        public ObservableCollection<AuthorizedNetworkModel> Networks
+        public IList<AuthorizedNetworkModel> Networks
         {
             get { return _networks; }
             set { SetValueAndRaise(ref _networks, value); }
         }
-        private ObservableCollection<AuthorizedNetworkModel> _networks;
 
         /// <summary>
         /// The network name, this is bound to an text box in the UI to allow the 
@@ -75,8 +78,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
             get { return _networkName; }
             set { SetValueAndRaise(ref _networkName, value); }
         }
-        private string _networkName;
-
+        
         /// <summary>
         /// The network value, this is bound to an text box in the UI to allow the 
         /// user to add new networks.
@@ -86,8 +88,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
             get { return _networkValue; }
             set { SetValueAndRaise(ref _networkValue, value); }
         }
-        private string _networkValue;
-
+        
         /// <summary>
         /// The changes that were made by the user. This property will be null if the user
         /// cancelled the dialog.
@@ -120,10 +121,11 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
         /// </summary>
         /// <param name="instance"></param>
         /// <returns></returns>
-        private ObservableCollection<AuthorizedNetworkModel> GetAuthorizedNetworks(DatabaseInstance instance)
+        private IList<AuthorizedNetworkModel> GetAuthorizedNetworks(DatabaseInstance instance)
         {
-            IList<AclEntry> acls = instance?.Settings?.IpConfiguration?.AuthorizedNetworks ?? new List<AclEntry>();
-            return new ObservableCollection<AuthorizedNetworkModel>(acls.Select((x) => new AuthorizedNetworkModel(x)));
+            IEnumerable<AclEntry> acls = instance?.Settings?.IpConfiguration?.AuthorizedNetworks ??
+                                         Enumerable.Empty<AclEntry>();
+            return new List<AuthorizedNetworkModel>(acls.Select((x) => new AuthorizedNetworkModel(x)));
         }
 
 
@@ -162,7 +164,6 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
         {
             Result = new AuthorizedNetworkChange(Networks);
             _owner.Close();
-           
         }
     }
 }
