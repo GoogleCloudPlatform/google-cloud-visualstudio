@@ -23,10 +23,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
     internal class GceSource : CloudExplorerSourceBase<GceSourceRootViewModel>
     {
         private const string WindowsOnlyButtonIconPath = "CloudExplorerSources/Gce/Resources/filter.png";
+        private const string InstancesOnlyButtonIconPath = "CloudExplorerSources/Gce/Resources/filter.png";
 
         private static readonly Lazy<ImageSource> s_windowsOnlyButtonIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WindowsOnlyButtonIconPath));
+        private static readonly Lazy<ImageSource> s_instancesOnlyButtonIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(InstancesOnlyButtonIconPath));
 
         private readonly ButtonDefinition _windowsOnlyButton;
+        private readonly ButtonDefinition _instancesOnlyButton;
 
         public GceSource(ICloudSourceContext context) : base(context)
         {
@@ -37,6 +40,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 Icon = s_windowsOnlyButtonIcon.Value,
             };
             ActualButtons.Add(_windowsOnlyButton);
+
+            _instancesOnlyButton = new ButtonDefinition
+            {
+                ToolTip = Resources.CloudExplorerGceOnlyInstancesButtonToolTip,
+                Command = new WeakCommand(OnOnlyInstancesClicked),
+                Icon = s_instancesOnlyButtonIcon.Value,
+            };
+            ActualButtons.Add(_instancesOnlyButton);
+        }
+
+        private void OnOnlyInstancesClicked()
+        {
+            _instancesOnlyButton.IsChecked = !_instancesOnlyButton.IsChecked;
+            ActualRoot.ShowInstances = _instancesOnlyButton.IsChecked;
         }
 
         private void OnOnlyWindowsClicked()

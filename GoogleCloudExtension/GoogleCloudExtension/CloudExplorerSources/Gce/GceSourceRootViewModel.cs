@@ -47,6 +47,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private static readonly TreeLeaf s_noZonesPlaceholder = new TreeLeaf { Caption = Resources.CloudExplorerGceSourceNoZonesCaption };
 
         private bool _showOnlyWindowsInstances = false;
+        private bool _showInstances = false;
         private IList<InstancesPerZone> _instancesPerZone;
         private Lazy<GceDataSource> _dataSource;
 
@@ -70,8 +71,21 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     return;
                 }
                 _showOnlyWindowsInstances = value;
+                PresentViewModels();
+            }
+        }
 
-                PresentZoneViewModels();
+        public bool ShowInstances
+        {
+            get { return _showInstances; }
+            set
+            {
+                if (value == _showInstances)
+                {
+                    return;
+                }
+                _showInstances = value;
+                PresentViewModels();
             }
         }
 
@@ -128,7 +142,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             try
             {
                 _instancesPerZone = await _dataSource.Value.GetAllInstancesPerZonesAsync();
-                PresentZoneViewModels();
+                PresentViewModels();
             }
             catch (DataSourceException ex)
             {
@@ -147,6 +161,18 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 }
 
                 throw new CloudExplorerSourceException(ex.Message, ex);
+            }
+        }
+
+        private void PresentViewModels()
+        {
+            if (_showInstances)
+            {
+                PresentInstanceViewModels();
+            }
+            else
+            {
+                PresentZoneViewModels();
             }
         }
 
@@ -174,6 +200,34 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             return _instancesPerZone?
                 .OrderBy(x => x.Zone.Name)
                 .Select(x => new ZoneViewModel(this, x, _showOnlyWindowsInstances)).ToList();
+        }
+
+        private void PresentInstanceViewModels()
+        {
+            if (_instancesPerZone == null)
+            {
+                return;
+            }
+
+            var instances = GetInstanceViewModels();
+            Children.Clear();
+            foreach (var instance in instances)
+            {
+                Children.Add(instance);
+            }
+            if (Children.Count == 0)
+            {
+                Children.Add(s_noZonesPlaceholder);
+            }
+        }
+
+        private IList<GceInstanceViewModel> GetInstanceViewModels()
+        {
+            return _instancesPerZone
+                .SelectMany(x => x.Instances)
+                .Where(x => _showOnlyWindowsInstances ? x.IsWindowsInstance() : true)
+                .Select(x => new GceInstanceViewModel(this, x))
+                .ToList();
         }
 
         private void OnStatusCommand()

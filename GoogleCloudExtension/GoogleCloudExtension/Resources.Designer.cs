@@ -403,7 +403,16 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only Windows Instances.
+        ///   Looks up a localized string similar to Show Instances instead of Zones.
+        /// </summary>
+        public static string CloudExplorerGceOnlyInstancesButtonToolTip {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceOnlyInstancesButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter to Only Windows Instances.
         /// </summary>
         public static string CloudExplorerGceOnlyWindowsButtonToolTip {
             get {
