@@ -19,7 +19,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" TextWrapping="Wrap" Margin="3,0,3,5"
+            <TextBlock TextWrapping="Wrap" Margin="3,0,3,5"
                        Text="{x:Static ext:Resources.AuthorizedNetworksWindowMessage}"/>
 
             <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1px">
@@ -28,7 +28,7 @@
                         <RowDefinition Height="50px" />
                         <RowDefinition Height="25px"/>
                     </Grid.RowDefinitions>
-                    <Grid Grid.Row="0">
+                    <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*" />
                             <RowDefinition Height="*"/>
@@ -38,13 +38,13 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock Grid.Row="0" Grid.Column="0" Margin="5px, 2px" 
+                        <TextBlock Margin="5px, 2px" 
                                    TextWrapping="Wrap"  VerticalAlignment="Center"  
                                    Text="{x:Static ext:Resources.AuthorizedNetworksWindowNameTextBoxTitle}"/>
-                        <TextBox Grid.Row="0" Grid.Column="1" Margin="5px, 2px" 
+                        <TextBox Grid.Column="1" Margin="5px, 2px" 
                                  Text="{Binding NetworkName, Mode=TwoWay}" Height="20px"/>
 
-                        <TextBlock Grid.Row="1" Grid.Column="0" Margin="5px, 2px" 
+                        <TextBlock Grid.Row="1" Margin="5px, 2px" 
                                    TextWrapping="Wrap"  VerticalAlignment="Center"  
                                    Text="{x:Static ext:Resources.AuthorizedNetworksWindowValueTextBoxTitle}"/>
                         <TextBox Grid.Row="1" Grid.Column="1" Margin="5px, 2px"
@@ -60,20 +60,19 @@
             </Border>
 
             <Grid Grid.Row="2" Margin="3px, 5px">
-                <ScrollViewer VerticalScrollBarVisibility="Auto">
-                    <ItemsControl ItemsSource="{Binding Networks}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid Height="25px">
+                <ListView ItemsSource="{Binding Networks}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Height="25px">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
 
-                                    <Button Width="75px" Margin="1px" Grid.Column="0"  Command="{Binding DeleteCommand}" 
+                                    <Button Width="75px" Margin="1px" Command="{Binding DeleteCommand}" 
                                             Content="{x:Static ext:Resources.UiDeleteButtonCaption}"
                                             Visibility="{Binding Path=NotDeleted, Converter={StaticResource BoolToVis}}"/>
-                                    <Button Width="75px"  Margin="1px" Grid.Column="0" Command="{Binding UndoDeleteCommand}" 
+                                    <Button Width="75px"  Margin="1px" Command="{Binding UndoDeleteCommand}" 
                                             Content="{x:Static ext:Resources.UiUndoButtonCaption}"
                                             Visibility="{Binding Path=Deleted, Converter={StaticResource BoolToVis}}"/>
 
@@ -82,11 +81,10 @@
                                     <TextBlock Text="{Binding DisplayString}" Grid.Column="1" VerticalAlignment="Center" Margin="1px" 
                                                TextDecorations="Strikethrough" 
                                                Visibility="{Binding Path=Deleted, Converter={StaticResource BoolToVis}}"/>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </Grid>
         </Grid>
     </UserControl.Resources>

@@ -74,50 +74,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             UpdateIcon();
         }
 
-        /// <summary>
-        /// Poll the status of a pending operation until it is complete.
-        /// </summary>
-        /// <param name="task">The current operation to watch and poll</param>
-        /// <param name="action">A string representation of what the operation is doing for user display</param>
-        /// <param name="errorMessage">A user friendly error message to show to users if a failure occurs</param>
-        private async void PollOperation(Task<Operation> task, string action, string errorMessage)
-        {
-            // Update the user display and menu.
-            IsLoading = true;
-            UpdateMenu();
-            Caption = action;
-            CloudSqlDataSource dataSource = _owner.DataSource.Value;
-
-            try
-            {
-                // Poll until the update to completes.
-                Func<Operation, Task<Operation>> fetch = (o) => dataSource.GetOperationAsync(o.Name);
-                Predicate<Operation> stopPolling = (o) => CloudSqlDataSource.OperationStateDone.Equals(o.Status);
-                Operation operation = await Polling<Operation>.Poll(await task, fetch, stopPolling);
-
-                // Be sure to update the instance when finished to ensure we have
-                // the most up to date version.
-                Instance = await dataSource.GetInstanceAsync(Instance.Name);
-            }
-            catch  (DataSourceException ex)
-            {
-                IsError = true;
-                UserPromptUtils.ErrorPrompt(ex.Message, errorMessage);
-            }
-            catch (TimeoutException ex)
-            {
-                IsError = true;
-                UserPromptUtils.ErrorPrompt(Resources.CloudExploreOperationTimeoutMessage, errorMessage);
-            }
-            finally
-            {
-                // Update the user display and menu.
-                IsLoading = false;
-                UpdateMenu();
-                Caption = Instance.Name;
-            }
-        }
-
         private void OnOpenOnCloudConsoleCommand()
         {
             var url = $"https://console.cloud.google.com/sql/instances/{_instance.Name}/overview?project={_owner.Context.CurrentProject.Name}";
@@ -133,7 +89,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         /// Opens the a dialog to manage authorized networks for the instance.  This will allow
         /// the user to add and remove authorized networks and then save the changes they have made.
         /// </summary>
-        private void OnManageAuthorizedNetworks()
+        private async void OnManageAuthorizedNetworks()
         {
             ExtensionAnalytics.ReportCommand(
                 CommandName.OpenUpdateCloudSqlAuthorizedNetworksDialog, CommandInvocationSource.Button);
@@ -149,10 +105,52 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 CommandName.UpdateCloudSqlAuthorizedNetworks, CommandInvocationSource.Button);
             IList<AclEntry> updatedNetworks = networkChange.AuthorizedNetworks;
             DatabaseInstanceExtensions.UpdateAuthorizedNetworks(Instance, updatedNetworks);
-            Task<Operation> operation = _owner.DataSource.Value.UpdateInstanceAsync(Instance);
-            string action = Resources.CloudExplorerSqlUpdatedAthorizedNetworksCaption;
-            string errorMessage = Resources.CloudExplorerSqlUpdateAthorizedNetworksErrorMessage;
-            PollOperation(operation, action, errorMessage);
+
+            // Update the user display and menu.
+            IsLoading = true;
+            UpdateMenu();
+            Caption = Resources.CloudExplorerSqlUpdatedAthorizedNetworksCaption;
+            CloudSqlDataSource dataSource = _owner.DataSource.Value;
+
+            try
+            {
+                // Poll until the update to completes.
+                Task<Operation> operation = _owner.DataSource.Value.UpdateInstanceAsync(Instance);
+                Func<Operation, Task<Operation>> fetch = (o) => dataSource.GetOperationAsync(o.Name);
+                Predicate<Operation> stopPolling = (o) => CloudSqlDataSource.OperationStateDone.Equals(o.Status);
+                await Polling<Operation>.Poll(await operation, fetch, stopPolling);
+            }
+            catch (DataSourceException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(ex.Message, 
+                    Resources.CloudExplorerSqlUpdateAthorizedNetworksErrorMessage);
+            }
+            catch (TimeoutException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(
+                    Resources.CloudExploreOperationTimeoutMessage,
+                    Resources.CloudExplorerSqlUpdateAthorizedNetworksErrorMessage);
+            }
+            catch (OperationCanceledException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(
+                    Resources.CloudExploreOperationCanceledMessage, 
+                    Resources.CloudExplorerSqlUpdateAthorizedNetworksErrorMessage);
+            }
+            finally
+            {
+                // Update the user display and menu.
+                IsLoading = false;
+                UpdateMenu();
+                Caption = Instance.Name;
+            }
+
+            // Be sure to update the instance when finished to ensure we have
+            // the most up to date version.
+            Instance = await dataSource.GetInstanceAsync(Instance.Name);
         }
 
 

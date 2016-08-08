@@ -129,6 +129,10 @@
     <value>The operation took too long to complete and timed out.</value>
     <comment>A message denoting the operation took too long.</comment>
   </data>
+  <data name="CloudExploreOperationCanceledMessage" xml:space="preserve">
+  <value>The operation was canceled.</value>
+    <comment>A message denoting the operation was canceld.</comment>
+  </data>
   <data name="CloudExploreDisabledApiEnableApiMenuHeader" xml:space="preserve">
     <value>Enable API</value>
     <comment>Menu header for the Enable API command.</comment>

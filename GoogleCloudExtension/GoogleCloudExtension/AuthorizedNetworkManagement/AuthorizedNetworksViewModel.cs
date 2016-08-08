@@ -56,14 +56,14 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
     {
         private readonly AuthorizedNetworksWindow _owner;
 
-        private IList<AuthorizedNetworkModel> _networks;
+        private ObservableCollection<AuthorizedNetworkModel> _networks;
         private string _networkName;
         private string _networkValue;
 
         /// <summary>
         /// The list of authorized networks.
         /// </summary>
-        public IList<AuthorizedNetworkModel> Networks
+        public ObservableCollection<AuthorizedNetworkModel> Networks
         {
             get { return _networks; }
             set { SetValueAndRaise(ref _networks, value); }
@@ -121,11 +121,11 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
         /// </summary>
         /// <param name="instance"></param>
         /// <returns></returns>
-        private IList<AuthorizedNetworkModel> GetAuthorizedNetworks(DatabaseInstance instance)
+        private ObservableCollection<AuthorizedNetworkModel> GetAuthorizedNetworks(DatabaseInstance instance)
         {
             IEnumerable<AclEntry> acls = instance?.Settings?.IpConfiguration?.AuthorizedNetworks ??
                                          Enumerable.Empty<AclEntry>();
-            return new List<AuthorizedNetworkModel>(acls.Select((x) => new AuthorizedNetworkModel(x)));
+            return new ObservableCollection<AuthorizedNetworkModel>(acls.Select((x) => new AuthorizedNetworkModel(x)));
         }
 
 

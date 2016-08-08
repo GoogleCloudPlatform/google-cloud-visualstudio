@@ -56,7 +56,12 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
         public bool Deleted
         {
             get { return _toBeDeleted; }
-            set { SetValueAndRaise(ref _toBeDeleted, value); }
+            set
+            {
+                SetValueAndRaise(ref _toBeDeleted, value);
+                RaisePropertyChanged(nameof(NotDeleted));
+                RaisePropertyChanged(nameof(NewOrUpdated));
+            }
         }
 
         /// <summary>
@@ -100,11 +105,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
 
         public override string ToString()
         {
-            if (String.IsNullOrWhiteSpace(Name))
-            {
-                return Value;
-            }
-            return $"{Name} ({Value})";
+            return string.IsNullOrWhiteSpace(Name) ? Value : $"{Name} ({Value})";
         }
     }
 }

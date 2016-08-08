@@ -160,6 +160,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The operation was canceled..
+        /// </summary>
+        public static string CloudExploreOperationCanceledMessage {
+            get {
+                return ResourceManager.GetString("CloudExploreOperationCanceledMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The operation took too long to complete and timed out..
         /// </summary>
         public static string CloudExploreOperationTimeoutMessage {
