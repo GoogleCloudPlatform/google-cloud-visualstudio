@@ -310,11 +310,11 @@
     <comment>Message shown when the GCE API is disabled.</comment>
   </data>
   <data name="CloudExplorerGceSourceFailedLoadingZonesCaption" xml:space="preserve">
-    <value>Failed to load zones.</value>
+    <value>Failed to load instances data.</value>
     <comment>Caption shown in the node when failed to load GCE zones.</comment>
   </data>
   <data name="CloudExplorerGceSourceLoadingZonesCaption" xml:space="preserve">
-    <value>Loading zones...</value>
+    <value>Loading instances data...</value>
     <comment>Caption shown in the node when loading GCE zones.</comment>
   </data>
   <data name="CloudExplorerGceSourceNoZonesCaption" xml:space="preserve">

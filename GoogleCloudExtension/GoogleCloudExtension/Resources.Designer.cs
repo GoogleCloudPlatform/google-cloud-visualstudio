@@ -493,7 +493,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to load zones..
+        ///   Looks up a localized string similar to Failed to load instances data..
         /// </summary>
         public static string CloudExplorerGceSourceFailedLoadingZonesCaption {
             get {
@@ -502,7 +502,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading zones....
+        ///   Looks up a localized string similar to Loading instances data....
         /// </summary>
         public static string CloudExplorerGceSourceLoadingZonesCaption {
             get {
