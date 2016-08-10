@@ -85,7 +85,7 @@ namespace GoogleCloudExtension
         /// <summary>
         /// The application name to use everywhere one is needed. Analytics, data sources, etc...
         /// </summary>
-        public static string ApplicationName => "Google Cloud Tools for Visual Studio";
+        public static string ApplicationName => "google-cloud-visualstudio";
 
         /// <summary>
         /// The version of the extension's main assembly.
