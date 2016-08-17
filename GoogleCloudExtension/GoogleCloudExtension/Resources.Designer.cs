@@ -403,15 +403,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show instances instead of zones.
-        /// </summary>
-        public static string CloudExplorerGceOnlyInstancesButtonToolTip {
-            get {
-                return ResourceManager.GetString("CloudExplorerGceOnlyInstancesButtonToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show only Windows instances.
         /// </summary>
         public static string CloudExplorerGceOnlyWindowsButtonToolTip {
@@ -480,6 +471,24 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGceSavePublishSettingsMenuHeader {
             get {
                 return ResourceManager.GetString("CloudExplorerGceSavePublishSettingsMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Instances.
+        /// </summary>
+        public static string CloudExplorerGceShowInstancesCommand {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceShowInstancesCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Zones.
+        /// </summary>
+        public static string CloudExplorerGceShowZonesCommand {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceShowZonesCommand", resourceCulture);
             }
         }
         

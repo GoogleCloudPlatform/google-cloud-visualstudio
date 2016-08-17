@@ -269,10 +269,6 @@
     <value>No Windows instances in this zone</value>
     <comment>The caption to show when there are no Windows instances in a GCE zone.</comment>
   </data>
-  <data name="CloudExplorerGceOnlyInstancesButtonToolTip" xml:space="preserve">
-    <value>Show instances instead of zones</value>
-    <comment>The tooltip for the button to show instances, not zones in gce.</comment>
-  </data>
   <data name="CloudExplorerGceOnlyWindowsButtonToolTip" xml:space="preserve">
     <value>Show only Windows instances</value>
     <comment>The tooltip for the filter button.</comment>
@@ -304,6 +300,14 @@
   <data name="CloudExplorerGceSavePublishSettingsMenuHeader" xml:space="preserve">
     <value>Save Publishing Settings...</value>
     <comment>Header for the save publish settings menu item.</comment>
+  </data>
+  <data name="CloudExplorerGceShowInstancesCommand" xml:space="preserve">
+    <value>Show Instances</value>
+    <comment>Caption for the command to show instances instead of zones.</comment>
+  </data>
+  <data name="CloudExplorerGceShowZonesCommand" xml:space="preserve">
+    <value>Show Zones</value>
+    <comment>Caption for the command that shows the zones.</comment>
   </data>
   <data name="CloudExplorerGceSourceApiDisabledMessage" xml:space="preserve">
     <value>The Google Compute Engine API is not enabled for this project.</value>

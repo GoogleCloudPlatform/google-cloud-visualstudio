@@ -47,7 +47,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private static readonly TreeLeaf s_noZonesPlaceholder = new TreeLeaf { Caption = Resources.CloudExplorerGceSourceNoZonesCaption };
 
         private bool _showOnlyWindowsInstances = false;
-        private bool _showInstances = false;
+        private bool _showZones = false;
         private IList<InstancesPerZone> _instancesPerZone;
         private Lazy<GceDataSource> _dataSource;
 
@@ -75,17 +75,18 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
         }
 
-        public bool ShowInstances
+        public bool ShowZones
         {
-            get { return _showInstances; }
+            get { return _showZones; }
             set
             {
-                if (value == _showInstances)
+                if (value == _showZones)
                 {
                     return;
                 }
-                _showInstances = value;
+                _showZones = value;
                 PresentViewModels();
+                UpdateContextMenu();
             }
         }
 
@@ -94,14 +95,38 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             base.Initialize(context);
 
             InvalidateProjectOrAccount();
+            UpdateContextMenu();
+        }
 
+        private void UpdateContextMenu()
+        {
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new WeakCommand(OnStatusCommand) },
                 new MenuItem { Header = Resources.CloudExplorerGceNewAspNetInstanceMenuHeader, Command = new WeakCommand(OnNewAspNetInstanceCommand) },
                 new MenuItem { Header = Resources.CloudExplorerGceNewInstanceMenuHeader, Command = new WeakCommand(OnNewInstanceCommand) },
             };
+
+            if (ShowZones)
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowInstancesCommand, Command = new WeakCommand(OnShowInstancesCommand) });
+            }
+            else
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowZonesCommand, Command = new WeakCommand(OnShowZonesCommand) });
+            }
+
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void OnShowInstancesCommand()
+        {
+            ShowZones = false;
+        }
+
+        private void OnShowZonesCommand()
+        {
+            ShowZones = true;
         }
 
         private void OnNewAspNetInstanceCommand()
@@ -166,13 +191,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void PresentViewModels()
         {
-            if (_showInstances)
+            if (_showZones)
             {
-                PresentInstanceViewModels();
+                PresentZoneViewModels();
             }
             else
             {
-                PresentZoneViewModels();
+                PresentInstanceViewModels();
             }
         }
 

@@ -40,20 +40,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 Icon = s_windowsOnlyButtonIcon.Value,
             };
             ActualButtons.Add(_windowsOnlyButton);
-
-            _instancesOnlyButton = new ButtonDefinition
-            {
-                ToolTip = Resources.CloudExplorerGceOnlyInstancesButtonToolTip,
-                Command = new WeakCommand(OnOnlyInstancesClicked),
-                Icon = s_instancesOnlyButtonIcon.Value,
-            };
-            ActualButtons.Add(_instancesOnlyButton);
         }
 
         private void OnOnlyInstancesClicked()
         {
             _instancesOnlyButton.IsChecked = !_instancesOnlyButton.IsChecked;
-            ActualRoot.ShowInstances = _instancesOnlyButton.IsChecked;
+            ActualRoot.ShowZones = _instancesOnlyButton.IsChecked;
         }
 
         private void OnOnlyWindowsClicked()
