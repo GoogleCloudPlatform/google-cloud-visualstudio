@@ -29,7 +29,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private static readonly Lazy<ImageSource> s_instancesOnlyButtonIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(InstancesOnlyButtonIconPath));
 
         private readonly ButtonDefinition _windowsOnlyButton;
-        private readonly ButtonDefinition _instancesOnlyButton;
 
         public GceSource(ICloudSourceContext context) : base(context)
         {
@@ -40,12 +39,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 Icon = s_windowsOnlyButtonIcon.Value,
             };
             ActualButtons.Add(_windowsOnlyButton);
+            ActualRoot.ShowOnlyWindowsInstancesChanged += OnShowOnlyWindowsInstancesChanged;
         }
 
-        private void OnOnlyInstancesClicked()
+        private void OnShowOnlyWindowsInstancesChanged(object sender, EventArgs e)
         {
-            _instancesOnlyButton.IsChecked = !_instancesOnlyButton.IsChecked;
-            ActualRoot.ShowZones = _instancesOnlyButton.IsChecked;
+            _windowsOnlyButton.IsChecked = ActualRoot.ShowOnlyWindowsInstances;
         }
 
         private void OnOnlyWindowsClicked()

@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
@@ -72,6 +73,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 }
                 _showOnlyWindowsInstances = value;
                 PresentViewModels();
+                UpdateContextMenu();
+                ShowOnlyWindowsInstancesChanged?.Invoke(this, EventArgs.Empty);
             }
         }
 
@@ -90,6 +93,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
         }
 
+        public event EventHandler ShowOnlyWindowsInstancesChanged;
+
         public override void Initialize(ICloudSourceContext context)
         {
             base.Initialize(context);
@@ -100,12 +105,22 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void UpdateContextMenu()
         {
-            var menuItems = new List<MenuItem>
+            var menuItems = new List<FrameworkElement>
             {
                 new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new WeakCommand(OnStatusCommand) },
                 new MenuItem { Header = Resources.CloudExplorerGceNewAspNetInstanceMenuHeader, Command = new WeakCommand(OnNewAspNetInstanceCommand) },
                 new MenuItem { Header = Resources.CloudExplorerGceNewInstanceMenuHeader, Command = new WeakCommand(OnNewInstanceCommand) },
+                new Separator(),
             };
+
+            if (ShowOnlyWindowsInstances)
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowAllOsInstancesCommand, Command = new WeakCommand(OnShowAllOsInstancesCommand) });
+            }
+            else
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowWindowsOnlyInstancesCommand, Command = new WeakCommand(OnShowOnlyWindowsInstancesCommand) });
+            }
 
             if (ShowZones)
             {
@@ -117,6 +132,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void OnShowOnlyWindowsInstancesCommand()
+        {
+            ShowOnlyWindowsInstances = true;
+        }
+
+        private void OnShowAllOsInstancesCommand()
+        {
+            ShowOnlyWindowsInstances = false;
         }
 
         private void OnShowInstancesCommand()

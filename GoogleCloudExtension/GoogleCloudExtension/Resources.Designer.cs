@@ -475,11 +475,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show All OS Instances.
+        /// </summary>
+        public static string CloudExplorerGceShowAllOsInstancesCommand {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceShowAllOsInstancesCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Instances.
         /// </summary>
         public static string CloudExplorerGceShowInstancesCommand {
             get {
                 return ResourceManager.GetString("CloudExplorerGceShowInstancesCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Only Windows Instances.
+        /// </summary>
+        public static string CloudExplorerGceShowWindowsOnlyInstancesCommand {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceShowWindowsOnlyInstancesCommand", resourceCulture);
             }
         }
         

@@ -301,9 +301,17 @@
     <value>Save Publishing Settings...</value>
     <comment>Header for the save publish settings menu item.</comment>
   </data>
+  <data name="CloudExplorerGceShowAllOsInstancesCommand" xml:space="preserve">
+    <value>Show All OS Instances</value>
+    <comment>Caption for the command that shows all of the instances regardless of OS.</comment>
+  </data>
   <data name="CloudExplorerGceShowInstancesCommand" xml:space="preserve">
     <value>Show Instances</value>
     <comment>Caption for the command to show instances instead of zones.</comment>
+  </data>
+  <data name="CloudExplorerGceShowWindowsOnlyInstancesCommand" xml:space="preserve">
+    <value>Show Only Windows Instances</value>
+    <comment>Caption for the command that shows only the Windows instances.</comment>
   </data>
   <data name="CloudExplorerGceShowZonesCommand" xml:space="preserve">
     <value>Show Zones</value>
