@@ -62,6 +62,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         public override string RootCaption => Resources.CloudExplorerGceRootNodeCaption;
 
+        /// <summary>
+        /// Whether the list should be filter down to only those VMs that are running Windows.
+        /// </summary>
         public bool ShowOnlyWindowsInstances
         {
             get { return _showOnlyWindowsInstances; }
@@ -78,6 +81,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
         }
 
+        /// <summary>
+        /// Whether the list should be shown as a tree of zones. If false then the list should be shown
+        /// as a plain list of VMs.
+        /// </summary>
         public bool ShowZones
         {
             get { return _showZones; }
@@ -93,6 +100,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
         }
 
+        /// <summary>
+        /// This event is raised every time the <seealso cref="ShowOnlyWindowsInstances"/> property value changes.
+        /// </summary>
         public event EventHandler ShowOnlyWindowsInstancesChanged;
 
         public override void Initialize(ICloudSourceContext context)
