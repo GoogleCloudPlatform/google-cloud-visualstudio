@@ -79,6 +79,69 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Add Authorized Network.
+        /// </summary>
+        public static string AuthorizedNetworksWindowAddNetworkButton {
+            get {
+                return ResourceManager.GetString("AuthorizedNetworksWindowAddNetworkButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Authorized Networks.
+        /// </summary>
+        public static string AuthorizedNetworksWindowCaption {
+            get {
+                return ResourceManager.GetString("AuthorizedNetworksWindowCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter IPv4 in CIDR notation (e.g. 192.168.2.0/24)..
+        /// </summary>
+        public static string AuthorizedNetworksWindowInvalidCidrFormatErrorMessage {
+            get {
+                return ResourceManager.GetString("AuthorizedNetworksWindowInvalidCidrFormatErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Subnet..
+        /// </summary>
+        public static string AuthorizedNetworksWindowInvalidCidrFormatErrorTitle {
+            get {
+                return ResourceManager.GetString("AuthorizedNetworksWindowInvalidCidrFormatErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage authorized networks that can connect to your instance..
+        /// </summary>
+        public static string AuthorizedNetworksWindowMessage {
+            get {
+                return ResourceManager.GetString("AuthorizedNetworksWindowMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name (Optional):.
+        /// </summary>
+        public static string AuthorizedNetworksWindowNameTextBoxTitle {
+            get {
+                return ResourceManager.GetString("AuthorizedNetworksWindowNameTextBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Network (CIDR Notation):.
+        /// </summary>
+        public static string AuthorizedNetworksWindowValueTextBoxTitle {
+            get {
+                return ResourceManager.GetString("AuthorizedNetworksWindowValueTextBoxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enable API.
         /// </summary>
         public static string CloudExploreDisabledApiEnableApiMenuHeader {
@@ -93,6 +156,24 @@ namespace GoogleCloudExtension {
         public static string CloudExploreNoProjectMessage {
             get {
                 return ResourceManager.GetString("CloudExploreNoProjectMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operation was canceled..
+        /// </summary>
+        public static string CloudExploreOperationCanceledMessage {
+            get {
+                return ResourceManager.GetString("CloudExploreOperationCanceledMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The operation took too long to complete and timed out..
+        /// </summary>
+        public static string CloudExploreOperationTimeoutMessage {
+            get {
+                return ResourceManager.GetString("CloudExploreOperationTimeoutMessage", resourceCulture);
             }
         }
         
@@ -889,6 +970,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage Authorized Networks.
+        /// </summary>
+        public static string CloudExplorerSqlManageAuthorizedNetworksMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerSqlManageAuthorizedNetworksMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No instances found..
         /// </summary>
         public static string CloudExplorerSqlNoInstancesFoundCaption {
@@ -912,6 +1002,24 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerSqlRootNodeCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerSqlRootNodeCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to updated authorized networks..
+        /// </summary>
+        public static string CloudExplorerSqlUpdateAthorizedNetworksErrorMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerSqlUpdateAthorizedNetworksErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating authorized networks....
+        /// </summary>
+        public static string CloudExplorerSqlUpdatedAthorizedNetworksCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerSqlUpdatedAthorizedNetworksCaption", resourceCulture);
             }
         }
         
@@ -1267,6 +1375,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string UiDeleteButtonCaption {
+            get {
+                return ResourceManager.GetString("UiDeleteButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download.
         /// </summary>
         public static string UiDownloadButtonCaption {
@@ -1299,6 +1416,24 @@ namespace GoogleCloudExtension {
         public static string UiPropertiesMenuHeader {
             get {
                 return ResourceManager.GetString("UiPropertiesMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string UiSaveButtonCaption {
+            get {
+                return ResourceManager.GetString("UiSaveButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Undo.
+        /// </summary>
+        public static string UiUndoButtonCaption {
+            get {
+                return ResourceManager.GetString("UiUndoButtonCaption", resourceCulture);
             }
         }
     }

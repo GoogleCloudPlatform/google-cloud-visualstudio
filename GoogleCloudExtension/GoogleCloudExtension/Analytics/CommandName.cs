@@ -94,6 +94,13 @@ namespace GoogleCloudExtension.Analytics
         OpenMySQLDataConnectionDialog,
 
         // Command to add a MySQL Data Connection.
-        AddMySQLDataConnection
+        AddMySQLDataConnection,
+
+        // Command to open the dialog to update a Cloud SQL's authorized networks.
+        OpenUpdateCloudSqlAuthorizedNetworksDialog,
+
+        // Command to update a Cloud SQL's authorized networks.
+        UpdateCloudSqlAuthorizedNetworks,
+
     }
 }
