@@ -56,18 +56,14 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
     {
         private readonly AuthorizedNetworksWindow _owner;
 
-        private ObservableCollection<AuthorizedNetworkModel> _networks;
         private string _networkName;
         private string _networkValue;
 
         /// <summary>
         /// The list of authorized networks.
         /// </summary>
-        public ObservableCollection<AuthorizedNetworkModel> Networks
-        {
-            get { return _networks; }
-            set { SetValueAndRaise(ref _networks, value); }
-        }
+        public ObservableCollection<AuthorizedNetworkModel> Networks { get; } = new  ObservableCollection<AuthorizedNetworkModel>();
+
 
         /// <summary>
         /// The network name, this is bound to an text box in the UI to allow the 
@@ -108,7 +104,10 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
         public AuthorizedNetworksViewModel(AuthorizedNetworksWindow owner, DatabaseInstance instance)
         {
             _owner = owner;
-            Networks = GetAuthorizedNetworks(instance);
+            foreach (var network in GetAuthorizedNetworks(instance))
+            {
+                Networks.Add(network);
+            } 
             Result = null;
 
             SaveCommand = new WeakCommand(OnSaveCommand);
