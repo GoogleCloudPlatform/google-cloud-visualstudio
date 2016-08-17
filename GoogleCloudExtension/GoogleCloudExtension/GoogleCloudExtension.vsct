@@ -59,7 +59,7 @@
       <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidManageCredentialsCommand" priority="0x0400" type="Button">
         <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" />
         <Strings>
-          <ButtonText>Manage Credentials...</ButtonText>
+          <ButtonText>Manage Accounts...</ButtonText>
         </Strings>
       </Button>
 

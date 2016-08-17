@@ -1,3 +1,5 @@
+[![Build status](https://ci.appveyor.com/api/projects/status/0s0wo324dmv18uo9/branch/master?svg=true)](https://ci.appveyor.com/project/ivannaranjo/google-cloud-visualstudio-bnnrp/branch/master)
+
 # Visual Studio Extension for Google Cloud Platform
 
 This repo contains the source code for the Visual Studio Extension for Google
@@ -17,6 +19,9 @@ install the `beta` command group as follows:
 ```bash
 gcloud components install beta
 ```
+
+## Builds
+We use appveyor to build on every push to this branch, the latest release build of the extension for the master branch can be found [here](https://ci.appveyor.com/api/projects/ivannaranjo/google-cloud-visualstudio/artifacts/GoogleCloudExtension/GoogleCloudExtension/bin/Release/GoogleCloudExtension.vsix?branch=master).
 
 ## Support
 
