@@ -17,6 +17,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.LinkPrompt;
+using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.ShowPassword;
 using GoogleCloudExtension.Utils;
 using System;
@@ -80,6 +81,8 @@ namespace GoogleCloudExtension.ResetPassword
         /// The command to exectue to cancel the changes.
         /// </summary>
         public WeakCommand CancelCommand { get; }
+
+        public WindowsCredentials Result { get; private set; }
 
         public ResetPasswordViewModel(ResetPasswordWindow owner, Instance instance, string projectId)
         {
@@ -147,10 +150,7 @@ namespace GoogleCloudExtension.ResetPassword
 
                 ResettingPassword = false;
 
-                ShowPasswordWindow.PromptUser(
-                    userName: UserName,
-                    password: newCredentials.Password,
-                    instanceName: _instance.Name);
+                Result = new WindowsCredentials { UserName = _userName, Password = newCredentials.Password };
             }
             catch (GCloudException ex)
             {

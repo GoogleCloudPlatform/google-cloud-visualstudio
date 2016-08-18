@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.Compute.v1.Data;
+using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.Theming;
 using System;
 
@@ -20,19 +21,23 @@ namespace GoogleCloudExtension.ResetPassword
 {
     public class ResetPasswordWindow : CommonDialogWindowBase
     {
+        public ResetPasswordViewModel ViewModel { get; }
+
         private ResetPasswordWindow(Instance instance, string projectId)
             : base(String.Format(GoogleCloudExtension.Resources.ResetPasswordWindowTitle, instance.Name), width: 350, height: 160)
         {
+            ViewModel = new ResetPasswordViewModel(this, instance, projectId);
             Content = new ResetPasswordWindowContent
             {
-                DataContext = new ResetPasswordViewModel(this, instance, projectId)
+                DataContext = ViewModel
             };
         }
 
-        public static void PromptUser(Instance instance, string projectId)
+        public static WindowsCredentials PromptUser(Instance instance, string projectId)
         {
             var dialog = new ResetPasswordWindow(instance, projectId);
             dialog.ShowModal();
+            return dialog.ViewModel.Result;
         }
     }
 }

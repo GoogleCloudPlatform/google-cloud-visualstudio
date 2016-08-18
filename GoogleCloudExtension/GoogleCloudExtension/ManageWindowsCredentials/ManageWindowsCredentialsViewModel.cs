@@ -1,4 +1,6 @@
 ﻿using Google.Apis.Compute.v1.Data;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.ResetPassword;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -34,7 +36,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             }
         }
 
-        public IEnumerable<WindowsCredentials> Credentials
+        public IEnumerable<WindowsCredentials> CredentialsList
         {
             get { return _credentials; }
             set { SetValueAndRaise(ref _credentials, value); }
@@ -45,7 +47,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             _instance = instance;
             _owner = owner;
 
-            Credentials = LoadCredentialsForInstance(instance);
+            CredentialsList = LoadCredentialsForInstance(instance);
 
             AddCredentialsCommand = new WeakCommand(OnAddCredentialsCommand);
             DeleteCredentialsCommand = new WeakCommand(OnDeleteCredentialsCommand);
@@ -69,7 +71,11 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
 
         private void OnAddCredentialsCommand()
         {
-            throw new NotImplementedException();
+            var credentials = ResetPasswordWindow.PromptUser(_instance, CredentialsStore.Default.CurrentProjectId);
+            if (credentials != null)
+            {
+                CredentialsList = WindowsCredentialsStore.Default.AddCredentialsToInstance(_instance, credentials);
+            }
         }
 
         private void UpdateCommands()

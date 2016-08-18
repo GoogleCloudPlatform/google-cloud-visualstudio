@@ -44,15 +44,14 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             {
                 result = Directory.EnumerateFiles(fullInstancePath)
                     .Where(x => Path.GetExtension(x) == ".json")
-                    .Select(x => LoadCredentials(x))
-                    .ToList();
+                    .Select(x => LoadCredentials(x));
             }
             _credentialsForInstance[instancePath] = result;
 
             return result;
         }
 
-        public void AddCredentialsToInstance(Instance instance, WindowsCredentials credentials)
+        public IEnumerable<WindowsCredentials> AddCredentialsToInstance(Instance instance, WindowsCredentials credentials)
         {
             var instancePath = GetInstancePath(instance);
             var fullInstancePath = Path.Combine(s_credentialsStoreRoot, instancePath);
@@ -62,6 +61,8 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             var cachedCredentials = GetCredentialsForInstance(instance).ToList();
             cachedCredentials.Add(credentials);
             _credentialsForInstance[instancePath] = cachedCredentials;
+
+            return cachedCredentials;
         }
 
         private WindowsCredentials LoadCredentials(string path)
