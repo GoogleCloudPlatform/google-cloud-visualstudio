@@ -763,6 +763,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The location where the bucket resides..
+        /// </summary>
+        public static string CloudExplorerGcsBucketLocationDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerGcsBucketLocationDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location.
+        /// </summary>
+        public static string CloudExplorerGcsBucketLocationDisplayName {
+            get {
+                return ResourceManager.GetString("CloudExplorerGcsBucketLocationDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The modification time stamp for the bucket.
         /// </summary>
         public static string CloudExplorerGcsBucketModifiedDescription {
@@ -849,6 +867,24 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGcsRootNodeCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerGcsRootNodeCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Buckets.
+        /// </summary>
+        public static string CloudExplorerGcsShowBucketsCommand {
+            get {
+                return ResourceManager.GetString("CloudExplorerGcsShowBucketsCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Locations.
+        /// </summary>
+        public static string CloudExplorerGcsShowLocationsCommand {
+            get {
+                return ResourceManager.GetString("CloudExplorerGcsShowLocationsCommand", resourceCulture);
             }
         }
         
