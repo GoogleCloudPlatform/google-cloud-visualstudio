@@ -753,4 +753,12 @@
     <value>Location</value>
     <comment>The display name for the location property in a GCS bucket.</comment>
   </data>
+  <data name="CloudExplorerGcsShowBucketsCommand" xml:space="preserve">
+    <value>Show Buckets</value>
+    <comment>The command to show the buckets in a flat list.</comment>
+  </data>
+  <data name="CloudExplorerGcsShowLocationsCommand" xml:space="preserve">
+    <value>Show Locations</value>
+    <comment>The command to use use to show the buckets per location.</comment>
+  </data>
 </root>

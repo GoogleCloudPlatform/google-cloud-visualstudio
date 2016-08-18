@@ -91,11 +91,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
             if (_showLocations)
             {
-                menuItems.Add(new MenuItem { Header = "Show Buckets", Command = new WeakCommand(OnShowBucketsCommand) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGcsShowBucketsCommand, Command = new WeakCommand(OnShowBucketsCommand) });
             }
             else
             {
-                menuItems.Add(new MenuItem { Header = "Show Locations", Command = new WeakCommand(OnShowLocationsCommand) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGcsShowLocationsCommand, Command = new WeakCommand(OnShowLocationsCommand) });
             }
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };

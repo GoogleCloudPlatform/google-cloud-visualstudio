@@ -871,6 +871,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Buckets.
+        /// </summary>
+        public static string CloudExplorerGcsShowBucketsCommand {
+            get {
+                return ResourceManager.GetString("CloudExplorerGcsShowBucketsCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Locations.
+        /// </summary>
+        public static string CloudExplorerGcsShowLocationsCommand {
+            get {
+                return ResourceManager.GetString("CloudExplorerGcsShowLocationsCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Google Cloud Storage API is not enabled for this project..
         /// </summary>
         public static string CloudExplorerGcsSourceApiDisabledMessage {
