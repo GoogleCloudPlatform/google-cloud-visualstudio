@@ -70,7 +70,8 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
 
         private void OnDeleteCredentialsCommand()
         {
-            throw new NotImplementedException();
+            WindowsCredentialsStore.Default.DeleteCredentialsForInstance(_instance, SelectedCredentials);
+            CredentialsList = WindowsCredentialsStore.Default.GetCredentialsForInstance(_instance);
         }
 
         private void OnAddCredentialsCommand()

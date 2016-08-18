@@ -61,6 +61,19 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             _credentialsForInstance.Remove(instancePath);
         }
 
+        public void DeleteCredentialsForInstance(Instance instance, WindowsCredentials credentials)
+        {
+            var instancePath = GetInstancePath(instance);
+            var fullInstancePath = Path.Combine(s_credentialsStoreRoot, instancePath);
+            var credentialsPath = Path.Combine(fullInstancePath, GetFileName(credentials));
+
+            if (File.Exists(credentialsPath))
+            {
+                File.Delete(credentialsPath);
+                _credentialsForInstance.Remove(instancePath);
+            }
+        }
+
         private WindowsCredentials LoadCredentials(string path)
         {
             var content = File.ReadAllText(path);
