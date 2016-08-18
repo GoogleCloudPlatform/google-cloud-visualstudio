@@ -187,15 +187,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create or Reset Password....
-        /// </summary>
-        public static string CloudExplorerGceCreateOrResetPasswordMenuHeader {
-            get {
-                return ResourceManager.GetString("CloudExplorerGceCreateOrResetPasswordMenuHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Credentials Error.
         /// </summary>
         public static string CloudExplorerGceFailedToGetOauthCredentialsCaption {

@@ -145,10 +145,6 @@
     <value>Go to the Google Cloud Console for other services</value>
     <comment>The caption for the console link in the cloud source.</comment>
   </data>
-  <data name="CloudExplorerGceCreateOrResetPasswordMenuHeader" xml:space="preserve">
-    <value>Create or Reset Password...</value>
-    <comment>Header for the create or reset password menu item.</comment>
-  </data>
   <data name="CloudExplorerGceFailedToGetOauthCredentialsCaption" xml:space="preserve">
     <value>Credentials Error</value>
     <comment>Caption for the prompt.</comment>
