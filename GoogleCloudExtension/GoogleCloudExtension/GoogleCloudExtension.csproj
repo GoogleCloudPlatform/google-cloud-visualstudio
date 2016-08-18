@@ -63,6 +63,7 @@
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksWindowContent.xaml.cs">
       <DependentUpon>AuthorizedNetworksWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CloudExplorerSources\Gcs\BucketLocationViewModel.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
