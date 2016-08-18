@@ -235,7 +235,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             if (_showZones)
             {
                 viewModels = _instancesPerZone
-                    .Select(x => new { Zone = x.Zone.Name, Instances = x.Instances.Where(i => _showOnlyWindowsInstances ? i.IsWindowsInstance() : true) })
+                    .Select(x => new
+                    {
+                        Zone = x.Zone.Name,
+                        Instances = x.Instances
+                            .Where(i => _showOnlyWindowsInstances ? i.IsWindowsInstance() : true)
+                            .OrderBy(i => i.Name)
+                    })
                     .Where(x => x.Instances.Count() > 0)
                     .OrderBy(x => x.Zone)
                     .Select(x => new ZoneViewModel(this, x.Zone, x.Instances.Select(i => new GceInstanceViewModel(this, i))));
