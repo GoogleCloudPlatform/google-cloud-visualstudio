@@ -23,10 +23,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
     internal class GceSource : CloudExplorerSourceBase<GceSourceRootViewModel>
     {
         private const string WindowsOnlyButtonIconPath = "CloudExplorerSources/Gce/Resources/filter.png";
-        private const string InstancesOnlyButtonIconPath = "CloudExplorerSources/Gce/Resources/filter.png";
 
         private static readonly Lazy<ImageSource> s_windowsOnlyButtonIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WindowsOnlyButtonIconPath));
-        private static readonly Lazy<ImageSource> s_instancesOnlyButtonIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(InstancesOnlyButtonIconPath));
 
         private readonly ButtonDefinition _windowsOnlyButton;
 
