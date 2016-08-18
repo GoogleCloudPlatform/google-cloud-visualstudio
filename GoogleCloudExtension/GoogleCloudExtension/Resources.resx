@@ -278,7 +278,7 @@
     <comment>The caption to show when there are no Windows instances in a GCE zone.</comment>
   </data>
   <data name="CloudExplorerGceOnlyWindowsButtonToolTip" xml:space="preserve">
-    <value>Only Windows Instances</value>
+    <value>Show only Windows instances</value>
     <comment>The tooltip for the filter button.</comment>
   </data>
   <data name="CloudExplorerGceOpenTerminalSessionMenuHeader" xml:space="preserve">
@@ -309,16 +309,32 @@
     <value>Save Publishing Settings...</value>
     <comment>Header for the save publish settings menu item.</comment>
   </data>
+  <data name="CloudExplorerGceShowAllOsInstancesCommand" xml:space="preserve">
+    <value>Show All OS Instances</value>
+    <comment>Caption for the command that shows all of the instances regardless of OS.</comment>
+  </data>
+  <data name="CloudExplorerGceShowInstancesCommand" xml:space="preserve">
+    <value>Show Instances</value>
+    <comment>Caption for the command to show instances instead of zones.</comment>
+  </data>
+  <data name="CloudExplorerGceShowWindowsOnlyInstancesCommand" xml:space="preserve">
+    <value>Show Only Windows Instances</value>
+    <comment>Caption for the command that shows only the Windows instances.</comment>
+  </data>
+  <data name="CloudExplorerGceShowZonesCommand" xml:space="preserve">
+    <value>Show Zones</value>
+    <comment>Caption for the command that shows the zones.</comment>
+  </data>
   <data name="CloudExplorerGceSourceApiDisabledMessage" xml:space="preserve">
     <value>The Google Compute Engine API is not enabled for this project.</value>
     <comment>Message shown when the GCE API is disabled.</comment>
   </data>
   <data name="CloudExplorerGceSourceFailedLoadingZonesCaption" xml:space="preserve">
-    <value>Failed to load zones.</value>
+    <value>Failed to load instances data.</value>
     <comment>Caption shown in the node when failed to load GCE zones.</comment>
   </data>
   <data name="CloudExplorerGceSourceLoadingZonesCaption" xml:space="preserve">
-    <value>Loading zones...</value>
+    <value>Loading instances data...</value>
     <comment>Caption shown in the node when loading GCE zones.</comment>
   </data>
   <data name="CloudExplorerGceSourceNoZonesCaption" xml:space="preserve">

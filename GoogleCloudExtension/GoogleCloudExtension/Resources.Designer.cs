@@ -484,7 +484,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Only Windows Instances.
+        ///   Looks up a localized string similar to Show only Windows instances.
         /// </summary>
         public static string CloudExplorerGceOnlyWindowsButtonToolTip {
             get {
@@ -556,6 +556,42 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show All OS Instances.
+        /// </summary>
+        public static string CloudExplorerGceShowAllOsInstancesCommand {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceShowAllOsInstancesCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Instances.
+        /// </summary>
+        public static string CloudExplorerGceShowInstancesCommand {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceShowInstancesCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Only Windows Instances.
+        /// </summary>
+        public static string CloudExplorerGceShowWindowsOnlyInstancesCommand {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceShowWindowsOnlyInstancesCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Zones.
+        /// </summary>
+        public static string CloudExplorerGceShowZonesCommand {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceShowZonesCommand", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Google Compute Engine API is not enabled for this project..
         /// </summary>
         public static string CloudExplorerGceSourceApiDisabledMessage {
@@ -565,7 +601,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to load zones..
+        ///   Looks up a localized string similar to Failed to load instances data..
         /// </summary>
         public static string CloudExplorerGceSourceFailedLoadingZonesCaption {
             get {
@@ -574,7 +610,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading zones....
+        ///   Looks up a localized string similar to Loading instances data....
         /// </summary>
         public static string CloudExplorerGceSourceLoadingZonesCaption {
             get {
