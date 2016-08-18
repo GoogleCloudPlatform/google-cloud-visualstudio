@@ -44,25 +44,21 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             {
                 result = Directory.EnumerateFiles(fullInstancePath)
                     .Where(x => Path.GetExtension(x) == ".json")
-                    .Select(x => LoadCredentials(x));
+                    .Select(x => LoadCredentials(x))
+                    .OrderBy(x => x.UserName);
             }
             _credentialsForInstance[instancePath] = result;
 
             return result;
         }
 
-        public IEnumerable<WindowsCredentials> AddCredentialsToInstance(Instance instance, WindowsCredentials credentials)
+        public void AddCredentialsToInstance(Instance instance, WindowsCredentials credentials)
         {
             var instancePath = GetInstancePath(instance);
             var fullInstancePath = Path.Combine(s_credentialsStoreRoot, instancePath);
 
             SaveCredentials(fullInstancePath, credentials);
-
-            var cachedCredentials = GetCredentialsForInstance(instance).ToList();
-            cachedCredentials.Add(credentials);
-            _credentialsForInstance[instancePath] = cachedCredentials;
-
-            return cachedCredentials;
+            _credentialsForInstance.Remove(instancePath);
         }
 
         private WindowsCredentials LoadCredentials(string path)
@@ -95,19 +91,6 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             return $@"{credentials.CurrentProjectId}\{instance.GetZoneName()}\{instance.Name}";
         }
 
-        private static string GetFileName(WindowsCredentials credentials)
-        {
-            var serialized = JsonConvert.SerializeObject(credentials);
-            var sha1 = SHA1.Create();
-            var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(serialized));
-
-            StringBuilder sb = new StringBuilder();
-            foreach (byte b in hash)
-            {
-                sb.AppendFormat("{0:x2}", b);
-            }
-            sb.Append(".json");
-            return sb.ToString();
-        }
+        private static string GetFileName(WindowsCredentials credentials) => $"{credentials.UserName}.json";
     }
 }
