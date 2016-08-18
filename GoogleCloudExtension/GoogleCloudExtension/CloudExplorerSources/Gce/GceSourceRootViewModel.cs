@@ -176,6 +176,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             Process.Start(url);
         }
 
+        private void OnStatusCommand()
+        {
+            Process.Start("https://status.cloud.google.com/");
+        }
+
         public override void InvalidateProjectOrAccount()
         {
             Debug.WriteLine("New credentials, invalidating data source for GCE");
@@ -226,73 +231,37 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void PresentViewModels()
         {
+            IEnumerable<TreeNode> viewModels;
             if (_showZones)
             {
-                PresentZoneViewModels();
+                viewModels = _instancesPerZone
+                    .Select(x => new { Zone = x.Zone.Name, Instances = x.Instances.Where(i => _showOnlyWindowsInstances ? i.IsWindowsInstance() : true) })
+                    .Where(x => x.Instances.Count() > 0)
+                    .OrderBy(x => x.Zone)
+                    .Select(x => new ZoneViewModel(this, x.Zone, x.Instances.Select(i => new GceInstanceViewModel(this, i))));
             }
             else
             {
-                PresentInstanceViewModels();
+                viewModels = _instancesPerZone
+                    .SelectMany(x => x.Instances)
+                    .Where(x => _showOnlyWindowsInstances ? x.IsWindowsInstance() : true)
+                    .OrderBy(x => x.Name)
+                    .Select(x => new GceInstanceViewModel(this, x));
             }
+            UpdateViewModels(viewModels);
         }
 
-        private void PresentZoneViewModels()
+        private void UpdateViewModels(IEnumerable<TreeNode> viewModels)
         {
-            if (_instancesPerZone == null)
-            {
-                return;
-            }
-
-            var zones = GetZoneViewModels();
             Children.Clear();
-            foreach (var zone in zones)
+            foreach (var viewModel in viewModels)
             {
-                Children.Add(zone);
+                Children.Add(viewModel);
             }
             if (Children.Count == 0)
             {
-                Children.Add(s_noZonesPlaceholder);
+                Children.Add(s_noItemsPlacehoder);
             }
-        }
-
-        private IList<ZoneViewModel> GetZoneViewModels()
-        {
-            return _instancesPerZone?
-                .OrderBy(x => x.Zone.Name)
-                .Select(x => new ZoneViewModel(this, x, _showOnlyWindowsInstances)).ToList();
-        }
-
-        private void PresentInstanceViewModels()
-        {
-            if (_instancesPerZone == null)
-            {
-                return;
-            }
-
-            var instances = GetInstanceViewModels();
-            Children.Clear();
-            foreach (var instance in instances)
-            {
-                Children.Add(instance);
-            }
-            if (Children.Count == 0)
-            {
-                Children.Add(s_noZonesPlaceholder);
-            }
-        }
-
-        private IList<GceInstanceViewModel> GetInstanceViewModels()
-        {
-            return _instancesPerZone
-                .SelectMany(x => x.Instances)
-                .Where(x => _showOnlyWindowsInstances ? x.IsWindowsInstance() : true)
-                .Select(x => new GceInstanceViewModel(this, x))
-                .ToList();
-        }
-
-        private void OnStatusCommand()
-        {
-            Process.Start("https://status.cloud.google.com/");
         }
     }
 }

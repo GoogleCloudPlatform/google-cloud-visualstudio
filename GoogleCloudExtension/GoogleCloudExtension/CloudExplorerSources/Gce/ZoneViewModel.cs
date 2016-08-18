@@ -47,20 +47,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         public object Item => new ZoneItem(_instancesPerZone.Zone);
 
-        public ZoneViewModel(GceSourceRootViewModel owner, InstancesPerZone instancesPerZone, bool onlyWindowsInstances)
+        internal ZoneViewModel(GceSourceRootViewModel owner, string name, IEnumerable<GceInstanceViewModel> instances)
         {
             _owner = owner;
-            _instancesPerZone = instancesPerZone;
 
-            var instancesToShow = instancesPerZone.Instances.Where(x => !onlyWindowsInstances || x.IsWindowsInstance()).ToList();
-
-            Caption = $"{instancesPerZone.Zone.Name} ({instancesToShow.Count})";
+            Caption = $"{name} ({instances.Count()})";
             Icon = s_zoneIcon.Value;
 
-            var viewModels = instancesToShow.Select(x => new GceInstanceViewModel(owner, x));
-            foreach (var viewModel in viewModels)
+            foreach (var instance in instances)
             {
-                Children.Add(viewModel);
+                Children.Add(instance);
             }
 
             var menuItems = new List<MenuItem>
@@ -69,18 +65,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
-
-            if (Children.Count == 0)
-            {
-                if (onlyWindowsInstances)
-                {
-                    Children.Add(s_noWindowsInstancesPlaceholder);
-                }
-                else
-                {
-                    Children.Add(s_noInstancesPlaceholder);
-                }
-            }
         }
 
         private void OnPropertiesCommand()
