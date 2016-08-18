@@ -12,7 +12,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
     public class ManageWindowsCredentialsViewModel : ViewModelBase
     {
         private readonly ManageWindowsCredentialsWindow _owner;
-        private IList<WindowsCredentials> _credentials;
+        private IEnumerable<WindowsCredentials> _credentials;
         private readonly Instance _instance;
         private WindowsCredentials _selectedCredentials;
 
@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             }
         }
 
-        public IList<WindowsCredentials> Credentials
+        public IEnumerable<WindowsCredentials> Credentials
         {
             get { return _credentials; }
             set { SetValueAndRaise(ref _credentials, value); }
@@ -42,6 +42,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
 
         public ManageWindowsCredentialsViewModel(Instance instance, ManageWindowsCredentialsWindow owner)
         {
+            _instance = instance;
             _owner = owner;
 
             Credentials = LoadCredentialsForInstance(instance);
@@ -51,9 +52,9 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             ShowCredentialsCommand = new WeakCommand(OnShowCredentialsCommand);
         }
 
-        private IList<WindowsCredentials> LoadCredentialsForInstance(Instance instance)
+        private IEnumerable<WindowsCredentials> LoadCredentialsForInstance(Instance instance)
         {
-            throw new NotImplementedException();
+            return WindowsCredentialsStore.Default.GetCredentialsForInstance(instance);
         }
 
         private void OnShowCredentialsCommand()

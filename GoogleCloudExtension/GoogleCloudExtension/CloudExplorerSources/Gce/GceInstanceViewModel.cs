@@ -18,6 +18,7 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.FirewallManagement;
+using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.OAuth;
 using GoogleCloudExtension.ResetPassword;
 using GoogleCloudExtension.Utils;
@@ -204,6 +205,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             var stopInstanceCommand = new WeakCommand(OnStopInstanceCommand);
             var resetInstancePasswordCommand = new WeakCommand(OnResetInstancePasswordCommand, Instance.IsWindowsInstance() && Instance.IsRunning());
             var manageFirewallPorts = new WeakCommand(OnManageFirewallPortsCommand);
+            var manageWindowsCredentials = new WeakCommand(OnManageWindowsCredentialsCommand, canExecuteCommand: Instance.IsWindowsInstance());
 
             var menuItems = new List<MenuItem>
             {
@@ -212,6 +214,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 new MenuItem { Header = Resources.CloudExplorerGceOpenWebSiteMenuHeader, Command = openWebSite },
                 new MenuItem { Header = Resources.CloudExplorerGceCreateOrResetPasswordMenuHeader, Command = resetInstancePasswordCommand },
                 new MenuItem { Header = Resources.CloudExplorerGceManageFirewallPortsMenuHeader, Command = manageFirewallPorts },
+                new MenuItem { Header = "Manage Windows Credentials...", Command = manageWindowsCredentials }
             };
 
             if (Instance.IsRunning())
@@ -227,6 +230,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             menuItems.Add(new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) });
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void OnManageWindowsCredentialsCommand()
+        {
+            ManageWindowsCredentialsWindow.PromptUser(Instance);
         }
 
         private void OnOpenOnCloudConsoleCommand()
