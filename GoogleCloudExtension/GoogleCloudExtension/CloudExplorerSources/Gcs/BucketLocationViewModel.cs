@@ -12,7 +12,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 {
     internal class BucketLocationViewModel : TreeHierarchy
     {
-        private const string IconResourcePath = "CloudExplorerSources/Gce/Resources/zone_icon.png";
+        private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/zone_icon.png";
 
         private static readonly Lazy<ImageSource> s_zoneIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
 
