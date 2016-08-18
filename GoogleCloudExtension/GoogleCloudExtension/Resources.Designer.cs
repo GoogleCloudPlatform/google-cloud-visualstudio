@@ -763,6 +763,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The location where the bucket resides..
+        /// </summary>
+        public static string CloudExplorerGcsBucketLocationDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerGcsBucketLocationDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location.
+        /// </summary>
+        public static string CloudExplorerGcsBucketLocationDisplayName {
+            get {
+                return ResourceManager.GetString("CloudExplorerGcsBucketLocationDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The modification time stamp for the bucket.
         /// </summary>
         public static string CloudExplorerGcsBucketModifiedDescription {
