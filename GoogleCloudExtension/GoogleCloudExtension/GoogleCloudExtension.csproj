@@ -111,6 +111,13 @@
       <DependentUpon>PortManagerWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="FirewallManagement\PortModel.cs" />
+    <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsViewModel.cs" />
+    <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindow.cs" />
+    <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml.cs">
+      <DependentUpon>ManageWindowsCredentialsWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ManageWindowsCredentials\WindowsCredentials.cs" />
+    <Compile Include="ManageWindowsCredentials\WindowsCredentialsStore.cs" />
     <Compile Include="MySQLInstaller\MySQLInstallerWindowContent.xaml.cs">
       <DependentUpon>MySQLInstallerWindowContent.xaml</DependentUpon>
     </Compile>
@@ -448,6 +455,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FirewallManagement\PortManagerWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
