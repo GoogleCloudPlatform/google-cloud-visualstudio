@@ -125,6 +125,14 @@
     <value>Usage Statistics</value>
     <comment>Title for the analytics prompt.</comment>
   </data>
+  <data name="CloudExploreOperationTimeoutMessage" xml:space="preserve">
+    <value>The operation took too long to complete and timed out.</value>
+    <comment>A message denoting the operation took too long.</comment>
+  </data>
+  <data name="CloudExploreOperationCanceledMessage" xml:space="preserve">
+  <value>The operation was canceled.</value>
+    <comment>A message denoting the operation was canceld.</comment>
+  </data>
   <data name="CloudExploreDisabledApiEnableApiMenuHeader" xml:space="preserve">
     <value>Enable API</value>
     <comment>Menu header for the Enable API command.</comment>
@@ -477,6 +485,10 @@
     <value>Failed to load the list of Google Cloud SQL instances.</value>
     <comment>Message shown in the output window when failed to load list of SQL instances.</comment>
   </data>
+  <data name="CloudExplorerSqlUpdateAthorizedNetworksErrorMessage" xml:space="preserve">
+    <value>Failed to updated authorized networks.</value>
+    <comment>Message shown when an attempt to updated authorized networks fails.</comment>
+  </data>
   <data name="CloudExplorerSqlFailedToLoadInstancesCaption" xml:space="preserve">
     <value>Failed to list instances.</value>
     <comment>Caption shown when failed to load SQL instances.</comment>
@@ -505,9 +517,17 @@
     <value>No instances found.</value>
     <comment>Caption shown when no SQL instances are found.</comment>
   </data>
+  <data name="CloudExplorerSqlUpdatedAthorizedNetworksCaption" xml:space="preserve">
+    <value>Updating authorized networks...</value>
+    <comment>Caption shown when the authorized networks are being updated.</comment>
+  </data>
   <data name="CloudExplorerSqlOpenAddDataConnectionMenuHeader" xml:space="preserve">
     <value>Add Data Connection</value>
     <comment>Menu header for the open add data connection dialog menu item.</comment>
+  </data>
+  <data name="CloudExplorerSqlManageAuthorizedNetworksMenuHeader" xml:space="preserve">
+    <value>Manage Authorized Networks</value>
+    <comment>Menu header for the option to manage authorized networks.</comment>
   </data>
   <data name="CloudExplorerSqlRootNodeCaption" xml:space="preserve">
     <value>Google Cloud SQL</value>
@@ -593,6 +613,35 @@
     <value>Set Firewall rules and tags to enable traffic for the instance</value>
     <comment>Main message in the port manager dialog.</comment>
   </data>
+  <data name="AuthorizedNetworksWindowCaption" xml:space="preserve">
+    <value>Manage Authorized Networks</value>
+    <comment>Caption for the manage authorized networks dialog.</comment>
+  </data>
+  <data name="AuthorizedNetworksWindowMessage" xml:space="preserve">
+    <value>Manage authorized networks that can connect to your instance.</value>
+    <comment>Main message in the authorized networks dialog.</comment>
+  </data>
+  <data name="AuthorizedNetworksWindowNameTextBoxTitle" xml:space="preserve">
+    <value>Name (Optional):</value>
+    <comment>Title for the name text box use to create new authorized networks.</comment>
+  </data>
+  <data name="AuthorizedNetworksWindowValueTextBoxTitle" xml:space="preserve">
+    <value>Network (CIDR Notation):</value>
+    <comment>Title for the value text box use to create new authorized networks.</comment>
+  </data>
+  <data name="AuthorizedNetworksWindowAddNetworkButton" xml:space="preserve">
+    <value>Add Authorized Network</value>
+    <comment>Title for the button to create a new authorized network.</comment>
+  </data>
+ 
+  <data name="AuthorizedNetworksWindowInvalidCidrFormatErrorTitle" xml:space="preserve">
+    <value>Invalid Subnet.</value>
+    <comment>Title for an error message in the authorized networks dialog for an ipv4 address.</comment>
+  </data>
+  <data name="AuthorizedNetworksWindowInvalidCidrFormatErrorMessage" xml:space="preserve">
+    <value>Enter IPv4 in CIDR notation (e.g. 192.168.2.0/24).</value>
+    <comment>Message for an error message in the authorized networks dialog for an ipv4 address.</comment>
+  </data>
   <data name="ResetPasswordConfirmationPromptMessage" xml:space="preserve">
     <value>Are you sure you want to reset the password for the user {0} in instance {1}? This operation cannot be cancelled.</value>
     <comment>The message for the confirmation prompt for resetting or creating a password. {0) is the user name, {1} is the instance name.</comment>
@@ -676,6 +725,18 @@
   <data name="UiOkButtonCaption" xml:space="preserve">
     <value>Ok</value>
     <comment>Caption for Ok buttons.</comment>
+  </data>
+    <data name="UiSaveButtonCaption" xml:space="preserve">
+    <value>Save</value>
+    <comment>Caption for Save buttons.</comment>
+  </data>
+  <data name="UiDeleteButtonCaption" xml:space="preserve">
+    <value>Delete</value>
+    <comment>Caption for Delete buttons.</comment>
+  </data>
+   <data name="UiUndoButtonCaption" xml:space="preserve">
+    <value>Undo</value>
+    <comment>Caption for Undo buttons.</comment>
   </data>
   <data name="UiOpenOnCloudConsoleMenuHeader" xml:space="preserve">
     <value>Open on Cloud Console</value>

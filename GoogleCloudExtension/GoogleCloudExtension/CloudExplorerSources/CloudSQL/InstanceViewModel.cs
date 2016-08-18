@@ -23,9 +23,11 @@ using Microsoft.VisualStudio.Shell;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Media;
+using GoogleCloudExtension.AuthorizedNetworkManagement;
 
 namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 {
@@ -43,31 +45,32 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         private static readonly Lazy<ImageSource> s_instanceUnknownIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconUnknownResourcePath));
 
         private readonly CloudSQLSourceRootViewModel _owner;
-        private readonly DatabaseInstance _instance;
-        private readonly Lazy<InstanceItem> _item;
-        private readonly WeakCommand _openAddDataConnectionDialog;
+
+        private DatabaseInstance _instance;
+
+        private DatabaseInstance Instance
+        {
+            get { return _instance; }
+            set
+            {
+                _instance = value;
+                UpdateIcon();
+                ItemChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
 
         public event EventHandler ItemChanged;
 
-        public object Item => _item.Value;
+        public object Item => GetItem();
 
         public InstanceViewModel(CloudSQLSourceRootViewModel owner, DatabaseInstance instance)
         {
             _owner = owner;
             _instance = instance;
-            _item = new Lazy<InstanceItem>(GetItem);
-            _openAddDataConnectionDialog = new WeakCommand(OpenDataConnectionDialog);
 
-            Caption = _instance.Name;
+            Caption = Instance.Name;
 
-            var menuItems = new List<MenuItem>
-            {
-                new MenuItem { Header = Resources.CloudExplorerSqlOpenAddDataConnectionMenuHeader, Command = _openAddDataConnectionDialog },
-                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) },
-                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesCommand) },
-            };
-            ContextMenu = new ContextMenu { ItemsSource = menuItems };
-
+            UpdateMenu();
             UpdateIcon();
         }
 
@@ -82,6 +85,80 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             _owner.Context.ShowPropertiesWindow(Item);
         }
 
+        /// <summary>
+        /// Opens the a dialog to manage authorized networks for the instance.  This will allow
+        /// the user to add and remove authorized networks and then save the changes they have made.
+        /// </summary>
+        private async void OnManageAuthorizedNetworks()
+        {
+            ExtensionAnalytics.ReportCommand(
+                CommandName.OpenUpdateCloudSqlAuthorizedNetworksDialog, CommandInvocationSource.Button);
+            // Get the changes to the networks and check if any changes have occured (or the results is
+            // null if the user canceled the dialog).
+            AuthorizedNetworkChange networkChange = AuthorizedNetworksWindow.PromptUser(Instance);
+            if (networkChange == null || !networkChange.HasChanges)
+            {
+                return;
+            }
+
+            ExtensionAnalytics.ReportCommand(
+                CommandName.UpdateCloudSqlAuthorizedNetworks, CommandInvocationSource.Button);
+            IList<AclEntry> updatedNetworks = networkChange.AuthorizedNetworks;
+            DatabaseInstanceExtensions.UpdateAuthorizedNetworks(Instance, updatedNetworks);
+
+            // Update the user display and menu.
+            IsLoading = true;
+            UpdateMenu();
+            Caption = Resources.CloudExplorerSqlUpdatedAthorizedNetworksCaption;
+            CloudSqlDataSource dataSource = _owner.DataSource.Value;
+
+            try
+            {
+                // Poll until the update to completes.
+                Task<Operation> operation = _owner.DataSource.Value.UpdateInstanceAsync(Instance);
+                Func<Operation, Task<Operation>> fetch = (o) => dataSource.GetOperationAsync(o.Name);
+                Predicate<Operation> stopPolling = (o) => CloudSqlDataSource.OperationStateDone.Equals(o.Status);
+                await Polling<Operation>.Poll(await operation, fetch, stopPolling);
+            }
+            catch (DataSourceException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(ex.Message, 
+                    Resources.CloudExplorerSqlUpdateAthorizedNetworksErrorMessage);
+            }
+            catch (TimeoutException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(
+                    Resources.CloudExploreOperationTimeoutMessage,
+                    Resources.CloudExplorerSqlUpdateAthorizedNetworksErrorMessage);
+            }
+            catch (OperationCanceledException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(
+                    Resources.CloudExploreOperationCanceledMessage, 
+                    Resources.CloudExplorerSqlUpdateAthorizedNetworksErrorMessage);
+            }
+            finally
+            {
+                // Update the user display and menu.
+                IsLoading = false;
+                UpdateMenu();
+                Caption = Instance.Name;
+            }
+
+            // Be sure to update the instance when finished to ensure we have
+            // the most up to date version.
+            Instance = await dataSource.GetInstanceAsync(Instance.Name);
+        }
+
+
+        /// <summary>
+        /// Opens the Add Data Connection Dialog with the data source being a MySQL database and the server field
+        /// set to the ip of the intance.  If the proper dependencies are not installed (for the MySQL database)
+        /// the user will be prompted to install them before they can continue.
+        /// </summary>
         private void OpenDataConnectionDialog()
         {
             ExtensionAnalytics.ReportCommand(CommandName.OpenMySQLDataConnectionDialog, CommandInvocationSource.Button);
@@ -101,7 +178,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 
                 // Create the connection string to pre populate the server address in the dialog.
                 MySqlConnectionStringBuilder builderPrePopulate = new MySqlConnectionStringBuilder();
-                InstanceItem instance = _item.Value;
+                InstanceItem instance = GetItem();
                 builderPrePopulate.Server = String.IsNullOrEmpty(instance.IpAddress) ? instance.Ipv6Address : instance.IpAddress;
                 dialog.DisplayConnectionString = builderPrePopulate.GetConnectionString(false);
 
@@ -112,7 +189,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 
                     // Create a name for the data connection
                     MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder(dialog.DisplayConnectionString);
-                    string database = $"{_instance.Project}[{builder.Server}][{builder.Database}]";
+                    string database = $"{Instance.Project}[{builder.Server}][{builder.Database}]";
 
                     // Add the MySQL data connection to the data explorer
                     DataExplorerConnectionManager manager = (DataExplorerConnectionManager)Package.GetGlobalService(typeof(DataExplorerConnectionManager));
@@ -127,17 +204,42 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             }
         }
 
+        /// <summary>
+        /// Update the context menu based on the current state of the instance.
+        /// </summary>
+        private void UpdateMenu()
+        {
+            // Do not allow actions when the instance is loading or in an error state.
+            if (IsLoading || IsError)
+            {
+                ContextMenu = null;
+                return;
+            }
+
+            var menuItems = new List<MenuItem>
+            {
+                new MenuItem { Header = Resources.CloudExplorerSqlOpenAddDataConnectionMenuHeader, Command = new WeakCommand(OpenDataConnectionDialog) },
+                new MenuItem { Header = Resources.CloudExplorerSqlManageAuthorizedNetworksMenuHeader, Command = new WeakCommand(OnManageAuthorizedNetworks) },
+                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) },
+                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesCommand) },
+            };
+            ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        /// <summary>
+        /// Update the icon menu based on the current state of the instance.
+        /// </summary>
         private void UpdateIcon()
         {
-            switch (_instance.State)
+            switch (Instance.State)
             {
-                case CloudSqlDataSource.RunnableState:
-                case CloudSqlDataSource.PendingCreateState:
+                case DatabaseInstanceExtensions.RunnableState:
+                case DatabaseInstanceExtensions.PendingCreateState:
                     Icon = s_instanceRunningIcon.Value;
                     break;
 
-                case CloudSqlDataSource.SuspendedState:
-                case CloudSqlDataSource.MaintenanceState:
+                case DatabaseInstanceExtensions.SuspendedState:
+                case DatabaseInstanceExtensions.MaintenanceState:
                     Icon = s_instanceOfflineIcon.Value;
                     break;
 
@@ -147,6 +249,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             }
         }
 
-        public InstanceItem GetItem() => new InstanceItem(_instance);
+        public InstanceItem GetItem() => new InstanceItem(Instance);
     }
 }

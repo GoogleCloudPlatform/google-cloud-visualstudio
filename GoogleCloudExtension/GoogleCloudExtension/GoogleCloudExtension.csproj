@@ -57,6 +57,12 @@
     <Compile Include="Accounts\CredentialsStoreException.cs" />
     <Compile Include="Accounts\DefaultCredentials.cs" />
     <Compile Include="Analytics\CommandName.cs" />
+    <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworkModel.cs" />
+    <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksViewModel.cs" />
+    <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksWindow.cs" />
+    <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksWindowContent.xaml.cs">
+      <DependentUpon>AuthorizedNetworksWindowContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
@@ -418,6 +424,7 @@
     <EmbeddedResource Include="Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
@@ -426,6 +433,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="AuthorizedNetworkManagement\AuthorizedNetworksWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CloudExplorer\CloudExplorerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
