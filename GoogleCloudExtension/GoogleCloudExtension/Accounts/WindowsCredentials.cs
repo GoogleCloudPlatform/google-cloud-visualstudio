@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace GoogleCloudExtension.ManageWindowsCredentials
+namespace GoogleCloudExtension.Accounts
 {
     public class WindowsCredentials
     {

@@ -17,7 +17,6 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.LinkPrompt;
-using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;

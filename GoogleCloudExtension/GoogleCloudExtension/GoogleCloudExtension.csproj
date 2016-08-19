@@ -116,8 +116,8 @@
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml.cs">
       <DependentUpon>ManageWindowsCredentialsWindowContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ManageWindowsCredentials\WindowsCredentials.cs" />
-    <Compile Include="ManageWindowsCredentials\WindowsCredentialsStore.cs" />
+    <Compile Include="Accounts\WindowsCredentials.cs" />
+    <Compile Include="Accounts\WindowsCredentialsStore.cs" />
     <Compile Include="MySQLInstaller\MySQLInstallerWindowContent.xaml.cs">
       <DependentUpon>MySQLInstallerWindowContent.xaml</DependentUpon>
     </Compile>

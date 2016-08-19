@@ -1,5 +1,4 @@
 ﻿using Google.Apis.Compute.v1.Data;
-using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using Newtonsoft.Json;
 using System;
@@ -7,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace GoogleCloudExtension.ManageWindowsCredentials
+namespace GoogleCloudExtension.Accounts
 {
     internal class WindowsCredentialsStore
     {
