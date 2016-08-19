@@ -1,11 +1,8 @@
-﻿using Google.Apis.Storage.v1.Data;
-using GoogleCloudExtension.CloudExplorer;
+﻿using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gcs
