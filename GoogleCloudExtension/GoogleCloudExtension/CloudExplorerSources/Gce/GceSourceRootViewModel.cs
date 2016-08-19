@@ -234,6 +234,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             IEnumerable<TreeNode> viewModels;
             if (_showZones)
             {
+                // This query creates the zone view model with the following steps:
+                //   * Create an object that represents the zone and the instances that must be shown (after filtering)
+                //     for that zone. The instances in the zone are sorted by their name.
+                //   * Filter out the zones that (after filtering instances) are empty.
+                //   * Sort the resulting zones by the zone name.
+                //   * Create the view model for each zone, containing the instances for that zone.
                 viewModels = _instancesPerZone
                     .Select(x => new
                     {
@@ -248,6 +254,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
             else
             {
+                // This query gets the list of view models for the instnaces with the following steps:
+                //   * Select all of the instances in all of the zones in a source list.
+                //   * Filters the instances according to the _showOnlyWindowsInstances setting.
+                //   * Sorts the resulting instances by name.
+                //   * Creates the view model for each instance.
                 viewModels = _instancesPerZone
                     .SelectMany(x => x.Instances)
                     .Where(x => _showOnlyWindowsInstances ? x.IsWindowsInstance() : true)
