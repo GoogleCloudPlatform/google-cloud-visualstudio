@@ -757,4 +757,24 @@
     <value>Show Locations</value>
     <comment>The command to use use to show the buckets per location.</comment>
   </data>
+  <data name="ManageWindowsCredentialsAddCredentialsCaption" xml:space="preserve">
+    <value>Add Credentials</value>
+    <comment>The caption for the add credentials button in the dialog.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsDeleteCredentialsCaption" xml:space="preserve">
+    <value>Delete Credentials</value>
+    <comment>The caption for the delete credentials button in the dialog.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsShowCredentialsCaption" xml:space="preserve">
+    <value>Show Credentials</value>
+    <comment>The caption or the show credentials button in the dialog.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsWindowMessage" xml:space="preserve">
+    <value>Windows credentials for {0}</value>
+    <comment>Message at the top of the Manage Windows Credentials dialog. The {0} placeholder is the name of the instance.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsWindowTitle" xml:space="preserve">
+    <value>Manage Windows Credentials</value>
+    <comment>Title for the Manage Windows Credentials dialog.</comment>
+  </data>
 </root>

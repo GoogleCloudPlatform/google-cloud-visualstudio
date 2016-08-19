@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
 {
     public class ManageWindowsCredentialsWindow : CommonDialogWindowBase
     {
-        private ManageWindowsCredentialsWindow(Instance instance) : base("Manage Windows Credentials", 500, 400)
+        private ManageWindowsCredentialsWindow(Instance instance) : base(GoogleCloudExtension.Resources.ManageWindowsCredentialsWindowTitle, 500, 400)
         {
             Content = new ManageWindowsCredentialsWindowContent { DataContext = new ManageWindowsCredentialsViewModel(instance, this) };
         }
