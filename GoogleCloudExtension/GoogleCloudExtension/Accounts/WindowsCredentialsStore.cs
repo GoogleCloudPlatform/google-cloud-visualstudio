@@ -23,6 +23,15 @@ using System.Text;
 
 namespace GoogleCloudExtension.Accounts
 {
+    /// <summary>
+    /// This class manages the Windows credentials associated with a particular VM.
+    /// 
+    /// The credentials are stored in files with the name {username}.data. The name of the file
+    /// is the username, the contents of the file is the encrypted version of the password. Only the
+    /// current user will be able to decrypt the password.
+    /// 
+    /// The password is encrypted/decryped using the <seealso cref="ProtectedData"/> class.
+    /// </summary>
     internal class WindowsCredentialsStore
     {
         private const string WindowsCredentialsPath = @"googlecloudvsextension\windows_credentials";
@@ -37,6 +46,12 @@ namespace GoogleCloudExtension.Accounts
 
         public static WindowsCredentialsStore Default => s_defaultStore.Value;
 
+        /// <summary>
+        /// Loads the list of Windows credentials associated with <paramref name="instance"/>.
+        /// </summary>
+        /// <param name="instance">The instance</param>
+        /// <returns>The list of <seealso cref="WindowsCredentials"/> associated with the instance. It might be
+        /// empty if no credentials are found.</returns>
         public IEnumerable<WindowsCredentials> GetCredentialsForInstance(Instance instance)
         {
             var instancePath = GetInstancePath(instance);
@@ -63,6 +78,11 @@ namespace GoogleCloudExtension.Accounts
             return result;
         }
 
+        /// <summary>
+        /// Adds a Windows credential to the store for the given <paramref name="instance"/>.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <param name="credentials">The credentials to store.</param>
         public void AddCredentialsToInstance(Instance instance, WindowsCredentials credentials)
         {
             var instancePath = GetInstancePath(instance);
@@ -72,6 +92,11 @@ namespace GoogleCloudExtension.Accounts
             _credentialsForInstance.Remove(instancePath);
         }
 
+        /// <summary>
+        /// Deletes the given credentials from the list of associated credenials for <paramref name="instance"/>.
+        /// </summary>
+        /// <param name="instance">The instance.</param>
+        /// <param name="credentials">The credentials.</param>
         public void DeleteCredentialsForInstance(Instance instance, WindowsCredentials credentials)
         {
             var instancePath = GetInstancePath(instance);
