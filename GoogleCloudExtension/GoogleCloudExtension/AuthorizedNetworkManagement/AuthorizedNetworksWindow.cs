@@ -22,10 +22,10 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
     /// </summary>
     public class AuthorizedNetworksWindow : CommonDialogWindowBase
     {
-        private AuthorizedNetworksViewModel ViewModel => 
+        private AuthorizedNetworksViewModel ViewModel =>
             (AuthorizedNetworksViewModel)((AuthorizedNetworksWindowContent)Content).DataContext;
 
-        private AuthorizedNetworksWindow(DatabaseInstance instance) : 
+        private AuthorizedNetworksWindow(DatabaseInstance instance) :
             base(GoogleCloudExtension.Resources.AuthorizedNetworksWindowCaption, width: 450, height: 550)
         {
             Content = new AuthorizedNetworksWindowContent

@@ -15,7 +15,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
         private WindowsCredentials _selectedCredentials;
 
         public WeakCommand AddCredentialsCommand { get; }
-        
+
         public WeakCommand DeleteCredentialsCommand { get; }
 
         public WeakCommand ShowCredentialsCommand { get; }

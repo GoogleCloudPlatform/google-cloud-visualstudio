@@ -1,4 +1,5 @@
-﻿namespace GoogleCloudExtension.Accounts
+﻿
+namespace GoogleCloudExtension.Accounts
 {
     public class WindowsCredentials
     {

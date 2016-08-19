@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
         /// <summary>
         /// The list of authorized networks.
         /// </summary>
-        public ObservableCollection<AuthorizedNetworkModel> Networks { get; } = new  ObservableCollection<AuthorizedNetworkModel>();
+        public ObservableCollection<AuthorizedNetworkModel> Networks { get; } = new ObservableCollection<AuthorizedNetworkModel>();
 
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
             get { return _networkName; }
             set { SetValueAndRaise(ref _networkName, value); }
         }
-        
+
         /// <summary>
         /// The network value, this is bound to an text box in the UI to allow the 
         /// user to add new networks.
@@ -84,7 +84,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
             get { return _networkValue; }
             set { SetValueAndRaise(ref _networkValue, value); }
         }
-        
+
         /// <summary>
         /// The changes that were made by the user. This property will be null if the user
         /// cancelled the dialog.
@@ -107,7 +107,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
             foreach (var network in GetAuthorizedNetworks(instance))
             {
                 Networks.Add(network);
-            } 
+            }
             Result = null;
 
             SaveCommand = new WeakCommand(OnSaveCommand);

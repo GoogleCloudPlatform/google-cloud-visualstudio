@@ -123,7 +123,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             catch (DataSourceException ex)
             {
                 IsError = true;
-                UserPromptUtils.ErrorPrompt(ex.Message, 
+                UserPromptUtils.ErrorPrompt(ex.Message,
                     Resources.CloudExplorerSqlUpdateAthorizedNetworksErrorMessage);
             }
             catch (TimeoutException ex)
@@ -137,7 +137,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             {
                 IsError = true;
                 UserPromptUtils.ErrorPrompt(
-                    Resources.CloudExploreOperationCanceledMessage, 
+                    Resources.CloudExploreOperationCanceledMessage,
                     Resources.CloudExplorerSqlUpdateAthorizedNetworksErrorMessage);
             }
             finally
