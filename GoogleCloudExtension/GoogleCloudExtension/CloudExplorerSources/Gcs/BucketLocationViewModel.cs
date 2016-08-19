@@ -10,6 +10,10 @@ using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 {
+    /// <summary>
+    /// This class is the view model for the location of a bucket, showing the buckets
+    /// under this location and the right icon.
+    /// </summary>
     internal class BucketLocationViewModel : TreeHierarchy
     {
         private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/zone_icon.png";
