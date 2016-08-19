@@ -14,7 +14,6 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.DataSources;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
