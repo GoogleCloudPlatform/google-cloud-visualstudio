@@ -5,6 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace GoogleCloudExtension.Accounts
 {
@@ -39,8 +41,8 @@ namespace GoogleCloudExtension.Accounts
             else
             {
                 result = Directory.EnumerateFiles(fullInstancePath)
-                    .Where(x => Path.GetExtension(x) == ".json")
-                    .Select(x => LoadCredentials(x))
+                    .Where(x => Path.GetExtension(x) == ".data")
+                    .Select(x => LoadEncryptedCredentials(x))
                     .OrderBy(x => x.UserName);
             }
             _credentialsForInstance[instancePath] = result;
@@ -53,7 +55,7 @@ namespace GoogleCloudExtension.Accounts
             var instancePath = GetInstancePath(instance);
             var fullInstancePath = Path.Combine(s_credentialsStoreRoot, instancePath);
 
-            SaveCredentials(fullInstancePath, credentials);
+            SaveEncryptedCredentials(fullInstancePath, credentials);
             _credentialsForInstance.Remove(instancePath);
         }
 
@@ -70,13 +72,20 @@ namespace GoogleCloudExtension.Accounts
             }
         }
 
-        private WindowsCredentials LoadCredentials(string path)
+        private WindowsCredentials LoadEncryptedCredentials(string path)
         {
-            var content = File.ReadAllText(path);
-            return JsonConvert.DeserializeObject<WindowsCredentials>(content);
+            var userName = Path.GetFileNameWithoutExtension(path);
+            var encryptedPassword = File.ReadAllBytes(path);
+            var passwordBytes = ProtectedData.Unprotect(encryptedPassword, null, DataProtectionScope.CurrentUser);
+
+            return new WindowsCredentials
+            {
+                UserName = userName,
+                Password = Encoding.UTF8.GetString(passwordBytes)
+            };
         }
 
-        private void SaveCredentials(string path, WindowsCredentials credentials)
+        private void SaveEncryptedCredentials(string path, WindowsCredentials credentials)
         {
             if (!Directory.Exists(path))
             {
@@ -84,8 +93,9 @@ namespace GoogleCloudExtension.Accounts
             }
 
             var filePath = Path.Combine(path, GetFileName(credentials));
-            var content = JsonConvert.SerializeObject(credentials);
-            File.WriteAllText(filePath, content);
+            var passwordBytes = Encoding.UTF8.GetBytes(credentials.Password);
+            var encrypted = ProtectedData.Protect(passwordBytes, null, DataProtectionScope.CurrentUser);
+            File.WriteAllBytes(filePath, encrypted);
         }
 
         private static string GetCredentialsStoreRoot()
@@ -100,6 +110,6 @@ namespace GoogleCloudExtension.Accounts
             return $@"{credentials.CurrentProjectId}\{instance.GetZoneName()}\{instance.Name}";
         }
 
-        private static string GetFileName(WindowsCredentials credentials) => $"{credentials.UserName}.json";
+        private static string GetFileName(WindowsCredentials credentials) => $"{credentials.UserName}.data";
     }
 }
