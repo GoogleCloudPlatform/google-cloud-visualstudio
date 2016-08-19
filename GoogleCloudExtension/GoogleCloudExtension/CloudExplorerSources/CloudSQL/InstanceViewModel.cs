@@ -14,6 +14,7 @@
 
 using Google.Apis.SQLAdmin.v1beta4.Data;
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.AuthorizedNetworkManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.MySQLInstaller;
@@ -23,11 +24,10 @@ using Microsoft.VisualStudio.Shell;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
-using GoogleCloudExtension.AuthorizedNetworkManagement;
 
 namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 {

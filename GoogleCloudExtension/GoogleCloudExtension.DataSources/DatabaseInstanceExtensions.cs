@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
-using System.Linq;
 using Google.Apis.SQLAdmin.v1beta4.Data;
+using System.Collections.Generic;
 
 namespace GoogleCloudExtension.DataSources
 {

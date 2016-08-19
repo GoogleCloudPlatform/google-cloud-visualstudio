@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Windows.Input;
 using Google.Apis.SQLAdmin.v1beta4.Data;
 using GoogleCloudExtension.Utils;
+using System.Windows.Input;
 
 namespace GoogleCloudExtension.AuthorizedNetworkManagement
 {
