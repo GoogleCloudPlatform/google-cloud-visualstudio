@@ -80,7 +80,7 @@ namespace GoogleCloudExtension.ResetPassword
         /// </summary>
         public WeakCommand CancelCommand { get; }
 
-        public WindowsCredentials Result { get; private set; }
+        public WindowsInstanceCredentials Result { get; private set; }
 
         public ResetPasswordViewModel(ResetPasswordWindow owner, Instance instance, string projectId)
         {
@@ -140,15 +140,13 @@ namespace GoogleCloudExtension.ResetPassword
                     AppName = GoogleCloudExtensionPackage.ApplicationName,
                     AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
                 };
-                var newCredentials = await GCloudWrapper.ResetWindowsCredentialsAsync(
+                Result = await GCloudWrapper.ResetWindowsCredentialsAsync(
                     instanceName: _instance.Name,
                     zoneName: _instance.GetZoneName(),
                     userName: _userName,
                     context: context);
 
                 ResettingPassword = false;
-
-                Result = new WindowsCredentials { UserName = _userName, Password = newCredentials.Password };
             }
             catch (GCloudException ex)
             {

@@ -14,6 +14,7 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.GCloud;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -34,7 +35,7 @@ namespace GoogleCloudExtension.Accounts
     /// </summary>
     internal class WindowsCredentialsStore
     {
-        private const string WindowsCredentialsPath = @"googlecloudvsextension\windows_credentials";
+        private const string WindowsInstanceCredentialsPath = @"googlecloudvsextension\windows_credentials";
         private const string PasswordFileExtension = ".data";
 
         private static readonly Lazy<WindowsCredentialsStore> s_defaultStore = new Lazy<WindowsCredentialsStore>();
@@ -43,7 +44,7 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// In memory cache of the credentials for the current credentials (account and project pair).
         /// </summary>
-        private readonly Dictionary<string, IEnumerable<WindowsCredentials>> _credentialsForInstance = new Dictionary<string, IEnumerable<WindowsCredentials>>();
+        private readonly Dictionary<string, IEnumerable<WindowsInstanceCredentials>> _credentialsForInstance = new Dictionary<string, IEnumerable<WindowsInstanceCredentials>>();
 
         public static WindowsCredentialsStore Default => s_defaultStore.Value;
 
@@ -51,12 +52,12 @@ namespace GoogleCloudExtension.Accounts
         /// Loads the list of Windows credentials associated with <paramref name="instance"/>.
         /// </summary>
         /// <param name="instance">The instance</param>
-        /// <returns>The list of <seealso cref="WindowsCredentials"/> associated with the instance. It might be
+        /// <returns>The list of <seealso cref="WindowsInstanceCredentials"/> associated with the instance. It might be
         /// empty if no credentials are found.</returns>
-        public IEnumerable<WindowsCredentials> GetCredentialsForInstance(Instance instance)
+        public IEnumerable<WindowsInstanceCredentials> GetCredentialsForInstance(Instance instance)
         {
             var instancePath = GetInstancePath(instance);
-            IEnumerable<WindowsCredentials> result;
+            IEnumerable<WindowsInstanceCredentials> result;
             if (_credentialsForInstance.TryGetValue(instancePath, out result))
             {
                 return result;
@@ -65,14 +66,14 @@ namespace GoogleCloudExtension.Accounts
             var fullInstancePath = Path.Combine(s_credentialsStoreRoot, instancePath);
             if (!Directory.Exists(fullInstancePath))
             {
-                result = Enumerable.Empty<WindowsCredentials>();
+                result = Enumerable.Empty<WindowsInstanceCredentials>();
             }
             else
             {
                 result = Directory.EnumerateFiles(fullInstancePath)
                     .Where(x => Path.GetExtension(x) == PasswordFileExtension)
                     .Select(x => LoadEncryptedCredentials(x))
-                    .OrderBy(x => x.UserName);
+                    .OrderBy(x => x.User);
             }
             _credentialsForInstance[instancePath] = result;
 
@@ -84,7 +85,7 @@ namespace GoogleCloudExtension.Accounts
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <param name="credentials">The credentials to store.</param>
-        public void AddCredentialsToInstance(Instance instance, WindowsCredentials credentials)
+        public void AddCredentialsToInstance(Instance instance, WindowsInstanceCredentials credentials)
         {
             var instancePath = GetInstancePath(instance);
             var fullInstancePath = Path.Combine(s_credentialsStoreRoot, instancePath);
@@ -98,7 +99,7 @@ namespace GoogleCloudExtension.Accounts
         /// </summary>
         /// <param name="instance">The instance.</param>
         /// <param name="credentials">The credentials.</param>
-        public void DeleteCredentialsForInstance(Instance instance, WindowsCredentials credentials)
+        public void DeleteCredentialsForInstance(Instance instance, WindowsInstanceCredentials credentials)
         {
             var instancePath = GetInstancePath(instance);
             var fullInstancePath = Path.Combine(s_credentialsStoreRoot, instancePath);
@@ -111,20 +112,16 @@ namespace GoogleCloudExtension.Accounts
             }
         }
 
-        private WindowsCredentials LoadEncryptedCredentials(string path)
+        private WindowsInstanceCredentials LoadEncryptedCredentials(string path)
         {
             var userName = GetUserName(path);
             var encryptedPassword = File.ReadAllBytes(path);
             var passwordBytes = ProtectedData.Unprotect(encryptedPassword, null, DataProtectionScope.CurrentUser);
 
-            return new WindowsCredentials
-            {
-                UserName = userName,
-                Password = Encoding.UTF8.GetString(passwordBytes)
-            };
+            return new WindowsInstanceCredentials { User = userName, Password = Encoding.UTF8.GetString(passwordBytes) };
         }
 
-        private void SaveEncryptedCredentials(string path, WindowsCredentials credentials)
+        private void SaveEncryptedCredentials(string path, WindowsInstanceCredentials credentials)
         {
             if (!Directory.Exists(path))
             {
@@ -140,7 +137,7 @@ namespace GoogleCloudExtension.Accounts
         private static string GetCredentialsStoreRoot()
         {
             var localAppData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            return Path.Combine(localAppData, WindowsCredentialsPath);
+            return Path.Combine(localAppData, WindowsInstanceCredentialsPath);
         }
 
         private static string GetInstancePath(Instance instance)
@@ -149,7 +146,7 @@ namespace GoogleCloudExtension.Accounts
             return $@"{credentials.CurrentProjectId}\{instance.GetZoneName()}\{instance.Name}";
         }
 
-        private static string GetFileName(WindowsCredentials credentials) => $"{credentials.UserName}{PasswordFileExtension}";
+        private static string GetFileName(WindowsInstanceCredentials credentials) => $"{credentials.User}{PasswordFileExtension}";
 
         private static string GetUserName(string path) => Path.GetFileNameWithoutExtension(path);
     }

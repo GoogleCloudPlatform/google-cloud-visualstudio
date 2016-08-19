@@ -14,6 +14,7 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Theming;
 using System;
 
@@ -33,7 +34,7 @@ namespace GoogleCloudExtension.ResetPassword
             };
         }
 
-        public static WindowsCredentials PromptUser(Instance instance, string projectId)
+        public static WindowsInstanceCredentials PromptUser(Instance instance, string projectId)
         {
             var dialog = new ResetPasswordWindow(instance, projectId);
             dialog.ShowModal();

@@ -14,6 +14,7 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.ResetPassword;
 using GoogleCloudExtension.ShowPassword;
 using GoogleCloudExtension.Utils;
@@ -24,9 +25,9 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
     public class ManageWindowsCredentialsViewModel : ViewModelBase
     {
         private readonly ManageWindowsCredentialsWindow _owner;
-        private IEnumerable<WindowsCredentials> _credentials;
+        private IEnumerable<WindowsInstanceCredentials> _credentials;
         private readonly Instance _instance;
-        private WindowsCredentials _selectedCredentials;
+        private WindowsInstanceCredentials _selectedCredentials;
 
         public WeakCommand AddCredentialsCommand { get; }
 
@@ -36,7 +37,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
 
         public string InstanceName => _instance.Name;
 
-        public WindowsCredentials SelectedCredentials
+        public WindowsInstanceCredentials SelectedCredentials
         {
             get { return _selectedCredentials; }
             set
@@ -46,7 +47,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             }
         }
 
-        public IEnumerable<WindowsCredentials> CredentialsList
+        public IEnumerable<WindowsInstanceCredentials> CredentialsList
         {
             get { return _credentials; }
             set { SetValueAndRaise(ref _credentials, value); }
@@ -64,7 +65,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             ShowCredentialsCommand = new WeakCommand(OnShowCredentialsCommand, canExecuteCommand: false);
         }
 
-        private IEnumerable<WindowsCredentials> LoadCredentialsForInstance(Instance instance)
+        private IEnumerable<WindowsInstanceCredentials> LoadCredentialsForInstance(Instance instance)
         {
             return WindowsCredentialsStore.Default.GetCredentialsForInstance(instance);
         }
@@ -72,7 +73,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
         private void OnShowCredentialsCommand()
         {
             ShowPasswordWindow.PromptUser(
-                userName: SelectedCredentials.UserName,
+                userName: SelectedCredentials.User,
                 password: SelectedCredentials.Password,
                 instanceName: _instance.Name);
         }
