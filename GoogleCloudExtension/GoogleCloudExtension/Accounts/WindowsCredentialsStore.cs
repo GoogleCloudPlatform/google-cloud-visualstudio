@@ -35,6 +35,7 @@ namespace GoogleCloudExtension.Accounts
     internal class WindowsCredentialsStore
     {
         private const string WindowsCredentialsPath = @"googlecloudvsextension\windows_credentials";
+        private const string PasswordFileExtension = ".data";
 
         private static readonly Lazy<WindowsCredentialsStore> s_defaultStore = new Lazy<WindowsCredentialsStore>();
         private static readonly string s_credentialsStoreRoot = GetCredentialsStoreRoot();
@@ -69,7 +70,7 @@ namespace GoogleCloudExtension.Accounts
             else
             {
                 result = Directory.EnumerateFiles(fullInstancePath)
-                    .Where(x => Path.GetExtension(x) == ".data")
+                    .Where(x => Path.GetExtension(x) == PasswordFileExtension)
                     .Select(x => LoadEncryptedCredentials(x))
                     .OrderBy(x => x.UserName);
             }
@@ -112,7 +113,7 @@ namespace GoogleCloudExtension.Accounts
 
         private WindowsCredentials LoadEncryptedCredentials(string path)
         {
-            var userName = Path.GetFileNameWithoutExtension(path);
+            var userName = GetUserName(path);
             var encryptedPassword = File.ReadAllBytes(path);
             var passwordBytes = ProtectedData.Unprotect(encryptedPassword, null, DataProtectionScope.CurrentUser);
 
@@ -148,6 +149,8 @@ namespace GoogleCloudExtension.Accounts
             return $@"{credentials.CurrentProjectId}\{instance.GetZoneName()}\{instance.Name}";
         }
 
-        private static string GetFileName(WindowsCredentials credentials) => $"{credentials.UserName}.data";
+        private static string GetFileName(WindowsCredentials credentials) => $"{credentials.UserName}{PasswordFileExtension}";
+
+        private static string GetUserName(string path) => Path.GetFileNameWithoutExtension(path);
     }
 }
