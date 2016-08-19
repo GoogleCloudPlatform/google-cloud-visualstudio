@@ -12,11 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.ObjectModel;
 using Google.Apis.SQLAdmin.v1beta4.Data;
 using GoogleCloudExtension.Theming;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace GoogleCloudExtension.AuthorizedNetworkManagement
 {

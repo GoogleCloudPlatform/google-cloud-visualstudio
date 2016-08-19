@@ -130,7 +130,7 @@
     <comment>A message denoting the operation took too long.</comment>
   </data>
   <data name="CloudExploreOperationCanceledMessage" xml:space="preserve">
-  <value>The operation was canceled.</value>
+    <value>The operation was canceled.</value>
     <comment>A message denoting the operation was canceld.</comment>
   </data>
   <data name="CloudExploreDisabledApiEnableApiMenuHeader" xml:space="preserve">
@@ -633,7 +633,6 @@
     <value>Add Authorized Network</value>
     <comment>Title for the button to create a new authorized network.</comment>
   </data>
- 
   <data name="AuthorizedNetworksWindowInvalidCidrFormatErrorTitle" xml:space="preserve">
     <value>Invalid Subnet.</value>
     <comment>Title for an error message in the authorized networks dialog for an ipv4 address.</comment>
@@ -726,7 +725,7 @@
     <value>Ok</value>
     <comment>Caption for Ok buttons.</comment>
   </data>
-    <data name="UiSaveButtonCaption" xml:space="preserve">
+  <data name="UiSaveButtonCaption" xml:space="preserve">
     <value>Save</value>
     <comment>Caption for Save buttons.</comment>
   </data>
@@ -734,7 +733,7 @@
     <value>Delete</value>
     <comment>Caption for Delete buttons.</comment>
   </data>
-   <data name="UiUndoButtonCaption" xml:space="preserve">
+  <data name="UiUndoButtonCaption" xml:space="preserve">
     <value>Undo</value>
     <comment>Caption for Undo buttons.</comment>
   </data>
@@ -745,5 +744,21 @@
   <data name="UiPropertiesMenuHeader" xml:space="preserve">
     <value>Properties</value>
     <comment>Header for the generic properties menu item, to show the properties window.</comment>
+  </data>
+  <data name="CloudExplorerGcsBucketLocationDescription" xml:space="preserve">
+    <value>The location where the bucket resides.</value>
+    <comment>The description of the location property in a GCS bucket.</comment>
+  </data>
+  <data name="CloudExplorerGcsBucketLocationDisplayName" xml:space="preserve">
+    <value>Location</value>
+    <comment>The display name for the location property in a GCS bucket.</comment>
+  </data>
+  <data name="CloudExplorerGcsShowBucketsCommand" xml:space="preserve">
+    <value>Show Buckets</value>
+    <comment>The command to show the buckets in a flat list.</comment>
+  </data>
+  <data name="CloudExplorerGcsShowLocationsCommand" xml:space="preserve">
+    <value>Show Locations</value>
+    <comment>The command to use use to show the buckets per location.</comment>
   </data>
 </root>
