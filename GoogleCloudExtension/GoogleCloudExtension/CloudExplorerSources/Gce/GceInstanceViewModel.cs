@@ -20,7 +20,6 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.FirewallManagement;
 using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.OAuth;
-using GoogleCloudExtension.ResetPassword;
 using GoogleCloudExtension.Utils;
 using Microsoft.Win32;
 using System;
