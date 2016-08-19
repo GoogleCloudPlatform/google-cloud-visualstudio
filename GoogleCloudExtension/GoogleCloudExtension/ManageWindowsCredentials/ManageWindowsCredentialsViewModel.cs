@@ -18,6 +18,7 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.ResetPassword;
 using GoogleCloudExtension.ShowPassword;
 using GoogleCloudExtension.Utils;
+using System;
 using System.Collections.Generic;
 
 namespace GoogleCloudExtension.ManageWindowsCredentials
@@ -80,6 +81,13 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
 
         private void OnDeleteCredentialsCommand()
         {
+            if (!UserPromptUtils.YesNoPrompt(
+                String.Format(Resources.ManageWindowsCredentialsDeleteCredentialsPromptMessage, SelectedCredentials.User),
+                Resources.ManageWindowsCredentialsDeleteCredentialsPromptTitle))
+            {
+                return;
+            }
+
             WindowsCredentialsStore.Default.DeleteCredentialsForInstance(_instance, SelectedCredentials);
             CredentialsList = WindowsCredentialsStore.Default.GetCredentialsForInstance(_instance);
         }

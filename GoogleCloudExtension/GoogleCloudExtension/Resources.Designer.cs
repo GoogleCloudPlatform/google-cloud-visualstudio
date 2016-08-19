@@ -1222,6 +1222,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to the delete the credentials for user {0}?.
+        /// </summary>
+        public static string ManageWindowsCredentialsDeleteCredentialsPromptMessage {
+            get {
+                return ResourceManager.GetString("ManageWindowsCredentialsDeleteCredentialsPromptMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Credentials.
+        /// </summary>
+        public static string ManageWindowsCredentialsDeleteCredentialsPromptTitle {
+            get {
+                return ResourceManager.GetString("ManageWindowsCredentialsDeleteCredentialsPromptTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Credentials.
         /// </summary>
         public static string ManageWindowsCredentialsShowCredentialsCaption {

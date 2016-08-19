@@ -765,6 +765,14 @@
     <value>Delete Credentials</value>
     <comment>The caption for the delete credentials button in the dialog.</comment>
   </data>
+  <data name="ManageWindowsCredentialsDeleteCredentialsPromptMessage" xml:space="preserve">
+    <value>Are you sure you want to the delete the credentials for user {0}?</value>
+    <comment>The message for the confirmation prompt to delete credentials. The {0} placeholder is the username.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsDeleteCredentialsPromptTitle" xml:space="preserve">
+    <value>Delete Credentials</value>
+    <comment>Title for the confirmation prompt to delete credentials.</comment>
+  </data>
   <data name="ManageWindowsCredentialsShowCredentialsCaption" xml:space="preserve">
     <value>Show Credentials</value>
     <comment>The caption or the show credentials button in the dialog.</comment>
