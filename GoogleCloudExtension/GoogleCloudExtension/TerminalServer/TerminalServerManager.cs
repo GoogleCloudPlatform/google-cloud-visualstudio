@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.TerminalServer
         private static string CreateRdpFile(Instance instance, WindowsInstanceCredentials credentials)
         {
             var instanceRootPath = WindowsCredentialsStore.Default.GetStoragePathForInstance(instance);
-            var rdpPath = Path.Combine(instanceRootPath, GetRdpFileName(instance));
+            var rdpPath = Path.Combine(instanceRootPath, GetRdpFileName(credentials));
 
             WriteRdpFile(rdpPath, instance, credentials);
             return rdpPath;
@@ -60,6 +60,6 @@ namespace GoogleCloudExtension.TerminalServer
             return result.ToString();
         }
 
-        private static string GetRdpFileName(Instance instance) => $"{instance.Name}.rdp";
+        private static string GetRdpFileName(WindowsInstanceCredentials credentials) => $"{credentials.User}.rdp";
     }
 }
