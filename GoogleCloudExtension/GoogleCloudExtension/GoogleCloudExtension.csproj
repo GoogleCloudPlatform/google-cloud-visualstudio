@@ -143,6 +143,11 @@
     </Compile>
     <Compile Include="TerminalServer\RdpProperties.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
+    <Compile Include="TerminalServer\TerminalServerManagerViewModel.cs" />
+    <Compile Include="TerminalServer\TerminalServerManagerWindow.cs" />
+    <Compile Include="TerminalServer\TerminalServerManagerWindowContent.xaml.cs">
+      <DependentUpon>TerminalServerManagerWindowContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Theming\ThemeManager.cs" />
     <Compile Include="Utils\LinkInfo.cs" />
     <Compile Include="LinkPrompt\LinkPromptDialogWindow.cs" />
@@ -477,6 +482,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="LinkPrompt\LinkPromptDialogWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TerminalServer\TerminalServerManagerWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

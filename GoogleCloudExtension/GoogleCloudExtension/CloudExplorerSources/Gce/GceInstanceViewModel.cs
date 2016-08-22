@@ -331,7 +331,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             ExtensionAnalytics.ReportCommand(CommandName.OpenTerminalServerSessionForGceInstanceCommand, CommandInvocationSource.Button);
 
-            
+            TerminalServerManagerWindow.PromptUser(_instance);
         }
 
         private void OnOpenWebsite()
