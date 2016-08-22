@@ -785,6 +785,10 @@
     <value>Manage Windows Credentials</value>
     <comment>Title for the Manage Windows Credentials dialog.</comment>
   </data>
+  <data name="TerminalServerManagerWindowManageCredentialsButtonToolTip" xml:space="preserve">
+    <value>Manage Windows Credentials</value>
+    <comment>Tooltip for the manage credentials button in the terminal server window.</comment>
+  </data>
   <data name="TerminalServerManagerWindowMessage" xml:space="preserve">
     <value>Choose credentials to use:</value>
     <comment>Top message in the terminal server window.</comment>

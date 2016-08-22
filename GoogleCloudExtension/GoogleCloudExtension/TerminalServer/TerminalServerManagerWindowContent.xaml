@@ -16,10 +16,22 @@
             <TextBlock Margin="3,0,3,5" TextWrapping="Wrap" Text="{x:Static ext:Resources.TerminalServerManagerWindowMessage}" />
 
             <!-- The list of credentials for the instance. -->
-            <ComboBox ItemsSource="{Binding InstanceCredentials}"
+            <Grid Margin="3,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="25" />
+                </Grid.ColumnDefinitions>
+                
+                <ComboBox ItemsSource="{Binding InstanceCredentials}"
                       SelectedItem="{Binding CurrentCredentials}"
                       SelectedIndex="0"
                       DisplayMemberPath="User" />
+                <Button Grid.Column="1"
+                        Margin="5,0,0,0"
+                        Content="..."
+                        Command="{Binding ManageCredentialsCommand}"
+                        ToolTip="{x:Static ext:Resources.TerminalServerManagerWindowManageCredentialsButtonToolTip}"/>
+            </Grid>
 
         </StackPanel>
     </UserControl.Resources>

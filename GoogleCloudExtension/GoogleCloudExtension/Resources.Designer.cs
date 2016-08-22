@@ -1483,6 +1483,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage Windows Credentials.
+        /// </summary>
+        public static string TerminalServerManagerWindowManageCredentialsButtonToolTip {
+            get {
+                return ResourceManager.GetString("TerminalServerManagerWindowManageCredentialsButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose credentials to use:.
         /// </summary>
         public static string TerminalServerManagerWindowMessage {
