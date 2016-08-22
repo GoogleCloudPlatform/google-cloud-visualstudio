@@ -1483,6 +1483,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choose credentials to use:.
+        /// </summary>
+        public static string TerminalServerManagerWindowMessage {
+            get {
+                return ResourceManager.GetString("TerminalServerManagerWindowMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Terminal Server session.
+        /// </summary>
+        public static string TerminalServerManagerWindowTitle {
+            get {
+                return ResourceManager.GetString("TerminalServerManagerWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string UiCancelButtonCaption {

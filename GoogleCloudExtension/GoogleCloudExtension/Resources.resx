@@ -785,4 +785,12 @@
     <value>Manage Windows Credentials</value>
     <comment>Title for the Manage Windows Credentials dialog.</comment>
   </data>
+  <data name="TerminalServerManagerWindowMessage" xml:space="preserve">
+    <value>Choose credentials to use:</value>
+    <comment>Top message in the terminal server window.</comment>
+  </data>
+  <data name="TerminalServerManagerWindowTitle" xml:space="preserve">
+    <value>Start Terminal Server session</value>
+    <comment>Title for the manage terminal server window.</comment>
+  </data>
 </root>

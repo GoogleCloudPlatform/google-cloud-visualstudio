@@ -13,7 +13,7 @@ namespace GoogleCloudExtension.TerminalServer
         private TerminalServerManagerViewModel ViewModel { get; }
 
         private TerminalServerManagerWindow(Instance instance):
-            base("Start Terminal Server session", 300, 150)
+            base(GoogleCloudExtension.Resources.TerminalServerManagerWindowTitle, 300, 150)
         {
             ViewModel = new TerminalServerManagerViewModel(instance, this);
             Content = new TerminalServerManagerWindowContent { DataContext = ViewModel };
