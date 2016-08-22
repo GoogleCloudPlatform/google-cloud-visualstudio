@@ -21,7 +21,7 @@ namespace GoogleCloudExtension.TerminalServer
     {
         private TerminalServerManagerViewModel ViewModel { get; }
 
-        private TerminalServerManagerWindow(Instance instance):
+        private TerminalServerManagerWindow(Instance instance) :
             base(GoogleCloudExtension.Resources.TerminalServerManagerWindowTitle, 300, 150)
         {
             ViewModel = new TerminalServerManagerViewModel(instance, this);
