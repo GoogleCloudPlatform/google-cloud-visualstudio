@@ -88,6 +88,7 @@ namespace GoogleAnalyticsUtils
         /// <param name="clientId">The client id to use when reporting, if null a new random Guid will be generated.</param>
         /// <param name="appVersion">Optional, the app version. Defaults to null.</param>
         /// <param name="debug">Optional, whether this reporter is in debug mode. Defaults to false.</param>
+        /// <param name="userAgent">Optiona, the user agent to use for all HTTP requests.</param>
         public AnalyticsReporter(
             string propertyId,
             string appName,
