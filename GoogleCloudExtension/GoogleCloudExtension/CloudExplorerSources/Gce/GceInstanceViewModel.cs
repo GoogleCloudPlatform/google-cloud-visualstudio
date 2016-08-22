@@ -20,12 +20,14 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.FirewallManagement;
 using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.OAuth;
+using GoogleCloudExtension.TerminalServer;
 using GoogleCloudExtension.Utils;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -329,7 +331,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             ExtensionAnalytics.ReportCommand(CommandName.OpenTerminalServerSessionForGceInstanceCommand, CommandInvocationSource.Button);
 
-            Process.Start("mstsc", $"/v:{Instance.GetPublicIpAddress()}");
+            
         }
 
         private void OnOpenWebsite()
