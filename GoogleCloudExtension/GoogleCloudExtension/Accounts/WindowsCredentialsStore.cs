@@ -112,6 +112,12 @@ namespace GoogleCloudExtension.Accounts
             }
         }
 
+        public string GetStoragePathForInstance(Instance instance)
+        {
+            var instancePath = GetInstancePath(instance);
+            return Path.Combine(s_credentialsStoreRoot, instancePath);
+        }
+
         private WindowsInstanceCredentials LoadEncryptedCredentials(string path)
         {
             var userName = GetUserName(path);

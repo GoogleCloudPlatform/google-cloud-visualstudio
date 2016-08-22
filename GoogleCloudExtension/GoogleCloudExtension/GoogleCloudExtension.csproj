@@ -141,7 +141,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="TerminalServer\RdpProperties.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
     <Compile Include="TerminalServer\TerminalServerManagerViewModel.cs" />
     <Compile Include="TerminalServer\TerminalServerManagerWindow.cs" />
