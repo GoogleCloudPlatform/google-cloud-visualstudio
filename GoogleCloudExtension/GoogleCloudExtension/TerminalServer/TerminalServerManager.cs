@@ -1,15 +1,11 @@
 ﻿using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.DataSources;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using GoogleCloudExtension.GCloud;
 using System.Diagnostics;
+using System.IO;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace GoogleCloudExtension.TerminalServer
 {
