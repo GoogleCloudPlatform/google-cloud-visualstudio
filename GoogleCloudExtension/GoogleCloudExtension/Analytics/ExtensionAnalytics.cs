@@ -126,7 +126,8 @@ namespace GoogleCloudExtension.Analytics
                     clientId: settings.ClientId,
                     appName: GoogleCloudExtensionPackage.ApplicationName,
                     appVersion: GoogleCloudExtensionPackage.ApplicationVersion,
-                    debug: debug);
+                    debug: debug,
+                    userAgent: GoogleCloudExtensionPackage.ApplicationName);
             }
             else
             {
