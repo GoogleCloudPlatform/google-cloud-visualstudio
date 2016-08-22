@@ -1,4 +1,6 @@
-﻿using GoogleCloudExtension.GCloud;
+﻿using Google.Apis.Compute.v1.Data;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.GCloud;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +17,7 @@ namespace GoogleCloudExtension.TerminalServer
     /// </summary>
     internal class RdpProperties
     {
-        public string Address { get; set; }
+        public Instance Instance { get; set; }
 
         public WindowsInstanceCredentials Credentials { get; set; }
 
@@ -23,7 +25,7 @@ namespace GoogleCloudExtension.TerminalServer
         {
             using (var writer = new StreamWriter(path))
             {
-                writer.WriteLine($"full address:s:{Address}");
+                writer.WriteLine($"full address:s:{Instance.GetPublicIpAddress()}");
                 writer.WriteLine($"username:s:{Credentials.User}");
                 writer.WriteLine($"password 51:b:{SerializePassword(Credentials.Password)}");
             }

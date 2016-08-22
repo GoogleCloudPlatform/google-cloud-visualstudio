@@ -18,7 +18,7 @@ namespace GoogleCloudExtension.TerminalServer
         {
             var properties = new RdpProperties
             {
-                Address = instance.GetPublicIpAddress(),
+                Instance = instance,
                 Credentials = credentials,
             };
 
@@ -26,16 +26,7 @@ namespace GoogleCloudExtension.TerminalServer
             properties.Serialize(path);
             Debug.WriteLine($"Saved session file to {path}");
 
-            var info = Process.Start("mstsc", path);
-            await Task.Run(() => info.WaitForExit()).ConfigureAwait(false);
-
-            try
-            {
-                Debug.WriteLine($"Deleting session file {path}");
-                File.Delete(path);
-            }
-            catch (Exception)
-            { }
+            Process.Start("mstsc", path);
         }
     }
 }
