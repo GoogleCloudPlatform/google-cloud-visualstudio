@@ -14,16 +14,19 @@ namespace GoogleCloudExtension.TerminalServer
 {
     public class TerminalServerManagerViewModel : ViewModelBase
     {
-        private static readonly WindowsInstanceCredentials s_addNewCredentials = new WindowsInstanceCredentials
+        private static readonly IEnumerable<WindowsInstanceCredentials> s_addNewCredentials = new List<WindowsInstanceCredentials>
         {
-            User = "Add new credentials...",
-            Password = "xxx"
+            new WindowsInstanceCredentials
+            {
+                User = Resources.TerminalServerManagerNoCredentialsFoundMessage,
+            }
         };
 
         private readonly Instance _instance;
         private readonly TerminalServerManagerWindow _owner;
         private IEnumerable<WindowsInstanceCredentials> _instanceCredentials;
         private WindowsInstanceCredentials _currentCredentials;
+        private bool _hasCredentials;
 
         public IEnumerable<WindowsInstanceCredentials> InstanceCredentials
         {
@@ -38,11 +41,13 @@ namespace GoogleCloudExtension.TerminalServer
         public WindowsInstanceCredentials CurrentCredentials
         {
             get { return _currentCredentials; }
-            set
-            {
-                SetValueAndRaise(ref _currentCredentials, value);
-                OkCommand.CanExecuteCommand = _currentCredentials != null;
-            }
+            set { SetValueAndRaise(ref _currentCredentials, value); }
+        }
+
+        public bool HasCredentials
+        {
+            get { return _hasCredentials; }
+            set { SetValueAndRaise(ref _hasCredentials, value); }
         }
 
         public TerminalServerManagerViewModel(Instance instance, TerminalServerManagerWindow owner)
@@ -53,14 +58,28 @@ namespace GoogleCloudExtension.TerminalServer
             OkCommand = new WeakCommand(OnOkCommand, canExecuteCommand: false);
             ManageCredentialsCommand = new WeakCommand(OnManageCredentialsCommand);
 
-            InstanceCredentials = WindowsCredentialsStore.Default.GetCredentialsForInstance(instance);
-            CurrentCredentials = InstanceCredentials.FirstOrDefault();
+            LoadCredentials();
         }
 
         private void OnManageCredentialsCommand()
         {
             ManageWindowsCredentialsWindow.PromptUser(_instance);
+            LoadCredentials();
+        }
+
+        private void LoadCredentials()
+        {
             InstanceCredentials = WindowsCredentialsStore.Default.GetCredentialsForInstance(_instance);
+            if (InstanceCredentials.Count() == 0)
+            {
+                InstanceCredentials = s_addNewCredentials;
+                HasCredentials = false;
+            }
+            else
+            {
+                HasCredentials = true;
+            }
+            OkCommand.CanExecuteCommand = HasCredentials;
             if (CurrentCredentials == null)
             {
                 CurrentCredentials = InstanceCredentials.FirstOrDefault();

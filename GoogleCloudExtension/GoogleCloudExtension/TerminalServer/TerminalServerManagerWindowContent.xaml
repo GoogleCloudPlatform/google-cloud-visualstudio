@@ -23,9 +23,10 @@
                 </Grid.ColumnDefinitions>
                 
                 <ComboBox ItemsSource="{Binding InstanceCredentials}"
-                      SelectedItem="{Binding CurrentCredentials}"
-                      SelectedIndex="0"
-                      DisplayMemberPath="User" />
+                          SelectedItem="{Binding CurrentCredentials, Mode=TwoWay}"
+                          IsEnabled="{Binding HasCredentials}"
+                          SelectedIndex="0"
+                          DisplayMemberPath="User" />
                 <Button Grid.Column="1"
                         Margin="5,0,0,0"
                         Content="..."

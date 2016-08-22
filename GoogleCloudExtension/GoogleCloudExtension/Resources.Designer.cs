@@ -1483,6 +1483,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No credentials found....
+        /// </summary>
+        public static string TerminalServerManagerNoCredentialsFoundMessage {
+            get {
+                return ResourceManager.GetString("TerminalServerManagerNoCredentialsFoundMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Manage Windows Credentials.
         /// </summary>
         public static string TerminalServerManagerWindowManageCredentialsButtonToolTip {
