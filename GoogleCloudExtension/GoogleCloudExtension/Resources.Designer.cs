@@ -439,6 +439,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage Windows Credentials....
+        /// </summary>
+        public static string CloudExplorerGceManageWindowsCredentialsMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceManageWindowsCredentialsMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New ASP.NET Instance.
         /// </summary>
         public static string CloudExplorerGceNewAspNetInstanceMenuHeader {

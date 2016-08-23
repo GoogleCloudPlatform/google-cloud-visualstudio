@@ -785,4 +785,8 @@
     <value>Manage Windows Credentials</value>
     <comment>Title for the Manage Windows Credentials dialog.</comment>
   </data>
+  <data name="CloudExplorerGceManageWindowsCredentialsMenuHeader" xml:space="preserve">
+    <value>Manage Windows Credentials...</value>
+    <comment>Header for the menu entry to manage credentials.</comment>
+  </data>
 </root>

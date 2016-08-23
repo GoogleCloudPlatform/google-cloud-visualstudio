@@ -211,7 +211,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 new MenuItem { Header = Resources.CloudExplorerGceOpenTerminalSessionMenuHeader, Command = openTerminalServerSessionCommand },
                 new MenuItem { Header = Resources.CloudExplorerGceOpenWebSiteMenuHeader, Command = openWebSite },
                 new MenuItem { Header = Resources.CloudExplorerGceManageFirewallPortsMenuHeader, Command = manageFirewallPorts },
-                new MenuItem { Header = "Manage Windows Credentials...", Command = manageWindowsCredentials }
+                new MenuItem { Header = Resources.CloudExplorerGceManageWindowsCredentialsMenuHeader, Command = manageWindowsCredentials }
             };
 
             if (Instance.IsRunning())
