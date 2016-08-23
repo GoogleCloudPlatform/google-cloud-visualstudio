@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
         {
             new WindowsInstanceCredentials
             {
-                User = Resources.TerminalServerManagerNoCredentialsFoundMessage,
+                User = Resources.WindowsCredentialsChooserNoCredentialsFoundMessage,
             }
         };
 

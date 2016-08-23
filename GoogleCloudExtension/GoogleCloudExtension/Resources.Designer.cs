@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -1483,24 +1483,6 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No credentials found....
-        /// </summary>
-        public static string TerminalServerManagerNoCredentialsFoundMessage {
-            get {
-                return ResourceManager.GetString("TerminalServerManagerNoCredentialsFoundMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Manage Windows Credentials.
-        /// </summary>
-        public static string TerminalServerManagerWindowManageCredentialsButtonToolTip {
-            get {
-                return ResourceManager.GetString("TerminalServerManagerWindowManageCredentialsButtonToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Choose credentials to use:.
         /// </summary>
         public static string TerminalServerManagerWindowMessage {
@@ -1596,6 +1578,24 @@ namespace GoogleCloudExtension
         public static string UiUndoButtonCaption {
             get {
                 return ResourceManager.GetString("UiUndoButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Windows Credentials.
+        /// </summary>
+        public static string WindowsCredentialsChooserButtonToolTip {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsChooserButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No credentials found....
+        /// </summary>
+        public static string WindowsCredentialsChooserNoCredentialsFoundMessage {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsChooserNoCredentialsFoundMessage", resourceCulture);
             }
         }
     }
