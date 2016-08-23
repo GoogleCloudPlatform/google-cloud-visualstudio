@@ -13,25 +13,28 @@
 // limitations under the License.
 
 using Google.Apis.Compute.v1.Data;
+using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Theming;
+using System;
 
-namespace GoogleCloudExtension.TerminalServer
+namespace GoogleCloudExtension.WindowsCredentialsChooser
 {
-    public class TerminalServerManagerWindow : CommonDialogWindowBase
+    public class WindowsCredentialsChooserWindow : CommonDialogWindowBase
     {
-        private TerminalServerManagerViewModel ViewModel { get; }
+        private WindowsCredentialsChooserViewModel ViewModel { get; }
 
-        private TerminalServerManagerWindow(Instance instance) :
+        private WindowsCredentialsChooserWindow(Instance instance) :
             base(GoogleCloudExtension.Resources.TerminalServerManagerWindowTitle, 300, 150)
         {
-            ViewModel = new TerminalServerManagerViewModel(instance, this);
-            Content = new TerminalServerManagerWindowContent { DataContext = ViewModel };
+            ViewModel = new WindowsCredentialsChooserViewModel(instance, this);
+            Content = new WindowsCredentialsChooserWindowContent { DataContext = ViewModel };
         }
 
-        public static void PromptUser(Instance instance)
+        public static WindowsInstanceCredentials PromptUser(Instance instance)
         {
-            var dialog = new TerminalServerManagerWindow(instance);
+            var dialog = new WindowsCredentialsChooserWindow(instance);
             dialog.ShowModal();
+            return dialog.ViewModel.Result;
         }
     }
 }

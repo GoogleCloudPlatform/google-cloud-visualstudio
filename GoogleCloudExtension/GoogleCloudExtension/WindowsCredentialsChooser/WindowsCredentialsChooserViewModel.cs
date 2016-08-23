@@ -17,13 +17,14 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
 
-namespace GoogleCloudExtension.TerminalServer
+namespace GoogleCloudExtension.WindowsCredentialsChooser
 {
-    public class TerminalServerManagerViewModel : ViewModelBase
+    public class WindowsCredentialsChooserViewModel : ViewModelBase
     {
         private static readonly IEnumerable<WindowsInstanceCredentials> s_addNewCredentials = new List<WindowsInstanceCredentials>
         {
@@ -34,7 +35,7 @@ namespace GoogleCloudExtension.TerminalServer
         };
 
         private readonly Instance _instance;
-        private readonly TerminalServerManagerWindow _owner;
+        private readonly WindowsCredentialsChooserWindow _owner;
         private IEnumerable<WindowsInstanceCredentials> _instanceCredentials;
         private WindowsInstanceCredentials _currentCredentials;
         private bool _hasCredentials;
@@ -61,7 +62,9 @@ namespace GoogleCloudExtension.TerminalServer
             set { SetValueAndRaise(ref _hasCredentials, value); }
         }
 
-        public TerminalServerManagerViewModel(Instance instance, TerminalServerManagerWindow owner)
+        public WindowsInstanceCredentials Result { get; private set; }
+
+        public WindowsCredentialsChooserViewModel(Instance instance, WindowsCredentialsChooserWindow owner)
         {
             _instance = instance;
             _owner = owner;
@@ -99,7 +102,7 @@ namespace GoogleCloudExtension.TerminalServer
 
         private void OnOkCommand()
         {
-            TerminalServerManager.OpenSession(_instance, _currentCredentials);
+            Result = CurrentCredentials;
             _owner.Close();
         }
     }

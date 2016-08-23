@@ -14,14 +14,14 @@
 
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.TerminalServer
+namespace GoogleCloudExtension.WindowsCredentialsChooser
 {
     /// <summary>
     /// Interaction logic for TerminalServerManagerWindowContent.xaml
     /// </summary>
-    public partial class TerminalServerManagerWindowContent : UserControl
+    public partial class WindowsCredentialsChooserWindowContent : UserControl
     {
-        public TerminalServerManagerWindowContent()
+        public WindowsCredentialsChooserWindowContent()
         {
             InitializeComponent();
         }

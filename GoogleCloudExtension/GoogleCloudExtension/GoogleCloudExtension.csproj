@@ -142,10 +142,10 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
-    <Compile Include="TerminalServer\TerminalServerManagerViewModel.cs" />
-    <Compile Include="TerminalServer\TerminalServerManagerWindow.cs" />
-    <Compile Include="TerminalServer\TerminalServerManagerWindowContent.xaml.cs">
-      <DependentUpon>TerminalServerManagerWindowContent.xaml</DependentUpon>
+    <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserViewModel.cs" />
+    <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindow.cs" />
+    <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml.cs">
+      <DependentUpon>WindowsCredentialsChooserWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Theming\ThemeManager.cs" />
     <Compile Include="Utils\LinkInfo.cs" />
@@ -484,7 +484,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="TerminalServer\TerminalServerManagerWindowContent.xaml">
+    <Page Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
