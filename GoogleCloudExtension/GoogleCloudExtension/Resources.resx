@@ -302,7 +302,7 @@
     <comment>Extension for the save dialog. Format defined as part of the Save Dialog spec, do not over translate.</comment>
   </data>
   <data name="CloudExplorerGceSavePublishSettingsMenuHeader" xml:space="preserve">
-    <value>Save Publishing Settings...</value>
+    <value>Save publishing settings for user</value>
     <comment>Header for the save publish settings menu item.</comment>
   </data>
   <data name="CloudExplorerGceShowAllOsInstancesCommand" xml:space="preserve">

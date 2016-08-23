@@ -538,7 +538,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save Publishing Settings....
+        ///   Looks up a localized string similar to Save publishing settings for user.
         /// </summary>
         public static string CloudExplorerGceSavePublishSettingsMenuHeader {
             get {

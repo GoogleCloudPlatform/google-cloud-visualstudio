@@ -31,6 +31,10 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Collections;
+using System.Linq;
+using System.Windows;
+using GoogleCloudExtension.GCloud;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
@@ -197,7 +201,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 return;
             }
 
-            var getPublishSettingsCommand = new WeakCommand(OnGetPublishSettings, Instance.IsAspnetInstance() && Instance.IsRunning());
             var openWebSite = new WeakCommand(OnOpenWebsite, Instance.IsAspnetInstance() && Instance.IsRunning());
             var openTerminalServerSessionCommand = new WeakCommand(
                 OnOpenTerminalServerSessionCommand,
@@ -207,9 +210,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             var manageFirewallPorts = new WeakCommand(OnManageFirewallPortsCommand);
             var manageWindowsCredentials = new WeakCommand(OnManageWindowsCredentialsCommand, canExecuteCommand: Instance.IsWindowsInstance());
 
+            var publishMenuItem = new MenuItem { Header = Resources.CloudExplorerGceSavePublishSettingsMenuHeader };
+            publishMenuItem.ItemsSource = new List<MenuItem>
+            {
+                new MenuItem { Header = "Choose credentials...", Command=new WeakCommand(OnDownloadPublishSettingsWithCredentialsCommand)},
+                new MenuItem { Header = "No Credentials", Command=new WeakCommand(OnDownloadPublishSettingsWithoutCredentialsCommand)},
+            };
+
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = Resources.CloudExplorerGceSavePublishSettingsMenuHeader, Command = getPublishSettingsCommand },
+                publishMenuItem,
                 new MenuItem { Header = Resources.CloudExplorerGceOpenTerminalSessionMenuHeader, Command = openTerminalServerSessionCommand },
                 new MenuItem { Header = Resources.CloudExplorerGceOpenWebSiteMenuHeader, Command = openWebSite },
                 new MenuItem { Header = Resources.CloudExplorerGceManageFirewallPortsMenuHeader, Command = manageFirewallPorts },
@@ -229,6 +239,55 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             menuItems.Add(new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) });
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void OnDownloadPublishSettingsWithoutCredentialsCommand()
+        {
+            ExtensionAnalytics.ReportCommand(CommandName.GetPublishSettingsForGceInstance, CommandInvocationSource.Button);
+
+            Debug.WriteLine($"Generating Publishing settings for {Instance.Name}");
+
+            var storePath = PromptForPublishSettingsPath(Instance.Name);
+            if (storePath == null)
+            {
+                Debug.WriteLine("User canceled saving the pubish settings.");
+                return;
+            }
+
+            var profile = Instance.GeneratePublishSettings();
+            File.WriteAllText(storePath, profile);
+            GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGcePublishingSettingsSavedMessage, storePath));
+        }
+
+        private void OnDownloadPublishSettingsWithCredentialsCommand()
+        {
+            Debug.WriteLine($"Generating Publishing settings for {Instance.Name}");
+
+            var credentials = WindowsCredentialsChooserWindow.PromptUser(
+                Instance,
+                new WindowsCredentialsChooserWindow.Options
+                {
+                    Title = "Choose credentials",
+                    Message = "Credentials for publish settings"
+                });
+            if (credentials == null)
+            {
+                Debug.WriteLine("User canceled when selecting credentials.");
+                return;
+            }
+                
+            var storePath = PromptForPublishSettingsPath(Instance.Name);
+            if (storePath == null)
+            {
+                Debug.WriteLine("User canceled saving the pubish settings.");
+                return;
+            }
+
+            var profile = Instance.GeneratePublishSettings(
+                userName: credentials.User,
+                password: credentials.Password);
+            File.WriteAllText(storePath, profile);
+            GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGcePublishingSettingsSavedMessage, storePath));
         }
 
         private void OnManageWindowsCredentialsCommand()
@@ -351,24 +410,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             var url = Instance.GetDestinationAppUri();
             Debug.WriteLine($"Opening Web Site: {url}");
             Process.Start(url);
-        }
-
-        private void OnGetPublishSettings()
-        {
-            ExtensionAnalytics.ReportCommand(CommandName.GetPublishSettingsForGceInstance, CommandInvocationSource.Button);
-
-            Debug.WriteLine($"Generating Publishing settings for {Instance.Name}");
-
-            var storePath = PromptForPublishSettingsPath(Instance.Name);
-            if (storePath == null)
-            {
-                Debug.WriteLine("User canceled saving the pubish settings.");
-                return;
-            }
-
-            var profile = Instance.GeneratePublishSettings();
-            File.WriteAllText(storePath, profile);
-            GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGcePublishingSettingsSavedMessage, storePath));
         }
 
         private static string PromptForPublishSettingsPath(string fileName)
