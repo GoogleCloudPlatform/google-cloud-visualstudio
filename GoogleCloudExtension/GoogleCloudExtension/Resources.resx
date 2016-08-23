@@ -801,4 +801,8 @@
     <value>No credentials found...</value>
     <comment>Message shown in the dropdown when no credentials are found.</comment>
   </data>
+  <data name="CloudExplorerGceManageWindowsCredentialsMenuHeader" xml:space="preserve">
+    <value>Manage Windows Credentials...</value>
+    <comment>Header for the menu entry to manage credentials.</comment>
+  </data>
 </root>
