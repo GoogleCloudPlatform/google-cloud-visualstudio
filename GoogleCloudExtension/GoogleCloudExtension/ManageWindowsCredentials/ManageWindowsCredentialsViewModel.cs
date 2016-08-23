@@ -82,8 +82,8 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
         private void OnDeleteCredentialsCommand()
         {
             if (!UserPromptUtils.YesNoPrompt(
-                String.Format(Resources.ManageWindowsCredentialsDeleteCredentialsPromptMessage, SelectedCredentials.User),
-                Resources.ManageWindowsCredentialsDeleteCredentialsPromptTitle))
+                    String.Format(Resources.ManageWindowsCredentialsDeleteCredentialsPromptMessage, SelectedCredentials.User),
+                    Resources.ManageWindowsCredentialsDeleteCredentialsPromptTitle))
             {
                 return;
             }

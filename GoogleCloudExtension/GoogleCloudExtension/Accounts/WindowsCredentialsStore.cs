@@ -51,8 +51,8 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// Loads the list of Windows credentials associated with <paramref name="instance"/>.
         /// </summary>
-        /// <param name="instance">The instance</param>
-        /// <returns>The list of <seealso cref="WindowsInstanceCredentials"/> associated with the instance. It might be
+        /// <param name="instance">The GCE VM</param>
+        /// <returns>The list of <seealso cref="WindowsInstanceCredentials"/> associated with The GCE VM. It might be
         /// empty if no credentials are found.</returns>
         public IEnumerable<WindowsInstanceCredentials> GetCredentialsForInstance(Instance instance)
         {
@@ -83,7 +83,7 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// Adds a Windows credential to the store for the given <paramref name="instance"/>.
         /// </summary>
-        /// <param name="instance">The instance.</param>
+        /// <param name="instance">The GCE VM.</param>
         /// <param name="credentials">The credentials to store.</param>
         public void AddCredentialsToInstance(Instance instance, WindowsInstanceCredentials credentials)
         {
@@ -97,7 +97,7 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// Deletes the given credentials from the list of associated credenials for <paramref name="instance"/>.
         /// </summary>
-        /// <param name="instance">The instance.</param>
+        /// <param name="instance">The GCE VM.</param>
         /// <param name="credentials">The credentials.</param>
         public void DeleteCredentialsForInstance(Instance instance, WindowsInstanceCredentials credentials)
         {
