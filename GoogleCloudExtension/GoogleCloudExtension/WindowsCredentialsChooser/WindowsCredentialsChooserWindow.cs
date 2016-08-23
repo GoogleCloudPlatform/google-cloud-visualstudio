@@ -18,12 +18,24 @@ using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.WindowsCredentialsChooser
 {
+    /// <summary>
+    /// This class represents a dialog that can be used to choose a set of Windows VM credentials.
+    /// </summary>
     public class WindowsCredentialsChooserWindow : CommonDialogWindowBase
     {
+        /// <summary>
+        /// This class contains the options used for the dialog.
+        /// </summary>
         public class Options
         {
+            /// <summary>
+            /// The title of the window.
+            /// </summary>
             public string Title { get; set; }
 
+            /// <summary>
+            /// The message to show in the dialog.
+            /// </summary>
             public string Message { get; set; }
         }
 
@@ -36,6 +48,12 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
             Content = new WindowsCredentialsChooserWindowContent { DataContext = ViewModel };
         }
 
+        /// <summary>
+        /// Opens the dialog and returns the selected credentials if any.
+        /// </summary>
+        /// <param name="instance">The Windows VM.</param>
+        /// <param name="options">The options for the dialog</param>
+        /// <returns>The selected credentials, null if cancelled out.</returns>
         public static WindowsInstanceCredentials PromptUser(Instance instance, Options options)
         {
             var dialog = new WindowsCredentialsChooserWindow(instance, options);

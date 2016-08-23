@@ -23,8 +23,18 @@ using System.Text;
 
 namespace GoogleCloudExtension.TerminalServer
 {
+    /// <summary>
+    /// This class manages the terminal server connection that are created to connect
+    /// to the Windows VM with a the given set of credentials.
+    /// </summary>
     internal class TerminalServerManager
     {
+        /// <summary>
+        /// Opens a new Terminal Server session against the given <paramref name="instance"/> with the
+        /// given set of <paramref name="credentials"/>.
+        /// </summary>
+        /// <param name="instance">The Windows VM</param>
+        /// <param name="credentials">The credentials to use to connect.</param>
         public static void OpenSession(Instance instance, WindowsInstanceCredentials credentials)
         {
             var rdpPath = CreateRdpFile(instance, credentials);
@@ -41,18 +51,33 @@ namespace GoogleCloudExtension.TerminalServer
             return rdpPath;
         }
 
+        /// <summary>
+        /// Creates an .rdp file with the minimal set of settings required to connect to the VM.
+        /// </summary>
         public static void WriteRdpFile(string path, Instance instance, WindowsInstanceCredentials credentials)
         {
             using (var writer = new StreamWriter(path))
             {
+                // The IP (or name) of the VM to connect to.
                 writer.WriteLine($"full address:s:{instance.GetPublicIpAddress()}");
+
+                // The user name to use.
                 writer.WriteLine($"username:s:{credentials.User}");
-                writer.WriteLine($"password 51:b:{SerializePassword(credentials.Password)}");
+
+                // The encrypted password to use.
+                writer.WriteLine($"password 51:b:{EncryptPassword(credentials.Password)}");
             }
         }
 
-        private static string SerializePassword(string password)
+        /// <summary>
+        /// Encrypts the given password a form that mstsc.exe will accept. 
+        /// </summary>
+        /// <param name="password">The password to encrypt.</param>
+        /// <returns>The hexadecimal string representation of the encrypted password.</returns>
+        private static string EncryptPassword(string password)
         {
+            // The password is encoded in Unicode first, then encrypted using the user's key. This is the value
+            // that mstsc.exe expects for a locally stored password.
             var output = ProtectedData.Protect(
                 Encoding.Unicode.GetBytes(password),
                 null,
