@@ -21,18 +21,25 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
 {
     public class WindowsCredentialsChooserWindow : CommonDialogWindowBase
     {
+        public class Options
+        {
+            public string Title { get; set; }
+
+            public string Message { get; set; }
+        }
+
         private WindowsCredentialsChooserViewModel ViewModel { get; }
 
-        private WindowsCredentialsChooserWindow(Instance instance) :
-            base(GoogleCloudExtension.Resources.TerminalServerManagerWindowTitle, 300, 150)
+        private WindowsCredentialsChooserWindow(Instance instance, Options options) :
+            base(options.Title, 300, 150)
         {
-            ViewModel = new WindowsCredentialsChooserViewModel(instance, this);
+            ViewModel = new WindowsCredentialsChooserViewModel(instance, options, this);
             Content = new WindowsCredentialsChooserWindowContent { DataContext = ViewModel };
         }
 
-        public static WindowsInstanceCredentials PromptUser(Instance instance)
+        public static WindowsInstanceCredentials PromptUser(Instance instance, Options options)
         {
-            var dialog = new WindowsCredentialsChooserWindow(instance);
+            var dialog = new WindowsCredentialsChooserWindow(instance, options);
             dialog.ShowModal();
             return dialog.ViewModel.Result;
         }

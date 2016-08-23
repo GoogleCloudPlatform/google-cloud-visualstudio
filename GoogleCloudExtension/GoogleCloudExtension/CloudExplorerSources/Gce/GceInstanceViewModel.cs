@@ -331,7 +331,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             ExtensionAnalytics.ReportCommand(CommandName.OpenTerminalServerSessionForGceInstanceCommand, CommandInvocationSource.Button);
 
-            var credentials = WindowsCredentialsChooserWindow.PromptUser(_instance);
+            var credentials = WindowsCredentialsChooserWindow.PromptUser(
+                _instance,
+                new WindowsCredentialsChooserWindow.Options
+                {
+                    Title = Resources.TerminalServerManagerWindowTitle,
+                    Message = Resources.TerminalServerManagerWindowMessage
+                });
+            if (credentials != null)
+            {
+                TerminalServerManager.OpenSession(_instance, credentials);
+            }
         }
 
         private void OnOpenWebsite()

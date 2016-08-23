@@ -35,10 +35,15 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
         };
 
         private readonly Instance _instance;
+        private readonly WindowsCredentialsChooserWindow.Options _options;
         private readonly WindowsCredentialsChooserWindow _owner;
         private IEnumerable<WindowsInstanceCredentials> _instanceCredentials;
         private WindowsInstanceCredentials _currentCredentials;
         private bool _hasCredentials;
+
+        public string Title => _options.Title;
+
+        public string Message => _options.Message;
 
         public IEnumerable<WindowsInstanceCredentials> InstanceCredentials
         {
@@ -64,9 +69,13 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
 
         public WindowsInstanceCredentials Result { get; private set; }
 
-        public WindowsCredentialsChooserViewModel(Instance instance, WindowsCredentialsChooserWindow owner)
+        public WindowsCredentialsChooserViewModel(
+            Instance instance,
+            WindowsCredentialsChooserWindow.Options options,
+            WindowsCredentialsChooserWindow owner)
         {
             _instance = instance;
+            _options = options;
             _owner = owner;
 
             OkCommand = new WeakCommand(OnOkCommand, canExecuteCommand: false);
