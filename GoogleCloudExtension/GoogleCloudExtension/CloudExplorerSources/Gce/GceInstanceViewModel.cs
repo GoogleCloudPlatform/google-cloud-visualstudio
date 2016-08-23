@@ -213,8 +213,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             var publishMenuItem = new MenuItem { Header = Resources.CloudExplorerGceSavePublishSettingsMenuHeader };
             publishMenuItem.ItemsSource = new List<MenuItem>
             {
-                new MenuItem { Header = "Choose credentials...", Command=new WeakCommand(OnDownloadPublishSettingsWithCredentialsCommand)},
-                new MenuItem { Header = "No Credentials", Command=new WeakCommand(OnDownloadPublishSettingsWithoutCredentialsCommand)},
+                new MenuItem { Header = Resources.CloudExplorerGcePublishSettingsChooseCredentialsMenuHeader, Command=new WeakCommand(OnDownloadPublishSettingsWithCredentialsCommand)},
+                new MenuItem { Header = Resources.CloudExplorerGcePublishSettingsNoCredentialsMenuHeader, Command=new WeakCommand(OnDownloadPublishSettingsWithoutCredentialsCommand)},
             };
 
             var menuItems = new List<MenuItem>
