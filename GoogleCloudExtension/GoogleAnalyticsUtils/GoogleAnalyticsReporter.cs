@@ -58,6 +58,7 @@ namespace GoogleAnalyticsUtils
         private readonly bool _debug;
         private readonly string _serverUrl;
         private readonly Dictionary<string, string> _baseHitData;
+        private readonly string _userAgent;
 
         /// <summary>
         /// The name of the application to use when reporting data.
@@ -87,12 +88,14 @@ namespace GoogleAnalyticsUtils
         /// <param name="clientId">The client id to use when reporting, if null a new random Guid will be generated.</param>
         /// <param name="appVersion">Optional, the app version. Defaults to null.</param>
         /// <param name="debug">Optional, whether this reporter is in debug mode. Defaults to false.</param>
+        /// <param name="userAgent">Optiona, the user agent to use for all HTTP requests.</param>
         public AnalyticsReporter(
             string propertyId,
             string appName,
             string clientId = null,
             string appVersion = null,
-            bool debug = false)
+            bool debug = false,
+            string userAgent = null)
         {
             PropertyId = Preconditions.CheckNotNull(propertyId, nameof(propertyId));
             ApplicationName = Preconditions.CheckNotNull(appName, nameof(appName));
@@ -102,6 +105,7 @@ namespace GoogleAnalyticsUtils
             _debug = debug;
             _serverUrl = debug ? DebugServerUrl : ProductionServerUrl;
             _baseHitData = MakeBaseHitData();
+            _userAgent = userAgent;
         }
 
         /// <summary>
@@ -205,10 +209,16 @@ namespace GoogleAnalyticsUtils
         private async void SendHitData(Dictionary<string, string> hitData)
         {
             using (var client = new HttpClient())
-            using (var form = new FormUrlEncodedContent(hitData))
-            using (var response = await client.PostAsync(_serverUrl, form).ConfigureAwait(false))
             {
-                DebugPrintAnalyticsOutput(response.Content.ReadAsStringAsync());
+                if (_userAgent != null)
+                {
+                    client.DefaultRequestHeaders.UserAgent.ParseAdd(_userAgent);
+                }
+                using (var form = new FormUrlEncodedContent(hitData))
+                using (var response = await client.PostAsync(_serverUrl, form).ConfigureAwait(false))
+                {
+                    DebugPrintAnalyticsOutput(response.Content.ReadAsStringAsync());
+                }
             }
         }
 
