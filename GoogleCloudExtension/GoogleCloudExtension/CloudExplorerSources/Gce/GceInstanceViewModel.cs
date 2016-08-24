@@ -264,7 +264,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 Debug.WriteLine("User canceled when selecting credentials.");
                 return;
             }
-                
+
             var storePath = PromptForPublishSettingsPath($"{Instance.Name}-{credentials.User}");
             if (storePath == null)
             {
