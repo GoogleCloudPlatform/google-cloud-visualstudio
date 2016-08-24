@@ -31,10 +31,6 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Collections;
-using System.Linq;
-using System.Windows;
-using GoogleCloudExtension.GCloud;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
 {
