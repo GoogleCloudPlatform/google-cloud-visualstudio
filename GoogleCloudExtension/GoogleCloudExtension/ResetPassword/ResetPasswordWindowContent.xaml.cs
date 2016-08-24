@@ -24,6 +24,9 @@ namespace GoogleCloudExtension.ResetPassword
         public ResetPasswordWindowContent()
         {
             InitializeComponent();
+
+            // Ensure focus is on the textbox.
+            _passwordBox.Focus();
         }
     }
 }
