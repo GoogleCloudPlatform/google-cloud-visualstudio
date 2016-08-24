@@ -41,32 +41,51 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
         private WindowsInstanceCredentials _currentCredentials;
         private bool _hasCredentials;
 
-        public string Title => _options.Title;
-
+        /// <summary>
+        /// The message to dislay in the dialog.
+        /// </summary>
         public string Message => _options.Message;
 
+        /// <summary>
+        /// The list of credentials for the current instance.
+        /// </summary>
         public IEnumerable<WindowsInstanceCredentials> InstanceCredentials
         {
             get { return _instanceCredentials; }
             set { SetValueAndRaise(ref _instanceCredentials, value); }
         }
 
-        public WeakCommand OkCommand { get; }
-
-        public ICommand ManageCredentialsCommand { get; }
-
+        /// <summary>
+        /// The selected credentials.
+        /// </summary>
         public WindowsInstanceCredentials CurrentCredentials
         {
             get { return _currentCredentials; }
             set { SetValueAndRaise(ref _currentCredentials, value); }
         }
 
+        /// <summary>
+        /// The command to execute in the OK button.
+        /// </summary>
+        public WeakCommand OkCommand { get; }
+
+        /// <summary>
+        /// The command to exectue from the manage credentials button.
+        /// </summary>
+        public ICommand ManageCredentialsCommand { get; }
+
+        /// <summary>
+        /// Wether there are credentials for the instance.
+        /// </summary>
         public bool HasCredentials
         {
             get { return _hasCredentials; }
             set { SetValueAndRaise(ref _hasCredentials, value); }
         }
 
+        /// <summary>
+        /// The selected set of credentials, or null if the user cancelled out.
+        /// </summary>
         public WindowsInstanceCredentials Result { get; private set; }
 
         public WindowsCredentialsChooserViewModel(
