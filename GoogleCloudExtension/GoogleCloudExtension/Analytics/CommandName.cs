@@ -101,6 +101,5 @@ namespace GoogleCloudExtension.Analytics
 
         // Command to update a Cloud SQL's authorized networks.
         UpdateCloudSqlAuthorizedNetworks,
-
     }
 }

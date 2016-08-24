@@ -187,15 +187,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create or Reset Password....
-        /// </summary>
-        public static string CloudExplorerGceCreateOrResetPasswordMenuHeader {
-            get {
-                return ResourceManager.GetString("CloudExplorerGceCreateOrResetPasswordMenuHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Credentials Error.
         /// </summary>
         public static string CloudExplorerGceFailedToGetOauthCredentialsCaption {
@@ -444,6 +435,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGceManageFirewallPortsMenuHeader {
             get {
                 return ResourceManager.GetString("CloudExplorerGceManageFirewallPortsMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Windows Credentials....
+        /// </summary>
+        public static string CloudExplorerGceManageWindowsCredentialsMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceManageWindowsCredentialsMenuHeader", resourceCulture);
             }
         }
         
@@ -1209,6 +1209,69 @@ namespace GoogleCloudExtension {
         public static string ManageAccountsWindowTitle {
             get {
                 return ResourceManager.GetString("ManageAccountsWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Credentials.
+        /// </summary>
+        public static string ManageWindowsCredentialsAddCredentialsCaption {
+            get {
+                return ResourceManager.GetString("ManageWindowsCredentialsAddCredentialsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Credentials.
+        /// </summary>
+        public static string ManageWindowsCredentialsDeleteCredentialsCaption {
+            get {
+                return ResourceManager.GetString("ManageWindowsCredentialsDeleteCredentialsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to the delete the credentials for user {0}?.
+        /// </summary>
+        public static string ManageWindowsCredentialsDeleteCredentialsPromptMessage {
+            get {
+                return ResourceManager.GetString("ManageWindowsCredentialsDeleteCredentialsPromptMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Credentials.
+        /// </summary>
+        public static string ManageWindowsCredentialsDeleteCredentialsPromptTitle {
+            get {
+                return ResourceManager.GetString("ManageWindowsCredentialsDeleteCredentialsPromptTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Credentials.
+        /// </summary>
+        public static string ManageWindowsCredentialsShowCredentialsCaption {
+            get {
+                return ResourceManager.GetString("ManageWindowsCredentialsShowCredentialsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows credentials for {0}.
+        /// </summary>
+        public static string ManageWindowsCredentialsWindowMessage {
+            get {
+                return ResourceManager.GetString("ManageWindowsCredentialsWindowMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Windows Credentials.
+        /// </summary>
+        public static string ManageWindowsCredentialsWindowTitle {
+            get {
+                return ResourceManager.GetString("ManageWindowsCredentialsWindowTitle", resourceCulture);
             }
         }
         

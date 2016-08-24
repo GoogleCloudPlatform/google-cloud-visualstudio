@@ -18,8 +18,8 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.FirewallManagement;
+using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.OAuth;
-using GoogleCloudExtension.ResetPassword;
 using GoogleCloudExtension.Utils;
 using Microsoft.Win32;
 using System;
@@ -202,16 +202,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 Instance.IsWindowsInstance() && Instance.IsRunning());
             var startInstanceCommand = new WeakCommand(OnStartInstanceCommand);
             var stopInstanceCommand = new WeakCommand(OnStopInstanceCommand);
-            var resetInstancePasswordCommand = new WeakCommand(OnResetInstancePasswordCommand, Instance.IsWindowsInstance() && Instance.IsRunning());
             var manageFirewallPorts = new WeakCommand(OnManageFirewallPortsCommand);
+            var manageWindowsCredentials = new WeakCommand(OnManageWindowsCredentialsCommand, canExecuteCommand: Instance.IsWindowsInstance());
 
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = Resources.CloudExplorerGceSavePublishSettingsMenuHeader, Command = getPublishSettingsCommand },
                 new MenuItem { Header = Resources.CloudExplorerGceOpenTerminalSessionMenuHeader, Command = openTerminalServerSessionCommand },
                 new MenuItem { Header = Resources.CloudExplorerGceOpenWebSiteMenuHeader, Command = openWebSite },
-                new MenuItem { Header = Resources.CloudExplorerGceCreateOrResetPasswordMenuHeader, Command = resetInstancePasswordCommand },
                 new MenuItem { Header = Resources.CloudExplorerGceManageFirewallPortsMenuHeader, Command = manageFirewallPorts },
+                new MenuItem { Header = Resources.CloudExplorerGceManageWindowsCredentialsMenuHeader, Command = manageWindowsCredentials }
             };
 
             if (Instance.IsRunning())
@@ -227,6 +227,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             menuItems.Add(new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) });
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void OnManageWindowsCredentialsCommand()
+        {
+            ManageWindowsCredentialsWindow.PromptUser(Instance);
         }
 
         private void OnOpenOnCloudConsoleCommand()
@@ -258,11 +263,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             {
                 UserPromptUtils.ErrorPrompt(Resources.CloudExplorerGceFailedToUpdateFirewallMessage, Resources.CloudExplorerGceFailedToUpdateFirewallCaption);
             }
-        }
-
-        private void OnResetInstancePasswordCommand()
-        {
-            ResetPasswordWindow.PromptUser(Instance, CredentialsStore.Default.CurrentProjectId);
         }
 
         private void OnStopInstanceCommand()

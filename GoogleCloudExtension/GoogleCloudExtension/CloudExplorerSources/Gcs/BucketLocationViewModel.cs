@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         private static readonly Lazy<ImageSource> s_zoneIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
 
         private readonly GcsSourceRootViewModel _owner;
-        private IEnumerable<BucketViewModel> _buckets;
+        private readonly IEnumerable<BucketViewModel> _buckets;
 
         public BucketLocationViewModel(GcsSourceRootViewModel owner, string name, IEnumerable<BucketViewModel> buckets)
         {

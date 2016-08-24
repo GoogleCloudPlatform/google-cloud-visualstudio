@@ -17,7 +17,6 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.LinkPrompt;
-using GoogleCloudExtension.ShowPassword;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
@@ -81,6 +80,8 @@ namespace GoogleCloudExtension.ResetPassword
         /// </summary>
         public WeakCommand CancelCommand { get; }
 
+        public WindowsInstanceCredentials Result { get; private set; }
+
         public ResetPasswordViewModel(ResetPasswordWindow owner, Instance instance, string projectId)
         {
             _owner = owner;
@@ -139,18 +140,13 @@ namespace GoogleCloudExtension.ResetPassword
                     AppName = GoogleCloudExtensionPackage.ApplicationName,
                     AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
                 };
-                var newCredentials = await GCloudWrapper.ResetWindowsCredentialsAsync(
+                Result = await GCloudWrapper.ResetWindowsCredentialsAsync(
                     instanceName: _instance.Name,
                     zoneName: _instance.GetZoneName(),
                     userName: _userName,
                     context: context);
 
                 ResettingPassword = false;
-
-                ShowPasswordWindow.PromptUser(
-                    userName: UserName,
-                    password: newCredentials.Password,
-                    instanceName: _instance.Name);
             }
             catch (GCloudException ex)
             {

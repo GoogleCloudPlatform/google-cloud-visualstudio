@@ -100,7 +100,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
         private void OnUndoDeleteCommand()
         {
             Deleted = false;
-        } 
+        }
 
         public override string ToString()
         {

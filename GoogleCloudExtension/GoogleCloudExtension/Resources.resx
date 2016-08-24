@@ -145,10 +145,6 @@
     <value>Go to the Google Cloud Console for other services</value>
     <comment>The caption for the console link in the cloud source.</comment>
   </data>
-  <data name="CloudExplorerGceCreateOrResetPasswordMenuHeader" xml:space="preserve">
-    <value>Create or Reset Password...</value>
-    <comment>Header for the create or reset password menu item.</comment>
-  </data>
   <data name="CloudExplorerGceFailedToGetOauthCredentialsCaption" xml:space="preserve">
     <value>Credentials Error</value>
     <comment>Caption for the prompt.</comment>
@@ -760,5 +756,37 @@
   <data name="CloudExplorerGcsShowLocationsCommand" xml:space="preserve">
     <value>Show Locations</value>
     <comment>The command to use use to show the buckets per location.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsAddCredentialsCaption" xml:space="preserve">
+    <value>Add Credentials</value>
+    <comment>The caption for the add credentials button in the dialog.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsDeleteCredentialsCaption" xml:space="preserve">
+    <value>Delete Credentials</value>
+    <comment>The caption for the delete credentials button in the dialog.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsDeleteCredentialsPromptMessage" xml:space="preserve">
+    <value>Are you sure you want to the delete the credentials for user {0}?</value>
+    <comment>The message for the confirmation prompt to delete credentials. The {0} placeholder is the username.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsDeleteCredentialsPromptTitle" xml:space="preserve">
+    <value>Delete Credentials</value>
+    <comment>Title for the confirmation prompt to delete credentials.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsShowCredentialsCaption" xml:space="preserve">
+    <value>Show Credentials</value>
+    <comment>The caption or the show credentials button in the dialog.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsWindowMessage" xml:space="preserve">
+    <value>Windows credentials for {0}</value>
+    <comment>Message at the top of the Manage Windows Credentials dialog. The {0} placeholder is the name of the instance.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsWindowTitle" xml:space="preserve">
+    <value>Manage Windows Credentials</value>
+    <comment>Title for the Manage Windows Credentials dialog.</comment>
+  </data>
+  <data name="CloudExplorerGceManageWindowsCredentialsMenuHeader" xml:space="preserve">
+    <value>Manage Windows Credentials...</value>
+    <comment>Header for the menu entry to manage credentials.</comment>
   </data>
 </root>
