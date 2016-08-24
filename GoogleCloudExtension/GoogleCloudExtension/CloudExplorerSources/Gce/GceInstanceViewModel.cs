@@ -210,16 +210,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             var manageFirewallPorts = new WeakCommand(OnManageFirewallPortsCommand);
             var manageWindowsCredentials = new WeakCommand(OnManageWindowsCredentialsCommand, canExecuteCommand: Instance.IsWindowsInstance());
 
-            var publishMenuItem = new MenuItem { Header = Resources.CloudExplorerGceSavePublishSettingsMenuHeader };
-            publishMenuItem.ItemsSource = new List<MenuItem>
-            {
-                new MenuItem { Header = Resources.CloudExplorerGcePublishSettingsChooseCredentialsMenuHeader, Command=new WeakCommand(OnDownloadPublishSettingsWithCredentialsCommand)},
-                new MenuItem { Header = Resources.CloudExplorerGcePublishSettingsNoCredentialsMenuHeader, Command=new WeakCommand(OnDownloadPublishSettingsWithoutCredentialsCommand)},
-            };
-
             var menuItems = new List<MenuItem>
             {
-                publishMenuItem,
+                new MenuItem { Header = Resources.CloudExplorerGceSavePublishSettingsMenuHeader, Command=new WeakCommand(OnDownloadPublishSettingsWithCredentialsCommand)},
                 new MenuItem { Header = Resources.CloudExplorerGceOpenTerminalSessionMenuHeader, Command = openTerminalServerSessionCommand },
                 new MenuItem { Header = Resources.CloudExplorerGceOpenWebSiteMenuHeader, Command = openWebSite },
                 new MenuItem { Header = Resources.CloudExplorerGceManageFirewallPortsMenuHeader, Command = manageFirewallPorts },

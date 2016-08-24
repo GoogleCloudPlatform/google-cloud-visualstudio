@@ -520,24 +520,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose credentials....
-        /// </summary>
-        public static string CloudExplorerGcePublishSettingsChooseCredentialsMenuHeader {
-            get {
-                return ResourceManager.GetString("CloudExplorerGcePublishSettingsChooseCredentialsMenuHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No Credentials.
-        /// </summary>
-        public static string CloudExplorerGcePublishSettingsNoCredentialsMenuHeader {
-            get {
-                return ResourceManager.GetString("CloudExplorerGcePublishSettingsNoCredentialsMenuHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Google Compute Engine.
         /// </summary>
         public static string CloudExplorerGceRootNodeCaption {
@@ -565,7 +547,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save publishing settings for user.
+        ///   Looks up a localized string similar to Save publishing settings....
         /// </summary>
         public static string CloudExplorerGceSavePublishSettingsMenuHeader {
             get {
