@@ -208,7 +208,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = Resources.CloudExplorerGceSavePublishSettingsMenuHeader, Command=new WeakCommand(OnDownloadPublishSettingsWithCredentialsCommand)},
+                new MenuItem { Header = Resources.CloudExplorerGceSavePublishSettingsMenuHeader, Command=new WeakCommand(OnSavePublishSettingsCommand)},
                 new MenuItem { Header = Resources.CloudExplorerGceOpenTerminalSessionMenuHeader, Command = openTerminalServerSessionCommand },
                 new MenuItem { Header = Resources.CloudExplorerGceOpenWebSiteMenuHeader, Command = openWebSite },
                 new MenuItem { Header = Resources.CloudExplorerGceManageFirewallPortsMenuHeader, Command = manageFirewallPorts },
@@ -230,25 +230,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
-        private void OnDownloadPublishSettingsWithoutCredentialsCommand()
-        {
-            ExtensionAnalytics.ReportCommand(CommandName.GetPublishSettingsForGceInstance, CommandInvocationSource.Button);
-
-            Debug.WriteLine($"Generating Publishing settings for {Instance.Name}");
-
-            var storePath = PromptForPublishSettingsPath(Instance.Name);
-            if (storePath == null)
-            {
-                Debug.WriteLine("User canceled saving the pubish settings.");
-                return;
-            }
-
-            var profile = Instance.GeneratePublishSettings();
-            File.WriteAllText(storePath, profile);
-            GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGcePublishingSettingsSavedMessage, storePath));
-        }
-
-        private void OnDownloadPublishSettingsWithCredentialsCommand()
+        private void OnSavePublishSettingsCommand()
         {
             Debug.WriteLine($"Generating Publishing settings for {Instance.Name}");
 
@@ -256,8 +238,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 Instance,
                 new WindowsCredentialsChooserWindow.Options
                 {
-                    Title = "Choose credentials",
-                    Message = "Credentials for publish settings"
+                    Title = Resources.CloudExplorerGceSavePubSettingsCredentialsTitle,
+                    Message = Resources.CloudExplorerGceSavePubSettingsCredentialsMessage,
                 });
             if (credentials == null)
             {
