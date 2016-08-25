@@ -152,6 +152,7 @@
     </Compile>
     <Compile Include="PublishDialog\PublishDialogWindowViewModel.cs" />
     <Compile Include="PublishDialog\PublishTarget.cs" />
+    <Compile Include="PublishDialog\PublishProjectCommand.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

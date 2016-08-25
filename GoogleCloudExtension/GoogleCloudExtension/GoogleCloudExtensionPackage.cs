@@ -17,6 +17,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.ManageAccounts;
+using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -194,6 +195,7 @@ namespace GoogleCloudExtension
             // Register the command handlers.
             CloudExplorerCommand.Initialize(this);
             ManageAccountsCommand.Initialize(this);
+            PublishProjectCommand.Initialize(this);
 
             // Activity log utils, to aid in debugging.
             ActivityLogUtils.Initialize(this);
