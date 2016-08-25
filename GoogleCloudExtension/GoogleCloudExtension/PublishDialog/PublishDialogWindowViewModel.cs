@@ -37,7 +37,7 @@ namespace GoogleCloudExtension.PublishDialog
             NextCommand = new WeakCommand(OnNextCommand);
             PublishCommand = new WeakCommand(OnPublishCommand);
 
-            CurrentStepChanged();
+            PushStep(initialStep);
         }
 
         private void OnNextCommand()

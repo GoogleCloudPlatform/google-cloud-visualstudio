@@ -40,21 +40,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 
         #region IPublishDialogStep
 
-        bool IPublishDialogStep.CanGoNext
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        bool IPublishDialogStep.CanGoNext => false;
 
-        bool IPublishDialogStep.CanPublish
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        bool IPublishDialogStep.CanPublish => false;
 
         FrameworkElement IPublishDialogStep.Content => _content;
 

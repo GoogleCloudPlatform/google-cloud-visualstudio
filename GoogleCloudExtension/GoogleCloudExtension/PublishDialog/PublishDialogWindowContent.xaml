@@ -11,39 +11,18 @@
              d:DataContext="{x:Type local:PublishDialogWindowViewModel}">
 
     <UserControl.Resources>
-        
-        <Grid x:Key="content" Margin="3,3,3,0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
-            
-            <!-- The first row contains the target chooser, which determines what else is visible in the dialog. -->
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="auto" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
 
-                <TextBlock Text="Target:" Margin="0,0,5,0" />
-                <ComboBox Grid.Column="1"
-                          ItemsSource="{Binding Targets}"
-                          DisplayMemberPath="Name"
-                          IsSynchronizedWithCurrentItem="True"/>
-            </Grid>
-            
-            <!-- The second grid will contain the UI for the target. -->
-            <ContentControl Grid.Row="1" Content="{Binding TargetUi}" />
+        <ContentControl x:Key="content"
+                        Margin="3"
+                        Content="{Binding Content}" />
 
-        </Grid>
-        
     </UserControl.Resources>
 
     <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
         <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Caption="Prev" />
-            <theming:DialogButtonInfo Caption="Next" />
-            <theming:DialogButtonInfo Caption="Publish" />
+            <theming:DialogButtonInfo Caption="Prev" Command="{Binding DataContext.PrevCommand, Source={StaticResource content}}"/>
+            <theming:DialogButtonInfo Caption="Next" Command="{Binding DataContext.NextCommand, Source={StaticResource content}}"/>
+            <theming:DialogButtonInfo Caption="Publish" Command="{Binding DataContext.PublishCommand, Source={StaticResource content}}"/>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCloseButtonCaption}" IsCancel="true" />
         </theming:CommonDialogWindowBaseContent.Buttons>
     </theming:CommonDialogWindowBaseContent>
