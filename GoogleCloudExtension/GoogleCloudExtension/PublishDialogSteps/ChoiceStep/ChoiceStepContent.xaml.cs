@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace GoogleCloudExtension.PublishDialogTargets.Gce
+namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 {
     /// <summary>
-    /// Interaction logic for GceTargetWindowContent.xaml
+    /// Interaction logic for ChoiceStepContent.xaml
     /// </summary>
-    public partial class GceTargetWindowContent : UserControl
+    public partial class ChoiceStepContent : UserControl
     {
-        public GceTargetWindowContent()
+        public ChoiceStepContent()
         {
             InitializeComponent();
         }

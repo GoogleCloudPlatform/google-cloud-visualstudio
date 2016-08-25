@@ -136,11 +136,16 @@
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PublishDialogTargets\Gce\GceTargetViewModel.cs" />
-    <Compile Include="PublishDialogTargets\Gce\GceTargetWindowContent.xaml.cs">
-      <DependentUpon>GceTargetWindowContent.xaml</DependentUpon>
+    <Compile Include="PublishDialogSteps\ChoiceStep\Choice.cs" />
+    <Compile Include="PublishDialogSteps\ChoiceStep\ChoiceStepContent.xaml.cs">
+      <DependentUpon>ChoiceStepContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PublishDialog\IPublishDialogTarget.cs" />
+    <Compile Include="PublishDialogSteps\ChoiceStep\ChoiceStepViewModel.cs" />
+    <Compile Include="PublishDialogSteps\GceStep\GceStepViewModel.cs" />
+    <Compile Include="PublishDialogSteps\GceStep\GceStepContent.xaml.cs">
+      <DependentUpon>GceStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\IPublishDialogStep.cs" />
     <Compile Include="PublishDialog\PublishDialogWindow.cs" />
     <Compile Include="PublishDialog\PublishDialogWindowContent.xaml.cs">
       <DependentUpon>PublishDialogWindowContent.xaml</DependentUpon>
@@ -496,7 +501,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PublishDialogTargets\Gce\GceTargetWindowContent.xaml">
+    <Page Include="PublishDialogSteps\ChoiceStep\ChoiceStepContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialogSteps\GceStep\GceStepContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -543,9 +552,7 @@
       <Name>GoogleCloudExtension.Utils</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="PublishDialogTargets\AppEngine\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

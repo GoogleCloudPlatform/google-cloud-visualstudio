@@ -1,4 +1,5 @@
-﻿using GoogleCloudExtension.Theming;
+﻿using GoogleCloudExtension.PublishDialogSteps.ChoiceStep;
+using GoogleCloudExtension.Theming;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +14,9 @@ namespace GoogleCloudExtension.PublishDialog
 
         private PublishDialogWindow() : base("Publish Application", 500, 400)
         {
-            ViewModel = new PublishDialogWindowViewModel(this);
+            var initialStep = ChoiceStepViewModel.CreateStep();
+
+            ViewModel = new PublishDialogWindowViewModel(initialStep, this);
             Content = new PublishDialogWindowContent { DataContext = ViewModel };
         }
 
