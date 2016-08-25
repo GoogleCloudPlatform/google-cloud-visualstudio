@@ -7,7 +7,7 @@
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="400" d:DesignWidth="500"
              d:DataContext="{x:Type local:PublishDialogWindowViewModel}">
 
     <UserControl.Resources>
@@ -26,10 +26,10 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="Target:" Margin="0,0,5,0" />
-                <ComboBox Grid.Column="1">
-                    <TextBlock>Option1</TextBlock>
-                    <TextBlock>Option2</TextBlock>
-                </ComboBox>
+                <ComboBox Grid.Column="1"
+                          ItemsSource="{Binding Targets}"
+                          DisplayMemberPath="Name"
+                          IsSynchronizedWithCurrentItem="True"/>
             </Grid>
             
             <!-- The second grid will contain the UI for the target. -->
@@ -41,8 +41,10 @@
 
     <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
         <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="Prev" />
+            <theming:DialogButtonInfo Caption="Next" />
             <theming:DialogButtonInfo Caption="Publish" />
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="true" />
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCloseButtonCaption}" IsCancel="true" />
         </theming:CommonDialogWindowBaseContent.Buttons>
     </theming:CommonDialogWindowBaseContent>
 
