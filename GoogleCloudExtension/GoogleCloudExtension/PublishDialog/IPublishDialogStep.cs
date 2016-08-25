@@ -18,5 +18,7 @@ namespace GoogleCloudExtension.PublishDialog
         IPublishDialogStep Next();
 
         void Publish();
+
+        void OnPushedToDialog(IPublishDialog dialog);
     }
 }

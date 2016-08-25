@@ -11,31 +11,20 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 {
     public class GceStepViewModel : ViewModelBase, IPublishDialogStep
     {
+        private readonly GceStepContent _content;
+
+        private GceStepViewModel(GceStepContent content)
+        {
+            _content = content;
+        }
+
         #region IPublishDialogTarget
 
-        bool IPublishDialogStep.CanGoNext
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        bool IPublishDialogStep.CanGoNext => false;
 
-        bool IPublishDialogStep.CanPublish
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        bool IPublishDialogStep.CanPublish => true;
 
-        FrameworkElement IPublishDialogStep.Content
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        FrameworkElement IPublishDialogStep.Content => _content;
 
         IPublishDialogStep IPublishDialogStep.Next()
         {
@@ -47,6 +36,19 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             throw new NotImplementedException();
         }
 
+        void IPublishDialogStep.OnPushedToDialog(IPublishDialog dialog)
+        { }
+
         #endregion
+
+        internal static GceStepViewModel CreateStep()
+        {
+            var content = new GceStepContent();
+            var viewModel = new GceStepViewModel(content);
+            content.DataContext = viewModel;
+
+            return viewModel;
+        }
+
     }
 }

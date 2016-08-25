@@ -8,7 +8,7 @@ using System.Windows;
 
 namespace GoogleCloudExtension.PublishDialog
 {
-    public class PublishDialogWindowViewModel : ViewModelBase
+    public class PublishDialogWindowViewModel : ViewModelBase, IPublishDialog
     {
         private readonly PublishDialogWindow _owner;
         private readonly Stack<IPublishDialogStep> _stack = new Stack<IPublishDialogStep>();
@@ -59,6 +59,7 @@ namespace GoogleCloudExtension.PublishDialog
         private void PushStep(IPublishDialogStep step)
         {
             _stack.Push(step);
+            step.OnPushedToDialog(this);
             CurrentStepChanged();
         }
 
@@ -75,5 +76,14 @@ namespace GoogleCloudExtension.PublishDialog
             NextCommand.CanExecuteCommand = CurrentStep.CanGoNext;
             PublishCommand.CanExecuteCommand = CurrentStep.CanPublish;
         }
+
+        #region IPublishDialog
+
+        void IPublishDialog.PushStep(IPublishDialogStep step)
+        {
+            PushStep(step);
+        }
+
+        #endregion
     }
 }

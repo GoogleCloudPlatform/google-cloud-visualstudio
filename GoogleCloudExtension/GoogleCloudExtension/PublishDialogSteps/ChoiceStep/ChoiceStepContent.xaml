@@ -7,18 +7,20 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{x:Type local:ChoiceStepViewModel}">
-    <Grid>
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-            <ItemsControl ItemsSource="{Binding Choices}" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <TextBlock Text="Choose a target:" />
+
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Background="Red">
+            <ItemsControl ItemsSource="{Binding Choices}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Button Content="{Binding Name}"
-                                Command="{Binding Command}"
-                                CommandParameter="{Binding}" />
+                                Command="{Binding Command}" />
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>

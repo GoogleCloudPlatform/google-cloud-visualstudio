@@ -1,4 +1,5 @@
 ﻿using GoogleCloudExtension.PublishDialog;
+using GoogleCloudExtension.PublishDialogSteps.GceStep;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
     public class ChoiceStepViewModel : ViewModelBase, IPublishDialogStep
     {
         private readonly ChoiceStepContent _content;
+        private IPublishDialog _dialog;
 
         public IEnumerable<Choice> Choices { get; }
 
@@ -24,18 +26,17 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 
         private IEnumerable<Choice> GetChoicesForCurrentProject()
         {
-            var command = new WeakCommand<Choice>(OnChoiceCommand);
-
             return new List<Choice>
             {
-                new Choice { Name = "App Engine", Command = command },
-                new Choice { Name = "Compute Engine", Command = command },
+                new Choice { Name = "App Engine", Command = null },
+                new Choice { Name = "Compute Engine", Command = new WeakCommand(OnGceChoiceCommand) },
             };
         }
 
-        private void OnChoiceCommand(Choice obj)
+        private void OnGceChoiceCommand()
         {
-            throw new NotImplementedException();
+            var nextStep = GceStepViewModel.CreateStep();
+            _dialog.PushStep(nextStep);
         }
 
         #region IPublishDialogStep
@@ -54,6 +55,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
         void IPublishDialogStep.Publish()
         {
             throw new NotImplementedException();
+        }
+
+        void IPublishDialogStep.OnPushedToDialog(IPublishDialog dialog)
+        {
+            _dialog = dialog;
         }
 
         #endregion
