@@ -136,6 +136,11 @@
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PublishDialogTargets\Gce\GceTargetViewModel.cs" />
+    <Compile Include="PublishDialogTargets\Gce\GceTargetWindowContent.xaml.cs">
+      <DependentUpon>GceTargetWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\IPublishDialogTarget.cs" />
     <Compile Include="PublishDialog\PublishDialogWindow.cs" />
     <Compile Include="PublishDialog\PublishDialogWindowContent.xaml.cs">
       <DependentUpon>PublishDialogWindowContent.xaml</DependentUpon>
@@ -147,6 +152,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
+    <Compile Include="Utils\SolutionHelper.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserViewModel.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindow.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml.cs">
@@ -489,6 +495,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PublishDialogTargets\Gce\GceTargetWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PublishDialog\PublishDialogWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -532,7 +542,9 @@
       <Name>GoogleCloudExtension.Utils</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="PublishDialogTargets\AppEngine\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

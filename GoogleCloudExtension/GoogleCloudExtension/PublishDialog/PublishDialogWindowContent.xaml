@@ -11,9 +11,32 @@
              d:DataContext="{x:Type local:PublishDialogWindowViewModel}">
 
     <UserControl.Resources>
-        <Grid x:Key="content">
+        
+        <Grid x:Key="content" Margin="3,3,3,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             
+            <!-- The first row contains the target chooser, which determines what else is visible in the dialog. -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Text="Target:" Margin="0,0,5,0" />
+                <ComboBox Grid.Column="1">
+                    <TextBlock>Option1</TextBlock>
+                    <TextBlock>Option2</TextBlock>
+                </ComboBox>
+            </Grid>
+            
+            <!-- The second grid will contain the UI for the target. -->
+            <ContentControl Grid.Row="1" Content="{Binding TargetUi}" />
+
         </Grid>
+        
     </UserControl.Resources>
 
     <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
