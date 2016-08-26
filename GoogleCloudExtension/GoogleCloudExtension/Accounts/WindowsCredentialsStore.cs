@@ -112,6 +112,11 @@ namespace GoogleCloudExtension.Accounts
             }
         }
 
+        /// <summary>
+        /// Returns the path where to store credential related information for a GCE VM.
+        /// </summary>
+        /// <param name="instance">The GCE VM.</param>
+        /// <returns>The full path where to store information for the instance.</returns>
         public string GetStoragePathForInstance(Instance instance)
         {
             var instancePath = GetInstancePath(instance);

@@ -149,8 +149,10 @@ namespace GoogleCloudExtension.DataSources
         /// Generates the publishsettings information for a given GCE instance.
         /// </summary>
         /// <param name="instance">The instance to inspect.</param>
+        /// <param name="userName">The user name to use.</param>
+        /// <param name="password">The passwod to use.</param>
         /// <returns>A string with the publishsettings content.</returns>
-        public static string GeneratePublishSettings(this Instance instance)
+        public static string GeneratePublishSettings(this Instance instance, string userName, string password)
         {
             var doc = new XDocument(
                 new XElement("publishData",
@@ -158,6 +160,8 @@ namespace GoogleCloudExtension.DataSources
                         new XAttribute("profileName", instance.Name),
                         new XAttribute("publishMethod", "MSDeploy"),
                         new XAttribute("publishUrl", instance.GetPublishUrl()),
+                        new XAttribute("userName", userName),
+                        new XAttribute("userPWD", password),
                         new XAttribute("msdeploySite", "Default Web Site"),
                         new XAttribute("destinationAppUri", instance.GetDestinationAppUri()))));
 

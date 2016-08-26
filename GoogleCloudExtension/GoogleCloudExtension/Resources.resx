@@ -241,10 +241,6 @@
     <value>Windows Properties</value>
     <comment>The category for Windows properties for a GCE instance.</comment>
   </data>
-  <data name="CloudExplorerGceInstanceWindowsVersionDescription" xml:space="preserve">
-    <value>The version of Windows installed on the instance.</value>
-    <comment>The description for the Windows version property for a GCE instance.</comment>
-  </data>
   <data name="CloudExplorerGceInstanceWindowsVersionDisplayName" xml:space="preserve">
     <value>Windows Version</value>
     <comment>The display name for the Windows version in a GCE instance.</comment>
@@ -302,7 +298,7 @@
     <comment>Extension for the save dialog. Format defined as part of the Save Dialog spec, do not over translate.</comment>
   </data>
   <data name="CloudExplorerGceSavePublishSettingsMenuHeader" xml:space="preserve">
-    <value>Save Publishing Settings...</value>
+    <value>Save publishing settings...</value>
     <comment>Header for the save publish settings menu item.</comment>
   </data>
   <data name="CloudExplorerGceShowAllOsInstancesCommand" xml:space="preserve">
@@ -804,5 +800,17 @@
   <data name="CloudExplorerGceManageWindowsCredentialsMenuHeader" xml:space="preserve">
     <value>Manage Windows Credentials...</value>
     <comment>Header for the menu entry to manage credentials.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceWindowsVersionDescription" xml:space="preserve">
+    <value>The version of Windows installed on the instance.</value>
+    <comment>The description for the Windows version property for a GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceSavePubSettingsCredentialsMessage" xml:space="preserve">
+    <value>Choose credentials for publish settings:</value>
+    <comment>The message for the choose credentials used during the save publish settings flow.</comment>
+  </data>
+  <data name="CloudExplorerGceSavePubSettingsCredentialsTitle" xml:space="preserve">
+    <value>Choose credentials</value>
+    <comment>The title for the choose credentials used during the save publish settings flow.</comment>
   </data>
 </root>

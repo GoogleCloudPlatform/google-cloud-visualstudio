@@ -547,11 +547,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save Publishing Settings....
+        ///   Looks up a localized string similar to Save publishing settings....
         /// </summary>
         public static string CloudExplorerGceSavePublishSettingsMenuHeader {
             get {
                 return ResourceManager.GetString("CloudExplorerGceSavePublishSettingsMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose credentials for publish settings:.
+        /// </summary>
+        public static string CloudExplorerGceSavePubSettingsCredentialsMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceSavePubSettingsCredentialsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose credentials.
+        /// </summary>
+        public static string CloudExplorerGceSavePubSettingsCredentialsTitle {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceSavePubSettingsCredentialsTitle", resourceCulture);
             }
         }
         
