@@ -248,7 +248,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 return;
             }
 
-            var storePath = PromptForPublishSettingsPath($"{Instance.Name}-{credentials.User}");
+            var projectId = CredentialsStore.Default.CurrentProjectId;
+            var storePath = PromptForPublishSettingsPath($"{projectId}-{Instance.Name}-{credentials.User}");
             if (storePath == null)
             {
                 Debug.WriteLine("User canceled saving the pubish settings.");
