@@ -70,7 +70,7 @@ namespace GoogleCloudExtension.TerminalServer
         }
 
         /// <summary>
-        /// Encrypts the given password a form that mstsc.exe will accept. 
+        /// Encrypts the given password in a form that mstsc.exe will accept.
         /// </summary>
         /// <param name="password">The password to encrypt.</param>
         /// <returns>The hexadecimal string representation of the encrypted password.</returns>
