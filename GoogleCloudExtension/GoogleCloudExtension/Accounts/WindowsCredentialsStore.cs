@@ -63,14 +63,14 @@ namespace GoogleCloudExtension.Accounts
                 return result;
             }
 
-            var fullInstancePath = Path.Combine(s_credentialsStoreRoot, instancePath);
-            if (!Directory.Exists(fullInstancePath))
+            var instanceStoragePath = GetStoragePathForInstance(instance);
+            if (!Directory.Exists(instanceStoragePath))
             {
                 result = Enumerable.Empty<WindowsInstanceCredentials>();
             }
             else
             {
-                result = Directory.EnumerateFiles(fullInstancePath)
+                result = Directory.EnumerateFiles(instanceStoragePath)
                     .Where(x => Path.GetExtension(x) == PasswordFileExtension)
                     .Select(x => LoadEncryptedCredentials(x))
                     .OrderBy(x => x.User);
@@ -88,9 +88,9 @@ namespace GoogleCloudExtension.Accounts
         public void AddCredentialsToInstance(Instance instance, WindowsInstanceCredentials credentials)
         {
             var instancePath = GetInstancePath(instance);
-            var fullInstancePath = Path.Combine(s_credentialsStoreRoot, instancePath);
+            var instanceStoragePath = GetStoragePathForInstance(instance);
 
-            SaveEncryptedCredentials(fullInstancePath, credentials);
+            SaveEncryptedCredentials(instanceStoragePath, credentials);
             _credentialsForInstance.Remove(instancePath);
         }
 
@@ -102,8 +102,8 @@ namespace GoogleCloudExtension.Accounts
         public void DeleteCredentialsForInstance(Instance instance, WindowsInstanceCredentials credentials)
         {
             var instancePath = GetInstancePath(instance);
-            var fullInstancePath = Path.Combine(s_credentialsStoreRoot, instancePath);
-            var credentialsPath = Path.Combine(fullInstancePath, GetFileName(credentials));
+            var instanceStoragePath = GetStoragePathForInstance(instance);
+            var credentialsPath = Path.Combine(instanceStoragePath, GetFileName(credentials));
 
             if (File.Exists(credentialsPath))
             {
