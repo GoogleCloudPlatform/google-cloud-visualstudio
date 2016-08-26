@@ -1,4 +1,5 @@
-﻿using GoogleCloudExtension.PublishDialog;
+﻿using EnvDTE;
+using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -12,10 +13,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
     public class GceStepViewModel : ViewModelBase, IPublishDialogStep
     {
         private readonly GceStepContent _content;
+        private readonly Project _currentProject;
 
         private GceStepViewModel(GceStepContent content)
         {
             _content = content;
+
+            _currentProject = SolutionHelper.CurrentSolution.StartupProject;
         }
 
         #region IPublishDialogTarget

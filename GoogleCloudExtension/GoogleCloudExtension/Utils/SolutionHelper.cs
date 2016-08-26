@@ -4,6 +4,7 @@ using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -50,16 +51,17 @@ namespace GoogleCloudExtension.Utils
                 return null;
             }
 
-            string startupProjectName = startupProjects.GetValue(0) as string;
-            if (startupProjectName == null)
+            string startupProjectFilePath = startupProjects.GetValue(0) as string;
+            if (startupProjectFilePath == null)
             {
                 ActivityLogUtils.LogInfo("No startup project name.");
                 return null;
             }
 
+            string projectName = Path.GetFileNameWithoutExtension(startupProjectFilePath);
             foreach (Project p in _solution.Projects)
             {
-                if (p.Name == startupProjectName)
+                if (p.Name == projectName)
                 {
                     return p;
                 }
