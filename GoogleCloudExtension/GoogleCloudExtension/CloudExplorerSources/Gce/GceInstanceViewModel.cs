@@ -20,7 +20,9 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.FirewallManagement;
 using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.OAuth;
+using GoogleCloudExtension.TerminalServer;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.WindowsCredentialsChooser;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -329,7 +331,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             ExtensionAnalytics.ReportCommand(CommandName.OpenTerminalServerSessionForGceInstanceCommand, CommandInvocationSource.Button);
 
-            Process.Start("mstsc", $"/v:{Instance.GetPublicIpAddress()}");
+            var credentials = WindowsCredentialsChooserWindow.PromptUser(
+                _instance,
+                new WindowsCredentialsChooserWindow.Options
+                {
+                    Title = Resources.TerminalServerManagerWindowTitle,
+                    Message = Resources.TerminalServerManagerWindowMessage
+                });
+            if (credentials != null)
+            {
+                TerminalServerManager.OpenSession(_instance, credentials);
+            }
         }
 
         private void OnOpenWebsite()

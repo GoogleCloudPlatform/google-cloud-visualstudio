@@ -1492,6 +1492,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Choose credentials to use:.
+        /// </summary>
+        public static string TerminalServerManagerWindowMessage {
+            get {
+                return ResourceManager.GetString("TerminalServerManagerWindowMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Terminal Server session.
+        /// </summary>
+        public static string TerminalServerManagerWindowTitle {
+            get {
+                return ResourceManager.GetString("TerminalServerManagerWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string UiCancelButtonCaption {
@@ -1569,6 +1587,24 @@ namespace GoogleCloudExtension {
         public static string UiUndoButtonCaption {
             get {
                 return ResourceManager.GetString("UiUndoButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Windows Credentials.
+        /// </summary>
+        public static string WindowsCredentialsChooserButtonToolTip {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsChooserButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No credentials found....
+        /// </summary>
+        public static string WindowsCredentialsChooserNoCredentialsFoundMessage {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsChooserNoCredentialsFoundMessage", resourceCulture);
             }
         }
     }
