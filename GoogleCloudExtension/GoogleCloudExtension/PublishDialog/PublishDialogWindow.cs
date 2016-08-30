@@ -1,4 +1,5 @@
-﻿using GoogleCloudExtension.PublishDialogSteps.ChoiceStep;
+﻿using EnvDTE;
+using GoogleCloudExtension.PublishDialogSteps.ChoiceStep;
 using GoogleCloudExtension.Theming;
 using System;
 using System.Collections.Generic;
@@ -12,17 +13,17 @@ namespace GoogleCloudExtension.PublishDialog
     {
         private PublishDialogWindowViewModel ViewModel { get; }
 
-        private PublishDialogWindow() : base("Publish Application", 500, 400)
+        private PublishDialogWindow(Project project) : base("Publish Application", 500, 400)
         {
             var initialStep = ChoiceStepViewModel.CreateStep();
 
-            ViewModel = new PublishDialogWindowViewModel(initialStep, this);
+            ViewModel = new PublishDialogWindowViewModel(project, initialStep, this);
             Content = new PublishDialogWindowContent { DataContext = ViewModel };
         }
 
-        public static void PromptUser()
+        public static void PromptUser(Project project)
         {
-            var dialog = new PublishDialogWindow();
+            var dialog = new PublishDialogWindow(project);
             dialog.ShowModal();
         }
     }

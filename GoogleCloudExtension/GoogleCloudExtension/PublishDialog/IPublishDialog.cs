@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EnvDTE;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,8 @@ namespace GoogleCloudExtension.PublishDialog
 {
     public interface IPublishDialog
     {
+        Project Project { get; }
+
         void PushStep(IPublishDialogStep step);
     }
 }

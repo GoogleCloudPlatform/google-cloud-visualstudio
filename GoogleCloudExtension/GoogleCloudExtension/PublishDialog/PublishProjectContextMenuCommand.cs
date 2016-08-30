@@ -4,6 +4,7 @@ using System.Globalization;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using GoogleCloudExtension.Utils;
+using System.Diagnostics;
 
 namespace GoogleCloudExtension.PublishDialog
 {
@@ -89,7 +90,9 @@ namespace GoogleCloudExtension.PublishDialog
         /// <param name="e">Event args.</param>
         private void OnDeployCommand(object sender, EventArgs e)
         {
-            PublishDialogWindow.PromptUser();
+            var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
+            Debug.WriteLine($"Deploying project: {selectedProject.FullName}");
+            PublishDialogWindow.PromptUser(selectedProject);
         }
 
         private void OnBeforeQueryStatus(object sender, EventArgs e)
