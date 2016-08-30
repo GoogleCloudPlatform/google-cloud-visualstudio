@@ -52,6 +52,11 @@
       <Group guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" priority="0x0000">
         <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpMenu" />
       </Group>
+      
+      <!-- This groiup contains all of the commands added to the project's context menu. -->
+      <Group guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpProjectContextMenu" priority="0x600">
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
+      </Group>
     </Groups>
 
     <Buttons>
@@ -71,8 +76,8 @@
         </Strings>
       </Button>
      
-      <!-- This command publish the current project to Google Cloud. -->
-      <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidPublishProjectCommand" priority="0x0500" type="Button">
+      <!-- This command publishes the current project to Google Cloud from the tools menu. -->
+      <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidPublishProjectToolsMenuCommand" priority="0x0500" type="Button">
         <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <CommandFlag>DynamicVisibility</CommandFlag>
@@ -81,6 +86,18 @@
           <ButtonText>Publish project to Google Cloud...</ButtonText>
         </Strings>
       </Button>
+
+      <!-- This command publishes the current project from the project's context menu. -->
+      <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidPublishProjectContextMenuCommand" priority="0x0500" type="Button">
+        <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpProjectContextMenu" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
+        <Strings>
+          <ButtonText>Publish project to Google Cloud...</ButtonText>
+        </Strings>
+      </Button>
+
     </Buttons>
   </Commands>
 
@@ -92,10 +109,12 @@
     <GuidSymbol name="guidGoogleCloudExtensionPackageCmdSet" value="{a7435138-27e2-410c-9d28-dffc5aa3fe80}">
       <IDSymbol value="256" name="cmdidManageCredentialsCommand" />
       <IDSymbol value="4129" name="cmdidCloudExplorerToolWindowCommand" />
-      <IDSymbol value="0x1060" name="GcpMenu" />
-      <IDSymbol value="0x1070" name="GcpToolsGroup" />
-      <IDSymbol value="0x1080" name="GcpToolsGroupMenu" />
-      <IDSymbol value="4225" name="cmdidPublishProjectCommand" />
+      <IDSymbol value="4192" name="GcpMenu" />
+      <IDSymbol value="4208" name="GcpToolsGroup" />
+      <IDSymbol value="4224" name="GcpToolsGroupMenu" />
+      <IDSymbol value="4225" name="cmdidPublishProjectToolsMenuCommand" />
+      <IDSymbol value="4226" name="cmdidPublishProjectContextMenuCommand" />
+      <IDSymbol value="4230" name="GcpProjectContextMenu"/>
     </GuidSymbol>
   
   </Symbols>

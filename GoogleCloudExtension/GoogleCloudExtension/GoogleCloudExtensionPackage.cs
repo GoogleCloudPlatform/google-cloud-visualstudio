@@ -195,7 +195,8 @@ namespace GoogleCloudExtension
             // Register the command handlers.
             CloudExplorerCommand.Initialize(this);
             ManageAccountsCommand.Initialize(this);
-            PublishProjectCommand.Initialize(this);
+            PublishProjectMainMenuCommand.Initialize(this);
+            PublishProjectContextMenuCommand.Initialize(this);
 
             // Activity log utils, to aid in debugging.
             ActivityLogUtils.Initialize(this);

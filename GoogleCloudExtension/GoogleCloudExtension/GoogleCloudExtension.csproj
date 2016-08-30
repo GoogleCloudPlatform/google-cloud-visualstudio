@@ -152,8 +152,9 @@
       <DependentUpon>PublishDialogWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="PublishDialog\PublishDialogWindowViewModel.cs" />
+    <Compile Include="PublishDialog\PublishProjectContextMenuCommand.cs" />
     <Compile Include="PublishDialog\PublishTarget.cs" />
-    <Compile Include="PublishDialog\PublishProjectCommand.cs" />
+    <Compile Include="PublishDialog\PublishProjectMainMenuCommand.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

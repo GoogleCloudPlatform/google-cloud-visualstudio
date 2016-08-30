@@ -1,10 +1,13 @@
 ﻿using EnvDTE;
 using EnvDTE80;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -34,6 +37,73 @@ namespace GoogleCloudExtension.Utils
         public string Root => _solution.FullName;
 
         public Project StartupProject => GetStartupProject();
+
+        public Project SelectedProject => GetSelectedProject();
+
+        private Project GetSelectedProject()
+        {
+            var selectedProjectDirectory = GetSelectedProjectDirectory();
+            if (selectedProjectDirectory == null)
+            {
+                return null;
+            }
+
+            foreach (Project p in _solution.Projects)
+            {
+                var projectDirectory = Path.GetDirectoryName(p.FullName);
+                if (projectDirectory.Equals(selectedProjectDirectory, StringComparison.OrdinalIgnoreCase))
+                {
+                    return p;
+                }
+            }
+            return null;
+        }
+
+        private static string GetSelectedProjectDirectory()
+        {
+            var monitorSelection = Package.GetGlobalService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection;
+            var solution = Package.GetGlobalService(typeof(SVsSolution)) as IVsSolution;
+            if (monitorSelection == null || solution == null)
+            {
+                return null;
+            }
+
+            IVsMultiItemSelect select = null;
+            uint itemid = 0;
+            IntPtr hierarchyPtr = IntPtr.Zero;
+            IntPtr selectionContainerPtr = IntPtr.Zero;
+
+            try
+            {
+                var hr = monitorSelection.GetCurrentSelection(out hierarchyPtr, out itemid, out select, out selectionContainerPtr);
+                if (ErrorHandler.Failed(hr) || hierarchyPtr == IntPtr.Zero || itemid == VSConstants.VSITEMID_NIL)
+                {
+                    return null;
+                }
+
+                var hierarchy = Marshal.GetObjectForIUnknown(hierarchyPtr) as IVsHierarchy;
+                if (hierarchy == null)
+                {
+                    return null;
+                }
+
+                object result = null;
+                hierarchy.GetProperty(VSConstants.VSITEMID_ROOT, (int)__VSHPROPID.VSHPROPID_ProjectDir, out result);
+                return (string)result;
+            }
+            finally
+            {
+                if (selectionContainerPtr != IntPtr.Zero)
+                {
+                    Marshal.Release(selectionContainerPtr);
+                }
+
+                if (hierarchyPtr != IntPtr.Zero)
+                {
+                    Marshal.Release(hierarchyPtr);
+                }
+            }
+        }
 
         private Project GetStartupProject()
         {

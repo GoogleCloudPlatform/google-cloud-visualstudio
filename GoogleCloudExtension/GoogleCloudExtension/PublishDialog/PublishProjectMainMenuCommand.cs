@@ -10,7 +10,7 @@ namespace GoogleCloudExtension.PublishDialog
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class PublishProjectCommand
+    internal sealed class PublishProjectMainMenuCommand
     {
         /// <summary>
         /// Command ID.
@@ -28,11 +28,11 @@ namespace GoogleCloudExtension.PublishDialog
         private readonly Package package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PublishProjectCommand"/> class.
+        /// Initializes a new instance of the <see cref="PublishProjectMainMenuCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private PublishProjectCommand(Package package)
+        private PublishProjectMainMenuCommand(Package package)
         {
             if (package == null)
             {
@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.PublishDialog
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static PublishProjectCommand Instance
+        public static PublishProjectMainMenuCommand Instance
         {
             get;
             private set;
@@ -77,7 +77,7 @@ namespace GoogleCloudExtension.PublishDialog
         /// <param name="package">Owner package, not null.</param>
         public static void Initialize(Package package)
         {
-            Instance = new PublishProjectCommand(package);
+            Instance = new PublishProjectMainMenuCommand(package);
         }
 
         /// <summary>
