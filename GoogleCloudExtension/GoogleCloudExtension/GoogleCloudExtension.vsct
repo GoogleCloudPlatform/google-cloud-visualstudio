@@ -74,8 +74,11 @@
       <!-- This command publish the current project to Google Cloud. -->
       <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidPublishProjectCommand" priority="0x0500" type="Button">
         <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
         <Strings>
-          <ButtonText>Publish to Google...</ButtonText>
+          <ButtonText>Publish project to Google Cloud...</ButtonText>
         </Strings>
       </Button>
     </Buttons>

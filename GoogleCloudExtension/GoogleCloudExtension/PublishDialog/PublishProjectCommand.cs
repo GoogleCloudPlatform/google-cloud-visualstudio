@@ -3,6 +3,7 @@ using System.ComponentModel.Design;
 using System.Globalization;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.PublishDialog
 {
@@ -44,7 +45,8 @@ namespace GoogleCloudExtension.PublishDialog
             if (commandService != null)
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
-                var menuItem = new MenuCommand(this.MenuItemCallback, menuCommandID);
+                var menuItem = new OleMenuCommand(OnDeployCommand, menuCommandID);
+                menuItem.BeforeQueryStatus += OnBeforeQueryStatus;
                 commandService.AddCommand(menuItem);
             }
         }
@@ -85,9 +87,32 @@ namespace GoogleCloudExtension.PublishDialog
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private void MenuItemCallback(object sender, EventArgs e)
+        private void OnDeployCommand(object sender, EventArgs e)
         {
             PublishDialogWindow.PromptUser();
+        }
+
+        private void OnBeforeQueryStatus(object sender, EventArgs e)
+        {
+            var menuCommand = sender as OleMenuCommand;
+            if (menuCommand == null)
+            {
+                return;
+            }
+
+            menuCommand.Visible = true;
+
+            var startupProject = SolutionHelper.CurrentSolution.StartupProject;
+            if (startupProject != null)
+            {
+                menuCommand.Enabled = true;
+                menuCommand.Text = $"Publish {startupProject.Name} to Google Cloud...";
+            }
+            else
+            {
+                menuCommand.Enabled = false;
+                menuCommand.Text = $"Publish project to Google Cloud...";
+            }
         }
     }
 }
