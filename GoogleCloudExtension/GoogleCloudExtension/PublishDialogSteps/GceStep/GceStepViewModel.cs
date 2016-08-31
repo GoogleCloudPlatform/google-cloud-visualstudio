@@ -50,6 +50,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             {
                 SetValueAndRaise(ref _selectedCredentials, value);
                 RaisePropertyChanged(nameof(HasSelectedCredentials));
+                CanPublish = value != null;
             }
         }
 

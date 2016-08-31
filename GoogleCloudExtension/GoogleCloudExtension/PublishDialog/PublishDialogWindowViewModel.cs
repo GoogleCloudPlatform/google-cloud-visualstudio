@@ -60,14 +60,37 @@ namespace GoogleCloudExtension.PublishDialog
 
         private void PushStep(IPublishDialogStep step)
         {
+            RemoveStepEvents();
             _stack.Push(step);
+            AddStepEvents();
+
             step.OnPushedToDialog(this);
             CurrentStepChanged();
         }
 
+        private void AddStepEvents()
+        {
+            var top = _stack.Peek();
+            top.CanGoNextChanged += OnCanGoNextChanged;
+            top.CanPublishChanged += OnCanPublishChanged;
+        }
+
+        private void RemoveStepEvents()
+        {
+            if (_stack.Count > 0)
+            {
+                var top = _stack.Peek();
+                top.CanGoNextChanged -= OnCanGoNextChanged;
+                top.CanPublishChanged -= OnCanPublishChanged;
+            }
+        }
+
         private void PopStep()
         {
+            RemoveStepEvents();
             _stack.Pop();
+            AddStepEvents();
+
             CurrentStepChanged();
         }
 
@@ -77,6 +100,16 @@ namespace GoogleCloudExtension.PublishDialog
             PrevCommand.CanExecuteCommand = _stack.Count > 1;
             NextCommand.CanExecuteCommand = CurrentStep.CanGoNext;
             PublishCommand.CanExecuteCommand = CurrentStep.CanPublish;
+        }
+
+        private void OnCanPublishChanged(object sender, EventArgs e)
+        {
+            PublishCommand.CanExecuteCommand = CurrentStep.CanPublish;
+        }
+
+        private void OnCanGoNextChanged(object sender, EventArgs e)
+        {
+            NextCommand.CanExecuteCommand = CurrentStep.CanGoNext;
         }
 
         #region IPublishDialog
