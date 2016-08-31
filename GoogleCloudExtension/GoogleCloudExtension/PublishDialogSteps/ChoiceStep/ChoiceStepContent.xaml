@@ -15,12 +15,34 @@
 
         <TextBlock Text="Choose a target:" />
 
-        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center" Background="Red">
+        <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
             <ItemsControl ItemsSource="{Binding Choices}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <Button Content="{Binding Name}"
-                                Command="{Binding Command}" />
+                        <Button Content="{Binding}"
+                                    Height="60" Width="200"
+                                    Grid.Column="1"
+                                    HorizontalContentAlignment="Stretch"
+                                    VerticalContentAlignment="Stretch"
+                                    ToolTip="{Binding ToolTip}"
+                                    Command="{Binding Command}" Margin="0,0,0,20">
+                            <Button.ContentTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="5,0,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="1*" />
+                                            <ColumnDefinition Width="3*" />
+                                        </Grid.ColumnDefinitions>
+
+                                        <Image Source="{Binding Icon}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                        <ContentPresenter Content="{Binding Name}"
+                                                          Grid.Column="1"
+                                                          VerticalAlignment="Center"
+                                                          Margin="5,0,0,0"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </Button.ContentTemplate>
+                        </Button>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
