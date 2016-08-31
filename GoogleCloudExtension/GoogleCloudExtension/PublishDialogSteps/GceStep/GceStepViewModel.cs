@@ -23,6 +23,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         private Instance _selectedInstance;
         private IEnumerable<WindowsInstanceCredentials> _credentials;
         private WindowsInstanceCredentials _selectedCredentials;
+        private bool _busy;
 
         public AsyncPropertyValue<IEnumerable<Instance>> Instances { get; }
 
@@ -58,6 +59,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         public WeakCommand ManageCredentialsCommand { get; }
 
+        public bool Busy
+        {
+            get { return _busy; }
+            set { SetValueAndRaise(ref _busy, value); }
+        }
+
         private GceStepViewModel(GceStepContent content)
         {
             _content = content;
@@ -92,9 +99,24 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             throw new NotImplementedException();
         }
 
-        public override void Publish()
+        public override async void Publish()
         {
-            throw new NotImplementedException();
+            try
+            {
+                Busy = true;
+                GcpOutputWindow.Activate();
+                GcpOutputWindow.Clear();
+                GcpOutputWindow.OutputLine($"Publishing {_currentProject.Name} to Compute Engine");
+                await AspNetPublisher.PublishAppAsync(
+                    _currentProject,
+                    SelectedInstance,
+                    SelectedCredentials,
+                    (l) => GcpOutputWindow.OutputLine(l));
+            }
+            finally
+            {
+                Busy = false;
+            }
         }
 
         public override void OnPushedToDialog(IPublishDialog dialog)

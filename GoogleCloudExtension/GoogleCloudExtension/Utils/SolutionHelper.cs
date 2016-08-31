@@ -40,6 +40,11 @@ namespace GoogleCloudExtension.Utils
 
         public Project SelectedProject => GetSelectedProject();
 
+        public void PublishProject(Project project)
+        {
+            SolutionBuild.PublishProject("Release", project.UniqueName, WaitForPublishToFinish: false);
+        }
+
         private Project GetSelectedProject()
         {
             var selectedProjectDirectory = GetSelectedProjectDirectory();
