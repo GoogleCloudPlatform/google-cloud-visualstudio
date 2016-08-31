@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.PublishDialog
         /// <summary>
         /// VS Package that provides this command, not null.
         /// </summary>
-        private readonly Package package;
+        private readonly Package _package;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="PublishProjectMainMenuCommand"/> class.
@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.PublishDialog
                 throw new ArgumentNullException("package");
             }
 
-            this.package = package;
+            _package = package;
 
             OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)
@@ -80,7 +80,7 @@ namespace GoogleCloudExtension.PublishDialog
         {
             get
             {
-                return this.package;
+                return _package;
             }
         }
 
