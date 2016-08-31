@@ -20,6 +20,7 @@ using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -33,7 +34,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         private Instance _selectedInstance;
         private IEnumerable<WindowsInstanceCredentials> _credentials;
         private WindowsInstanceCredentials _selectedCredentials;
-        private bool _busy;
+        private bool _openWebsite;
 
         public AsyncPropertyValue<IEnumerable<Instance>> Instances { get; }
 
@@ -69,10 +70,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         public WeakCommand ManageCredentialsCommand { get; }
 
-        public bool Busy
+        public bool OpenWebsite
         {
-            get { return _busy; }
-            set { SetValueAndRaise(ref _busy, value); }
+            get { return _openWebsite; }
+            set { SetValueAndRaise(ref _openWebsite, value); }
         }
 
         private GceStepViewModel(GceStepContent content)
@@ -104,17 +105,24 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         public override FrameworkElement Content => _content;
 
-        public override void Publish()
+        public override async void Publish()
         {
             GcpOutputWindow.Activate();
             GcpOutputWindow.Clear();
             GcpOutputWindow.OutputLine($"Publishing {_publishDialog.Project.Name} to Compute Engine");
-            AspNetPublisher.StartPublishApp(
+            var publishTask = AspNetPublisher.PublishAppAsync(
                 _publishDialog.Project,
                 SelectedInstance,
                 SelectedCredentials,
                 (l) => GcpOutputWindow.OutputLine(l));
             _publishDialog.Finished();
+
+            await publishTask;
+            if (OpenWebsite)
+            {
+                var url = SelectedInstance.GetDestinationAppUri();
+                Process.Start(url);
+            }
         }
 
         public override void OnPushedToDialog(IPublishDialog dialog)

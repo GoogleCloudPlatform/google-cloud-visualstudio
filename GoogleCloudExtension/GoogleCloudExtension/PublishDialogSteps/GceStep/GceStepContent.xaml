@@ -16,7 +16,7 @@
                   IsSynchronizedWithCurrentItem="True"
                   SelectedItem="{Binding SelectedInstance, Mode=TwoWay}" />
 
-        <Grid>
+        <Grid Margin="0,5,0,0">
             <Grid.RowDefinitions>
                 <RowDefinition />
                 <RowDefinition />
@@ -27,7 +27,7 @@
                 <ColumnDefinition Width="25" />
             </Grid.ColumnDefinitions>
             
-            <TextBlock Grid.ColumnSpan="2" Margin="0,5,0,0">Select account:</TextBlock>
+            <TextBlock Grid.ColumnSpan="2">Select account:</TextBlock>
             <ComboBox ItemsSource="{Binding Credentials}"
                       IsEnabled="{Binding Instances.IsCompleted}"
                       IsSynchronizedWithCurrentItem="True"
@@ -36,6 +36,11 @@
                       SelectedItem="{Binding SelectedCredentials, Mode=TwoWay}" Margin="0,0,5,0" />
             <Button Content="..." Grid.Row="1" Grid.Column="1" Command="{Binding ManageCredentialsCommand}" />
         </Grid>
+
+        <CheckBox Margin="0,8,0,0"
+                  IsEnabled="{Binding Instances.IsCompleted}"
+                  Content="Open website after publish process finishes"
+                  IsChecked="{Binding OpenWebsite, Mode=TwoWay}" />
 
     </StackPanel>
 </UserControl>

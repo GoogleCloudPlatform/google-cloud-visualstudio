@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.Utils
         private static readonly Lazy<string> s_msbuildPath = new Lazy<string>(GetMsbuildPath);
         private static readonly Lazy<string> s_msdeployPath = new Lazy<string>(GetMsdeployPath);
 
-        public static async void StartPublishApp(
+        public static async Task PublishAppAsync(
             EnvDTE.Project project,
             Instance targetInstance,
             WindowsInstanceCredentials credentials,
