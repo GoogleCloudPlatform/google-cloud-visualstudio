@@ -16,7 +16,7 @@ namespace GoogleCloudExtension.Utils
         private static readonly Lazy<string> s_msbuildPath = new Lazy<string>(GetMsbuildPath);
         private static readonly Lazy<string> s_msdeployPath = new Lazy<string>(GetMsdeployPath);
 
-        public static async Task PublishAppAsync(
+        public static async void StartPublishApp(
             EnvDTE.Project project,
             Instance targetInstance,
             WindowsInstanceCredentials credentials,
@@ -35,9 +35,15 @@ namespace GoogleCloudExtension.Utils
                 return;
             }
 
-            await DeployAppAsync(stageDirectory, publishSettingsPath, outputAction);
+            if (!await DeployAppAsync(stageDirectory, publishSettingsPath, outputAction))
+            {
+                outputAction($"Failed to publish project {project.Name}");
+            }
 
             File.Delete(publishSettingsPath);
+            // TODO: Delete the temporary directory with the app bundle.
+
+            outputAction($"Project {project.Name} succesfully published to Compute Engine instance {targetInstance.Name}");
         }
 
         private static async Task<bool> DeployAppAsync(string stageDirectory, string publishSettingsPath, Action<string> outputAction)

@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
     public class GceStepViewModel : PublishDialogStepBase
     {
         private readonly GceStepContent _content;
-        private EnvDTE.Project _currentProject;
+        private IPublishDialog _publishDialog;
         private Instance _selectedInstance;
         private IEnumerable<WindowsInstanceCredentials> _credentials;
         private WindowsInstanceCredentials _selectedCredentials;
@@ -94,34 +94,22 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         public override FrameworkElement Content => _content;
 
-        public override IPublishDialogStep Next()
+        public override void Publish()
         {
-            throw new NotImplementedException();
-        }
-
-        public override async void Publish()
-        {
-            try
-            {
-                Busy = true;
-                GcpOutputWindow.Activate();
-                GcpOutputWindow.Clear();
-                GcpOutputWindow.OutputLine($"Publishing {_currentProject.Name} to Compute Engine");
-                await AspNetPublisher.PublishAppAsync(
-                    _currentProject,
-                    SelectedInstance,
-                    SelectedCredentials,
-                    (l) => GcpOutputWindow.OutputLine(l));
-            }
-            finally
-            {
-                Busy = false;
-            }
+            GcpOutputWindow.Activate();
+            GcpOutputWindow.Clear();
+            GcpOutputWindow.OutputLine($"Publishing {_publishDialog.Project.Name} to Compute Engine");
+            AspNetPublisher.StartPublishApp(
+                _publishDialog.Project,
+                SelectedInstance,
+                SelectedCredentials,
+                (l) => GcpOutputWindow.OutputLine(l));
+            _publishDialog.Finished();
         }
 
         public override void OnPushedToDialog(IPublishDialog dialog)
         {
-            _currentProject = dialog.Project;
+            _publishDialog = dialog;
         }
 
         #endregion

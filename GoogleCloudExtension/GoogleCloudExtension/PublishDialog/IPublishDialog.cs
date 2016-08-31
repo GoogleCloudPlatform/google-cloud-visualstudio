@@ -12,5 +12,7 @@ namespace GoogleCloudExtension.PublishDialog
         Project Project { get; }
 
         void PushStep(IPublishDialogStep step);
+
+        void Finished();
     }
 }

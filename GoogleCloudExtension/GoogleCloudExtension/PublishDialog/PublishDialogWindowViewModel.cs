@@ -121,6 +121,11 @@ namespace GoogleCloudExtension.PublishDialog
             PushStep(step);
         }
 
+        void IPublishDialog.Finished()
+        {
+            _owner.Close();
+        }
+
         #endregion
     }
 }
