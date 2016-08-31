@@ -1,18 +1,14 @@
-﻿using EnvDTE;
-using Google.Apis.Compute.v1.Data;
+﻿using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 
 namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 {

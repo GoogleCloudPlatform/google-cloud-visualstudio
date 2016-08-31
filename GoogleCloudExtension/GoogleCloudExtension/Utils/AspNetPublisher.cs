@@ -1,12 +1,8 @@
-﻿using EnvDTE;
-using Google.Apis.Compute.v1.Data;
+﻿using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Utils

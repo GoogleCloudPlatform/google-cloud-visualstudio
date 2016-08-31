@@ -1,9 +1,7 @@
-﻿using System;
-using System.ComponentModel.Design;
-using System.Globalization;
+﻿using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
-using GoogleCloudExtension.Utils;
+using System;
+using System.ComponentModel.Design;
 using System.Diagnostics;
 
 namespace GoogleCloudExtension.PublishDialog
