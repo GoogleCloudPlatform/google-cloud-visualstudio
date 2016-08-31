@@ -10,7 +10,7 @@ using System.Windows;
 
 namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 {
-    public class ChoiceStepViewModel : ViewModelBase, IPublishDialogStep
+    public class ChoiceStepViewModel : PublishDialogStepBase
     {
         private readonly ChoiceStepContent _content;
         private IPublishDialog _dialog;
@@ -41,23 +41,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 
         #region IPublishDialogStep
 
-        bool IPublishDialogStep.CanGoNext => false;
+        public override FrameworkElement Content => _content;
 
-        bool IPublishDialogStep.CanPublish => false;
-
-        FrameworkElement IPublishDialogStep.Content => _content;
-
-        IPublishDialogStep IPublishDialogStep.Next()
-        {
-            throw new NotImplementedException();
-        }
-
-        void IPublishDialogStep.Publish()
-        {
-            throw new NotImplementedException();
-        }
-
-        void IPublishDialogStep.OnPushedToDialog(IPublishDialog dialog)
+        public override void OnPushedToDialog(IPublishDialog dialog)
         {
             _dialog = dialog;
         }

@@ -16,7 +16,7 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 {
-    public class GceStepViewModel : ViewModelBase, IPublishDialogStep
+    public class GceStepViewModel : PublishDialogStepBase
     {
         private readonly GceStepContent _content;
         private EnvDTE.Project _currentProject;
@@ -84,23 +84,19 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         #region IPublishDialogStep
 
-        bool IPublishDialogStep.CanGoNext => false;
+        public override FrameworkElement Content => _content;
 
-        bool IPublishDialogStep.CanPublish => true;
-
-        FrameworkElement IPublishDialogStep.Content => _content;
-
-        IPublishDialogStep IPublishDialogStep.Next()
+        public override IPublishDialogStep Next()
         {
             throw new NotImplementedException();
         }
 
-        void IPublishDialogStep.Publish()
+        public override void Publish()
         {
             throw new NotImplementedException();
         }
 
-        void IPublishDialogStep.OnPushedToDialog(IPublishDialog dialog)
+        public override void OnPushedToDialog(IPublishDialog dialog)
         {
             _currentProject = dialog.Project;
         }

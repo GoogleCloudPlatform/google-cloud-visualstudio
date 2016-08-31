@@ -147,6 +147,7 @@
     </Compile>
     <Compile Include="PublishDialog\IPublishDialog.cs" />
     <Compile Include="PublishDialog\IPublishDialogStep.cs" />
+    <Compile Include="PublishDialog\PublishDialogStepBase.cs" />
     <Compile Include="PublishDialog\PublishDialogWindow.cs" />
     <Compile Include="PublishDialog\PublishDialogWindowContent.xaml.cs">
       <DependentUpon>PublishDialogWindowContent.xaml</DependentUpon>

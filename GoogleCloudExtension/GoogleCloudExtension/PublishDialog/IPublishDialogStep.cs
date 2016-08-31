@@ -11,7 +11,11 @@ namespace GoogleCloudExtension.PublishDialog
     {
         bool CanGoNext { get; }
 
+        event EventHandler CanGoNextChanged;
+
         bool CanPublish { get; }
+
+        event EventHandler CanPublishChanged;
 
         FrameworkElement Content { get; }
 
