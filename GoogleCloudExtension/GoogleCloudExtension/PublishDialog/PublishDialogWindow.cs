@@ -1,6 +1,7 @@
 ﻿using EnvDTE;
 using GoogleCloudExtension.PublishDialogSteps.ChoiceStep;
 using GoogleCloudExtension.Theming;
+using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +26,12 @@ namespace GoogleCloudExtension.PublishDialog
         {
             var dialog = new PublishDialogWindow(project);
             dialog.ShowModal();
+        }
+
+        public static bool CanPublish(Project project)
+        {
+            var type = project.GetProjectType();
+            return type == KnownProjectTypes.WebApplication;
         }
     }
 }

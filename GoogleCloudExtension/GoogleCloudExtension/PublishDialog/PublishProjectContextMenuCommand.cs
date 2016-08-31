@@ -104,7 +104,7 @@ namespace GoogleCloudExtension.PublishDialog
             }
 
             var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
-            if (selectedProject == null)
+            if (selectedProject == null || !PublishDialogWindow.CanPublish(selectedProject))
             {
                 menuCommand.Visible = false;
             }

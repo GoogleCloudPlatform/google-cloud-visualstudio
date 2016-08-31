@@ -106,15 +106,15 @@ namespace GoogleCloudExtension.PublishDialog
             menuCommand.Visible = true;
 
             var startupProject = SolutionHelper.CurrentSolution.StartupProject;
-            if (startupProject != null)
-            {
-                menuCommand.Enabled = true;
-                menuCommand.Text = $"Publish {startupProject.Name} to Google Cloud...";
-            }
-            else
+            if (startupProject == null)
             {
                 menuCommand.Enabled = false;
                 menuCommand.Text = $"Publish project to Google Cloud...";
+            }
+            else
+            {
+                menuCommand.Enabled = PublishDialogWindow.CanPublish(startupProject);
+                menuCommand.Text = $"Publish {startupProject.Name} to Google Cloud...";
             }
         }
     }
