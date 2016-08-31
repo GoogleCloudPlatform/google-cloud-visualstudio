@@ -87,7 +87,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
             var instances = await dataSource.GetInstanceListAsync();
-            return instances.Where(x => x.IsRunning() && x.IsWindowsInstance());
+            return instances.Where(x => x.IsRunning() && x.IsWindowsInstance()).OrderBy(x => x.Name);
         }
 
         #region IPublishDialogStep
