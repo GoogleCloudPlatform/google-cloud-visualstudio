@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         {
             _content = content;
 
-            Instances = AsyncPropertyValueUtils.CreateAsyncProperty(GetAllAspNetInstances());
+            Instances = AsyncPropertyValueUtils.CreateAsyncProperty(GetAllWindowsInstances());
 
             ManageCredentialsCommand = new WeakCommand(OnManageCredentialsCommand, canExecuteCommand: false);
         }
@@ -73,14 +73,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             UpdateCredentials();
         }
 
-        private async Task<IEnumerable<Instance>> GetAllAspNetInstances()
+        private async Task<IEnumerable<Instance>> GetAllWindowsInstances()
         {
             var dataSource = new GceDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
             var instances = await dataSource.GetInstanceListAsync();
-            return instances.Where(x => x.IsRunning() && x.IsAspnetInstance());
+            return instances.Where(x => x.IsRunning() && x.IsWindowsInstance());
         }
 
         #region IPublishDialogStep
