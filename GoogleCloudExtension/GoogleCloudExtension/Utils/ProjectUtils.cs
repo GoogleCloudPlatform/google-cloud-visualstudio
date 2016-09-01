@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using EnvDTE;
+using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
@@ -22,6 +23,7 @@ namespace GoogleCloudExtension.Utils
     {
         None,
         WebApplication,
+        NetCoreWebApplication,
     }
 
     internal static class ProjectUtils
@@ -31,24 +33,33 @@ namespace GoogleCloudExtension.Utils
 
         public static KnownProjectTypes GetProjectType(this Project project)
         {
-            var dom = XDocument.Load(project.FullName);
-            var projectGuids = dom.Root
-                .Elements(XName.Get("PropertyGroup", MsbuildNamespace))
-                .Descendants(XName.Get("ProjectTypeGuids", MsbuildNamespace))
-                .Select(x => x.Value)
-                .FirstOrDefault();
+            var projectFullPath = project.FullName;
 
-            if (projectGuids == null)
+            if (Path.GetExtension(projectFullPath) == ".xproj")
             {
+                return KnownProjectTypes.NetCoreWebApplication;
+            }
+            else
+            {
+                var dom = XDocument.Load(project.FullName);
+                var projectGuids = dom.Root
+                    .Elements(XName.Get("PropertyGroup", MsbuildNamespace))
+                    .Descendants(XName.Get("ProjectTypeGuids", MsbuildNamespace))
+                    .Select(x => x.Value)
+                    .FirstOrDefault();
+
+                if (projectGuids == null)
+                {
+                    return KnownProjectTypes.None;
+                }
+
+                var guids = projectGuids.Split(';');
+                if (guids.Contains(WebApplicationGuid))
+                {
+                    return KnownProjectTypes.WebApplication;
+                }
                 return KnownProjectTypes.None;
             }
-
-            var guids = projectGuids.Split(';');
-            if (guids.Contains(WebApplicationGuid))
-            {
-                return KnownProjectTypes.WebApplication;
-            }
-            return KnownProjectTypes.None;
         }
     }
 }
