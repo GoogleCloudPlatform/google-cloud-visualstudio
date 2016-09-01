@@ -69,7 +69,7 @@ namespace GoogleCloudExtension.Utils
         /// Returns the <seealso cref="SolutionBuild2"/> associated with the current solution.
         /// </summary>
         private SolutionBuild2 SolutionBuild => _solution.SolutionBuild as SolutionBuild2;
-        
+
         private SolutionHelper(Solution solution)
         {
             _solution = solution;
