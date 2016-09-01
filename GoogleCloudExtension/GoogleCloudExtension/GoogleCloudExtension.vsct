@@ -60,7 +60,7 @@
     </Groups>
 
     <Buttons>
-      <!-- This command shows the tool window that managed AppEngine apps. -->
+      <!-- This command shows the Cloud Explorer tool window. -->
       <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidCloudExplorerToolWindowCommand" priority="0x0200" type="Button">
         <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" />
         <Strings>
