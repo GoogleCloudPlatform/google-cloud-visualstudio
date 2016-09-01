@@ -20,9 +20,9 @@
 
     <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
         <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Caption="Prev" Command="{Binding DataContext.PrevCommand, Source={StaticResource content}}"/>
-            <theming:DialogButtonInfo Caption="Next" Command="{Binding DataContext.NextCommand, Source={StaticResource content}}"/>
-            <theming:DialogButtonInfo Caption="Publish" Command="{Binding DataContext.PublishCommand, Source={StaticResource content}}"/>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogPrevButtonCaption}" Command="{Binding DataContext.PrevCommand, Source={StaticResource content}}"/>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogNextButtonCaption}" Command="{Binding DataContext.NextCommand, Source={StaticResource content}}"/>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogPublishButtonCaption}" Command="{Binding DataContext.PublishCommand, Source={StaticResource content}}"/>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCloseButtonCaption}" IsCancel="true" />
         </theming:CommonDialogWindowBaseContent.Buttons>
     </theming:CommonDialogWindowBaseContent>

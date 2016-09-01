@@ -1384,6 +1384,114 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Publish {0}.
+        /// </summary>
+        public static string PublishDialogCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App Engine Flex.
+        /// </summary>
+        public static string PublishDialogChoiceStepAppEngineFlexName {
+            get {
+                return ResourceManager.GetString("PublishDialogChoiceStepAppEngineFlexName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploy to App Engine Flex.
+        /// </summary>
+        public static string PublishDialogChoiceStepAppEngineToolTip {
+            get {
+                return ResourceManager.GetString("PublishDialogChoiceStepAppEngineToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compute Engine.
+        /// </summary>
+        public static string PublishDialogChoiceStepGceName {
+            get {
+                return ResourceManager.GetString("PublishDialogChoiceStepGceName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploy to Compute Engine.
+        /// </summary>
+        public static string PublishDialogChoiceStepGceToolTip {
+            get {
+                return ResourceManager.GetString("PublishDialogChoiceStepGceToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a target:.
+        /// </summary>
+        public static string PublishDialogChoiceStepMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogChoiceStepMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open website after publish process finishes.
+        /// </summary>
+        public static string PublishDialogGceStepOpenWebsiteCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogGceStepOpenWebsiteCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select account:.
+        /// </summary>
+        public static string PublishDialogGceStepSelectCredentialsMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogGceStepSelectCredentialsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select instance:.
+        /// </summary>
+        public static string PublishDialogGceStepSelectInstanceMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogGceStepSelectInstanceMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        public static string PublishDialogNextButtonCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogNextButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prev.
+        /// </summary>
+        public static string PublishDialogPrevButtonCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogPrevButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish.
+        /// </summary>
+        public static string PublishDialogPublishButtonCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogPublishButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to reset the password for the user {0} in instance {1}? This operation cannot be cancelled..
         /// </summary>
         public static string ResetPasswordConfirmationPromptMessage {

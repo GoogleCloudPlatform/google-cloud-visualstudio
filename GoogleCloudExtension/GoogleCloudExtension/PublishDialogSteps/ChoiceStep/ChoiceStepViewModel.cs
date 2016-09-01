@@ -61,21 +61,21 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
             {
                 new Choice
                 {
-                    Name = "App Engine Flex",
+                    Name = Resources.PublishDialogChoiceStepAppEngineFlexName,
                     Command = new WeakCommand(
                         OnAppEngineChoiceCommand,
                         canExecuteCommand: false),
                     Icon = s_appEngineIcon.Value,
-                    ToolTip = "Deploy to App Engine Flex"
+                    ToolTip = Resources.PublishDialogChoiceStepAppEngineToolTip
                 },
                 new Choice
                 {
-                    Name = "Compute Engine",
+                    Name = Resources.PublishDialogChoiceStepGceName,
                     Command = new WeakCommand(
                         OnGceChoiceCommand,
                         canExecuteCommand: projectType == KnownProjectTypes.WebApplication),
                     Icon = s_gceIcon.Value,
-                    ToolTip = "Deploy to Compute Engine"
+                    ToolTip = Resources.PublishDialogChoiceStepGceToolTip
                 },
             };
         }

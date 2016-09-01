@@ -16,6 +16,7 @@ using EnvDTE;
 using GoogleCloudExtension.PublishDialogSteps.ChoiceStep;
 using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
+using System;
 
 namespace GoogleCloudExtension.PublishDialog
 {
@@ -26,7 +27,8 @@ namespace GoogleCloudExtension.PublishDialog
     {
         private PublishDialogWindowViewModel ViewModel { get; }
 
-        private PublishDialogWindow(Project project) : base("Publish Application", 500, 400)
+        private PublishDialogWindow(Project project)
+            : base(String.Format(GoogleCloudExtension.Resources.PublishDialogCaption, project.Name), 500, 400)
         {
             var initialStep = ChoiceStepViewModel.CreateStep();
 

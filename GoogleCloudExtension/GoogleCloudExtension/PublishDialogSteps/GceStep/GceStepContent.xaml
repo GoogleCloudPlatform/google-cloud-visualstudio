@@ -4,12 +4,13 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialogSteps.GceStep"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{x:Type local:GceStepViewModel}">
 
     <StackPanel>
-        <TextBlock>Select instance:</TextBlock>
+        <TextBlock Text="{x:Static ext:Resources.PublishDialogGceStepSelectInstanceMessage}" />
         <ComboBox ItemsSource="{Binding Instances.Value}"
                   DisplayMemberPath="Name"
                   IsEnabled="{Binding Instances.IsCompleted}"
@@ -26,20 +27,24 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="25" />
             </Grid.ColumnDefinitions>
-            
-            <TextBlock Grid.ColumnSpan="2">Select account:</TextBlock>
+
+            <TextBlock Grid.ColumnSpan="2" Text="{x:Static ext:Resources.PublishDialogGceStepSelectCredentialsMessage}" />
             <ComboBox ItemsSource="{Binding Credentials}"
                       IsEnabled="{Binding Instances.IsCompleted}"
                       IsSynchronizedWithCurrentItem="True"
                       DisplayMemberPath="User"
                       Grid.Row="1"
                       SelectedItem="{Binding SelectedCredentials, Mode=TwoWay}" Margin="0,0,5,0" />
-            <Button Content="..." Grid.Row="1" Grid.Column="1" Command="{Binding ManageCredentialsCommand}" />
+            <Button Content="..."
+                    ToolTip="{x:Static ext:Resources.WindowsCredentialsChooserButtonToolTip}"
+                    Grid.Row="1"
+                    Grid.Column="1"
+                    Command="{Binding ManageCredentialsCommand}" />
         </Grid>
 
         <CheckBox Margin="0,8,0,0"
                   IsEnabled="{Binding Instances.IsCompleted}"
-                  Content="Open website after publish process finishes"
+                  Content="{x:Static ext:Resources.PublishDialogGceStepOpenWebsiteCaption}"
                   IsChecked="{Binding OpenWebsite, Mode=TwoWay}" />
 
     </StackPanel>
