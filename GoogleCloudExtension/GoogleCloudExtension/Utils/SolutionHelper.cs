@@ -24,37 +24,55 @@ using System.Runtime.InteropServices;
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
-    /// This class wraps the Visual Studio solution.
+    /// This class wraps the Visual Studio solution and simplifies its usage.
     /// </summary>
     internal class SolutionHelper
     {
         private readonly Solution _solution;
 
-        internal SolutionHelper(Solution solution)
-        {
-            _solution = solution;
-        }
-
+        /// <summary>
+        /// Returns the current solution open, null if no solution is present.
+        /// </summary>
         public static SolutionHelper CurrentSolution
         {
             get
             {
                 var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
-                return new SolutionHelper(dte.Solution);
+                var solution = dte.Solution;
+                if (solution != null)
+                {
+                    return new SolutionHelper(dte.Solution);
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 
-        private SolutionBuild2 SolutionBuild => _solution.SolutionBuild as SolutionBuild2;
+        /// <summary>
+        /// Returns the path to the root of the solution.
+        /// </summary>
+        public string SolutionRoot => _solution.FullName;
 
-        public string Root => _solution.FullName;
-
+        /// <summary>
+        /// Returns the startup project for the current solution.
+        /// </summary>
         public Project StartupProject => GetStartupProject();
 
+        /// <summary>
+        /// Returns the selected project in the Solution Explorer.
+        /// </summary>
         public Project SelectedProject => GetSelectedProject();
 
-        public void PublishProject(Project project)
+        /// <summary>
+        /// Returns the <seealso cref="SolutionBuild2"/> associated with the current solution.
+        /// </summary>
+        private SolutionBuild2 SolutionBuild => _solution.SolutionBuild as SolutionBuild2;
+        
+        private SolutionHelper(Solution solution)
         {
-            SolutionBuild.PublishProject("Release", project.UniqueName, WaitForPublishToFinish: false);
+            _solution = solution;
         }
 
         private Project GetSelectedProject()
@@ -76,6 +94,13 @@ namespace GoogleCloudExtension.Utils
             return null;
         }
 
+        /// <summary>
+        /// Uses COM interop to find out what is the selected node in the Solution Explorer and from that what
+        /// is the path to the directory that contains it.
+        /// Note: This method does not guarantee that the selected node is a projet, the caller should ensure that
+        /// it is called in a context in which it will.
+        /// </summary>
+        /// <returns>The path to the directory that contains the project.</returns>
         private static string GetSelectedProjectDirectory()
         {
             var monitorSelection = Package.GetGlobalService(typeof(SVsShellMonitorSelection)) as IVsMonitorSelection;
@@ -127,21 +152,18 @@ namespace GoogleCloudExtension.Utils
             var sb = SolutionBuild;
             if (sb == null)
             {
-                ActivityLogUtils.LogInfo("No startup project, no solution loaded yet.");
                 return null;
             }
 
             var startupProjects = sb.StartupProjects as Array;
             if (startupProjects == null)
             {
-                ActivityLogUtils.LogInfo("No startup projects in solution.");
                 return null;
             }
 
             string startupProjectFilePath = startupProjects.GetValue(0) as string;
             if (startupProjectFilePath == null)
             {
-                ActivityLogUtils.LogInfo("No startup project name.");
                 return null;
             }
 

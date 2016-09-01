@@ -22,11 +22,22 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Deployment
 {
+    /// <summary>
+    /// This class offers services to perform deployments for ASP.NET 4.x applications to a GCE VM.
+    /// </summary>
     public static class AspnetDeployment
     {
         private static readonly Lazy<string> s_msbuildPath = new Lazy<string>(GetMsbuildPath);
         private static readonly Lazy<string> s_msdeployPath = new Lazy<string>(GetMsdeployPath);
 
+        /// <summary>
+        /// Publishes an ASP.NET 4.x project to the given GCE <seealso cref="Instance"/>.
+        /// </summary>
+        /// <param name="projectPath">The full path to the project file.</param>
+        /// <param name="targetInstance">The instance to which deploy.</param>
+        /// <param name="credentials">The Windows credentials to use to deploy to the <paramref name="targetInstance"/>.</param>
+        /// <param name="outputAction">The action to call with lines of output.</param>
+        /// <returns></returns>
         public static async Task PublishProjectAsync(
             string projectPath,
             Instance targetInstance,
