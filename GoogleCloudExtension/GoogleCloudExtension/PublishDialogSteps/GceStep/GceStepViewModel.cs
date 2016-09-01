@@ -20,6 +20,7 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -108,11 +109,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
         public override async void Publish()
         {
+            var project = _publishDialog.Project;
+
             GcpOutputWindow.Activate();
             GcpOutputWindow.Clear();
-            GcpOutputWindow.OutputLine($"Publishing {_publishDialog.Project.Name} to Compute Engine");
+            GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishStepStartMessage, project.Name));
 
-            var project = _publishDialog.Project;
             _publishDialog.Finished();
 
             var result = await AspnetDeployment.PublishProjectAsync(
@@ -122,7 +124,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                 (l) => GcpOutputWindow.OutputLine(l));
             if (result)
             {
-                GcpOutputWindow.OutputLine($"Project {project.Name} succesfully published to Compute Engine instance {SelectedInstance.Name}");
+                GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishSuccessMessage, project.Name, SelectedInstance.Name));
                 if (OpenWebsite)
                 {
                     var url = SelectedInstance.GetDestinationAppUri();
@@ -131,7 +133,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             }
             else
             {
-                GcpOutputWindow.OutputLine($"Failed to publish project {project.Name}.");
+                GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishFailedMessage, project.Name));
             }
         }
 

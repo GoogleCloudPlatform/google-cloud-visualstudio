@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -1137,6 +1137,33 @@ namespace GoogleCloudExtension
         public static string CloudExplorerToolWindowCaptionNoAccount {
             get {
                 return ResourceManager.GetString("CloudExplorerToolWindowCaptionNoAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to publish project {0}..
+        /// </summary>
+        public static string GcePublishFailedMessage {
+            get {
+                return ResourceManager.GetString("GcePublishFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publishing {0} to Compute Engine..
+        /// </summary>
+        public static string GcePublishStepStartMessage {
+            get {
+                return ResourceManager.GetString("GcePublishStepStartMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project {0} succesfully published to Compute Engine instance {1}..
+        /// </summary>
+        public static string GcePublishSuccessMessage {
+            get {
+                return ResourceManager.GetString("GcePublishSuccessMessage", resourceCulture);
             }
         }
         
