@@ -22,6 +22,11 @@ using System.Windows.Media;
 
 namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 {
+    /// <summary>
+    /// The view model for the publish dialog step that allows the user to choose the target
+    /// for the publish process. This is always the first step to be shown in the wizard, and it
+    /// navigates to the step specified by the user pressing the choice button.
+    /// </summary>
     public class ChoiceStepViewModel : PublishDialogStepBase
     {
         private const string AppEngineIconPath = "PublishDialogSteps/ChoiceStep/Resources/AppEngine_128px_Retina.png";
@@ -34,6 +39,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
         private IPublishDialog _dialog;
         private IEnumerable<Choice> _choices;
 
+        /// <summary>
+        /// The choices available for the project being published.
+        /// </summary>
         public IEnumerable<Choice> Choices
         {
             get { return _choices; }
@@ -80,7 +88,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
         private void OnGceChoiceCommand()
         {
             var nextStep = GceStepViewModel.CreateStep();
-            _dialog.PushStep(nextStep);
+            _dialog.NavigateToStep(nextStep);
         }
 
         #region IPublishDialogStep

@@ -19,6 +19,9 @@ using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.PublishDialog
 {
+    /// <summary>
+    /// This class implements the window that hosts the publish dialog wizard.
+    /// </summary>
     public class PublishDialogWindow : CommonDialogWindowBase
     {
         private PublishDialogWindowViewModel ViewModel { get; }
@@ -31,12 +34,21 @@ namespace GoogleCloudExtension.PublishDialog
             Content = new PublishDialogWindowContent { DataContext = ViewModel };
         }
 
+        /// <summary>
+        /// Starts the publish wizard for the given <paramref name="project"/>.
+        /// </summary>
+        /// <param name="project">The project to publish.</param>
         public static void PromptUser(Project project)
         {
             var dialog = new PublishDialogWindow(project);
             dialog.ShowModal();
         }
 
+        /// <summary>
+        /// Returns true if <paramref name="project"/> can be published using this wizard.
+        /// </summary>
+        /// <param name="project">The project to check.</param>
+        /// <returns>True if the project is supported by this wizard, false otherwise.</returns>
         public static bool CanPublish(Project project)
         {
             var type = project.GetProjectType();

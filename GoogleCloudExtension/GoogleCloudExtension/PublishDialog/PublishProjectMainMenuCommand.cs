@@ -21,7 +21,7 @@ using System.Diagnostics;
 namespace GoogleCloudExtension.PublishDialog
 {
     /// <summary>
-    /// Command handler
+    /// This class implements the command handler for the menu item shown under "Tools > Google Cloud Tools".
     /// </summary>
     internal sealed class PublishProjectMainMenuCommand
     {

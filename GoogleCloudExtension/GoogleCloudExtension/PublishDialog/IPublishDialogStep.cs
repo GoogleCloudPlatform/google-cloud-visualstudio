@@ -17,22 +17,51 @@ using System.Windows;
 
 namespace GoogleCloudExtension.PublishDialog
 {
+    /// <summary>
+    /// Interface that defines the services offered by a publish dialog step.
+    /// </summary>
     public interface IPublishDialogStep
     {
+        /// <summary>
+        /// Returns whether the step can go to a next step.
+        /// </summary>
         bool CanGoNext { get; }
 
+        /// <summary>
+        /// Event raised whenever <seealso cref="CanGoNext"/> value changes.
+        /// </summary>
         event EventHandler CanGoNextChanged;
 
+        /// <summary>
+        /// Returns whether the step can perform the publish operation.
+        /// </summary>
         bool CanPublish { get; }
 
+        /// <summary>
+        /// Event raised whenever <seealso cref="CanPublish"/> value changes.
+        /// </summary>
         event EventHandler CanPublishChanged;
 
+        /// <summary>
+        /// Returns the content of the publish step.
+        /// </summary>
         FrameworkElement Content { get; }
 
+        /// <summary>
+        /// Returns the next step to navigate to when the next button is pressed.
+        /// </summary>
+        /// <returns>The next step to navigate to.</returns>
         IPublishDialogStep Next();
 
+        /// <summary>
+        /// Performs the publish step action, will only be aclled if <seealso cref="CanPublish"/> return true.
+        /// </summary>
         void Publish();
 
+        /// <summary>
+        /// Called every time that this step is at the top of the navigation stack and therefore visible.
+        /// </summary>
+        /// <param name="dialog">The dialog that is hosting this step.</param>
         void OnPushedToDialog(IPublishDialog dialog);
     }
 }

@@ -18,14 +18,29 @@ using System.Windows.Media;
 
 namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 {
+    /// <summary>
+    /// This class contains all of the data for a choice of target in the <seealso cref="ChoiceStepViewModel"/> step.
+    /// </summary>
     public class Choice : Model
     {
+        /// <summary>
+        /// Returns the name of the choice, App Engine, GCE, etc...
+        /// </summary>
         public string Name { get; set; }
 
+        /// <summary>
+        /// The tooltip string for the choice button.
+        /// </summary>
         public string ToolTip { get; set; }
 
+        /// <summary>
+        /// The command to execute when the user presses on the choice.
+        /// </summary>
         public ICommand Command { get; set; }
 
+        /// <summary>
+        /// The icon to show for the choice.
+        /// </summary>
         public ImageSource Icon { get; set; }
     }
 }

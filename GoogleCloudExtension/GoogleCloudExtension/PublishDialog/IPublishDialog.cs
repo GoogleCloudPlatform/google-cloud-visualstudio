@@ -16,12 +16,26 @@ using EnvDTE;
 
 namespace GoogleCloudExtension.PublishDialog
 {
+    /// <summary>
+    /// This interface is to be implemented by the Publish dialog and contains all of the services
+    /// offered from the publish dialog to the steps that it hosts.
+    /// </summary>
     public interface IPublishDialog
     {
+        /// <summary>
+        /// Returns the the VS project selected by the user.
+        /// </summary>
         Project Project { get; }
 
-        void PushStep(IPublishDialogStep step);
+        /// <summary>
+        /// This method pushes the given <seealso cref="IPublishDialogStep"/> to the navigation stack and activates it.
+        /// </summary>
+        /// <param name="step">The step to navigate to.</param>
+        void NavigateToStep(IPublishDialogStep step);
 
-        void Finished();
+        /// <summary>
+        /// Called from a step that wants to finish the flow. In essence closes the dialog.
+        /// </summary>
+        void FinishFlow();
     }
 }

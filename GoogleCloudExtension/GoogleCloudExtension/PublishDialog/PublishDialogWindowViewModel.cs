@@ -20,6 +20,10 @@ using System.Windows;
 
 namespace GoogleCloudExtension.PublishDialog
 {
+    /// <summary>
+    /// The view model for the <seealso cref="PublishDialogWindowContent"/> control. Implements all of the interaction
+    /// logic for the UI.
+    /// </summary>
     public class PublishDialogWindowViewModel : ViewModelBase, IPublishDialog
     {
         private readonly PublishDialogWindow _owner;
@@ -27,18 +31,33 @@ namespace GoogleCloudExtension.PublishDialog
         private readonly Stack<IPublishDialogStep> _stack = new Stack<IPublishDialogStep>();
         private FrameworkElement _content;
 
+        /// <summary>
+        /// The content to display to the user, the content of the active <seealso cref="IPublishDialogStep"/> .
+        /// </summary>
         public FrameworkElement Content
         {
             get { return _content; }
             set { SetValueAndRaise(ref _content, value); }
         }
 
+        /// <summary>
+        /// The command to execute when pressing the "Prev" button.
+        /// </summary>
         public WeakCommand PrevCommand { get; }
 
+        /// <summary>
+        /// The command to execute when pressing the "Next" button.
+        /// </summary>
         public WeakCommand NextCommand { get; }
 
+        /// <summary>
+        /// The command to execute when presing the "Publish" button.
+        /// </summary>
         public WeakCommand PublishCommand { get; }
 
+        /// <summary>
+        /// The current <seealso cref="IPublishDialogStep"/> being shown.
+        /// </summary>
         private IPublishDialogStep CurrentStep => _stack.Peek();
 
         public PublishDialogWindowViewModel(Project project, IPublishDialogStep initialStep, PublishDialogWindow owner)
@@ -127,12 +146,12 @@ namespace GoogleCloudExtension.PublishDialog
 
         Project IPublishDialog.Project => _project;
 
-        void IPublishDialog.PushStep(IPublishDialogStep step)
+        void IPublishDialog.NavigateToStep(IPublishDialogStep step)
         {
             PushStep(step);
         }
 
-        void IPublishDialog.Finished()
+        void IPublishDialog.FinishFlow()
         {
             _owner.Close();
         }

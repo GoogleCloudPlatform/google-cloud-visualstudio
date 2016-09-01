@@ -29,6 +29,9 @@ using System.Windows;
 
 namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 {
+    /// <summary>
+    /// The view model for the publish step that publishes the project to a GCE VM.
+    /// </summary>
     public class GceStepViewModel : PublishDialogStepBase
     {
         private readonly GceStepContent _content;
@@ -38,8 +41,15 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         private WindowsInstanceCredentials _selectedCredentials;
         private bool _openWebsite;
 
+        /// <summary>
+        /// The asynchrnous value that will resolve to the list of instances in the current GCP Project, and that are
+        /// the available target for the publish process.
+        /// </summary>
         public AsyncPropertyValue<IEnumerable<Instance>> Instances { get; }
 
+        /// <summary>
+        /// The selected GCE VM that will be the target of the publish process.
+        /// </summary>
         public Instance SelectedInstance
         {
             get { return _selectedInstance; }
@@ -51,12 +61,18 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             }
         }
 
+        /// <summary>
+        /// The list of credentials available for the selected <seealso cref="Instance"/>.
+        /// </summary>
         public IEnumerable<WindowsInstanceCredentials> Credentials
         {
             get { return _credentials; }
             private set { SetValueAndRaise(ref _credentials, value); }
         }
 
+        /// <summary>
+        /// The selected <seealso cref="WindowsInstanceCredentials"/> to use for the publish process.
+        /// </summary>
         public WindowsInstanceCredentials SelectedCredentials
         {
             get { return _selectedCredentials; }
@@ -68,10 +84,19 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             }
         }
 
+        /// <summary>
+        /// Returns whether there are credentials selected for the publish process.
+        /// </summary>
         public bool HasSelectedCredentials => SelectedCredentials != null;
 
+        /// <summary>
+        /// The command to execute when pressing the manage credentials button.
+        /// </summary>
         public WeakCommand ManageCredentialsCommand { get; }
 
+        /// <summary>
+        /// Whether to open the website after a succesful publish operation.
+        /// </summary>
         public bool OpenWebsite
         {
             get { return _openWebsite; }
@@ -115,7 +140,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             GcpOutputWindow.Clear();
             GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishStepStartMessage, project.Name));
 
-            _publishDialog.Finished();
+            _publishDialog.FinishFlow();
 
             var result = await AspnetDeployment.PublishProjectAsync(
                 project.FullName,
