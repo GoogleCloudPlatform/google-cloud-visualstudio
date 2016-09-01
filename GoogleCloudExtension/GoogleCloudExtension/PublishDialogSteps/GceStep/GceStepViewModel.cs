@@ -15,6 +15,7 @@
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.PublishDialog;
@@ -110,8 +111,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             GcpOutputWindow.Activate();
             GcpOutputWindow.Clear();
             GcpOutputWindow.OutputLine($"Publishing {_publishDialog.Project.Name} to Compute Engine");
-            var publishTask = AspNetPublisher.PublishAppAsync(
-                _publishDialog.Project,
+            var publishTask = AspnetDeployment.PublishProjectAsync(
+                _publishDialog.Project.FullName,
                 SelectedInstance,
                 SelectedCredentials,
                 (l) => GcpOutputWindow.OutputLine(l));

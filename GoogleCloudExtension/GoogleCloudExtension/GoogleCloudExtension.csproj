@@ -162,7 +162,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
-    <Compile Include="Utils\AspNetPublisher.cs" />
     <Compile Include="Utils\ProjectUtils.cs" />
     <Compile Include="Utils\SolutionHelper.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserViewModel.cs" />
@@ -546,6 +545,10 @@
     <ProjectReference Include="..\GoogleAnalyticsUtils\GoogleAnalyticsUtils.csproj">
       <Project>{a2d9ac4e-9621-4385-a175-316832f7bfdc}</Project>
       <Name>GoogleAnalyticsUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.Deployment\GoogleCloudExtension.Deployment.csproj">
+      <Project>{92c6e0d0-41d8-4ecc-87e1-ae72fca891fc}</Project>
+      <Name>GoogleCloudExtension.Deployment</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.GCloud\GoogleCloudExtension.GCloud.csproj">
       <Project>{95efac7e-4f6e-46f0-bcc8-90ee1487e1e1}</Project>

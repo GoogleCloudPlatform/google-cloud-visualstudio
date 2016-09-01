@@ -15,19 +15,20 @@
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.Utils;
 using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.Utils
+namespace GoogleCloudExtension.Deployment
 {
-    internal static class AspNetPublisher
+    public static class AspnetDeployment
     {
         private static readonly Lazy<string> s_msbuildPath = new Lazy<string>(GetMsbuildPath);
         private static readonly Lazy<string> s_msdeployPath = new Lazy<string>(GetMsdeployPath);
 
-        public static async Task PublishAppAsync(
-            EnvDTE.Project project,
+        public static async Task PublishProjectAsync(
+            string projectPath,
             Instance targetInstance,
             WindowsInstanceCredentials credentials,
             Action<string> outputAction)
@@ -39,21 +40,21 @@ namespace GoogleCloudExtension.Utils
             var publishSettingsContent = targetInstance.GeneratePublishSettings(credentials.User, credentials.Password);
             File.WriteAllText(publishSettingsPath, publishSettingsContent);
 
-            if (!await CreateAppBundleAsync(project, stageDirectory, outputAction))
+            if (!await CreateAppBundleAsync(projectPath, stageDirectory, outputAction))
             {
-                outputAction($"Failed to publish project {project.Name}");
+                outputAction($"Failed to publish project {projectPath}");
                 return;
             }
 
             if (!await DeployAppAsync(stageDirectory, publishSettingsPath, outputAction))
             {
-                outputAction($"Failed to publish project {project.Name}");
+                outputAction($"Failed to publish project {projectPath}");
             }
 
             File.Delete(publishSettingsPath);
             // TODO: Delete the temporary directory with the app bundle.
 
-            outputAction($"Project {project.Name} succesfully published to Compute Engine instance {targetInstance.Name}");
+            outputAction($"Project {projectPath} succesfully published to Compute Engine instance {targetInstance.Name}");
         }
 
         private static async Task<bool> DeployAppAsync(string stageDirectory, string publishSettingsPath, Action<string> outputAction)
@@ -78,9 +79,9 @@ namespace GoogleCloudExtension.Utils
             return result;
         }
 
-        private static async Task<bool> CreateAppBundleAsync(EnvDTE.Project project, string stageDirectory, Action<string> outputAction)
+        private static async Task<bool> CreateAppBundleAsync(string projectPath, string stageDirectory, Action<string> outputAction)
         {
-            var arguments = $@"""{project.FullName}""" + " " +
+            var arguments = $@"""{projectPath}""" + " " +
                 "/p:Configuration=Release " +
                 "/p:Platform=AnyCPU " +
                 "/t:WebPublish " +
