@@ -111,18 +111,27 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             GcpOutputWindow.Activate();
             GcpOutputWindow.Clear();
             GcpOutputWindow.OutputLine($"Publishing {_publishDialog.Project.Name} to Compute Engine");
-            var publishTask = AspnetDeployment.PublishProjectAsync(
-                _publishDialog.Project.FullName,
+
+            var project = _publishDialog.Project;
+            _publishDialog.Finished();
+
+            var result = await AspnetDeployment.PublishProjectAsync(
+                project.FullName,
                 SelectedInstance,
                 SelectedCredentials,
                 (l) => GcpOutputWindow.OutputLine(l));
-            _publishDialog.Finished();
-
-            await publishTask;
-            if (OpenWebsite)
+            if (result)
             {
-                var url = SelectedInstance.GetDestinationAppUri();
-                Process.Start(url);
+                GcpOutputWindow.OutputLine($"Project {project.Name} succesfully published to Compute Engine instance {SelectedInstance.Name}");
+                if (OpenWebsite)
+                {
+                    var url = SelectedInstance.GetDestinationAppUri();
+                    Process.Start(url);
+                }
+            }
+            else
+            {
+                GcpOutputWindow.OutputLine($"Failed to publish project {project.Name}.");
             }
         }
 

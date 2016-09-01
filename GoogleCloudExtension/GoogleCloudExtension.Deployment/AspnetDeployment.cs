@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="credentials">The Windows credentials to use to deploy to the <paramref name="targetInstance"/>.</param>
         /// <param name="outputAction">The action to call with lines of output.</param>
         /// <returns></returns>
-        public static async Task PublishProjectAsync(
+        public static async Task<bool> PublishProjectAsync(
             string projectPath,
             Instance targetInstance,
             WindowsInstanceCredentials credentials,
@@ -53,44 +53,32 @@ namespace GoogleCloudExtension.Deployment
 
             if (!await CreateAppBundleAsync(projectPath, stageDirectory, outputAction))
             {
-                outputAction($"Failed to publish project {projectPath}");
-                return;
+                return false;
             }
 
             if (!await DeployAppAsync(stageDirectory, publishSettingsPath, outputAction))
             {
-                outputAction($"Failed to publish project {projectPath}");
+                return false;
             }
 
             File.Delete(publishSettingsPath);
             // TODO: Delete the temporary directory with the app bundle.
 
-            outputAction($"Project {projectPath} succesfully published to Compute Engine instance {targetInstance.Name}");
+            return true;
         }
 
-        private static async Task<bool> DeployAppAsync(string stageDirectory, string publishSettingsPath, Action<string> outputAction)
+        private static Task<bool> DeployAppAsync(string stageDirectory, string publishSettingsPath, Action<string> outputAction)
         {
             var arguments = "-verb:sync " +
                 $@"-source:contentPath=""{stageDirectory}"" " +
                 $@"-dest:contentPath=""Default Web Site"",publishSettings=""{publishSettingsPath}"" " +
                 "-allowUntrusted";
 
-            outputAction($"Publishing projet with command:");
             outputAction($"msdeploy.exe {arguments}");
-            var result = await ProcessUtils.RunCommandAsync(s_msdeployPath.Value, arguments, (o, e) => outputAction(e.Line));
-            if (result)
-            {
-                outputAction("Command succeeded.");
-            }
-            else
-            {
-                outputAction("Command failed.");
-            }
-
-            return result;
+            return ProcessUtils.RunCommandAsync(s_msdeployPath.Value, arguments, (o, e) => outputAction(e.Line));
         }
 
-        private static async Task<bool> CreateAppBundleAsync(string projectPath, string stageDirectory, Action<string> outputAction)
+        private static Task<bool> CreateAppBundleAsync(string projectPath, string stageDirectory, Action<string> outputAction)
         {
             var arguments = $@"""{projectPath}""" + " " +
                 "/p:Configuration=Release " +
@@ -100,19 +88,8 @@ namespace GoogleCloudExtension.Deployment
                 "/p:DeleteExistingFiles=True " +
                 $@"/p:publishUrl=""{stageDirectory}""";
 
-            outputAction($"Execution command:");
             outputAction($"msbuild.exe {arguments}");
-            var result = await ProcessUtils.RunCommandAsync(s_msbuildPath.Value, arguments, (o, e) => outputAction(e.Line));
-            if (result)
-            {
-                outputAction("Coommand succeeded.");
-            }
-            else
-            {
-                outputAction("Command failed.");
-            }
-
-            return result;
+            return ProcessUtils.RunCommandAsync(s_msbuildPath.Value, arguments, (o, e) => outputAction(e.Line));
         }
 
         private static string GetMsbuildPath()
