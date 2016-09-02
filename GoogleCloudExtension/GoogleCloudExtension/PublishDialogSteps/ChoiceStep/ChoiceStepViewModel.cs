@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialogSteps.GceStep;
+using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;

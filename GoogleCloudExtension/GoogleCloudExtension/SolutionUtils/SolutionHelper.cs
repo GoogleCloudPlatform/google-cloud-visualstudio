@@ -21,7 +21,7 @@ using System;
 using System.IO;
 using System.Runtime.InteropServices;
 
-namespace GoogleCloudExtension.Utils
+namespace GoogleCloudExtension.SolutionUtils
 {
     /// <summary>
     /// This class wraps the Visual Studio solution and simplifies its usage.

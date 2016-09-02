@@ -160,9 +160,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SolutionUtils\KnownProjectTypes.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
-    <Compile Include="Utils\ProjectUtils.cs" />
-    <Compile Include="Utils\SolutionHelper.cs" />
+    <Compile Include="SolutionUtils\ISolutionProject.cs" />
+    <Compile Include="SolutionUtils\ProjectExtension.cs" />
+    <Compile Include="SolutionUtils\SolutionHelper.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserViewModel.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindow.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml.cs">

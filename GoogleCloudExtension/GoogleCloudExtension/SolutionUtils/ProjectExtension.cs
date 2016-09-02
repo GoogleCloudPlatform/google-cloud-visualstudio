@@ -17,16 +17,9 @@ using System.IO;
 using System.Linq;
 using System.Xml.Linq;
 
-namespace GoogleCloudExtension.Utils
+namespace GoogleCloudExtension.SolutionUtils
 {
-    internal enum KnownProjectTypes
-    {
-        None,
-        WebApplication,
-        NetCoreWebApplication,
-    }
-
-    internal static class ProjectUtils
+    internal static class ProjectExtension
     {
         private const string MsbuildNamespace = "http://schemas.microsoft.com/developer/msbuild/2003";
         private const string WebApplicationGuid = "{349c5851-65df-11da-9384-00065b846f21}";
