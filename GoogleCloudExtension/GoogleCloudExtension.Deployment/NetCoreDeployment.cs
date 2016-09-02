@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
@@ -45,6 +46,8 @@ namespace GoogleCloudExtension.Deployment
             public string Version { get; set; }
 
             public bool Promote { get; set; }
+
+            public Context Context { get; set; }
         }
 
         public static async Task<bool> PublishProjectAsync(
@@ -122,14 +125,13 @@ namespace GoogleCloudExtension.Deployment
 
         private static Task<bool> DeployAppBundleAsync(string stageDirectory, DeploymentOptions options, Action<string> outputAction)
         {
-            var version = String.IsNullOrEmpty(options.Version) ? "" : $"--version={options.Version}";
-            var promote = options.Promote ? "--promote" : "--no-promote";
             var appYamlPath = Path.Combine(stageDirectory, AppYamlName);
-            var command = $"app deploy \"{appYamlPath}\" {version} {promote} --verbosity=info --quiet";
-            var arguments = $"/c gcloud.cmd {command}";
-
-            outputAction($"gcloud {command}");
-            return ProcessUtils.RunCommandAsync("cmd.exe", arguments, (o, e) => outputAction(e.Line));
+            return GCloudWrapper.DeployAppAsync(
+                appYaml: appYamlPath,
+                version: options.Version,
+                promote: options.Promote,
+                outputAction: outputAction,
+                context: options.Context);
         }
 
         private static string GetDotnetPath()

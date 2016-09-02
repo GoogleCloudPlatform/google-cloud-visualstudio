@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using System;
@@ -57,7 +59,19 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         public override async void Publish()
         {
-            var options = new NetCoreDeployment.DeploymentOptions { Version = Version, Promote = Promote };
+            var context = new Context
+            {
+                CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
+                ProjectId = CredentialsStore.Default.CurrentProjectId,
+                AppName = GoogleCloudExtensionPackage.ApplicationName,
+                AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
+            };
+            var options = new NetCoreDeployment.DeploymentOptions
+            {
+                Version = Version,
+                Promote = Promote,
+                Context = context
+            };
             var project = _publishDialog.Project;
 
             GcpOutputWindow.Activate();
