@@ -1,8 +1,10 @@
-﻿using GoogleCloudExtension.Deployment;
+﻿using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,11 +65,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             if (result)
             {
                 GcpOutputWindow.OutputLine($"Project {project.Name} deployed to App Engine Flex.");
-                /*if (OpenWebsite)
-                {
-                    var url = SelectedInstance.GetDestinationAppUri();
-                    Process.Start(url);
-                }*/
             }
             else
             {
