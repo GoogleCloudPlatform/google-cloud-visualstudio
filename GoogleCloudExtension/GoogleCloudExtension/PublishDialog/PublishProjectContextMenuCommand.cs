@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.SolutionUtils;
-using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;

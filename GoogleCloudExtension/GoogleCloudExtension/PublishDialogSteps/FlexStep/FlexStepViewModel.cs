@@ -1,13 +1,7 @@
-﻿using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Deployment;
+﻿using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
