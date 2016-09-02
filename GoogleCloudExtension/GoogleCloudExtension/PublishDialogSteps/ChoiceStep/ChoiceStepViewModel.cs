@@ -56,7 +56,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 
         private IEnumerable<Choice> GetChoicesForCurrentProject()
         {
-            var projectType = _dialog.Project.GetProjectType();
+            var projectType = _dialog.Project.ProjectType;
 
             return new List<Choice>
             {

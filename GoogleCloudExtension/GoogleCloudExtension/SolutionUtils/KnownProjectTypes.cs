@@ -1,6 +1,6 @@
 ﻿namespace GoogleCloudExtension.SolutionUtils
 {
-    internal enum KnownProjectTypes
+    public enum KnownProjectTypes
     {
         None,
         WebApplication,

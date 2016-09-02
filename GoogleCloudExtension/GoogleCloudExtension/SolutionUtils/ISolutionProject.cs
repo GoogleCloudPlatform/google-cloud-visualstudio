@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.SolutionUtils
 {
-    internal interface ISolutionProject
+    public interface ISolutionProject
     {
         string Name { get; }
 

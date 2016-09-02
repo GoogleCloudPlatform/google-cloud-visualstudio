@@ -105,7 +105,7 @@ namespace GoogleCloudExtension.PublishDialog
         private void OnDeployCommand(object sender, EventArgs e)
         {
             var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
-            Debug.WriteLine($"Deploying project: {selectedProject.FullName}");
+            Debug.WriteLine($"Deploying project: {selectedProject.FullPath}");
             PublishDialogWindow.PromptUser(selectedProject);
         }
 
