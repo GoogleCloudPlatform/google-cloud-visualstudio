@@ -103,9 +103,9 @@ namespace GoogleCloudExtension.PublishDialog
         /// <param name="e">Event args.</param>
         private void OnDeployCommand(object sender, EventArgs e)
         {
-            var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
-            Debug.WriteLine($"Deploying project: {selectedProject.FullPath}");
-            PublishDialogWindow.PromptUser(selectedProject);
+            var project = SolutionHelper.CurrentSolution.StartupProject;
+            Debug.WriteLine($"Deploying project: {project.FullPath}");
+            PublishDialogWindow.PromptUser(project);
         }
 
         private void OnBeforeQueryStatus(object sender, EventArgs e)

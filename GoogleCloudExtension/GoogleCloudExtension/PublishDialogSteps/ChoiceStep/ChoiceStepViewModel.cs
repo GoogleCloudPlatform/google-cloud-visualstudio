@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.PublishDialog;
+using GoogleCloudExtension.PublishDialogSteps.FlexStep;
 using GoogleCloudExtension.PublishDialogSteps.GceStep;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
@@ -65,7 +66,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
                     Name = Resources.PublishDialogChoiceStepAppEngineFlexName,
                     Command = new WeakCommand(
                         OnAppEngineChoiceCommand,
-                        canExecuteCommand: false),
+                        canExecuteCommand: projectType == KnownProjectTypes.NetCoreWebApplication),
                     Icon = s_appEngineIcon.Value,
                     ToolTip = Resources.PublishDialogChoiceStepAppEngineToolTip
                 },
@@ -83,7 +84,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 
         private void OnAppEngineChoiceCommand()
         {
-            throw new NotImplementedException();
+            var nextStep = FlexStepViewModel.CreateStep();
+            _dialog.NavigateToStep(nextStep);
         }
 
         private void OnGceChoiceCommand()

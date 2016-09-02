@@ -141,6 +141,10 @@
       <DependentUpon>ChoiceStepContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="PublishDialogSteps\ChoiceStep\ChoiceStepViewModel.cs" />
+    <Compile Include="PublishDialogSteps\FlexStep\FlexStepContent.xaml.cs">
+      <DependentUpon>FlexStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialogSteps\FlexStep\FlexStepViewModel.cs" />
     <Compile Include="PublishDialogSteps\GceStep\GceStepViewModel.cs" />
     <Compile Include="PublishDialogSteps\GceStep\GceStepContent.xaml.cs">
       <DependentUpon>GceStepContent.xaml</DependentUpon>
@@ -512,6 +516,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PublishDialogSteps\ChoiceStep\ChoiceStepContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialogSteps\FlexStep\FlexStepContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

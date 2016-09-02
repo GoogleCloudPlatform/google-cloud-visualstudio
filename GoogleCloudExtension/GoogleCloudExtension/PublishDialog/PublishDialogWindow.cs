@@ -54,7 +54,8 @@ namespace GoogleCloudExtension.PublishDialog
         /// <returns>True if the project is supported by this wizard, false otherwise.</returns>
         public static bool CanPublish(ISolutionProject project)
         {
-            return project.ProjectType == KnownProjectTypes.WebApplication;
+            var projectType = project.ProjectType;
+            return projectType == KnownProjectTypes.WebApplication || projectType == KnownProjectTypes.NetCoreWebApplication;
         }
     }
 }
