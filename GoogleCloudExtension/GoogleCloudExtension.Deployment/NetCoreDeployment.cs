@@ -50,7 +50,7 @@ namespace GoogleCloudExtension.Deployment
             public Context Context { get; set; }
         }
 
-        public static async Task<bool> PublishProjectAsync(
+        public static async Task<NetCorePublishResult> PublishProjectAsync(
             string projectPath,
             DeploymentOptions options,
             Action<string> outputAction)
@@ -58,7 +58,7 @@ namespace GoogleCloudExtension.Deployment
             if (!File.Exists(projectPath))
             {
                 Debug.WriteLine($"Cannot find {projectPath}, not a valid project.");
-                return false;
+                return null;
             }
 
             var stageDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
@@ -66,18 +66,55 @@ namespace GoogleCloudExtension.Deployment
 
             if (!await CreateAppBundleAsync(projectPath, stageDirectory, outputAction))
             {
-                return false;
+                return null;
             }
 
             CopyOrCreateDockerfile(projectPath, stageDirectory);
 
             CopyOrCreateAppYaml(projectPath, stageDirectory);
 
-            var result = await DeployAppBundleAsync(stageDirectory, options, outputAction);
+            var effectiveVersion = options.Version ?? GetDefaultVersion();
+            var result = await DeployAppBundleAsync(
+                stageDirectory: stageDirectory,
+                version: effectiveVersion,
+                promote: options.Promote,
+                context: options.Context,
+                outputAction: outputAction);
+            if (!result)
+            {
+                return null;
+            }
 
-            // TODO: Cleanup the staging directory.
+            var service = GetAppEngineService(projectPath);
+            return new NetCorePublishResult(
+                projectId: options.Context.ProjectId,
+                service: service,
+                version: effectiveVersion,
+                promoted: options.Promote);
+        }
 
-            return result;
+        private static string GetAppEngineService(string projectPath)
+        {
+            var projectDirectory = Path.GetDirectoryName(projectPath);
+            var appYaml = Path.Combine(projectDirectory, AppYamlName);
+            if (!File.Exists(appYaml))
+            {
+                return "default";
+            }
+            else
+            {
+                // TODO: Load the app yaml and look for the service key.
+                return "default";
+            }
+        }
+
+        private static string GetDefaultVersion()
+        {
+            var now = DateTime.Now;
+            return String.Format(
+                "{0:0000}{1:00}{2:00}t{3:00}{4:00}{5:00}",
+                now.Year, now.Month, now.Day,
+                now.Hour, now.Minute, now.Second);
         }
 
         private static Task<bool> CreateAppBundleAsync(string projectPath, string stageDirectory, Action<string> outputAction)
@@ -123,15 +160,20 @@ namespace GoogleCloudExtension.Deployment
             }
         }
 
-        private static Task<bool> DeployAppBundleAsync(string stageDirectory, DeploymentOptions options, Action<string> outputAction)
+        private static Task<bool> DeployAppBundleAsync(
+            string stageDirectory,
+            string version,
+            bool promote,
+            Context context,
+            Action<string> outputAction)
         {
             var appYamlPath = Path.Combine(stageDirectory, AppYamlName);
             return GCloudWrapper.DeployAppAsync(
                 appYaml: appYamlPath,
-                version: options.Version,
-                promote: options.Promote,
+                version: version,
+                promote: promote,
                 outputAction: outputAction,
-                context: options.Context);
+                context: context);
         }
 
         private static string GetDotnetPath()

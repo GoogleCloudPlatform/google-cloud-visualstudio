@@ -18,6 +18,7 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using System;
+using System.Diagnostics;
 using System.Windows;
 
 namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
@@ -28,6 +29,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         private IPublishDialog _publishDialog;
         private string _version;
         private bool _promote;
+        private bool _openWebsite;
 
         public string Version
         {
@@ -39,6 +41,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         {
             get { return _promote; }
             set { SetValueAndRaise(ref _promote, value); }
+        }
+
+        public bool OpenWebsite
+        {
+            get { return _openWebsite; }
+            set { SetValueAndRaise(ref _openWebsite, value); }
         }
 
         private FlexStepViewModel(FlexStepContent content)
@@ -84,14 +92,22 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 project.FullPath,
                 options,
                 (l) => GcpOutputWindow.OutputLine(l));
-            if (result)
+            if (result!= null)
             {
                 GcpOutputWindow.OutputLine($"Project {project.Name} deployed to App Engine Flex.");
+                if (OpenWebsite)
+                {
+                    var url = result.GetDeploymentUrl();
+                    GcpOutputWindow.OutputLine($"Opening webiste {url}");
+                    Process.Start(url);
+                }
             }
             else
             {
                 GcpOutputWindow.OutputLine($"Failed to deploy project {project.Name} to App Engine Flex.");
             }
+
+
         }
 
         #endregion

@@ -11,6 +11,7 @@
         <TextBlock>Version name:</TextBlock>
         <TextBox Text="{Binding Version, Mode=TwoWay}" />
 
-        <CheckBox IsChecked="{Binding Promote, Mode=TwoWay}" Margin="0,5,0,0">Promote version.</CheckBox>
+        <CheckBox IsChecked="{Binding Promote, Mode=TwoWay}" Margin="0,5,0,0">Promote version</CheckBox>
+        <CheckBox IsChecked="{Binding OpenWebsite, Mode=TwoWay}" Margin="0,5,0,0">Open website after publish process finishes</CheckBox>
     </StackPanel>
 </UserControl>
