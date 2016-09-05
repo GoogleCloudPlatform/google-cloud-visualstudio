@@ -171,6 +171,7 @@
     <Compile Include="SolutionUtils\ISolutionProject.cs" />
     <Compile Include="SolutionUtils\ProjectExtension.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
+    <Compile Include="Utils\ProgressBarHelper.cs" />
     <Compile Include="Utils\StatusbarHelper.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserViewModel.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindow.cs" />

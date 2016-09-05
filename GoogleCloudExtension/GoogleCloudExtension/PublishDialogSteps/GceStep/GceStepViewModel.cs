@@ -142,11 +142,19 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
             _publishDialog.FinishFlow();
 
-            var result = await AspnetDeployment.PublishProjectAsync(
-                project.FullPath,
-                SelectedInstance,
-                SelectedCredentials,
-                (l) => GcpOutputWindow.OutputLine(l));
+            bool result;
+            using (var frozen = StatusbarHelper.Freeze())
+            using (var animationShown = StatusbarHelper.ShowDeployAnimation())
+            using (var progress = StatusbarHelper.ShowProgressBar())
+            {
+                result = await AspnetDeployment.PublishProjectAsync(
+                    project.FullPath,
+                    SelectedInstance,
+                    SelectedCredentials,
+                    progress,
+                    (l) => GcpOutputWindow.OutputLine(l));
+            }
+
             if (result)
             {
                 GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishSuccessMessage, project.Name, SelectedInstance.Name));

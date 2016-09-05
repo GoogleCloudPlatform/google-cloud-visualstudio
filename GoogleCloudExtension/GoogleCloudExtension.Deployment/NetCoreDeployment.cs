@@ -53,6 +53,7 @@ namespace GoogleCloudExtension.Deployment
         public static async Task<NetCorePublishResult> PublishProjectAsync(
             string projectPath,
             DeploymentOptions options,
+            IProgress<double> progress,
             Action<string> outputAction)
         {
             if (!File.Exists(projectPath))
@@ -68,10 +69,11 @@ namespace GoogleCloudExtension.Deployment
             {
                 return null;
             }
+            progress?.Report(0.5);
 
             CopyOrCreateDockerfile(projectPath, stageDirectory);
-
             CopyOrCreateAppYaml(projectPath, stageDirectory);
+            progress?.Report(0.6);
 
             var effectiveVersion = options.Version ?? GetDefaultVersion();
             var result = await DeployAppBundleAsync(
@@ -84,6 +86,7 @@ namespace GoogleCloudExtension.Deployment
             {
                 return null;
             }
+            progress?.Report(1);
 
             var service = GetAppEngineService(projectPath);
             return new NetCorePublishResult(

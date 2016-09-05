@@ -36,12 +36,14 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="projectPath">The full path to the project file.</param>
         /// <param name="targetInstance">The instance to which deploy.</param>
         /// <param name="credentials">The Windows credentials to use to deploy to the <paramref name="targetInstance"/>.</param>
+        /// <param name="progress">The progress indicator.</param>
         /// <param name="outputAction">The action to call with lines of output.</param>
         /// <returns></returns>
         public static async Task<bool> PublishProjectAsync(
             string projectPath,
             Instance targetInstance,
             WindowsInstanceCredentials credentials,
+            IProgress<double> progress,
             Action<string> outputAction)
         {
             var stageDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
@@ -55,11 +57,13 @@ namespace GoogleCloudExtension.Deployment
             {
                 return false;
             }
+            progress?.Report(0.5);
 
             if (!await DeployAppAsync(stageDirectory, publishSettingsPath, outputAction))
             {
                 return false;
             }
+            progress?.Report(1);
 
             File.Delete(publishSettingsPath);
             // TODO: Delete the temporary directory with the app bundle.

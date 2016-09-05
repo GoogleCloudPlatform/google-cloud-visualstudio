@@ -6,27 +6,10 @@ namespace GoogleCloudExtension.Utils
 {
     public static class StatusbarHelper
     {
-        private class StatusBarFrozenToken : IDisposable
-        {
-            public void Dispose()
-            {
-                StatusbarHelper.UnFreeze();
-            }
-        }
+        private readonly static Lazy<IVsStatusbar> s_statusbar = new Lazy<IVsStatusbar>(
+            () => Package.GetGlobalService(typeof(SVsStatusbar)) as IVsStatusbar);
 
-        private static IVsStatusbar s_statusbar;
-
-        private static IVsStatusbar Statusbar
-        {
-            get
-            {
-                if (s_statusbar == null)
-                {
-                    s_statusbar = Package.GetGlobalService(typeof(SVsStatusbar)) as IVsStatusbar;
-                }
-                return s_statusbar;
-            }
-        }
+        private static IVsStatusbar Statusbar => s_statusbar.Value;
 
         public static void SetText(string text)
         {
@@ -61,7 +44,12 @@ namespace GoogleCloudExtension.Utils
             }
         }
 
-        public static void HideDeployAnimation()
+        public static ProgressBarHelper ShowProgressBar()
+        {
+            return new ProgressBarHelper(Statusbar);
+        }
+
+        private static void HideDeployAnimation()
         {
             try
             {
@@ -88,7 +76,7 @@ namespace GoogleCloudExtension.Utils
             }
         }
 
-        public static void UnFreeze()
+        private static void UnFreeze()
         {
             try
             {

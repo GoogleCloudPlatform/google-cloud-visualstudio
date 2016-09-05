@@ -91,14 +91,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             StatusbarHelper.SetText("Deploying to App Engine Flex...");
             NetCorePublishResult result;
             using (var frozen = StatusbarHelper.Freeze())
+            using (var animationShown = StatusbarHelper.ShowDeployAnimation())
+            using (var progress = StatusbarHelper.ShowProgressBar())
             {
-                using (var animationShown = StatusbarHelper.ShowDeployAnimation())
-                {
-                    result = await NetCoreDeployment.PublishProjectAsync(
-                        project.FullPath,
-                        options,
-                        GcpOutputWindow.OutputLine);
-                }
+                result = await NetCoreDeployment.PublishProjectAsync(
+                    project.FullPath,
+                    options,
+                    progress,
+                    GcpOutputWindow.OutputLine);
             }
 
             if (result != null)
