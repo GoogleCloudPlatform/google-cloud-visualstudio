@@ -44,9 +44,9 @@ namespace GoogleCloudExtension.Utils
             }
         }
 
-        public static ProgressBarHelper ShowProgressBar()
+        public static ProgressBarHelper ShowProgressBar(string label)
         {
-            return new ProgressBarHelper(Statusbar);
+            return new ProgressBarHelper(Statusbar, label);
         }
 
         private static void HideDeployAnimation()

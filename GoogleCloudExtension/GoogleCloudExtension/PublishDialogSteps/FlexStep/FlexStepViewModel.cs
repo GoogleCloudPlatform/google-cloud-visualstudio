@@ -28,8 +28,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         private readonly FlexStepContent _content;
         private IPublishDialog _publishDialog;
         private string _version;
-        private bool _promote;
-        private bool _openWebsite;
+        private bool _promote = true;
+        private bool _openWebsite = true;
 
         public string Version
         {
@@ -88,11 +88,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
             _publishDialog.FinishFlow();
 
-            StatusbarHelper.SetText("Deploying to App Engine Flex...");
             NetCorePublishResult result;
             using (var frozen = StatusbarHelper.Freeze())
             using (var animationShown = StatusbarHelper.ShowDeployAnimation())
-            using (var progress = StatusbarHelper.ShowProgressBar())
+            using (var progress = StatusbarHelper.ShowProgressBar("Deploying to App Engine Flex..."))
             {
                 result = await NetCoreDeployment.PublishProjectAsync(
                     project.FullPath,
@@ -105,10 +104,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             {
                 GcpOutputWindow.OutputLine($"Project {project.Name} deployed to App Engine Flex.");
                 StatusbarHelper.SetText("Deployment succeeded");
+
+                var url = result.GetDeploymentUrl();
+                GcpOutputWindow.OutputLine($"App deployed to {url}");
                 if (OpenWebsite)
                 {
-                    var url = result.GetDeploymentUrl();
-                    GcpOutputWindow.OutputLine($"Opening webiste {url}");
                     Process.Start(url);
                 }
             }

@@ -66,17 +66,22 @@ namespace GoogleCloudExtension.Deployment
             Directory.CreateDirectory(stageDirectory);
             progress.Report(0.1);
 
-            if (!await CreateAppBundleAsync(projectPath, stageDirectory, outputAction))
+            // Wait for the bundle creation operation to finish, updating progress as it goes.
+            if (!await ProgressHelper.UpdateProgress(
+                    CreateAppBundleAsync(projectPath, stageDirectory, outputAction),
+                    progress,
+                    from: 0.1, to: 0.3))
             {
                 Debug.WriteLine("Failed to create app bundle.");
                 return null;
             }
-            progress.Report(0.5);
 
             CopyOrCreateDockerfile(projectPath, stageDirectory);
             CopyOrCreateAppYaml(projectPath, stageDirectory);
-            progress.Report(0.6);
+            progress.Report(0.4);
 
+            // Deploy to app engine, this is where most of the time is going to be spent. Wait for
+            // the operation to finish, update the progress as it goes.
             var effectiveVersion = options.Version ?? GetDefaultVersion();
             var deployTask = DeployAppBundleAsync(
                 stageDirectory: stageDirectory,
@@ -84,11 +89,12 @@ namespace GoogleCloudExtension.Deployment
                 promote: options.Promote,
                 context: options.Context,
                 outputAction: outputAction);
-            if (!await UpdateProgress(deployTask, progress, 0.6, 0.9))
+            if (!await ProgressHelper.UpdateProgress(deployTask, progress, 0.6, 0.9))
             {
                 Debug.WriteLine("Failed to deploy bundle.");
                 return null;
             }
+            progress.Report(1.0);
 
             var service = GetAppEngineService(projectPath);
             return new NetCorePublishResult(
@@ -96,24 +102,6 @@ namespace GoogleCloudExtension.Deployment
                 service: service,
                 version: effectiveVersion,
                 promoted: options.Promote);
-        }
-
-        private static async Task<bool> UpdateProgress(Task<bool> deployTask, IProgress<double> progress, double from, double to)
-        {
-            double current = 0.6;
-            while (current < to)
-            {
-                progress.Report(current);
-
-                var resultTask = await Task.WhenAny(deployTask, Task.Delay(10000));
-                if (resultTask == deployTask)
-                {
-                    return await deployTask;
-                }
-
-                current += 0.05;
-            }
-            return await deployTask;
         }
 
         private static string GetAppEngineService(string projectPath)

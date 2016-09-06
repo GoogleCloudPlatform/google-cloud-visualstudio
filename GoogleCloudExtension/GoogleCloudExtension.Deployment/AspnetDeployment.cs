@@ -54,13 +54,21 @@ namespace GoogleCloudExtension.Deployment
             var publishSettingsContent = targetInstance.GeneratePublishSettings(credentials.User, credentials.Password);
             File.WriteAllText(publishSettingsPath, publishSettingsContent);
 
-            if (!await CreateAppBundleAsync(projectPath, stageDirectory, outputAction))
+            // Wait for the bundle operation to finish and update the progress in the mean time to show progress.
+            if (!await ProgressHelper.UpdateProgress(
+                    CreateAppBundleAsync(projectPath, stageDirectory, outputAction),
+                    progress,
+                    from: 0.1, to: 0.5))
             {
                 return false;
             }
-            progress.Report(0.5);
+            progress.Report(0.6);
 
-            if (!await DeployAppAsync(stageDirectory, publishSettingsPath, outputAction))
+            // Update for the deploy operation to finish and update the progress as it goes.
+            if (!await ProgressHelper.UpdateProgress(
+                    DeployAppAsync(stageDirectory, publishSettingsPath, outputAction),
+                    progress,
+                    from: 0.6, to: 0.9))
             {
                 return false;
             }

@@ -12,11 +12,14 @@ namespace GoogleCloudExtension.Utils
         private const uint Total = 1000;
 
         private readonly IVsStatusbar _statusbar;
+        private readonly string _label;
         private uint _cookie;
 
-        public ProgressBarHelper(IVsStatusbar statusbar)
+        public ProgressBarHelper(IVsStatusbar statusbar, string label)
         {
             _statusbar = statusbar;
+            _label = label ?? "";
+
             _statusbar.Progress(ref _cookie, 1, "", 0, 0);
         }
 
@@ -33,7 +36,7 @@ namespace GoogleCloudExtension.Utils
 
         void IProgress<double>.Report(double value)
         {
-            _statusbar.Progress(ref _cookie, 1, "", (uint)(value * Total), Total);
+            _statusbar.Progress(ref _cookie, 1, _label, (uint)(value * Total), Total);
         }
 
         #endregion
