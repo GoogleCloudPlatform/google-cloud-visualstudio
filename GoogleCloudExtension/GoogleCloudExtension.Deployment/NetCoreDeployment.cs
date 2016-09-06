@@ -64,29 +64,31 @@ namespace GoogleCloudExtension.Deployment
 
             var stageDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(stageDirectory);
+            progress.Report(0.1);
 
             if (!await CreateAppBundleAsync(projectPath, stageDirectory, outputAction))
             {
+                Debug.WriteLine("Failed to create app bundle.");
                 return null;
             }
-            progress?.Report(0.5);
+            progress.Report(0.5);
 
             CopyOrCreateDockerfile(projectPath, stageDirectory);
             CopyOrCreateAppYaml(projectPath, stageDirectory);
-            progress?.Report(0.6);
+            progress.Report(0.6);
 
             var effectiveVersion = options.Version ?? GetDefaultVersion();
-            var result = await DeployAppBundleAsync(
+            var deployTask = DeployAppBundleAsync(
                 stageDirectory: stageDirectory,
                 version: effectiveVersion,
                 promote: options.Promote,
                 context: options.Context,
                 outputAction: outputAction);
-            if (!result)
+            if (!await UpdateProgress(deployTask, progress, 0.6, 0.9))
             {
+                Debug.WriteLine("Failed to deploy bundle.");
                 return null;
             }
-            progress?.Report(1);
 
             var service = GetAppEngineService(projectPath);
             return new NetCorePublishResult(
@@ -94,6 +96,24 @@ namespace GoogleCloudExtension.Deployment
                 service: service,
                 version: effectiveVersion,
                 promoted: options.Promote);
+        }
+
+        private static async Task<bool> UpdateProgress(Task<bool> deployTask, IProgress<double> progress, double from, double to)
+        {
+            double current = 0.6;
+            while (current < to)
+            {
+                progress.Report(current);
+
+                var resultTask = await Task.WhenAny(deployTask, Task.Delay(10000));
+                if (resultTask == deployTask)
+                {
+                    return await deployTask;
+                }
+
+                current += 0.05;
+            }
+            return await deployTask;
         }
 
         private static string GetAppEngineService(string projectPath)

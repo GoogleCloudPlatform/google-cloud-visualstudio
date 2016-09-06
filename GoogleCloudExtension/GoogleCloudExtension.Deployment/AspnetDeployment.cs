@@ -48,6 +48,7 @@ namespace GoogleCloudExtension.Deployment
         {
             var stageDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(stageDirectory);
+            progress.Report(0.1);
 
             var publishSettingsPath = Path.GetTempFileName();
             var publishSettingsContent = targetInstance.GeneratePublishSettings(credentials.User, credentials.Password);
@@ -57,13 +58,13 @@ namespace GoogleCloudExtension.Deployment
             {
                 return false;
             }
-            progress?.Report(0.5);
+            progress.Report(0.5);
 
             if (!await DeployAppAsync(stageDirectory, publishSettingsPath, outputAction))
             {
                 return false;
             }
-            progress?.Report(1);
+            progress.Report(1);
 
             File.Delete(publishSettingsPath);
             // TODO: Delete the temporary directory with the app bundle.
