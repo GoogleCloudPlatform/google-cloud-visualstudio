@@ -849,7 +849,7 @@
     <value>Choose a target:</value>
     <comment>The message shown in the choice step.</comment>
   </data>
-  <data name="PublishDialogGceStepOpenWebsiteCaption" xml:space="preserve">
+  <data name="PublishDialogOpenWebsiteCaption" xml:space="preserve">
     <value>Open website after publish process finishes</value>
     <comment>The caption for the open website checkbox.</comment>
   </data>
@@ -872,5 +872,41 @@
   <data name="PublishDialogPublishButtonCaption" xml:space="preserve">
     <value>Publish</value>
     <comment>The caption for the publish button.</comment>
+  </data>
+  <data name="FlexPublishFailedMessage" xml:space="preserve">
+    <value>Failed to deploy project {0} to App Engine Flex.</value>
+    <comment>Message shown in the output window after a failed deployment. {0} is the project name.</comment>
+  </data>
+  <data name="FlexPublishProgressMessage" xml:space="preserve">
+    <value>Deploying to App Engine Flex...</value>
+    <comment>Message shown in the progress area during the deployment to Flex.</comment>
+  </data>
+  <data name="FlexPublishSuccessMessage" xml:space="preserve">
+    <value>Project {0} deployed to App Engine Flex.</value>
+    <comment>Message shown once the app is succesfully deployed to flex. {0} is the project name.</comment>
+  </data>
+  <data name="GcePublishProgressMessage" xml:space="preserve">
+    <value>Deploying to {0}...</value>
+    <comment>Message shown in the progress area during the deployment to GCE. {0} is the name of the VM.</comment>
+  </data>
+  <data name="PublishDialogFlexPromoteVersionCaption" xml:space="preserve">
+    <value>Promote version</value>
+    <comment>Caption used in the promote version checkbox.</comment>
+  </data>
+  <data name="PublishDialogFlexVersionNameCaption" xml:space="preserve">
+    <value>Version name:</value>
+    <comment>Caption used for the version name.</comment>
+  </data>
+  <data name="PublishFailureStatusMessage" xml:space="preserve">
+    <value>Deployment failed</value>
+    <comment>Message shown in the status area after a failed deployment.</comment>
+  </data>
+  <data name="PublishSuccessStatusMessage" xml:space="preserve">
+    <value>Deployment succeeded</value>
+    <comment>Message shown in the status area after a succesful deployment.</comment>
+  </data>
+  <data name="PublishUrlMessage" xml:space="preserve">
+    <value>App deployed to {0}</value>
+    <comment>Message shown in the output window to show the URL where the app is deployed. {0} is the URL.</comment>
   </data>
 </root>

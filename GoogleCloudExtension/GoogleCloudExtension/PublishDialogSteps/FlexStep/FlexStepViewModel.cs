@@ -91,7 +91,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             NetCorePublishResult result;
             using (var frozen = StatusbarHelper.Freeze())
             using (var animationShown = StatusbarHelper.ShowDeployAnimation())
-            using (var progress = StatusbarHelper.ShowProgressBar("Deploying to App Engine Flex..."))
+            using (var progress = StatusbarHelper.ShowProgressBar(Resources.FlexPublishProgressMessage))
             {
                 result = await NetCoreDeployment.PublishProjectAsync(
                     project.FullPath,
@@ -102,11 +102,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
             if (result != null)
             {
-                GcpOutputWindow.OutputLine($"Project {project.Name} deployed to App Engine Flex.");
-                StatusbarHelper.SetText("Deployment succeeded");
+                GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishSuccessMessage, project.Name));
+                StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
 
                 var url = result.GetDeploymentUrl();
-                GcpOutputWindow.OutputLine($"App deployed to {url}");
+                GcpOutputWindow.OutputLine(String.Format(Resources.PublishUrlMessage, url));
                 if (OpenWebsite)
                 {
                     Process.Start(url);
@@ -114,8 +114,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             }
             else
             {
-                GcpOutputWindow.OutputLine($"Failed to deploy project {project.Name} to App Engine Flex.");
-                StatusbarHelper.SetText("Deployment failed");
+                GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishFailedMessage, project.Name));
+                StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
             }
 
 

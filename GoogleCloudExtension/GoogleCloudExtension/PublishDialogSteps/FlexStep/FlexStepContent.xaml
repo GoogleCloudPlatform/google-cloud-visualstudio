@@ -4,14 +4,15 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialogSteps.FlexStep"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{x:Type local:FlexStepViewModel}">
     <StackPanel>
-        <TextBlock>Version name:</TextBlock>
+        <TextBlock Text="{x:Static ext:Resources.PublishDialogFlexVersionNameCaption}" />
         <TextBox Text="{Binding Version, Mode=TwoWay}" />
 
-        <CheckBox IsChecked="{Binding Promote, Mode=TwoWay}" Margin="0,5,0,0">Promote version</CheckBox>
-        <CheckBox IsChecked="{Binding OpenWebsite, Mode=TwoWay}" Margin="0,5,0,0">Open website after publish process finishes</CheckBox>
+        <CheckBox IsChecked="{Binding Promote, Mode=TwoWay}" Margin="0,5,0,0" Content="{x:Static ext:Resources.PublishDialogFlexPromoteVersionCaption}" />
+        <CheckBox IsChecked="{Binding OpenWebsite, Mode=TwoWay}" Margin="0,5,0,0" Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"  />
     </StackPanel>
 </UserControl>
