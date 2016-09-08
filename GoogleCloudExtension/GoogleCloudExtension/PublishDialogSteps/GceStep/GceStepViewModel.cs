@@ -146,6 +146,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             using (var frozen = StatusbarHelper.Freeze())
             using (var animationShown = StatusbarHelper.ShowDeployAnimation())
             using (var progress = StatusbarHelper.ShowProgressBar(String.Format(Resources.GcePublishProgressMessage, SelectedInstance.Name)))
+            using (var deployingOperation = GoogleCloudExtensionPackage.GetDeploymentOperation())
             {
                 result = await AspnetDeployment.PublishProjectAsync(
                     project.FullPath,

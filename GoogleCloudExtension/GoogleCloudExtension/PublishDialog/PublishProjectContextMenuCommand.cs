@@ -124,7 +124,7 @@ namespace GoogleCloudExtension.PublishDialog
             else
             {
                 menuCommand.Visible = true;
-                menuCommand.Enabled = true;
+                menuCommand.Enabled = !GoogleCloudExtensionPackage.IsDeploying;
                 menuCommand.Text = $"Publish {selectedProject.Name} to Google Cloud...";
             }
         }

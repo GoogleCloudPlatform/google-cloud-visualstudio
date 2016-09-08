@@ -92,6 +92,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             using (var frozen = StatusbarHelper.Freeze())
             using (var animationShown = StatusbarHelper.ShowDeployAnimation())
             using (var progress = StatusbarHelper.ShowProgressBar(Resources.FlexPublishProgressMessage))
+            using (var deployingOperation = GoogleCloudExtensionPackage.GetDeploymentOperation())
             {
                 result = await NetCoreDeployment.PublishProjectAsync(
                     project.FullPath,

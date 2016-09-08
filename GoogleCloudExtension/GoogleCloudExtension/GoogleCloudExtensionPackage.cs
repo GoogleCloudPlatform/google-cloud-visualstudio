@@ -80,6 +80,9 @@ namespace GoogleCloudExtension
             { CurrentGcpAccountKey, () => CredentialsStore.Default.CurrentAccount?.AccountName },
         };
 
+        // Whether the extension is deploying or not at the moment.
+        private static bool s_isDeploying;
+
         private DTE _dteInstance;
         private Dictionary<string, string> _properties;
 
@@ -224,5 +227,29 @@ namespace GoogleCloudExtension
         public AnalyticsOptionsPage AnalyticsSettings => (AnalyticsOptionsPage)GetDialogPage(typeof(AnalyticsOptionsPage));
 
         #endregion
+
+        #region Global state of the extension
+
+        public static bool IsDeploying
+        {
+            get { return s_isDeploying; }
+            private set
+            {
+                if (s_isDeploying != value)
+                {
+                    s_isDeploying = value;
+                    ShellUtils.InvalidateCommandUIStatus();
+                }
+            }
+        }
+
+        public static IDisposable GetDeploymentOperation()
+        {
+            IsDeploying = true;
+            return new Disposable(() => IsDeploying = false);
+        }
+
+        #endregion
+
     }
 }
