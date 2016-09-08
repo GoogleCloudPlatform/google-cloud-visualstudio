@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.SolutionUtils;
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
@@ -125,7 +126,7 @@ namespace GoogleCloudExtension.PublishDialog
             }
             else
             {
-                menuCommand.Enabled = PublishDialogWindow.CanPublish(startupProject) && !GoogleCloudExtensionPackage.IsDeploying;
+                menuCommand.Enabled = PublishDialogWindow.CanPublish(startupProject) && !ShellUtils.IsBusy();
                 menuCommand.Text = $"Publish {startupProject.Name} to Google Cloud...";
             }
         }
