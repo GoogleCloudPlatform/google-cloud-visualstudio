@@ -39,14 +39,7 @@ namespace GoogleCloudExtension.Utils
             {
                 var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
                 var solution = dte.Solution;
-                if (solution != null)
-                {
-                    return new SolutionHelper(dte.Solution);
-                }
-                else
-                {
-                    return null;
-                }
+                return solution != null ? new SolutionHelper(solution) : null;
             }
         }
 

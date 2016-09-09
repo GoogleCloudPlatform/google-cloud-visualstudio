@@ -873,4 +873,12 @@
     <value>Publish</value>
     <comment>The caption for the publish button.</comment>
   </data>
+  <data name="PublishDialogGenericMenuHeader" xml:space="preserve">
+    <value>Publish project to Google Cloud...</value>
+    <comment>Generic menu header to show usually disabled.</comment>
+  </data>
+  <data name="PublishDialogProjectMenuHeader" xml:space="preserve">
+    <value>Publish {0} to Google Cloud...</value>
+    <comment>Menu header to open the publish dialog with a project name. {0} is the project name.</comment>
+  </data>
 </root>

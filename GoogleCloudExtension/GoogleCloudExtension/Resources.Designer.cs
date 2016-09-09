@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -1465,6 +1465,15 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Publish project to Google Cloud....
+        /// </summary>
+        public static string PublishDialogGenericMenuHeader {
+            get {
+                return ResourceManager.GetString("PublishDialogGenericMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Next.
         /// </summary>
         public static string PublishDialogNextButtonCaption {
@@ -1479,6 +1488,15 @@ namespace GoogleCloudExtension
         public static string PublishDialogPrevButtonCaption {
             get {
                 return ResourceManager.GetString("PublishDialogPrevButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish {0} to Google Cloud....
+        /// </summary>
+        public static string PublishDialogProjectMenuHeader {
+            get {
+                return ResourceManager.GetString("PublishDialogProjectMenuHeader", resourceCulture);
             }
         }
         

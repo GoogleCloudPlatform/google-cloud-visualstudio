@@ -19,6 +19,9 @@ namespace GoogleCloudExtension.PublishDialog
     /// <summary>
     /// This interface is to be implemented by the Publish dialog and contains all of the services
     /// offered from the publish dialog to the steps that it hosts.
+    /// 
+    /// The publishing dialog is logically defined as a navigation stack of steps, which allows the user to go back
+    /// to the previous step.
     /// </summary>
     public interface IPublishDialog
     {
@@ -28,7 +31,8 @@ namespace GoogleCloudExtension.PublishDialog
         Project Project { get; }
 
         /// <summary>
-        /// This method pushes the given <seealso cref="IPublishDialogStep"/> to the navigation stack and activates it.
+        /// This method pushes the given <seealso cref="IPublishDialogStep"/> to the navigation stack and sets the step
+        /// as the current displayed step in the dialog.
         /// </summary>
         /// <param name="step">The step to navigate to.</param>
         void NavigateToStep(IPublishDialogStep step);

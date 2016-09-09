@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.PublishDialog
         IPublishDialogStep Next();
 
         /// <summary>
-        /// Performs the publish step action, will only be aclled if <seealso cref="CanPublish"/> return true.
+        /// Performs the publish step action, will only be called if <seealso cref="CanPublish"/> return true.
         /// </summary>
         void Publish();
 

@@ -53,7 +53,7 @@
         <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpMenu" />
       </Group>
       
-      <!-- This groiup contains all of the commands added to the project's context menu. -->
+      <!-- This group contains all of the commands added to the project's context menu. -->
       <Group guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpProjectContextMenu" priority="0x600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
       </Group>

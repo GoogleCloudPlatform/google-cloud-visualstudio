@@ -88,6 +88,10 @@ namespace GoogleCloudExtension.Deployment
             }
         }
 
+        /// <summary>
+        /// This method publishes the app to the VM using the <paramref name="publishSettingsPath"/> to find the publish
+        /// settings to use to do so.
+        /// </summary>
         private static Task<bool> DeployAppAsync(string stageDirectory, string publishSettingsPath, Action<string> outputAction)
         {
             var arguments = "-verb:sync " +
@@ -99,6 +103,10 @@ namespace GoogleCloudExtension.Deployment
             return ProcessUtils.RunCommandAsync(s_msdeployPath.Value, arguments, (o, e) => outputAction(e.Line));
         }
 
+        /// <summary>
+        /// This method stages the application into the <paramref name="stageDirectory"/> by invoking the WebPublish target
+        /// present in all Web projects. It publishes to the staging directory by using the FileSystem method.
+        /// </summary>
         private static Task<bool> CreateAppBundleAsync(string projectPath, string stageDirectory, Action<string> outputAction)
         {
             var arguments = $@"""{projectPath}""" + " " +
