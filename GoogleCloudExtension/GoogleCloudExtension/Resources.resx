@@ -909,4 +909,12 @@
     <value>App deployed to {0}</value>
     <comment>Message shown in the output window to show the URL where the app is deployed. {0} is the URL.</comment>
   </data>
+  <data name="PublishDialogGenericMenuHeader" xml:space="preserve">
+    <value>Publish project to Google Cloud...</value>
+    <comment>Generic menu header to show usually disabled.</comment>
+  </data>
+  <data name="PublishDialogProjectMenuHeader" xml:space="preserve">
+    <value>Publish {0} to Google Cloud...</value>
+    <comment>Menu header to open the publish dialog with a project name. {0} is the project name.</comment>
+  </data>
 </root>

@@ -16,11 +16,15 @@ using System;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// Simple class that runs the provided <seealso cref="Action"/> on dispose, useful when combined with
+    /// using blocks.
+    /// </summary>
     public class Disposable : IDisposable
     {
         private readonly Action _action;
 
-        public Disposable(Action action)
+        public Disposable(Action action = null)
         {
             _action = action;
         }

@@ -122,12 +122,12 @@ namespace GoogleCloudExtension.PublishDialog
             if (startupProject == null)
             {
                 menuCommand.Enabled = false;
-                menuCommand.Text = $"Publish project to Google Cloud...";
+                menuCommand.Text = Resources.PublishDialogGenericMenuHeader;
             }
             else
             {
                 menuCommand.Enabled = PublishDialogWindow.CanPublish(startupProject) && !ShellUtils.IsBusy();
-                menuCommand.Text = $"Publish {startupProject.Name} to Google Cloud...";
+                menuCommand.Text = String.Format(Resources.PublishDialogProjectMenuHeader, startupProject.Name);
             }
         }
     }

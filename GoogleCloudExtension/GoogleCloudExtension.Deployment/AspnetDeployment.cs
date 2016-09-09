@@ -17,6 +17,7 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -34,7 +35,7 @@ namespace GoogleCloudExtension.Deployment
         /// Publishes an ASP.NET 4.x project to the given GCE <seealso cref="Instance"/>.
         /// </summary>
         /// <param name="projectPath">The full path to the project file.</param>
-        /// <param name="targetInstance">The instance to which deploy.</param>
+        /// <param name="targetInstance">The instance to deploy.</param>
         /// <param name="credentials">The Windows credentials to use to deploy to the <paramref name="targetInstance"/>.</param>
         /// <param name="progress">The progress indicator.</param>
         /// <param name="outputAction">The action to call with lines of output.</param>
@@ -46,40 +47,64 @@ namespace GoogleCloudExtension.Deployment
             IProgress<double> progress,
             Action<string> outputAction)
         {
-            var stageDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            Directory.CreateDirectory(stageDirectory);
+            var stagingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            Directory.CreateDirectory(stagingDirectory);
             progress.Report(0.1);
 
             var publishSettingsPath = Path.GetTempFileName();
             var publishSettingsContent = targetInstance.GeneratePublishSettings(credentials.User, credentials.Password);
             File.WriteAllText(publishSettingsPath, publishSettingsContent);
 
-            // Wait for the bundle operation to finish and update the progress in the mean time to show progress.
-            if (!await ProgressHelper.UpdateProgress(
-                    CreateAppBundleAsync(projectPath, stageDirectory, outputAction),
-                    progress,
-                    from: 0.1, to: 0.5))
+            using (var cleanup = new Disposable(() => Cleanup(publishSettingsPath, stagingDirectory)))
             {
-                return false;
-            }
-            progress.Report(0.6);
+                // Wait for the bundle operation to finish and update the progress in the mean time to show progress.
+                if (!await ProgressHelper.UpdateProgress(
+                        CreateAppBundleAsync(projectPath, stagingDirectory, outputAction),
+                        progress,
+                        from: 0.1, to: 0.5))
+                {
+                    return false;
+                }
+                progress.Report(0.6);
 
-            // Update for the deploy operation to finish and update the progress as it goes.
-            if (!await ProgressHelper.UpdateProgress(
-                    DeployAppAsync(stageDirectory, publishSettingsPath, outputAction),
-                    progress,
-                    from: 0.6, to: 0.9))
-            {
-                return false;
+                // Update for the deploy operation to finish and update the progress as it goes.
+                if (!await ProgressHelper.UpdateProgress(
+                        DeployAppAsync(stagingDirectory, publishSettingsPath, outputAction),
+                        progress,
+                        from: 0.6, to: 0.9))
+                {
+                    return false;
+                }
+                progress.Report(1);
             }
-            progress.Report(1);
-
-            File.Delete(publishSettingsPath);
-            // TODO: Delete the temporary directory with the app bundle.
 
             return true;
         }
 
+        private static void Cleanup(string publishSettings, string stagingDirectory)
+        {
+            try
+            {
+                if (File.Exists(publishSettings))
+                {
+                    File.Delete(publishSettings);
+                }
+
+                if (Directory.Exists(stagingDirectory))
+                {
+                    Directory.Delete(stagingDirectory, recursive: true);
+                }
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine($"Failed to cleanup: {ex.Message}");
+            }
+        }
+
+        /// <summary>
+        /// This method publishes the app to the VM using the <paramref name="publishSettingsPath"/> to find the publish
+        /// settings to use to do so.
+        /// </summary>
         private static Task<bool> DeployAppAsync(string stageDirectory, string publishSettingsPath, Action<string> outputAction)
         {
             var arguments = "-verb:sync " +
@@ -91,6 +116,10 @@ namespace GoogleCloudExtension.Deployment
             return ProcessUtils.RunCommandAsync(s_msdeployPath.Value, arguments, (o, e) => outputAction(e.Line));
         }
 
+        /// <summary>
+        /// This method stages the application into the <paramref name="stageDirectory"/> by invoking the WebPublish target
+        /// present in all Web projects. It publishes to the staging directory by using the FileSystem method.
+        /// </summary>
         private static Task<bool> CreateAppBundleAsync(string projectPath, string stageDirectory, Action<string> outputAction)
         {
             var arguments = $@"""{projectPath}""" + " " +
