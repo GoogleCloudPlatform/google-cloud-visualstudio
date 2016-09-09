@@ -441,6 +441,34 @@
     <value>No projects found</value>
     <comment>Message for the placeholder element displayed when no projects are found.</comment>
   </data>
+  <data name="CloudExplorerPubSubListTopicsErrorCaption" xml:space="preserve">
+    <value>Failed to load Topics</value>
+    <comment>Caption shown when there is an error loading Pub/Sub topics.</comment>
+  </data>
+  <data name="CloudExplorerPubSubLoadingCaption" xml:space="preserve">
+    <value>Loading Topics...</value>
+    <comment>Caption shown when loading Pub/Sub topics.</comment>
+  </data>
+  <data name="CloudExplorerPubSubNewTopicMenuHeader" xml:space="preserve">
+    <value>New Topic</value>
+    <comment>Header for menu item to create a new Pub/Sub topic.</comment>
+  </data>
+  <data name="CloudExplorerPubSubNoTopicsFoundCaption" xml:space="preserve">
+    <value>No Topics Found</value>
+    <comment>Caption shown when no Pub/Sub topics are found.</comment>
+  </data>
+  <data name="CloudExplorerPubSubRootCaption" xml:space="preserve">
+    <value>Google Cloud Pub/Sub</value>
+    <comment>Root caption for Google Cloud Pub/Sub.</comment>
+  </data>
+  <data name="CloudExplorerPubSubTopicCategory" xml:space="preserve">
+    <value>Topic Properties</value>
+    <comment>The category for PubSub topic properties.</comment>
+  </data>
+  <data name="CloudExplorerPubSubTopicNameDescription" xml:space="preserve">
+    <value>The Name of the Topic</value>
+    <comment>The description of the name property of a PubSub topic.</comment>
+  </data>
   <data name="CloudExplorerRefreshButtonToolTip" xml:space="preserve">
     <value>Refresh</value>
     <comment>The tooltip for the refresh button.</comment>

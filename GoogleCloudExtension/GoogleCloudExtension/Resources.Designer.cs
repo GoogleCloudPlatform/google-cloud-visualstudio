@@ -790,6 +790,69 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to load Topics.
+        /// </summary>
+        public static string CloudExplorerPubSubListTopicsErrorCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubListTopicsErrorCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading Topics....
+        /// </summary>
+        public static string CloudExplorerPubSubLoadingCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubLoadingCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Topic.
+        /// </summary>
+        public static string CloudExplorerPubSubNewTopicMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubNewTopicMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Topics Found.
+        /// </summary>
+        public static string CloudExplorerPubSubNoTopicsFoundCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubNoTopicsFoundCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud Pub/Sub.
+        /// </summary>
+        public static string CloudExplorerPubSubRootCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubRootCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Topic Properties.
+        /// </summary>
+        public static string CloudExplorerPubSubTopicCategory {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubTopicCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Name of the Topic.
+        /// </summary>
+        public static string CloudExplorerPubSubTopicNameDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubTopicNameDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refresh.
         /// </summary>
         public static string CloudExplorerRefreshButtonToolTip {
