@@ -17,6 +17,7 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -34,7 +35,7 @@ namespace GoogleCloudExtension.Deployment
         /// Publishes an ASP.NET 4.x project to the given GCE <seealso cref="Instance"/>.
         /// </summary>
         /// <param name="projectPath">The full path to the project file.</param>
-        /// <param name="targetInstance">The instance to which deploy.</param>
+        /// <param name="targetInstance">The instance to deploy.</param>
         /// <param name="credentials">The Windows credentials to use to deploy to the <paramref name="targetInstance"/>.</param>
         /// <param name="outputAction">The action to call with lines of output.</param>
         /// <returns></returns>
@@ -44,27 +45,47 @@ namespace GoogleCloudExtension.Deployment
             WindowsInstanceCredentials credentials,
             Action<string> outputAction)
         {
-            var stageDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            Directory.CreateDirectory(stageDirectory);
+            var stagingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            Directory.CreateDirectory(stagingDirectory);
 
             var publishSettingsPath = Path.GetTempFileName();
             var publishSettingsContent = targetInstance.GeneratePublishSettings(credentials.User, credentials.Password);
             File.WriteAllText(publishSettingsPath, publishSettingsContent);
 
-            if (!await CreateAppBundleAsync(projectPath, stageDirectory, outputAction))
+            using (var cleanup = new Disposable(() => Cleanup(publishSettingsPath, stagingDirectory)))
             {
-                return false;
-            }
+                if (!await CreateAppBundleAsync(projectPath, stagingDirectory, outputAction))
+                {
+                    return false;
+                }
 
-            if (!await DeployAppAsync(stageDirectory, publishSettingsPath, outputAction))
-            {
-                return false;
+                if (!await DeployAppAsync(stagingDirectory, publishSettingsPath, outputAction))
+                {
+                    return false;
+                }
             }
-
-            File.Delete(publishSettingsPath);
-            // TODO: Delete the temporary directory with the app bundle.
 
             return true;
+        }
+
+        private static void Cleanup(string publishSettings, string stagingDirectory)
+        {
+            try
+            {
+                if (File.Exists(publishSettings))
+                {
+                    File.Delete(publishSettings);
+                }
+
+                if (Directory.Exists(stagingDirectory))
+                {
+                    Directory.Delete(stagingDirectory, recursive: true);
+                }
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine($"Failed to cleanup: {ex.Message}");
+            }
         }
 
         private static Task<bool> DeployAppAsync(string stageDirectory, string publishSettingsPath, Action<string> outputAction)
