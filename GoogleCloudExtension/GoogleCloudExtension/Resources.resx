@@ -813,4 +813,72 @@
     <value>Choose credentials</value>
     <comment>The title for the choose credentials used during the save publish settings flow.</comment>
   </data>
+  <data name="GcePublishFailedMessage" xml:space="preserve">
+    <value>Failed to publish project {0}.</value>
+    <comment>Failure message written to the output window when the GCE publish process fails. {0} is the name of the project.</comment>
+  </data>
+  <data name="GcePublishStepStartMessage" xml:space="preserve">
+    <value>Publishing {0} to Compute Engine.</value>
+    <comment>Start message for the GCE publish step, shown on the output window. {0} is the name of the project being published.</comment>
+  </data>
+  <data name="GcePublishSuccessMessage" xml:space="preserve">
+    <value>Project {0} succesfully published to Compute Engine instance {1}.</value>
+    <comment>Success message written to the output window when the GCE publish process is susccesful. {0} is the name of the project, {1} is the name of the instance.</comment>
+  </data>
+  <data name="PublishDialogCaption" xml:space="preserve">
+    <value>Publish {0}</value>
+    <comment>The caption for the publish dialog window.</comment>
+  </data>
+  <data name="PublishDialogChoiceStepAppEngineFlexName" xml:space="preserve">
+    <value>App Engine Flex</value>
+    <comment>The name of the App Engine Flex choice.</comment>
+  </data>
+  <data name="PublishDialogChoiceStepAppEngineToolTip" xml:space="preserve">
+    <value>Deploy to App Engine Flex</value>
+    <comment>The tooltip for the App Engine Flex button.</comment>
+  </data>
+  <data name="PublishDialogChoiceStepGceName" xml:space="preserve">
+    <value>Compute Engine</value>
+    <comment>The name of the GCE choice.</comment>
+  </data>
+  <data name="PublishDialogChoiceStepGceToolTip" xml:space="preserve">
+    <value>Deploy to Compute Engine</value>
+    <comment>The tooltip for the GCE button.</comment>
+  </data>
+  <data name="PublishDialogChoiceStepMessage" xml:space="preserve">
+    <value>Choose a target:</value>
+    <comment>The message shown in the choice step.</comment>
+  </data>
+  <data name="PublishDialogGceStepOpenWebsiteCaption" xml:space="preserve">
+    <value>Open website after publish process finishes</value>
+    <comment>The caption for the open website checkbox.</comment>
+  </data>
+  <data name="PublishDialogGceStepSelectCredentialsMessage" xml:space="preserve">
+    <value>Select account:</value>
+    <comment>The message shown to select credentials.</comment>
+  </data>
+  <data name="PublishDialogGceStepSelectInstanceMessage" xml:space="preserve">
+    <value>Select instance:</value>
+    <comment>The message shown to select an instance.</comment>
+  </data>
+  <data name="PublishDialogNextButtonCaption" xml:space="preserve">
+    <value>Next</value>
+    <comment>The caption for the next button.</comment>
+  </data>
+  <data name="PublishDialogPrevButtonCaption" xml:space="preserve">
+    <value>Prev</value>
+    <comment>The caption for the prev button.</comment>
+  </data>
+  <data name="PublishDialogPublishButtonCaption" xml:space="preserve">
+    <value>Publish</value>
+    <comment>The caption for the publish button.</comment>
+  </data>
+  <data name="PublishDialogGenericMenuHeader" xml:space="preserve">
+    <value>Publish project to Google Cloud...</value>
+    <comment>Generic menu header to show usually disabled.</comment>
+  </data>
+  <data name="PublishDialogProjectMenuHeader" xml:space="preserve">
+    <value>Publish {0} to Google Cloud...</value>
+    <comment>Menu header to open the publish dialog with a project name. {0} is the project name.</comment>
+  </data>
 </root>

@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.Utils
         /// <param name="timeout">Optional, The timeout, defaults to <see cref="DefaultPollTimeout"/> when unset or null</param>
         public PollingConfiguration(TimeSpan? interval = null, TimeSpan? timeout = null)
         {
-            Interval= interval ?? DefaultPollInterval;
+            Interval = interval ?? DefaultPollInterval;
             Timeout = timeout ?? DefaultPollTimeout;
         }
     }

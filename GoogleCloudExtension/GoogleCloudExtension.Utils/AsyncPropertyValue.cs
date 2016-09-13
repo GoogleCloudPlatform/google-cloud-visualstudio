@@ -80,5 +80,10 @@ namespace GoogleCloudExtension.Utils
         {
             return new AsyncPropertyValue<T>(valueSource.ContinueWith(t => func(t.Result)), defaultValue);
         }
+
+        public static AsyncPropertyValue<T> CreateAsyncProperty<T>(Task<T> valueSource, T defaultValue = default(T))
+        {
+            return new AsyncPropertyValue<T>(valueSource, defaultValue);
+        }
     }
 }

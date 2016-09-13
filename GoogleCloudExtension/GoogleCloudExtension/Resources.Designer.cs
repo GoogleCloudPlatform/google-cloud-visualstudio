@@ -1141,6 +1141,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to publish project {0}..
+        /// </summary>
+        public static string GcePublishFailedMessage {
+            get {
+                return ResourceManager.GetString("GcePublishFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publishing {0} to Compute Engine..
+        /// </summary>
+        public static string GcePublishStepStartMessage {
+            get {
+                return ResourceManager.GetString("GcePublishStepStartMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project {0} succesfully published to Compute Engine instance {1}..
+        /// </summary>
+        public static string GcePublishSuccessMessage {
+            get {
+                return ResourceManager.GetString("GcePublishSuccessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The user account {0} already exists..
         /// </summary>
         public static string ManageAccountsAccountAlreadyExistsPromptMessage {
@@ -1353,6 +1380,132 @@ namespace GoogleCloudExtension {
         public static string PortManagerWindowMessage {
             get {
                 return ResourceManager.GetString("PortManagerWindowMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish {0}.
+        /// </summary>
+        public static string PublishDialogCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App Engine Flex.
+        /// </summary>
+        public static string PublishDialogChoiceStepAppEngineFlexName {
+            get {
+                return ResourceManager.GetString("PublishDialogChoiceStepAppEngineFlexName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploy to App Engine Flex.
+        /// </summary>
+        public static string PublishDialogChoiceStepAppEngineToolTip {
+            get {
+                return ResourceManager.GetString("PublishDialogChoiceStepAppEngineToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Compute Engine.
+        /// </summary>
+        public static string PublishDialogChoiceStepGceName {
+            get {
+                return ResourceManager.GetString("PublishDialogChoiceStepGceName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploy to Compute Engine.
+        /// </summary>
+        public static string PublishDialogChoiceStepGceToolTip {
+            get {
+                return ResourceManager.GetString("PublishDialogChoiceStepGceToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose a target:.
+        /// </summary>
+        public static string PublishDialogChoiceStepMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogChoiceStepMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open website after publish process finishes.
+        /// </summary>
+        public static string PublishDialogGceStepOpenWebsiteCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogGceStepOpenWebsiteCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select account:.
+        /// </summary>
+        public static string PublishDialogGceStepSelectCredentialsMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogGceStepSelectCredentialsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select instance:.
+        /// </summary>
+        public static string PublishDialogGceStepSelectInstanceMessage {
+            get {
+                return ResourceManager.GetString("PublishDialogGceStepSelectInstanceMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish project to Google Cloud....
+        /// </summary>
+        public static string PublishDialogGenericMenuHeader {
+            get {
+                return ResourceManager.GetString("PublishDialogGenericMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Next.
+        /// </summary>
+        public static string PublishDialogNextButtonCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogNextButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Prev.
+        /// </summary>
+        public static string PublishDialogPrevButtonCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogPrevButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish {0} to Google Cloud....
+        /// </summary>
+        public static string PublishDialogProjectMenuHeader {
+            get {
+                return ResourceManager.GetString("PublishDialogProjectMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish.
+        /// </summary>
+        public static string PublishDialogPublishButtonCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogPublishButtonCaption", resourceCulture);
             }
         }
         
