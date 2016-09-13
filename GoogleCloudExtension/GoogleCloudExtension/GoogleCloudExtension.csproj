@@ -59,8 +59,10 @@
     <Compile Include="Analytics\CommandName.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSource.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSourceRootViewModel.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\PubSubTopicItem.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\PubSubTopicViewModel.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\SubscriptionItem.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\TopicItem.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\TopicViewModel.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\SubscriptionViewModel.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
@@ -276,12 +278,12 @@
       <HintPath>..\packages\Google.Apis.Auth.1.16.0\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.12.0.440, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.12.0.440\lib\portable-net45+netcore45+wpa81+wp8\Google.Apis.CloudResourceManager.v1.dll</HintPath>
+    <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.16.0.533, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.16.0.533\lib\portable-net45+netcore45+wpa81+wp8\Google.Apis.CloudResourceManager.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Compute.v1, Version=1.12.0.462, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Compute.v1.1.12.0.462\lib\portable-net45+netcore45+wpa81+wp8\Google.Apis.Compute.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Compute.v1, Version=1.16.0.615, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Compute.v1.1.16.0.615\lib\portable-net45+netcore45+wpa81+wp8\Google.Apis.Compute.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Apis.Core, Version=1.16.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
@@ -292,20 +294,20 @@
       <HintPath>..\packages\Google.Apis.1.16.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Plus.v1, Version=1.12.0.463, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Plus.v1.1.12.0.463\lib\portable-net45+netcore45+wpa81+wp8\Google.Apis.Plus.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Plus.v1, Version=1.16.0.614, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Plus.v1.1.16.0.614\lib\portable-net45+netcore45+wpa81+wp8\Google.Apis.Plus.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Apis.Pubsub.v1, Version=1.16.0.441, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Pubsub.v1.1.16.0.441\lib\portable-net45+netcore45+wpa81+wp8\Google.Apis.Pubsub.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.SQLAdmin.v1beta4, Version=1.11.1.417, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.SQLAdmin.v1beta4.1.11.1.417\lib\portable-net45+sl50+netcore45+wpa81+wp8\Google.Apis.SQLAdmin.v1beta4.dll</HintPath>
+    <Reference Include="Google.Apis.SQLAdmin.v1beta4, Version=1.16.0.599, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.SQLAdmin.v1beta4.1.16.0.599\lib\portable-net45+netcore45+wpa81+wp8\Google.Apis.SQLAdmin.v1beta4.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Storage.v1, Version=1.12.0.454, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Storage.v1.1.12.0.454\lib\portable-net45+netcore45+wpa81+wp8\Google.Apis.Storage.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Storage.v1, Version=1.16.0.579, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Storage.v1.1.16.0.579\lib\portable-net45+netcore45+wpa81+wp8\Google.Apis.Storage.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="log4net, Version=1.2.13.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
@@ -428,6 +430,7 @@
     <EmbeddedResource Include="Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>

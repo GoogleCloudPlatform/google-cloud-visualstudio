@@ -790,6 +790,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to load Subscriptions.
+        /// </summary>
+        public static string CloudExplorerPubSubListSubscriptionsErrorCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubListSubscriptionsErrorCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to load Topics.
         /// </summary>
         public static string CloudExplorerPubSubListTopicsErrorCaption {
@@ -799,11 +808,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Loading Subscriptions....
+        /// </summary>
+        public static string CloudExplorerPubSubLoadingSubscriptionsCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubLoadingSubscriptionsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading Topics....
         /// </summary>
-        public static string CloudExplorerPubSubLoadingCaption {
+        public static string CloudExplorerPubSubLoadingTopicsCaption {
             get {
-                return ResourceManager.GetString("CloudExplorerPubSubLoadingCaption", resourceCulture);
+                return ResourceManager.GetString("CloudExplorerPubSubLoadingTopicsCaption", resourceCulture);
             }
         }
         
@@ -813,6 +831,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerPubSubNewTopicMenuHeader {
             get {
                 return ResourceManager.GetString("CloudExplorerPubSubNewTopicMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Subscriptions Found.
+        /// </summary>
+        public static string CloudExplorerPubSubNoSubscriptionsFoundCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubNoSubscriptionsFoundCaption", resourceCulture);
             }
         }
         
@@ -831,6 +858,33 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerPubSubRootCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerPubSubRootCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subscription.
+        /// </summary>
+        public static string CloudExplorerPubSubSubscriptionCategory {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubSubscriptionCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Name of the Subscription.
+        /// </summary>
+        public static string CloudExplorerPubSubSubscriptionNameDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubSubscriptionNameDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Topic the Subscription reads from.
+        /// </summary>
+        public static string CloudExplorerPubSubSubscriptionTopicDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubSubscriptionTopicDescription", resourceCulture);
             }
         }
         

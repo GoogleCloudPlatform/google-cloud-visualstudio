@@ -17,22 +17,28 @@ using Google.Apis.Pubsub.v1;
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.DataSources;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 {
     public class PubSubDataSource : DataSourceBase<PubsubService>
     {
-
-        public PubSubDataSource(string currentProjectId, GoogleCredential currentGoogleCredential,
-            string applicationName) :
-                base(currentProjectId, currentGoogleCredential, init => new PubsubService(init), applicationName)
+        /// <summary>
+        /// Initializes a new data source that connects to Google Cloud Pub/Sub.
+        /// </summary>
+        /// <param name="projectId">The id of the project to connect to.</param>
+        /// <param name="credential">The Google Credential to connect to.</param>
+        /// <param name="applicationName">The name of the application. </param>
+        public PubSubDataSource(string projectId, GoogleCredential credential, string applicationName) :
+            base(projectId, credential, init => new PubsubService(init), applicationName)
         { }
 
-        public async Task<IList<Topic>> GetTopicListAsync()
+        public Task<IList<Topic>> GetTopicListAsync()
         {
-            ProjectsResource.TopicsResource.ListRequest request = Service.Projects.Topics.List(ProjectId);
-            return await LoadPagedListAsync(
+            ProjectsResource.TopicsResource.ListRequest request =
+                Service.Projects.Topics.List($"projects/{ProjectId}");
+            return LoadPagedListAsync(
                 token =>
                 {
                     request.PageToken = token;
@@ -40,6 +46,53 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 },
                 response => response.Topics,
                 response => response.NextPageToken);
+        }
+
+        public Task<IList<Subscription>> GetSubscriptionListAsync()
+        {
+            ProjectsResource.SubscriptionsResource.ListRequest request =
+                Service.Projects.Subscriptions.List($"projects/{ProjectId}");
+            return LoadPagedListAsync(
+                token =>
+                {
+                    request.PageToken = token;
+                    return request.ExecuteAsync();
+                },
+                response => response.Subscriptions,
+                response => response.NextPageToken);
+        }
+
+        public Task<IList<string>> GetTopicSubscriptionListAsync(string topicName)
+        {
+            var request = Service.Projects.Topics.Subscriptions.List(topicName);
+            return LoadPagedListAsync(
+                token =>
+                {
+                    request.PageToken = token;
+                    return request.ExecuteAsync();
+                },
+                response => response.Subscriptions,
+                response => response.NextPageToken);
+        }
+
+        public async Task<IList<ReceivedMessage>> PullSubscriptionMessagesAsync(Subscription subscription)
+        {
+            ProjectsResource.SubscriptionsResource.PullRequest request =
+                Service.Projects.Subscriptions.Pull(new PullRequest(), subscription.Name);
+            PullResponse response = await request.ExecuteAsync();
+            return response.ReceivedMessages;
+        }
+
+        public Task<Empty> RemoveMessagesAsync(
+            Subscription subscription, IEnumerable<ReceivedMessage> messages)
+        {
+            var body = new AcknowledgeRequest
+            {
+                AckIds = messages.Select(message => message.AckId).ToList()
+            };
+            ProjectsResource.SubscriptionsResource.AcknowledgeRequest request =
+                Service.Projects.Subscriptions.Acknowledge(body, subscription.Name);
+            return request.ExecuteAsync();
         }
     }
 }
