@@ -37,6 +37,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 Icon = s_windowsOnlyButtonIcon.Value,
             };
             ActualButtons.Add(_windowsOnlyButton);
+            ActualRoot.ShowOnlyWindowsInstancesChanged += OnShowOnlyWindowsInstancesChanged;
+        }
+
+        private void OnShowOnlyWindowsInstancesChanged(object sender, EventArgs e)
+        {
+            _windowsOnlyButton.IsChecked = ActualRoot.ShowOnlyWindowsInstances;
         }
 
         private void OnOnlyWindowsClicked()

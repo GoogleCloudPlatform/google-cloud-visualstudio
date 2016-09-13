@@ -14,19 +14,16 @@
 
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.ResetPassword
+namespace GoogleCloudExtension.ManageWindowsCredentials
 {
     /// <summary>
-    /// Interaction logic for ResetPasswordWindowContent.xaml
+    /// Interaction logic for ManageWindowsCredentialsWindowContent.xaml
     /// </summary>
-    public partial class ResetPasswordWindowContent : UserControl
+    public partial class ManageWindowsCredentialsWindowContent : UserControl
     {
-        public ResetPasswordWindowContent()
+        public ManageWindowsCredentialsWindowContent()
         {
             InitializeComponent();
-
-            // Ensure focus is on the textbox.
-            _passwordBox.Focus();
         }
     }
 }

@@ -59,6 +59,7 @@
     <Compile Include="JsonOutputException.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="PlaceholderMessage.cs" />
+    <Compile Include="Polling.cs" />
     <Compile Include="ProcessUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VisibilityConverter.cs" />

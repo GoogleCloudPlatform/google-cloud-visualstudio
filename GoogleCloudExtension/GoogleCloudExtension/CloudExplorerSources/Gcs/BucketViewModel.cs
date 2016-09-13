@@ -25,6 +25,10 @@ using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 {
+    /// <summary>
+    /// This class is the view model for a GCS bucket. Defines the possible operations on the
+    /// bucket, accessible through the context menu.
+    /// </summary>
     internal class BucketViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
         private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/bucket_icon.png";

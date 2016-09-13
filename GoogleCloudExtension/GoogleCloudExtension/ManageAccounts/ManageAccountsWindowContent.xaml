@@ -13,13 +13,13 @@
         <utils:VisibilityConverter x:Key="visibilityConverter" />
 
         <Grid x:Key="content">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
-            </Grid.RowDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
             
-            <!-- Caption row -->
-            <TextBlock Margin="3,3,3,2" Text="{x:Static ext:Resources.ManageAccountsChooseAccountMessage}"/>
+                <!-- Caption row -->
+                <TextBlock Margin="3,3,3,2" Text="{x:Static ext:Resources.ManageAccountsChooseAccountMessage}"/>
 
             <!-- Listbox with the credentials -->
             <ListBox Grid.Row="1"

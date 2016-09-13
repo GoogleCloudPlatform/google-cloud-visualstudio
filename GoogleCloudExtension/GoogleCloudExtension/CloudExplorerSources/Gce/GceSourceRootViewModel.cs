@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gce
@@ -47,6 +48,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private static readonly TreeLeaf s_noZonesPlaceholder = new TreeLeaf { Caption = Resources.CloudExplorerGceSourceNoZonesCaption };
 
         private bool _showOnlyWindowsInstances = false;
+        private bool _showZones = false;
         private IList<InstancesPerZone> _instancesPerZone;
         private Lazy<GceDataSource> _dataSource;
 
@@ -60,6 +62,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         public override string RootCaption => Resources.CloudExplorerGceRootNodeCaption;
 
+        /// <summary>
+        /// Whether the list should be filter down to only those VMs that are running Windows.
+        /// </summary>
         public bool ShowOnlyWindowsInstances
         {
             get { return _showOnlyWindowsInstances; }
@@ -70,24 +75,93 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     return;
                 }
                 _showOnlyWindowsInstances = value;
-
-                PresentZoneViewModels();
+                PresentViewModels();
+                UpdateContextMenu();
+                ShowOnlyWindowsInstancesChanged?.Invoke(this, EventArgs.Empty);
             }
         }
+
+        /// <summary>
+        /// Whether the list should be shown as a tree of zones. If false then the list should be shown
+        /// as a plain list of VMs.
+        /// </summary>
+        public bool ShowZones
+        {
+            get { return _showZones; }
+            set
+            {
+                if (value == _showZones)
+                {
+                    return;
+                }
+                _showZones = value;
+                PresentViewModels();
+                UpdateContextMenu();
+            }
+        }
+
+        /// <summary>
+        /// This event is raised every time the <seealso cref="ShowOnlyWindowsInstances"/> property value changes.
+        /// </summary>
+        public event EventHandler ShowOnlyWindowsInstancesChanged;
 
         public override void Initialize(ICloudSourceContext context)
         {
             base.Initialize(context);
 
             InvalidateProjectOrAccount();
+            UpdateContextMenu();
+        }
 
-            var menuItems = new List<MenuItem>
+        private void UpdateContextMenu()
+        {
+            var menuItems = new List<FrameworkElement>
             {
                 new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new WeakCommand(OnStatusCommand) },
                 new MenuItem { Header = Resources.CloudExplorerGceNewAspNetInstanceMenuHeader, Command = new WeakCommand(OnNewAspNetInstanceCommand) },
                 new MenuItem { Header = Resources.CloudExplorerGceNewInstanceMenuHeader, Command = new WeakCommand(OnNewInstanceCommand) },
+                new Separator(),
             };
+
+            if (ShowOnlyWindowsInstances)
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowAllOsInstancesCommand, Command = new WeakCommand(OnShowAllOsInstancesCommand) });
+            }
+            else
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowWindowsOnlyInstancesCommand, Command = new WeakCommand(OnShowOnlyWindowsInstancesCommand) });
+            }
+
+            if (ShowZones)
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowInstancesCommand, Command = new WeakCommand(OnShowInstancesCommand) });
+            }
+            else
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowZonesCommand, Command = new WeakCommand(OnShowZonesCommand) });
+            }
+
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void OnShowOnlyWindowsInstancesCommand()
+        {
+            ShowOnlyWindowsInstances = true;
+        }
+
+        private void OnShowAllOsInstancesCommand()
+        {
+            ShowOnlyWindowsInstances = false;
+        }
+
+        private void OnShowInstancesCommand()
+        {
+            ShowZones = false;
+        }
+
+        private void OnShowZonesCommand()
+        {
+            ShowZones = true;
         }
 
         private void OnNewAspNetInstanceCommand()
@@ -100,6 +174,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             var url = $"https://console.cloud.google.com/compute/instancesAdd?project={Context.CurrentProject.Name}";
             Process.Start(url);
+        }
+
+        private void OnStatusCommand()
+        {
+            Process.Start("https://status.cloud.google.com/");
         }
 
         public override void InvalidateProjectOrAccount()
@@ -128,7 +207,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             try
             {
                 _instancesPerZone = await _dataSource.Value.GetAllInstancesPerZonesAsync();
-                PresentZoneViewModels();
+                PresentViewModels();
             }
             catch (DataSourceException ex)
             {
@@ -150,35 +229,56 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             }
         }
 
-        private void PresentZoneViewModels()
+        private void PresentViewModels()
         {
-            if (_instancesPerZone == null)
+            IEnumerable<TreeNode> viewModels;
+            if (_showZones)
             {
-                return;
+                // This query creates the zone view model with the following steps:
+                //   * Create an object that represents the zone and the instances that must be shown (after filtering)
+                //     for that zone. The instances in the zone are sorted by their name.
+                //   * Filter out the zones that (after filtering instances) are empty.
+                //   * Sort the resulting zones by the zone name.
+                //   * Create the view model for each zone, containing the instances for that zone.
+                viewModels = _instancesPerZone
+                    .Select(x => new
+                    {
+                        Zone = x.Zone.Name,
+                        Instances = x.Instances
+                            .Where(i => _showOnlyWindowsInstances ? i.IsWindowsInstance() : true)
+                            .OrderBy(i => i.Name)
+                    })
+                    .Where(x => x.Instances.Count() > 0)
+                    .OrderBy(x => x.Zone)
+                    .Select(x => new ZoneViewModel(this, x.Zone, x.Instances.Select(i => new GceInstanceViewModel(this, i))));
             }
-
-            var zones = GetZoneViewModels();
-            Children.Clear();
-            foreach (var zone in zones)
+            else
             {
-                Children.Add(zone);
+                // This query gets the list of view models for the instnaces with the following steps:
+                //   * Select all of the instances in all of the zones in a source list.
+                //   * Filters the instances according to the _showOnlyWindowsInstances setting.
+                //   * Sorts the resulting instances by name.
+                //   * Creates the view model for each instance.
+                viewModels = _instancesPerZone
+                    .SelectMany(x => x.Instances)
+                    .Where(x => _showOnlyWindowsInstances ? x.IsWindowsInstance() : true)
+                    .OrderBy(x => x.Name)
+                    .Select(x => new GceInstanceViewModel(this, x));
+            }
+            UpdateViewModels(viewModels);
+        }
+
+        private void UpdateViewModels(IEnumerable<TreeNode> viewModels)
+        {
+            Children.Clear();
+            foreach (var viewModel in viewModels)
+            {
+                Children.Add(viewModel);
             }
             if (Children.Count == 0)
             {
-                Children.Add(s_noZonesPlaceholder);
+                Children.Add(s_noItemsPlacehoder);
             }
-        }
-
-        private IList<ZoneViewModel> GetZoneViewModels()
-        {
-            return _instancesPerZone?
-                .OrderBy(x => x.Zone.Name)
-                .Select(x => new ZoneViewModel(this, x, _showOnlyWindowsInstances)).ToList();
-        }
-
-        private void OnStatusCommand()
-        {
-            Process.Start("https://status.cloud.google.com/");
         }
     }
 }
