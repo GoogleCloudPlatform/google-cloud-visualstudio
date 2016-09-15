@@ -9,4 +9,4 @@
 **/project.lock.json
 .DS_Store
 **/packages/*
-/GoogleCloudExtension/GoogleCloudExtension.sln.DotSettings.user
+**.DotSettings.user

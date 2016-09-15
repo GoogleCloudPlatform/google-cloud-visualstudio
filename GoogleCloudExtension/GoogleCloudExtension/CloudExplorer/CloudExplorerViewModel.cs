@@ -206,7 +206,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 new CloudSQLSource(this),
 
                 // The Google Publish/Subscription source.
-                new PubSubSource(this),
+                new PubsubSource(this),
 
                 // The source to navigate to the cloud console.
                 new CloudConsoleSource(),

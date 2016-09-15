@@ -1,16 +1,16 @@
-﻿// // Copyright 2016 Google Inc. All Rights Reserved.
-// //
-// // Licensed under the Apache License, Version 2.0 (the "License");
-// // you may not use this file except in compliance with the License.
-// // You may obtain a copy of the License at
-// //
-// //     http://www.apache.org/licenses/LICENSE-2.0
-// //
-// // Unless required by applicable law or agreed to in writing, software
-// // distributed under the License is distributed on an "AS IS" BASIS,
-// // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// // See the License for the specific language governing permissions and
-// // limitations under the License.
+﻿// Copyright 2016 Google Inc. All Rights Reserved.
+// 
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
 
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Pubsub.v1.Data;
@@ -19,12 +19,14 @@ using GoogleCloudExtension.CloudExplorer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 {
-    internal class PubSubSourceRootViewModel : SourceRootViewModelBase
+    /// <summary>
+    /// Root node of the Pubsub tree.
+    /// </summary>
+    internal class PubsubSourceRootViewModel : SourceRootViewModelBase
     {
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
@@ -42,23 +44,25 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             IsError = true
         };
 
-        public override string RootCaption { get; } = Resources.CloudExplorerPubSubRootCaption;
-        public override TreeLeaf ErrorPlaceholder { get; } = s_errorPlaceholder;
-        public override TreeLeaf NoItemsPlaceholder { get; } = s_noItemsPlacehoder;
-        public override TreeLeaf LoadingPlaceholder { get; } = s_loadingPlaceholder;
+        public override string RootCaption => Resources.CloudExplorerPubSubRootCaption;
+        public override TreeLeaf ErrorPlaceholder => s_errorPlaceholder;
+        public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
+        public override TreeLeaf LoadingPlaceholder => s_loadingPlaceholder;
 
-        private Lazy<PubSubDataSource> _dataSource = new Lazy<PubSubDataSource>(CreateDataSource);
-        internal PubSubDataSource DataSource => _dataSource.Value;
+        public IList<Subscription> Subscriptions { get; private set; }
 
-        private Lazy<Task<IList<Subscription>>> _subscriptions;
-        public Task<IList<Subscription>> Subscriptions => _subscriptions.Value;
+        internal PubsubDataSource DataSource => _dataSource.Value;
+        private Lazy<PubsubDataSource> _dataSource = new Lazy<PubsubDataSource>(CreateDataSource);
 
-        public PubSubSourceRootViewModel()
+        public PubsubSourceRootViewModel()
         {
-            _subscriptions = new Lazy<Task<IList<Subscription>>>(GetSubscriptionsAsync);
+            Subscriptions = new Subscription[0];
         }
 
-        private static PubSubDataSource CreateDataSource()
+        /// <summary>
+        /// Creates a new PubsubDataSource from the default credentials.
+        /// </summary>
+        private static PubsubDataSource CreateDataSource()
         {
             if (CredentialsStore.Default.CurrentProjectId != null)
             {
@@ -67,7 +71,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 {
                     credential.CreateScoped(PubsubService.Scope.Pubsub);
                 }
-                return new PubSubDataSource(
+                return new PubsubDataSource(
                     CredentialsStore.Default.CurrentProjectId,
                     credential,
                     GoogleCloudExtensionPackage.ApplicationName);
@@ -78,27 +82,29 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             }
         }
 
-        public override void Initialize(ICloudSourceContext context)
-        {
-            base.Initialize(context);
-        }
-
+        /// <summary>
+        /// Resets the datasource.
+        /// </summary>
         public override void InvalidateProjectOrAccount()
         {
-            Debug.WriteLine("New credentials, invalidating the GCS source.");
-            _dataSource = new Lazy<PubSubDataSource>(CreateDataSource);
+            Debug.WriteLine("New credentials, invalidating the Pubsub source.");
+            _dataSource = new Lazy<PubsubDataSource>(CreateDataSource);
         }
 
+        /// <summary>
+        /// Loads the topics, and creates child topic nodes.
+        /// </summary>
         protected override async Task LoadDataOverride()
         {
             try
             {
-                _subscriptions = new Lazy<Task<IList<Subscription>>>(GetSubscriptionsAsync);
-                IEnumerable<TopicViewModel> topicModels = await ListTopicViewModelsAsync();
+                Task<IList<Subscription>> subscriptionsTask = GetSubscriptionsAsync();
+                IEnumerable<Topic> topics = await DataSource.GetTopicListAsync();
+                Subscriptions = await subscriptionsTask;
                 Children.Clear();
-                foreach (var topicModel in topicModels)
+                foreach (var topic in topics)
                 {
-                    Children.Add(topicModel);
+                    Children.Add(new TopicViewModel(this, topic));
                 }
             }
             catch (Exception e)
@@ -108,15 +114,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             }
         }
 
-        private async Task<IEnumerable<TopicViewModel>> ListTopicViewModelsAsync()
-        {
-            IEnumerable<Topic> topics = await _dataSource.Value.GetTopicListAsync();
-            return topics.Select(topic => new TopicViewModel(this, topic));
-        }
 
         private Task<IList<Subscription>> GetSubscriptionsAsync()
         {
-            return _dataSource.Value.GetSubscriptionListAsync();
+            return DataSource.GetSubscriptionListAsync();
         }
     }
 }

@@ -1069,6 +1069,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Full Name of the Topic.
+        /// </summary>
+        public static string CloudExplorerPubSubTopicFullNameDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubTopicFullNameDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Name of the Topic.
         /// </summary>
         public static string CloudExplorerPubSubTopicNameDescription {

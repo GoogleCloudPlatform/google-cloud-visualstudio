@@ -64,8 +64,8 @@
       <DependentUpon>AuthorizedNetworksWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="CloudExplorerSources\Gcs\BucketLocationViewModel.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\PubSubSource.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\PubSubSourceRootViewModel.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\PubsubSource.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\PubsubSourceRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\SubscriptionItem.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicItem.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModel.cs" />
