@@ -43,13 +43,16 @@ namespace GoogleAnalyticsUtils
             Preconditions.CheckNotNull(eventType, nameof(eventType));
             Preconditions.CheckNotNull(eventName, nameof(eventName));
 
-            _reporter.ReportPageView(
-                page: GetPageViewURI(eventType: eventType, eventName: eventName),
-                title: SerializeEventMetadata(metadata),
-                customDimensions: new Dictionary<int, string>
+            var customDimensions = projectId != null ? new Dictionary<int, string>
                 {
                     { ProjectIdHashIndex, GetProjectHash(projectId) }
-                });
+                } : null;
+            var serializedMetadata = metadata != null ? SerializeEventMetadata(metadata) : null;
+
+            _reporter.ReportPageView(
+                page: GetPageViewURI(eventType: eventType, eventName: eventName),
+                title: serializedMetadata,
+                customDimensions: customDimensions);
         }
 
         private static string GetProjectHash(string projectId)
