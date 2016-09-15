@@ -131,7 +131,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 if (value == null || value is Project)
                 {
                     var project = (Project)value;
-                    CredentialsStore.Default.CurrentProjectId = project?.ProjectId;
+                    CredentialsStore.Default.UpdateCurrentProject(project);
                 }
             }
         }

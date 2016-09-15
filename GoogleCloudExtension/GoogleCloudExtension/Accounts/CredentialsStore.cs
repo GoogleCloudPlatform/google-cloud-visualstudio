@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.CloudResourceManager.v1.Data;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -51,6 +52,7 @@ namespace GoogleCloudExtension.Accounts
         private Dictionary<string, StoredUserAccount> _cachedCredentials;
         private UserAccount _currentAccount;
         private string _currentProjectId;
+        private string _currentProjectNumericId;
 
         public static CredentialsStore Default => s_defaultCredentialsStore.Value;
 
@@ -91,7 +93,7 @@ namespace GoogleCloudExtension.Accounts
         public string CurrentProjectId
         {
             get { return _currentProjectId; }
-            set
+            private set
             {
                 if (_currentProjectId != value)
                 {
@@ -101,6 +103,11 @@ namespace GoogleCloudExtension.Accounts
                 }
             }
         }
+
+        /// <summary>
+        /// The currently selected project numeric ID, might be null if no project is loaded.
+        /// </summary>
+        public string CurrentProjectNumericId { get; private set; }
 
         /// <summary>
         /// The list of accounts known to the store.
@@ -116,6 +123,15 @@ namespace GoogleCloudExtension.Accounts
             {
                 ResetCredentials(defaultCredentials.AccountName, defaultCredentials.ProjectId);
             }
+        }
+
+        /// <summary>
+        /// Updates the current project data from the given <paramref name="project"/>.
+        /// </summary>
+        public void UpdateCurrentProject(Project project)
+        {
+            CurrentProjectId = project.ProjectId;
+            CurrentProjectNumericId = project?.ProjectNumber?.ToString();
         }
 
         /// <summary>
