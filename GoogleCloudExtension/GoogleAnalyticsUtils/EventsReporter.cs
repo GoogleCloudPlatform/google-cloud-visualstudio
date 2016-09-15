@@ -34,7 +34,14 @@ namespace GoogleAnalyticsUtils
             _reporter = Preconditions.CheckNotNull(reporter, nameof(reporter));
         }
 
-        public void ReportEventAsync(
+        /// <summary>
+        /// Report an event to analytics.
+        /// </summary>
+        /// <param name="eventType">The event type of the event.</param>
+        /// <param name="eventName">The event name.</param>
+        /// <param name="projectNumber">The project number, optional.</param>
+        /// <param name="metadata">Extra metadata for the event, optional.</param>
+        public void ReportEvent(
             string eventType,
             string eventName,
             string projectNumber = null,

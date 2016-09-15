@@ -38,7 +38,7 @@ namespace GoogleAnalyticsUtilsTests
                 expectedEventName: FakeEventName);
             var eventsReporter = new EventsReporter(fakeReporter);
 
-            eventsReporter.ReportEventAsync(
+            eventsReporter.ReportEvent(
                 eventType: FakeEventType,
                 eventName: FakeEventName);
         }
@@ -53,7 +53,7 @@ namespace GoogleAnalyticsUtilsTests
                 expectedMetadata: s_metadata);
             var eventsReporter = new EventsReporter(fakeReporter);
 
-            eventsReporter.ReportEventAsync(
+            eventsReporter.ReportEvent(
                 eventType: FakeEventType,
                 eventName: FakeEventName,
                 metadata: s_metadata);
@@ -69,7 +69,7 @@ namespace GoogleAnalyticsUtilsTests
                 expectedProjectNumberHash: ExpectedProjectNumberHash);
             var eventsReporter = new EventsReporter(fakeReporter);
 
-            eventsReporter.ReportEventAsync(
+            eventsReporter.ReportEvent(
                 eventType: FakeEventType,
                 eventName: FakeEventName,
                 metadata: s_metadata,
