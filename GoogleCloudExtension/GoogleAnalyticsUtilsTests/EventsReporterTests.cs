@@ -1,8 +1,6 @@
-﻿using System;
-using System.Text;
-using System.Collections.Generic;
+﻿using GoogleAnalyticsUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using GoogleAnalyticsUtils;
+using System.Collections.Generic;
 
 namespace GoogleAnalyticsUtilsTests
 {
