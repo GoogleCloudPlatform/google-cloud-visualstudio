@@ -37,15 +37,15 @@ namespace GoogleAnalyticsUtils
         public void ReportEventAsync(
             string eventType,
             string eventName,
-            string projectId = null,
+            string projectNumber = null,
             Dictionary<string, string> metadata = null)
         {
             Preconditions.CheckNotNull(eventType, nameof(eventType));
             Preconditions.CheckNotNull(eventName, nameof(eventName));
 
-            var customDimensions = projectId != null ? new Dictionary<int, string>
+            var customDimensions = projectNumber != null ? new Dictionary<int, string>
                 {
-                    { ProjectIdHashIndex, GetProjectHash(projectId) }
+                    { ProjectIdHashIndex, GetHash(projectNumber) }
                 } : null;
             var serializedMetadata = metadata != null ? SerializeEventMetadata(metadata) : null;
 
@@ -55,7 +55,7 @@ namespace GoogleAnalyticsUtils
                 customDimensions: customDimensions);
         }
 
-        private static string GetProjectHash(string projectId)
+        private static string GetHash(string projectId)
         {
             var sha1 = SHA1.Create();
             var hash = sha1.ComputeHash(Encoding.UTF8.GetBytes(projectId));

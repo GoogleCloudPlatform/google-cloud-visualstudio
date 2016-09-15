@@ -15,7 +15,7 @@ namespace GoogleAnalyticsUtilsTests
         private readonly string _expectedEventType;
         private readonly string _expectedEventName;
         private readonly Dictionary<string, string> _expectedMetadata;
-        private readonly string _expectedProjectNameHash;
+        private readonly string _expectedProjectNumberHash;
 
         public FakeAnalyticsReporterForEventsImpl(
             string expectedEventType,
@@ -26,7 +26,7 @@ namespace GoogleAnalyticsUtilsTests
             _expectedEventType = expectedEventType;
             _expectedEventName = expectedEventName;
             _expectedMetadata = expectedMetadata;
-            _expectedProjectNameHash = expectedProjectNumberHash;
+            _expectedProjectNumberHash = expectedProjectNumberHash;
         }
 
         public void ReportEvent(string category, string action, string label = null, int? value = default(int?))
@@ -49,10 +49,10 @@ namespace GoogleAnalyticsUtilsTests
                 CollectionAssert.AreEqual(_expectedMetadata, actualMetadata, $"Invalid metadata.");
             }
 
-            if (_expectedProjectNameHash != null)
+            if (_expectedProjectNumberHash != null)
             {
                 Assert.IsNotNull(customDimensions);
-                Assert.AreEqual(_expectedProjectNameHash, customDimensions[11]);
+                Assert.AreEqual(_expectedProjectNumberHash, customDimensions[11]);
             }
         }
 
