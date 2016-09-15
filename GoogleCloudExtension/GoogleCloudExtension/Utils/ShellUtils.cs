@@ -82,7 +82,6 @@ namespace GoogleCloudExtension.Utils
 
         private static void SetUIContext(IVsMonitorSelection monitorSelection, Guid contextGuid, bool value)
         {
-
             uint cookie = 0;
 
             ErrorHandler.ThrowOnFailure(monitorSelection.GetCmdUIContextCookie(contextGuid, out cookie));

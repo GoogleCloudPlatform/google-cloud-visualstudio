@@ -118,8 +118,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
             }
-
-
         }
 
         #endregion

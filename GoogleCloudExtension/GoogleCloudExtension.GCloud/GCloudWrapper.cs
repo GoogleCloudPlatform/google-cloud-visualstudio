@@ -165,7 +165,7 @@ namespace GoogleCloudExtension.GCloud
 
             // This code depends on the fact that gcloud.cmd is a batch file.
             Debug.Write($"Executing gcloud command: {actualCommand}");
-            return ProcessUtils.RunCommandAsync("cmd.exe", $"/c {actualCommand}", (o, e) => outputAction(e.Line) ,environment);
+            return ProcessUtils.RunCommandAsync("cmd.exe", $"/c {actualCommand}", (o, e) => outputAction(e.Line), environment);
         }
     }
 }
