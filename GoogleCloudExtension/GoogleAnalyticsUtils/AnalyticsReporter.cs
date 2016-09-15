@@ -14,9 +14,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace GoogleAnalyticsUtils
 {
@@ -31,11 +28,8 @@ namespace GoogleAnalyticsUtils
     /// https://developers.google.com/analytics/devguides/collection/protocol/v1/
     /// </para>
     /// </summary>
-    public class AnalyticsReporter
+    public class AnalyticsReporter : IAnalyticsReporter
     {
-        private const string ProductionServerUrl = "https://ssl.google-analytics.com/collect";
-        private const string DebugServerUrl = "https://ssl.google-analytics.com/debug/collect";
-
         private const string HitTypeParam = "t";
         private const string VersionParam = "v";
         private const string EventCategoryParam = "ec";
@@ -48,17 +42,18 @@ namespace GoogleAnalyticsUtils
         private const string AppNameParam = "an";
         private const string AppVersionParam = "av";
         private const string ScreenNameParam = "cd";
+        private const string DocumentTitleParam = "dt";
+        private const string DocumentPathParam = "dp";
 
         private const string VersionValue = "1";
         private const string EventTypeValue = "event";
+        private const string PageViewValue = "pageView";
         private const string SessionStartValue = "start";
         private const string SessionEndValue = "end";
         private const string ScreenViewValue = "screenview";
 
-        private readonly bool _debug;
-        private readonly string _serverUrl;
         private readonly Dictionary<string, string> _baseHitData;
-        private readonly string _userAgent;
+        private readonly IHitSender _hitSender;
 
         /// <summary>
         /// The name of the application to use when reporting data.
@@ -95,17 +90,16 @@ namespace GoogleAnalyticsUtils
             string clientId = null,
             string appVersion = null,
             bool debug = false,
-            string userAgent = null)
+            string userAgent = null,
+            IHitSender sender = null)
         {
             PropertyId = Preconditions.CheckNotNull(propertyId, nameof(propertyId));
             ApplicationName = Preconditions.CheckNotNull(appName, nameof(appName));
             ClientId = clientId ?? Guid.NewGuid().ToString();
             ApplicationVersion = appVersion;
 
-            _debug = debug;
-            _serverUrl = debug ? DebugServerUrl : ProductionServerUrl;
             _baseHitData = MakeBaseHitData();
-            _userAgent = userAgent;
+            _hitSender = sender ?? new HitSender(debug, userAgent);
         }
 
         /// <summary>
@@ -136,7 +130,28 @@ namespace GoogleAnalyticsUtils
             {
                 hitData[EventValueParam] = value.ToString();
             }
-            SendHitData(hitData);
+            _hitSender.SendHitData(hitData);
+        }
+
+        public void ReportPageView(string page, string title, Dictionary<int, string> customDimensions = null)
+        {
+            Preconditions.CheckNotNull(page, nameof(page));
+            Preconditions.CheckNotNull(title, nameof(title));
+
+            var hitData = new Dictionary<string, string>(_baseHitData)
+            {
+                { HitTypeParam, PageViewValue },
+                { DocumentPathParam, page },
+                { DocumentTitleParam, title },
+            };
+            if (customDimensions != null)
+            {
+                foreach (var entry in customDimensions)
+                {
+                    hitData[GetCustomDimension(entry.Key)] = entry.Value;
+                }
+            }
+            _hitSender.SendHitData(hitData);
         }
 
         /// <summary>
@@ -152,7 +167,7 @@ namespace GoogleAnalyticsUtils
                 { HitTypeParam, ScreenViewValue },
                 { ScreenNameParam, name },
             };
-            SendHitData(hitData);
+            _hitSender.SendHitData(hitData);
         }
 
         /// <summary>
@@ -165,7 +180,7 @@ namespace GoogleAnalyticsUtils
                 { HitTypeParam,EventTypeValue },
                 { SessionControlParam, SessionStartValue }
             };
-            SendHitData(hitData);
+            _hitSender.SendHitData(hitData);
         }
 
         /// <summary>
@@ -178,7 +193,7 @@ namespace GoogleAnalyticsUtils
                 { HitTypeParam, EventTypeValue },
                 { SessionControlParam, SessionEndValue }
             };
-            SendHitData(hitData);
+            _hitSender.SendHitData(hitData);
         }
 
         /// <summary>
@@ -202,35 +217,6 @@ namespace GoogleAnalyticsUtils
             return result;
         }
 
-        /// <summary>
-        /// Sends the hit data to the server.
-        /// </summary>
-        /// <param name="hitData">The hit data to be sent.</param>
-        private async void SendHitData(Dictionary<string, string> hitData)
-        {
-            using (var client = new HttpClient())
-            {
-                if (_userAgent != null)
-                {
-                    client.DefaultRequestHeaders.UserAgent.ParseAdd(_userAgent);
-                }
-                using (var form = new FormUrlEncodedContent(hitData))
-                using (var response = await client.PostAsync(_serverUrl, form).ConfigureAwait(false))
-                {
-                    DebugPrintAnalyticsOutput(response.Content.ReadAsStringAsync());
-                }
-            }
-        }
-
-        /// <summary>
-        /// Debugging utility that will print out to the output window the result of the hit request.
-        /// </summary>
-        /// <param name="resultTask">The task resulting from the request.</param>
-        [Conditional("DEBUG")]
-        private async void DebugPrintAnalyticsOutput(Task<string> resultTask)
-        {
-            var result = await resultTask.ConfigureAwait(false);
-            Debug.WriteLine($"Output of analytics: {result}");
-        }
+        private static string GetCustomDimension(int index) => "cd{index}";
     }
 }
