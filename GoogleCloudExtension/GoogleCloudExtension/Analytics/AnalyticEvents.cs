@@ -19,5 +19,6 @@ namespace GoogleCloudExtension.Analytics
         public const string GceVMListLoadEventName = "gceVMsLoad";
         public const string GcsBucketListLoadEventName = "gcsBucketsLoad";
         public const string CloudSQLInstancesListLoadEventName = "cloudSQLInstancesLoad";
+        public const string ChangedFirewallPortsEventName = "manageFirewallPorts";
     }
 }
