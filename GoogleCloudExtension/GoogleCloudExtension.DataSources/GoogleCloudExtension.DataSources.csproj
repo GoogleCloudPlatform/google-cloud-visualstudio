@@ -44,6 +44,10 @@
       <HintPath>..\packages\Google.Apis.1.16.0\lib\net45\Google.Apis.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Google.Apis.Appengine.v1, Version=1.16.0.579, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Appengine.v1.1.16.0.579\lib\portable-net45+netcore45+wpa81+wp8\Google.Apis.Appengine.v1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Google.Apis.Auth, Version=1.16.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Auth.1.16.0\lib\net45\Google.Apis.Auth.dll</HintPath>
       <Private>True</Private>
@@ -107,6 +111,8 @@
     <Compile Include="DataSourceBase.cs" />
     <Compile Include="DataSourceException.cs" />
     <Compile Include="FirewallPort.cs" />
+    <Compile Include="GaeDataSource.cs" />
+    <Compile Include="GaeServiceExtensions.cs" />
     <Compile Include="GceDataSource.cs" />
     <Compile Include="InstanceExtensions.cs" />
     <Compile Include="GceOperation.cs" />

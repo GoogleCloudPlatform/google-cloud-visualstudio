@@ -16,6 +16,7 @@ using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorerSources.CloudSQL;
+using GoogleCloudExtension.CloudExplorerSources.Gae;
 using GoogleCloudExtension.CloudExplorerSources.Gce;
 using GoogleCloudExtension.CloudExplorerSources.Gcs;
 using GoogleCloudExtension.DataSources;
@@ -195,6 +196,9 @@ namespace GoogleCloudExtension.CloudExplorer
 
             _sources = new List<ICloudExplorerSource>
             {
+                // The Google App Engine source.
+                new GaeSource(this),
+
                 // The Google Compute Engine source.
                 new GceSource(this),
 
