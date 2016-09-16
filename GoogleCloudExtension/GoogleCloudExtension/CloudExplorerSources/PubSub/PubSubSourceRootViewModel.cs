@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.Accounts;
@@ -107,9 +108,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                     Children.Add(new TopicViewModel(this, topic));
                 }
             }
-            catch (Exception e)
+            catch (GoogleApiException e)
             {
-                Children.Add(new TreeLeaf { Caption = e.Message, IsError = true });
                 throw new CloudExplorerSourceException(e.Message, e);
             }
         }

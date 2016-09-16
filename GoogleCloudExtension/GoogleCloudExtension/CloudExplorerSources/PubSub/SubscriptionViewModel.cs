@@ -34,7 +34,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         public object Item => _subscriptionItem;
         public event EventHandler ItemChanged;
 
-
         public SubscriptionViewModel(TopicViewModel owner, Subscription subscription)
         {
             _owner = owner;

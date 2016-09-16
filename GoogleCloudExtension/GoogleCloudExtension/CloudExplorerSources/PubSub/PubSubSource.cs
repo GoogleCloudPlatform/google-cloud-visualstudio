@@ -25,11 +25,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         public PubsubSource(ICloudSourceContext context) : base(context) { }
 
         /// <summary>
-        /// Gets the last part of the full name.
+        /// Gets the last part of the full name i.e. the leaf of the path.
         /// </summary>
-        internal static string GetPartialName(string fullName)
+        internal static string GetPathLeaf(string path)
         {
-            return fullName.Substring(1 + fullName.LastIndexOf("/", StringComparison.Ordinal));
+            return path.Substring(1 + path.LastIndexOf("/", StringComparison.Ordinal));
         }
     }
 }
