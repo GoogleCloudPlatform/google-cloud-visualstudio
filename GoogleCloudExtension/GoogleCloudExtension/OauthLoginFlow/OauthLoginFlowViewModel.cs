@@ -42,7 +42,6 @@ namespace GoogleCloudExtension.OauthLoginFlow
 
         private void OnCloseCommand()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.OAuthFlowCancel, CommandInvocationSource.Button);
             _owner.CancelOperation();
         }
     }

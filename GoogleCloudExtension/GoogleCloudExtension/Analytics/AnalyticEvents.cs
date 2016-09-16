@@ -8,10 +8,10 @@ namespace GoogleCloudExtension.Analytics
 {
     internal static class AnalyticEvents
     {
-        public const string ExtensionEventType = "vsextension";
+        
 
-        public const string NewInstallEventName = "newInstall";
-        public const string UpgradeEventName = "upgrade";
+        
+        
         public const string NewLoginEventName = "newLogin";
         public const string CloudExplorerInteractionEventName = "cloudExplorerInteraction";
         public const string GceAppDeploymentEventName = "gceAppDeployment";

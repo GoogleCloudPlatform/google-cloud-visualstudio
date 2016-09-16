@@ -40,8 +40,6 @@ namespace GoogleCloudExtension.MySQLInstaller
 
         private void OpenDownload()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.OpenMySQLInstallerDownload, CommandInvocationSource.Button);
-
             var url = $"https://dev.mysql.com/downloads/installer/";
             Debug.WriteLine($"Opening page to download MySQL Installer: {url}");
             Process.Start(url);

@@ -32,9 +32,6 @@ namespace GoogleCloudExtension.Theming
             ResizeMode = System.Windows.ResizeMode.NoResize;
             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
             ShowInTaskbar = false;
-
-            // Report that this window is opened.
-            ExtensionAnalytics.ReportScreenView(this);
         }
     }
 }

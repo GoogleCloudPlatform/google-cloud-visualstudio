@@ -361,8 +361,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnOpenTerminalServerSessionCommand()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.OpenTerminalServerSessionForGceInstanceCommand, CommandInvocationSource.Button);
-
             var credentials = WindowsCredentialsChooserWindow.PromptUser(
                 _instance,
                 new WindowsCredentialsChooserWindow.Options
@@ -378,8 +376,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnOpenWebsite()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.OpenWebsiteForGceInstanceCommand, CommandInvocationSource.Button);
-
             var url = Instance.GetDestinationAppUri();
             Debug.WriteLine($"Opening Web Site: {url}");
             Process.Start(url);

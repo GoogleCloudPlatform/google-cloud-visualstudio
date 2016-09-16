@@ -23,7 +23,7 @@ namespace GoogleAnalyticsUtils
     /// <summary>
     /// Reports events using the provided analytics reporter.
     /// </summary>
-    public class EventsReporter
+    public class EventsReporter : IEventsReporter
     {
         private const int ProjectIdHashIndex = 11;
 

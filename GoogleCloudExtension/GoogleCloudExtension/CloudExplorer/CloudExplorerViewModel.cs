@@ -262,8 +262,6 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnManageAccountsCommand()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.OpenManageAccountsDialog, CommandInvocationSource.Button);
-
             ManageAccountsWindow.PromptUser();
         }
 
@@ -400,8 +398,6 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnRefresh()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.RefreshDataSource, CommandInvocationSource.Button);
-
             RefreshSources();
         }
 

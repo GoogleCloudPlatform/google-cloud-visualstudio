@@ -199,20 +199,10 @@ namespace GoogleCloudExtension
             ActivityLogUtils.Initialize(this);
             ActivityLogUtils.LogInfo("Starting Google Cloud Tools.");
 
-            // Analytics reporting.
-            ExtensionAnalytics.ReportStartSession();
-
             _dteInstance = (DTE)Package.GetGlobalService(typeof(DTE));
-            _dteInstance.Events.DTEEvents.OnBeginShutdown += DTEEvents_OnBeginShutdown;
         }
 
         public static GoogleCloudExtensionPackage Instance { get; private set; }
-
-        private void DTEEvents_OnBeginShutdown()
-        {
-            ActivityLogUtils.LogInfo("Shutting down Google Cloud Tools.");
-            ExtensionAnalytics.ReportEndSession();
-        }
 
         #endregion
 

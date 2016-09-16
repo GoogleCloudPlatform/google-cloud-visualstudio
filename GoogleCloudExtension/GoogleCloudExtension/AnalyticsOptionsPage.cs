@@ -74,7 +74,7 @@ namespace GoogleCloudExtension
                 ClientId = null;
             }
 
-            ExtensionAnalytics.AnalyticsOptInStateChanged();
+            EventsReporterWrapper.AnalyticsOptInStateChanged();
 
             base.SaveSettingsToStorage();
         }
