@@ -9,13 +9,12 @@ namespace GoogleCloudExtension.Analytics.Events
     internal static class GceAppDeploymentEvent
     {
         private const string GceAppDeploymentEventName = "gceAppDeployment";
-        private const string StatusProperty = "status";
 
-        public static void Report(string status)
+        public static void Report(CommandStatus status)
         {
             EventsReporterWrapper.ReportEvent(
                 GceAppDeploymentEventName,
-                StatusProperty, status);
+                CommandStatusUtils.StatusProperty, CommandStatusUtils.GetStatusString(status));
         }
     }
 }

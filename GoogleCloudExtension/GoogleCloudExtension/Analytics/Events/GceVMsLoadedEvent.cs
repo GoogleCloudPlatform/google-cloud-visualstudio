@@ -10,9 +10,11 @@ namespace GoogleCloudExtension.Analytics.Events
     {
         private const string GceVMsLoadedEventName = "gceVMsLoad";
 
-        public static void Report()
+        public static void Report(CommandStatus status)
         {
-            EventsReporterWrapper.ReportEvent(GceVMsLoadedEventName);
+            EventsReporterWrapper.ReportEvent(
+                GceVMsLoadedEventName,
+                CommandStatusUtils.StatusProperty, CommandStatusUtils.GetStatusString(status));
         }
     }
 }

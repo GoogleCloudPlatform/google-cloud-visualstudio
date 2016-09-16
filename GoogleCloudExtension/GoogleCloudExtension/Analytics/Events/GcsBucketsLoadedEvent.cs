@@ -10,9 +10,11 @@ namespace GoogleCloudExtension.Analytics.Events
     {
         private const string GcsBucketsLoadedEventName = "gcsBucketsLoad";
 
-        public static void Report()
+        public static void Report(CommandStatus status)
         {
-            EventsReporterWrapper.ReportEvent(GcsBucketsLoadedEventName);
+            EventsReporterWrapper.ReportEvent(
+                GcsBucketsLoadedEventName,
+                CommandStatusUtils.StatusProperty, CommandStatusUtils.GetStatusString(status));
         }
     }
 }

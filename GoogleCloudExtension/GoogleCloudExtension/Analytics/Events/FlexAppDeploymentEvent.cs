@@ -9,13 +9,12 @@ namespace GoogleCloudExtension.Analytics.Events
     internal static class FlexAppDeploymentEvent
     {
         private const string FlexAppDeploymentEventName = "flexAppDeployment";
-        private const string StatusProperty = "status";
 
-        public static void Report(string status)
+        public static void Report(CommandStatus status)
         {
             EventsReporterWrapper.ReportEvent(
                 FlexAppDeploymentEventName,
-                StatusProperty, status);
+                CommandStatusUtils.StatusProperty, CommandStatusUtils.GetStatusString(status));
         }
     }
 }

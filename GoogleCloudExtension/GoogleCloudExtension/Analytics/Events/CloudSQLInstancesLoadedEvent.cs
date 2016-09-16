@@ -10,9 +10,11 @@ namespace GoogleCloudExtension.Analytics.Events
     {
         private const string CloudSQLInstancesLoadedEventName = "cloudSQLInstancesLoad";
 
-        public static void Report()
+        public static void Report(CommandStatus status)
         {
-            EventsReporterWrapper.ReportEvent(CloudSQLInstancesLoadedEventName);
+            EventsReporterWrapper.ReportEvent(
+                CloudSQLInstancesLoadedEventName,
+                CommandStatusUtils.StatusProperty, CommandStatusUtils.GetStatusString(status));
         }
     }
 }
