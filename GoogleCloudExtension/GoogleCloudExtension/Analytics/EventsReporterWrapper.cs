@@ -77,6 +77,11 @@ namespace GoogleCloudExtension.Analytics
 
         private static Dictionary<string, string> GetMetadataFromParams(string[] args)
         {
+            if (args.Length == 0)
+            {
+                return null;
+            }
+
             if ((args.Length % 2) != 0)
             {
                 Debug.WriteLine($"Invalid count of params: {args.Length}");
