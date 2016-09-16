@@ -62,6 +62,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new WeakCommand(OnStatusCommand) },
+                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
@@ -69,6 +70,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private void OnStatusCommand()
         {
             Process.Start("https://status.cloud.google.com/");
+        }
+
+        private void OnOpenOnCloudConsoleCommand()
+        {
+            var url = $"https://console.cloud.google.com/appengine/services?project={Context.CurrentProject.ProjectId}";
+            Process.Start(url);
         }
 
         public override void InvalidateProjectOrAccount()

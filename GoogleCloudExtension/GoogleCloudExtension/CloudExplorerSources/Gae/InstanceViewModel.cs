@@ -14,7 +14,10 @@
 
 using Google.Apis.Appengine.v1.Data;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.Utils;
 using System;
+using System.Collections.Generic;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {
@@ -24,6 +27,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
     class InstanceViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
         private readonly VersionViewModel _owner;
+
+        public readonly GaeSourceRootViewModel root;
 
         private readonly Instance _instance;
 
@@ -35,8 +40,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             _owner = owner;
             _instance = instance;
+            root = _owner.root;
 
             Caption = _instance.VmName;
+
+            var menuItems = new List<MenuItem>
+            {
+                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) },
+            };
+            ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void OnPropertiesWindowCommand()
+        {
+            root.Context.ShowPropertiesWindow(Item);
         }
 
         public InstanceItem GetItem() => new InstanceItem(_instance);

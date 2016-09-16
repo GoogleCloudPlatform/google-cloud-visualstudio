@@ -20,6 +20,8 @@ using System.Threading.Tasks;
 using System.Linq;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
+using System.Diagnostics;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {
@@ -48,7 +50,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private bool _resourcesLoaded;
 
-        public readonly Lazy<GaeDataSource> DataSource;
+        public readonly GaeSourceRootViewModel root;
 
         public readonly Service service;
 
@@ -60,13 +62,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             _owner = owner;
             this.service = service;
-
-            DataSource = _owner.DataSource;
+            root = _owner;
 
             Caption = service.Id;
 
             _resourcesLoaded = false;
             Children.Add(s_loadingPlaceholder);
+
+            var menuItems = new List<MenuItem>
+            {
+                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) },
+                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) },
+            };
+            ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
         protected override async void OnIsExpandedChanged(bool newValue)
@@ -107,12 +115,23 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
         }
 
+        private void OnOpenOnCloudConsoleCommand()
+        {
+            var url = $"https://console.cloud.google.com/appengine/versions?project={root.Context.CurrentProject.ProjectId}&moduleId={service.Id}";
+            Process.Start(url);
+        }
+
+        private void OnPropertiesWindowCommand()
+        {
+            root.Context.ShowPropertiesWindow(Item);
+        }
+
         /// <summary>
         /// Load a list of versions sorted by percent of traffic allocation.
         /// </summary>
         private async Task<List<VersionViewModel>> LoadVersionList()
         {
-            var versions = await DataSource.Value.GetVersionListAsync(service.Id);
+            var versions = await root.DataSource.Value.GetVersionListAsync(service.Id);
             return versions?
                 .Select(x => new VersionViewModel(this, x))
                 .OrderByDescending(x => GaeServiceExtensions.GetTrafficAllocation(service, x.version.Id))

@@ -17,9 +17,11 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {
@@ -46,6 +48,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private readonly ServiceViewModel _owner;
 
+        public readonly GaeSourceRootViewModel root;
+
         private bool _resourcesLoaded;
 
         public readonly Google.Apis.Appengine.v1.Data.Version version;
@@ -59,11 +63,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             _owner = owner;
             this.version = version;
+            root = _owner.root;
 
             Caption = GetCaption();
 
             _resourcesLoaded = false;
             Children.Add(s_loadingPlaceholder);
+
+            var menuItems = new List<MenuItem>
+            {
+                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) },
+                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) },
+            };
+            ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
         protected override async void OnIsExpandedChanged(bool newValue)
@@ -104,12 +116,23 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
         }
 
+        private void OnOpenOnCloudConsoleCommand()
+        {
+            var url = $"https://console.cloud.google.com/appengine/instances?project={root.Context.CurrentProject.ProjectId}&moduleId={_owner.service.Id}&versionId={version.Id}";
+            Process.Start(url);
+        }
+
+        private void OnPropertiesWindowCommand()
+        {
+            root.Context.ShowPropertiesWindow(Item);
+        }
+
         /// <summary>
         /// Load a list of instances.
         /// </summary>
         private async Task<List<InstanceViewModel>> LoadInstanceList()
         {
-            var instances = await _owner.DataSource.Value.GetInstanceListAsync(_owner.service.Id, version.Id);
+            var instances = await _owner.root.DataSource.Value.GetInstanceListAsync(_owner.service.Id, version.Id);
             return instances?.Select(x => new InstanceViewModel(this, x)).ToList();
         }
 
