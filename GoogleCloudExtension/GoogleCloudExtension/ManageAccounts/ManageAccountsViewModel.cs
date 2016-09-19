@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -124,6 +125,7 @@ namespace GoogleCloudExtension.ManageAccounts
             Debug.WriteLine("Stating the oauth login flow.");
             if (await AccountsManager.StartAddAccountFlowAsync())
             {
+                NewLoginEvent.Report();
                 Debug.WriteLine($"The user logged in: {CredentialsStore.Default.CurrentAccount.AccountName}");
                 _owner.Close();
             }
