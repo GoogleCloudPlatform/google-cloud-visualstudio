@@ -103,17 +103,24 @@ namespace GoogleCloudExtension.Analytics
             if (settings.OptIn)
             {
                 Debug.WriteLine("Analytics report enabled.");
-                bool debug = false;
 #if DEBUG
-                debug = true;
-#endif
                 var analyticsReporter = new AnalyticsReporter(PropertyId,
                     clientId: settings.ClientId,
                     appName: GoogleCloudExtensionPackage.ApplicationName,
                     appVersion: GoogleCloudExtensionPackage.ApplicationVersion,
-                    debug: debug,
+                    debug: true,
                     userAgent: GoogleCloudExtensionPackage.VersionedApplicationName);
-                return new EventsReporter(analyticsReporter);
+                return new DebugEventReporter(new EventsReporter(analyticsReporter));
+
+#else
+                var analyticsReporter = new AnalyticsReporter(PropertyId,
+                    clientId: settings.ClientId,
+                    appName: GoogleCloudExtensionPackage.ApplicationName,
+                    appVersion: GoogleCloudExtensionPackage.ApplicationVersion,
+                    debug: false,
+                    userAgent: GoogleCloudExtensionPackage.VersionedApplicationName);
+                 return new EventsReporter(analyticsReporter);
+#endif
             }
             else
             {
