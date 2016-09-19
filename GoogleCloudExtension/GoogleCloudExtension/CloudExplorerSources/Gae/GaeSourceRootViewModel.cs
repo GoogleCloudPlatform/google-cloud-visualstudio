@@ -22,6 +22,7 @@ using System.Windows.Controls;
 using System.Threading.Tasks;
 using System.Linq;
 using GoogleCloudExtension.Accounts;
+using Google.Apis.Appengine.v1.Data;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {
@@ -44,6 +45,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         };
 
         public Lazy<GaeDataSource> DataSource;
+
+        public Application GaeApplication;
 
         public override string RootCaption => Resources.CloudExplorerGaeRootNodeCaption;
 
@@ -104,7 +107,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             try
             {
                 Debug.WriteLine("Loading list of services.");
-                var services = await LoadServiceList();
+                Task<Application> gaeApplicationTask = DataSource.Value.GetApplicationAsync();
+                Task<List<ServiceViewModel>> servicesTask = LoadServiceList();
+                await Task.WhenAll(gaeApplicationTask, servicesTask);
+
+                GaeApplication = gaeApplicationTask.Result;
+                var services = servicesTask.Result;
                 Children.Clear();
                 if (services == null)
                 {

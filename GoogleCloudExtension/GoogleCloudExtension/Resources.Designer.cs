@@ -403,6 +403,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open Running Service.
+        /// </summary>
+        public static string CloudExplorerGaeServiceOpen {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeServiceOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Version Properties.
         /// </summary>
         public static string CloudExplorerGaeVersionCategory {
@@ -426,6 +435,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGaeVersionInstanceClassDisplayName {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeVersionInstanceClassDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open Running Version.
+        /// </summary>
+        public static string CloudExplorerGaeVersionOpen {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionOpen", resourceCulture);
             }
         }
         

@@ -73,6 +73,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             {
                 new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) },
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) },
+                new MenuItem { Header = Resources.CloudExplorerGaeServiceOpen, Command = new WeakCommand(OnOpenService) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
@@ -124,6 +125,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private void OnPropertiesWindowCommand()
         {
             root.Context.ShowPropertiesWindow(Item);
+        }
+
+        private void OnOpenService()
+        {
+            var url = GaeUtils.GetAppUrl(root.GaeApplication.DefaultHostname, service.Id);
+            Process.Start(url);
         }
 
         /// <summary>

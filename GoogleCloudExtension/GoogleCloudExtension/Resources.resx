@@ -981,6 +981,10 @@
     <value>Zone</value>
     <comment>The display name for the GAE instance virtual machine zone.</comment>
   </data>
+  <data name="CloudExplorerGaeServiceOpen" xml:space="preserve">
+    <value>Open Running Service</value>
+    <comment>Header for the menu that opens the service in a browser.</comment>
+  </data>
   <data name="CloudExplorerGaeVersionCreationTimeDisplayName" xml:space="preserve">
     <value>Creation Time</value>
     <comment>The display name for the GAE version creation time</comment>
@@ -1004,5 +1008,9 @@
   <data name="CloudExplorerGaeVersionVirtualMachineDisplayName" xml:space="preserve">
     <value>Virtual Machine</value>
     <comment>The display name for the GAE version virtual machine</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionOpen" xml:space="preserve">
+    <value>Open Running Version</value>
+    <comment>Header for the menu that opens the version in a browser.</comment>
   </data>
 </root>

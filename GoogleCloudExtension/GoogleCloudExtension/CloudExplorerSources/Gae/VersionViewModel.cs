@@ -75,6 +75,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) },
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) },
             };
+
+            // If the version has traffic allocated to it it can be opened.
+            double? trafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_owner.service, version.Id);
+            if (trafficAllocation != null)
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeVersionOpen, Command = new WeakCommand(OnOpenVersion) });
+            }
+
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
@@ -125,6 +133,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private void OnPropertiesWindowCommand()
         {
             root.Context.ShowPropertiesWindow(Item);
+        }
+
+        private void OnOpenVersion()
+        {
+            Process.Start(version.VersionUrl);
         }
 
         /// <summary>

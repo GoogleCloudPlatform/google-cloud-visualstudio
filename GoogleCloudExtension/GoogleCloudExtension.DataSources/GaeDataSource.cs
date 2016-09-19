@@ -39,6 +39,24 @@ namespace GoogleCloudExtension.DataSources
         { }
 
         /// <summary>
+        /// Fetches the the GAE application for the given project.
+        /// </summary>
+        /// <returns>The GAE application.</returns>
+        public async Task<Application> GetApplicationAsync()
+        {
+            try
+            {
+                AppsResource.GetRequest request = Service.Apps.Get(ProjectId);
+                return await request.ExecuteAsync();
+            }
+            catch (GoogleApiException ex)
+            {
+                Debug.WriteLine($"Failed to get application: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
         /// Fetches the list of GAE services for the given project.
         /// </summary>
         /// <returns>The list of GAE services.</returns>
