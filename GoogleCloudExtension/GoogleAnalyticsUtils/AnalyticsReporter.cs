@@ -133,17 +133,21 @@ namespace GoogleAnalyticsUtils
             _hitSender.SendHitData(hitData);
         }
 
-        public void ReportPageView(string page, string title, Dictionary<int, string> customDimensions = null)
+        public void ReportPageView(string page, string title = null, Dictionary<int, string> customDimensions = null)
         {
             Preconditions.CheckNotNull(page, nameof(page));
-            Preconditions.CheckNotNull(title, nameof(title));
 
             var hitData = new Dictionary<string, string>(_baseHitData)
             {
                 { HitTypeParam, PageViewValue },
                 { DocumentPathParam, page },
-                { DocumentTitleParam, title },
             };
+
+            if (title != null)
+            {
+                hitData[DocumentTitleParam] = title;
+            }
+
             if (customDimensions != null)
             {
                 foreach (var entry in customDimensions)
