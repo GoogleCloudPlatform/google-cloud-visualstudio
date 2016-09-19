@@ -112,7 +112,7 @@ namespace GoogleCloudExtension.Analytics
                     appName: GoogleCloudExtensionPackage.ApplicationName,
                     appVersion: GoogleCloudExtensionPackage.ApplicationVersion,
                     debug: debug,
-                    userAgent: GoogleCloudExtensionPackage.ApplicationName);
+                    userAgent: GoogleCloudExtensionPackage.VersionedApplicationName);
                 return new EventsReporter(analyticsReporter);
             }
             else

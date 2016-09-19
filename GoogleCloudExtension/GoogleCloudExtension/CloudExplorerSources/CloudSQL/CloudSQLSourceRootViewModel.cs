@@ -87,7 +87,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 return new CloudSqlDataSource(
                     CredentialsStore.Default.CurrentProjectId,
                     CredentialsStore.Default.CurrentGoogleCredential,
-                    GoogleCloudExtensionPackage.ApplicationName);
+                    GoogleCloudExtensionPackage.VersionedApplicationName);
             }
             else
             {

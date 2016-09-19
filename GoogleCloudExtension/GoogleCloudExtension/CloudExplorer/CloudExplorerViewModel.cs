@@ -231,13 +231,13 @@ namespace GoogleCloudExtension.CloudExplorer
         private static GPlusDataSource CreatePlusDataSource()
         {
             var currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
-            return currentCredential != null ? new GPlusDataSource(currentCredential, GoogleCloudExtensionPackage.ApplicationName) : null;
+            return currentCredential != null ? new GPlusDataSource(currentCredential, GoogleCloudExtensionPackage.VersionedApplicationName) : null;
         }
 
         private static ResourceManagerDataSource CreateResourceManagerDataSource()
         {
             var currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
-            return currentCredential != null ? new ResourceManagerDataSource(currentCredential, GoogleCloudExtensionPackage.ApplicationName) : null;
+            return currentCredential != null ? new ResourceManagerDataSource(currentCredential, GoogleCloudExtensionPackage.VersionedApplicationName) : null;
         }
 
         private void UpdateUserProfile()
