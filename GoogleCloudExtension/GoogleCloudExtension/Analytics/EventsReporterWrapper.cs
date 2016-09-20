@@ -33,7 +33,6 @@ namespace GoogleCloudExtension.Analytics
         private const string PropertyId = "UA-36037335-1";
 
         private static Lazy<IEventsReporter> s_reporter = new Lazy<IEventsReporter>(CreateReporter);
-        private static Lazy<List<AnalyticsEvent>> s_eventQueue = new Lazy<List<AnalyticsEvent>>();
 
         /// <summary>
         /// Ensures that the opt-in dialog is shown to the user.
@@ -51,14 +50,6 @@ namespace GoogleCloudExtension.Analytics
         }
 
         /// <summary>
-        /// Queues the given <seealso cref="AnalyticsEvent"/> to be sent later.
-        /// </summary>
-        public static void QueueEvent(AnalyticsEvent eventData)
-        {
-            s_eventQueue.Value.Add(eventData);
-        }
-
-        /// <summary>
         /// Called when the state if the opt-in changed, to enable/disable reporting after that.
         /// </summary>
         public static void AnalyticsOptInStateChanged()
@@ -67,35 +58,17 @@ namespace GoogleCloudExtension.Analytics
         }
 
         /// <summary>
-        /// Called to report an intersting event to analytics. If there's a queue of events it will be
+        /// Called to report an interesting event to analytics. If there's a queue of events it will be
         /// flushed as well.
         /// </summary>
         /// <param name="eventData"></param>
         public static void ReportEvent(AnalyticsEvent eventData)
         {
-            if (s_eventQueue.IsValueCreated)
-            {
-                Debug.WriteLineIf(s_eventQueue.Value.Count > 0, $"Have queued events to report.");
-                foreach (var queued in s_eventQueue.Value)
-                {
-                    ReportActualEvent(queued.Name, queued.Metadata);
-                }
-                s_eventQueue.Value.Clear();
-            }
-
-            ReportActualEvent(eventData.Name, eventData.Metadata);
-        }
-
-        /// <summary>
-        /// Called to report an event.
-        /// </summary>
-        private static void ReportActualEvent(string eventName, Dictionary<string, string> metadata)
-        {
             s_reporter.Value?.ReportEvent(
                 eventType: ExtensionEventType,
-                eventName: eventName,
+                eventName: eventData.Name,
                 projectNumber: CredentialsStore.Default.CurrentProjectNumericId,
-                metadata: metadata);
+                metadata: eventData.Metadata);
         }
 
         private static IEventsReporter CreateReporter()

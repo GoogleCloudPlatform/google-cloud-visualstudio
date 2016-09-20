@@ -56,7 +56,7 @@ namespace GoogleCloudExtension.CloudExplorer
             CredentialsStore.Default.CurrentAccountChanged += OnCurrentAccountChanged;
             CredentialsStore.Default.Reset += OnCurrentAccountChanged;
 
-            EventsReporterWrapper.QueueEvent(CloudExplorerInteractionEvent.Create());
+            EventsReporterWrapper.ReportEvent(CloudExplorerInteractionEvent.Create());
         }
 
         private void OnCurrentAccountChanged(object sender, EventArgs e)
