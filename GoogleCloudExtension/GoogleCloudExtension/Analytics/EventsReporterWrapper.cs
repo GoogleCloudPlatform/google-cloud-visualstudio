@@ -53,7 +53,7 @@ namespace GoogleCloudExtension.Analytics
         /// <summary>
         /// Queues the given <seealso cref="AnalyticsEvent"/> to be sent later.
         /// </summary>
-        public static void QueueEventCall(AnalyticsEvent eventData)
+        public static void QueueEvent(AnalyticsEvent eventData)
         {
             s_eventQueue.Value.Add(eventData);
         }

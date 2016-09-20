@@ -221,6 +221,6 @@ namespace GoogleAnalyticsUtils
             return result;
         }
 
-        private static string GetCustomDimension(int index) => "cd{index}";
+        private static string GetCustomDimension(int index) => $"cd{index}";
     }
 }
