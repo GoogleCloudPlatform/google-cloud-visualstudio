@@ -15,6 +15,7 @@
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.FirewallManagement;
@@ -291,10 +292,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                         portsToEnable: changes.PortsToEnable,
                         portsToDisable: changes.PortsToDisable);
                     UpdateInstanceState(operation);
+
+                    EventsReporterWrapper.ReportEvent(ChangedFirewallPortsEvent.Create(CommandStatus.Success));
                 }
             }
             catch (DataSourceException)
             {
+                EventsReporterWrapper.ReportEvent(ChangedFirewallPortsEvent.Create(CommandStatus.Failure));
                 UserPromptUtils.ErrorPrompt(Resources.CloudExplorerGceFailedToUpdateFirewallMessage, Resources.CloudExplorerGceFailedToUpdateFirewallCaption);
             }
         }
