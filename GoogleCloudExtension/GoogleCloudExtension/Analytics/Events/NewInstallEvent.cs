@@ -9,13 +9,10 @@ namespace GoogleCloudExtension.Analytics.Events
     internal static class NewInstallEvent
     {
         private const string NewInstallEventName = "newInstall";
-        private const string VersionProperty = "version";
 
-        public static AnalyticsEvent Create(string version)
+        public static AnalyticsEvent Create()
         {
-            return new AnalyticsEvent(
-                NewInstallEventName,
-                VersionProperty, version);
+            return new AnalyticsEvent(NewInstallEventName);
         }
     }
 }

@@ -9,13 +9,10 @@ namespace GoogleCloudExtension.Analytics.Events
     internal static class UpgradeEvent
     {
         private const string UpgradeEventName = "upgrade";
-        private const string VersionProperty = "version";
 
-        public static AnalyticsEvent Create(string version)
+        public static AnalyticsEvent Create()
         {
-            return new AnalyticsEvent(
-                UpgradeEventName,
-                VersionProperty, version);
+            return new AnalyticsEvent(UpgradeEventName);
         }
     }
 }
