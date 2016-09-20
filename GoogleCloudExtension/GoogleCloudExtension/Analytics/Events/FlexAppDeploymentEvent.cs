@@ -10,9 +10,9 @@ namespace GoogleCloudExtension.Analytics.Events
     {
         private const string FlexAppDeploymentEventName = "flexAppDeployment";
 
-        public static void Report(CommandStatus status)
+        public static AnalyticsEvent Create(CommandStatus status)
         {
-            EventsReporterWrapper.ReportEvent(
+            return new AnalyticsEvent(
                 FlexAppDeploymentEventName,
                 CommandStatusUtils.StatusProperty, CommandStatusUtils.GetStatusString(status));
         }

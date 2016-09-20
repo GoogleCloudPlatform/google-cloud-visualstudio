@@ -233,7 +233,7 @@ namespace GoogleCloudExtension
             {
                 // This is a new installation.
                 Debug.WriteLine("New installation detected.");
-                EventsReporterWrapper.QueueEventCall(settings, () => NewInstallEvent.Report(ApplicationVersion));
+                EventsReporterWrapper.QueueEventCall(NewInstallEvent.Create(ApplicationVersion));
             }
             else if (settings.InstalledVersion != ApplicationVersion)
             {
@@ -255,7 +255,7 @@ namespace GoogleCloudExtension
                 if (installed < current)
                 {
                     Debug.WriteLine($"Upgrade to version {ApplicationVersion} detected.");
-                    EventsReporterWrapper.QueueEventCall(settings, () => UpgradeEvent.Report(ApplicationVersion));
+                    EventsReporterWrapper.QueueEventCall(UpgradeEvent.Create(ApplicationVersion));
                 }
             }
             else

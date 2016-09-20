@@ -191,7 +191,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             else
             {
                 // MySQL for Visual Studio isn't installed, prompt the user to install it.
-                EventsReporterWrapper.ReportEvent("MySQLForVisualStudio", "Missing");
                 MySQLInstallerWindow.PromptUser();
             }
         }

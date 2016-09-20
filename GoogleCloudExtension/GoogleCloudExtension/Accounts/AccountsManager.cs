@@ -61,17 +61,14 @@ namespace GoogleCloudExtension.Accounts
         {
             try
             {
-                EventsReporterWrapper.ReportEvent(OAuthEventCategory, "FlowStarted");
                 string refreshToken = OAuthLoginFlowWindow.PromptUser(s_extensionCredentials, s_extensionScopes);
                 if (refreshToken == null)
                 {
-                    EventsReporterWrapper.ReportEvent(OAuthEventCategory, "FlowCancelled");
                     Debug.WriteLine("The user cancelled the OAUTH login flow.");
                     return false;
                 }
 
                 var credentials = await GetUserAccountForRefreshToken(refreshToken);
-                EventsReporterWrapper.ReportEvent(OAuthEventCategory, "FlowFinished");
 
                 var existingUserAccount = CredentialsStore.Default.GetAccount(credentials.AccountName);
                 if (existingUserAccount != null)
@@ -91,7 +88,6 @@ namespace GoogleCloudExtension.Accounts
             }
             catch (OAuthException ex)
             {
-                EventsReporterWrapper.ReportEvent(OAuthEventCategory, "FlowFailed");
                 UserPromptUtils.ErrorPrompt(
                     String.Format(Resources.CloudExplorerGceFailedToGetOauthCredentialsMessage, ex.Message),
                     Resources.CloudExplorerGceFailedToGetOauthCredentialsCaption);

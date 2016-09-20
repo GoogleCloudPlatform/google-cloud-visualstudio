@@ -131,8 +131,6 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             try
             {
-                EventsReporterWrapper.ReportEvent(this.GetType().Name, "LoadingData");
-
                 IsLoadingState = true;
                 Children.Clear();
 

@@ -103,7 +103,6 @@ namespace GoogleCloudExtension.ManageAccounts
                 String.Format(Resources.ManageAccountsDeleteAccountPromptMessage, CurrentAccountName),
                 Resources.ManageAccountsDeleteAccountPromptTitle))
             {
-                EventsReporterWrapper.ReportEvent("DeleteAccountCommandCancelled", "Cancelled");
                 Debug.WriteLine($"The user cancelled the deletion of the account.");
                 return;
             }
@@ -125,7 +124,7 @@ namespace GoogleCloudExtension.ManageAccounts
             Debug.WriteLine("Stating the oauth login flow.");
             if (await AccountsManager.StartAddAccountFlowAsync())
             {
-                NewLoginEvent.Report();
+                EventsReporterWrapper.ReportEvent(NewLoginEvent.Create());
                 Debug.WriteLine($"The user logged in: {CredentialsStore.Default.CurrentAccount.AccountName}");
                 _owner.Close();
             }

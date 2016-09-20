@@ -32,9 +32,8 @@ namespace GoogleCloudExtension.Analytics
 
         private const string PropertyId = "UA-36037335-1";
 
-        private static bool s_queueProcessed = false;
         private static Lazy<IEventsReporter> s_reporter = new Lazy<IEventsReporter>(CreateReporter);
-        private static Lazy<List<Action>> s_eventQueue = new Lazy<List<Action>>();
+        private static Lazy<List<AnalyticsEvent>> s_eventQueue = new Lazy<List<AnalyticsEvent>>();
 
         /// <summary>
         /// Ensures that the opt-in dialog is shown to the user.
@@ -49,40 +48,14 @@ namespace GoogleCloudExtension.Analytics
                 settings.DialogShown = true;
                 settings.SaveSettingsToStorage();
             }
-            // Play all of the queue of events after the user been shown the opt-in dialog.
-            if (!s_queueProcessed)
-            {
-                if (s_eventQueue.IsValueCreated)
-                {
-                    foreach (var action in s_eventQueue.Value)
-                    {
-                        action();
-                    }
-                    s_eventQueue.Value.Clear();
-                }
-                s_queueProcessed = true;
-            }
         }
 
         /// <summary>
-        /// Queues an event sending <paramref name="action"/> to be sent once the user is shown the
-        /// opt-in dialog. If the opt-in dialog is already shown to the user then the action is invoked
-        /// right away.
+        /// Queues the given <seealso cref="AnalyticsEvent"/> to be sent later.
         /// </summary>
-        public static void QueueEventCall(AnalyticsOptionsPage settings, Action action)
+        public static void QueueEventCall(AnalyticsEvent eventData)
         {
-            if (settings.DialogShown)
-            {
-                // If the opt-in dialog has already been shown to the user then we can send the
-                // the event (or not) directly.
-                action();
-            }
-            else
-            {
-                // If the opt-in dialog has not been shown yet to the user save the events for when it is.
-                // Note: this has the risk that if the dialog is never shown we can miss this event.
-                s_eventQueue.Value.Add(action);
-            }
+            s_eventQueue.Value.Add(eventData);
         }
 
         /// <summary>
@@ -94,42 +67,35 @@ namespace GoogleCloudExtension.Analytics
         }
 
         /// <summary>
-        /// Called to report an event.
+        /// Called to report an intersting event to analytics. If there's a queue of events it will be
+        /// flushed as well.
         /// </summary>
-        public static void ReportEvent(
-            string eventName,
-            params string[] metadata)
+        /// <param name="eventData"></param>
+        public static void ReportEvent(AnalyticsEvent eventData)
         {
-            var reporter = s_reporter.Value;
-            if (reporter != null)
+            if (s_eventQueue.IsValueCreated)
             {
-                reporter.ReportEvent(
-                    eventType: ExtensionEventType,
-                    eventName: eventName,
-                    projectNumber: CredentialsStore.Default.CurrentProjectNumericId,
-                    metadata: GetMetadataFromParams(metadata));
+                Debug.WriteLineIf(s_eventQueue.Value.Count > 0, $"Have queued events to report.");
+                foreach (var queued in s_eventQueue.Value)
+                {
+                    ReportActualEvent(queued.Name, queued.Metadata);
+                }
+                s_eventQueue.Value.Clear();
             }
+
+            ReportActualEvent(eventData.Name, eventData.Metadata);
         }
 
-        private static Dictionary<string, string> GetMetadataFromParams(string[] args)
+        /// <summary>
+        /// Called to report an event.
+        /// </summary>
+        private static void ReportActualEvent(string eventName, Dictionary<string, string> metadata)
         {
-            if (args.Length == 0)
-            {
-                return null;
-            }
-
-            if ((args.Length % 2) != 0)
-            {
-                Debug.WriteLine($"Invalid count of params: {args.Length}");
-                return null;
-            }
-
-            Dictionary<string, string> result = new Dictionary<string, string>();
-            for (int i = 0; i < args.Length; i += 2)
-            {
-                result.Add(args[i], args[i + 1]);
-            }
-            return result;
+            s_reporter.Value?.ReportEvent(
+                eventType: ExtensionEventType,
+                eventName: eventName,
+                projectNumber: CredentialsStore.Default.CurrentProjectNumericId,
+                metadata: metadata);
         }
 
         private static IEventsReporter CreateReporter()

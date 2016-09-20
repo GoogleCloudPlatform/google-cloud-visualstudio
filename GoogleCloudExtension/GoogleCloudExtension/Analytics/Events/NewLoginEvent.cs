@@ -10,9 +10,9 @@ namespace GoogleCloudExtension.Analytics.Events
     {
         private const string NewLoginEventName = "newLogin";
 
-        public static void Report()
+        public static AnalyticsEvent Create()
         {
-            EventsReporterWrapper.ReportEvent(NewLoginEventName);
+            return new AnalyticsEvent(NewLoginEventName);
         }
     }
 }

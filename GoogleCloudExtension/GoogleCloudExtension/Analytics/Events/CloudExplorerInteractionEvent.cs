@@ -10,9 +10,9 @@ namespace GoogleCloudExtension.Analytics.Events
     {
         private const string CloudExplorerInteractionEventName = "cloudExplorerInteraction";
 
-        public static void Report()
+        public static AnalyticsEvent Create()
         {
-            EventsReporterWrapper.ReportEvent(CloudExplorerInteractionEventName);
+            return new AnalyticsEvent(CloudExplorerInteractionEventName);
         }
     }
 }

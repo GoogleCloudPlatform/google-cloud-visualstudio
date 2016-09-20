@@ -11,9 +11,9 @@ namespace GoogleCloudExtension.Analytics.Events
         private const string UpgradeEventName = "upgrade";
         private const string VersionProperty = "version";
 
-        public static void Report(string version)
+        public static AnalyticsEvent Create(string version)
         {
-            EventsReporterWrapper.ReportEvent(
+            return new AnalyticsEvent(
                 UpgradeEventName,
                 VersionProperty, version);
         }
