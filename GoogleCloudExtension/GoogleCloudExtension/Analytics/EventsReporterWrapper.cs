@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.Analytics
     /// </summary>
     internal abstract class EventsReporterWrapper
     {
-        public const string ExtensionEventType = "vsextension";
+        public const string ExtensionEventType = "visualstudio";
 
         private const string PropertyId = "UA-36037335-1";
 

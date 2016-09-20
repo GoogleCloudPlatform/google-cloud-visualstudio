@@ -58,6 +58,7 @@ namespace GoogleCloudExtension.Accounts
 
         public event EventHandler CurrentAccountChanged;
         public event EventHandler CurrentProjectIdChanged;
+        public event EventHandler CurrentProjectNumericIdChanged;
         public event EventHandler Reset;
 
         /// <summary>
@@ -107,7 +108,18 @@ namespace GoogleCloudExtension.Accounts
         /// <summary>
         /// The currently selected project numeric ID, might be null if no project is loaded.
         /// </summary>
-        public string CurrentProjectNumericId { get; private set; }
+        public string CurrentProjectNumericId
+        {
+            get { return _currentProjectNumericId; }
+            set
+            {
+                if (_currentProjectNumericId != value)
+                {
+                    _currentProjectNumericId = value;
+                    CurrentProjectNumericIdChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
 
         /// <summary>
         /// The list of accounts known to the store.
