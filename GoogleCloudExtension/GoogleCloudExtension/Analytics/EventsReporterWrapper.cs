@@ -14,11 +14,8 @@
 
 using GoogleAnalyticsUtils;
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Shell;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace GoogleCloudExtension.Analytics

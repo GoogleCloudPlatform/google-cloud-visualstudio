@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.SQLAdmin.v1beta4.Data;
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.AuthorizedNetworkManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;

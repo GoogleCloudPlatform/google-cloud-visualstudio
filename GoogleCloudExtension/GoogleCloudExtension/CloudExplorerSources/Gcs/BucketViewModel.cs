@@ -14,7 +14,6 @@
 
 using Google.Apis.Storage.v1.Data;
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.Utils;
 using System;

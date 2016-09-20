@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Threading.Tasks;
