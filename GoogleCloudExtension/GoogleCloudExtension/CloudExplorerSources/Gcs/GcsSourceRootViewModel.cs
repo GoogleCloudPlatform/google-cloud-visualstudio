@@ -124,7 +124,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
                 return new GcsDataSource(
                     CredentialsStore.Default.CurrentProjectId,
                     CredentialsStore.Default.CurrentGoogleCredential,
-                    GoogleCloudExtensionPackage.ApplicationName);
+                    GoogleCloudExtensionPackage.VersionedApplicationName);
             }
             else
             {
