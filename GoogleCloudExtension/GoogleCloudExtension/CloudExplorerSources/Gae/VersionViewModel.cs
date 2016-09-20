@@ -31,11 +31,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
     /// </summary>
     class VersionViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
+        public const string ServingStatus = "SERVING";
+        public const string StoppedStatus = "STOPPED";
+
         private const string IconRunningResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_running.png";
         private const string IconStopedResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_stoped.png";
+        private const string IconTransitionResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_transition.png";
 
         private static readonly Lazy<ImageSource> s_versionRunningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconRunningResourcePath));
         private static readonly Lazy<ImageSource> s_versionStopedIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconStopedResourcePath));
+        private static readonly Lazy<ImageSource> s_versionTransitionIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconTransitionResourcePath));
+
 
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
@@ -174,14 +180,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private void UpdateIcon()
         {
-            double? trafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_owner.service, version.Id);
-            if (trafficAllocation != null)
+            switch (version.ServingStatus)
             {
-                Icon = s_versionRunningIcon.Value;
-            }
-            else
-            {
-                Icon = s_versionStopedIcon.Value;
+                case ServingStatus:
+                    Icon = s_versionRunningIcon.Value;
+                    break;
+                case StoppedStatus:
+                    Icon = s_versionStopedIcon.Value;
+                    break;
+                default:
+                    Icon = s_versionTransitionIcon.Value;
+                    break;
             }
         }
 
