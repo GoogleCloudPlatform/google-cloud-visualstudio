@@ -58,7 +58,6 @@ namespace GoogleAnalyticsUtilsTests
         [TestMethod]
         public void EventWithMetadataTest()
         {
-
             var fakeReporter = new FakeAnalyticsReporterForEventsImpl(
                 expectedEventType: FakeEventType,
                 expectedEventName: FakeEventName,
@@ -87,6 +86,5 @@ namespace GoogleAnalyticsUtilsTests
                 metadata: s_metadata,
                 projectNumber: FakeProjectNumber);
         }
-
     }
 }
