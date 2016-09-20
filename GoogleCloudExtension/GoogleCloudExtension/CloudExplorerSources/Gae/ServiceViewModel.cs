@@ -22,6 +22,7 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System.Diagnostics;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {
@@ -30,6 +31,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
     /// </summary>
     class ServiceViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
+        private const string IconServiceResourcePath = "CloudExplorerSources/Gae/Resources/service_icon.png";
+
+        private static readonly Lazy<ImageSource> s_serviceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconServiceResourcePath));
+
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
             Caption = Resources.CloudExplorerGaeLoadingVersionCaption,
@@ -65,6 +70,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             root = _owner;
 
             Caption = service.Id;
+            Icon = s_serviceIcon.Value;
 
             _resourcesLoaded = false;
             Children.Add(s_loadingPlaceholder);

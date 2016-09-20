@@ -22,6 +22,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {
@@ -30,6 +31,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
     /// </summary>
     class VersionViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
+        private const string IconRunningResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_running.png";
+        private const string IconStopedResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_stoped.png";
+
+        private static readonly Lazy<ImageSource> s_versionRunningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconRunningResourcePath));
+        private static readonly Lazy<ImageSource> s_versionStopedIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconStopedResourcePath));
+
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
             Caption = Resources.CloudExplorerGaeLoadingInstancesCaption,
@@ -66,6 +73,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             root = _owner.root;
 
             Caption = GetCaption();
+            UpdateIcon();
 
             _resourcesLoaded = false;
             Children.Add(s_loadingPlaceholder);
@@ -162,6 +170,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
             string percent = ((double)trafficAllocation).ToString("P", CultureInfo.InvariantCulture);
             return String.Format("{0} ({1})", version.Id, percent);
+        }
+
+        private void UpdateIcon()
+        {
+            double? trafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_owner.service, version.Id);
+            if (trafficAllocation != null)
+            {
+                Icon = s_versionRunningIcon.Value;
+            }
+            else
+            {
+                Icon = s_versionStopedIcon.Value;
+            }
         }
 
         public VersionItem GetItem() => new VersionItem(version);

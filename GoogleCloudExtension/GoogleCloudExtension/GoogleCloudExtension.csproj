@@ -225,6 +225,10 @@
     <None Include="Key.snk" />
     <None Include="packages.config" />
     <Resource Include="CloudExplorerSources\Gce\Resources\filter.png" />
+    <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_running.png" />
+    <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_stoped.png" />
+	<Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_transition.png" />
+    <Resource Include="CloudExplorerSources\Gae\Resources\service_icon.png" />
     <Resource Include="CloudExplorer\Resources\warning_icon.png" />
     <Resource Include="CloudExplorer\Resources\logo_cloud.png" />
     <Resource Include="Controls\Resources\step_10_dark.png" />

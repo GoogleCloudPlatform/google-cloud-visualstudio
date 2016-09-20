@@ -14,10 +14,12 @@
 
 using Google.Apis.Appengine.v1.Data;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {
@@ -26,6 +28,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
     /// </summary>
     class InstanceViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
+        public const string RunningStatus = "RUNNING";
+        public const string TerminatedStatus = "TERMINATED";
+
+        private const string IconRunningResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_running.png";
+        private const string IconStopedResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_stoped.png";
+        private const string IconTransitionResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_transition.png";
+
+        private static readonly Lazy<ImageSource> s_instanceRunningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconRunningResourcePath));
+        private static readonly Lazy<ImageSource> s_instanceStopedIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconStopedResourcePath));
+        private static readonly Lazy<ImageSource> s_instanceTransitionIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconTransitionResourcePath));
+
         private readonly VersionViewModel _owner;
 
         public readonly GaeSourceRootViewModel root;
@@ -43,6 +56,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             root = _owner.root;
 
             Caption = _instance.VmName;
+            UpdateIcon();
 
             var menuItems = new List<MenuItem>
             {
@@ -54,6 +68,22 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private void OnPropertiesWindowCommand()
         {
             root.Context.ShowPropertiesWindow(Item);
+        }
+
+        private void UpdateIcon()
+        {
+            switch (_instance.VmStatus)
+            {
+                case RunningStatus:
+                    Icon = s_instanceRunningIcon.Value;
+                    break;
+                case TerminatedStatus:
+                    Icon = s_instanceStopedIcon.Value;
+                    break;
+                default:
+                    Icon = s_instanceTransitionIcon.Value;
+                    break;
+            }
         }
 
         public InstanceItem GetItem() => new InstanceItem(_instance);
