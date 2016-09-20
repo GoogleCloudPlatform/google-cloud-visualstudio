@@ -130,7 +130,7 @@ namespace GoogleCloudExtension.Accounts
         /// </summary>
         public void UpdateCurrentProject(Project project)
         {
-            CurrentProjectId = project.ProjectId;
+            CurrentProjectId = project?.ProjectId;
             CurrentProjectNumericId = project?.ProjectNumber?.ToString();
         }
 
