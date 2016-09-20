@@ -32,7 +32,9 @@ namespace GoogleCloudExtension.Analytics
 
         private const string PropertyId = "UA-36037335-1";
 
+        private static bool s_queueProcessed = false;
         private static Lazy<IEventsReporter> s_reporter = new Lazy<IEventsReporter>(CreateReporter);
+        private static Lazy<List<Action>> s_eventQueue = new Lazy<List<Action>>();
 
         /// <summary>
         /// Ensures that the opt-in dialog is shown to the user.
@@ -46,6 +48,40 @@ namespace GoogleCloudExtension.Analytics
                 settings.OptIn = UserPromptUtils.YesNoPrompt(Resources.AnalyticsPromptMessage, Resources.AnalyticsPromptTitle);
                 settings.DialogShown = true;
                 settings.SaveSettingsToStorage();
+            }
+            // Play all of the queue of events after the user been shown the opt-in dialog.
+            if (!s_queueProcessed)
+            {
+                if (s_eventQueue.IsValueCreated)
+                {
+                    foreach (var action in s_eventQueue.Value)
+                    {
+                        action();
+                    }
+                    s_eventQueue.Value.Clear();
+                }
+                s_queueProcessed = true;
+            }
+        }
+
+        /// <summary>
+        /// Queues an event sending <paramref name="action"/> to be sent once the user is shown the
+        /// opt-in dialog. If the opt-in dialog is already shown to the user then the action is invoked
+        /// right away.
+        /// </summary>
+        public static void QueueEventCall(AnalyticsOptionsPage settings, Action action)
+        {
+            if (settings.DialogShown)
+            {
+                // If the opt-in dialog has already been shown to the user then we can send the
+                // the event (or not) directly.
+                action();
+            }
+            else
+            {
+                // If the opt-in dialog has not been shown yet to the user save the events for when it is.
+                // Note: this has the risk that if the dialog is never shown we can miss this event.
+                s_eventQueue.Value.Add(action);
             }
         }
 

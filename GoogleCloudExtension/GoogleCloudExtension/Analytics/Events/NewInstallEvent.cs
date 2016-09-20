@@ -16,7 +16,6 @@ namespace GoogleCloudExtension.Analytics.Events
             EventsReporterWrapper.ReportEvent(
                 NewInstallEventName,
                 VersionProperty, version);
-                
         }
     }
 }
