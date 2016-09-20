@@ -110,7 +110,7 @@ namespace GoogleCloudExtension.Analytics
                     appVersion: GoogleCloudExtensionPackage.ApplicationVersion,
                     debug: true,
                     userAgent: GoogleCloudExtensionPackage.VersionedApplicationName);
-                return new DebugEventReporter(new EventsReporter(analyticsReporter));
+                return new DebugEventReporter(analyticsReporter);
 
 #else
                 var analyticsReporter = new AnalyticsReporter(PropertyId,
