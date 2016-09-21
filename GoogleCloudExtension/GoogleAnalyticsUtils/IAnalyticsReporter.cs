@@ -16,10 +16,26 @@ using System.Collections.Generic;
 
 namespace GoogleAnalyticsUtils
 {
+    /// <summary>
+    /// This interface abstracts away a class to send analytics data.
+    /// </summary>
     public interface IAnalyticsReporter
     {
+        /// <summary>
+        /// Reports a single event as defined by Google Analytics.
+        /// </summary>
+        /// <param name="category">The cateogry of the event.</param>
+        /// <param name="action">The action taken.</param>
+        /// <param name="label">The label for the event, optional.</param>
+        /// <param name="value">The value for the vent, optional.</param>
         void ReportEvent(string category, string action, string label = null, int? value = null);
 
+        /// <summary>
+        /// Reports a page view.
+        /// </summary>
+        /// <param name="page">The URL of the page.</param>
+        /// <param name="title">The title of the page.</param>
+        /// <param name="customDimensions">Custom values to report using the custom dimensions.</param>
         void ReportPageView(string page, string title, Dictionary<int, string> customDimensions = null);
     }
 }

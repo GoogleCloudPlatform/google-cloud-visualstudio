@@ -16,6 +16,10 @@ using System.Collections.Generic;
 
 namespace GoogleAnalyticsUtils
 {
+    /// <summary>
+    /// This interface defines the what a class capable of sending hits to an analytics
+    /// services should implement.
+    /// </summary>
     public interface IHitSender
     {
         void SendHitData(Dictionary<string, string> hitData);

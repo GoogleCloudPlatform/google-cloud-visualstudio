@@ -24,8 +24,6 @@ namespace GoogleAnalyticsUtils
     /// </para>
     /// 
     /// <para>
-    /// For more information, see:
-    /// https://developers.google.com/analytics/devguides/collection/protocol/v1/
     /// </para>
     /// </summary>
     public class AnalyticsReporter : IAnalyticsReporter

@@ -20,6 +20,11 @@ using System.Threading.Tasks;
 
 namespace GoogleAnalyticsUtils
 {
+    /// <summary>
+    /// Class used to send Google Analytic hits using the Google Analytics measurement protocol.
+    /// 
+    /// For more information, see:
+    /// https://developers.google.com/analytics/devguides/collection/protocol/v1/
     internal class HitSender : IHitSender
     {
         private const string ProductionServerUrl = "https://ssl.google-analytics.com/collect";
