@@ -930,8 +930,8 @@
     <comment>Caption shown when no GAE services are found.</comment>
   </data>
   <data name="CloudExplorerGaeNoVersionsFoundCaption" xml:space="preserve">
-    <value>No versions found.</value>
-    <comment>Caption shown when no GAE versions are found.</comment>
+    <value>No flexible versions found.</value>
+    <comment>Caption shown when no flexible GAE versions are found.</comment>
   </data>
   <data name="CloudExplorerGaeRootNodeCaption" xml:space="preserve">
     <value>Google App Engine</value>

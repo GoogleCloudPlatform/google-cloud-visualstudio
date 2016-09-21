@@ -140,13 +140,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         }
 
         /// <summary>
-        /// Load a list of versions sorted by percent of traffic allocation.
+        /// Load a list of flexible versions sorted by percent of traffic allocation.
         /// </summary>
         private async Task<List<VersionViewModel>> LoadVersionList()
         {
             var versions = await root.DataSource.Value.GetVersionListAsync(service.Id);
             return versions?
                 .Select(x => new VersionViewModel(this, x))
+                .Where(x => x.version.Vm ?? false)
                 .OrderByDescending(x => GaeServiceExtensions.GetTrafficAllocation(service, x.version.Id))
                 .ToList();
         }

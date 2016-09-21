@@ -376,7 +376,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No versions found..
+        ///   Looks up a localized string similar to No flexible versions found..
         /// </summary>
         public static string CloudExplorerGaeNoVersionsFoundCaption {
             get {
