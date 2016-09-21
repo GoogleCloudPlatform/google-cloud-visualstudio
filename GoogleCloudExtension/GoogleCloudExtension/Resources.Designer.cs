@@ -412,6 +412,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show All Versions.
+        /// </summary>
+        public static string CloudExplorerGaeShowAllVersions {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeShowAllVersions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Only Flexible Versions.
+        /// </summary>
+        public static string CloudExplorerGaeShowFlexVersions {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeShowFlexVersions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Version Properties.
         /// </summary>
         public static string CloudExplorerGaeVersionCategory {

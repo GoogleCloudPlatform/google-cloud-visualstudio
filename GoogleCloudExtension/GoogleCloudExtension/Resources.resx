@@ -1013,4 +1013,12 @@
     <value>Open Running Version</value>
     <comment>Header for the menu that opens the version in a browser.</comment>
   </data>
+  <data name="CloudExplorerGaeShowAllVersions" xml:space="preserve">
+    <value>Show All Versions</value>
+    <comment>Menu item to show all GAE versions of a service</comment>
+  </data>
+  <data name="CloudExplorerGaeShowFlexVersions" xml:space="preserve">
+    <value>Show Only Flexible Versions</value>
+    <comment>Menu item to show only flexible GAE versions of a service</comment>
+  </data>
 </root>

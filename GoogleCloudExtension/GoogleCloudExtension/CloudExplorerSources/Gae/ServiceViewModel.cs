@@ -23,6 +23,7 @@ using GoogleCloudExtension.Utils;
 using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {
@@ -55,6 +56,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private bool _resourcesLoaded;
 
+        private bool _showOnlyFlexVersions;
+
+        private List<VersionViewModel> _versions;
+
         public readonly GaeSourceRootViewModel root;
 
         public readonly Service service;
@@ -62,6 +67,21 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         public event EventHandler ItemChanged;
 
         public object Item => GetItem();
+
+        public bool ShowOnlyFlexVersions
+        {
+            get { return _showOnlyFlexVersions;  }
+            set
+            {
+                if (value == _showOnlyFlexVersions)
+                {
+                    return;
+                }
+                _showOnlyFlexVersions = value;
+                UpdateContextMenu();
+                PresentViewModels();
+            }
+        }
 
         public ServiceViewModel(GaeSourceRootViewModel owner, Service service)
         {
@@ -73,15 +93,69 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Icon = s_serviceIcon.Value;
 
             _resourcesLoaded = false;
+            _showOnlyFlexVersions = true;
+
             Children.Add(s_loadingPlaceholder);
 
-            var menuItems = new List<MenuItem>
+            UpdateContextMenu();
+        }
+
+        private void UpdateContextMenu()
+        {
+            var menuItems = new List<FrameworkElement>
             {
                 new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) },
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) },
                 new MenuItem { Header = Resources.CloudExplorerGaeServiceOpen, Command = new WeakCommand(OnOpenService) },
+                new Separator(),
             };
+
+            if (ShowOnlyFlexVersions)
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowAllVersions, Command = new WeakCommand(OnShowAllInstances) });
+            }
+            else
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowFlexVersions, Command = new WeakCommand(OnShowOnlyFlexInstances) });
+            }
+
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void PresentViewModels()
+        {
+            if (_versions == null)
+            {
+                return;
+            }
+
+            List<VersionViewModel> versions = _versions
+                .Where(x => !ShowOnlyFlexVersions || (x.version.Vm ?? false))
+                .ToList();
+            UpdateViewModels(versions);
+        }
+
+        private void UpdateViewModels(List<VersionViewModel> versions)
+        {
+            Children.Clear();
+            foreach (var version in versions)
+            {
+                Children.Add(version);
+            }
+            if (Children.Count == 0)
+            {
+                Children.Add(s_noItemsPlacehoder);
+            }
+        }
+
+        private void OnShowOnlyFlexInstances()
+        {
+            ShowOnlyFlexVersions = true;
+        }
+
+        private void OnShowAllInstances()
+        {
+            ShowOnlyFlexVersions = false;
         }
 
         protected override async void OnIsExpandedChanged(bool newValue)
@@ -93,22 +167,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 if (!_resourcesLoaded && newValue)
                 {
                     _resourcesLoaded = true;
-                    var versions = await LoadVersionList();
+                    _versions = await LoadVersionList();
                     Children.Clear();
-                    if (versions == null)
+                    if (_versions == null)
                     {
                         Children.Add(s_errorPlaceholder);
                     }
                     else
                     {
-                        foreach (var item in versions)
-                        {
-                            Children.Add(item);
-                        }
-                        if (Children.Count == 0)
-                        {
-                            Children.Add(s_noItemsPlacehoder);
-                        }
+                        PresentViewModels();
                     }
                 }
             }
@@ -147,7 +214,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             var versions = await root.DataSource.Value.GetVersionListAsync(service.Id);
             return versions?
                 .Select(x => new VersionViewModel(this, x))
-                .Where(x => x.version.Vm ?? false)
                 .OrderByDescending(x => GaeServiceExtensions.GetTrafficAllocation(service, x.version.Id))
                 .ToList();
         }
