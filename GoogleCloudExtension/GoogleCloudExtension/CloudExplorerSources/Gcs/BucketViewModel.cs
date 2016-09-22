@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             _owner = owner;
             _bucket = bucket;
             _item = new Lazy<BucketItem>(GetItem);
-            _openOnCloudConsoleCommand = new WeakCommand(OnOpenConCloudConsoleCommand);
+            _openOnCloudConsoleCommand = new WeakCommand(OnOpenOnCloudConsoleCommand);
 
             Caption = _bucket.Name;
             Icon = s_bucketIcon.Value;
@@ -72,7 +72,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             _owner.Context.ShowPropertiesWindow(Item);
         }
 
-        private void OnOpenConCloudConsoleCommand()
+        private void OnOpenOnCloudConsoleCommand()
         {
             ExtensionAnalytics.ReportCommand(CommandName.OpenWebsiteForGcsBucket, CommandInvocationSource.Button);
 
