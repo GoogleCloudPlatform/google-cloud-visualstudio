@@ -14,10 +14,24 @@
 
 namespace GoogleCloudExtension.SolutionUtils
 {
+    /// <summary>
+    /// The type of projects supported.
+    /// </summary>
     public enum KnownProjectTypes
     {
+        /// <summary>
+        /// The unknown project.
+        /// </summary>
         None,
+
+        /// <summary>
+        /// An ASP.NET 4.x app, a traditional web app.
+        /// </summary>
         WebApplication,
+
+        /// <summary>
+        /// An ASP.NET Core app, new kind of web app.
+        /// </summary>
         NetCoreWebApplication,
     }
 }

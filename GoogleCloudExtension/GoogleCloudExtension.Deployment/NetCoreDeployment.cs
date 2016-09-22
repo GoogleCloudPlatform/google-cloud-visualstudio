@@ -21,6 +21,10 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Deployment
 {
+    /// <summary>
+    /// This class implements all of the necessary details to deploy an ASP.NET Core application
+    /// to the App Engine Flex environment.
+    /// </summary>
     public static class NetCoreDeployment
     {
         private const string AppYamlName = "app.yaml";
@@ -41,15 +45,36 @@ namespace GoogleCloudExtension.Deployment
 
         private static readonly Lazy<string> s_dotnetPath = new Lazy<string>(GetDotnetPath);
 
+        /// <summary>
+        /// The options or the deployment operation.
+        /// </summary>
         public class DeploymentOptions
         {
+            /// <summary>
+            /// What version name to use when deploying. If null a default version name based on curren time and
+            /// date will be used.
+            /// </summary>
             public string Version { get; set; }
 
+            /// <summary>
+            /// Whether to promote the new version so receive 100% of the traffic or not.
+            /// </summary>
             public bool Promote { get; set; }
 
+            /// <summary>
+            /// The context on which to execute the underlying gcloud command.
+            /// </summary>
             public Context Context { get; set; }
         }
 
+        /// <summary>
+        /// Publishes the ASP.NET Core project to App Engine Flex.
+        /// </summary>
+        /// <param name="projectPath">The full path to the project.json for the ASP.NET Core project.</param>
+        /// <param name="options">The <seealso cref="DeploymentOptions"/> to use.</param>
+        /// <param name="progress">The progress indicator.</param>
+        /// <param name="outputAction">The action to call with lines from the command output.</param>
+        /// <returns></returns>
         public static async Task<NetCorePublishResult> PublishProjectAsync(
             string projectPath,
             DeploymentOptions options,

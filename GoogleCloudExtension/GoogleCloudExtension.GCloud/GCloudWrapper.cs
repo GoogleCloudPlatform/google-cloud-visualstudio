@@ -58,7 +58,16 @@ namespace GoogleCloudExtension.GCloud
             GetJsonOutputAsync<WindowsInstanceCredentials>(
                 $"beta compute reset-windows-password {instanceName} --zone={zoneName} --user={userName} --quiet ",
                 context);
-
+        
+        /// <summary>
+        /// Deploys an app to App Engine.
+        /// </summary>
+        /// <param name="appYaml">The path to the app.yaml file to deploy.</param>
+        /// <param name="version">The version to use, if no version is used gcloud will decide the version name.</param>
+        /// <param name="promote">Whether to promote the app or not.</param>
+        /// <param name="outputAction">The action to call with output from the command.</param>
+        /// <param name="context">The context under which the command is executed.</param>
+        /// <returns></returns>
         public static Task<bool> DeployAppAsync(
             string appYaml,
             string version,

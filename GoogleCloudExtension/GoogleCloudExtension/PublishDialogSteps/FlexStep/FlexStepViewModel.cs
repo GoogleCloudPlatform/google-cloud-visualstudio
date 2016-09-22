@@ -23,6 +23,9 @@ using System.Windows;
 
 namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 {
+    /// <summary>
+    /// The view model for the Flex step in the publish app wizard.
+    /// </summary>
     public class FlexStepViewModel : PublishDialogStepBase
     {
         private readonly FlexStepContent _content;
@@ -31,18 +34,27 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         private bool _promote = true;
         private bool _openWebsite = true;
 
+        /// <summary>
+        /// The version to use for the the app in App Engine Flex.
+        /// </summary>
         public string Version
         {
             get { return _version; }
             set { SetValueAndRaise(ref _version, value); }
         }
 
+        /// <summary>
+        /// Whether to promote the app or not. Default to true.
+        /// </summary>
         public bool Promote
         {
             get { return _promote; }
             set { SetValueAndRaise(ref _promote, value); }
         }
 
+        /// <summary>
+        /// Whether to open the webiste at the end of a succesfull publish process. Default to true.
+        /// </summary>
         public bool OpenWebsite
         {
             get { return _openWebsite; }
@@ -122,6 +134,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         #endregion
 
+        /// <summary>
+        /// Creates a new step instance. This method will also create the necessary view and conect both
+        /// objects together.
+        /// </summary>
+        /// <returns></returns>
         internal static FlexStepViewModel CreateStep()
         {
             var content = new FlexStepContent();

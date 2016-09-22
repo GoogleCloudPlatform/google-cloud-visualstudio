@@ -95,7 +95,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         public WeakCommand ManageCredentialsCommand { get; }
 
         /// <summary>
-        /// Whether to open the website after a succesful publish operation.
+        /// Whether to open the website after a succesful publish operation. Defaults to true.
         /// </summary>
         public bool OpenWebsite
         {

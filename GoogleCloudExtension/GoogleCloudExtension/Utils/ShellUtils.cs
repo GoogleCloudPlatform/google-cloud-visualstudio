@@ -20,8 +20,14 @@ using System.Diagnostics;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// This class contains utilities to manage the UI state of the Visual Studio shell.
+    /// </summary>
     public static class ShellUtils
     {
+        /// <summary>
+        /// Invalidates the state of all commands, forces the re-evaluation of the state changing callbacks.
+        /// </summary>
         public static void InvalidateCommandUIStatus()
         {
             // Invalidate the commands status.                                                                                                                                                                                                
@@ -33,20 +39,37 @@ namespace GoogleCloudExtension.Utils
             shell.UpdateCommandUI(0);
         }
 
+        /// <summary>
+        /// Returns whether the shell is in the debugger state. This will happen if the user is debugging an app.
+        /// </summary>
+        /// <returns>True if the shell is in the debugger state, false otherwise.</returns>
         public static bool IsDebugging()
         {
             var monitorSelection = GetMonitorSelectionService();
             return GetUIContext(monitorSelection, VSConstants.UICONTEXT.Debugging_guid);
         }
 
+        /// <summary>
+        /// Returns whether the shell is in the buliding state. This will happen if the user is building the app.
+        /// </summary>
+        /// <returns>True if the shell is in the building state, false otherwise.</returns>
         public static bool IsBuilding()
         {
             var monitorSelection = GetMonitorSelectionService();
             return GetUIContext(monitorSelection, VSConstants.UICONTEXT.SolutionBuilding_guid);
         }
 
+        /// <summary>
+        /// Returns true if the shell is in a busy state.
+        /// </summary>
+        /// <returns></returns>
         public static bool IsBusy() => IsDebugging() || IsBuilding();
 
+        /// <summary>
+        /// Changes the UI state to a busy state. The pattern to use this method is to assign the resut value
+        /// to a variable in a using statement.
+        /// </summary>
+        /// <returns>An implementation of <seealso cref="IDisposable"/> that will cleanup the state change on dispose.</returns>
         public static IDisposable SetShellUIBusy()
         {
             IVsMonitorSelection monitorSelection = GetMonitorSelectionService();

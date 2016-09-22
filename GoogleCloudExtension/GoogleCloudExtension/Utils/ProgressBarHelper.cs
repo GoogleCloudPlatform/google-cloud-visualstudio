@@ -17,6 +17,9 @@ using System;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// Class that manages the progress bar in the status bar of Visual Studio.
+    /// </summary>
     public class ProgressBarHelper : IProgress<double>, IDisposable
     {
         private const uint Total = 1000;

@@ -14,14 +14,29 @@
 
 namespace GoogleCloudExtension.Deployment
 {
+    /// <summary>
+    /// This class represents the result of publishing an ASP.NET Core app to App Engine Flex.
+    /// </summary>
     public class NetCorePublishResult
     {
+        /// <summary>
+        /// The project ID to which the app was deployed.
+        /// </summary>
         public string ProjectId { get; }
 
+        /// <summary>
+        /// The service on which the app was deployed.
+        /// </summary>
         public string Service { get; }
 
+        /// <summary>
+        /// The name of the version that contains the app.
+        /// </summary>
         public string Version { get; }
 
+        /// <summary>
+        /// Whether the app was promoted and recieves 100% of the traffic.
+        /// </summary>
         public bool Promoted { get; }
 
         public NetCorePublishResult(string projectId, string service, string version, bool promoted)
@@ -32,6 +47,10 @@ namespace GoogleCloudExtension.Deployment
             Promoted = promoted;
         }
 
+        /// <summary>
+        /// Returns the expected URL for the deployed app.
+        /// </summary>
+        /// <returns></returns>
         public string GetDeploymentUrl()
         {
             if (Promoted)
@@ -42,12 +61,19 @@ namespace GoogleCloudExtension.Deployment
                 }
                 else
                 {
-                    return $"https://{Service}-{ProjectId}.appspot.com";
+                    return $"https://{Service}-dot-{ProjectId}.appspot.com";
                 }
             }
             else
             {
-                return $"https://{Version}-{Service}-{ProjectId}.appspot.com";
+                if (Service == "default")
+                {
+                    return $"https://{Version}-dot-{ProjectId}.appspot.com";
+                }
+                else
+                {
+                    return $"https://{Version}-dot-{Service}-dot-{ProjectId}.appspot.com";
+                }
             }
         }
     }

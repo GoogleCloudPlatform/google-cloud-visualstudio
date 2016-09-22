@@ -23,6 +23,8 @@ namespace GoogleCloudExtension.SolutionUtils
     {
         private readonly string _projectJsonPath;
 
+        #region ISolutionProject
+
         public string DirectoryPath => Path.GetDirectoryName(_projectJsonPath);
 
         public string FullPath => _projectJsonPath;
@@ -30,6 +32,8 @@ namespace GoogleCloudExtension.SolutionUtils
         public string Name => Path.GetFileName(Path.GetDirectoryName(_projectJsonPath));
 
         public KnownProjectTypes ProjectType => KnownProjectTypes.NetCoreWebApplication;
+
+        #endregion
 
         public NetCoreProject(string projectJsonPath)
         {

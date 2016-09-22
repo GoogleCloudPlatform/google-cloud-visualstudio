@@ -14,14 +14,29 @@
 
 namespace GoogleCloudExtension.SolutionUtils
 {
+    /// <summary>
+    /// This interface defines the operations that can be performed in a VS project.
+    /// </summary>
     public interface ISolutionProject
     {
+        /// <summary>
+        /// The name of the project.
+        /// </summary>
         string Name { get; }
 
+        /// <summary>
+        /// The full path to the project, including the project file.
+        /// </summary>
         string FullPath { get; }
 
+        /// <summary>
+        /// The full path to the directory that contains the project file.
+        /// </summary>
         string DirectoryPath { get; }
 
+        /// <summary>
+        /// The type of the project.
+        /// </summary>
         KnownProjectTypes ProjectType { get; }
     }
 }

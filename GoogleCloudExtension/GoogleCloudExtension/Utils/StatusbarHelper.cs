@@ -18,6 +18,9 @@ using System;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// This class contains helpers to manage the status bar for the Visual Studio shell.
+    /// </summary>
     public static class StatusbarHelper
     {
         private readonly static Lazy<IVsStatusbar> s_statusbar = new Lazy<IVsStatusbar>(
@@ -25,6 +28,10 @@ namespace GoogleCloudExtension.Utils
 
         private static IVsStatusbar Statusbar => s_statusbar.Value;
 
+        /// <summary>
+        /// Change the text in the status bar. If the status bar is frozen no change is made.
+        /// </summary>
+        /// <param name="text">The text to display.</param>
         public static void SetText(string text)
         {
             try
@@ -43,6 +50,12 @@ namespace GoogleCloudExtension.Utils
             }
         }
 
+        /// <summary>
+        /// Shows an animation to show that a deploy action is being executed. This animation will only show
+        /// if VS is showing all of the visual effects. The result of the method should stored in a variable in a 
+        /// using statement.
+        /// </summary>
+        /// <returns>An implementation of <seealso cref="IDisposable"/> that will stop the animation on dispose.</returns>
         public static IDisposable ShowDeployAnimation()
         {
             try
@@ -58,6 +71,14 @@ namespace GoogleCloudExtension.Utils
             }
         }
 
+        /// <summary>
+        /// Shows the progress bar indicator in the Visual Studio shell.
+        /// </summary>
+        /// <param name="label">The label to use for the progress indicator.</param>
+        /// <returns>
+        /// An instance of <seealso cref="ProgressBarHelper"/> which can be used to both update the progress bar
+        /// and perform cleanup.
+        /// </returns>
         public static ProgressBarHelper ShowProgressBar(string label)
         {
             return new ProgressBarHelper(Statusbar, label);
@@ -76,6 +97,10 @@ namespace GoogleCloudExtension.Utils
             }
         }
 
+        /// <summary>
+        /// Freezes the status bar, which prevents updates from other parts of the VS shell.
+        /// </summary>
+        /// <returns>An implementation of <seealso cref="IDisposable"/> that will unfreeze the status bar on dispose.</returns>
         public static IDisposable Freeze()
         {
             try

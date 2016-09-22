@@ -17,8 +17,20 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Deployment
 {
+    /// <summary>
+    /// Utilities for dealing with <seealso cref="IProgress{T}"/> instances.
+    /// </summary>
     internal static class ProgressHelper
     {
+        /// <summary>
+        /// Waits for a long running task, periodically updating the progress indicator.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="deployTask">The task to wait.</param>
+        /// <param name="progress">The progress indicator to update.</param>
+        /// <param name="from">The initial value.</param>
+        /// <param name="to">The final value.</param>
+        /// <returns></returns>
         internal static async Task<T> UpdateProgress<T>(
             Task<T> deployTask,
             IProgress<double> progress,
