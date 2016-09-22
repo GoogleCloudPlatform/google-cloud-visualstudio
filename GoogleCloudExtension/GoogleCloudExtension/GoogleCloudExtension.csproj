@@ -142,6 +142,15 @@
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PubSubWindows\NewSubscriptionData.cs" />
+    <Compile Include="PubSubWindows\NewSubscriptionWindow.xaml.cs">
+      <DependentUpon>NewSubscriptionWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PubSubWindows\NewTopicData.cs" />
+    <Compile Include="PubSubWindows\NewTopicWindow.xaml.cs">
+      <DependentUpon>NewTopicWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PubSubWindows\PubSubNameValidationRule.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -493,6 +502,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="LinkPrompt\LinkPromptDialogWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PubSubWindows\NewSubscriptionWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PubSubWindows\NewTopicWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

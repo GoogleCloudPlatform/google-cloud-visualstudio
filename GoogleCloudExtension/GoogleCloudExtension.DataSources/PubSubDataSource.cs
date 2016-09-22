@@ -72,20 +72,46 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 response => response.NextPageToken);
         }
 
-        /// <summary>
-        /// Gets the name of the subscriptions for a given topic.
-        /// </summary>
-        public Task<IList<string>> GetTopicSubscriptionListAsync(string topicName)
+        public Task<Topic> NewTopicAsync(string project, string topicName)
         {
-            var request = Service.Projects.Topics.Subscriptions.List(topicName);
-            return LoadPagedListAsync(
-                token =>
+            ProjectsResource.TopicsResource.CreateRequest request =
+                Service.Projects.Topics.Create(new Topic(), $"projects/{project}/topics/{topicName}");
+            return request.ExecuteAsync();
+        }
+
+        public async Task DeleteTopicAsync(string fullName)
+        {
+            ProjectsResource.TopicsResource.DeleteRequest request =
+                Service.Projects.Topics.Delete(fullName);
+            await request.ExecuteAsync();
+        }
+
+        public async Task<Subscription> NewSubscriptionAsync(
+            string fullName, string topicFullName, int? ackDeadlineSeconds, bool push, string pushUrl)
+        {
+            var subscription = new Subscription
+            {
+                Name = fullName,
+                Topic = topicFullName,
+                AckDeadlineSeconds = ackDeadlineSeconds
+            };
+            if (push)
+            {
+                subscription.PushConfig = new PushConfig
                 {
-                    request.PageToken = token;
-                    return request.ExecuteAsync();
-                },
-                response => response.Subscriptions,
-                response => response.NextPageToken);
+                    PushEndpoint = pushUrl
+                };
+            }
+            ProjectsResource.SubscriptionsResource.CreateRequest request =
+                Service.Projects.Subscriptions.Create(subscription, fullName);
+            return await request.ExecuteAsync();
+        }
+
+        public async Task DeleteSubscriptionAsync(string fullName)
+        {
+            ProjectsResource.SubscriptionsResource.DeleteRequest request =
+                Service.Projects.Subscriptions.Delete(fullName);
+            await request.ExecuteAsync();
         }
     }
 }

@@ -16,6 +16,9 @@ using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.Utils;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.PubSub
@@ -32,6 +35,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         private TopicViewModel _owner;
         private SubscriptionItem _subscriptionItem;
         public object Item => _subscriptionItem;
+        public PubsubDataSource DataSource => _owner.DataSource;
         public event EventHandler ItemChanged;
 
         public SubscriptionViewModel(TopicViewModel owner, Subscription subscription)
@@ -40,6 +44,40 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             _subscriptionItem = new SubscriptionItem(subscription);
             Caption = _subscriptionItem.Name;
             Icon = s_subscriptionIcon.Value;
+
+            ContextMenu = new ContextMenu
+            {
+                ItemsSource = new List<MenuItem>
+                {
+                    new MenuItem
+                    {
+                        Header = Resources.CloudExplorerPubSubDeleteSubscriptionMenuHeader,
+                        Command = new WeakCommand(OnDeleteSubscriptionCommand)
+                    }
+                }
+            };
+        }
+
+        private async void OnDeleteSubscriptionCommand()
+        {
+            bool doDelete = UserPromptUtils.YesNoPrompt(
+                string.Format(Resources.PubSubDeleteSubscriptionWindowMessage, _subscriptionItem.Name),
+                Resources.PubSubDeleteSubscriptionWindowHeader);
+            if (doDelete)
+            {
+                try
+                {
+                    await DataSource.DeleteSubscriptionAsync(_subscriptionItem.FullName);
+                    _owner.Refresh();
+                }
+                catch (Exception e)
+                {
+                    Debug.Write(e, "Error in delete subscription");
+                    UserPromptUtils.ErrorPrompt(Resources.PubSubDeleteSubscriptionErrorMessage,
+                        Resources.PubSubDeleteSubscriptionErrorHeader);
+
+                }
+            }
         }
     }
 }

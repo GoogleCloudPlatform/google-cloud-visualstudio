@@ -490,7 +490,7 @@
     <comment>Root caption for Google Cloud Pub/Sub.</comment>
   </data>
   <data name="CloudExplorerPubSubSubscriptionCategory" xml:space="preserve">
-    <value>Subscription</value>
+    <value>Subscription Properties</value>
     <comment>The category for PubSub subscription properties.</comment>
   </data>
   <data name="CloudExplorerPubSubSubscriptionNameDescription" xml:space="preserve">
@@ -770,7 +770,7 @@
     <comment>Caption for Ok buttons.</comment>
   </data>
   <data name="UiSaveButtonCaption" xml:space="preserve">
-    <value>Save</value>
+    <value>Saves</value>
     <comment>Caption for Save buttons.</comment>
   </data>
   <data name="UiDeleteButtonCaption" xml:space="preserve">
@@ -868,5 +868,65 @@
   <data name="CloudExplorerPubSubTopicFullNameDescription" xml:space="preserve">
     <value>The Full Name of the Topic</value>
     <comment>The description of the full name property of a PubSub topic.</comment>
+  </data>
+  <data name="CloudExplorerPubSubDeleteTopicMenuHeader" xml:space="preserve">
+    <value>Delete Topic</value>
+    <comment>Header for the delete topic menu item.s</comment>
+  </data>
+  <data name="CloudExplorerPubSubNewSubscriptionMenuHeader" xml:space="preserve">
+    <value>New Subscription</value>
+    <comment>Header for menu item to create a new Pub/Sub subscription.</comment>
+  </data>
+  <data name="PubSubDeleteTopicErrorHeader" xml:space="preserve">
+    <value>Error in delete topic</value>
+    <comment>Header of the message window displayed when there is an error deleting a topic.</comment>
+  </data>
+  <data name="PubSubDeleteTopicErrorMessage" xml:space="preserve">
+    <value>Error deleting topic.</value>
+    <comment>Message diplayed when there is an error deleting a topic.</comment>
+  </data>
+  <data name="PubSubDeleteTopicWindowHeader" xml:space="preserve">
+    <value>Delete topic</value>
+    <comment>Header of the delete Pub/Sub topic window.</comment>
+  </data>
+  <data name="PubSubDeleteTopicWindowMessage" xml:space="preserve">
+    <value>Are you sure you wish to delete topic {0}?</value>
+    <comment>Message of the delete Pub/Sub topic window.</comment>
+  </data>
+  <data name="PubSubNewTopicErrorHeader" xml:space="preserve">
+    <value>Error in new topic</value>
+    <comment>Header of the message window displayed when there is an error creating a new topic.</comment>
+  </data>
+  <data name="PubSubNewTopicErrorMessage" xml:space="preserve">
+    <value>Error creating new topic.</value>
+    <comment>Message diplayed when there is an error creating a new topic.</comment>
+  </data>
+  <data name="PubSubNewTopicWindowHeader" xml:space="preserve">
+    <value>New Topic</value>
+    <comment>Header of the New Topic window.</comment>
+  </data>
+  <data name="CloudExplorerPubSubDeleteSubscriptionMenuHeader" xml:space="preserve">
+    <value>Delete Subscription</value>
+    <comment>Header for the delete pub/sub subscription menu item.</comment>
+  </data>
+  <data name="CloudExplorerPubSubSubscriptionFullNameDescription" xml:space="preserve">
+    <value>The Full Name of the Subscription</value>
+    <comment>The description of the full name property of a PubSub subscription.</comment>
+  </data>
+  <data name="PubSubDeleteSubscriptionErrorHeader" xml:space="preserve">
+    <value>Error in delete subscription</value>
+    <comment>Header of the message window displayed when there is an error deleting a PubSub subscription.</comment>
+  </data>
+  <data name="PubSubDeleteSubscriptionErrorMessage" xml:space="preserve">
+    <value>Error deleting subscription</value>
+    <comment>Message diplayed when there is an error deleting a PubSub subscription.</comment>
+  </data>
+  <data name="PubSubDeleteSubscriptionWindowHeader" xml:space="preserve">
+    <value>Delete subscription</value>
+    <comment>Header of the delete Pub/Sub subscription window.</comment>
+  </data>
+  <data name="PubSubDeleteSubscriptionWindowMessage" xml:space="preserve">
+    <value>Are you sure you wish to delete subscription {0}?</value>
+    <comment>Message of the delete Pub/Sub subscription window.</comment>
   </data>
 </root>

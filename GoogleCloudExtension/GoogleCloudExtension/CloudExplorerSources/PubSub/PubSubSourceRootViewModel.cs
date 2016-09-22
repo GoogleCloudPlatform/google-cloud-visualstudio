@@ -17,10 +17,13 @@ using Google.Apis.Pubsub.v1;
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.PubSubWindows;
+using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 {
@@ -50,15 +53,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
         public override TreeLeaf LoadingPlaceholder => s_loadingPlaceholder;
 
+        /// <summary>
+        /// The list of all visible subscriptions of the current project.
+        /// </summary>
         public IList<Subscription> Subscriptions { get; private set; }
 
         internal PubsubDataSource DataSource => _dataSource.Value;
         private Lazy<PubsubDataSource> _dataSource = new Lazy<PubsubDataSource>(CreateDataSource);
-
-        public PubsubSourceRootViewModel()
-        {
-            Subscriptions = new Subscription[0];
-        }
 
         /// <summary>
         /// Creates a new PubsubDataSource from the default credentials.
@@ -80,6 +81,60 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             else
             {
                 return null;
+            }
+        }
+
+        public PubsubSourceRootViewModel()
+        {
+            Subscriptions = new Subscription[0];
+        }
+
+        public override void Initialize(ICloudSourceContext context)
+        {
+            base.Initialize(context);
+
+            List<MenuItem> menuItems = new List<MenuItem>
+            {
+                new MenuItem
+                {
+                    Header = Resources.CloudExplorerPubSubNewTopicMenuHeader,
+                    Command = new WeakCommand(OnNewTopicCommand)
+                },
+                new MenuItem
+                {
+                    Header = Resources.UiOpenOnCloudConsoleMenuHeader,
+                    Command = new WeakCommand(OnOpenCloudConsoleCommand)
+                }
+        };
+            ContextMenu = new ContextMenu
+            {
+                ItemsSource = menuItems
+            };
+        }
+
+        private void OnOpenCloudConsoleCommand()
+        {
+            var url = $"https://console.cloud.google.com/cloudpubsub?project={Context.CurrentProject.ProjectId}";
+            Process.Start(url);
+        }
+
+        private async void OnNewTopicCommand()
+        {
+            try
+            {
+                var dialog = new NewTopicWindow(CredentialsStore.Default.CurrentProjectId);
+                if (dialog.ShowDialog() == true)
+                {
+                    var newTopicData = (NewTopicData)dialog.DataContext;
+                    await DataSource.NewTopicAsync(newTopicData.Project, newTopicData.TopicName);
+                    Refresh();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Write(e, "Error in new topic");
+                UserPromptUtils.ErrorPrompt(
+                    Resources.PubSubNewTopicErrorMessage, Resources.PubSubNewTopicErrorHeader);
             }
         }
 

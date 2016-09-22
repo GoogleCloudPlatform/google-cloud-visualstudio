@@ -961,6 +961,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete Subscription.
+        /// </summary>
+        public static string CloudExplorerPubSubDeleteSubscriptionMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubDeleteSubscriptionMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Topic.
+        /// </summary>
+        public static string CloudExplorerPubSubDeleteTopicMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubDeleteTopicMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to load Subscriptions.
         /// </summary>
         public static string CloudExplorerPubSubListSubscriptionsErrorCaption {
@@ -993,6 +1011,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerPubSubLoadingTopicsCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerPubSubLoadingTopicsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Subscription.
+        /// </summary>
+        public static string CloudExplorerPubSubNewSubscriptionMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubNewSubscriptionMenuHeader", resourceCulture);
             }
         }
         
@@ -1033,11 +1060,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Subscription.
+        ///   Looks up a localized string similar to Subscription Properties.
         /// </summary>
         public static string CloudExplorerPubSubSubscriptionCategory {
             get {
                 return ResourceManager.GetString("CloudExplorerPubSubSubscriptionCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Full Name of the Subscription.
+        /// </summary>
+        public static string CloudExplorerPubSubSubscriptionFullNameDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubSubscriptionFullNameDescription", resourceCulture);
             }
         }
         
@@ -1483,6 +1519,105 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error in delete subscription.
+        /// </summary>
+        public static string PubSubDeleteSubscriptionErrorHeader {
+            get {
+                return ResourceManager.GetString("PubSubDeleteSubscriptionErrorHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error deleting subscription.
+        /// </summary>
+        public static string PubSubDeleteSubscriptionErrorMessage {
+            get {
+                return ResourceManager.GetString("PubSubDeleteSubscriptionErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete subscription.
+        /// </summary>
+        public static string PubSubDeleteSubscriptionWindowHeader {
+            get {
+                return ResourceManager.GetString("PubSubDeleteSubscriptionWindowHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you wish to delete subscription {0}?.
+        /// </summary>
+        public static string PubSubDeleteSubscriptionWindowMessage {
+            get {
+                return ResourceManager.GetString("PubSubDeleteSubscriptionWindowMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in delete topic.
+        /// </summary>
+        public static string PubSubDeleteTopicErrorHeader {
+            get {
+                return ResourceManager.GetString("PubSubDeleteTopicErrorHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error deleting topic..
+        /// </summary>
+        public static string PubSubDeleteTopicErrorMessage {
+            get {
+                return ResourceManager.GetString("PubSubDeleteTopicErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete topic.
+        /// </summary>
+        public static string PubSubDeleteTopicWindowHeader {
+            get {
+                return ResourceManager.GetString("PubSubDeleteTopicWindowHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you wish to delete topic {0}?.
+        /// </summary>
+        public static string PubSubDeleteTopicWindowMessage {
+            get {
+                return ResourceManager.GetString("PubSubDeleteTopicWindowMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in new topic.
+        /// </summary>
+        public static string PubSubNewTopicErrorHeader {
+            get {
+                return ResourceManager.GetString("PubSubNewTopicErrorHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error creating new topic..
+        /// </summary>
+        public static string PubSubNewTopicErrorMessage {
+            get {
+                return ResourceManager.GetString("PubSubNewTopicErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Topic.
+        /// </summary>
+        public static string PubSubNewTopicWindowHeader {
+            get {
+                return ResourceManager.GetString("PubSubNewTopicWindowHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to reset the password for the user {0} in instance {1}? This operation cannot be cancelled..
         /// </summary>
         public static string ResetPasswordConfirmationPromptMessage {
@@ -1717,7 +1852,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save.
+        ///   Looks up a localized string similar to Saves.
         /// </summary>
         public static string UiSaveButtonCaption {
             get {
