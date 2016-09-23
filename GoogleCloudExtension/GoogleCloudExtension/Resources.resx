@@ -1037,4 +1037,24 @@
     <value>Show Versions with and without Traffic</value>
     <comment>Menu item to show GAE versions of a service with and without traffic</comment>
   </data>
+  <data name="CloudExplorerGaeStartVersion" xml:space="preserve">
+    <value>Start Version</value>
+    <comment>Header for the menu that starts the version.</comment>
+  </data>
+  <data name="CloudExplorerGaeStopVersion" xml:space="preserve">
+    <value>Stop Version</value>
+    <comment>Header for the menu that stops the version.</comment>
+  </data>
+  <data name="CloudExplorerGaeUpdateServingStatusErrorMessage" xml:space="preserve">
+    <value>Failed to updated the serving status.</value>
+    <comment>Message shown when an attempt to updated the serving status fails.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionStartServingMessage" xml:space="preserve">
+    <value>Starting version...</value>
+    <comment>Message shown when a version is starting.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionStopServingMessage" xml:space="preserve">
+    <value>Stopping version...</value>
+    <comment>Message shown when a version is stopping.</comment>
+  </data>
 </root>

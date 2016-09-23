@@ -19,9 +19,6 @@ namespace GoogleCloudExtension.DataSources
 {
     public static class GaeServiceExtensions
     {
-
-        public static readonly string DotNetRuntime = "dotnet";
-
         /// <summary>
         /// Get the traffic allocation of a version.
         /// </summary>

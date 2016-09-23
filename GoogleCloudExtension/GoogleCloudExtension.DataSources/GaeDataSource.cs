@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using static Google.Apis.Appengine.v1.AppsResource.ServicesResource;
 
 namespace GoogleCloudExtension.DataSources
 {
@@ -28,6 +29,7 @@ namespace GoogleCloudExtension.DataSources
     /// </summary>
     public class GaeDataSource : DataSourceBase<AppengineService>
     {
+        private static readonly string ServingStatusUpdateMask = "servingStatus";
 
         /// <summary>
         /// Initializes an instance of the data source.
@@ -108,6 +110,54 @@ namespace GoogleCloudExtension.DataSources
         }
 
         /// <summary>
+        /// Gets a GAE version for the given project, service and version id.
+        /// </summary>
+        /// <param name="serviceId">The id of the service</param>
+        /// <param name="versionId">The id of the version</param>
+        /// <returns>The GAE version.</returns>
+        public async Task<Google.Apis.Appengine.v1.Data.Version> GetVersionAsync(string serviceId, string versionId)
+        {
+            try
+            {
+                var request = Service.Apps.Services.Versions.Get(ProjectId, serviceId, versionId);
+                return await request.ExecuteAsync();
+            }
+            catch (GoogleApiException ex)
+            {
+                Debug.WriteLine($"Failed to get version: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Update a GAE version's serving status.
+        /// </summary>
+        /// <param name="status">The serving status to set.  Either 'SERVING' or 'STOPPED'</param>
+        /// <param name="serviceId">The id of the service</param>
+        /// <param name="versionId">The id of the version</param>
+        /// <returns>The GAE operation.</returns>
+        public async Task<Operation> UpdateVersionServingStatus(string status, string serviceId, string versionId)
+        {
+            try
+            {
+                // Create a version with just the service status set.
+                Google.Apis.Appengine.v1.Data.Version version = new Google.Apis.Appengine.v1.Data.Version()
+                {
+                    ServingStatus = status,
+                };
+                var request = Service.Apps.Services.Versions.Patch(version, ProjectId, serviceId, versionId);
+                // Only update the service status.
+                request.UpdateMask = ServingStatusUpdateMask;
+                return await request.ExecuteAsync();
+            }
+            catch (GoogleApiException ex)
+            {
+                Debug.WriteLine($"Failed to update serving status to '{status}': {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
         /// Fetches the list of GAE instance for the given project, service and version.
         /// </summary>
         /// <param name="serviceId">The id of the service</param>
@@ -132,6 +182,25 @@ namespace GoogleCloudExtension.DataSources
                 },
                 x => x.Instances,
                 x => x.NextPageToken);
+        }
+
+        /// <summary>
+        /// Gets a GAE operation.
+        /// </summary>
+        /// <param name="id">The unique operation id.</param>
+        /// <returns>The GAE operation.</returns>
+        public async Task<Operation> GetOperationAsync(string id)
+        {
+            try
+            {
+                var request = Service.Apps.Operations.Get(ProjectId, id);
+                return await request.ExecuteAsync();
+            }
+            catch (GoogleApiException ex)
+            {
+                Debug.WriteLine($"Failed to get operation: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
         }
     }
 }

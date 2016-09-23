@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Appengine.v1.Data;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
@@ -21,6 +22,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -31,9 +33,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
     /// </summary>
     class VersionViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
-        public const string ServingStatus = "SERVING";
-        public const string StoppedStatus = "STOPPED";
-
         private const string IconRunningResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_running.png";
         private const string IconStopedResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_stoped.png";
         private const string IconTransitionResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_transition.png";
@@ -41,7 +40,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private static readonly Lazy<ImageSource> s_versionRunningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconRunningResourcePath));
         private static readonly Lazy<ImageSource> s_versionStopedIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconStopedResourcePath));
         private static readonly Lazy<ImageSource> s_versionTransitionIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconTransitionResourcePath));
-
 
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
         {
@@ -59,15 +57,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             IsError = true
         };
 
+        private bool HasTrafficAllocation => trafficAllocation != null;
+
         private readonly ServiceViewModel _owner;
 
         public readonly GaeSourceRootViewModel root;
 
         private bool _resourcesLoaded;
 
-        public readonly Google.Apis.Appengine.v1.Data.Version version;
+        public Google.Apis.Appengine.v1.Data.Version version { get; private set; }
 
-        public readonly double? trafficAllocation;
+        public double? trafficAllocation { get; private set; }
 
         public event EventHandler ItemChanged;
 
@@ -80,63 +80,91 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             this.version = version;
             root = _owner.root;
 
-            _resourcesLoaded = false;
-            Children.Add(s_loadingPlaceholder);
+            Initialize();
+        }
 
-            var menuItems = new List<MenuItem>
+        private void Initialize()
+        {
+            // Get the traffic allocation for the version
+            trafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_owner.service, version.Id);
+
+            // Reset the resources loaded and clear any children. 
+            _resourcesLoaded = false;
+            Children.Clear();
+
+            // If the version is serving allow instances to be loaded.
+            if (GaeVersionExtensions.IsServing(version))
+            {
+                Children.Add(s_loadingPlaceholder);
+            }
+
+            // Update the view.
+            Caption = GetCaption();
+            UpdateIcon();
+            UpdateMenu();
+        }
+
+        /// <summary>
+        /// Update the context menu based on the current state of the version.
+        /// </summary>
+        private void UpdateMenu()
+        {
+            // Do not allow actions when the version is loading or in an error state.
+            if (IsLoading || IsError)
+            {
+                ContextMenu = null;
+                return;
+            }
+
+            var menuItems = new List<FrameworkElement>
             {
                 new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) },
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) },
             };
 
             // If the version has traffic allocated to it it can be opened.
-            trafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_owner.service, version.Id);
-            if (trafficAllocation != null)
+            if (HasTrafficAllocation)
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeVersionOpen, Command = new WeakCommand(OnOpenVersion) });
             }
 
-            ContextMenu = new ContextMenu { ItemsSource = menuItems };
+            menuItems.Add(new Separator());
 
-            Caption = GetCaption();
-            UpdateIcon();
+            if (GaeVersionExtensions.IsServing(version))
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeStopVersion, Command = new WeakCommand(OnStopVersion) });
+            }
+            else if (GaeVersionExtensions.IsStopped(version))
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeStartVersion, Command = new WeakCommand(OnStartVersion) });
+            }
+
+            ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
-        protected override async void OnIsExpandedChanged(bool newValue)
+        private void OnStartVersion()
+        {
+            UpdateServingStatus(
+                GaeVersionExtensions.ServingStatus,
+                Resources.CloudExplorerGaeVersionStartServingMessage);
+        }
+
+        private void OnStopVersion()
+        {
+            UpdateServingStatus(
+                GaeVersionExtensions.StoppedStatus,
+                Resources.CloudExplorerGaeVersionStopServingMessage);
+        }
+
+        protected override void OnIsExpandedChanged(bool newValue)
         {
             base.OnIsExpandedChanged(newValue);
-            try
-            {
-                // If this is the first time the node has been expanded load it's resources.
-                if (!_resourcesLoaded && newValue)
-                {
-                    _resourcesLoaded = true;
-                    var instances = await LoadInstanceList();
-                    Children.Clear();
-                    if (instances == null)
-                    {
-                        Children.Add(s_errorPlaceholder);
-                    }
-                    else
-                    {
-                        foreach (var item in instances)
-                        {
-                            Children.Add(item);
-                        }
-                        if (Children.Count == 0)
-                        {
-                            Children.Add(s_noItemsPlacehoder);
-                        }
-                    }
-                }
-            }
-            catch (DataSourceException ex)
-            {
-                GcpOutputWindow.OutputLine(Resources.CloudExplorerGaeFailedInstancesMessage);
-                GcpOutputWindow.OutputLine(ex.Message);
-                GcpOutputWindow.Activate();
 
-                throw new CloudExplorerSourceException(ex.Message, ex);
+            // If this is the first time the node has been expanded load it's resources.
+            if (!_resourcesLoaded && newValue)
+            {
+                _resourcesLoaded = true;
+                UpdateChildren();
             }
         }
 
@@ -157,6 +185,102 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         }
 
         /// <summary>
+        /// Update the serving status of the version.
+        /// </summary>
+        /// <param name="status">The serving status to update the version to.</param>
+        /// <param name="statusMessage">The message to display while updating the status</param>
+        private async void UpdateServingStatus(string status, string statusMessage)
+        {
+            IsLoading = true;
+            Children.Clear();
+            UpdateMenu();
+            Caption = statusMessage;
+            GaeDataSource datasource = root.DataSource.Value;
+
+            try
+            {
+                Task<Operation> operationTask = datasource.UpdateVersionServingStatus(status, _owner.service.Id, version.Id);
+                Func<Operation, Task<Operation>> fetch = (o) => datasource.GetOperationAsync(GaeVersionExtensions.GetOperationId(o));
+                Predicate<Operation> stopPolling = (o) => o.Done ?? false;
+                Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);
+                if (operation.Error != null)
+                {
+                    throw new DataSourceException(operation.Error.Message);
+                }
+                version = await datasource.GetVersionAsync(_owner.service.Id, version.Id);
+            }
+            catch (DataSourceException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(ex.Message,
+                    Resources.CloudExplorerGaeUpdateServingStatusErrorMessage);
+            }
+            catch (TimeoutException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(
+                    Resources.CloudExploreOperationTimeoutMessage,
+                    Resources.CloudExplorerGaeUpdateServingStatusErrorMessage);
+            }
+            catch (OperationCanceledException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(
+                    Resources.CloudExploreOperationCanceledMessage,
+                    Resources.CloudExplorerGaeUpdateServingStatusErrorMessage);
+            }
+            finally
+            {
+                IsLoading = false;
+
+                // Re-initialize the instance as it will have a new version.
+                if (!IsError)
+                {
+                    Initialize();
+                }
+                else
+                {
+                    Caption = GetCaption();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Update the children (GAE instances) of this version.
+        /// </summary>
+        private async void UpdateChildren()
+        {
+            try
+            {
+                var instances = await LoadInstanceList();
+                Children.Clear();
+                if (instances == null)
+                {
+                    Children.Add(s_errorPlaceholder);
+                }
+                else
+                {
+                    foreach (var item in instances)
+                    {
+                        Children.Add(item);
+                    }
+                    if (Children.Count == 0)
+                    {
+                        Children.Add(s_noItemsPlacehoder);
+                    }
+                }
+            }
+            catch (DataSourceException ex)
+            {
+                GcpOutputWindow.OutputLine(Resources.CloudExplorerGaeFailedInstancesMessage);
+                GcpOutputWindow.OutputLine(ex.Message);
+                GcpOutputWindow.Activate();
+
+                throw new CloudExplorerSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
         /// Load a list of instances.
         /// </summary>
         private async Task<List<InstanceViewModel>> LoadInstanceList()
@@ -171,7 +295,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         /// </summary>
         private string GetCaption()
         {
-            if (trafficAllocation == null)
+            if (!HasTrafficAllocation)
             {
                 return version.Id;
             }
@@ -183,10 +307,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             switch (version.ServingStatus)
             {
-                case ServingStatus:
+                case GaeVersionExtensions.ServingStatus:
                     Icon = s_versionRunningIcon.Value;
                     break;
-                case StoppedStatus:
+                case GaeVersionExtensions.StoppedStatus:
                     Icon = s_versionStopedIcon.Value;
                     break;
                 default:

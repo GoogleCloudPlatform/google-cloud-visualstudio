@@ -113,6 +113,7 @@
     <Compile Include="FirewallPort.cs" />
     <Compile Include="GaeDataSource.cs" />
     <Compile Include="GaeServiceExtensions.cs" />
+    <Compile Include="GaeVersionExtensions.cs" />
     <Compile Include="GceDataSource.cs" />
     <Compile Include="InstanceExtensions.cs" />
     <Compile Include="GceOperation.cs" />

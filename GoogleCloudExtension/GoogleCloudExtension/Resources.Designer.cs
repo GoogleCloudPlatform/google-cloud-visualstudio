@@ -466,6 +466,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start Version.
+        /// </summary>
+        public static string CloudExplorerGaeStartVersion {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeStartVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop Version.
+        /// </summary>
+        public static string CloudExplorerGaeStopVersion {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeStopVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to updated the serving status..
+        /// </summary>
+        public static string CloudExplorerGaeUpdateServingStatusErrorMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeUpdateServingStatusErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Version Properties.
         /// </summary>
         public static string CloudExplorerGaeVersionCategory {
@@ -525,6 +552,24 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGaeVersionResourcesCategory {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeVersionResourcesCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting version....
+        /// </summary>
+        public static string CloudExplorerGaeVersionStartServingMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionStartServingMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stopping version....
+        /// </summary>
+        public static string CloudExplorerGaeVersionStopServingMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionStopServingMessage", resourceCulture);
             }
         }
         
