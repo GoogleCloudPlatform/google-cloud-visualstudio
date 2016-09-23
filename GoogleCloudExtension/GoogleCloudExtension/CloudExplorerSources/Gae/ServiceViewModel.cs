@@ -57,6 +57,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private bool _resourcesLoaded;
 
         private bool _showOnlyFlexVersions;
+        private bool _showOnlyDotNetRuntimes;
+        private bool _showOnlyVersionsWithTraffic;
 
         private List<VersionViewModel> _versions;
 
@@ -78,6 +80,38 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                     return;
                 }
                 _showOnlyFlexVersions = value;
+                _showOnlyDotNetRuntimes = false;
+                UpdateContextMenu();
+                PresentViewModels();
+            }
+        }
+
+        public bool ShowOnlyDotNetRuntimes
+        {
+            get { return _showOnlyDotNetRuntimes; }
+            set
+            {
+                if (value == _showOnlyDotNetRuntimes)
+                {
+                    return;
+                }
+                _showOnlyDotNetRuntimes = value;
+                _showOnlyFlexVersions = false;
+                UpdateContextMenu();
+                PresentViewModels();
+            }
+        }
+
+        public bool ShowOnlyVersionsWithTraffic
+        {
+            get { return _showOnlyVersionsWithTraffic; }
+            set
+            {
+                if (value == _showOnlyVersionsWithTraffic)
+                {
+                    return;
+                }
+                _showOnlyVersionsWithTraffic = value;
                 UpdateContextMenu();
                 PresentViewModels();
             }
@@ -94,6 +128,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             _resourcesLoaded = false;
             _showOnlyFlexVersions = true;
+            // TODO: We should start this as true when the upstream changes are pushed.
+            _showOnlyDotNetRuntimes = false;
+            _showOnlyVersionsWithTraffic = false;
 
             Children.Add(s_loadingPlaceholder);
 
@@ -112,11 +149,29 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             if (ShowOnlyFlexVersions)
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowAllVersions, Command = new WeakCommand(OnShowAllInstances) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowFlexAndStandardVersions, Command = new WeakCommand(OnShowFlexibleAndStandardVersions) });
             }
             else
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowFlexVersions, Command = new WeakCommand(OnShowOnlyFlexInstances) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowFlexVersions, Command = new WeakCommand(OnShowOnlyFlexVersions) });
+            }
+
+            if (ShowOnlyDotNetRuntimes)
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowAllRuntimes, Command = new WeakCommand(OnShowAllRuntimes) });
+            }
+            else
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowDotNetRuntimes, Command = new WeakCommand(OnShowOnlyDotNetRuntimes) });
+            }
+
+            if (ShowOnlyVersionsWithTraffic)
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowWithAndWithoutTraffic, Command = new WeakCommand(OnShowVersionsWithAndWithoutTraffic) });
+            }
+            else
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowVersionsWithTraffic, Command = new WeakCommand(OnShowOnlyVersionsWithTraffic) });
             }
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
@@ -129,10 +184,22 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 return;
             }
 
-            List<VersionViewModel> versions = _versions
-                .Where(x => !ShowOnlyFlexVersions || (x.version.Vm ?? false))
-                .ToList();
-            UpdateViewModels(versions);
+            IEnumerable<VersionViewModel> versions = _versions;
+            if (ShowOnlyFlexVersions)
+            {
+                versions = versions.Where(x => x.version.Vm ?? false);
+            }
+            if (ShowOnlyDotNetRuntimes)
+            {
+                versions = versions.Where(
+                    x => x.version?.Runtime.Equals(GaeServiceExtensions.DotNetRuntime) ?? false);
+            }
+            if (ShowOnlyVersionsWithTraffic)
+            {
+                versions = versions.Where(x => x.trafficAllocation != null);
+            }
+
+            UpdateViewModels(versions.ToList());
         }
 
         private void UpdateViewModels(List<VersionViewModel> versions)
@@ -148,14 +215,34 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
         }
 
-        private void OnShowOnlyFlexInstances()
+        private void OnShowOnlyFlexVersions()
         {
             ShowOnlyFlexVersions = true;
         }
 
-        private void OnShowAllInstances()
+        private void OnShowFlexibleAndStandardVersions()
         {
             ShowOnlyFlexVersions = false;
+        }
+
+        private void OnShowOnlyDotNetRuntimes()
+        {
+            ShowOnlyDotNetRuntimes = true;
+        }
+
+        private void OnShowAllRuntimes()
+        {
+            ShowOnlyDotNetRuntimes = false;
+        }
+
+        private void OnShowOnlyVersionsWithTraffic()
+        {
+            ShowOnlyVersionsWithTraffic = true;
+        }
+
+        private void OnShowVersionsWithAndWithoutTraffic()
+        {
+            ShowOnlyVersionsWithTraffic = false;
         }
 
         protected override async void OnIsExpandedChanged(bool newValue)
@@ -214,7 +301,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             var versions = await root.DataSource.Value.GetVersionListAsync(service.Id);
             return versions?
                 .Select(x => new VersionViewModel(this, x))
-                .OrderByDescending(x => GaeServiceExtensions.GetTrafficAllocation(service, x.version.Id))
+                .OrderByDescending(x => x.trafficAllocation)
                 .ToList();
         }
 

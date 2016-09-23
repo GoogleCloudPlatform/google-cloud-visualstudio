@@ -67,6 +67,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         public readonly Google.Apis.Appengine.v1.Data.Version version;
 
+        public readonly double? trafficAllocation;
+
         public event EventHandler ItemChanged;
 
         public object Item => GetItem();
@@ -78,9 +80,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             this.version = version;
             root = _owner.root;
 
-            Caption = GetCaption();
-            UpdateIcon();
-
             _resourcesLoaded = false;
             Children.Add(s_loadingPlaceholder);
 
@@ -91,13 +90,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             };
 
             // If the version has traffic allocated to it it can be opened.
-            double? trafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_owner.service, version.Id);
+            trafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_owner.service, version.Id);
             if (trafficAllocation != null)
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeVersionOpen, Command = new WeakCommand(OnOpenVersion) });
             }
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+
+            Caption = GetCaption();
+            UpdateIcon();
         }
 
         protected override async void OnIsExpandedChanged(bool newValue)
@@ -169,7 +171,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         /// </summary>
         private string GetCaption()
         {
-            double? trafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_owner.service, version.Id);
             if (trafficAllocation == null)
             {
                 return version.Id;

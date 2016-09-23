@@ -376,7 +376,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No flexible versions found..
+        ///   Looks up a localized string similar to No versions found..
         /// </summary>
         public static string CloudExplorerGaeNoVersionsFoundCaption {
             get {
@@ -412,11 +412,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show All Versions.
+        ///   Looks up a localized string similar to Show All Runtimes.
         /// </summary>
-        public static string CloudExplorerGaeShowAllVersions {
+        public static string CloudExplorerGaeShowAllRuntimes {
             get {
-                return ResourceManager.GetString("CloudExplorerGaeShowAllVersions", resourceCulture);
+                return ResourceManager.GetString("CloudExplorerGaeShowAllRuntimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Only .NET Runtimes.
+        /// </summary>
+        public static string CloudExplorerGaeShowDotNetRuntimes {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeShowDotNetRuntimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Flexible and Standard Versions.
+        /// </summary>
+        public static string CloudExplorerGaeShowFlexAndStandardVersions {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeShowFlexAndStandardVersions", resourceCulture);
             }
         }
         
@@ -426,6 +444,24 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGaeShowFlexVersions {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeShowFlexVersions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Only Versions with Traffic.
+        /// </summary>
+        public static string CloudExplorerGaeShowVersionsWithTraffic {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeShowVersionsWithTraffic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Versions with and without Traffic.
+        /// </summary>
+        public static string CloudExplorerGaeShowWithAndWithoutTraffic {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeShowWithAndWithoutTraffic", resourceCulture);
             }
         }
         

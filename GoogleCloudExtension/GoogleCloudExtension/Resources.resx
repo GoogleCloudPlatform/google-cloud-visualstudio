@@ -930,8 +930,8 @@
     <comment>Caption shown when no GAE services are found.</comment>
   </data>
   <data name="CloudExplorerGaeNoVersionsFoundCaption" xml:space="preserve">
-    <value>No flexible versions found.</value>
-    <comment>Caption shown when no flexible GAE versions are found.</comment>
+    <value>No versions found.</value>
+    <comment>Caption shown when no GAE versions are found.</comment>
   </data>
   <data name="CloudExplorerGaeRootNodeCaption" xml:space="preserve">
     <value>Google App Engine</value>
@@ -1013,12 +1013,28 @@
     <value>Open Running Version</value>
     <comment>Header for the menu that opens the version in a browser.</comment>
   </data>
-  <data name="CloudExplorerGaeShowAllVersions" xml:space="preserve">
-    <value>Show All Versions</value>
-    <comment>Menu item to show all GAE versions of a service</comment>
+  <data name="CloudExplorerGaeShowFlexAndStandardVersions" xml:space="preserve">
+    <value>Show Flexible and Standard Versions</value>
+    <comment>Menu item to show flexible and standardGAE versions of a service</comment>
   </data>
   <data name="CloudExplorerGaeShowFlexVersions" xml:space="preserve">
     <value>Show Only Flexible Versions</value>
     <comment>Menu item to show only flexible GAE versions of a service</comment>
+  </data>
+  <data name="CloudExplorerGaeShowAllRuntimes" xml:space="preserve">
+    <value>Show All Runtimes</value>
+    <comment>Menu item to show all GAE runtimes of a service</comment>
+  </data>
+  <data name="CloudExplorerGaeShowDotNetRuntimes" xml:space="preserve">
+    <value>Show Only .NET Runtimes</value>
+    <comment>Menu item to show only .net GAE runtimes of a service</comment>
+  </data>
+  <data name="CloudExplorerGaeShowVersionsWithTraffic" xml:space="preserve">
+    <value>Show Only Versions with Traffic</value>
+    <comment>Menu item to show only GAE versions of a service with traffic</comment>
+  </data>
+  <data name="CloudExplorerGaeShowWithAndWithoutTraffic" xml:space="preserve">
+    <value>Show Versions with and without Traffic</value>
+    <comment>Menu item to show GAE versions of a service with and without traffic</comment>
   </data>
 </root>
