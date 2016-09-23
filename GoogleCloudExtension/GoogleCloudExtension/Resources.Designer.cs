@@ -1303,6 +1303,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Cancel.
+        /// </summary>
+        public static string FocusableCancelButton {
+            get {
+                return ResourceManager.GetString("FocusableCancelButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to C_reate.
+        /// </summary>
+        public static string FocusableCreateButton {
+            get {
+                return ResourceManager.GetString("FocusableCreateButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The user account {0} already exists..
         /// </summary>
         public static string ManageAccountsAccountAlreadyExistsPromptMessage {
@@ -1479,6 +1497,78 @@ namespace GoogleCloudExtension {
         public static string MySqlInstallerWindowTopMessage {
             get {
                 return ResourceManager.GetString("MySqlInstallerWindowTopMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Acknowledgement Deadline (seconds):.
+        /// </summary>
+        public static string NewSubscriptionWindowAckDeadlineLabel {
+            get {
+                return ResourceManager.GetString("NewSubscriptionWindowAckDeadlineLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delivery Type:.
+        /// </summary>
+        public static string NewSubscriptionWindowDeliveryType {
+            get {
+                return ResourceManager.GetString("NewSubscriptionWindowDeliveryType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Subscription for Topic {0}.
+        /// </summary>
+        public static string NewSubscriptionWindowHeader {
+            get {
+                return ResourceManager.GetString("NewSubscriptionWindowHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Name:.
+        /// </summary>
+        public static string NewSubscriptionWindowNameLabel {
+            get {
+                return ResourceManager.GetString("NewSubscriptionWindowNameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pu_ll.
+        /// </summary>
+        public static string NewSubscriptionWindowPullLabel {
+            get {
+                return ResourceManager.GetString("NewSubscriptionWindowPullLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Push to _URL:.
+        /// </summary>
+        public static string NewSubscriptionWindowPushLabel {
+            get {
+                return ResourceManager.GetString("NewSubscriptionWindowPushLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Topic _Name:.
+        /// </summary>
+        public static string NewTopicWindowNameLabel {
+            get {
+                return ResourceManager.GetString("NewTopicWindowNameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create topic in project {0}..
+        /// </summary>
+        public static string NewTopicWindowTitle {
+            get {
+                return ResourceManager.GetString("NewTopicWindowTitle", resourceCulture);
             }
         }
         
@@ -1771,6 +1861,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose credentials to use:.
         /// </summary>
         public static string TerminalServerManagerWindowMessage {
@@ -1866,6 +1965,51 @@ namespace GoogleCloudExtension {
         public static string UiUndoButtonCaption {
             get {
                 return ResourceManager.GetString("UiUndoButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to May not have more than 255 characters..
+        /// </summary>
+        public static string Validation255CharactersMessage {
+            get {
+                return ResourceManager.GetString("Validation255CharactersMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to May not start with &quot;goog&quot;.
+        /// </summary>
+        public static string ValidationDisallowStartGoogMessage {
+            get {
+                return ResourceManager.GetString("ValidationDisallowStartGoogMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to May only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) or percent signs (%)..
+        /// </summary>
+        public static string ValidationPubSubNameCharacterClassMessage {
+            get {
+                return ResourceManager.GetString("ValidationPubSubNameCharacterClassMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Must start with a letter..
+        /// </summary>
+        public static string ValidationStartWithLetterMessage {
+            get {
+                return ResourceManager.GetString("ValidationStartWithLetterMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Must have at least 3 characters..
+        /// </summary>
+        public static string ValidationThreeCharactersMessage {
+            get {
+                return ResourceManager.GetString("ValidationThreeCharactersMessage", resourceCulture);
             }
         }
         

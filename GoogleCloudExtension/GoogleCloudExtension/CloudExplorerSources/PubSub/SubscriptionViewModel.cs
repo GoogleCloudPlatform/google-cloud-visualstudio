@@ -32,9 +32,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/bucket_icon.png";
         private static readonly Lazy<ImageSource> s_subscriptionIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
-        private TopicViewModel _owner;
-        private SubscriptionItem _subscriptionItem;
+        private readonly TopicViewModel _owner;
+        private readonly SubscriptionItem _subscriptionItem;
+
+        /// <summary>
+        /// The item this tree node represents.
+        /// </summary>
         public object Item => _subscriptionItem;
+
+        /// <summary>
+        /// The datasource for the item.
+        /// </summary>
         public PubsubDataSource DataSource => _owner.DataSource;
         public event EventHandler ItemChanged;
 
@@ -60,23 +68,22 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 
         private async void OnDeleteSubscriptionCommand()
         {
-            bool doDelete = UserPromptUtils.YesNoPrompt(
-                string.Format(Resources.PubSubDeleteSubscriptionWindowMessage, _subscriptionItem.Name),
-                Resources.PubSubDeleteSubscriptionWindowHeader);
-            if (doDelete)
+            try
             {
-                try
+                bool doDelete = UserPromptUtils.YesNoPrompt(
+                    string.Format(Resources.PubSubDeleteSubscriptionWindowMessage, _subscriptionItem.Name),
+                    Resources.PubSubDeleteSubscriptionWindowHeader);
+                if (doDelete)
                 {
-                    await DataSource.DeleteSubscriptionAsync(_subscriptionItem.FullName);
+                    await DataSource.DeleteSubscriptionAsync(_subscriptionItem.Name);
                     _owner.Refresh();
                 }
-                catch (Exception e)
-                {
-                    Debug.Write(e, "Error in delete subscription");
-                    UserPromptUtils.ErrorPrompt(Resources.PubSubDeleteSubscriptionErrorMessage,
-                        Resources.PubSubDeleteSubscriptionErrorHeader);
-
-                }
+            }
+            catch (Exception e)
+            {
+                Debug.Write(e, "Delete Subscription");
+                UserPromptUtils.ErrorPrompt(Resources.PubSubDeleteSubscriptionErrorMessage,
+                    Resources.PubSubDeleteSubscriptionErrorHeader);
             }
         }
     }

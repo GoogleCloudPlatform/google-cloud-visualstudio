@@ -929,4 +929,67 @@
     <value>Are you sure you wish to delete subscription {0}?</value>
     <comment>Message of the delete Pub/Sub subscription window.</comment>
   </data>
+  <data name="NewSubscriptionWindowHeader" xml:space="preserve">
+    <value>New Subscription for Topic {0}</value>
+    <comment>Text at the top of the NewSubscriptionWindow</comment>
+  </data>
+  <data name="Validation255CharactersMessage" xml:space="preserve">
+    <value>May not have more than 255 characters.</value>
+    <comment>Message displayed by validator limiting input to 255 characters.</comment>
+  </data>
+  <data name="ValidationDisallowStartGoogMessage" xml:space="preserve">
+    <value>May not start with "goog"</value>
+    <comment>Message displayed by validator disallowing input that starts with "goog".</comment>
+  </data>
+  <data name="ValidationPubSubNameCharacterClassMessage" xml:space="preserve">
+    <value>May only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) or percent signs (%).</value>
+    <comment>Message displayed by validator limiting characters allowed in pub sub names.</comment>
+  </data>
+  <data name="ValidationStartWithLetterMessage" xml:space="preserve">
+    <value>Must start with a letter.</value>
+    <comment>Message displayed by validator requiring input to start with a letter.</comment>
+  </data>
+  <data name="ValidationThreeCharactersMessage" xml:space="preserve">
+    <value>Must have at least 3 characters.</value>
+    <comment>Message displayed by validator requiring 3 characters.</comment>
+  </data>
+  <data name="FocusableCancelButton" xml:space="preserve">
+    <value>_Cancel</value>
+    <comment>Cancel button that has keyboard focusability.</comment>
+  </data>
+  <data name="FocusableCreateButton" xml:space="preserve">
+    <value>C_reate</value>
+    <comment>Create button that has keyboard focusability.</comment>
+  </data>
+  <data name="NewSubscriptionWindowAckDeadlineLabel" xml:space="preserve">
+    <value>_Acknowledgement Deadline (seconds):</value>
+    <comment>The acknowledgement label of the new pub/sub subscription window.</comment>
+  </data>
+  <data name="NewSubscriptionWindowDeliveryType" xml:space="preserve">
+    <value>Delivery Type:</value>
+    <comment>The delivery type label in the new pub/sub subscription window.</comment>
+  </data>
+  <data name="NewSubscriptionWindowNameLabel" xml:space="preserve">
+    <value>_Name:</value>
+    <comment>The name label in the new pub/sub subscription window.</comment>
+  </data>
+  <data name="NewSubscriptionWindowPullLabel" xml:space="preserve">
+    <value>Pu_ll</value>
+    <comment>The pull label for the new pub/sub subscription window.</comment>
+  </data>
+  <data name="NewSubscriptionWindowPushLabel" xml:space="preserve">
+    <value>Push to _URL:</value>
+    <comment>The push label of the new pub/sub subscritpion window.</comment>
+  </data>
+  <data name="NewTopicWindowNameLabel" xml:space="preserve">
+    <value>Topic _Name:</value>
+    <comment>Label for the topic name text box in the new pub/sub topic window.</comment>
+  </data>
+  <data name="NewTopicWindowTitle" xml:space="preserve">
+    <value>Create topic in project {0}.</value>
+    <comment>The title for the new pub/sub topic window</comment>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
 </root>

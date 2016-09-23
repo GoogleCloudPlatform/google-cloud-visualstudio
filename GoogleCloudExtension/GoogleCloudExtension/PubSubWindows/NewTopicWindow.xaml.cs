@@ -22,10 +22,13 @@ namespace GoogleCloudExtension.PubSubWindows
     /// </summary>
     public partial class NewTopicWindow : CommonDialogWindowBase
     {
+        public NewTopicData NewTopicData { get; }
+
         public NewTopicWindow(string project) : base(GoogleCloudExtension.Resources.PubSubNewTopicWindowHeader)
         {
             InitializeComponent();
-            DataContext = new NewTopicData(project);
+            NewTopicData = new NewTopicData(project);
+            DataContext = NewTopicData;
         }
 
         void createButton_Click(object sender, RoutedEventArgs routedEventArgs)

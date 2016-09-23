@@ -56,7 +56,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             {
                 ItemsSource = new List<MenuItem>
                 {
-
                     new MenuItem
                     {
                         Header = Resources.CloudExplorerPubSubNewSubscriptionMenuHeader,
@@ -67,7 +66,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                         Header = Resources.CloudExplorerPubSubDeleteTopicMenuHeader,
                         Command = new WeakCommand(OnDeleteTopicCommand)
                     },
-
                     new MenuItem
                     {
                         Header = Resources.UiPropertiesMenuHeader,
@@ -81,42 +79,40 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             try
             {
-                var data = new NewSubscriptionData(_topicItem.FullName, _owner.Context.CurrentProject.ProjectId);
+                var data = new NewSubscriptionData(_topicItem.FullName);
                 var dialog = new NewSubscriptionWindow(data);
                 if (dialog.ShowDialog() == true)
                 {
                     await DataSource.NewSubscriptionAsync(
-                        data.FullName, data.TopicFullName, data.AckDeadlineSeconds, data.Push, data.PushUrl);
+                        data.Name, data.TopicName, data.AckDeadlineSeconds, data.Push ? data.PushUrl : null);
                     Refresh();
                 }
             }
             catch (Exception e)
             {
-                Debug.Write(e.Message);
-                Debug.Write(e.StackTrace);
+                Debug.Write(e.Message, "New Subscription");
                 UserPromptUtils.ErrorPrompt("Error creating new subscription.", "Error in new subscription");
             }
         }
 
         private async void OnDeleteTopicCommand()
         {
-            bool doDelete = UserPromptUtils.YesNoPrompt(
-                string.Format(Resources.PubSubDeleteTopicWindowMessage, _topicItem.Name),
-                Resources.PubSubDeleteTopicWindowHeader);
-            if (doDelete)
+            try
             {
-                try
+                bool doDelete = UserPromptUtils.YesNoPrompt(
+                    string.Format(Resources.PubSubDeleteTopicWindowMessage, _topicItem.Name),
+                    Resources.PubSubDeleteTopicWindowHeader);
+                if (doDelete)
                 {
-                    await DataSource.DeleteTopicAsync(_topicItem.FullName);
+                    await DataSource.DeleteTopicAsync(_topicItem.Name);
                     Refresh();
                 }
-                catch (Exception e)
-                {
-                    Debug.Write(e, "Error in delete topic");
-                    UserPromptUtils.ErrorPrompt(
-                        Resources.PubSubDeleteTopicErrorMessage, Resources.PubSubDeleteTopicErrorHeader);
-
-                }
+            }
+            catch (Exception e)
+            {
+                Debug.Write(e.Message, "Delete Topic");
+                UserPromptUtils.ErrorPrompt(
+                    Resources.PubSubDeleteTopicErrorMessage, Resources.PubSubDeleteTopicErrorHeader);
             }
         }
 

@@ -24,31 +24,28 @@ namespace GoogleCloudExtension.PubSubWindows
     /// </summary>
     public class PubSubNameValidationRule : ValidationRule
     {
-
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             string name = value?.ToString();
             if (name == null || name.Length < 3)
             {
-                return new ValidationResult(false, "Must have at least 3 characters.");
+                return new ValidationResult(false, Resources.ValidationThreeCharactersMessage);
             }
             if (name.Length > 255)
             {
-                return new ValidationResult(false, "May not have more than 255 characters.");
+                return new ValidationResult(false, Resources.Validation255CharactersMessage);
             }
             if (!char.IsLetter(name.First()))
             {
-                return new ValidationResult(false, "Must start with a letter.");
+                return new ValidationResult(false, Resources.ValidationStartWithLetterMessage);
             }
             if (Regex.IsMatch(name, "[^A-Za-z0-9_\\.~+%\\-]"))
             {
-                return new ValidationResult(false,
-                    "May only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_)," +
-                    " periods (.), tildes (~), plus (+) or percent signs (%).");
+                return new ValidationResult(false, Resources.ValidationPubSubNameCharacterClassMessage);
             }
             if (name.StartsWith("goog"))
             {
-                return new ValidationResult(false, "May not start with \"goog\"");
+                return new ValidationResult(false, Resources.ValidationDisallowStartGoogMessage);
             }
             return ValidationResult.ValidResult;
         }

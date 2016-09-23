@@ -6,6 +6,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
         xmlns:local="clr-namespace:GoogleCloudExtension.PubSubWindows"
+        xmlns:ext="clr-namespace:GoogleCloudExtension"
         mc:Ignorable="d"
         SizeToContent="WidthAndHeight"
         ResizeMode="CanResize"
@@ -15,12 +16,10 @@
         Topmost="True"
         FocusManager.FocusedElement="{Binding ElementName=SubscriptionName}">
     <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5">
-        <TextBlock Margin="5" HorizontalAlignment="Center">
-            New Subscription for Topic
-            <TextBlock Text="{Binding TopicName}" FontFamily="Lucida Console"/>
-        </TextBlock>
+        <TextBlock Margin="5" HorizontalAlignment="Center"
+                   Text="{Binding TopicName, StringFormat={x:Static ext:Resources.NewSubscriptionWindowHeader}}"/>
         <DockPanel>
-            <Label DockPanel.Dock="Left" Target="{Binding ElementName=SubscriptionName}">_Name:</Label>
+            <Label DockPanel.Dock="Left" Target="{Binding ElementName=SubscriptionName}" Content="{x:Static ext:Resources.NewSubscriptionWindowNameLabel}"/>
             <TextBox Name="SubscriptionName" MinWidth="200" Margin="5" MinHeight="20" MaxLines="1"
                 ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}">
                 <TextBox.Text>
@@ -32,22 +31,24 @@
                 </TextBox.Text>
             </TextBox>
         </DockPanel>
-        <TextBlock Margin="5">Delivery Type:</TextBlock>
-        <RadioButton GroupName="PushPull" Margin="5" IsChecked="True">Pu_ll</RadioButton>
+        <TextBlock Margin="5" Text="{x:Static ext:Resources.NewSubscriptionWindowDeliveryType}"/>
+        <RadioButton GroupName="PushPull" Margin="5" IsChecked="True" Content="{x:Static ext:Resources.NewSubscriptionWindowPullLabel}"/>
         <DockPanel >
-            <RadioButton DockPanel.Dock="Left" Name="PushRadioButton" GroupName="PushPull" IsChecked="{Binding Push}" Margin="5">Push to _URL:</RadioButton>
-            <TextBox MinWidth="200" Text="{Binding PushUrl}" MaxLines="1" Margin="5"
+            <RadioButton DockPanel.Dock="Left" Name="PushRadioButton" GroupName="PushPull" IsChecked="{Binding Push}" Margin="5"
+                         Content="{x:Static ext:Resources.NewSubscriptionWindowPushLabel}"/>
+            <TextBox MinWidth="200" Text="{Binding PushUrl, TargetNullValue=https://}" MaxLines="1" Margin="5"
                      IsEnabled="{Binding ElementName=PushRadioButton, Path=IsChecked}"/>
         </DockPanel>
         <DockPanel >
-            <Label DockPanel.Dock="Left" Target="{Binding ElementName=Deadline}">
-                _Acknowledgement Deadline (seconds):
-            </Label>
+            <Label DockPanel.Dock="Left" Target="{Binding ElementName=Deadline}"
+                   Content="{x:Static ext:Resources.NewSubscriptionWindowAckDeadlineLabel}"/>
             <TextBox Name ="Deadline" Text="{Binding AckDeadlineSeconds}" MaxLines="1" Margin="5"/>
         </DockPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
-            <Button Margin="5" IsDefault="True" Click="createButton_OnClick">C_reate</Button>
-            <Button Margin="5" IsCancel="True">_Cancel</Button>
+            <Button Margin="5" IsDefault="True" Click="createButton_OnClick"
+                    Content="{x:Static ext:Resources.FocusableCreateButton}"/>
+            <Button Margin="5" IsCancel="True"
+                    Content="{x:Static ext:Resources.FocusableCancelButton}"/>
         </StackPanel>
     </StackPanel>
 </theming:CommonDialogWindowBase>

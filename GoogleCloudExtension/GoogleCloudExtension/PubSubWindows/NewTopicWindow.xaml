@@ -6,6 +6,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:local="clr-namespace:GoogleCloudExtension.PubSubWindows"
         xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
+        xmlns:ext="clr-namespace:GoogleCloudExtension"
         mc:Ignorable="d"
         SizeToContent="WidthAndHeight"
         ResizeMode="CanResize"
@@ -16,21 +17,13 @@
         Topmost="True"
         FocusManager.FocusedElement="{Binding ElementName=TopicName}">
 
-    <DockPanel>
-        <TextBlock HorizontalAlignment="Center" DockPanel.Dock="Top" Margin="5">Create topic in project 
-            <TextBlock Text="{Binding Project}" FontFamily="Lucida Console"/>.
-        </TextBlock>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Bottom">
-            <Button Margin="5" Click="createButton_Click" IsDefault="True">C_reate</Button>
-            <Button Margin="5" IsCancel="True">_Cancel</Button>
-        </StackPanel>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Target="{Binding ElementName=TopicName}">Topic _Name:</Label>
-            <TextBox x:Name="TopicName" Grid.Column="1" MinWidth="200" Margin="5" MaxLines="1"
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5">
+        <TextBlock HorizontalAlignment="Center" Margin="5"
+                   Text="{Binding Project, StringFormat={x:Static ext:Resources.NewTopicWindowTitle}}"/>
+        <DockPanel>
+            <Label Target="{Binding ElementName=TopicName}" DockPanel.Dock="Left"
+                   Content="{x:Static ext:Resources.NewTopicWindowNameLabel}"/>
+            <TextBox x:Name="TopicName" MinWidth="200" Margin="5" MaxLines="1"
                      ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}">
                 <TextBox.Text>
                     <Binding Path="TopicName" UpdateSourceTrigger="PropertyChanged">
@@ -40,7 +33,12 @@
                     </Binding>
                 </TextBox.Text>
             </TextBox>
-        </Grid>
-    </DockPanel>
+        </DockPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Margin="5" Click="createButton_Click" IsDefault="True"
+                    Content="{x:Static ext:Resources.FocusableCreateButton}"/>
+            <Button Margin="5" IsCancel="True" Content="{x:Static ext:Resources.FocusableCancelButton}"/>
+        </StackPanel>
+    </StackPanel>
 </theming:CommonDialogWindowBase>
 

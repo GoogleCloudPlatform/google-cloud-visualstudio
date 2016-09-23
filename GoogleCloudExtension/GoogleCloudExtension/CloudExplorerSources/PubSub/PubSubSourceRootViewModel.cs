@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PubSubWindows;
 using GoogleCloudExtension.Utils;
 using System;
@@ -93,49 +93,22 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             base.Initialize(context);
 
-            List<MenuItem> menuItems = new List<MenuItem>
-            {
-                new MenuItem
-                {
-                    Header = Resources.CloudExplorerPubSubNewTopicMenuHeader,
-                    Command = new WeakCommand(OnNewTopicCommand)
-                },
-                new MenuItem
-                {
-                    Header = Resources.UiOpenOnCloudConsoleMenuHeader,
-                    Command = new WeakCommand(OnOpenCloudConsoleCommand)
-                }
-        };
             ContextMenu = new ContextMenu
             {
-                ItemsSource = menuItems
-            };
-        }
-
-        private void OnOpenCloudConsoleCommand()
-        {
-            var url = $"https://console.cloud.google.com/cloudpubsub?project={Context.CurrentProject.ProjectId}";
-            Process.Start(url);
-        }
-
-        private async void OnNewTopicCommand()
-        {
-            try
-            {
-                var dialog = new NewTopicWindow(CredentialsStore.Default.CurrentProjectId);
-                if (dialog.ShowDialog() == true)
+                ItemsSource = new List<MenuItem>
                 {
-                    var newTopicData = (NewTopicData)dialog.DataContext;
-                    await DataSource.NewTopicAsync(newTopicData.Project, newTopicData.TopicName);
-                    Refresh();
+                    new MenuItem
+                    {
+                        Header = Resources.CloudExplorerPubSubNewTopicMenuHeader,
+                        Command = new WeakCommand(OnNewTopicCommand)
+                    },
+                    new MenuItem
+                    {
+                        Header = Resources.UiOpenOnCloudConsoleMenuHeader,
+                        Command = new WeakCommand(OnOpenCloudConsoleCommand)
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                Debug.Write(e, "Error in new topic");
-                UserPromptUtils.ErrorPrompt(
-                    Resources.PubSubNewTopicErrorMessage, Resources.PubSubNewTopicErrorHeader);
-            }
+            };
         }
 
         /// <summary>
@@ -163,12 +136,36 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                     Children.Add(new TopicViewModel(this, topic));
                 }
             }
-            catch (GoogleApiException e)
+            catch (DataSourceException e)
             {
                 throw new CloudExplorerSourceException(e.Message, e);
             }
         }
 
+        private void OnOpenCloudConsoleCommand()
+        {
+            var url = $"https://console.cloud.google.com/cloudpubsub?project={Context.CurrentProject.ProjectId}";
+            Process.Start(url);
+        }
+
+        private async void OnNewTopicCommand()
+        {
+            try
+            {
+                var dialog = new NewTopicWindow(CredentialsStore.Default.CurrentProjectId);
+                if (dialog.ShowDialog() == true)
+                {
+                    await DataSource.NewTopicAsync(dialog.NewTopicData.TopicName);
+                    Refresh();
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.Write(e, "New Topic");
+                UserPromptUtils.ErrorPrompt(
+                    Resources.PubSubNewTopicErrorMessage, Resources.PubSubNewTopicErrorHeader);
+            }
+        }
 
         private Task<IList<Subscription>> GetSubscriptionsAsync()
         {

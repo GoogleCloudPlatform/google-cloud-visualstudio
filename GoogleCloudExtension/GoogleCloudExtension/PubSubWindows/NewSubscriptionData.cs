@@ -22,20 +22,13 @@ namespace GoogleCloudExtension.PubSubWindows
     /// </summary>
     public class NewSubscriptionData
     {
-        private readonly string _projectId;
 
-        public NewSubscriptionData(string topicFullName, string projectId)
+        public NewSubscriptionData(string topicFullName)
         {
             TopicFullName = topicFullName;
-            _projectId = projectId;
         }
 
         public string Name { get; set; }
-
-        /// <summary>
-        /// The full path name of the subscription required by the pubsub api.
-        /// </summary>
-        public string FullName => $"projects/{_projectId}/subscriptions/{Name}";
 
         public string TopicName => PubsubSource.GetPathLeaf(TopicFullName);
 
@@ -47,7 +40,7 @@ namespace GoogleCloudExtension.PubSubWindows
         /// <summary>
         /// How long pub sub should wait for an acknoledgement before resending a message.
         /// </summary>
-        public int? AckDeadlineSeconds { get; set; } = 60;
+        public int AckDeadlineSeconds { get; set; } = 60;
 
         /// <summary>
         /// If PubSub should send a push notification rather than waiting for a pull.
@@ -57,6 +50,6 @@ namespace GoogleCloudExtension.PubSubWindows
         /// <summary>
         /// The url to send a push notification too.
         /// </summary>
-        public string PushUrl { get; set; } = "https://";
+        public string PushUrl { get; set; }
     }
 }
