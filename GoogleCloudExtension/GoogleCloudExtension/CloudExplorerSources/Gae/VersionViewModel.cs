@@ -91,7 +91,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             };
 
             // If the version has traffic allocated to it it can be opened.
-            double? trafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_owner.service, version.Id);
+            double? trafficAllocation = _owner.service.GetTrafficAllocation( version.Id);
             if (trafficAllocation != null)
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeVersionOpen, Command = new WeakCommand(OnOpenVersion) });
@@ -169,7 +169,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         /// </summary>
         private string GetCaption()
         {
-            double? trafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_owner.service, version.Id);
+            double? trafficAllocation = _owner.service.GetTrafficAllocation(version.Id);
             if (trafficAllocation == null)
             {
                 return version.Id;

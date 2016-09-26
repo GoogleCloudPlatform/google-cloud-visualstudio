@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="service"></param>
         /// <param name="versionId"></param>
         /// <returns>The traffic allocation if it exists, null otherwise.</returns>
-        public static double? GetTrafficAllocation(Service service, string versionId)
+        public static double? GetTrafficAllocation(this Service service, string versionId)
         {
             IDictionary<string, double?> allocations = service.Split.Allocations;
             double? allocation;

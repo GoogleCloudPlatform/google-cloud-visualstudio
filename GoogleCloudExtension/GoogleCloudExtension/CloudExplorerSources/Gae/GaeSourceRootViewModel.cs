@@ -26,6 +26,9 @@ using Google.Apis.Appengine.v1.Data;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {
+    /// <summary>
+    /// The root view for Google App Engine for the Cloud Explorer.
+    /// </summary>
     internal class GaeSourceRootViewModel : SourceRootViewModelBase
     {
         private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
