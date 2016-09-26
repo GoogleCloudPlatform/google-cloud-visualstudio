@@ -37,19 +37,19 @@ namespace GoogleCloudExtension.DataSources
         /// <summary>
         /// Gets an operation id.
         /// </summary>
-        public static string GetOperationId(Operation operation)
+        public static string GetOperationId(this Operation operation)
         { 
             return operation.Name.Split('/').Last();
         }
 
         /// <returns>True if the version is serving.</returns>
-        public static bool IsServing(Version version)
+        public static bool IsServing(this Version version)
         {
             return ServingStatus.Equals(version.ServingStatus);
         }
 
         /// <returns>True if the version is stopped.</returns>
-        public static bool IsStopped(Version version)
+        public static bool IsStopped(this Version version)
         {
             return StoppedStatus.Equals(version.ServingStatus);
         }

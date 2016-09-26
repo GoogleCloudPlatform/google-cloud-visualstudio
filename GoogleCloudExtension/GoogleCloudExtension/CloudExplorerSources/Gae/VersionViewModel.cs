@@ -93,7 +93,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Children.Clear();
 
             // If the version is serving allow instances to be loaded.
-            if (GaeVersionExtensions.IsServing(version))
+            if (version.IsServing())
             {
                 Children.Add(s_loadingPlaceholder);
             }
@@ -130,13 +130,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             menuItems.Add(new Separator());
 
-            if (GaeVersionExtensions.IsServing(version))
+            if (version.IsServing())
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeStopVersion, Command = new WeakCommand(OnStopVersion) });
             }
-            else if (GaeVersionExtensions.IsStopped(version))
+            else if (version.IsStopped())
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeStartVersion, Command = new WeakCommand(OnStartVersion) });
+            }
+
+            // If the version is stopped and has no traffic allocated to it allow it to be deleted.
+            if (!HasTrafficAllocation && version.IsStopped())
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteVersion, Command = new WeakCommand(OnDeleteVersion) });
             }
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
@@ -154,6 +160,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             UpdateServingStatus(
                 GaeVersionExtensions.StoppedStatus,
                 Resources.CloudExplorerGaeVersionStopServingMessage);
+        }
+
+        private void OnDeleteVersion()
+        {
+            string confirmationMessage = String.Format(
+                Resources.CloudExplorerGaeDeleteVersionConfirmationPromptMessage, _owner.service.Id, version.Id);
+            if (!UserPromptUtils.YesNoPrompt(confirmationMessage, Resources.CloudExplorerGaeDeleteVersion))
+            {
+                Debug.WriteLine("The user cancelled deleting the version.");
+                return;
+            }
+
+            DeleteVersion();
         }
 
         protected override void OnIsExpandedChanged(bool newValue)
@@ -184,6 +203,63 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Process.Start(version.VersionUrl);
         }
 
+        private async void DeleteVersion()
+        {
+            IsLoading = true;
+            Children.Clear();
+            UpdateMenu();
+            Caption = Resources.CloudExplorerGaeVersionDeleteMessage;
+            GaeDataSource datasource = root.DataSource.Value;
+
+            try
+            {
+                Task<Operation> operationTask = root.DataSource.Value.DeleteVersionAsync(_owner.service.Id, version.Id);
+                Func<Operation, Task<Operation>> fetch = (o) => datasource.GetOperationAsync(o.GetOperationId());
+                Predicate<Operation> stopPolling = (o) => o.Done ?? false;
+                Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);
+                if (operation.Error != null)
+                {
+                    throw new DataSourceException(operation.Error.Message);
+                }
+            }
+            catch (DataSourceException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(ex.Message,
+                    Resources.CloudExplorerGaeDeleteVersionErrorMessage);
+            }
+            catch (TimeoutException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(
+                    Resources.CloudExploreOperationTimeoutMessage,
+                    Resources.CloudExplorerGaeDeleteVersionErrorMessage);
+            }
+            catch (OperationCanceledException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(
+                    Resources.CloudExploreOperationCanceledMessage,
+                    Resources.CloudExplorerGaeDeleteVersionErrorMessage);
+            }
+            finally
+            {
+                IsLoading = false;
+
+                // Re-initialize the instance as it will have a new version.
+                if (!IsError)
+                {
+                    // Remove the deleted child.
+                    _owner.Children.Remove(this);
+                    Initialize();
+                }
+                else
+                {
+                    Caption = GetCaption();
+                }
+            }
+        }
+
         /// <summary>
         /// Update the serving status of the version.
         /// </summary>
@@ -200,7 +276,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             try
             {
                 Task<Operation> operationTask = datasource.UpdateVersionServingStatus(status, _owner.service.Id, version.Id);
-                Func<Operation, Task<Operation>> fetch = (o) => datasource.GetOperationAsync(GaeVersionExtensions.GetOperationId(o));
+                Func<Operation, Task<Operation>> fetch = (o) => datasource.GetOperationAsync(o.GetOperationId());
                 Predicate<Operation> stopPolling = (o) => o.Done ?? false;
                 Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);
                 if (operation.Error != null)

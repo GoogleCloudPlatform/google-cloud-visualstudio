@@ -187,6 +187,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete Version.
+        /// </summary>
+        public static string CloudExplorerGaeDeleteVersion {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeDeleteVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete {0}&apos;s version {1}?.
+        /// </summary>
+        public static string CloudExplorerGaeDeleteVersionConfirmationPromptMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeDeleteVersionConfirmationPromptMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to delete version..
+        /// </summary>
+        public static string CloudExplorerGaeDeleteVersionErrorMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeDeleteVersionErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to load the list of Google Cloud App Engine instances.
         /// </summary>
         public static string CloudExplorerGaeFailedInstancesMessage {
@@ -507,6 +534,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGaeVersionCreationTimeDisplayName {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeVersionCreationTimeDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleting version....
+        /// </summary>
+        public static string CloudExplorerGaeVersionDeleteMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionDeleteMessage", resourceCulture);
             }
         }
         

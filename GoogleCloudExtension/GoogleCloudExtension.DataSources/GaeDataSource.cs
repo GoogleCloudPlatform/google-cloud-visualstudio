@@ -130,12 +130,32 @@ namespace GoogleCloudExtension.DataSources
         }
 
         /// <summary>
+        /// Deletes a GAE version for the given project, service and version id.
+        /// </summary>
+        /// <param name="serviceId">The id of the service</param>
+        /// <param name="versionId">The id of the version</param>
+        /// <returns>The GAE operation for the deletion.</returns>
+        public async Task<Operation> DeleteVersionAsync(string serviceId, string versionId)
+        {
+            try
+            {
+                var request = Service.Apps.Services.Versions.Delete(ProjectId, serviceId, versionId);
+                return await request.ExecuteAsync();
+            }
+            catch (GoogleApiException ex)
+            {
+                Debug.WriteLine($"Failed to delete version: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
         /// Update a GAE version's serving status.
         /// </summary>
         /// <param name="status">The serving status to set.  Either 'SERVING' or 'STOPPED'</param>
         /// <param name="serviceId">The id of the service</param>
         /// <param name="versionId">The id of the version</param>
-        /// <returns>The GAE operation.</returns>
+        /// <returns>The GAE operation for the update.</returns>
         public async Task<Operation> UpdateVersionServingStatus(string status, string serviceId, string versionId)
         {
             try

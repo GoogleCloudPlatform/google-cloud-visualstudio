@@ -1057,4 +1057,20 @@
     <value>Stopping version...</value>
     <comment>Message shown when a version is stopping.</comment>
   </data>
+  <data name="CloudExplorerGaeDeleteVersion" xml:space="preserve">
+    <value>Delete Version</value>
+    <comment>Header for the menu that deletes the version.</comment>
+  </data>
+  <data name="CloudExplorerGaeDeleteVersionConfirmationPromptMessage" xml:space="preserve">
+    <value>Are you sure you want to delete {0}'s version {1}?</value>
+    <comment>The message for the confirmation prompt for deleteing a version. {0) service, {1} is the version.</comment>
+  </data>
+  <data name="CloudExplorerGaeDeleteVersionErrorMessage" xml:space="preserve">
+    <value>Failed to delete version.</value>
+    <comment>Message shown when an attempt to delete a version fails.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionDeleteMessage" xml:space="preserve">
+    <value>Deleting version...</value>
+    <comment>Message shown when a version is being deleted.</comment>
+  </data>
 </root>
