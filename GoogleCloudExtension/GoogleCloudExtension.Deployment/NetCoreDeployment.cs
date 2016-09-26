@@ -35,6 +35,12 @@ namespace GoogleCloudExtension.Deployment
 
         private const string DockerfileName = "Dockerfile";
 
+        /// <summary>
+        /// This template is the smallest possible Dockerfile needed to deploy an ASP.NET Core app to
+        /// App Engine Flex environment. It invokes the entry point .dll given by {0}, sets up the environment
+        /// so the app listens on port 8080.
+        /// All of the files composing the app are copied to the /app path, then it is set as the working directory.
+        /// </summary>
         private const string DockerfileDefaultContent =
             "FROM microsoft/dotnet:1.0.0-core\n" +
             "COPY . /app\n" +
@@ -43,21 +49,23 @@ namespace GoogleCloudExtension.Deployment
             "ENV ASPNETCORE_URLS=http://*:8080\n" +
             "ENTRYPOINT [\"dotnet\", \"{0}.dll\"]\n";
 
+        private const string DefaultServiceName = "default";
+
         private static readonly Lazy<string> s_dotnetPath = new Lazy<string>(GetDotnetPath);
 
         /// <summary>
-        /// The options or the deployment operation.
+        /// The options for the deployment operation.
         /// </summary>
         public class DeploymentOptions
         {
             /// <summary>
-            /// What version name to use when deploying. If null a default version name based on curren time and
+            /// What version name to use when deploying. If null a default version name based on current time and
             /// date will be used.
             /// </summary>
             public string Version { get; set; }
 
             /// <summary>
-            /// Whether to promote the new version so receive 100% of the traffic or not.
+            /// Whether to promote the new version to receive 100% of the traffic or not.
             /// </summary>
             public bool Promote { get; set; }
 
@@ -153,12 +161,12 @@ namespace GoogleCloudExtension.Deployment
             var appYaml = Path.Combine(projectDirectory, AppYamlName);
             if (!File.Exists(appYaml))
             {
-                return "default";
+                return DefaultServiceName;
             }
             else
             {
                 // TODO: Load the app yaml and look for the service key.
-                return "default";
+                return DefaultServiceName;
             }
         }
 

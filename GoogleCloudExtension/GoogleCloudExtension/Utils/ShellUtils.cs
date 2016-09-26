@@ -26,20 +26,6 @@ namespace GoogleCloudExtension.Utils
     public static class ShellUtils
     {
         /// <summary>
-        /// Invalidates the state of all commands, forces the re-evaluation of the state changing callbacks.
-        /// </summary>
-        public static void InvalidateCommandUIStatus()
-        {
-            // Invalidate the commands status.                                                                                                                                                                                                
-            var shell = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
-            if (shell == null)
-            {
-                return;
-            }
-            shell.UpdateCommandUI(0);
-        }
-
-        /// <summary>
         /// Returns whether the shell is in the debugger state. This will happen if the user is debugging an app.
         /// </summary>
         /// <returns>True if the shell is in the debugger state, false otherwise.</returns>
@@ -66,7 +52,7 @@ namespace GoogleCloudExtension.Utils
         public static bool IsBusy() => IsDebugging() || IsBuilding();
 
         /// <summary>
-        /// Changes the UI state to a busy state. The pattern to use this method is to assign the resut value
+        /// Changes the UI state to a busy state. The pattern to use this method is to assign the result value
         /// to a variable in a using statement.
         /// </summary>
         /// <returns>An implementation of <seealso cref="IDisposable"/> that will cleanup the state change on dispose.</returns>

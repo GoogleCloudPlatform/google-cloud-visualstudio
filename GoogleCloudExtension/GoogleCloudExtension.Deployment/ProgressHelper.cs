@@ -22,6 +22,9 @@ namespace GoogleCloudExtension.Deployment
     /// </summary>
     internal static class ProgressHelper
     {
+        private const int DefaultTaskWaitMilliseconds = 5000;
+        private const double DefaultProgressIncrement = 0.025;
+
         /// <summary>
         /// Waits for a long running task, periodically updating the progress indicator.
         /// </summary>
@@ -41,13 +44,13 @@ namespace GoogleCloudExtension.Deployment
             {
                 progress.Report(current);
 
-                var resultTask = await Task.WhenAny(deployTask, Task.Delay(5000));
+                var resultTask = await Task.WhenAny(deployTask, Task.Delay(DefaultTaskWaitMilliseconds));
                 if (resultTask == deployTask)
                 {
                     return await deployTask;
                 }
 
-                current += 0.025;
+                current += DefaultProgressIncrement;
                 current = Math.Min(current, to);
             }
         }

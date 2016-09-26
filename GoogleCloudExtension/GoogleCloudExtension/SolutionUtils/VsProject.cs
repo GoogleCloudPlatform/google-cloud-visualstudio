@@ -21,7 +21,7 @@ using System.Xml.Linq;
 namespace GoogleCloudExtension.SolutionUtils
 {
     /// <summary>
-    /// This clas represents a native Visual Studio project.
+    /// This class represents a native Visual Studio project.
     /// </summary>
     internal class VsProject : ISolutionProject
     {
