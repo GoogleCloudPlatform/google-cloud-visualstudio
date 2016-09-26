@@ -139,6 +139,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private void UpdateContextMenu()
         {
+            // Do not allow actions when the service is loading or in an error state.
+            if (IsLoading || IsError)
+            {
+                ContextMenu = null;
+                return;
+            }
+
             var menuItems = new List<FrameworkElement>
             {
                 new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) },
@@ -146,6 +153,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 new MenuItem { Header = Resources.CloudExplorerGaeServiceOpen, Command = new WeakCommand(OnOpenService) },
                 new Separator(),
             };
+
+            menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteService, Command = new WeakCommand(OnDeleteService) });
 
             if (ShowOnlyFlexVersions)
             {
@@ -213,6 +222,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             {
                 Children.Add(s_noItemsPlacehoder);
             }
+        }
+
+        private void OnDeleteService()
+        {
+            string confirmationMessage = String.Format(
+               Resources.CloudExplorerGaeDeleteServiceConfirmationPromptMessage, service.Id);
+            if (!UserPromptUtils.YesNoPrompt(confirmationMessage, Resources.CloudExplorerGaeDeleteService))
+            {
+                Debug.WriteLine("The user cancelled deleting the service.");
+                return;
+            }
+
+            DeleteService();
         }
 
         private void OnShowOnlyFlexVersions()
@@ -291,6 +313,62 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             var url = GaeUtils.GetAppUrl(root.GaeApplication.DefaultHostname, service.Id);
             Process.Start(url);
+        }
+
+        private async void DeleteService()
+        {
+            IsLoading = true;
+            Children.Clear();
+            UpdateContextMenu();
+            Caption = Resources.CloudExplorerGaeServiceDeleteMessage;
+            GaeDataSource datasource = root.DataSource.Value;
+
+            try
+            {
+                Task<Operation> operationTask = root.DataSource.Value.DeleteServiceAsync(service.Id);
+                Func<Operation, Task<Operation>> fetch = (o) => datasource.GetOperationAsync(o.GetOperationId());
+                Predicate<Operation> stopPolling = (o) => o.Done ?? false;
+                Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);
+                if (operation.Error != null)
+                {
+                    throw new DataSourceException(operation.Error.Message);
+                }
+            }
+            catch (DataSourceException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(ex.Message,
+                    Resources.CloudExplorerGaeDeleteServiceErrorMessage);
+            }
+            catch (TimeoutException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(
+                    Resources.CloudExploreOperationTimeoutMessage,
+                    Resources.CloudExplorerGaeDeleteServiceErrorMessage);
+            }
+            catch (OperationCanceledException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(
+                    Resources.CloudExploreOperationCanceledMessage,
+                    Resources.CloudExplorerGaeDeleteServiceErrorMessage);
+            }
+            finally
+            {
+                IsLoading = false;
+
+                // Re-initialize the instance as it will have a new version.
+                if (!IsError)
+                {
+                    // Remove the deleted child.
+                    _owner.Children.Remove(this);
+                }
+                else
+                {
+                    Caption = service.Id;
+                }
+            }
         }
 
         /// <summary>

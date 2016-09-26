@@ -84,6 +84,25 @@ namespace GoogleCloudExtension.DataSources
         }
 
         /// <summary>
+        /// Deletes a GAE service for the given project and service id.
+        /// </summary>
+        /// <param name="serviceId">The id of the service</param>
+        /// <returns>The GAE operation for the deletion.</returns>
+        public async Task<Operation> DeleteServiceAsync(string serviceId)
+        {
+            try
+            {
+                var request = Service.Apps.Services.Delete(ProjectId, serviceId);
+                return await request.ExecuteAsync();
+            }
+            catch (GoogleApiException ex)
+            {
+                Debug.WriteLine($"Failed to delete service: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
         /// Fetches the list of GAE versions for the given project and service.
         /// </summary>
         /// <param name="serviceId">The id of the service</param>

@@ -187,6 +187,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete Service.
+        /// </summary>
+        public static string CloudExplorerGaeDeleteService {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeDeleteService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete service {0}?.
+        /// </summary>
+        public static string CloudExplorerGaeDeleteServiceConfirmationPromptMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeDeleteServiceConfirmationPromptMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to delete service..
+        /// </summary>
+        public static string CloudExplorerGaeDeleteServiceErrorMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeDeleteServiceErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delete Version.
         /// </summary>
         public static string CloudExplorerGaeDeleteVersion {
@@ -426,6 +453,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGaeServiceCategory {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeServiceCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleting service....
+        /// </summary>
+        public static string CloudExplorerGaeServiceDeleteMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeServiceDeleteMessage", resourceCulture);
             }
         }
         
