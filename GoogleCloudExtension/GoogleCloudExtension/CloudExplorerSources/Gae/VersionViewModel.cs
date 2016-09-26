@@ -251,7 +251,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 {
                     // Remove the deleted child.
                     _owner.Children.Remove(this);
-                    Initialize();
                 }
                 else
                 {
