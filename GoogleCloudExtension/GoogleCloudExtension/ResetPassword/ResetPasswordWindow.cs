@@ -21,10 +21,13 @@ namespace GoogleCloudExtension.ResetPassword
 {
     public class ResetPasswordWindow : CommonDialogWindowBase
     {
+        private const int NormalHeight = 160;
+        private const int PasswordHeight = 320;
+
         public ResetPasswordViewModel ViewModel { get; }
 
         private ResetPasswordWindow(Instance instance, string projectId)
-            : base(String.Format(GoogleCloudExtension.Resources.ResetPasswordWindowTitle, instance.Name), width: 350, height: 160)
+            : base(String.Format(GoogleCloudExtension.Resources.ResetPasswordWindowTitle, instance.Name), width: 350, height: NormalHeight)
         {
             ViewModel = new ResetPasswordViewModel(this, instance, projectId);
             Content = new ResetPasswordWindowContent
@@ -38,6 +41,18 @@ namespace GoogleCloudExtension.ResetPassword
             var dialog = new ResetPasswordWindow(instance, projectId);
             dialog.ShowModal();
             return dialog.ViewModel.Result;
+        }
+
+        public void ResizeForPasswordInput(bool hasPassword)
+        {
+            if (hasPassword)
+            {
+                Height = PasswordHeight;
+            }
+            else
+            {
+                Height = NormalHeight;
+            }
         }
     }
 }

@@ -29,6 +29,7 @@ namespace GoogleCloudExtension.ResetPassword
     public class ResetPasswordViewModel : ViewModelBase
     {
         private string _userName;
+        private bool _hasPassword;
         private bool _resettingPassword;
         private readonly ResetPasswordWindow _owner;
         private readonly Instance _instance;
@@ -44,6 +45,19 @@ namespace GoogleCloudExtension.ResetPassword
             {
                 SetValueAndRaise(ref _userName, value);
                 RaisePropertyChanged(nameof(HasUserName));
+            }
+        }
+
+        /// <summary>
+        /// Whether the user has a password or not.
+        /// </summary>
+        public bool HasPassword
+        {
+            get { return _hasPassword; }
+            set
+            {
+                SetValueAndRaise(ref _hasPassword, value);
+                UpdateWindowSize();
             }
         }
 
@@ -163,6 +177,11 @@ namespace GoogleCloudExtension.ResetPassword
         private void OnCancelCommand()
         {
             _owner.Close();
+        }
+
+        private void UpdateWindowSize()
+        {
+            _owner.ResizeForPasswordInput(HasPassword);
         }
     }
 }
