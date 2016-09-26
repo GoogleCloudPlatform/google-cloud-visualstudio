@@ -27,7 +27,7 @@ namespace GoogleAnalyticsUtils
         /// <param name="category">The cateogry of the event.</param>
         /// <param name="action">The action taken.</param>
         /// <param name="label">The label for the event, optional.</param>
-        /// <param name="value">The value for the vent, optional.</param>
+        /// <param name="value">The value for the event, optional.</param>
         void ReportEvent(string category, string action, string label = null, int? value = null);
 
         /// <summary>

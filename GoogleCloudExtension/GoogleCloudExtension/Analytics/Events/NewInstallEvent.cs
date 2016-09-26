@@ -14,6 +14,10 @@
 
 namespace GoogleCloudExtension.Analytics.Events
 {
+    /// <summary>
+    /// This event will be sent when no previous version of the VS extension is detected and thus signifies
+    /// that this is a new install.
+    /// </summary>
     internal static class NewInstallEvent
     {
         private const string NewInstallEventName = "newInstall";

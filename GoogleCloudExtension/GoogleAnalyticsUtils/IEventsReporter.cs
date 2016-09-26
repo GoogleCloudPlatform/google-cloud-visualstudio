@@ -24,7 +24,7 @@ namespace GoogleAnalyticsUtils
         /// <summary>
         /// Report an event to analytics.
         /// </summary>
-        /// <param name="eventType">The event type of the event.</param>
+        /// <param name="eventType">The event type.</param>
         /// <param name="eventName">The event name.</param>
         /// <param name="projectNumber">The project number, optional.</param>
         /// <param name="metadata">Extra metadata for the event, optional.</param>

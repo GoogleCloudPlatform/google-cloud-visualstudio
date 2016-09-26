@@ -14,6 +14,9 @@
 
 namespace GoogleCloudExtension.Analytics.Events
 {
+    /// <summary>
+    /// This event is sent every time the Cloud Explorer tool window is opened.
+    /// </summary>
     internal static class CloudExplorerInteractionEvent
     {
         private const string CloudExplorerInteractionEventName = "cloudExplorerInteraction";

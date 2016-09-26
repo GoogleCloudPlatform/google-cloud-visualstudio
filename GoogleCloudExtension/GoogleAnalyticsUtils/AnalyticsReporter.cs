@@ -82,6 +82,7 @@ namespace GoogleAnalyticsUtils
         /// <param name="appVersion">Optional, the app version. Defaults to null.</param>
         /// <param name="debug">Optional, whether this reporter is in debug mode. Defaults to false.</param>
         /// <param name="userAgent">Optiona, the user agent to use for all HTTP requests.</param>
+        /// <param name="sender">The instance of <seealso cref="IHitSender"/> to use to send the this.</param>
         public AnalyticsReporter(
             string propertyId,
             string appName,

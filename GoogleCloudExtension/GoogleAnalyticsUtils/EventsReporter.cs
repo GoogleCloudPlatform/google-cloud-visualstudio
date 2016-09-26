@@ -25,7 +25,8 @@ namespace GoogleAnalyticsUtils
     /// </summary>
     public class EventsReporter : IEventsReporter
     {
-        private const int ProjectIdHashIndex = 11;
+        // The custom dimension index for the various properties sent to Google Analytics.
+        private const int ProjectIdHashIndex = 11;      // The project hash is sent in the custom dimension c11.
 
         private readonly IAnalyticsReporter _reporter;
 
@@ -34,13 +35,8 @@ namespace GoogleAnalyticsUtils
             _reporter = Preconditions.CheckNotNull(reporter, nameof(reporter));
         }
 
-        /// <summary>
-        /// Report an event to analytics.
-        /// </summary>
-        /// <param name="eventType">The event type of the event.</param>
-        /// <param name="eventName">The event name.</param>
-        /// <param name="projectNumber">The project number, optional.</param>
-        /// <param name="metadata">Extra metadata for the event, optional.</param>
+        #region IEventsReporter
+
         public void ReportEvent(
             string eventType,
             string eventName,
@@ -61,6 +57,8 @@ namespace GoogleAnalyticsUtils
                 title: serializedMetadata,
                 customDimensions: customDimensions);
         }
+
+        #endregion
 
         private static string GetHash(string projectId)
         {
@@ -83,6 +81,11 @@ namespace GoogleAnalyticsUtils
         private static string SerializeMetadataEntry(KeyValuePair<string, string> entry) =>
             $"{entry.Key}={EscapeValue(entry.Value)}";
 
+        /// <summary>
+        /// Escapes a value so it can be included in the GA hit and being able to parse them again on 
+        /// the backedn Only the ',', '=' and '\\' characters need to be escaped as those are the separators
+        /// for the values, in the string.
+        /// </summary>
         private static string EscapeValue(string value)
         {
             var result = new StringBuilder();

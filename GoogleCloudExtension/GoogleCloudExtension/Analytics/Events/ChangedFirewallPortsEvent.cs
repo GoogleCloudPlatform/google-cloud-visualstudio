@@ -14,6 +14,9 @@
 
 namespace GoogleCloudExtension.Analytics.Events
 {
+    /// <summary>
+    /// This event is sent every time the user uses the Manage Firewall dialog to change firewall ports.
+    /// </summary>
     internal static class ChangedFirewallPortsEvent
     {
         private const string ChangedFirewallPortsEventName = "manageFirewallPorts";

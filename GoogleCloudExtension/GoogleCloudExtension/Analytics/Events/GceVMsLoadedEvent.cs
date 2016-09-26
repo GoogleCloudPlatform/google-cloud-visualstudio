@@ -14,6 +14,9 @@
 
 namespace GoogleCloudExtension.Analytics.Events
 {
+    /// <summary>
+    /// This event is sent every time that the list of VMs for the current project is retrieved.
+    /// </summary>
     internal static class GceVMsLoadedEvent
     {
         private const string GceVMsLoadedEventName = "gceVMsLoad";

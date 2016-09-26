@@ -47,7 +47,7 @@ namespace GoogleCloudExtension.Analytics
         }
 
         /// <summary>
-        /// Called when the state if the opt-in changed, to enable/disable reporting after that.
+        /// Called when the user changes the opt-in state to invalidate the state of the reporter.
         /// </summary>
         public static void AnalyticsOptInStateChanged()
         {

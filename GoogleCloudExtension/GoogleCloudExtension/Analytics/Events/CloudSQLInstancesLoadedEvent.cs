@@ -14,6 +14,9 @@
 
 namespace GoogleCloudExtension.Analytics.Events
 {
+    /// <summary>
+    /// This event is sent every time that the list of SQL instances is fetched.
+    /// </summary>
     internal static class CloudSQLInstancesLoadedEvent
     {
         private const string CloudSQLInstancesLoadedEventName = "cloudSQLInstancesLoad";

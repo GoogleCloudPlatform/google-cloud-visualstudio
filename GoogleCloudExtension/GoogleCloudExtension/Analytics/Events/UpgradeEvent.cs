@@ -14,6 +14,10 @@
 
 namespace GoogleCloudExtension.Analytics.Events
 {
+    /// <summary>
+    /// This event is reported when it is detected that this version of VS extension was installed over
+    /// and old version and thus is an upgrade.
+    /// </summary>
     internal static class UpgradeEvent
     {
         private const string UpgradeEventName = "upgrade";

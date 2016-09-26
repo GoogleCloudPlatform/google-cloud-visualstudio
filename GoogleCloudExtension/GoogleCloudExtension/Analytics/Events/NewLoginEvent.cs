@@ -14,6 +14,9 @@
 
 namespace GoogleCloudExtension.Analytics.Events
 {
+    /// <summary>
+    /// This event will be sent every time there's a new user logged in using the Google credentials.
+    /// </summary>
     internal static class NewLoginEvent
     {
         private const string NewLoginEventName = "newLogin";

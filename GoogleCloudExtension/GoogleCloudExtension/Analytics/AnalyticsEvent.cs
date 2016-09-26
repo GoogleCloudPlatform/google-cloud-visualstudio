@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.Analytics
         private static Dictionary<string, string> GetMetadataFromParams(string[] args)
         {
             Dictionary<string, string> result = new Dictionary<string, string>();
-            if (args.Length == 0)
+            if (args.Length != 0)
             {
                 if ((args.Length % 2) != 0)
                 {
