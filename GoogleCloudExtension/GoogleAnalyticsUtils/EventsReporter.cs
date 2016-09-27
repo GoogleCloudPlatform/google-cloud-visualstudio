@@ -83,7 +83,7 @@ namespace GoogleAnalyticsUtils
 
         /// <summary>
         /// Escapes a value so it can be included in the GA hit and being able to parse them again on 
-        /// the backedn Only the ',', '=' and '\\' characters need to be escaped as those are the separators
+        /// the backend Only the ',', '=' and '\\' characters need to be escaped as those are the separators
         /// for the values, in the string.
         /// </summary>
         private static string EscapeValue(string value)

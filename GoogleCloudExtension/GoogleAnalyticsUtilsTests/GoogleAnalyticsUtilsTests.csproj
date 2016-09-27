@@ -52,7 +52,6 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="AnalyticsReporterTests.cs" />
     <Compile Include="EventsReporterTests.cs" />
     <Compile Include="FakeAnalyticsReporterForEventsImpl.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
