@@ -46,6 +46,12 @@ namespace GoogleCloudExtension
         public string ClientId { get; set; }
 
         /// <summary>
+        /// The version of the extension already installed in the system.
+        /// </summary>
+        [Browsable(false)]
+        public string InstalledVersion { get; set; }
+
+        /// <summary>
         /// Reset all the settings to their default values.
         /// </summary>
         public override void ResetSettings()
@@ -74,7 +80,7 @@ namespace GoogleCloudExtension
                 ClientId = null;
             }
 
-            ExtensionAnalytics.AnalyticsOptInStateChanged();
+            EventsReporterWrapper.AnalyticsOptInStateChanged();
 
             base.SaveSettingsToStorage();
         }

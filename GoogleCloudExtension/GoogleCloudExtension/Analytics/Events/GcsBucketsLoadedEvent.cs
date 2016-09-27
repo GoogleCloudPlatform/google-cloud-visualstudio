@@ -12,25 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.PlatformUI;
-
-namespace GoogleCloudExtension.Theming
+namespace GoogleCloudExtension.Analytics.Events
 {
     /// <summary>
-    /// Base calls for all dialogs in the extension, ensures consistent appearence for all dialogs.
+    /// This event is sent every time that the list of GCS buckets for the current project is retrieved.
     /// </summary>
-    public class CommonDialogWindowBase : DialogWindow
+    internal static class GcsBucketsLoadedEvent
     {
-        public CommonDialogWindowBase(string title, double width, double height)
-        {
-            Title = title;
-            Width = width;
-            Height = height;
+        private const string GcsBucketsLoadedEventName = "gcsBucketsLoad";
 
-            // Common settings to all dialogs.
-            ResizeMode = System.Windows.ResizeMode.NoResize;
-            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
-            ShowInTaskbar = false;
+        public static AnalyticsEvent Create(CommandStatus status)
+        {
+            return new AnalyticsEvent(
+                GcsBucketsLoadedEventName,
+                CommandStatusUtils.StatusProperty, CommandStatusUtils.GetStatusString(status));
         }
     }
 }

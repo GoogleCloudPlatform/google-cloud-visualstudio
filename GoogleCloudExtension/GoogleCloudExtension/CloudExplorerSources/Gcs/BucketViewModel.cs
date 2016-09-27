@@ -14,7 +14,6 @@
 
 using Google.Apis.Storage.v1.Data;
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.Utils;
 using System;
@@ -74,8 +73,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         private void OnOpenConCloudConsoleCommand()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.OpenWebsiteForGcsBucket, CommandInvocationSource.Button);
-
             var url = $"https://console.cloud.google.com/storage/browser/{_bucket.Name}/?project={CredentialsStore.Default.CurrentProjectId}";
             Debug.WriteLine($"Starting bucket browsing at: {url}");
             Process.Start(url);

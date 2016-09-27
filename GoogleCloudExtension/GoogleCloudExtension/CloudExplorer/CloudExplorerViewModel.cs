@@ -14,7 +14,6 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorerSources.CloudSQL;
 using GoogleCloudExtension.CloudExplorerSources.Gce;
 using GoogleCloudExtension.CloudExplorerSources.Gcs;
@@ -131,7 +130,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 if (value == null || value is Project)
                 {
                     var project = (Project)value;
-                    CredentialsStore.Default.CurrentProjectId = project?.ProjectId;
+                    CredentialsStore.Default.UpdateCurrentProject(project);
                 }
             }
         }
@@ -262,8 +261,6 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnManageAccountsCommand()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.OpenManageAccountsDialog, CommandInvocationSource.Button);
-
             ManageAccountsWindow.PromptUser();
         }
 
@@ -400,8 +397,6 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnRefresh()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.RefreshDataSource, CommandInvocationSource.Button);
-
             RefreshSources();
         }
 

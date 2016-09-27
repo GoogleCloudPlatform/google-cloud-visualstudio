@@ -12,25 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.PlatformUI;
-
-namespace GoogleCloudExtension.Theming
+namespace GoogleCloudExtension.Analytics.Events
 {
     /// <summary>
-    /// Base calls for all dialogs in the extension, ensures consistent appearence for all dialogs.
+    /// This event is reported when it is detected that this version of VS extension was installed over
+    /// and old version and thus is an upgrade.
     /// </summary>
-    public class CommonDialogWindowBase : DialogWindow
+    internal static class UpgradeEvent
     {
-        public CommonDialogWindowBase(string title, double width, double height)
-        {
-            Title = title;
-            Width = width;
-            Height = height;
+        private const string UpgradeEventName = "upgrade";
 
-            // Common settings to all dialogs.
-            ResizeMode = System.Windows.ResizeMode.NoResize;
-            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
-            ShowInTaskbar = false;
+        public static AnalyticsEvent Create()
+        {
+            return new AnalyticsEvent(UpgradeEventName);
         }
     }
 }
