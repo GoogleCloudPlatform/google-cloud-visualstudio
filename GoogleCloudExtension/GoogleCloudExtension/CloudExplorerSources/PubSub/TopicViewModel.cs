@@ -40,6 +40,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         public PubsubDataSource DataSource => _owner.DataSource;
 
         public object Item => _topicItem;
+        /// <summary>
+        /// Returns the context in which this view model is working.
+        /// </summary>
+        public ICloudSourceContext Context => _owner.Context;
+
         public event EventHandler ItemChanged;
 
         public TopicViewModel(PubsubSourceRootViewModel owner, Topic topic)
@@ -79,9 +84,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             try
             {
-                var data = new NewSubscriptionData(_topicItem.FullName);
-                var dialog = new NewSubscriptionWindow(data);
-                if (dialog.ShowDialog() == true)
+                NewSubscriptionData data;
+                if (NewSubscriptionWindow.PromptUser(_topicItem.FullName, out data))
                 {
                     await DataSource.NewSubscriptionAsync(
                         data.Name, data.TopicName, data.AckDeadlineSeconds, data.Push ? data.PushUrl : null);
@@ -118,7 +122,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 
         private void OnPropertiesWindowCommand()
         {
-            _owner.Context.ShowPropertiesWindow(Item);
+            Context.ShowPropertiesWindow(Item);
         }
 
         /// <summary>

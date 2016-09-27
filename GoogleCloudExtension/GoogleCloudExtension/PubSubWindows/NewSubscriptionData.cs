@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.PubSubWindows
         /// <summary>
         /// How long pub sub should wait for an acknoledgement before resending a message.
         /// </summary>
-        public int AckDeadlineSeconds { get; set; } = 60;
+        public int? AckDeadlineSeconds { get; set; }
 
         /// <summary>
         /// If PubSub should send a push notification rather than waiting for a pull.

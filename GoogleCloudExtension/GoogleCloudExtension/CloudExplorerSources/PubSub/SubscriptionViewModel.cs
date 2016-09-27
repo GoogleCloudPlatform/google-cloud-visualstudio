@@ -41,6 +41,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         public object Item => _subscriptionItem;
 
         /// <summary>
+        /// Returns the context in which this view model is working.
+        /// </summary>
+        public ICloudSourceContext Context => _owner.Context;
+
+        /// <summary>
         /// The datasource for the item.
         /// </summary>
         public PubsubDataSource DataSource => _owner.DataSource;
@@ -61,6 +66,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                     {
                         Header = Resources.CloudExplorerPubSubDeleteSubscriptionMenuHeader,
                         Command = new WeakCommand(OnDeleteSubscriptionCommand)
+                    },
+                    new MenuItem
+                    {
+                        Header = Resources.UiPropertiesMenuHeader,
+                        Command = new WeakCommand(OnPropertiesWindowCommand)
                     }
                 }
             };
@@ -85,6 +95,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 UserPromptUtils.ErrorPrompt(Resources.PubSubDeleteSubscriptionErrorMessage,
                     Resources.PubSubDeleteSubscriptionErrorHeader);
             }
+        }
+
+        private void OnPropertiesWindowCommand()
+        {
+            Context.ShowPropertiesWindow(Item);
         }
     }
 }

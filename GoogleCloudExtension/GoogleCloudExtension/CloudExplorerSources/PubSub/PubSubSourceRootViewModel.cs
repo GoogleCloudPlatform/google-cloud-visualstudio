@@ -152,10 +152,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             try
             {
-                var dialog = new NewTopicWindow(CredentialsStore.Default.CurrentProjectId);
-                if (dialog.ShowDialog() == true)
+                NewTopicData newTopicData;
+                if (NewTopicWindow.PromptUser(CredentialsStore.Default.CurrentProjectId, out newTopicData))
                 {
-                    await DataSource.NewTopicAsync(dialog.NewTopicData.TopicName);
+                    await DataSource.NewTopicAsync(newTopicData.TopicName);
                     Refresh();
                 }
             }

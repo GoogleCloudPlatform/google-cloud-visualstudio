@@ -32,5 +32,19 @@ namespace GoogleCloudExtension.PubSubWindows
             DialogResult = true;
             Close();
         }
+
+        public static bool PromptUser(string fullName, out NewSubscriptionData data)
+        {
+            data = new NewSubscriptionData(fullName);
+            var dialog = new NewSubscriptionWindow(data);
+            if (dialog.ShowDialog() == true)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
     }
 }

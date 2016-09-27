@@ -22,19 +22,25 @@ namespace GoogleCloudExtension.PubSubWindows
     /// </summary>
     public partial class NewTopicWindow : CommonDialogWindowBase
     {
-        public NewTopicData NewTopicData { get; }
 
-        public NewTopicWindow(string project) : base(GoogleCloudExtension.Resources.PubSubNewTopicWindowHeader)
+        public NewTopicWindow(NewTopicData newTopicData) : base(GoogleCloudExtension.Resources.PubSubNewTopicWindowHeader)
         {
             InitializeComponent();
-            NewTopicData = new NewTopicData(project);
-            DataContext = NewTopicData;
+            DataContext = newTopicData;
         }
 
         void createButton_Click(object sender, RoutedEventArgs routedEventArgs)
         {
             DialogResult = true;
             Close();
+        }
+
+        public static bool PromptUser(string projectId, out NewTopicData newTopicData)
+        {
+            newTopicData = new NewTopicData(projectId);
+            var dialog = new NewTopicWindow(newTopicData);
+            bool dialogResult = dialog.ShowDialog() == true;
+            return dialogResult;
         }
     }
 }

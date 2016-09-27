@@ -131,7 +131,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <param name="ackDeadlineSeconds">The number of seconds the topic should wait for an acknoladgement before resending a message.</param>
         /// <param name="pushUrl">The url to push to. Set to null to set a pull subscription.</param>
         public async Task<Subscription> NewSubscriptionAsync(
-            string subscriptionName, string topicName, int ackDeadlineSeconds, string pushUrl)
+            string subscriptionName, string topicName, int? ackDeadlineSeconds, string pushUrl)
         {
             try
             {
@@ -183,7 +183,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 
         private string GetSubscriptionFullName(string subscriptionName)
         {
-            return $"projects/{ProjectId}/subscription/{subscriptionName}";
+            return $"projects/{ProjectId}/subscriptions/{subscriptionName}";
         }
     }
 }

@@ -23,7 +23,7 @@
         <DockPanel>
             <Label Target="{Binding ElementName=TopicName}" DockPanel.Dock="Left"
                    Content="{x:Static ext:Resources.NewTopicWindowNameLabel}"/>
-            <TextBox x:Name="TopicName" MinWidth="200" Margin="5" MaxLines="1"
+            <TextBox x:Name="TopicName" MinWidth="200" Margin="3" Padding="2" MaxLines="1"
                      ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}">
                 <TextBox.Text>
                     <Binding Path="TopicName" UpdateSourceTrigger="PropertyChanged">
@@ -35,9 +35,9 @@
             </TextBox>
         </DockPanel>
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Margin="5" Click="createButton_Click" IsDefault="True"
+            <Button Margin="3" Padding="2" Click="createButton_Click" IsDefault="True"
                     Content="{x:Static ext:Resources.FocusableCreateButton}"/>
-            <Button Margin="5" IsCancel="True" Content="{x:Static ext:Resources.FocusableCancelButton}"/>
+            <Button Margin="3" Padding="2" IsCancel="True" Content="{x:Static ext:Resources.FocusableCancelButton}"/>
         </StackPanel>
     </StackPanel>
 </theming:CommonDialogWindowBase>
