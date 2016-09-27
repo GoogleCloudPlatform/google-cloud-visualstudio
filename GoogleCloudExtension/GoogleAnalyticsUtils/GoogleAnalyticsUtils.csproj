@@ -46,7 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GoogleAnalyticsReporter.cs" />
+    <Compile Include="AnalyticsReporter.cs" />
+    <Compile Include="EventsReporter.cs" />
+    <Compile Include="HitSender.cs" />
+    <Compile Include="IAnalyticsReporter.cs" />
+    <Compile Include="IEventsReporter.cs" />
+    <Compile Include="IHitSender.cs" />
     <Compile Include="Preconditions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

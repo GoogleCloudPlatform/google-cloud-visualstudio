@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
@@ -55,7 +56,7 @@ namespace GoogleCloudExtension.CloudExplorer
             CredentialsStore.Default.CurrentAccountChanged += OnCurrentAccountChanged;
             CredentialsStore.Default.Reset += OnCurrentAccountChanged;
 
-            ExtensionAnalytics.ReportScreenView(this);
+            EventsReporterWrapper.ReportEvent(CloudExplorerInteractionEvent.Create());
         }
 
         private void OnCurrentAccountChanged(object sender, EventArgs e)

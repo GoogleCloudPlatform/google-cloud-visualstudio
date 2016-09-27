@@ -12,25 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.PlatformUI;
-
-namespace GoogleCloudExtension.Theming
+namespace GoogleCloudExtension.Analytics.Events
 {
     /// <summary>
-    /// Base calls for all dialogs in the extension, ensures consistent appearence for all dialogs.
+    /// This event will be sent every time there's a new user logged in using the Google credentials.
     /// </summary>
-    public class CommonDialogWindowBase : DialogWindow
+    internal static class NewLoginEvent
     {
-        public CommonDialogWindowBase(string title, double width, double height)
-        {
-            Title = title;
-            Width = width;
-            Height = height;
+        private const string NewLoginEventName = "newLogin";
 
-            // Common settings to all dialogs.
-            ResizeMode = System.Windows.ResizeMode.NoResize;
-            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
-            ShowInTaskbar = false;
+        public static AnalyticsEvent Create()
+        {
+            return new AnalyticsEvent(NewLoginEventName);
         }
     }
 }
