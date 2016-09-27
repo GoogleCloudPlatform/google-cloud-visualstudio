@@ -1141,11 +1141,47 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to deploy project {0} to App Engine Flex..
+        /// </summary>
+        public static string FlexPublishFailedMessage {
+            get {
+                return ResourceManager.GetString("FlexPublishFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploying to App Engine Flex....
+        /// </summary>
+        public static string FlexPublishProgressMessage {
+            get {
+                return ResourceManager.GetString("FlexPublishProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project {0} deployed to App Engine Flex..
+        /// </summary>
+        public static string FlexPublishSuccessMessage {
+            get {
+                return ResourceManager.GetString("FlexPublishSuccessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to publish project {0}..
         /// </summary>
         public static string GcePublishFailedMessage {
             get {
                 return ResourceManager.GetString("GcePublishFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploying to {0}....
+        /// </summary>
+        public static string GcePublishProgressMessage {
+            get {
+                return ResourceManager.GetString("GcePublishProgressMessage", resourceCulture);
             }
         }
         
@@ -1438,11 +1474,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open website after publish process finishes.
+        ///   Looks up a localized string similar to Promote version.
         /// </summary>
-        public static string PublishDialogGceStepOpenWebsiteCaption {
+        public static string PublishDialogFlexPromoteVersionCaption {
             get {
-                return ResourceManager.GetString("PublishDialogGceStepOpenWebsiteCaption", resourceCulture);
+                return ResourceManager.GetString("PublishDialogFlexPromoteVersionCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version name:.
+        /// </summary>
+        public static string PublishDialogFlexVersionNameCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogFlexVersionNameCaption", resourceCulture);
             }
         }
         
@@ -1483,6 +1528,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open website after publish process finishes.
+        /// </summary>
+        public static string PublishDialogOpenWebsiteCaption {
+            get {
+                return ResourceManager.GetString("PublishDialogOpenWebsiteCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Prev.
         /// </summary>
         public static string PublishDialogPrevButtonCaption {
@@ -1506,6 +1560,33 @@ namespace GoogleCloudExtension {
         public static string PublishDialogPublishButtonCaption {
             get {
                 return ResourceManager.GetString("PublishDialogPublishButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deployment failed.
+        /// </summary>
+        public static string PublishFailureStatusMessage {
+            get {
+                return ResourceManager.GetString("PublishFailureStatusMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deployment succeeded.
+        /// </summary>
+        public static string PublishSuccessStatusMessage {
+            get {
+                return ResourceManager.GetString("PublishSuccessStatusMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to App deployed to {0}.
+        /// </summary>
+        public static string PublishUrlMessage {
+            get {
+                return ResourceManager.GetString("PublishUrlMessage", resourceCulture);
             }
         }
         

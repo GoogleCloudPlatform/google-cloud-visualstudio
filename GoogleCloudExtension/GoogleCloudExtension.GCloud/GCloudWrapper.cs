@@ -58,6 +58,27 @@ namespace GoogleCloudExtension.GCloud
             GetJsonOutputAsync<WindowsInstanceCredentials>(
                 $"beta compute reset-windows-password {instanceName} --zone={zoneName} --user={userName} --quiet ",
                 context);
+        
+        /// <summary>
+        /// Deploys an app to App Engine.
+        /// </summary>
+        /// <param name="appYaml">The path to the app.yaml file to deploy.</param>
+        /// <param name="version">The version to use, if no version is used gcloud will decide the version name.</param>
+        /// <param name="promote">Whether to promote the app or not.</param>
+        /// <param name="outputAction">The action to call with output from the command.</param>
+        /// <param name="context">The context under which the command is executed.</param>
+        /// <returns></returns>
+        public static Task<bool> DeployAppAsync(
+            string appYaml,
+            string version,
+            bool promote,
+            Action<string> outputAction,
+            Context context)
+        {
+            var versionParameter = version != null ? $"--version={version}" : "";
+            var promoteParameter = promote ? "--promote" : "--no-promote";
+            return RunCommandAsync($"app deploy \"{appYaml}\" {versionParameter} {promoteParameter} --quiet", outputAction, context);
+        }
 
         /// <summary>
         /// Returns true if the <seealso cref="ResetWindowsCredentialsAsync(string, string, string, Context)"/> method can
@@ -105,16 +126,17 @@ namespace GoogleCloudExtension.GCloud
             return installedComponents.Contains(component);
         }
 
-        private static string FormatCommand(string command, Context context)
+        private static string FormatCommand(string command, Context context, bool jsonFormat)
         {
             var projectId = context?.ProjectId != null ? $"--project={context.ProjectId}" : "";
             var credentialsPath = context?.CredentialsPath != null ? $"--credential-file-override={context.CredentialsPath}" : "";
-            return $"gcloud {command} {projectId} {credentialsPath} --format=json";
+            var format = jsonFormat ? "--format=json" : "";
+            return $"gcloud {command} {projectId} {credentialsPath} {format}";
         }
 
         private static async Task<T> GetJsonOutputAsync<T>(string command, Context context = null)
         {
-            var actualCommand = FormatCommand(command, context);
+            var actualCommand = FormatCommand(command, context, jsonFormat: true);
             try
             {
                 Dictionary<string, string> environment = null;
@@ -135,6 +157,24 @@ namespace GoogleCloudExtension.GCloud
             {
                 throw new GCloudException($"Failed to execute command {actualCommand}\nInner message:\n{ex.Message}", ex);
             }
+        }
+
+        private static Task<bool> RunCommandAsync(string command, Action<string> outputAction, Context context = null)
+        {
+            var actualCommand = FormatCommand(command, context, jsonFormat: false);
+            Dictionary<string, string> environment = null;
+            if (context?.AppName != null)
+            {
+                environment = new Dictionary<string, string> { { GCloudMetricsVariable, context?.AppName } };
+                if (context?.AppVersion != null)
+                {
+                    environment[GCloudMetricsVersionVariable] = context?.AppVersion;
+                }
+            }
+
+            // This code depends on the fact that gcloud.cmd is a batch file.
+            Debug.Write($"Executing gcloud command: {actualCommand}");
+            return ProcessUtils.RunCommandAsync("cmd.exe", $"/c {actualCommand}", (o, e) => outputAction(e.Line), environment);
         }
     }
 }

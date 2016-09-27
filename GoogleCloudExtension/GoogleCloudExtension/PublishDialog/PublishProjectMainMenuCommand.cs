@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
@@ -102,9 +103,9 @@ namespace GoogleCloudExtension.PublishDialog
         /// <param name="e">Event args.</param>
         private void OnDeployCommand(object sender, EventArgs e)
         {
-            var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
-            Debug.WriteLine($"Deploying project: {selectedProject.FullName}");
-            PublishDialogWindow.PromptUser(selectedProject);
+            var project = SolutionHelper.CurrentSolution.StartupProject;
+            Debug.WriteLine($"Deploying project: {project.FullPath}");
+            PublishDialogWindow.PromptUser(project);
         }
 
         private void OnBeforeQueryStatus(object sender, EventArgs e)
@@ -125,7 +126,7 @@ namespace GoogleCloudExtension.PublishDialog
             }
             else
             {
-                menuCommand.Enabled = PublishDialogWindow.CanPublish(startupProject);
+                menuCommand.Enabled = PublishDialogWindow.CanPublish(startupProject) && !ShellUtils.IsBusy();
                 menuCommand.Text = String.Format(Resources.PublishDialogProjectMenuHeader, startupProject.Name);
             }
         }

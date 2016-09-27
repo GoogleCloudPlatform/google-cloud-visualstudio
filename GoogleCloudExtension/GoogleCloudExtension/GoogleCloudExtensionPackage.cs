@@ -93,6 +93,11 @@ namespace GoogleCloudExtension
         /// </summary>
         public static string ApplicationVersion => s_appVersion.Value;
 
+        /// <summary>
+        /// Returns the versioned application name in the right format for analytics, etc...
+        /// </summary>
+        public static string VersionedApplicationName => $"{ApplicationName}/{ApplicationVersion}";
+
         public GoogleCloudExtensionPackage()
         {
             // Register all of the properties.
