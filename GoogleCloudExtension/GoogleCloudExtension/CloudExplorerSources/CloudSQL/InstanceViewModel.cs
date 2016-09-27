@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.SQLAdmin.v1beta4.Data;
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.AuthorizedNetworkManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
@@ -91,8 +90,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         /// </summary>
         private async void OnManageAuthorizedNetworks()
         {
-            ExtensionAnalytics.ReportCommand(
-                CommandName.OpenUpdateCloudSqlAuthorizedNetworksDialog, CommandInvocationSource.Button);
             // Get the changes to the networks and check if any changes have occured (or the results is
             // null if the user canceled the dialog).
             AuthorizedNetworkChange networkChange = AuthorizedNetworksWindow.PromptUser(Instance);
@@ -101,8 +98,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 return;
             }
 
-            ExtensionAnalytics.ReportCommand(
-                CommandName.UpdateCloudSqlAuthorizedNetworks, CommandInvocationSource.Button);
             IList<AclEntry> updatedNetworks = networkChange.AuthorizedNetworks;
             DatabaseInstanceExtensions.UpdateAuthorizedNetworks(Instance, updatedNetworks);
 
@@ -161,8 +156,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
         /// </summary>
         private void OpenDataConnectionDialog()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.OpenMySQLDataConnectionDialog, CommandInvocationSource.Button);
-
             // Create a data connection dialog and add all possible data sources to it.
             DataConnectionDialogFactory factory = (DataConnectionDialogFactory)Package.GetGlobalService(typeof(DataConnectionDialogFactory));
             DataConnectionDialog dialog = factory.CreateConnectionDialog();
@@ -185,8 +178,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 bool addDataConnection = dialog.ShowDialog();
                 if (addDataConnection)
                 {
-                    ExtensionAnalytics.ReportCommand(CommandName.AddMySQLDataConnection, CommandInvocationSource.Button);
-
                     // Create a name for the data connection
                     MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder(dialog.DisplayConnectionString);
                     string database = $"{Instance.Project}[{builder.Server}][{builder.Database}]";
@@ -199,7 +190,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             else
             {
                 // MySQL for Visual Studio isn't installed, prompt the user to install it.
-                ExtensionAnalytics.ReportEvent("MySQLForVisualStudio", "Missing");
                 MySQLInstallerWindow.PromptUser();
             }
         }

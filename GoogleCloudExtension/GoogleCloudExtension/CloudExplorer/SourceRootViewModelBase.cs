@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Threading.Tasks;
@@ -131,8 +130,6 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             try
             {
-                ExtensionAnalytics.ReportEvent(this.GetType().Name, "LoadingData");
-
                 IsLoadingState = true;
                 Children.Clear();
 

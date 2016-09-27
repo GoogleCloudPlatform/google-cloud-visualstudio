@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.Utils;
 using System;
@@ -47,15 +46,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnOnlyWindowsClicked()
         {
-            if (_windowsOnlyButton.IsChecked)
-            {
-                ExtensionAnalytics.ReportCommand(CommandName.ShowAllGceInstancesCommand, CommandInvocationSource.Button);
-            }
-            else
-            {
-                ExtensionAnalytics.ReportCommand(CommandName.ShowOnlyWindowsGceInstancesCommand, CommandInvocationSource.Button);
-            }
-
             _windowsOnlyButton.IsChecked = !_windowsOnlyButton.IsChecked;
             ActualRoot.ShowOnlyWindowsInstances = _windowsOnlyButton.IsChecked;
         }

@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -86,8 +87,6 @@ namespace GoogleCloudExtension.ManageAccounts
 
         public void DoucleClickedItem(UserAccountViewModel userAccount)
         {
-            ExtensionAnalytics.ReportCommand(CommandName.DoubleClickedAccountCommand, CommandInvocationSource.ListItem);
-
             if (userAccount.IsCurrentAccount)
             {
                 return;
@@ -99,14 +98,11 @@ namespace GoogleCloudExtension.ManageAccounts
 
         private void OnDeleteAccountCommand()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.DeleteAccountCommand, CommandInvocationSource.Button);
-
             Debug.WriteLine($"Attempting to delete account: {CurrentAccountName}");
             if (!UserPromptUtils.YesNoPrompt(
                 String.Format(Resources.ManageAccountsDeleteAccountPromptMessage, CurrentAccountName),
                 Resources.ManageAccountsDeleteAccountPromptTitle))
             {
-                ExtensionAnalytics.ReportEvent("DeleteAccountCommandCancelled", "Cancelled");
                 Debug.WriteLine($"The user cancelled the deletion of the account.");
                 return;
             }
@@ -118,8 +114,6 @@ namespace GoogleCloudExtension.ManageAccounts
 
         private void OnSetAsCurrentAccountCommand()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.SetCurrentAccountCommand, CommandInvocationSource.Button);
-
             Debug.WriteLine($"Setting current account: {CurrentAccountName}");
             CredentialsStore.Default.CurrentAccount = CurrentUserAccount.UserAccount;
             _owner.Close();
@@ -127,11 +121,10 @@ namespace GoogleCloudExtension.ManageAccounts
 
         private async void OnAddAccountCommand()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.AddAccountCommand, CommandInvocationSource.Button);
-
             Debug.WriteLine("Stating the oauth login flow.");
             if (await AccountsManager.StartAddAccountFlowAsync())
             {
+                EventsReporterWrapper.ReportEvent(NewLoginEvent.Create());
                 Debug.WriteLine($"The user logged in: {CredentialsStore.Default.CurrentAccount.AccountName}");
                 _owner.Close();
             }
