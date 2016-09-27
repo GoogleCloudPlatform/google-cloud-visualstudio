@@ -56,7 +56,18 @@
     <Compile Include="Accounts\CredentialsStore.cs" />
     <Compile Include="Accounts\CredentialsStoreException.cs" />
     <Compile Include="Accounts\DefaultCredentials.cs" />
-    <Compile Include="Analytics\CommandName.cs" />
+    <Compile Include="Analytics\AnalyticsEvent.cs" />
+    <Compile Include="Analytics\CommandStatus.cs" />
+    <Compile Include="Analytics\CommandStatusUtils.cs" />
+    <Compile Include="Analytics\DebugEventReporter.cs" />
+    <Compile Include="Analytics\Events\ChangedFirewallPortsEvent.cs" />
+    <Compile Include="Analytics\Events\CloudExplorerInteractionEvent.cs" />
+    <Compile Include="Analytics\Events\CloudSQLInstancesLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GceVMsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GcsBucketsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\NewInstallEvent.cs" />
+    <Compile Include="Analytics\Events\NewLoginEvent.cs" />
+    <Compile Include="Analytics\Events\UpgradeEvent.cs" />
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworkModel.cs" />
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksViewModel.cs" />
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksWindow.cs" />
@@ -93,7 +104,7 @@
     <Compile Include="CloudExplorer\CloudExplorerToolWindowControl.xaml.cs">
       <DependentUpon>CloudExplorerToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Analytics\ExtensionAnalytics.cs" />
+    <Compile Include="Analytics\EventsReporterWrapper.cs" />
     <Compile Include="CloudExplorer\ICloudExplorerItemSource.cs" />
     <Compile Include="CloudExplorer\ICloudExplorerSource.cs" />
     <Compile Include="CloudExplorer\TreeHierarchy.cs" />

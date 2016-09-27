@@ -12,25 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.PlatformUI;
+using System.Collections.Generic;
 
-namespace GoogleCloudExtension.Theming
+namespace GoogleAnalyticsUtils
 {
     /// <summary>
-    /// Base calls for all dialogs in the extension, ensures consistent appearence for all dialogs.
+    /// This interface defines the what a class capable of sending hits to an analytics
+    /// services should implement.
     /// </summary>
-    public class CommonDialogWindowBase : DialogWindow
+    public interface IHitSender
     {
-        public CommonDialogWindowBase(string title, double width, double height)
-        {
-            Title = title;
-            Width = width;
-            Height = height;
-
-            // Common settings to all dialogs.
-            ResizeMode = System.Windows.ResizeMode.NoResize;
-            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
-            ShowInTaskbar = false;
-        }
+        void SendHitData(Dictionary<string, string> hitData);
     }
 }

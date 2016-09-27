@@ -14,6 +14,8 @@
 
 using Google;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
@@ -208,6 +210,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             {
                 _instancesPerZone = await _dataSource.Value.GetAllInstancesPerZonesAsync();
                 PresentViewModels();
+
+                EventsReporterWrapper.ReportEvent(GceVMsLoadedEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException ex)
             {
@@ -225,6 +229,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     return;
                 }
 
+                EventsReporterWrapper.ReportEvent(GceVMsLoadedEvent.Create(CommandStatus.Failure));
                 throw new CloudExplorerSourceException(ex.Message, ex);
             }
         }
