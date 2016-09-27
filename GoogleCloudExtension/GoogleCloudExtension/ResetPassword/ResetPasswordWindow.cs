@@ -21,8 +21,8 @@ namespace GoogleCloudExtension.ResetPassword
 {
     public class ResetPasswordWindow : CommonDialogWindowBase
     {
-        private const int NormalHeight = 160;
-        private const int PasswordHeight = 320;
+        private const int NormalHeight = 200;
+        private const int PasswordHeight = NormalHeight + 10;
 
         public ResetPasswordViewModel ViewModel { get; }
 
