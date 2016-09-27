@@ -14,6 +14,7 @@
 
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PubSubWindows;
 using GoogleCloudExtension.Utils;
 using System;
@@ -85,14 +86,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             try
             {
                 NewSubscriptionData data;
-                if (NewSubscriptionWindow.PromptUser(_topicItem.FullName, out data))
+                if (NewSubscriptionWindowContent.PromptUser(_topicItem.FullName, out data))
                 {
                     await DataSource.NewSubscriptionAsync(
                         data.Name, data.TopicName, data.AckDeadlineSeconds, data.Push ? data.PushUrl : null);
                     Refresh();
                 }
             }
-            catch (Exception e)
+            catch (DataSourceException e)
             {
                 Debug.Write(e.Message, "New Subscription");
                 UserPromptUtils.ErrorPrompt("Error creating new subscription.", "Error in new subscription");
@@ -112,7 +113,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                     Refresh();
                 }
             }
-            catch (Exception e)
+            catch (DataSourceException e)
             {
                 Debug.Write(e.Message, "Delete Topic");
                 UserPromptUtils.ErrorPrompt(

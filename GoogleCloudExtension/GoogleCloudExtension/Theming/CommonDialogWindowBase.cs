@@ -28,12 +28,12 @@ namespace GoogleCloudExtension.Theming
             Height = height;
         }
 
-        protected CommonDialogWindowBase(string title) : this()
+        public CommonDialogWindowBase(string title) : this()
         {
             Title = title;
         }
 
-        public CommonDialogWindowBase()
+        private CommonDialogWindowBase()
         {
             // Common settings to all dialogs.
             ResizeMode = System.Windows.ResizeMode.NoResize;

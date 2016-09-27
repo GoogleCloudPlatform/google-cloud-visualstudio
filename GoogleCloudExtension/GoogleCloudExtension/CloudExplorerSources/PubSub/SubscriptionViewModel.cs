@@ -14,6 +14,7 @@
 
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -89,7 +90,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                     _owner.Refresh();
                 }
             }
-            catch (Exception e)
+            catch (DataSourceException e)
             {
                 Debug.Write(e, "Delete Subscription");
                 UserPromptUtils.ErrorPrompt(Resources.PubSubDeleteSubscriptionErrorMessage,

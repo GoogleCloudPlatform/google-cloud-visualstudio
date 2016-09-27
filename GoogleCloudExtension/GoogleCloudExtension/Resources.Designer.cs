@@ -1555,6 +1555,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New Subscription.
+        /// </summary>
+        public static string NewSubscriptionWindowTitle {
+            get {
+                return ResourceManager.GetString("NewSubscriptionWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Topic _Name:.
         /// </summary>
         public static string NewTopicWindowNameLabel {
@@ -1857,15 +1866,6 @@ namespace GoogleCloudExtension {
         public static string ShowPasswordWindowTitle {
             get {
                 return ResourceManager.GetString("ShowPasswordWindowTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string String1 {
-            get {
-                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
         

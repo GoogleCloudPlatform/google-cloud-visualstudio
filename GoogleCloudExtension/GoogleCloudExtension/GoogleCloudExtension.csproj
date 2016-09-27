@@ -143,12 +143,12 @@
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="PubSubWindows\NewSubscriptionData.cs" />
-    <Compile Include="PubSubWindows\NewSubscriptionWindow.xaml.cs">
-      <DependentUpon>NewSubscriptionWindow.xaml</DependentUpon>
+    <Compile Include="PubSubWindows\NewSubscriptionWindowContent.xaml.cs">
+      <DependentUpon>NewSubscriptionWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="PubSubWindows\NewTopicData.cs" />
-    <Compile Include="PubSubWindows\NewTopicWindow.xaml.cs">
-      <DependentUpon>NewTopicWindow.xaml</DependentUpon>
+    <Compile Include="PubSubWindows\NewTopicWindowContent.xaml.cs">
+      <DependentUpon>NewTopicWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="PubSubWindows\PubSubNameValidationRule.cs" />
     <Compile Include="Resources.Designer.cs">
@@ -505,11 +505,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PubSubWindows\NewSubscriptionWindow.xaml">
+    <Page Include="PubSubWindows\NewSubscriptionWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PubSubWindows\NewTopicWindow.xaml">
+    <Page Include="PubSubWindows\NewTopicWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

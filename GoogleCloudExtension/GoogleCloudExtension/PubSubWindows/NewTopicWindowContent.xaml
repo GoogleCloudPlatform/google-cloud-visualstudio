@@ -1,5 +1,5 @@
-﻿<theming:CommonDialogWindowBase
-        x:Class="GoogleCloudExtension.PubSubWindows.NewTopicWindow"
+﻿<UserControl
+        x:Class="GoogleCloudExtension.PubSubWindows.NewTopicWindowContent"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,13 +8,8 @@
         xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
         xmlns:ext="clr-namespace:GoogleCloudExtension"
         mc:Ignorable="d"
-        SizeToContent="WidthAndHeight"
-        ResizeMode="CanResize"
-        HasMinimizeButton="False"
-        HasMaximizeButton="False"
         Margin="5"
         Padding="5"
-        Topmost="True"
         FocusManager.FocusedElement="{Binding ElementName=TopicName}">
 
     <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5">
@@ -40,5 +35,5 @@
             <Button Margin="3" Padding="2" IsCancel="True" Content="{x:Static ext:Resources.FocusableCancelButton}"/>
         </StackPanel>
     </StackPanel>
-</theming:CommonDialogWindowBase>
+</UserControl>
 

@@ -153,13 +153,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             try
             {
                 NewTopicData newTopicData;
-                if (NewTopicWindow.PromptUser(CredentialsStore.Default.CurrentProjectId, out newTopicData))
+                if (NewTopicWindowContent.PromptUser(CredentialsStore.Default.CurrentProjectId, out newTopicData))
                 {
                     await DataSource.NewTopicAsync(newTopicData.TopicName);
                     Refresh();
                 }
             }
-            catch (Exception e)
+            catch (DataSourceException e)
             {
                 Debug.Write(e, "New Topic");
                 UserPromptUtils.ErrorPrompt(

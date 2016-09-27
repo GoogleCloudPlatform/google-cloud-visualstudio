@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Theming;
+using GoogleCloudExtension.Utils;
+using System;
 using System.Windows;
 
 namespace GoogleCloudExtension.PubSubWindows
@@ -20,27 +22,39 @@ namespace GoogleCloudExtension.PubSubWindows
     /// <summary>
     /// Interaction logic for NewTopicWindow.xaml
     /// </summary>
-    public partial class NewTopicWindow : CommonDialogWindowBase
+    public partial class NewTopicWindowContent
     {
+        private readonly WeakCommand _onCreateClick;
 
-        public NewTopicWindow(NewTopicData newTopicData) : base(GoogleCloudExtension.Resources.PubSubNewTopicWindowHeader)
+        public NewTopicWindowContent(NewTopicData newTopicData, Action onCreateClick)
         {
             InitializeComponent();
+            _onCreateClick = new WeakCommand(onCreateClick);
             DataContext = newTopicData;
         }
 
         void createButton_Click(object sender, RoutedEventArgs routedEventArgs)
         {
-            DialogResult = true;
-            Close();
+            _onCreateClick.Execute(null);
         }
 
         public static bool PromptUser(string projectId, out NewTopicData newTopicData)
         {
             newTopicData = new NewTopicData(projectId);
-            var dialog = new NewTopicWindow(newTopicData);
-            bool dialogResult = dialog.ShowDialog() == true;
-            return dialogResult;
+            var dialog = new CommonDialogWindowBase(GoogleCloudExtension.Resources.NewSubscriptionWindowTitle)
+            {
+
+                SizeToContent = SizeToContent.WidthAndHeight,
+                ResizeMode = ResizeMode.CanResize,
+                HasMinimizeButton = false,
+                HasMaximizeButton = false
+            };
+            dialog.Content = new NewTopicWindowContent(newTopicData, () =>
+            {
+                dialog.DialogResult = true;
+                dialog.Close();
+            });
+            return dialog.ShowModal() == true;
         }
     }
 }

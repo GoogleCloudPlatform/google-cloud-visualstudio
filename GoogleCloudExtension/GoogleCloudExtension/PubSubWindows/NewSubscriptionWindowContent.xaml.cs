@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Theming;
+using GoogleCloudExtension.Utils;
+using System;
 using System.Windows;
 
 namespace GoogleCloudExtension.PubSubWindows
@@ -19,32 +22,38 @@ namespace GoogleCloudExtension.PubSubWindows
     /// <summary>
     /// Interaction logic for NewSubscriptionWindow.xaml
     /// </summary>
-    public partial class NewSubscriptionWindow
+    public partial class NewSubscriptionWindowContent
     {
-        public NewSubscriptionWindow(NewSubscriptionData data)
+        private WeakCommand _onClick;
+
+        public NewSubscriptionWindowContent(NewSubscriptionData data, Action onCreateClick)
         {
             InitializeComponent();
             DataContext = data;
+            _onClick = new WeakCommand(onCreateClick);
         }
 
-        private void createButton_OnClick(object sender, RoutedEventArgs e)
+        private void createButton_OnClick(object sender, EventArgs args)
         {
-            DialogResult = true;
-            Close();
+            _onClick.Execute(null);
         }
 
         public static bool PromptUser(string fullName, out NewSubscriptionData data)
         {
+            var dialog = new CommonDialogWindowBase(GoogleCloudExtension.Resources.PubSubNewSubscriptionWindowHeader)
+            {
+                SizeToContent = SizeToContent.WidthAndHeight,
+                ResizeMode = ResizeMode.CanResize,
+                HasMinimizeButton = false,
+                HasMaximizeButton = false
+            };
             data = new NewSubscriptionData(fullName);
-            var dialog = new NewSubscriptionWindow(data);
-            if (dialog.ShowDialog() == true)
+            dialog.Content = new NewSubscriptionWindowContent(data, () =>
             {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+                dialog.DialogResult = true;
+                dialog.Close();
+            });
+            return dialog.ShowModal() == true;
         }
     }
 }
