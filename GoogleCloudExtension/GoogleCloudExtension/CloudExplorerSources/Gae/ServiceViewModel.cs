@@ -154,7 +154,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 new Separator(),
             };
 
-            menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteService, Command = new WeakCommand(OnDeleteService) });
+            if (!GaeUtils.AppEngineDefaultServiceName.Equals(service.Id))
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteService, Command = new WeakCommand(OnDeleteService) });
+            }
 
             if (ShowOnlyFlexVersions)
             {
@@ -285,6 +288,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                     else
                     {
                         PresentViewModels();
+                        UpdateContextMenu();
                     }
                 }
             }
