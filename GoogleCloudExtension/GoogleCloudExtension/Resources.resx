@@ -1049,4 +1049,80 @@
     <value>Open Running Version</value>
     <comment>Header for the menu that opens the version in a browser.</comment>
   </data>
+  <data name="CloudExplorerGaeShowFlexAndStandardVersions" xml:space="preserve">
+    <value>Show Flexible and Standard Versions</value>
+    <comment>Menu item to show flexible and standardGAE versions of a service</comment>
+  </data>
+  <data name="CloudExplorerGaeShowFlexVersions" xml:space="preserve">
+    <value>Show Only Flexible Versions</value>
+    <comment>Menu item to show only flexible GAE versions of a service</comment>
+  </data>
+  <data name="CloudExplorerGaeShowAllRuntimes" xml:space="preserve">
+    <value>Show All Runtimes</value>
+    <comment>Menu item to show all GAE runtimes of a service</comment>
+  </data>
+  <data name="CloudExplorerGaeShowDotNetRuntimes" xml:space="preserve">
+    <value>Show Only .NET Runtimes</value>
+    <comment>Menu item to show only .net GAE runtimes of a service</comment>
+  </data>
+  <data name="CloudExplorerGaeShowVersionsWithTraffic" xml:space="preserve">
+    <value>Show Only Versions with Traffic</value>
+    <comment>Menu item to show only GAE versions of a service with traffic</comment>
+  </data>
+  <data name="CloudExplorerGaeShowWithAndWithoutTraffic" xml:space="preserve">
+    <value>Show Versions with and without Traffic</value>
+    <comment>Menu item to show GAE versions of a service with and without traffic</comment>
+  </data>
+  <data name="CloudExplorerGaeStartVersion" xml:space="preserve">
+    <value>Start Version</value>
+    <comment>Header for the menu that starts the version.</comment>
+  </data>
+  <data name="CloudExplorerGaeStopVersion" xml:space="preserve">
+    <value>Stop Version</value>
+    <comment>Header for the menu that stops the version.</comment>
+  </data>
+  <data name="CloudExplorerGaeUpdateServingStatusErrorMessage" xml:space="preserve">
+    <value>Failed to updated the serving status.</value>
+    <comment>Message shown when an attempt to updated the serving status fails.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionStartServingMessage" xml:space="preserve">
+    <value>Starting version...</value>
+    <comment>Message shown when a version is starting.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionStopServingMessage" xml:space="preserve">
+    <value>Stopping version...</value>
+    <comment>Message shown when a version is stopping.</comment>
+  </data>
+  <data name="CloudExplorerGaeDeleteService" xml:space="preserve">
+    <value>Delete Service</value>
+    <comment>Header for the menu that deletes the service.</comment>
+  </data>
+  <data name="CloudExplorerGaeDeleteServiceConfirmationPromptMessage" xml:space="preserve">
+    <value>Are you sure you want to delete service {0}?</value>
+    <comment>The message for the confirmation prompt for deleteing a service. {0) is the service.</comment>
+  </data>
+  <data name="CloudExplorerGaeDeleteServiceErrorMessage" xml:space="preserve">
+    <value>Failed to delete service.</value>
+    <comment>Message shown when an attempt to delete a service fails.</comment>
+  </data>
+  <data name="CloudExplorerGaeDeleteVersion" xml:space="preserve">
+    <value>Delete Version</value>
+    <comment>Header for the menu that deletes the version.</comment>
+  </data>
+  <data name="CloudExplorerGaeDeleteVersionConfirmationPromptMessage" xml:space="preserve">
+    <value>Are you sure you want to delete {0}'s version {1}?</value>
+    <comment>The message for the confirmation prompt for deleteing a version. {0) service, {1} is the version.</comment>
+  </data>
+  <data name="CloudExplorerGaeDeleteVersionErrorMessage" xml:space="preserve">
+    <value>Failed to delete version.</value>
+    <comment>Message shown when an attempt to delete a version fails.</comment>
+  </data>
+  <data name="CloudExplorerGaeServiceDeleteMessage" xml:space="preserve">
+    <value>Deleting service...</value>
+    <comment>Message shown when a service is being deleted.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionDeleteMessage" xml:space="preserve">
+    <value>Deleting version...</value>
+    <comment>Message shown when a version is being deleted.</comment>
+  </data>
 </root>

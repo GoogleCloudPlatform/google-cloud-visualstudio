@@ -187,6 +187,60 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete Service.
+        /// </summary>
+        public static string CloudExplorerGaeDeleteService {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeDeleteService", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete service {0}?.
+        /// </summary>
+        public static string CloudExplorerGaeDeleteServiceConfirmationPromptMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeDeleteServiceConfirmationPromptMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to delete service..
+        /// </summary>
+        public static string CloudExplorerGaeDeleteServiceErrorMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeDeleteServiceErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Version.
+        /// </summary>
+        public static string CloudExplorerGaeDeleteVersion {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeDeleteVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete {0}&apos;s version {1}?.
+        /// </summary>
+        public static string CloudExplorerGaeDeleteVersionConfirmationPromptMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeDeleteVersionConfirmationPromptMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to delete version..
+        /// </summary>
+        public static string CloudExplorerGaeDeleteVersionErrorMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeDeleteVersionErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to load the list of Google Cloud App Engine instances.
         /// </summary>
         public static string CloudExplorerGaeFailedInstancesMessage {
@@ -403,11 +457,101 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deleting service....
+        /// </summary>
+        public static string CloudExplorerGaeServiceDeleteMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeServiceDeleteMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open Running Service.
         /// </summary>
         public static string CloudExplorerGaeServiceOpen {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeServiceOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show All Runtimes.
+        /// </summary>
+        public static string CloudExplorerGaeShowAllRuntimes {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeShowAllRuntimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Only .NET Runtimes.
+        /// </summary>
+        public static string CloudExplorerGaeShowDotNetRuntimes {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeShowDotNetRuntimes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Flexible and Standard Versions.
+        /// </summary>
+        public static string CloudExplorerGaeShowFlexAndStandardVersions {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeShowFlexAndStandardVersions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Only Flexible Versions.
+        /// </summary>
+        public static string CloudExplorerGaeShowFlexVersions {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeShowFlexVersions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Only Versions with Traffic.
+        /// </summary>
+        public static string CloudExplorerGaeShowVersionsWithTraffic {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeShowVersionsWithTraffic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show Versions with and without Traffic.
+        /// </summary>
+        public static string CloudExplorerGaeShowWithAndWithoutTraffic {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeShowWithAndWithoutTraffic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Start Version.
+        /// </summary>
+        public static string CloudExplorerGaeStartVersion {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeStartVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop Version.
+        /// </summary>
+        public static string CloudExplorerGaeStopVersion {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeStopVersion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to updated the serving status..
+        /// </summary>
+        public static string CloudExplorerGaeUpdateServingStatusErrorMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeUpdateServingStatusErrorMessage", resourceCulture);
             }
         }
         
@@ -426,6 +570,15 @@ namespace GoogleCloudExtension
         public static string CloudExplorerGaeVersionCreationTimeDisplayName {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeVersionCreationTimeDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleting version....
+        /// </summary>
+        public static string CloudExplorerGaeVersionDeleteMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionDeleteMessage", resourceCulture);
             }
         }
         
@@ -471,6 +624,24 @@ namespace GoogleCloudExtension
         public static string CloudExplorerGaeVersionResourcesCategory {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeVersionResourcesCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starting version....
+        /// </summary>
+        public static string CloudExplorerGaeVersionStartServingMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionStartServingMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stopping version....
+        /// </summary>
+        public static string CloudExplorerGaeVersionStopServingMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionStopServingMessage", resourceCulture);
             }
         }
         
