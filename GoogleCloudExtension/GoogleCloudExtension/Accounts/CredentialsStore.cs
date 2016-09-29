@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.CloudResourceManager.v1.Data;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -51,11 +52,13 @@ namespace GoogleCloudExtension.Accounts
         private Dictionary<string, StoredUserAccount> _cachedCredentials;
         private UserAccount _currentAccount;
         private string _currentProjectId;
+        private string _currentProjectNumericId;
 
         public static CredentialsStore Default => s_defaultCredentialsStore.Value;
 
         public event EventHandler CurrentAccountChanged;
         public event EventHandler CurrentProjectIdChanged;
+        public event EventHandler CurrentProjectNumericIdChanged;
         public event EventHandler Reset;
 
         /// <summary>
@@ -91,13 +94,29 @@ namespace GoogleCloudExtension.Accounts
         public string CurrentProjectId
         {
             get { return _currentProjectId; }
-            set
+            private set
             {
                 if (_currentProjectId != value)
                 {
                     _currentProjectId = value;
                     UpdateDefaultCredentials();
                     CurrentProjectIdChanged?.Invoke(this, EventArgs.Empty);
+                }
+            }
+        }
+
+        /// <summary>
+        /// The currently selected project numeric ID, might be null if no project is loaded.
+        /// </summary>
+        public string CurrentProjectNumericId
+        {
+            get { return _currentProjectNumericId; }
+            set
+            {
+                if (_currentProjectNumericId != value)
+                {
+                    _currentProjectNumericId = value;
+                    CurrentProjectNumericIdChanged?.Invoke(this, EventArgs.Empty);
                 }
             }
         }
@@ -116,6 +135,15 @@ namespace GoogleCloudExtension.Accounts
             {
                 ResetCredentials(defaultCredentials.AccountName, defaultCredentials.ProjectId);
             }
+        }
+
+        /// <summary>
+        /// Updates the current project data from the given <paramref name="project"/>.
+        /// </summary>
+        public void UpdateCurrentProject(Project project)
+        {
+            CurrentProjectId = project?.ProjectId;
+            CurrentProjectNumericId = project?.ProjectNumber?.ToString();
         }
 
         /// <summary>

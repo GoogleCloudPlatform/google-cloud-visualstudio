@@ -14,7 +14,6 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorerSources.CloudSQL;
 using GoogleCloudExtension.CloudExplorerSources.Gae;
 using GoogleCloudExtension.CloudExplorerSources.Gce;
@@ -132,7 +131,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 if (value == null || value is Project)
                 {
                     var project = (Project)value;
-                    CredentialsStore.Default.CurrentProjectId = project?.ProjectId;
+                    CredentialsStore.Default.UpdateCurrentProject(project);
                 }
             }
         }
@@ -235,13 +234,13 @@ namespace GoogleCloudExtension.CloudExplorer
         private static GPlusDataSource CreatePlusDataSource()
         {
             var currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
-            return currentCredential != null ? new GPlusDataSource(currentCredential, GoogleCloudExtensionPackage.ApplicationName) : null;
+            return currentCredential != null ? new GPlusDataSource(currentCredential, GoogleCloudExtensionPackage.VersionedApplicationName) : null;
         }
 
         private static ResourceManagerDataSource CreateResourceManagerDataSource()
         {
             var currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
-            return currentCredential != null ? new ResourceManagerDataSource(currentCredential, GoogleCloudExtensionPackage.ApplicationName) : null;
+            return currentCredential != null ? new ResourceManagerDataSource(currentCredential, GoogleCloudExtensionPackage.VersionedApplicationName) : null;
         }
 
         private void UpdateUserProfile()
@@ -266,8 +265,6 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnManageAccountsCommand()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.OpenManageAccountsDialog, CommandInvocationSource.Button);
-
             ManageAccountsWindow.PromptUser();
         }
 
@@ -404,8 +401,6 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnRefresh()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.RefreshDataSource, CommandInvocationSource.Button);
-
             RefreshSources();
         }
 

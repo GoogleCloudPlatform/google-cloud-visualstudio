@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         private Instance _selectedInstance;
         private IEnumerable<WindowsInstanceCredentials> _credentials;
         private WindowsInstanceCredentials _selectedCredentials;
-        private bool _openWebsite;
+        private bool _openWebsite = true;
 
         /// <summary>
         /// The asynchrnous value that will resolve to the list of instances in the current GCP Project, and that are
@@ -95,7 +95,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         public WeakCommand ManageCredentialsCommand { get; }
 
         /// <summary>
-        /// Whether to open the website after a succesful publish operation.
+        /// Whether to open the website after a succesful publish operation. Defaults to true.
         /// </summary>
         public bool OpenWebsite
         {
@@ -142,23 +142,36 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
             _publishDialog.FinishFlow();
 
-            var result = await AspnetDeployment.PublishProjectAsync(
-                project.FullName,
-                SelectedInstance,
-                SelectedCredentials,
-                (l) => GcpOutputWindow.OutputLine(l));
+            bool result;
+            using (var frozen = StatusbarHelper.Freeze())
+            using (var animationShown = StatusbarHelper.ShowDeployAnimation())
+            using (var progress = StatusbarHelper.ShowProgressBar(String.Format(Resources.GcePublishProgressMessage, SelectedInstance.Name)))
+            using (var deployingOperation = ShellUtils.SetShellUIBusy())
+            {
+                result = await AspnetDeployment.PublishProjectAsync(
+                    project.FullPath,
+                    SelectedInstance,
+                    SelectedCredentials,
+                    progress,
+                    (l) => GcpOutputWindow.OutputLine(l));
+            }
+
             if (result)
             {
                 GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishSuccessMessage, project.Name, SelectedInstance.Name));
+                StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
+
+                var url = SelectedInstance.GetDestinationAppUri();
+                GcpOutputWindow.OutputLine(String.Format(Resources.PublishUrlMessage, url));
                 if (OpenWebsite)
                 {
-                    var url = SelectedInstance.GetDestinationAppUri();
                     Process.Start(url);
                 }
             }
             else
             {
                 GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishFailedMessage, project.Name));
+                StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
             }
         }
 

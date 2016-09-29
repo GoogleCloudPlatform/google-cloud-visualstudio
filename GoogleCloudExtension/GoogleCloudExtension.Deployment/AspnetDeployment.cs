@@ -37,16 +37,19 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="projectPath">The full path to the project file.</param>
         /// <param name="targetInstance">The instance to deploy.</param>
         /// <param name="credentials">The Windows credentials to use to deploy to the <paramref name="targetInstance"/>.</param>
+        /// <param name="progress">The progress indicator.</param>
         /// <param name="outputAction">The action to call with lines of output.</param>
         /// <returns></returns>
         public static async Task<bool> PublishProjectAsync(
             string projectPath,
             Instance targetInstance,
             WindowsInstanceCredentials credentials,
+            IProgress<double> progress,
             Action<string> outputAction)
         {
             var stagingDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(stagingDirectory);
+            progress.Report(0.1);
 
             var publishSettingsPath = Path.GetTempFileName();
             var publishSettingsContent = targetInstance.GeneratePublishSettings(credentials.User, credentials.Password);
@@ -54,15 +57,25 @@ namespace GoogleCloudExtension.Deployment
 
             using (var cleanup = new Disposable(() => Cleanup(publishSettingsPath, stagingDirectory)))
             {
-                if (!await CreateAppBundleAsync(projectPath, stagingDirectory, outputAction))
+                // Wait for the bundle operation to finish and update the progress in the mean time to show progress.
+                if (!await ProgressHelper.UpdateProgress(
+                        CreateAppBundleAsync(projectPath, stagingDirectory, outputAction),
+                        progress,
+                        from: 0.1, to: 0.5))
                 {
                     return false;
                 }
+                progress.Report(0.6);
 
-                if (!await DeployAppAsync(stagingDirectory, publishSettingsPath, outputAction))
+                // Update for the deploy operation to finish and update the progress as it goes.
+                if (!await ProgressHelper.UpdateProgress(
+                        DeployAppAsync(stagingDirectory, publishSettingsPath, outputAction),
+                        progress,
+                        from: 0.6, to: 0.9))
                 {
                     return false;
                 }
+                progress.Report(1);
             }
 
             return true;

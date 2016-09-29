@@ -44,7 +44,7 @@
 
         <CheckBox Margin="0,8,0,0"
                   IsEnabled="{Binding Instances.IsCompleted}"
-                  Content="{x:Static ext:Resources.PublishDialogGceStepOpenWebsiteCaption}"
+                  Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
                   IsChecked="{Binding OpenWebsite, Mode=TwoWay}" />
 
     </StackPanel>

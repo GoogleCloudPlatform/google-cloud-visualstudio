@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Analytics;
 using Microsoft.VisualStudio.PlatformUI;
 
 namespace GoogleCloudExtension.Theming
@@ -32,9 +31,6 @@ namespace GoogleCloudExtension.Theming
             ResizeMode = System.Windows.ResizeMode.NoResize;
             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
             ShowInTaskbar = false;
-
-            // Report that this window is opened.
-            ExtensionAnalytics.ReportScreenView(this);
         }
     }
 }

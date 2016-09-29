@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE;
+using GoogleCloudExtension.SolutionUtils;
 
 namespace GoogleCloudExtension.PublishDialog
 {
@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.PublishDialog
         /// <summary>
         /// Returns the the VS project selected by the user.
         /// </summary>
-        Project Project { get; }
+        ISolutionProject Project { get; }
 
         /// <summary>
         /// This method pushes the given <seealso cref="IPublishDialogStep"/> to the navigation stack and sets the step

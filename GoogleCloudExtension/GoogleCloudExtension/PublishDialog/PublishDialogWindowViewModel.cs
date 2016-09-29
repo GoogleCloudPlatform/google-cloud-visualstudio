@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE;
+using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.PublishDialog
     public class PublishDialogWindowViewModel : ViewModelBase, IPublishDialog
     {
         private readonly PublishDialogWindow _owner;
-        private readonly Project _project;
+        private readonly ISolutionProject _project;
         private readonly Stack<IPublishDialogStep> _stack = new Stack<IPublishDialogStep>();
         private FrameworkElement _content;
 
@@ -60,7 +60,7 @@ namespace GoogleCloudExtension.PublishDialog
         /// </summary>
         private IPublishDialogStep CurrentStep => _stack.Peek();
 
-        public PublishDialogWindowViewModel(Project project, IPublishDialogStep initialStep, PublishDialogWindow owner)
+        public PublishDialogWindowViewModel(ISolutionProject project, IPublishDialogStep initialStep, PublishDialogWindow owner)
         {
             _owner = owner;
             _project = project;
@@ -144,7 +144,7 @@ namespace GoogleCloudExtension.PublishDialog
 
         #region IPublishDialog
 
-        Project IPublishDialog.Project => _project;
+        ISolutionProject IPublishDialog.Project => _project;
 
         void IPublishDialog.NavigateToStep(IPublishDialogStep step)
         {
