@@ -917,5 +917,136 @@
     <value>Publish {0} to Google Cloud...</value>
     <comment>Menu header to open the publish dialog with a project name. {0} is the project name.</comment>
   </data>
+  <data name="CloudExplorerGaeFailedInstancesMessage" xml:space="preserve">
+    <value>Failed to load the list of Google Cloud App Engine instances</value>
+    <comment>Message shown in the output window when failed to load list of GAE instances</comment>
+  </data>
+  <data name="CloudExplorerGaeFailedServicesMessage" xml:space="preserve">
+    <value>Failed to load the list of Google Cloud App Engine services</value>
+    <comment>Message shown in the output window when failed to load list of GAE services.</comment>
+  </data>
+  <data name="CloudExplorerGaeFailedToLoadInstancesCaption" xml:space="preserve">
+    <value>Failed to load instances.</value>
+    <comment>Caption shown when failed to load GAE instances.</comment>
+  </data>
+  <data name="CloudExplorerGaeFailedToLoadServicesCaption" xml:space="preserve">
+    <value>Failed to load services.</value>
+    <comment>Caption shown when failed to load GAE services,</comment>
+  </data>
+  <data name="CloudExplorerGaeFailedToLoadVersionsCaption" xml:space="preserve">
+    <value>Failed to load versions.</value>
+    <comment>Caption shown when failed to load GAE versions.</comment>
+  </data>
+  <data name="CloudExplorerGaeFailedVersionsMessage" xml:space="preserve">
+    <value>Failed to load the list of Google Cloud App Engine versions</value>
+    <comment>Message shown in the output window when failed to load list of GAE versions</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceCategory" xml:space="preserve">
+    <value>Instance Properties</value>
+    <comment>Category for the GAE instance properties.</comment>
+  </data>
+  <data name="CloudExplorerGaeLoadingInstancesCaption" xml:space="preserve">
+    <value>Loading instances...</value>
+    <comment>Caption shown when loading GAE instances.</comment>
+  </data>
+  <data name="CloudExplorerGaeLoadingServicesCaption" xml:space="preserve">
+    <value>Loading services...</value>
+    <comment>Caption shown when loading GAE services.</comment>
+  </data>
+  <data name="CloudExplorerGaeLoadingVersionCaption" xml:space="preserve">
+    <value>Loading versions...</value>
+    <comment>Caption shown when loading GAE versions.</comment>
+  </data>
+  <data name="CloudExplorerGaeNoInstancesFoundCaption" xml:space="preserve">
+    <value>No instances found.</value>
+    <comment>Caption shown when no GAE instances are found.</comment>
+  </data>
+  <data name="CloudExplorerGaeNoServicesFoundCaption" xml:space="preserve">
+    <value>No services found.</value>
+    <comment>Caption shown when no GAE services are found.</comment>
+  </data>
+  <data name="CloudExplorerGaeNoVersionsFoundCaption" xml:space="preserve">
+    <value>No versions found.</value>
+    <comment>Caption shown when no GAE versions are found.</comment>
+  </data>
+  <data name="CloudExplorerGaeRootNodeCaption" xml:space="preserve">
+    <value>Google App Engine</value>
+    <comment>Caption for the root node in the GAE source.</comment>
+  </data>
+  <data name="CloudExplorerGaeServiceCategory" xml:space="preserve">
+    <value>Service Properties</value>
+    <comment>Category for the GAE service properties.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionCategory" xml:space="preserve">
+    <value>Version Properties</value>
+    <comment>Category for the GAE version properties.</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceAppEngineReleaseDisplayName" xml:space="preserve">
+    <value>App Engine Release</value>
+    <comment>The display name for the GAE instance app engine release</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceAverageLatencyDisplayName" xml:space="preserve">
+    <value>Average Latency</value>
+    <comment>The display name for the GAE instance average latency</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceMemoryUsageDisplayName" xml:space="preserve">
+    <value>Memory Usage</value>
+    <comment>The display name for the GAE instance memory usage.</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceStartTimeDisplayName" xml:space="preserve">
+    <value>Start Time</value>
+    <comment>The display name for the GAE instance start time.</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceVirtualMachineCategory" xml:space="preserve">
+    <value>Instance Virtual Machine Properties</value>
+    <comment>Category for the GAE instance virtual machine properties.</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceVirtualMachineIdDisplayName" xml:space="preserve">
+    <value>Id</value>
+    <comment>The display name for the GAE instance virtual machine id.</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceVirtualMachineNameDisplayName" xml:space="preserve">
+    <value>Name</value>
+    <comment>The display name for the GAE instance virtual machine name.</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceVirtualMachineStatusDisplayName" xml:space="preserve">
+    <value>Status</value>
+    <comment>The display name for the GAE instance virtual machine status.</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceVirtualMachineZoneDisplayName" xml:space="preserve">
+    <value>Zone</value>
+    <comment>The display name for the GAE instance virtual machine zone.</comment>
+  </data>
+  <data name="CloudExplorerGaeServiceOpen" xml:space="preserve">
+    <value>Open Running Service</value>
+    <comment>Header for the menu that opens the service in a browser.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionCreationTimeDisplayName" xml:space="preserve">
+    <value>Creation Time</value>
+    <comment>The display name for the GAE version creation time</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionInstanceClassDisplayName" xml:space="preserve">
+    <value>Instance Class</value>
+    <comment>The display name for the GAE version instance class</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionResoucesDiskDisplayName" xml:space="preserve">
+    <value>Disk (GB)</value>
+    <comment>The display name for the GAE version resource disk.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionResoucesMemoryDisplayName" xml:space="preserve">
+    <value>Memory (GB)</value>
+    <comment>The display name for the GAE version resource memory.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionResourcesCategory" xml:space="preserve">
+    <value>Version Resouces Properties</value>
+    <comment>Category for the GAE version resources properties.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionVirtualMachineDisplayName" xml:space="preserve">
+    <value>Virtual Machine</value>
+    <comment>The display name for the GAE version virtual machine</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionOpen" xml:space="preserve">
+    <value>Open Running Version</value>
+    <comment>Header for the menu that opens the version in a browser.</comment>
+  </data>
 </root>
-
