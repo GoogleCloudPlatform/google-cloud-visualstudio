@@ -47,6 +47,7 @@ namespace GoogleCloudExtension.ResetPassword
             {
                 SetValueAndRaise(ref _userName, value);
                 RaisePropertyChanged(nameof(HasUserName));
+                OkCommand.CanExecuteCommand = HasUserName;
             }
         }
 
@@ -112,7 +113,7 @@ namespace GoogleCloudExtension.ResetPassword
             _instance = instance;
             _projectId = projectId;
 
-            OkCommand = new WeakCommand(OnOkCommand);
+            OkCommand = new WeakCommand(OnOkCommand, canExecuteCommand: false);
             CancelCommand = new WeakCommand(OnCancelCommand);
         }
 
