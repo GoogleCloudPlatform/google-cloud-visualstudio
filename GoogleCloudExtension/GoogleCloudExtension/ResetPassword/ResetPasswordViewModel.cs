@@ -118,6 +118,19 @@ namespace GoogleCloudExtension.ResetPassword
 
         private async void OnOkCommand()
         {
+            if (HasPassword)
+            {
+                Debug.WriteLine("The user is suplying the password.");
+                Result = new WindowsInstanceCredentials
+                {
+                    User = UserName,
+                    Password = Password
+                };
+                _owner.Close();
+                return;
+            }
+
+            Debug.WriteLine("The user requested the password to be generated.");
             if (!UserPromptUtils.YesNoPrompt(
                     String.Format(Resources.ResetPasswordConfirmationPromptMessage, UserName, _instance.Name),
                     Resources.ResetPasswordConfirmationPromptTitle))
