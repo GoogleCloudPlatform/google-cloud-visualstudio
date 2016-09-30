@@ -51,6 +51,9 @@ namespace GoogleCloudExtension.ResetPassword
             }
         }
 
+        /// <summary>
+        /// The password the user provided manually.
+        /// </summary>
         public string Password
         {
             get { return _password; }
