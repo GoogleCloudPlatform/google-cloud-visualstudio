@@ -30,6 +30,7 @@ namespace GoogleCloudExtension.ResetPassword
     {
         private string _userName;
         private string _password;
+        private bool _generatePassword = true;
         private bool _hasPassword;
         private bool _resettingPassword;
         private readonly ResetPasswordWindow _owner;
@@ -55,17 +56,19 @@ namespace GoogleCloudExtension.ResetPassword
             set { SetValueAndRaise(ref _password, value); }
         }
 
+        public bool GeneratePassword
+        {
+            get { return _generatePassword; }
+            set { SetValueAndRaise(ref _generatePassword, value); }
+        }
+
         /// <summary>
         /// Whether the user has a password or not.
         /// </summary>
         public bool HasPassword
         {
             get { return _hasPassword; }
-            set
-            {
-                SetValueAndRaise(ref _hasPassword, value);
-                UpdateWindowSize();
-            }
+            set { SetValueAndRaise(ref _hasPassword, value); }
         }
 
         /// <summary>
@@ -184,11 +187,6 @@ namespace GoogleCloudExtension.ResetPassword
         private void OnCancelCommand()
         {
             _owner.Close();
-        }
-
-        private void UpdateWindowSize()
-        {
-            _owner.ResizeForPasswordInput(HasPassword);
         }
     }
 }
