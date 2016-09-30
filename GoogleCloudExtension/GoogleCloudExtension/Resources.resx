@@ -1118,8 +1118,8 @@
     <comment>Message shown when an attempt to delete a version fails.</comment>
   </data>
   <data name="CloudExplorerGaeServiceDeleteMessage" xml:space="preserve">
-    <value>Deleting service...</value>
-    <comment>Message shown when a service is being deleted.</comment>
+    <value>Deleting service {0}...</value>
+    <comment>Message shown when a service is being deleted. {0} is the service name.</comment>
   </data>
   <data name="CloudExplorerGaeVersionDeleteMessage" xml:space="preserve">
     <value>Deleting version...</value>

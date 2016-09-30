@@ -54,11 +54,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private readonly GaeSourceRootViewModel _owner;
 
-        private bool _resourcesLoaded;
+        private bool _resourcesLoaded = false;
 
-        private bool _showOnlyFlexVersions;
-        private bool _showOnlyDotNetRuntimes;
-        private bool _showOnlyVersionsWithTraffic;
+        private bool _showOnlyFlexVersions = true;
+        private bool _showOnlyDotNetRuntimes = false;
+        private bool _showOnlyVersionsWithTraffic = false;
 
         private List<VersionViewModel> _versions;
 
@@ -125,12 +125,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             Caption = service.Id;
             Icon = s_serviceIcon.Value;
-
-            _resourcesLoaded = false;
-            _showOnlyFlexVersions = true;
-            // TODO: We should start this as true when the upstream changes are pushed.
-            _showOnlyDotNetRuntimes = false;
-            _showOnlyVersionsWithTraffic = false;
 
             Children.Add(s_loadingPlaceholder);
 
@@ -208,13 +202,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
             if (ShowOnlyVersionsWithTraffic)
             {
-                versions = versions.Where(x => x.trafficAllocation != null);
+                versions = versions.Where(x => x.TrafficAllocation != null);
             }
 
-            UpdateViewModels(versions.ToList());
+            UpdateViewModels(versions);
         }
 
-        private void UpdateViewModels(List<VersionViewModel> versions)
+        private void UpdateViewModels(IEnumerable<VersionViewModel> versions)
         {
             Children.Clear();
             foreach (var version in versions)
@@ -324,7 +318,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             IsLoading = true;
             Children.Clear();
             UpdateContextMenu();
-            Caption = Resources.CloudExplorerGaeServiceDeleteMessage;
+            Caption = String.Format(Resources.CloudExplorerGaeServiceDeleteMessage, service.Id);
             GaeDataSource datasource = root.DataSource.Value;
 
             try
@@ -363,27 +357,27 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 IsLoading = false;
 
                 // Re-initialize the instance as it will have a new version.
-                if (!IsError)
+                if (IsError)
                 {
-                    // Remove the deleted child.
-                    _owner.Children.Remove(this);
+                    Caption = service.Id;
                 }
                 else
                 {
-                    Caption = service.Id;
+                    // Remove the deleted child.
+                    _owner.Children.Remove(this);
                 }
             }
         }
 
         /// <summary>
-        /// Load a list of flexible versions sorted by percent of traffic allocation.
+        /// Load a list of Flex versions sorted by percent of traffic allocation.
         /// </summary>
         private async Task<List<VersionViewModel>> LoadVersionList()
         {
             var versions = await root.DataSource.Value.GetVersionListAsync(service.Id);
             return versions?
                 .Select(x => new VersionViewModel(this, x))
-                .OrderByDescending(x => x.trafficAllocation)
+                .OrderByDescending(x => x.TrafficAllocation)
                 .ToList();
         }
 

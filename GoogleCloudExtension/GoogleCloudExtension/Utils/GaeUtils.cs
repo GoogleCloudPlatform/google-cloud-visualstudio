@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.Utils
         private static readonly string AppEngineUrlSeperator = "-dot-";
 
         // The name of the default app engine service.
-        public static readonly string AppEngineDefaultServiceName = "default";
+        public const string AppEngineDefaultServiceName = "default";
 
 
         /// <summary>

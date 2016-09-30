@@ -57,17 +57,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             IsError = true
         };
 
-        private bool HasTrafficAllocation => trafficAllocation != null;
+        private bool HasTrafficAllocation => TrafficAllocation != null;
 
         private readonly ServiceViewModel _owner;
 
         public readonly GaeSourceRootViewModel root;
 
-        private bool _resourcesLoaded;
+        private bool _resourcesLoaded = false;
 
         public Google.Apis.Appengine.v1.Data.Version version { get; private set; }
 
-        public double? trafficAllocation { get; private set; }
+        public double? TrafficAllocation { get; private set; }
 
         public event EventHandler ItemChanged;
 
@@ -86,7 +86,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private void Initialize()
         {
             // Get the traffic allocation for the version
-            trafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_owner.service, version.Id);
+            TrafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_owner.service, version.Id);
 
             // Reset the resources loaded and clear any children. 
             _resourcesLoaded = false;
@@ -327,6 +327,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             try
             {
+                Children.Clear();
+                Children.Add(s_loadingPlaceholder);
+
                 var instances = await LoadInstanceList();
                 Children.Clear();
                 if (instances == null)
@@ -351,6 +354,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 GcpOutputWindow.OutputLine(ex.Message);
                 GcpOutputWindow.Activate();
 
+                Children.Add(s_errorPlaceholder);
                 throw new CloudExplorerSourceException(ex.Message, ex);
             }
         }
@@ -374,7 +378,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             {
                 return version.Id;
             }
-            string percent = ((double)trafficAllocation).ToString("P", CultureInfo.InvariantCulture);
+            string percent = ((double)TrafficAllocation).ToString("P", CultureInfo.InvariantCulture);
             return String.Format("{0} ({1})", version.Id, percent);
         }
 
