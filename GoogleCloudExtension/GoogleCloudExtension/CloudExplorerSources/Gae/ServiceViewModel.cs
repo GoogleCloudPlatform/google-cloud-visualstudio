@@ -23,6 +23,7 @@ using GoogleCloudExtension.Utils;
 using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {
@@ -53,7 +54,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private readonly GaeSourceRootViewModel _owner;
 
-        private bool _resourcesLoaded;
+        private bool _resourcesLoaded = false;
+
+        private bool _showOnlyFlexVersions = true;
+        private bool _showOnlyDotNetRuntimes = false;
+        private bool _showOnlyVersionsWithTraffic = false;
+
+        private List<VersionViewModel> _versions;
 
         public readonly GaeSourceRootViewModel root;
 
@@ -62,6 +69,53 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         public event EventHandler ItemChanged;
 
         public object Item => GetItem();
+
+        public bool ShowOnlyFlexVersions
+        {
+            get { return _showOnlyFlexVersions;  }
+            set
+            {
+                if (value == _showOnlyFlexVersions)
+                {
+                    return;
+                }
+                _showOnlyFlexVersions = value;
+                _showOnlyDotNetRuntimes = false;
+                UpdateContextMenu();
+                PresentViewModels();
+            }
+        }
+
+        public bool ShowOnlyDotNetRuntimes
+        {
+            get { return _showOnlyDotNetRuntimes; }
+            set
+            {
+                if (value == _showOnlyDotNetRuntimes)
+                {
+                    return;
+                }
+                _showOnlyDotNetRuntimes = value;
+                _showOnlyFlexVersions = false;
+                UpdateContextMenu();
+                PresentViewModels();
+            }
+        }
+
+        public bool ShowOnlyVersionsWithTraffic
+        {
+            get { return _showOnlyVersionsWithTraffic; }
+            set
+            {
+                if (value == _showOnlyVersionsWithTraffic)
+                {
+                    return;
+                }
+                _showOnlyVersionsWithTraffic = value;
+                UpdateContextMenu();
+                PresentViewModels();
+            }
+        }
 
         public ServiceViewModel(GaeSourceRootViewModel owner, Service service)
         {
@@ -72,16 +126,142 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Caption = service.Id;
             Icon = s_serviceIcon.Value;
 
-            _resourcesLoaded = false;
             Children.Add(s_loadingPlaceholder);
 
-            var menuItems = new List<MenuItem>
+            UpdateContextMenu();
+        }
+
+        private void UpdateContextMenu()
+        {
+            // Do not allow actions when the service is loading or in an error state.
+            if (IsLoading || IsError)
+            {
+                ContextMenu = null;
+                return;
+            }
+
+            var menuItems = new List<FrameworkElement>
             {
                 new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) },
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) },
                 new MenuItem { Header = Resources.CloudExplorerGaeServiceOpen, Command = new WeakCommand(OnOpenService) },
+                new Separator(),
             };
+
+            if (!GaeUtils.AppEngineDefaultServiceName.Equals(service.Id))
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteService, Command = new WeakCommand(OnDeleteService) });
+            }
+
+            if (ShowOnlyFlexVersions)
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowFlexAndStandardVersions, Command = new WeakCommand(OnShowFlexibleAndStandardVersions) });
+            }
+            else
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowFlexVersions, Command = new WeakCommand(OnShowOnlyFlexVersions) });
+            }
+
+            if (ShowOnlyDotNetRuntimes)
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowAllRuntimes, Command = new WeakCommand(OnShowAllRuntimes) });
+            }
+            else
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowDotNetRuntimes, Command = new WeakCommand(OnShowOnlyDotNetRuntimes) });
+            }
+
+            if (ShowOnlyVersionsWithTraffic)
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowWithAndWithoutTraffic, Command = new WeakCommand(OnShowVersionsWithAndWithoutTraffic) });
+            }
+            else
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowVersionsWithTraffic, Command = new WeakCommand(OnShowOnlyVersionsWithTraffic) });
+            }
+
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void PresentViewModels()
+        {
+            if (_versions == null)
+            {
+                return;
+            }
+
+            IEnumerable<VersionViewModel> versions = _versions;
+            if (ShowOnlyFlexVersions)
+            {
+                versions = versions.Where(x => x.version.Vm ?? false);
+            }
+            if (ShowOnlyDotNetRuntimes)
+            {
+                versions = versions.Where(
+                    x => x.version?.Runtime.Equals(GaeVersionExtensions.DotNetRuntime) ?? false);
+            }
+            if (ShowOnlyVersionsWithTraffic)
+            {
+                versions = versions.Where(x => x.TrafficAllocation != null);
+            }
+
+            UpdateViewModels(versions);
+        }
+
+        private void UpdateViewModels(IEnumerable<VersionViewModel> versions)
+        {
+            Children.Clear();
+            foreach (var version in versions)
+            {
+                Children.Add(version);
+            }
+            if (Children.Count == 0)
+            {
+                Children.Add(s_noItemsPlacehoder);
+            }
+        }
+
+        private void OnDeleteService()
+        {
+            string confirmationMessage = String.Format(
+               Resources.CloudExplorerGaeDeleteServiceConfirmationPromptMessage, service.Id);
+            if (!UserPromptUtils.YesNoPrompt(confirmationMessage, Resources.CloudExplorerGaeDeleteService))
+            {
+                Debug.WriteLine("The user cancelled deleting the service.");
+                return;
+            }
+
+            DeleteService();
+        }
+
+        private void OnShowOnlyFlexVersions()
+        {
+            ShowOnlyFlexVersions = true;
+        }
+
+        private void OnShowFlexibleAndStandardVersions()
+        {
+            ShowOnlyFlexVersions = false;
+        }
+
+        private void OnShowOnlyDotNetRuntimes()
+        {
+            ShowOnlyDotNetRuntimes = true;
+        }
+
+        private void OnShowAllRuntimes()
+        {
+            ShowOnlyDotNetRuntimes = false;
+        }
+
+        private void OnShowOnlyVersionsWithTraffic()
+        {
+            ShowOnlyVersionsWithTraffic = true;
+        }
+
+        private void OnShowVersionsWithAndWithoutTraffic()
+        {
+            ShowOnlyVersionsWithTraffic = false;
         }
 
         protected override async void OnIsExpandedChanged(bool newValue)
@@ -93,22 +273,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 if (!_resourcesLoaded && newValue)
                 {
                     _resourcesLoaded = true;
-                    var versions = await LoadVersionList();
+                    _versions = await LoadVersionList();
                     Children.Clear();
-                    if (versions == null)
+                    if (_versions == null)
                     {
                         Children.Add(s_errorPlaceholder);
                     }
                     else
                     {
-                        foreach (var item in versions)
-                        {
-                            Children.Add(item);
-                        }
-                        if (Children.Count == 0)
-                        {
-                            Children.Add(s_noItemsPlacehoder);
-                        }
+                        PresentViewModels();
+                        UpdateContextMenu();
                     }
                 }
             }
@@ -139,15 +313,71 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Process.Start(url);
         }
 
+        private async void DeleteService()
+        {
+            IsLoading = true;
+            Children.Clear();
+            UpdateContextMenu();
+            Caption = String.Format(Resources.CloudExplorerGaeServiceDeleteMessage, service.Id);
+            GaeDataSource datasource = root.DataSource.Value;
+
+            try
+            {
+                Task<Operation> operationTask = root.DataSource.Value.DeleteServiceAsync(service.Id);
+                Func<Operation, Task<Operation>> fetch = (o) => datasource.GetOperationAsync(o.GetOperationId());
+                Predicate<Operation> stopPolling = (o) => o.Done ?? false;
+                Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);
+                if (operation.Error != null)
+                {
+                    throw new DataSourceException(operation.Error.Message);
+                }
+            }
+            catch (DataSourceException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(ex.Message,
+                    Resources.CloudExplorerGaeDeleteServiceErrorMessage);
+            }
+            catch (TimeoutException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(
+                    Resources.CloudExploreOperationTimeoutMessage,
+                    Resources.CloudExplorerGaeDeleteServiceErrorMessage);
+            }
+            catch (OperationCanceledException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(
+                    Resources.CloudExploreOperationCanceledMessage,
+                    Resources.CloudExplorerGaeDeleteServiceErrorMessage);
+            }
+            finally
+            {
+                IsLoading = false;
+
+                // Re-initialize the instance as it will have a new version.
+                if (IsError)
+                {
+                    Caption = service.Id;
+                }
+                else
+                {
+                    // Remove the deleted child.
+                    _owner.Children.Remove(this);
+                }
+            }
+        }
+
         /// <summary>
-        /// Load a list of versions sorted by percent of traffic allocation.
+        /// Load a list of Flex versions sorted by percent of traffic allocation.
         /// </summary>
         private async Task<List<VersionViewModel>> LoadVersionList()
         {
             var versions = await root.DataSource.Value.GetVersionListAsync(service.Id);
             return versions?
                 .Select(x => new VersionViewModel(this, x))
-                .OrderByDescending(x => service.GetTrafficAllocation(x.version.Id))
+                .OrderByDescending(x => x.TrafficAllocation)
                 .ToList();
         }
 
