@@ -33,7 +33,7 @@ namespace GoogleAnalyticsUtils
         // IsUserSignedIn (cd16): true if a user is signed on, false otherwise.
         private const int IsUserSignedInIndex = 16;
 
-        // IsInternalUser (cd17): true if the suer is internal to Google, false otherwise.
+        // IsInternalUser (cd17): true if the user is internal to Google, false otherwise.
         private const int IsInternalUserIndex = 17;
 
         // EventType (cd19): the event type.
