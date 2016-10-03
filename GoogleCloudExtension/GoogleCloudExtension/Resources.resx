@@ -670,7 +670,7 @@
     <comment>Caption for the user name textbox.</comment>
   </data>
   <data name="ResetPasswordWindowTitle" xml:space="preserve">
-    <value>Reset Password for {0}</value>
+    <value>Add Credential for {0}</value>
     <comment>The title for the reset password dialog. {0} is the instance name.</comment>
   </data>
   <data name="ShowPasswordCopyFailedMessage" xml:space="preserve">
@@ -812,5 +812,13 @@
   <data name="CloudExplorerGceSavePubSettingsCredentialsTitle" xml:space="preserve">
     <value>Choose credentials</value>
     <comment>The title for the choose credentials used during the save publish settings flow.</comment>
+  </data>
+  <data name="ResetPasswordGeneratePasswordMessage" xml:space="preserve">
+    <value>Generate the password for this user name</value>
+    <comment>Message shown in the radio button of the Reset password dialog to signify that the password will be generated instead of provided by the user.</comment>
+  </data>
+  <data name="ResetPasswordHavePasswordMessage" xml:space="preserve">
+    <value>I have a password for this user name</value>
+    <comment>Message shown in the radio button of the Reset Password dialog to signify that the user will provide the password.</comment>
   </data>
 </root>

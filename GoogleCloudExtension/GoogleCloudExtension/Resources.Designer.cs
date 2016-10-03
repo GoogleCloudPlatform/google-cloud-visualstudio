@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -1420,6 +1420,24 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Generate the password for this user name.
+        /// </summary>
+        public static string ResetPasswordGeneratePasswordMessage {
+            get {
+                return ResourceManager.GetString("ResetPasswordGeneratePasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I have a password for this user name.
+        /// </summary>
+        public static string ResetPasswordHavePasswordMessage {
+            get {
+                return ResourceManager.GetString("ResetPasswordHavePasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Missing Google Cloud SDK.
         /// </summary>
         public static string ResetPasswordMissingGcloudTitle {
@@ -1438,7 +1456,7 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reset Password for {0}.
+        ///   Looks up a localized string similar to Add Credential for {0}.
         /// </summary>
         public static string ResetPasswordWindowTitle {
             get {
