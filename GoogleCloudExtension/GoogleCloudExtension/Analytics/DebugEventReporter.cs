@@ -24,12 +24,13 @@ namespace GoogleCloudExtension.Analytics
     {
         private readonly IEventsReporter _reporter;
 
-        public DebugEventReporter(string eventSource, IAnalyticsReporter analyticsReporter)
+        public DebugEventReporter(IAnalyticsReporter analyticsReporter)
         {
-            _reporter = new EventsReporter(eventSource, analyticsReporter);
+            _reporter = new EventsReporter(analyticsReporter);
         }
 
         public void ReportEvent(
+            string source,
             string eventType,
             string eventName,
             bool userLoggedIn = false,
@@ -39,11 +40,12 @@ namespace GoogleCloudExtension.Analytics
             Debug.WriteLine($"Analytics Event] Event: {eventType}/{eventName} Project: {projectNumber ?? "(No Project)"} Metadata: {SerializeMetadata(metadata)}");
 
             _reporter.ReportEvent(
-                eventType,
-                eventName,
-                userLoggedIn,
-                projectNumber,
-                metadata);
+                source: source,
+                eventType: eventType,
+                eventName: eventName,
+                userLoggedIn: userLoggedIn,
+                projectNumber: projectNumber,
+                metadata: metadata);
         }
 
         private static string SerializeMetadata(Dictionary<string, string> metadata)

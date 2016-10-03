@@ -63,8 +63,10 @@ namespace GoogleCloudExtension.Analytics
         public static void ReportEvent(AnalyticsEvent eventData)
         {
             s_reporter.Value?.ReportEvent(
+                source: ExtensionEventSource,
                 eventType: ExtensionEventType,
                 eventName: eventData.Name,
+                userLoggedIn: CredentialsStore.Default.CurrentAccount != null,
                 projectNumber: CredentialsStore.Default.CurrentProjectNumericId,
                 metadata: eventData.Metadata);
         }
@@ -83,7 +85,7 @@ namespace GoogleCloudExtension.Analytics
                     appVersion: GoogleCloudExtensionPackage.ApplicationVersion,
                     debug: true,
                     userAgent: GoogleCloudExtensionPackage.VersionedApplicationName);
-                return new DebugEventReporter(ExtensionEventSource, analyticsReporter);
+                return new DebugEventReporter(analyticsReporter);
 
 #else
                 var analyticsReporter = new AnalyticsReporter(PropertyId,
@@ -92,7 +94,7 @@ namespace GoogleCloudExtension.Analytics
                     appVersion: GoogleCloudExtensionPackage.ApplicationVersion,
                     debug: false,
                     userAgent: GoogleCloudExtensionPackage.VersionedApplicationName);
-                 return new EventsReporter(ExtensionEventSource, analyticsReporter);
+                 return new EventsReporter(analyticsReporter);
 #endif
             }
             else

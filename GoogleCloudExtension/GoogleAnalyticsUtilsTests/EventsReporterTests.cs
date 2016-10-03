@@ -50,11 +50,13 @@ namespace GoogleAnalyticsUtilsTests
                 expectedEventType: FakeEventType,
                 expectedEventName: FakeEventName,
                 expectedHostName: FakeHostName);
-            var eventsReporter = new EventsReporter(FakeHostName, fakeReporter);
+            var eventsReporter = new EventsReporter(fakeReporter);
 
             eventsReporter.ReportEvent(
+                source: FakeHostName,
                 eventType: FakeEventType,
-                eventName: FakeEventName);
+                eventName: FakeEventName,
+                userLoggedIn: false);
         }
 
         [TestMethod]
@@ -65,11 +67,13 @@ namespace GoogleAnalyticsUtilsTests
                 expectedEventName: FakeEventName,
                 expectedHostName: FakeHostName,
                 expectedMetadata: s_metadata);
-            var eventsReporter = new EventsReporter(FakeHostName, fakeReporter);
+            var eventsReporter = new EventsReporter(fakeReporter);
 
             eventsReporter.ReportEvent(
+                source: FakeHostName,
                 eventType: FakeEventType,
                 eventName: FakeEventName,
+                userLoggedIn: false,
                 metadata: s_metadata);
         }
 
@@ -82,11 +86,13 @@ namespace GoogleAnalyticsUtilsTests
                 expectedHostName: FakeHostName,
                 expectedMetadata: s_metadata,
                 expectedProjectNumberHash: ExpectedProjectNumberHash);
-            var eventsReporter = new EventsReporter(FakeHostName, fakeReporter);
+            var eventsReporter = new EventsReporter(fakeReporter);
 
             eventsReporter.ReportEvent(
+                source: FakeHostName,
                 eventType: FakeEventType,
                 eventName: FakeEventName,
+                userLoggedIn: false,
                 metadata: s_metadata,
                 projectNumber: FakeProjectNumber);
         }

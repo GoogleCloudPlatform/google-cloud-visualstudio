@@ -51,18 +51,18 @@ namespace GoogleAnalyticsUtils
         private readonly string _eventSource;
         private readonly IAnalyticsReporter _reporter;
 
-        public EventsReporter(string eventSource, IAnalyticsReporter reporter)
+        public EventsReporter(IAnalyticsReporter reporter)
         {
-            _eventSource = eventSource;
             _reporter = Preconditions.CheckNotNull(reporter, nameof(reporter));
         }
 
         #region IEventsReporter
 
         public void ReportEvent(
+            string source,
             string eventType,
             string eventName,
-            bool userLoggedIn = false,
+            bool userLoggedIn,
             string projectNumber = null,
             Dictionary<string, string> metadata = null)
         {
@@ -86,7 +86,7 @@ namespace GoogleAnalyticsUtils
             _reporter.ReportPageView(
                 page: GetPageViewURI(eventType: eventType, eventName: eventName),
                 title: serializedMetadata,
-                host: _eventSource,
+                host: source,
                 customDimensions: customDimensions);
         }
 
