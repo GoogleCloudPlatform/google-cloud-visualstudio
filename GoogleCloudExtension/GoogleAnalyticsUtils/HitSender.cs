@@ -27,7 +27,7 @@ namespace GoogleAnalyticsUtils
     /// https://developers.google.com/analytics/devguides/collection/protocol/v1/
     internal class HitSender : IHitSender
     {
-        private const string ProductionServerUrl = "https://ssl.google-analytics.com/collect";
+        private const string ProductionServerUrl = "https://www.google-analytics.com/internal/collect";
         private const string DebugServerUrl = "https://ssl.google-analytics.com/debug/collect";
 
         private readonly Lazy<HttpClient> _httpClient;

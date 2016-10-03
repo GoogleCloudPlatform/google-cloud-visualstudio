@@ -26,6 +26,7 @@ namespace GoogleAnalyticsUtilsTests
     {
         private const string FakeEventType = "my_event_type";
         private const string FakeEventName = "my_event_name";
+        private const string FakeHostName = "my_host_name";
         private const string FakeProjectNumber = "1234";
 
         // SHA1 hash of project number 1234.
@@ -47,12 +48,15 @@ namespace GoogleAnalyticsUtilsTests
         {
             var fakeReporter = new FakeAnalyticsReporterForEventsImpl(
                 expectedEventType: FakeEventType,
-                expectedEventName: FakeEventName);
+                expectedEventName: FakeEventName,
+                expectedHostName: FakeHostName);
             var eventsReporter = new EventsReporter(fakeReporter);
 
             eventsReporter.ReportEvent(
+                source: FakeHostName,
                 eventType: FakeEventType,
-                eventName: FakeEventName);
+                eventName: FakeEventName,
+                userLoggedIn: false);
         }
 
         [TestMethod]
@@ -61,12 +65,15 @@ namespace GoogleAnalyticsUtilsTests
             var fakeReporter = new FakeAnalyticsReporterForEventsImpl(
                 expectedEventType: FakeEventType,
                 expectedEventName: FakeEventName,
+                expectedHostName: FakeHostName,
                 expectedMetadata: s_metadata);
             var eventsReporter = new EventsReporter(fakeReporter);
 
             eventsReporter.ReportEvent(
+                source: FakeHostName,
                 eventType: FakeEventType,
                 eventName: FakeEventName,
+                userLoggedIn: false,
                 metadata: s_metadata);
         }
 
@@ -76,13 +83,16 @@ namespace GoogleAnalyticsUtilsTests
             var fakeReporter = new FakeAnalyticsReporterForEventsImpl(
                 expectedEventType: FakeEventType,
                 expectedEventName: FakeEventName,
+                expectedHostName: FakeHostName,
                 expectedMetadata: s_metadata,
                 expectedProjectNumberHash: ExpectedProjectNumberHash);
             var eventsReporter = new EventsReporter(fakeReporter);
 
             eventsReporter.ReportEvent(
+                source: FakeHostName,
                 eventType: FakeEventType,
                 eventName: FakeEventName,
+                userLoggedIn: false,
                 metadata: s_metadata,
                 projectNumber: FakeProjectNumber);
         }
