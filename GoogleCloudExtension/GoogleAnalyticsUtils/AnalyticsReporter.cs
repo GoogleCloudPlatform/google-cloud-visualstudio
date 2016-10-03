@@ -132,7 +132,11 @@ namespace GoogleAnalyticsUtils
             _hitSender.SendHitData(hitData);
         }
 
-        public void ReportPageView(string page, string title = null, Dictionary<int, string> customDimensions = null)
+        public void ReportPageView(
+            string page,
+            string title,
+            string host,
+            Dictionary<int, string> customDimensions = null)
         {
             Preconditions.CheckNotNull(page, nameof(page));
 

@@ -28,10 +28,12 @@ namespace GoogleAnalyticsUtils
         // The custom dimension index for the various properties sent to Google Analytics.
         private const int ProjectIdHashIndex = 11;      // The project hash is sent in the custom dimension c11.
 
+        private readonly string _eventSource;
         private readonly IAnalyticsReporter _reporter;
 
-        public EventsReporter(IAnalyticsReporter reporter)
+        public EventsReporter(string eventSource, IAnalyticsReporter reporter)
         {
+            _eventSource = eventSource;
             _reporter = Preconditions.CheckNotNull(reporter, nameof(reporter));
         }
 
@@ -55,6 +57,7 @@ namespace GoogleAnalyticsUtils
             _reporter.ReportPageView(
                 page: GetPageViewURI(eventType: eventType, eventName: eventName),
                 title: serializedMetadata,
+                host: _eventSource,
                 customDimensions: customDimensions);
         }
 

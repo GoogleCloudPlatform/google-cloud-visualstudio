@@ -24,9 +24,9 @@ namespace GoogleCloudExtension.Analytics
     {
         private readonly IEventsReporter _reporter;
 
-        public DebugEventReporter(IAnalyticsReporter analyticsReporter)
+        public DebugEventReporter(string eventSource, IAnalyticsReporter analyticsReporter)
         {
-            _reporter = new EventsReporter(analyticsReporter);
+            _reporter = new EventsReporter(eventSource, analyticsReporter);
         }
 
         public void ReportEvent(

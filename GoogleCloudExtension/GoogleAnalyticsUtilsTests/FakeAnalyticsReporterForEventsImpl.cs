@@ -26,17 +26,20 @@ namespace GoogleAnalyticsUtilsTests
 
         private readonly string _expectedEventType;
         private readonly string _expectedEventName;
+        private readonly string _expectedHostName;
         private readonly Dictionary<string, string> _expectedMetadata;
         private readonly string _expectedProjectNumberHash;
 
         public FakeAnalyticsReporterForEventsImpl(
             string expectedEventType,
             string expectedEventName,
+            string expectedHostName,
             Dictionary<string, string> expectedMetadata = null,
             string expectedProjectNumberHash = null)
         {
             _expectedEventType = expectedEventType;
             _expectedEventName = expectedEventName;
+            _expectedHostName = expectedHostName;
             _expectedMetadata = expectedMetadata;
             _expectedProjectNumberHash = expectedProjectNumberHash;
         }
@@ -46,13 +49,14 @@ namespace GoogleAnalyticsUtilsTests
             throw new NotImplementedException();
         }
 
-        public void ReportPageView(string page, string title, Dictionary<int, string> customDimensions = null)
+        public void ReportPageView(string page, string title, string host, Dictionary<int, string> customDimensions = null)
         {
             string actualEventType, actualEventName;
             ParsePageUrl(page, out actualEventType, out actualEventName);
 
             Assert.AreEqual(_expectedEventType, actualEventType);
             Assert.AreEqual(_expectedEventName, actualEventName);
+            Assert.AreEqual(_expectedHostName, host);
 
             if (_expectedMetadata != null)
             {
