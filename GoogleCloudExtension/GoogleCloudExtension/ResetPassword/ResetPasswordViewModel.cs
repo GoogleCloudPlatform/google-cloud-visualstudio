@@ -145,7 +145,7 @@ namespace GoogleCloudExtension.ResetPassword
         {
             if (ManualPassword)
             {
-                Debug.WriteLine("The user is suplying the password.");
+                Debug.WriteLine("The user is supplying the password.");
                 Result = new WindowsInstanceCredentials
                 {
                     User = UserName,
