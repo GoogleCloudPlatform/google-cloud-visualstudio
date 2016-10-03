@@ -22,6 +22,14 @@ namespace GoogleAnalyticsUtilsTests
 {
     internal class FakeAnalyticsReporterForEventsImpl : IAnalyticsReporter
     {
+        // Indexes for the custom dimensions.
+        private const int IsUserSignedInIndex = 16;
+        private const int IsInternalUserIndex = 17;
+        private const int EventTypeIndex = 19;
+        private const int EventNameIndex = 20;
+        private const int IsEventHitIndex = 21;
+        private const int ProjectNumberHashIndex = 31;
+
         private const string VirtualUrlPrefix = "/virtual/";
 
         private readonly string _expectedEventType;
@@ -29,19 +37,22 @@ namespace GoogleAnalyticsUtilsTests
         private readonly string _expectedHostName;
         private readonly Dictionary<string, string> _expectedMetadata;
         private readonly string _expectedProjectNumberHash;
+        private readonly bool _expectedUserLoggedIn;
 
         public FakeAnalyticsReporterForEventsImpl(
             string expectedEventType,
             string expectedEventName,
             string expectedHostName,
-            Dictionary<string, string> expectedMetadata = null,
-            string expectedProjectNumberHash = null)
+            string expectedProjectNumberHash = null,
+            bool expectedUserLoggedIn = false,
+            Dictionary<string, string> expectedMetadata = null)
         {
             _expectedEventType = expectedEventType;
             _expectedEventName = expectedEventName;
             _expectedHostName = expectedHostName;
-            _expectedMetadata = expectedMetadata;
             _expectedProjectNumberHash = expectedProjectNumberHash;
+            _expectedUserLoggedIn = expectedUserLoggedIn;
+            _expectedMetadata = expectedMetadata;
         }
 
         public void ReportEvent(string category, string action, string label = null, int? value = default(int?))
@@ -54,6 +65,7 @@ namespace GoogleAnalyticsUtilsTests
             string actualEventType, actualEventName;
             ParsePageUrl(page, out actualEventType, out actualEventName);
 
+            Assert.IsNotNull(customDimensions);
             Assert.AreEqual(_expectedEventType, actualEventType);
             Assert.AreEqual(_expectedEventName, actualEventName);
             Assert.AreEqual(_expectedHostName, host);
@@ -65,10 +77,15 @@ namespace GoogleAnalyticsUtilsTests
                 CollectionAssert.AreEqual(_expectedMetadata, actualMetadata, $"Invalid metadata.");
             }
 
+            Assert.AreEqual(_expectedUserLoggedIn ? "true" : "false", customDimensions[IsUserSignedInIndex]);
+            Assert.AreEqual("false", customDimensions[IsInternalUserIndex]);
+            Assert.AreEqual(_expectedEventType, customDimensions[EventTypeIndex]);
+            Assert.AreEqual(_expectedEventName, customDimensions[EventNameIndex]);
+            Assert.AreEqual("true", customDimensions[IsEventHitIndex]);
             if (_expectedProjectNumberHash != null)
             {
                 Assert.IsNotNull(customDimensions);
-                Assert.AreEqual(_expectedProjectNumberHash, customDimensions[11]);
+                Assert.AreEqual(_expectedProjectNumberHash, customDimensions[ProjectNumberHashIndex]);
             }
         }
 

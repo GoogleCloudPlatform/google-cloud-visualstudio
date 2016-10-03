@@ -42,6 +42,7 @@ namespace GoogleAnalyticsUtils
         private const string ScreenNameParam = "cd";
         private const string DocumentTitleParam = "dt";
         private const string DocumentPathParam = "dp";
+        private const string DocumentHostNameParam = "dh";
 
         private const string VersionValue = "1";
         private const string EventTypeValue = "event";
@@ -132,6 +133,13 @@ namespace GoogleAnalyticsUtils
             _hitSender.SendHitData(hitData);
         }
 
+        /// <summary>
+        /// Reports a page view hit to analytics.
+        /// </summary>
+        /// <param name="page">The URL to the page.</param>
+        /// <param name="title">The page title.</param>
+        /// <param name="host">The page host name.</param>
+        /// <param name="customDimensions">Custom dimensions to add to the hit.</param>
         public void ReportPageView(
             string page,
             string title,
@@ -150,7 +158,10 @@ namespace GoogleAnalyticsUtils
             {
                 hitData[DocumentTitleParam] = title;
             }
-
+            if (host != null)
+            {
+                hitData[DocumentHostNameParam] = host;
+            }
             if (customDimensions != null)
             {
                 foreach (var entry in customDimensions)
@@ -158,6 +169,7 @@ namespace GoogleAnalyticsUtils
                     hitData[GetCustomDimension(entry.Key)] = entry.Value;
                 }
             }
+
             _hitSender.SendHitData(hitData);
         }
 

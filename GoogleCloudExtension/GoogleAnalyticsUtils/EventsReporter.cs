@@ -25,8 +25,28 @@ namespace GoogleAnalyticsUtils
     /// </summary>
     public class EventsReporter : IEventsReporter
     {
+        private const string TrueValue = "true";
+        private const string FalseValue = "false";
+
         // The custom dimension index for the various properties sent to Google Analytics.
-        private const int ProjectIdHashIndex = 11;      // The project hash is sent in the custom dimension c11.
+
+        // IsUserSignedIn (cd16): true if a user is signed on, false otherwise.
+        private const int IsUserSignedInIndex = 16;
+
+        // IsInternalUser (cd17): true if the suer is internal to Google, false otherwise.
+        private const int IsInternalUserIndex = 17;
+
+        // EventType (cd19): the event type.
+        private const int EventTypeIndex = 19;
+
+        // EventName (cd20): the event name.
+        private const int EventNameIndex = 20;
+
+        // IsEventHit (cd21): true.
+        private const int IsEventHitIndex = 21;
+
+        // ProjectNumberHash (cd31): sha1 hash of the project numeric id.
+        private const int ProjectNumberHashIndex = 31;
 
         private readonly string _eventSource;
         private readonly IAnalyticsReporter _reporter;
@@ -42,16 +62,25 @@ namespace GoogleAnalyticsUtils
         public void ReportEvent(
             string eventType,
             string eventName,
+            bool userLoggedIn = false,
             string projectNumber = null,
             Dictionary<string, string> metadata = null)
         {
             Preconditions.CheckNotNull(eventType, nameof(eventType));
             Preconditions.CheckNotNull(eventName, nameof(eventName));
 
-            var customDimensions = projectNumber != null ? new Dictionary<int, string>
-                {
-                    { ProjectIdHashIndex, GetHash(projectNumber) }
-                } : null;
+            var customDimensions = new Dictionary<int, string>
+            {
+                { IsUserSignedInIndex, userLoggedIn ? TrueValue : FalseValue },
+                { IsInternalUserIndex, FalseValue },
+                { EventTypeIndex, eventType },
+                { EventNameIndex, eventName },
+                { IsEventHitIndex, TrueValue },
+            };
+            if (projectNumber != null)
+            {
+                customDimensions[ProjectNumberHashIndex] = GetHash(projectNumber);
+            }
             var serializedMetadata = metadata != null ? SerializeEventMetadata(metadata) : null;
 
             _reporter.ReportPageView(

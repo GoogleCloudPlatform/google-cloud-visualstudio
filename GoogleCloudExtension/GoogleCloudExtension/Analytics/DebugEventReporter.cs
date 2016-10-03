@@ -32,6 +32,7 @@ namespace GoogleCloudExtension.Analytics
         public void ReportEvent(
             string eventType,
             string eventName,
+            bool userLoggedIn = false,
             string projectNumber = null,
             Dictionary<string, string> metadata = null)
         {
@@ -40,6 +41,7 @@ namespace GoogleCloudExtension.Analytics
             _reporter.ReportEvent(
                 eventType,
                 eventName,
+                userLoggedIn,
                 projectNumber,
                 metadata);
         }
