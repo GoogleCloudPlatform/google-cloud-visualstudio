@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.ResetPassword
         private string _password;
         private bool _generatePassword = true;
         private bool _manualPassword;
-        private bool _resettingPassword;
+        private bool _isResettingPassword;
         private readonly ResetPasswordWindow _owner;
         private readonly Instance _instance;
         private readonly string _projectId;
@@ -104,12 +104,12 @@ namespace GoogleCloudExtension.ResetPassword
         /// <summary>
         /// Whether the dialog is in the busy state.
         /// </summary>
-        public bool ResettingPassword
+        public bool IsResettingPassword
         {
-            get { return _resettingPassword; }
+            get { return _isResettingPassword; }
             set
             {
-                SetValueAndRaise(ref _resettingPassword, value);
+                SetValueAndRaise(ref _isResettingPassword, value);
                 RaisePropertyChanged(nameof(IsNotResettingPassword));
             }
         }
@@ -117,7 +117,7 @@ namespace GoogleCloudExtension.ResetPassword
         /// <summary>
         /// Negation of the ResettingPassword.
         /// </summary>
-        public bool IsNotResettingPassword => !ResettingPassword;
+        public bool IsNotResettingPassword => !IsResettingPassword;
 
         /// <summary>
         /// The command to execute to accept the changes.
@@ -168,7 +168,7 @@ namespace GoogleCloudExtension.ResetPassword
             {
                 Debug.WriteLine($"Resetting the password for the user {UserName}");
 
-                ResettingPassword = true;
+                IsResettingPassword = true;
 
                 // The operation cannot be cancelled once it started, so we have to disable the buttons while
                 // it is in flight.
@@ -208,7 +208,7 @@ namespace GoogleCloudExtension.ResetPassword
                     userName: _userName,
                     context: context);
 
-                ResettingPassword = false;
+                IsResettingPassword = false;
             }
             catch (GCloudException ex)
             {
