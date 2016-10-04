@@ -670,7 +670,7 @@
     <comment>Caption for the user name textbox.</comment>
   </data>
   <data name="ResetPasswordWindowTitle" xml:space="preserve">
-    <value>Add Credential for {0}</value>
+    <value>Add Credential for VM {0}</value>
     <comment>The title for the reset password dialog. {0} is the instance name.</comment>
   </data>
   <data name="ShowPasswordCopyFailedMessage" xml:space="preserve">
@@ -820,5 +820,9 @@
   <data name="ResetPasswordHavePasswordMessage" xml:space="preserve">
     <value>I have a password for this user name</value>
     <comment>Message shown in the radio button of the Reset Password dialog to signify that the user will provide the password.</comment>
+  </data>
+  <data name="ResetWindowSettingPasswordProgressMessage" xml:space="preserve">
+    <value>Setting password for user {0}</value>
+    <comment>Message shown to the user when the password for the Windows user is being set. {0} is the user name.</comment>
   </data>
 </root>
