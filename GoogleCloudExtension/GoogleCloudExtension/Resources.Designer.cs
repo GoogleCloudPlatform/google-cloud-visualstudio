@@ -1456,11 +1456,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Credential for {0}.
+        ///   Looks up a localized string similar to Add Credential for VM {0}.
         /// </summary>
         public static string ResetPasswordWindowTitle {
             get {
                 return ResourceManager.GetString("ResetPasswordWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setting password for user {0}.
+        /// </summary>
+        public static string ResetWindowSettingPasswordProgressMessage {
+            get {
+                return ResourceManager.GetString("ResetWindowSettingPasswordProgressMessage", resourceCulture);
             }
         }
         
