@@ -1645,6 +1645,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage credentials.
+        /// </summary>
+        public static string WindowsCredentialsChooserManageCredentialsCaption {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsChooserManageCredentialsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to No credentials found....
         /// </summary>
         public static string WindowsCredentialsChooserNoCredentialsFoundMessage {

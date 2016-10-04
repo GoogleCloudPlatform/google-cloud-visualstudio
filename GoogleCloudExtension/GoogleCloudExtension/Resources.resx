@@ -825,4 +825,8 @@
     <value>Setting password for user {0}</value>
     <comment>Message shown to the user when the password for the Windows user is being set. {0} is the user name.</comment>
   </data>
+  <data name="WindowsCredentialsChooserManageCredentialsCaption" xml:space="preserve">
+    <value>Manage credentials</value>
+    <comment>Caption used in the hyperlink shown in the Windows credentials chooser dialog.</comment>
+  </data>
 </root>
