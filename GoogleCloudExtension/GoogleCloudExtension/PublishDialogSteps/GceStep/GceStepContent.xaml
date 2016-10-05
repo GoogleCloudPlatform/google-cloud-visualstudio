@@ -25,7 +25,7 @@
                   SelectedItem="{Binding SelectedCredentials, Mode=TwoWay}" />
         <TextBlock Margin="0,5,0,0">
             <Hyperlink Command="{Binding ManageCredentialsCommand}">
-                <TextBlock Text="Manage Credentials" />
+                <TextBlock Text="{x:Static ext:Resources.GcePublishStepManageCredentialsCaption}" />
             </Hyperlink>
         </TextBlock>
         
