@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -1654,6 +1654,24 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Generate the password for this user name.
+        /// </summary>
+        public static string ResetPasswordGeneratePasswordMessage {
+            get {
+                return ResourceManager.GetString("ResetPasswordGeneratePasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I have a password for this user name.
+        /// </summary>
+        public static string ResetPasswordHavePasswordMessage {
+            get {
+                return ResourceManager.GetString("ResetPasswordHavePasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Missing Google Cloud SDK.
         /// </summary>
         public static string ResetPasswordMissingGcloudTitle {
@@ -1672,11 +1690,20 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reset Password for {0}.
+        ///   Looks up a localized string similar to Add Credential for VM {0}.
         /// </summary>
         public static string ResetPasswordWindowTitle {
             get {
                 return ResourceManager.GetString("ResetPasswordWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setting password for user {0}.
+        /// </summary>
+        public static string ResetWindowSettingPasswordProgressMessage {
+            get {
+                return ResourceManager.GetString("ResetWindowSettingPasswordProgressMessage", resourceCulture);
             }
         }
         
@@ -1848,6 +1875,15 @@ namespace GoogleCloudExtension
         public static string WindowsCredentialsChooserButtonToolTip {
             get {
                 return ResourceManager.GetString("WindowsCredentialsChooserButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage credentials.
+        /// </summary>
+        public static string WindowsCredentialsChooserManageCredentialsCaption {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsChooserManageCredentialsCaption", resourceCulture);
             }
         }
         

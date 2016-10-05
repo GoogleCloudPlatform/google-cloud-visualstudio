@@ -24,14 +24,18 @@ namespace GoogleAnalyticsUtils
         /// <summary>
         /// Report an event to analytics.
         /// </summary>
+        /// <param name="source">The source of the events.</param>
         /// <param name="eventType">The event type.</param>
         /// <param name="eventName">The event name.</param>
+        /// <param name="userLoggedIn">Is there a logged in user.</param>
         /// <param name="projectNumber">The project number, optional.</param>
         /// <param name="metadata">Extra metadata for the event, optional.</param>
         void ReportEvent(
-           string eventType,
-           string eventName,
-           string projectNumber = null,
-           Dictionary<string, string> metadata = null);
+            string source,
+            string eventType,
+            string eventName,
+            bool userLoggedIn,
+            string projectNumber = null,
+            Dictionary<string, string> metadata = null);
     }
 }

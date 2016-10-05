@@ -42,7 +42,7 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
         private WindowsCredentialsChooserViewModel ViewModel { get; }
 
         private WindowsCredentialsChooserWindow(Instance instance, Options options) :
-            base(options.Title, 300, 150)
+            base(options.Title, 300, 200)
         {
             ViewModel = new WindowsCredentialsChooserViewModel(instance, options, this);
             Content = new WindowsCredentialsChooserWindowContent { DataContext = ViewModel };
