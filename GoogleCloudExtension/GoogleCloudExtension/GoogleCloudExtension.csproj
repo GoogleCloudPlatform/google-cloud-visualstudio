@@ -74,6 +74,14 @@
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksWindowContent.xaml.cs">
       <DependentUpon>AuthorizedNetworksWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CloudExplorerSources\Gae\GaeSource.cs" />
+    <Compile Include="CloudExplorerSources\Gae\GaeSourceRootViewModel.cs" />
+    <Compile Include="CloudExplorerSources\Gae\InstanceItem.cs" />
+    <Compile Include="CloudExplorerSources\Gae\InstanceViewModel.cs" />
+    <Compile Include="CloudExplorerSources\Gae\ServiceItem.cs" />
+    <Compile Include="CloudExplorerSources\Gae\ServiceViewModel.cs" />
+    <Compile Include="CloudExplorerSources\Gae\VersionItem.cs" />
+    <Compile Include="CloudExplorerSources\Gae\VersionViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gcs\BucketLocationViewModel.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
@@ -181,6 +189,7 @@
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
     <Compile Include="SolutionUtils\ISolutionProject.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
+	<Compile Include="Utils\GaeUtils.cs" />
     <Compile Include="Utils\ProgressBarHelper.cs" />
     <Compile Include="Utils\ShellUtils.cs" />
     <Compile Include="Utils\StatusbarHelper.cs" />
@@ -237,6 +246,10 @@
     <None Include="Key.snk" />
     <None Include="packages.config" />
     <Resource Include="CloudExplorerSources\Gce\Resources\filter.png" />
+    <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_running.png" />
+    <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_stoped.png" />
+	<Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_transition.png" />
+    <Resource Include="CloudExplorerSources\Gae\Resources\service_icon.png" />
     <Resource Include="CloudExplorer\Resources\warning_icon.png" />
     <Resource Include="CloudExplorer\Resources\logo_cloud.png" />
     <Resource Include="Controls\Resources\step_10_dark.png" />
@@ -324,6 +337,10 @@
     </Reference>
     <Reference Include="Google.Apis, Version=1.16.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.1.16.0\lib\net45\Google.Apis.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Google.Apis.Appengine.v1, Version=1.16.0.579, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Appengine.v1.1.16.0.579\lib\portable-net45+netcore45+wpa81+wp8\Google.Apis.Appengine.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Apis.Auth, Version=1.16.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">

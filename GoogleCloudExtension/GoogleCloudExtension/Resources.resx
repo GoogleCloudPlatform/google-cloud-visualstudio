@@ -933,5 +933,213 @@
     <value>Manage credentials</value>
     <comment>Caption used in the hyperlink shown in the Windows credentials chooser dialog.</comment>
   </data>
+  <data name="CloudExplorerGaeFailedInstancesMessage" xml:space="preserve">
+    <value>Failed to load the list of Google Cloud App Engine instances</value>
+    <comment>Message shown in the output window when failed to load list of GAE instances</comment>
+  </data>
+  <data name="CloudExplorerGaeFailedServicesMessage" xml:space="preserve">
+    <value>Failed to load the list of Google Cloud App Engine services</value>
+    <comment>Message shown in the output window when failed to load list of GAE services.</comment>
+  </data>
+  <data name="CloudExplorerGaeFailedToLoadInstancesCaption" xml:space="preserve">
+    <value>Failed to load instances.</value>
+    <comment>Caption shown when failed to load GAE instances.</comment>
+  </data>
+  <data name="CloudExplorerGaeFailedToLoadServicesCaption" xml:space="preserve">
+    <value>Failed to load services.</value>
+    <comment>Caption shown when failed to load GAE services,</comment>
+  </data>
+  <data name="CloudExplorerGaeFailedToLoadVersionsCaption" xml:space="preserve">
+    <value>Failed to load versions.</value>
+    <comment>Caption shown when failed to load GAE versions.</comment>
+  </data>
+  <data name="CloudExplorerGaeFailedVersionsMessage" xml:space="preserve">
+    <value>Failed to load the list of Google Cloud App Engine versions</value>
+    <comment>Message shown in the output window when failed to load list of GAE versions</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceCategory" xml:space="preserve">
+    <value>Instance Properties</value>
+    <comment>Category for the GAE instance properties.</comment>
+  </data>
+  <data name="CloudExplorerGaeLoadingInstancesCaption" xml:space="preserve">
+    <value>Loading instances...</value>
+    <comment>Caption shown when loading GAE instances.</comment>
+  </data>
+  <data name="CloudExplorerGaeLoadingServicesCaption" xml:space="preserve">
+    <value>Loading services...</value>
+    <comment>Caption shown when loading GAE services.</comment>
+  </data>
+  <data name="CloudExplorerGaeLoadingVersionCaption" xml:space="preserve">
+    <value>Loading versions...</value>
+    <comment>Caption shown when loading GAE versions.</comment>
+  </data>
+  <data name="CloudExplorerGaeNoInstancesFoundCaption" xml:space="preserve">
+    <value>No instances found.</value>
+    <comment>Caption shown when no GAE instances are found.</comment>
+  </data>
+  <data name="CloudExplorerGaeNoServicesFoundCaption" xml:space="preserve">
+    <value>No services found.</value>
+    <comment>Caption shown when no GAE services are found.</comment>
+  </data>
+  <data name="CloudExplorerGaeNoVersionsFoundCaption" xml:space="preserve">
+    <value>No versions found.</value>
+    <comment>Caption shown when no GAE versions are found.</comment>
+  </data>
+  <data name="CloudExplorerGaeRootNodeCaption" xml:space="preserve">
+    <value>Google App Engine</value>
+    <comment>Caption for the root node in the GAE source.</comment>
+  </data>
+  <data name="CloudExplorerGaeServiceCategory" xml:space="preserve">
+    <value>Service Properties</value>
+    <comment>Category for the GAE service properties.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionCategory" xml:space="preserve">
+    <value>Version Properties</value>
+    <comment>Category for the GAE version properties.</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceAppEngineReleaseDisplayName" xml:space="preserve">
+    <value>App Engine Release</value>
+    <comment>The display name for the GAE instance app engine release</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceAverageLatencyDisplayName" xml:space="preserve">
+    <value>Average Latency</value>
+    <comment>The display name for the GAE instance average latency</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceMemoryUsageDisplayName" xml:space="preserve">
+    <value>Memory Usage</value>
+    <comment>The display name for the GAE instance memory usage.</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceStartTimeDisplayName" xml:space="preserve">
+    <value>Start Time</value>
+    <comment>The display name for the GAE instance start time.</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceVirtualMachineCategory" xml:space="preserve">
+    <value>Instance Virtual Machine Properties</value>
+    <comment>Category for the GAE instance virtual machine properties.</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceVirtualMachineIdDisplayName" xml:space="preserve">
+    <value>Id</value>
+    <comment>The display name for the GAE instance virtual machine id.</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceVirtualMachineNameDisplayName" xml:space="preserve">
+    <value>Name</value>
+    <comment>The display name for the GAE instance virtual machine name.</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceVirtualMachineStatusDisplayName" xml:space="preserve">
+    <value>Status</value>
+    <comment>The display name for the GAE instance virtual machine status.</comment>
+  </data>
+  <data name="CloudExplorerGaeInstanceVirtualMachineZoneDisplayName" xml:space="preserve">
+    <value>Zone</value>
+    <comment>The display name for the GAE instance virtual machine zone.</comment>
+  </data>
+  <data name="CloudExplorerGaeServiceOpen" xml:space="preserve">
+    <value>Open Running Service</value>
+    <comment>Header for the menu that opens the service in a browser.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionCreationTimeDisplayName" xml:space="preserve">
+    <value>Creation Time</value>
+    <comment>The display name for the GAE version creation time</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionInstanceClassDisplayName" xml:space="preserve">
+    <value>Instance Class</value>
+    <comment>The display name for the GAE version instance class</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionResoucesDiskDisplayName" xml:space="preserve">
+    <value>Disk (GB)</value>
+    <comment>The display name for the GAE version resource disk.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionResoucesMemoryDisplayName" xml:space="preserve">
+    <value>Memory (GB)</value>
+    <comment>The display name for the GAE version resource memory.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionResourcesCategory" xml:space="preserve">
+    <value>Version Resouces Properties</value>
+    <comment>Category for the GAE version resources properties.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionVirtualMachineDisplayName" xml:space="preserve">
+    <value>Virtual Machine</value>
+    <comment>The display name for the GAE version virtual machine</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionOpen" xml:space="preserve">
+    <value>Open Running Version</value>
+    <comment>Header for the menu that opens the version in a browser.</comment>
+  </data>
+  <data name="CloudExplorerGaeShowFlexAndStandardVersions" xml:space="preserve">
+    <value>Show Flexible and Standard Versions</value>
+    <comment>Menu item to show flexible and standardGAE versions of a service</comment>
+  </data>
+  <data name="CloudExplorerGaeShowFlexVersions" xml:space="preserve">
+    <value>Show Only Flexible Versions</value>
+    <comment>Menu item to show only flexible GAE versions of a service</comment>
+  </data>
+  <data name="CloudExplorerGaeShowAllRuntimes" xml:space="preserve">
+    <value>Show All Runtimes</value>
+    <comment>Menu item to show all GAE runtimes of a service</comment>
+  </data>
+  <data name="CloudExplorerGaeShowDotNetRuntimes" xml:space="preserve">
+    <value>Show Only .NET Runtimes</value>
+    <comment>Menu item to show only .net GAE runtimes of a service</comment>
+  </data>
+  <data name="CloudExplorerGaeShowVersionsWithTraffic" xml:space="preserve">
+    <value>Show Only Versions with Traffic</value>
+    <comment>Menu item to show only GAE versions of a service with traffic</comment>
+  </data>
+  <data name="CloudExplorerGaeShowWithAndWithoutTraffic" xml:space="preserve">
+    <value>Show Versions with and without Traffic</value>
+    <comment>Menu item to show GAE versions of a service with and without traffic</comment>
+  </data>
+  <data name="CloudExplorerGaeStartVersion" xml:space="preserve">
+    <value>Start Version</value>
+    <comment>Header for the menu that starts the version.</comment>
+  </data>
+  <data name="CloudExplorerGaeStopVersion" xml:space="preserve">
+    <value>Stop Version</value>
+    <comment>Header for the menu that stops the version.</comment>
+  </data>
+  <data name="CloudExplorerGaeUpdateServingStatusErrorMessage" xml:space="preserve">
+    <value>Failed to updated the serving status.</value>
+    <comment>Message shown when an attempt to updated the serving status fails.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionStartServingMessage" xml:space="preserve">
+    <value>Starting version...</value>
+    <comment>Message shown when a version is starting.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionStopServingMessage" xml:space="preserve">
+    <value>Stopping version...</value>
+    <comment>Message shown when a version is stopping.</comment>
+  </data>
+  <data name="CloudExplorerGaeDeleteService" xml:space="preserve">
+    <value>Delete Service</value>
+    <comment>Header for the menu that deletes the service.</comment>
+  </data>
+  <data name="CloudExplorerGaeDeleteServiceConfirmationPromptMessage" xml:space="preserve">
+    <value>Are you sure you want to delete service {0}?</value>
+    <comment>The message for the confirmation prompt for deleteing a service. {0) is the service.</comment>
+  </data>
+  <data name="CloudExplorerGaeDeleteServiceErrorMessage" xml:space="preserve">
+    <value>Failed to delete service.</value>
+    <comment>Message shown when an attempt to delete a service fails.</comment>
+  </data>
+  <data name="CloudExplorerGaeDeleteVersion" xml:space="preserve">
+    <value>Delete Version</value>
+    <comment>Header for the menu that deletes the version.</comment>
+  </data>
+  <data name="CloudExplorerGaeDeleteVersionConfirmationPromptMessage" xml:space="preserve">
+    <value>Are you sure you want to delete {0}'s version {1}?</value>
+    <comment>The message for the confirmation prompt for deleteing a version. {0) service, {1} is the version.</comment>
+  </data>
+  <data name="CloudExplorerGaeDeleteVersionErrorMessage" xml:space="preserve">
+    <value>Failed to delete version.</value>
+    <comment>Message shown when an attempt to delete a version fails.</comment>
+  </data>
+  <data name="CloudExplorerGaeServiceDeleteMessage" xml:space="preserve">
+    <value>Deleting service {0}...</value>
+    <comment>Message shown when a service is being deleted. {0} is the service name.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionDeleteMessage" xml:space="preserve">
+    <value>Deleting version...</value>
+    <comment>Message shown when a version is being deleted.</comment>
+  </data>
 </root>
 
