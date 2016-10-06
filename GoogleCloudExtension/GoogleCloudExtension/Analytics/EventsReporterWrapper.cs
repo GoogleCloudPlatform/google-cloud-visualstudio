@@ -26,6 +26,7 @@ namespace GoogleCloudExtension.Analytics
     internal abstract class EventsReporterWrapper
     {
         public const string ExtensionEventType = "visualstudio";
+        public const string ExtensionEventSource = "virtual.visualstudio";
 
         private const string PropertyId = "UA-36037335-1";
 
@@ -62,8 +63,10 @@ namespace GoogleCloudExtension.Analytics
         public static void ReportEvent(AnalyticsEvent eventData)
         {
             s_reporter.Value?.ReportEvent(
+                source: ExtensionEventSource,
                 eventType: ExtensionEventType,
                 eventName: eventData.Name,
+                userLoggedIn: CredentialsStore.Default.CurrentAccount != null,
                 projectNumber: CredentialsStore.Default.CurrentProjectNumericId,
                 metadata: eventData.Metadata);
         }
