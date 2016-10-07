@@ -29,9 +29,11 @@
 
                     <TextBlock TextWrapping="Wrap" Margin="3,0,3,5" VerticalAlignment="Center"  
                                Text="{x:Static ext:Resources.SplitTrafficWindowSplitByMessage}"/>
-                    <RadioButton Content="IP Address" GroupName="ShardBy" Grid.Column="1"
+                    <RadioButton Content="{x:Static ext:Resources.SplitTrafficWindowIpAddressLabel}"
+                                 GroupName="ShardBy" Grid.Column="1"
                                  IsChecked="{Binding IsIpChecked}" VerticalAlignment="Center" />
-                    <RadioButton Content="Cookie" GroupName="ShardBy" Grid.Column="2"
+                    <RadioButton Content="{x:Static ext:Resources.SplitTrafficWindowCookieLabel}"
+                                 GroupName="ShardBy" Grid.Column="2"
                                  IsChecked="{Binding IsCookieChecked}" VerticalAlignment="Center" />
                 </Grid>
             </Border>

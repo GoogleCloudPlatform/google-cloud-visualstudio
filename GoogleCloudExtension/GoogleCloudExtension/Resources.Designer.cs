@@ -2284,6 +2284,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cookie.
+        /// </summary>
+        public static string SplitTrafficWindowCookieLabel {
+            get {
+                return ResourceManager.GetString("SplitTrafficWindowCookieLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Each traffic allocation must be greater than or equal to 1% and less than or equal to 100%.
         /// </summary>
         public static string SplitTrafficWindowInvalidPercentRangeErrorMessage {
@@ -2307,6 +2316,15 @@ namespace GoogleCloudExtension {
         public static string SplitTrafficWindowInvalidPercentTitle {
             get {
                 return ResourceManager.GetString("SplitTrafficWindowInvalidPercentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to IP Address.
+        /// </summary>
+        public static string SplitTrafficWindowIpAddressLabel {
+            get {
+                return ResourceManager.GetString("SplitTrafficWindowIpAddressLabel", resourceCulture);
             }
         }
         
