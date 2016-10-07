@@ -529,6 +529,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Split Traffic.
+        /// </summary>
+        public static string CloudExplorerGaeSplitTraffic {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeSplitTraffic", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start Version.
         /// </summary>
         public static string CloudExplorerGaeStartVersion {
@@ -552,6 +561,24 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGaeUpdateServingStatusErrorMessage {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeUpdateServingStatusErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to update traffic split..
+        /// </summary>
+        public static string CloudExplorerGaeUpdateTrafficSplitErrorMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeUpdateTrafficSplitErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Updating traffic split....
+        /// </summary>
+        public static string CloudExplorerGaeUpdateTrafficSplitMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeUpdateTrafficSplitMessage", resourceCulture);
             }
         }
         
@@ -2208,6 +2235,87 @@ namespace GoogleCloudExtension {
         public static string ShowPasswordWindowTitle {
             get {
                 return ResourceManager.GetString("ShowPasswordWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Version to Traffic Split.
+        /// </summary>
+        public static string SplitTrafficWindowAddVersionMessage {
+            get {
+                return ResourceManager.GetString("SplitTrafficWindowAddVersionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Each traffic allocation must be greater than or equal to 1% and less than or equal to 100%.
+        /// </summary>
+        public static string SplitTrafficWindowInvalidPercentRangeErrorMessage {
+            get {
+                return ResourceManager.GetString("SplitTrafficWindowInvalidPercentRangeErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The sum of traffic allocations must be 100% of all traffic..
+        /// </summary>
+        public static string SplitTrafficWindowInvalidPercentSumErrorMessage {
+            get {
+                return ResourceManager.GetString("SplitTrafficWindowInvalidPercentSumErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Percent.
+        /// </summary>
+        public static string SplitTrafficWindowInvalidPercentTitle {
+            get {
+                return ResourceManager.GetString("SplitTrafficWindowInvalidPercentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to %.
+        /// </summary>
+        public static string SplitTrafficWindowPercentLabel {
+            get {
+                return ResourceManager.GetString("SplitTrafficWindowPercentLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage traffic splitting of versions by:.
+        /// </summary>
+        public static string SplitTrafficWindowSplitByMessage {
+            get {
+                return ResourceManager.GetString("SplitTrafficWindowSplitByMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Traffic Split Allocations.
+        /// </summary>
+        public static string SplitTrafficWindowTitle {
+            get {
+                return ResourceManager.GetString("SplitTrafficWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Traffic Allocation.
+        /// </summary>
+        public static string SplitTrafficWindowTrafficAllocationLabel {
+            get {
+                return ResourceManager.GetString("SplitTrafficWindowTrafficAllocationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version.
+        /// </summary>
+        public static string SplitTrafficWindowVersionLabel {
+            get {
+                return ResourceManager.GetString("SplitTrafficWindowVersionLabel", resourceCulture);
             }
         }
         
