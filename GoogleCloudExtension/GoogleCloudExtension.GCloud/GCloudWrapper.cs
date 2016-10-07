@@ -108,7 +108,7 @@ namespace GoogleCloudExtension.GCloud
         private static string FormatCommand(string command, Context context)
         {
             var projectId = context?.ProjectId != null ? $"--project={context.ProjectId}" : "";
-            var credentialsPath = context?.CredentialsPath != null ? $"--credential-file-override={context.CredentialsPath}" : "";
+            var credentialsPath = context?.CredentialsPath != null ? $"--credential-file-override=\"{context.CredentialsPath}\"" : "";
             return $"gcloud {command} {projectId} {credentialsPath} --format=json";
         }
 
