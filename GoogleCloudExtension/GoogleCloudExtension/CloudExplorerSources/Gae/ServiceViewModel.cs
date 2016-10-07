@@ -231,7 +231,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         /// <summary>
         /// Update the view model with the version models for display.
         /// </summary>
-        private void UpdateViewModels(List<VersionViewModel> versions)
+        private void UpdateViewModels(IEnumerable<VersionViewModel> versions)
         {
             Children.Clear();
             foreach (var version in versions)
