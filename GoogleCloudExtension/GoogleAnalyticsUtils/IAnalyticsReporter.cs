@@ -35,7 +35,8 @@ namespace GoogleAnalyticsUtils
         /// </summary>
         /// <param name="page">The URL of the page.</param>
         /// <param name="title">The title of the page.</param>
+        /// <param name="host">The host name for the page.</param>
         /// <param name="customDimensions">Custom values to report using the custom dimensions.</param>
-        void ReportPageView(string page, string title, Dictionary<int, string> customDimensions = null);
+        void ReportPageView(string page, string title, string host, Dictionary<int, string> customDimensions = null);
     }
 }

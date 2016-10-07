@@ -27,7 +27,7 @@ namespace GoogleAnalyticsUtils
     /// https://developers.google.com/analytics/devguides/collection/protocol/v1/
     internal class HitSender : IHitSender
     {
-        private const string ProductionServerUrl = "https://ssl.google-analytics.com/collect";
+        private const string ProductionServerUrl = "https://www.google-analytics.com/internal/collect";
         private const string DebugServerUrl = "https://ssl.google-analytics.com/debug/collect";
 
         private readonly Lazy<HttpClient> _httpClient;
@@ -51,7 +51,7 @@ namespace GoogleAnalyticsUtils
             using (var form = new FormUrlEncodedContent(hitData))
             using (var response = await client.PostAsync(_serverUrl, form).ConfigureAwait(false))
             {
-                DebugPrintAnalyticsOutput(response.Content.ReadAsStringAsync());
+                DebugPrintAnalyticsOutput(response.Content.ReadAsStringAsync(), hitData);
             }
         }
 
@@ -60,10 +60,15 @@ namespace GoogleAnalyticsUtils
         /// </summary>
         /// <param name="resultTask">The task resulting from the request.</param>
         [Conditional("DEBUG")]
-        private async void DebugPrintAnalyticsOutput(Task<string> resultTask)
+        private async void DebugPrintAnalyticsOutput(Task<string> resultTask, Dictionary<string, string> hitData)
         {
-            var result = await resultTask.ConfigureAwait(false);
-            Debug.WriteLine($"Output of analytics: {result}");
+            using (var form = new FormUrlEncodedContent(hitData))
+            {
+                var result = await resultTask.ConfigureAwait(false);
+                var formData = await form.ReadAsStringAsync().ConfigureAwait(false);
+                Debug.WriteLine($"Request: POST {_serverUrl} Data: {formData}");
+                Debug.WriteLine($"Output of analytics: {result}");
+            }
         }
 
         private HttpClient CreateHttpClient()

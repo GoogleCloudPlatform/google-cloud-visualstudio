@@ -1681,6 +1681,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage Credentials.
+        /// </summary>
+        public static string GcePublishStepManageCredentialsCaption {
+            get {
+                return ResourceManager.GetString("GcePublishStepManageCredentialsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publishing {0} to Compute Engine..
         /// </summary>
         public static string GcePublishStepStartMessage {
@@ -2149,6 +2158,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Generate the password for this user name.
+        /// </summary>
+        public static string ResetPasswordGeneratePasswordMessage {
+            get {
+                return ResourceManager.GetString("ResetPasswordGeneratePasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I have a password for this user name.
+        /// </summary>
+        public static string ResetPasswordHavePasswordMessage {
+            get {
+                return ResourceManager.GetString("ResetPasswordHavePasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Missing Google Cloud SDK.
         /// </summary>
         public static string ResetPasswordMissingGcloudTitle {
@@ -2167,11 +2194,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Reset Password for {0}.
+        ///   Looks up a localized string similar to Add Credential for VM {0}.
         /// </summary>
         public static string ResetPasswordWindowTitle {
             get {
                 return ResourceManager.GetString("ResetPasswordWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Setting password for user {0}.
+        /// </summary>
+        public static string ResetWindowSettingPasswordProgressMessage {
+            get {
+                return ResourceManager.GetString("ResetWindowSettingPasswordProgressMessage", resourceCulture);
             }
         }
         
@@ -2424,6 +2460,15 @@ namespace GoogleCloudExtension {
         public static string WindowsCredentialsChooserButtonToolTip {
             get {
                 return ResourceManager.GetString("WindowsCredentialsChooserButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage credentials.
+        /// </summary>
+        public static string WindowsCredentialsChooserManageCredentialsCaption {
+            get {
+                return ResourceManager.GetString("WindowsCredentialsChooserManageCredentialsCaption", resourceCulture);
             }
         }
         

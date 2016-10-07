@@ -19,6 +19,7 @@ artifacts:
 
   - path: GoogleCloudExtension\GoogleCloudExtension\bin\Debug\GoogleCloudExtension.vsix
 
-# No tests are defined as of now.
-# TODO: Enable when we have tests.
-test: off
+# Run the analytics tests.
+test:
+  assemblies:
+  - GoogleAnalyticsUtilsTests.dll

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Windows;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.ResetPassword
@@ -21,12 +22,23 @@ namespace GoogleCloudExtension.ResetPassword
     /// </summary>
     public partial class ResetPasswordWindowContent : UserControl
     {
+        private ResetPasswordViewModel ViewModel => (ResetPasswordViewModel)DataContext;
+
         public ResetPasswordWindowContent()
         {
             InitializeComponent();
 
             // Ensure focus is on the textbox.
-            _passwordBox.Focus();
+            _userName.Focus();
+
+            // Listen for changes in the password. This is needed because the Password property is not
+            // a dependency property and thus it cannot be bound to.
+            _password.PasswordChanged += OnPasswordChanged;
+        }
+
+        private void OnPasswordChanged(object sender, RoutedEventArgs e)
+        {
+            ViewModel.Password = _password.Password;
         }
     }
 }

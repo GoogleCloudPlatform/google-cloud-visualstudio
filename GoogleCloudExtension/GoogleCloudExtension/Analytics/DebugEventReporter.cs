@@ -30,18 +30,22 @@ namespace GoogleCloudExtension.Analytics
         }
 
         public void ReportEvent(
+            string source,
             string eventType,
             string eventName,
+            bool userLoggedIn = false,
             string projectNumber = null,
             Dictionary<string, string> metadata = null)
         {
             Debug.WriteLine($"Analytics Event] Event: {eventType}/{eventName} Project: {projectNumber ?? "(No Project)"} Metadata: {SerializeMetadata(metadata)}");
 
             _reporter.ReportEvent(
-                eventType,
-                eventName,
-                projectNumber,
-                metadata);
+                source: source,
+                eventType: eventType,
+                eventName: eventName,
+                userLoggedIn: userLoggedIn,
+                projectNumber: projectNumber,
+                metadata: metadata);
         }
 
         private static string SerializeMetadata(Dictionary<string, string> metadata)

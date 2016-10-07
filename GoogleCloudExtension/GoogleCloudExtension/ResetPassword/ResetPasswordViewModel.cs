@@ -29,7 +29,10 @@ namespace GoogleCloudExtension.ResetPassword
     public class ResetPasswordViewModel : ViewModelBase
     {
         private string _userName;
-        private bool _resettingPassword;
+        private string _password;
+        private bool _generatePassword = true;
+        private bool _manualPassword;
+        private bool _isResettingPassword;
         private readonly ResetPasswordWindow _owner;
         private readonly Instance _instance;
         private readonly string _projectId;
@@ -44,6 +47,47 @@ namespace GoogleCloudExtension.ResetPassword
             {
                 SetValueAndRaise(ref _userName, value);
                 RaisePropertyChanged(nameof(HasUserName));
+                UpdateOkCommand();
+            }
+        }
+
+        /// <summary>
+        /// The password the user provided manually.
+        /// </summary>
+        public string Password
+        {
+            get { return _password; }
+            set
+            {
+                SetValueAndRaise(ref _password, value);
+                RaisePropertyChanged(nameof(HasPassword));
+                UpdateOkCommand();
+            }
+        }
+
+        /// <summary>
+        /// Whether the user opted for the password to be generated.
+        /// </summary>
+        public bool GeneratePassword
+        {
+            get { return _generatePassword; }
+            set
+            {
+                SetValueAndRaise(ref _generatePassword, value);
+                UpdateOkCommand();
+            }
+        }
+
+        /// <summary>
+        /// Whether the user opted for providing a manual password.
+        /// </summary>
+        public bool ManualPassword
+        {
+            get { return _manualPassword; }
+            set
+            {
+                SetValueAndRaise(ref _manualPassword, value);
+                UpdateOkCommand();
             }
         }
 
@@ -53,14 +97,19 @@ namespace GoogleCloudExtension.ResetPassword
         public bool HasUserName => !String.IsNullOrEmpty(UserName);
 
         /// <summary>
+        /// Whether there is a password.
+        /// </summary>
+        public bool HasPassword => !String.IsNullOrEmpty(Password);
+
+        /// <summary>
         /// Whether the dialog is in the busy state.
         /// </summary>
-        public bool ResettingPassword
+        public bool IsResettingPassword
         {
-            get { return _resettingPassword; }
+            get { return _isResettingPassword; }
             set
             {
-                SetValueAndRaise(ref _resettingPassword, value);
+                SetValueAndRaise(ref _isResettingPassword, value);
                 RaisePropertyChanged(nameof(IsNotResettingPassword));
             }
         }
@@ -68,7 +117,7 @@ namespace GoogleCloudExtension.ResetPassword
         /// <summary>
         /// Negation of the ResettingPassword.
         /// </summary>
-        public bool IsNotResettingPassword => !ResettingPassword;
+        public bool IsNotResettingPassword => !IsResettingPassword;
 
         /// <summary>
         /// The command to execute to accept the changes.
@@ -88,12 +137,25 @@ namespace GoogleCloudExtension.ResetPassword
             _instance = instance;
             _projectId = projectId;
 
-            OkCommand = new WeakCommand(OnOkCommand);
+            OkCommand = new WeakCommand(OnOkCommand, canExecuteCommand: false);
             CancelCommand = new WeakCommand(OnCancelCommand);
         }
 
         private async void OnOkCommand()
         {
+            if (ManualPassword)
+            {
+                Debug.WriteLine("The user is supplying the password.");
+                Result = new WindowsInstanceCredentials
+                {
+                    User = UserName,
+                    Password = Password
+                };
+                _owner.Close();
+                return;
+            }
+
+            Debug.WriteLine("The user requested the password to be generated.");
             if (!UserPromptUtils.YesNoPrompt(
                     String.Format(Resources.ResetPasswordConfirmationPromptMessage, UserName, _instance.Name),
                     Resources.ResetPasswordConfirmationPromptTitle))
@@ -106,7 +168,7 @@ namespace GoogleCloudExtension.ResetPassword
             {
                 Debug.WriteLine($"Resetting the password for the user {UserName}");
 
-                ResettingPassword = true;
+                IsResettingPassword = true;
 
                 // The operation cannot be cancelled once it started, so we have to disable the buttons while
                 // it is in flight.
@@ -146,7 +208,7 @@ namespace GoogleCloudExtension.ResetPassword
                     userName: _userName,
                     context: context);
 
-                ResettingPassword = false;
+                IsResettingPassword = false;
             }
             catch (GCloudException ex)
             {
@@ -163,6 +225,13 @@ namespace GoogleCloudExtension.ResetPassword
         private void OnCancelCommand()
         {
             _owner.Close();
+        }
+
+        private void UpdateOkCommand()
+        {
+            // The Ok command should be enabled if the user name was specified and if (optionally)
+            // the password is specified.
+            OkCommand.CanExecuteCommand = HasUserName && (!ManualPassword || HasPassword);
         }
     }
 }
