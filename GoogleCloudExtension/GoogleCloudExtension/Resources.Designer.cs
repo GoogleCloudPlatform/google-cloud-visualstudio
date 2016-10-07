@@ -1654,6 +1654,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage Credentials.
+        /// </summary>
+        public static string GcePublishStepManageCredentialsCaption {
+            get {
+                return ResourceManager.GetString("GcePublishStepManageCredentialsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Publishing {0} to Compute Engine..
         /// </summary>
         public static string GcePublishStepStartMessage {

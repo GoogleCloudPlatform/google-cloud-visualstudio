@@ -1141,5 +1141,8 @@
     <value>Deleting version...</value>
     <comment>Message shown when a version is being deleted.</comment>
   </data>
+  <data name="GcePublishStepManageCredentialsCaption" xml:space="preserve">
+    <value>Manage Credentials</value>
+    <comment>Caption for the link shown in the GCE step of the publishing dialog for managing the credentials of the selected VM.</comment>
+  </data>
 </root>
-
