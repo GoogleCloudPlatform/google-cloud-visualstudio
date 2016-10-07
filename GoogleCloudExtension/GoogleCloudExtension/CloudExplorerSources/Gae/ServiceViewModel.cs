@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows;
+using GoogleCloudExtension.SplitTrafficManagement;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {
@@ -64,7 +65,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         public readonly GaeSourceRootViewModel root;
 
-        public readonly Service service;
+        public Service service { get; private set; }
 
         public event EventHandler ItemChanged;
 
@@ -123,6 +124,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             this.service = service;
             root = _owner;
 
+            Initialize();
+        }
+
+        private void Initialize()
+        {
             Caption = service.Id;
             Icon = s_serviceIcon.Value;
 
@@ -137,6 +143,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             UpdateContextMenu();
         }
 
+        /// <summary>
+        /// Update the context menu based on the current state of the service.
+        /// </summary>
         private void UpdateContextMenu()
         {
             // Do not allow actions when the service is loading or in an error state.
@@ -151,8 +160,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) },
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) },
                 new MenuItem { Header = Resources.CloudExplorerGaeServiceOpen, Command = new WeakCommand(OnOpenService) },
-                new Separator(),
+                
             };
+
+            if (Children.Count > 1)
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeSplitTraffic, Command = new WeakCommand(OnSplitTraffic) });
+            }
+
+            menuItems.Add(new Separator());
 
             if (!GaeUtils.AppEngineDefaultServiceName.Equals(service.Id))
             {
@@ -189,6 +205,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
+
+        /// <summary>
+        /// Present the view model based on the versions and filters.
+        /// </summary>
         private void PresentViewModels()
         {
             if (_versions == null)
@@ -214,6 +234,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             UpdateViewModels(versions.ToList());
         }
 
+        /// <summary>
+        /// Update the view model with the version models for display.
+        /// </summary>
         private void UpdateViewModels(List<VersionViewModel> versions)
         {
             Children.Clear();
@@ -227,6 +250,29 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
         }
 
+        /// <summary>
+        /// Opens the dialog to manage traffic splitting for the GAE service and 
+        /// updates the traffic split if the user makes a change.
+        /// </summary>
+        private void OnSplitTraffic()
+        {
+            SplitTrafficChange change = SplitTrafficWindow.PromptUser(service, _versions.Select(x => x.version));
+            if (change == null)
+            {
+                return;
+            }
+
+            TrafficSplit split = new TrafficSplit()
+            {
+                ShardBy = change.ShardBy,
+                Allocations = change.Allocations,
+            };
+            UpdateTrafficSplit(split);
+        }
+
+        /// <summary>
+        /// Promptes the user if they would like to delete this service.
+        /// </summary>
         private void OnDeleteService()
         {
             string confirmationMessage = String.Format(
@@ -319,6 +365,61 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Process.Start(url);
         }
 
+        /// <summary>
+        /// Update a service's traffic split.
+        /// </summary>
+        private async void UpdateTrafficSplit(TrafficSplit split)
+        {
+            IsLoading = true;
+            // Ensure there are no children and they are not expanded so a
+            // reload of children will occur after the split update happens.
+            IsExpanded = false;
+            Children.Clear();
+            UpdateContextMenu();
+            Caption = Resources.CloudExplorerGaeUpdateTrafficSplitMessage;
+            GaeDataSource datasource = root.DataSource.Value;
+
+            try
+            {
+                Task<Operation> operationTask = root.DataSource.Value.UpdateServiceTrafficSplit(split, service.Id);
+                Func<Operation, Task<Operation>> fetch = (o) => datasource.GetOperationAsync(o.GetOperationId());
+                Predicate<Operation> stopPolling = (o) => o.Done ?? false;
+                Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);
+                if (operation.Error != null)
+                {
+                    throw new DataSourceException(operation.Error.Message);
+                }
+                service = await datasource.GetServiceAsync(service.Id);
+            }
+            catch (DataSourceException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(ex.Message,
+                    Resources.CloudExplorerGaeUpdateTrafficSplitErrorMessage);
+            }
+            catch (TimeoutException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(
+                    Resources.CloudExploreOperationTimeoutMessage,
+                    Resources.CloudExplorerGaeDeleteServiceErrorMessage);
+            }
+            catch (OperationCanceledException ex)
+            {
+                IsError = true;
+                UserPromptUtils.ErrorPrompt(
+                    Resources.CloudExploreOperationCanceledMessage,
+                    Resources.CloudExplorerGaeDeleteServiceErrorMessage);
+            }
+            finally { 
+                IsLoading = false;
+                Initialize();
+            }
+        }
+
+        /// <summary>
+        /// Deletes 'this' service.
+        /// </summary>
         private async void DeleteService()
         {
             IsLoading = true;
@@ -362,7 +463,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             {
                 IsLoading = false;
 
-                // Re-initialize the instance as it will have a new version.
                 if (!IsError)
                 {
                     // Remove the deleted child.

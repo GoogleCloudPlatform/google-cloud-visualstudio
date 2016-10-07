@@ -30,6 +30,7 @@ namespace GoogleCloudExtension.DataSources
     public class GaeDataSource : DataSourceBase<AppengineService>
     {
         private static readonly string ServingStatusUpdateMask = "servingStatus";
+        private static readonly string TrafficSplitUpdateMask = "split";
 
         /// <summary>
         /// Initializes an instance of the data source.
@@ -84,6 +85,25 @@ namespace GoogleCloudExtension.DataSources
         }
 
         /// <summary>
+        /// Gets a GAE service for the given project and service id.
+        /// </summary>
+        /// <param name="serviceId">The id of the service</param>
+        /// <returns>The GAE service.</returns>
+        public async Task<Service> GetServiceAsync(string serviceId)
+        {
+            try
+            {
+                var request = Service.Apps.Services.Get(ProjectId, serviceId);
+                return await request.ExecuteAsync();
+            }
+            catch (GoogleApiException ex)
+            {
+                Debug.WriteLine($"Failed to get service: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
         /// Deletes a GAE service for the given project and service id.
         /// </summary>
         /// <param name="serviceId">The id of the service</param>
@@ -98,6 +118,33 @@ namespace GoogleCloudExtension.DataSources
             catch (GoogleApiException ex)
             {
                 Debug.WriteLine($"Failed to delete service: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Update a GAE services's traffic split.
+        /// </summary>
+        /// <param name="split">The traffic split to set.</param>
+        /// <param name="serviceId">The id of the service</param>
+        /// <returns>The GAE operation for the update.</returns>
+        public async Task<Operation> UpdateServiceTrafficSplit(TrafficSplit split, string serviceId)
+        {
+            try
+            {
+                // Create a service with just the traffic split set.
+                Service service = new Service()
+                {
+                    Split = split
+                };
+                var request = Service.Apps.Services.Patch(service, ProjectId, serviceId);
+                // Only update the traffic split.
+                request.UpdateMask = TrafficSplitUpdateMask;
+                return await request.ExecuteAsync();
+            }
+            catch (GoogleApiException ex)
+            {
+                Debug.WriteLine($"Failed to update traffic split: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
             }
         }

@@ -1089,4 +1089,52 @@
     <value>Deleting version...</value>
     <comment>Message shown when a version is being deleted.</comment>
   </data>
+  <data name="CloudExplorerGaeSplitTraffic" xml:space="preserve">
+    <value>Split Traffic</value>
+    <comment>Menu item to open the split traffic dialog.</comment>
+  </data>
+  <data name="CloudExplorerGaeUpdateTrafficSplitErrorMessage" xml:space="preserve">
+    <value>Failed to update traffic split.</value>
+    <comment>Message shown when an attempt to update a traffic split fails.</comment>
+  </data>
+  <data name="CloudExplorerGaeUpdateTrafficSplitMessage" xml:space="preserve">
+    <value>Updating traffic split...</value>
+    <comment>Message shown when a traffic split is being updated.</comment>
+  </data>
+  <data name="SplitTrafficWindowAddVersionMessage" xml:space="preserve">
+    <value>Add Version to Traffic Split</value>
+    <comment>Button label to add a version to the traffic splits.</comment>
+  </data>
+  <data name="SplitTrafficWindowInvalidPercentRangeErrorMessage" xml:space="preserve">
+    <value>Each traffic allocation must be greater than or equal to 1% and less than or equal to 100%</value>
+    <comment>Message for an error message in the split traffic dialog for an invalid percentage out of range.</comment>
+  </data>
+  <data name="SplitTrafficWindowInvalidPercentSumErrorMessage" xml:space="preserve">
+    <value>The sum of traffic allocations must be 100% of all traffic.</value>
+    <comment>Message for an error message in the split traffic dialog for an invalid percentage sum.</comment>
+  </data>
+  <data name="SplitTrafficWindowInvalidPercentTitle" xml:space="preserve">
+    <value>Invalid Percent</value>
+    <comment>Title for an error message in the split traffic dialog for an invalid percent.</comment>
+  </data>
+  <data name="SplitTrafficWindowPercentLabel" xml:space="preserve">
+    <value>%</value>
+    <comment>Label to denoate a percentage.</comment>
+  </data>
+  <data name="SplitTrafficWindowSplitByMessage" xml:space="preserve">
+    <value>Manage traffic splitting of versions by:</value>
+    <comment>Label for the option of how to split the versions traffic.</comment>
+  </data>
+  <data name="SplitTrafficWindowTitle" xml:space="preserve">
+    <value>Traffic Split Allocations</value>
+    <comment>Tittle for the split traffic dialog.</comment>
+  </data>
+  <data name="SplitTrafficWindowTrafficAllocationLabel" xml:space="preserve">
+    <value>Traffic Allocation</value>
+    <comment>Label to denoate a traffic allocation.</comment>
+  </data>
+  <data name="SplitTrafficWindowVersionLabel" xml:space="preserve">
+    <value>Version</value>
+    <comment>Label to denoate a version.</comment>
+  </data>
 </root>

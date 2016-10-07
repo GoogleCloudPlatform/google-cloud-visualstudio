@@ -20,6 +20,16 @@ namespace GoogleCloudExtension.DataSources
     public static class GaeServiceExtensions
     {
         /// <summary>
+        /// The value of a traffic split by IP address for a service.
+        /// </summary>
+        public static readonly string ShardByIp = "IP";
+
+        /// <summary>
+        /// The value of a traffic split by cookies for a service.
+        /// </summary>
+        public static readonly string ShardByCookie = "COOKIE";
+
+        /// <summary>
         /// Get the traffic allocation of a version.
         /// </summary>
         /// <param name="service"></param>
