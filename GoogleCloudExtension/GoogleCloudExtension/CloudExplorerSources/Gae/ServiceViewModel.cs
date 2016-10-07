@@ -25,6 +25,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows;
 using GoogleCloudExtension.SplitTrafficManagement;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {
@@ -331,6 +333,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                         UpdateContextMenu();
                     }
                 }
+
+                EventsReporterWrapper.ReportEvent(GaeVersionsLoadedEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException ex)
             {
@@ -338,6 +342,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 GcpOutputWindow.OutputLine(ex.Message);
                 GcpOutputWindow.Activate();
 
+                EventsReporterWrapper.ReportEvent(GaeVersionsLoadedEvent.Create(CommandStatus.Failure));
                 throw new CloudExplorerSourceException(ex.Message, ex);
             }
         }
@@ -384,28 +389,36 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                     throw new DataSourceException(operation.Error.Message);
                 }
                 service = await datasource.GetServiceAsync(service.Id);
+                EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Success));
             }
-            catch (DataSourceException ex)
+            catch (Exception ex)
             {
+                EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Failure));
                 IsError = true;
-                UserPromptUtils.ErrorPrompt(ex.Message,
-                    Resources.CloudExplorerGaeUpdateTrafficSplitErrorMessage);
-            }
-            catch (TimeoutException ex)
-            {
-                IsError = true;
+                var message = "";
+
+                if (ex is DataSourceException)
+                {
+                    message = ex.Message;
+                }
+                else if (ex is TimeoutException)
+                {
+                    message = Resources.CloudExploreOperationTimeoutMessage;
+                }
+                else if (ex is OperationCanceledException)
+                {
+                    message = Resources.CloudExploreOperationCanceledMessage;
+                }
+                else
+                {
+                    throw;
+                }
+
                 UserPromptUtils.ErrorPrompt(
-                    Resources.CloudExploreOperationTimeoutMessage,
-                    Resources.CloudExplorerGaeDeleteServiceErrorMessage);
+                   message, Resources.CloudExplorerGaeDeleteServiceErrorMessage);
             }
-            catch (OperationCanceledException ex)
+            finally
             {
-                IsError = true;
-                UserPromptUtils.ErrorPrompt(
-                    Resources.CloudExploreOperationCanceledMessage,
-                    Resources.CloudExplorerGaeDeleteServiceErrorMessage);
-            }
-            finally { 
                 IsLoading = false;
                 Initialize();
             }
@@ -432,26 +445,33 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 {
                     throw new DataSourceException(operation.Error.Message);
                 }
+                EventsReporterWrapper.ReportEvent(GaeServiceDeletedEvent.Create(CommandStatus.Success));
             }
-            catch (DataSourceException ex)
+            catch (Exception ex)
             {
+                EventsReporterWrapper.ReportEvent(GaeServiceDeletedEvent.Create(CommandStatus.Failure));
                 IsError = true;
-                UserPromptUtils.ErrorPrompt(ex.Message,
-                    Resources.CloudExplorerGaeDeleteServiceErrorMessage);
-            }
-            catch (TimeoutException ex)
-            {
-                IsError = true;
+                var message = "";
+
+                if (ex is DataSourceException)
+                {
+                    message = ex.Message;
+                }
+                else if (ex is TimeoutException)
+                {
+                    message = Resources.CloudExploreOperationTimeoutMessage;
+                }
+                else if (ex is OperationCanceledException)
+                {
+                    message = Resources.CloudExploreOperationCanceledMessage;
+                }
+                else
+                {
+                    throw;
+                }
+
                 UserPromptUtils.ErrorPrompt(
-                    Resources.CloudExploreOperationTimeoutMessage,
-                    Resources.CloudExplorerGaeDeleteServiceErrorMessage);
-            }
-            catch (OperationCanceledException ex)
-            {
-                IsError = true;
-                UserPromptUtils.ErrorPrompt(
-                    Resources.CloudExploreOperationCanceledMessage,
-                    Resources.CloudExplorerGaeDeleteServiceErrorMessage);
+                   message, Resources.CloudExplorerGaeDeleteServiceErrorMessage);
             }
             finally
             {

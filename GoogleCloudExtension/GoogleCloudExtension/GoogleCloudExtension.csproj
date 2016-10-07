@@ -63,6 +63,13 @@
     <Compile Include="Analytics\Events\ChangedFirewallPortsEvent.cs" />
     <Compile Include="Analytics\Events\CloudExplorerInteractionEvent.cs" />
     <Compile Include="Analytics\Events\CloudSQLInstancesLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeInstancesLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeServiceDeletedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeServicesLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeTrafficSplitUpdatedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeVersionDeletedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeVersionServingStatusUpdatedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeVersionsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GceVMsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GcsBucketsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\NewInstallEvent.cs" />
@@ -195,7 +202,7 @@
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
     <Compile Include="SolutionUtils\ISolutionProject.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
-	<Compile Include="Utils\GaeUtils.cs" />
+    <Compile Include="Utils\GaeUtils.cs" />
     <Compile Include="Utils\ProgressBarHelper.cs" />
     <Compile Include="Utils\ShellUtils.cs" />
     <Compile Include="Utils\StatusbarHelper.cs" />

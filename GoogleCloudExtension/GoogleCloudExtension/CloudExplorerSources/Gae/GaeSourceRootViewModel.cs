@@ -23,6 +23,8 @@ using System.Threading.Tasks;
 using System.Linq;
 using GoogleCloudExtension.Accounts;
 using Google.Apis.Appengine.v1.Data;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {
@@ -132,6 +134,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                         Children.Add(s_noItemsPlacehoder);
                     }
                 }
+                EventsReporterWrapper.ReportEvent(GaeServicesLoadedEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException ex)
             {
@@ -139,6 +142,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 GcpOutputWindow.OutputLine(ex.Message);
                 GcpOutputWindow.Activate();
 
+                EventsReporterWrapper.ReportEvent(GaeServicesLoadedEvent.Create(CommandStatus.Failure));
                 throw new CloudExplorerSourceException(ex.Message, ex);
             }
         }
