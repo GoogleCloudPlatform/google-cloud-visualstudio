@@ -208,6 +208,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             try
             {
+                _instancesPerZone = null;
                 _instancesPerZone = await _dataSource.Value.GetAllInstancesPerZonesAsync();
                 PresentViewModels();
 
@@ -236,6 +237,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void PresentViewModels()
         {
+            // If there's no data then there's nothing to do.
+            if (_instancesPerZone == null)
+            {
+                return;
+            }
+
             IEnumerable<TreeNode> viewModels;
             if (_showZones)
             {
