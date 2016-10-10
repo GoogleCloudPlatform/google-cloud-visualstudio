@@ -16,6 +16,10 @@ using System;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// This class wraps an <seealso cref="Action"/> with the <seealso cref="ErrorHandlerUtils.HandleExceptions(Action)"/>
+    /// method to handle all exceptions that might escape correctly.
+    /// </summary>
     public class ProtectedAction
     {
         private readonly Action _action;
@@ -25,12 +29,20 @@ namespace GoogleCloudExtension.Utils
             _action = action;
         }
 
+        /// <summary>
+        /// Invokes the action handling all of the exceptions that escape.
+        /// </summary>
         public void Invoke()
         {
             ErrorHandlerUtils.HandleExceptions(() => _action());
         }
     }
 
+    /// <summary>
+    /// This class wraps an <seealso cref="Action{T}"/> with the <seealso cref="ErrorHandlerUtils.HandleExceptions(Action)"/>
+    /// method to handle all exceptions that might escape correctly.
+    /// </summary>
+    /// <typeparam name="TIn"></typeparam>
     public class ProtectedAction<TIn>
     {
         private readonly Action<TIn> _action;
@@ -40,12 +52,20 @@ namespace GoogleCloudExtension.Utils
             _action = action;
         }
 
+        /// <summary>
+        /// Invokes the action handling all of the exceptions that escape.
+        /// </summary>
         public void Invoke(TIn param1)
         {
             ErrorHandlerUtils.HandleExceptions(() => _action.Invoke(param1));
         }
     }
 
+    /// <summary>
+    /// This class wraps an <seealso cref="Action{T1, T2}"/> with the <seealso cref="ErrorHandlerUtils.HandleExceptions(Action)"/>
+    /// method to handle all exceptions that might escape correctly.
+    /// </summary>
+    /// <typeparam name="TIn"></typeparam>
     public class ProtectedAction<TIn1, TIn2>
     {
         private readonly Action<TIn1, TIn2> _action;
@@ -55,6 +75,9 @@ namespace GoogleCloudExtension.Utils
             _action = action;
         }
 
+        /// <summary>
+        /// Invokes the action handling all of the exceptions that escape.
+        /// </summary>
         public void Invoke(TIn1 param1, TIn2 param2)
         {
             ErrorHandlerUtils.HandleExceptions(() => _action.Invoke(param1, param2));

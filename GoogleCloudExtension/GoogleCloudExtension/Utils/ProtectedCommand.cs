@@ -17,6 +17,10 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// This class implements the <seealso cref="ICommand"/> interface and wraps the action for the command
+    /// in <seealso cref="ErrorHandlerUtils.HandleExceptions(Action)"/> to handle the exceptions that could escape.
+    /// </summary>
     public class ProtectedCommand : ICommand
     {
         private bool _canExecuteCommand;
@@ -63,6 +67,10 @@ namespace GoogleCloudExtension.Utils
         }
     }
 
+    /// <summary>
+    /// This class implements the <seealso cref="ICommand"/> interface and wraps the action for the command
+    /// in <seealso cref="ErrorHandlerUtils.HandleExceptions(Action)"/> to handle the exceptions that could escape.
+    /// </summary>
     public class ProtectedCommand<T> : ICommand
     {
         private bool _canExecuteCommand;
