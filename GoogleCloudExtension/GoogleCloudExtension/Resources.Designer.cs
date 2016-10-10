@@ -1141,6 +1141,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to perform the operation: {0}.
+        /// </summary>
+        public static string ExceptionPromptMessage {
+            get {
+                return ResourceManager.GetString("ExceptionPromptMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation failed.
+        /// </summary>
+        public static string ExceptionPromptTitle {
+            get {
+                return ResourceManager.GetString("ExceptionPromptTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The user account {0} already exists..
         /// </summary>
         public static string ManageAccountsAccountAlreadyExistsPromptMessage {

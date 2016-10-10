@@ -79,14 +79,26 @@ namespace GoogleCloudExtension.Utils
                     OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
         }
 
+        /// <summary>
+        /// Shows an error message for the given exception.
+        /// </summary>
+        /// <param name="ex">The exception to show.</param>
         public static void ExceptionPrompt(Exception ex)
         {
-            ErrorPrompt("Operation failed", $"Failed to perform the operation: {ex.Message}");
+            ErrorPrompt(
+                Resources.ExceptionPromptTitle,
+                String.Format(Resources.ExceptionPromptMessage, ex.Message));
         }
 
+        /// <summary>
+        /// Shows an error message for the given <seealso cref="AggregateException"/>.
+        /// </summary>
+        /// <param name="ex">The exception to show.</param>
         public static void ExceptionPrompt(AggregateException ex)
         {
-            ErrorPrompt("Operation failed", $"Failed to perform the operation: {ex.InnerException.Message}");
+            ErrorPrompt(
+                Resources.ExceptionPromptTitle,
+                String.Format(Resources.ExceptionPromptMessage, ex.InnerException.Message));
         }
     }
 }
