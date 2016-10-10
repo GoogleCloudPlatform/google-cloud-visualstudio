@@ -23,6 +23,7 @@ namespace GoogleCloudExtension.Utils
                 {
                     throw;
                 }
+                UserPromptUtils.ExceptionPrompt(ex);
             }
             catch (Exception ex)
             {
@@ -31,6 +32,7 @@ namespace GoogleCloudExtension.Utils
                 {
                     throw;
                 }
+                UserPromptUtils.ExceptionPrompt(ex);
             }
         }
     }

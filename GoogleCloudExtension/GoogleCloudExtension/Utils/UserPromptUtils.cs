@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
@@ -76,6 +77,16 @@ namespace GoogleCloudExtension.Utils
                     OLEMSGICON.OLEMSGICON_CRITICAL,
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,
                     OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+        }
+
+        public static void ExceptionPrompt(Exception ex)
+        {
+            ErrorPrompt("Operation failed", $"Failed to perform the operation: {ex.Message}");
+        }
+
+        public static void ExceptionPrompt(AggregateException ex)
+        {
+            ErrorPrompt("Operation failed", $"Failed to perform the operation: {ex.InnerException.Message}");
         }
     }
 }
