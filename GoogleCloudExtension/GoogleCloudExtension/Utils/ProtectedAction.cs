@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.Utils
         }
     }
 
-    class ProtectedAction<TIn1, TIn2>
+    public class ProtectedAction<TIn1, TIn2>
     {
         private readonly Action<TIn1, TIn2> _action;
 
