@@ -25,7 +25,6 @@ namespace GoogleCloudExtension.CloudExplorer
     public partial class CloudExplorerToolWindowControl : UserControl
     {
         private readonly SelectionUtils _selectionUtils;
-        private readonly WeakAction<object, EventArgs> _onItemChangedHandler;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CloudExplorerToolWindowControl"/> class.
@@ -33,7 +32,6 @@ namespace GoogleCloudExtension.CloudExplorer
         public CloudExplorerToolWindowControl(SelectionUtils selectionUtils)
         {
             this.InitializeComponent();
-            _onItemChangedHandler = new WeakAction<object, EventArgs>(OnItemChanged);
             _selectionUtils = selectionUtils;
         }
 

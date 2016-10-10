@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.OauthLoginFlow
         {
             _owner = owner;
 
-            CloseCommand = new WeakCommand(OnCloseCommand);
+            CloseCommand = new ProtectedCommand(OnCloseCommand);
         }
 
         private void OnCloseCommand()

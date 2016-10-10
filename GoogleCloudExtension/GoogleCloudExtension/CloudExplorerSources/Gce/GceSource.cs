@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             _windowsOnlyButton = new ButtonDefinition
             {
                 ToolTip = Resources.CloudExplorerGceOnlyWindowsButtonToolTip,
-                Command = new WeakCommand(OnOnlyWindowsClicked),
+                Command = new ProtectedCommand(OnOnlyWindowsClicked),
                 Icon = s_windowsOnlyButtonIcon.Value,
             };
             ActualButtons.Add(_windowsOnlyButton);

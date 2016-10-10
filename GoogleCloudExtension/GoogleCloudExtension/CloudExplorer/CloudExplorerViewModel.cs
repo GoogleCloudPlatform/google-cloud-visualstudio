@@ -213,12 +213,12 @@ namespace GoogleCloudExtension.CloudExplorer
                 {
                     Icon = s_refreshIcon.Value,
                     ToolTip = Resources.CloudExplorerRefreshButtonToolTip,
-                    Command = new WeakCommand(this.OnRefresh),
+                    Command = new ProtectedCommand(this.OnRefresh),
                 }
             };
             Buttons = Enumerable.Concat(refreshButtonEnumerable, _sources.SelectMany(x => x.Buttons));
 
-            ManageAccountsCommand = new WeakCommand(OnManageAccountsCommand);
+            ManageAccountsCommand = new ProtectedCommand(OnManageAccountsCommand);
 
             CredentialsStore.Default.CurrentAccountChanged += OnCurrentAccountChanged;
             CredentialsStore.Default.CurrentProjectIdChanged += OnCurrentProjectIdChanged;
@@ -365,7 +365,7 @@ namespace GoogleCloudExtension.CloudExplorer
             {
                 EmptyStateMessage = Resources.CloudExploreNoProjectMessage;
                 EmptyStateButtonCaption = Resources.CloudExplorerNoProjectButtonCaption;
-                EmptyStateCommand = new WeakCommand(OnNavigateToCloudConsole);
+                EmptyStateCommand = new ProtectedCommand(OnNavigateToCloudConsole);
             }
         }
 

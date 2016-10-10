@@ -88,9 +88,9 @@ namespace GoogleCloudExtension.ShowPassword
             Password = password;
             InstanceName = instanceName;
 
-            OkCommand = new WeakCommand(OnOkCommand);
-            TogglePasswordCommand = new WeakCommand(OnTogglePasswordCommand);
-            CopyCommand = new WeakCommand(OnCopyCommand);
+            OkCommand = new ProtectedCommand(OnOkCommand);
+            TogglePasswordCommand = new ProtectedCommand(OnTogglePasswordCommand);
+            CopyCommand = new ProtectedCommand(OnCopyCommand);
         }
 
         private void OnCopyCommand()

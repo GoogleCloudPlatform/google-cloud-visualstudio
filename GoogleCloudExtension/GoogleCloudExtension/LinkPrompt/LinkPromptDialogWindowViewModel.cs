@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.LinkPrompt
         public LinkPromptDialogWindowViewModel(string text, LinkInfo link)
         {
             Text = text;
-            NavigateCommand = new WeakCommand(OnNavigateCommand);
+            NavigateCommand = new ProtectedCommand(OnNavigateCommand);
 
             _link = link;
         }

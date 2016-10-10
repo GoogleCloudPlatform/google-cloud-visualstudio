@@ -110,8 +110,8 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
             }
             Result = null;
 
-            SaveCommand = new WeakCommand(OnSaveCommand);
-            AddNetwork = new WeakCommand(OnAddNetwork);
+            SaveCommand = new ProtectedCommand(OnSaveCommand);
+            AddNetwork = new ProtectedCommand(OnAddNetwork);
         }
 
         /// <summary>

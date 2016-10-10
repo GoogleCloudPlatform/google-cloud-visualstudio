@@ -88,16 +88,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         {
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new WeakCommand(OnStatusCommand) },
+                new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new ProtectedCommand(OnStatusCommand) },
             };
 
             if (_showLocations)
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGcsShowBucketsCommand, Command = new WeakCommand(OnShowBucketsCommand) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGcsShowBucketsCommand, Command = new ProtectedCommand(OnShowBucketsCommand) });
             }
             else
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGcsShowLocationsCommand, Command = new WeakCommand(OnShowLocationsCommand) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGcsShowLocationsCommand, Command = new ProtectedCommand(OnShowLocationsCommand) });
             }
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };

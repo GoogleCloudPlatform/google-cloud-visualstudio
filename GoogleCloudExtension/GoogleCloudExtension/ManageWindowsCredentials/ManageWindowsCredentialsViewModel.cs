@@ -30,11 +30,11 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
         private readonly Instance _instance;
         private WindowsInstanceCredentials _selectedCredentials;
 
-        public WeakCommand AddCredentialsCommand { get; }
+        public ProtectedCommand AddCredentialsCommand { get; }
 
-        public WeakCommand DeleteCredentialsCommand { get; }
+        public ProtectedCommand DeleteCredentialsCommand { get; }
 
-        public WeakCommand ShowCredentialsCommand { get; }
+        public ProtectedCommand ShowCredentialsCommand { get; }
 
         public string InstanceName => _instance.Name;
 
@@ -61,9 +61,9 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
 
             CredentialsList = LoadCredentialsForInstance(instance);
 
-            AddCredentialsCommand = new WeakCommand(OnAddCredentialsCommand);
-            DeleteCredentialsCommand = new WeakCommand(OnDeleteCredentialsCommand, canExecuteCommand: false);
-            ShowCredentialsCommand = new WeakCommand(OnShowCredentialsCommand, canExecuteCommand: false);
+            AddCredentialsCommand = new ProtectedCommand(OnAddCredentialsCommand);
+            DeleteCredentialsCommand = new ProtectedCommand(OnDeleteCredentialsCommand, canExecuteCommand: false);
+            ShowCredentialsCommand = new ProtectedCommand(OnShowCredentialsCommand, canExecuteCommand: false);
         }
 
         private IEnumerable<WindowsInstanceCredentials> LoadCredentialsForInstance(Instance instance)

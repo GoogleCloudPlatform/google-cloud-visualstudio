@@ -13,7 +13,7 @@ namespace GoogleCloudExtension.Utils
         private readonly ProtectedAction _action;
 
         /// <summary>
-        /// Initializes a new instance of WeakCommand.
+        /// Initializes a new instance of ProtectedCommand.
         /// </summary>
         /// <param name="handler">The action to execute when the command is executed.</param>
         /// <param name="canExecuteCommand">Whether the command is enabled or not.</param>
@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.Utils
         private readonly ProtectedAction<T> _action;
 
         /// <summary>
-        /// Initializes the new instance of WeakCommand.
+        /// Initializes the new instance of ProtectedCommand.
         /// </summary>
         /// <param name="handler">The action to execute when executing the command.</param>
         /// <param name="canExecuteCommand">Whether the command is enabled or not.</param>
