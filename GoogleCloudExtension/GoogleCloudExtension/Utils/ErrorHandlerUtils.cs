@@ -18,8 +18,17 @@ using System.Diagnostics;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// This class implements an event handler for the exceptions that escape the given <seealso cref="Action"/>.
+    /// </summary>
     public static class ErrorHandlerUtils
     {
+        /// <summary>
+        /// Runs the given <seealso cref="Action"/> and handles all non-critical exceptions by showing an
+        /// error dialog to the user. If the exception is critical, as determiend by <seealso cref="ErrorHandler.IsCriticalException(Exception)"/>
+        /// then it is re-thrown as this could be that the process is not in a good state to continue executing.
+        /// </summary>
+        /// <param name="action"></param>
         public static void HandleExceptions(Action action)
         {
             try
