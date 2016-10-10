@@ -154,6 +154,8 @@
     </Compile>
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
     <Compile Include="Utils\ErrorHandlerUtils.cs" />
+    <Compile Include="Utils\ProtectedAction.cs" />
+    <Compile Include="Utils\ProtectedCommand.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserViewModel.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindow.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml.cs">
