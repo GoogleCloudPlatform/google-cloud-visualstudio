@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
-using System;
 using System.Windows;
 
 namespace GoogleCloudExtension.PubSubWindows
@@ -24,37 +23,31 @@ namespace GoogleCloudExtension.PubSubWindows
     /// </summary>
     public partial class NewTopicWindowContent
     {
-        private readonly WeakCommand _onCreateClick;
 
-        public NewTopicWindowContent(NewTopicData newTopicData, Action onCreateClick)
+        public NewTopicWindowContent(NewTopicViewModel newTopicViewModel)
         {
             InitializeComponent();
-            _onCreateClick = new WeakCommand(onCreateClick);
-            DataContext = newTopicData;
+            DataContext = newTopicViewModel;
         }
 
-        void createButton_Click(object sender, RoutedEventArgs routedEventArgs)
+        public static bool PromptUser(string projectId, out string topicName)
         {
-            _onCreateClick.Execute(null);
-        }
-
-        public static bool PromptUser(string projectId, out NewTopicData newTopicData)
-        {
-            newTopicData = new NewTopicData(projectId);
-            var dialog = new CommonDialogWindowBase(GoogleCloudExtension.Resources.NewSubscriptionWindowTitle)
+            var dialog = new CommonDialogWindowBase(GoogleCloudExtension.Resources.NewTopicWindowTitle)
             {
-
                 SizeToContent = SizeToContent.WidthAndHeight,
-                ResizeMode = ResizeMode.CanResize,
+                ResizeMode = ResizeMode.NoResize,
                 HasMinimizeButton = false,
                 HasMaximizeButton = false
             };
-            dialog.Content = new NewTopicWindowContent(newTopicData, () =>
+            NewTopicViewModel newTopicViewModel = new NewTopicViewModel(projectId, new WeakCommand(() =>
             {
                 dialog.DialogResult = true;
                 dialog.Close();
-            });
-            return dialog.ShowModal() == true;
+            }));
+            dialog.Content = new NewTopicWindowContent(newTopicViewModel);
+            var returnVal = dialog.ShowModal() == true;
+            topicName = newTopicViewModel.TopicName;
+            return returnVal;
         }
     }
 }

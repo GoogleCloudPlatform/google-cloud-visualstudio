@@ -5,27 +5,26 @@
         xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
         xmlns:local="clr-namespace:GoogleCloudExtension.PubSubWindows"
         xmlns:ext="clr-namespace:GoogleCloudExtension"
-        Margin="5"
         FocusManager.FocusedElement="{Binding ElementName=SubscriptionName}">
     <UserControl.Resources>
-        <Style x:Key="TextBox" TargetType="TextBox">
-            <Setter Property="Margin" Value="3"/>
-            <Setter Property="Padding" Value="1"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
-        </Style>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <theming:DefaultStyles/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5">
-        <TextBlock Margin="5" HorizontalAlignment="Center"
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+        <TextBlock HorizontalAlignment="Center" MaxWidth="300"
                    Text="{Binding TopicName, StringFormat={x:Static ext:Resources.NewSubscriptionWindowHeader}}"/>
         <DockPanel>
             <Label DockPanel.Dock="Left" Target="{Binding ElementName=SubscriptionName}" VerticalAlignment="Center"
                    Content="{x:Static ext:Resources.NewSubscriptionWindowNameLabel}"/>
-            <TextBox Name="SubscriptionName" MinWidth="200" Style="{StaticResource TextBox}"
+            <TextBox MinWidth="200"  ClipToBounds="True"
                 ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}">
                 <TextBox.Text>
-                    <Binding Path="Name" UpdateSourceTrigger="PropertyChanged">
+                    <Binding Path="Subscription.Name" UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>
-                            <local:PubSubNameValidationRule />
+                            <local:PubSubNameValidationRule/>
                         </Binding.ValidationRules>
                     </Binding>
                 </TextBox.Text>
@@ -36,20 +35,18 @@
         <DockPanel>
             <RadioButton DockPanel.Dock="Left" Name="PushRadioButton" GroupName="PushPull" IsChecked="{Binding Push}" Margin="5"
                          Content="{x:Static ext:Resources.NewSubscriptionWindowPushLabel}" VerticalAlignment="Center"/>
-            <TextBox Name="PushUrlBox" MinWidth="200" Style="{StaticResource TextBox}" Text="{Binding PushUrl}"
+            <TextBox Name="PushUrlBox" MinWidth="200" Text="{Binding PushConfig.PushEndpoint}"
                      IsEnabled="{Binding ElementName=PushRadioButton, Path=IsChecked}"/>
         </DockPanel>
         <DockPanel>
             <Label DockPanel.Dock="Left" Target="{Binding ElementName=Deadline}" VerticalAlignment="Center"
                    Content="{x:Static ext:Resources.NewSubscriptionWindowAckDeadlineLabel}"/>
-            <TextBox Name ="Deadline" Style="{StaticResource TextBox}" MinWidth="40"
-                     Text="{Binding AckDeadlineSeconds, TargetNullValue=60, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Name ="Deadline" MinWidth="40"
+                     Text="{Binding Subscription.AckDeadlineSeconds, TargetNullValue=60, UpdateSourceTrigger=PropertyChanged}"/>
         </DockPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Top">
-            <Button Margin="5" Padding="2" IsDefault="True" Click="createButton_OnClick"
-                    Content="{x:Static ext:Resources.FocusableCreateButton}"/>
-            <Button Margin="5" Padding="2" IsCancel="True"
-                    Content="{x:Static ext:Resources.FocusableCancelButton}"/>
+        <StackPanel Style="{StaticResource ButtonsPanel}">
+            <Button Content="{x:Static ext:Resources.FocusableCreateButton}" Command="{Binding CreateCommand}" IsDefault="True"/>
+            <Button Content="{x:Static ext:Resources.FocusableCancelButton}" IsCancel="True"/>
         </StackPanel>
     </StackPanel>
 </UserControl>

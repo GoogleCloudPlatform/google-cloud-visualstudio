@@ -11,14 +11,20 @@
         Margin="5"
         Padding="5"
         FocusManager.FocusedElement="{Binding ElementName=TopicName}">
-
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="5">
-        <TextBlock HorizontalAlignment="Center" Margin="5"
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <theming:DefaultStyles/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+        <TextBlock HorizontalAlignment="Center"
                    Text="{Binding Project, StringFormat={x:Static ext:Resources.NewTopicWindowTitle}}"/>
         <DockPanel>
             <Label Target="{Binding ElementName=TopicName}" DockPanel.Dock="Left"
                    Content="{x:Static ext:Resources.NewTopicWindowNameLabel}"/>
-            <TextBox x:Name="TopicName" MinWidth="200" Margin="3" Padding="2" MaxLines="1"
+            <TextBox x:Name="TopicName" MinWidth="200" MaxLines="1"
                      ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}">
                 <TextBox.Text>
                     <Binding Path="TopicName" UpdateSourceTrigger="PropertyChanged">
@@ -29,10 +35,10 @@
                 </TextBox.Text>
             </TextBox>
         </DockPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button Margin="3" Padding="2" Click="createButton_Click" IsDefault="True"
+        <StackPanel Style="{StaticResource ButtonsPanel}">
+            <Button Command="{Binding CreateCommand}" IsDefault="True"
                     Content="{x:Static ext:Resources.FocusableCreateButton}"/>
-            <Button Margin="3" Padding="2" IsCancel="True" Content="{x:Static ext:Resources.FocusableCancelButton}"/>
+            <Button IsCancel="True" Content="{x:Static ext:Resources.FocusableCancelButton}"/>
         </StackPanel>
     </StackPanel>
 </UserControl>

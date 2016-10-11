@@ -85,11 +85,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             try
             {
-                NewSubscriptionData data;
-                if (NewSubscriptionWindowContent.PromptUser(_topicItem.FullName, out data))
+                Subscription subscription;
+                if (NewSubscriptionWindowContent.PromptUser(_topicItem.FullName, out subscription))
                 {
-                    await DataSource.NewSubscriptionAsync(
-                        data.Name, data.TopicName, data.AckDeadlineSeconds, data.Push ? data.PushUrl : null);
+                    await DataSource.NewSubscriptionAsync(subscription);
                     Refresh();
                 }
             }

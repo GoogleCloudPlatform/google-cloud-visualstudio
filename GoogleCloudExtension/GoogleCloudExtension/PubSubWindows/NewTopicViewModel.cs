@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.ComponentModel;
+using GoogleCloudExtension.Utils;
 using System.Runtime.CompilerServices;
 
 namespace GoogleCloudExtension.PubSubWindows
@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.PubSubWindows
     /// <summary>
     /// Data object that backs the new topic window. Contains necessicary data for creating a new topic.
     /// </summary>
-    public class NewTopicData : INotifyPropertyChanged
+    public class NewTopicViewModel : ViewModelBase
     {
         private string _topicName;
 
@@ -36,16 +36,18 @@ namespace GoogleCloudExtension.PubSubWindows
             }
         }
 
-        public NewTopicData(string project)
+        public WeakCommand CreateCommand { get; }
+
+        public NewTopicViewModel(string project, WeakCommand createCommand)
         {
             Project = project;
+            CreateCommand = createCommand;
         }
-
-        public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+            RaisePropertyChanged(propertyName);
         }
     }
 }

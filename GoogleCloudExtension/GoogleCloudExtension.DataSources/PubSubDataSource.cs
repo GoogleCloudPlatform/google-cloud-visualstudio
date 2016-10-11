@@ -126,30 +126,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <summary>
         /// Creates a new subscription.
         /// </summary>
-        /// <param name="subscriptionName">The name of the new subscription. Does not include the project id.</param>
-        /// <param name="topicName">The name of the topic to subscribe to. Does not include the project id.</param>
-        /// <param name="ackDeadlineSeconds">The number of seconds the topic should wait for an acknoladgement before resending a message.</param>
-        /// <param name="pushUrl">The url to push to. Set to null to set a pull subscription.</param>
-        public async Task<Subscription> NewSubscriptionAsync(
-            string subscriptionName, string topicName, int? ackDeadlineSeconds, string pushUrl)
+        public async Task<Subscription> NewSubscriptionAsync(Subscription subscription)
         {
             try
             {
-                var subscription = new Subscription
-                {
-                    Name = GetSubscriptionFullName(subscriptionName),
-                    Topic = GetTopicFullName(topicName),
-                    AckDeadlineSeconds = ackDeadlineSeconds
-                };
-                if (pushUrl != null)
-                {
-                    subscription.PushConfig = new PushConfig
-                    {
-                        PushEndpoint = pushUrl
-                    };
-                }
+                string subscriptionFullName = GetSubscriptionFullName(subscription.Name);
                 ProjectsResource.SubscriptionsResource.CreateRequest request =
-                    Service.Projects.Subscriptions.Create(subscription, subscription.Name);
+                    Service.Projects.Subscriptions.Create(subscription, subscriptionFullName);
                 return await request.ExecuteAsync();
             }
             catch (GoogleApiException e)

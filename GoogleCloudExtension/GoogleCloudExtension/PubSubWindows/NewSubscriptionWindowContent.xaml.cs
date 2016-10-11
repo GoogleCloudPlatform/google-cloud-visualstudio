@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
-using System;
 using System.Windows;
 
 namespace GoogleCloudExtension.PubSubWindows
@@ -24,35 +24,31 @@ namespace GoogleCloudExtension.PubSubWindows
     /// </summary>
     public partial class NewSubscriptionWindowContent
     {
-        private WeakCommand _onClick;
-
-        public NewSubscriptionWindowContent(NewSubscriptionData data, Action onCreateClick)
+        public NewSubscriptionWindowContent(NewSubscriptionVeiwModel veiwModel)
         {
             InitializeComponent();
-            DataContext = data;
-            _onClick = new WeakCommand(onCreateClick);
+            DataContext = veiwModel;
         }
 
-        private void createButton_OnClick(object sender, EventArgs args)
+        public static bool PromptUser(string topicFullName, out Subscription model)
         {
-            _onClick.Execute(null);
-        }
-
-        public static bool PromptUser(string fullName, out NewSubscriptionData data)
-        {
-            var dialog = new CommonDialogWindowBase(GoogleCloudExtension.Resources.PubSubNewSubscriptionWindowHeader)
+            var dialog = new CommonDialogWindowBase(GoogleCloudExtension.Resources.NewSubscriptionWindowTitle)
             {
                 SizeToContent = SizeToContent.WidthAndHeight,
-                ResizeMode = ResizeMode.CanResize,
+                ResizeMode = ResizeMode.NoResize,
                 HasMinimizeButton = false,
                 HasMaximizeButton = false
             };
-            data = new NewSubscriptionData(fullName);
-            dialog.Content = new NewSubscriptionWindowContent(data, () =>
+
+            model = new Subscription { Topic = topicFullName };
+            var createCommand = new WeakCommand(() =>
             {
                 dialog.DialogResult = true;
                 dialog.Close();
             });
+
+            NewSubscriptionVeiwModel veiwModel = new NewSubscriptionVeiwModel(model, createCommand);
+            dialog.Content = new NewSubscriptionWindowContent(veiwModel);
             return dialog.ShowModal() == true;
         }
     }

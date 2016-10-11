@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.CloudExplorerSources.PubSub;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.PubSubWindows
 {
@@ -20,36 +22,31 @@ namespace GoogleCloudExtension.PubSubWindows
     /// Data objet that backs the new subscription window. It contains the information needed to create a new
     /// subscription.
     /// </summary>
-    public class NewSubscriptionData
+    public class NewSubscriptionVeiwModel : ViewModelBase
     {
 
-        public NewSubscriptionData(string topicFullName)
+        public NewSubscriptionVeiwModel(Subscription subscription, WeakCommand createCommand)
         {
-            TopicFullName = topicFullName;
+            Subscription = subscription;
+            CreateCommand = createCommand;
+            PushConfig = subscription.PushConfig ?? new PushConfig();
         }
 
-        public string Name { get; set; }
-
-        public string TopicName => PubsubSource.GetPathLeaf(TopicFullName);
-
-        /// <summary>
-        /// The full path name of the topic as given by the pubsub api.
-        /// </summary>
-        public string TopicFullName { get; }
-
-        /// <summary>
-        /// How long pub sub should wait for an acknoledgement before resending a message.
-        /// </summary>
-        public int? AckDeadlineSeconds { get; set; }
+        public string TopicName => PubsubSource.GetPathLeaf(Subscription.Topic);
 
         /// <summary>
         /// If PubSub should send a push notification rather than waiting for a pull.
         /// </summary>
-        public bool Push { get; set; } = false;
+        public bool Push
+        {
+            get { return Subscription.PushConfig == PushConfig; }
+            set { Subscription.PushConfig = value ? PushConfig : null; }
+        }
 
-        /// <summary>
-        /// The url to send a push notification too.
-        /// </summary>
-        public string PushUrl { get; set; }
+        public PushConfig PushConfig { get; }
+
+        public Subscription Subscription { get; }
+
+        public WeakCommand CreateCommand { get; }
     }
 }
