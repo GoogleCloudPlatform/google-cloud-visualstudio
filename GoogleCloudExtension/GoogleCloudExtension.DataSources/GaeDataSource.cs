@@ -133,7 +133,7 @@ namespace GoogleCloudExtension.DataSources
             try
             {
                 // Create a service with just the traffic split set.
-                Service service = new Service()
+                Service service = new Service
                 {
                     Split = split
                 };
