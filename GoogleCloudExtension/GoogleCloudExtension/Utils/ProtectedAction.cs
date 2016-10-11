@@ -18,7 +18,7 @@ namespace GoogleCloudExtension.Utils
 {
     /// <summary>
     /// This class wraps an <seealso cref="Action"/> with the <seealso cref="ErrorHandlerUtils.HandleExceptions(Action)"/>
-    /// method to handle all exceptions that might escape correctly.
+    /// method to correclty handle all exceptions that escape the action.
     /// </summary>
     public class ProtectedAction
     {
@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.Utils
         }
 
         /// <summary>
-        /// Invokes the action handling all of the exceptions that escape.
+        /// Invokes the action handling all of the exceptions that escape the action.
         /// </summary>
         public void Invoke()
         {
@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.Utils
 
     /// <summary>
     /// This class wraps an <seealso cref="Action{T}"/> with the <seealso cref="ErrorHandlerUtils.HandleExceptions(Action)"/>
-    /// method to handle all exceptions that might escape correctly.
+    /// method to correclty handle all exceptions that escape the action.
     /// </summary>
     /// <typeparam name="TIn"></typeparam>
     public class ProtectedAction<TIn>
@@ -53,7 +53,7 @@ namespace GoogleCloudExtension.Utils
         }
 
         /// <summary>
-        /// Invokes the action handling all of the exceptions that escape.
+        /// Invokes the action handling all of the exceptions that escape the action.
         /// </summary>
         public void Invoke(TIn param1)
         {
@@ -63,7 +63,7 @@ namespace GoogleCloudExtension.Utils
 
     /// <summary>
     /// This class wraps an <seealso cref="Action{T1, T2}"/> with the <seealso cref="ErrorHandlerUtils.HandleExceptions(Action)"/>
-    /// method to handle all exceptions that might escape correctly.
+    /// method to correclty handle all exceptions that escape the action.
     /// </summary>
     /// <typeparam name="TIn"></typeparam>
     public class ProtectedAction<TIn1, TIn2>
@@ -76,7 +76,7 @@ namespace GoogleCloudExtension.Utils
         }
 
         /// <summary>
-        /// Invokes the action handling all of the exceptions that escape.
+        /// Invokes the action handling all of the exceptions that escape the action.
         /// </summary>
         public void Invoke(TIn1 param1, TIn2 param2)
         {
