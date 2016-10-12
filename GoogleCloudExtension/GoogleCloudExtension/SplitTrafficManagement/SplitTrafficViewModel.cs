@@ -22,6 +22,7 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Globalization;
 using GoogleCloudExtension.DataSources;
+using System.Collections.Specialized;
 
 namespace GoogleCloudExtension.SplitTrafficManagement
 {
@@ -33,12 +34,12 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         /// <summary>
         /// The map of version Ids to traffic percentages.
         /// </summary>
-        public IDictionary<string, double?> Allocations;
+        public IDictionary<string, double?> Allocations { get; }
 
         /// <summary>
         /// The mechanism to shard the traffic by.  Either "COOKIE" or "IP"
         /// </summary>
-        public string ShardBy;
+        public string ShardBy { get; }
 
         public SplitTrafficChange(IDictionary<string, double?> allocations, string shardBy)
         {
@@ -53,7 +54,6 @@ namespace GoogleCloudExtension.SplitTrafficManagement
     public class SplitTrafficViewModel : ViewModelBase
     {
         private readonly SplitTrafficWindow _owner;
-
         private readonly Service _service;
 
         private string _versionId;
@@ -148,19 +148,15 @@ namespace GoogleCloudExtension.SplitTrafficManagement
             IsIpChecked = !IsCookieChecked;
 
             // Set up the current allocations and avaible versions.
-            foreach (var allocation in GetAllocations(service))
-            {
-                Allocations.Add(allocation);
-            }
-            foreach (var version in GetAvailableVersions(service, versions))
-            {
-                AvailableVersions.Add(version);
-            }
+            Allocations = GetAllocations(service);
+            AvailableVersions = GetAvailableVersions(service, versions);
 
-            Result = null;
             SaveCommand = new WeakCommand(OnSaveCommand);
             DeleteCommand = new WeakCommand<SplitTrafficModel>(OnDeleteCommand);
             AddTrafficAllocationCommand = new WeakCommand(OnAddTrafficAllocationCommand);
+
+            AvailableVersions.CollectionChanged += new NotifyCollectionChangedEventHandler(
+                (s, e)=> RaisePropertyChanged(nameof(HasAvailableVersions))); 
         }
 
         /// <summary>
@@ -204,9 +200,6 @@ namespace GoogleCloudExtension.SplitTrafficManagement
             // Reset the version and traffic
             VersionId = null;
             TrafficAllocation = 0;
-
-            // Ensure the 'HasAvailableVersions' is up to date so the view state is up to date.
-            RaisePropertyChanged(nameof(HasAvailableVersions));
         }
 
         /// <summary>
@@ -219,9 +212,6 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         {
             Allocations.Remove(sender);
             AvailableVersions.Add(sender.VersionId);
-
-            // Ensure the 'HasAvailableVersions' is up to date so the view state is up to date.
-            RaisePropertyChanged(nameof(HasAvailableVersions));
         }
 
         /// <summary>

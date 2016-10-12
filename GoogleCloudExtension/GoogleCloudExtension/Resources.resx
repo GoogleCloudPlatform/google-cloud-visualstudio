@@ -1193,4 +1193,12 @@
     <value>Manage Credentials</value>
     <comment>Caption for the link shown in the GCE step of the publishing dialog for managing the credentials of the selected VM.</comment>
   </data>
+  <data name="SplitTrafficWindowCookieLabel" xml:space="preserve">
+    <value>Cookie</value>
+    <comment>Label for the Cookie radio button.</comment>
+  </data>
+  <data name="SplitTrafficWindowIpAddressLabel" xml:space="preserve">
+    <value>IP Address</value>
+    <comment>Label for the IP Address radio button.</comment>
+  </data>
 </root>

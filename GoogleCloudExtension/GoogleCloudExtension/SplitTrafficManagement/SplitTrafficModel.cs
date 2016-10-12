@@ -30,10 +30,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         public string VersionId
         {
             get { return _versionId;  }
-            set
-            {
-                SetValueAndRaise(ref _versionId, value);
-            }
+            set { SetValueAndRaise(ref _versionId, value); }
         }
 
         /// <summary>
@@ -43,10 +40,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         public int TrafficAllocation
         {
             get { return _trafficAllocation; }
-            set
-            {
-                SetValueAndRaise(ref _trafficAllocation, value);
-            }
+            set { SetValueAndRaise(ref _trafficAllocation, value); }
         }
 
         public SplitTrafficModel(string versionId, int trafficAllocation)
