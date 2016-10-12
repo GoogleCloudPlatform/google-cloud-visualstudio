@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using Microsoft.VisualStudio;
 using System;
 using System.Diagnostics;
@@ -42,6 +44,7 @@ namespace GoogleCloudExtension.Utils
                 {
                     throw;
                 }
+                EventsReporterWrapper.ReportEvent(UnhandledExceptionEvent.Create(ex));
                 UserPromptUtils.ExceptionPrompt(ex);
             }
             catch (Exception ex)
@@ -51,6 +54,7 @@ namespace GoogleCloudExtension.Utils
                 {
                     throw;
                 }
+                EventsReporterWrapper.ReportEvent(UnhandledExceptionEvent.Create(ex));
                 UserPromptUtils.ExceptionPrompt(ex);
             }
         }
