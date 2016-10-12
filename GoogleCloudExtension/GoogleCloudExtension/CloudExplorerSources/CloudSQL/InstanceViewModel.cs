@@ -75,7 +75,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 
         private void OnOpenOnCloudConsoleCommand()
         {
-            var url = $"https://console.cloud.google.com/sql/instances/{_instance.Name}/overview?project={_owner.Context.CurrentProject.Name}";
+            var url = $"https://console.cloud.google.com/sql/instances/{_instance.Name}/overview?project={_owner.Context.CurrentProject.ProjectId}";
             Process.Start(url);
         }
 
