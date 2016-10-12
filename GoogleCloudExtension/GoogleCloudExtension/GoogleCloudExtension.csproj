@@ -186,6 +186,12 @@
     <Compile Include="SolutionUtils\KnownProjectTypes.cs" />
     <Compile Include="SolutionUtils\NetCoreProject.cs" />
     <Compile Include="SolutionUtils\VsProject.cs" />
+    <Compile Include="SplitTrafficManagement\SplitTrafficWindow.cs" />
+    <Compile Include="SplitTrafficManagement\SplitTrafficModel.cs" />
+    <Compile Include="SplitTrafficManagement\SplitTrafficViewModel.cs" />
+    <Compile Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml.cs">
+      <DependentUpon>SplitTrafficWindowContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
     <Compile Include="SolutionUtils\ISolutionProject.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
@@ -248,7 +254,7 @@
     <Resource Include="CloudExplorerSources\Gce\Resources\filter.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_running.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_stoped.png" />
-	<Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_transition.png" />
+    <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_transition.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\service_icon.png" />
     <Resource Include="CloudExplorer\Resources\warning_icon.png" />
     <Resource Include="CloudExplorer\Resources\logo_cloud.png" />
@@ -558,6 +564,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PublishDialog\PublishDialogWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

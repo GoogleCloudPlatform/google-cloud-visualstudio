@@ -86,7 +86,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private void Initialize()
         {
             // Get the traffic allocation for the version
-            TrafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_owner.service, version.Id);
+            TrafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_owner.Service, version.Id);
 
             // Reset the resources loaded and clear any children. 
             _resourcesLoaded = false;
@@ -165,7 +165,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private void OnDeleteVersion()
         {
             string confirmationMessage = String.Format(
-                Resources.CloudExplorerGaeDeleteVersionConfirmationPromptMessage, _owner.service.Id, version.Id);
+                Resources.CloudExplorerGaeDeleteVersionConfirmationPromptMessage, _owner.Service.Id, version.Id);
             if (!UserPromptUtils.YesNoPrompt(confirmationMessage, Resources.CloudExplorerGaeDeleteVersion))
             {
                 Debug.WriteLine("The user cancelled deleting the version.");
@@ -189,7 +189,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private void OnOpenOnCloudConsoleCommand()
         {
-            var url = $"https://console.cloud.google.com/appengine/instances?project={root.Context.CurrentProject.ProjectId}&moduleId={_owner.service.Id}&versionId={version.Id}";
+            var url = $"https://console.cloud.google.com/appengine/instances?project={root.Context.CurrentProject.ProjectId}&moduleId={_owner.Service.Id}&versionId={version.Id}";
             Process.Start(url);
         }
 
@@ -213,7 +213,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             try
             {
-                Task<Operation> operationTask = root.DataSource.Value.DeleteVersionAsync(_owner.service.Id, version.Id);
+                Task<Operation> operationTask = root.DataSource.Value.DeleteVersionAsync(_owner.Service.Id, version.Id);
                 Func<Operation, Task<Operation>> fetch = (o) => datasource.GetOperationAsync(o.GetOperationId());
                 Predicate<Operation> stopPolling = (o) => o.Done ?? false;
                 Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);
@@ -274,7 +274,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             try
             {
-                Task<Operation> operationTask = datasource.UpdateVersionServingStatus(status, _owner.service.Id, version.Id);
+                Task<Operation> operationTask = datasource.UpdateVersionServingStatus(status, _owner.Service.Id, version.Id);
                 Func<Operation, Task<Operation>> fetch = (o) => datasource.GetOperationAsync(o.GetOperationId());
                 Predicate<Operation> stopPolling = (o) => o.Done ?? false;
                 Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);
@@ -282,7 +282,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 {
                     throw new DataSourceException(operation.Error.Message);
                 }
-                version = await datasource.GetVersionAsync(_owner.service.Id, version.Id);
+                version = await datasource.GetVersionAsync(_owner.Service.Id, version.Id);
             }
             catch (DataSourceException ex)
             {
@@ -364,7 +364,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         /// </summary>
         private async Task<List<InstanceViewModel>> LoadInstanceList()
         {
-            var instances = await _owner.root.DataSource.Value.GetInstanceListAsync(_owner.service.Id, version.Id);
+            var instances = await _owner.root.DataSource.Value.GetInstanceListAsync(_owner.Service.Id, version.Id);
             return instances?.Select(x => new InstanceViewModel(this, x)).ToList();
         }
 

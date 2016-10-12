@@ -1,0 +1,128 @@
+﻿<UserControl x:Class="GoogleCloudExtension.SplitTrafficManagement.SplitTrafficWindowContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.SplitTrafficManagement"
+             xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
+             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             mc:Ignorable="d" 
+             d:DesignHeight="500" d:DesignWidth="450">
+
+    <UserControl.Resources>
+        <Grid x:Key="content">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30px" />
+                <RowDefinition Height="85px"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Shard traffic by selector. -->
+            <Border  BorderBrush="Black" BorderThickness="1px" Margin="3px, 2px">
+                <StackPanel Orientation="Horizontal" Background="#FFECECEC">
+                    <TextBlock TextWrapping="Wrap" Margin="3,0,3,5" VerticalAlignment="Center"  
+                               Text="{x:Static ext:Resources.SplitTrafficWindowSplitByMessage}"/>
+                    <RadioButton Content="{x:Static ext:Resources.SplitTrafficWindowIpAddressLabel}"
+                                 GroupName="ShardBy" Grid.Column="1"
+                                 IsChecked="{Binding IsIpChecked}" VerticalAlignment="Center" />
+                    <RadioButton Content="{x:Static ext:Resources.SplitTrafficWindowCookieLabel}"
+                                 GroupName="ShardBy" Grid.Column="2"
+                                 IsChecked="{Binding IsCookieChecked}" VerticalAlignment="Center" />
+                </StackPanel>
+            </Border>
+
+            <!-- Add version to traffic split section. -->
+            <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1px" Margin="3px, 2px">
+                <Grid Background="#FFECECEC" IsEnabled="{Binding HasAvailableVersions}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50px" />
+                        <RowDefinition Height="25px"/>
+                    </Grid.RowDefinitions>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Margin="5px, 2px" TextWrapping="Wrap" VerticalAlignment="Center"
+                                   Text="{x:Static ext:Resources.SplitTrafficWindowVersionLabel}"/>
+                        <ComboBox ItemsSource="{Binding AvailableVersions}"
+                                  SelectedItem="{Binding VersionId, Mode=TwoWay}"
+                                  SelectedIndex="0" Grid.Column="1" Height="20px" Margin="5px, 2px"
+                                  Style="{DynamicResource {x:Static vsshell:VsResourceKeys.ComboBoxStyleKey}}" />
+
+                        <TextBlock Grid.Row="1" Margin="5px, 2px" 
+                                   TextWrapping="Wrap"  VerticalAlignment="Center"  
+                                   Text="{x:Static ext:Resources.SplitTrafficWindowTrafficAllocationLabel}"/>
+                        <TextBox Grid.Row="1" Grid.Column="1" Margin="5px, 2px"
+                                 Text="{Binding TrafficAllocation, Mode=TwoWay}"  Height="20px" />
+                    </Grid>
+
+                    <Button Grid.Row="1" Margin="5px, 2px" Width="Auto" Command="{Binding AddTrafficAllocationCommand}"
+                            Content="{x:Static ext:Resources.SplitTrafficWindowAddVersionMessage}"
+                            HorizontalAlignment="Center" VerticalAlignment="Center"/>
+ 
+                </Grid>
+            </Border>
+
+            <!-- Traffic allocations section. -->
+            <Grid Grid.Row="2" Margin="3px, 5px">
+                <ListView  ItemsSource="{Binding Allocations}">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                            <Setter Property="Focusable" Value="false"/>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Height="25px">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Delete version from traffic split button. -->
+                                <Button Width="75px" Margin="1px" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                        Command="{Binding Path=DataContext.DeleteCommand, 
+                                            RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListView}}}"
+                                            CommandParameter="{Binding}"
+                                        Content="{x:Static ext:Resources.UiDeleteButtonCaption}"/>
+
+                                <!-- Version id. -->
+                                <StackPanel Orientation="Horizontal" Grid.Column="1">
+                                    <Label Content="{x:Static ext:Resources.SplitTrafficWindowVersionLabel}"
+                                           VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold" />
+                                    <TextBlock Text="{Binding VersionId}" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                                </StackPanel>
+
+                                <!-- Percentage of allocated traffic for the given version. -->
+                                <StackPanel Orientation="Horizontal" Grid.Column="2">
+                                    <TextBox Text="{Binding TrafficAllocation, Mode=TwoWay}" 
+                                             Width="30px" VerticalAlignment="Center" />
+                                    <Label Grid.Column="1" Content="{x:Static ext:Resources.SplitTrafficWindowPercentLabel}" 
+                                           VerticalAlignment="Center"  HorizontalAlignment="Left"/>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+        </Grid>
+    </UserControl.Resources>
+    
+    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiSaveButtonCaption}"
+                                      IsDefault="True"
+                                      Command="{Binding DataContext.SaveCommand, Source={StaticResource content}}"/>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
+        </theming:CommonDialogWindowBaseContent.Buttons>
+    </theming:CommonDialogWindowBaseContent>
+</UserControl>
