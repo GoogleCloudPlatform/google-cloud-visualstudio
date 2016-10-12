@@ -392,7 +392,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
                 if (ex is DataSourceException)
                 {
-                    Caption = Resources.CloudExplorerGaeDeleteServiceErrorMessage;
+                    Caption = Resources.CloudExplorerGaeUpdateTrafficSplitErrorMessage;
                 }
                 else if (ex is TimeoutException)
                 {

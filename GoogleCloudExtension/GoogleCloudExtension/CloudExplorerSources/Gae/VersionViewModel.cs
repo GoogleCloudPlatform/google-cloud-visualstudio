@@ -229,27 +229,23 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             {
                 EventsReporterWrapper.ReportEvent(GaeVersionDeletedEvent.Create(CommandStatus.Failure));
                 IsError = true;
-                var message = "";
 
                 if (ex is DataSourceException)
                 {
-                    message = ex.Message;
+                    Caption = Resources.CloudExplorerGaeDeleteVersionErrorMessage;
                 }
                 else if (ex is TimeoutException)
                 {
-                    message = Resources.CloudExploreOperationTimeoutMessage;
+                    Caption = Resources.CloudExploreOperationTimeoutMessage;
                 }
                 else if (ex is OperationCanceledException)
                 {
-                    message = Resources.CloudExploreOperationCanceledMessage;
+                    Caption = Resources.CloudExploreOperationCanceledMessage;
                 }
                 else
                 {
                     throw;
                 }
-
-                UserPromptUtils.ErrorPrompt(
-                   message, Resources.CloudExplorerGaeDeleteVersionErrorMessage);
             }
             finally
             {
@@ -301,27 +297,23 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 EventsReporterWrapper.ReportEvent(
                     GaeVersionServingStatusUpdatedEvent.Create(CommandStatus.Failure, statusMessage));
                 IsError = true;
-                var message = "";
 
                 if (ex is DataSourceException)
                 {
-                    message = ex.Message;
+                    Caption = Resources.CloudExplorerGaeUpdateServingStatusErrorMessage;
                 }
                 else if (ex is TimeoutException)
                 {
-                    message = Resources.CloudExploreOperationTimeoutMessage;
+                    Caption = Resources.CloudExploreOperationTimeoutMessage;
                 }
                 else if (ex is OperationCanceledException)
                 {
-                    message = Resources.CloudExploreOperationCanceledMessage;
+                    Caption = Resources.CloudExploreOperationCanceledMessage;
                 }
                 else
                 {
                     throw;
                 }
-
-                UserPromptUtils.ErrorPrompt(
-                   message, Resources.CloudExplorerGaeUpdateServingStatusErrorMessage);
             }
             finally
             {
