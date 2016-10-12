@@ -829,4 +829,12 @@
     <value>Manage credentials</value>
     <comment>Caption used in the hyperlink shown in the Windows credentials chooser dialog.</comment>
   </data>
+  <data name="ExceptionPromptMessage" xml:space="preserve">
+    <value>Failed to perform the operation: {0}</value>
+    <comment>Message shown in the exception dialog. {0} is the exception message.</comment>
+  </data>
+  <data name="ExceptionPromptTitle" xml:space="preserve">
+    <value>Operation failed</value>
+    <comment>Title shown on the message dialog down when an unhandled exception happened.</comment>
+  </data>
 </root>

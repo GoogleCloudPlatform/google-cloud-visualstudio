@@ -18,23 +18,22 @@ using System.Windows.Input;
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
-    /// Implements the ICommand interface but keeping a weak reference back to the object
-    /// that actually implements the command via a delegate, useful to avoid leaks of ViewModels.
-    /// <typeparam name="T">The type of the object passed in to the handler.</typeparam>
+    /// This class implements the <seealso cref="ICommand"/> interface and wraps the action for the command
+    /// in <seealso cref="ErrorHandlerUtils.HandleExceptions(Action)"/> to handle the exceptions that could escape.
     /// </summary>
-    public class WeakCommand<T> : ICommand
+    public class ProtectedCommand : ICommand
     {
         private bool _canExecuteCommand;
-        private readonly WeakAction<T> _delegate;
+        private readonly ProtectedAction _action;
 
         /// <summary>
-        /// Initializes the new instance of WeakCommand.
+        /// Initializes a new instance of ProtectedCommand.
         /// </summary>
-        /// <param name="handler">The action to execute when executing the command.</param>
+        /// <param name="handler">The action to execute when the command is executed.</param>
         /// <param name="canExecuteCommand">Whether the command is enabled or not.</param>
-        public WeakCommand(Action<T> handler, bool canExecuteCommand = true)
+        public ProtectedCommand(Action handler, bool canExecuteCommand = true)
         {
-            _delegate = new WeakAction<T>(handler);
+            _action = new ProtectedAction(handler);
             this.CanExecuteCommand = canExecuteCommand;
         }
 
@@ -42,23 +41,17 @@ namespace GoogleCloudExtension.Utils
 
         public event EventHandler CanExecuteChanged;
 
-        public bool CanExecute(object parameter)
-        {
-            return CanExecuteCommand;
-        }
+        public bool CanExecute(object parameter) => CanExecuteCommand;
 
         public void Execute(object parameter)
         {
-            if (parameter is T)
-            {
-                _delegate.Invoke((T)parameter);
-            }
+            _action.Invoke();
         }
 
         #endregion
 
         /// <summary>
-        /// Gets/sets whether the command can be executed.
+        /// Gets/sets whether the command can be executed or not.
         /// </summary>
         public bool CanExecuteCommand
         {
@@ -75,22 +68,22 @@ namespace GoogleCloudExtension.Utils
     }
 
     /// <summary>
-    /// Implements the weak ICommand pattern for the case when there is no parameter to be
-    /// passed to the handler.
+    /// This class implements the <seealso cref="ICommand"/> interface and wraps the action for the command
+    /// in <seealso cref="ErrorHandlerUtils.HandleExceptions(Action)"/> to handle the exceptions that could escape.
     /// </summary>
-    public class WeakCommand : ICommand
+    public class ProtectedCommand<T> : ICommand
     {
         private bool _canExecuteCommand;
-        private readonly WeakAction _delegate;
+        private readonly ProtectedAction<T> _action;
 
         /// <summary>
-        /// Initializes a new instance of WeakCommand.
+        /// Initializes the new instance of ProtectedCommand.
         /// </summary>
-        /// <param name="handler">The action to execute when the command is executed.</param>
+        /// <param name="handler">The action to execute when executing the command.</param>
         /// <param name="canExecuteCommand">Whether the command is enabled or not.</param>
-        public WeakCommand(Action handler, bool canExecuteCommand = true)
+        public ProtectedCommand(Action<T> handler, bool canExecuteCommand = true)
         {
-            _delegate = new WeakAction(handler);
+            _action = new ProtectedAction<T>(handler);
             this.CanExecuteCommand = canExecuteCommand;
         }
 
@@ -98,17 +91,23 @@ namespace GoogleCloudExtension.Utils
 
         public event EventHandler CanExecuteChanged;
 
-        public bool CanExecute(object parameter) => CanExecuteCommand;
+        public bool CanExecute(object parameter)
+        {
+            return CanExecuteCommand;
+        }
 
         public void Execute(object parameter)
         {
-            _delegate.Invoke();
+            if (parameter is T)
+            {
+                _action.Invoke((T)parameter);
+            }
         }
 
         #endregion
 
         /// <summary>
-        /// Gets/sets whether the command can be executed or not.
+        /// Gets/sets whether the command can be executed.
         /// </summary>
         public bool CanExecuteCommand
         {

@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.MySQLInstaller
         {
             _owner = owner;
 
-            DownloadCommand = new WeakCommand(OpenDownload);
+            DownloadCommand = new ProtectedCommand(OpenDownload);
         }
 
         private void OpenDownload()

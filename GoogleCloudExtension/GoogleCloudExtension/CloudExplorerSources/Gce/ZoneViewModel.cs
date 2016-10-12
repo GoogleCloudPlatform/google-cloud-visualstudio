@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -41,17 +41,18 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         };
 
         private readonly GceSourceRootViewModel _owner;
-        private readonly InstancesPerZone _instancesPerZone;
+        private readonly Zone _zone;
 
         public event EventHandler ItemChanged;
 
-        public object Item => new ZoneItem(_instancesPerZone.Zone);
+        public object Item => new ZoneItem(_zone);
 
-        internal ZoneViewModel(GceSourceRootViewModel owner, string name, IEnumerable<GceInstanceViewModel> instances)
+        internal ZoneViewModel(GceSourceRootViewModel owner, Zone zone, IEnumerable<GceInstanceViewModel> instances)
         {
             _owner = owner;
+            _zone = zone;
 
-            Caption = $"{name} ({instances.Count()})";
+            Caption = $"{zone.Name} ({instances.Count()})";
             Icon = s_zoneIcon.Value;
 
             foreach (var instance in instances)
@@ -61,8 +62,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = Resources.CloudExplorerGceNewInstanceMenuHeader, Command = new WeakCommand(OnNewInstanceCommand) },
-                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesCommand) },
+                new MenuItem { Header = Resources.CloudExplorerGceNewInstanceMenuHeader, Command = new ProtectedCommand(OnNewInstanceCommand) },
+                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
@@ -74,7 +75,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnNewInstanceCommand()
         {
-            var url = $"https://console.cloud.google.com/compute/instancesAdd?project={_owner.Context.CurrentProject.Name}&zone={_instancesPerZone.Zone.Name}";
+            var url = $"https://console.cloud.google.com/compute/instancesAdd?project={_owner.Context.CurrentProject.Name}&zone={_zone.Name}";
             Process.Start(url);
         }
     }

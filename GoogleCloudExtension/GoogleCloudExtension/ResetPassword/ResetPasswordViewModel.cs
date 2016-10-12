@@ -122,12 +122,12 @@ namespace GoogleCloudExtension.ResetPassword
         /// <summary>
         /// The command to execute to accept the changes.
         /// </summary>
-        public WeakCommand OkCommand { get; }
+        public ProtectedCommand OkCommand { get; }
 
         /// <summary>
         /// The command to exectue to cancel the changes.
         /// </summary>
-        public WeakCommand CancelCommand { get; }
+        public ProtectedCommand CancelCommand { get; }
 
         public WindowsInstanceCredentials Result { get; private set; }
 
@@ -137,8 +137,8 @@ namespace GoogleCloudExtension.ResetPassword
             _instance = instance;
             _projectId = projectId;
 
-            OkCommand = new WeakCommand(OnOkCommand, canExecuteCommand: false);
-            CancelCommand = new WeakCommand(OnCancelCommand);
+            OkCommand = new ProtectedCommand(OnOkCommand, canExecuteCommand: false);
+            CancelCommand = new ProtectedCommand(OnCancelCommand);
         }
 
         private async void OnOkCommand()

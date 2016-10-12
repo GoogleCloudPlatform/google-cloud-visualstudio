@@ -64,9 +64,9 @@ namespace GoogleCloudExtension.ManageAccounts
             }
         }
 
-        public WeakCommand SetAsCurrentAccountCommand { get; }
+        public ProtectedCommand SetAsCurrentAccountCommand { get; }
 
-        public WeakCommand DeleteAccountCommand { get; }
+        public ProtectedCommand DeleteAccountCommand { get; }
 
         public ICommand CloseCommand { get; }
 
@@ -79,10 +79,10 @@ namespace GoogleCloudExtension.ManageAccounts
 
             CurrentAccountName = CredentialsStore.Default.CurrentAccount?.AccountName;
 
-            SetAsCurrentAccountCommand = new WeakCommand(OnSetAsCurrentAccountCommand, canExecuteCommand: false);
-            DeleteAccountCommand = new WeakCommand(OnDeleteAccountCommand);
-            CloseCommand = new WeakCommand(owner.Close);
-            AddAccountCommand = new WeakCommand(OnAddAccountCommand);
+            SetAsCurrentAccountCommand = new ProtectedCommand(OnSetAsCurrentAccountCommand, canExecuteCommand: false);
+            DeleteAccountCommand = new ProtectedCommand(OnDeleteAccountCommand);
+            CloseCommand = new ProtectedCommand(owner.Close);
+            AddAccountCommand = new ProtectedCommand(OnAddAccountCommand);
         }
 
         public void DoucleClickedItem(UserAccountViewModel userAccount)

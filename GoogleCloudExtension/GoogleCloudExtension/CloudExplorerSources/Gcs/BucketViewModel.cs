@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         private readonly GcsSourceRootViewModel _owner;
         private readonly Bucket _bucket;
         private readonly Lazy<BucketItem> _item;
-        private readonly WeakCommand _openOnCloudConsoleCommand;
+        private readonly ProtectedCommand _openOnCloudConsoleCommand;
 
         public object Item
         {
@@ -53,7 +53,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             _owner = owner;
             _bucket = bucket;
             _item = new Lazy<BucketItem>(GetItem);
-            _openOnCloudConsoleCommand = new WeakCommand(OnOpenConCloudConsoleCommand);
+            _openOnCloudConsoleCommand = new ProtectedCommand(OnOpenConCloudConsoleCommand);
 
             Caption = _bucket.Name;
             Icon = s_bucketIcon.Value;
@@ -61,7 +61,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = _openOnCloudConsoleCommand },
-                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesCommand) },
+                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }

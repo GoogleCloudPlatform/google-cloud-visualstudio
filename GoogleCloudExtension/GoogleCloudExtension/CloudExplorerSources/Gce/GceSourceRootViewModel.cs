@@ -119,28 +119,28 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             var menuItems = new List<FrameworkElement>
             {
-                new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new WeakCommand(OnStatusCommand) },
-                new MenuItem { Header = Resources.CloudExplorerGceNewAspNetInstanceMenuHeader, Command = new WeakCommand(OnNewAspNetInstanceCommand) },
-                new MenuItem { Header = Resources.CloudExplorerGceNewInstanceMenuHeader, Command = new WeakCommand(OnNewInstanceCommand) },
+                new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new ProtectedCommand(OnStatusCommand) },
+                new MenuItem { Header = Resources.CloudExplorerGceNewAspNetInstanceMenuHeader, Command = new ProtectedCommand(OnNewAspNetInstanceCommand) },
+                new MenuItem { Header = Resources.CloudExplorerGceNewInstanceMenuHeader, Command = new ProtectedCommand(OnNewInstanceCommand) },
                 new Separator(),
             };
 
             if (ShowOnlyWindowsInstances)
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowAllOsInstancesCommand, Command = new WeakCommand(OnShowAllOsInstancesCommand) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowAllOsInstancesCommand, Command = new ProtectedCommand(OnShowAllOsInstancesCommand) });
             }
             else
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowWindowsOnlyInstancesCommand, Command = new WeakCommand(OnShowOnlyWindowsInstancesCommand) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowWindowsOnlyInstancesCommand, Command = new ProtectedCommand(OnShowOnlyWindowsInstancesCommand) });
             }
 
             if (ShowZones)
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowInstancesCommand, Command = new WeakCommand(OnShowInstancesCommand) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowInstancesCommand, Command = new ProtectedCommand(OnShowInstancesCommand) });
             }
             else
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowZonesCommand, Command = new WeakCommand(OnShowZonesCommand) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowZonesCommand, Command = new ProtectedCommand(OnShowZonesCommand) });
             }
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
@@ -255,13 +255,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 viewModels = _instancesPerZone
                     .Select(x => new
                     {
-                        Zone = x.Zone.Name,
+                        Zone = x.Zone,
                         Instances = x.Instances
                             .Where(i => _showOnlyWindowsInstances ? i.IsWindowsInstance() : true)
                             .OrderBy(i => i.Name)
                     })
                     .Where(x => x.Instances.Count() > 0)
-                    .OrderBy(x => x.Zone)
+                    .OrderBy(x => x.Zone.Name)
                     .Select(x => new ZoneViewModel(this, x.Zone, x.Instances.Select(i => new GceInstanceViewModel(this, i))));
             }
             else
