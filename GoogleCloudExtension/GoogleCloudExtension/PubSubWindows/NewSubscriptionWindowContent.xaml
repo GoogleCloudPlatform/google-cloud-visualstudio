@@ -9,13 +9,7 @@
         Padding="5"
         FocusManager.FocusedElement="{Binding ElementName=SubscriptionName}">
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <theming:DefaultStyles/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
-    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
+    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" x:Key="Content">
         <TextBlock HorizontalAlignment="Center" MaxWidth="300"
                    Text="{Binding TopicName, StringFormat={x:Static ext:Resources.NewSubscriptionWindowHeader}}"/>
         <DockPanel>
@@ -38,7 +32,7 @@
             <RadioButton DockPanel.Dock="Left" Name="PushRadioButton" GroupName="PushPull" IsChecked="{Binding Push}" Margin="5"
                          Content="{x:Static ext:Resources.NewSubscriptionWindowPushLabel}" VerticalAlignment="Center"/>
             <TextBox Name="PushUrlBox" MinWidth="200" Text="{Binding PushConfig.PushEndpoint}"
-                     IsEnabled="{Binding ElementName=PushRadioButton, Path=IsChecked}"/>
+                     IsEnabled="{Binding Push}"/>
         </DockPanel>
         <DockPanel>
             <Label DockPanel.Dock="Left" Target="{Binding ElementName=Deadline}" VerticalAlignment="Center"
@@ -46,9 +40,14 @@
             <TextBox Name ="Deadline" MinWidth="40"
                      Text="{Binding Subscription.AckDeadlineSeconds, TargetNullValue=60, UpdateSourceTrigger=PropertyChanged}"/>
         </DockPanel>
-        <StackPanel Style="{StaticResource ButtonsPanel}">
-            <Button Content="{x:Static ext:Resources.FocusableCreateButton}" Command="{Binding CreateCommand}" IsDefault="True"/>
-            <Button Content="{x:Static ext:Resources.FocusableCancelButton}" IsCancel="True"/>
-        </StackPanel>
     </StackPanel>
+    </UserControl.Resources>
+    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource Content}">
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.FocusableCreateButton}"
+                                      Command="{Binding DataContext.CreateCommand, Source={StaticResource Content}}"
+                                      IsDefault="True"/>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.FocusableCancelButton}" IsCancel="True"/>
+        </theming:CommonDialogWindowBaseContent.Buttons>
+    </theming:CommonDialogWindowBaseContent>
 </UserControl>

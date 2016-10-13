@@ -12,34 +12,31 @@
         Padding="5"
         FocusManager.FocusedElement="{Binding ElementName=TopicName}">
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <theming:DefaultStyles/>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-        <TextBlock HorizontalAlignment="Center"
-                   Text="{Binding Project, StringFormat={x:Static ext:Resources.NewTopicWindowTitle}}"/>
-        <DockPanel>
-            <Label Target="{Binding ElementName=TopicName}" DockPanel.Dock="Left"
-                   Content="{x:Static ext:Resources.NewTopicWindowNameLabel}"/>
-            <TextBox x:Name="TopicName" MinWidth="200" MaxWidth="500" MaxLines="1"
-                     ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}">
-                <TextBox.Text>
-                    <Binding Path="TopicName" UpdateSourceTrigger="PropertyChanged">
-                        <Binding.ValidationRules>
-                            <local:PubSubNameValidationRule />
-                        </Binding.ValidationRules>
-                    </Binding>
-                </TextBox.Text>
-            </TextBox>
-        </DockPanel>
-        <StackPanel Style="{StaticResource ButtonsPanel}">
-            <Button Command="{Binding CreateCommand}" IsDefault="True"
-                    Content="{x:Static ext:Resources.FocusableCreateButton}"/>
-            <Button IsCancel="True" Content="{x:Static ext:Resources.FocusableCancelButton}"/>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center" x:Key="Content">
+            <TextBlock HorizontalAlignment="Center"
+                       Text="{Binding Project, StringFormat={x:Static ext:Resources.NewTopicWindowTitle}}"/>
+            <DockPanel>
+                <Label Target="{Binding ElementName=TopicName}" DockPanel.Dock="Left"
+                       Content="{x:Static ext:Resources.NewTopicWindowNameLabel}"/>
+                <TextBox x:Name="TopicName" MinWidth="200" MaxWidth="500" MaxLines="1"
+                         ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}">
+                    <TextBox.Text>
+                        <Binding Path="TopicName" UpdateSourceTrigger="PropertyChanged">
+                            <Binding.ValidationRules>
+                                <local:PubSubNameValidationRule />
+                            </Binding.ValidationRules>
+                        </Binding>
+                    </TextBox.Text>
+                </TextBox>
+            </DockPanel>
         </StackPanel>
-    </StackPanel>
+    </UserControl.Resources>
+    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource Content}">
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Command="{Binding DataContext.CreateCommand, Source={StaticResource Content}}"
+                                      IsDefault="True"
+                                      Caption="{x:Static ext:Resources.FocusableCreateButton}"/>
+            <theming:DialogButtonInfo IsCancel="True" Caption="{x:Static ext:Resources.FocusableCancelButton}"/>
+        </theming:CommonDialogWindowBaseContent.Buttons>
+    </theming:CommonDialogWindowBaseContent>
 </UserControl>
-

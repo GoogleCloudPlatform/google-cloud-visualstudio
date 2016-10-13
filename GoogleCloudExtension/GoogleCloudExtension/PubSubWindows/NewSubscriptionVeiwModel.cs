@@ -39,9 +39,13 @@ namespace GoogleCloudExtension.PubSubWindows
         public bool Push
         {
             get { return Subscription.PushConfig == PushConfig; }
-            set { Subscription.PushConfig = value ? PushConfig : null; }
+            set
+            {
+                Subscription.PushConfig = value ? PushConfig : null;
+                RaisePropertyChanged();
+            }
         }
-
+        
         public PushConfig PushConfig { get; }
 
         public Subscription Subscription { get; }
