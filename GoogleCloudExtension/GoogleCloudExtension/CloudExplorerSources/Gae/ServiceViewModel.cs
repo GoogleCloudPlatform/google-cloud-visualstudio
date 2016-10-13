@@ -25,6 +25,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows;
 using GoogleCloudExtension.SplitTrafficManagement;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {
@@ -328,6 +330,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                         UpdateContextMenu();
                     }
                 }
+
+                EventsReporterWrapper.ReportEvent(GaeVersionsLoadedEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException ex)
             {
@@ -335,6 +339,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 GcpOutputWindow.OutputLine(ex.Message);
                 GcpOutputWindow.Activate();
 
+                EventsReporterWrapper.ReportEvent(GaeVersionsLoadedEvent.Create(CommandStatus.Failure));
                 throw new CloudExplorerSourceException(ex.Message, ex);
             }
         }
@@ -378,24 +383,28 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                     throw new DataSourceException(operation.Error.Message);
                 }
                 Service = await datasource.GetServiceAsync(Service.Id);
-                Caption = Service.Id;
+                EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Success));
             }
-            catch (DataSourceException ex)
-            {
+            catch (Exception ex) when (ex is DataSourceException || ex is TimeoutException || ex is OperationCanceledException)
+            { 
+                EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Failure));
                 IsError = true;
-                Caption = Resources.CloudExplorerGaeUpdateTrafficSplitErrorMessage;
+
+                if (ex is DataSourceException)
+                {
+                    Caption = Resources.CloudExplorerGaeUpdateTrafficSplitErrorMessage;
+                }
+                else if (ex is TimeoutException)
+                {
+                    Caption = Resources.CloudExploreOperationTimeoutMessage;
+                }
+                else if (ex is OperationCanceledException)
+                {
+                    Caption = Resources.CloudExploreOperationCanceledMessage;
+                }
             }
-            catch (TimeoutException ex)
-            {
-                IsError = true;
-                Caption = Resources.CloudExploreOperationTimeoutMessage;
-            }
-            catch (OperationCanceledException ex)
-            {
-                IsError = true;
-                Caption = Resources.CloudExploreOperationCanceledMessage;
-            }
-            finally { 
+            finally
+            { 
                 IsLoading = false;
                 PresentViewModels();
                 Icon = s_serviceIcon.Value;
@@ -424,22 +433,25 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 {
                     throw new DataSourceException(operation.Error.Message);
                 }
-                Caption = Service.Id;
+                EventsReporterWrapper.ReportEvent(GaeServiceDeletedEvent.Create(CommandStatus.Success));
             }
-            catch (DataSourceException ex)
+            catch (Exception ex) when (ex is DataSourceException || ex is TimeoutException || ex is OperationCanceledException)
             {
+                EventsReporterWrapper.ReportEvent(GaeServiceDeletedEvent.Create(CommandStatus.Failure));
                 IsError = true;
-                Caption = Resources.CloudExplorerGaeDeleteServiceErrorMessage;
-            }
-            catch (TimeoutException ex)
-            {
-                IsError = true;
-                Caption = Resources.CloudExploreOperationTimeoutMessage;
-            }
-            catch (OperationCanceledException ex)
-            {
-                IsError = true;
-                Caption = Resources.CloudExploreOperationCanceledMessage;
+
+                if (ex is DataSourceException)
+                {
+                    Caption = Resources.CloudExplorerGaeDeleteServiceErrorMessage;
+                }
+                else if (ex is TimeoutException)
+                {
+                    Caption = Resources.CloudExploreOperationTimeoutMessage;
+                }
+                else if (ex is OperationCanceledException)
+                {
+                    Caption = Resources.CloudExploreOperationCanceledMessage;
+                }
             }
             finally
             {

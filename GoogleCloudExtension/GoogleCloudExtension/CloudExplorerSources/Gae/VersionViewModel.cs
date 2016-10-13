@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using Google.Apis.Appengine.v1.Data;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
@@ -221,26 +223,25 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 {
                     throw new DataSourceException(operation.Error.Message);
                 }
+                EventsReporterWrapper.ReportEvent(GaeVersionDeletedEvent.Create(CommandStatus.Success));
             }
-            catch (DataSourceException ex)
+            catch (Exception ex) when (ex is DataSourceException || ex is TimeoutException || ex is OperationCanceledException)
             {
+                EventsReporterWrapper.ReportEvent(GaeVersionDeletedEvent.Create(CommandStatus.Failure));
                 IsError = true;
-                UserPromptUtils.ErrorPrompt(ex.Message,
-                    Resources.CloudExplorerGaeDeleteVersionErrorMessage);
-            }
-            catch (TimeoutException ex)
-            {
-                IsError = true;
-                UserPromptUtils.ErrorPrompt(
-                    Resources.CloudExploreOperationTimeoutMessage,
-                    Resources.CloudExplorerGaeDeleteVersionErrorMessage);
-            }
-            catch (OperationCanceledException ex)
-            {
-                IsError = true;
-                UserPromptUtils.ErrorPrompt(
-                    Resources.CloudExploreOperationCanceledMessage,
-                    Resources.CloudExplorerGaeDeleteVersionErrorMessage);
+
+                if (ex is DataSourceException)
+                {
+                    Caption = Resources.CloudExplorerGaeDeleteVersionErrorMessage;
+                }
+                else if (ex is TimeoutException)
+                {
+                    Caption = Resources.CloudExploreOperationTimeoutMessage;
+                }
+                else if (ex is OperationCanceledException)
+                {
+                    Caption = Resources.CloudExploreOperationCanceledMessage;
+                }
             }
             finally
             {
@@ -282,27 +283,29 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 {
                     throw new DataSourceException(operation.Error.Message);
                 }
+
                 version = await datasource.GetVersionAsync(_owner.Service.Id, version.Id);
+                EventsReporterWrapper.ReportEvent(
+                    GaeVersionServingStatusUpdatedEvent.Create(CommandStatus.Success, statusMessage));
             }
-            catch (DataSourceException ex)
+            catch (Exception ex) when (ex is DataSourceException || ex is TimeoutException || ex is OperationCanceledException)
             {
+                EventsReporterWrapper.ReportEvent(
+                    GaeVersionServingStatusUpdatedEvent.Create(CommandStatus.Failure, statusMessage));
                 IsError = true;
-                UserPromptUtils.ErrorPrompt(ex.Message,
-                    Resources.CloudExplorerGaeUpdateServingStatusErrorMessage);
-            }
-            catch (TimeoutException ex)
-            {
-                IsError = true;
-                UserPromptUtils.ErrorPrompt(
-                    Resources.CloudExploreOperationTimeoutMessage,
-                    Resources.CloudExplorerGaeUpdateServingStatusErrorMessage);
-            }
-            catch (OperationCanceledException ex)
-            {
-                IsError = true;
-                UserPromptUtils.ErrorPrompt(
-                    Resources.CloudExploreOperationCanceledMessage,
-                    Resources.CloudExplorerGaeUpdateServingStatusErrorMessage);
+
+                if (ex is DataSourceException)
+                {
+                    Caption = Resources.CloudExplorerGaeUpdateServingStatusErrorMessage;
+                }
+                else if (ex is TimeoutException)
+                {
+                    Caption = Resources.CloudExploreOperationTimeoutMessage;
+                }
+                else if (ex is OperationCanceledException)
+                {
+                    Caption = Resources.CloudExploreOperationCanceledMessage;
+                }
             }
             finally
             {
@@ -347,6 +350,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                         Children.Add(s_noItemsPlacehoder);
                     }
                 }
+                EventsReporterWrapper.ReportEvent(GaeInstancesLoadedEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException ex)
             {
@@ -355,6 +359,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 GcpOutputWindow.Activate();
 
                 Children.Add(s_errorPlaceholder);
+                EventsReporterWrapper.ReportEvent(GaeInstancesLoadedEvent.Create(CommandStatus.Failure));
                 throw new CloudExplorerSourceException(ex.Message, ex);
             }
         }
