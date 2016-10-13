@@ -364,7 +364,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             IsLoading = true;
             Children.Clear();
             UpdateContextMenu();
-            Caption = Resources.CloudExplorerGaeUpdateTrafficSplitLoadingMessage;
+            Caption = Resources.CloudExplorerGaeUpdateTrafficSplitMessage;
             GaeDataSource datasource = root.DataSource.Value;
 
             try
