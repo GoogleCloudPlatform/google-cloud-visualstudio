@@ -151,9 +151,9 @@ namespace GoogleCloudExtension.SplitTrafficManagement
             Allocations = GetAllocations(service);
             AvailableVersions = GetAvailableVersions(service, versions);
 
-            SaveCommand = new WeakCommand(OnSaveCommand);
-            DeleteCommand = new WeakCommand<SplitTrafficModel>(OnDeleteCommand);
-            AddTrafficAllocationCommand = new WeakCommand(OnAddTrafficAllocationCommand);
+            SaveCommand = new ProtectedCommand(OnSaveCommand);
+            DeleteCommand = new ProtectedCommand<SplitTrafficModel>(OnDeleteCommand);
+            AddTrafficAllocationCommand = new ProtectedCommand(OnAddTrafficAllocationCommand);
 
             AvailableVersions.CollectionChanged += new NotifyCollectionChangedEventHandler(
                 (s, e)=> RaisePropertyChanged(nameof(HasAvailableVersions))); 

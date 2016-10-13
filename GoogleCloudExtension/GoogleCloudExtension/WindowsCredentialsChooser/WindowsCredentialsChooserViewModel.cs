@@ -66,7 +66,7 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
         /// <summary>
         /// The command to execute in the OK button.
         /// </summary>
-        public WeakCommand OkCommand { get; }
+        public ProtectedCommand OkCommand { get; }
 
         /// <summary>
         /// The command to exectue from the manage credentials button.
@@ -96,8 +96,8 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
             _options = options;
             _owner = owner;
 
-            OkCommand = new WeakCommand(OnOkCommand, canExecuteCommand: false);
-            ManageCredentialsCommand = new WeakCommand(OnManageCredentialsCommand);
+            OkCommand = new ProtectedCommand(OnOkCommand, canExecuteCommand: false);
+            ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand);
 
             LoadCredentials();
         }

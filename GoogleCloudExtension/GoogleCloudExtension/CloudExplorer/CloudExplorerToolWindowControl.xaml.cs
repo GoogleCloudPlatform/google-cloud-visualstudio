@@ -25,7 +25,6 @@ namespace GoogleCloudExtension.CloudExplorer
     public partial class CloudExplorerToolWindowControl : UserControl
     {
         private readonly SelectionUtils _selectionUtils;
-        private readonly WeakAction<object, EventArgs> _onItemChangedHandler;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CloudExplorerToolWindowControl"/> class.
@@ -33,57 +32,68 @@ namespace GoogleCloudExtension.CloudExplorer
         public CloudExplorerToolWindowControl(SelectionUtils selectionUtils)
         {
             this.InitializeComponent();
-            _onItemChangedHandler = new WeakAction<object, EventArgs>(OnItemChanged);
             _selectionUtils = selectionUtils;
         }
 
         private void TreeView_SelectedItemChanged(object sender, System.Windows.RoutedPropertyChangedEventArgs<object> e)
         {
-            var oldItemSource = e.OldValue as ICloudExplorerItemSource;
-            if (oldItemSource != null)
+            ErrorHandlerUtils.HandleExceptions(() =>
             {
-                oldItemSource.ItemChanged -= OnItemChanged;
-            }
+                var oldItemSource = e.OldValue as ICloudExplorerItemSource;
+                if (oldItemSource != null)
+                {
+                    oldItemSource.ItemChanged -= OnItemChanged;
+                }
 
-            var newItemSource = e.NewValue as ICloudExplorerItemSource;
-            if (newItemSource == null)
-            {
-                _selectionUtils.ClearSelection();
-                return;
-            }
-            newItemSource.ItemChanged += OnItemChanged;
+                var newItemSource = e.NewValue as ICloudExplorerItemSource;
+                if (newItemSource == null)
+                {
+                    _selectionUtils.ClearSelection();
+                    return;
+                }
+                newItemSource.ItemChanged += OnItemChanged;
 
-            _selectionUtils.SelectItem(newItemSource.Item);
+                _selectionUtils.SelectItem(newItemSource.Item);
+            });
         }
 
         private void OnItemChanged(object sender, EventArgs e)
         {
-            var itemSource = (ICloudExplorerItemSource)sender;
-            _selectionUtils.SelectItem(itemSource.Item);
+            ErrorHandlerUtils.HandleExceptions(() =>
+            {
+                var itemSource = (ICloudExplorerItemSource)sender;
+                _selectionUtils.SelectItem(itemSource.Item);
+            });
         }
 
         private void TreeView_KeyDown(object sender, KeyEventArgs e)
         {
-            // Detect that Shift+F10 is pressed, open up the context menu.
-            if (e.Key == Key.F10 && (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift)
+            ErrorHandlerUtils.HandleExceptions(() =>
             {
-                var item = _treeView.SelectedItem as TreeHierarchy;
-                if (item != null)
+                // Detect that Shift+F10 is pressed, open up the context menu.
+                if (e.Key == Key.F10 && (Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift)
                 {
-                    var contextMenu = item.ContextMenu;
-                    contextMenu.IsOpen = true;
-                    e.Handled = true;
+                    var item = _treeView.SelectedItem as TreeHierarchy;
+                    if (item != null)
+                    {
+                        var contextMenu = item.ContextMenu;
+                        contextMenu.IsOpen = true;
+                        e.Handled = true;
+                    }
                 }
-            }
+            });
         }
 
         private void TreeViewItem_PreviewMouseRightButtonDown(object sender, MouseEventArgs e)
         {
-            var item = sender as TreeViewItem;
-            if (item != null)
+            ErrorHandlerUtils.HandleExceptions(() =>
             {
-                item.IsSelected = true;
-            }
+                var item = sender as TreeViewItem;
+                if (item != null)
+                {
+                    item.IsSelected = true;
+                }
+            });
         }
     }
 }

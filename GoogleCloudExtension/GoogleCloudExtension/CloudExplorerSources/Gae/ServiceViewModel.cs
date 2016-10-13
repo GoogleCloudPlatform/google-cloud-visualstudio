@@ -146,49 +146,49 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             var menuItems = new List<FrameworkElement>
             {
-                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) },
-                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) },
-                new MenuItem { Header = Resources.CloudExplorerGaeServiceOpen, Command = new WeakCommand(OnOpenService) },
+                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand) },
+                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesWindowCommand) },
+                new MenuItem { Header = Resources.CloudExplorerGaeServiceOpen, Command = new ProtectedCommand(OnOpenService) },
                 
             };
 
             if (Children.Count > 1)
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeSplitTraffic, Command = new WeakCommand(OnSplitTraffic) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeSplitTraffic, Command = new ProtectedCommand(OnSplitTraffic) });
             }
 
             menuItems.Add(new Separator());
 
             if (!GaeUtils.AppEngineDefaultServiceName.Equals(Service.Id))
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteService, Command = new WeakCommand(OnDeleteService) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteService, Command = new ProtectedCommand(OnDeleteService) });
             }
 
             if (ShowOnlyFlexVersions)
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowFlexAndStandardVersions, Command = new WeakCommand(OnShowFlexibleAndStandardVersions) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowFlexAndStandardVersions, Command = new ProtectedCommand(OnShowFlexibleAndStandardVersions) });
             }
             else
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowFlexVersions, Command = new WeakCommand(OnShowOnlyFlexVersions) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowFlexVersions, Command = new ProtectedCommand(OnShowOnlyFlexVersions) });
             }
 
             if (ShowOnlyDotNetRuntimes)
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowAllRuntimes, Command = new WeakCommand(OnShowAllRuntimes) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowAllRuntimes, Command = new ProtectedCommand(OnShowAllRuntimes) });
             }
             else
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowDotNetRuntimes, Command = new WeakCommand(OnShowOnlyDotNetRuntimes) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowDotNetRuntimes, Command = new ProtectedCommand(OnShowOnlyDotNetRuntimes) });
             }
 
             if (ShowOnlyVersionsWithTraffic)
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowWithAndWithoutTraffic, Command = new WeakCommand(OnShowVersionsWithAndWithoutTraffic) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowWithAndWithoutTraffic, Command = new ProtectedCommand(OnShowVersionsWithAndWithoutTraffic) });
             }
             else
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowVersionsWithTraffic, Command = new WeakCommand(OnShowOnlyVersionsWithTraffic) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeShowVersionsWithTraffic, Command = new ProtectedCommand(OnShowOnlyVersionsWithTraffic) });
             }
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };

@@ -118,31 +118,31 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             var menuItems = new List<FrameworkElement>
             {
-                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) },
-                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) },
+                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand) },
+                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesWindowCommand) },
             };
 
             // If the version has traffic allocated to it it can be opened.
             if (HasTrafficAllocation)
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeVersionOpen, Command = new WeakCommand(OnOpenVersion) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeVersionOpen, Command = new ProtectedCommand(OnOpenVersion) });
             }
 
             menuItems.Add(new Separator());
 
             if (version.IsServing())
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeStopVersion, Command = new WeakCommand(OnStopVersion) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeStopVersion, Command = new ProtectedCommand(OnStopVersion) });
             }
             else if (version.IsStopped())
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeStartVersion, Command = new WeakCommand(OnStartVersion) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeStartVersion, Command = new ProtectedCommand(OnStartVersion) });
             }
 
             // If the version is stopped and has no traffic allocated to it allow it to be deleted.
             if (!HasTrafficAllocation && version.IsStopped())
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteVersion, Command = new WeakCommand(OnDeleteVersion) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteVersion, Command = new ProtectedCommand(OnDeleteVersion) });
             }
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };

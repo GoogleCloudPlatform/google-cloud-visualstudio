@@ -61,7 +61,10 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnCurrentAccountChanged(object sender, EventArgs e)
         {
-            SetCaption();
+            ErrorHandlerUtils.HandleExceptions(() =>
+            {
+                SetCaption();
+            });
         }
 
         private void SetCaption()
