@@ -24,7 +24,6 @@ namespace GoogleCloudExtension.PubSubWindows
     /// </summary>
     public class NewSubscriptionVeiwModel : ViewModelBase
     {
-
         public NewSubscriptionVeiwModel(Subscription subscription, WeakCommand createCommand)
         {
             Subscription = subscription;

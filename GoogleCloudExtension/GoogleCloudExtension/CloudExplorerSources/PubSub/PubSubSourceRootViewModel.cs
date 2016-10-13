@@ -161,7 +161,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             }
             catch (DataSourceException e)
             {
-                Debug.Write(e, "New Topic");
+                Debug.Write(e.Message, "New Topic");
                 UserPromptUtils.ErrorPrompt(
                     Resources.PubSubNewTopicErrorMessage, Resources.PubSubNewTopicErrorHeader);
             }

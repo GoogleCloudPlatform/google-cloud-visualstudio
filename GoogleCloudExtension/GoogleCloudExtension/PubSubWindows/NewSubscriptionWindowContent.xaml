@@ -5,6 +5,8 @@
         xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
         xmlns:local="clr-namespace:GoogleCloudExtension.PubSubWindows"
         xmlns:ext="clr-namespace:GoogleCloudExtension"
+        Margin="5"
+        Padding="5"
         FocusManager.FocusedElement="{Binding ElementName=SubscriptionName}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -13,13 +15,13 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
-    <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+    <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
         <TextBlock HorizontalAlignment="Center" MaxWidth="300"
                    Text="{Binding TopicName, StringFormat={x:Static ext:Resources.NewSubscriptionWindowHeader}}"/>
         <DockPanel>
             <Label DockPanel.Dock="Left" Target="{Binding ElementName=SubscriptionName}" VerticalAlignment="Center"
                    Content="{x:Static ext:Resources.NewSubscriptionWindowNameLabel}"/>
-            <TextBox MinWidth="200"  ClipToBounds="True"
+            <TextBox Name="SubscriptionName" MinWidth="200" MaxWidth="500" ClipToBounds="True"
                 ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}">
                 <TextBox.Text>
                     <Binding Path="Subscription.Name" UpdateSourceTrigger="PropertyChanged">

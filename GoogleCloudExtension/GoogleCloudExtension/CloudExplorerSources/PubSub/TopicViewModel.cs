@@ -85,12 +85,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             try
             {
+                IsLoading = true;
                 Subscription subscription;
                 if (NewSubscriptionWindowContent.PromptUser(_topicItem.FullName, out subscription))
                 {
                     await DataSource.NewSubscriptionAsync(subscription);
                     Refresh();
                 }
+                IsLoading = false;
             }
             catch (DataSourceException e)
             {
@@ -103,9 +105,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             try
             {
+                IsLoading = true;
                 bool doDelete = UserPromptUtils.YesNoPrompt(
                     string.Format(Resources.PubSubDeleteTopicWindowMessage, _topicItem.Name),
                     Resources.PubSubDeleteTopicWindowHeader);
+                IsLoading = false;
                 if (doDelete)
                 {
                     await DataSource.DeleteTopicAsync(_topicItem.Name);

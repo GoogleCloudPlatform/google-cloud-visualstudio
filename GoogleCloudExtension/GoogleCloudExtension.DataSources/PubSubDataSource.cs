@@ -91,13 +91,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// Creates a new topic.
         /// </summary>
         /// <param name="topicName">The name of the topic. Does not include the project id.</param>
-        public Task<Topic> NewTopicAsync(string topicName)
+        public async Task<Topic> NewTopicAsync(string topicName)
         {
             try
             {
                 ProjectsResource.TopicsResource.CreateRequest request =
                     Service.Projects.Topics.Create(new Topic(), GetTopicFullName(topicName));
-                return request.ExecuteAsync();
+                return await request.ExecuteAsync();
             }
             catch (GoogleApiException e)
             {

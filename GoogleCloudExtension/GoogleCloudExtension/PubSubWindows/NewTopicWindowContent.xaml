@@ -24,7 +24,7 @@
         <DockPanel>
             <Label Target="{Binding ElementName=TopicName}" DockPanel.Dock="Left"
                    Content="{x:Static ext:Resources.NewTopicWindowNameLabel}"/>
-            <TextBox x:Name="TopicName" MinWidth="200" MaxLines="1"
+            <TextBox x:Name="TopicName" MinWidth="200" MaxWidth="500" MaxLines="1"
                      ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}">
                 <TextBox.Text>
                     <Binding Path="TopicName" UpdateSourceTrigger="PropertyChanged">
