@@ -168,13 +168,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnNewAspNetInstanceCommand()
         {
-            var url = $"https://console.cloud.google.com/launcher/details/click-to-deploy-images/aspnet?project={Context.CurrentProject.Name}";
+            var url = $"https://console.cloud.google.com/launcher/details/click-to-deploy-images/aspnet?project={Context.CurrentProject.ProjectId}";
             Process.Start(url);
         }
 
         private void OnNewInstanceCommand()
         {
-            var url = $"https://console.cloud.google.com/compute/instancesAdd?project={Context.CurrentProject.Name}";
+            var url = $"https://console.cloud.google.com/compute/instancesAdd?project={Context.CurrentProject.ProjectId}";
             Process.Start(url);
         }
 

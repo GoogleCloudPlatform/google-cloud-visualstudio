@@ -75,7 +75,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnNewInstanceCommand()
         {
-            var url = $"https://console.cloud.google.com/compute/instancesAdd?project={_owner.Context.CurrentProject.Name}&zone={_zone.Name}";
+            var url = $"https://console.cloud.google.com/compute/instancesAdd?project={_owner.Context.CurrentProject.ProjectId}&zone={_zone.Name}";
             Process.Start(url);
         }
     }
