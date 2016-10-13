@@ -385,7 +385,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 Service = await datasource.GetServiceAsync(Service.Id);
                 EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Success));
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is DataSourceException || ex is TimeoutException || ex is OperationCanceledException)
             { 
                 EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Failure));
                 IsError = true;
@@ -401,10 +401,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 else if (ex is OperationCanceledException)
                 {
                     Caption = Resources.CloudExploreOperationCanceledMessage;
-                }
-                else
-                {
-                    throw;
                 }
             }
             finally
@@ -439,7 +435,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 }
                 EventsReporterWrapper.ReportEvent(GaeServiceDeletedEvent.Create(CommandStatus.Success));
             }
-            catch (Exception ex)
+            catch (Exception ex) when (ex is DataSourceException || ex is TimeoutException || ex is OperationCanceledException)
             {
                 EventsReporterWrapper.ReportEvent(GaeServiceDeletedEvent.Create(CommandStatus.Failure));
                 IsError = true;
@@ -455,10 +451,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 else if (ex is OperationCanceledException)
                 {
                     Caption = Resources.CloudExploreOperationCanceledMessage;
-                }
-                else
-                {
-                    throw;
                 }
             }
             finally
