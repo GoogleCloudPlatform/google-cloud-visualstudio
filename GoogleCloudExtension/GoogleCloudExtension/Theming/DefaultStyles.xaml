@@ -6,20 +6,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
         xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
         mc:Ignorable="d">
-    <Style x:Key="BasePanel" TargetType="Panel">
-        <Setter Property="Background" Value="{DynamicResource VsBrush.Window}"/>
-    </Style>
+    <Style x:Key="BasePanel" TargetType="Panel"/>
+    
     <Style BasedOn="{StaticResource BasePanel}" TargetType="StackPanel"/>
     <Style BasedOn="{StaticResource BasePanel}" TargetType="Grid"/>
     <Style BasedOn="{StaticResource BasePanel}" TargetType="DockPanel"/>
-    <Style x:Key="Control" TargetType="Control">
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.PanelTextKey}}"/>
-    </Style>
+    <Style x:Key="Control" TargetType="Control"/>
+    
     <Style TargetType="RadioButton" BasedOn="{StaticResource Control}"/>
-    <Style TargetType="TextBlock">
-        <Setter Property="Background" Value="{DynamicResource VsBrush.Window}"/>
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.PanelTextKey}}"/>
-    </Style>
+    <Style TargetType="TextBlock"/>
     <Style TargetType="Label" BasedOn="{StaticResource Control}"/>
     <Style TargetType="Button">
         <Style.Resources>
@@ -27,15 +22,10 @@
         </Style.Resources>
         <Setter Property="Margin" Value="3"/>
         <Setter Property="Padding" Value="5"/>
-        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ButtonFaceKey}}"/>
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ButtonTextKey}}"/>
     </Style>
     <Style TargetType="TextBox">
         <Setter Property="Margin" Value="3"/>
         <Setter Property="Padding" Value="2"/>
-        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowBackgroundKey}}"/>
-        <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowTextKey}}"/>
-        <Setter Property="SelectionBrush" Value="{DynamicResource {x:Static vsshell:VsBrushes.ToolWindowButtonHoverActiveKey}}"/>
     </Style>
     <Style x:Key="ButtonsPanel" TargetType="StackPanel">
         <Setter Property="Orientation" Value="Horizontal"/>
@@ -48,8 +38,6 @@
                 <Setter Property="Width" Value="100"/>
                 <Setter Property="Margin" Value="5,5,8,5"/>
                 <Setter Property="Height" Value="25"/>
-                <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.ButtonFaceKey}}"/>
-                <Setter Property="Foreground" Value="{DynamicResource {x:Static vsshell:VsBrushes.ButtonTextKey}}"/>
             </Style>
         </Style.Resources>
     </Style>
