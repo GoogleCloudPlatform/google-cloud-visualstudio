@@ -576,7 +576,7 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to Updating traffic split....
         /// </summary>
-        public static string CloudExplorerGaeUpdateTrafficSplitLoadingMessage {
+        public static string CloudExplorerGaeUpdateTrafficSplitMessage {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeUpdateTrafficSplitMessage", resourceCulture);
             }
