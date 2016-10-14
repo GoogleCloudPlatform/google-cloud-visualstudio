@@ -10,14 +10,9 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <local:DefaultStyles/>
-            </ResourceDictionary.MergedDictionaries>
-            <utils:VisibilityConverter x:Key="visibilityConverter" />
-        </ResourceDictionary>
+        <utils:VisibilityConverter x:Key="visibilityConverter" />
     </UserControl.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -32,11 +27,12 @@
         <!-- The row of buttons. -->
         <Border Grid.Row="1"
                 Background="#FFECECEC">
-            <StackPanel Style="{StaticResource ButtonsPanel}">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <ItemsControl x:Name="_buttonsRow">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Command="{Binding Command}"
+                            <Button Width="100" Margin="5,5,8,5" Height="25"
+                                    Command="{Binding Command}"
                                     IsDefault="{Binding IsDefault}"
                                     IsCancel="{Binding IsCancel}">
                                 <StackPanel Orientation="Horizontal">
@@ -56,7 +52,5 @@
                 </ItemsControl>
             </StackPanel>
         </Border>
-
     </Grid>
 </UserControl>
-

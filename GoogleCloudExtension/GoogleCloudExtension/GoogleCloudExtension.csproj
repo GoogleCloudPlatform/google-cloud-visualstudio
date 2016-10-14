@@ -151,9 +151,6 @@
       <DependentUpon>NewTopicWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="PubSubWindows\PubSubNameValidationRule.cs" />
-    <Compile Include="Theming\DefaultStyles.xaml.cs">
-      <DependentUpon>DefaultStyles.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -513,10 +510,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PubSubWindows\NewTopicWindowContent.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Theming\DefaultStyles.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
