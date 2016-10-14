@@ -5,8 +5,6 @@
         xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
         xmlns:local="clr-namespace:GoogleCloudExtension.PubSubWindows"
         xmlns:ext="clr-namespace:GoogleCloudExtension"
-        Margin="5"
-        Padding="5"
         FocusManager.FocusedElement="{Binding ElementName=SubscriptionName}">
     <UserControl.Resources>
     <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center" x:Key="Content">
@@ -31,13 +29,13 @@
         <DockPanel>
             <RadioButton DockPanel.Dock="Left" Name="PushRadioButton" GroupName="PushPull" IsChecked="{Binding Push}" Margin="5"
                          Content="{x:Static ext:Resources.NewSubscriptionWindowPushLabel}" VerticalAlignment="Center"/>
-            <TextBox Name="PushUrlBox" MinWidth="200" Text="{Binding PushConfig.PushEndpoint}"
+            <TextBox Name="PushUrlBox" MinWidth="200" MaxWidth="500" Text="{Binding PushConfig.PushEndpoint}"
                      IsEnabled="{Binding Push}"/>
         </DockPanel>
         <DockPanel>
             <Label DockPanel.Dock="Left" Target="{Binding ElementName=Deadline}" VerticalAlignment="Center"
                    Content="{x:Static ext:Resources.NewSubscriptionWindowAckDeadlineLabel}"/>
-            <TextBox Name ="Deadline" MinWidth="40"
+            <TextBox Name ="Deadline" Width="40"
                      Text="{Binding Subscription.AckDeadlineSeconds, TargetNullValue=60, UpdateSourceTrigger=PropertyChanged}"/>
         </DockPanel>
     </StackPanel>

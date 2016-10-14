@@ -8,8 +8,6 @@
         xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
         xmlns:ext="clr-namespace:GoogleCloudExtension"
         mc:Ignorable="d"
-        Margin="5"
-        Padding="5"
         FocusManager.FocusedElement="{Binding ElementName=TopicName}">
     <UserControl.Resources>
         <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center" x:Key="Content">

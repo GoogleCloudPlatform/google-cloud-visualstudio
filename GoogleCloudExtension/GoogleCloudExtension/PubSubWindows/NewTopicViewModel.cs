@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils;
-using System.Runtime.CompilerServices;
 
 namespace GoogleCloudExtension.PubSubWindows
 {
@@ -31,8 +30,7 @@ namespace GoogleCloudExtension.PubSubWindows
             get { return _topicName; }
             set
             {
-                _topicName = value;
-                OnPropertyChanged();
+                SetValueAndRaise(ref _topicName, value);
             }
         }
 
@@ -42,12 +40,6 @@ namespace GoogleCloudExtension.PubSubWindows
         {
             Project = project;
             CreateCommand = createCommand;
-        }
-
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-        {
-
-            RaisePropertyChanged(propertyName);
         }
     }
 }

@@ -24,6 +24,15 @@ namespace GoogleCloudExtension.PubSubWindows
     /// </summary>
     public class PubSubNameValidationRule : ValidationRule
     {
+        /// <summary>
+        /// From the pub sub api documentation,
+        /// both subscription names and topic names must follow these rules:
+        /// It must start with a letter.
+        /// It must contain only letters (`[A-Za-z]`), numbers (`[0-9]`), dashes (`-`), underscores (`_`),
+        /// periods (`.`), tildes (`~`), plus (`+`) or percent signs (`%`).
+        /// It must be between 3 and 255 characters in length.
+        /// It must not start with `"goog"`.
+        /// </summary>
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
             string name = value?.ToString();

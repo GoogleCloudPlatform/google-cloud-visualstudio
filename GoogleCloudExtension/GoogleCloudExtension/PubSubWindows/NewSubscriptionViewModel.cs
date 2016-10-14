@@ -22,9 +22,9 @@ namespace GoogleCloudExtension.PubSubWindows
     /// Data objet that backs the new subscription window. It contains the information needed to create a new
     /// subscription.
     /// </summary>
-    public class NewSubscriptionVeiwModel : ViewModelBase
+    public class NewSubscriptionViewModel : ViewModelBase
     {
-        public NewSubscriptionVeiwModel(Subscription subscription, WeakCommand createCommand)
+        public NewSubscriptionViewModel(Subscription subscription, WeakCommand createCommand)
         {
             Subscription = subscription;
             CreateCommand = createCommand;

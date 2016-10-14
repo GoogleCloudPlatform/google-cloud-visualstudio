@@ -24,10 +24,10 @@ namespace GoogleCloudExtension.PubSubWindows
     /// </summary>
     public partial class NewSubscriptionWindowContent
     {
-        public NewSubscriptionWindowContent(NewSubscriptionVeiwModel veiwModel)
+        public NewSubscriptionWindowContent(NewSubscriptionViewModel viewModel)
         {
             InitializeComponent();
-            DataContext = veiwModel;
+            DataContext = viewModel;
         }
 
         public static bool PromptUser(string topicFullName, out Subscription model)
@@ -47,8 +47,8 @@ namespace GoogleCloudExtension.PubSubWindows
                 dialog.Close();
             });
 
-            NewSubscriptionVeiwModel veiwModel = new NewSubscriptionVeiwModel(model, createCommand);
-            dialog.Content = new NewSubscriptionWindowContent(veiwModel);
+            NewSubscriptionViewModel viewModel = new NewSubscriptionViewModel(model, createCommand);
+            dialog.Content = new NewSubscriptionWindowContent(viewModel);
             return dialog.ShowModal() == true;
         }
     }

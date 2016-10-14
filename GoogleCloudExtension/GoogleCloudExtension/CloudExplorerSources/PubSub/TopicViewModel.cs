@@ -83,33 +83,35 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 
         private async void OnNewSubscriptionCommand()
         {
+            IsLoading = true;
             try
             {
-                IsLoading = true;
                 Subscription subscription;
                 if (NewSubscriptionWindowContent.PromptUser(_topicItem.FullName, out subscription))
                 {
                     await DataSource.NewSubscriptionAsync(subscription);
                     Refresh();
                 }
-                IsLoading = false;
             }
             catch (DataSourceException e)
             {
                 Debug.Write(e.Message, "New Subscription");
                 UserPromptUtils.ErrorPrompt("Error creating new subscription.", "Error in new subscription");
             }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         private async void OnDeleteTopicCommand()
         {
+            IsLoading = true;
             try
             {
-                IsLoading = true;
                 bool doDelete = UserPromptUtils.YesNoPrompt(
                     string.Format(Resources.PubSubDeleteTopicWindowMessage, _topicItem.Name),
                     Resources.PubSubDeleteTopicWindowHeader);
-                IsLoading = false;
                 if (doDelete)
                 {
                     await DataSource.DeleteTopicAsync(_topicItem.Name);
@@ -121,6 +123,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 Debug.Write(e.Message, "Delete Topic");
                 UserPromptUtils.ErrorPrompt(
                     Resources.PubSubDeleteTopicErrorMessage, Resources.PubSubDeleteTopicErrorHeader);
+            }
+            finally
+            {
+                IsLoading = false;
             }
         }
 

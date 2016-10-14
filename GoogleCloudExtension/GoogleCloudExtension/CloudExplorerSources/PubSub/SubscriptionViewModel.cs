@@ -79,13 +79,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 
         private async void OnDeleteSubscriptionCommand()
         {
+            IsLoading = true;
             try
             {
-                IsLoading = true;
                 bool doDelete = UserPromptUtils.YesNoPrompt(
                     string.Format(Resources.PubSubDeleteSubscriptionWindowMessage, _subscriptionItem.Name),
                     Resources.PubSubDeleteSubscriptionWindowHeader);
-                IsLoading = false;
                 if (doDelete)
                 {
                     await DataSource.DeleteSubscriptionAsync(_subscriptionItem.Name);
@@ -97,6 +96,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 Debug.Write(e.Message, "Delete Subscription");
                 UserPromptUtils.ErrorPrompt(Resources.PubSubDeleteSubscriptionErrorMessage,
                     Resources.PubSubDeleteSubscriptionErrorHeader);
+            }
+            finally
+            {
+                IsLoading = false;
             }
         }
 
