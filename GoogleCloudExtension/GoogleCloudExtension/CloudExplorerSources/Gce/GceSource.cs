@@ -32,22 +32,33 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             _windowsOnlyButton = new ButtonDefinition
             {
                 ToolTip = Resources.CloudExplorerGceOnlyWindowsButtonToolTip,
-                Command = new WeakCommand(OnOnlyWindowsClicked),
+                Command = new ProtectedCommand(OnOnlyWindowsCommand),
                 Icon = s_windowsOnlyButtonIcon.Value,
             };
             ActualButtons.Add(_windowsOnlyButton);
             ActualRoot.ShowOnlyWindowsInstancesChanged += OnShowOnlyWindowsInstancesChanged;
         }
 
+        #region Event handlers
+
         private void OnShowOnlyWindowsInstancesChanged(object sender, EventArgs e)
         {
-            _windowsOnlyButton.IsChecked = ActualRoot.ShowOnlyWindowsInstances;
+            ErrorHandlerUtils.HandleExceptions(() =>
+            {
+                _windowsOnlyButton.IsChecked = ActualRoot.ShowOnlyWindowsInstances;
+            });
         }
 
-        private void OnOnlyWindowsClicked()
+        #endregion
+
+        #region Command handlers.
+
+        private void OnOnlyWindowsCommand()
         {
             _windowsOnlyButton.IsChecked = !_windowsOnlyButton.IsChecked;
             ActualRoot.ShowOnlyWindowsInstances = _windowsOnlyButton.IsChecked;
         }
+
+        #endregion
     }
 }

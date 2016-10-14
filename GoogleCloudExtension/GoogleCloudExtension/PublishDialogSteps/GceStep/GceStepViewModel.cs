@@ -92,7 +92,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         /// <summary>
         /// The command to execute when pressing the manage credentials button.
         /// </summary>
-        public WeakCommand ManageCredentialsCommand { get; }
+        public ProtectedCommand ManageCredentialsCommand { get; }
 
         /// <summary>
         /// Whether to open the website after a succesful publish operation. Defaults to true.
@@ -109,7 +109,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
             Instances = AsyncPropertyValueUtils.CreateAsyncProperty(GetAllWindowsInstances());
 
-            ManageCredentialsCommand = new WeakCommand(OnManageCredentialsCommand, canExecuteCommand: false);
+            ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand, canExecuteCommand: false);
         }
 
         private void OnManageCredentialsCommand()

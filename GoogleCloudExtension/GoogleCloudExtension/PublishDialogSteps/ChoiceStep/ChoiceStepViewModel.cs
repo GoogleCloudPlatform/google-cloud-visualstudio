@@ -64,7 +64,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
                 new Choice
                 {
                     Name = Resources.PublishDialogChoiceStepAppEngineFlexName,
-                    Command = new WeakCommand(
+                    Command = new ProtectedCommand(
                         OnAppEngineChoiceCommand,
                         canExecuteCommand: projectType == KnownProjectTypes.NetCoreWebApplication),
                     Icon = s_appEngineIcon.Value,
@@ -73,7 +73,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
                 new Choice
                 {
                     Name = Resources.PublishDialogChoiceStepGceName,
-                    Command = new WeakCommand(
+                    Command = new ProtectedCommand(
                         OnGceChoiceCommand,
                         canExecuteCommand: projectType == KnownProjectTypes.WebApplication),
                     Icon = s_gceIcon.Value,

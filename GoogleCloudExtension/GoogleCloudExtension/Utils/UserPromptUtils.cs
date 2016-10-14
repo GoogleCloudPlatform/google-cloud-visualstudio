@@ -14,6 +14,7 @@
 
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using System;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -76,6 +77,28 @@ namespace GoogleCloudExtension.Utils
                     OLEMSGICON.OLEMSGICON_CRITICAL,
                     OLEMSGBUTTON.OLEMSGBUTTON_OK,
                     OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+        }
+
+        /// <summary>
+        /// Shows an error message for the given exception.
+        /// </summary>
+        /// <param name="ex">The exception to show.</param>
+        public static void ExceptionPrompt(Exception ex)
+        {
+            ErrorPrompt(
+                Resources.ExceptionPromptTitle,
+                String.Format(Resources.ExceptionPromptMessage, ex.Message));
+        }
+
+        /// <summary>
+        /// Shows an error message for the given <seealso cref="AggregateException"/>.
+        /// </summary>
+        /// <param name="ex">The exception to show.</param>
+        public static void ExceptionPrompt(AggregateException ex)
+        {
+            ErrorPrompt(
+                Resources.ExceptionPromptTitle,
+                String.Format(Resources.ExceptionPromptMessage, ex.InnerException.Message));
         }
     }
 }

@@ -90,7 +90,7 @@ namespace GoogleCloudExtension.FirewallManagement
             _instance = instance;
 
             Ports = CreatePortModels();
-            OkCommand = new WeakCommand(OnOkCommand);
+            OkCommand = new ProtectedCommand(OnOkCommand);
         }
 
         private void OnOkCommand()

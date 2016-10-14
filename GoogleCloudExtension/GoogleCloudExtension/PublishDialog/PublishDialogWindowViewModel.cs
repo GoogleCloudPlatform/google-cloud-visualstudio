@@ -43,17 +43,17 @@ namespace GoogleCloudExtension.PublishDialog
         /// <summary>
         /// The command to execute when pressing the "Prev" button.
         /// </summary>
-        public WeakCommand PrevCommand { get; }
+        public ProtectedCommand PrevCommand { get; }
 
         /// <summary>
         /// The command to execute when pressing the "Next" button.
         /// </summary>
-        public WeakCommand NextCommand { get; }
+        public ProtectedCommand NextCommand { get; }
 
         /// <summary>
         /// The command to execute when presing the "Publish" button.
         /// </summary>
-        public WeakCommand PublishCommand { get; }
+        public ProtectedCommand PublishCommand { get; }
 
         /// <summary>
         /// The current <seealso cref="IPublishDialogStep"/> being shown.
@@ -65,9 +65,9 @@ namespace GoogleCloudExtension.PublishDialog
             _owner = owner;
             _project = project;
 
-            PrevCommand = new WeakCommand(OnPrevCommand);
-            NextCommand = new WeakCommand(OnNextCommand);
-            PublishCommand = new WeakCommand(OnPublishCommand);
+            PrevCommand = new ProtectedCommand(OnPrevCommand);
+            NextCommand = new ProtectedCommand(OnNextCommand);
+            PublishCommand = new ProtectedCommand(OnPublishCommand);
 
             PushStep(initialStep);
         }

@@ -60,7 +60,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) },
+                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesWindowCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
