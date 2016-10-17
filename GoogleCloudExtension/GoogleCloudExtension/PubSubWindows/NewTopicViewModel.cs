@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.PubSubWindows
@@ -21,6 +22,7 @@ namespace GoogleCloudExtension.PubSubWindows
     /// </summary>
     public class NewTopicViewModel : ViewModelBase
     {
+        private readonly CommonDialogWindowBase _window;
         private string _topicName;
 
         public string Project { get; }
@@ -28,18 +30,22 @@ namespace GoogleCloudExtension.PubSubWindows
         public string TopicName
         {
             get { return _topicName; }
-            set
-            {
-                SetValueAndRaise(ref _topicName, value);
-            }
+            set { SetValueAndRaise(ref _topicName, value); }
         }
 
         public WeakCommand CreateCommand { get; }
 
-        public NewTopicViewModel(string project, WeakCommand createCommand)
+        public NewTopicViewModel(string project, CommonDialogWindowBase window)
         {
+            _window = window;
             Project = project;
-            CreateCommand = createCommand;
+            CreateCommand = new WeakCommand(OnCreateCommand);
+        }
+
+        private void OnCreateCommand()
+        {
+            _window.DialogResult = true;
+            _window.Close();
         }
     }
 }

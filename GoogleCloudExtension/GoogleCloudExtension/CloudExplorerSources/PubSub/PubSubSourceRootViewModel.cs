@@ -152,8 +152,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             try
             {
-                string topicName;
-                if (NewTopicWindowContent.PromptUser(CredentialsStore.Default.CurrentProjectId, out topicName))
+                string topicName = NewTopicWindowContent.PromptUser(CredentialsStore.Default.CurrentProjectId);
+                if (topicName != null)
                 {
                     await DataSource.NewTopicAsync(topicName);
                     Refresh();

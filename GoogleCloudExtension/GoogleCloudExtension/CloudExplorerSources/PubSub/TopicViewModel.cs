@@ -86,8 +86,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             IsLoading = true;
             try
             {
-                Subscription subscription;
-                if (NewSubscriptionWindowContent.PromptUser(_topicItem.FullName, out subscription))
+                Subscription subscription = NewSubscriptionWindowContent.PromptUser(_topicItem.FullName);
+                if (subscription != null)
                 {
                     await DataSource.NewSubscriptionAsync(subscription);
                     Refresh();
@@ -96,7 +96,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             catch (DataSourceException e)
             {
                 Debug.Write(e.Message, "New Subscription");
-                UserPromptUtils.ErrorPrompt("Error creating new subscription.", "Error in new subscription");
+                UserPromptUtils.ErrorPrompt(
+                    Resources.PubSubNewSubscriptionErrorMessage, Resources.PubSubNewSubscriptionErrorHeader);
             }
             finally
             {

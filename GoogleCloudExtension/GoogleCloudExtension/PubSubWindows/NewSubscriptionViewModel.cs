@@ -14,6 +14,7 @@
 
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.CloudExplorerSources.PubSub;
+using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.PubSubWindows
@@ -24,11 +25,20 @@ namespace GoogleCloudExtension.PubSubWindows
     /// </summary>
     public class NewSubscriptionViewModel : ViewModelBase
     {
-        public NewSubscriptionViewModel(Subscription subscription, WeakCommand createCommand)
+        private readonly CommonDialogWindowBase _window;
+
+        public NewSubscriptionViewModel(Subscription subscription, CommonDialogWindowBase window)
         {
+            _window = window;
             Subscription = subscription;
-            CreateCommand = createCommand;
+            CreateCommand = new WeakCommand(OnCreateCommand);
             PushConfig = subscription.PushConfig ?? new PushConfig();
+        }
+
+        private void OnCreateCommand()
+        {
+            _window.DialogResult = true;
+            _window.Close();
         }
 
         public string TopicName => PubsubSource.GetPathLeaf(Subscription.Topic);
@@ -41,11 +51,14 @@ namespace GoogleCloudExtension.PubSubWindows
             get { return Subscription.PushConfig == PushConfig; }
             set
             {
-                Subscription.PushConfig = value ? PushConfig : null;
-                RaisePropertyChanged();
+                if (value != Push)
+                {
+                    Subscription.PushConfig = value ? PushConfig : null;
+                    RaisePropertyChanged();
+                }
             }
         }
-        
+
         public PushConfig PushConfig { get; }
 
         public Subscription Subscription { get; }

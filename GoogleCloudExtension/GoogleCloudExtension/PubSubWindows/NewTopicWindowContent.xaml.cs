@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Theming;
-using GoogleCloudExtension.Utils;
 using System.Windows;
 
 namespace GoogleCloudExtension.PubSubWindows
@@ -30,24 +29,25 @@ namespace GoogleCloudExtension.PubSubWindows
             DataContext = newTopicViewModel;
         }
 
-        public static bool PromptUser(string projectId, out string topicName)
+        public static string PromptUser(string projectId)
         {
-            var dialog = new CommonDialogWindowBase(GoogleCloudExtension.Resources.NewTopicWindowTitle)
+            var dialog = new CommonDialogWindowBase(GoogleCloudExtension.Resources.NewTopicWindowTitle, 600, 400)
             {
                 SizeToContent = SizeToContent.WidthAndHeight,
                 ResizeMode = ResizeMode.NoResize,
                 HasMinimizeButton = false,
                 HasMaximizeButton = false
             };
-            NewTopicViewModel newTopicViewModel = new NewTopicViewModel(projectId, new WeakCommand(() =>
-            {
-                dialog.DialogResult = true;
-                dialog.Close();
-            }));
+            NewTopicViewModel newTopicViewModel = new NewTopicViewModel(projectId, dialog);
             dialog.Content = new NewTopicWindowContent(newTopicViewModel);
-            var returnVal = dialog.ShowModal() == true;
-            topicName = newTopicViewModel.TopicName;
-            return returnVal;
+            if (dialog.ShowModal() == true)
+            {
+                return newTopicViewModel.TopicName;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

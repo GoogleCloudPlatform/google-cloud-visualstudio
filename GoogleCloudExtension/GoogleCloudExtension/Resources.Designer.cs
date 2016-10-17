@@ -1303,7 +1303,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Cancel.
+        ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string FocusableCancelButton {
             get {
@@ -1312,7 +1312,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to C_reate.
+        ///   Looks up a localized string similar to Create.
         /// </summary>
         public static string FocusableCreateButton {
             get {
@@ -1573,7 +1573,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create topic in project {0}..
+        ///   Looks up a localized string similar to Create topic..
         /// </summary>
         public static string NewTopicWindowTitle {
             get {
@@ -1686,6 +1686,24 @@ namespace GoogleCloudExtension {
         public static string PubSubDeleteTopicWindowMessage {
             get {
                 return ResourceManager.GetString("PubSubDeleteTopicWindowMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in new subscription.
+        /// </summary>
+        public static string PubSubNewSubscriptionErrorHeader {
+            get {
+                return ResourceManager.GetString("PubSubNewSubscriptionErrorHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error creating new subscription..
+        /// </summary>
+        public static string PubSubNewSubscriptionErrorMessage {
+            get {
+                return ResourceManager.GetString("PubSubNewSubscriptionErrorMessage", resourceCulture);
             }
         }
         

@@ -36,7 +36,7 @@
                                     IsDefault="{Binding IsDefault}"
                                     IsCancel="{Binding IsCancel}">
                                 <StackPanel Orientation="Horizontal">
-                                    <AccessText Text="{Binding Caption}" />
+                                    <TextBlock Text="{Binding Caption}" />
                                     <controls:ProgressIndicator Visibility="{Binding IsBusy, Converter={StaticResource visibilityConverter}}"
                                                                 ForceTheme="Blue"/>
                                 </StackPanel>

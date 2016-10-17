@@ -14,7 +14,6 @@
 
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.Theming;
-using GoogleCloudExtension.Utils;
 using System.Windows;
 
 namespace GoogleCloudExtension.PubSubWindows
@@ -30,9 +29,9 @@ namespace GoogleCloudExtension.PubSubWindows
             DataContext = viewModel;
         }
 
-        public static bool PromptUser(string topicFullName, out Subscription model)
+        public static Subscription PromptUser(string topicFullName)
         {
-            var dialog = new CommonDialogWindowBase(GoogleCloudExtension.Resources.NewSubscriptionWindowTitle)
+            var dialog = new CommonDialogWindowBase(GoogleCloudExtension.Resources.NewSubscriptionWindowTitle, 600, 400)
             {
                 SizeToContent = SizeToContent.WidthAndHeight,
                 ResizeMode = ResizeMode.NoResize,
@@ -40,16 +39,18 @@ namespace GoogleCloudExtension.PubSubWindows
                 HasMaximizeButton = false
             };
 
-            model = new Subscription { Topic = topicFullName };
-            var createCommand = new WeakCommand(() =>
-            {
-                dialog.DialogResult = true;
-                dialog.Close();
-            });
+            Subscription model = new Subscription { Topic = topicFullName };
 
-            NewSubscriptionViewModel viewModel = new NewSubscriptionViewModel(model, createCommand);
+            NewSubscriptionViewModel viewModel = new NewSubscriptionViewModel(model, dialog);
             dialog.Content = new NewSubscriptionWindowContent(viewModel);
-            return dialog.ShowModal() == true;
+            if (dialog.ShowModal() == true)
+            {
+                return model;
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 }

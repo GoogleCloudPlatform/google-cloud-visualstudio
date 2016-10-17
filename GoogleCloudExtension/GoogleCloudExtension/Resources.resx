@@ -954,11 +954,11 @@
     <comment>Message displayed by validator requiring 3 characters.</comment>
   </data>
   <data name="FocusableCancelButton" xml:space="preserve">
-    <value>_Cancel</value>
+    <value>Cancel</value>
     <comment>Cancel button that has keyboard focusability.</comment>
   </data>
   <data name="FocusableCreateButton" xml:space="preserve">
-    <value>C_reate</value>
+    <value>Create</value>
     <comment>Create button that has keyboard focusability.</comment>
   </data>
   <data name="NewSubscriptionWindowAckDeadlineLabel" xml:space="preserve">
@@ -989,7 +989,15 @@
     <comment>Label for the topic name text box in the new pub/sub topic window.</comment>
   </data>
   <data name="NewTopicWindowTitle" xml:space="preserve">
-    <value>Create topic in project {0}.</value>
+    <value>Create topic.</value>
     <comment>The title for the new pub/sub topic window</comment>
+  </data>
+  <data name="PubSubNewSubscriptionErrorHeader" xml:space="preserve">
+    <value>Error in new subscription</value>
+    <comment>Header of the message window displayed when there is an error creating a new subscription.</comment>
+  </data>
+  <data name="PubSubNewSubscriptionErrorMessage" xml:space="preserve">
+    <value>Error creating new subscription.</value>
+    <comment>Message diplayed when there is an error creating a new subscription.</comment>
   </data>
 </root>
