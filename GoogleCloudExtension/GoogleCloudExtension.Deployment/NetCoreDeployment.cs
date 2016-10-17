@@ -15,6 +15,7 @@
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -184,9 +185,15 @@ namespace GoogleCloudExtension.Deployment
             var arguments = $"publish \"{projectPath}\" " +
                 $"-o \"{stageDirectory}\" " +
                 "-c Release";
+            var externalTools = GetExternalToolsPath();
+            var env = new Dictionary<string, string>
+            {
+                { "PATH", $"{Environment.GetEnvironmentVariable("PATH")};{externalTools}" },
+            };
 
+            Debug.WriteLine($"Using tools from {externalTools}");
             outputAction($"dotnet {arguments}");
-            return ProcessUtils.RunCommandAsync(s_dotnetPath.Value, arguments, (o, e) => outputAction(e.Line));
+            return ProcessUtils.RunCommandAsync(s_dotnetPath.Value, arguments, (o, e) => outputAction(e.Line), env);
         }
 
         private static void CopyOrCreateAppYaml(string projectPath, string stageDirectory)
@@ -248,6 +255,12 @@ namespace GoogleCloudExtension.Deployment
         {
             var directory = Path.GetDirectoryName(projectPath);
             return Path.GetFileName(directory);
+        }
+
+        private static string GetExternalToolsPath()
+        {
+            var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+            return Path.Combine(programFilesPath, @"Microsoft Visual Studio 14.0\Web\External");
         }
     }
 }
