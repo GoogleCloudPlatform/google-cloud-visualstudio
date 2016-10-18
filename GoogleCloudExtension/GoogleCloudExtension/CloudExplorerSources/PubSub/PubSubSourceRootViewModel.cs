@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 {
@@ -152,7 +153,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             try
             {
-                string topicName = NewTopicWindowContent.PromptUser(CredentialsStore.Default.CurrentProjectId);
+                string topicName = NewTopicWindow.PromptUser(CredentialsStore.Default.CurrentProjectId);
                 if (topicName != null)
                 {
                     await DataSource.NewTopicAsync(topicName);

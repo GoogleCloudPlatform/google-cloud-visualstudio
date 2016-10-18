@@ -86,7 +86,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             IsLoading = true;
             try
             {
-                Subscription subscription = NewSubscriptionWindowContent.PromptUser(_topicItem.FullName);
+                Subscription subscription = NewSubscriptionWindow.PromptUser(_topicItem.FullName);
                 if (subscription != null)
                 {
                     await DataSource.NewSubscriptionAsync(subscription);

@@ -22,32 +22,10 @@ namespace GoogleCloudExtension.PubSubWindows
     /// </summary>
     public partial class NewTopicWindowContent
     {
-
         public NewTopicWindowContent(NewTopicViewModel newTopicViewModel)
         {
             InitializeComponent();
             DataContext = newTopicViewModel;
-        }
-
-        public static string PromptUser(string projectId)
-        {
-            var dialog = new CommonDialogWindowBase(GoogleCloudExtension.Resources.NewTopicWindowTitle, 600, 400)
-            {
-                SizeToContent = SizeToContent.WidthAndHeight,
-                ResizeMode = ResizeMode.NoResize,
-                HasMinimizeButton = false,
-                HasMaximizeButton = false
-            };
-            NewTopicViewModel newTopicViewModel = new NewTopicViewModel(projectId, dialog);
-            dialog.Content = new NewTopicWindowContent(newTopicViewModel);
-            if (dialog.ShowModal() == true)
-            {
-                return newTopicViewModel.TopicName;
-            }
-            else
-            {
-                return null;
-            }
         }
     }
 }

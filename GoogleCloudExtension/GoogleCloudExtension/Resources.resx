@@ -953,10 +953,6 @@
     <value>Must have at least 3 characters.</value>
     <comment>Message displayed by validator requiring 3 characters.</comment>
   </data>
-  <data name="FocusableCancelButton" xml:space="preserve">
-    <value>Cancel</value>
-    <comment>Cancel button that has keyboard focusability.</comment>
-  </data>
   <data name="FocusableCreateButton" xml:space="preserve">
     <value>Create</value>
     <comment>Create button that has keyboard focusability.</comment>

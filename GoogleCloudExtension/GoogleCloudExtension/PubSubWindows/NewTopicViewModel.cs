@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.PubSubWindows
     /// </summary>
     public class NewTopicViewModel : ViewModelBase
     {
-        private readonly CommonDialogWindowBase _window;
+        private readonly CommonDialogWindowBase _owner;
         private string _topicName;
 
         public string Project { get; }
@@ -33,19 +33,21 @@ namespace GoogleCloudExtension.PubSubWindows
             set { SetValueAndRaise(ref _topicName, value); }
         }
 
+        public string Result { get; private set; }
+
         public WeakCommand CreateCommand { get; }
 
-        public NewTopicViewModel(string project, CommonDialogWindowBase window)
+        public NewTopicViewModel(string project, CommonDialogWindowBase owner)
         {
-            _window = window;
+            _owner = owner;
             Project = project;
             CreateCommand = new WeakCommand(OnCreateCommand);
         }
 
         private void OnCreateCommand()
         {
-            _window.DialogResult = true;
-            _window.Close();
+            Result = TopicName;
+            _owner.Close();
         }
     }
 }

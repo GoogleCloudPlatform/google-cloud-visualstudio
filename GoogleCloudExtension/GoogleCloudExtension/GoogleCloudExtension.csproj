@@ -143,10 +143,12 @@
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="PubSubWindows\NewSubscriptionViewModel.cs" />
+    <Compile Include="PubSubWindows\NewSubscriptionWindow.cs" />
     <Compile Include="PubSubWindows\NewSubscriptionWindowContent.xaml.cs">
       <DependentUpon>NewSubscriptionWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="PubSubWindows\NewTopicViewModel.cs" />
+    <Compile Include="PubSubWindows\NewTopicWindow.cs" />
     <Compile Include="PubSubWindows\NewTopicWindowContent.xaml.cs">
       <DependentUpon>NewTopicWindowContent.xaml</DependentUpon>
     </Compile>

@@ -12,9 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Pubsub.v1.Data;
-using GoogleCloudExtension.Theming;
-using System.Windows;
 
 namespace GoogleCloudExtension.PubSubWindows
 {
@@ -27,30 +24,6 @@ namespace GoogleCloudExtension.PubSubWindows
         {
             InitializeComponent();
             DataContext = viewModel;
-        }
-
-        public static Subscription PromptUser(string topicFullName)
-        {
-            var dialog = new CommonDialogWindowBase(GoogleCloudExtension.Resources.NewSubscriptionWindowTitle, 600, 400)
-            {
-                SizeToContent = SizeToContent.WidthAndHeight,
-                ResizeMode = ResizeMode.NoResize,
-                HasMinimizeButton = false,
-                HasMaximizeButton = false
-            };
-
-            Subscription model = new Subscription { Topic = topicFullName };
-
-            NewSubscriptionViewModel viewModel = new NewSubscriptionViewModel(model, dialog);
-            dialog.Content = new NewSubscriptionWindowContent(viewModel);
-            if (dialog.ShowModal() == true)
-            {
-                return model;
-            }
-            else
-            {
-                return null;
-            }
         }
     }
 }

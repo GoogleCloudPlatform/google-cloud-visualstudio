@@ -25,21 +25,7 @@ namespace GoogleCloudExtension.PubSubWindows
     /// </summary>
     public class NewSubscriptionViewModel : ViewModelBase
     {
-        private readonly CommonDialogWindowBase _window;
-
-        public NewSubscriptionViewModel(Subscription subscription, CommonDialogWindowBase window)
-        {
-            _window = window;
-            Subscription = subscription;
-            CreateCommand = new WeakCommand(OnCreateCommand);
-            PushConfig = subscription.PushConfig ?? new PushConfig();
-        }
-
-        private void OnCreateCommand()
-        {
-            _window.DialogResult = true;
-            _window.Close();
-        }
+        private readonly CommonDialogWindowBase _owner;
 
         public string TopicName => PubsubSource.GetPathLeaf(Subscription.Topic);
 
@@ -64,5 +50,21 @@ namespace GoogleCloudExtension.PubSubWindows
         public Subscription Subscription { get; }
 
         public WeakCommand CreateCommand { get; }
+
+        public Subscription Result { get; private set; }
+
+        public NewSubscriptionViewModel(Subscription subscription, CommonDialogWindowBase owner)
+        {
+            _owner = owner;
+            Subscription = subscription;
+            CreateCommand = new WeakCommand(OnCreateCommand);
+            PushConfig = subscription.PushConfig ?? new PushConfig();
+        }
+
+        private void OnCreateCommand()
+        {
+            Result = Subscription;
+            _owner.Close();
+        }
     }
 }

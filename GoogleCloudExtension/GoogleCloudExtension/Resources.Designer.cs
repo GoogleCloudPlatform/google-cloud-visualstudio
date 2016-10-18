@@ -1303,15 +1303,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancel.
-        /// </summary>
-        public static string FocusableCancelButton {
-            get {
-                return ResourceManager.GetString("FocusableCancelButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Create.
         /// </summary>
         public static string FocusableCreateButton {

@@ -34,7 +34,7 @@
             <theming:DialogButtonInfo Command="{Binding DataContext.CreateCommand, Source={StaticResource Content}}"
                                       IsDefault="True"
                                       Caption="{x:Static ext:Resources.FocusableCreateButton}"/>
-            <theming:DialogButtonInfo IsCancel="True" Caption="{x:Static ext:Resources.FocusableCancelButton}"/>
+            <theming:DialogButtonInfo IsCancel="True" Caption="{x:Static ext:Resources.UiCancelButtonCaption}"/>
         </theming:CommonDialogWindowBaseContent.Buttons>
     </theming:CommonDialogWindowBaseContent>
 </UserControl>

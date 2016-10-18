@@ -12,7 +12,7 @@
     <UserControl.Resources>
         <utils:VisibilityConverter x:Key="visibilityConverter" />
     </UserControl.Resources>
-
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
@@ -52,5 +52,6 @@
                 </ItemsControl>
             </StackPanel>
         </Border>
+
     </Grid>
 </UserControl>
