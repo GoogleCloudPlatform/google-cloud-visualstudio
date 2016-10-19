@@ -31,7 +31,8 @@
                 <ItemsControl x:Name="_buttonsRow">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Width="100" Margin="5,5,8,5" Height="25"
+                            <Button Width="96px" Margin="5,5,8,5" Height="25"
+                                    Background="#3B78E7"
                                     Command="{Binding Command}"
                                     IsDefault="{Binding IsDefault}"
                                     IsCancel="{Binding IsCancel}">
