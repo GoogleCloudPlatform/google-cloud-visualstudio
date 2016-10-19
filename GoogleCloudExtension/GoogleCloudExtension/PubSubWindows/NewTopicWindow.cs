@@ -1,19 +1,17 @@
 using GoogleCloudExtension.Theming;
-using System.Windows;
 
 namespace GoogleCloudExtension.PubSubWindows
 {
+    /// <summary>
+    /// The window for the new pub sub topic dialog.
+    /// </summary>
     public class NewTopicWindow : CommonDialogWindowBase
     {
         public NewTopicViewModel ViewModel { get; }
 
         public NewTopicWindow(string projectId) :
-            base(GoogleCloudExtension.Resources.NewTopicWindowTitle, 0, 0)
+            base(GoogleCloudExtension.Resources.NewTopicWindowTitle, 303, 138)
         {
-            SizeToContent = SizeToContent.WidthAndHeight;
-            ResizeMode = ResizeMode.NoResize;
-            HasMinimizeButton = false;
-            HasMaximizeButton = false;
             ViewModel = new NewTopicViewModel(projectId, this);
             Content = new NewTopicWindowContent(ViewModel);
         }

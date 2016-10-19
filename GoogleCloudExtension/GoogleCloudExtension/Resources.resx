@@ -770,7 +770,7 @@
     <comment>Caption for Ok buttons.</comment>
   </data>
   <data name="UiSaveButtonCaption" xml:space="preserve">
-    <value>Saves</value>
+    <value>Save</value>
     <comment>Caption for Save buttons.</comment>
   </data>
   <data name="UiDeleteButtonCaption" xml:space="preserve">
@@ -952,10 +952,6 @@
   <data name="ValidationThreeCharactersMessage" xml:space="preserve">
     <value>Must have at least 3 characters.</value>
     <comment>Message displayed by validator requiring 3 characters.</comment>
-  </data>
-  <data name="FocusableCreateButton" xml:space="preserve">
-    <value>Create</value>
-    <comment>Create button that has keyboard focusability.</comment>
   </data>
   <data name="NewSubscriptionWindowAckDeadlineLabel" xml:space="preserve">
     <value>_Acknowledgement Deadline (seconds):</value>

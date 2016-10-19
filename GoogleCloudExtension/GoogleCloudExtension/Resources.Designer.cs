@@ -1303,15 +1303,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create.
-        /// </summary>
-        public static string FocusableCreateButton {
-            get {
-                return ResourceManager.GetString("FocusableCreateButton", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The user account {0} already exists..
         /// </summary>
         public static string ManageAccountsAccountAlreadyExistsPromptMessage {
@@ -1960,7 +1951,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Saves.
+        ///   Looks up a localized string similar to Save.
         /// </summary>
         public static string UiSaveButtonCaption {
             get {

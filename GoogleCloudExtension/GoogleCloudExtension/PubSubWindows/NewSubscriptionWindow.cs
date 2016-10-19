@@ -1,22 +1,18 @@
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.Theming;
-using System.Windows;
 
 namespace GoogleCloudExtension.PubSubWindows
 {
+    /// <summary>
+    /// The window for the new pub sub subscription dialog.
+    /// </summary>
     public class NewSubscriptionWindow : CommonDialogWindowBase
     {
         public NewSubscriptionViewModel ViewModel { get; }
 
         public NewSubscriptionWindow(string topicFullName) :
-            base(GoogleCloudExtension.Resources.NewSubscriptionWindowTitle, 0, 0)
+            base(GoogleCloudExtension.Resources.NewSubscriptionWindowTitle, 322, 236)
         {
-
-            SizeToContent = SizeToContent.WidthAndHeight;
-            ResizeMode = ResizeMode.NoResize;
-            HasMinimizeButton = false;
-            HasMaximizeButton = false;
-
             Subscription model = new Subscription { Topic = topicFullName };
 
             ViewModel = new NewSubscriptionViewModel(model, this);
