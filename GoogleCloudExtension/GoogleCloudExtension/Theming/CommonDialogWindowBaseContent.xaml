@@ -10,7 +10,11 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Resources>
-        <utils:VisibilityConverter x:Key="visibilityConverter" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ThemingResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
     
     <Grid>
@@ -25,8 +29,7 @@
         </Border>
 
         <!-- The row of buttons. -->
-        <Border Grid.Row="1"
-                Background="#FFECECEC">
+        <Border Grid.Row="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <ItemsControl x:Name="_buttonsRow">
                     <ItemsControl.ItemTemplate>
@@ -38,8 +41,6 @@
                                     IsCancel="{Binding IsCancel}">
                                 <StackPanel Orientation="Horizontal">
                                     <TextBlock Text="{Binding Caption}" />
-                                    <controls:ProgressIndicator Visibility="{Binding IsBusy, Converter={StaticResource visibilityConverter}}"
-                                                                ForceTheme="Blue"/>
                                 </StackPanel>
                             </Button>
                         </DataTemplate>
