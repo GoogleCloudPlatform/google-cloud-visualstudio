@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         public string Subversion { get; }
 
-        public WindowsInstanceInfo(string displayName, string version, string subversion)
+        public WindowsInstanceInfo(string displayName, string version, string subversion = null)
         {
             DisplayName = displayName;
             Version = version;
