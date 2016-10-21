@@ -1,8 +1,16 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-    <Style TargetType="{x:Type Button}">
-        <Setter Property="Background" Value="#FFECECEC" />
+    <Style TargetType="{x:Type Button}" x:Key="DialogButtonStyle">
+        <Setter Property="Background" Value="Blue" />
+        <Setter Property="Width" Value="96px" />
+        <Setter Property="Margin" Value="5,5,8,5" />
+        <Setter Property="Height" Value="25px" />
+    </Style>
+
+    <Style x:Key="DialogBackgroundStyle" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="White" />
+        <Setter Property="Padding" Value="5" />
     </Style>
     
 </ResourceDictionary>

@@ -20,12 +20,12 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition />
-            <RowDefinition Height="49" />
+            <RowDefinition Height="50" />
         </Grid.RowDefinitions>
 
         <!-- The actual content displayed in the dialog. -->
-        <Border Background="White">
-            <ContentControl Margin="5" Background="White" x:Name="_content" />
+        <Border Style="{StaticResource DialogBackgroundStyle}">
+            <ContentControl x:Name="_content" />
         </Border>
 
         <!-- The row of buttons. -->
@@ -34,15 +34,11 @@
                 <ItemsControl x:Name="_buttonsRow">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Button Width="96px" Margin="5,5,8,5" Height="25"
-                                    Background="#3B78E7"
+                            <Button Style="{StaticResource DialogButtonStyle}"
                                     Command="{Binding Command}"
                                     IsDefault="{Binding IsDefault}"
-                                    IsCancel="{Binding IsCancel}">
-                                <StackPanel Orientation="Horizontal">
-                                    <TextBlock Text="{Binding Caption}" />
-                                </StackPanel>
-                            </Button>
+                                    Content="{Binding Caption}"
+                                    IsCancel="{Binding IsCancel}" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
 
