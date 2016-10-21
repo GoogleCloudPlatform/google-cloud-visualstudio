@@ -24,9 +24,9 @@ namespace GoogleCloudExtension.Theming
     {
         public CommonDialogWindowBase(string title, double width, double height)
         {
-            Title = title;
             Width = width;
             Height = height;
+            Title = title;
 
             // Common settings to all dialogs.
             ResizeMode = System.Windows.ResizeMode.NoResize;

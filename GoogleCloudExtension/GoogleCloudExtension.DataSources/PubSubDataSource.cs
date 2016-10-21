@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Pubsub.v1.Data;
@@ -39,53 +40,133 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         { }
 
         /// <summary>
-        /// Gets all of the topics of the given project.
+        /// Gets all of the topics of the current project.
         /// </summary>
-        public Task<IList<Topic>> GetTopicListAsync()
+        public async Task<IList<Topic>> GetTopicListAsync()
         {
-            ProjectsResource.TopicsResource.ListRequest request =
-                Service.Projects.Topics.List(ProjectResourceName);
-            return LoadPagedListAsync(
-                token =>
-                {
-                    request.PageToken = token;
-                    return request.ExecuteAsync();
-                },
-                response => response.Topics,
-                response => response.NextPageToken);
+            try
+            {
+                ProjectsResource.TopicsResource.ListRequest request =
+                    Service.Projects.Topics.List(ProjectResourceName);
+                return await LoadPagedListAsync(
+                    token =>
+                    {
+                        request.PageToken = token;
+                        return request.ExecuteAsync();
+                    },
+                    response => response.Topics,
+                    response => response.NextPageToken);
+            }
+            catch (GoogleApiException e)
+            {
+                throw new DataSourceException("Error listing topics", e);
+            }
         }
 
         /// <summary>
-        /// Gets all of the subscriptions of a given project.
+        /// Gets all of the subscriptions of a current project.
         /// </summary>
-        public Task<IList<Subscription>> GetSubscriptionListAsync()
+        public async Task<IList<Subscription>> GetSubscriptionListAsync()
         {
-            ProjectsResource.SubscriptionsResource.ListRequest request =
-                Service.Projects.Subscriptions.List(ProjectResourceName);
-            return LoadPagedListAsync(
-                token =>
-                {
-                    request.PageToken = token;
-                    return request.ExecuteAsync();
-                },
-                response => response.Subscriptions,
-                response => response.NextPageToken);
+            try
+            {
+                ProjectsResource.SubscriptionsResource.ListRequest request =
+                    Service.Projects.Subscriptions.List(ProjectResourceName);
+                return await LoadPagedListAsync(
+                    token =>
+                    {
+                        request.PageToken = token;
+                        return request.ExecuteAsync();
+                    },
+                    response => response.Subscriptions,
+                    response => response.NextPageToken);
+            }
+            catch (GoogleApiException e)
+            {
+                throw new DataSourceException("Error listing subscriptions", e);
+            }
         }
 
         /// <summary>
-        /// Gets the name of the subscriptions for a given topic.
+        /// Creates a new topic.
         /// </summary>
-        public Task<IList<string>> GetTopicSubscriptionListAsync(string topicName)
+        /// <param name="topicName">The name of the topic. Does not include the project id.</param>
+        public async Task<Topic> NewTopicAsync(string topicName)
         {
-            var request = Service.Projects.Topics.Subscriptions.List(topicName);
-            return LoadPagedListAsync(
-                token =>
-                {
-                    request.PageToken = token;
-                    return request.ExecuteAsync();
-                },
-                response => response.Subscriptions,
-                response => response.NextPageToken);
+            try
+            {
+                ProjectsResource.TopicsResource.CreateRequest request =
+                    Service.Projects.Topics.Create(new Topic(), GetTopicFullName(topicName));
+                return await request.ExecuteAsync();
+            }
+            catch (GoogleApiException e)
+            {
+                throw new DataSourceException("Error creating new topic", e);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a topic.
+        /// </summary>
+        /// <param name="topicName">The name of the topic. Does not include the project id.</param>
+        public async Task DeleteTopicAsync(string topicName)
+        {
+            try
+            {
+                ProjectsResource.TopicsResource.DeleteRequest request =
+                    Service.Projects.Topics.Delete(GetTopicFullName(topicName));
+                await request.ExecuteAsync();
+            }
+            catch (GoogleApiException e)
+            {
+                throw new DataSourceException("Error deleting topic", e);
+            }
+        }
+
+        /// <summary>
+        /// Creates a new subscription.
+        /// </summary>
+        public async Task<Subscription> NewSubscriptionAsync(Subscription subscription)
+        {
+            try
+            {
+                string subscriptionFullName = GetSubscriptionFullName(subscription.Name);
+                ProjectsResource.SubscriptionsResource.CreateRequest request =
+                    Service.Projects.Subscriptions.Create(subscription, subscriptionFullName);
+                return await request.ExecuteAsync();
+            }
+            catch (GoogleApiException e)
+            {
+                throw new DataSourceException("Error creating new subscription", e);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a subscription
+        /// </summary>
+        /// <param name="subscriptionName">The name of the subscription to delete. Does not include the project id.</param>
+        public async Task DeleteSubscriptionAsync(string subscriptionName)
+        {
+            try
+            {
+                ProjectsResource.SubscriptionsResource.DeleteRequest request =
+                    Service.Projects.Subscriptions.Delete(GetSubscriptionFullName(subscriptionName));
+                await request.ExecuteAsync();
+            }
+            catch (GoogleApiException e)
+            {
+                throw new DataSourceException("Error deleting subscription", e);
+            }
+        }
+
+        private string GetTopicFullName(string topicName)
+        {
+            return $"projects/{ProjectId}/topics/{topicName}";
+        }
+
+        private string GetSubscriptionFullName(string subscriptionName)
+        {
+            return $"projects/{ProjectId}/subscriptions/{subscriptionName}";
         }
     }
 }

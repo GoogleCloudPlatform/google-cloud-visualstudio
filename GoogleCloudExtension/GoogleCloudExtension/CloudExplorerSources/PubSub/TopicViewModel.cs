@@ -14,10 +14,14 @@
 
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.PubSubWindows;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.PubSub
@@ -34,8 +38,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         private PubsubSourceRootViewModel _owner;
 
         private TopicItem _topicItem;
+        public PubsubDataSource DataSource => _owner.DataSource;
 
         public object Item => _topicItem;
+        /// <summary>
+        /// Returns the context in which this view model is working.
+        /// </summary>
+        public ICloudSourceContext Context => _owner.Context;
+
         public event EventHandler ItemChanged;
 
         public TopicViewModel(PubsubSourceRootViewModel owner, Topic topic)
@@ -48,6 +58,82 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             {
                 Children.Add(new SubscriptionViewModel(this, subscription));
             }
+            ContextMenu = new ContextMenu
+            {
+                ItemsSource = new List<MenuItem>
+                {
+                    new MenuItem
+                    {
+                        Header = Resources.CloudExplorerPubSubNewSubscriptionMenuHeader,
+                        Command = new WeakCommand(OnNewSubscriptionCommand)
+                    },
+                    new MenuItem
+                    {
+                        Header = Resources.CloudExplorerPubSubDeleteTopicMenuHeader,
+                        Command = new WeakCommand(OnDeleteTopicCommand)
+                    },
+                    new MenuItem
+                    {
+                        Header = Resources.UiPropertiesMenuHeader,
+                        Command = new WeakCommand(OnPropertiesWindowCommand)
+                    }
+                }
+            };
+        }
+
+        private async void OnNewSubscriptionCommand()
+        {
+            IsLoading = true;
+            try
+            {
+                Subscription subscription = NewSubscriptionWindow.PromptUser(_topicItem.FullName);
+                if (subscription != null)
+                {
+                    await DataSource.NewSubscriptionAsync(subscription);
+                    Refresh();
+                }
+            }
+            catch (DataSourceException e)
+            {
+                Debug.Write(e.Message, "New Subscription");
+                UserPromptUtils.ErrorPrompt(
+                    Resources.PubSubNewSubscriptionErrorMessage, Resources.PubSubNewSubscriptionErrorHeader);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        private async void OnDeleteTopicCommand()
+        {
+            IsLoading = true;
+            try
+            {
+                bool doDelete = UserPromptUtils.YesNoPrompt(
+                    string.Format(Resources.PubSubDeleteTopicWindowMessage, _topicItem.Name),
+                    Resources.PubSubDeleteTopicWindowHeader);
+                if (doDelete)
+                {
+                    await DataSource.DeleteTopicAsync(_topicItem.Name);
+                    Refresh();
+                }
+            }
+            catch (DataSourceException e)
+            {
+                Debug.Write(e.Message, "Delete Topic");
+                UserPromptUtils.ErrorPrompt(
+                    Resources.PubSubDeleteTopicErrorMessage, Resources.PubSubDeleteTopicErrorHeader);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        private void OnPropertiesWindowCommand()
+        {
+            Context.ShowPropertiesWindow(Item);
         }
 
         /// <summary>
@@ -56,6 +142,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         private IEnumerable<Subscription> ListSubscriptionViewModels()
         {
             return _owner.Subscriptions.Where(subscription => subscription.Topic == _topicItem.FullName);
+        }
+
+        public virtual void Refresh()
+        {
+            _owner.Refresh();
         }
     }
 }

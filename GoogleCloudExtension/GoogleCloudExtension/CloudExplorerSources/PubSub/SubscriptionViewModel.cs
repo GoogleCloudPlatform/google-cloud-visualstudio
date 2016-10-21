@@ -14,8 +14,12 @@
 
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.PubSub
@@ -29,9 +33,23 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/bucket_icon.png";
         private static readonly Lazy<ImageSource> s_subscriptionIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
-        private TopicViewModel _owner;
-        private SubscriptionItem _subscriptionItem;
+        private readonly TopicViewModel _owner;
+        private readonly SubscriptionItem _subscriptionItem;
+
+        /// <summary>
+        /// The item this tree node represents.
+        /// </summary>
         public object Item => _subscriptionItem;
+
+        /// <summary>
+        /// Returns the context in which this view model is working.
+        /// </summary>
+        public ICloudSourceContext Context => _owner.Context;
+
+        /// <summary>
+        /// The datasource for the item.
+        /// </summary>
+        public PubsubDataSource DataSource => _owner.DataSource;
         public event EventHandler ItemChanged;
 
         public SubscriptionViewModel(TopicViewModel owner, Subscription subscription)
@@ -40,6 +58,54 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             _subscriptionItem = new SubscriptionItem(subscription);
             Caption = _subscriptionItem.Name;
             Icon = s_subscriptionIcon.Value;
+
+            ContextMenu = new ContextMenu
+            {
+                ItemsSource = new List<MenuItem>
+                {
+                    new MenuItem
+                    {
+                        Header = Resources.CloudExplorerPubSubDeleteSubscriptionMenuHeader,
+                        Command = new WeakCommand(OnDeleteSubscriptionCommand)
+                    },
+                    new MenuItem
+                    {
+                        Header = Resources.UiPropertiesMenuHeader,
+                        Command = new WeakCommand(OnPropertiesWindowCommand)
+                    }
+                }
+            };
+        }
+
+        private async void OnDeleteSubscriptionCommand()
+        {
+            IsLoading = true;
+            try
+            {
+                bool doDelete = UserPromptUtils.YesNoPrompt(
+                    string.Format(Resources.PubSubDeleteSubscriptionWindowMessage, _subscriptionItem.Name),
+                    Resources.PubSubDeleteSubscriptionWindowHeader);
+                if (doDelete)
+                {
+                    await DataSource.DeleteSubscriptionAsync(_subscriptionItem.Name);
+                    _owner.Refresh();
+                }
+            }
+            catch (DataSourceException e)
+            {
+                Debug.Write(e.Message, "Delete Subscription");
+                UserPromptUtils.ErrorPrompt(Resources.PubSubDeleteSubscriptionErrorMessage,
+                    Resources.PubSubDeleteSubscriptionErrorHeader);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+        }
+
+        private void OnPropertiesWindowCommand()
+        {
+            Context.ShowPropertiesWindow(Item);
         }
     }
 }

@@ -12,15 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.PubSubWindows;
+using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 {
@@ -50,15 +54,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
         public override TreeLeaf LoadingPlaceholder => s_loadingPlaceholder;
 
+        /// <summary>
+        /// The list of all visible subscriptions of the current project.
+        /// </summary>
         public IList<Subscription> Subscriptions { get; private set; }
 
         internal PubsubDataSource DataSource => _dataSource.Value;
         private Lazy<PubsubDataSource> _dataSource = new Lazy<PubsubDataSource>(CreateDataSource);
-
-        public PubsubSourceRootViewModel()
-        {
-            Subscriptions = new Subscription[0];
-        }
 
         /// <summary>
         /// Creates a new PubsubDataSource from the default credentials.
@@ -81,6 +83,33 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             {
                 return null;
             }
+        }
+
+        public PubsubSourceRootViewModel()
+        {
+            Subscriptions = new Subscription[0];
+        }
+
+        public override void Initialize(ICloudSourceContext context)
+        {
+            base.Initialize(context);
+
+            ContextMenu = new ContextMenu
+            {
+                ItemsSource = new List<MenuItem>
+                {
+                    new MenuItem
+                    {
+                        Header = Resources.CloudExplorerPubSubNewTopicMenuHeader,
+                        Command = new WeakCommand(OnNewTopicCommand)
+                    },
+                    new MenuItem
+                    {
+                        Header = Resources.UiOpenOnCloudConsoleMenuHeader,
+                        Command = new WeakCommand(OnOpenCloudConsoleCommand)
+                    }
+                }
+            };
         }
 
         /// <summary>
@@ -108,12 +137,36 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                     Children.Add(new TopicViewModel(this, topic));
                 }
             }
-            catch (GoogleApiException e)
+            catch (DataSourceException e)
             {
                 throw new CloudExplorerSourceException(e.Message, e);
             }
         }
 
+        private void OnOpenCloudConsoleCommand()
+        {
+            var url = $"https://console.cloud.google.com/cloudpubsub?project={Context.CurrentProject.ProjectId}";
+            Process.Start(url);
+        }
+
+        private async void OnNewTopicCommand()
+        {
+            try
+            {
+                string topicName = NewTopicWindow.PromptUser(CredentialsStore.Default.CurrentProjectId);
+                if (topicName != null)
+                {
+                    await DataSource.NewTopicAsync(topicName);
+                    Refresh();
+                }
+            }
+            catch (DataSourceException e)
+            {
+                Debug.Write(e.Message, "New Topic");
+                UserPromptUtils.ErrorPrompt(
+                    Resources.PubSubNewTopicErrorMessage, Resources.PubSubNewTopicErrorHeader);
+            }
+        }
 
         private Task<IList<Subscription>> GetSubscriptionsAsync()
         {
