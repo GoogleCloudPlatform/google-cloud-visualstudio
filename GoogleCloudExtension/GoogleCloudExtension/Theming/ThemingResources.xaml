@@ -83,6 +83,14 @@
         </Setter>
     </Style>
 
+    <Style x:Key="DialogButtonSize1" BasedOn="{StaticResource DialogButtonStyle}" TargetType="{x:Type Button}">
+        <Setter Property="Width" Value="96px" />
+    </Style>
+
+    <Style x:Key="DialogButtonSize2" BasedOn="{StaticResource DialogButtonStyle}" TargetType="{x:Type Button}">
+        <Setter Property="Width" Value="75px" />
+    </Style>
+
     <Style x:Key="DialogBackgroundStyle" TargetType="{x:Type Border}">
         <Setter Property="Background" Value="White" />
         <Setter Property="Padding" Value="5" />
