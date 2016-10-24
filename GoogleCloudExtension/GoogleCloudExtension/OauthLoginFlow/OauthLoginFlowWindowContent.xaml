@@ -12,7 +12,7 @@
     <theming:CommonDialogWindowBaseContent>
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
-                                      Command="{Binding DataContext.CloseCommand, Source={StaticResource content}}"
+                                      Command="{Binding CloseCommand}"
                                       IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
 

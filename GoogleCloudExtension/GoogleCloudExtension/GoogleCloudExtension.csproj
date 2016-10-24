@@ -154,7 +154,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
+    <Compile Include="Theming\ButtonsList.cs" />
     <Compile Include="Theming\CommonDialogWindowBaseContent.cs" />
+    <Compile Include="Utils\BindableList.cs" />
     <Compile Include="Utils\ErrorHandlerUtils.cs" />
     <Compile Include="Utils\ProtectedAction.cs" />
     <Compile Include="Utils\ProtectedCommand.cs" />

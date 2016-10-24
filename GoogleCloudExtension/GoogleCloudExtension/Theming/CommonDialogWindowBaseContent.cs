@@ -1,5 +1,6 @@
 ﻿using GoogleCloudExtension.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -16,22 +17,22 @@ namespace GoogleCloudExtension.Theming
         public static readonly DependencyProperty ButtonsProperty =
             DependencyProperty.Register(
                 nameof(Buttons),
-                typeof(ObservableCollection<DialogButtonInfo>),
+                typeof(IList),
                 typeof(CommonDialogWindowBaseContent));
 
         /// <summary>
         /// The list of buttons to show in the dialog.
         /// </summary>
-        public ObservableCollection<DialogButtonInfo> Buttons
+        public IList Buttons
         {
-            get { return (ObservableCollection<DialogButtonInfo>)GetValue(ButtonsProperty); }
+            get { return (IList)GetValue(ButtonsProperty); }
             set { SetValue(ButtonsProperty, value); }
         }
 
         public CommonDialogWindowBaseContent()
         {
             Initialize();
-            Buttons = new ObservableCollection<DialogButtonInfo>();
+            Buttons = new BindableList<DialogButtonInfo>(this);
         }
 
         private void Initialize()

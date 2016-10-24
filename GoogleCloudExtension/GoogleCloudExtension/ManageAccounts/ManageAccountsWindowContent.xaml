@@ -16,14 +16,13 @@
     <theming:CommonDialogWindowBaseContent>
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.ManageAccountsAddAccountButtonCaption}"
-                                      Command="{Binding DataContext.AddAccountCommand}" />
+                                      Command="{Binding AddAccountCommand}" />
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.ManageAccountsSetAsCurrentAccountButtonCaption}"
-                                      Command="{Binding DataContext.SetAsCurrentAccountCommand}" />
+                                      Command="{Binding SetAsCurrentAccountCommand}" />
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.ManageAccountsDeleteAccountButtonCaption}"
-                                      Command="{Binding DataContext.DeleteAccountCommand}"/>
+                                      Command="{Binding DeleteAccountCommand}"/>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCloseButtonCaption}"
-                                      IsCancel="True"
-                                      Command="{Binding DataContext.CloseAccountCommand}"/>
+                                      IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
 
         <Grid>
