@@ -27,6 +27,8 @@ namespace GoogleCloudExtension.Utils
     {
         private static readonly Lazy<string> s_assemblyName = new Lazy<string>(GetAssemblyName);
 
+        public static Uri GetResourceUri(string path) => new Uri($"pack://application:,,,/{s_assemblyName.Value};component/{path}");
+
         /// <summary>
         /// Loads an image resource given its relative path in the resources.
         /// </summary>
@@ -34,7 +36,7 @@ namespace GoogleCloudExtension.Utils
         /// <returns></returns>
         public static ImageSource LoadImage(string path)
         {
-            var uri = new Uri($"pack://application:,,,/{s_assemblyName.Value};component/{path}");
+            var uri = GetResourceUri(path);
             Debug.WriteLine($"Loading resource: {path}");
             return new BitmapImage(uri);
         }

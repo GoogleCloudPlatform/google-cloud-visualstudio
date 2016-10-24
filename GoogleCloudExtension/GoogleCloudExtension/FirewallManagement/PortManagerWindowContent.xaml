@@ -12,8 +12,15 @@
              d:DataContext="{d:DesignInstance {x:Type local:PortManagerViewModel}}"
              d:DesignHeight="300" d:DesignWidth="300">
 
-    <UserControl.Resources>
-        <StackPanel x:Key="content">
+    <theming:CommonDialogWindowBaseContent>
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}"
+                                      IsDefault="True"
+                                      Command="{Binding DataContext.OkCommand}"/>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
+        </theming:CommonDialogWindowBaseContent.Buttons>
+
+        <StackPanel>
             <TextBlock TextWrapping="Wrap" Margin="3,0,3,5" Text="{x:Static ext:Resources.PortManagerWindowMessage}"/>
 
             <StackPanel Margin="3,0">
@@ -35,15 +42,7 @@
                 </ItemsControl>
             </StackPanel>
         </StackPanel>
-    </UserControl.Resources>
 
-    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
-        <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}"
-                                      IsDefault="True"
-                                      Command="{Binding DataContext.OkCommand, Source={StaticResource content}}"/>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
-        </theming:CommonDialogWindowBaseContent.Buttons>
     </theming:CommonDialogWindowBaseContent>
 
 </UserControl>

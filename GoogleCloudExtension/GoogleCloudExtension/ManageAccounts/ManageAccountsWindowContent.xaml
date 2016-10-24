@@ -11,8 +11,22 @@
              d:DataContext="{d:DesignInstance {x:Type local:ManageAccountsViewModel}}">
     <UserControl.Resources>
         <utils:VisibilityConverter x:Key="visibilityConverter" />
+    </UserControl.Resources>
 
-        <Grid x:Key="content">
+    <theming:CommonDialogWindowBaseContent>
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.ManageAccountsAddAccountButtonCaption}"
+                                      Command="{Binding DataContext.AddAccountCommand}" />
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.ManageAccountsSetAsCurrentAccountButtonCaption}"
+                                      Command="{Binding DataContext.SetAsCurrentAccountCommand}" />
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.ManageAccountsDeleteAccountButtonCaption}"
+                                      Command="{Binding DataContext.DeleteAccountCommand}"/>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCloseButtonCaption}"
+                                      IsCancel="True"
+                                      Command="{Binding DataContext.CloseAccountCommand}"/>
+        </theming:CommonDialogWindowBaseContent.Buttons>
+
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -81,20 +95,6 @@
             </ListBox>
         </Grid>
 
-    </UserControl.Resources>
-
-    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
-        <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.ManageAccountsAddAccountButtonCaption}"
-                                      Command="{Binding DataContext.AddAccountCommand, Source={StaticResource content}}" />
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.ManageAccountsSetAsCurrentAccountButtonCaption}"
-                                      Command="{Binding DataContext.SetAsCurrentAccountCommand, Source={StaticResource content}}" />
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.ManageAccountsDeleteAccountButtonCaption}"
-                                      Command="{Binding DataContext.DeleteAccountCommand, Source={StaticResource content}}"/>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCloseButtonCaption}"
-                                      IsCancel="True"
-                                      Command="{Binding DataContext.CloseAccountCommand, Source={StaticResource content}}"/>
-        </theming:CommonDialogWindowBaseContent.Buttons>
     </theming:CommonDialogWindowBaseContent>
 
 </UserControl>
