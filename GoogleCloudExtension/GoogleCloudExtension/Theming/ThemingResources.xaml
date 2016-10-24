@@ -4,23 +4,23 @@
     <!-- Colors for the dialog button for the various UI states. -->
     
     <!-- Normal state -->
-    <SolidColorBrush x:Key="DialogButtonColors.Static.Background" Color="#FF3B78E7"/>
-    <SolidColorBrush x:Key="DialogButtonColors.Static.Border" Color="#FF3B78E7"/>
-    <SolidColorBrush x:Key="DialogButtonColors.Static.Foreground" Color="White"/>
+    <SolidColorBrush x:Key="DialogButtonColors.Static.Background" Color="White"/>
+    <SolidColorBrush x:Key="DialogButtonColors.Static.Border" Color="#FFBDBDBD"/>
+    <SolidColorBrush x:Key="DialogButtonColors.Static.Foreground" Color="Black"/>
     
     <!-- Mouse over state -->
-    <SolidColorBrush x:Key="DialogButtonColors.MouseOver.Background" Color="#FF3B78E7"/>
+    <SolidColorBrush x:Key="DialogButtonColors.MouseOver.Background" Color="White"/>
     <SolidColorBrush x:Key="DialogButtonColors.MouseOver.Border" Color="#FF82B1FF"/>
-    <SolidColorBrush x:Key="DialogButtonColors.MouseOver.Foreground" Color="White"/>
+    <SolidColorBrush x:Key="DialogButtonColors.MouseOver.Foreground" Color="Black"/>
     
     <!-- Pressed state -->
-    <SolidColorBrush x:Key="DialogButtonColors.Pressed.Background" Color="#FF5E97F6"/>
-    <SolidColorBrush x:Key="DialogButtonColors.Pressed.Border" Color="#FF5E97F6"/>
-    <SolidColorBrush x:Key="DialogButtonColors.Pressed.Foreground" Color="White"/>
+    <SolidColorBrush x:Key="DialogButtonColors.Pressed.Background" Color="#FFF5F5F5"/>
+    <SolidColorBrush x:Key="DialogButtonColors.Pressed.Border" Color="#FF82B1FF"/>
+    <SolidColorBrush x:Key="DialogButtonColors.Pressed.Foreground" Color="Black"/>
     
     <!-- Disabled state -->
     <SolidColorBrush x:Key="DialogButtonColors.Disabled.Background" Color="#FFE0E0E0"/>
-    <SolidColorBrush x:Key="DialogButtonColors.Disabled.Border" Color="White"/>
+    <SolidColorBrush x:Key="DialogButtonColors.Disabled.Border" Color="#FFBDBDBD"/>
     <SolidColorBrush x:Key="DialogButtonColors.Disabled.Foreground" Color="#FF9E9E9E"/>
 
     <Style x:Key="DialogFocusVisual">
@@ -58,6 +58,7 @@
                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           Margin="{TemplateBinding Padding}"
                                           RecognizesAccessKey="True"
+                                          TextElement.FontSize="10px"
                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
                     </Border>
