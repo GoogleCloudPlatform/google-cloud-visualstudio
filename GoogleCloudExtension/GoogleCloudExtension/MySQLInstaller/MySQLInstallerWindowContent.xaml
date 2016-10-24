@@ -13,7 +13,7 @@
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiDownloadButtonCaption}"
                                       IsDefault="True"
-                                      Command="{Binding DataContext.DownloadCommand}"/>
+                                      Command="{Binding DownloadCommand}"/>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
 
