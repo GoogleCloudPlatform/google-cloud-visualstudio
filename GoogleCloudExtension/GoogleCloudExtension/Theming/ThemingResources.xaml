@@ -108,7 +108,29 @@
         <Setter Property="Margin" Value="0,18,0,12" />
     </Style>
     
+    <!-- Button templates. -->
+    
+    <!-- Template to display the button using the wide size. -->
+    <DataTemplate x:Key="DialogButtonTemplateWide">
+        <Button Style="{StaticResource DialogButtonWide}"
+                Command="{Binding Command}"
+                IsDefault="{Binding IsDefault}"
+                Content="{Binding Caption}"
+                IsCancel="{Binding IsCancel}" />
+    </DataTemplate>
+    
+    <!-- Template to display the button in the standard size. -->
+    <DataTemplate x:Key="DialogButtonTemplateStandard">
+        <Button Style="{StaticResource DialogButtonStandard}"
+                Command="{Binding Command}"
+                IsDefault="{Binding IsDefault}"
+                Content="{Binding Caption}"
+                IsCancel="{Binding IsCancel}" />
+    </DataTemplate>
+    
     <!-- Style for the visuals. -->
+    <local:ButtonTemplateSelector x:Key="DialogButtonTemplateSelector" />
+
     <Style TargetType="{x:Type local:CommonDialogWindowBaseContent}">
         <Setter Property="Template">
             <Setter.Value>
@@ -127,17 +149,8 @@
                             <!-- The row of buttons. -->
                             <Border Grid.Row="1" Style="{StaticResource DialogButtonBar}">
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                    <local:ButtonsList ItemsSource="{Binding Buttons.Collection, RelativeSource={RelativeSource TemplatedParent}}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Button Style="{StaticResource DialogButtonStyle}"
-                                                        Command="{Binding Command}"
-                                                        IsDefault="{Binding IsDefault}"
-                                                        Content="{Binding Caption}"
-                                                        IsCancel="{Binding IsCancel}" />
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-
+                                    <local:ButtonsList ItemsSource="{Binding Buttons.Collection, RelativeSource={RelativeSource TemplatedParent}}"
+                                                       ItemTemplateSelector="{StaticResource DialogButtonTemplateSelector}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
                                                 <StackPanel Orientation="Horizontal" />

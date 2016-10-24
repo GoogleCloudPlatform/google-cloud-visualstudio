@@ -155,6 +155,7 @@
     </Compile>
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
     <Compile Include="Theming\ButtonsList.cs" />
+    <Compile Include="Theming\ButtonTemplateSelector.cs" />
     <Compile Include="Theming\CommonDialogWindowBaseContent.cs" />
     <Compile Include="Utils\BindableList.cs" />
     <Compile Include="Utils\ErrorHandlerUtils.cs" />
