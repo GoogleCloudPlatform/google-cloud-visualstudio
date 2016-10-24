@@ -15,6 +15,8 @@
 using Google;
 using Google.Apis.Storage.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
@@ -86,16 +88,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         {
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new WeakCommand(OnStatusCommand) },
+                new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new ProtectedCommand(OnStatusCommand) },
             };
 
             if (_showLocations)
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGcsShowBucketsCommand, Command = new WeakCommand(OnShowBucketsCommand) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGcsShowBucketsCommand, Command = new ProtectedCommand(OnShowBucketsCommand) });
             }
             else
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGcsShowLocationsCommand, Command = new WeakCommand(OnShowLocationsCommand) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGcsShowLocationsCommand, Command = new ProtectedCommand(OnShowLocationsCommand) });
             }
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
@@ -124,7 +126,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
                 return new GcsDataSource(
                     CredentialsStore.Default.CurrentProjectId,
                     CredentialsStore.Default.CurrentGoogleCredential,
-                    GoogleCloudExtensionPackage.ApplicationName);
+                    GoogleCloudExtensionPackage.VersionedApplicationName);
             }
             else
             {
@@ -139,6 +141,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
                 Debug.WriteLine("Loading list of buckets.");
                 _buckets = await LoadBucketList();
                 PresentViewModels();
+
+                EventsReporterWrapper.ReportEvent(GcsBucketsLoadedEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException ex)
             {
@@ -155,6 +159,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
                     return;
                 }
 
+                EventsReporterWrapper.ReportEvent(GcsBucketsLoadedEvent.Create(CommandStatus.Failure));
                 throw new CloudExplorerSourceException(ex.Message, ex);
             }
         }

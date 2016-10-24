@@ -14,6 +14,8 @@
 
 using Google;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
@@ -117,28 +119,28 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             var menuItems = new List<FrameworkElement>
             {
-                new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new WeakCommand(OnStatusCommand) },
-                new MenuItem { Header = Resources.CloudExplorerGceNewAspNetInstanceMenuHeader, Command = new WeakCommand(OnNewAspNetInstanceCommand) },
-                new MenuItem { Header = Resources.CloudExplorerGceNewInstanceMenuHeader, Command = new WeakCommand(OnNewInstanceCommand) },
+                new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new ProtectedCommand(OnStatusCommand) },
+                new MenuItem { Header = Resources.CloudExplorerGceNewAspNetInstanceMenuHeader, Command = new ProtectedCommand(OnNewAspNetInstanceCommand) },
+                new MenuItem { Header = Resources.CloudExplorerGceNewInstanceMenuHeader, Command = new ProtectedCommand(OnNewInstanceCommand) },
                 new Separator(),
             };
 
             if (ShowOnlyWindowsInstances)
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowAllOsInstancesCommand, Command = new WeakCommand(OnShowAllOsInstancesCommand) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowAllOsInstancesCommand, Command = new ProtectedCommand(OnShowAllOsInstancesCommand) });
             }
             else
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowWindowsOnlyInstancesCommand, Command = new WeakCommand(OnShowOnlyWindowsInstancesCommand) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowWindowsOnlyInstancesCommand, Command = new ProtectedCommand(OnShowOnlyWindowsInstancesCommand) });
             }
 
             if (ShowZones)
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowInstancesCommand, Command = new WeakCommand(OnShowInstancesCommand) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowInstancesCommand, Command = new ProtectedCommand(OnShowInstancesCommand) });
             }
             else
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowZonesCommand, Command = new WeakCommand(OnShowZonesCommand) });
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceShowZonesCommand, Command = new ProtectedCommand(OnShowZonesCommand) });
             }
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
@@ -166,13 +168,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnNewAspNetInstanceCommand()
         {
-            var url = $"https://console.cloud.google.com/launcher/details/click-to-deploy-images/aspnet?project={Context.CurrentProject.Name}";
+            var url = $"https://console.cloud.google.com/launcher/details/click-to-deploy-images/aspnet?project={Context.CurrentProject.ProjectId}";
             Process.Start(url);
         }
 
         private void OnNewInstanceCommand()
         {
-            var url = $"https://console.cloud.google.com/compute/instancesAdd?project={Context.CurrentProject.Name}";
+            var url = $"https://console.cloud.google.com/compute/instancesAdd?project={Context.CurrentProject.ProjectId}";
             Process.Start(url);
         }
 
@@ -194,7 +196,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 return new GceDataSource(
                     CredentialsStore.Default.CurrentProjectId,
                     CredentialsStore.Default.CurrentGoogleCredential,
-                    GoogleCloudExtensionPackage.ApplicationName);
+                    GoogleCloudExtensionPackage.VersionedApplicationName);
             }
             else
             {
@@ -206,8 +208,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             try
             {
+                _instancesPerZone = null;
                 _instancesPerZone = await _dataSource.Value.GetAllInstancesPerZonesAsync();
                 PresentViewModels();
+
+                EventsReporterWrapper.ReportEvent(GceVMsLoadedEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException ex)
             {
@@ -225,12 +230,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     return;
                 }
 
+                EventsReporterWrapper.ReportEvent(GceVMsLoadedEvent.Create(CommandStatus.Failure));
                 throw new CloudExplorerSourceException(ex.Message, ex);
             }
         }
 
         private void PresentViewModels()
         {
+            // If there's no data then there's nothing to do.
+            if (_instancesPerZone == null)
+            {
+                return;
+            }
+
             IEnumerable<TreeNode> viewModels;
             if (_showZones)
             {
@@ -243,13 +255,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 viewModels = _instancesPerZone
                     .Select(x => new
                     {
-                        Zone = x.Zone.Name,
+                        Zone = x.Zone,
                         Instances = x.Instances
                             .Where(i => _showOnlyWindowsInstances ? i.IsWindowsInstance() : true)
                             .OrderBy(i => i.Name)
                     })
                     .Where(x => x.Instances.Count() > 0)
-                    .OrderBy(x => x.Zone)
+                    .OrderBy(x => x.Zone.Name)
                     .Select(x => new ZoneViewModel(this, x.Zone, x.Instances.Select(i => new GceInstanceViewModel(this, i))));
             }
             else

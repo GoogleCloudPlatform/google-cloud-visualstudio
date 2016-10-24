@@ -101,12 +101,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                     new MenuItem
                     {
                         Header = Resources.CloudExplorerPubSubNewTopicMenuHeader,
-                        Command = new WeakCommand(OnNewTopicCommand)
+                        Command = new ProtectedCommand(OnNewTopicCommand)
                     },
                     new MenuItem
                     {
                         Header = Resources.UiOpenOnCloudConsoleMenuHeader,
-                        Command = new WeakCommand(OnOpenCloudConsoleCommand)
+                        Command = new ProtectedCommand(OnOpenCloudConsoleCommand)
                     }
                 }
             };

@@ -35,13 +35,13 @@ namespace GoogleCloudExtension.PubSubWindows
 
         public string Result { get; private set; }
 
-        public WeakCommand CreateCommand { get; }
+        public ProtectedCommand CreateCommand { get; }
 
         public NewTopicViewModel(string project, CommonDialogWindowBase owner)
         {
             _owner = owner;
             Project = project;
-            CreateCommand = new WeakCommand(OnCreateCommand);
+            CreateCommand = new ProtectedCommand(OnCreateCommand);
         }
 
         private void OnCreateCommand()

@@ -15,8 +15,10 @@
 using EnvDTE;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.ManageAccounts;
+using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -91,6 +93,11 @@ namespace GoogleCloudExtension
         /// The version of the extension's main assembly.
         /// </summary>
         public static string ApplicationVersion => s_appVersion.Value;
+
+        /// <summary>
+        /// Returns the versioned application name in the right format for analytics, etc...
+        /// </summary>
+        public static string VersionedApplicationName => $"{ApplicationName}/{ApplicationVersion}";
 
         public GoogleCloudExtensionPackage()
         {
@@ -194,25 +201,20 @@ namespace GoogleCloudExtension
             // Register the command handlers.
             CloudExplorerCommand.Initialize(this);
             ManageAccountsCommand.Initialize(this);
+            PublishProjectMainMenuCommand.Initialize(this);
+            PublishProjectContextMenuCommand.Initialize(this);
 
             // Activity log utils, to aid in debugging.
             ActivityLogUtils.Initialize(this);
             ActivityLogUtils.LogInfo("Starting Google Cloud Tools.");
 
-            // Analytics reporting.
-            ExtensionAnalytics.ReportStartSession();
-
             _dteInstance = (DTE)Package.GetGlobalService(typeof(DTE));
-            _dteInstance.Events.DTEEvents.OnBeginShutdown += DTEEvents_OnBeginShutdown;
+
+            // Update the installation status of the package.
+            CheckInstallationStatus();
         }
 
         public static GoogleCloudExtensionPackage Instance { get; private set; }
-
-        private void DTEEvents_OnBeginShutdown()
-        {
-            ActivityLogUtils.LogInfo("Shutting down Google Cloud Tools.");
-            ExtensionAnalytics.ReportEndSession();
-        }
 
         #endregion
 
@@ -221,5 +223,52 @@ namespace GoogleCloudExtension
         public AnalyticsOptionsPage AnalyticsSettings => (AnalyticsOptionsPage)GetDialogPage(typeof(AnalyticsOptionsPage));
 
         #endregion
+
+        /// <summary>
+        /// Checks the installed version vs the version that is running, and will report either a new install
+        /// if no previous version is found, or an upgrade if a lower version is found. If the same version
+        /// is found, nothing is reported.
+        /// </summary>
+        private void CheckInstallationStatus()
+        {
+            var settings = AnalyticsSettings;
+            if (settings.InstalledVersion == null)
+            {
+                // This is a new installation.
+                Debug.WriteLine("New installation detected.");
+                EventsReporterWrapper.ReportEvent(NewInstallEvent.Create());
+            }
+            else if (settings.InstalledVersion != ApplicationVersion)
+            {
+                // This is an upgrade (or different version installed).
+                Debug.WriteLine($"Found new version {settings.InstalledVersion} different than current {ApplicationVersion}");
+
+                Version current, installed;
+                if (!Version.TryParse(ApplicationVersion, out current))
+                {
+                    Debug.WriteLine($"Invalid application version: {ApplicationVersion}");
+                    return;
+                }
+                if (!Version.TryParse(settings.InstalledVersion, out installed))
+                {
+                    Debug.WriteLine($"Invalid installed version: {settings.InstalledVersion}");
+                    return;
+                }
+
+                if (installed < current)
+                {
+                    Debug.WriteLine($"Upgrade to version {ApplicationVersion} detected.");
+                    EventsReporterWrapper.ReportEvent(UpgradeEvent.Create());
+                }
+            }
+            else
+            {
+                Debug.WriteLine($"Same version {settings.InstalledVersion} detected.");
+            }
+
+            // Update the stored settings with the current version.
+            settings.InstalledVersion = ApplicationVersion;
+            settings.SaveSettingsToStorage();
+        }
     }
 }

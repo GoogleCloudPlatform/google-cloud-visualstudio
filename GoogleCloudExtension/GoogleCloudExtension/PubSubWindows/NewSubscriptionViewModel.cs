@@ -49,7 +49,7 @@ namespace GoogleCloudExtension.PubSubWindows
 
         public Subscription Subscription { get; }
 
-        public WeakCommand CreateCommand { get; }
+        public ProtectedCommand CreateCommand { get; }
 
         public Subscription Result { get; private set; }
 
@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.PubSubWindows
         {
             _owner = owner;
             Subscription = subscription;
-            CreateCommand = new WeakCommand(OnCreateCommand);
+            CreateCommand = new ProtectedCommand(OnCreateCommand);
             PushConfig = subscription.PushConfig ?? new PushConfig();
         }
 

@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = Resources.CloudExploreDisabledApiEnableApiMenuHeader, Command=new WeakCommand(OnEnableApiCommand) },
+                new MenuItem { Header = Resources.CloudExploreDisabledApiEnableApiMenuHeader, Command=new ProtectedCommand(OnEnableApiCommand) },
             };
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };

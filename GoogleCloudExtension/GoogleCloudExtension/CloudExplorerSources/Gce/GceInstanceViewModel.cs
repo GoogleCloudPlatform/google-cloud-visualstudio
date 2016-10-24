@@ -15,6 +15,7 @@
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.FirewallManagement;
@@ -197,15 +198,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 return;
             }
 
-            var getPublishSettingsCommand = new WeakCommand(OnSavePublishSettingsCommand, canExecuteCommand: Instance.IsAspnetInstance());
-            var openWebSite = new WeakCommand(OnOpenWebsite, canExecuteCommand: Instance.IsAspnetInstance() && Instance.IsRunning());
-            var openTerminalServerSessionCommand = new WeakCommand(
+            var getPublishSettingsCommand = new ProtectedCommand(OnSavePublishSettingsCommand, canExecuteCommand: Instance.IsAspnetInstance());
+            var openWebSite = new ProtectedCommand(OnOpenWebsite, canExecuteCommand: Instance.IsAspnetInstance() && Instance.IsRunning());
+            var openTerminalServerSessionCommand = new ProtectedCommand(
                 OnOpenTerminalServerSessionCommand,
                 canExecuteCommand: Instance.IsWindowsInstance() && Instance.IsRunning());
-            var startInstanceCommand = new WeakCommand(OnStartInstanceCommand);
-            var stopInstanceCommand = new WeakCommand(OnStopInstanceCommand);
-            var manageFirewallPorts = new WeakCommand(OnManageFirewallPortsCommand);
-            var manageWindowsCredentials = new WeakCommand(OnManageWindowsCredentialsCommand, canExecuteCommand: Instance.IsWindowsInstance());
+            var startInstanceCommand = new ProtectedCommand(OnStartInstanceCommand);
+            var stopInstanceCommand = new ProtectedCommand(OnStopInstanceCommand);
+            var manageFirewallPorts = new ProtectedCommand(OnManageFirewallPortsCommand);
+            var manageWindowsCredentials = new ProtectedCommand(OnManageWindowsCredentialsCommand, canExecuteCommand: Instance.IsWindowsInstance());
 
             var menuItems = new List<MenuItem>
             {
@@ -225,8 +226,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceStartInstanceMenuHeader, Command = startInstanceCommand });
             }
 
-            menuItems.Add(new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) });
-            menuItems.Add(new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) });
+            menuItems.Add(new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand) });
+            menuItems.Add(new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesWindowCommand) });
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
@@ -291,10 +292,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                         portsToEnable: changes.PortsToEnable,
                         portsToDisable: changes.PortsToDisable);
                     UpdateInstanceState(operation);
+
+                    EventsReporterWrapper.ReportEvent(ChangedFirewallPortsEvent.Create(CommandStatus.Success));
                 }
             }
             catch (DataSourceException)
             {
+                EventsReporterWrapper.ReportEvent(ChangedFirewallPortsEvent.Create(CommandStatus.Failure));
                 UserPromptUtils.ErrorPrompt(Resources.CloudExplorerGceFailedToUpdateFirewallMessage, Resources.CloudExplorerGceFailedToUpdateFirewallCaption);
             }
         }
@@ -361,8 +365,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnOpenTerminalServerSessionCommand()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.OpenTerminalServerSessionForGceInstanceCommand, CommandInvocationSource.Button);
-
             var credentials = WindowsCredentialsChooserWindow.PromptUser(
                 _instance,
                 new WindowsCredentialsChooserWindow.Options
@@ -378,8 +380,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnOpenWebsite()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.OpenWebsiteForGceInstanceCommand, CommandInvocationSource.Button);
-
             var url = Instance.GetDestinationAppUri();
             Debug.WriteLine($"Opening Web Site: {url}");
             Process.Start(url);
