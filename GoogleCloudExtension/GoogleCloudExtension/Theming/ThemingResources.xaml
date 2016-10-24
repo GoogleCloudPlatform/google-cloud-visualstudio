@@ -2,6 +2,10 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:GoogleCloudExtension.Theming;assembly=GoogleCloudExtension">
 
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="CommonResources.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
     <!-- Colors for the dialog button for the various UI states. -->
     
     <!-- Normal state -->
