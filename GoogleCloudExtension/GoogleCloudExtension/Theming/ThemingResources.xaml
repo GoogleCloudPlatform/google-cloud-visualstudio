@@ -36,7 +36,7 @@
     <Style x:Key="DialogButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="Blue" />
         <Setter Property="Width" Value="96px" />
-        <Setter Property="Margin" Value="5,5,8,5" />
+        <Setter Property="Margin" Value="6,0,0,0" />
         <Setter Property="Height" Value="25px" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource DialogFocusVisual}"/>
         <Setter Property="Background" Value="{StaticResource DialogButtonColors.Static.Background}"/>
@@ -52,7 +52,7 @@
                     <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Background="{TemplateBinding Background}"
-                            SnapsToDevicePixels="true">
+                            SnapsToDevicePixels="true" CornerRadius="2">
                         <ContentPresenter x:Name="contentPresenter"
                                           Focusable="False"
                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -84,17 +84,27 @@
         </Setter>
     </Style>
 
-    <Style x:Key="DialogButtonSize1" BasedOn="{StaticResource DialogButtonStyle}" TargetType="{x:Type Button}">
+    <!-- Style for wide buttons. -->
+    <Style x:Key="DialogButtonWide" BasedOn="{StaticResource DialogButtonStyle}" TargetType="{x:Type Button}">
         <Setter Property="Width" Value="96px" />
     </Style>
 
-    <Style x:Key="DialogButtonSize2" BasedOn="{StaticResource DialogButtonStyle}" TargetType="{x:Type Button}">
+    <!-- Style for the standard buttons. -->
+    <Style x:Key="DialogButtonStandard" BasedOn="{StaticResource DialogButtonStyle}" TargetType="{x:Type Button}">
         <Setter Property="Width" Value="75px" />
     </Style>
 
+    <!-- Styles for the dialog. -->
+    
+    <!-- Style for the background of the dialog. -->
     <Style x:Key="DialogBackgroundStyle" TargetType="{x:Type Border}">
-        <Setter Property="Background" Value="White" />
-        <Setter Property="Padding" Value="5" />
+        <Setter Property="Background" Value="#FFEEEEEE" />
+        <Setter Property="Padding" Value="12" />
+    </Style>
+    
+    <!-- Style for the row of buttons. -->
+    <Style x:Key="DialogButtonBar" TargetType="{x:Type Border}">
+        <Setter Property="Margin" Value="0,18,0,12" />
     </Style>
     
 </ResourceDictionary>

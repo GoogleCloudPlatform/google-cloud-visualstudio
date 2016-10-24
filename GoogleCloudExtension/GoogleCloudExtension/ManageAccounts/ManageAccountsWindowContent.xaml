@@ -13,23 +13,23 @@
         <utils:VisibilityConverter x:Key="visibilityConverter" />
 
         <Grid x:Key="content">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-            
-                <!-- Caption row -->
-                <TextBlock Margin="3,3,3,2" Text="{x:Static ext:Resources.ManageAccountsChooseAccountMessage}"/>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Caption row -->
+            <TextBlock Margin="0,0,0,5" Text="{x:Static ext:Resources.ManageAccountsChooseAccountMessage}"/>
 
             <!-- Listbox with the credentials -->
             <ListBox Grid.Row="1"
                  x:Name="_accountsListBox"
-                 Margin="3,2,3,5"
                  MouseDoubleClick="ListBox_MouseDoubleClick"
                  ItemsSource="{Binding UserAccountsList}"
                  SelectedItem="{Binding CurrentUserAccount, Mode=OneWayToSource}"
                  SelectedValue="{Binding CurrentAccountName}"
                  SelectedValuePath="AccountName">
+
                 <ListBox.ItemContainerStyle>
                     <Style TargetType="{x:Type ListBoxItem}">
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -80,7 +80,7 @@
 
             </ListBox>
         </Grid>
-        
+
     </UserControl.Resources>
 
     <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
@@ -96,5 +96,5 @@
                                       Command="{Binding DataContext.CloseAccountCommand, Source={StaticResource content}}"/>
         </theming:CommonDialogWindowBaseContent.Buttons>
     </theming:CommonDialogWindowBaseContent>
-    
+
 </UserControl>
