@@ -4,7 +4,7 @@
     
     <!-- Common size for all font text. -->
     <Style x:Key="CommonTextStyleBase">
-        <Setter Property="TextElement.FontSize" Value="11px" />
+        <Setter Property="TextElement.FontSize" Value="10px" />
     </Style>
     
     <!-- Label style. -->
@@ -16,5 +16,80 @@
     <Style x:Key="CommonTextStyle" BasedOn="{StaticResource CommonTextStyleBase}" TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground" Value="Black" />
     </Style>
-  
+
+    <!-- Common ListView styles. -->
+
+    <!-- Colors for the list view item. -->
+    
+    <!-- Text color. -->
+    <SolidColorBrush x:Key="CommonListViewItem.Foreground" Color="Black" />
+
+    <!-- Mouse over colors. -->
+    <SolidColorBrush x:Key="CommonListViewItem.MouseOver.Background" Color="#FFE9E9E9"/>
+    
+    <!-- Selected active color. -->
+    <SolidColorBrush x:Key="CommonListViewItem.Selected.Background" Color="#FFE8F0FE"/>
+
+    <!-- Focus visual for the item. -->
+    <Style x:Key="CommonListItemFocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- Common item container style. -->
+    <Style x:Key="CommonListItemContainerStyle" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Padding" Value="8,0,0,0"/>
+        <Setter Property="Height" Value="18px" />
+        <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="FocusVisualStyle" Value="{StaticResource CommonListItemFocusVisual}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                    <Border x:Name="Bd"
+                            BorderThickness="0"
+                            Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="true">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          Style="{StaticResource CommonTextStyleBase}"
+                                          TextElement.Foreground="{StaticResource CommonListViewItem.Foreground}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <!-- Set the background when hovering over item, and item is not selected. -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                                <Condition Property="IsSelected" Value="False"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource CommonListViewItem.MouseOver.Background}"/>
+                        </MultiTrigger>
+                        
+                        <!-- Set the background when the item is selected. -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource CommonListViewItem.Selected.Background}"/>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Style for common listboxes. -->
+    <Style x:Key="CommonListBoxStyle" TargetType="{x:Type ListBox}">
+        <Setter Property="ItemContainerStyle" Value="{StaticResource CommonListItemContainerStyle}" />
+    </Style>
+
 </ResourceDictionary>
