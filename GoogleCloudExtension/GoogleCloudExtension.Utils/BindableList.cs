@@ -7,7 +7,7 @@ using System.Windows.Data;
 
 namespace GoogleCloudExtension.Utils
 {
-    public class BindableList<T> : IList where T: FrameworkElement
+    public class BindableList<T> : IList where T : FrameworkElement
     {
         private readonly IList<T> _storage = new ObservableCollection<T>();
         private readonly DependencyObject _dataContextSource;
@@ -84,6 +84,5 @@ namespace GoogleCloudExtension.Utils
             };
             BindingOperations.SetBinding(item, FrameworkElement.DataContextProperty, dataContextBinding);
         }
-
     }
 }
