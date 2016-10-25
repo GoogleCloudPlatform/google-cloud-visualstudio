@@ -7,27 +7,28 @@
     </ResourceDictionary.MergedDictionaries>
 
     <!-- Colors for the dialog button for the various UI states. -->
-    
+
     <!-- Normal state -->
     <SolidColorBrush x:Key="DialogButtonColors.Static.Background" Color="White"/>
     <SolidColorBrush x:Key="DialogButtonColors.Static.Border" Color="#FFBDBDBD"/>
     <SolidColorBrush x:Key="DialogButtonColors.Static.Foreground" Color="Black"/>
-    
+
     <!-- Mouse over state -->
     <SolidColorBrush x:Key="DialogButtonColors.MouseOver.Background" Color="White"/>
     <SolidColorBrush x:Key="DialogButtonColors.MouseOver.Border" Color="#FF82B1FF"/>
     <SolidColorBrush x:Key="DialogButtonColors.MouseOver.Foreground" Color="Black"/>
-    
+
     <!-- Pressed state -->
     <SolidColorBrush x:Key="DialogButtonColors.Pressed.Background" Color="#FFF5F5F5"/>
     <SolidColorBrush x:Key="DialogButtonColors.Pressed.Border" Color="#FF82B1FF"/>
     <SolidColorBrush x:Key="DialogButtonColors.Pressed.Foreground" Color="Black"/>
-    
+
     <!-- Disabled state -->
     <SolidColorBrush x:Key="DialogButtonColors.Disabled.Background" Color="#FFE0E0E0"/>
     <SolidColorBrush x:Key="DialogButtonColors.Disabled.Border" Color="#FFBDBDBD"/>
     <SolidColorBrush x:Key="DialogButtonColors.Disabled.Foreground" Color="#FF9E9E9E"/>
 
+    <!-- Template for the dialog control. -->
     <Style x:Key="DialogFocusVisual">
         <Setter Property="Control.Template">
             <Setter.Value>
@@ -37,7 +38,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style x:Key="DialogButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="Blue" />
         <Setter Property="Width" Value="96px" />
@@ -100,20 +101,20 @@
     </Style>
 
     <!-- Styles for the dialog. -->
-    
+
     <!-- Style for the background of the dialog. -->
     <Style x:Key="DialogBackgroundStyle" TargetType="{x:Type Border}">
         <Setter Property="Background" Value="#FFEEEEEE" />
         <Setter Property="Padding" Value="12" />
     </Style>
-    
+
     <!-- Style for the row of buttons. -->
     <Style x:Key="DialogButtonBar" TargetType="{x:Type Border}">
         <Setter Property="Margin" Value="0,18,0,12" />
     </Style>
-    
+
     <!-- Button templates. -->
-    
+
     <!-- Template to display the button using the wide size. -->
     <DataTemplate x:Key="DialogButtonTemplateWide">
         <Button Style="{StaticResource DialogButtonWide}"
@@ -122,7 +123,7 @@
                 Content="{Binding Caption}"
                 IsCancel="{Binding IsCancel}" />
     </DataTemplate>
-    
+
     <!-- Template to display the button in the standard size. -->
     <DataTemplate x:Key="DialogButtonTemplateStandard">
         <Button Style="{StaticResource DialogButtonStandard}"
@@ -131,7 +132,7 @@
                 Content="{Binding Caption}"
                 IsCancel="{Binding IsCancel}" />
     </DataTemplate>
-    
+
     <!-- Style for the visuals. -->
     <local:ButtonTemplateSelector x:Key="DialogButtonTemplateSelector" />
 
@@ -171,5 +172,5 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
 </ResourceDictionary>
