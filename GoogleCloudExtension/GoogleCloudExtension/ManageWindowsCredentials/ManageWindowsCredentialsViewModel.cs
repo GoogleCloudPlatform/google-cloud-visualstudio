@@ -38,6 +38,8 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
 
         public string InstanceName => _instance.Name;
 
+        public string Message => String.Format(Resources.ManageWindowsCredentialsWindowMessage, _instance.Name);
+
         public WindowsInstanceCredentials SelectedCredentials
         {
             get { return _selectedCredentials; }
