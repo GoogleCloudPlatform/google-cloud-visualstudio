@@ -16,9 +16,16 @@ using System.Windows.Controls;
 
 namespace GoogleCloudExtension.Theming
 {
+    /// <summary>
+    /// This class was created to be able to force the <seealso cref="ItemsControl"/> to apply the
+    /// data templates, and template selector, to the items even if they are <seealso cref="FrameworkElement"/>
+    /// instances.
+    /// </summary>
     public class ButtonsList : ItemsControl
     {
-        // Ensure that all items get the ItemTemplate applied to them.
+        /// <summary>
+        /// Ensures that all items have the data templates, and template selectors, applied to them.
+        /// </summary>
         protected override bool IsItemItsOwnContainerOverride(object item) => false;
     }
 }

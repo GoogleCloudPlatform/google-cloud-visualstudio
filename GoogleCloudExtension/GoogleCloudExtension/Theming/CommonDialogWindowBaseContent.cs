@@ -19,6 +19,9 @@ using System.Windows.Controls;
 
 namespace GoogleCloudExtension.Theming
 {
+    /// <summary>
+    /// This class implements all of the common visuals for all dialogs.
+    /// </summary>
     public class CommonDialogWindowBaseContent : ContentControl
     {
         // Dependency property registration for the buttons property, to allow template binding to work.
@@ -43,6 +46,11 @@ namespace GoogleCloudExtension.Theming
             Buttons = new BindableList<DialogButtonInfo>(this);
         }
 
+        /// <summary>
+        /// Due to a limitation on the Xaml parser with respect to names in the content of a ContentControl
+        /// we need to load the visuals (the styles) programmatically. If we were to use the normal pattern we will
+        /// get the "Can't apply Name to an element" error.
+        /// </summary>
         private void Initialize()
         {
             ResourceDictionary resources = new ResourceDictionary();

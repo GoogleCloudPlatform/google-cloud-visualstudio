@@ -17,8 +17,16 @@ using System.Windows.Controls;
 
 namespace GoogleCloudExtension.Theming
 {
+    /// <summary>
+    /// This class implements the <seealso cref="DataTemplateSelector"/> interface to choose the right
+    /// button style (with the right size) depending on the contents of the button.
+    /// </summary>
     public class ButtonTemplateSelector : DataTemplateSelector
     {
+        /// <summary>
+        /// Choose between the Wide and Standard sizes for a button depending on the information on 
+        /// the button fino.
+        /// </summary>
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             var buttonInfo = (DialogButtonInfo)item;

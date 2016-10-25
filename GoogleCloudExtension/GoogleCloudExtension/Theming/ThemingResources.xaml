@@ -28,7 +28,7 @@
     <SolidColorBrush x:Key="DialogButtonColors.Disabled.Border" Color="#FFBDBDBD"/>
     <SolidColorBrush x:Key="DialogButtonColors.Disabled.Foreground" Color="#FF9E9E9E"/>
 
-    <!-- Template for the dialog control. -->
+    <!-- The dialog button visuals. -->
     <Style x:Key="DialogFocusVisual">
         <Setter Property="Control.Template">
             <Setter.Value>
@@ -133,9 +133,12 @@
                 IsCancel="{Binding IsCancel}" />
     </DataTemplate>
 
-    <!-- Style for the visuals. -->
+    <!-- Common visuals for the dialogs. -->
+    
+    <!-- The template selector to decide what button style to apply. -->
     <local:ButtonTemplateSelector x:Key="DialogButtonTemplateSelector" />
 
+    <!-- The dialog visuals. -->
     <Style TargetType="{x:Type local:CommonDialogWindowBaseContent}">
         <Setter Property="Template">
             <Setter.Value>

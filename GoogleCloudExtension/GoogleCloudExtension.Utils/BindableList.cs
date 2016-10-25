@@ -21,6 +21,12 @@ using System.Windows.Data;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// This class implements a list that allows the DataContext to flow through from the owner of the
+    /// list to the elements in the list. <typeparamref name="T"/> must be a <seealso cref="FrameworkElement"/> so
+    /// the DataContext can be set as they are added to the list.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public class BindableList<T> : IList where T : FrameworkElement
     {
         private readonly IList<T> _storage = new ObservableCollection<T>();
@@ -89,6 +95,11 @@ namespace GoogleCloudExtension.Utils
             _dataContextSource = dataContextSource;
         }
 
+        /// <summary>
+        /// Ensures that the DataContext in the item is connected to the source of the data context,
+        /// we use a Binding so that updats to the source's DataContext are reflected in the items.
+        /// </summary>
+        /// <param name="item"></param>
         private void SetupDataContextBinding(T item)
         {
             Binding dataContextBinding = new Binding
