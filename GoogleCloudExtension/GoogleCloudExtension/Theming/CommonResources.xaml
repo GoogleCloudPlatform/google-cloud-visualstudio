@@ -91,6 +91,9 @@
     <!-- Style for common listboxes. -->
     <Style x:Key="CommonListBoxStyle" TargetType="{x:Type ListBox}">
         <Setter Property="ItemContainerStyle" Value="{StaticResource CommonListItemContainerStyle}" />
+        <Setter Property="Background" Value="#FFFAFAFA" />
+        <Setter Property="BorderThickness" Value="1px" />
+        <Setter Property="BorderBrush" Value="#FFE0E0E0" />
     </Style>
 
 </ResourceDictionary>
