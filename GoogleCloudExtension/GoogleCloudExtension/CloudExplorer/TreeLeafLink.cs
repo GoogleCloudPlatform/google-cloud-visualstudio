@@ -37,7 +37,7 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             LinkInfo = linkInfo;
             Caption = LinkInfo.Caption;
-            NavigateCommand = new WeakCommand(OnNavigateCommand);
+            NavigateCommand = new ProtectedCommand(OnNavigateCommand);
         }
 
         private void OnNavigateCommand()

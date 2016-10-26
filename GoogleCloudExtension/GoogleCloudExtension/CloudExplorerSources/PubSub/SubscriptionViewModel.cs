@@ -66,12 +66,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                     new MenuItem
                     {
                         Header = Resources.CloudExplorerPubSubDeleteSubscriptionMenuHeader,
-                        Command = new WeakCommand(OnDeleteSubscriptionCommand)
+                        Command = new ProtectedCommand(OnDeleteSubscriptionCommand)
                     },
                     new MenuItem
                     {
                         Header = Resources.UiPropertiesMenuHeader,
-                        Command = new WeakCommand(OnPropertiesWindowCommand)
+                        Command = new ProtectedCommand(OnPropertiesWindowCommand)
                     }
                 }
             };

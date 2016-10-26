@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.ResetPassword
         public ResetPasswordViewModel ViewModel { get; }
 
         private ResetPasswordWindow(Instance instance, string projectId)
-            : base(String.Format(GoogleCloudExtension.Resources.ResetPasswordWindowTitle, instance.Name), width: 350, height: 160)
+            : base(String.Format(GoogleCloudExtension.Resources.ResetPasswordWindowTitle, instance.Name), width: 350, height: 210)
         {
             ViewModel = new ResetPasswordViewModel(this, instance, projectId);
             Content = new ResetPasswordWindowContent

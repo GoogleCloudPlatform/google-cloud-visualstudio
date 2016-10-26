@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Utils;
 using System.Diagnostics;
 using System.Windows.Input;
@@ -35,13 +34,11 @@ namespace GoogleCloudExtension.MySQLInstaller
         {
             _owner = owner;
 
-            DownloadCommand = new WeakCommand(OpenDownload);
+            DownloadCommand = new ProtectedCommand(OpenDownload);
         }
 
         private void OpenDownload()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.OpenMySQLInstallerDownload, CommandInvocationSource.Button);
-
             var url = $"https://dev.mysql.com/downloads/installer/";
             Debug.WriteLine($"Opening page to download MySQL Installer: {url}");
             Process.Start(url);

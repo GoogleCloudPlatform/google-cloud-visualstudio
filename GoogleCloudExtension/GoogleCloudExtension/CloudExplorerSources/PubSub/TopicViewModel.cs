@@ -65,17 +65,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                     new MenuItem
                     {
                         Header = Resources.CloudExplorerPubSubNewSubscriptionMenuHeader,
-                        Command = new WeakCommand(OnNewSubscriptionCommand)
+                        Command = new ProtectedCommand(OnNewSubscriptionCommand)
                     },
                     new MenuItem
                     {
                         Header = Resources.CloudExplorerPubSubDeleteTopicMenuHeader,
-                        Command = new WeakCommand(OnDeleteTopicCommand)
+                        Command = new ProtectedCommand(OnDeleteTopicCommand)
                     },
                     new MenuItem
                     {
                         Header = Resources.UiPropertiesMenuHeader,
-                        Command = new WeakCommand(OnPropertiesWindowCommand)
+                        Command = new ProtectedCommand(OnPropertiesWindowCommand)
                     }
                 }
             };

@@ -82,8 +82,8 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
             _newNetwork = newNetwork;
             _toBeDeleted = false;
 
-            DeleteCommand = new WeakCommand(OnDeleteCommand);
-            UndoDeleteCommand = new WeakCommand(OnUndoDeleteCommand);
+            DeleteCommand = new ProtectedCommand(OnDeleteCommand);
+            UndoDeleteCommand = new ProtectedCommand(OnUndoDeleteCommand);
         }
 
         /// <summary>

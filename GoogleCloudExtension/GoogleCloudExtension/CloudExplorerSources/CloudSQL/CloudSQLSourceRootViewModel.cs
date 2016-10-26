@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
@@ -64,7 +66,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new WeakCommand(OnStatusCommand) },
+                new MenuItem { Header = Resources.CloudExplorerStatusMenuHeader, Command = new ProtectedCommand(OnStatusCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
@@ -87,7 +89,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 return new CloudSqlDataSource(
                     CredentialsStore.Default.CurrentProjectId,
                     CredentialsStore.Default.CurrentGoogleCredential,
-                    GoogleCloudExtensionPackage.ApplicationName);
+                    GoogleCloudExtensionPackage.VersionedApplicationName);
             }
             else
             {
@@ -117,6 +119,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                         Children.Add(s_noItemsPlacehoder);
                     }
                 }
+
+                EventsReporterWrapper.ReportEvent(CloudSQLInstancesLoadedEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException ex)
             {
@@ -124,6 +128,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 GcpOutputWindow.OutputLine(ex.Message);
                 GcpOutputWindow.Activate();
 
+                EventsReporterWrapper.ReportEvent(CloudSQLInstancesLoadedEvent.Create(CommandStatus.Failure));
                 throw new CloudExplorerSourceException(ex.Message, ex);
             }
         }

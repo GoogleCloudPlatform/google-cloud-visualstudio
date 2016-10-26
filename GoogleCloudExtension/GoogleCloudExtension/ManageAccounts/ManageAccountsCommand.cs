@@ -88,9 +88,7 @@ namespace GoogleCloudExtension.ManageAccounts
         /// <param name="e">The event args.</param>
         private void ShowToolWindow(object sender, EventArgs e)
         {
-            ExtensionAnalytics.EnsureAnalyticsOptIn();
-
-            ExtensionAnalytics.ReportCommand(CommandName.OpenManageAccountsDialog, CommandInvocationSource.ToolsMenu);
+            EventsReporterWrapper.EnsureAnalyticsOptIn();
 
             ManageAccountsWindow.PromptUser();
         }
