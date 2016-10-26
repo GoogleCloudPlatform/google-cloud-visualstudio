@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.Theming
     /// </summary>
     public class CommonDialogWindowBaseContent : ContentControl
     {
-        private const string DialogBannerPath = "Theming/Resources/GCP_logo_horizontal_rgb.png";
+        private const string DialogBannerPath = "Theming/Resources/GCP_logo_horizontal.png";
 
         private static readonly Lazy<ImageSource> s_dialogBanner = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(DialogBannerPath));
 

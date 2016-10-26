@@ -153,8 +153,11 @@
                         <!-- The banner for the dialog, possibly hidden. -->
                         <Border Height="36px"
                                 Background="White"
+                                Padding="12,0,0,0"
                                 Visibility="{Binding HasBanner, RelativeSource={RelativeSource TemplatedParent}, Converter={utils:VisibilityConverter}}">
                             <Image Source="{Binding Banner, RelativeSource={RelativeSource TemplatedParent}}"
+                                   Height="24px"
+                                   VerticalAlignment="Center"
                                    HorizontalAlignment="Left" />
                         </Border>
 
