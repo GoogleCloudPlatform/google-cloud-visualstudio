@@ -10,6 +10,7 @@
     <!-- Label style. -->
     <Style x:Key="CommonLabelStyle" BasedOn="{StaticResource CommonTextStyleBase}" TargetType="{x:Type Label}">
         <Setter Property="TextElement.Foreground" Value="Black" />
+        <Setter Property="Padding" Value="0" />
     </Style>
     
     <!-- Text style. -->
