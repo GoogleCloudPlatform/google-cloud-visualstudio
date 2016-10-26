@@ -4,7 +4,7 @@
     
     <!-- Common size for all font text. -->
     <Style x:Key="CommonTextStyleBase">
-        <Setter Property="TextElement.FontSize" Value="10px" />
+        <Setter Property="TextElement.FontSize" Value="12px" />
     </Style>
     
     <!-- Label style. -->

@@ -93,7 +93,7 @@
 
     <!-- Style for wide buttons. -->
     <Style x:Key="DialogButtonWide" BasedOn="{StaticResource DialogButtonStyle}" TargetType="{x:Type Button}">
-        <Setter Property="Width" Value="96px" />
+        <Setter Property="Width" Value="110px" />
     </Style>
 
     <!-- Style for the standard buttons. -->
