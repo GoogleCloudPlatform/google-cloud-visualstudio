@@ -10,19 +10,17 @@
              d:DataContext="{d:DesignInstance {x:Type local:LinkPromptDialogWindowViewModel}}"
              d:DesignHeight="300" d:DesignWidth="300">
 
-    <UserControl.Resources>
-        <TextBlock TextWrapping="Wrap" x:Key="content">
+    <theming:CommonDialogWindowBaseContent>
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}" IsDefault="True" IsCancel="True"/>
+        </theming:CommonDialogWindowBaseContent.Buttons>
+
+        <TextBlock TextWrapping="Wrap">
             <TextBlock Text="{Binding Text}" TextWrapping="Wrap"/>
             <Hyperlink Command="{Binding NavigateCommand}">
                 <TextBlock Text="{Binding LinkCaption}" />
             </Hyperlink>
         </TextBlock>
-    </UserControl.Resources>
-
-    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
-        <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}" IsDefault="True" IsCancel="True"/>
-        </theming:CommonDialogWindowBaseContent.Buttons>
     </theming:CommonDialogWindowBaseContent>
 
 </UserControl>

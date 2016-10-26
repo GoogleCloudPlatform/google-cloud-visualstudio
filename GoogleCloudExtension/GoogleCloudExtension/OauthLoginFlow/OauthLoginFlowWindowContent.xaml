@@ -9,17 +9,15 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type local:OAuthLoginFlowViewModel}}" d:DesignHeight="300" d:DesignWidth="300">
 
-    <UserControl.Resources>
-        <TextBlock TextWrapping="Wrap" Margin="3,0" x:Key="content" Text="{x:Static ext:Resources.OAuthFlowWindowMessage}" />
-
-    </UserControl.Resources>
-
-    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
+    <theming:CommonDialogWindowBaseContent>
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
-                                      Command="{Binding DataContext.CloseCommand, Source={StaticResource content}}"
+                                      Command="{Binding CloseCommand}"
                                       IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
+
+        <TextBlock TextWrapping="Wrap" Text="{x:Static ext:Resources.OAuthFlowWindowMessage}" />
+
     </theming:CommonDialogWindowBaseContent>
    
 </UserControl>

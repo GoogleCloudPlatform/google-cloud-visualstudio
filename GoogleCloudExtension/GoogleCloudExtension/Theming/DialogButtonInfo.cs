@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.Theming
     /// <seealso cref="DependencyObject"/> to allow bindings to be set on the properties. Specially 
     /// usefull for the <seealso cref="Command"/> property.
     /// </summary>
-    public class DialogButtonInfo : DependencyObject
+    public class DialogButtonInfo : FrameworkElement
     {
         #region DependencyProperty registrations
 

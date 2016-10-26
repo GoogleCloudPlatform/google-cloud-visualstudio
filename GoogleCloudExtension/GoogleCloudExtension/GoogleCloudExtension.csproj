@@ -154,6 +154,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
+    <Compile Include="Theming\ButtonsList.cs" />
+    <Compile Include="Theming\ButtonTemplateSelector.cs" />
+    <Compile Include="Theming\CommonDialogWindowBaseContent.cs" />
     <Compile Include="Utils\ErrorHandlerUtils.cs" />
     <Compile Include="Utils\ProtectedAction.cs" />
     <Compile Include="Utils\ProtectedCommand.cs" />
@@ -171,9 +174,6 @@
     <Compile Include="LinkPrompt\LinkPromptDialogWindowViewModel.cs" />
     <Compile Include="Theming\CommonDialogWindowBase.cs" />
     <Compile Include="Theming\DialogButtonInfo.cs" />
-    <Compile Include="Theming\CommonDialogWindowBaseContent.xaml.cs">
-      <DependentUpon>CommonDialogWindowBaseContent.xaml</DependentUpon>
-    </Compile>
     <Compile Include="ResetPassword\ResetPasswordViewModel.cs" />
     <Compile Include="ResetPassword\ResetPasswordWindow.cs" />
     <Compile Include="ResetPassword\ResetPasswordWindowContent.xaml.cs">
@@ -499,11 +499,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml">
+    <Resource Include="Theming\ThemingResources.xaml">
       <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Theming\CommonDialogWindowBaseContent.xaml">
+    </Resource>
+    <Resource Include="Theming\CommonResources.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Page Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,0 +1,11 @@
+﻿<!-- Common theming resources to be used in all dialogs and UI. -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Common base style for all of the TextBlock instances. -->
+    <Style x:Key="CommonTextBlock" TargetType="{x:Type TextBlock}">
+        <Setter Property="FontSize" Value="10px" />
+        <Setter Property="Foreground" Value="Black" />
+    </Style>
+    
+</ResourceDictionary>

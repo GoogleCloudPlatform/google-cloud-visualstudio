@@ -9,22 +9,26 @@
              mc:Ignorable="d" 
              d:DesignHeight="225" d:DesignWidth="300">
     
-    <UserControl.Resources>
-        <StackPanel x:Key="content">
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Margin="5" Text="{x:Static ext:Resources.MySqlInstallerWindowTopMessage}" />
-
-
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Margin="5" Text="{x:Static ext:Resources.MySqlInstallerWindowBottomMessage}" />
-
-        </StackPanel>
-    </UserControl.Resources>
-
-    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
+    <theming:CommonDialogWindowBaseContent>
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiDownloadButtonCaption}"
                                       IsDefault="True"
-                                      Command="{Binding DataContext.DownloadCommand, Source={StaticResource content}}"/>
+                                      Command="{Binding DownloadCommand}"/>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
+
+        <StackPanel>
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       TextWrapping="WrapWithOverflow"
+                       Margin="5"
+                       Text="{x:Static ext:Resources.MySqlInstallerWindowTopMessage}" />
+            <TextBlock HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       TextWrapping="WrapWithOverflow"
+                       Margin="5"
+                       Text="{x:Static ext:Resources.MySqlInstallerWindowBottomMessage}" />
+        </StackPanel>
+
     </theming:CommonDialogWindowBaseContent>
 </UserControl>
