@@ -25,13 +25,15 @@ namespace GoogleCloudExtension.Theming
     {
         /// <summary>
         /// Choose between the Wide and Standard sizes for a button depending on the information on 
-        /// the button fino.
+        /// the button info.
         /// </summary>
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
             var buttonInfo = (DialogButtonInfo)item;
             var element = (FrameworkElement)container;
 
+            // Using 6 characters as the treshold for choosing the right size of the button to
+            // accomodate the visuals better.
             if (buttonInfo.Caption.Length > 6)
             {
                 return (DataTemplate)element.FindResource("DialogButtonTemplateWide");
