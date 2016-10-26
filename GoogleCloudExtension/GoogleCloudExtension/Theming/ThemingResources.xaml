@@ -43,7 +43,6 @@
     <Style x:Key="DialogButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="Blue" />
         <Setter Property="Width" Value="96px" />
-        <Setter Property="Margin" Value="6,0,0,0" />
         <Setter Property="Height" Value="25px" />
         <Setter Property="FocusVisualStyle" Value="{StaticResource DialogFocusVisual}"/>
         <Setter Property="Background" Value="{StaticResource DialogButtonColors.Static.Background}"/>
@@ -115,19 +114,24 @@
     </Style>
 
     <!-- Button templates. -->
+    
+    <!-- Margin for the buttons inside of the buttonb ar. -->
+    <Thickness x:Key="DialogButtonMargin">6,0,0,0</Thickness>
 
-    <!-- Template to display the button using the wide size. -->
+    <!-- Template to display the button using the wide size in the button bar. -->
     <DataTemplate x:Key="DialogButtonTemplateWide">
         <Button Style="{StaticResource DialogButtonWide}"
+                Margin="{StaticResource DialogButtonMargin}"
                 Command="{Binding Command}"
                 IsDefault="{Binding IsDefault}"
                 Content="{Binding Caption}"
                 IsCancel="{Binding IsCancel}" />
     </DataTemplate>
 
-    <!-- Template to display the button in the standard size. -->
+    <!-- Template to display the button in the standard size in the button bar. -->
     <DataTemplate x:Key="DialogButtonTemplateStandard">
         <Button Style="{StaticResource DialogButtonStandard}"
+                Margin="{StaticResource DialogButtonMargin}"
                 Command="{Binding Command}"
                 IsDefault="{Binding IsDefault}"
                 Content="{Binding Caption}"
