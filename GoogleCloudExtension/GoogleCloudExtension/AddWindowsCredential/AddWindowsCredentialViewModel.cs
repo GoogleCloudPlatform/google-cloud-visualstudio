@@ -35,7 +35,6 @@ namespace GoogleCloudExtension.AddWindowsCredential
         private bool _isResettingPassword;
         private readonly AddWindowsCredentialWindow _owner;
         private readonly Instance _instance;
-        private readonly string _projectId;
 
         /// <summary>
         /// The username requested by the user.
@@ -102,129 +101,35 @@ namespace GoogleCloudExtension.AddWindowsCredential
         public bool HasPassword => !String.IsNullOrEmpty(Password);
 
         /// <summary>
-        /// Whether the dialog is in the busy state.
-        /// </summary>
-        public bool IsResettingPassword
-        {
-            get { return _isResettingPassword; }
-            set
-            {
-                SetValueAndRaise(ref _isResettingPassword, value);
-                RaisePropertyChanged(nameof(IsNotResettingPassword));
-            }
-        }
-
-        /// <summary>
-        /// Negation of the ResettingPassword.
-        /// </summary>
-        public bool IsNotResettingPassword => !IsResettingPassword;
-
-        /// <summary>
         /// The command to execute to accept the changes.
         /// </summary>
         public ProtectedCommand OkCommand { get; }
 
-        /// <summary>
-        /// The command to exectue to cancel the changes.
-        /// </summary>
-        public ProtectedCommand CancelCommand { get; }
+        public CredentialsRequest Result { get; private set; }
 
-        public WindowsInstanceCredentials Result { get; private set; }
-
-        public AddWindowsCredentialViewModel(AddWindowsCredentialWindow owner, Instance instance, string projectId)
+        public AddWindowsCredentialViewModel(AddWindowsCredentialWindow owner, Instance instance)
         {
             _owner = owner;
             _instance = instance;
-            _projectId = projectId;
 
             OkCommand = new ProtectedCommand(OnOkCommand, canExecuteCommand: false);
-            CancelCommand = new ProtectedCommand(OnCancelCommand);
         }
 
-        private async void OnOkCommand()
+        private void OnOkCommand()
         {
             if (ManualPassword)
             {
                 Debug.WriteLine("The user is supplying the password.");
-                Result = new WindowsInstanceCredentials
-                {
-                    User = UserName,
-                    Password = Password
-                };
-                _owner.Close();
-                return;
+                Result = new CredentialsRequest(UserName, Password);
             }
-
-            Debug.WriteLine("The user requested the password to be generated.");
-            if (!UserPromptUtils.YesNoPrompt(
-                    String.Format(Resources.ResetPasswordConfirmationPromptMessage, UserName, _instance.Name),
-                    Resources.ResetPasswordConfirmationPromptTitle))
+            else
             {
-                Debug.WriteLine("The user cancelled resetting the password.");
-                return;
+                Debug.WriteLine("The user is requesting the password to be generated.");
+                Result = new CredentialsRequest(UserName);
             }
 
-            try
-            {
-                Debug.WriteLine($"Resetting the password for the user {UserName}");
-
-                IsResettingPassword = true;
-
-                // The operation cannot be cancelled once it started, so we have to disable the buttons while
-                // it is in flight.
-                OkCommand.CanExecuteCommand = false;
-                CancelCommand.CanExecuteCommand = false;
-                _owner.IsCloseButtonEnabled = false;
-
-                // Check that gcloud is in the right state to invoke the reset credentials method.
-                if (!await GCloudWrapper.CanUseResetWindowsCredentialsAsync())
-                {
-                    if (!GCloudWrapper.IsGCloudCliInstalled())
-                    {
-                        LinkPromptDialogWindow.PromptUser(
-                            Resources.ResetPasswordMissingGcloudTitle,
-                            Resources.ResetPasswordGcloudMissingMessage,
-                            new LinkInfo(link: "https://cloud.google.com/sdk/", caption: Resources.ResetPasswordGcloudLinkCaption));
-                    }
-                    else
-                    {
-                        UserPromptUtils.ErrorPrompt(
-                            message: Resources.ResetPasswordGcloudMissingBetaMessage,
-                            title: Resources.ResetPasswordGcloudMissingComponentTitle);
-                    }
-                    return;
-                }
-
-                var context = new Context
-                {
-                    CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
-                    ProjectId = _projectId,
-                    AppName = GoogleCloudExtensionPackage.ApplicationName,
-                    AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
-                };
-                Result = await GCloudWrapper.ResetWindowsCredentialsAsync(
-                    instanceName: _instance.Name,
-                    zoneName: _instance.GetZoneName(),
-                    userName: _userName,
-                    context: context);
-
-                IsResettingPassword = false;
-            }
-            catch (GCloudException ex)
-            {
-                UserPromptUtils.ErrorPrompt(
-                    String.Format(Resources.ResetPasswordFailedPromptMessage, _instance.Name, ex.Message),
-                    Resources.ResetPasswordConfirmationPromptTitle);
-            }
-            finally
-            {
-                _owner.Close();
-            }
-        }
-
-        private void OnCancelCommand()
-        {
             _owner.Close();
+            return;
         }
 
         private void UpdateOkCommand()

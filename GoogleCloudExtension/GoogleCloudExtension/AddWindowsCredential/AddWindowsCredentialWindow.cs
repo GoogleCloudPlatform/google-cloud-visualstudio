@@ -23,19 +23,19 @@ namespace GoogleCloudExtension.AddWindowsCredential
     {
         public AddWindowsCredentialViewModel ViewModel { get; }
 
-        private AddWindowsCredentialWindow(Instance instance, string projectId)
+        private AddWindowsCredentialWindow(Instance instance)
             : base(String.Format(GoogleCloudExtension.Resources.ResetPasswordWindowTitle, instance.Name))
         {
-            ViewModel = new AddWindowsCredentialViewModel(this, instance, projectId);
+            ViewModel = new AddWindowsCredentialViewModel(this, instance);
             Content = new AddWindowsCredentialWindowContent
             {
                 DataContext = ViewModel
             };
         }
 
-        public static WindowsInstanceCredentials PromptUser(Instance instance, string projectId)
+        public static CredentialsRequest PromptUser(Instance instance)
         {
-            var dialog = new AddWindowsCredentialWindow(instance, projectId);
+            var dialog = new AddWindowsCredentialWindow(instance);
             dialog.ShowModal();
             return dialog.ViewModel.Result;
         }
