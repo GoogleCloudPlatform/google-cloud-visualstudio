@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
         public AddWindowsCredentialViewModel ViewModel { get; }
 
         private AddWindowsCredentialWindow(Instance instance, string projectId)
-            : base(String.Format(GoogleCloudExtension.Resources.ResetPasswordWindowTitle, instance.Name), width: 350, height: 210)
+            : base(String.Format(GoogleCloudExtension.Resources.ResetPasswordWindowTitle, instance.Name), width: 350, height: 400)
         {
             ViewModel = new AddWindowsCredentialViewModel(this, instance, projectId);
             Content = new AddWindowsCredentialWindowContent
