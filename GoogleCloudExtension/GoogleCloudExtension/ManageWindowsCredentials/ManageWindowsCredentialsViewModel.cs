@@ -23,6 +23,10 @@ using System.Collections.Generic;
 
 namespace GoogleCloudExtension.ManageWindowsCredentials
 {
+    /// <summary>
+    /// This class is the view model for the <seealso cref="ManageWindowsCredentialsWindow"/> dialog and
+    /// implements all of the behaviors associated with it.
+    /// </summary>
     public class ManageWindowsCredentialsViewModel : ViewModelBase
     {
         private readonly ManageWindowsCredentialsWindow _owner;
@@ -30,14 +34,29 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
         private readonly Instance _instance;
         private WindowsInstanceCredentials _selectedCredentials;
 
+        /// <summary>
+        /// Command to execute when adding a new set of credentials.
+        /// </summary>
         public ProtectedCommand AddCredentialsCommand { get; }
 
+        /// <summary>
+        /// Command to execute when deleting credentials.
+        /// </summary>
         public ProtectedCommand DeleteCredentialsCommand { get; }
 
+        /// <summary>
+        /// Command to execute when showing the credentials to the user.
+        /// </summary>
         public ProtectedCommand ShowCredentialsCommand { get; }
 
-        public string InstanceName => _instance.Name;
+        /// <summary>
+        /// The message to show at the top of the dialog.
+        /// </summary>
+        public string Message => String.Format(Resources.ManageWindowsCredentialsWindowMessage, _instance.Name);
 
+        /// <summary>
+        /// The currently selected credentials in the dialog.
+        /// </summary>
         public WindowsInstanceCredentials SelectedCredentials
         {
             get { return _selectedCredentials; }
@@ -48,6 +67,9 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             }
         }
 
+        /// <summary>
+        /// The list of credentials to display in the dialog.
+        /// </summary>
         public IEnumerable<WindowsInstanceCredentials> CredentialsList
         {
             get { return _credentials; }

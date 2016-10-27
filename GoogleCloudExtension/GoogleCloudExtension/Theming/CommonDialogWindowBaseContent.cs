@@ -13,9 +13,11 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils;
+using System;
 using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace GoogleCloudExtension.Theming
 {
@@ -24,11 +26,22 @@ namespace GoogleCloudExtension.Theming
     /// </summary>
     public class CommonDialogWindowBaseContent : ContentControl
     {
+        private const string DialogBannerPath = "Theming/Resources/GCP_logo_horizontal.png";
+
+        private static readonly Lazy<ImageSource> s_dialogBanner = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(DialogBannerPath));
+
         // Dependency property registration for the buttons property, to allow template binding to work.
         public static readonly DependencyProperty ButtonsProperty =
             DependencyProperty.Register(
                 nameof(Buttons),
                 typeof(IList),
+                typeof(CommonDialogWindowBaseContent));
+
+        // Dependency property for the HasBanner property.
+        public static readonly DependencyProperty HasBannerProperty =
+            DependencyProperty.Register(
+                nameof(HasBanner),
+                typeof(bool),
                 typeof(CommonDialogWindowBaseContent));
 
         /// <summary>
@@ -38,6 +51,20 @@ namespace GoogleCloudExtension.Theming
         {
             get { return (IList)GetValue(ButtonsProperty); }
             set { SetValue(ButtonsProperty, value); }
+        }
+
+        /// <summary>
+        /// Returns the banner to use for the dialog.
+        /// </summary>
+        public ImageSource Banner => s_dialogBanner.Value;
+
+        /// <summary>
+        /// Returns whether the banner is on or not.
+        /// </summary>
+        public bool HasBanner
+        {
+            get { return (bool)GetValue(HasBannerProperty); }
+            set { SetValue(HasBannerProperty, value); }
         }
 
         public CommonDialogWindowBaseContent()

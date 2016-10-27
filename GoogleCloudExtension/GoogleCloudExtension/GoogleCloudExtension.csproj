@@ -202,6 +202,7 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Theming\Resources\GCP_logo_horizontal.png" />
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
