@@ -17,17 +17,17 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Theming;
 using System;
 
-namespace GoogleCloudExtension.ResetPassword
+namespace GoogleCloudExtension.AddWindowsCredential
 {
-    public class ResetPasswordWindow : CommonDialogWindowBase
+    public class AddWindowsCredentialWindow : CommonDialogWindowBase
     {
-        public ResetPasswordViewModel ViewModel { get; }
+        public AddWindowsCredentialViewModel ViewModel { get; }
 
-        private ResetPasswordWindow(Instance instance, string projectId)
+        private AddWindowsCredentialWindow(Instance instance, string projectId)
             : base(String.Format(GoogleCloudExtension.Resources.ResetPasswordWindowTitle, instance.Name), width: 350, height: 210)
         {
-            ViewModel = new ResetPasswordViewModel(this, instance, projectId);
-            Content = new ResetPasswordWindowContent
+            ViewModel = new AddWindowsCredentialViewModel(this, instance, projectId);
+            Content = new AddWindowsCredentialWindowContent
             {
                 DataContext = ViewModel
             };
@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.ResetPassword
 
         public static WindowsInstanceCredentials PromptUser(Instance instance, string projectId)
         {
-            var dialog = new ResetPasswordWindow(instance, projectId);
+            var dialog = new AddWindowsCredentialWindow(instance, projectId);
             dialog.ShowModal();
             return dialog.ViewModel.Result;
         }

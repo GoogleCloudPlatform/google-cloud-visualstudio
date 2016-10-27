@@ -21,19 +21,19 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
 
-namespace GoogleCloudExtension.ResetPassword
+namespace GoogleCloudExtension.AddWindowsCredential
 {
     /// <summary>
     /// Viewmodel for the reset password dialog.
     /// </summary>
-    public class ResetPasswordViewModel : ViewModelBase
+    public class AddWindowsCredentialViewModel : ViewModelBase
     {
         private string _userName;
         private string _password;
         private bool _generatePassword = true;
         private bool _manualPassword;
         private bool _isResettingPassword;
-        private readonly ResetPasswordWindow _owner;
+        private readonly AddWindowsCredentialWindow _owner;
         private readonly Instance _instance;
         private readonly string _projectId;
 
@@ -131,7 +131,7 @@ namespace GoogleCloudExtension.ResetPassword
 
         public WindowsInstanceCredentials Result { get; private set; }
 
-        public ResetPasswordViewModel(ResetPasswordWindow owner, Instance instance, string projectId)
+        public AddWindowsCredentialViewModel(AddWindowsCredentialWindow owner, Instance instance, string projectId)
         {
             _owner = owner;
             _instance = instance;

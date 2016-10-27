@@ -174,10 +174,10 @@
     <Compile Include="LinkPrompt\LinkPromptDialogWindowViewModel.cs" />
     <Compile Include="Theming\CommonDialogWindowBase.cs" />
     <Compile Include="Theming\DialogButtonInfo.cs" />
-    <Compile Include="AddWindowsCredential\ResetPasswordViewModel.cs" />
-    <Compile Include="AddWindowsCredential\ResetPasswordWindow.cs" />
-    <Compile Include="AddWindowsCredential\ResetPasswordWindowContent.xaml.cs">
-      <DependentUpon>ResetPasswordWindowContent.xaml</DependentUpon>
+    <Compile Include="AddWindowsCredential\AddWindowsCredentialViewModel.cs" />
+    <Compile Include="AddWindowsCredential\AddWindowsCredentialWindow.cs" />
+    <Compile Include="AddWindowsCredential\AddwindowsCredentialWindowContent.xaml.cs">
+      <DependentUpon>AddwindowsCredentialWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="ShowPassword\ShowPasswordViewModel.cs" />
     <Compile Include="ShowPassword\ShowPasswordWindow.cs" />
@@ -510,7 +510,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="AddWindowsCredential\ResetPasswordWindowContent.xaml">
+    <Page Include="AddWindowsCredential\AddwindowsCredentialWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

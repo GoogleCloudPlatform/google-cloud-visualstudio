@@ -15,7 +15,7 @@
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.ResetPassword;
+using GoogleCloudExtension.AddWindowsCredential;
 using GoogleCloudExtension.ShowPassword;
 using GoogleCloudExtension.Utils;
 using System;
@@ -116,7 +116,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
 
         private void OnAddCredentialsCommand()
         {
-            var credentials = ResetPasswordWindow.PromptUser(_instance, CredentialsStore.Default.CurrentProjectId);
+            var credentials = AddWindowsCredentialWindow.PromptUser(_instance, CredentialsStore.Default.CurrentProjectId);
             if (credentials != null)
             {
                 WindowsCredentialsStore.Default.AddCredentialsToInstance(_instance, credentials);
