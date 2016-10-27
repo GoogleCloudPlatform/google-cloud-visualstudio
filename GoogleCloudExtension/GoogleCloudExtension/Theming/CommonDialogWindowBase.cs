@@ -22,8 +22,6 @@ namespace GoogleCloudExtension.Theming
     /// </summary>
     public class CommonDialogWindowBase : DialogWindow
     {
-        public ResizeMode NoResize { get; private set; }
-
         public CommonDialogWindowBase(string title, double width, double height)
         {
             Title = title;
@@ -45,7 +43,7 @@ namespace GoogleCloudExtension.Theming
             Title = title;
 
             // Common to all dyanmically sized dialogs.
-            ResizeMode = NoResize;
+            ResizeMode = System.Windows.ResizeMode.NoResize;
             SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
             ShowInTaskbar = false;
