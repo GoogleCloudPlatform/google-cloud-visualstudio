@@ -115,7 +115,7 @@
 
     <!-- Button templates. -->
     
-    <!-- Margin for the buttons inside of the buttonb ar. -->
+    <!-- Margin for the buttons inside of the button bar. -->
     <Thickness x:Key="DialogButtonMargin">6,0,0,0</Thickness>
 
     <!-- Template to display the button using the wide size in the button bar. -->
