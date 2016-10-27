@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Windows;
 using Microsoft.VisualStudio.PlatformUI;
 
 namespace GoogleCloudExtension.Theming
@@ -21,6 +22,8 @@ namespace GoogleCloudExtension.Theming
     /// </summary>
     public class CommonDialogWindowBase : DialogWindow
     {
+        public ResizeMode NoResize { get; private set; }
+
         public CommonDialogWindowBase(string title, double width, double height)
         {
             Title = title;
@@ -29,6 +32,21 @@ namespace GoogleCloudExtension.Theming
 
             // Common settings to all dialogs.
             ResizeMode = System.Windows.ResizeMode.NoResize;
+            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
+            ShowInTaskbar = false;
+        }
+
+        /// <summary>
+        /// Use this constructor when the dialog size must be calculated from the content.
+        /// </summary>
+        /// <param name="title"></param>
+        public CommonDialogWindowBase(string title)
+        {
+            Title = title;
+
+            // Common to all dyanmically sized dialogs.
+            ResizeMode = NoResize;
+            SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
             ShowInTaskbar = false;
         }
