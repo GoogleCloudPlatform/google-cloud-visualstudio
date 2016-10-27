@@ -110,7 +110,7 @@
 
     <!-- Style for the row of buttons. -->
     <Style x:Key="DialogButtonBar" TargetType="{x:Type Border}">
-        <Setter Property="Margin" Value="0,18,0,12" />
+        <Setter Property="Margin" Value="0,18,0,0" />
     </Style>
 
     <!-- Button templates. -->
