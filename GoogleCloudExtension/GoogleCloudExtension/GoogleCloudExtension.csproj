@@ -149,6 +149,11 @@
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProgressDialog\ProgressDialogWindow.cs" />
+    <Compile Include="ProgressDialog\ProgressDialogWindowContent.xaml.cs">
+      <DependentUpon>ProgressDialogWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProgressDialog\ProgressDialogWindowViewModel.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -507,6 +512,10 @@
     <Resource Include="Theming\CommonResources.xaml">
       <SubType>Designer</SubType>
     </Resource>
+    <Page Include="ProgressDialog\ProgressDialogWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
