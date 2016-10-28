@@ -7,7 +7,7 @@
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type local:ProgressDialogWindowViewModel}}"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="100">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -17,6 +17,11 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
+    <!-- Apply the style for the dialog. -->
+    <UserControl.Style>
+        <Binding Source="{StaticResource CommonDialogStyleSmall}" />
+    </UserControl.Style>
+
     <theming:CommonDialogWindowBaseContent>
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="Cancel"
@@ -24,7 +29,7 @@
                                       IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
 
-        <StackPanel MinWidth="300" MinHeight="100">
+        <StackPanel>
             <TextBlock Text="{Binding Message}" Style="{StaticResource CommonTextStyle}" Margin="0,0,0,5" />
             <ProgressBar IsIndeterminate="True"
                          HorizontalAlignment="Stretch"

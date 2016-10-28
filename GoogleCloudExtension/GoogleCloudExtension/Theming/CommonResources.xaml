@@ -18,6 +18,20 @@
     <Style x:Key="CommonTextStyle" BasedOn="{StaticResource CommonTextStyleBase}" TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground" Value="Black" />
     </Style>
+    
+    <!-- Common sizes for dialogs. -->
+    
+    <!-- Small dialog, typical for prompts. -->
+    <Style x:Key="CommonDialogStyleSmall" TargetType="{x:Type UserControl}">
+        <Setter Property="Width" Value="300px" />
+        <Setter Property="Height" Value="100px" />
+    </Style>
+    
+    <!-- Larget dialog, typical for wizards or main entry dialogs. -->
+    <Style x:Key="CommonDialogStyleLarge" TargetType="{x:Type UserControl}">
+        <Setter Property="Width" Value="500px" />
+        <Setter Property="Height" Value="350" />
+    </Style>
 
     <!-- Common ListView styles. -->
 
