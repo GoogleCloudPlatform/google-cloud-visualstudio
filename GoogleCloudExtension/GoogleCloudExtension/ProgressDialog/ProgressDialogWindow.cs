@@ -4,42 +4,54 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace GoogleCloudExtension.ProgressDialog
 {
     public class ProgressDialogWindow : CommonDialogWindowBase
     {
-        public ProgressDialogWindowViewModel ViewModel { get; }
-
-        private ProgressDialogWindow(string title, string message, Task task) : base(title)
+        public class Options
         {
-            ViewModel = new ProgressDialogWindowViewModel(this, message, task);
-            Content = new ProgressDialogWindowContent { DataContext = ViewModel };
+            public string Message { get; set; }
+
+            public string Title { get; set; }
+
+            public bool IsCancellable { get; set; } = true;
         }
 
-        public static void PromptUser(string title, string message, Task task)
+        public ProgressDialogWindowViewModel ViewModel { get; }
+
+        private ProgressDialogWindow(Task task, Options options) : base(options.Title)
         {
-            var dialog = new ProgressDialogWindow(title: title, message: message, task: task);
+            ViewModel = new ProgressDialogWindowViewModel(this, options, task);
+            Content = new ProgressDialogWindowContent { DataContext = ViewModel };
+
+            IsCloseButtonEnabled = options.IsCancellable;
+        }
+
+        public static async Task PromptUser(Task task, Options options)
+        {
+            var dialog = new ProgressDialogWindow(task, options);
             dialog.ShowModal();
             if (!dialog.ViewModel.WasCancelled)
             {
-                task.Wait(); // So the inner exception is thrown.
+                await task;
             }
         }
 
-        public static T PromptUser<T>(string title, string message, Task<T> task) where T : class
+        public static async Task<T> PromptUser<T>(Task<T> task, Options options) where T : class
         {
-            var dialog = new ProgressDialogWindow(title: title, message: message, task: task);
+            var dialog = new ProgressDialogWindow(task, options);
             dialog.ShowModal();
 
             // Check if the dialog closed because the task completed or because the user cancelled the operation.
             if (dialog.ViewModel.WasCancelled)
             {
-                return null;
+                return default(T);
             }
             else
             {
-                return task.Result; // So the inner exception is thrown.
+                return await task; // So the inner exception is thrown.
             }
         }
     }

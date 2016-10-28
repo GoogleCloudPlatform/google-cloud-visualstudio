@@ -16,15 +16,15 @@ namespace GoogleCloudExtension.ProgressDialog
 
         public ProtectedCommand CancelCommand { get; }
 
-        public bool WasCancelled { get; private set; }
+        public bool WasCancelled { get; set; }
 
-        public ProgressDialogWindowViewModel(ProgressDialogWindow owner, string message, Task task)
+        public ProgressDialogWindowViewModel(ProgressDialogWindow owner, ProgressDialogWindow.Options options, Task task)
         {
             _owner = owner;
             _task = task;
 
-            Message = message;
-            CancelCommand = new ProtectedCommand(OnCancelCommand);
+            Message = options.Message;
+            CancelCommand = new ProtectedCommand(OnCancelCommand, canExecuteCommand: options.IsCancellable);
 
             CloseOnTaskCompletion();
         }

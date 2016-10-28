@@ -119,7 +119,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             CredentialsList = WindowsCredentialsStore.Default.GetCredentialsForInstance(_instance);
         }
 
-        private void OnAddCredentialsCommand()
+        private async void OnAddCredentialsCommand()
         {
             var request = AddWindowsCredentialWindow.PromptUser(_instance);
             if (request == null)
@@ -131,10 +131,14 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             if (request.GeneratePassword)
             {
                 var resetCredentialsTask = CreateOrResetCredentials(request.User);
-                credentials = ProgressDialogWindow.PromptUser(
-                    "Reseting Password",
-                    $"Resetting password for {request.User}",
-                    resetCredentialsTask);
+                credentials = await ProgressDialogWindow.PromptUser(
+                    resetCredentialsTask,
+                    new ProgressDialogWindow.Options
+                    {
+                        Title = "Resetting Password",
+                        Message = $"Resetting password for {request.User}",
+                        IsCancellable = false
+                    });
             }
             else
             {
