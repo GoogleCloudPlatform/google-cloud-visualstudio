@@ -24,7 +24,7 @@
                                       IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
 
-        <StackPanel>
+        <StackPanel MinWidth="300" MinHeight="100">
             <TextBlock Text="{Binding Message}" Style="{StaticResource CommonTextStyle}" Margin="0,0,0,5" />
             <ProgressBar IsIndeterminate="True"
                          HorizontalAlignment="Stretch"
