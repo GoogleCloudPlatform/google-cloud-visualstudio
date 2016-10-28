@@ -125,7 +125,8 @@
                 Command="{Binding Command}"
                 IsDefault="{Binding IsDefault}"
                 Content="{Binding Caption}"
-                IsCancel="{Binding IsCancel}" />
+                IsCancel="{Binding IsCancel}"
+                ToolTip="{Binding ToolTip}"/>
     </DataTemplate>
 
     <!-- Template to display the button in the standard size in the button bar. -->
@@ -135,7 +136,8 @@
                 Command="{Binding Command}"
                 IsDefault="{Binding IsDefault}"
                 Content="{Binding Caption}"
-                IsCancel="{Binding IsCancel}" />
+                IsCancel="{Binding IsCancel}"
+                ToolTip="{Binding ToolTip}"/>
     </DataTemplate>
 
     <!-- Common visuals for the dialogs. -->

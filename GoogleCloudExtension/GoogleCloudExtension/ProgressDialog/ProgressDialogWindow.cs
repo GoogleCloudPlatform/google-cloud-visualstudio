@@ -16,6 +16,8 @@ namespace GoogleCloudExtension.ProgressDialog
 
             public string Title { get; set; }
 
+            public string CancelToolTip { get; set; }
+
             public bool IsCancellable { get; set; } = true;
         }
 

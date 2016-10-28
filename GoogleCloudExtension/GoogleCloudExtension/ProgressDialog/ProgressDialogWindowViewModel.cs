@@ -11,6 +11,7 @@ namespace GoogleCloudExtension.ProgressDialog
     {
         private readonly ProgressDialogWindow _owner;
         private readonly Task _task;
+        private readonly ProgressDialogWindow.Options _options;
 
         public string Message { get; }
 
@@ -18,13 +19,16 @@ namespace GoogleCloudExtension.ProgressDialog
 
         public bool WasCancelled { get; set; }
 
+        public string CancelToolTip => _options.CancelToolTip;
+
         public ProgressDialogWindowViewModel(ProgressDialogWindow owner, ProgressDialogWindow.Options options, Task task)
         {
             _owner = owner;
             _task = task;
+            _options = options;
 
-            Message = options.Message;
-            CancelCommand = new ProtectedCommand(OnCancelCommand, canExecuteCommand: options.IsCancellable);
+            Message = _options.Message;
+            CancelCommand = new ProtectedCommand(OnCancelCommand, canExecuteCommand: _options.IsCancellable);
 
             CloseOnTaskCompletion();
         }

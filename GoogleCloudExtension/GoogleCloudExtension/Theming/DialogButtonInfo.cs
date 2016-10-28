@@ -46,12 +46,6 @@ namespace GoogleCloudExtension.Theming
                 typeof(bool),
                 typeof(DialogButtonInfo));
 
-        public static readonly DependencyProperty IsBusyProperty =
-            DependencyProperty.Register(
-                nameof(IsBusy),
-                typeof(bool),
-                typeof(DialogButtonInfo));
-
         public static readonly DependencyProperty CommandProperty =
             DependencyProperty.Register(
                 nameof(Command),
@@ -85,15 +79,6 @@ namespace GoogleCloudExtension.Theming
         {
             get { return (bool)GetValue(IsCancelProperty); }
             set { SetValue(IsCancelProperty, value); }
-        }
-
-        /// <summary>
-        /// Whether the button is busy, which means it will show a progress indicator next to the caption.
-        /// </summary>
-        public bool IsBusy
-        {
-            get { return (bool)GetValue(IsBusyProperty); }
-            set { SetValue(IsBusyProperty, value); }
         }
 
         /// <summary>

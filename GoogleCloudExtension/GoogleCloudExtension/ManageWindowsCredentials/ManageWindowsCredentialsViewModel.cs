@@ -137,6 +137,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                     {
                         Title = "Resetting Password",
                         Message = $"Resetting password for {request.User}",
+                        CancelToolTip = "Can't cancel the operation.",
                         IsCancellable = false
                     });
             }
