@@ -261,5 +261,20 @@
             </MultiTrigger>
         </Style.Triggers>
     </Style>
+    
+    <!-- Common ProgressBar style -->
+    
+    <!-- Colors for the ProgressBar. -->
+    <SolidColorBrush x:Key="CommonProgressBar.Progress" Color="#FF3B78E7"/>
+    <SolidColorBrush x:Key="CommonProgressBar.Background" Color="#FFD9E5FA"/>
+    <SolidColorBrush x:Key="CommonProgressBar.Border" Color="Transparent"/>
+    
+    <!-- Template for the progress bar. -->
+    <Style x:Key="CommonProgressBarStyle" TargetType="{x:Type ProgressBar}">
+        <Setter Property="Height" Value="12px" />
+        <Setter Property="Foreground" Value="{StaticResource CommonProgressBar.Progress}"/>
+        <Setter Property="Background" Value="{StaticResource CommonProgressBar.Background}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource CommonProgressBar.Border}"/>
+    </Style>
 
 </ResourceDictionary>
