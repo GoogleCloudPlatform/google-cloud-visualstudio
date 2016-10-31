@@ -45,7 +45,7 @@ namespace GoogleCloudExtension.ProgressDialog
             public bool IsCancellable { get; set; }
         }
 
-        public ProgressDialogWindowViewModel ViewModel { get; }
+        private ProgressDialogWindowViewModel ViewModel { get; }
 
         private ProgressDialogWindow(Task task, Options options) : base(options.Title)
         {
