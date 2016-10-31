@@ -35,8 +35,9 @@
             <theming:DialogButtonInfo Caption="{Binding ActionButtonCaption}"
                                       Command="{Binding ActionCommand}"
                                       Visibility="{Binding HasActionButton, Converter={utils:VisibilityConverter}}"
-                                      IsDefault="True" />
+                                      IsDefault="{Binding HasActionButton}" />
             <theming:DialogButtonInfo Caption="{Binding CancelButtonCaption}"
+                                      IsDefault="{Binding DoesNotHaveActionButton}"
                                       IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
         

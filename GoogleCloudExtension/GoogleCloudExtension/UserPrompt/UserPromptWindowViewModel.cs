@@ -26,6 +26,8 @@ namespace GoogleCloudExtension.UserPrompt
 
         public bool HasActionButton => !String.IsNullOrEmpty(_options.ActionButtonCaption);
 
+        public bool DoesNotHaveActionButton => !HasActionButton;
+
         public string CancelButtonCaption => _options.CancelButtonCaption;
 
         public bool Result { get; private set; }
