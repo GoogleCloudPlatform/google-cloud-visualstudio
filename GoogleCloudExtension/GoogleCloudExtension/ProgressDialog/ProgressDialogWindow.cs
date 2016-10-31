@@ -17,17 +17,32 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.ProgressDialog
 {
+    /// <summary>
+    /// This class represents the ProgressDialog window, which shows a progress indicator
+    /// to the user while a <seealso cref="Task"/> is running.
+    /// </summary>
     public class ProgressDialogWindow : CommonDialogWindowBase
     {
+        /// <summary>
+        /// The options for the dialog.
+        /// </summary>
         public class Options
         {
+            /// <summary>
+            /// What message to display inside of the progress dialog.
+            /// </summary>
             public string Message { get; set; }
 
+            /// <summary>
+            /// The title for the progress dialog.
+            /// </summary>
             public string Title { get; set; }
 
-            public string CancelToolTip { get; set; }
-
-            public bool IsCancellable { get; set; } = true;
+            /// <summary>
+            /// Whether the operation can be cancelled. Settings this to true will disable the cancel
+            /// button and the close button in the dialog. By default the operations are not cancellable.
+            /// </summary>
+            public bool IsCancellable { get; set; }
         }
 
         public ProgressDialogWindowViewModel ViewModel { get; }
@@ -40,6 +55,13 @@ namespace GoogleCloudExtension.ProgressDialog
             IsCloseButtonEnabled = options.IsCancellable;
         }
 
+        /// <summary>
+        /// Prompts the user with the progress dialog and awaits the end of the <seealso cref="Task"/> to close
+        /// itself.
+        /// </summary>
+        /// <param name="task">The <seealso cref="Task"/> instance to show progress for.</param>
+        /// <param name="options">The options for the dialog.</param>
+        /// <returns>A task that can be awaited to get the result of the operation.</returns>
         public static async Task PromptUser(Task task, Options options)
         {
             var dialog = new ProgressDialogWindow(task, options);
@@ -50,7 +72,15 @@ namespace GoogleCloudExtension.ProgressDialog
             }
         }
 
-        public static async Task<T> PromptUser<T>(Task<T> task, Options options) where T : class
+        /// <summary>
+        /// Prompts the user with the progress dialog and awaits the end of the <seealso cref="Task{TResult}"/> to close
+        /// itself.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="task">The <seealso cref="Task{TResult}"/> instance to show progress for.</param>
+        /// <param name="options">The options for the dialog.</param>
+        /// <returns>A task that can be awaited to get the result of the operation.</returns>
+        public static async Task<T> PromptUser<T>(Task<T> task, Options options)
         {
             var dialog = new ProgressDialogWindow(task, options);
             dialog.ShowModal();

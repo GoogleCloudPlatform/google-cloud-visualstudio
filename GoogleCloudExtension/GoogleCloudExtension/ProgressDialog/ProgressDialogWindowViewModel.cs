@@ -14,22 +14,34 @@
 
 using GoogleCloudExtension.Utils;
 using System.Threading.Tasks;
+using System;
 
 namespace GoogleCloudExtension.ProgressDialog
 {
+    /// <summary>
+    /// This class is the view model for the ProgressDialog.
+    /// </summary>
     public class ProgressDialogWindowViewModel : ViewModelBase
     {
         private readonly ProgressDialogWindow _owner;
         private readonly Task _task;
         private readonly ProgressDialogWindow.Options _options;
+        private bool _closingOwner;
 
-        public string Message { get; }
+        /// <summary>
+        /// The message to show for the user.
+        /// </summary>
+        public string Message => _options.Message;
 
+        /// <summary>
+        /// The command to execute on cancel.
+        /// </summary>
         public ProtectedCommand CancelCommand { get; }
 
+        /// <summary>
+        /// Wether the operation was cancelled or not.
+        /// </summary>
         public bool WasCancelled { get; set; }
-
-        public string CancelToolTip => _options.CancelToolTip;
 
         public ProgressDialogWindowViewModel(ProgressDialogWindow owner, ProgressDialogWindow.Options options, Task task)
         {
@@ -37,12 +49,16 @@ namespace GoogleCloudExtension.ProgressDialog
             _task = task;
             _options = options;
 
-            Message = _options.Message;
             CancelCommand = new ProtectedCommand(OnCancelCommand, canExecuteCommand: _options.IsCancellable);
 
             CloseOnTaskCompletion();
+            owner.Closed += OnOwnerClosed;
         }
 
+        /// <summary>
+        /// This method will wait for the task to complete (whether succesfully or not) and when so it will
+        /// close the dialog.
+        /// </summary>
         private void CloseOnTaskCompletion()
         {
             _task.ContinueWith(t =>
@@ -57,13 +73,27 @@ namespace GoogleCloudExtension.ProgressDialog
             {
                 return;
             }
+            _closingOwner = true;
             _owner.Close();
         }
 
         private void OnCancelCommand()
         {
             WasCancelled = true;
+            _closingOwner = true;
             _owner.Close();
+        }
+
+        private void OnOwnerClosed(object sender, EventArgs e)
+        {
+            // If the view model is the one closing the dialog then nothing to do.
+            if (_closingOwner)
+            {
+                return;
+            }
+
+            // The user closed the dialog, this counts as a cancellation.
+            WasCancelled = true;
         }
     }
 }

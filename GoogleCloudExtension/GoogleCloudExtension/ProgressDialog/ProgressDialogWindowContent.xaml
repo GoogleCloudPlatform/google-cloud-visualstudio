@@ -26,7 +26,6 @@
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="Cancel"
                                       Command="{Binding CancelCommand}"
-                                      ToolTip="{Binding CancelToolTip}"
                                       IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
 
