@@ -1465,6 +1465,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Resetting password for {0}.
+        /// </summary>
+        public static string ResetPasswordProgressMessage {
+            get {
+                return ResourceManager.GetString("ResetPasswordProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resetting Password.
+        /// </summary>
+        public static string ResetPasswordProgressTitle {
+            get {
+                return ResourceManager.GetString("ResetPasswordProgressTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User name:.
         /// </summary>
         public static string ResetPasswordUserNameCaption {

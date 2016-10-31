@@ -135,9 +135,8 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                     resetCredentialsTask,
                     new ProgressDialogWindow.Options
                     {
-                        Title = "Resetting Password",
-                        Message = $"Resetting password for {request.User}",
-                        CancelToolTip = "Can't cancel the operation.",
+                        Title = Resources.ResetPasswordProgressTitle,
+                        Message = String.Format(Resources.ResetPasswordProgressMessage, request.User),
                         IsCancellable = false
                     });
             }
