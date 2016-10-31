@@ -1420,6 +1420,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You can&apos;t undo this later..
+        /// </summary>
+        public static string ResetPasswordConfirmationMessage {
+            get {
+                return ResourceManager.GetString("ResetPasswordConfirmationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to reset the password for {0}?.
         /// </summary>
         public static string ResetPasswordConfirmationPromptMessage {
@@ -1645,6 +1654,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string UiNoButtonCaption {
+            get {
+                return ResourceManager.GetString("UiNoButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Ok.
         /// </summary>
         public static string UiOkButtonCaption {
@@ -1672,6 +1690,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Reset.
+        /// </summary>
+        public static string UiResetButtonCaption {
+            get {
+                return ResourceManager.GetString("UiResetButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Save.
         /// </summary>
         public static string UiSaveButtonCaption {
@@ -1681,11 +1708,38 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        public static string UiStartButtonCaption {
+            get {
+                return ResourceManager.GetString("UiStartButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop.
+        /// </summary>
+        public static string UiStopButtonCaption {
+            get {
+                return ResourceManager.GetString("UiStopButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Undo.
         /// </summary>
         public static string UiUndoButtonCaption {
             get {
                 return ResourceManager.GetString("UiUndoButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string UiYesButtonCaption {
+            get {
+                return ResourceManager.GetString("UiYesButtonCaption", resourceCulture);
             }
         }
         

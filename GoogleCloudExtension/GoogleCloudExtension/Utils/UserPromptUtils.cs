@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.UserPrompt;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
@@ -32,19 +33,28 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Show a message dialog with a Yes and No button to the user.
         /// </summary>
-        /// <param name="message">The message for the dialog.</param>
+        /// <param name="prompt">The message for the dialog.</param>
         /// <param name="title">The title for the dialog.</param>
         /// <returns>Returns true if the user pressed the YES button.</returns>
-        public static bool YesNoPrompt(string message, string title)
+        public static bool ActionPrompt(
+            string prompt,
+            string title,
+            string message = null,
+            string actionCaption = null,
+            string cancelCaption = null)
         {
-            var result = VsShellUtilities.ShowMessageBox(
-                    GoogleCloudExtensionPackage.Instance,
-                    message,
-                    title,
-                    OLEMSGICON.OLEMSGICON_QUERY,
-                    OLEMSGBUTTON.OLEMSGBUTTON_YESNO,
-                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND);
-            return result == IDYES;
+            actionCaption = actionCaption ?? Resources.UiYesButtonCaption;
+            cancelCaption = cancelCaption ?? Resources.UiCancelButtonCaption;
+
+            return UserPromptWindow.PromptUser(
+                new UserPromptWindow.Options
+                {
+                    Title = title,
+                    Prompt = prompt,
+                    Message = message,
+                    ActionButtonCaption = actionCaption,
+                    CancelButtonCaption = cancelCaption
+                });
         }
 
         /// <summary>

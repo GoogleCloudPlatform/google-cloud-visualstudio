@@ -34,7 +34,7 @@
             <theming:DialogButtonInfo Caption="{Binding ActionButtonCaption}"
                                       Command="{Binding ActionCommand}"
                                       IsDefault="True" />
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
+            <theming:DialogButtonInfo Caption="{Binding CancelButtonCaption}"
                                       IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
         

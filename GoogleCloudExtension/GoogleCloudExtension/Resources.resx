@@ -853,4 +853,23 @@
     <value>Type password:</value>
     <comment>Content for the label used for the custom password.</comment>
   </data>
+  <data name="ResetPasswordConfirmationMessage" xml:space="preserve">
+    <value>You can't undo this later.</value>
+    <comment>Message shown for the reset password confirmation dialog.</comment>
+  </data>
+  <data name="UiNoButtonCaption" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="UiResetButtonCaption" xml:space="preserve">
+    <value>Reset</value>
+  </data>
+  <data name="UiStartButtonCaption" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="UiStopButtonCaption" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="UiYesButtonCaption" xml:space="preserve">
+    <value>Yes</value>
+  </data>
 </root>

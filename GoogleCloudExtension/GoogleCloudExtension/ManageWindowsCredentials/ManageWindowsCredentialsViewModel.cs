@@ -109,9 +109,10 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
 
         private void OnDeleteCredentialsCommand()
         {
-            if (!UserPromptUtils.YesNoPrompt(
+            if (!UserPromptUtils.ActionPrompt(
                     String.Format(Resources.ManageWindowsCredentialsDeleteCredentialsPromptMessage, SelectedCredentials.User),
-                    Resources.ManageWindowsCredentialsDeleteCredentialsPromptTitle))
+                    Resources.ManageWindowsCredentialsDeleteCredentialsPromptTitle,
+                    actionCaption: Resources.UiDeleteButtonCaption))
             {
                 return;
             }
@@ -162,14 +163,11 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             try
             {
                 Debug.WriteLine("The user requested the password to be generated.");
-                if (!UserPromptWindow.PromptUser(
-                        new UserPromptWindow.Options
-                        {
-                            Title = Resources.ResetPasswordConfirmationPromptTitle,
-                            Prompt = String.Format(Resources.ResetPasswordConfirmationPromptMessage, user, _instance.Name),
-                            Message = "You can't undo this later.",
-                            ActionButtonCaption = "Reset"
-                        }))
+                if (!UserPromptUtils.ActionPrompt(
+                        prompt: String.Format(Resources.ResetPasswordConfirmationPromptMessage, user, _instance.Name),
+                        title: Resources.ResetPasswordConfirmationPromptTitle,
+                        message: Resources.ResetPasswordConfirmationMessage,
+                        actionCaption: Resources.UiResetButtonCaption))
                 {
                     Debug.WriteLine("The user cancelled resetting the password.");
                     return null;

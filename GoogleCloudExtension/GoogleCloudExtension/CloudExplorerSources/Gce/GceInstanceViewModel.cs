@@ -307,9 +307,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             try
             {
-                if (!UserPromptUtils.YesNoPrompt(
+                if (!UserPromptUtils.ActionPrompt(
                     String.Format(Resources.CloudExplorerGceStopInstanceConfirmationPrompt, Instance.Name),
-                    String.Format(Resources.CloudExplorerGceStopInstanceConfirmationPromptCaption, Instance.Name)))
+                    String.Format(Resources.CloudExplorerGceStopInstanceConfirmationPromptCaption, Instance.Name),
+                    actionCaption: Resources.UiStopButtonCaption))
                 {
                     Debug.WriteLine($"The user cancelled stopping instance {Instance.Name}.");
                     return;
@@ -341,9 +342,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             try
             {
-                if (!UserPromptUtils.YesNoPrompt(
+                if (!UserPromptUtils.ActionPrompt(
                     String.Format(Resources.CloudExplorerGceStartInstanceConfirmationPrompt, Instance.Name),
-                    String.Format(Resources.CloudExplorerGceStartInstanceConfirmationPromptCaption, Instance.Name)))
+                    String.Format(Resources.CloudExplorerGceStartInstanceConfirmationPromptCaption, Instance.Name),
+                    actionCaption: Resources.UiStartButtonCaption))
                 {
                     Debug.WriteLine($"The user cancelled starting instance {Instance.Name}.");
                     return;

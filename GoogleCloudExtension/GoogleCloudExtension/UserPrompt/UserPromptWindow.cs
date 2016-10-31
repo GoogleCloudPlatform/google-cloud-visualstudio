@@ -21,6 +21,8 @@ namespace GoogleCloudExtension.UserPrompt
             public ImageSource Icon { get; set; }
 
             public string ActionButtonCaption { get; set; }
+
+            public string CancelButtonCaption { get; set; } = GoogleCloudExtension.Resources.UiCancelButtonCaption;
         }
 
         private UserPromptWindowViewModel ViewModel { get; }
