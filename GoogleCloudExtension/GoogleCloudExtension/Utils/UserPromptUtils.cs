@@ -64,13 +64,13 @@ namespace GoogleCloudExtension.Utils
         /// <param name="title">The title for the dialog.</param>
         public static void OkPrompt(string message, string title)
         {
-            VsShellUtilities.ShowMessageBox(
-                    GoogleCloudExtensionPackage.Instance,
-                    message,
-                    title,
-                    OLEMSGICON.OLEMSGICON_INFO,
-                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            UserPromptWindow.PromptUser(
+                new UserPromptWindow.Options
+                {
+                    Title = title,
+                    Prompt = message,
+                    CancelButtonCaption = Resources.UiOkButtonCaption
+                });
         }
 
         /// <summary>

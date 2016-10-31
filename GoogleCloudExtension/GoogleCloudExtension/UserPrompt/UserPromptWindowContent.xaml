@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.UserPrompt"
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type local:UserPromptWindowViewModel}}"
              d:DesignHeight="300" d:DesignWidth="300">
@@ -33,6 +34,7 @@
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{Binding ActionButtonCaption}"
                                       Command="{Binding ActionCommand}"
+                                      Visibility="{Binding HasActionButton, Converter={utils:VisibilityConverter}}"
                                       IsDefault="True" />
             <theming:DialogButtonInfo Caption="{Binding CancelButtonCaption}"
                                       IsCancel="True" />
