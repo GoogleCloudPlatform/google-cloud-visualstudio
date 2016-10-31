@@ -20,7 +20,7 @@ using System.Diagnostics;
 namespace GoogleCloudExtension.AddWindowsCredential
 {
     /// <summary>
-    /// Viewmodel for the reset password dialog.
+    /// Viewmodel for the AddWindowsCredential dialog.
     /// </summary>
     public class AddWindowsCredentialViewModel : ViewModelBase
     {

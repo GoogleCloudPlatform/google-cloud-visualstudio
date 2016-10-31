@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -1461,6 +1461,15 @@ namespace GoogleCloudExtension
         public static string ResetPasswordMissingGcloudTitle {
             get {
                 return ResourceManager.GetString("ResetPasswordMissingGcloudTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        public static string ResetPasswordPasswordGroupHeader {
+            get {
+                return ResourceManager.GetString("ResetPasswordPasswordGroupHeader", resourceCulture);
             }
         }
         

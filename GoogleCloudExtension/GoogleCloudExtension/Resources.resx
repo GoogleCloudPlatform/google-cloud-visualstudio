@@ -837,6 +837,10 @@
     <value>Operation failed</value>
     <comment>Title shown on the message dialog down when an unhandled exception happened.</comment>
   </data>
+  <data name="ResetPasswordPasswordGroupHeader" xml:space="preserve">
+    <value>Password</value>
+    <comment>The header shown in the UI for the password radio buttons.</comment>
+  </data>
   <data name="ResetPasswordProgressMessage" xml:space="preserve">
     <value>Resetting password for {0}</value>
     <comment>Message shown in the progress window while the password is being reset. {0} is the user name.</comment>

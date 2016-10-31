@@ -18,6 +18,9 @@ using System;
 
 namespace GoogleCloudExtension.AddWindowsCredential
 {
+    /// <summary>
+    /// This class represents the AddWindowsCredential window.
+    /// </summary>
     public class AddWindowsCredentialWindow : CommonDialogWindowBase
     {
         public AddWindowsCredentialViewModel ViewModel { get; }
@@ -32,6 +35,11 @@ namespace GoogleCloudExtension.AddWindowsCredential
             };
         }
 
+        /// <summary>
+        /// Prompt the user for the Windows credentials to use, returns the result of the operation.
+        /// </summary>
+        /// <param name="instance">What is the instance for which the credentials are added.</param>
+        /// <returns>An instance of <seealso cref="AddWindowsCredentialResult"/> if the user accepeted, null if canceled.</returns>
         public static AddWindowsCredentialResult PromptUser(Instance instance)
         {
             var dialog = new AddWindowsCredentialWindow(instance);
