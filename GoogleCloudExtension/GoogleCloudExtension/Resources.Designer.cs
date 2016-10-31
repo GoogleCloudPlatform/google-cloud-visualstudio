@@ -1420,7 +1420,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to reset the password for the user {0} in instance {1}? This operation cannot be cancelled..
+        ///   Looks up a localized string similar to Are you sure you want to reset the password for {0}?.
         /// </summary>
         public static string ResetPasswordConfirmationPromptMessage {
             get {

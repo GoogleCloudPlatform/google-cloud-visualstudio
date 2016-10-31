@@ -163,6 +163,11 @@
     <Compile Include="Theming\ButtonsList.cs" />
     <Compile Include="Theming\ButtonTemplateSelector.cs" />
     <Compile Include="Theming\CommonDialogWindowBaseContent.cs" />
+    <Compile Include="UserPrompt\UserPromptWindow.cs" />
+    <Compile Include="UserPrompt\UserPromptWindowContent.xaml.cs">
+      <DependentUpon>UserPromptWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserPrompt\UserPromptWindowViewModel.cs" />
     <Compile Include="Utils\ErrorHandlerUtils.cs" />
     <Compile Include="Utils\ProtectedAction.cs" />
     <Compile Include="Utils\ProtectedCommand.cs" />
@@ -513,6 +518,10 @@
       <SubType>Designer</SubType>
     </Resource>
     <Page Include="ProgressDialog\ProgressDialogWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserPrompt\UserPromptWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

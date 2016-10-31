@@ -20,6 +20,7 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.LinkPrompt;
 using GoogleCloudExtension.ProgressDialog;
 using GoogleCloudExtension.ShowPassword;
+using GoogleCloudExtension.UserPrompt;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -161,9 +162,14 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             try
             {
                 Debug.WriteLine("The user requested the password to be generated.");
-                if (!UserPromptUtils.YesNoPrompt(
-                        String.Format(Resources.ResetPasswordConfirmationPromptMessage, user, _instance.Name),
-                        Resources.ResetPasswordConfirmationPromptTitle))
+                if (!UserPromptWindow.PromptUser(
+                        new UserPromptWindow.Options
+                        {
+                            Title = Resources.ResetPasswordConfirmationPromptTitle,
+                            Prompt = String.Format(Resources.ResetPasswordConfirmationPromptMessage, user, _instance.Name),
+                            Message = "You can't undo this later.",
+                            ActionButtonCaption = "Reset"
+                        }))
                 {
                     Debug.WriteLine("The user cancelled resetting the password.");
                     return null;

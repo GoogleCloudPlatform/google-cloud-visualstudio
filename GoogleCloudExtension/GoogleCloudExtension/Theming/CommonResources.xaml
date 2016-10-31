@@ -21,6 +21,7 @@
     
     <!-- Common sizes for dialogs. -->
     
+    <!-- Static sizes. -->
     <!-- Small dialog, typical for prompts. -->
     <Style x:Key="CommonDialogStyleSmall" TargetType="{x:Type UserControl}">
         <Setter Property="Width" Value="300px" />
@@ -30,7 +31,20 @@
     <!-- Larget dialog, typical for wizards or main entry dialogs. -->
     <Style x:Key="CommonDialogStyleLarge" TargetType="{x:Type UserControl}">
         <Setter Property="Width" Value="500px" />
-        <Setter Property="Height" Value="350" />
+        <Setter Property="Height" Value="350px" />
+    </Style>
+    
+    <!-- Dynamic sizes. -->
+    <!-- Small dialog, fixed on the width but allows it to grow vertically. -->
+    <Style x:Key="CommonDialogStyleDynamicSmall" TargetType="{x:Type UserControl}">
+        <Setter Property="Width" Value="300px" />
+        <Setter Property="MinHeight" Value="100px" />
+    </Style>
+    
+    <!-- Large dialog, fixed on the width but allows it to grow vertically. -->
+    <Style x:Key="CommonDialogStyleDynamicLarge" TargetType="{x:Type UserControl}">
+        <Setter Property="Width" Value="500px" />
+        <Setter Property="MinHeight" Value="350px" />
     </Style>
 
     <!-- Common ListView styles. -->

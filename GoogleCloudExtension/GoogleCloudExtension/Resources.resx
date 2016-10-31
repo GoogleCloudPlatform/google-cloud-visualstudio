@@ -634,8 +634,8 @@
     <comment>Message for an error message in the authorized networks dialog for an ipv4 address.</comment>
   </data>
   <data name="ResetPasswordConfirmationPromptMessage" xml:space="preserve">
-    <value>Are you sure you want to reset the password for the user {0} in instance {1}? This operation cannot be cancelled.</value>
-    <comment>The message for the confirmation prompt for resetting or creating a password. {0) is the user name, {1} is the instance name.</comment>
+    <value>Are you sure you want to reset the password for {0}?</value>
+    <comment>The message for the confirmation prompt for resetting or creating a password. {0) is the user name.</comment>
   </data>
   <data name="ResetPasswordConfirmationPromptTitle" xml:space="preserve">
     <value>Reset Password</value>
