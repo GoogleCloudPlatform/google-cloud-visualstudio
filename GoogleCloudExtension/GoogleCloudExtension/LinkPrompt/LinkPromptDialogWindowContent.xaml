@@ -7,15 +7,26 @@
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance {x:Type local:LinkPromptDialogWindowViewModel}}"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DataContext="{d:DesignInstance {x:Type local:LinkPromptDialogWindowViewModel}}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.Style>
+        <Binding Source="{StaticResource CommonDialogStyleDynamicSmall}" />
+    </UserControl.Style>
 
     <theming:CommonDialogWindowBaseContent>
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}" IsDefault="True" IsCancel="True"/>
         </theming:CommonDialogWindowBaseContent.Buttons>
 
-        <TextBlock TextWrapping="Wrap">
+        <TextBlock TextWrapping="Wrap" Style="{StaticResource CommonTextStyle}">
             <TextBlock Text="{Binding Text}" TextWrapping="Wrap"/>
             <Hyperlink Command="{Binding NavigateCommand}">
                 <TextBlock Text="{Binding LinkCaption}" />

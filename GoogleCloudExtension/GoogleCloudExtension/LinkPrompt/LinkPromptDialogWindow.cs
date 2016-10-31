@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.LinkPrompt
 {
     public class LinkPromptDialogWindow : CommonDialogWindowBase
     {
-        private LinkPromptDialogWindow(string title, string text, LinkInfo link) : base(title, width: 320, height: 200)
+        private LinkPromptDialogWindow(string title, string text, LinkInfo link) : base(title)
         {
             var viewModel = new LinkPromptDialogWindowViewModel(text, link);
             Content = new LinkPromptDialogWindowContent
