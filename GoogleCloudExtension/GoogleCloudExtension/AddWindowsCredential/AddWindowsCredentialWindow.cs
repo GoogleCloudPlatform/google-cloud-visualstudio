@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
             };
         }
 
-        public static CredentialsRequest PromptUser(Instance instance)
+        public static AddWindowsCredentialResult PromptUser(Instance instance)
         {
             var dialog = new AddWindowsCredentialWindow(instance);
             dialog.ShowModal();

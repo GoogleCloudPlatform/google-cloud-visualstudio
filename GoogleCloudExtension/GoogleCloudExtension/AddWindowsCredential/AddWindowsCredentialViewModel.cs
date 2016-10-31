@@ -100,7 +100,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
         /// </summary>
         public ProtectedCommand OkCommand { get; }
 
-        public CredentialsRequest Result { get; private set; }
+        public AddWindowsCredentialResult Result { get; private set; }
 
         public AddWindowsCredentialViewModel(AddWindowsCredentialWindow owner, Instance instance)
         {
@@ -115,12 +115,12 @@ namespace GoogleCloudExtension.AddWindowsCredential
             if (ManualPassword)
             {
                 Debug.WriteLine("The user is supplying the password.");
-                Result = new CredentialsRequest(UserName, Password);
+                Result = new AddWindowsCredentialResult(UserName, Password);
             }
             else
             {
                 Debug.WriteLine("The user is requesting the password to be generated.");
-                Result = new CredentialsRequest(UserName);
+                Result = new AddWindowsCredentialResult(UserName);
             }
 
             _owner.Close();

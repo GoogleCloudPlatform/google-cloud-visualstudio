@@ -16,7 +16,7 @@ using System;
 
 namespace GoogleCloudExtension.AddWindowsCredential
 {
-    public class CredentialsRequest
+    public class AddWindowsCredentialResult
     {
         public string Password { get; private set; }
 
@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
         public bool GeneratePassword => String.IsNullOrEmpty(Password);
 
 
-        public CredentialsRequest(string user, string password = null)
+        public AddWindowsCredentialResult(string user, string password = null)
         {
             Password = password;
             User = user;
