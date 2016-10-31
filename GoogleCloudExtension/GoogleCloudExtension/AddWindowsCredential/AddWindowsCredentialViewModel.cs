@@ -28,7 +28,6 @@ namespace GoogleCloudExtension.AddWindowsCredential
         private string _password;
         private bool _generatePassword = true;
         private bool _manualPassword;
-        private bool _isResettingPassword;
         private readonly AddWindowsCredentialWindow _owner;
         private readonly Instance _instance;
 
