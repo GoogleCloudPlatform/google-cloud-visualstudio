@@ -14,17 +14,17 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.AddWindowsCredential;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.LinkPrompt;
+using GoogleCloudExtension.ProgressDialog;
 using GoogleCloudExtension.ShowPassword;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Diagnostics;
-using GoogleCloudExtension.LinkPrompt;
-using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.ProgressDialog;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.ManageWindowsCredentials
 {

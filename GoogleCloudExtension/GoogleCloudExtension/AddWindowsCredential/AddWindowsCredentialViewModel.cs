@@ -13,10 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Compute.v1.Data;
-using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.LinkPrompt;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
