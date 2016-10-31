@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
             {
                 SetValueAndRaise(ref _userName, value);
                 RaisePropertyChanged(nameof(HasUserName));
-                UpdateOkCommand();
+                UpdateSaveCommand();
             }
         }
 
@@ -55,7 +55,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
             {
                 SetValueAndRaise(ref _password, value);
                 RaisePropertyChanged(nameof(HasPassword));
-                UpdateOkCommand();
+                UpdateSaveCommand();
             }
         }
 
@@ -68,7 +68,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
             set
             {
                 SetValueAndRaise(ref _generatePassword, value);
-                UpdateOkCommand();
+                UpdateSaveCommand();
             }
         }
 
@@ -81,7 +81,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
             set
             {
                 SetValueAndRaise(ref _manualPassword, value);
-                UpdateOkCommand();
+                UpdateSaveCommand();
             }
         }
 
@@ -98,7 +98,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
         /// <summary>
         /// The command to execute to accept the changes.
         /// </summary>
-        public ProtectedCommand OkCommand { get; }
+        public ProtectedCommand SaveCommand { get; }
 
         public AddWindowsCredentialResult Result { get; private set; }
 
@@ -107,10 +107,10 @@ namespace GoogleCloudExtension.AddWindowsCredential
             _owner = owner;
             _instance = instance;
 
-            OkCommand = new ProtectedCommand(OnOkCommand, canExecuteCommand: false);
+            SaveCommand = new ProtectedCommand(OnSaveCommand, canExecuteCommand: false);
         }
 
-        private void OnOkCommand()
+        private void OnSaveCommand()
         {
             if (ManualPassword)
             {
@@ -127,11 +127,11 @@ namespace GoogleCloudExtension.AddWindowsCredential
             return;
         }
 
-        private void UpdateOkCommand()
+        private void UpdateSaveCommand()
         {
             // The Ok command should be enabled if the user name was specified and if (optionally)
             // the password is specified.
-            OkCommand.CanExecuteCommand = HasUserName && (!ManualPassword || HasPassword);
+            SaveCommand.CanExecuteCommand = HasUserName && (!ManualPassword || HasPassword);
         }
     }
 }

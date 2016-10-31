@@ -61,6 +61,51 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Generate the password for this user name.
+        /// </summary>
+        public static string AddWindowsCredentialGeneratePasswordMessage {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialGeneratePasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I have a password for this user name.
+        /// </summary>
+        public static string AddWindowsCredentialHavePasswordMessage {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialHavePasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        public static string AddWindowsCredentialPasswordGroupHeader {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialPasswordGroupHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type password:.
+        /// </summary>
+        public static string AddWindowsCredentialPasswordLabel {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialPasswordLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User name:.
+        /// </summary>
+        public static string AddWindowsCredentialUserNameCaption {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialUserNameCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to help Google by reporting usage statics?.
         /// </summary>
         public static string AnalyticsPromptMessage {
@@ -1438,38 +1483,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generate the password for this user name.
-        /// </summary>
-        public static string ResetPasswordGeneratePasswordMessage {
-            get {
-                return ResourceManager.GetString("ResetPasswordGeneratePasswordMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to I have a password for this user name.
-        /// </summary>
-        public static string ResetPasswordHavePasswordMessage {
-            get {
-                return ResourceManager.GetString("ResetPasswordHavePasswordMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Missing Google Cloud SDK.
         /// </summary>
         public static string ResetPasswordMissingGcloudTitle {
             get {
                 return ResourceManager.GetString("ResetPasswordMissingGcloudTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Password.
-        /// </summary>
-        public static string ResetPasswordPasswordGroupHeader {
-            get {
-                return ResourceManager.GetString("ResetPasswordPasswordGroupHeader", resourceCulture);
             }
         }
         
@@ -1488,15 +1506,6 @@ namespace GoogleCloudExtension {
         public static string ResetPasswordProgressTitle {
             get {
                 return ResourceManager.GetString("ResetPasswordProgressTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to User name:.
-        /// </summary>
-        public static string ResetPasswordUserNameCaption {
-            get {
-                return ResourceManager.GetString("ResetPasswordUserNameCaption", resourceCulture);
             }
         }
         
