@@ -68,6 +68,8 @@ namespace GoogleCloudExtension.ProgressDialog
             dialog.ShowModal();
             if (!dialog.ViewModel.WasCancelled)
             {
+                // Await the task to get the value it holds or to force it to throw
+                // the exception it holds if it failed.
                 await task;
             }
         }
@@ -92,7 +94,9 @@ namespace GoogleCloudExtension.ProgressDialog
             }
             else
             {
-                return await task; // So the inner exception is thrown.
+                // Await the task to get the value it holds or to force it to throw
+                // the exception it holds if it failed.
+                return await task;
             }
         }
     }
