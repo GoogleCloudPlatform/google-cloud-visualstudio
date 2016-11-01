@@ -13,8 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.UserPrompt;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using System;
 
 namespace GoogleCloudExtension.Utils
@@ -24,12 +22,6 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     internal static class UserPromptUtils
     {
-        /// <summary>
-        /// These values come from a comment on https://msdn.microsoft.com/en-us/library/microsoft.visualstudio.shell.vsshellutilities.showmessagebox(v=vs.100).aspx.
-        /// </summary>
-        private const int IDYES = 6;
-        private const int IDNO = 7;
-
         /// <summary>
         /// Show a message dialog with a Yes and No button to the user.
         /// </summary>
@@ -80,13 +72,14 @@ namespace GoogleCloudExtension.Utils
         /// <param name="title">The title for the dialog.</param>
         public static void ErrorPrompt(string message, string title)
         {
-            VsShellUtilities.ShowMessageBox(
-                    GoogleCloudExtensionPackage.Instance,
-                    message,
-                    title,
-                    OLEMSGICON.OLEMSGICON_CRITICAL,
-                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            // TODO: Show the error icon.
+            UserPromptWindow.PromptUser(
+                new UserPromptWindow.Options
+                {
+                    Title = title,
+                    Prompt = message,
+                    CancelButtonCaption = Resources.UiOkButtonCaption
+                });
         }
 
         /// <summary>

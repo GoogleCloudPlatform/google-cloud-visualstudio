@@ -17,20 +17,46 @@ using System.Windows.Media;
 
 namespace GoogleCloudExtension.UserPrompt
 {
+    /// <summary>
+    /// This class represents a user prompt dialog, which replaces the VS built-in dialog with a 
+    /// styled one.
+    /// </summary>
     public class UserPromptWindow : CommonDialogWindowBase
     {
+        /// <summary>
+        /// This class contains the options for the dialog being shown.
+        /// </summary>
         public class Options
         {
+            /// <summary>
+            /// The title for the dialog.
+            /// </summary>
             public string Title { get; set; }
 
+            /// <summary>
+            /// The main prompt for the dialog.
+            /// </summary>
             public string Prompt { get; set; }
 
+            /// <summary>
+            /// The message shown under the prompt in the dialog.
+            /// </summary>
             public string Message { get; set; }
 
+            /// <summary>
+            /// The icon to use in the dialog. Should be 24x24 px.
+            /// </summary>
             public ImageSource Icon { get; set; }
 
+            /// <summary>
+            /// The caption to use for the action button. If no caption is given then the
+            /// action button is hidden.
+            /// </summary>
             public string ActionButtonCaption { get; set; }
 
+            /// <summary>
+            /// The caption for the cancel button, but default it is "Cancel".
+            /// </summary>
             public string CancelButtonCaption { get; set; } = GoogleCloudExtension.Resources.UiCancelButtonCaption;
         }
 
@@ -42,6 +68,11 @@ namespace GoogleCloudExtension.UserPrompt
             Content = new UserPromptWindowContent { DataContext = ViewModel };
         }
 
+        /// <summary>
+        /// Show the prompt to the user with the given options.
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns>Returns true if the user pressed the action button, false otherwise.</returns>
         public static bool PromptUser(Options options)
         {
             var dialog = new UserPromptWindow(options);
