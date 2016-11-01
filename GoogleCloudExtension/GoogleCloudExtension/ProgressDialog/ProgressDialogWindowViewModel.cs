@@ -56,7 +56,7 @@ namespace GoogleCloudExtension.ProgressDialog
         }
 
         /// <summary>
-        /// This method will wait for the task to complete (whether succesfully or not) and when so it will
+        /// This method will wait for the task to complete (whether succesfully or not) and then it will
         /// close the dialog.
         /// </summary>
         private void CloseOnTaskCompletion()
