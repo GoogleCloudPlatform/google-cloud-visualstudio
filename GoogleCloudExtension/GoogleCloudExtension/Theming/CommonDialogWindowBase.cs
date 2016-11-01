@@ -32,5 +32,20 @@ namespace GoogleCloudExtension.Theming
             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
             ShowInTaskbar = false;
         }
+
+        /// <summary>
+        /// Use this constructor when the dialog size must be calculated from the content.
+        /// </summary>
+        /// <param name="title"></param>
+        public CommonDialogWindowBase(string title)
+        {
+            Title = title;
+
+            // Common to all dyanmically sized dialogs.
+            ResizeMode = System.Windows.ResizeMode.NoResize;
+            SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
+            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
+            ShowInTaskbar = false;
+        }
     }
 }

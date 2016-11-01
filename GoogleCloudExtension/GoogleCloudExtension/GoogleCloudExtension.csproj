@@ -56,6 +56,7 @@
     <Compile Include="Accounts\CredentialsStore.cs" />
     <Compile Include="Accounts\CredentialsStoreException.cs" />
     <Compile Include="Accounts\DefaultCredentials.cs" />
+    <Compile Include="AddWindowsCredential\AddWindowsCredentialResult.cs" />
     <Compile Include="Analytics\AnalyticsEvent.cs" />
     <Compile Include="Analytics\CommandStatus.cs" />
     <Compile Include="Analytics\CommandStatusUtils.cs" />
@@ -148,6 +149,11 @@
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ProgressDialog\ProgressDialogWindow.cs" />
+    <Compile Include="ProgressDialog\ProgressDialogWindowContent.xaml.cs">
+      <DependentUpon>ProgressDialogWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProgressDialog\ProgressDialogWindowViewModel.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -174,10 +180,10 @@
     <Compile Include="LinkPrompt\LinkPromptDialogWindowViewModel.cs" />
     <Compile Include="Theming\CommonDialogWindowBase.cs" />
     <Compile Include="Theming\DialogButtonInfo.cs" />
-    <Compile Include="ResetPassword\ResetPasswordViewModel.cs" />
-    <Compile Include="ResetPassword\ResetPasswordWindow.cs" />
-    <Compile Include="ResetPassword\ResetPasswordWindowContent.xaml.cs">
-      <DependentUpon>ResetPasswordWindowContent.xaml</DependentUpon>
+    <Compile Include="AddWindowsCredential\AddWindowsCredentialViewModel.cs" />
+    <Compile Include="AddWindowsCredential\AddWindowsCredentialWindow.cs" />
+    <Compile Include="AddWindowsCredential\AddwindowsCredentialWindowContent.xaml.cs">
+      <DependentUpon>AddwindowsCredentialWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="ShowPassword\ShowPasswordViewModel.cs" />
     <Compile Include="ShowPassword\ShowPasswordWindow.cs" />
@@ -506,11 +512,15 @@
     <Resource Include="Theming\CommonResources.xaml">
       <SubType>Designer</SubType>
     </Resource>
+    <Page Include="ProgressDialog\ProgressDialogWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ResetPassword\ResetPasswordWindowContent.xaml">
+    <Page Include="AddWindowsCredential\AddwindowsCredentialWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

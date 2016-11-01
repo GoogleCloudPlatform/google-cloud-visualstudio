@@ -14,12 +14,17 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.AddWindowsCredential;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.ResetPassword;
+using GoogleCloudExtension.LinkPrompt;
+using GoogleCloudExtension.ProgressDialog;
 using GoogleCloudExtension.ShowPassword;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.ManageWindowsCredentials
 {
@@ -114,14 +119,108 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             CredentialsList = WindowsCredentialsStore.Default.GetCredentialsForInstance(_instance);
         }
 
-        private void OnAddCredentialsCommand()
+        private async void OnAddCredentialsCommand()
         {
-            var credentials = ResetPasswordWindow.PromptUser(_instance, CredentialsStore.Default.CurrentProjectId);
+            var request = AddWindowsCredentialWindow.PromptUser(_instance);
+            if (request == null)
+            {
+                return;
+            }
+
+            WindowsInstanceCredentials credentials;
+            if (request.GeneratePassword)
+            {
+                var resetCredentialsTask = CreateOrResetCredentials(request.User);
+                credentials = await ProgressDialogWindow.PromptUser(
+                    resetCredentialsTask,
+                    new ProgressDialogWindow.Options
+                    {
+                        Title = Resources.ResetPasswordProgressTitle,
+                        Message = String.Format(Resources.ResetPasswordProgressMessage, request.User),
+                        IsCancellable = false
+                    });
+            }
+            else
+            {
+                credentials = new WindowsInstanceCredentials
+                {
+                    User = request.User,
+                    Password = request.Password
+                };
+            }
+
             if (credentials != null)
             {
                 WindowsCredentialsStore.Default.AddCredentialsToInstance(_instance, credentials);
                 CredentialsList = WindowsCredentialsStore.Default.GetCredentialsForInstance(_instance);
             }
+        }
+
+        private async Task<WindowsInstanceCredentials> CreateOrResetCredentials(string user)
+        {
+            try
+            {
+                Debug.WriteLine("The user requested the password to be generated.");
+                if (!UserPromptUtils.YesNoPrompt(
+                        String.Format(Resources.ResetPasswordConfirmationPromptMessage, user, _instance.Name),
+                        Resources.ResetPasswordConfirmationPromptTitle))
+                {
+                    Debug.WriteLine("The user cancelled resetting the password.");
+                    return null;
+                }
+
+                Debug.WriteLine($"Resetting the password for the user {user}");
+
+                // Check that gcloud is in the right state to invoke the reset credentials method.
+                if (!await VerifyGCloudDependencies())
+                {
+                    Debug.WriteLine("Missing gcloud dependencies for resetting password.");
+                    return null;
+                }
+
+                var context = new Context
+                {
+                    CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
+                    ProjectId = CredentialsStore.Default.CurrentProjectId,
+                    AppName = GoogleCloudExtensionPackage.ApplicationName,
+                    AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
+                };
+                return await GCloudWrapper.ResetWindowsCredentialsAsync(
+                    instanceName: _instance.Name,
+                    zoneName: _instance.GetZoneName(),
+                    userName: user,
+                    context: context);
+            }
+            catch (GCloudException ex)
+            {
+                UserPromptUtils.ErrorPrompt(
+                    String.Format(Resources.ResetPasswordFailedPromptMessage, _instance.Name, ex.Message),
+                    Resources.ResetPasswordConfirmationPromptTitle);
+                return null;
+            }
+        }
+
+        private static async Task<bool> VerifyGCloudDependencies()
+        {
+            if (!await GCloudWrapper.CanUseResetWindowsCredentialsAsync())
+            {
+                if (!GCloudWrapper.IsGCloudCliInstalled())
+                {
+                    LinkPromptDialogWindow.PromptUser(
+                        Resources.ResetPasswordMissingGcloudTitle,
+                        Resources.ResetPasswordGcloudMissingMessage,
+                        new LinkInfo(link: "https://cloud.google.com/sdk/", caption: Resources.ResetPasswordGcloudLinkCaption));
+                }
+                else
+                {
+                    UserPromptUtils.ErrorPrompt(
+                        message: Resources.ResetPasswordGcloudMissingBetaMessage,
+                        title: Resources.ResetPasswordGcloudMissingComponentTitle);
+                }
+                return false;
+            }
+
+            return true;
         }
 
         private void UpdateCommands()

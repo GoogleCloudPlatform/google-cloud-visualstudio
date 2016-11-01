@@ -110,7 +110,7 @@
 
     <!-- Style for the row of buttons. -->
     <Style x:Key="DialogButtonBar" TargetType="{x:Type Border}">
-        <Setter Property="Margin" Value="0,18,0,12" />
+        <Setter Property="Margin" Value="0,18,0,0" />
     </Style>
 
     <!-- Button templates. -->
@@ -125,7 +125,8 @@
                 Command="{Binding Command}"
                 IsDefault="{Binding IsDefault}"
                 Content="{Binding Caption}"
-                IsCancel="{Binding IsCancel}" />
+                IsCancel="{Binding IsCancel}"
+                ToolTip="{Binding ToolTip}"/>
     </DataTemplate>
 
     <!-- Template to display the button in the standard size in the button bar. -->
@@ -135,7 +136,8 @@
                 Command="{Binding Command}"
                 IsDefault="{Binding IsDefault}"
                 Content="{Binding Caption}"
-                IsCancel="{Binding IsCancel}" />
+                IsCancel="{Binding IsCancel}"
+                ToolTip="{Binding ToolTip}"/>
     </DataTemplate>
 
     <!-- Common visuals for the dialogs. -->

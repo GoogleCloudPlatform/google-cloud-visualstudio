@@ -61,6 +61,51 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Generate the password for this user name.
+        /// </summary>
+        public static string AddWindowsCredentialGeneratePasswordMessage {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialGeneratePasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I have a password for this user name.
+        /// </summary>
+        public static string AddWindowsCredentialHavePasswordMessage {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialHavePasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        public static string AddWindowsCredentialPasswordGroupHeader {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialPasswordGroupHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type password:.
+        /// </summary>
+        public static string AddWindowsCredentialPasswordLabel {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialPasswordLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to User name:.
+        /// </summary>
+        public static string AddWindowsCredentialUserNameCaption {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialUserNameCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to help Google by reporting usage statics?.
         /// </summary>
         public static string AnalyticsPromptMessage {
@@ -1438,24 +1483,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generate the password for this user name.
-        /// </summary>
-        public static string ResetPasswordGeneratePasswordMessage {
-            get {
-                return ResourceManager.GetString("ResetPasswordGeneratePasswordMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to I have a password for this user name.
-        /// </summary>
-        public static string ResetPasswordHavePasswordMessage {
-            get {
-                return ResourceManager.GetString("ResetPasswordHavePasswordMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Missing Google Cloud SDK.
         /// </summary>
         public static string ResetPasswordMissingGcloudTitle {
@@ -1465,11 +1492,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User name:.
+        ///   Looks up a localized string similar to Resetting password for {0}.
         /// </summary>
-        public static string ResetPasswordUserNameCaption {
+        public static string ResetPasswordProgressMessage {
             get {
-                return ResourceManager.GetString("ResetPasswordUserNameCaption", resourceCulture);
+                return ResourceManager.GetString("ResetPasswordProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Resetting Password.
+        /// </summary>
+        public static string ResetPasswordProgressTitle {
+            get {
+                return ResourceManager.GetString("ResetPasswordProgressTitle", resourceCulture);
             }
         }
         

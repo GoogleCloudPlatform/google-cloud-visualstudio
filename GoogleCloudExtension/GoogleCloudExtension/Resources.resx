@@ -665,7 +665,7 @@
     <value>Missing Google Cloud SDK</value>
     <comment>Title for the prompts shown when gcloud is not installed.</comment>
   </data>
-  <data name="ResetPasswordUserNameCaption" xml:space="preserve">
+  <data name="AddWindowsCredentialUserNameCaption" xml:space="preserve">
     <value>User name:</value>
     <comment>Caption for the user name textbox.</comment>
   </data>
@@ -813,11 +813,11 @@
     <value>Choose credentials</value>
     <comment>The title for the choose credentials used during the save publish settings flow.</comment>
   </data>
-  <data name="ResetPasswordGeneratePasswordMessage" xml:space="preserve">
+  <data name="AddWindowsCredentialGeneratePasswordMessage" xml:space="preserve">
     <value>Generate the password for this user name</value>
     <comment>Message shown in the radio button of the Reset password dialog to signify that the password will be generated instead of provided by the user.</comment>
   </data>
-  <data name="ResetPasswordHavePasswordMessage" xml:space="preserve">
+  <data name="AddWindowsCredentialHavePasswordMessage" xml:space="preserve">
     <value>I have a password for this user name</value>
     <comment>Message shown in the radio button of the Reset Password dialog to signify that the user will provide the password.</comment>
   </data>
@@ -836,5 +836,21 @@
   <data name="ExceptionPromptTitle" xml:space="preserve">
     <value>Operation failed</value>
     <comment>Title shown on the message dialog down when an unhandled exception happened.</comment>
+  </data>
+  <data name="AddWindowsCredentialPasswordGroupHeader" xml:space="preserve">
+    <value>Password</value>
+    <comment>The header shown in the UI for the password radio buttons.</comment>
+  </data>
+  <data name="ResetPasswordProgressMessage" xml:space="preserve">
+    <value>Resetting password for {0}</value>
+    <comment>Message shown in the progress window while the password is being reset. {0} is the user name.</comment>
+  </data>
+  <data name="ResetPasswordProgressTitle" xml:space="preserve">
+    <value>Resetting Password</value>
+    <comment>Title for the progress window shown while the password is being reset.</comment>
+  </data>
+  <data name="AddWindowsCredentialPasswordLabel" xml:space="preserve">
+    <value>Type password:</value>
+    <comment>Content for the label used for the custom password.</comment>
   </data>
 </root>
