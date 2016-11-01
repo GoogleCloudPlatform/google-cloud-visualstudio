@@ -20,7 +20,6 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.LinkPrompt;
 using GoogleCloudExtension.ProgressDialog;
 using GoogleCloudExtension.ShowPassword;
-using GoogleCloudExtension.UserPrompt;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
