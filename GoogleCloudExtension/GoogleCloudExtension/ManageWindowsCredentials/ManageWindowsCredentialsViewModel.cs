@@ -101,9 +101,13 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
         private void OnShowCredentialsCommand()
         {
             ShowPasswordWindow.PromptUser(
-                userName: SelectedCredentials.User,
-                password: SelectedCredentials.Password,
-                instanceName: _instance.Name);
+                new ShowPasswordWindow.Options
+                {
+                    Title = String.Format(Resources.ShowPasswordWindowTitle, _instance.Name),
+                    UserName = SelectedCredentials.User,
+                    Password = SelectedCredentials.Password,
+                    Message = String.Format(Resources.ShowPasswordMessage, SelectedCredentials.User, _instance.Name)
+                });
         }
 
         private void OnDeleteCredentialsCommand()

@@ -26,35 +26,28 @@ namespace GoogleCloudExtension.ShowPassword
     /// </summary>
     public class ShowPasswordViewModel : ViewModelBase
     {
-        private readonly ShowPasswordWindow _owner;
+        private readonly ShowPasswordWindow.Options _options;
 
         /// <summary>
         /// The user name for the credentials.
         /// </summary>
-        public string UserName { get; }
+        public string UserName => _options.UserName;
 
         /// <summary>
         /// The password to show.
         /// </summary>
-        public string Password { get; }
+        public string Password => _options.Password;
 
-        /// <summary>
-        /// The name of the instance for which the credentials are valid.
-        /// </summary>
-        public string InstanceName { get; }
+        public string Message => _options.Message;
 
         /// <summary>
         /// The command to execute to copy the password to the clipboard.
         /// </summary>
         public ICommand CopyCommand { get; }
 
-        public ShowPasswordViewModel(ShowPasswordWindow owner, string userName, string password, string instanceName)
+        public ShowPasswordViewModel(ShowPasswordWindow.Options options)
         {
-            _owner = owner;
-
-            UserName = userName;
-            Password = password;
-            InstanceName = instanceName;
+            _options = options;
 
             CopyCommand = new ProtectedCommand(OnCopyCommand);
         }
