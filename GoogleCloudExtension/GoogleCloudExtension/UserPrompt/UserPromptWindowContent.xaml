@@ -42,14 +42,14 @@
         </theming:CommonDialogWindowBaseContent.Buttons>
         
         
-        <Grid Margin="12,12,0,0">
+        <Grid Margin="0,12,0,0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
             <!-- Display the icon for the dialog. -->
-            <StackPanel Margin="0,0,24,0">
+            <StackPanel Margin="12,0,24,0" Visibility="{Binding HasIcon, Converter={utils:VisibilityConverter}}">
                 <Image Source="{Binding Icon}" Width="24px" Height="24px"/>
             </StackPanel>
 

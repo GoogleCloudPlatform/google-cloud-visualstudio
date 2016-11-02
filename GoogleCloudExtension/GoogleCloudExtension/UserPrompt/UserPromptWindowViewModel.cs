@@ -43,6 +43,11 @@ namespace GoogleCloudExtension.UserPrompt
         public ImageSource Icon => _options.Icon;
 
         /// <summary>
+        /// Whether there's an icon to show or no.
+        /// </summary>
+        public bool HasIcon => Icon != null;
+
+        /// <summary>
         /// The command to execute in the action button.
         /// </summary>
         public ICommand ActionCommand { get; }
