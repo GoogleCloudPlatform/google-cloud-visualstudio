@@ -25,7 +25,6 @@ namespace GoogleCloudExtension.ShowPassword
         {
             InitializeComponent();
             DataContext = viewModel;
-            _passwordBox.Password = viewModel.Password;
         }
     }
 }

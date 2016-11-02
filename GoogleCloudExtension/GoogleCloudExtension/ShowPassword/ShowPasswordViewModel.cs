@@ -26,14 +26,7 @@ namespace GoogleCloudExtension.ShowPassword
     /// </summary>
     public class ShowPasswordViewModel : ViewModelBase
     {
-        private const string ShowPasswordIconPath = "ShowPassword/Resources/visibility.png";
-        private const string HidePasswordIconPath = "ShowPassword/Resources/visibility_off.png";
-
-        private static readonly Lazy<ImageSource> s_showPasswordIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(ShowPasswordIconPath));
-        private static readonly Lazy<ImageSource> s_hidePasswordIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(HidePasswordIconPath));
-
         private readonly ShowPasswordWindow _owner;
-        private bool _revealPassword;
 
         /// <summary>
         /// The user name for the credentials.
@@ -46,34 +39,9 @@ namespace GoogleCloudExtension.ShowPassword
         public string Password { get; }
 
         /// <summary>
-        /// Wether to show or not the password to the user.
-        /// </summary>
-        public bool RevealPassword
-        {
-            get { return _revealPassword; }
-            set
-            {
-                SetValueAndRaise(ref _revealPassword, value);
-                RaisePropertyChanged(nameof(HidePassword));
-                RaisePropertyChanged(nameof(ShowPasswordIcon));
-            }
-        }
-
-        public bool HidePassword => !RevealPassword;
-
-        public ImageSource ShowPasswordIcon => RevealPassword ? s_hidePasswordIcon.Value : s_showPasswordIcon.Value;
-
-        /// <summary>
         /// The name of the instance for which the credentials are valid.
         /// </summary>
         public string InstanceName { get; }
-
-        /// <summary>
-        /// The command to execute to accept and close the window.
-        /// </summary>
-        public ICommand OkCommand { get; }
-
-        public ICommand TogglePasswordCommand { get; }
 
         /// <summary>
         /// The command to execute to copy the password to the clipboard.
@@ -88,8 +56,6 @@ namespace GoogleCloudExtension.ShowPassword
             Password = password;
             InstanceName = instanceName;
 
-            OkCommand = new ProtectedCommand(OnOkCommand);
-            TogglePasswordCommand = new ProtectedCommand(OnTogglePasswordCommand);
             CopyCommand = new ProtectedCommand(OnCopyCommand);
         }
 
@@ -104,16 +70,6 @@ namespace GoogleCloudExtension.ShowPassword
                 Debug.WriteLine("Failed to copy the string to the clipboard.");
                 UserPromptUtils.ErrorPrompt(Resources.ShowPasswordCopyFailedMessage, Resources.ShowPasswordCopyFailedTitle);
             }
-        }
-
-        private void OnTogglePasswordCommand()
-        {
-            RevealPassword = !RevealPassword;
-        }
-
-        private void OnOkCommand()
-        {
-            _owner.Close();
         }
     }
 }

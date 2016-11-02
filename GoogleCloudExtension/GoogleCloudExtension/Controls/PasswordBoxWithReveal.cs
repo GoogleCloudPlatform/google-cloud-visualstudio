@@ -57,6 +57,10 @@ namespace GoogleCloudExtension.Controls
             if (_passwordBox != null)
             {
                 _passwordBox.IsEnabled = false;
+
+                // Since the PasswordBox.Password property is not a DP we cannot use TemplateBinding
+                // or any other form of binding to set the value, we must do it manually.
+                _passwordBox.Password = Password;
             }
 
             if (_reveal != null)
