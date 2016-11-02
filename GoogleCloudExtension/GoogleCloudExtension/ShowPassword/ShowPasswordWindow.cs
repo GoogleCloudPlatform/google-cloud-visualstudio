@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Theming;
-using System;
 
 namespace GoogleCloudExtension.ShowPassword
 {
