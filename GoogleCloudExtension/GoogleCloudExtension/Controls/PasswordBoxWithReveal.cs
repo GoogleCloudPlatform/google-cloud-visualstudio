@@ -19,7 +19,8 @@ namespace GoogleCloudExtension.Controls
             DependencyProperty.Register(
                 nameof(Password),
                 typeof(string),
-                typeof(PasswordBoxWithReveal));
+                typeof(PasswordBoxWithReveal),
+                new PropertyMetadata { PropertyChangedCallback = OnPasswordPropertyChanged });
 
         public static readonly DependencyProperty ShowingPasswordProperty =
             DependencyProperty.Register(
@@ -72,6 +73,20 @@ namespace GoogleCloudExtension.Controls
         private void OnRevealClicked(object sender, RoutedEventArgs e)
         {
             ShowingPassword = !ShowingPassword;
+        }
+
+        private void UpdatePassword(string newValue)
+        {
+            if (_passwordBox != null)
+            {
+                _passwordBox.Password = newValue;
+            }
+        }
+
+        private static void OnPasswordPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs e)
+        {
+            var self = (PasswordBoxWithReveal)sender;
+            self.UpdatePassword((string)e.NewValue);
         }
     }
 }

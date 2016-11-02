@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.ShowPassword
     public class ShowPasswordWindow : CommonDialogWindowBase
     {
         private ShowPasswordWindow(string userName, string password, string instanceName)
-            : base(String.Format(GoogleCloudExtension.Resources.ShowPasswordWindowTitle, instanceName), width: 300, height: 200)
+            : base(String.Format(GoogleCloudExtension.Resources.ShowPasswordWindowTitle, instanceName))
         {
             Content = new ShowPasswordWindowContent(new ShowPasswordViewModel(
                     this,
