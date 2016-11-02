@@ -29,15 +29,13 @@ namespace GoogleCloudExtension.ShowPassword
         private readonly ShowPasswordWindow.Options _options;
 
         /// <summary>
-        /// The user name for the credentials.
-        /// </summary>
-        public string UserName => _options.UserName;
-
-        /// <summary>
         /// The password to show.
         /// </summary>
         public string Password => _options.Password;
 
+        /// <summary>
+        /// The message to display in the dialog.
+        /// </summary>
         public string Message => _options.Message;
 
         /// <summary>

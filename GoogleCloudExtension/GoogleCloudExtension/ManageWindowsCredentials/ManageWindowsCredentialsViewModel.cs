@@ -104,7 +104,6 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                 new ShowPasswordWindow.Options
                 {
                     Title = String.Format(Resources.ShowPasswordWindowTitle, _instance.Name),
-                    UserName = SelectedCredentials.User,
                     Password = SelectedCredentials.Password,
                     Message = String.Format(Resources.ShowPasswordMessage, SelectedCredentials.User, _instance.Name)
                 });
@@ -144,6 +143,16 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                         Message = String.Format(Resources.ResetPasswordProgressMessage, request.User),
                         IsCancellable = false
                     });
+                if (credentials != null)
+                {
+                    ShowPasswordWindow.PromptUser(
+                        new ShowPasswordWindow.Options
+                        {
+                            Title = $"Password for {request.User}",
+                            Message = $"The password for {request.User} has been set:",
+                            Password = credentials.Password,
+                        });
+                }
             }
             else
             {
