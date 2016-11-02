@@ -113,6 +113,7 @@
     <Compile Include="CloudExplorer\TreeLeaf.cs" />
     <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
+    <Compile Include="Controls\PasswordBoxWithReveal.cs" />
     <Compile Include="Controls\PressButton.cs" />
     <Compile Include="Controls\ProgressIndicator.xaml.cs">
       <DependentUpon>ProgressIndicator.xaml</DependentUpon>
@@ -213,6 +214,8 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Theming\Resources\ic_hide_black_10px.png" />
+    <Resource Include="Theming\Resources\ic_inspect_black_10px.png" />
     <Resource Include="Utils\Resources\ic_warning_yellow_24px.png" />
     <Resource Include="Theming\Resources\GCP_logo_horizontal.png" />
     <None Include="app.config">
