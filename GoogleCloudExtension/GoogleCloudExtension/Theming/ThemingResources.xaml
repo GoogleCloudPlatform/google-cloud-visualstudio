@@ -126,6 +126,7 @@
                 IsDefault="{Binding IsDefault}"
                 Content="{Binding Caption}"
                 IsCancel="{Binding IsCancel}"
+                Visibility="{Binding Visibility}"
                 ToolTip="{Binding ToolTip}"/>
     </DataTemplate>
 
@@ -137,6 +138,7 @@
                 IsDefault="{Binding IsDefault}"
                 Content="{Binding Caption}"
                 IsCancel="{Binding IsCancel}"
+                Visibility="{Binding Visibility}"
                 ToolTip="{Binding ToolTip}"/>
     </DataTemplate>
 

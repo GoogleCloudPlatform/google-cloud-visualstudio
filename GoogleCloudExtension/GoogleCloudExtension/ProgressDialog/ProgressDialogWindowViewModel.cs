@@ -13,8 +13,8 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils;
-using System.Threading.Tasks;
 using System;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.ProgressDialog
 {

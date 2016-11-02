@@ -12,8 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
+using GoogleCloudExtension.UserPrompt;
 using System;
 
 namespace GoogleCloudExtension.Utils
@@ -24,27 +23,33 @@ namespace GoogleCloudExtension.Utils
     internal static class UserPromptUtils
     {
         /// <summary>
-        /// These values come from a comment on https://msdn.microsoft.com/en-us/library/microsoft.visualstudio.shell.vsshellutilities.showmessagebox(v=vs.100).aspx.
-        /// </summary>
-        private const int IDYES = 6;
-        private const int IDNO = 7;
-
-        /// <summary>
         /// Show a message dialog with a Yes and No button to the user.
         /// </summary>
-        /// <param name="message">The message for the dialog.</param>
+        /// <param name="prompt">The message for the dialog.</param>
         /// <param name="title">The title for the dialog.</param>
-        /// <returns>Returns true if the user pressed the YES button.</returns>
-        public static bool YesNoPrompt(string message, string title)
+        /// <param name="message">The message to show under the prompt.</param>
+        /// <param name="actionCaption">The caption for the action button, it will be "Yes" by default.</param>
+        /// <param name="cancelCaption">The caption for the cancel button, it will be "Cancel" by default.</param>
+        /// <returns>Returns true if the user pressed the action button, false if the user pressed the cancel button or closed the dialog.</returns>
+        public static bool ActionPrompt(
+            string prompt,
+            string title,
+            string message = null,
+            string actionCaption = null,
+            string cancelCaption = null)
         {
-            var result = VsShellUtilities.ShowMessageBox(
-                    GoogleCloudExtensionPackage.Instance,
-                    message,
-                    title,
-                    OLEMSGICON.OLEMSGICON_QUERY,
-                    OLEMSGBUTTON.OLEMSGBUTTON_YESNO,
-                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_SECOND);
-            return result == IDYES;
+            actionCaption = actionCaption ?? Resources.UiYesButtonCaption;
+            cancelCaption = cancelCaption ?? Resources.UiCancelButtonCaption;
+
+            return UserPromptWindow.PromptUser(
+                new UserPromptWindow.Options
+                {
+                    Title = title,
+                    Prompt = prompt,
+                    Message = message,
+                    ActionButtonCaption = actionCaption,
+                    CancelButtonCaption = cancelCaption
+                });
         }
 
         /// <summary>
@@ -54,13 +59,13 @@ namespace GoogleCloudExtension.Utils
         /// <param name="title">The title for the dialog.</param>
         public static void OkPrompt(string message, string title)
         {
-            VsShellUtilities.ShowMessageBox(
-                    GoogleCloudExtensionPackage.Instance,
-                    message,
-                    title,
-                    OLEMSGICON.OLEMSGICON_INFO,
-                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            UserPromptWindow.PromptUser(
+                new UserPromptWindow.Options
+                {
+                    Title = title,
+                    Prompt = message,
+                    CancelButtonCaption = Resources.UiOkButtonCaption
+                });
         }
 
         /// <summary>
@@ -70,13 +75,14 @@ namespace GoogleCloudExtension.Utils
         /// <param name="title">The title for the dialog.</param>
         public static void ErrorPrompt(string message, string title)
         {
-            VsShellUtilities.ShowMessageBox(
-                    GoogleCloudExtensionPackage.Instance,
-                    message,
-                    title,
-                    OLEMSGICON.OLEMSGICON_CRITICAL,
-                    OLEMSGBUTTON.OLEMSGBUTTON_OK,
-                    OLEMSGDEFBUTTON.OLEMSGDEFBUTTON_FIRST);
+            // TODO: Show the error icon.
+            UserPromptWindow.PromptUser(
+                new UserPromptWindow.Options
+                {
+                    Title = title,
+                    Prompt = message,
+                    CancelButtonCaption = Resources.UiOkButtonCaption
+                });
         }
 
         /// <summary>
