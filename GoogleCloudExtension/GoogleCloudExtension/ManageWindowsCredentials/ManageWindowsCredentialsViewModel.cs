@@ -148,8 +148,8 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                     ShowPasswordWindow.PromptUser(
                         new ShowPasswordWindow.Options
                         {
-                            Title = $"Password for {request.User}",
-                            Message = $"The password for {request.User} has been set:",
+                            Title = String.Format(Resources.ShowPasswordWindowTitle, _instance.Name),
+                            Message = String.Format(Resources.ShowPasswordNewPasswordMessage, credentials.User),
                             Password = credentials.Password,
                         });
                 }

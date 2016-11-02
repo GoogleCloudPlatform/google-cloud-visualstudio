@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -1578,6 +1578,15 @@ namespace GoogleCloudExtension
         public static string ShowPasswordMessage {
             get {
                 return ResourceManager.GetString("ShowPasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The password for {0} has been set:.
+        /// </summary>
+        public static string ShowPasswordNewPasswordMessage {
+            get {
+                return ResourceManager.GetString("ShowPasswordNewPasswordMessage", resourceCulture);
             }
         }
         
