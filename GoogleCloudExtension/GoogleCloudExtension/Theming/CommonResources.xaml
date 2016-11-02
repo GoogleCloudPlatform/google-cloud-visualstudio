@@ -408,7 +408,8 @@
 
                             <!-- Display the button to reveal/hide the password. -->
                             <Button x:Name="PART_Reveal"
-                                    Width="12px"
+                                    Width="15px"
+                                    Height="15px"
                                     Grid.Column="1"
                                     Style="{StaticResource PasswordPartButtonStyle}">
                                 <Image x:Name="buttonIcon"
