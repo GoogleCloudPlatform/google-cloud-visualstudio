@@ -20,9 +20,9 @@ namespace GoogleCloudExtension.Controls
     public class PasswordBoxWithReveal : Control
     {
         // Part names for the control.
-        const string PasswordBoxPart = "PART_PasswordBox";
-        const string TextBoxPart = "PART_TextBox";
-        const string RevealPart = "PART_Reveal";
+        private const string PasswordBoxPart = "PART_PasswordBox";
+        private const string TextBoxPart = "PART_TextBox";
+        private const string RevealPart = "PART_Reveal";
 
         public static readonly DependencyProperty PasswordProperty =
             DependencyProperty.Register(
@@ -37,7 +37,7 @@ namespace GoogleCloudExtension.Controls
                 typeof(bool),
                 typeof(PasswordBoxWithReveal),
                 new PropertyMetadata { DefaultValue = false });
-                
+
         private Button _reveal;
         private TextBox _textBox;
         private PasswordBox _passwordBox;
