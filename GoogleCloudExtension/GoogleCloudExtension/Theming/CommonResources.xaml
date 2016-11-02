@@ -322,7 +322,7 @@
     <SolidColorBrush x:Key="IconButtonColors.Disabled.Background" Color="#FFE0E0E0"/>
     <SolidColorBrush x:Key="IconButtonColors.Disabled.Border" Color="#FFBDBDBD"/>
     <SolidColorBrush x:Key="IconButtonColors.Disabled.Foreground" Color="#FF9E9E9E"/>
-
+    
     <Style x:Key="CommonIconButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
@@ -342,6 +342,8 @@
                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           Margin="{TemplateBinding Padding}"
                                           RecognizesAccessKey="True"
+                                          Height="15px"
+                                          Width="15px"
                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                           Style="{StaticResource CommonTextStyleBase}"/>
@@ -414,24 +416,6 @@
         </Setter>
     </Style>
 
-    <!-- Ultra simple style for the reveal button. -->
-    <Style x:Key="PasswordPartButtonStyle" TargetType="{x:Type Button}">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type Button}">
-                    <ContentPresenter x:Name="contentPresenter"
-                                      Focusable="False"
-                                      HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                      Margin="{TemplateBinding Padding}"
-                                      RecognizesAccessKey="True"
-                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                      VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                      Style="{StaticResource CommonTextStyleBase}"/>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <!-- Template for the PasswordBoxWithReveal control. -->
     <Style TargetType="{x:Type controls:PasswordBoxWithReveal}">
         <Setter Property="Height" Value="30px" />
@@ -475,8 +459,6 @@
                                     Grid.Column="1"
                                     Style="{StaticResource CommonIconButtonStyle}">
                                 <Image x:Name="buttonIcon"
-                                       Width="15px"
-                                       Height="15px"
                                        Source="pack://application:,,,/GoogleCloudExtension;component/Theming/Resources/ic_inspect_black_10px.png" />
                             </Button>
                         </Grid>
