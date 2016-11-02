@@ -214,6 +214,7 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Theming\Resources\ic_copy_black_10px.png" />
     <Resource Include="Theming\Resources\ic_hide_black_10px.png" />
     <Resource Include="Theming\Resources\ic_inspect_black_10px.png" />
     <Resource Include="Utils\Resources\ic_warning_yellow_24px.png" />
