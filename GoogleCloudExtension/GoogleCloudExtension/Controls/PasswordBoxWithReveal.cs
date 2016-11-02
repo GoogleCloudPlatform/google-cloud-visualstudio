@@ -17,6 +17,9 @@ using System.Windows.Controls;
 
 namespace GoogleCloudExtension.Controls
 {
+    /// <summary>
+    /// This class implements a control that allows the extension to show the password safely to the user.
+    /// </summary>
     public class PasswordBoxWithReveal : Control
     {
         // Part names for the control.
@@ -42,12 +45,18 @@ namespace GoogleCloudExtension.Controls
         private TextBox _textBox;
         private PasswordBox _passwordBox;
 
+        /// <summary>
+        /// The password to display.
+        /// </summary>
         public string Password
         {
             get { return (string)GetValue(PasswordProperty); }
             set { SetValue(PasswordProperty, value); }
         }
 
+        /// <summary>
+        /// Whether the password is being shown or not.
+        /// </summary>
         public bool ShowingPassword
         {
             get { return (bool)GetValue(ShowingPasswordProperty); }
