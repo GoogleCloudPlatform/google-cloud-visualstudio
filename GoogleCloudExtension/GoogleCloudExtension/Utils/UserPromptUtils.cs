@@ -27,7 +27,10 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="prompt">The message for the dialog.</param>
         /// <param name="title">The title for the dialog.</param>
-        /// <returns>Returns true if the user pressed the YES button.</returns>
+        /// <param name="message">The message to show under the prompt.</param>
+        /// <param name="actionCaption">The caption for the action button, it will be "Yes" by default.</param>
+        /// <param name="cancelCaption">The caption for the cancel button, it will be "Cancel" by default.</param>
+        /// <returns>Returns true if the user pressed the action button, false if the user pressed the cancel button or closed the dialog.</returns>
         public static bool ActionPrompt(
             string prompt,
             string title,
