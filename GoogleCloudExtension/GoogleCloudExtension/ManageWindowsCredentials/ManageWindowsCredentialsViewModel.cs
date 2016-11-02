@@ -166,7 +166,8 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                         prompt: String.Format(Resources.ResetPasswordConfirmationPromptMessage, user, _instance.Name),
                         title: Resources.ResetPasswordConfirmationPromptTitle,
                         message: Resources.ResetPasswordConfirmationMessage,
-                        actionCaption: Resources.UiResetButtonCaption))
+                        actionCaption: Resources.UiResetButtonCaption,
+                        isWarning: true))
                 {
                     Debug.WriteLine("The user cancelled resetting the password.");
                     return null;
