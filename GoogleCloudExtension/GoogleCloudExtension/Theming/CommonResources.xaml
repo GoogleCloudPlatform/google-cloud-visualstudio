@@ -306,6 +306,68 @@
         <Setter Property="BorderBrush" Value="{StaticResource CommonProgressBar.Border}"/>
     </Style>
 
+    <!-- A style for icon buttons. -->
+
+    <!-- Mouse over state -->
+    <SolidColorBrush x:Key="IconButtonColors.MouseOver.Background" Color="White"/>
+    <SolidColorBrush x:Key="IconButtonColors.MouseOver.Border" Color="#FF82B1FF"/>
+    <SolidColorBrush x:Key="IconButtonColors.MouseOver.Foreground" Color="Black"/>
+
+    <!-- Pressed state -->
+    <SolidColorBrush x:Key="IconButtonColors.Pressed.Background" Color="#FFF5F5F5"/>
+    <SolidColorBrush x:Key="IconButtonColors.Pressed.Border" Color="#FF82B1FF"/>
+    <SolidColorBrush x:Key="IconButtonColors.Pressed.Foreground" Color="Black"/>
+
+    <!-- Disabled state -->
+    <SolidColorBrush x:Key="IconButtonColors.Disabled.Background" Color="#FFE0E0E0"/>
+    <SolidColorBrush x:Key="IconButtonColors.Disabled.Border" Color="#FFBDBDBD"/>
+    <SolidColorBrush x:Key="IconButtonColors.Disabled.Foreground" Color="#FF9E9E9E"/>
+
+    <Style x:Key="CommonIconButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Width" Value="20px" />
+        <Setter Property="Height" Value="20px" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            SnapsToDevicePixels="true" CornerRadius="2">
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Focusable="False"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}"
+                                          RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Style="{StaticResource CommonTextStyleBase}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource IconButtonColors.MouseOver.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource IconButtonColors.MouseOver.Border}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource IconButtonColors.MouseOver.Foreground}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource IconButtonColors.Pressed.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource IconButtonColors.Pressed.Border}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource IconButtonColors.Pressed.Foreground}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource IconButtonColors.Disabled.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource IconButtonColors.Disabled.Border}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource IconButtonColors.Disabled.Foreground}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Common PasswordWithReveal style. -->
 
     <!-- Ultra simple template for the TextBox used to display the password. -->
@@ -385,7 +447,7 @@
                             BorderBrush="{TemplateBinding BorderBrush}"
                             BorderThickness="{TemplateBinding BorderThickness}"
                             Background="{TemplateBinding Background}"
-                            Padding="8,5,12,5"
+                            Padding="8,0,12,0"
                             SnapsToDevicePixels="True">
                         <Grid>
                             <Grid.ColumnDefinitions>
@@ -395,12 +457,14 @@
 
                             <!-- Display the password box or textbox, by default we do not show the password. -->
                             <TextBox x:Name="PART_TextBox"
+                                     Margin="0,5,0,5"
                                      BorderBrush="Transparent"
                                      Background="Transparent"
                                      Visibility="Collapsed"
                                      Text="{TemplateBinding Password}"
                                      Style="{StaticResource PasswordPartTextBoxStyle}" />
                             <PasswordBox x:Name="PART_PasswordBox"
+                                         Margin="0,5,0,5"
                                          BorderBrush="Transparent"
                                          Background="Transparent"
                                          Visibility="Visible"
@@ -408,11 +472,11 @@
 
                             <!-- Display the button to reveal/hide the password. -->
                             <Button x:Name="PART_Reveal"
-                                    Width="15px"
-                                    Height="15px"
                                     Grid.Column="1"
-                                    Style="{StaticResource PasswordPartButtonStyle}">
+                                    Style="{StaticResource CommonIconButtonStyle}">
                                 <Image x:Name="buttonIcon"
+                                       Width="15px"
+                                       Height="15px"
                                        Source="pack://application:,,,/GoogleCloudExtension;component/Theming/Resources/ic_inspect_black_10px.png" />
                             </Button>
                         </Grid>
@@ -431,68 +495,6 @@
                             <Setter Property="Source"
                                     TargetName="buttonIcon"
                                     Value="pack://application:,,,/GoogleCloudExtension;component/Theming/Resources/ic_hide_black_10px.png" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-    
-    <!-- A style for icon buttons. -->
-
-    <!-- Mouse over state -->
-    <SolidColorBrush x:Key="IconButtonColors.MouseOver.Background" Color="White"/>
-    <SolidColorBrush x:Key="IconButtonColors.MouseOver.Border" Color="#FF82B1FF"/>
-    <SolidColorBrush x:Key="IconButtonColors.MouseOver.Foreground" Color="Black"/>
-
-    <!-- Pressed state -->
-    <SolidColorBrush x:Key="IconButtonColors.Pressed.Background" Color="#FFF5F5F5"/>
-    <SolidColorBrush x:Key="IconButtonColors.Pressed.Border" Color="#FF82B1FF"/>
-    <SolidColorBrush x:Key="IconButtonColors.Pressed.Foreground" Color="Black"/>
-
-    <!-- Disabled state -->
-    <SolidColorBrush x:Key="IconButtonColors.Disabled.Background" Color="#FFE0E0E0"/>
-    <SolidColorBrush x:Key="IconButtonColors.Disabled.Border" Color="#FFBDBDBD"/>
-    <SolidColorBrush x:Key="IconButtonColors.Disabled.Foreground" Color="#FF9E9E9E"/>
-
-    <Style x:Key="CommonIconButtonStyle" TargetType="{x:Type Button}">
-        <Setter Property="Background" Value="Transparent" />
-        <Setter Property="BorderBrush" Value="Transparent" />
-        <Setter Property="Width" Value="20px" />
-        <Setter Property="Height" Value="20px" />
-        <Setter Property="VerticalContentAlignment" Value="Center" />
-        <Setter Property="HorizontalContentAlignment" Value="Center" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type Button}">
-                    <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}"
-                            Background="{TemplateBinding Background}"
-                            SnapsToDevicePixels="true" CornerRadius="2">
-                        <ContentPresenter x:Name="contentPresenter"
-                                          Focusable="False"
-                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                          Margin="{TemplateBinding Padding}"
-                                          RecognizesAccessKey="True"
-                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-                                          Style="{StaticResource CommonTextStyleBase}"/>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="true">
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource IconButtonColors.MouseOver.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource IconButtonColors.MouseOver.Border}"/>
-                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource IconButtonColors.MouseOver.Foreground}"/>
-                        </Trigger>
-                        <Trigger Property="IsPressed" Value="true">
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource IconButtonColors.Pressed.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource IconButtonColors.Pressed.Border}"/>
-                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource IconButtonColors.Pressed.Foreground}"/>
-                        </Trigger>
-                        <Trigger Property="IsEnabled" Value="false">
-                            <Setter Property="Background" TargetName="border" Value="{StaticResource IconButtonColors.Disabled.Background}"/>
-                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource IconButtonColors.Disabled.Border}"/>
-                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource IconButtonColors.Disabled.Foreground}"/>
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
