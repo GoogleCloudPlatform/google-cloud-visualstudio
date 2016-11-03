@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.TerminalServer
         {
             var rdpPath = CreateRdpFile(instance, credentials);
             Debug.WriteLine($"Saved .rdp file at {rdpPath}");
-            Process.Start("mstsc", rdpPath);
+            Process.Start("mstsc", $"\"{rdpPath}\"");
         }
 
         private static string CreateRdpFile(Instance instance, WindowsInstanceCredentials credentials)

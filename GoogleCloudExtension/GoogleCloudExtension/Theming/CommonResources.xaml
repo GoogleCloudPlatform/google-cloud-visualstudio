@@ -342,8 +342,8 @@
                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                           Margin="{TemplateBinding Padding}"
                                           RecognizesAccessKey="True"
-                                          Height="15px"
-                                          Width="15px"
+                                          Height="14px"
+                                          Width="14px"
                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
                                           VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
                                           Style="{StaticResource CommonTextStyleBase}"/>
@@ -459,7 +459,7 @@
                                     Grid.Column="1"
                                     Style="{StaticResource CommonIconButtonStyle}">
                                 <Image x:Name="buttonIcon"
-                                       Source="pack://application:,,,/GoogleCloudExtension;component/Theming/Resources/ic_inspect_black_10px.png" />
+                                       Source="pack://application:,,,/GoogleCloudExtension;component/Theming/Resources/ic_inspect_black_14px.png" />
                             </Button>
                         </Grid>
                     </Border>
@@ -476,7 +476,7 @@
                             <Setter Property="Visibility" TargetName="PART_PasswordBox" Value="Collapsed" />
                             <Setter Property="Source"
                                     TargetName="buttonIcon"
-                                    Value="pack://application:,,,/GoogleCloudExtension;component/Theming/Resources/ic_hide_black_10px.png" />
+                                    Value="pack://application:,,,/GoogleCloudExtension;component/Theming/Resources/ic_hide_black_14px.png" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>
