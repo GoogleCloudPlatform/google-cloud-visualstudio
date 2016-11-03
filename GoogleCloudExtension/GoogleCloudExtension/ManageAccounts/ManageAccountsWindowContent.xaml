@@ -10,10 +10,11 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type local:ManageAccountsViewModel}}">
     <UserControl.Resources>
+       
         <utils:VisibilityConverter x:Key="visibilityConverter" />
     </UserControl.Resources>
 
-    <theming:CommonDialogWindowBaseContent>
+    <theming:CommonDialogWindowBaseContent HasBanner="True">
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.ManageAccountsAddAccountButtonCaption}"
                                       Command="{Binding AddAccountCommand}" />

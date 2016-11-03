@@ -1582,6 +1582,15 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The password for {0} has been set:.
+        /// </summary>
+        public static string ShowPasswordNewPasswordMessage {
+            get {
+                return ResourceManager.GetString("ShowPasswordNewPasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show password.
         /// </summary>
         public static string ShowPasswordShowPasswordTooltip {

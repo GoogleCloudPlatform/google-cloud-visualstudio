@@ -872,4 +872,8 @@
   <data name="UiYesButtonCaption" xml:space="preserve">
     <value>Yes</value>
   </data>
+  <data name="ShowPasswordNewPasswordMessage" xml:space="preserve">
+    <value>The password for {0} has been set:</value>
+    <comment>Message shown when a new password is generated. {0} is the user name.</comment>
+  </data>
 </root>

@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.UserPrompt;
 using System;
+using System.Windows.Media;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -22,6 +23,10 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     internal static class UserPromptUtils
     {
+        private const string WarningIconPath = "Utils/Resources/ic_warning_yellow_24px.png";
+
+        private static readonly Lazy<ImageSource> s_warningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
+
         /// <summary>
         /// Show a message dialog with a Yes and No button to the user.
         /// </summary>
@@ -36,7 +41,8 @@ namespace GoogleCloudExtension.Utils
             string title,
             string message = null,
             string actionCaption = null,
-            string cancelCaption = null)
+            string cancelCaption = null,
+            bool isWarning = false)
         {
             actionCaption = actionCaption ?? Resources.UiYesButtonCaption;
             cancelCaption = cancelCaption ?? Resources.UiCancelButtonCaption;
@@ -48,7 +54,8 @@ namespace GoogleCloudExtension.Utils
                     Prompt = prompt,
                     Message = message,
                     ActionButtonCaption = actionCaption,
-                    CancelButtonCaption = cancelCaption
+                    CancelButtonCaption = cancelCaption,
+                    Icon = isWarning ? s_warningIcon.Value : null
                 });
         }
 

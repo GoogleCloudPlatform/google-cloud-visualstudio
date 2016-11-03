@@ -101,9 +101,12 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
         private void OnShowCredentialsCommand()
         {
             ShowPasswordWindow.PromptUser(
-                userName: SelectedCredentials.User,
-                password: SelectedCredentials.Password,
-                instanceName: _instance.Name);
+                new ShowPasswordWindow.Options
+                {
+                    Title = String.Format(Resources.ShowPasswordWindowTitle, _instance.Name),
+                    Password = SelectedCredentials.Password,
+                    Message = String.Format(Resources.ShowPasswordMessage, SelectedCredentials.User, _instance.Name)
+                });
         }
 
         private void OnDeleteCredentialsCommand()
@@ -140,6 +143,16 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                         Message = String.Format(Resources.ResetPasswordProgressMessage, request.User),
                         IsCancellable = false
                     });
+                if (credentials != null)
+                {
+                    ShowPasswordWindow.PromptUser(
+                        new ShowPasswordWindow.Options
+                        {
+                            Title = String.Format(Resources.ShowPasswordWindowTitle, _instance.Name),
+                            Message = String.Format(Resources.ShowPasswordNewPasswordMessage, credentials.User),
+                            Password = credentials.Password,
+                        });
+                }
             }
             else
             {
@@ -166,7 +179,8 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                         prompt: String.Format(Resources.ResetPasswordConfirmationPromptMessage, user, _instance.Name),
                         title: Resources.ResetPasswordConfirmationPromptTitle,
                         message: Resources.ResetPasswordConfirmationMessage,
-                        actionCaption: Resources.UiResetButtonCaption))
+                        actionCaption: Resources.UiResetButtonCaption,
+                        isWarning: true))
                 {
                     Debug.WriteLine("The user cancelled resetting the password.");
                     return null;
