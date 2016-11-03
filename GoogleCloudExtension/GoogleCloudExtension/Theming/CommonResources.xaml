@@ -322,7 +322,7 @@
     <SolidColorBrush x:Key="IconButtonColors.Disabled.Background" Color="#FFE0E0E0"/>
     <SolidColorBrush x:Key="IconButtonColors.Disabled.Border" Color="#FFBDBDBD"/>
     <SolidColorBrush x:Key="IconButtonColors.Disabled.Foreground" Color="#FF9E9E9E"/>
-    
+
     <Style x:Key="CommonIconButtonStyle" TargetType="{x:Type Button}">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
@@ -482,6 +482,22 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+
+    <!-- Common style for popups. -->
+    <Style x:Key="CommonPopupStyle" TargetType="{x:Type Popup}">
+        <Setter Property="AllowsTransparency" Value="True" />
+        <Setter Property="PopupAnimation" Value="Fade" />
+    </Style>
+
+    <!-- Common border style for popups. -->
+    <SolidColorBrush x:Key="CommonBorderColors.Background" Color="LightYellow" />
+    <SolidColorBrush x:Key="CommonBorderColors.Border" Color="Yellow" />
+
+    <Style x:Key="CommonPopupBorderStyle" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="{StaticResource CommonBorderColors.Background}" />
+        <Setter Property="BorderBrush" Value="{StaticResource CommonBorderColors.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
     </Style>
 
 </ResourceDictionary>
