@@ -217,9 +217,6 @@
     <Resource Include="Theming\Resources\ic_copy_black_14px.png" />
     <Resource Include="Theming\Resources\ic_hide_black_14px.png" />
     <Resource Include="Theming\Resources\ic_inspect_black_14px.png" />
-    <Resource Include="Theming\Resources\ic_copy_black_10px.png" />
-    <Resource Include="Theming\Resources\ic_hide_black_10px.png" />
-    <Resource Include="Theming\Resources\ic_inspect_black_10px.png" />
     <Resource Include="Utils\Resources\ic_warning_yellow_24px.png" />
     <Resource Include="Theming\Resources\GCP_logo_horizontal.png" />
     <None Include="app.config">
