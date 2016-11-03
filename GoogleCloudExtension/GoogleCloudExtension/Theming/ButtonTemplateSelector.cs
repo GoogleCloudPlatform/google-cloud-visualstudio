@@ -32,6 +32,12 @@ namespace GoogleCloudExtension.Theming
             var buttonInfo = (DialogButtonInfo)item;
             var element = (FrameworkElement)container;
 
+            // Buttons that are meant to be hidden, without caption, do not get any template.
+            if (buttonInfo.Caption == null)
+            {
+                return null;
+            }
+
             // Using 6 characters as the treshold for choosing the right size of the button to
             // accomodate the visuals better.
             if (buttonInfo.Caption.Length > 6)
