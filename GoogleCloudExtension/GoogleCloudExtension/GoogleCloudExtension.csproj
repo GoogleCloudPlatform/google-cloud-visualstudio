@@ -214,6 +214,9 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Theming\Resources\ic_copy_black_14px.png" />
+    <Resource Include="Theming\Resources\ic_hide_black_14px.png" />
+    <Resource Include="Theming\Resources\ic_inspect_black_14px.png" />
     <Resource Include="Theming\Resources\ic_copy_black_10px.png" />
     <Resource Include="Theming\Resources\ic_hide_black_10px.png" />
     <Resource Include="Theming\Resources\ic_inspect_black_10px.png" />
@@ -253,8 +256,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="ShowPassword\Resources\visibility_off.png" />
-    <Resource Include="ShowPassword\Resources\visibility.png" />
     <VSCTCompile Include="GoogleCloudExtension.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
