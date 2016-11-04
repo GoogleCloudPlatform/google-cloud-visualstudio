@@ -114,6 +114,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             if (!UserPromptUtils.ActionPrompt(
                     String.Format(Resources.ManageWindowsCredentialsDeleteCredentialsPromptMessage, SelectedCredentials.User),
                     Resources.ManageWindowsCredentialsDeleteCredentialsPromptTitle,
+                    message: Resources.UiOperationCannotBeUndone,
                     actionCaption: Resources.UiDeleteButtonCaption))
             {
                 return;
@@ -178,7 +179,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                 if (!UserPromptUtils.ActionPrompt(
                         prompt: String.Format(Resources.ResetPasswordConfirmationPromptMessage, user, _instance.Name),
                         title: Resources.ResetPasswordConfirmationPromptTitle,
-                        message: Resources.ResetPasswordConfirmationMessage,
+                        message: Resources.UiOperationCannotBeUndone,
                         actionCaption: Resources.UiResetButtonCaption,
                         isWarning: true))
                 {

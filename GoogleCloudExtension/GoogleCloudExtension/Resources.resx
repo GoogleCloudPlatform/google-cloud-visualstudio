@@ -634,8 +634,8 @@
     <comment>Message for an error message in the authorized networks dialog for an ipv4 address.</comment>
   </data>
   <data name="ResetPasswordConfirmationPromptMessage" xml:space="preserve">
-    <value>Are you sure you want to reset the password for {0}?</value>
-    <comment>The message for the confirmation prompt for resetting or creating a password. {0) is the user name.</comment>
+    <value>Reset the password for {0} on instance {1}?</value>
+    <comment>The message for the confirmation prompt for resetting or creating a password. {0) is the user name, {1} is the instance name.</comment>
   </data>
   <data name="ResetPasswordConfirmationPromptTitle" xml:space="preserve">
     <value>Reset Password</value>
@@ -666,12 +666,12 @@
     <comment>Title for the prompts shown when gcloud is not installed.</comment>
   </data>
   <data name="AddWindowsCredentialUserNameCaption" xml:space="preserve">
-    <value>User name:</value>
+    <value>_User name:</value>
     <comment>Caption for the user name textbox.</comment>
   </data>
-  <data name="ResetPasswordWindowTitle" xml:space="preserve">
-    <value>Add Credential for VM {0}</value>
-    <comment>The title for the reset password dialog. {0} is the instance name.</comment>
+  <data name="AddWindowsCredentialTitle" xml:space="preserve">
+    <value>Add Windows Credential</value>
+    <comment>The title for the reset password dialog. </comment>
   </data>
   <data name="ShowPasswordCopyFailedMessage" xml:space="preserve">
     <value>The copy operation failed, this might happen if another program has the Windows Clipboard open, such as a virtual machine agent.</value>
@@ -710,7 +710,7 @@
     <comment>Caption for the close window button.</comment>
   </data>
   <data name="UiDownloadButtonCaption" xml:space="preserve">
-    <value>Download</value>
+    <value>_Download</value>
     <comment>The caption for the general download button.</comment>
   </data>
   <data name="UiOkButtonCaption" xml:space="preserve">
@@ -718,15 +718,15 @@
     <comment>Caption for Ok buttons.</comment>
   </data>
   <data name="UiSaveButtonCaption" xml:space="preserve">
-    <value>Save</value>
+    <value>_Save</value>
     <comment>Caption for Save buttons.</comment>
   </data>
   <data name="UiDeleteButtonCaption" xml:space="preserve">
-    <value>Delete</value>
+    <value>_Delete</value>
     <comment>Caption for Delete buttons.</comment>
   </data>
   <data name="UiUndoButtonCaption" xml:space="preserve">
-    <value>Undo</value>
+    <value>_Undo</value>
     <comment>Caption for Undo buttons.</comment>
   </data>
   <data name="UiOpenOnCloudConsoleMenuHeader" xml:space="preserve">
@@ -762,7 +762,7 @@
     <comment>The caption for the delete credentials button in the dialog.</comment>
   </data>
   <data name="ManageWindowsCredentialsDeleteCredentialsPromptMessage" xml:space="preserve">
-    <value>Are you sure you want to the delete the credentials for user {0}?</value>
+    <value>Delete user name {0} from this computer? The credentials will still exist on the Windows instance.</value>
     <comment>The message for the confirmation prompt to delete credentials. The {0} placeholder is the username.</comment>
   </data>
   <data name="ManageWindowsCredentialsDeleteCredentialsPromptTitle" xml:space="preserve">
@@ -814,11 +814,11 @@
     <comment>The title for the choose credentials used during the save publish settings flow.</comment>
   </data>
   <data name="AddWindowsCredentialGeneratePasswordMessage" xml:space="preserve">
-    <value>Generate the password for this user name</value>
+    <value>Create a password for me</value>
     <comment>Message shown in the radio button of the Reset password dialog to signify that the password will be generated instead of provided by the user.</comment>
   </data>
   <data name="AddWindowsCredentialHavePasswordMessage" xml:space="preserve">
-    <value>I have a password for this user name</value>
+    <value>I have a password for this user</value>
     <comment>Message shown in the radio button of the Reset Password dialog to signify that the user will provide the password.</comment>
   </data>
   <data name="ResetWindowSettingPasswordProgressMessage" xml:space="preserve">
@@ -853,15 +853,15 @@
     <value>Type password:</value>
     <comment>Content for the label used for the custom password.</comment>
   </data>
-  <data name="ResetPasswordConfirmationMessage" xml:space="preserve">
+  <data name="UiOperationCannotBeUndone" xml:space="preserve">
     <value>You can't undo this later.</value>
-    <comment>Message shown for the reset password confirmation dialog.</comment>
+    <comment>Message shown in dialogs to indicate that the operation cannot be undone.</comment>
   </data>
   <data name="UiNoButtonCaption" xml:space="preserve">
-    <value>No</value>
+    <value>_No</value>
   </data>
   <data name="UiResetButtonCaption" xml:space="preserve">
-    <value>Reset</value>
+    <value>_Reset</value>
   </data>
   <data name="UiStartButtonCaption" xml:space="preserve">
     <value>Start</value>
@@ -870,7 +870,7 @@
     <value>Stop</value>
   </data>
   <data name="UiYesButtonCaption" xml:space="preserve">
-    <value>Yes</value>
+    <value>_Yes</value>
   </data>
   <data name="ShowPasswordNewPasswordMessage" xml:space="preserve">
     <value>The password for {0} has been set:</value>
@@ -891,6 +891,9 @@
   <data name="AddWindowsCredentialValidationErrorTtitle" xml:space="preserve">
     <value>Add Windows Credential</value>
     <comment>Title for the validation error dialogs in the add windows credential dialog.</comment>
+  </data>
+  <data name="AddWindowsCredentialToolTip" xml:space="preserve">
+    <value>Enter a user name. If the user name already exists as an account on the Windows instance, then you can reset the password or enter the current one.</value>
   </data>
   <data name="ShowPasswordCopiedMessage" xml:space="preserve">
     <value>Password copied to clipboard.</value>
