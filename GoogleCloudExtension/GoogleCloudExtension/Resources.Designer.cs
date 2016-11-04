@@ -511,7 +511,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Firewall Ports....
+        ///   Looks up a localized string similar to Firewall options....
         /// </summary>
         public static string CloudExplorerGceManageFirewallPortsMenuHeader {
             get {
@@ -520,7 +520,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Windows Credentials....
+        ///   Looks up a localized string similar to Manage Windows credentials....
         /// </summary>
         public static string CloudExplorerGceManageWindowsCredentialsMenuHeader {
             get {
@@ -574,7 +574,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open Terminal Server Session....
+        ///   Looks up a localized string similar to Open terminal session....
         /// </summary>
         public static string CloudExplorerGceOpenTerminalSessionMenuHeader {
             get {
@@ -583,7 +583,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open Web Site....
+        ///   Looks up a localized string similar to Open website.
         /// </summary>
         public static string CloudExplorerGceOpenWebSiteMenuHeader {
             get {
@@ -1330,7 +1330,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Credentials.
+        ///   Looks up a localized string similar to _Add credentials.
         /// </summary>
         public static string ManageWindowsCredentialsAddCredentialsCaption {
             get {
@@ -1339,7 +1339,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete Credentials.
+        ///   Looks up a localized string similar to _Delete credentials.
         /// </summary>
         public static string ManageWindowsCredentialsDeleteCredentialsCaption {
             get {
@@ -1357,7 +1357,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete Credentials.
+        ///   Looks up a localized string similar to Delete Credential.
         /// </summary>
         public static string ManageWindowsCredentialsDeleteCredentialsPromptTitle {
             get {
@@ -1366,7 +1366,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Credentials.
+        ///   Looks up a localized string similar to _Show password.
         /// </summary>
         public static string ManageWindowsCredentialsShowCredentialsCaption {
             get {
@@ -1375,7 +1375,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Windows _credentials for {0}.
+        ///   Looks up a localized string similar to _Credentials for {0}. Windows credentials are used to log in to a Windows machine instance..
         /// </summary>
         public static string ManageWindowsCredentialsWindowMessage {
             get {
@@ -1384,7 +1384,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Windows Credentials.
+        ///   Looks up a localized string similar to Windows Credentials.
         /// </summary>
         public static string ManageWindowsCredentialsWindowTitle {
             get {
@@ -1573,6 +1573,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Password copied to clipboard..
+        /// </summary>
+        public static string ShowPasswordCopiedMessage {
+            get {
+                return ResourceManager.GetString("ShowPasswordCopiedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The copy operation failed, this might happen if another program has the Windows Clipboard open, such as a virtual machine agent..
         /// </summary>
         public static string ShowPasswordCopyFailedMessage {
@@ -1717,7 +1726,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open on Cloud Console.
+        ///   Looks up a localized string similar to Open in the console.
         /// </summary>
         public static string UiOpenOnCloudConsoleMenuHeader {
             get {

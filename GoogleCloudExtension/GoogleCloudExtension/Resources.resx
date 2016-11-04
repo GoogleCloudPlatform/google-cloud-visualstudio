@@ -250,7 +250,7 @@
     <comment>The description of the zone property for a GCE instance.</comment>
   </data>
   <data name="CloudExplorerGceManageFirewallPortsMenuHeader" xml:space="preserve">
-    <value>Manage Firewall Ports...</value>
+    <value>Firewall options...</value>
     <comment>Header for the manage firewall ports menu item.</comment>
   </data>
   <data name="CloudExplorerGceNewAspNetInstanceMenuHeader" xml:space="preserve">
@@ -274,11 +274,11 @@
     <comment>The tooltip for the filter button.</comment>
   </data>
   <data name="CloudExplorerGceOpenTerminalSessionMenuHeader" xml:space="preserve">
-    <value>Open Terminal Server Session...</value>
+    <value>Open terminal session...</value>
     <comment>Header for the open terminal session menu item.</comment>
   </data>
   <data name="CloudExplorerGceOpenWebSiteMenuHeader" xml:space="preserve">
-    <value>Open Web Site...</value>
+    <value>Open website</value>
     <comment>Header for the open website menu item.</comment>
   </data>
   <data name="CloudExplorerGcePublishingSettingsSavedMessage" xml:space="preserve">
@@ -730,7 +730,7 @@
     <comment>Caption for Undo buttons.</comment>
   </data>
   <data name="UiOpenOnCloudConsoleMenuHeader" xml:space="preserve">
-    <value>Open on Cloud Console</value>
+    <value>Open in the console</value>
     <comment>Header for the menu that opens the item in the cloud console.</comment>
   </data>
   <data name="UiPropertiesMenuHeader" xml:space="preserve">
@@ -754,11 +754,11 @@
     <comment>The command to use use to show the buckets per location.</comment>
   </data>
   <data name="ManageWindowsCredentialsAddCredentialsCaption" xml:space="preserve">
-    <value>Add Credentials</value>
+    <value>_Add credentials</value>
     <comment>The caption for the add credentials button in the dialog.</comment>
   </data>
   <data name="ManageWindowsCredentialsDeleteCredentialsCaption" xml:space="preserve">
-    <value>Delete Credentials</value>
+    <value>_Delete credentials</value>
     <comment>The caption for the delete credentials button in the dialog.</comment>
   </data>
   <data name="ManageWindowsCredentialsDeleteCredentialsPromptMessage" xml:space="preserve">
@@ -766,19 +766,19 @@
     <comment>The message for the confirmation prompt to delete credentials. The {0} placeholder is the username.</comment>
   </data>
   <data name="ManageWindowsCredentialsDeleteCredentialsPromptTitle" xml:space="preserve">
-    <value>Delete Credentials</value>
+    <value>Delete Credential</value>
     <comment>Title for the confirmation prompt to delete credentials.</comment>
   </data>
   <data name="ManageWindowsCredentialsShowCredentialsCaption" xml:space="preserve">
-    <value>Show Credentials</value>
+    <value>_Show password</value>
     <comment>The caption or the show credentials button in the dialog.</comment>
   </data>
   <data name="ManageWindowsCredentialsWindowMessage" xml:space="preserve">
-    <value>Windows _credentials for {0}</value>
+    <value>_Credentials for {0}. Windows credentials are used to log in to a Windows machine instance.</value>
     <comment>Message at the top of the Manage Windows Credentials dialog. The {0} placeholder is the name of the instance.</comment>
   </data>
   <data name="ManageWindowsCredentialsWindowTitle" xml:space="preserve">
-    <value>Manage Windows Credentials</value>
+    <value>Windows Credentials</value>
     <comment>Title for the Manage Windows Credentials dialog.</comment>
   </data>
   <data name="TerminalServerManagerWindowMessage" xml:space="preserve">
@@ -798,7 +798,7 @@
     <comment>Message shown in the dropdown when no credentials are found.</comment>
   </data>
   <data name="CloudExplorerGceManageWindowsCredentialsMenuHeader" xml:space="preserve">
-    <value>Manage Windows Credentials...</value>
+    <value>Manage Windows credentials...</value>
     <comment>Header for the menu entry to manage credentials.</comment>
   </data>
   <data name="CloudExplorerGceInstanceWindowsVersionDescription" xml:space="preserve">
@@ -891,5 +891,9 @@
   <data name="AddWindowsCredentialValidationErrorTtitle" xml:space="preserve">
     <value>Add Windows Credential</value>
     <comment>Title for the validation error dialogs in the add windows credential dialog.</comment>
+  </data>
+  <data name="ShowPasswordCopiedMessage" xml:space="preserve">
+    <value>Password copied to clipboard.</value>
+    <comment>Message shown in the popup for the copy operation.</comment>
   </data>
 </root>
