@@ -24,8 +24,10 @@ namespace GoogleCloudExtension.Utils
     internal static class UserPromptUtils
     {
         private const string WarningIconPath = "Utils/Resources/ic_warning_yellow_24px.png";
+        private const string ErrorIconPath = "Utils/Resources/ic_error_red_24px.png";
 
         private static readonly Lazy<ImageSource> s_warningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
+        private static readonly Lazy<ImageSource> s_errorIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(ErrorIconPath));
 
         /// <summary>
         /// Show a message dialog with a Yes and No button to the user.
@@ -82,13 +84,13 @@ namespace GoogleCloudExtension.Utils
         /// <param name="title">The title for the dialog.</param>
         public static void ErrorPrompt(string message, string title)
         {
-            // TODO: Show the error icon.
             UserPromptWindow.PromptUser(
                 new UserPromptWindow.Options
                 {
                     Title = title,
                     Prompt = message,
-                    CancelButtonCaption = Resources.UiOkButtonCaption
+                    CancelButtonCaption = Resources.UiOkButtonCaption,
+                    Icon = s_errorIcon.Value
                 });
         }
 
