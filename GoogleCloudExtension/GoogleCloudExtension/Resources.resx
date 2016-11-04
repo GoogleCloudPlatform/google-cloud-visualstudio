@@ -690,8 +690,8 @@
     <comment>The tooltip shown to hide the password.</comment>
   </data>
   <data name="ShowPasswordMessage" xml:space="preserve">
-    <value>The password for user {0} in instance {1} is:</value>
-    <comment>The message shown for the password textblock. {0} is the user name, {1} is the instance name.</comment>
+    <value>{0} password:</value>
+    <comment>The message shown for the password textblock. {0} is the user name.</comment>
   </data>
   <data name="ShowPasswordShowPasswordTooltip" xml:space="preserve">
     <value>Show password</value>

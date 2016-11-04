@@ -105,7 +105,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                 {
                     Title = String.Format(Resources.ShowPasswordWindowTitle, _instance.Name),
                     Password = SelectedCredentials.Password,
-                    Message = String.Format(Resources.ShowPasswordMessage, SelectedCredentials.User, _instance.Name)
+                    Message = String.Format(Resources.ShowPasswordMessage, SelectedCredentials.User)
                 });
         }
 
