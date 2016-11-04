@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -102,6 +102,42 @@ namespace GoogleCloudExtension
         public static string AddWindowsCredentialUserNameCaption {
             get {
                 return ResourceManager.GetString("AddWindowsCredentialUserNameCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The password field cannot be empty..
+        /// </summary>
+        public static string AddWindowsCredentialValidationEmptyPassword {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialValidationEmptyPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The username cannot be empty..
+        /// </summary>
+        public static string AddWindowsCredentialValidationEmptyUser {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialValidationEmptyUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Windows Credential.
+        /// </summary>
+        public static string AddWindowsCredentialValidationErrorTtitle {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialValidationErrorTtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The user name contains invalid characters {0}.
+        /// </summary>
+        public static string AddWindowsCredentialValidationInvalidChars {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialValidationInvalidChars", resourceCulture);
             }
         }
         

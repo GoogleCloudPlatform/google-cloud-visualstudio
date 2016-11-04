@@ -876,4 +876,20 @@
     <value>The password for {0} has been set:</value>
     <comment>Message shown when a new password is generated. {0} is the user name.</comment>
   </data>
+  <data name="AddWindowsCredentialValidationEmptyPassword" xml:space="preserve">
+    <value>The password field cannot be empty.</value>
+    <comment>Validation error for when there's no password.</comment>
+  </data>
+  <data name="AddWindowsCredentialValidationEmptyUser" xml:space="preserve">
+    <value>The username cannot be empty.</value>
+    <comment>Validation error for when there's no user name.</comment>
+  </data>
+  <data name="AddWindowsCredentialValidationInvalidChars" xml:space="preserve">
+    <value>The user name contains invalid characters {0}</value>
+    <comment>Validation error fo when there are invalid chars. {0} are the invalid chars.</comment>
+  </data>
+  <data name="AddWindowsCredentialValidationErrorTtitle" xml:space="preserve">
+    <value>Add Windows Credential</value>
+    <comment>Title for the validation error dialogs in the add windows credential dialog.</comment>
+  </data>
 </root>

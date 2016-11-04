@@ -139,8 +139,8 @@ namespace GoogleCloudExtension.AddWindowsCredential
             if (String.IsNullOrEmpty(UserName))
             {
                 UserPromptUtils.ErrorPrompt(
-                    "The username cannot be empty.",
-                    Resources.ResetPasswordWindowTitle);
+                    Resources.AddWindowsCredentialValidationEmptyUser,
+                    Resources.AddWindowsCredentialValidationErrorTtitle);
                 return false;
             }
 
@@ -148,16 +148,16 @@ namespace GoogleCloudExtension.AddWindowsCredential
             if (invalidChars.Length > 0)
             {
                 UserPromptUtils.ErrorPrompt(
-                    $"The user name contains invalid characters \"{new string(invalidChars)}\"",
-                    Resources.ResetPasswordWindowTitle);
+                    String.Format(Resources.AddWindowsCredentialValidationInvalidChars, new string(invalidChars)),
+                    Resources.AddWindowsCredentialValidationErrorTtitle);
                 return false;
             }
 
             if (ManualPassword && String.IsNullOrEmpty(Password))
             {
                 UserPromptUtils.ErrorPrompt(
-                    "The password field cannot be empty.",
-                    Resources.ResetPasswordWindowTitle);
+                    Resources.AddWindowsCredentialValidationEmptyPassword,
+                    Resources.AddWindowsCredentialValidationErrorTtitle);
                 return false;
             }
 
