@@ -16,6 +16,8 @@ using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
+using System.Linq;
+using System.Windows.Input;
 
 namespace GoogleCloudExtension.AddWindowsCredential
 {
@@ -24,6 +26,10 @@ namespace GoogleCloudExtension.AddWindowsCredential
     /// </summary>
     public class AddWindowsCredentialViewModel : ViewModelBase
     {
+        // These are the chars that must not be present in a Windows username.
+        // This list was obtained from https://technet.microsoft.com/en-us/library/bb726984.aspx
+        private const string UserNameInvalidChars = @"""/\[]:;|=,+*?<>";
+
         private string _userName;
         private string _password;
         private bool _generatePassword = true;
@@ -41,7 +47,6 @@ namespace GoogleCloudExtension.AddWindowsCredential
             {
                 SetValueAndRaise(ref _userName, value);
                 RaisePropertyChanged(nameof(HasUserName));
-                UpdateSaveCommand();
             }
         }
 
@@ -55,7 +60,6 @@ namespace GoogleCloudExtension.AddWindowsCredential
             {
                 SetValueAndRaise(ref _password, value);
                 RaisePropertyChanged(nameof(HasPassword));
-                UpdateSaveCommand();
             }
         }
 
@@ -68,7 +72,6 @@ namespace GoogleCloudExtension.AddWindowsCredential
             set
             {
                 SetValueAndRaise(ref _generatePassword, value);
-                UpdateSaveCommand();
             }
         }
 
@@ -81,7 +84,6 @@ namespace GoogleCloudExtension.AddWindowsCredential
             set
             {
                 SetValueAndRaise(ref _manualPassword, value);
-                UpdateSaveCommand();
             }
         }
 
@@ -98,7 +100,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
         /// <summary>
         /// The command to execute to accept the changes.
         /// </summary>
-        public ProtectedCommand SaveCommand { get; }
+        public ICommand SaveCommand { get; }
 
         public AddWindowsCredentialResult Result { get; private set; }
 
@@ -107,11 +109,16 @@ namespace GoogleCloudExtension.AddWindowsCredential
             _owner = owner;
             _instance = instance;
 
-            SaveCommand = new ProtectedCommand(OnSaveCommand, canExecuteCommand: false);
+            SaveCommand = new ProtectedCommand(OnSaveCommand);
         }
 
         private void OnSaveCommand()
         {
+            if (!Validate())
+            {
+                return;
+            }
+
             if (ManualPassword)
             {
                 Debug.WriteLine("The user is supplying the password.");
@@ -127,11 +134,35 @@ namespace GoogleCloudExtension.AddWindowsCredential
             return;
         }
 
-        private void UpdateSaveCommand()
+        private bool Validate()
         {
-            // The Ok command should be enabled if the user name was specified and if (optionally)
-            // the password is specified.
-            SaveCommand.CanExecuteCommand = HasUserName && (!ManualPassword || HasPassword);
+            if (String.IsNullOrEmpty(UserName))
+            {
+                UserPromptUtils.ErrorPrompt(
+                    "The username cannot be empty.",
+                    Resources.ResetPasswordWindowTitle);
+                return false;
+            }
+
+            var invalidChars = UserName.Intersect(UserNameInvalidChars).ToArray();
+            if (invalidChars.Length > 0)
+            {
+                UserPromptUtils.ErrorPrompt(
+                    $"The user name contains invalid characters \"{new string(invalidChars)}\"",
+                    Resources.ResetPasswordWindowTitle);
+                return false;
+            }
+
+            if (ManualPassword && String.IsNullOrEmpty(Password))
+            {
+                UserPromptUtils.ErrorPrompt(
+                    "The password field cannot be empty.",
+                    Resources.ResetPasswordWindowTitle);
+                return false;
+            }
+
+            // Valid entry.
+            return true;
         }
     }
 }

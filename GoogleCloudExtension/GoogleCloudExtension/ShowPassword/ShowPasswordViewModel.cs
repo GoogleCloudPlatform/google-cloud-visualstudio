@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.Utils;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -25,6 +26,7 @@ namespace GoogleCloudExtension.ShowPassword
     public class ShowPasswordViewModel : ViewModelBase
     {
         private readonly ShowPasswordWindow.Options _options;
+        private bool _showCopyFeedback;
 
         /// <summary>
         /// The password to show.
@@ -41,6 +43,15 @@ namespace GoogleCloudExtension.ShowPassword
         /// </summary>
         public ICommand CopyCommand { get; }
 
+        /// <summary>
+        /// Whether to show the copy feedback or not.
+        /// </summary>
+        public bool ShowCopyFeedback
+        {
+            get { return _showCopyFeedback; }
+            set { SetValueAndRaise(ref _showCopyFeedback, value); }
+        }
+
         public ShowPasswordViewModel(ShowPasswordWindow.Options options)
         {
             _options = options;
@@ -48,11 +59,18 @@ namespace GoogleCloudExtension.ShowPassword
             CopyCommand = new ProtectedCommand(OnCopyCommand);
         }
 
-        private void OnCopyCommand()
+        private async void OnCopyCommand()
         {
             try
             {
                 Clipboard.SetText(Password);
+
+                if (!ShowCopyFeedback)
+                {
+                    ShowCopyFeedback = true;
+                    await Task.Delay(2000);
+                    ShowCopyFeedback = false;
+                }
             }
             catch
             {
