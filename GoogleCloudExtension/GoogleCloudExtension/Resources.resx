@@ -598,11 +598,11 @@
     <comment>OAUTH flow window title.</comment>
   </data>
   <data name="PortManagerWindowCaption" xml:space="preserve">
-    <value>Manage Firewall Ports</value>
+    <value>Firewall Options</value>
     <comment>Caption for the port manager dialog.</comment>
   </data>
   <data name="PortManagerWindowMessage" xml:space="preserve">
-    <value>Set Firewall rules and tags to enable traffic for the instance</value>
+    <value>Firewall rules:</value>
     <comment>Main message in the port manager dialog.</comment>
   </data>
   <data name="AuthorizedNetworksWindowCaption" xml:space="preserve">
@@ -899,8 +899,31 @@
     <value>Windows credentials are used to log in to a Windows machine instance.</value>
     <comment>Tooltip shown in the manage windows credentials window.</comment>
   </data>
+  <data name="PortManagerDisplayStringFormat" xml:space="preserve">
+    <value>{0} ({1} {2})</value>
+    <comment>Format string to compose the display string for a prot. {0} is the port description, {1} is the protocol name, {2} is the port number.</comment>
+  </data>
+  <data name="PortManagerHttpDescription" xml:space="preserve">
+    <value>Allow HTTP traffic to the instance</value>
+    <comment>Description for the HTTP port.</comment>
+  </data>
+  <data name="PortManagerHttpsDescription" xml:space="preserve">
+    <value>Allow HTTPS traffic to the instance</value>
+    <comment>Description for the HTTPS port.</comment>
+  </data>
+  <data name="PortManagerRdpDescription" xml:space="preserve">
+    <value>Allow Remote Desktop connections to the instance</value>
+    <comment>Description for the RDP port.</comment>
+  </data>
+  <data name="PortManagerWebDeployDescription" xml:space="preserve">
+    <value>Allow publishing with WebDeploy to the instance</value>
+    <comment>Description for the WebDeploy port.</comment>
+  </data>
   <data name="ShowPasswordCopiedMessage" xml:space="preserve">
     <value>Password copied to clipboard.</value>
     <comment>Message shown in the popup for the copy operation.</comment>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
   </data>
 </root>

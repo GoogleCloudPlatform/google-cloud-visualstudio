@@ -1465,7 +1465,52 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Firewall Ports.
+        ///   Looks up a localized string similar to {0} ({1} {2}).
+        /// </summary>
+        public static string PortManagerDisplayStringFormat {
+            get {
+                return ResourceManager.GetString("PortManagerDisplayStringFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow HTTP traffic to the instance.
+        /// </summary>
+        public static string PortManagerHttpDescription {
+            get {
+                return ResourceManager.GetString("PortManagerHttpDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow HTTPS traffic to the instance.
+        /// </summary>
+        public static string PortManagerHttpsDescription {
+            get {
+                return ResourceManager.GetString("PortManagerHttpsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow Remote Desktop connections to the instance.
+        /// </summary>
+        public static string PortManagerRdpDescription {
+            get {
+                return ResourceManager.GetString("PortManagerRdpDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow publishing with WebDeploy to the instance.
+        /// </summary>
+        public static string PortManagerWebDeployDescription {
+            get {
+                return ResourceManager.GetString("PortManagerWebDeployDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Firewall Options.
         /// </summary>
         public static string PortManagerWindowCaption {
             get {
@@ -1474,7 +1519,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Set Firewall rules and tags to enable traffic for the instance.
+        ///   Looks up a localized string similar to Firewall rules:.
         /// </summary>
         public static string PortManagerWindowMessage {
             get {
@@ -1659,6 +1704,15 @@ namespace GoogleCloudExtension {
         public static string ShowPasswordWindowTitle {
             get {
                 return ResourceManager.GetString("ShowPasswordWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
             }
         }
         

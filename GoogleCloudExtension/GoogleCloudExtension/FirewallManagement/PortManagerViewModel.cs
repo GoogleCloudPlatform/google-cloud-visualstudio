@@ -59,10 +59,10 @@ namespace GoogleCloudExtension.FirewallManagement
         /// </summary>
         private static readonly IList<PortInfo> s_supportedPorts = new List<PortInfo>
         {
-            new PortInfo("HTTP", 80),
-            new PortInfo("HTTPS", 443),
-            new PortInfo("RDP", 3389),
-            new PortInfo("WebDeploy", 8172),
+            new PortInfo("HTTP", 80, description: Resources.PortManagerHttpDescription),
+            new PortInfo("HTTPS", 443, description: Resources.PortManagerHttpsDescription),
+            new PortInfo("RDP", 3389, description: Resources.PortManagerRdpDescription),
+            new PortInfo("WebDeploy", 8172, description: Resources.PortManagerWebDeployDescription),
         };
 
         private readonly PortManagerWindow _owner;
@@ -100,7 +100,7 @@ namespace GoogleCloudExtension.FirewallManagement
 
             foreach (var entry in Ports.Where(x => x.Changed))
             {
-                var firewallPort = new FirewallPort(entry.PortInfo.GetTag(_instance), entry.Port);
+                var firewallPort = new FirewallPort(entry.PortInfo.GetTag(_instance), entry.PortInfo.Port);
                 if (entry.IsEnabled)
                 {
                     portsToEnable.Add(firewallPort);

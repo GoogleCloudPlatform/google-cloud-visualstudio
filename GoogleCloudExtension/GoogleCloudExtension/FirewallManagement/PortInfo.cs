@@ -31,10 +31,16 @@ namespace GoogleCloudExtension.FirewallManagement
         /// </summary>
         public int Port { get; }
 
-        public PortInfo(string name, int port)
+        /// <summary>
+        /// The tooltip to display for this port.
+        /// </summary>
+        public string Description { get; }
+
+        public PortInfo(string name, int port, string description = null)
         {
             Name = name;
             Port = port;
+            Description = description;
         }
 
         /// <summary>
