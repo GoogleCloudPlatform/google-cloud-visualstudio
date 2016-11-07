@@ -649,5 +649,28 @@
     <Style x:Key="CommonButtonStandardStyle" BasedOn="{StaticResource CommonButtonStyle}" TargetType="{x:Type Button}">
         <Setter Property="Width" Value="75px" />
     </Style>
+    
+    <!-- Common hyperlink style. -->
+    
+    <!-- Common hyperlink colors. -->
+    <SolidColorBrush x:Key="CommonHyperlinkColors.Normal" Color="Blue" />
+    <SolidColorBrush x:Key="CommonHyperlinkColors.Disabled" Color="Gray" />
+    <SolidColorBrush x:Key="CommonHyperlinkColors.MouseOver" Color="Blue" />
+
+    <Style x:Key="CommonHyperlinkStyle" TargetType="{x:Type Hyperlink}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter Property="Foreground" Value="{StaticResource CommonHyperlinkColors.MouseOver}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Foreground" Value="{StaticResource CommonHyperlinkColors.Disabled}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="true">
+                <Setter Property="Cursor" Value="Hand" />
+            </Trigger>
+        </Style.Triggers>
+        <Setter Property="Foreground" Value="{StaticResource CommonHyperlinkColors.Normal}" />
+        <Setter Property="TextDecorations" Value="Underline" />
+    </Style>
 
 </ResourceDictionary>

@@ -28,7 +28,7 @@
 
         <TextBlock TextWrapping="Wrap" Style="{StaticResource CommonTextStyle}">
             <TextBlock Text="{Binding Text}" TextWrapping="Wrap"/>
-            <Hyperlink Command="{Binding NavigateCommand}">
+            <Hyperlink Command="{Binding NavigateCommand}" Style="{StaticResource CommonHyperlinkStyle}">
                 <TextBlock Text="{Binding LinkCaption}" />
             </Hyperlink>
         </TextBlock>
