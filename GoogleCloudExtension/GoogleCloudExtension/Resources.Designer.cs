@@ -1393,7 +1393,16 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Credentials for {0}. Windows credentials are used to log in to a Windows machine instance..
+        ///   Looks up a localized string similar to Windows credentials are used to log in to a Windows machine instance..
+        /// </summary>
+        public static string ManageWindowsCredentialsToolTip {
+            get {
+                return ResourceManager.GetString("ManageWindowsCredentialsToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Credentials for {0}. .
         /// </summary>
         public static string ManageWindowsCredentialsWindowMessage {
             get {

@@ -13,6 +13,12 @@
     <Style x:Key="CommonTextStyle" BasedOn="{StaticResource CommonTextStyleBase}" TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground" Value="Black" />
     </Style>
+    
+    <!-- Text style to be used inside of a tooltip. -->
+    <Style x:Key="CommonToolTipTextStyle" BasedOn="{StaticResource CommonTextStyle}" TargetType="{x:Type TextBlock}">
+        <Setter Property="MaxWidth" Value="200px" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
 
     <!-- Label style. -->
     <Style x:Key="CommonLabelStyle" BasedOn="{StaticResource CommonTextStyleBase}" TargetType="{x:Type Label}">

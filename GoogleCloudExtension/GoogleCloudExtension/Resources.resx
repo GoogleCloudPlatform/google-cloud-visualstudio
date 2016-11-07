@@ -774,7 +774,7 @@
     <comment>The caption or the show credentials button in the dialog.</comment>
   </data>
   <data name="ManageWindowsCredentialsWindowMessage" xml:space="preserve">
-    <value>_Credentials for {0}. Windows credentials are used to log in to a Windows machine instance.</value>
+    <value>_Credentials for {0}. </value>
     <comment>Message at the top of the Manage Windows Credentials dialog. The {0} placeholder is the name of the instance.</comment>
   </data>
   <data name="ManageWindowsCredentialsWindowTitle" xml:space="preserve">
@@ -894,6 +894,10 @@
   </data>
   <data name="AddWindowsCredentialToolTip" xml:space="preserve">
     <value>Enter a user name. If the user name already exists as an account on the Windows instance, then you can reset the password or enter the current one.</value>
+  </data>
+  <data name="ManageWindowsCredentialsToolTip" xml:space="preserve">
+    <value>Windows credentials are used to log in to a Windows machine instance.</value>
+    <comment>Tooltip shown in the manage windows credentials window.</comment>
   </data>
   <data name="ShowPasswordCopiedMessage" xml:space="preserve">
     <value>Password copied to clipboard.</value>
