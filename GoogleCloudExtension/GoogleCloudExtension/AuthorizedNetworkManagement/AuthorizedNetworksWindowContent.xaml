@@ -7,12 +7,21 @@
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance {x:Type local:AuthorizedNetworksViewModel}}"
-             d:DesignHeight="500" d:DesignWidth="450">
+             d:DataContext="{d:DesignInstance {x:Type local:AuthorizedNetworksViewModel}}">
 
     <UserControl.Resources>
-        <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <BooleanToVisibilityConverter x:Key="BoolToVis" />
+        </ResourceDictionary>
     </UserControl.Resources>
+
+    <UserControl.Style>
+        <Binding Source="{StaticResource CommonDialogStyleDynamicLarge}" />
+    </UserControl.Style>
 
     <theming:CommonDialogWindowBaseContent>
         <theming:CommonDialogWindowBaseContent.Buttons>
@@ -24,50 +33,50 @@
 
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="20px" />
-                <RowDefinition Height="80px"/>
+                <RowDefinition Height="auto" />
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <TextBlock TextWrapping="Wrap" Margin="3,0,3,5"
-                       Text="{x:Static ext:Resources.AuthorizedNetworksWindowMessage}"/>
+            <!-- Header of the dialog. -->
+            <StackPanel>
+                <Label Content="{x:Static ext:Resources.AuthorizedNetworksWindowMessage}"
+                   Style="{StaticResource CommonLabelStyle}" />
 
-            <Border Grid.Row="1" BorderBrush="Black" BorderThickness="1px">
-                <Grid Background="#FFECECEC">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="50px" />
-                        <RowDefinition Height="25px"/>
-                    </Grid.RowDefinitions>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*" />
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+                <GroupBox Grid.Row="1"
+                      Header="Network"
+                      Style="{StaticResource CommonGroupBoxStyle}">
+                    <StackPanel>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
 
-                        <TextBlock Margin="5px, 2px" 
-                                   TextWrapping="Wrap"  VerticalAlignment="Center"  
-                                   Text="{x:Static ext:Resources.AuthorizedNetworksWindowNameTextBoxTitle}"/>
-                        <TextBox Grid.Column="1" Margin="5px, 2px" 
+                            <TextBlock Margin="5px, 2px" 
+                                       TextWrapping="Wrap"  VerticalAlignment="Center"  
+                                       Text="{x:Static ext:Resources.AuthorizedNetworksWindowNameTextBoxTitle}"/>
+                            <TextBox Grid.Column="1" Margin="5px, 2px" 
                                  Text="{Binding NetworkName, Mode=TwoWay}" Height="20px"/>
 
-                        <TextBlock Grid.Row="1" Margin="5px, 2px" 
+                            <TextBlock Grid.Row="1" Margin="5px, 2px" 
                                    TextWrapping="Wrap"  VerticalAlignment="Center"  
                                    Text="{x:Static ext:Resources.AuthorizedNetworksWindowValueTextBoxTitle}"/>
-                        <TextBox Grid.Row="1" Grid.Column="1" Margin="5px, 2px"
+                            <TextBox Grid.Row="1" Grid.Column="1" Margin="5px, 2px"
                                  Text="{Binding NetworkValue, Mode=TwoWay}"  Height="20px" />
-                    </Grid>
+                        </Grid>
 
-                    <Grid Grid.Row="1">
-                        <Button Margin="5px, 2px" Width="Auto" Command="{Binding AddNetwork}"
+                        <Button Command="{Binding AddNetwork}"
                                 Content="{x:Static ext:Resources.AuthorizedNetworksWindowAddNetworkButton}"
-                                HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Grid>
-                </Grid>
-            </Border>
+                                HorizontalAlignment="Right"
+                                Margin="0,18,0,0"
+                                Style="{StaticResource CommonButtonDynamicStyle}"/>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
 
             <Grid Grid.Row="2" Margin="3px, 5px">
                 <ListView ItemsSource="{Binding Networks}">
