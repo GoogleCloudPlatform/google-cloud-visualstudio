@@ -546,11 +546,11 @@
     <comment>The title for the prompt indicating the account already exists.</comment>
   </data>
   <data name="ManageAccountsAddAccountButtonCaption" xml:space="preserve">
-    <value>Add...</value>
+    <value>_Add account</value>
     <comment>Caption for the add account button.</comment>
   </data>
   <data name="ManageAccountsChooseAccountMessage" xml:space="preserve">
-    <value>Choose account:</value>
+    <value>_Choose account:</value>
     <comment>The message at the top of the manage accounts window.</comment>
   </data>
   <data name="ManageAccountsCurrentAccountMessage" xml:space="preserve">
@@ -558,7 +558,7 @@
     <comment>Message shown in the current account.</comment>
   </data>
   <data name="ManageAccountsDeleteAccountButtonCaption" xml:space="preserve">
-    <value>Delete</value>
+    <value>_Delete</value>
     <comment>Caption for the delete account button.</comment>
   </data>
   <data name="ManageAccountsDeleteAccountPromptMessage" xml:space="preserve">
@@ -570,7 +570,7 @@
     <comment>Title for the confirmation prompt for deleting an account.</comment>
   </data>
   <data name="ManageAccountsSetAsCurrentAccountButtonCaption" xml:space="preserve">
-    <value>Set As Current</value>
+    <value>_Set current</value>
     <comment>Caption for the set as current account button.</comment>
   </data>
   <data name="ManageAccountsWindowTitle" xml:space="preserve">
