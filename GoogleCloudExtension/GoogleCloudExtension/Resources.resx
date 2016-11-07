@@ -514,11 +514,11 @@
     <comment>Caption shown when the authorized networks are being updated.</comment>
   </data>
   <data name="CloudExplorerSqlOpenAddDataConnectionMenuHeader" xml:space="preserve">
-    <value>Add Data Connection</value>
+    <value>Add Data Connection...</value>
     <comment>Menu header for the open add data connection dialog menu item.</comment>
   </data>
   <data name="CloudExplorerSqlManageAuthorizedNetworksMenuHeader" xml:space="preserve">
-    <value>Manage Authorized Networks</value>
+    <value>Manage authorized networks...</value>
     <comment>Menu header for the option to manage authorized networks.</comment>
   </data>
   <data name="CloudExplorerSqlRootNodeCaption" xml:space="preserve">

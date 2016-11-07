@@ -1159,7 +1159,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Authorized Networks.
+        ///   Looks up a localized string similar to Manage authorized networks....
         /// </summary>
         public static string CloudExplorerSqlManageAuthorizedNetworksMenuHeader {
             get {
@@ -1177,7 +1177,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Data Connection.
+        ///   Looks up a localized string similar to Add Data Connection....
         /// </summary>
         public static string CloudExplorerSqlOpenAddDataConnectionMenuHeader {
             get {
