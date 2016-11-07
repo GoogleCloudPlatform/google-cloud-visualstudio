@@ -12,6 +12,7 @@
     <!-- Text style. -->
     <Style x:Key="CommonTextStyle" BasedOn="{StaticResource CommonTextStyleBase}" TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground" Value="Black" />
+        <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
     
     <!-- Text style to be used inside of a tooltip. -->
@@ -180,6 +181,16 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+    
+    <!-- Variations on the style of listboxes. -->
+    
+    <!-- Medium sized listbox item. -->
+    <Style x:Key="CommonMediumListItemStyle" BasedOn="{StaticResource CommonListItemContainerStyle}" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="Height" Value="35px" />
+    </Style>
+    <Style x:Key="CommonMediumListBoxStyle" BasedOn="{StaticResource CommonListBoxStyle}" TargetType="{x:Type ListBox}">
+        <Setter Property="ItemContainerStyle" Value="{StaticResource CommonMediumListItemStyle}" />
     </Style>
 
     <!-- Style for all GroupBox instances. -->

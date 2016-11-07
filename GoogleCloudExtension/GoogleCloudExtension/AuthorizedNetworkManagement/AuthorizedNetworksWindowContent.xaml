@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.AuthorizedNetworkManagement"
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type local:AuthorizedNetworksViewModel}}">
 
@@ -14,8 +15,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <BooleanToVisibilityConverter x:Key="BoolToVis" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -23,7 +22,7 @@
         <Binding Source="{StaticResource CommonDialogStyleDynamicLarge}" />
     </UserControl.Style>
 
-    <theming:CommonDialogWindowBaseContent>
+    <theming:CommonDialogWindowBaseContent HasBanner="True">
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiSaveButtonCaption}"
                                       IsDefault="True"
@@ -34,39 +33,51 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
             <!-- Header of the dialog. -->
-            <StackPanel>
-                <Label Content="{x:Static ext:Resources.AuthorizedNetworksWindowMessage}"
-                   Style="{StaticResource CommonLabelStyle}" />
-
+            <StackPanel Margin="0,0,0,18">
                 <GroupBox Grid.Row="1"
-                      Header="Network"
-                      Style="{StaticResource CommonGroupBoxStyle}">
+                          Header="Network"
+                          Style="{StaticResource CommonGroupBoxStyle}">
                     <StackPanel>
                         <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*" />
-                                <RowDefinition Height="*"/>
-                            </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="0.5*" />
+                                <ColumnDefinition Width="0.5*" />
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Margin="5px, 2px" 
-                                       TextWrapping="Wrap"  VerticalAlignment="Center"  
-                                       Text="{x:Static ext:Resources.AuthorizedNetworksWindowNameTextBoxTitle}"/>
-                            <TextBox Grid.Column="1" Margin="5px, 2px" 
-                                 Text="{Binding NetworkName, Mode=TwoWay}" Height="20px"/>
+                            <Label Margin="0,0,0,5" 
+                                   VerticalAlignment="Center"
+                                   Content="{x:Static ext:Resources.AuthorizedNetworksWindowNameTextBoxTitle}"
+                                   Target="{Binding ElementName=_networkName}"
+                                   Style="{StaticResource CommonLabelStyle}" />
+                            <TextBox x:Name="_networkName"
+                                     Grid.Column="1"
+                                     Margin="0,0,0,5"
+                                     Text="{Binding NetworkName, Mode=TwoWay}"
+                                     Style="{StaticResource CommonTextBoxStyle}"/>
+                        </Grid>
 
-                            <TextBlock Grid.Row="1" Margin="5px, 2px" 
-                                   TextWrapping="Wrap"  VerticalAlignment="Center"  
-                                   Text="{x:Static ext:Resources.AuthorizedNetworksWindowValueTextBoxTitle}"/>
-                            <TextBox Grid.Row="1" Grid.Column="1" Margin="5px, 2px"
-                                 Text="{Binding NetworkValue, Mode=TwoWay}"  Height="20px" />
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.5*" />
+                                <ColumnDefinition Width="0.5*" />
+                            </Grid.ColumnDefinitions>
+
+                            <Label Margin="0,0,0,5" 
+                                   VerticalAlignment="Center"
+                                   Target="{Binding ElementName=_networkValue}"
+                                   Content="{x:Static ext:Resources.AuthorizedNetworksWindowValueTextBoxTitle}"
+                                   Style="{StaticResource CommonLabelStyle}" />
+                            <TextBox x:Name="_networkValue"
+                                     Grid.Column="1"
+                                     Margin="0,0,0,5"
+                                     Text="{Binding NetworkValue, Mode=TwoWay}"
+                                     Style="{StaticResource CommonTextBoxStyle}" />
+
                         </Grid>
 
                         <Button Command="{Binding AddNetwork}"
@@ -78,33 +89,36 @@
                 </GroupBox>
             </StackPanel>
 
-            <Grid Grid.Row="2" Margin="3px, 5px">
-                <ListView ItemsSource="{Binding Networks}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Height="25px">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
+            <Label Grid.Row="1"
+                   Content="{x:Static ext:Resources.AuthorizedNetworksWindowMessage}"
+                   Target="{Binding ElementName=_networks}"
+                   Style="{StaticResource CommonLabelStyle}" />
+            <ListBox x:Name="_networks"
+                     Grid.Row="2"
+                     ItemsSource="{Binding Networks}"
+                     Height="200"
+                     Style="{StaticResource CommonMediumListBoxStyle}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding DisplayString}"
+                                       Margin="0,0,5,0"
+                                       VerticalAlignment="Center"
+                                       TextDecorations="{Binding Deleted, Converter={utils:BooleanConverter TrueValue='Strikethrough'}}"
+                                       Style="{StaticResource CommonTextStyle}" />
 
-                                <Button Width="75px" Margin="1px" Command="{Binding DeleteCommand}" 
-                                            Content="{x:Static ext:Resources.UiDeleteButtonCaption}"
-                                            Visibility="{Binding Path=NotDeleted, Converter={StaticResource BoolToVis}}"/>
-                                <Button Width="75px"  Margin="1px" Command="{Binding UndoDeleteCommand}" 
-                                            Content="{x:Static ext:Resources.UiUndoButtonCaption}"
-                                            Visibility="{Binding Path=Deleted, Converter={StaticResource BoolToVis}}"/>
-
-                                <TextBlock Text="{Binding DisplayString}" Grid.Column="1" VerticalAlignment="Center" Margin="1px"
-                                                Visibility="{Binding Path=NotDeleted, Converter={StaticResource BoolToVis}}"/>
-                                <TextBlock Text="{Binding DisplayString}" Grid.Column="1" VerticalAlignment="Center" Margin="1px" 
-                                               TextDecorations="Strikethrough" 
-                                               Visibility="{Binding Path=Deleted, Converter={StaticResource BoolToVis}}"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </Grid>
+                            <Button Command="{Binding DeleteCommand}"
+                                    Content="{x:Static ext:Resources.UiDeleteButtonCaption}"
+                                    Visibility="{Binding Path=NotDeleted, Converter={utils:VisibilityConverter}}"
+                                    Style="{StaticResource CommonButtonDynamicStyle}" />
+                            <Button Command="{Binding UndoDeleteCommand}" 
+                                    Content="{x:Static ext:Resources.UiUndoButtonCaption}"
+                                    Visibility="{Binding Path=Deleted, Converter={utils:VisibilityConverter}}"
+                                    Style="{StaticResource CommonButtonDynamicStyle}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
     </theming:CommonDialogWindowBaseContent>
 </UserControl>
