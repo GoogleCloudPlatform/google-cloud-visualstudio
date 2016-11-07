@@ -1330,6 +1330,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}).
+        /// </summary>
+        public static string ManageAccountsDisplayStringFormat {
+            get {
+                return ResourceManager.GetString("ManageAccountsDisplayStringFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Set As Current.
         /// </summary>
         public static string ManageAccountsSetAsCurrentAccountButtonCaption {

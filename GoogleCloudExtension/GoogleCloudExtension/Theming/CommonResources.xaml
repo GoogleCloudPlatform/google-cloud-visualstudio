@@ -192,6 +192,14 @@
     <Style x:Key="CommonMediumListBoxStyle" BasedOn="{StaticResource CommonListBoxStyle}" TargetType="{x:Type ListBox}">
         <Setter Property="ItemContainerStyle" Value="{StaticResource CommonMediumListItemStyle}" />
     </Style>
+    
+    <!-- Large sized listobx item. -->
+    <Style x:Key="CommonLargeListItemStyle" BasedOn="{StaticResource CommonListItemContainerStyle}" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="Height" Value="70px" />
+    </Style>
+    <Style x:Key="CommonLargeListBoxStyle" BasedOn="{StaticResource CommonListBoxStyle}" TargetType="{x:Type ListBox}">
+        <Setter Property="ItemContainerStyle" Value="{StaticResource CommonLargeListItemStyle}" />
+    </Style>
 
     <!-- Style for all GroupBox instances. -->
     <Style x:Key="CommonGroupBoxStyle" TargetType="{x:Type GroupBox}">

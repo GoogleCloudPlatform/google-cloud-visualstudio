@@ -891,6 +891,10 @@
   <data name="AddWindowsCredentialToolTip" xml:space="preserve">
     <value>Enter a user name. If the user name already exists as an account on the Windows instance, then you can reset the password or enter the current one.</value>
   </data>
+  <data name="ManageAccountsDisplayStringFormat" xml:space="preserve">
+    <value>{0} ({1})</value>
+    <comment>Format for the display string for an account. {0} is the user name, {1} is the email address.</comment>
+  </data>
   <data name="ManageWindowsCredentialsToolTip" xml:space="preserve">
     <value>Windows credentials are used to log in to a Windows machine instance.</value>
     <comment>Tooltip shown in the manage windows credentials window.</comment>
