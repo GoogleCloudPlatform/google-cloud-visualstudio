@@ -789,10 +789,6 @@
     <value>Start Terminal Server session</value>
     <comment>Title for the manage terminal server window.</comment>
   </data>
-  <data name="WindowsCredentialsChooserButtonToolTip" xml:space="preserve">
-    <value>Manage Windows Credentials</value>
-    <comment>Tooltip for the manage credentials button in the terminal server window.</comment>
-  </data>
   <data name="WindowsCredentialsChooserNoCredentialsFoundMessage" xml:space="preserve">
     <value>No credentials found...</value>
     <comment>Message shown in the dropdown when no credentials are found.</comment>
@@ -826,7 +822,7 @@
     <comment>Message shown to the user when the password for the Windows user is being set. {0} is the user name.</comment>
   </data>
   <data name="WindowsCredentialsChooserManageCredentialsCaption" xml:space="preserve">
-    <value>Manage credentials</value>
+    <value>Manage Windows credentials</value>
     <comment>Caption used in the hyperlink shown in the Windows credentials chooser dialog.</comment>
   </data>
   <data name="ExceptionPromptMessage" xml:space="preserve">
@@ -925,5 +921,9 @@
   </data>
   <data name="String1" xml:space="preserve">
     <value />
+  </data>
+  <data name="UiOpenButtonCaption" xml:space="preserve">
+    <value>_Open</value>
+    <comment>Caption for the open button in dialogs.</comment>
   </data>
 </root>

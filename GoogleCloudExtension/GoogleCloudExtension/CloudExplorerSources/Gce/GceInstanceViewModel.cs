@@ -242,6 +242,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 {
                     Title = Resources.CloudExplorerGceSavePubSettingsCredentialsTitle,
                     Message = Resources.CloudExplorerGceSavePubSettingsCredentialsMessage,
+                    ActionButtonCaption = Resources.UiSaveButtonCaption
                 });
             if (credentials == null)
             {
@@ -372,7 +373,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 new WindowsCredentialsChooserWindow.Options
                 {
                     Title = Resources.TerminalServerManagerWindowTitle,
-                    Message = Resources.TerminalServerManagerWindowMessage
+                    Message = Resources.TerminalServerManagerWindowMessage,
+                    ActionButtonCaption = Resources.UiOpenButtonCaption
                 });
             if (credentials != null)
             {

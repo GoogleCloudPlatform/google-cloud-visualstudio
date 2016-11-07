@@ -46,6 +46,11 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
         public string Message => _options.Message;
 
         /// <summary>
+        /// The caption for the aciton button.
+        /// </summary>
+        public string ActionButtonCaption => _options.ActionButtonCaption;
+
+        /// <summary>
         /// The list of credentials for the current instance.
         /// </summary>
         public IEnumerable<WindowsInstanceCredentials> InstanceCredentials
@@ -66,7 +71,7 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
         /// <summary>
         /// The command to execute in the OK button.
         /// </summary>
-        public ProtectedCommand OkCommand { get; }
+        public ProtectedCommand ActionCommand { get; }
 
         /// <summary>
         /// The command to exectue from the manage credentials button.
@@ -96,7 +101,7 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
             _options = options;
             _owner = owner;
 
-            OkCommand = new ProtectedCommand(OnOkCommand, canExecuteCommand: false);
+            ActionCommand = new ProtectedCommand(OnActionCommand, canExecuteCommand: false);
             ManageCredentialsCommand = new ProtectedCommand(OnManageCredentialsCommand);
 
             LoadCredentials();
@@ -120,11 +125,11 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
             {
                 HasCredentials = true;
             }
-            OkCommand.CanExecuteCommand = HasCredentials;
+            ActionCommand.CanExecuteCommand = HasCredentials;
             CurrentCredentials = InstanceCredentials.FirstOrDefault();
         }
 
-        private void OnOkCommand()
+        private void OnActionCommand()
         {
             Result = CurrentCredentials;
             _owner.Close();

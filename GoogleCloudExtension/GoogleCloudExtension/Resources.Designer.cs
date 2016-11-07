@@ -1789,6 +1789,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Open.
+        /// </summary>
+        public static string UiOpenButtonCaption {
+            get {
+                return ResourceManager.GetString("UiOpenButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open in the console.
         /// </summary>
         public static string UiOpenOnCloudConsoleMenuHeader {
@@ -1870,16 +1879,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Windows Credentials.
-        /// </summary>
-        public static string WindowsCredentialsChooserButtonToolTip {
-            get {
-                return ResourceManager.GetString("WindowsCredentialsChooserButtonToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Manage credentials.
+        ///   Looks up a localized string similar to Manage Windows credentials.
         /// </summary>
         public static string WindowsCredentialsChooserManageCredentialsCaption {
             get {
