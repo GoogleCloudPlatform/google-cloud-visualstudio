@@ -69,7 +69,7 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
         }
 
         /// <summary>
-        /// The command to execute in the OK button.
+        /// The command to execute in the action button.
         /// </summary>
         public ProtectedCommand ActionCommand { get; }
 
