@@ -193,7 +193,7 @@
         <Setter Property="ItemContainerStyle" Value="{StaticResource CommonMediumListItemStyle}" />
     </Style>
     
-    <!-- Large sized listobx item. -->
+    <!-- Large sized listbox item. -->
     <Style x:Key="CommonLargeListItemStyle" BasedOn="{StaticResource CommonListItemContainerStyle}" TargetType="{x:Type ListBoxItem}">
         <Setter Property="Height" Value="70px" />
     </Style>
