@@ -250,7 +250,7 @@
     <comment>The description of the zone property for a GCE instance.</comment>
   </data>
   <data name="CloudExplorerGceManageFirewallPortsMenuHeader" xml:space="preserve">
-    <value>Manage Firewall Ports...</value>
+    <value>Firewall options...</value>
     <comment>Header for the manage firewall ports menu item.</comment>
   </data>
   <data name="CloudExplorerGceNewAspNetInstanceMenuHeader" xml:space="preserve">
@@ -274,11 +274,11 @@
     <comment>The tooltip for the filter button.</comment>
   </data>
   <data name="CloudExplorerGceOpenTerminalSessionMenuHeader" xml:space="preserve">
-    <value>Open Terminal Server Session...</value>
+    <value>Open terminal session...</value>
     <comment>Header for the open terminal session menu item.</comment>
   </data>
   <data name="CloudExplorerGceOpenWebSiteMenuHeader" xml:space="preserve">
-    <value>Open Web Site...</value>
+    <value>Open website</value>
     <comment>Header for the open website menu item.</comment>
   </data>
   <data name="CloudExplorerGcePublishingSettingsSavedMessage" xml:space="preserve">
@@ -514,11 +514,11 @@
     <comment>Caption shown when the authorized networks are being updated.</comment>
   </data>
   <data name="CloudExplorerSqlOpenAddDataConnectionMenuHeader" xml:space="preserve">
-    <value>Add Data Connection</value>
+    <value>Add Data Connection...</value>
     <comment>Menu header for the open add data connection dialog menu item.</comment>
   </data>
   <data name="CloudExplorerSqlManageAuthorizedNetworksMenuHeader" xml:space="preserve">
-    <value>Manage Authorized Networks</value>
+    <value>Manage authorized networks...</value>
     <comment>Menu header for the option to manage authorized networks.</comment>
   </data>
   <data name="CloudExplorerSqlRootNodeCaption" xml:space="preserve">
@@ -598,11 +598,11 @@
     <comment>OAUTH flow window title.</comment>
   </data>
   <data name="PortManagerWindowCaption" xml:space="preserve">
-    <value>Manage Firewall Ports</value>
+    <value>Firewall Options</value>
     <comment>Caption for the port manager dialog.</comment>
   </data>
   <data name="PortManagerWindowMessage" xml:space="preserve">
-    <value>Set Firewall rules and tags to enable traffic for the instance</value>
+    <value>Firewall rules:</value>
     <comment>Main message in the port manager dialog.</comment>
   </data>
   <data name="AuthorizedNetworksWindowCaption" xml:space="preserve">
@@ -634,8 +634,8 @@
     <comment>Message for an error message in the authorized networks dialog for an ipv4 address.</comment>
   </data>
   <data name="ResetPasswordConfirmationPromptMessage" xml:space="preserve">
-    <value>Are you sure you want to reset the password for {0}?</value>
-    <comment>The message for the confirmation prompt for resetting or creating a password. {0) is the user name.</comment>
+    <value>Reset the password for {0} on instance {1}?</value>
+    <comment>The message for the confirmation prompt for resetting or creating a password. {0) is the user name, {1} is the instance name.</comment>
   </data>
   <data name="ResetPasswordConfirmationPromptTitle" xml:space="preserve">
     <value>Reset Password</value>
@@ -666,12 +666,12 @@
     <comment>Title for the prompts shown when gcloud is not installed.</comment>
   </data>
   <data name="AddWindowsCredentialUserNameCaption" xml:space="preserve">
-    <value>User name:</value>
+    <value>_User name:</value>
     <comment>Caption for the user name textbox.</comment>
   </data>
-  <data name="ResetPasswordWindowTitle" xml:space="preserve">
-    <value>Add Credential for VM {0}</value>
-    <comment>The title for the reset password dialog. {0} is the instance name.</comment>
+  <data name="AddWindowsCredentialTitle" xml:space="preserve">
+    <value>Add Windows Credential</value>
+    <comment>The title for the reset password dialog. </comment>
   </data>
   <data name="ShowPasswordCopyFailedMessage" xml:space="preserve">
     <value>The copy operation failed, this might happen if another program has the Windows Clipboard open, such as a virtual machine agent.</value>
@@ -690,8 +690,8 @@
     <comment>The tooltip shown to hide the password.</comment>
   </data>
   <data name="ShowPasswordMessage" xml:space="preserve">
-    <value>The password for user {0} in instance {1} is:</value>
-    <comment>The message shown for the password textblock. {0} is the user name, {1} is the instance name.</comment>
+    <value>{0} password:</value>
+    <comment>The message shown for the password textblock. {0} is the user name.</comment>
   </data>
   <data name="ShowPasswordShowPasswordTooltip" xml:space="preserve">
     <value>Show password</value>
@@ -710,7 +710,7 @@
     <comment>Caption for the close window button.</comment>
   </data>
   <data name="UiDownloadButtonCaption" xml:space="preserve">
-    <value>Download</value>
+    <value>_Download</value>
     <comment>The caption for the general download button.</comment>
   </data>
   <data name="UiOkButtonCaption" xml:space="preserve">
@@ -718,19 +718,19 @@
     <comment>Caption for Ok buttons.</comment>
   </data>
   <data name="UiSaveButtonCaption" xml:space="preserve">
-    <value>Save</value>
+    <value>_Save</value>
     <comment>Caption for Save buttons.</comment>
   </data>
   <data name="UiDeleteButtonCaption" xml:space="preserve">
-    <value>Delete</value>
+    <value>_Delete</value>
     <comment>Caption for Delete buttons.</comment>
   </data>
   <data name="UiUndoButtonCaption" xml:space="preserve">
-    <value>Undo</value>
+    <value>_Undo</value>
     <comment>Caption for Undo buttons.</comment>
   </data>
   <data name="UiOpenOnCloudConsoleMenuHeader" xml:space="preserve">
-    <value>Open on Cloud Console</value>
+    <value>Open in the console</value>
     <comment>Header for the menu that opens the item in the cloud console.</comment>
   </data>
   <data name="UiPropertiesMenuHeader" xml:space="preserve">
@@ -754,31 +754,31 @@
     <comment>The command to use use to show the buckets per location.</comment>
   </data>
   <data name="ManageWindowsCredentialsAddCredentialsCaption" xml:space="preserve">
-    <value>Add Credentials</value>
+    <value>_Add credentials</value>
     <comment>The caption for the add credentials button in the dialog.</comment>
   </data>
   <data name="ManageWindowsCredentialsDeleteCredentialsCaption" xml:space="preserve">
-    <value>Delete Credentials</value>
+    <value>_Delete credentials</value>
     <comment>The caption for the delete credentials button in the dialog.</comment>
   </data>
   <data name="ManageWindowsCredentialsDeleteCredentialsPromptMessage" xml:space="preserve">
-    <value>Are you sure you want to the delete the credentials for user {0}?</value>
+    <value>Delete user name {0} from this computer? The credentials will still exist on the Windows instance.</value>
     <comment>The message for the confirmation prompt to delete credentials. The {0} placeholder is the username.</comment>
   </data>
   <data name="ManageWindowsCredentialsDeleteCredentialsPromptTitle" xml:space="preserve">
-    <value>Delete Credentials</value>
+    <value>Delete Credential</value>
     <comment>Title for the confirmation prompt to delete credentials.</comment>
   </data>
   <data name="ManageWindowsCredentialsShowCredentialsCaption" xml:space="preserve">
-    <value>Show Credentials</value>
+    <value>_Show password</value>
     <comment>The caption or the show credentials button in the dialog.</comment>
   </data>
   <data name="ManageWindowsCredentialsWindowMessage" xml:space="preserve">
-    <value>Windows _credentials for {0}</value>
+    <value>_Credentials for {0}. </value>
     <comment>Message at the top of the Manage Windows Credentials dialog. The {0} placeholder is the name of the instance.</comment>
   </data>
   <data name="ManageWindowsCredentialsWindowTitle" xml:space="preserve">
-    <value>Manage Windows Credentials</value>
+    <value>Windows Credentials</value>
     <comment>Title for the Manage Windows Credentials dialog.</comment>
   </data>
   <data name="TerminalServerManagerWindowMessage" xml:space="preserve">
@@ -789,16 +789,12 @@
     <value>Start Terminal Server session</value>
     <comment>Title for the manage terminal server window.</comment>
   </data>
-  <data name="WindowsCredentialsChooserButtonToolTip" xml:space="preserve">
-    <value>Manage Windows Credentials</value>
-    <comment>Tooltip for the manage credentials button in the terminal server window.</comment>
-  </data>
   <data name="WindowsCredentialsChooserNoCredentialsFoundMessage" xml:space="preserve">
     <value>No credentials found...</value>
     <comment>Message shown in the dropdown when no credentials are found.</comment>
   </data>
   <data name="CloudExplorerGceManageWindowsCredentialsMenuHeader" xml:space="preserve">
-    <value>Manage Windows Credentials...</value>
+    <value>Manage Windows credentials...</value>
     <comment>Header for the menu entry to manage credentials.</comment>
   </data>
   <data name="CloudExplorerGceInstanceWindowsVersionDescription" xml:space="preserve">
@@ -814,11 +810,11 @@
     <comment>The title for the choose credentials used during the save publish settings flow.</comment>
   </data>
   <data name="AddWindowsCredentialGeneratePasswordMessage" xml:space="preserve">
-    <value>Generate the password for this user name</value>
+    <value>Create a password for me</value>
     <comment>Message shown in the radio button of the Reset password dialog to signify that the password will be generated instead of provided by the user.</comment>
   </data>
   <data name="AddWindowsCredentialHavePasswordMessage" xml:space="preserve">
-    <value>I have a password for this user name</value>
+    <value>I have a password for this user</value>
     <comment>Message shown in the radio button of the Reset Password dialog to signify that the user will provide the password.</comment>
   </data>
   <data name="ResetWindowSettingPasswordProgressMessage" xml:space="preserve">
@@ -826,7 +822,7 @@
     <comment>Message shown to the user when the password for the Windows user is being set. {0} is the user name.</comment>
   </data>
   <data name="WindowsCredentialsChooserManageCredentialsCaption" xml:space="preserve">
-    <value>Manage credentials</value>
+    <value>Manage Windows credentials</value>
     <comment>Caption used in the hyperlink shown in the Windows credentials chooser dialog.</comment>
   </data>
   <data name="ExceptionPromptMessage" xml:space="preserve">
@@ -853,15 +849,15 @@
     <value>Type password:</value>
     <comment>Content for the label used for the custom password.</comment>
   </data>
-  <data name="ResetPasswordConfirmationMessage" xml:space="preserve">
+  <data name="UiOperationCannotBeUndone" xml:space="preserve">
     <value>You can't undo this later.</value>
-    <comment>Message shown for the reset password confirmation dialog.</comment>
+    <comment>Message shown in dialogs to indicate that the operation cannot be undone.</comment>
   </data>
   <data name="UiNoButtonCaption" xml:space="preserve">
-    <value>No</value>
+    <value>_No</value>
   </data>
   <data name="UiResetButtonCaption" xml:space="preserve">
-    <value>Reset</value>
+    <value>_Reset</value>
   </data>
   <data name="UiStartButtonCaption" xml:space="preserve">
     <value>Start</value>
@@ -870,7 +866,7 @@
     <value>Stop</value>
   </data>
   <data name="UiYesButtonCaption" xml:space="preserve">
-    <value>Yes</value>
+    <value>_Yes</value>
   </data>
   <data name="ShowPasswordNewPasswordMessage" xml:space="preserve">
     <value>The password for {0} has been set:</value>
@@ -891,5 +887,44 @@
   <data name="AddWindowsCredentialValidationErrorTtitle" xml:space="preserve">
     <value>Add Windows Credential</value>
     <comment>Title for the validation error dialogs in the add windows credential dialog.</comment>
+  </data>
+  <data name="AddWindowsCredentialToolTip" xml:space="preserve">
+    <value>Enter a user name. If the user name already exists as an account on the Windows instance, then you can reset the password or enter the current one.</value>
+  </data>
+  <data name="ManageAccountsDisplayStringFormat" xml:space="preserve">
+    <value>{0} ({1})</value>
+    <comment>Format for the display string for an account. {0} is the user name, {1} is the email address.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsToolTip" xml:space="preserve">
+    <value>Windows credentials are used to log in to a Windows machine instance.</value>
+    <comment>Tooltip shown in the manage windows credentials window.</comment>
+  </data>
+  <data name="PortManagerDisplayStringFormat" xml:space="preserve">
+    <value>{0} ({1} {2})</value>
+    <comment>Format string to compose the display string for a port.{0} is the port description, {1} is the protocol name, {2} is the port number.</comment>
+  </data>
+  <data name="PortManagerHttpDescription" xml:space="preserve">
+    <value>Allow HTTP traffic to the instance</value>
+    <comment>Description for the HTTP port.</comment>
+  </data>
+  <data name="PortManagerHttpsDescription" xml:space="preserve">
+    <value>Allow HTTPS traffic to the instance</value>
+    <comment>Description for the HTTPS port.</comment>
+  </data>
+  <data name="PortManagerRdpDescription" xml:space="preserve">
+    <value>Allow Remote Desktop connections to the instance</value>
+    <comment>Description for the RDP port.</comment>
+  </data>
+  <data name="PortManagerWebDeployDescription" xml:space="preserve">
+    <value>Allow publishing with WebDeploy to the instance</value>
+    <comment>Description for the WebDeploy port.</comment>
+  </data>
+  <data name="ShowPasswordCopiedMessage" xml:space="preserve">
+    <value>Password copied to clipboard.</value>
+    <comment>Message shown in the popup for the copy operation.</comment>
+  </data>
+  <data name="UiOpenButtonCaption" xml:space="preserve">
+    <value>_Open</value>
+    <comment>Caption for the open button in dialogs.</comment>
   </data>
 </root>

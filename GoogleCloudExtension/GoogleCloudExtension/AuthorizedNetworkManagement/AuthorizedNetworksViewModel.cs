@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
         /// <summary>
         /// True if any changes to the authorized networks occured.
         /// </summary>
-        public bool HasChanges;
+        public bool HasChanges { get; }
 
         public AuthorizedNetworkChange(IList<AuthorizedNetworkModel> authorizedNetworks)
         {
@@ -150,7 +150,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
                 Name = NetworkName,
                 Value = NetworkValue
             };
-            Networks.Add(new AuthorizedNetworkModel(acl));
+            Networks.Add(new AuthorizedNetworkModel(acl, newNetwork: true));
 
             NetworkValue = "";
             NetworkName = "";

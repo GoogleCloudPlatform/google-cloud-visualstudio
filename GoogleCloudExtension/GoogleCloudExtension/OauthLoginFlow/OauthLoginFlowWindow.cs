@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.OauthLoginFlow
         private OAuthLoginFlowViewModel ViewModel { get; }
 
         private OAuthLoginFlowWindow(OAuthCredentials credentials, IEnumerable<string> scopes)
-            : base(GoogleCloudExtension.Resources.OAuthFlowWindowTitle, width: 300, height: 300)
+            : base(GoogleCloudExtension.Resources.OAuthFlowWindowTitle)
         {
             _flow = new OAuthLoginFlow(
                 credentials,

@@ -9,38 +9,43 @@
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance {x:Type local:PortManagerViewModel}}"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DataContext="{d:DesignInstance {x:Type local:PortManagerViewModel}}">
 
-    <theming:CommonDialogWindowBaseContent>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.Style>
+        <Binding Source="{StaticResource CommonDialogStyleDynamicLarge}" />
+    </UserControl.Style>
+
+    <theming:CommonDialogWindowBaseContent HasBanner="True">
         <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}"
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiSaveButtonCaption}"
                                       IsDefault="True"
                                       Command="{Binding OkCommand}"/>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
 
         <StackPanel>
-            <TextBlock TextWrapping="Wrap" Margin="3,0,3,5" Text="{x:Static ext:Resources.PortManagerWindowMessage}"/>
-
-            <StackPanel Margin="3,0">
-                <ItemsControl ItemsSource="{Binding Ports}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <CheckBox IsChecked="{Binding IsEnabled}">
-                                <TextBlock>
-                                    <TextBlock.Text>
-                                        <MultiBinding StringFormat="{}{0} ({1})">
-                                            <Binding Path="Name" />
-                                            <Binding Path="Port" />
-                                        </MultiBinding>
-                                    </TextBlock.Text>
-                                </TextBlock>
-                            </CheckBox>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </StackPanel>
+            <Label Content="{x:Static ext:Resources.PortManagerWindowMessage}"
+                   Style="{StaticResource CommonLabelStyle}" />
+            
+            <ItemsControl ItemsSource="{Binding Ports}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <CheckBox IsChecked="{Binding IsEnabled}"
+                                  Content="{Binding DisplayString}"
+                                  Margin="0,0,0,5"
+                                  Style="{StaticResource CommonTextStyleBase}">
+                        </CheckBox>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </StackPanel>
 
     </theming:CommonDialogWindowBaseContent>

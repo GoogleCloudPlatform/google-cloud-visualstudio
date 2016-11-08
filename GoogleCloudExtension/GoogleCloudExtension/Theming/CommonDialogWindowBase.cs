@@ -21,22 +21,6 @@ namespace GoogleCloudExtension.Theming
     /// </summary>
     public class CommonDialogWindowBase : DialogWindow
     {
-        public CommonDialogWindowBase(string title, double width, double height)
-        {
-            Title = title;
-            Width = width;
-            Height = height;
-
-            // Common settings to all dialogs.
-            ResizeMode = System.Windows.ResizeMode.NoResize;
-            WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
-            ShowInTaskbar = false;
-        }
-
-        /// <summary>
-        /// Use this constructor when the dialog size must be calculated from the content.
-        /// </summary>
-        /// <param name="title"></param>
         public CommonDialogWindowBase(string title)
         {
             Title = title;

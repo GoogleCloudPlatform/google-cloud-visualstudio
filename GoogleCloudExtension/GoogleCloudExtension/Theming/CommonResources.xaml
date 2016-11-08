@@ -9,16 +9,49 @@
         <Setter Property="TextElement.FontSize" Value="12px" />
     </Style>
 
-    <!-- Label style. -->
-    <Style x:Key="CommonLabelStyle" BasedOn="{StaticResource CommonTextStyleBase}" TargetType="{x:Type Label}">
-        <Setter Property="TextElement.Foreground" Value="Black" />
-        <Setter Property="Padding" Value="0" />
-        <Setter Property="Margin" Value="0,0,0,5" />
-    </Style>
-
     <!-- Text style. -->
     <Style x:Key="CommonTextStyle" BasedOn="{StaticResource CommonTextStyleBase}" TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground" Value="Black" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    
+    <!-- Text style to be used inside of a tooltip. -->
+    <Style x:Key="CommonToolTipTextStyle" BasedOn="{StaticResource CommonTextStyle}" TargetType="{x:Type TextBlock}">
+        <Setter Property="MaxWidth" Value="200px" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <!-- Label style. -->
+    <Style x:Key="CommonLabelStyle" BasedOn="{StaticResource CommonTextStyleBase}" TargetType="{x:Type Label}">
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0,0,0,5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Label}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                        <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Content="{TemplateBinding Content}"
+                                          ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <ContentPresenter.Resources>
+                                <!-- Ensure that the text in the label wraps. -->
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource CommonTextStyle}">
+                                    <Setter Property="TextWrapping" Value="Wrap" />
+                                </Style>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 
     <!-- Common sizes for dialogs. -->
@@ -148,6 +181,24 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+    </Style>
+    
+    <!-- Variations on the style of listboxes. -->
+    
+    <!-- Medium sized listbox item. -->
+    <Style x:Key="CommonMediumListItemStyle" BasedOn="{StaticResource CommonListItemContainerStyle}" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="Height" Value="35px" />
+    </Style>
+    <Style x:Key="CommonMediumListBoxStyle" BasedOn="{StaticResource CommonListBoxStyle}" TargetType="{x:Type ListBox}">
+        <Setter Property="ItemContainerStyle" Value="{StaticResource CommonMediumListItemStyle}" />
+    </Style>
+    
+    <!-- Large sized listbox item. -->
+    <Style x:Key="CommonLargeListItemStyle" BasedOn="{StaticResource CommonListItemContainerStyle}" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="Height" Value="70px" />
+    </Style>
+    <Style x:Key="CommonLargeListBoxStyle" BasedOn="{StaticResource CommonListBoxStyle}" TargetType="{x:Type ListBox}">
+        <Setter Property="ItemContainerStyle" Value="{StaticResource CommonLargeListItemStyle}" />
     </Style>
 
     <!-- Style for all GroupBox instances. -->
@@ -488,6 +539,110 @@
         <Setter Property="Background" Value="{StaticResource CommonBorderColors.Background}" />
         <Setter Property="BorderBrush" Value="{StaticResource CommonBorderColors.Border}" />
         <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    
+    <!-- Common buttons. -->
+
+    <!-- Colors for the dialog button for the various UI states. -->
+    
+    <!-- Normal state -->
+    <SolidColorBrush x:Key="CommonButtonColors.Static.Background" Color="White"/>
+    <SolidColorBrush x:Key="CommonButtonColors.Static.Border" Color="#FFBDBDBD"/>
+    <SolidColorBrush x:Key="CommonButtonColors.Static.Foreground" Color="Black"/>
+
+    <!-- Mouse over state -->
+    <SolidColorBrush x:Key="CommonButtonColors.MouseOver.Background" Color="White"/>
+    <SolidColorBrush x:Key="CommonButtonColors.MouseOver.Border" Color="#FF82B1FF"/>
+    <SolidColorBrush x:Key="CommonButtonColors.MouseOver.Foreground" Color="Black"/>
+
+    <!-- Pressed state -->
+    <SolidColorBrush x:Key="CommonButtonColors.Pressed.Background" Color="#FFF5F5F5"/>
+    <SolidColorBrush x:Key="CommonButtonColors.Pressed.Border" Color="#FF82B1FF"/>
+    <SolidColorBrush x:Key="CommonButtonColors.Pressed.Foreground" Color="Black"/>
+
+    <!-- Disabled state -->
+    <SolidColorBrush x:Key="CommonButtonColors.Disabled.Background" Color="#FFE0E0E0"/>
+    <SolidColorBrush x:Key="CommonButtonColors.Disabled.Border" Color="#FFBDBDBD"/>
+    <SolidColorBrush x:Key="CommonButtonColors.Disabled.Foreground" Color="#FF9E9E9E"/>
+
+
+    <!-- The dialog button visuals. -->
+    <Style x:Key="CommonButtonFocusVisualStyle">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="CommonButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="Blue" />
+        <Setter Property="Width" Value="96px" />
+        <Setter Property="Height" Value="25px" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource CommonButtonFocusVisualStyle}"/>
+        <Setter Property="Background" Value="{StaticResource CommonButtonColors.Static.Background}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource CommonButtonColors.Static.Border}"/>
+        <Setter Property="Foreground" Value="{StaticResource CommonButtonColors.Static.Foreground}" />
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            SnapsToDevicePixels="true" CornerRadius="2">
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Focusable="False"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}"
+                                          RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Style="{StaticResource CommonTextStyleBase}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource CommonButtonColors.MouseOver.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource CommonButtonColors.MouseOver.Border}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource CommonButtonColors.MouseOver.Foreground}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource CommonButtonColors.Pressed.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource CommonButtonColors.Pressed.Border}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource CommonButtonColors.Pressed.Foreground}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource CommonButtonColors.Disabled.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource CommonButtonColors.Disabled.Border}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource CommonButtonColors.Disabled.Foreground}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- Common variations of buttons. -->
+
+    <!-- Dynamic button that adjusts to the contents. -->
+    <Style x:Key="CommonButtonDynamicStyle" BasedOn="{StaticResource CommonButtonStyle}" TargetType="{x:Type Button}">
+        <Setter Property="Width" Value="auto" />
+        <Setter Property="Padding" Value="5,0" />
+    </Style>
+
+    <!-- Style for wide buttons. -->
+    <Style x:Key="CommonButtonWideStyle" BasedOn="{StaticResource CommonButtonStyle}" TargetType="{x:Type Button}">
+        <Setter Property="Width" Value="110px" />
+    </Style>
+
+    <!-- Style for the standard buttons. -->
+    <Style x:Key="CommonButtonStandardStyle" BasedOn="{StaticResource CommonButtonStyle}" TargetType="{x:Type Button}">
+        <Setter Property="Width" Value="75px" />
     </Style>
 
 </ResourceDictionary>
