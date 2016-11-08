@@ -71,7 +71,7 @@
             <!-- Data template to be applied to the link leaf, which terminate the nodes and shows a link. -->
             <DataTemplate DataType="{x:Type CloudExplorer:TreeLeafLink}">
                 <TextBlock Focusable="False">
-                <Hyperlink Focusable="False" Command="{Binding NavigateCommand}">
+                <Hyperlink Focusable="False" Command="{Binding NavigateCommand}" Style="{StaticResource CommonHyperlinkStyle}">
                     <TextBlock Focusable="False" Text="{Binding Caption}" />
                 </Hyperlink>
             </TextBlock>
