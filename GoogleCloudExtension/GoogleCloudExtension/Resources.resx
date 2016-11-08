@@ -901,7 +901,7 @@
   </data>
   <data name="PortManagerDisplayStringFormat" xml:space="preserve">
     <value>{0} ({1} {2})</value>
-    <comment>Format string to compose the display string for a prot. {0} is the port description, {1} is the protocol name, {2} is the port number.</comment>
+    <comment>Format string to compose the display string for a port.{0} is the port description, {1} is the protocol name, {2} is the port number.</comment>
   </data>
   <data name="PortManagerHttpDescription" xml:space="preserve">
     <value>Allow HTTP traffic to the instance</value>
@@ -922,9 +922,6 @@
   <data name="ShowPasswordCopiedMessage" xml:space="preserve">
     <value>Password copied to clipboard.</value>
     <comment>Message shown in the popup for the copy operation.</comment>
-  </data>
-  <data name="String1" xml:space="preserve">
-    <value />
   </data>
   <data name="UiOpenButtonCaption" xml:space="preserve">
     <value>_Open</value>
