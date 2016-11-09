@@ -250,7 +250,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No projects found, to create a project navigate to the Google Cloud Console..
+        ///   Looks up a localized string similar to No projects found, to create a project navigate to the Cloud Platform Console..
         /// </summary>
         public static string CloudExploreNoProjectMessage {
             get {
@@ -277,7 +277,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go to the Google Cloud Console for other services.
+        ///   Looks up a localized string similar to Go to the Cloud Platform Console for other services.
         /// </summary>
         public static string CloudExplorerConsoleLinkCaption {
             get {
@@ -1042,7 +1042,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Navigate to Cloud Console.
+        ///   Looks up a localized string similar to Navigate to Cloud Platform Console.
         /// </summary>
         public static string CloudExplorerNoProjectButtonCaption {
             get {
@@ -1798,7 +1798,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open in the console.
+        ///   Looks up a localized string similar to Open on Cloud Platform Console.
         /// </summary>
         public static string UiOpenOnCloudConsoleMenuHeader {
             get {
