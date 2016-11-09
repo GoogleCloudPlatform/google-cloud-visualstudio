@@ -1276,7 +1276,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add....
+        ///   Looks up a localized string similar to _Add account.
         /// </summary>
         public static string ManageAccountsAddAccountButtonCaption {
             get {
@@ -1285,7 +1285,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose account:.
+        ///   Looks up a localized string similar to _Choose account:.
         /// </summary>
         public static string ManageAccountsChooseAccountMessage {
             get {
@@ -1303,7 +1303,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete.
+        ///   Looks up a localized string similar to _Delete.
         /// </summary>
         public static string ManageAccountsDeleteAccountButtonCaption {
             get {
@@ -1339,7 +1339,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Set As Current.
+        ///   Looks up a localized string similar to _Set current.
         /// </summary>
         public static string ManageAccountsSetAsCurrentAccountButtonCaption {
             get {

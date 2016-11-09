@@ -45,7 +45,7 @@ namespace GoogleCloudExtension.Analytics
                     Resources.AnalyticsPromptMessage,
                     Resources.AnalyticsPromptTitle,
                     actionCaption: Resources.UiYesButtonCaption,
-                    cancelCaption: Resources.UiCancelButtonCaption);
+                    cancelCaption: Resources.UiNoButtonCaption);
                 settings.DialogShown = true;
                 settings.SaveSettingsToStorage();
             }

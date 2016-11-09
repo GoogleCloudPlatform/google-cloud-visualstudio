@@ -55,29 +55,34 @@
     </Style>
 
     <!-- Common sizes for dialogs. -->
+    
+    <!-- Base style for all dialog styles. -->
+    <Style x:Key="CommonDialogStyleBase" TargetType="{x:Type UserControl}">
+        <Setter Property="Focusable" Value="False" />
+    </Style>
 
     <!-- Static sizes. -->
     <!-- Small dialog, typical for prompts. -->
-    <Style x:Key="CommonDialogStyleSmall" TargetType="{x:Type UserControl}">
+    <Style x:Key="CommonDialogStyleSmall" BasedOn="{StaticResource CommonDialogStyleBase}" TargetType="{x:Type UserControl}">
         <Setter Property="Width" Value="300px" />
         <Setter Property="Height" Value="100px" />
     </Style>
 
-    <!-- Larget dialog, typical for wizards or main entry dialogs. -->
-    <Style x:Key="CommonDialogStyleLarge" TargetType="{x:Type UserControl}">
+    <!-- Large dialog, typical for wizards or main entry dialogs. -->
+    <Style x:Key="CommonDialogStyleLarge" BasedOn="{StaticResource CommonDialogStyleBase}" TargetType="{x:Type UserControl}">
         <Setter Property="Width" Value="500px" />
         <Setter Property="Height" Value="350px" />
     </Style>
 
     <!-- Dynamic sizes. -->
     <!-- Small dialog, fixed on the width but allows it to grow vertically. -->
-    <Style x:Key="CommonDialogStyleDynamicSmall" TargetType="{x:Type UserControl}">
+    <Style x:Key="CommonDialogStyleDynamicSmall" BasedOn="{StaticResource CommonDialogStyleBase}" TargetType="{x:Type UserControl}">
         <Setter Property="Width" Value="300px" />
         <Setter Property="MinHeight" Value="100px" />
     </Style>
 
     <!-- Large dialog, fixed on the width but allows it to grow vertically. -->
-    <Style x:Key="CommonDialogStyleDynamicLarge" TargetType="{x:Type UserControl}">
+    <Style x:Key="CommonDialogStyleDynamicLarge" BasedOn="{StaticResource CommonDialogStyleBase}" TargetType="{x:Type UserControl}">
         <Setter Property="Width" Value="500px" />
         <Setter Property="MinHeight" Value="350px" />
     </Style>
@@ -643,6 +648,30 @@
     <!-- Style for the standard buttons. -->
     <Style x:Key="CommonButtonStandardStyle" BasedOn="{StaticResource CommonButtonStyle}" TargetType="{x:Type Button}">
         <Setter Property="Width" Value="75px" />
+    </Style>
+    
+    <!-- Common hyperlink style. -->
+    
+    <!-- Common hyperlink colors. -->
+    <SolidColorBrush x:Key="CommonHyperlinkColors.Normal" Color="Blue" />
+    <SolidColorBrush x:Key="CommonHyperlinkColors.Disabled" Color="Gray" />
+    <SolidColorBrush x:Key="CommonHyperlinkColors.MouseOver" Color="Blue" />
+
+    <Style x:Key="CommonHyperlinkStyle" TargetType="{x:Type Hyperlink}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter Property="Foreground" Value="{StaticResource CommonHyperlinkColors.MouseOver}" />
+                <Setter Property="TextDecorations" Value="Underline" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Foreground" Value="{StaticResource CommonHyperlinkColors.Disabled}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="true">
+                <Setter Property="Cursor" Value="Hand" />
+            </Trigger>
+        </Style.Triggers>
+        <Setter Property="Foreground" Value="{StaticResource CommonHyperlinkColors.Normal}" />
+        <Setter Property="TextDecorations" Value="None" />
     </Style>
 
 </ResourceDictionary>
