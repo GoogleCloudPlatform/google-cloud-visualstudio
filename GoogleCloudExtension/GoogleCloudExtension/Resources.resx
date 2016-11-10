@@ -138,11 +138,11 @@
     <comment>Menu header for the Enable API command.</comment>
   </data>
   <data name="CloudExploreNoProjectMessage" xml:space="preserve">
-    <value>No projects found, to create a project navigate to the Google Cloud Console.</value>
+    <value>No projects found, to create a project open Cloud Platform Console.</value>
     <comment>Message shwon int he Cloud Explorer when no project is found.</comment>
   </data>
   <data name="CloudExplorerConsoleLinkCaption" xml:space="preserve">
-    <value>Go to the Google Cloud Console for other services</value>
+    <value>Open Cloud Platform Console for other services</value>
     <comment>The caption for the console link in the cloud source.</comment>
   </data>
   <data name="CloudExplorerGceFailedToGetOauthCredentialsCaption" xml:space="preserve">
@@ -261,14 +261,6 @@
     <value>New Instance</value>
     <comment>Header for the new instance menu item.</comment>
   </data>
-  <data name="CloudExplorerGceNoInstancesInZoneCaption" xml:space="preserve">
-    <value>No instances in this zone</value>
-    <comment>The caption to show when there are no instances in a GCE zone.</comment>
-  </data>
-  <data name="CloudExplorerGceNoWindowsInstancesInZoneCaption" xml:space="preserve">
-    <value>No Windows instances in this zone</value>
-    <comment>The caption to show when there are no Windows instances in a GCE zone.</comment>
-  </data>
   <data name="CloudExplorerGceOnlyWindowsButtonToolTip" xml:space="preserve">
     <value>Show only Windows instances</value>
     <comment>The tooltip for the filter button.</comment>
@@ -329,8 +321,8 @@
     <value>Loading instances data...</value>
     <comment>Caption shown in the node when loading GCE zones.</comment>
   </data>
-  <data name="CloudExplorerGceSourceNoZonesCaption" xml:space="preserve">
-    <value>No zones found.</value>
+  <data name="CloudExplorerGceSourceNoInstancesCaption" xml:space="preserve">
+    <value>No instances found.</value>
     <comment>Caption shown in the node when no GCE zones are found.</comment>
   </data>
   <data name="CloudExplorerGceStartInstanceConfirmationPrompt" xml:space="preserve">
@@ -450,7 +442,7 @@
     <comment>Message shown in the Cloud Exlorer when there's no account selected.</comment>
   </data>
   <data name="CloudExplorerNoProjectButtonCaption" xml:space="preserve">
-    <value>Navigate to Cloud Console</value>
+    <value>Open Cloud Platform Console</value>
     <comment>Caption for the button, or link, shown in the Cloud Explorer when no project is found.</comment>
   </data>
   <data name="CloudExplorerNoProjectsFoundPlaceholderMessage" xml:space="preserve">
@@ -730,7 +722,7 @@
     <comment>Caption for Undo buttons.</comment>
   </data>
   <data name="UiOpenOnCloudConsoleMenuHeader" xml:space="preserve">
-    <value>Open in the console</value>
+    <value>Open on Cloud Platform Console</value>
     <comment>Header for the menu that opens the item in the cloud console.</comment>
   </data>
   <data name="UiPropertiesMenuHeader" xml:space="preserve">

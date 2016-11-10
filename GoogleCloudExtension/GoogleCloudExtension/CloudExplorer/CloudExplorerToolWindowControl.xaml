@@ -354,7 +354,7 @@
                     Visibility="Visible"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center">
-                <TextBlock Text="{Binding EmptyStateMessage}"  HorizontalAlignment="Center"/>
+                <TextBlock Text="{Binding EmptyStateMessage}"  HorizontalAlignment="Center"  TextWrapping="Wrap"/>
                 <TextBlock HorizontalAlignment="Center">
                     <Hyperlink Command="{Binding EmptyStateCommand}" Style="{StaticResource CommonHyperlinkStyle}">
                         <TextBlock Text="{Binding EmptyStateButtonCaption}" />
