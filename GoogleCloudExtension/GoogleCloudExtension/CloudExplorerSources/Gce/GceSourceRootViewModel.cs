@@ -45,9 +45,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         };
         private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
         {
-            Caption = Resources.CloudExplorerGceSourceNoZonesCaption
+            Caption = Resources.CloudExplorerGceSourceNoInstancesCaption
         };
-        private static readonly TreeLeaf s_noZonesPlaceholder = new TreeLeaf { Caption = Resources.CloudExplorerGceSourceNoZonesCaption };
 
         private bool _showOnlyWindowsInstances = false;
         private bool _showZones = false;

@@ -261,14 +261,6 @@
     <value>New Instance</value>
     <comment>Header for the new instance menu item.</comment>
   </data>
-  <data name="CloudExplorerGceNoInstancesInZoneCaption" xml:space="preserve">
-    <value>No instances in this zone</value>
-    <comment>The caption to show when there are no instances in a GCE zone.</comment>
-  </data>
-  <data name="CloudExplorerGceNoWindowsInstancesInZoneCaption" xml:space="preserve">
-    <value>No Windows instances in this zone</value>
-    <comment>The caption to show when there are no Windows instances in a GCE zone.</comment>
-  </data>
   <data name="CloudExplorerGceOnlyWindowsButtonToolTip" xml:space="preserve">
     <value>Show only Windows instances</value>
     <comment>The tooltip for the filter button.</comment>
@@ -329,8 +321,8 @@
     <value>Loading instances data...</value>
     <comment>Caption shown in the node when loading GCE zones.</comment>
   </data>
-  <data name="CloudExplorerGceSourceNoZonesCaption" xml:space="preserve">
-    <value>No zones found.</value>
+  <data name="CloudExplorerGceSourceNoInstancesCaption" xml:space="preserve">
+    <value>No instances found.</value>
     <comment>Caption shown in the node when no GCE zones are found.</comment>
   </data>
   <data name="CloudExplorerGceStartInstanceConfirmationPrompt" xml:space="preserve">
