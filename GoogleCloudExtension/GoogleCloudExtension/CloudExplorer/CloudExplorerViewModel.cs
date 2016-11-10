@@ -286,7 +286,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnRefreshCommand()
         {
-            RefreshSources();
+            ResetCredentials();
         }
 
         #endregion
