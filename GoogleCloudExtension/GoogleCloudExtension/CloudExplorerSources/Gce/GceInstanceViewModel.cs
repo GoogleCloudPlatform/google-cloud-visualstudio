@@ -190,14 +190,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void UpdateContextMenu()
         {
-            // If the instance is busy, then there's no context menu.
-            // TODO(ivann): Should we have a "Cancel Operation" menu item?
-            if (IsLoading || IsError)
-            {
-                ContextMenu = null;
-                return;
-            }
-
             var getPublishSettingsCommand = new ProtectedCommand(OnSavePublishSettingsCommand, canExecuteCommand: Instance.IsAspnetInstance());
             var openWebSite = new ProtectedCommand(OnOpenWebsite, canExecuteCommand: Instance.IsAspnetInstance() && Instance.IsRunning());
             var openTerminalServerSessionCommand = new ProtectedCommand(
@@ -230,6 +222,23 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             menuItems.Add(new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesWindowCommand) });
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+
+            // If the instance is busy or in error then we need to disable all commands.
+            if (IsError || IsLoading)
+            {
+                foreach (var item in ContextMenu.ItemsSource)
+                {
+                    var menu = item as MenuItem;
+                    if (menu != null)
+                    {
+                        if (menu.Command is ProtectedCommand)
+                        {
+                            var cmd = (ProtectedCommand)menu.Command;
+                            cmd.CanExecuteCommand = false;
+                        }
+                    }
+                }
+            }
         }
 
         private void OnSavePublishSettingsCommand()
