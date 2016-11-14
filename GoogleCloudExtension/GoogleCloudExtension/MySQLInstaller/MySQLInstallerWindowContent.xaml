@@ -5,26 +5,35 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.MySQLInstaller"
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
-             xmlns:ext="clr-namespace:GoogleCloudExtension"
-             mc:Ignorable="d" 
-             d:DesignHeight="225" d:DesignWidth="300">
-    
+             xmlns:ext="clr-namespace:GoogleCloudExtension">
+
     <UserControl.Resources>
-        <StackPanel x:Key="content">
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Margin="5" Text="{x:Static ext:Resources.MySqlInstallerWindowTopMessage}" />
-
-
-            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWithOverflow" Margin="5" Text="{x:Static ext:Resources.MySqlInstallerWindowBottomMessage}" />
-
-        </StackPanel>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
 
-    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
+    <UserControl.Style>
+        <Binding Source="{StaticResource CommonDialogStyleDynamicSmall}" />
+    </UserControl.Style>
+    
+    <theming:CommonDialogWindowBaseContent>
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiDownloadButtonCaption}"
                                       IsDefault="True"
-                                      Command="{Binding DataContext.DownloadCommand, Source={StaticResource content}}"/>
+                                      Command="{Binding DownloadCommand}"/>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
+
+        <StackPanel>
+            <TextBlock Text="{x:Static ext:Resources.MySqlInstallerWindowTopMessage}"
+                       Margin="0,0,0,5"
+                       Style="{StaticResource CommonTextStyle}"/>
+            <TextBlock Text="{x:Static ext:Resources.MySqlInstallerWindowBottomMessage}"
+                       Style="{StaticResource CommonTextStyle}"/>
+        </StackPanel>
+
     </theming:CommonDialogWindowBaseContent>
 </UserControl>

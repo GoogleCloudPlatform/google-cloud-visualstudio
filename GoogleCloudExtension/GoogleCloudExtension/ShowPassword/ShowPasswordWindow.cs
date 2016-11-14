@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Theming;
-using System;
 
 namespace GoogleCloudExtension.ShowPassword
 {
@@ -23,25 +22,29 @@ namespace GoogleCloudExtension.ShowPassword
     /// </summary>
     public class ShowPasswordWindow : CommonDialogWindowBase
     {
-        private ShowPasswordWindow(string userName, string password, string instanceName)
-            : base(String.Format(GoogleCloudExtension.Resources.ShowPasswordWindowTitle, instanceName), width: 300, height: 200)
+        public class Options
         {
-            Content = new ShowPasswordWindowContent(new ShowPasswordViewModel(
-                    this,
-                    userName: userName,
-                    password: password,
-                    instanceName: instanceName));
+            public string Title { get; set; }
+
+            public string Password { get; set; }
+
+            public string Message { get; set; }
+        }
+
+        private ShowPasswordWindow(Options options) : base(options.Title)
+        {
+            Content = new ShowPasswordWindowContent
+            {
+                DataContext = new ShowPasswordViewModel(options)
+            };
         }
 
         /// <summary>
         /// Shows the given credentials to the user.
         /// </summary>
-        public static void PromptUser(string userName, string password, string instanceName)
+        public static void PromptUser(Options options)
         {
-            var dialog = new ShowPasswordWindow(
-                userName: userName,
-                password: password,
-                instanceName: instanceName);
+            var dialog = new ShowPasswordWindow(options);
             dialog.ShowModal();
         }
     }

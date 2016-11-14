@@ -10,39 +10,59 @@
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type local:ManageAccountsViewModel}}">
     <UserControl.Resources>
-        <utils:VisibilityConverter x:Key="visibilityConverter" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
 
-        <Grid x:Key="content">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-            
-                <!-- Caption row -->
-                <TextBlock Margin="3,3,3,2" Text="{x:Static ext:Resources.ManageAccountsChooseAccountMessage}"/>
+            <utils:VisibilityConverter x:Key="visibilityConverter" />
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.Style>
+        <Binding Source="{StaticResource CommonDialogStyleLarge}" />
+    </UserControl.Style>
+
+    <theming:CommonDialogWindowBaseContent HasBanner="True">
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.ManageAccountsAddAccountButtonCaption}"
+                                      Command="{Binding AddAccountCommand}" />
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.ManageAccountsSetAsCurrentAccountButtonCaption}"
+                                      Command="{Binding SetAsCurrentAccountCommand}" />
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiDeleteButtonCaption}"
+                                      Command="{Binding DeleteAccountCommand}"/>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCloseButtonCaption}"
+                                      IsCancel="True" />
+        </theming:CommonDialogWindowBaseContent.Buttons>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Caption row -->
+            <Label Content="{x:Static ext:Resources.ManageAccountsChooseAccountMessage}"
+                   Target="{Binding ElementName=_accountsListBox}"
+                   Style="{StaticResource CommonLabelStyle}"/>
 
             <!-- Listbox with the credentials -->
-            <ListBox Grid.Row="1"
-                 x:Name="_accountsListBox"
-                 Margin="3,2,3,5"
-                 MouseDoubleClick="ListBox_MouseDoubleClick"
-                 ItemsSource="{Binding UserAccountsList}"
-                 SelectedItem="{Binding CurrentUserAccount, Mode=OneWayToSource}"
-                 SelectedValue="{Binding CurrentAccountName}"
-                 SelectedValuePath="AccountName">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="{x:Type ListBoxItem}">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    </Style>
-                </ListBox.ItemContainerStyle>
+            <ListBox x:Name="_accountsListBox"
+                     Grid.Row="1"
+                     MouseDoubleClick="ListBox_MouseDoubleClick"
+                     ItemsSource="{Binding UserAccountsList}"
+                     SelectedItem="{Binding CurrentUserAccount, Mode=OneWayToSource}"
+                     SelectedValue="{Binding CurrentAccountName}"
+                     SelectedValuePath="AccountName"
+                     Style="{StaticResource CommonLargeListBoxStyle}">
 
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid Height="75" Margin="10,0,0,0" HorizontalAlignment="Stretch">
+                        <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto" MinWidth="75" />
-                                <ColumnDefinition />
-                                <ColumnDefinition />
+                                <ColumnDefinition Width="auto" MinWidth="75" />
+                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="auto"/>
                             </Grid.ColumnDefinitions>
 
                             <!-- First show the image -->
@@ -61,40 +81,31 @@
                                    VerticalAlignment="Center" />
 
                             <!-- Show the name and the account name -->
-                            <StackPanel Grid.Column="1"
-                                    VerticalAlignment="Center" Height="38">
-                                <TextBlock Text="{Binding NameAsync.Value}" 
-                                       Margin="0,0,0,5"/>
-                                <TextBlock Text="{Binding AccountName, StringFormat='({0})'}" />
-                            </StackPanel>
+                            <TextBlock Grid.Column="1"
+                                       VerticalAlignment="Center"
+                                       Margin="0,0,5,0"
+                                       Style="{StaticResource CommonTextStyle}">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{x:Static ext:Resources.ManageAccountsDisplayStringFormat}">
+                                        <Binding Path="NameAsync.Value" />
+                                        <Binding Path="AccountName" />
+                                    </MultiBinding>
+                                </TextBlock.Text>
+                            </TextBlock>
 
                             <!-- The label for the current account -->
                             <TextBlock Grid.Column="2"
-                                   Visibility="{Binding IsCurrentAccount, Converter={StaticResource visibilityConverter}}"
-                                   VerticalAlignment="Center"
-                                   Text="{x:Static ext:Resources.ManageAccountsCurrentAccountMessage}" />
-
+                                       Visibility="{Binding IsCurrentAccount, Converter={StaticResource visibilityConverter}}"
+                                       VerticalAlignment="Center"
+                                       Text="{x:Static ext:Resources.ManageAccountsCurrentAccountMessage}"
+                                       Style="{StaticResource CommonTextStyle}"/>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
 
             </ListBox>
         </Grid>
-        
-    </UserControl.Resources>
 
-    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
-        <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.ManageAccountsAddAccountButtonCaption}"
-                                      Command="{Binding DataContext.AddAccountCommand, Source={StaticResource content}}" />
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.ManageAccountsSetAsCurrentAccountButtonCaption}"
-                                      Command="{Binding DataContext.SetAsCurrentAccountCommand, Source={StaticResource content}}" />
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.ManageAccountsDeleteAccountButtonCaption}"
-                                      Command="{Binding DataContext.DeleteAccountCommand, Source={StaticResource content}}"/>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCloseButtonCaption}"
-                                      IsCancel="True"
-                                      Command="{Binding DataContext.CloseAccountCommand, Source={StaticResource content}}"/>
-        </theming:CommonDialogWindowBaseContent.Buttons>
     </theming:CommonDialogWindowBaseContent>
-    
+
 </UserControl>

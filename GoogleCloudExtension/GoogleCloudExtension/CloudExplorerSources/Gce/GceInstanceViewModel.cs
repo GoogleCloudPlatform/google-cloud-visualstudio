@@ -190,14 +190,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void UpdateContextMenu()
         {
-            // If the instance is busy, then there's no context menu.
-            // TODO(ivann): Should we have a "Cancel Operation" menu item?
-            if (IsLoading || IsError)
-            {
-                ContextMenu = null;
-                return;
-            }
-
             var getPublishSettingsCommand = new ProtectedCommand(OnSavePublishSettingsCommand, canExecuteCommand: Instance.IsAspnetInstance());
             var openWebSite = new ProtectedCommand(OnOpenWebsite, canExecuteCommand: Instance.IsAspnetInstance() && Instance.IsRunning());
             var openTerminalServerSessionCommand = new ProtectedCommand(
@@ -230,6 +222,23 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             menuItems.Add(new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesWindowCommand) });
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+
+            // If the instance is busy or in error then we need to disable all commands.
+            if (IsError || IsLoading)
+            {
+                foreach (var item in ContextMenu.ItemsSource)
+                {
+                    var menu = item as MenuItem;
+                    if (menu != null)
+                    {
+                        if (menu.Command is ProtectedCommand)
+                        {
+                            var cmd = (ProtectedCommand)menu.Command;
+                            cmd.CanExecuteCommand = false;
+                        }
+                    }
+                }
+            }
         }
 
         private void OnSavePublishSettingsCommand()
@@ -242,6 +251,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 {
                     Title = Resources.CloudExplorerGceSavePubSettingsCredentialsTitle,
                     Message = Resources.CloudExplorerGceSavePubSettingsCredentialsMessage,
+                    ActionButtonCaption = Resources.UiSaveButtonCaption
                 });
             if (credentials == null)
             {
@@ -307,9 +317,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             try
             {
-                if (!UserPromptUtils.YesNoPrompt(
+                if (!UserPromptUtils.ActionPrompt(
                     String.Format(Resources.CloudExplorerGceStopInstanceConfirmationPrompt, Instance.Name),
-                    String.Format(Resources.CloudExplorerGceStopInstanceConfirmationPromptCaption, Instance.Name)))
+                    String.Format(Resources.CloudExplorerGceStopInstanceConfirmationPromptCaption, Instance.Name),
+                    actionCaption: Resources.UiStopButtonCaption))
                 {
                     Debug.WriteLine($"The user cancelled stopping instance {Instance.Name}.");
                     return;
@@ -341,9 +352,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             try
             {
-                if (!UserPromptUtils.YesNoPrompt(
+                if (!UserPromptUtils.ActionPrompt(
                     String.Format(Resources.CloudExplorerGceStartInstanceConfirmationPrompt, Instance.Name),
-                    String.Format(Resources.CloudExplorerGceStartInstanceConfirmationPromptCaption, Instance.Name)))
+                    String.Format(Resources.CloudExplorerGceStartInstanceConfirmationPromptCaption, Instance.Name),
+                    actionCaption: Resources.UiStartButtonCaption))
                 {
                     Debug.WriteLine($"The user cancelled starting instance {Instance.Name}.");
                     return;
@@ -370,7 +382,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 new WindowsCredentialsChooserWindow.Options
                 {
                     Title = Resources.TerminalServerManagerWindowTitle,
-                    Message = Resources.TerminalServerManagerWindowMessage
+                    Message = Resources.TerminalServerManagerWindowMessage,
+                    ActionButtonCaption = Resources.UiOpenButtonCaption
                 });
             if (credentials != null)
             {

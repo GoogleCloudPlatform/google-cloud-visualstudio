@@ -1,0 +1,677 @@
+﻿<!-- Common theming resources to be used in all dialogs and UI. -->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:GoogleCloudExtension.Controls;assembly=GoogleCloudExtension"
+                    xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions;assembly=GoogleCloudExtension">
+
+    <!-- Common size for all font text. -->
+    <Style x:Key="CommonTextStyleBase">
+        <Setter Property="TextElement.FontSize" Value="12px" />
+    </Style>
+
+    <!-- Text style. -->
+    <Style x:Key="CommonTextStyle" BasedOn="{StaticResource CommonTextStyleBase}" TargetType="{x:Type TextBlock}">
+        <Setter Property="Foreground" Value="Black" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+    
+    <!-- Text style to be used inside of a tooltip. -->
+    <Style x:Key="CommonToolTipTextStyle" BasedOn="{StaticResource CommonTextStyle}" TargetType="{x:Type TextBlock}">
+        <Setter Property="MaxWidth" Value="200px" />
+        <Setter Property="TextWrapping" Value="Wrap" />
+    </Style>
+
+    <!-- Label style. -->
+    <Style x:Key="CommonLabelStyle" BasedOn="{StaticResource CommonTextStyleBase}" TargetType="{x:Type Label}">
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0,0,0,5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Label}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                        <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
+                                          Content="{TemplateBinding Content}"
+                                          ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                            <ContentPresenter.Resources>
+                                <!-- Ensure that the text in the label wraps. -->
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource CommonTextStyle}">
+                                    <Setter Property="TextWrapping" Value="Wrap" />
+                                </Style>
+                            </ContentPresenter.Resources>
+                        </ContentPresenter>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Common sizes for dialogs. -->
+    
+    <!-- Base style for all dialog styles. -->
+    <Style x:Key="CommonDialogStyleBase" TargetType="{x:Type UserControl}">
+        <Setter Property="Focusable" Value="False" />
+    </Style>
+
+    <!-- Static sizes. -->
+    <!-- Small dialog, typical for prompts. -->
+    <Style x:Key="CommonDialogStyleSmall" BasedOn="{StaticResource CommonDialogStyleBase}" TargetType="{x:Type UserControl}">
+        <Setter Property="Width" Value="300px" />
+        <Setter Property="Height" Value="100px" />
+    </Style>
+
+    <!-- Large dialog, typical for wizards or main entry dialogs. -->
+    <Style x:Key="CommonDialogStyleLarge" BasedOn="{StaticResource CommonDialogStyleBase}" TargetType="{x:Type UserControl}">
+        <Setter Property="Width" Value="500px" />
+        <Setter Property="Height" Value="350px" />
+    </Style>
+
+    <!-- Dynamic sizes. -->
+    <!-- Small dialog, fixed on the width but allows it to grow vertically. -->
+    <Style x:Key="CommonDialogStyleDynamicSmall" BasedOn="{StaticResource CommonDialogStyleBase}" TargetType="{x:Type UserControl}">
+        <Setter Property="Width" Value="300px" />
+        <Setter Property="MinHeight" Value="100px" />
+    </Style>
+
+    <!-- Large dialog, fixed on the width but allows it to grow vertically. -->
+    <Style x:Key="CommonDialogStyleDynamicLarge" BasedOn="{StaticResource CommonDialogStyleBase}" TargetType="{x:Type UserControl}">
+        <Setter Property="Width" Value="500px" />
+        <Setter Property="MinHeight" Value="350px" />
+    </Style>
+
+    <!-- Common ListView styles. -->
+
+    <!-- Colors for the list view item. -->
+
+    <!-- Text color. -->
+    <SolidColorBrush x:Key="CommonListViewItem.Foreground" Color="Black" />
+
+    <!-- Mouse over colors. -->
+    <SolidColorBrush x:Key="CommonListViewItem.MouseOver.Background" Color="#FFE9E9E9"/>
+
+    <!-- Selected active color. -->
+    <SolidColorBrush x:Key="CommonListViewItem.Selected.Background" Color="#FFE8F0FE"/>
+
+    <!-- Focus visual for the item. -->
+    <Style x:Key="CommonListItemFocusVisual">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Common item container style. -->
+    <Style x:Key="CommonListItemContainerStyle" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Padding" Value="8,0,0,0"/>
+        <Setter Property="Height" Value="18px" />
+        <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="FocusVisualStyle" Value="{StaticResource CommonListItemFocusVisual}"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                    <Border x:Name="Bd"
+                            BorderThickness="0"
+                            Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}"
+                            SnapsToDevicePixels="true">
+                        <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          Style="{StaticResource CommonTextStyleBase}"
+                                          TextElement.Foreground="{StaticResource CommonListViewItem.Foreground}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <!-- Set the background when hovering over item, and item is not selected. -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsMouseOver" Value="True"/>
+                                <Condition Property="IsSelected" Value="False"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource CommonListViewItem.MouseOver.Background}"/>
+                        </MultiTrigger>
+
+                        <!-- Set the background when the item is selected. -->
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsSelected" Value="True"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="Background" TargetName="Bd" Value="{StaticResource CommonListViewItem.Selected.Background}"/>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Style for common listboxes. -->
+    <Style x:Key="CommonListBoxStyle" TargetType="{x:Type ListBox}">
+        <Setter Property="ItemContainerStyle" Value="{StaticResource CommonListItemContainerStyle}" />
+        <Setter Property="Background" Value="#FFFAFAFA" />
+        <Setter Property="BorderThickness" Value="1px" />
+        <Setter Property="BorderBrush" Value="#FFE0E0E0" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ListBox}">
+                    <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" SnapsToDevicePixels="True">
+                        <ScrollViewer Focusable="False" Padding="{TemplateBinding Padding}">
+                            <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                        </ScrollViewer>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Background" TargetName="Bd" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsGrouping" Value="True"/>
+                                <Condition Property="VirtualizingPanel.IsVirtualizingWhenGrouping" Value="False"/>
+                            </MultiTrigger.Conditions>
+                            <Setter Property="ScrollViewer.CanContentScroll" Value="False"/>
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- Variations on the style of listboxes. -->
+    
+    <!-- Medium sized listbox item. -->
+    <Style x:Key="CommonMediumListItemStyle" BasedOn="{StaticResource CommonListItemContainerStyle}" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="Height" Value="35px" />
+    </Style>
+    <Style x:Key="CommonMediumListBoxStyle" BasedOn="{StaticResource CommonListBoxStyle}" TargetType="{x:Type ListBox}">
+        <Setter Property="ItemContainerStyle" Value="{StaticResource CommonMediumListItemStyle}" />
+    </Style>
+    
+    <!-- Large sized listbox item. -->
+    <Style x:Key="CommonLargeListItemStyle" BasedOn="{StaticResource CommonListItemContainerStyle}" TargetType="{x:Type ListBoxItem}">
+        <Setter Property="Height" Value="70px" />
+    </Style>
+    <Style x:Key="CommonLargeListBoxStyle" BasedOn="{StaticResource CommonListBoxStyle}" TargetType="{x:Type ListBox}">
+        <Setter Property="ItemContainerStyle" Value="{StaticResource CommonLargeListItemStyle}" />
+    </Style>
+
+    <!-- Style for all GroupBox instances. -->
+    <Style x:Key="CommonGroupBoxStyle" TargetType="{x:Type GroupBox}">
+        <Setter Property="BorderBrush" Value="#FFE0E0E0" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Padding" Value="12,9,12,9" />
+        <Setter Property="HeaderTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" Style="{StaticResource CommonTextStyle}" />
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Style for the radion buttons. -->
+    <Style x:Key="CommonRadioButton" TargetType="{x:Type RadioButton}">
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" Style="{StaticResource CommonTextStyle}" />
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Common separator for radio buttons. -->
+    <Thickness x:Key="CommonRadioButtonMargin">0,0,0,9</Thickness>
+
+    <!-- Common text box style. -->
+
+    <!-- Colors for the TextBox -->
+
+    <!-- Colors for the normal state. -->
+    <SolidColorBrush x:Key="CommonTextBox.Static.Border" Color="#FFE0E0E0" />
+    <SolidColorBrush x:Key="CommonTextBox.Static.Background" Color="#FFFAFAFA" />
+
+    <!-- Colors for the disabled state. -->
+    <SolidColorBrush x:Key="CommonTextBox.Disabled.Background" Color="#FFE0E0E0" />
+    <SolidColorBrush x:Key="CommonTextBox.Disabled.Border" Color="#FFBDBDBD" />
+
+    <!-- Colors for the focused state. -->
+    <SolidColorBrush x:Key="CommonTextBox.Focus.Border" Color="#FFB5CFE7"/>
+
+    <!-- Template for the TextBox -->
+    <Style x:Key="CommonTextBoxStyle" TargetType="{x:Type TextBox}">
+        <Setter Property="Height" Value="30px" />
+        <Setter Property="Background" Value="{StaticResource CommonTextBox.Static.Background}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource CommonTextBox.Static.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="AllowDrop" Value="true"/>
+        <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+        <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border x:Name="border"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            Padding="8,5,8,5"
+                            SnapsToDevicePixels="True">
+                        <ScrollViewer x:Name="PART_ContentHost"
+                                      Focusable="false"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      VerticalScrollBarVisibility="Hidden"
+                                      Style="{StaticResource CommonTextStyleBase}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource CommonTextBox.Disabled.Background}" />
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource CommonTextBox.Disabled.Border}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="true">
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource CommonTextBox.Focus.Border}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsInactiveSelectionHighlightEnabled" Value="true"/>
+                    <Condition Property="IsSelectionActive" Value="false"/>
+                </MultiTrigger.Conditions>
+                <Setter Property="SelectionBrush" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}"/>
+            </MultiTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Common PasswordBox style. -->
+
+    <!-- PasswordBox template. -->
+    <Style x:Key="CommonPasswordBox" TargetType="{x:Type PasswordBox}">
+        <Setter Property="Height" Value="30px" />
+        <Setter Property="PasswordChar" Value="●"/>
+        <Setter Property="Background" Value="{StaticResource CommonTextBox.Static.Background}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource CommonTextBox.Static.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        <Setter Property="AllowDrop" Value="true"/>
+        <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
+        <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type PasswordBox}">
+                    <Border x:Name="border"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            Padding="8,5,8,5"
+                            SnapsToDevicePixels="True">
+                        <ScrollViewer x:Name="PART_ContentHost" Focusable="false" HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource CommonTextBox.Disabled.Background}" />
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource CommonTextBox.Disabled.Border}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="true">
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource CommonTextBox.Focus.Border}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <MultiTrigger>
+                <MultiTrigger.Conditions>
+                    <Condition Property="IsInactiveSelectionHighlightEnabled" Value="true"/>
+                    <Condition Property="IsSelectionActive" Value="false"/>
+                </MultiTrigger.Conditions>
+                <Setter Property="SelectionBrush" Value="{DynamicResource {x:Static SystemColors.InactiveSelectionHighlightBrushKey}}"/>
+            </MultiTrigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Common ProgressBar style -->
+
+    <!-- Colors for the ProgressBar. -->
+    <SolidColorBrush x:Key="CommonProgressBar.Progress" Color="#FF3B78E7"/>
+    <SolidColorBrush x:Key="CommonProgressBar.Background" Color="#FFD9E5FA"/>
+    <SolidColorBrush x:Key="CommonProgressBar.Border" Color="Transparent"/>
+
+    <!-- Template for the progress bar. -->
+    <Style x:Key="CommonProgressBarStyle" TargetType="{x:Type ProgressBar}">
+        <Setter Property="Height" Value="12px" />
+        <Setter Property="Foreground" Value="{StaticResource CommonProgressBar.Progress}"/>
+        <Setter Property="Background" Value="{StaticResource CommonProgressBar.Background}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource CommonProgressBar.Border}"/>
+    </Style>
+
+    <!-- A style for icon buttons. -->
+
+    <!-- Mouse over state -->
+    <SolidColorBrush x:Key="IconButtonColors.MouseOver.Background" Color="White"/>
+    <SolidColorBrush x:Key="IconButtonColors.MouseOver.Border" Color="#FF82B1FF"/>
+    <SolidColorBrush x:Key="IconButtonColors.MouseOver.Foreground" Color="Black"/>
+
+    <!-- Pressed state -->
+    <SolidColorBrush x:Key="IconButtonColors.Pressed.Background" Color="#FFF5F5F5"/>
+    <SolidColorBrush x:Key="IconButtonColors.Pressed.Border" Color="#FF82B1FF"/>
+    <SolidColorBrush x:Key="IconButtonColors.Pressed.Foreground" Color="Black"/>
+
+    <!-- Disabled state -->
+    <SolidColorBrush x:Key="IconButtonColors.Disabled.Background" Color="#FFE0E0E0"/>
+    <SolidColorBrush x:Key="IconButtonColors.Disabled.Border" Color="#FFBDBDBD"/>
+    <SolidColorBrush x:Key="IconButtonColors.Disabled.Foreground" Color="#FF9E9E9E"/>
+
+    <Style TargetType="{x:Type controls:IconButton}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+        <Setter Property="Width" Value="20px" />
+        <Setter Property="Height" Value="20px" />
+        <Setter Property="VerticalContentAlignment" Value="Center" />
+        <Setter Property="HorizontalContentAlignment" Value="Center" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:IconButton}">
+                    <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            SnapsToDevicePixels="true" CornerRadius="2">
+                        <Image x:Name="imagePresenter"
+                               HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                               VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                               Height="14px"
+                               Width="14px"
+                               Source="{TemplateBinding NormalIcon}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Source" TargetName="imagePresenter" Value="{Binding MouseOverIcon, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource IconButtonColors.Pressed.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource IconButtonColors.Pressed.Border}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource IconButtonColors.Disabled.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource IconButtonColors.Disabled.Border}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Common PasswordWithReveal style. -->
+
+    <!-- Ultra simple template for the TextBox used to display the password. -->
+    <Style x:Key="PasswordPartTextBoxStyle" TargetType="{x:Type TextBox}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type TextBox}">
+                    <Border x:Name="border"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            Padding="0"
+                            SnapsToDevicePixels="True">
+                        <ScrollViewer x:Name="PART_ContentHost"
+                                      Focusable="false"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      VerticalScrollBarVisibility="Hidden"
+                                      Style="{StaticResource CommonTextStyleBase}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Ultra simple template for the PasswordBox used to display the pasword -->
+    <Style x:Key="PasswordPartPasswordBoxStyle" TargetType="{x:Type PasswordBox}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type PasswordBox}">
+                    <Border x:Name="border"
+                            BorderBrush="Transparent"
+                            BorderThickness="0"
+                            Background="Transparent"
+                            Padding="0"
+                            SnapsToDevicePixels="True">
+                        <ScrollViewer x:Name="PART_ContentHost"
+                                      Focusable="false"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      VerticalScrollBarVisibility="Hidden"
+                                      Style="{StaticResource CommonTextStyleBase}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Template for the PasswordBoxWithReveal control. -->
+    <Style TargetType="{x:Type controls:PasswordBoxWithReveal}">
+        <Setter Property="Height" Value="30px" />
+        <Setter Property="Background" Value="{StaticResource CommonTextBox.Static.Background}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource CommonTextBox.Static.Border}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="KeyboardNavigation.TabNavigation" Value="None"/>
+        <Setter Property="HorizontalContentAlignment" Value="Left"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:PasswordBoxWithReveal}">
+                    <Border x:Name="border"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            Padding="8,0,12,0"
+                            SnapsToDevicePixels="True">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Display the password box or textbox, by default we do not show the password. -->
+                            <TextBox x:Name="PART_TextBox"
+                                     Margin="0,5,0,5"
+                                     BorderBrush="Transparent"
+                                     Background="Transparent"
+                                     Visibility="Collapsed"
+                                     Text="{TemplateBinding Password}"
+                                     Style="{StaticResource PasswordPartTextBoxStyle}" />
+                            <PasswordBox x:Name="PART_PasswordBox"
+                                         Margin="0,5,0,5"
+                                         BorderBrush="Transparent"
+                                         Background="Transparent"
+                                         Visibility="Visible"
+                                         Style="{StaticResource PasswordPartPasswordBoxStyle}" />
+
+                            <!-- Display the button to reveal/hide the password. -->
+                            <controls:IconButton x:Name="PART_Reveal"
+                                                 Grid.Column="1"
+                                                 NormalIcon="{mp:ImageResource Theming/Resources/ic_inspect_black_14px.png}"
+                                                 MouseOverIcon="{mp:ImageResource Theming/Resources/ic_inspect_blue_14px.png}" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource CommonTextBox.Disabled.Background}" />
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource CommonTextBox.Disabled.Border}" />
+                        </Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="true">
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource CommonTextBox.Focus.Border}"/>
+                        </Trigger>
+                        <Trigger Property="ShowingPassword" Value="true">
+                            <Setter Property="Visibility" TargetName="PART_TextBox" Value="Visible" />
+                            <Setter Property="Visibility" TargetName="PART_PasswordBox" Value="Collapsed" />
+                            <Setter Property="NormalIcon" TargetName="PART_Reveal" Value="{mp:ImageResource Theming/Resources/ic_hide_black_14px.png}" />
+                            <Setter Property="MouseOverIcon" TargetName="PART_Reveal" Value="{mp:ImageResource Theming/Resources/ic_hide_blue_14px.png}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Common style for popups. -->
+    <Style x:Key="CommonPopupStyle" TargetType="{x:Type Popup}">
+        <Setter Property="AllowsTransparency" Value="True" />
+        <Setter Property="PopupAnimation" Value="Fade" />
+    </Style>
+
+    <!-- Common border style for popups. -->
+    <SolidColorBrush x:Key="CommonBorderColors.Background" Color="LightYellow" />
+    <SolidColorBrush x:Key="CommonBorderColors.Border" Color="Yellow" />
+
+    <Style x:Key="CommonPopupBorderStyle" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="{StaticResource CommonBorderColors.Background}" />
+        <Setter Property="BorderBrush" Value="{StaticResource CommonBorderColors.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+    
+    <!-- Common buttons. -->
+
+    <!-- Colors for the dialog button for the various UI states. -->
+    
+    <!-- Normal state -->
+    <SolidColorBrush x:Key="CommonButtonColors.Static.Background" Color="White"/>
+    <SolidColorBrush x:Key="CommonButtonColors.Static.Border" Color="#FFBDBDBD"/>
+    <SolidColorBrush x:Key="CommonButtonColors.Static.Foreground" Color="Black"/>
+
+    <!-- Mouse over state -->
+    <SolidColorBrush x:Key="CommonButtonColors.MouseOver.Background" Color="White"/>
+    <SolidColorBrush x:Key="CommonButtonColors.MouseOver.Border" Color="#FF82B1FF"/>
+    <SolidColorBrush x:Key="CommonButtonColors.MouseOver.Foreground" Color="Black"/>
+
+    <!-- Pressed state -->
+    <SolidColorBrush x:Key="CommonButtonColors.Pressed.Background" Color="#FFF5F5F5"/>
+    <SolidColorBrush x:Key="CommonButtonColors.Pressed.Border" Color="#FF82B1FF"/>
+    <SolidColorBrush x:Key="CommonButtonColors.Pressed.Foreground" Color="Black"/>
+
+    <!-- Disabled state -->
+    <SolidColorBrush x:Key="CommonButtonColors.Disabled.Background" Color="#FFE0E0E0"/>
+    <SolidColorBrush x:Key="CommonButtonColors.Disabled.Border" Color="#FFBDBDBD"/>
+    <SolidColorBrush x:Key="CommonButtonColors.Disabled.Foreground" Color="#FF9E9E9E"/>
+
+
+    <!-- The dialog button visuals. -->
+    <Style x:Key="CommonButtonFocusVisualStyle">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="2" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="CommonButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="Blue" />
+        <Setter Property="Width" Value="96px" />
+        <Setter Property="Height" Value="25px" />
+        <Setter Property="FocusVisualStyle" Value="{StaticResource CommonButtonFocusVisualStyle}"/>
+        <Setter Property="Background" Value="{StaticResource CommonButtonColors.Static.Background}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource CommonButtonColors.Static.Border}"/>
+        <Setter Property="Foreground" Value="{StaticResource CommonButtonColors.Static.Foreground}" />
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Border x:Name="border" BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Background="{TemplateBinding Background}"
+                            SnapsToDevicePixels="true" CornerRadius="2">
+                        <ContentPresenter x:Name="contentPresenter"
+                                          Focusable="False"
+                                          HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                          Margin="{TemplateBinding Padding}"
+                                          RecognizesAccessKey="True"
+                                          SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                          VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                          Style="{StaticResource CommonTextStyleBase}"/>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource CommonButtonColors.MouseOver.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource CommonButtonColors.MouseOver.Border}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource CommonButtonColors.MouseOver.Foreground}"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource CommonButtonColors.Pressed.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource CommonButtonColors.Pressed.Border}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource CommonButtonColors.Pressed.Foreground}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Background" TargetName="border" Value="{StaticResource CommonButtonColors.Disabled.Background}"/>
+                            <Setter Property="BorderBrush" TargetName="border" Value="{StaticResource CommonButtonColors.Disabled.Border}"/>
+                            <Setter Property="TextElement.Foreground" TargetName="contentPresenter" Value="{StaticResource CommonButtonColors.Disabled.Foreground}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- Common variations of buttons. -->
+
+    <!-- Dynamic button that adjusts to the contents. -->
+    <Style x:Key="CommonButtonDynamicStyle" BasedOn="{StaticResource CommonButtonStyle}" TargetType="{x:Type Button}">
+        <Setter Property="Width" Value="auto" />
+        <Setter Property="Padding" Value="5,0" />
+    </Style>
+
+    <!-- Style for wide buttons. -->
+    <Style x:Key="CommonButtonWideStyle" BasedOn="{StaticResource CommonButtonStyle}" TargetType="{x:Type Button}">
+        <Setter Property="Width" Value="110px" />
+    </Style>
+
+    <!-- Style for the standard buttons. -->
+    <Style x:Key="CommonButtonStandardStyle" BasedOn="{StaticResource CommonButtonStyle}" TargetType="{x:Type Button}">
+        <Setter Property="Width" Value="75px" />
+    </Style>
+    
+    <!-- Common hyperlink style. -->
+    
+    <!-- Common hyperlink colors. -->
+    <SolidColorBrush x:Key="CommonHyperlinkColors.Normal" Color="Blue" />
+    <SolidColorBrush x:Key="CommonHyperlinkColors.Disabled" Color="Gray" />
+    <SolidColorBrush x:Key="CommonHyperlinkColors.MouseOver" Color="Blue" />
+
+    <Style x:Key="CommonHyperlinkStyle" TargetType="{x:Type Hyperlink}">
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="true">
+                <Setter Property="Foreground" Value="{StaticResource CommonHyperlinkColors.MouseOver}" />
+                <Setter Property="TextDecorations" Value="Underline" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Foreground" Value="{StaticResource CommonHyperlinkColors.Disabled}" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="true">
+                <Setter Property="Cursor" Value="Hand" />
+            </Trigger>
+        </Style.Triggers>
+        <Setter Property="Foreground" Value="{StaticResource CommonHyperlinkColors.Normal}" />
+        <Setter Property="TextDecorations" Value="None" />
+    </Style>
+
+</ResourceDictionary>

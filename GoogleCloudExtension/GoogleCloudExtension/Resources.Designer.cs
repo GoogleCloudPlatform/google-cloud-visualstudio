@@ -61,6 +61,105 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create a password for me.
+        /// </summary>
+        public static string AddWindowsCredentialGeneratePasswordMessage {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialGeneratePasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to I have a password for this user.
+        /// </summary>
+        public static string AddWindowsCredentialHavePasswordMessage {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialHavePasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password.
+        /// </summary>
+        public static string AddWindowsCredentialPasswordGroupHeader {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialPasswordGroupHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Type password:.
+        /// </summary>
+        public static string AddWindowsCredentialPasswordLabel {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialPasswordLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Windows Credential.
+        /// </summary>
+        public static string AddWindowsCredentialTitle {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter a user name. If the user name already exists as an account on the Windows instance, then you can reset the password or enter the current one..
+        /// </summary>
+        public static string AddWindowsCredentialToolTip {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _User name:.
+        /// </summary>
+        public static string AddWindowsCredentialUserNameCaption {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialUserNameCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The password field cannot be empty..
+        /// </summary>
+        public static string AddWindowsCredentialValidationEmptyPassword {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialValidationEmptyPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The username cannot be empty..
+        /// </summary>
+        public static string AddWindowsCredentialValidationEmptyUser {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialValidationEmptyUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Windows Credential.
+        /// </summary>
+        public static string AddWindowsCredentialValidationErrorTtitle {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialValidationErrorTtitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The user name contains invalid characters {0}.
+        /// </summary>
+        public static string AddWindowsCredentialValidationInvalidChars {
+            get {
+                return ResourceManager.GetString("AddWindowsCredentialValidationInvalidChars", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to help Google by reporting usage statics?.
         /// </summary>
         public static string AnalyticsPromptMessage {
@@ -151,7 +250,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No projects found, to create a project navigate to the Google Cloud Console..
+        ///   Looks up a localized string similar to No projects found, to create a project open Cloud Platform Console..
         /// </summary>
         public static string CloudExploreNoProjectMessage {
             get {
@@ -178,7 +277,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go to the Google Cloud Console for other services.
+        ///   Looks up a localized string similar to Open Cloud Platform Console for other services.
         /// </summary>
         public static string CloudExplorerConsoleLinkCaption {
             get {
@@ -925,7 +1024,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Firewall Ports....
+        ///   Looks up a localized string similar to Firewall options....
         /// </summary>
         public static string CloudExplorerGceManageFirewallPortsMenuHeader {
             get {
@@ -934,7 +1033,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Windows Credentials....
+        ///   Looks up a localized string similar to Manage Windows credentials....
         /// </summary>
         public static string CloudExplorerGceManageWindowsCredentialsMenuHeader {
             get {
@@ -961,24 +1060,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No instances in this zone.
-        /// </summary>
-        public static string CloudExplorerGceNoInstancesInZoneCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerGceNoInstancesInZoneCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No Windows instances in this zone.
-        /// </summary>
-        public static string CloudExplorerGceNoWindowsInstancesInZoneCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerGceNoWindowsInstancesInZoneCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Show only Windows instances.
         /// </summary>
         public static string CloudExplorerGceOnlyWindowsButtonToolTip {
@@ -988,7 +1069,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open Terminal Server Session....
+        ///   Looks up a localized string similar to Open terminal session....
         /// </summary>
         public static string CloudExplorerGceOpenTerminalSessionMenuHeader {
             get {
@@ -997,7 +1078,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open Web Site....
+        ///   Looks up a localized string similar to Open website.
         /// </summary>
         public static string CloudExplorerGceOpenWebSiteMenuHeader {
             get {
@@ -1132,11 +1213,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No zones found..
+        ///   Looks up a localized string similar to No instances found..
         /// </summary>
-        public static string CloudExplorerGceSourceNoZonesCaption {
+        public static string CloudExplorerGceSourceNoInstancesCaption {
             get {
-                return ResourceManager.GetString("CloudExplorerGceSourceNoZonesCaption", resourceCulture);
+                return ResourceManager.GetString("CloudExplorerGceSourceNoInstancesCaption", resourceCulture);
             }
         }
         
@@ -1438,7 +1519,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Navigate to Cloud Console.
+        ///   Looks up a localized string similar to Open Cloud Platform Console.
         /// </summary>
         public static string CloudExplorerNoProjectButtonCaption {
             get {
@@ -1555,7 +1636,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Authorized Networks.
+        ///   Looks up a localized string similar to Manage authorized networks....
         /// </summary>
         public static string CloudExplorerSqlManageAuthorizedNetworksMenuHeader {
             get {
@@ -1573,7 +1654,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Data Connection.
+        ///   Looks up a localized string similar to Add Data Connection....
         /// </summary>
         public static string CloudExplorerSqlOpenAddDataConnectionMenuHeader {
             get {
@@ -1744,7 +1825,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add....
+        ///   Looks up a localized string similar to _Add account.
         /// </summary>
         public static string ManageAccountsAddAccountButtonCaption {
             get {
@@ -1753,7 +1834,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose account:.
+        ///   Looks up a localized string similar to _Choose account:.
         /// </summary>
         public static string ManageAccountsChooseAccountMessage {
             get {
@@ -1771,7 +1852,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete.
+        ///   Looks up a localized string similar to _Delete.
         /// </summary>
         public static string ManageAccountsDeleteAccountButtonCaption {
             get {
@@ -1798,7 +1879,16 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Set As Current.
+        ///   Looks up a localized string similar to {0} ({1}).
+        /// </summary>
+        public static string ManageAccountsDisplayStringFormat {
+            get {
+                return ResourceManager.GetString("ManageAccountsDisplayStringFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Set current.
         /// </summary>
         public static string ManageAccountsSetAsCurrentAccountButtonCaption {
             get {
@@ -1816,7 +1906,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Credentials.
+        ///   Looks up a localized string similar to _Add credentials.
         /// </summary>
         public static string ManageWindowsCredentialsAddCredentialsCaption {
             get {
@@ -1825,7 +1915,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete Credentials.
+        ///   Looks up a localized string similar to _Delete credentials.
         /// </summary>
         public static string ManageWindowsCredentialsDeleteCredentialsCaption {
             get {
@@ -1834,7 +1924,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to the delete the credentials for user {0}?.
+        ///   Looks up a localized string similar to Delete user name {0} from this computer? The credentials will still exist on the Windows instance..
         /// </summary>
         public static string ManageWindowsCredentialsDeleteCredentialsPromptMessage {
             get {
@@ -1843,7 +1933,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete Credentials.
+        ///   Looks up a localized string similar to Delete Credential.
         /// </summary>
         public static string ManageWindowsCredentialsDeleteCredentialsPromptTitle {
             get {
@@ -1852,7 +1942,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show Credentials.
+        ///   Looks up a localized string similar to _Show password.
         /// </summary>
         public static string ManageWindowsCredentialsShowCredentialsCaption {
             get {
@@ -1861,7 +1951,16 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Windows credentials for {0}.
+        ///   Looks up a localized string similar to Windows credentials are used to log in to a Windows machine instance..
+        /// </summary>
+        public static string ManageWindowsCredentialsToolTip {
+            get {
+                return ResourceManager.GetString("ManageWindowsCredentialsToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Credentials for {0}. .
         /// </summary>
         public static string ManageWindowsCredentialsWindowMessage {
             get {
@@ -1870,7 +1969,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Windows Credentials.
+        ///   Looks up a localized string similar to Windows Credentials.
         /// </summary>
         public static string ManageWindowsCredentialsWindowTitle {
             get {
@@ -1924,7 +2023,52 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Firewall Ports.
+        ///   Looks up a localized string similar to {0} ({1} {2}).
+        /// </summary>
+        public static string PortManagerDisplayStringFormat {
+            get {
+                return ResourceManager.GetString("PortManagerDisplayStringFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow HTTP traffic to the instance.
+        /// </summary>
+        public static string PortManagerHttpDescription {
+            get {
+                return ResourceManager.GetString("PortManagerHttpDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow HTTPS traffic to the instance.
+        /// </summary>
+        public static string PortManagerHttpsDescription {
+            get {
+                return ResourceManager.GetString("PortManagerHttpsDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow Remote Desktop connections to the instance.
+        /// </summary>
+        public static string PortManagerRdpDescription {
+            get {
+                return ResourceManager.GetString("PortManagerRdpDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow publishing with WebDeploy to the instance.
+        /// </summary>
+        public static string PortManagerWebDeployDescription {
+            get {
+                return ResourceManager.GetString("PortManagerWebDeployDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Firewall Options.
         /// </summary>
         public static string PortManagerWindowCaption {
             get {
@@ -1933,7 +2077,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Set Firewall rules and tags to enable traffic for the instance.
+        ///   Looks up a localized string similar to Firewall rules:.
         /// </summary>
         public static string PortManagerWindowMessage {
             get {
@@ -2113,7 +2257,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Are you sure you want to reset the password for the user {0} in instance {1}? This operation cannot be cancelled..
+        ///   Looks up a localized string similar to Reset the password for {0} on instance {1}?.
         /// </summary>
         public static string ResetPasswordConfirmationPromptMessage {
             get {
@@ -2176,24 +2320,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generate the password for this user name.
-        /// </summary>
-        public static string ResetPasswordGeneratePasswordMessage {
-            get {
-                return ResourceManager.GetString("ResetPasswordGeneratePasswordMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to I have a password for this user name.
-        /// </summary>
-        public static string ResetPasswordHavePasswordMessage {
-            get {
-                return ResourceManager.GetString("ResetPasswordHavePasswordMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Missing Google Cloud SDK.
         /// </summary>
         public static string ResetPasswordMissingGcloudTitle {
@@ -2203,20 +2329,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to User name:.
+        ///   Looks up a localized string similar to Resetting password for {0}.
         /// </summary>
-        public static string ResetPasswordUserNameCaption {
+        public static string ResetPasswordProgressMessage {
             get {
-                return ResourceManager.GetString("ResetPasswordUserNameCaption", resourceCulture);
+                return ResourceManager.GetString("ResetPasswordProgressMessage", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Credential for VM {0}.
+        ///   Looks up a localized string similar to Resetting Password.
         /// </summary>
-        public static string ResetPasswordWindowTitle {
+        public static string ResetPasswordProgressTitle {
             get {
-                return ResourceManager.GetString("ResetPasswordWindowTitle", resourceCulture);
+                return ResourceManager.GetString("ResetPasswordProgressTitle", resourceCulture);
             }
         }
         
@@ -2226,6 +2352,15 @@ namespace GoogleCloudExtension {
         public static string ResetWindowSettingPasswordProgressMessage {
             get {
                 return ResourceManager.GetString("ResetWindowSettingPasswordProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password copied to clipboard..
+        /// </summary>
+        public static string ShowPasswordCopiedMessage {
+            get {
+                return ResourceManager.GetString("ShowPasswordCopiedMessage", resourceCulture);
             }
         }
         
@@ -2266,11 +2401,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The password for user {0} in instance {1} is:.
+        ///   Looks up a localized string similar to {0} password:.
         /// </summary>
         public static string ShowPasswordMessage {
             get {
                 return ResourceManager.GetString("ShowPasswordMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The password for {0} has been set:.
+        /// </summary>
+        public static string ShowPasswordNewPasswordMessage {
+            get {
+                return ResourceManager.GetString("ShowPasswordNewPasswordMessage", resourceCulture);
             }
         }
         
@@ -2428,7 +2572,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete.
+        ///   Looks up a localized string similar to _Delete.
         /// </summary>
         public static string UiDeleteButtonCaption {
             get {
@@ -2437,11 +2581,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Download.
+        ///   Looks up a localized string similar to _Download.
         /// </summary>
         public static string UiDownloadButtonCaption {
             get {
                 return ResourceManager.GetString("UiDownloadButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _No.
+        /// </summary>
+        public static string UiNoButtonCaption {
+            get {
+                return ResourceManager.GetString("UiNoButtonCaption", resourceCulture);
             }
         }
         
@@ -2455,11 +2608,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open on Cloud Console.
+        ///   Looks up a localized string similar to _Open.
+        /// </summary>
+        public static string UiOpenButtonCaption {
+            get {
+                return ResourceManager.GetString("UiOpenButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open on Cloud Platform Console.
         /// </summary>
         public static string UiOpenOnCloudConsoleMenuHeader {
             get {
                 return ResourceManager.GetString("UiOpenOnCloudConsoleMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You can&apos;t undo this later..
+        /// </summary>
+        public static string UiOperationCannotBeUndone {
+            get {
+                return ResourceManager.GetString("UiOperationCannotBeUndone", resourceCulture);
             }
         }
         
@@ -2473,7 +2644,16 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save.
+        ///   Looks up a localized string similar to _Reset.
+        /// </summary>
+        public static string UiResetButtonCaption {
+            get {
+                return ResourceManager.GetString("UiResetButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Save.
         /// </summary>
         public static string UiSaveButtonCaption {
             get {
@@ -2482,7 +2662,25 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Undo.
+        ///   Looks up a localized string similar to Start.
+        /// </summary>
+        public static string UiStartButtonCaption {
+            get {
+                return ResourceManager.GetString("UiStartButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stop.
+        /// </summary>
+        public static string UiStopButtonCaption {
+            get {
+                return ResourceManager.GetString("UiStopButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Undo.
         /// </summary>
         public static string UiUndoButtonCaption {
             get {
@@ -2491,16 +2689,16 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Windows Credentials.
+        ///   Looks up a localized string similar to _Yes.
         /// </summary>
-        public static string WindowsCredentialsChooserButtonToolTip {
+        public static string UiYesButtonCaption {
             get {
-                return ResourceManager.GetString("WindowsCredentialsChooserButtonToolTip", resourceCulture);
+                return ResourceManager.GetString("UiYesButtonCaption", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage credentials.
+        ///   Looks up a localized string similar to Manage Windows credentials.
         /// </summary>
         public static string WindowsCredentialsChooserManageCredentialsCaption {
             get {

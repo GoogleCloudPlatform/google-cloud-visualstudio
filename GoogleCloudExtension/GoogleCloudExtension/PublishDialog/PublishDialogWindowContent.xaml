@@ -7,23 +7,31 @@
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
-             d:DesignHeight="400" d:DesignWidth="500"
              d:DataContext="{x:Type local:PublishDialogWindowViewModel}">
 
     <UserControl.Resources>
-
-        <ContentControl x:Key="content"
-                        Margin="3"
-                        Content="{Binding Content}" />
-
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
 
-    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
+    <UserControl.Style>
+        <Binding Source="{StaticResource CommonDialogStyleLarge}" />
+    </UserControl.Style>
+
+
+    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}" Content="{Binding Content}">
         <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogPrevButtonCaption}" Command="{Binding DataContext.PrevCommand, Source={StaticResource content}}"/>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogNextButtonCaption}" Command="{Binding DataContext.NextCommand, Source={StaticResource content}}"/>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogPublishButtonCaption}" Command="{Binding DataContext.PublishCommand, Source={StaticResource content}}"/>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCloseButtonCaption}" IsCancel="true" />
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogPrevButtonCaption}"
+                                      Command="{Binding PrevCommand}"/>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogNextButtonCaption}"
+                                      Command="{Binding NextCommand}"/>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogPublishButtonCaption}"
+                                      Command="{Binding PublishCommand}"/>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCloseButtonCaption}"
+                                      IsCancel="true" />
         </theming:CommonDialogWindowBaseContent.Buttons>
     </theming:CommonDialogWindowBaseContent>
 

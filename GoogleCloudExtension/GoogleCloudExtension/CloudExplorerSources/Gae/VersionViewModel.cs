@@ -168,7 +168,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             string confirmationMessage = String.Format(
                 Resources.CloudExplorerGaeDeleteVersionConfirmationPromptMessage, _owner.Service.Id, version.Id);
-            if (!UserPromptUtils.YesNoPrompt(confirmationMessage, Resources.CloudExplorerGaeDeleteVersion))
+            if (!UserPromptUtils.ActionPrompt(
+                confirmationMessage,
+                Resources.CloudExplorerGaeDeleteVersion,
+                actionCaption: Resources.UiYesButtonCaption,
+                cancelCaption: Resources.UiNoButtonCaption))
             {
                 Debug.WriteLine("The user cancelled deleting the version.");
                 return;

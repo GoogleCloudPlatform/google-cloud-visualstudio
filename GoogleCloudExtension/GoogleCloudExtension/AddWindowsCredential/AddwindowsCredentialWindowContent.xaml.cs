@@ -16,16 +16,16 @@ using GoogleCloudExtension.Utils;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.ResetPassword
+namespace GoogleCloudExtension.AddWindowsCredential
 {
     /// <summary>
     /// Interaction logic for ResetPasswordWindowContent.xaml
     /// </summary>
-    public partial class ResetPasswordWindowContent : UserControl
+    public partial class AddWindowsCredentialWindowContent : UserControl
     {
-        private ResetPasswordViewModel ViewModel => (ResetPasswordViewModel)DataContext;
+        private AddWindowsCredentialViewModel ViewModel => (AddWindowsCredentialViewModel)DataContext;
 
-        public ResetPasswordWindowContent()
+        public AddWindowsCredentialWindowContent()
         {
             InitializeComponent();
 
