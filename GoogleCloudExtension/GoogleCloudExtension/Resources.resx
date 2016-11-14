@@ -266,7 +266,7 @@
     <comment>The tooltip for the filter button.</comment>
   </data>
   <data name="CloudExplorerGceOpenTerminalSessionMenuHeader" xml:space="preserve">
-    <value>Open terminal session...</value>
+    <value>Open Remote Desktop session...</value>
     <comment>Header for the open terminal session menu item.</comment>
   </data>
   <data name="CloudExplorerGceOpenWebSiteMenuHeader" xml:space="preserve">
@@ -778,7 +778,7 @@
     <comment>Top message in the terminal server window.</comment>
   </data>
   <data name="TerminalServerManagerWindowTitle" xml:space="preserve">
-    <value>Start Terminal Server session</value>
+    <value>Start Remote Desktop Session</value>
     <comment>Title for the manage terminal server window.</comment>
   </data>
   <data name="WindowsCredentialsChooserNoCredentialsFoundMessage" xml:space="preserve">

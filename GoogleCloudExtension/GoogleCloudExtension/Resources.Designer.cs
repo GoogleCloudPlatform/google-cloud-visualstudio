@@ -574,7 +574,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open terminal session....
+        ///   Looks up a localized string similar to Open Remote Desktop session....
         /// </summary>
         public static string CloudExplorerGceOpenTerminalSessionMenuHeader {
             get {
@@ -1708,7 +1708,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Start Terminal Server session.
+        ///   Looks up a localized string similar to Start Remote Desktop Session.
         /// </summary>
         public static string TerminalServerManagerWindowTitle {
             get {
