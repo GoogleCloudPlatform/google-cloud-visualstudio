@@ -7,11 +7,29 @@
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
-             mc:Ignorable="d" 
-             d:DesignHeight="500" d:DesignWidth="450">
+             mc:Ignorable="d">
 
     <UserControl.Resources>
-        <Grid x:Key="content">
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.Style>
+        <Binding Source="{StaticResource CommonDialogStyleLarge}" />
+    </UserControl.Style>
+
+    <theming:CommonDialogWindowBaseContent>
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiSaveButtonCaption}"
+                                      IsDefault="True"
+                                      Command="{Binding DataContext.SaveCommand, Source={StaticResource content}}"/>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
+        </theming:CommonDialogWindowBaseContent.Buttons>
+
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="30px" />
                 <RowDefinition Height="85px"/>
@@ -66,7 +84,7 @@
                     <Button Grid.Row="1" Margin="5px, 2px" Width="Auto" Command="{Binding AddTrafficAllocationCommand}"
                             Content="{x:Static ext:Resources.SplitTrafficWindowAddVersionMessage}"
                             HorizontalAlignment="Center" VerticalAlignment="Center"/>
- 
+
                 </Grid>
             </Border>
 
@@ -115,14 +133,6 @@
                 </ListView>
             </Grid>
         </Grid>
-    </UserControl.Resources>
-    
-    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
-        <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiSaveButtonCaption}"
-                                      IsDefault="True"
-                                      Command="{Binding DataContext.SaveCommand, Source={StaticResource content}}"/>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
-        </theming:CommonDialogWindowBaseContent.Buttons>
+
     </theming:CommonDialogWindowBaseContent>
 </UserControl>

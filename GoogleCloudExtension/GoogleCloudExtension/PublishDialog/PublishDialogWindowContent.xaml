@@ -21,8 +21,7 @@
         <Binding Source="{StaticResource CommonDialogStyleLarge}" />
     </UserControl.Style>
 
-
-    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}" Content="{Binding Content}">
+    <theming:CommonDialogWindowBaseContent Content="{Binding Content}" HasBanner="True">
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogPrevButtonCaption}"
                                       Command="{Binding PrevCommand}"/>
