@@ -138,7 +138,7 @@
     <comment>Menu header for the Enable API command.</comment>
   </data>
   <data name="CloudExploreNoProjectMessage" xml:space="preserve">
-    <value>No projects found, to create a project open Cloud Platform Console.</value>
+    <value>To create a project, go to the Cloud Platform Console.</value>
     <comment>Message shwon int he Cloud Explorer when no project is found.</comment>
   </data>
   <data name="CloudExplorerConsoleLinkCaption" xml:space="preserve">
@@ -434,7 +434,7 @@
     <comment>General loading message.</comment>
   </data>
   <data name="CloudExplorerNoAccountButtonCaption" xml:space="preserve">
-    <value>Select or Create Account</value>
+    <value>Select or create account</value>
     <comment>Caption for the button, or link, in the Cloud Exlorer shown when there's no account selected.</comment>
   </data>
   <data name="CloudExplorerNoAccountMessage" xml:space="preserve">
@@ -442,7 +442,7 @@
     <comment>Message shown in the Cloud Exlorer when there's no account selected.</comment>
   </data>
   <data name="CloudExplorerNoProjectButtonCaption" xml:space="preserve">
-    <value>Open Cloud Platform Console</value>
+    <value>Go to the Cloud Platform Console</value>
     <comment>Caption for the button, or link, shown in the Cloud Explorer when no project is found.</comment>
   </data>
   <data name="CloudExplorerNoProjectsFoundPlaceholderMessage" xml:space="preserve">
