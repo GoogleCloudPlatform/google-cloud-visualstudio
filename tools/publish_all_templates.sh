@@ -8,7 +8,7 @@ set -eu
 readonly workspace=$(dirname $0)/..
 
 # List all project templates and publishe them.
-for p in $(find "${workspace}/GoogleCloudExtension/ProjectTemplates" -mindepth 1 -maxdepth 1); do
+for p in $(find "${workspace}/GoogleCloudExtension/ProjectTemplates" -mindepth 1 -maxdepth 1 -type d); do
     echo "Publishing project: $(basename ${p})"
     ${workspace}/tools/publish_template.sh "${p}" "Google Cloud Platform"
 done
