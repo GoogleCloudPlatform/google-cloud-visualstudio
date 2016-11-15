@@ -21,11 +21,11 @@
         <Binding Source="{StaticResource CommonDialogStyleLarge}" />
     </UserControl.Style>
 
-    <theming:CommonDialogWindowBaseContent>
+    <theming:CommonDialogWindowBaseContent HasBanner="True">
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiSaveButtonCaption}"
                                       IsDefault="True"
-                                      Command="{Binding DataContext.SaveCommand, Source={StaticResource content}}"/>
+                                      Command="{Binding DataContext.SaveCommand}"/>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
 
