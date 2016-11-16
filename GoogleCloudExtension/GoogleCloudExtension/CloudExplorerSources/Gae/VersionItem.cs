@@ -20,14 +20,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
     /// <summary>
     /// This class represents a GAE service in the Properties Window.
     /// </summary>
-    class VersionItem : PropertyWindowItemBase
+    internal class VersionItem : PropertyWindowItemBase
     {
-
         private readonly Version _version;
 
         public VersionItem(Version version) : base(className: Resources.CloudExplorerGaeVersionCategory, componentName: version.Id)
         {
-            _version = version;   
+            _version = version;
         }
 
         [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionCategory))]

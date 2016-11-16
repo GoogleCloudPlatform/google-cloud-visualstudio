@@ -21,7 +21,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
     /// <summary>
     /// This class represents a GAE instance in the Properties Window.
     /// </summary>
-    class InstanceItem : PropertyWindowItemBase
+    internal class InstanceItem : PropertyWindowItemBase
     {
         private readonly Instance _instance;
 
@@ -74,7 +74,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         [LocalizedDisplayName(nameof(Resources.CloudExplorerGaeInstanceVirtualMachineIdDisplayName))]
         [LocalizedCategory(nameof(Resources.CloudExplorerGaeInstanceVirtualMachineCategory))]
-        public string VmId=> _instance.VmId;
+        public string VmId => _instance.VmId;
 
         [LocalizedDisplayName(nameof(Resources.CloudExplorerGaeInstanceVirtualMachineStatusDisplayName))]
         [LocalizedCategory(nameof(Resources.CloudExplorerGaeInstanceVirtualMachineCategory))]

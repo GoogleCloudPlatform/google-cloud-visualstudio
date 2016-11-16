@@ -156,7 +156,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
             AddTrafficAllocationCommand = new ProtectedCommand(OnAddTrafficAllocationCommand);
 
             AvailableVersions.CollectionChanged += new NotifyCollectionChangedEventHandler(
-                (s, e)=> RaisePropertyChanged(nameof(HasAvailableVersions))); 
+                (s, e) => RaisePropertyChanged(nameof(HasAvailableVersions)));
         }
 
         /// <summary>

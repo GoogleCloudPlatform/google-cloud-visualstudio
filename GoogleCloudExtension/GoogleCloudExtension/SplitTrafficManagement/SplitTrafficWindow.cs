@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         private SplitTrafficViewModel ViewModel =>
             (SplitTrafficViewModel)((SplitTrafficWindowContent)Content).DataContext;
 
-        public SplitTrafficWindow(Service service, IEnumerable<Version> versions) : 
+        public SplitTrafficWindow(Service service, IEnumerable<Version> versions) :
             base(GoogleCloudExtension.Resources.SplitTrafficWindowTitle)
         {
             Content = new SplitTrafficWindowContent

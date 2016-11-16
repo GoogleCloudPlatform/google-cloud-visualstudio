@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
     /// <summary>
     /// This class represents a GAE service in the Properties Window.
     /// </summary>
-    class ServiceItem : PropertyWindowItemBase
+    internal class ServiceItem : PropertyWindowItemBase
     {
         private readonly Service _service;
 

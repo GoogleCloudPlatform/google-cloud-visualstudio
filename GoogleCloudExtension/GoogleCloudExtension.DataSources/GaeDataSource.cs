@@ -29,8 +29,8 @@ namespace GoogleCloudExtension.DataSources
     /// </summary>
     public class GaeDataSource : DataSourceBase<AppengineService>
     {
-        private static readonly string ServingStatusUpdateMask = "servingStatus";
-        private static readonly string TrafficSplitUpdateMask = "split";
+        private static readonly string s_servingStatusUpdateMask = "servingStatus";
+        private static readonly string s_trafficSplitUpdateMask = "split";
 
         /// <summary>
         /// Initializes an instance of the data source.
@@ -139,7 +139,7 @@ namespace GoogleCloudExtension.DataSources
                 };
                 var request = Service.Apps.Services.Patch(service, ProjectId, serviceId);
                 // Only update the traffic split.
-                request.UpdateMask = TrafficSplitUpdateMask;
+                request.UpdateMask = s_trafficSplitUpdateMask;
                 return await request.ExecuteAsync();
             }
             catch (GoogleApiException ex)
@@ -233,7 +233,7 @@ namespace GoogleCloudExtension.DataSources
                 };
                 var request = Service.Apps.Services.Versions.Patch(version, ProjectId, serviceId, versionId);
                 // Only update the service status.
-                request.UpdateMask = ServingStatusUpdateMask;
+                request.UpdateMask = s_servingStatusUpdateMask;
                 return await request.ExecuteAsync();
             }
             catch (GoogleApiException ex)

@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.DataSources
         /// Gets an operation id.
         /// </summary>
         public static string GetOperationId(this Operation operation)
-        { 
+        {
             return operation.Name.Split('/').Last();
         }
 
