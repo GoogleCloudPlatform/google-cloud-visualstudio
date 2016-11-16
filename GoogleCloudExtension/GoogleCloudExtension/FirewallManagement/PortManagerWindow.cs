@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using Google.Apis.Compute.v1.Data;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.FirewallManagement
@@ -40,6 +42,8 @@ namespace GoogleCloudExtension.FirewallManagement
         /// <returns></returns>
         public static PortChanges PromptUser(Instance instance)
         {
+            EventsReporterWrapper.ReportEvent(OpenFirewallPortsDialogEvent.Create());
+
             var window = new PortManagerWindow(instance);
             window.ShowModal();
             return window.ViewModel.Result;
