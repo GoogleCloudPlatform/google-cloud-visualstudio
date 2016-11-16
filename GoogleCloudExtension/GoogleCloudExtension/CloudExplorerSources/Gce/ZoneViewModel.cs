@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private const string IconResourcePath = "CloudExplorerSources/Gce/Resources/zone_icon.png";
 
         private static readonly Lazy<ImageSource> s_zoneIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
-        
+
         private readonly GceSourceRootViewModel _owner;
         private readonly Zone _zone;
 
