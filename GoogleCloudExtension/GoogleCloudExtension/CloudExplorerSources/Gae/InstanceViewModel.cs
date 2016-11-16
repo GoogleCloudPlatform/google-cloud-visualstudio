@@ -14,7 +14,6 @@
 
 using Google.Apis.Appengine.v1.Data;
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;

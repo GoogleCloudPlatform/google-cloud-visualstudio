@@ -13,16 +13,14 @@
 // limitations under the License.
 
 using Google.Apis.Appengine.v1.Data;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows.Data;
-using System.Windows.Input;
-using System.Globalization;
-using GoogleCloudExtension.DataSources;
 using System.Collections.Specialized;
+using System.Linq;
+using System.Windows.Input;
 
 namespace GoogleCloudExtension.SplitTrafficManagement
 {

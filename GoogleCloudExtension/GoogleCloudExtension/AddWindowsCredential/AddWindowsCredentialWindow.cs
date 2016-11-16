@@ -14,7 +14,6 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Theming;
-using System;
 
 namespace GoogleCloudExtension.AddWindowsCredential
 {

@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using static Google.Apis.Appengine.v1.AppsResource.ServicesResource;
 
 namespace GoogleCloudExtension.DataSources
 {
