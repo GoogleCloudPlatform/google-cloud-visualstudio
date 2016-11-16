@@ -33,7 +33,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
     /// <summary>
     /// This class represents a view of a GAE service in the Google Cloud Explorer Window.
     /// </summary>
-    class ServiceViewModel : TreeHierarchy, ICloudExplorerItemSource
+    internal class ServiceViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
         private const string IconServiceResourcePath = "CloudExplorerSources/Gae/Resources/service_icon.png";
 
@@ -75,7 +75,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         public bool ShowOnlyFlexVersions
         {
-            get { return _showOnlyFlexVersions;  }
+            get { return _showOnlyFlexVersions; }
             set
             {
                 if (value == _showOnlyFlexVersions)
@@ -130,7 +130,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             Caption = Service.Id;
             Icon = s_serviceIcon.Value;
-
+ 
             UpdateContextMenu();
         }
 
@@ -151,20 +151,24 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand) },
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesWindowCommand) },
                 new MenuItem { Header = Resources.CloudExplorerGaeServiceOpen, Command = new ProtectedCommand(OnOpenService) },
-                
-            };
+};
 
-            if (Children.Count > 1)
+            menuItems.Add(new MenuItem
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeSplitTraffic, Command = new ProtectedCommand(OnSplitTraffic) });
-            }
+                Header = Resources.CloudExplorerGaeSplitTraffic,
+                Command = new ProtectedCommand(OnSplitTraffic, canExecuteCommand: Children.Count > 1)
+            });
 
             menuItems.Add(new Separator());
 
-            if (!GaeUtils.AppEngineDefaultServiceName.Equals(Service.Id))
+            menuItems.Add(new MenuItem
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteService, Command = new ProtectedCommand(OnDeleteService) });
-            }
+                Header = Resources.CloudExplorerGaeDeleteService,
+                Command = new ProtectedCommand(
+                    OnDeleteService,
+                    canExecuteCommand: !GaeUtils.AppEngineDefaultServiceName.Equals(Service.Id))
+            });
+
 
             if (ShowOnlyFlexVersions)
             {
@@ -390,7 +394,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Success));
             }
             catch (Exception ex) when (ex is DataSourceException || ex is TimeoutException || ex is OperationCanceledException)
-            { 
+            {
                 EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Failure));
                 IsError = true;
 
@@ -408,7 +412,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 }
             }
             finally
-            { 
+            {
                 IsLoading = false;
                 PresentViewModels();
                 Icon = s_serviceIcon.Value;
