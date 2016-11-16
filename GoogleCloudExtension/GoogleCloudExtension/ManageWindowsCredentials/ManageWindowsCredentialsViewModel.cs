@@ -15,6 +15,8 @@
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.AddWindowsCredential;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.LinkPrompt;
@@ -168,6 +170,8 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             {
                 WindowsCredentialsStore.Default.AddCredentialsToInstance(_instance, credentials);
                 CredentialsList = WindowsCredentialsStore.Default.GetCredentialsForInstance(_instance);
+
+                EventsReporterWrapper.ReportEvent(AddWindowsCredentialEvent.Create());
             }
         }
 
