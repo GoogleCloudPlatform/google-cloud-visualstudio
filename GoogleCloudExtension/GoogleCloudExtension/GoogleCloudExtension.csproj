@@ -68,7 +68,13 @@
     <Compile Include="Analytics\Events\GcsBucketsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\NewInstallEvent.cs" />
     <Compile Include="Analytics\Events\NewLoginEvent.cs" />
-    <Compile Include="Analytics\Events\OpenFirewallPortsDialogEvent.cs" />
+    <Compile Include="Analytics\Events\OpenGceInstanceOnCloudConsoleEvent.cs" />
+    <Compile Include="Analytics\Events\OpenGceInstanceWebsiteEvent.cs" />
+    <Compile Include="Analytics\Events\OpenGcsBucketOnCloudConsoleEvent.cs" />
+    <Compile Include="Analytics\Events\SavePublishSettingsEvent.cs" />
+    <Compile Include="Analytics\Events\StartGceInstanceEvent.cs" />
+    <Compile Include="Analytics\Events\StartRemoteDesktopSessionEvent.cs" />
+    <Compile Include="Analytics\Events\StopGceInstanceEvent.cs" />
     <Compile Include="Analytics\Events\UnhandledExceptionEvent.cs" />
     <Compile Include="Analytics\Events\UpgradeEvent.cs" />
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworkModel.cs" />

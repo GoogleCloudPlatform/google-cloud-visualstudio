@@ -42,8 +42,6 @@ namespace GoogleCloudExtension.FirewallManagement
         /// <returns></returns>
         public static PortChanges PromptUser(Instance instance)
         {
-            EventsReporterWrapper.ReportEvent(OpenFirewallPortsDialogEvent.Create());
-
             var window = new PortManagerWindow(instance);
             window.ShowModal();
             return window.ViewModel.Result;
