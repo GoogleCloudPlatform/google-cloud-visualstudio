@@ -14,8 +14,6 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
 using System.Diagnostics;

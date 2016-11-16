@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GoogleCloudExtension.Analytics.Events
+﻿namespace GoogleCloudExtension.Analytics.Events
 {
     /// <summary>
     /// Event sent when the cloud SQL connection dialog is open.
