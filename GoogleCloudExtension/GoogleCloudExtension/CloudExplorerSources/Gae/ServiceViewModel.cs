@@ -130,7 +130,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             Caption = Service.Id;
             Icon = s_serviceIcon.Value;
-
+ 
             UpdateContextMenu();
         }
 
@@ -153,17 +153,22 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 new MenuItem { Header = Resources.CloudExplorerGaeServiceOpen, Command = new ProtectedCommand(OnOpenService) },
 };
 
-            if (Children.Count > 1)
+            menuItems.Add(new MenuItem
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeSplitTraffic, Command = new ProtectedCommand(OnSplitTraffic) });
-            }
+                Header = Resources.CloudExplorerGaeSplitTraffic,
+                Command = new ProtectedCommand(OnSplitTraffic, canExecuteCommand: Children.Count > 1)
+            });
 
             menuItems.Add(new Separator());
 
-            if (!GaeUtils.AppEngineDefaultServiceName.Equals(Service.Id))
+            menuItems.Add(new MenuItem
             {
-                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteService, Command = new ProtectedCommand(OnDeleteService) });
-            }
+                Header = Resources.CloudExplorerGaeDeleteService,
+                Command = new ProtectedCommand(
+                    OnDeleteService,
+                    canExecuteCommand: !GaeUtils.AppEngineDefaultServiceName.Equals(Service.Id))
+            });
+
 
             if (ShowOnlyFlexVersions)
             {
