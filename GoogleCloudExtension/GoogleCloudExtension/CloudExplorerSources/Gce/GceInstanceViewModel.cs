@@ -172,11 +172,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     // Permanent error.
                     return;
                 }
-                catch (OAuthException ex)
-                {
-                    ShowOAuthErrorDialog(ex);
-                    return;
-                }
 
                 // See if there are more operations.
                 pendingOperation = _owner.DataSource.GetPendingOperation(Instance);
@@ -267,6 +262,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 return;
             }
 
+            EventsReporterWrapper.ReportEvent(SavePublishSettingsEvent.Create());
             var profile = Instance.GeneratePublishSettings(
                 userName: credentials.User,
                 password: credentials.Password);
@@ -281,6 +277,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnOpenOnCloudConsoleCommand()
         {
+            EventsReporterWrapper.ReportEvent(OpenGceInstanceOnCloudConsoleEvent.Create());
+
             var url = $"https://console.cloud.google.com/compute/instancesDetail/zones/{_instance.GetZoneName()}/instances/{_instance.Name}?project={_owner.Context.CurrentProject.ProjectId}";
             Process.Start(url);
         }
@@ -328,15 +326,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
                 var operation = _owner.DataSource.StopInstance(Instance);
                 UpdateInstanceState(operation);
+
+                EventsReporterWrapper.ReportEvent(StopGceInstanceEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException ex)
             {
                 GcpOutputWindow.Activate();
                 GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGceFailedToStopInstanceMessage, Instance.Name, ex.Message));
-            }
-            catch (OAuthException ex)
-            {
-                ShowOAuthErrorDialog(ex);
+                EventsReporterWrapper.ReportEvent(StopGceInstanceEvent.Create(CommandStatus.Failure));
             }
         }
 
@@ -363,15 +360,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
                 var operation = _owner.DataSource.StartInstance(Instance);
                 UpdateInstanceState(operation);
+
+                EventsReporterWrapper.ReportEvent(StartGceInstanceEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException ex)
             {
                 GcpOutputWindow.Activate();
                 GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGceFailedToStartInstanceMessage, Instance.Name, ex.Message));
-            }
-            catch (OAuthException ex)
-            {
-                ShowOAuthErrorDialog(ex);
+
+                EventsReporterWrapper.ReportEvent(StartGceInstanceEvent.Create(CommandStatus.Failure));
             }
         }
 
@@ -387,12 +384,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 });
             if (credentials != null)
             {
+                EventsReporterWrapper.ReportEvent(StartRemoteDesktopSessionEvent.Create());
                 TerminalServerManager.OpenSession(_instance, credentials);
             }
         }
 
         private void OnOpenWebsite()
         {
+            EventsReporterWrapper.ReportEvent(OpenGceInstanceWebsiteEvent.Create());
+
             var url = Instance.GetDestinationAppUri();
             Debug.WriteLine($"Opening Web Site: {url}");
             Process.Start(url);
