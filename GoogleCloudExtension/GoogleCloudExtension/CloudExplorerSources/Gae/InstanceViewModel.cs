@@ -14,7 +14,6 @@
 
 using Google.Apis.Appengine.v1.Data;
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -26,7 +25,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
     /// <summary>
     /// This class represents a view of a GAE instance in the Google Cloud Explorer Window.
     /// </summary>
-    class InstanceViewModel : TreeHierarchy, ICloudExplorerItemSource
+    internal class InstanceViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
         public const string RunningStatus = "RUNNING";
         public const string TerminatedStatus = "TERMINATED";

@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
 using Google.Apis.Appengine.v1.Data;
 using GoogleCloudExtension.Theming;
+using System.Collections.Generic;
 
 namespace GoogleCloudExtension.SplitTrafficManagement
 {
@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         private SplitTrafficViewModel ViewModel =>
             (SplitTrafficViewModel)((SplitTrafficWindowContent)Content).DataContext;
 
-        public SplitTrafficWindow(Service service, IEnumerable<Version> versions) : 
+        public SplitTrafficWindow(Service service, IEnumerable<Version> versions) :
             base(GoogleCloudExtension.Resources.SplitTrafficWindowTitle)
         {
             Content = new SplitTrafficWindowContent

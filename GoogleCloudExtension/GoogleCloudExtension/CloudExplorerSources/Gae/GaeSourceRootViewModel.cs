@@ -12,19 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Appengine.v1.Data;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Windows.Controls;
-using System.Threading.Tasks;
 using System.Linq;
-using GoogleCloudExtension.Accounts;
-using Google.Apis.Appengine.v1.Data;
-using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.Analytics.Events;
+using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {

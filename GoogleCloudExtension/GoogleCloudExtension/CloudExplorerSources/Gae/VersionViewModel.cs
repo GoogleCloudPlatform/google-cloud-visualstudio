@@ -33,7 +33,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
     /// <summary>
     /// This class represents a view of a GAE version in the Google Cloud Explorer Window.
     /// </summary>
-    class VersionViewModel : TreeHierarchy, ICloudExplorerItemSource
+    internal class VersionViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
         private const string IconRunningResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_running.png";
         private const string IconStopedResourcePath = "CloudExplorerSources/Gae/Resources/instance_icon_stoped.png";

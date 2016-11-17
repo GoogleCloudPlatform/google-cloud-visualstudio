@@ -58,7 +58,7 @@ namespace GoogleCloudExtension.GCloud
             GetJsonOutputAsync<WindowsInstanceCredentials>(
                 $"beta compute reset-windows-password {instanceName} --zone={zoneName} --user=\"{userName}\" --quiet ",
                 context);
-        
+
         /// <summary>
         /// Deploys an app to App Engine.
         /// </summary>

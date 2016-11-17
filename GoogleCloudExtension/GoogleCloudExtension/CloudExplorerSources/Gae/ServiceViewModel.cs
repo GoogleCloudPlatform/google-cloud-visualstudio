@@ -12,28 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
 using Google.Apis.Appengine.v1.Data;
-using GoogleCloudExtension.CloudExplorer;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Linq;
-using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.Utils;
-using System.Diagnostics;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows;
-using GoogleCloudExtension.SplitTrafficManagement;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.SplitTrafficManagement;
+using GoogleCloudExtension.Utils;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gae
 {
     /// <summary>
     /// This class represents a view of a GAE service in the Google Cloud Explorer Window.
     /// </summary>
-    class ServiceViewModel : TreeHierarchy, ICloudExplorerItemSource
+    internal class ServiceViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
         private const string IconServiceResourcePath = "CloudExplorerSources/Gae/Resources/service_icon.png";
 
@@ -75,7 +75,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         public bool ShowOnlyFlexVersions
         {
-            get { return _showOnlyFlexVersions;  }
+            get { return _showOnlyFlexVersions; }
             set
             {
                 if (value == _showOnlyFlexVersions)
@@ -151,8 +151,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand) },
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesWindowCommand) },
                 new MenuItem { Header = Resources.CloudExplorerGaeServiceOpen, Command = new ProtectedCommand(OnOpenService) },
-                
-            };
+};
 
             if (Children.Count > 1)
             {
@@ -390,7 +389,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Success));
             }
             catch (Exception ex) when (ex is DataSourceException || ex is TimeoutException || ex is OperationCanceledException)
-            { 
+            {
                 EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Failure));
                 IsError = true;
 
@@ -408,7 +407,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 }
             }
             finally
-            { 
+            {
                 IsLoading = false;
                 PresentViewModels();
                 Icon = s_serviceIcon.Value;
