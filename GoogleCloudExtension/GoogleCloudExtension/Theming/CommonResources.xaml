@@ -677,8 +677,7 @@
     
     <!-- Common ComboBox style -->
     <Style x:Key="CommonComboBoxStyle"
-           TargetType="{x:Type ComboBox}"
-           BasedOn="{DynamicResource {x:Static vsshell:VsResourceKeys.ComboBoxStyleKey}}">
+           TargetType="{x:Type ComboBox}">
         <Setter Property="Height" Value="30px" />
     </Style>
 
