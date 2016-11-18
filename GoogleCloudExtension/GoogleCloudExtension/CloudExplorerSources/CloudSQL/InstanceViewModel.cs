@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using Google.Apis.SQLAdmin.v1beta4.Data;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.AuthorizedNetworkManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
@@ -114,12 +116,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 Func<Operation, Task<Operation>> fetch = (o) => dataSource.GetOperationAsync(o.Name);
                 Predicate<Operation> stopPolling = (o) => CloudSqlDataSource.OperationStateDone.Equals(o.Status);
                 await Polling<Operation>.Poll(await operation, fetch, stopPolling);
+
+                EventsReporterWrapper.ReportEvent(ManageCloudSqlAuthorizedNetworkEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException ex)
             {
                 IsError = true;
                 UserPromptUtils.ErrorPrompt(ex.Message,
                     Resources.CloudExplorerSqlUpdateAthorizedNetworksErrorMessage);
+
+                EventsReporterWrapper.ReportEvent(ManageCloudSqlAuthorizedNetworkEvent.Create(CommandStatus.Failure));
             }
             catch (TimeoutException ex)
             {
@@ -127,6 +133,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 UserPromptUtils.ErrorPrompt(
                     Resources.CloudExploreOperationTimeoutMessage,
                     Resources.CloudExplorerSqlUpdateAthorizedNetworksErrorMessage);
+
+                EventsReporterWrapper.ReportEvent(ManageCloudSqlAuthorizedNetworkEvent.Create(CommandStatus.Failure));
             }
             catch (OperationCanceledException ex)
             {
@@ -134,6 +142,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 UserPromptUtils.ErrorPrompt(
                     Resources.CloudExploreOperationCanceledMessage,
                     Resources.CloudExplorerSqlUpdateAthorizedNetworksErrorMessage);
+
+                EventsReporterWrapper.ReportEvent(ManageCloudSqlAuthorizedNetworkEvent.Create(CommandStatus.Failure));
             }
             finally
             {
@@ -166,6 +176,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             // probably check for the needed pieces in the MySQL Connector/Net.
             if (dialog.AvailableSources.Contains(MySQLUtils.MySQLDataSource))
             {
+                EventsReporterWrapper.ReportEvent(OpenCloudSqlConnectionDialogEvent.Create());
+
                 // Pre select the MySQL data source.
                 dialog.SelectedSource = MySQLUtils.MySQLDataSource;
 
