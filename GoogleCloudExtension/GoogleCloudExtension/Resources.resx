@@ -1291,12 +1291,5 @@
     <value>_Open</value>
     <comment>Caption for the open button in dialogs.</comment>
   </data>
-  <data name="LogsViewerToolWindowCaptionNoAccount" xml:space="preserve">
-    <value>Google Cloud Stackdriver Logs Viewer (select account needed)	</value>
-    <comment>Log Viewer  caption used when no account is selected.</comment>
-  </data>
-  <data name="LogViewerToolWindowCaption" xml:space="preserve">
-    <value>Google Cloud Stackdriver Logs Viewer ({0})</value>
-    <comment>The Logs Viewer Tool Window caption followed by the current account user name.</comment>
-  </data>
 </root>
+

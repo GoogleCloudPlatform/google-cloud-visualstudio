@@ -19,7 +19,6 @@ using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.PublishDialog;
-using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -57,7 +56,6 @@ namespace GoogleCloudExtension
     [Guid(GoogleCloudExtensionPackage.PackageGuidString)]
     [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "pkgdef, VS and vsixmanifest are valid VS terms")]
     [ProvideToolWindow(typeof(CloudExplorerToolWindow))]
-    [ProvideToolWindow(typeof(LogsViewerToolWindow), Style = VsDockStyle.Tabbed)]
     [ProvideAutoLoad(UIContextGuids80.NoSolution)]
     [ProvideOptionPage(typeof(AnalyticsOptionsPage), "Google Cloud Tools", "Usage Report", 0, 0, false)]
     public sealed class GoogleCloudExtensionPackage : Package
@@ -205,7 +203,6 @@ namespace GoogleCloudExtension
             ManageAccountsCommand.Initialize(this);
             PublishProjectMainMenuCommand.Initialize(this);
             PublishProjectContextMenuCommand.Initialize(this);
-            LogsViewerToolWindowCommand.Initialize(this);
 
             // Activity log utils, to aid in debugging.
             ActivityLogUtils.Initialize(this);
