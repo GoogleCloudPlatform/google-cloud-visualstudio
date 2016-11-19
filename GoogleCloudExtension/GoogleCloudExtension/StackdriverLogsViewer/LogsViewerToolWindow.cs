@@ -12,15 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
+using Microsoft.VisualStudio.Shell;
 
-namespace GoogleCloudExtension.CloudExplorer
+namespace GoogleCloudExtension.StackdriverLogsViewer
 {
+
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.
     /// </summary>
@@ -32,29 +31,23 @@ namespace GoogleCloudExtension.CloudExplorer
     /// implementation of the IVsUIElementPane interface.
     /// </para>
     /// </remarks>
-    [Guid("fe34c2aa-59b3-40ad-a3b6-2743d072d2aa")]
-    public class CloudExplorerToolWindow : ToolWindowPane
+    [Guid("043c1f77-7cbf-4676-86c3-f205ed506d26")]
+    public class LogsViewerToolWindow : ToolWindowPane
     {
         private ToolWindowCaptionHelper _captionHelper;
-        private readonly SelectionUtils _selectionUtils;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CloudExplorerToolWindow"/> class.
+        /// Initializes a new instance of the <see cref="LogsViewerToolWindow"/> class.
         /// </summary>
-        public CloudExplorerToolWindow() : base(null)
+        public LogsViewerToolWindow() : base(null)
         {
-            _captionHelper = new ToolWindowCaptionHelper(this, Resources.CloudExplorerToolWindowCaption,
-                                                         Resources.CloudExplorerToolWindowCaptionNoAccount);
+            _captionHelper = new ToolWindowCaptionHelper(this, Resources.LogViewerToolWindowCaption, 
+                                                         Resources.LogsViewerToolWindowCaptionNoAccount);
 
-            _selectionUtils = new SelectionUtils(this);
-
-            var model = new CloudExplorerViewModel(_selectionUtils);
-            Content = new CloudExplorerToolWindowControl(_selectionUtils)
-            {
-                DataContext = model,
-            };
-
-            EventsReporterWrapper.ReportEvent(CloudExplorerInteractionEvent.Create());
+            // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
+            // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
+            // the object returned by the Content property.
+            this.Content = new LogsViewerToolWindowControl();
         }
     }
 }

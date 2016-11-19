@@ -1807,6 +1807,24 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Google Cloud Stackdriver Logs Viewer (select account needed)	.
+        /// </summary>
+        public static string LogsViewerToolWindowCaptionNoAccount {
+            get {
+                return ResourceManager.GetString("LogsViewerToolWindowCaptionNoAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud Stackdriver Logs Viewer ({0}).
+        /// </summary>
+        public static string LogViewerToolWindowCaption {
+            get {
+                return ResourceManager.GetString("LogViewerToolWindowCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The user account {0} already exists..
         /// </summary>
         public static string ManageAccountsAccountAlreadyExistsPromptMessage {
