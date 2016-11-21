@@ -74,12 +74,12 @@
                 <StackPanel>
                     <RadioButton Content="{x:Static ext:Resources.SplitTrafficWindowIpAddressLabel}"
                                  GroupName="ShardBy"
-                                 IsChecked="{Binding IsIpChecked}"
+                                 IsChecked="{Binding IpAddressSplit}"
                                  Style="{StaticResource CommonRadioButton}"
                                  Margin="{StaticResource CommonRadioButtonMargin}"/>
                     <RadioButton Content="{x:Static ext:Resources.SplitTrafficWindowCookieLabel}"
                                  GroupName="ShardBy"
-                                 IsChecked="{Binding IsCookieChecked}"
+                                 IsChecked="{Binding CookieSplit}"
                                  Style="{StaticResource CommonRadioButton}"/>
                 </StackPanel>
             </GroupBox>

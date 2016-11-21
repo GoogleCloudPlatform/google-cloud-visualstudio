@@ -20,11 +20,11 @@ namespace GoogleCloudExtension.AddTrafficSplit
             };
         }
 
-        public void PromptUser(IEnumerable<string> versions)
+        public AddTrafficSplitResult PromptUser(IEnumerable<string> versions)
         {
             var dialog = new AddTrafficSplitWindow(versions);
             dialog.ShowModal();
-            // TODO: Return the result.
+            return dialog.ViewModel.Result;
         }
     }
 }
