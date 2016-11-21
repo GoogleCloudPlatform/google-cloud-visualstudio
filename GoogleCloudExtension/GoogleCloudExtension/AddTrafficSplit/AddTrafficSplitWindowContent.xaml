@@ -38,15 +38,16 @@
                     <ColumnDefinition Width="0.5*" />
                 </Grid.ColumnDefinitions>
                 <Label Content="{x:Static ext:Resources.SplitTrafficWindowVersionLabel}"
-                               VerticalAlignment="Center"
-                               Target="{Binding ElementName=_version}"
-                               Style="{StaticResource CommonLabelStyle}"/>
+                       VerticalAlignment="Center"
+                       Target="{Binding ElementName=_version}"
+                       Style="{StaticResource CommonLabelStyle}"/>
                 <ComboBox x:Name="_version"
-                                  ItemsSource="{Binding AvailableVersions}"
-                                  Grid.Column="1"
-                                  SelectedItem="{Binding VersionId, Mode=TwoWay}"
-                                  SelectedIndex="0"
-                                  Style="{StaticResource CommonComboBoxStyle}" />
+                          ItemsSource="{Binding Versions}"
+                          Grid.Column="1"
+                          SelectedItem="{Binding SelectedVersion, Mode=TwoWay}"
+                          SelectedIndex="0"
+                          IsSynchronizedWithCurrentItem="True"
+                          Style="{StaticResource CommonComboBoxStyle}" />
             </Grid>
 
             <Grid Margin="0,5,0,0">
@@ -56,13 +57,13 @@
                 </Grid.ColumnDefinitions>
 
                 <Label Content="{x:Static ext:Resources.SplitTrafficWindowTrafficAllocationLabel}"
-                               VerticalAlignment="Center"
-                               Target="{Binding ElementName=_trafficAllocation}"
-                               Style="{StaticResource CommonLabelStyle}"/>
+                       VerticalAlignment="Center"
+                       Target="{Binding ElementName=_trafficAllocation}"
+                       Style="{StaticResource CommonLabelStyle}"/>
                 <TextBox x:Name="_trafficAllocation"
-                                 Grid.Column="1"
-                                 Text="{Binding TrafficAllocation, Mode=TwoWay}"
-                                 Style="{StaticResource CommonTextBoxStyle}"/>
+                         Grid.Column="1"
+                         Text="{Binding Allocation, Mode=TwoWay}"
+                         Style="{StaticResource CommonTextBoxStyle}"/>
 
             </Grid>
 
