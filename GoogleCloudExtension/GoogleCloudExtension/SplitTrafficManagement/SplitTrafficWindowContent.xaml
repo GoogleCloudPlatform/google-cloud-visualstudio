@@ -36,68 +36,13 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <!-- Shard traffic by selector. -->
-            <GroupBox Style="{StaticResource CommonGroupBoxStyle}"
-                      Header="Add new version:">
-                <StackPanel>
-                    <Label Content="{x:Static ext:Resources.SplitTrafficWindowSplitByMessage}"
-                           Style="{StaticResource CommonLabelStyle}" />
-
-                    <RadioButton Content="{x:Static ext:Resources.SplitTrafficWindowIpAddressLabel}"
-                                 GroupName="ShardBy"
-                                 IsChecked="{Binding IsIpChecked}"
-                                 Style="{StaticResource CommonRadioButton}"
-                                 Margin="{StaticResource CommonRadioButtonMargin}"/>
-                    <RadioButton Content="{x:Static ext:Resources.SplitTrafficWindowCookieLabel}"
-                                 GroupName="ShardBy"
-                                 IsChecked="{Binding IsCookieChecked}"
-                                 Style="{StaticResource CommonRadioButton}"/>
-
-                    <Grid Margin="0,5,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.5*" />
-                            <ColumnDefinition Width="0.5*" />
-                        </Grid.ColumnDefinitions>
-                        <Label Content="{x:Static ext:Resources.SplitTrafficWindowVersionLabel}"
-                               VerticalAlignment="Center"
-                               Target="{Binding ElementName=_version}"
-                               Style="{StaticResource CommonLabelStyle}"/>
-                        <ComboBox x:Name="_version"
-                                  ItemsSource="{Binding AvailableVersions}"
-                                  Grid.Column="1"
-                                  SelectedItem="{Binding VersionId, Mode=TwoWay}"
-                                  SelectedIndex="0"
-                                  Style="{StaticResource CommonComboBoxStyle}" />
-                    </Grid>
-
-                    <Grid Margin="0,5,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="0.5*" />
-                            <ColumnDefinition Width="0.5*" />
-                        </Grid.ColumnDefinitions>
-
-                        <Label Content="{x:Static ext:Resources.SplitTrafficWindowTrafficAllocationLabel}"
-                               VerticalAlignment="Center"
-                               Target="{Binding ElementName=_trafficAllocation}"
-                               Style="{StaticResource CommonLabelStyle}"/>
-                        <TextBox x:Name="_trafficAllocation"
-                                 Grid.Column="1"
-                                 Text="{Binding TrafficAllocation, Mode=TwoWay}"
-                                 Style="{StaticResource CommonTextBoxStyle}"/>
-
-                    </Grid>
-
-                    <Button Command="{Binding AddTrafficAllocationCommand}"
-                            Content="{x:Static ext:Resources.SplitTrafficWindowAddVersionMessage}"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            Margin="0,18,0,0"
-                            Style="{StaticResource CommonButtonDynamicStyle}"/>
-                </StackPanel>
-            </GroupBox>
+            <Label Content="_Allocations:"
+                   Target="{Binding ElementName=_allocations}"
+                   Style="{StaticResource CommonLabelStyle}" />
 
             <!-- Traffic allocations section. -->
-            <ListBox Grid.Row="1"
+            <ListBox x:Name="_allocations"
+                     Grid.Row="1"
                      ItemsSource="{Binding Allocations}"
                      Style="{StaticResource CommonLargeListBoxStyle}">
                 <ListBox.ItemTemplate>
