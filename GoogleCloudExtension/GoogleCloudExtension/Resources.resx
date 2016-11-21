@@ -1293,6 +1293,6 @@
   </data>
   <data name="LogViewerToolWindowCaption" xml:space="preserve">
     <value>Google Stackdriver Logging</value>
-    <comment>The Logs Viewer Tool Window caption. Keep it short because the tab width is narrow.</comment>
+    <comment>The Logs Viewer Tool Window caption. Keep it short because the tab is narrow.</comment>
   </data>
 </root>
