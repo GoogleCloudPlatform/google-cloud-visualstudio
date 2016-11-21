@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Utils;
@@ -35,7 +36,6 @@ namespace GoogleCloudExtension.CloudExplorer
     [Guid("fe34c2aa-59b3-40ad-a3b6-2743d072d2aa")]
     public class CloudExplorerToolWindow : ToolWindowPane
     {
-        private ToolWindowCaptionHelper _captionHelper;
         private readonly SelectionUtils _selectionUtils;
 
         /// <summary>
@@ -43,8 +43,7 @@ namespace GoogleCloudExtension.CloudExplorer
         /// </summary>
         public CloudExplorerToolWindow() : base(null)
         {
-            _captionHelper = new ToolWindowCaptionHelper(this, Resources.CloudExplorerToolWindowCaption,
-                                                         Resources.CloudExplorerToolWindowCaptionNoAccount);
+            SetCaption();
 
             _selectionUtils = new SelectionUtils(this);
 
@@ -54,7 +53,30 @@ namespace GoogleCloudExtension.CloudExplorer
                 DataContext = model,
             };
 
+            CredentialsStore.Default.CurrentAccountChanged += OnCurrentAccountChanged;
+            CredentialsStore.Default.Reset += OnCurrentAccountChanged;
+
             EventsReporterWrapper.ReportEvent(CloudExplorerInteractionEvent.Create());
+        }
+
+        private void OnCurrentAccountChanged(object sender, EventArgs e)
+        {
+            ErrorHandlerUtils.HandleExceptions(() =>
+            {
+                SetCaption();
+            });
+        }
+
+        private void SetCaption()
+        {
+            if (CredentialsStore.Default.CurrentAccount?.AccountName != null)
+            {
+                Caption = String.Format(Resources.CloudExplorerToolWindowCaption, CredentialsStore.Default.CurrentAccount.AccountName);
+            }
+            else
+            {
+                Caption = Resources.CloudExplorerToolWindowCaptionNoAccount;
+            }
         }
     }
 }

@@ -124,6 +124,7 @@
     <Compile Include="GPlusDataSource.cs" />
     <Compile Include="GcsDataSource.cs" />
     <Compile Include="InstancesPerZone.cs" />
+    <Compile Include="LoggingDataSource.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResourceManagerDataSource.cs" />
     <Compile Include="WindowsInstanceInfo.cs" />
