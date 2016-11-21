@@ -15,12 +15,15 @@
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.FirewallManagement;
+using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.OAuth;
-using GoogleCloudExtension.ResetPassword;
+using GoogleCloudExtension.TerminalServer;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.WindowsCredentialsChooser;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -169,11 +172,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                     // Permanent error.
                     return;
                 }
-                catch (OAuthException ex)
-                {
-                    ShowOAuthErrorDialog(ex);
-                    return;
-                }
 
                 // See if there are more operations.
                 pendingOperation = _owner.DataSource.GetPendingOperation(Instance);
@@ -187,31 +185,23 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void UpdateContextMenu()
         {
-            // If the instance is busy, then there's no context menu.
-            // TODO(ivann): Should we have a "Cancel Operation" menu item?
-            if (IsLoading || IsError)
-            {
-                ContextMenu = null;
-                return;
-            }
-
-            var getPublishSettingsCommand = new WeakCommand(OnGetPublishSettings, Instance.IsAspnetInstance() && Instance.IsRunning());
-            var openWebSite = new WeakCommand(OnOpenWebsite, Instance.IsAspnetInstance() && Instance.IsRunning());
-            var openTerminalServerSessionCommand = new WeakCommand(
+            var getPublishSettingsCommand = new ProtectedCommand(OnSavePublishSettingsCommand, canExecuteCommand: Instance.IsAspnetInstance());
+            var openWebSite = new ProtectedCommand(OnOpenWebsite, canExecuteCommand: Instance.IsAspnetInstance() && Instance.IsRunning());
+            var openTerminalServerSessionCommand = new ProtectedCommand(
                 OnOpenTerminalServerSessionCommand,
-                Instance.IsWindowsInstance() && Instance.IsRunning());
-            var startInstanceCommand = new WeakCommand(OnStartInstanceCommand);
-            var stopInstanceCommand = new WeakCommand(OnStopInstanceCommand);
-            var resetInstancePasswordCommand = new WeakCommand(OnResetInstancePasswordCommand, Instance.IsWindowsInstance() && Instance.IsRunning());
-            var manageFirewallPorts = new WeakCommand(OnManageFirewallPortsCommand);
+                canExecuteCommand: Instance.IsWindowsInstance() && Instance.IsRunning());
+            var startInstanceCommand = new ProtectedCommand(OnStartInstanceCommand);
+            var stopInstanceCommand = new ProtectedCommand(OnStopInstanceCommand);
+            var manageFirewallPorts = new ProtectedCommand(OnManageFirewallPortsCommand);
+            var manageWindowsCredentials = new ProtectedCommand(OnManageWindowsCredentialsCommand, canExecuteCommand: Instance.IsWindowsInstance());
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = Resources.CloudExplorerGceSavePublishSettingsMenuHeader, Command = getPublishSettingsCommand },
+                new MenuItem { Header = Resources.CloudExplorerGceSavePublishSettingsMenuHeader, Command = getPublishSettingsCommand},
                 new MenuItem { Header = Resources.CloudExplorerGceOpenTerminalSessionMenuHeader, Command = openTerminalServerSessionCommand },
                 new MenuItem { Header = Resources.CloudExplorerGceOpenWebSiteMenuHeader, Command = openWebSite },
-                new MenuItem { Header = Resources.CloudExplorerGceCreateOrResetPasswordMenuHeader, Command = resetInstancePasswordCommand },
                 new MenuItem { Header = Resources.CloudExplorerGceManageFirewallPortsMenuHeader, Command = manageFirewallPorts },
+                new MenuItem { Header = Resources.CloudExplorerGceManageWindowsCredentialsMenuHeader, Command = manageWindowsCredentials }
             };
 
             if (Instance.IsRunning())
@@ -223,14 +213,72 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceStartInstanceMenuHeader, Command = startInstanceCommand });
             }
 
-            menuItems.Add(new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new WeakCommand(OnOpenOnCloudConsoleCommand) });
-            menuItems.Add(new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesWindowCommand) });
+            menuItems.Add(new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand) });
+            menuItems.Add(new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesWindowCommand) });
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+
+            // If the instance is busy or in error then we need to disable all commands.
+            if (IsError || IsLoading)
+            {
+                foreach (var item in ContextMenu.ItemsSource)
+                {
+                    var menu = item as MenuItem;
+                    if (menu != null)
+                    {
+                        if (menu.Command is ProtectedCommand)
+                        {
+                            var cmd = (ProtectedCommand)menu.Command;
+                            cmd.CanExecuteCommand = false;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void OnSavePublishSettingsCommand()
+        {
+            Debug.WriteLine($"Generating Publishing settings for {Instance.Name}");
+
+            var credentials = WindowsCredentialsChooserWindow.PromptUser(
+                Instance,
+                new WindowsCredentialsChooserWindow.Options
+                {
+                    Title = Resources.CloudExplorerGceSavePubSettingsCredentialsTitle,
+                    Message = Resources.CloudExplorerGceSavePubSettingsCredentialsMessage,
+                    ActionButtonCaption = Resources.UiSaveButtonCaption
+                });
+            if (credentials == null)
+            {
+                Debug.WriteLine("User canceled when selecting credentials.");
+                return;
+            }
+
+            var projectId = CredentialsStore.Default.CurrentProjectId;
+            var storePath = PromptForPublishSettingsPath($"{projectId}-{Instance.Name}-{credentials.User}");
+            if (storePath == null)
+            {
+                Debug.WriteLine("User canceled saving the pubish settings.");
+                return;
+            }
+
+            EventsReporterWrapper.ReportEvent(SavePublishSettingsEvent.Create());
+            var profile = Instance.GeneratePublishSettings(
+                userName: credentials.User,
+                password: credentials.Password);
+            File.WriteAllText(storePath, profile);
+            GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGcePublishingSettingsSavedMessage, storePath));
+        }
+
+        private void OnManageWindowsCredentialsCommand()
+        {
+            ManageWindowsCredentialsWindow.PromptUser(Instance);
         }
 
         private void OnOpenOnCloudConsoleCommand()
         {
+            EventsReporterWrapper.ReportEvent(OpenGceInstanceOnCloudConsoleEvent.Create());
+
             var url = $"https://console.cloud.google.com/compute/instancesDetail/zones/{_instance.GetZoneName()}/instances/{_instance.Name}?project={_owner.Context.CurrentProject.ProjectId}";
             Process.Start(url);
         }
@@ -252,26 +300,25 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                         portsToEnable: changes.PortsToEnable,
                         portsToDisable: changes.PortsToDisable);
                     UpdateInstanceState(operation);
+
+                    EventsReporterWrapper.ReportEvent(ChangedFirewallPortsEvent.Create(CommandStatus.Success));
                 }
             }
             catch (DataSourceException)
             {
+                EventsReporterWrapper.ReportEvent(ChangedFirewallPortsEvent.Create(CommandStatus.Failure));
                 UserPromptUtils.ErrorPrompt(Resources.CloudExplorerGceFailedToUpdateFirewallMessage, Resources.CloudExplorerGceFailedToUpdateFirewallCaption);
             }
-        }
-
-        private void OnResetInstancePasswordCommand()
-        {
-            ResetPasswordWindow.PromptUser(Instance, CredentialsStore.Default.CurrentProjectId);
         }
 
         private void OnStopInstanceCommand()
         {
             try
             {
-                if (!UserPromptUtils.YesNoPrompt(
+                if (!UserPromptUtils.ActionPrompt(
                     String.Format(Resources.CloudExplorerGceStopInstanceConfirmationPrompt, Instance.Name),
-                    String.Format(Resources.CloudExplorerGceStopInstanceConfirmationPromptCaption, Instance.Name)))
+                    String.Format(Resources.CloudExplorerGceStopInstanceConfirmationPromptCaption, Instance.Name),
+                    actionCaption: Resources.UiStopButtonCaption))
                 {
                     Debug.WriteLine($"The user cancelled stopping instance {Instance.Name}.");
                     return;
@@ -279,15 +326,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
                 var operation = _owner.DataSource.StopInstance(Instance);
                 UpdateInstanceState(operation);
+
+                EventsReporterWrapper.ReportEvent(StopGceInstanceEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException ex)
             {
                 GcpOutputWindow.Activate();
                 GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGceFailedToStopInstanceMessage, Instance.Name, ex.Message));
-            }
-            catch (OAuthException ex)
-            {
-                ShowOAuthErrorDialog(ex);
+                EventsReporterWrapper.ReportEvent(StopGceInstanceEvent.Create(CommandStatus.Failure));
             }
         }
 
@@ -303,9 +349,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         {
             try
             {
-                if (!UserPromptUtils.YesNoPrompt(
+                if (!UserPromptUtils.ActionPrompt(
                     String.Format(Resources.CloudExplorerGceStartInstanceConfirmationPrompt, Instance.Name),
-                    String.Format(Resources.CloudExplorerGceStartInstanceConfirmationPromptCaption, Instance.Name)))
+                    String.Format(Resources.CloudExplorerGceStartInstanceConfirmationPromptCaption, Instance.Name),
+                    actionCaption: Resources.UiStartButtonCaption))
                 {
                     Debug.WriteLine($"The user cancelled starting instance {Instance.Name}.");
                     return;
@@ -313,50 +360,42 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
                 var operation = _owner.DataSource.StartInstance(Instance);
                 UpdateInstanceState(operation);
+
+                EventsReporterWrapper.ReportEvent(StartGceInstanceEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException ex)
             {
                 GcpOutputWindow.Activate();
                 GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGceFailedToStartInstanceMessage, Instance.Name, ex.Message));
-            }
-            catch (OAuthException ex)
-            {
-                ShowOAuthErrorDialog(ex);
+
+                EventsReporterWrapper.ReportEvent(StartGceInstanceEvent.Create(CommandStatus.Failure));
             }
         }
 
         private void OnOpenTerminalServerSessionCommand()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.OpenTerminalServerSessionForGceInstanceCommand, CommandInvocationSource.Button);
-
-            Process.Start("mstsc", $"/v:{Instance.GetPublicIpAddress()}");
+            var credentials = WindowsCredentialsChooserWindow.PromptUser(
+                _instance,
+                new WindowsCredentialsChooserWindow.Options
+                {
+                    Title = Resources.TerminalServerManagerWindowTitle,
+                    Message = Resources.TerminalServerManagerWindowMessage,
+                    ActionButtonCaption = Resources.UiOpenButtonCaption
+                });
+            if (credentials != null)
+            {
+                EventsReporterWrapper.ReportEvent(StartRemoteDesktopSessionEvent.Create());
+                TerminalServerManager.OpenSession(_instance, credentials);
+            }
         }
 
         private void OnOpenWebsite()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.OpenWebsiteForGceInstanceCommand, CommandInvocationSource.Button);
+            EventsReporterWrapper.ReportEvent(OpenGceInstanceWebsiteEvent.Create());
 
             var url = Instance.GetDestinationAppUri();
             Debug.WriteLine($"Opening Web Site: {url}");
             Process.Start(url);
-        }
-
-        private void OnGetPublishSettings()
-        {
-            ExtensionAnalytics.ReportCommand(CommandName.GetPublishSettingsForGceInstance, CommandInvocationSource.Button);
-
-            Debug.WriteLine($"Generating Publishing settings for {Instance.Name}");
-
-            var storePath = PromptForPublishSettingsPath(Instance.Name);
-            if (storePath == null)
-            {
-                Debug.WriteLine("User canceled saving the pubish settings.");
-                return;
-            }
-
-            var profile = Instance.GeneratePublishSettings();
-            File.WriteAllText(storePath, profile);
-            GcpOutputWindow.OutputLine(String.Format(Resources.CloudExplorerGcePublishingSettingsSavedMessage, storePath));
         }
 
         private static string PromptForPublishSettingsPath(string fileName)

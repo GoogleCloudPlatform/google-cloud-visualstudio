@@ -27,12 +27,14 @@ namespace GoogleCloudExtension.DataSources
     {
         private const string WindowsServer2012License = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-2012-r2-dc";
         private const string WindowsServer2008License = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-2008-r2-dc";
+        private const string WindowsServer2016License = "https://www.googleapis.com/compute/v1/projects/windows-cloud/global/licenses/windows-server-2016-dc";
         private const string SqlServerSaPasswordKey = "c2d-property-saPassword";
 
         private static readonly Dictionary<string, WindowsInstanceInfo> s_windowsLicenses = new Dictionary<string, WindowsInstanceInfo>
         {
             { WindowsServer2008License, new WindowsInstanceInfo(displayName: "Windows Server 2008 R2 Datacenter Edition", version: "2008", subversion: "RC2") },
             { WindowsServer2012License, new WindowsInstanceInfo(displayName: "Windows Server 2012 R2 Datacenter Edition", version: "2012", subversion: "RC2") },
+            { WindowsServer2016License, new WindowsInstanceInfo(displayName: "Windows Server 2016", version: "2016") }
         };
 
         public const string ProvisioningStatus = "PROVISIONING";
@@ -149,8 +151,10 @@ namespace GoogleCloudExtension.DataSources
         /// Generates the publishsettings information for a given GCE instance.
         /// </summary>
         /// <param name="instance">The instance to inspect.</param>
+        /// <param name="userName">The user name to use.</param>
+        /// <param name="password">The passwod to use.</param>
         /// <returns>A string with the publishsettings content.</returns>
-        public static string GeneratePublishSettings(this Instance instance)
+        public static string GeneratePublishSettings(this Instance instance, string userName, string password)
         {
             var doc = new XDocument(
                 new XElement("publishData",
@@ -158,6 +162,8 @@ namespace GoogleCloudExtension.DataSources
                         new XAttribute("profileName", instance.Name),
                         new XAttribute("publishMethod", "MSDeploy"),
                         new XAttribute("publishUrl", instance.GetPublishUrl()),
+                        new XAttribute("userName", userName),
+                        new XAttribute("userPWD", password),
                         new XAttribute("msdeploySite", "Default Web Site"),
                         new XAttribute("destinationAppUri", instance.GetDestinationAppUri()))));
 

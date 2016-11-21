@@ -1,0 +1,115 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:GoogleCloudExtension.Theming;assembly=GoogleCloudExtension"
+                    xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils">
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="CommonResources.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- Styles for the dialog. -->
+
+    <!-- Style for the background of the dialog. -->
+    <Style x:Key="DialogBackgroundStyle" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="#FFEEEEEE" />
+        <Setter Property="Padding" Value="12" />
+    </Style>
+
+    <!-- Style for the row of buttons. -->
+    <Style x:Key="DialogButtonBar" TargetType="{x:Type Border}">
+        <Setter Property="Margin" Value="0,18,0,0" />
+    </Style>
+
+    <!-- Button templates. -->
+    
+    <!-- Margin for the buttons inside of the button bar. -->
+    <Thickness x:Key="DialogButtonMargin">6,0,0,0</Thickness>
+
+    <!-- Template to display the button using the wide size in the button bar. -->
+    <DataTemplate x:Key="DialogButtonTemplateWide">
+        <Button Style="{StaticResource CommonButtonWideStyle}"
+                Margin="{StaticResource DialogButtonMargin}"
+                Command="{Binding Command}"
+                IsDefault="{Binding IsDefault}"
+                Content="{Binding Caption}"
+                IsCancel="{Binding IsCancel}"
+                Visibility="{Binding Visibility}"
+                ToolTip="{Binding ToolTip}"/>
+    </DataTemplate>
+
+    <!-- Template to display the button in the standard size in the button bar. -->
+    <DataTemplate x:Key="DialogButtonTemplateStandard">
+        <Button Style="{StaticResource CommonButtonStandardStyle}"
+                Margin="{StaticResource DialogButtonMargin}"
+                Command="{Binding Command}"
+                IsDefault="{Binding IsDefault}"
+                Content="{Binding Caption}"
+                IsCancel="{Binding IsCancel}"
+                Visibility="{Binding Visibility}"
+                ToolTip="{Binding ToolTip}"/>
+    </DataTemplate>
+
+    <!-- Common visuals for the dialogs. -->
+    
+    <!-- The template selector to decide what button style to apply. -->
+    <local:ButtonTemplateSelector x:Key="DialogButtonTemplateSelector" />
+
+    <!-- The dialog visuals. -->
+    <Style TargetType="{x:Type local:CommonDialogWindowBaseContent}">
+        <Setter Property="Focusable" Value="False" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:CommonDialogWindowBaseContent}">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <!-- The banner for the dialog, possibly hidden. -->
+                        <Border Height="36px"
+                                Background="White"
+                                Padding="12,0,0,0"
+                                Visibility="{Binding HasBanner, RelativeSource={RelativeSource TemplatedParent}, Converter={utils:VisibilityConverter}}">
+                            <Image Source="{Binding Banner, RelativeSource={RelativeSource TemplatedParent}}"
+                                   Height="24px"
+                                   VerticalAlignment="Center"
+                                   HorizontalAlignment="Left" />
+                        </Border>
+
+                        <!-- Main content of the dialog. -->
+                        <Border Grid.Row="1" Style="{StaticResource DialogBackgroundStyle}">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="auto" />
+                                </Grid.RowDefinitions>
+
+                                <!-- The actual content displayed in the dialog. -->
+                                <ContentPresenter Content="{TemplateBinding Content}" />
+
+                                <!-- The row of buttons. -->
+                                <Border Grid.Row="1" Style="{StaticResource DialogButtonBar}">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                        <local:ButtonsList ItemsSource="{Binding Buttons.Collection, RelativeSource={RelativeSource TemplatedParent}}"
+                                                           Focusable="False"
+                                                           ItemTemplateSelector="{StaticResource DialogButtonTemplateSelector}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <StackPanel Orientation="Horizontal" />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                        </local:ButtonsList>
+                                    </StackPanel>
+                                </Border>
+
+                            </Grid>
+                        </Border>
+
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

@@ -56,7 +56,7 @@ namespace GoogleCloudExtension.GCloud
             string userName,
             Context context) =>
             GetJsonOutputAsync<WindowsInstanceCredentials>(
-                $"beta compute reset-windows-password {instanceName} --zone={zoneName} --user={userName} --quiet ",
+                $"beta compute reset-windows-password {instanceName} --zone={zoneName} --user=\"{userName}\" --quiet ",
                 context);
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace GoogleCloudExtension.GCloud
         private static string FormatCommand(string command, Context context)
         {
             var projectId = context?.ProjectId != null ? $"--project={context.ProjectId}" : "";
-            var credentialsPath = context?.CredentialsPath != null ? $"--credential-file-override={context.CredentialsPath}" : "";
+            var credentialsPath = context?.CredentialsPath != null ? $"--credential-file-override=\"{context.CredentialsPath}\"" : "";
             return $"gcloud {command} {projectId} {credentialsPath} --format=json";
         }
 

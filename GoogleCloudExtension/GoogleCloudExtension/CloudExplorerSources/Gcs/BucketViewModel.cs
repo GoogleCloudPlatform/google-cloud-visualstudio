@@ -15,6 +15,7 @@
 using Google.Apis.Storage.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.Utils;
 using System;
@@ -25,6 +26,10 @@ using System.Windows.Media;
 
 namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 {
+    /// <summary>
+    /// This class is the view model for a GCS bucket. Defines the possible operations on the
+    /// bucket, accessible through the context menu.
+    /// </summary>
     internal class BucketViewModel : TreeHierarchy, ICloudExplorerItemSource
     {
         private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/bucket_icon.png";
@@ -33,7 +38,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         private readonly GcsSourceRootViewModel _owner;
         private readonly Bucket _bucket;
         private readonly Lazy<BucketItem> _item;
-        private readonly WeakCommand _openOnCloudConsoleCommand;
+        private readonly ProtectedCommand _openOnCloudConsoleCommand;
 
         public object Item
         {
@@ -50,7 +55,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             _owner = owner;
             _bucket = bucket;
             _item = new Lazy<BucketItem>(GetItem);
-            _openOnCloudConsoleCommand = new WeakCommand(OnOpenConCloudConsoleCommand);
+            _openOnCloudConsoleCommand = new ProtectedCommand(OnOpenConCloudConsoleCommand);
 
             Caption = _bucket.Name;
             Icon = s_bucketIcon.Value;
@@ -58,7 +63,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = _openOnCloudConsoleCommand },
-                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesCommand) },
+                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
@@ -70,7 +75,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         private void OnOpenConCloudConsoleCommand()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.OpenWebsiteForGcsBucket, CommandInvocationSource.Button);
+            EventsReporterWrapper.ReportEvent(OpenGcsBucketOnCloudConsoleEvent.Create());
 
             var url = $"https://console.cloud.google.com/storage/browser/{_bucket.Name}/?project={CredentialsStore.Default.CurrentProjectId}";
             Debug.WriteLine($"Starting bucket browsing at: {url}");

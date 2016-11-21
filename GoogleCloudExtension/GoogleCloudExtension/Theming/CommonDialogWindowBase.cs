@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Analytics;
 using Microsoft.VisualStudio.PlatformUI;
 
 namespace GoogleCloudExtension.Theming
@@ -22,19 +21,15 @@ namespace GoogleCloudExtension.Theming
     /// </summary>
     public class CommonDialogWindowBase : DialogWindow
     {
-        public CommonDialogWindowBase(string title, double width, double height)
+        public CommonDialogWindowBase(string title)
         {
             Title = title;
-            Width = width;
-            Height = height;
 
-            // Common settings to all dialogs.
+            // Common to all dyanmically sized dialogs.
             ResizeMode = System.Windows.ResizeMode.NoResize;
+            SizeToContent = System.Windows.SizeToContent.WidthAndHeight;
             WindowStartupLocation = System.Windows.WindowStartupLocation.CenterOwner;
             ShowInTaskbar = false;
-
-            // Report that this window is opened.
-            ExtensionAnalytics.ReportScreenView(this);
         }
     }
 }

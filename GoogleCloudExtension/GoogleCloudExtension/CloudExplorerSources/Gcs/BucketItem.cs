@@ -48,6 +48,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         [LocalizedDisplayName(nameof(Resources.CloudExplorerGcsBucketStorageClassDisplayName))]
         public string StorageClass => _bucket.StorageClass;
 
+        [LocalizedCategory(nameof(Resources.CloudExplorerGcsBucketCategory))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGcsBucketLocationDescription))]
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerGcsBucketLocationDisplayName))]
+        public string Location => _bucket.Location;
+
         public override string ToString() => _bucket.Name;
     }
 }

@@ -14,7 +14,6 @@
 
 using Google.Apis.CloudResourceManager.v1.Data;
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorerSources.CloudSQL;
 using GoogleCloudExtension.CloudExplorerSources.Gce;
 using GoogleCloudExtension.CloudExplorerSources.Gcs;
@@ -131,7 +130,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 if (value == null || value is Project)
                 {
                     var project = (Project)value;
-                    CredentialsStore.Default.CurrentProjectId = project?.ProjectId;
+                    CredentialsStore.Default.UpdateCurrentProject(project);
                 }
             }
         }
@@ -214,12 +213,12 @@ namespace GoogleCloudExtension.CloudExplorer
                 {
                     Icon = s_refreshIcon.Value,
                     ToolTip = Resources.CloudExplorerRefreshButtonToolTip,
-                    Command = new WeakCommand(this.OnRefresh),
+                    Command = new ProtectedCommand(OnRefreshCommand),
                 }
             };
             Buttons = Enumerable.Concat(refreshButtonEnumerable, _sources.SelectMany(x => x.Buttons));
 
-            ManageAccountsCommand = new WeakCommand(OnManageAccountsCommand);
+            ManageAccountsCommand = new ProtectedCommand(OnManageAccountsCommand);
 
             CredentialsStore.Default.CurrentAccountChanged += OnCurrentAccountChanged;
             CredentialsStore.Default.CurrentProjectIdChanged += OnCurrentProjectIdChanged;
@@ -231,13 +230,13 @@ namespace GoogleCloudExtension.CloudExplorer
         private static GPlusDataSource CreatePlusDataSource()
         {
             var currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
-            return currentCredential != null ? new GPlusDataSource(currentCredential, GoogleCloudExtensionPackage.ApplicationName) : null;
+            return currentCredential != null ? new GPlusDataSource(currentCredential, GoogleCloudExtensionPackage.VersionedApplicationName) : null;
         }
 
         private static ResourceManagerDataSource CreateResourceManagerDataSource()
         {
             var currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
-            return currentCredential != null ? new ResourceManagerDataSource(currentCredential, GoogleCloudExtensionPackage.ApplicationName) : null;
+            return currentCredential != null ? new ResourceManagerDataSource(currentCredential, GoogleCloudExtensionPackage.VersionedApplicationName) : null;
         }
 
         private void UpdateUserProfile()
@@ -262,38 +261,54 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void OnManageAccountsCommand()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.OpenManageAccountsDialog, CommandInvocationSource.Button);
-
             ManageAccountsWindow.PromptUser();
-        }
-
-        private void OnCurrentAccountChanged(object sender, EventArgs e)
-        {
-            Debug.WriteLine("Changing account.");
-            ResetCredentials();
         }
 
         private void OnCurrentProjectIdChanged(object sender, EventArgs e)
         {
-            if (IsBusy)
+            ErrorHandlerUtils.HandleExceptions(() =>
             {
-                return;
-            }
+                if (IsBusy)
+                {
+                    return;
+                }
 
-            Debug.WriteLine("Changing project.");
-            NotifySourcesOfUpdatedAccountOrProject();
-            RefreshSources();
+                Debug.WriteLine("Changing project.");
+                NotifySourcesOfUpdatedAccountOrProject();
+                RefreshSources();
+            });
         }
 
-        private void OnReset(object sender, EventArgs e)
+        private void OnNavigateToCloudConsoleCommand()
         {
-            Debug.WriteLine("Resetting the credentials.");
+            Process.Start("https://console.cloud.google.com/");
+        }
+
+        private void OnRefreshCommand()
+        {
             ResetCredentials();
         }
 
-        private void OnNavigateToCloudConsole()
+        #endregion
+
+        #region Event handlers
+
+        private void OnReset(object sender, EventArgs e)
         {
-            Process.Start("https://console.cloud.google.com/");
+            ErrorHandlerUtils.HandleExceptions(() =>
+            {
+                Debug.WriteLine("Resetting the credentials.");
+                ResetCredentials();
+            });
+        }
+
+        private void OnCurrentAccountChanged(object sender, EventArgs e)
+        {
+            ErrorHandlerUtils.HandleExceptions(() =>
+            {
+                Debug.WriteLine("Changing account.");
+                ResetCredentials();
+            });
         }
 
         #endregion
@@ -368,7 +383,7 @@ namespace GoogleCloudExtension.CloudExplorer
             {
                 EmptyStateMessage = Resources.CloudExploreNoProjectMessage;
                 EmptyStateButtonCaption = Resources.CloudExplorerNoProjectButtonCaption;
-                EmptyStateCommand = new WeakCommand(OnNavigateToCloudConsole);
+                EmptyStateCommand = new ProtectedCommand(OnNavigateToCloudConsoleCommand);
             }
         }
 
@@ -396,13 +411,6 @@ namespace GoogleCloudExtension.CloudExplorer
             {
                 return new List<Project>();
             }
-        }
-
-        private void OnRefresh()
-        {
-            ExtensionAnalytics.ReportCommand(CommandName.RefreshDataSource, CommandInvocationSource.Button);
-
-            RefreshSources();
         }
 
         private void RefreshSources()

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Utils;
 using System.Windows.Input;
 
@@ -37,12 +36,11 @@ namespace GoogleCloudExtension.OauthLoginFlow
         {
             _owner = owner;
 
-            CloseCommand = new WeakCommand(OnCloseCommand);
+            CloseCommand = new ProtectedCommand(OnCloseCommand);
         }
 
         private void OnCloseCommand()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.OAuthFlowCancel, CommandInvocationSource.Button);
             _owner.CancelOperation();
         }
     }

@@ -55,16 +55,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AsyncPropertyValue.cs" />
+    <Compile Include="BindableList.cs" />
     <Compile Include="BooleanConverter.cs" />
     <Compile Include="JsonOutputException.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="PlaceholderMessage.cs" />
+    <Compile Include="Polling.cs" />
     <Compile Include="ProcessUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VisibilityConverter.cs" />
-    <Compile Include="WeakAction.cs" />
-    <Compile Include="WeakCommand.cs" />
-    <Compile Include="WeakDelegate.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

@@ -13,11 +13,10 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils;
-using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace GoogleCloudExtension.ShowPassword
 {
@@ -26,94 +25,58 @@ namespace GoogleCloudExtension.ShowPassword
     /// </summary>
     public class ShowPasswordViewModel : ViewModelBase
     {
-        private const string ShowPasswordIconPath = "ShowPassword/Resources/visibility.png";
-        private const string HidePasswordIconPath = "ShowPassword/Resources/visibility_off.png";
-
-        private static readonly Lazy<ImageSource> s_showPasswordIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(ShowPasswordIconPath));
-        private static readonly Lazy<ImageSource> s_hidePasswordIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(HidePasswordIconPath));
-
-        private readonly ShowPasswordWindow _owner;
-        private bool _revealPassword;
-
-        /// <summary>
-        /// The user name for the credentials.
-        /// </summary>
-        public string UserName { get; }
+        private readonly ShowPasswordWindow.Options _options;
+        private bool _showCopyFeedback;
 
         /// <summary>
         /// The password to show.
         /// </summary>
-        public string Password { get; }
+        public string Password => _options.Password;
 
         /// <summary>
-        /// Wether to show or not the password to the user.
+        /// The message to display in the dialog.
         /// </summary>
-        public bool RevealPassword
-        {
-            get { return _revealPassword; }
-            set
-            {
-                SetValueAndRaise(ref _revealPassword, value);
-                RaisePropertyChanged(nameof(HidePassword));
-                RaisePropertyChanged(nameof(ShowPasswordIcon));
-            }
-        }
-
-        public bool HidePassword => !RevealPassword;
-
-        public ImageSource ShowPasswordIcon => RevealPassword ? s_hidePasswordIcon.Value : s_showPasswordIcon.Value;
-
-        /// <summary>
-        /// The name of the instance for which the credentials are valid.
-        /// </summary>
-        public string InstanceName { get; }
-
-        /// <summary>
-        /// The command to execute to accept and close the window.
-        /// </summary>
-        public ICommand OkCommand { get; }
-
-        public ICommand TogglePasswordCommand { get; }
+        public string Message => _options.Message;
 
         /// <summary>
         /// The command to execute to copy the password to the clipboard.
         /// </summary>
         public ICommand CopyCommand { get; }
 
-        public ShowPasswordViewModel(ShowPasswordWindow owner, string userName, string password, string instanceName)
+        /// <summary>
+        /// Whether to show the copy feedback or not.
+        /// </summary>
+        public bool ShowCopyFeedback
         {
-            _owner = owner;
-
-            UserName = userName;
-            Password = password;
-            InstanceName = instanceName;
-
-            OkCommand = new WeakCommand(OnOkCommand);
-            TogglePasswordCommand = new WeakCommand(OnTogglePasswordCommand);
-            CopyCommand = new WeakCommand(OnCopyCommand);
+            get { return _showCopyFeedback; }
+            set { SetValueAndRaise(ref _showCopyFeedback, value); }
         }
 
-        private void OnCopyCommand()
+        public ShowPasswordViewModel(ShowPasswordWindow.Options options)
+        {
+            _options = options;
+
+            CopyCommand = new ProtectedCommand(OnCopyCommand);
+        }
+
+        private async void OnCopyCommand()
         {
             try
             {
                 Clipboard.SetText(Password);
+
+                if (!ShowCopyFeedback)
+                {
+                    ShowCopyFeedback = true;
+                    await Task.Delay(2000);
+                    ShowCopyFeedback = false;
+                }
             }
             catch
             {
                 Debug.WriteLine("Failed to copy the string to the clipboard.");
                 UserPromptUtils.ErrorPrompt(Resources.ShowPasswordCopyFailedMessage, Resources.ShowPasswordCopyFailedTitle);
             }
-        }
-
-        private void OnTogglePasswordCommand()
-        {
-            RevealPassword = !RevealPassword;
-        }
-
-        private void OnOkCommand()
-        {
-            _owner.Close();
         }
     }
 }

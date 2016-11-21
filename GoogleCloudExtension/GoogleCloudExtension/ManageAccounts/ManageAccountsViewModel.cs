@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -63,9 +64,9 @@ namespace GoogleCloudExtension.ManageAccounts
             }
         }
 
-        public WeakCommand SetAsCurrentAccountCommand { get; }
+        public ProtectedCommand SetAsCurrentAccountCommand { get; }
 
-        public WeakCommand DeleteAccountCommand { get; }
+        public ProtectedCommand DeleteAccountCommand { get; }
 
         public ICommand CloseCommand { get; }
 
@@ -78,16 +79,14 @@ namespace GoogleCloudExtension.ManageAccounts
 
             CurrentAccountName = CredentialsStore.Default.CurrentAccount?.AccountName;
 
-            SetAsCurrentAccountCommand = new WeakCommand(OnSetAsCurrentAccountCommand, canExecuteCommand: false);
-            DeleteAccountCommand = new WeakCommand(OnDeleteAccountCommand);
-            CloseCommand = new WeakCommand(owner.Close);
-            AddAccountCommand = new WeakCommand(OnAddAccountCommand);
+            SetAsCurrentAccountCommand = new ProtectedCommand(OnSetAsCurrentAccountCommand, canExecuteCommand: false);
+            DeleteAccountCommand = new ProtectedCommand(OnDeleteAccountCommand);
+            CloseCommand = new ProtectedCommand(owner.Close);
+            AddAccountCommand = new ProtectedCommand(OnAddAccountCommand);
         }
 
         public void DoucleClickedItem(UserAccountViewModel userAccount)
         {
-            ExtensionAnalytics.ReportCommand(CommandName.DoubleClickedAccountCommand, CommandInvocationSource.ListItem);
-
             if (userAccount.IsCurrentAccount)
             {
                 return;
@@ -99,14 +98,12 @@ namespace GoogleCloudExtension.ManageAccounts
 
         private void OnDeleteAccountCommand()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.DeleteAccountCommand, CommandInvocationSource.Button);
-
             Debug.WriteLine($"Attempting to delete account: {CurrentAccountName}");
-            if (!UserPromptUtils.YesNoPrompt(
+            if (!UserPromptUtils.ActionPrompt(
                 String.Format(Resources.ManageAccountsDeleteAccountPromptMessage, CurrentAccountName),
-                Resources.ManageAccountsDeleteAccountPromptTitle))
+                Resources.ManageAccountsDeleteAccountPromptTitle,
+                actionCaption: Resources.UiDeleteButtonCaption))
             {
-                ExtensionAnalytics.ReportEvent("DeleteAccountCommandCancelled", "Cancelled");
                 Debug.WriteLine($"The user cancelled the deletion of the account.");
                 return;
             }
@@ -118,8 +115,6 @@ namespace GoogleCloudExtension.ManageAccounts
 
         private void OnSetAsCurrentAccountCommand()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.SetCurrentAccountCommand, CommandInvocationSource.Button);
-
             Debug.WriteLine($"Setting current account: {CurrentAccountName}");
             CredentialsStore.Default.CurrentAccount = CurrentUserAccount.UserAccount;
             _owner.Close();
@@ -127,11 +122,10 @@ namespace GoogleCloudExtension.ManageAccounts
 
         private async void OnAddAccountCommand()
         {
-            ExtensionAnalytics.ReportCommand(CommandName.AddAccountCommand, CommandInvocationSource.Button);
-
             Debug.WriteLine("Stating the oauth login flow.");
             if (await AccountsManager.StartAddAccountFlowAsync())
             {
+                EventsReporterWrapper.ReportEvent(NewLoginEvent.Create());
                 Debug.WriteLine($"The user logged in: {CredentialsStore.Default.CurrentAccount.AccountName}");
                 _owner.Close();
             }

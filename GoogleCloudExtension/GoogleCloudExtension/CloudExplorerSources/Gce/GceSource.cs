@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.Utils;
 using System;
@@ -33,25 +32,33 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             _windowsOnlyButton = new ButtonDefinition
             {
                 ToolTip = Resources.CloudExplorerGceOnlyWindowsButtonToolTip,
-                Command = new WeakCommand(OnOnlyWindowsClicked),
+                Command = new ProtectedCommand(OnOnlyWindowsCommand),
                 Icon = s_windowsOnlyButtonIcon.Value,
             };
             ActualButtons.Add(_windowsOnlyButton);
+            ActualRoot.ShowOnlyWindowsInstancesChanged += OnShowOnlyWindowsInstancesChanged;
         }
 
-        private void OnOnlyWindowsClicked()
-        {
-            if (_windowsOnlyButton.IsChecked)
-            {
-                ExtensionAnalytics.ReportCommand(CommandName.ShowAllGceInstancesCommand, CommandInvocationSource.Button);
-            }
-            else
-            {
-                ExtensionAnalytics.ReportCommand(CommandName.ShowOnlyWindowsGceInstancesCommand, CommandInvocationSource.Button);
-            }
+        #region Event handlers
 
+        private void OnShowOnlyWindowsInstancesChanged(object sender, EventArgs e)
+        {
+            ErrorHandlerUtils.HandleExceptions(() =>
+            {
+                _windowsOnlyButton.IsChecked = ActualRoot.ShowOnlyWindowsInstances;
+            });
+        }
+
+        #endregion
+
+        #region Command handlers.
+
+        private void OnOnlyWindowsCommand()
+        {
             _windowsOnlyButton.IsChecked = !_windowsOnlyButton.IsChecked;
             ActualRoot.ShowOnlyWindowsInstances = _windowsOnlyButton.IsChecked;
         }
+
+        #endregion
     }
 }

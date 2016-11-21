@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -29,58 +29,33 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private const string IconResourcePath = "CloudExplorerSources/Gce/Resources/zone_icon.png";
 
         private static readonly Lazy<ImageSource> s_zoneIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
-        private static readonly TreeLeaf s_noInstancesPlaceholder = new TreeLeaf
-        {
-            Caption = Resources.CloudExplorerGceNoInstancesInZoneCaption,
-            IsWarning = true
-        };
-        private static readonly TreeLeaf s_noWindowsInstancesPlaceholder = new TreeLeaf
-        {
-            Caption = Resources.CloudExplorerGceNoWindowsInstancesInZoneCaption,
-            IsWarning = true
-        };
 
         private readonly GceSourceRootViewModel _owner;
-        private readonly InstancesPerZone _instancesPerZone;
+        private readonly Zone _zone;
 
         public event EventHandler ItemChanged;
 
-        public object Item => new ZoneItem(_instancesPerZone.Zone);
+        public object Item => new ZoneItem(_zone);
 
-        public ZoneViewModel(GceSourceRootViewModel owner, InstancesPerZone instancesPerZone, bool onlyWindowsInstances)
+        internal ZoneViewModel(GceSourceRootViewModel owner, Zone zone, IEnumerable<GceInstanceViewModel> instances)
         {
             _owner = owner;
-            _instancesPerZone = instancesPerZone;
+            _zone = zone;
 
-            var instancesToShow = instancesPerZone.Instances.Where(x => !onlyWindowsInstances || x.IsWindowsInstance()).ToList();
-
-            Caption = $"{instancesPerZone.Zone.Name} ({instancesToShow.Count})";
+            Caption = $"{zone.Name} ({instances.Count()})";
             Icon = s_zoneIcon.Value;
 
-            var viewModels = instancesToShow.Select(x => new GceInstanceViewModel(owner, x));
-            foreach (var viewModel in viewModels)
+            foreach (var instance in instances)
             {
-                Children.Add(viewModel);
+                Children.Add(instance);
             }
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = Resources.CloudExplorerGceNewInstanceMenuHeader, Command = new WeakCommand(OnNewInstanceCommand) },
-                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new WeakCommand(OnPropertiesCommand) },
+                new MenuItem { Header = Resources.CloudExplorerGceNewInstanceMenuHeader, Command = new ProtectedCommand(OnNewInstanceCommand) },
+                new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
-
-            if (Children.Count == 0)
-            {
-                if (onlyWindowsInstances)
-                {
-                    Children.Add(s_noWindowsInstancesPlaceholder);
-                }
-                else
-                {
-                    Children.Add(s_noInstancesPlaceholder);
-                }
-            }
         }
 
         private void OnPropertiesCommand()
@@ -90,7 +65,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnNewInstanceCommand()
         {
-            var url = $"https://console.cloud.google.com/compute/instancesAdd?project={_owner.Context.CurrentProject.Name}&zone={_instancesPerZone.Zone.Name}";
+            var url = $"https://console.cloud.google.com/compute/instancesAdd?project={_owner.Context.CurrentProject.ProjectId}&zone={_zone.Name}";
             Process.Start(url);
         }
     }

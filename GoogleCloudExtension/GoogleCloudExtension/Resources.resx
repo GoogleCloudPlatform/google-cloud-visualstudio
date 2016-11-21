@@ -125,21 +125,25 @@
     <value>Usage Statistics</value>
     <comment>Title for the analytics prompt.</comment>
   </data>
+  <data name="CloudExploreOperationTimeoutMessage" xml:space="preserve">
+    <value>The operation took too long to complete and timed out.</value>
+    <comment>A message denoting the operation took too long.</comment>
+  </data>
+  <data name="CloudExploreOperationCanceledMessage" xml:space="preserve">
+    <value>The operation was canceled.</value>
+    <comment>A message denoting the operation was canceld.</comment>
+  </data>
   <data name="CloudExploreDisabledApiEnableApiMenuHeader" xml:space="preserve">
     <value>Enable API</value>
     <comment>Menu header for the Enable API command.</comment>
   </data>
   <data name="CloudExploreNoProjectMessage" xml:space="preserve">
-    <value>No projects found, to create a project navigate to the Google Cloud Console.</value>
+    <value>To create a project, go to the Cloud Platform Console.</value>
     <comment>Message shwon int he Cloud Explorer when no project is found.</comment>
   </data>
   <data name="CloudExplorerConsoleLinkCaption" xml:space="preserve">
-    <value>Go to the Google Cloud Console for other services</value>
+    <value>Open Cloud Platform Console for other services</value>
     <comment>The caption for the console link in the cloud source.</comment>
-  </data>
-  <data name="CloudExplorerGceCreateOrResetPasswordMenuHeader" xml:space="preserve">
-    <value>Create or Reset Password...</value>
-    <comment>Header for the create or reset password menu item.</comment>
   </data>
   <data name="CloudExplorerGceFailedToGetOauthCredentialsCaption" xml:space="preserve">
     <value>Credentials Error</value>
@@ -237,10 +241,6 @@
     <value>Windows Properties</value>
     <comment>The category for Windows properties for a GCE instance.</comment>
   </data>
-  <data name="CloudExplorerGceInstanceWindowsVersionDescription" xml:space="preserve">
-    <value>The version of Windows installed on the instance.</value>
-    <comment>The description for the Windows version property for a GCE instance.</comment>
-  </data>
   <data name="CloudExplorerGceInstanceWindowsVersionDisplayName" xml:space="preserve">
     <value>Windows Version</value>
     <comment>The display name for the Windows version in a GCE instance.</comment>
@@ -250,7 +250,7 @@
     <comment>The description of the zone property for a GCE instance.</comment>
   </data>
   <data name="CloudExplorerGceManageFirewallPortsMenuHeader" xml:space="preserve">
-    <value>Manage Firewall Ports...</value>
+    <value>Firewall options...</value>
     <comment>Header for the manage firewall ports menu item.</comment>
   </data>
   <data name="CloudExplorerGceNewAspNetInstanceMenuHeader" xml:space="preserve">
@@ -261,24 +261,16 @@
     <value>New Instance</value>
     <comment>Header for the new instance menu item.</comment>
   </data>
-  <data name="CloudExplorerGceNoInstancesInZoneCaption" xml:space="preserve">
-    <value>No instances in this zone</value>
-    <comment>The caption to show when there are no instances in a GCE zone.</comment>
-  </data>
-  <data name="CloudExplorerGceNoWindowsInstancesInZoneCaption" xml:space="preserve">
-    <value>No Windows instances in this zone</value>
-    <comment>The caption to show when there are no Windows instances in a GCE zone.</comment>
-  </data>
   <data name="CloudExplorerGceOnlyWindowsButtonToolTip" xml:space="preserve">
-    <value>Only Windows Instances</value>
+    <value>Show only Windows instances</value>
     <comment>The tooltip for the filter button.</comment>
   </data>
   <data name="CloudExplorerGceOpenTerminalSessionMenuHeader" xml:space="preserve">
-    <value>Open Terminal Server Session...</value>
+    <value>Open Remote Desktop session...</value>
     <comment>Header for the open terminal session menu item.</comment>
   </data>
   <data name="CloudExplorerGceOpenWebSiteMenuHeader" xml:space="preserve">
-    <value>Open Web Site...</value>
+    <value>Open website</value>
     <comment>Header for the open website menu item.</comment>
   </data>
   <data name="CloudExplorerGcePublishingSettingsSavedMessage" xml:space="preserve">
@@ -298,23 +290,39 @@
     <comment>Extension for the save dialog. Format defined as part of the Save Dialog spec, do not over translate.</comment>
   </data>
   <data name="CloudExplorerGceSavePublishSettingsMenuHeader" xml:space="preserve">
-    <value>Save Publishing Settings...</value>
+    <value>Save publishing settings...</value>
     <comment>Header for the save publish settings menu item.</comment>
+  </data>
+  <data name="CloudExplorerGceShowAllOsInstancesCommand" xml:space="preserve">
+    <value>Show All OS Instances</value>
+    <comment>Caption for the command that shows all of the instances regardless of OS.</comment>
+  </data>
+  <data name="CloudExplorerGceShowInstancesCommand" xml:space="preserve">
+    <value>Show Instances</value>
+    <comment>Caption for the command to show instances instead of zones.</comment>
+  </data>
+  <data name="CloudExplorerGceShowWindowsOnlyInstancesCommand" xml:space="preserve">
+    <value>Show Only Windows Instances</value>
+    <comment>Caption for the command that shows only the Windows instances.</comment>
+  </data>
+  <data name="CloudExplorerGceShowZonesCommand" xml:space="preserve">
+    <value>Show Zones</value>
+    <comment>Caption for the command that shows the zones.</comment>
   </data>
   <data name="CloudExplorerGceSourceApiDisabledMessage" xml:space="preserve">
     <value>The Google Compute Engine API is not enabled for this project.</value>
     <comment>Message shown when the GCE API is disabled.</comment>
   </data>
   <data name="CloudExplorerGceSourceFailedLoadingZonesCaption" xml:space="preserve">
-    <value>Failed to load zones.</value>
+    <value>Failed to load instances data.</value>
     <comment>Caption shown in the node when failed to load GCE zones.</comment>
   </data>
   <data name="CloudExplorerGceSourceLoadingZonesCaption" xml:space="preserve">
-    <value>Loading zones...</value>
+    <value>Loading instances data...</value>
     <comment>Caption shown in the node when loading GCE zones.</comment>
   </data>
-  <data name="CloudExplorerGceSourceNoZonesCaption" xml:space="preserve">
-    <value>No zones found.</value>
+  <data name="CloudExplorerGceSourceNoInstancesCaption" xml:space="preserve">
+    <value>No instances found.</value>
     <comment>Caption shown in the node when no GCE zones are found.</comment>
   </data>
   <data name="CloudExplorerGceStartInstanceConfirmationPrompt" xml:space="preserve">
@@ -426,7 +434,7 @@
     <comment>General loading message.</comment>
   </data>
   <data name="CloudExplorerNoAccountButtonCaption" xml:space="preserve">
-    <value>Select or Create Account</value>
+    <value>Select or create account</value>
     <comment>Caption for the button, or link, in the Cloud Exlorer shown when there's no account selected.</comment>
   </data>
   <data name="CloudExplorerNoAccountMessage" xml:space="preserve">
@@ -434,7 +442,7 @@
     <comment>Message shown in the Cloud Exlorer when there's no account selected.</comment>
   </data>
   <data name="CloudExplorerNoProjectButtonCaption" xml:space="preserve">
-    <value>Navigate to Cloud Console</value>
+    <value>Go to the Cloud Platform Console</value>
     <comment>Caption for the button, or link, shown in the Cloud Explorer when no project is found.</comment>
   </data>
   <data name="CloudExplorerNoProjectsFoundPlaceholderMessage" xml:space="preserve">
@@ -460,6 +468,10 @@
   <data name="CloudExplorerSqlFailedMessage" xml:space="preserve">
     <value>Failed to load the list of Google Cloud SQL instances.</value>
     <comment>Message shown in the output window when failed to load list of SQL instances.</comment>
+  </data>
+  <data name="CloudExplorerSqlUpdateAthorizedNetworksErrorMessage" xml:space="preserve">
+    <value>Failed to updated authorized networks.</value>
+    <comment>Message shown when an attempt to updated authorized networks fails.</comment>
   </data>
   <data name="CloudExplorerSqlFailedToLoadInstancesCaption" xml:space="preserve">
     <value>Failed to list instances.</value>
@@ -489,9 +501,17 @@
     <value>No instances found.</value>
     <comment>Caption shown when no SQL instances are found.</comment>
   </data>
+  <data name="CloudExplorerSqlUpdatedAthorizedNetworksCaption" xml:space="preserve">
+    <value>Updating authorized networks...</value>
+    <comment>Caption shown when the authorized networks are being updated.</comment>
+  </data>
   <data name="CloudExplorerSqlOpenAddDataConnectionMenuHeader" xml:space="preserve">
-    <value>Add Data Connection</value>
+    <value>Add Data Connection...</value>
     <comment>Menu header for the open add data connection dialog menu item.</comment>
+  </data>
+  <data name="CloudExplorerSqlManageAuthorizedNetworksMenuHeader" xml:space="preserve">
+    <value>Manage authorized networks...</value>
+    <comment>Menu header for the option to manage authorized networks.</comment>
   </data>
   <data name="CloudExplorerSqlRootNodeCaption" xml:space="preserve">
     <value>Google Cloud SQL</value>
@@ -518,11 +538,11 @@
     <comment>The title for the prompt indicating the account already exists.</comment>
   </data>
   <data name="ManageAccountsAddAccountButtonCaption" xml:space="preserve">
-    <value>Add...</value>
+    <value>_Add account</value>
     <comment>Caption for the add account button.</comment>
   </data>
   <data name="ManageAccountsChooseAccountMessage" xml:space="preserve">
-    <value>Choose account:</value>
+    <value>_Choose account:</value>
     <comment>The message at the top of the manage accounts window.</comment>
   </data>
   <data name="ManageAccountsCurrentAccountMessage" xml:space="preserve">
@@ -530,7 +550,7 @@
     <comment>Message shown in the current account.</comment>
   </data>
   <data name="ManageAccountsDeleteAccountButtonCaption" xml:space="preserve">
-    <value>Delete</value>
+    <value>_Delete</value>
     <comment>Caption for the delete account button.</comment>
   </data>
   <data name="ManageAccountsDeleteAccountPromptMessage" xml:space="preserve">
@@ -542,7 +562,7 @@
     <comment>Title for the confirmation prompt for deleting an account.</comment>
   </data>
   <data name="ManageAccountsSetAsCurrentAccountButtonCaption" xml:space="preserve">
-    <value>Set As Current</value>
+    <value>_Set current</value>
     <comment>Caption for the set as current account button.</comment>
   </data>
   <data name="ManageAccountsWindowTitle" xml:space="preserve">
@@ -570,15 +590,43 @@
     <comment>OAUTH flow window title.</comment>
   </data>
   <data name="PortManagerWindowCaption" xml:space="preserve">
-    <value>Manage Firewall Ports</value>
+    <value>Firewall Options</value>
     <comment>Caption for the port manager dialog.</comment>
   </data>
   <data name="PortManagerWindowMessage" xml:space="preserve">
-    <value>Set Firewall rules and tags to enable traffic for the instance</value>
+    <value>Firewall rules:</value>
     <comment>Main message in the port manager dialog.</comment>
   </data>
+  <data name="AuthorizedNetworksWindowCaption" xml:space="preserve">
+    <value>Manage Authorized Networks</value>
+    <comment>Caption for the manage authorized networks dialog.</comment>
+  </data>
+  <data name="AuthorizedNetworksWindowMessage" xml:space="preserve">
+    <value>Manage authorized networks that can connect to your instance.</value>
+    <comment>Main message in the authorized networks dialog.</comment>
+  </data>
+  <data name="AuthorizedNetworksWindowNameTextBoxTitle" xml:space="preserve">
+    <value>Name (Optional):</value>
+    <comment>Title for the name text box use to create new authorized networks.</comment>
+  </data>
+  <data name="AuthorizedNetworksWindowValueTextBoxTitle" xml:space="preserve">
+    <value>Network (CIDR Notation):</value>
+    <comment>Title for the value text box use to create new authorized networks.</comment>
+  </data>
+  <data name="AuthorizedNetworksWindowAddNetworkButton" xml:space="preserve">
+    <value>Add Authorized Network</value>
+    <comment>Title for the button to create a new authorized network.</comment>
+  </data>
+  <data name="AuthorizedNetworksWindowInvalidCidrFormatErrorTitle" xml:space="preserve">
+    <value>Invalid Subnet.</value>
+    <comment>Title for an error message in the authorized networks dialog for an ipv4 address.</comment>
+  </data>
+  <data name="AuthorizedNetworksWindowInvalidCidrFormatErrorMessage" xml:space="preserve">
+    <value>Enter IPv4 in CIDR notation (e.g. 192.168.2.0/24).</value>
+    <comment>Message for an error message in the authorized networks dialog for an ipv4 address.</comment>
+  </data>
   <data name="ResetPasswordConfirmationPromptMessage" xml:space="preserve">
-    <value>Are you sure you want to reset the password for the user {0} in instance {1}? This operation cannot be cancelled.</value>
+    <value>Reset the password for {0} on instance {1}?</value>
     <comment>The message for the confirmation prompt for resetting or creating a password. {0) is the user name, {1} is the instance name.</comment>
   </data>
   <data name="ResetPasswordConfirmationPromptTitle" xml:space="preserve">
@@ -609,13 +657,13 @@
     <value>Missing Google Cloud SDK</value>
     <comment>Title for the prompts shown when gcloud is not installed.</comment>
   </data>
-  <data name="ResetPasswordUserNameCaption" xml:space="preserve">
-    <value>User name:</value>
+  <data name="AddWindowsCredentialUserNameCaption" xml:space="preserve">
+    <value>_User name:</value>
     <comment>Caption for the user name textbox.</comment>
   </data>
-  <data name="ResetPasswordWindowTitle" xml:space="preserve">
-    <value>Reset Password for {0}</value>
-    <comment>The title for the reset password dialog. {0} is the instance name.</comment>
+  <data name="AddWindowsCredentialTitle" xml:space="preserve">
+    <value>Add Windows Credential</value>
+    <comment>The title for the reset password dialog. </comment>
   </data>
   <data name="ShowPasswordCopyFailedMessage" xml:space="preserve">
     <value>The copy operation failed, this might happen if another program has the Windows Clipboard open, such as a virtual machine agent.</value>
@@ -634,8 +682,8 @@
     <comment>The tooltip shown to hide the password.</comment>
   </data>
   <data name="ShowPasswordMessage" xml:space="preserve">
-    <value>The password for user {0} in instance {1} is:</value>
-    <comment>The message shown for the password textblock. {0} is the user name, {1} is the instance name.</comment>
+    <value>{0} password:</value>
+    <comment>The message shown for the password textblock. {0} is the user name.</comment>
   </data>
   <data name="ShowPasswordShowPasswordTooltip" xml:space="preserve">
     <value>Show password</value>
@@ -654,19 +702,221 @@
     <comment>Caption for the close window button.</comment>
   </data>
   <data name="UiDownloadButtonCaption" xml:space="preserve">
-    <value>Download</value>
+    <value>_Download</value>
     <comment>The caption for the general download button.</comment>
   </data>
   <data name="UiOkButtonCaption" xml:space="preserve">
     <value>Ok</value>
     <comment>Caption for Ok buttons.</comment>
   </data>
+  <data name="UiSaveButtonCaption" xml:space="preserve">
+    <value>_Save</value>
+    <comment>Caption for Save buttons.</comment>
+  </data>
+  <data name="UiDeleteButtonCaption" xml:space="preserve">
+    <value>_Delete</value>
+    <comment>Caption for Delete buttons.</comment>
+  </data>
+  <data name="UiUndoButtonCaption" xml:space="preserve">
+    <value>_Undo</value>
+    <comment>Caption for Undo buttons.</comment>
+  </data>
   <data name="UiOpenOnCloudConsoleMenuHeader" xml:space="preserve">
-    <value>Open on Cloud Console</value>
+    <value>Open on Cloud Platform Console</value>
     <comment>Header for the menu that opens the item in the cloud console.</comment>
   </data>
   <data name="UiPropertiesMenuHeader" xml:space="preserve">
     <value>Properties</value>
     <comment>Header for the generic properties menu item, to show the properties window.</comment>
+  </data>
+  <data name="CloudExplorerGcsBucketLocationDescription" xml:space="preserve">
+    <value>The location where the bucket resides.</value>
+    <comment>The description of the location property in a GCS bucket.</comment>
+  </data>
+  <data name="CloudExplorerGcsBucketLocationDisplayName" xml:space="preserve">
+    <value>Location</value>
+    <comment>The display name for the location property in a GCS bucket.</comment>
+  </data>
+  <data name="CloudExplorerGcsShowBucketsCommand" xml:space="preserve">
+    <value>Show Buckets</value>
+    <comment>The command to show the buckets in a flat list.</comment>
+  </data>
+  <data name="CloudExplorerGcsShowLocationsCommand" xml:space="preserve">
+    <value>Show Locations</value>
+    <comment>The command to use use to show the buckets per location.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsAddCredentialsCaption" xml:space="preserve">
+    <value>_Add credentials</value>
+    <comment>The caption for the add credentials button in the dialog.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsDeleteCredentialsCaption" xml:space="preserve">
+    <value>_Delete credentials</value>
+    <comment>The caption for the delete credentials button in the dialog.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsDeleteCredentialsPromptMessage" xml:space="preserve">
+    <value>Delete user name {0} from this computer? The credentials will still exist on the Windows instance.</value>
+    <comment>The message for the confirmation prompt to delete credentials. The {0} placeholder is the username.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsDeleteCredentialsPromptTitle" xml:space="preserve">
+    <value>Delete Credential</value>
+    <comment>Title for the confirmation prompt to delete credentials.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsShowCredentialsCaption" xml:space="preserve">
+    <value>_Show password</value>
+    <comment>The caption or the show credentials button in the dialog.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsWindowMessage" xml:space="preserve">
+    <value>_Credentials for {0}. </value>
+    <comment>Message at the top of the Manage Windows Credentials dialog. The {0} placeholder is the name of the instance.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsWindowTitle" xml:space="preserve">
+    <value>Windows Credentials</value>
+    <comment>Title for the Manage Windows Credentials dialog.</comment>
+  </data>
+  <data name="TerminalServerManagerWindowMessage" xml:space="preserve">
+    <value>Choose credentials to use:</value>
+    <comment>Top message in the terminal server window.</comment>
+  </data>
+  <data name="TerminalServerManagerWindowTitle" xml:space="preserve">
+    <value>Start Remote Desktop Session</value>
+    <comment>Title for the manage terminal server window.</comment>
+  </data>
+  <data name="WindowsCredentialsChooserNoCredentialsFoundMessage" xml:space="preserve">
+    <value>No credentials found...</value>
+    <comment>Message shown in the dropdown when no credentials are found.</comment>
+  </data>
+  <data name="CloudExplorerGceManageWindowsCredentialsMenuHeader" xml:space="preserve">
+    <value>Manage Windows credentials...</value>
+    <comment>Header for the menu entry to manage credentials.</comment>
+  </data>
+  <data name="CloudExplorerGceInstanceWindowsVersionDescription" xml:space="preserve">
+    <value>The version of Windows installed on the instance.</value>
+    <comment>The description for the Windows version property for a GCE instance.</comment>
+  </data>
+  <data name="CloudExplorerGceSavePubSettingsCredentialsMessage" xml:space="preserve">
+    <value>Choose credentials for publish settings:</value>
+    <comment>The message for the choose credentials used during the save publish settings flow.</comment>
+  </data>
+  <data name="CloudExplorerGceSavePubSettingsCredentialsTitle" xml:space="preserve">
+    <value>Choose credentials</value>
+    <comment>The title for the choose credentials used during the save publish settings flow.</comment>
+  </data>
+  <data name="AddWindowsCredentialGeneratePasswordMessage" xml:space="preserve">
+    <value>Create a password for me</value>
+    <comment>Message shown in the radio button of the Reset password dialog to signify that the password will be generated instead of provided by the user.</comment>
+  </data>
+  <data name="AddWindowsCredentialHavePasswordMessage" xml:space="preserve">
+    <value>I have a password for this user</value>
+    <comment>Message shown in the radio button of the Reset Password dialog to signify that the user will provide the password.</comment>
+  </data>
+  <data name="ResetWindowSettingPasswordProgressMessage" xml:space="preserve">
+    <value>Setting password for user {0}</value>
+    <comment>Message shown to the user when the password for the Windows user is being set. {0} is the user name.</comment>
+  </data>
+  <data name="WindowsCredentialsChooserManageCredentialsCaption" xml:space="preserve">
+    <value>Manage Windows credentials</value>
+    <comment>Caption used in the hyperlink shown in the Windows credentials chooser dialog.</comment>
+  </data>
+  <data name="ExceptionPromptMessage" xml:space="preserve">
+    <value>Failed to perform the operation: {0}</value>
+    <comment>Message shown in the exception dialog. {0} is the exception message.</comment>
+  </data>
+  <data name="ExceptionPromptTitle" xml:space="preserve">
+    <value>Operation failed</value>
+    <comment>Title shown on the message dialog down when an unhandled exception happened.</comment>
+  </data>
+  <data name="AddWindowsCredentialPasswordGroupHeader" xml:space="preserve">
+    <value>Password</value>
+    <comment>The header shown in the UI for the password radio buttons.</comment>
+  </data>
+  <data name="ResetPasswordProgressMessage" xml:space="preserve">
+    <value>Resetting password for {0}</value>
+    <comment>Message shown in the progress window while the password is being reset. {0} is the user name.</comment>
+  </data>
+  <data name="ResetPasswordProgressTitle" xml:space="preserve">
+    <value>Resetting Password</value>
+    <comment>Title for the progress window shown while the password is being reset.</comment>
+  </data>
+  <data name="AddWindowsCredentialPasswordLabel" xml:space="preserve">
+    <value>Type password:</value>
+    <comment>Content for the label used for the custom password.</comment>
+  </data>
+  <data name="UiOperationCannotBeUndone" xml:space="preserve">
+    <value>You can't undo this later.</value>
+    <comment>Message shown in dialogs to indicate that the operation cannot be undone.</comment>
+  </data>
+  <data name="UiNoButtonCaption" xml:space="preserve">
+    <value>_No</value>
+  </data>
+  <data name="UiResetButtonCaption" xml:space="preserve">
+    <value>_Reset</value>
+  </data>
+  <data name="UiStartButtonCaption" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="UiStopButtonCaption" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="UiYesButtonCaption" xml:space="preserve">
+    <value>_Yes</value>
+  </data>
+  <data name="ShowPasswordNewPasswordMessage" xml:space="preserve">
+    <value>The password for {0} has been set:</value>
+    <comment>Message shown when a new password is generated. {0} is the user name.</comment>
+  </data>
+  <data name="AddWindowsCredentialValidationEmptyPassword" xml:space="preserve">
+    <value>The password field cannot be empty.</value>
+    <comment>Validation error for when there's no password.</comment>
+  </data>
+  <data name="AddWindowsCredentialValidationEmptyUser" xml:space="preserve">
+    <value>The username cannot be empty.</value>
+    <comment>Validation error for when there's no user name.</comment>
+  </data>
+  <data name="AddWindowsCredentialValidationInvalidChars" xml:space="preserve">
+    <value>The user name contains invalid characters {0}</value>
+    <comment>Validation error fo when there are invalid chars. {0} are the invalid chars.</comment>
+  </data>
+  <data name="AddWindowsCredentialValidationErrorTtitle" xml:space="preserve">
+    <value>Add Windows Credential</value>
+    <comment>Title for the validation error dialogs in the add windows credential dialog.</comment>
+  </data>
+  <data name="AddWindowsCredentialToolTip" xml:space="preserve">
+    <value>Enter a user name. If the user name already exists as an account on the Windows instance, then you can reset the password or enter the current one.</value>
+  </data>
+  <data name="ManageAccountsDisplayStringFormat" xml:space="preserve">
+    <value>{0} ({1})</value>
+    <comment>Format for the display string for an account. {0} is the user name, {1} is the email address.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsToolTip" xml:space="preserve">
+    <value>Windows credentials are used to log in to a Windows machine instance.</value>
+    <comment>Tooltip shown in the manage windows credentials window.</comment>
+  </data>
+  <data name="PortManagerDisplayStringFormat" xml:space="preserve">
+    <value>{0} ({1} {2})</value>
+    <comment>Format string to compose the display string for a port.{0} is the port description, {1} is the protocol name, {2} is the port number.</comment>
+  </data>
+  <data name="PortManagerHttpDescription" xml:space="preserve">
+    <value>Allow HTTP traffic to the instance</value>
+    <comment>Description for the HTTP port.</comment>
+  </data>
+  <data name="PortManagerHttpsDescription" xml:space="preserve">
+    <value>Allow HTTPS traffic to the instance</value>
+    <comment>Description for the HTTPS port.</comment>
+  </data>
+  <data name="PortManagerRdpDescription" xml:space="preserve">
+    <value>Allow Remote Desktop connections to the instance</value>
+    <comment>Description for the RDP port.</comment>
+  </data>
+  <data name="PortManagerWebDeployDescription" xml:space="preserve">
+    <value>Allow publishing with WebDeploy to the instance</value>
+    <comment>Description for the WebDeploy port.</comment>
+  </data>
+  <data name="ShowPasswordCopiedMessage" xml:space="preserve">
+    <value>Password copied to clipboard.</value>
+    <comment>Message shown in the popup for the copy operation.</comment>
+  </data>
+  <data name="UiOpenButtonCaption" xml:space="preserve">
+    <value>_Open</value>
+    <comment>Caption for the open button in dialogs.</comment>
   </data>
 </root>
