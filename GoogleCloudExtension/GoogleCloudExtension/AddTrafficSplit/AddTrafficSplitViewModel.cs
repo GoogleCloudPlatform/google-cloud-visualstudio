@@ -11,10 +11,10 @@ namespace GoogleCloudExtension.AddTrafficSplit
     public class AddTrafficSplitViewModel : ViewModelBase
     {
         private readonly AddTrafficSplitWindow _owner;
-        private bool _ipAddressSplit;
+        private bool _ipAddressSplit = true;
         private bool _cookieSplit;
         private string _selectedVersion;
-        private int _allocation;
+        private string _allocation = "0";
 
         public bool IpAddressSplit
         {
@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.AddTrafficSplit
 
         public IEnumerable<string> Versions { get; }
 
-        public int Allocation
+        public string Allocation
         {
             get { return _allocation; }
             set { SetValueAndRaise(ref _allocation, value); }
@@ -57,24 +57,40 @@ namespace GoogleCloudExtension.AddTrafficSplit
 
         private void OnAddSplitCommand()
         {
-            if (!ValidateInput())
+            if (!Validate())
             {
-                UserPromptUtils.ErrorPrompt(
-                    message: "Invalid input",
-                    title: "Invalid input");
                 return;
             }
 
             Result = new AddTrafficSplitResult(
                 version: SelectedVersion,
-                allocation: Allocation,
+                allocation: Int32.Parse(Allocation),
                 ipAddressSplit: IpAddressSplit,
                 cookieSplit: CookieSplit);
+
+            _owner.Close();
         }
 
-        private bool ValidateInput()
+        private bool Validate()
         {
-            throw new NotImplementedException();
+            int allocationValue = 0;
+            if (!Int32.TryParse(Allocation, out allocationValue))
+            {
+                UserPromptUtils.ErrorPrompt(
+                    message: $"Invalid value for allocation, must be a number: {Allocation}",
+                    title: "Invalid Value");
+                return false;
+            }
+
+            if (allocationValue > 100 || allocationValue < 0)
+            {
+                UserPromptUtils.ErrorPrompt(
+                    message: $"Invalid allocation value, must be between 0 to 100: {Allocation}",
+                    title: "Invalid Value");
+                return false;
+            }
+
+            return true;
         }
     }
 }

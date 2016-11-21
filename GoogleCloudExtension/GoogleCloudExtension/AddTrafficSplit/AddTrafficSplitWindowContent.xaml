@@ -63,7 +63,8 @@
                 <TextBox x:Name="_trafficAllocation"
                          Grid.Column="1"
                          Text="{Binding Allocation, Mode=TwoWay}"
-                         Style="{StaticResource CommonTextBoxStyle}"/>
+                         Style="{StaticResource CommonTextBoxStyle}">
+                </TextBox>
 
             </Grid>
 

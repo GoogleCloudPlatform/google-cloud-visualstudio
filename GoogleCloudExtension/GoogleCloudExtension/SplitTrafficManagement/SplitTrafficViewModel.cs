@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.Appengine.v1.Data;
+using GoogleCloudExtension.AddTrafficSplit;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
@@ -122,6 +123,11 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         public SplitTrafficChange Result { get; private set; }
 
         /// <summary>
+        /// The command to execute when adding a new allocation.
+        /// </summary>
+        public ICommand AddAllocationCommand { get; }
+
+        /// <summary>
         /// The command to execute when the Save button is pressed.
         /// </summary>
         public ICommand SaveCommand { get; }
@@ -149,6 +155,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
             Allocations = GetAllocations(service);
             AvailableVersions = GetAvailableVersions(service, versions);
 
+            AddAllocationCommand = new ProtectedCommand(OnAddAllocationCommand);
             SaveCommand = new ProtectedCommand(OnSaveCommand);
             DeleteCommand = new ProtectedCommand<SplitTrafficModel>(OnDeleteCommand);
             AddTrafficAllocationCommand = new ProtectedCommand(OnAddTrafficAllocationCommand);
@@ -181,6 +188,15 @@ namespace GoogleCloudExtension.SplitTrafficManagement
                 .Where(x => !keys.Contains(x.Id))
                 .Select(x => x.Id);
             return new ObservableCollection<string>(versionIds);
+        }
+
+        private void OnAddAllocationCommand()
+        {
+            var result = AddTrafficSplitWindow.PromptUser(AvailableVersions);
+            if (result != null)
+            {
+                // TODO: Apply the changes.
+            }
         }
 
         /// <summary>

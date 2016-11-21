@@ -24,6 +24,8 @@
 
     <theming:CommonDialogWindowBaseContent HasBanner="True">
         <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="_Add Allocation"
+                                      Command="{Binding AddAllocationCommand}" />
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiSaveButtonCaption}"
                                       IsDefault="True"
                                       Command="{Binding DataContext.SaveCommand}"/>
