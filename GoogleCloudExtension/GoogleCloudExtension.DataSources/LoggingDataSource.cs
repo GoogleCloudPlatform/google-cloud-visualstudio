@@ -12,14 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
@@ -27,7 +23,7 @@ namespace GoogleCloudExtension.DataSources
 
     /// <summary>
     /// Data source that returns data from Stackdriver Logging API.
-    /// The API is described at https://cloud.google.com/logging/docs/api/reference/rest/v2/entries/list. 
+    /// The API is described at https://cloud.google.com/logging/docs/api/reference/rest
     /// </summary>
     public class LoggingDataSource : DataSourceBase<LoggingService>
     {
@@ -42,11 +38,6 @@ namespace GoogleCloudExtension.DataSources
         private LogEntryRequestParams _lastSuccessfulRequestParams;
 
         /// <summary>
-        /// The ListLogEntriesRequest page size.
-        /// </summary>
-        public int? PageSize { get; set; }
-
-        /// <summary>
         /// Initializes an instance of the data source.
         /// </summary>
         /// <param name="projectId">The Google Cloud Platform project id of the current user account .</param>
@@ -55,6 +46,10 @@ namespace GoogleCloudExtension.DataSources
             : base(projectId, credential, init => new LoggingService(init), appName)
         { }
 
+        /// <summary>
+        /// The ListLogEntriesRequest page size.
+        /// </summary>
+        public int? PageSize { get; set; }
 
         private ListLogEntriesRequest CreateRequestFromParams(LogEntryRequestParams requestParams)
         {
@@ -65,7 +60,7 @@ namespace GoogleCloudExtension.DataSources
                 ResourceNames = new List<string>(new string[] { projectsFilter }),
                 Filter = requestParams.Filter,
                 PageSize = requestParams.PageSize,
-                PageToken = requestParams.PageToken                
+                PageToken = requestParams.PageToken       
             };
         }
 
