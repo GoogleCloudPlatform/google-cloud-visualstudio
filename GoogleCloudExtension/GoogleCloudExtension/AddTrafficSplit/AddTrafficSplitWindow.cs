@@ -17,9 +17,15 @@ using System.Collections.Generic;
 
 namespace GoogleCloudExtension.AddTrafficSplit
 {
+    /// <summary>
+    /// The dialog implementation.
+    /// </summary>
     public class AddTrafficSplitWindow : CommonDialogWindowBase
     {
-        public AddTrafficSplitViewModel ViewModel { get; }
+        /// <summary>
+        /// The view model for the dialog.
+        /// </summary>
+        private AddTrafficSplitViewModel ViewModel { get; }
 
         private AddTrafficSplitWindow(IEnumerable<string> versions) : base("Add Traffic Split")
         {
@@ -30,6 +36,11 @@ namespace GoogleCloudExtension.AddTrafficSplit
             };
         }
 
+        /// <summary>
+        /// Prompts the user to choose from a list of versions the allocation for that version.
+        /// </summary>
+        /// <param name="versions">The list of version ids from which to choose.</param>
+        /// <returns>The <seealso cref="AddTrafficSplitResult"/> if the user accepted the changes, null otherwise.</returns>
         public static AddTrafficSplitResult PromptUser(IEnumerable<string> versions)
         {
             var dialog = new AddTrafficSplitWindow(versions);

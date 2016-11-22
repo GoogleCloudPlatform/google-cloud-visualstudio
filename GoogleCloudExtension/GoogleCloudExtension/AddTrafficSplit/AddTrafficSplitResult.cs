@@ -14,10 +14,19 @@
 
 namespace GoogleCloudExtension.AddTrafficSplit
 {
+    /// <summary>
+    /// The result from the <seealso cref="AddTrafficSplitWindow"/> dialog.
+    /// </summary>
     public class AddTrafficSplitResult
     {
+        /// <summary>
+        /// The version for which the traffic split is being added.
+        /// </summary>
         public string Version { get; }
 
+        /// <summary>
+        /// The allocation for the version.
+        /// </summary>
         public int Allocation { get; }
 
         public AddTrafficSplitResult(

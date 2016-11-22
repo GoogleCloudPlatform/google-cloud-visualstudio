@@ -20,28 +20,46 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.AddTrafficSplit
 {
+    /// <summary>
+    /// The view model for the <seealso cref="AddTrafficSplitWindow"/> dialog.
+    /// </summary>
     public class AddTrafficSplitViewModel : ViewModelBase
     {
         private readonly AddTrafficSplitWindow _owner;
         private string _selectedVersion;
         private string _allocation = "0";
 
+        /// <summary>
+        /// The currently selected version.
+        /// </summary>
         public string SelectedVersion
         {
             get { return _selectedVersion; }
             set { SetValueAndRaise(ref _selectedVersion, value); }
         }
 
+        /// <summary>
+        /// The list of versions that can be selected.
+        /// </summary>
         public IEnumerable<string> Versions { get; }
 
+        /// <summary>
+        /// The allocation chosen for the version.
+        /// </summary>
         public string Allocation
         {
             get { return _allocation; }
             set { SetValueAndRaise(ref _allocation, value); }
         }
 
+        /// <summary>
+        /// The command to execute to commit the changes.
+        /// </summary>
         public ICommand AddSplitCommand { get; }
 
+        /// <summary>
+        /// The result from the dialog.
+        /// </summary>
         public AddTrafficSplitResult Result { get; private set; }
 
         public AddTrafficSplitViewModel(AddTrafficSplitWindow owner, IEnumerable<string> versions)
