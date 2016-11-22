@@ -67,24 +67,6 @@
                 </TextBox>
 
             </Grid>
-
-            <!-- Radio buttons group. -->
-            <GroupBox Header="{x:Static ext:Resources.SplitTrafficWindowSplitByMessage}"
-                      Style="{StaticResource CommonGroupBoxStyle}"
-                      Margin="0,24,0,0">
-                <StackPanel>
-                    <RadioButton Content="{x:Static ext:Resources.SplitTrafficWindowIpAddressLabel}"
-                                 GroupName="ShardBy"
-                                 IsChecked="{Binding IpAddressSplit}"
-                                 Style="{StaticResource CommonRadioButton}"
-                                 Margin="{StaticResource CommonRadioButtonMargin}"/>
-                    <RadioButton Content="{x:Static ext:Resources.SplitTrafficWindowCookieLabel}"
-                                 GroupName="ShardBy"
-                                 IsChecked="{Binding CookieSplit}"
-                                 Style="{StaticResource CommonRadioButton}"/>
-                </StackPanel>
-            </GroupBox>
-
         </StackPanel>
 
     </theming:CommonDialogWindowBaseContent>

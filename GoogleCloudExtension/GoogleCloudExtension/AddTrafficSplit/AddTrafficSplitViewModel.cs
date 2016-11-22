@@ -11,22 +11,8 @@ namespace GoogleCloudExtension.AddTrafficSplit
     public class AddTrafficSplitViewModel : ViewModelBase
     {
         private readonly AddTrafficSplitWindow _owner;
-        private bool _ipAddressSplit = true;
-        private bool _cookieSplit;
         private string _selectedVersion;
         private string _allocation = "0";
-
-        public bool IpAddressSplit
-        {
-            get { return _ipAddressSplit; }
-            set { SetValueAndRaise(ref _ipAddressSplit, value); }
-        }
-
-        public bool CookieSplit
-        {
-            get { return _cookieSplit; }
-            set { SetValueAndRaise(ref _cookieSplit, value); }
-        }
 
         public string SelectedVersion
         {
@@ -64,10 +50,7 @@ namespace GoogleCloudExtension.AddTrafficSplit
 
             Result = new AddTrafficSplitResult(
                 version: SelectedVersion,
-                allocation: Int32.Parse(Allocation),
-                ipAddressSplit: IpAddressSplit,
-                cookieSplit: CookieSplit);
-
+                allocation: Int32.Parse(Allocation));
             _owner.Close();
         }
 

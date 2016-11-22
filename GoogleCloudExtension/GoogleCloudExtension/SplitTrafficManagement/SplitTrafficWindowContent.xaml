@@ -24,8 +24,9 @@
 
     <theming:CommonDialogWindowBaseContent HasBanner="True">
         <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Caption="_Add Allocation"
-                                      Command="{Binding AddAllocationCommand}" />
+            <theming:DialogButtonInfo Caption="_Add Allocation" Command="{Binding AddTrafficAllocationCommand}" />
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiDeleteButtonCaption}"
+                                      Command="{Binding DeleteAllocationCommand}" />
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiSaveButtonCaption}"
                                       IsDefault="True"
                                       Command="{Binding DataContext.SaveCommand}"/>
@@ -35,47 +36,49 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
+            <!-- Radio buttons group. -->
+            <GroupBox Header="{x:Static ext:Resources.SplitTrafficWindowSplitByMessage}"
+                      Style="{StaticResource CommonGroupBoxStyle}"
+                      Margin="0,0,0,24">
+                <StackPanel>
+                    <RadioButton Content="{x:Static ext:Resources.SplitTrafficWindowIpAddressLabel}"
+                                 GroupName="ShardBy"
+                                 IsChecked="{Binding IsIpChecked}"
+                                 Style="{StaticResource CommonRadioButton}"
+                                 Margin="{StaticResource CommonRadioButtonMargin}"/>
+                    <RadioButton Content="{x:Static ext:Resources.SplitTrafficWindowCookieLabel}"
+                                 GroupName="ShardBy"
+                                 IsChecked="{Binding IsCookieChecked}"
+                                 Style="{StaticResource CommonRadioButton}"/>
+                </StackPanel>
+            </GroupBox>
+            
+            <!-- The list of allocations. -->
             <Label Content="_Allocations:"
+                   Grid.Row="1"
                    Target="{Binding ElementName=_allocations}"
                    Style="{StaticResource CommonLabelStyle}" />
 
-            <!-- Traffic allocations section. -->
             <ListBox x:Name="_allocations"
-                     Grid.Row="1"
+                     Grid.Row="2"
                      ItemsSource="{Binding Allocations}"
-                     Style="{StaticResource CommonLargeListBoxStyle}">
+                     SelectedItem="{Binding SelectedSplit, Mode=OneWayToSource}"
+                     IsSynchronizedWithCurrentItem="True"
+                     Style="{StaticResource CommonListBoxStyle}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <!-- Delete version from traffic split button. -->
-                            <Button VerticalAlignment="Center"
-                                    HorizontalAlignment="Center"
-                                    Command="{Binding Path=DataContext.DeleteCommand, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type ListBox}}}"
-                                    CommandParameter="{Binding}"
-                                    Content="{x:Static ext:Resources.UiDeleteButtonCaption}"
-                                    Style="{StaticResource CommonButtonDynamicStyle}"/>
-
-                            <!-- Version id. -->
-                            <Label Content="{x:Static ext:Resources.SplitTrafficWindowVersionLabel}"
-                                   VerticalAlignment="Center"
-                                   Margin="5,0"
-                                   Style="{StaticResource CommonLabelStyle}" />
-                            <TextBlock Text="{Binding VersionId}" 
-                                       VerticalAlignment="Center"
-                                       Style="{StaticResource CommonTextStyle}"/>
-
-                            <!-- Percentage of allocated traffic for the given version. -->
-                            <TextBox Text="{Binding TrafficAllocation, Mode=TwoWay}" 
-                                     VerticalAlignment="Center"
-                                     Margin="5,0"
-                                     Style="{StaticResource CommonTextBoxStyle}"/>
-                            <Label Content="{x:Static ext:Resources.SplitTrafficWindowPercentLabel}" 
-                                   VerticalAlignment="Center"
-                                   Style="{StaticResource CommonLabelStyle}"/>
-                        </StackPanel>
+                        <TextBlock Style="{StaticResource CommonTextStyle}">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0} {1} %">
+                                    <Binding Path="VersionId" />
+                                    <Binding Path="TrafficAllocation" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>

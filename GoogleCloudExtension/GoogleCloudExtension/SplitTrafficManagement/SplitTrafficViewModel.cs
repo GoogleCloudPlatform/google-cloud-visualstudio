@@ -54,31 +54,11 @@ namespace GoogleCloudExtension.SplitTrafficManagement
     {
         private readonly SplitTrafficWindow _owner;
         private readonly Service _service;
+        private readonly IList<string> _availableVersions;
 
-        private string _versionId;
-        private int _trafficAllocation;
         private bool _isIpChecked;
         private bool _isCookieChecked;
-
-        /// <summary>
-        /// The version id, this is bound to an text box in the UI to allow the 
-        /// user to add new versions to the traffic split.
-        /// </summary>
-        public string VersionId
-        {
-            get { return _versionId; }
-            set { SetValueAndRaise(ref _versionId, value); }
-        }
-
-        /// <summary>
-        /// The traffic allocation, this is bound to an text box in the UI to allow the 
-        /// user to add new versions to the traffic split.
-        /// </summary>
-        public int TrafficAllocation
-        {
-            get { return _trafficAllocation; }
-            set { SetValueAndRaise(ref _trafficAllocation, value); }
-        }
+        private SplitTrafficModel _selectedSplit;
 
         /// <summary>
         /// Whether the user has checked IP address as the way to shard traffic. This is
@@ -101,20 +81,19 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         }
 
         /// <summary>
-        /// True if there are versions that do not have traffic allocated to them.  This
-        /// makes 'IsEnabled' checks in the UI more simple.
-        /// </summary>
-        public bool HasAvailableVersions => AvailableVersions.Count != 0;
-
-        /// <summary>
         /// The list of traffic allocations.
         /// </summary>
         public ObservableCollection<SplitTrafficModel> Allocations { get; } = new ObservableCollection<SplitTrafficModel>();
 
-        /// <summary>
-        /// The list of versions that are not in the traffic allocations.
-        /// </summary>
-        public ObservableCollection<string> AvailableVersions { get; } = new ObservableCollection<string>();
+        public SplitTrafficModel SelectedSplit
+        {
+            get { return _selectedSplit; }
+            set
+            {
+                SetValueAndRaise(ref _selectedSplit, value);
+                UpdateCommands();
+            }
+        }
 
         /// <summary>
         /// The changes that were made by the user. This property will be null if the user
@@ -123,24 +102,19 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         public SplitTrafficChange Result { get; private set; }
 
         /// <summary>
-        /// The command to execute when adding a new allocation.
-        /// </summary>
-        public ICommand AddAllocationCommand { get; }
-
-        /// <summary>
-        /// The command to execute when the Save button is pressed.
+        /// The command to execute when the Save button is pressed. Commits all of the changes.
         /// </summary>
         public ICommand SaveCommand { get; }
 
         /// <summary>
-        /// The command to execute when the Delete button is pressed.
+        /// The command to execute when the Delete allocation button is pressed.
         /// </summary>
-        public ICommand DeleteCommand { get; }
+        public ProtectedCommand DeleteAllocationCommand { get; }
 
         /// <summary>
         /// The command to execute when the Add Traffic Version button is pressed.
         /// </summary>
-        public ICommand AddTrafficAllocationCommand { get; }
+        public ProtectedCommand AddTrafficAllocationCommand { get; }
 
         public SplitTrafficViewModel(SplitTrafficWindow owner, Service service, IEnumerable<Google.Apis.Appengine.v1.Data.Version> versions)
         {
@@ -153,15 +127,19 @@ namespace GoogleCloudExtension.SplitTrafficManagement
 
             // Set up the current allocations and avaible versions.
             Allocations = GetAllocations(service);
-            AvailableVersions = GetAvailableVersions(service, versions);
+            _availableVersions = GetAvailableVersions(service, versions);
 
-            AddAllocationCommand = new ProtectedCommand(OnAddAllocationCommand);
             SaveCommand = new ProtectedCommand(OnSaveCommand);
-            DeleteCommand = new ProtectedCommand<SplitTrafficModel>(OnDeleteCommand);
+            DeleteAllocationCommand = new ProtectedCommand(OnDeleteCommand);
             AddTrafficAllocationCommand = new ProtectedCommand(OnAddTrafficAllocationCommand);
 
-            AvailableVersions.CollectionChanged += new NotifyCollectionChangedEventHandler(
-                (s, e) => RaisePropertyChanged(nameof(HasAvailableVersions)));
+            UpdateCommands();
+        }
+
+        private void UpdateCommands()
+        {
+            AddTrafficAllocationCommand.CanExecuteCommand = _availableVersions.Count != 0;
+            DeleteAllocationCommand.CanExecuteCommand = SelectedSplit != null;
         }
 
         /// <summary>
@@ -180,52 +158,50 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         /// <summary>
         /// Get a list of versions that are not allocated traffic in a service.
         /// </summary>
-        private ObservableCollection<string> GetAvailableVersions(
+        private IList<string> GetAvailableVersions(
             Service service, IEnumerable<Google.Apis.Appengine.v1.Data.Version> versions)
         {
             ICollection<string> keys = service?.Split?.Allocations?.Keys;
-            IEnumerable<string> versionIds = versions
+            return versions
                 .Where(x => !keys.Contains(x.Id))
-                .Select(x => x.Id);
-            return new ObservableCollection<string>(versionIds);
+                .Select(x => x.Id)
+                .ToList();
         }
 
-        private void OnAddAllocationCommand()
+        private void OnAddTrafficAllocationCommand()
         {
-            var result = AddTrafficSplitWindow.PromptUser(AvailableVersions);
+            var result = AddTrafficSplitWindow.PromptUser(_availableVersions);
             if (result != null)
             {
-                // TODO: Apply the changes.
+                var allocation = new SplitTrafficModel(
+                    versionId: result.Version,
+                    trafficAllocation: result.Allocation);
+
+                // Remove the allocation from the list of available allocations to in future invocations the
+                // user can only select the available ones.
+                _availableVersions.Remove(allocation.VersionId);
+
+                // Add the allocation to the list.
+                Allocations.Add(allocation);
+
+                // Update the visual state.
+                UpdateCommands();
             }
         }
 
         /// <summary>
-        /// Called when the user clicks the Add Traffic Version button.  This will add the
-        /// currently selected version (<seealso cref="VersionId"/>>) and allocation
-        /// <seealso cref="TrafficAllocation"/> to the list of <seealso cref="Allocations"/> and
-        /// removes the version from the the list of <seealso cref="AvailableVersions"/>.
-        /// </summary>
-        private void OnAddTrafficAllocationCommand()
-        {
-            SplitTrafficModel split = new SplitTrafficModel(VersionId, TrafficAllocation);
-            Allocations.Add(split);
-            AvailableVersions.Remove(VersionId);
-
-            // Reset the version and traffic
-            VersionId = null;
-            TrafficAllocation = 0;
-        }
-
-        /// <summary>
-        /// Called when the user clicks the Dlete button.  This will remove the
+        /// Called when the user clicks the Delete button.  This will remove the
         /// given version (<seealso cref="VersionId"/>>) from the list of
         /// <seealso cref="Allocations"/> and adds the version to the the list
         /// of <seealso cref="AvailableVersions"/>.
         /// </summary>
-        private void OnDeleteCommand(SplitTrafficModel sender)
+        private void OnDeleteCommand()
         {
-            Allocations.Remove(sender);
-            AvailableVersions.Add(sender.VersionId);
+            Allocations.Remove(SelectedSplit);
+            _availableVersions.Add(SelectedSplit.VersionId);
+
+            // Update the visual state.
+            UpdateCommands();
         }
 
         /// <summary>

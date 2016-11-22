@@ -8,24 +8,16 @@ namespace GoogleCloudExtension.AddTrafficSplit
 {
     public class AddTrafficSplitResult
     {
-        public bool IpAddressSplit { get; }
-
-        public bool CookieSplit { get; }
-
         public string Version { get; }
 
         public int Allocation { get; }
 
         public AddTrafficSplitResult(
             string version,
-            int allocation,
-            bool ipAddressSplit,
-            bool cookieSplit)
+            int allocation)
         {
             Version = version;
             Allocation = allocation;
-            IpAddressSplit = ipAddressSplit;
-            CookieSplit = cookieSplit;
         }
     }
 }
