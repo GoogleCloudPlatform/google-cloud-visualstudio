@@ -1146,8 +1146,8 @@
     <comment>Button label to add a version to the traffic splits.</comment>
   </data>
   <data name="SplitTrafficWindowInvalidPercentRangeErrorMessage" xml:space="preserve">
-    <value>Each traffic allocation must be greater than or equal to 1% and less than or equal to 100%</value>
-    <comment>Message for an error message in the split traffic dialog for an invalid percentage out of range.</comment>
+    <value>Invalid traffic allocation {0}. Each traffic allocation must be greater than or equal to 1% and less than or equal to 100%</value>
+    <comment>Message for an error message in the split traffic dialog for an invalid percentage out of range. {0} is the name of the traffic allocation outside of the valid range.</comment>
   </data>
   <data name="SplitTrafficWindowInvalidPercentSumErrorMessage" xml:space="preserve">
     <value>The sum of traffic allocations must be 100% of all traffic.</value>
@@ -1292,4 +1292,3 @@
     <comment>Caption for the open button in dialogs.</comment>
   </data>
 </root>
-

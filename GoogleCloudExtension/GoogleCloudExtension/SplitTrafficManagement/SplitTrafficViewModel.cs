@@ -220,10 +220,9 @@ namespace GoogleCloudExtension.SplitTrafficManagement
                 int percent = allocation.TrafficAllocation;
                 if (percent <= 0 || percent > 100)
                 {
-                    // TODO(talarico): Use form handler to detect errors before the user clicks.
                     UserPromptUtils.ErrorPrompt(
-                        Resources.SplitTrafficWindowInvalidPercentRangeErrorMessage,
-                        Resources.SplitTrafficWindowInvalidPercentTitle);
+                        message: String.Format(Resources.SplitTrafficWindowInvalidPercentRangeErrorMessage, allocation.VersionId),
+                        title: Resources.SplitTrafficWindowInvalidPercentTitle);
                     return;
                 }
                 sum += percent;
@@ -235,7 +234,6 @@ namespace GoogleCloudExtension.SplitTrafficManagement
             // Ensure that 100% of traffic is allocated.
             if (sum != 100)
             {
-                // TODO(talarico): Use form handler to detect errors before the user clicks.
                 UserPromptUtils.ErrorPrompt(
                     Resources.SplitTrafficWindowInvalidPercentSumErrorMessage,
                     Resources.SplitTrafficWindowInvalidPercentTitle);

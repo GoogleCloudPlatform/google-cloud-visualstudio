@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2455,7 +2455,7 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Each traffic allocation must be greater than or equal to 1% and less than or equal to 100%.
+        ///   Looks up a localized string similar to Invalid traffic allocation {0}. Each traffic allocation must be greater than or equal to 1% and less than or equal to 100%.
         /// </summary>
         public static string SplitTrafficWindowInvalidPercentRangeErrorMessage {
             get {
