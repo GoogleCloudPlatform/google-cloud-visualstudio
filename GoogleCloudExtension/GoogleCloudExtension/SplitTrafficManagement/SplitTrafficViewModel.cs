@@ -197,8 +197,9 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         /// </summary>
         private void OnDeleteCommand()
         {
-            Allocations.Remove(SelectedSplit);
-            _availableVersions.Add(SelectedSplit.VersionId);
+            var selected = SelectedSplit;
+            Allocations.Remove(selected);
+            _availableVersions.Add(selected.VersionId);
 
             // Update the visual state.
             UpdateCommands();
