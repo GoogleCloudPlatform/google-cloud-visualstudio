@@ -130,7 +130,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             Caption = Service.Id;
             Icon = s_serviceIcon.Value;
- 
+
             UpdateContextMenu();
         }
 

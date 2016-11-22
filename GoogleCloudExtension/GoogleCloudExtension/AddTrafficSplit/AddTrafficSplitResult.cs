@@ -1,4 +1,5 @@
-﻿namespace GoogleCloudExtension.AddTrafficSplit
+﻿
+namespace GoogleCloudExtension.AddTrafficSplit
 {
     public class AddTrafficSplitResult
     {
