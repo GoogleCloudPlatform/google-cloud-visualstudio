@@ -14,7 +14,7 @@
         <Setter Property="Foreground" Value="Black" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
-    
+
     <!-- Text style to be used inside of a tooltip. -->
     <Style x:Key="CommonToolTipTextStyle" BasedOn="{StaticResource CommonTextStyle}" TargetType="{x:Type TextBlock}">
         <Setter Property="MaxWidth" Value="200px" />
@@ -55,7 +55,7 @@
     </Style>
 
     <!-- Common sizes for dialogs. -->
-    
+
     <!-- Base style for all dialog styles. -->
     <Style x:Key="CommonDialogStyleBase" TargetType="{x:Type UserControl}">
         <Setter Property="Focusable" Value="False" />
@@ -187,9 +187,9 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <!-- Variations on the style of listboxes. -->
-    
+
     <!-- Medium sized listbox item. -->
     <Style x:Key="CommonMediumListItemStyle" BasedOn="{StaticResource CommonListItemContainerStyle}" TargetType="{x:Type ListBoxItem}">
         <Setter Property="Height" Value="35px" />
@@ -197,7 +197,7 @@
     <Style x:Key="CommonMediumListBoxStyle" BasedOn="{StaticResource CommonListBoxStyle}" TargetType="{x:Type ListBox}">
         <Setter Property="ItemContainerStyle" Value="{StaticResource CommonMediumListItemStyle}" />
     </Style>
-    
+
     <!-- Large sized listbox item. -->
     <Style x:Key="CommonLargeListItemStyle" BasedOn="{StaticResource CommonListItemContainerStyle}" TargetType="{x:Type ListBoxItem}">
         <Setter Property="Height" Value="70px" />
@@ -545,11 +545,11 @@
         <Setter Property="BorderBrush" Value="{StaticResource CommonBorderColors.Border}" />
         <Setter Property="BorderThickness" Value="1" />
     </Style>
-    
+
     <!-- Common buttons. -->
 
     <!-- Colors for the dialog button for the various UI states. -->
-    
+
     <!-- Normal state -->
     <SolidColorBrush x:Key="CommonButtonColors.Static.Background" Color="White"/>
     <SolidColorBrush x:Key="CommonButtonColors.Static.Border" Color="#FFBDBDBD"/>
@@ -631,7 +631,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <!-- Common variations of buttons. -->
 
     <!-- Dynamic button that adjusts to the contents. -->
@@ -649,9 +649,9 @@
     <Style x:Key="CommonButtonStandardStyle" BasedOn="{StaticResource CommonButtonStyle}" TargetType="{x:Type Button}">
         <Setter Property="Width" Value="75px" />
     </Style>
-    
+
     <!-- Common hyperlink style. -->
-    
+
     <!-- Common hyperlink colors. -->
     <SolidColorBrush x:Key="CommonHyperlinkColors.Normal" Color="Blue" />
     <SolidColorBrush x:Key="CommonHyperlinkColors.Disabled" Color="Gray" />
@@ -673,5 +673,56 @@
         <Setter Property="Foreground" Value="{StaticResource CommonHyperlinkColors.Normal}" />
         <Setter Property="TextDecorations" Value="None" />
     </Style>
+
+    <!-- Default style for the LabelWithHelp control. -->
+    <Style x:Key="{x:Type controls:LabelWithHelp}"
+           BasedOn="{StaticResource CommonTextStyleBase}"
+           TargetType="{x:Type controls:LabelWithHelp}">
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="Margin" Value="0,0,0,5" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:LabelWithHelp}">
+                    <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
+                                              Content="{TemplateBinding Content}"
+                                              ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              RecognizesAccessKey="True"
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+                                <ContentPresenter.Resources>
+                                    <!-- Ensure that the text in the label wraps. -->
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource CommonTextStyle}">
+                                        <Setter Property="TextWrapping" Value="Wrap" />
+                                    </Style>
+                                </ContentPresenter.Resources>
+                            </ContentPresenter>
+                            
+                            <!-- The help anchor -->
+                            <Image Grid.Column="1"
+                                   Margin="4,0,0,0"
+                                   Source="{mp:ImageResource Theming/Resources/ic_help_black_14px.png}"
+                                   Width="14px"
+                                   Height="14px"
+                                   ToolTip="{TemplateBinding HelpContent}" />
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
 
 </ResourceDictionary>
