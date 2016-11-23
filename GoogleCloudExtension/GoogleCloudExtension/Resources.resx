@@ -1291,4 +1291,24 @@
     <value>_Open</value>
     <comment>Caption for the open button in dialogs.</comment>
   </data>
+  <data name="AddGaeTrafficSplitInvalidValueMessage" xml:space="preserve">
+    <value>Invalid value for allocation, must be a number: {0}</value>
+    <comment>Message shown when an invalid value is detected. {0} is the invalid value.</comment>
+  </data>
+  <data name="AddGaeTrafficSplitInvalidValueTitle" xml:space="preserve">
+    <value>Invalid Value</value>
+    <comment>Title for the invalid value dialog.</comment>
+  </data>
+  <data name="AddGaeTrafficSplitTitle" xml:space="preserve">
+    <value>Add Traffic Split</value>
+    <comment>Title for the Add Traffic Split dialog.</comment>
+  </data>
+  <data name="AddGaeTrafficSplitValueOutOfRangeMessage" xml:space="preserve">
+    <value>Invalid allocation value, must be between 0 to 100: {0}</value>
+    <comment>Message shown when the value is out of the valid range. {0} is the value.</comment>
+  </data>
+  <data name="SplitTrafficWindowAllocationsLabel" xml:space="preserve">
+    <value>_Allocations:</value>
+    <comment>Label shown in the split traffic window to indicate the list of allocations.</comment>
+  </data>
 </root>

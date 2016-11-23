@@ -90,16 +90,16 @@ namespace GoogleCloudExtension.AddTrafficSplit
             if (!Int32.TryParse(Allocation, out allocationValue))
             {
                 UserPromptUtils.ErrorPrompt(
-                    message: $"Invalid value for allocation, must be a number: {Allocation}",
-                    title: "Invalid Value");
+                    message: String.Format(Resources.AddGaeTrafficSplitInvalidValueMessage, Allocation),
+                    title: Resources.AddGaeTrafficSplitInvalidValueTitle);
                 return false;
             }
 
             if (allocationValue > 100 || allocationValue < 0)
             {
                 UserPromptUtils.ErrorPrompt(
-                    message: $"Invalid allocation value, must be between 0 to 100: {Allocation}",
-                    title: "Invalid Value");
+                    message: String.Format(Resources.AddGaeTrafficSplitValueOutOfRangeMessage, Allocation),
+                    title: Resources.AddGaeTrafficSplitInvalidValueTitle);
                 return false;
             }
 

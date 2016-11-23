@@ -58,7 +58,7 @@
             </GroupBox>
             
             <!-- The list of allocations. -->
-            <Label Content="_Allocations:"
+            <Label Content="{x:Static ext:Resources.SplitTrafficWindowAllocationsLabel}"
                    Grid.Row="1"
                    Target="{Binding ElementName=_allocations}"
                    Style="{StaticResource CommonLabelStyle}" />

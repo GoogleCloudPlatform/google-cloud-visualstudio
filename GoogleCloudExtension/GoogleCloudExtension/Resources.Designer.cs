@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -57,6 +57,42 @@ namespace GoogleCloudExtension
             }
             set {
                 resourceCulture = value;
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid value for allocation, must be a number: {0}.
+        /// </summary>
+        public static string AddGaeTrafficSplitInvalidValueMessage {
+            get {
+                return ResourceManager.GetString("AddGaeTrafficSplitInvalidValueMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Value.
+        /// </summary>
+        public static string AddGaeTrafficSplitInvalidValueTitle {
+            get {
+                return ResourceManager.GetString("AddGaeTrafficSplitInvalidValueTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Add Traffic Split.
+        /// </summary>
+        public static string AddGaeTrafficSplitTitle {
+            get {
+                return ResourceManager.GetString("AddGaeTrafficSplitTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid allocation value, must be between 0 to 100: {0}.
+        /// </summary>
+        public static string AddGaeTrafficSplitValueOutOfRangeMessage {
+            get {
+                return ResourceManager.GetString("AddGaeTrafficSplitValueOutOfRangeMessage", resourceCulture);
             }
         }
         
@@ -2442,6 +2478,15 @@ namespace GoogleCloudExtension
         public static string SplitTrafficWindowAddVersionMessage {
             get {
                 return ResourceManager.GetString("SplitTrafficWindowAddVersionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Allocations:.
+        /// </summary>
+        public static string SplitTrafficWindowAllocationsLabel {
+            get {
+                return ResourceManager.GetString("SplitTrafficWindowAllocationsLabel", resourceCulture);
             }
         }
         

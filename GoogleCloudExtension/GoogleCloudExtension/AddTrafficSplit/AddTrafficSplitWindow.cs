@@ -27,7 +27,8 @@ namespace GoogleCloudExtension.AddTrafficSplit
         /// </summary>
         private AddTrafficSplitViewModel ViewModel { get; }
 
-        private AddTrafficSplitWindow(IEnumerable<string> versions) : base("Add Traffic Split")
+        private AddTrafficSplitWindow(IEnumerable<string> versions)
+            : base(GoogleCloudExtension.Resources.AddGaeTrafficSplitTitle)
         {
             ViewModel = new AddTrafficSplitViewModel(this, versions);
             Content = new AddTrafficSplitWindowContent
