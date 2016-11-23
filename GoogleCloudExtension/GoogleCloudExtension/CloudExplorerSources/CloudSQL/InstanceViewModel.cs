@@ -18,11 +18,7 @@ using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.AuthorizedNetworkManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.MySQLInstaller;
 using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Data;
-using Microsoft.VisualStudio.Shell;
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -158,54 +154,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             Instance = await dataSource.GetInstanceAsync(Instance.Name);
         }
 
-
-        /// <summary>
-        /// Opens the Add Data Connection Dialog with the data source being a MySQL database and the server field
-        /// set to the ip of the intance.  If the proper dependencies are not installed (for the MySQL database)
-        /// the user will be prompted to install them before they can continue.
-        /// </summary>
-        private void OpenDataConnectionDialog()
-        {
-            // Create a data connection dialog and add all possible data sources to it.
-            DataConnectionDialogFactory factory = (DataConnectionDialogFactory)Package.GetGlobalService(typeof(DataConnectionDialogFactory));
-            DataConnectionDialog dialog = factory.CreateConnectionDialog();
-            dialog.AddAllSources();
-
-            // Check if the MySQL data source exists.
-            // TODO(talarico): This is added when the user has MySQL for Visual Studio installed.  We should also
-            // probably check for the needed pieces in the MySQL Connector/Net.
-            if (dialog.AvailableSources.Contains(MySQLUtils.MySQLDataSource))
-            {
-                EventsReporterWrapper.ReportEvent(OpenCloudSqlConnectionDialogEvent.Create());
-
-                // Pre select the MySQL data source.
-                dialog.SelectedSource = MySQLUtils.MySQLDataSource;
-
-                // Create the connection string to pre populate the server address in the dialog.
-                MySqlConnectionStringBuilder builderPrePopulate = new MySqlConnectionStringBuilder();
-                InstanceItem instance = GetItem();
-                builderPrePopulate.Server = String.IsNullOrEmpty(instance.IpAddress) ? instance.Ipv6Address : instance.IpAddress;
-                dialog.DisplayConnectionString = builderPrePopulate.GetConnectionString(false);
-
-                bool addDataConnection = dialog.ShowDialog();
-                if (addDataConnection)
-                {
-                    // Create a name for the data connection
-                    MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder(dialog.DisplayConnectionString);
-                    string database = $"{Instance.Project}[{builder.Server}][{builder.Database}]";
-
-                    // Add the MySQL data connection to the data explorer
-                    DataExplorerConnectionManager manager = (DataExplorerConnectionManager)Package.GetGlobalService(typeof(DataExplorerConnectionManager));
-                    manager.AddConnection(database, MySQLUtils.MySQLDataProvider, dialog.EncryptedConnectionString, true);
-                }
-            }
-            else
-            {
-                // MySQL for Visual Studio isn't installed, prompt the user to install it.
-                MySQLInstallerWindow.PromptUser();
-            }
-        }
-
         /// <summary>
         /// Update the context menu based on the current state of the instance.
         /// </summary>
@@ -220,7 +168,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = Resources.CloudExplorerSqlOpenAddDataConnectionMenuHeader, Command = new ProtectedCommand(OpenDataConnectionDialog) },
                 new MenuItem { Header = Resources.CloudExplorerSqlManageAuthorizedNetworksMenuHeader, Command = new ProtectedCommand(OnManageAuthorizedNetworks) },
                 new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand) },
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesCommand) },

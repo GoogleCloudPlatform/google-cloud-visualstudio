@@ -1159,15 +1159,6 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Add Data Connection....
-        /// </summary>
-        public static string CloudExplorerSqlOpenAddDataConnectionMenuHeader {
-            get {
-                return ResourceManager.GetString("CloudExplorerSqlOpenAddDataConnectionMenuHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Google Cloud SQL.
         /// </summary>
         public static string CloudExplorerSqlRootNodeCaption {
@@ -1407,33 +1398,6 @@ namespace GoogleCloudExtension
         public static string ManageWindowsCredentialsWindowTitle {
             get {
                 return ResourceManager.GetString("ManageWindowsCredentialsWindowTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Download and install the MySQL Installer which will guide you through installing the needed extensions. After they are installed restart Visual Studio..
-        /// </summary>
-        public static string MySqlInstallerWindowBottomMessage {
-            get {
-                return ResourceManager.GetString("MySqlInstallerWindowBottomMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Download MySQL for Visual Studio.
-        /// </summary>
-        public static string MySqlInstallerWindowTitle {
-            get {
-                return ResourceManager.GetString("MySqlInstallerWindowTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To add a Google Cloud SQL database as a Data Connection &quot;MySQL for Visual Studio&quot; must be installed. It is highly recommended that the &quot;MySQL Connector/Net&quot; also be installed to be able to properly interact with the database..
-        /// </summary>
-        public static string MySqlInstallerWindowTopMessage {
-            get {
-                return ResourceManager.GetString("MySqlInstallerWindowTopMessage", resourceCulture);
             }
         }
         
