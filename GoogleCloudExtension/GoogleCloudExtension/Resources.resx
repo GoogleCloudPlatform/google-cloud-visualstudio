@@ -1146,8 +1146,8 @@
     <comment>Button label to add a version to the traffic splits.</comment>
   </data>
   <data name="SplitTrafficWindowInvalidPercentRangeErrorMessage" xml:space="preserve">
-    <value>Each traffic allocation must be greater than or equal to 1% and less than or equal to 100%</value>
-    <comment>Message for an error message in the split traffic dialog for an invalid percentage out of range.</comment>
+    <value>Invalid traffic allocation {0}. Each traffic allocation must be greater than or equal to 1% and less than or equal to 100%</value>
+    <comment>Message for an error message in the split traffic dialog for an invalid percentage out of range. {0} is the name of the traffic allocation outside of the valid range.</comment>
   </data>
   <data name="SplitTrafficWindowInvalidPercentSumErrorMessage" xml:space="preserve">
     <value>The sum of traffic allocations must be 100% of all traffic.</value>
@@ -1290,5 +1290,25 @@
   <data name="UiOpenButtonCaption" xml:space="preserve">
     <value>_Open</value>
     <comment>Caption for the open button in dialogs.</comment>
+  </data>
+  <data name="AddGaeTrafficSplitInvalidValueMessage" xml:space="preserve">
+    <value>Invalid value for allocation, must be a number: {0}</value>
+    <comment>Message shown when an invalid value is detected. {0} is the invalid value.</comment>
+  </data>
+  <data name="AddGaeTrafficSplitInvalidValueTitle" xml:space="preserve">
+    <value>Invalid Value</value>
+    <comment>Title for the invalid value dialog.</comment>
+  </data>
+  <data name="AddGaeTrafficSplitTitle" xml:space="preserve">
+    <value>Add Traffic Split</value>
+    <comment>Title for the Add Traffic Split dialog.</comment>
+  </data>
+  <data name="AddGaeTrafficSplitValueOutOfRangeMessage" xml:space="preserve">
+    <value>Invalid allocation value, must be between 0 to 100: {0}</value>
+    <comment>Message shown when the value is out of the valid range. {0} is the value.</comment>
+  </data>
+  <data name="SplitTrafficWindowAllocationsLabel" xml:space="preserve">
+    <value>_Allocations:</value>
+    <comment>Label shown in the split traffic window to indicate the list of allocations.</comment>
   </data>
 </root>

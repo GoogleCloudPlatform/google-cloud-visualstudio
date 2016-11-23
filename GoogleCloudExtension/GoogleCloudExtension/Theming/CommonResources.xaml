@@ -2,6 +2,7 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:GoogleCloudExtension.Controls;assembly=GoogleCloudExtension"
+                    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
                     xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions;assembly=GoogleCloudExtension">
 
     <!-- Common size for all font text. -->
@@ -672,6 +673,12 @@
         </Style.Triggers>
         <Setter Property="Foreground" Value="{StaticResource CommonHyperlinkColors.Normal}" />
         <Setter Property="TextDecorations" Value="None" />
+    </Style>
+    
+    <!-- Common ComboBox style -->
+    <Style x:Key="CommonComboBoxStyle"
+           TargetType="{x:Type ComboBox}">
+        <Setter Property="Height" Value="30px" />
     </Style>
 
     <!-- Default style for the LabelWithHelp control. -->

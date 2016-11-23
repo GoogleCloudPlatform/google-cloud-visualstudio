@@ -56,6 +56,12 @@
     <Compile Include="Accounts\CredentialsStore.cs" />
     <Compile Include="Accounts\CredentialsStoreException.cs" />
     <Compile Include="Accounts\DefaultCredentials.cs" />
+    <Compile Include="AddTrafficSplit\AddTrafficSplitResult.cs" />
+    <Compile Include="AddTrafficSplit\AddTrafficSplitViewModel.cs" />
+    <Compile Include="AddTrafficSplit\AddTrafficSplitWindow.cs" />
+    <Compile Include="AddTrafficSplit\AddTrafficSplitWindowContent.xaml.cs">
+      <DependentUpon>AddTrafficSplitWindowContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddWindowsCredential\AddWindowsCredentialResult.cs" />
     <Compile Include="Analytics\AnalyticsEvent.cs" />
     <Compile Include="Analytics\CommandStatus.cs" />
@@ -559,6 +565,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="AddTrafficSplit\AddTrafficSplitWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AuthorizedNetworkManagement\AuthorizedNetworksWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
