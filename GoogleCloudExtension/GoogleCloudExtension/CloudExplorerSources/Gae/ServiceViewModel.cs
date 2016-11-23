@@ -130,7 +130,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             Caption = Service.Id;
             Icon = s_serviceIcon.Value;
- 
+
             UpdateContextMenu();
         }
 
@@ -391,6 +391,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                     throw new DataSourceException(operation.Error.Message);
                 }
                 Service = await datasource.GetServiceAsync(Service.Id);
+                Caption = Service.Id;
+
                 EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Success));
             }
             catch (Exception ex) when (ex is DataSourceException || ex is TimeoutException || ex is OperationCanceledException)
