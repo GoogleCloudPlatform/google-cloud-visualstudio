@@ -70,7 +70,6 @@
     <Compile Include="Analytics\Events\ManageCloudSqlAuthorizedNetworkEvent.cs" />
     <Compile Include="Analytics\Events\NewInstallEvent.cs" />
     <Compile Include="Analytics\Events\NewLoginEvent.cs" />
-    <Compile Include="Analytics\Events\OpenCloudSqlConnectionDialogEvent.cs" />
     <Compile Include="Analytics\Events\OpenGceInstanceOnCloudConsoleEvent.cs" />
     <Compile Include="Analytics\Events\OpenGceInstanceWebsiteEvent.cs" />
     <Compile Include="Analytics\Events\OpenGcsBucketOnCloudConsoleEvent.cs" />

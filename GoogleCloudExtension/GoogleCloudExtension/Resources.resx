@@ -505,10 +505,6 @@
     <value>Updating authorized networks...</value>
     <comment>Caption shown when the authorized networks are being updated.</comment>
   </data>
-  <data name="CloudExplorerSqlOpenAddDataConnectionMenuHeader" xml:space="preserve">
-    <value>Add Data Connection...</value>
-    <comment>Menu header for the open add data connection dialog menu item.</comment>
-  </data>
   <data name="CloudExplorerSqlManageAuthorizedNetworksMenuHeader" xml:space="preserve">
     <value>Manage authorized networks...</value>
     <comment>Menu header for the option to manage authorized networks.</comment>
@@ -568,18 +564,6 @@
   <data name="ManageAccountsWindowTitle" xml:space="preserve">
     <value>Manage Accounts</value>
     <comment>The title for the manage accounts window.</comment>
-  </data>
-  <data name="MySqlInstallerWindowBottomMessage" xml:space="preserve">
-    <value>Download and install the MySQL Installer which will guide you through installing the needed extensions. After they are installed restart Visual Studio.</value>
-    <comment>Bottom message for the MySql installer window.</comment>
-  </data>
-  <data name="MySqlInstallerWindowTitle" xml:space="preserve">
-    <value>Download MySQL for Visual Studio</value>
-    <comment>Title for the MySql isntaller window.</comment>
-  </data>
-  <data name="MySqlInstallerWindowTopMessage" xml:space="preserve">
-    <value>To add a Google Cloud SQL database as a Data Connection "MySQL for Visual Studio" must be installed. It is highly recommended that the "MySQL Connector/Net" also be installed to be able to properly interact with the database.</value>
-    <comment>Top message for the MySql installer window.</comment>
   </data>
   <data name="OAuthFlowWindowMessage" xml:space="preserve">
     <value>A browser window has been open to login into your account. To cancel this operation close the browser window and press Cancel to close this window. When the login finishes this window will close automatically.</value>
