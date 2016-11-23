@@ -766,7 +766,7 @@
     <comment>The caption or the show credentials button in the dialog.</comment>
   </data>
   <data name="ManageWindowsCredentialsWindowMessage" xml:space="preserve">
-    <value>_Credentials for {0}. </value>
+    <value>_Credentials for {0}: </value>
     <comment>Message at the top of the Manage Windows Credentials dialog. The {0} placeholder is the name of the instance.</comment>
   </data>
   <data name="ManageWindowsCredentialsWindowTitle" xml:space="preserve">
@@ -1292,4 +1292,3 @@
     <comment>Caption for the open button in dialogs.</comment>
   </data>
 </root>
-

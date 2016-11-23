@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -1960,7 +1960,7 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Credentials for {0}. .
+        ///   Looks up a localized string similar to _Credentials for {0}: .
         /// </summary>
         public static string ManageWindowsCredentialsWindowMessage {
             get {

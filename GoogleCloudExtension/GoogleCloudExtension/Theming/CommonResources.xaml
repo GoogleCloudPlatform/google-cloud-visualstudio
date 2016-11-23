@@ -684,12 +684,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:LabelWithHelp}">
                     <Border BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="True">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="auto" />
-                            </Grid.ColumnDefinitions>
-
+                        <StackPanel Orientation="Horizontal">
                             <ContentPresenter ContentTemplate="{TemplateBinding ContentTemplate}"
                                               Content="{TemplateBinding Content}"
                                               ContentStringFormat="{TemplateBinding ContentStringFormat}"
@@ -704,15 +699,19 @@
                                     </Style>
                                 </ContentPresenter.Resources>
                             </ContentPresenter>
-                            
+
                             <!-- The help anchor -->
-                            <Image Grid.Column="1"
-                                   Margin="4,0,0,0"
+                            <Image Margin="4,0,0,0"
                                    Source="{mp:ImageResource Theming/Resources/ic_help_black_14px.png}"
                                    Width="14px"
-                                   Height="14px"
-                                   ToolTip="{TemplateBinding HelpContent}" />
-                        </Grid>
+                                   Height="14px">
+                                <Image.ToolTip>
+                                    <TextBlock Text="{TemplateBinding HelpContent}"
+                                               Style="{StaticResource CommonToolTipTextStyle}" />
+                                </Image.ToolTip>
+                            </Image>
+
+                        </StackPanel>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="False">
