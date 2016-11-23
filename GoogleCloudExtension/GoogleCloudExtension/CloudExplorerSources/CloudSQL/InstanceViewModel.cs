@@ -19,8 +19,6 @@ using GoogleCloudExtension.AuthorizedNetworkManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
-using Microsoft.VisualStudio.Data;
-using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
