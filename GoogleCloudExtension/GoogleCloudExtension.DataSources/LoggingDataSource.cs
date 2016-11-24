@@ -12,30 +12,47 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
 {
-
     /// <summary>
     /// Data source that returns data from Stackdriver Logging API.
     /// The API is described at https://cloud.google.com/logging/docs/api/reference/rest
     /// </summary>
     public class LoggingDataSource : DataSourceBase<LoggingService>
     {
+        /// <summary>
+        /// LogEntry List request parameters.
+        /// </summary>
         private class LogEntryRequestParams
         {
-            public string PageToken { get; set; }
-            public string Filter { get; set; }
-            public string ProjectId { get; set; }
-            public int? PageSize { get; set; }
+            /// <summary>
+            /// Optional        
+            /// The PageToken for requesting next page of log entries.
+            /// </summary>
+            public string PageToken;
+
+            /// <summary>
+            /// Optional
+            /// Refert to https://cloud.google.com/logging/docs/view/advanced_filters. 
+            /// </summary>
+            public string Filter;
+
+            /// <summary>
+            /// Optional
+            /// If page size is not specified, a server side default value is used. 
+            /// </summary>
+            public int? PageSize;
         }
 
-        private LogEntryRequestParams _lastSuccessfulRequestParams;
 
         /// <summary>
         /// Initializes an instance of the data source.
@@ -47,85 +64,87 @@ namespace GoogleCloudExtension.DataSources
         { }
 
         /// <summary>
-        /// The ListLogEntriesRequest page size.
+        /// Returns the next page of all LogEntry items of the project id.
         /// </summary>
-        public int? PageSize { get; set; }
+        /// <param name="pageToken">The page token returend from last request.</param>
+        /// <returns>
+        ///     A tuple of :   List of log entries,  optional next page token.
+        /// </returns>
+        public async Task<Tuple<IList<LogEntry>, string>> GetNextPageLogEntryListAsync(
+            string pageToken, int? pageSize = null)
+        {
+            return await MakeAsyncRequest(new LogEntryRequestParams() {
+                PageToken = pageToken,
+                PageSize = pageSize
+            });
+        }
+
+        /// <summary>
+        /// Returns the first page of log entries of the project id.
+        /// </summary>
+        /// <param name="filter">Optional. The Google.Apis.Logging.v2.Data.ListLogEntriesRequest Filter</param>
+        /// <param name="pageSize">
+        ///     Optional. specify the page size. 
+        ///     A default value is used on severside if not specified.
+        /// </param>
+        /// <returns>
+        ///     A tuple of :   List of log entries,  optional next page token.
+        /// </returns>
+        public async Task<Tuple<IList<LogEntry>, string>> GetLogEntryListAsync(
+            string filter = null, int? pageSize = null)
+        {
+            return await MakeAsyncRequest(new LogEntryRequestParams()
+            {
+                Filter = filter,
+                PageSize = pageSize
+            });
+        }
+
+        /// <summary>
+        /// Returns the list of MonitoredResourceDescriptor.
+        /// The size of entire set of MonitoredResourceDescriptor is small. 
+        /// Batch all in one request in case it spans multiple pages.
+        /// </summary>
+        public async Task<IList<MonitoredResourceDescriptor>> GetResourceDescriptorAsync()
+        {
+            return await LoadPagedListAsync(
+                (token) =>
+                {
+                    var request = Service.MonitoredResourceDescriptors.List();
+                    request.PageToken = token;
+                    return request.ExecuteAsync();
+                },
+                x => x.ResourceDescriptors,
+                x => x.NextPageToken);
+        }
 
         private ListLogEntriesRequest CreateRequestFromParams(LogEntryRequestParams requestParams)
         {
-            string projectsFilter = $"projects/{requestParams.ProjectId}";
+            string projectsFilter = $"projects/{ProjectId}";
 
             return new ListLogEntriesRequest()
             {
                 ResourceNames = new List<string>(new string[] { projectsFilter }),
                 Filter = requestParams.Filter,
                 PageSize = requestParams.PageSize,
-                PageToken = requestParams.PageToken       
+                PageToken = requestParams.PageToken
             };
         }
 
-        private async Task<IList<LogEntry>> MakeAsyncRequest(LogEntryRequestParams requestParams)
+        private async Task<Tuple<IList<LogEntry>, string>> MakeAsyncRequest(LogEntryRequestParams requestParams)
         {
-            ListLogEntriesRequest requestData = CreateRequestFromParams(requestParams);
-            var request = Service.Entries.List(requestData);
-            ListLogEntriesResponse response = await request.ExecuteAsync();
-            _lastSuccessfulRequestParams = requestParams;
-            _lastSuccessfulRequestParams.PageToken = response.NextPageToken;
-            return response.Entries;
-        }
-
-        /// <summary>
-        /// Returns the next page of all LogEntry items of the project id.
-        /// Please note: The values of other method parameters should be identical to those in the previous call.
-        /// </summary>
-        /// <returns></returns>
-        public async Task<IList<LogEntry>> GetNextPageLogEntryListAsync()
-        {
-            if (_lastSuccessfulRequestParams.ProjectId != ProjectId)
+            try
             {
-                throw new DataSourceException("The project id has changed. Fail to fetch next page. Do refresh.");
+                ListLogEntriesRequest requestData = CreateRequestFromParams(requestParams);
+                var request = Service.Entries.List(requestData);
+                ListLogEntriesResponse response = await request.ExecuteAsync();
+                return new Tuple<IList<LogEntry>, string>(response?.Entries, response?.NextPageToken);
             }
-
-            return await MakeAsyncRequest(_lastSuccessfulRequestParams);
-        }
-
-        /// <summary>
-        /// Returns the list of all log entries of the project id.
-        /// This function returns first page of log entries if one page size does not fit.
-        /// </summary>
-        /// <param name="filter">The Google.Apis.Logging.v2.Data.ListLogEntriesRequest Filter</param>
-        public async Task<IList<LogEntry>> GetLogEntryListAsync(string filter)
-        {
-            LogEntryRequestParams requestParams = new LogEntryRequestParams()
+            catch (GoogleApiException ex)
             {
-                ProjectId = ProjectId,
-                Filter = filter,
-                PageSize = PageSize
-            };
-
-            return await MakeAsyncRequest(requestParams);
-        }
-
-        /// <summary>
-        /// Returns the list of MonitoredResourceDescriptor.
-        /// </summary>
-        public async Task<IList<MonitoredResourceDescriptor>> GetResourceDescriptorAsync()
-        {
-            List<MonitoredResourceDescriptor> results = new List<MonitoredResourceDescriptor>();
-            var request = Service.MonitoredResourceDescriptors.List();
-            ListMonitoredResourceDescriptorsResponse response = null;
-            do
-            {
-                request.PageToken = response?.NextPageToken;
-                response = await request.ExecuteAsync();
-                if (response?.ResourceDescriptors == null)
-                {
-                    return results;
-                }
-                results.AddRange(response?.ResourceDescriptors);
-            } while (!string.IsNullOrWhiteSpace(response?.NextPageToken));
-
-            return results;
+                Debug.WriteLine($"Failed to get log entries: {ex.Message}");
+                throw new DataSourceException(ex.Message, ex);
+            }
         }
     }
 }

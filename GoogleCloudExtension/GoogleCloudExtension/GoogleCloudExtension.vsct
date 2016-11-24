@@ -71,6 +71,7 @@
       <!-- This command shows the Stackdriver Logs Viewer tool window. -->
       <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidLogsViewerToolWindowCommand" priority="0x0100" type="Button">
         <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Show Stackdriver Logs Viewer</ButtonText>
         </Strings>
