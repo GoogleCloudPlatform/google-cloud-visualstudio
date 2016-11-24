@@ -182,19 +182,27 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 
                 // Create the connection string to pre populate the server address in the dialog.
                 InstanceItem instance = GetItem();
-                var server = String.IsNullOrEmpty(instance.IpAddress) ? instance.Ipv6Address : instance.IpAddress;
-                dialog.DisplayConnectionString = CloudSqlUtils.FormatServerConnectionString(server);
+                var serverAddress = String.IsNullOrEmpty(instance.IpAddress) ? instance.Ipv6Address : instance.IpAddress;
+                dialog.DisplayConnectionString = CloudSqlUtils.FormatServerConnectionString(serverAddress);
 
                 bool addDataConnection = dialog.ShowDialog();
                 if (addDataConnection)
                 {
                     // Create a name for the data connection
                     var parsedConnection = CloudSqlUtils.ParseConnection(dialog.DisplayConnectionString);
-                    string database = $"{Instance.Project}[{parsedConnection.Server}][{parsedConnection.Database}]";
+                    string connectionName;
+                    if (parsedConnection.Server == serverAddress)
+                    {
+                        connectionName = $"{Instance.Project}[{Instance.Name}][{parsedConnection.Database}]";
+                    }
+                    else
+                    {
+                        connectionName = $"{parsedConnection.Server}[{parsedConnection.Database}]";
+                    }
 
                     // Add the MySQL data connection to the data explorer
                     DataExplorerConnectionManager manager = (DataExplorerConnectionManager)Package.GetGlobalService(typeof(DataExplorerConnectionManager));
-                    manager.AddConnection(database, CloudSqlUtils.DataProvider, dialog.EncryptedConnectionString, true);
+                    manager.AddConnection(connectionName, CloudSqlUtils.DataProvider, dialog.EncryptedConnectionString, true);
                 }
             }
             else
