@@ -17,10 +17,19 @@ using System.Diagnostics;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// This class contains the basic information for a connection string to a Cloud SQL instance.
+    /// </summary>
     internal class CloudSqlInstanceConnection
     {
+        /// <summary>
+        /// The the IP address of the Cloud SQL instance.
+        /// </summary>
         public string Server { get; }
 
+        /// <summary>
+        /// The database we're connected to.
+        /// </summary>
         public string Database { get; }
 
         public CloudSqlInstanceConnection(string server, string database)
