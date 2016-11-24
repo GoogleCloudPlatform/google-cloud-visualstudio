@@ -65,15 +65,18 @@ namespace GoogleCloudExtension.DataSources
 
         /// <summary>
         /// Returns the next page of all LogEntry items of the project id.
+        /// Please note, when calling this method, the filter, pageSize must be same as prior call.
         /// </summary>
+        /// <param name="filter">The filter to use.</param>
         /// <param name="pageToken">The page token returend from last request.</param>
         /// <returns>
         ///     A tuple of :   List of log entries,  optional next page token.
         /// </returns>
         public async Task<Tuple<IList<LogEntry>, string>> GetNextPageLogEntryListAsync(
-            string pageToken, int? pageSize = null)
+             string pageToken, string filter = null, int? pageSize = null)
         {
             return await MakeAsyncRequest(new LogEntryRequestParams() {
+                Filter = filter,
                 PageToken = pageToken,
                 PageSize = pageSize
             });
