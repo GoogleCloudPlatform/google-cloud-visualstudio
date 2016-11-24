@@ -46,7 +46,7 @@ namespace GoogleCloudExtension.Utils
         /// Formats a connection string for the given server.
         /// </summary>
         /// <param name="server">The server name or IP address.</param>
-        public static string FormatServerConnectionString(string server) => $"Server={server};User Id=root";
+        public static string FormatServerConnectionString(string server) => $"server={server}";
 
         /// <summary>
         /// Parses the connection string into its portions.
