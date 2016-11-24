@@ -30,20 +30,27 @@ namespace GoogleCloudExtension.Utils
         }
     }
 
-    internal static class MySQLUtils
+    internal static class CloudSqlUtils
     {
         /// <summary>
-        /// The GUID for the MySQL Database.
+        /// The GUID for the Cloud SQL database.
         /// </summary>
-        public static Guid MySQLDataSource { get; } = new Guid("{98FBE4D8-5583-4233-B219-70FF8C7FBBBD}");
+        public static Guid DataSource { get; } = new Guid("{98FBE4D8-5583-4233-B219-70FF8C7FBBBD}");
 
         /// <summary>
         /// The GUID for the MySQL Database Provider.
         /// </summary>
-        public static Guid MySQLDataProvider { get; } = new Guid("{C6882346-E592-4da5-80BA-D2EADCDA0359}");
+        public static Guid DataProvider { get; } = new Guid("{C6882346-E592-4da5-80BA-D2EADCDA0359}");
 
+        /// <summary>
+        /// Formats a connection string for the given server.
+        /// </summary>
+        /// <param name="server">The server name or IP address.</param>
         public static string FormatServerConnectionString(string server) => $"server={server}";
 
+        /// <summary>
+        /// Parses the connection string into its portions.
+        /// </summary>
         public static CloudSqlInstanceConnection ParseConnection(string connection)
         {
             var values = connection.Split(';');

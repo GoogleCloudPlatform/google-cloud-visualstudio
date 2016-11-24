@@ -173,28 +173,28 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             // Check if the MySQL data source exists.
             // TODO(talarico): This is added when the user has MySQL for Visual Studio installed.  We should also
             // probably check for the needed pieces in the MySQL Connector/Net.
-            if (dialog.AvailableSources.Contains(MySQLUtils.MySQLDataSource))
+            if (dialog.AvailableSources.Contains(CloudSqlUtils.DataSource))
             {
                 EventsReporterWrapper.ReportEvent(OpenCloudSqlConnectionDialogEvent.Create());
 
                 // Pre select the MySQL data source.
-                dialog.SelectedSource = MySQLUtils.MySQLDataSource;
+                dialog.SelectedSource = CloudSqlUtils.DataSource;
 
                 // Create the connection string to pre populate the server address in the dialog.
                 InstanceItem instance = GetItem();
                 var server = String.IsNullOrEmpty(instance.IpAddress) ? instance.Ipv6Address : instance.IpAddress;
-                dialog.DisplayConnectionString = MySQLUtils.FormatServerConnectionString(server);
+                dialog.DisplayConnectionString = CloudSqlUtils.FormatServerConnectionString(server);
 
                 bool addDataConnection = dialog.ShowDialog();
                 if (addDataConnection)
                 {
                     // Create a name for the data connection
-                    var parsedConnection = MySQLUtils.ParseConnection(dialog.DisplayConnectionString);
+                    var parsedConnection = CloudSqlUtils.ParseConnection(dialog.DisplayConnectionString);
                     string database = $"{Instance.Project}[{parsedConnection.Server}][{parsedConnection.Database}]";
 
                     // Add the MySQL data connection to the data explorer
                     DataExplorerConnectionManager manager = (DataExplorerConnectionManager)Package.GetGlobalService(typeof(DataExplorerConnectionManager));
-                    manager.AddConnection(database, MySQLUtils.MySQLDataProvider, dialog.EncryptedConnectionString, true);
+                    manager.AddConnection(database, CloudSqlUtils.DataProvider, dialog.EncryptedConnectionString, true);
                 }
             }
             else

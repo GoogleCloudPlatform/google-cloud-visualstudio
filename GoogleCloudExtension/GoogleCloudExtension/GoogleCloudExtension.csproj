@@ -218,7 +218,7 @@
     <Compile Include="Utils\LocalizedCategoryAttribute.cs" />
     <Compile Include="Utils\LocalizedDescriptionAttribute.cs" />
     <Compile Include="Utils\LocalizedDisplayNameAttribute.cs" />
-    <Compile Include="Utils\MySQLUtils.cs" />
+    <Compile Include="Utils\CloudSqlUtils.cs" />
     <Compile Include="Utils\PropertyWindowItemBase.cs" />
     <Compile Include="Utils\ResourceUtils.cs" />
     <Compile Include="Utils\SelectionUtils.cs" />
