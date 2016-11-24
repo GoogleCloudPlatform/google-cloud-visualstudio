@@ -46,7 +46,7 @@ namespace GoogleCloudExtension.Utils
         /// Formats a connection string for the given server.
         /// </summary>
         /// <param name="server">The server name or IP address.</param>
-        public static string FormatServerConnectionString(string server) => $"server={server}";
+        public static string FormatServerConnectionString(string server) => $"Server={server};User Id=root";
 
         /// <summary>
         /// Parses the connection string into its portions.
@@ -66,7 +66,7 @@ namespace GoogleCloudExtension.Utils
                     continue;
                 }
 
-                switch (parsedValue[0])
+                switch (parsedValue[0].ToLowerInvariant())
                 {
                     case "server":
                         server = parsedValue[1];
