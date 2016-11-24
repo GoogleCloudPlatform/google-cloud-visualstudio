@@ -680,6 +680,23 @@
            TargetType="{x:Type ComboBox}">
         <Setter Property="Height" Value="30px" />
     </Style>
+    
+    <!-- Default tyle for a tooltip. -->
+    <SolidColorBrush x:Key="CommonTooltipColors.Border" Color="#FFBDBDBD" />
+    <SolidColorBrush x:Key="CommonTooltipColors.Background" Color="#FFEEEEEE" />
+
+    <Style x:Key="CommonTooltipStyle" TargetType="{x:Type ToolTip}">
+        <Setter Property="BorderBrush" Value="{StaticResource CommonTooltipColors.Border}" />
+        <Setter Property="Background" Value="{StaticResource CommonTooltipColors.Background}" />
+        <Setter Property="Padding" Value="8px" />
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" Style="{StaticResource CommonToolTipTextStyle}" />
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <!-- Default style for the LabelWithHelp control. -->
     <Style x:Key="{x:Type controls:LabelWithHelp}"
@@ -713,8 +730,7 @@
                                    Width="14px"
                                    Height="14px">
                                 <Image.ToolTip>
-                                    <TextBlock Text="{TemplateBinding HelpContent}"
-                                               Style="{StaticResource CommonToolTipTextStyle}" />
+                                    <ToolTip Content="{TemplateBinding HelpContent}" Style="{StaticResource CommonTooltipStyle}" />
                                 </Image.ToolTip>
                             </Image>
 
