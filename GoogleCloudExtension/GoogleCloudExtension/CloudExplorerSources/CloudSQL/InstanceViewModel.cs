@@ -22,7 +22,6 @@ using GoogleCloudExtension.MySQLInstaller;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Data;
 using Microsoft.VisualStudio.Shell;
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -182,17 +181,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 dialog.SelectedSource = MySQLUtils.MySQLDataSource;
 
                 // Create the connection string to pre populate the server address in the dialog.
-                MySqlConnectionStringBuilder builderPrePopulate = new MySqlConnectionStringBuilder();
                 InstanceItem instance = GetItem();
-                builderPrePopulate.Server = String.IsNullOrEmpty(instance.IpAddress) ? instance.Ipv6Address : instance.IpAddress;
-                dialog.DisplayConnectionString = builderPrePopulate.GetConnectionString(false);
+                var server = String.IsNullOrEmpty(instance.IpAddress) ? instance.Ipv6Address : instance.IpAddress;
+                dialog.DisplayConnectionString = MySQLUtils.FormatServerConnectionString(server);
 
                 bool addDataConnection = dialog.ShowDialog();
                 if (addDataConnection)
                 {
                     // Create a name for the data connection
-                    MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder(dialog.DisplayConnectionString);
-                    string database = $"{Instance.Project}[{builder.Server}][{builder.Database}]";
+                    var parsedConnection = MySQLUtils.ParseConnection(dialog.DisplayConnectionString);
+                    string database = $"{Instance.Project}[{parsedConnection.Server}][{parsedConnection.Database}]";
 
                     // Add the MySQL data connection to the data explorer
                     DataExplorerConnectionManager manager = (DataExplorerConnectionManager)Package.GetGlobalService(typeof(DataExplorerConnectionManager));

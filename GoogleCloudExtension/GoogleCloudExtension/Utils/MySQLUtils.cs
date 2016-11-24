@@ -13,19 +13,65 @@
 // limitations under the License.
 
 using System;
+using System.Diagnostics;
 
 namespace GoogleCloudExtension.Utils
 {
+    internal class CloudSqlInstanceConnection
+    {
+        public string Server { get; }
+
+        public string Database { get; }
+
+        public CloudSqlInstanceConnection(string server, string database)
+        {
+            Server = server;
+            Database = database;
+        }
+    }
+
     internal static class MySQLUtils
     {
         /// <summary>
         /// The GUID for the MySQL Database.
         /// </summary>
-        public static readonly Guid MySQLDataSource = new Guid("{98FBE4D8-5583-4233-B219-70FF8C7FBBBD}");
+        public static Guid MySQLDataSource { get; } = new Guid("{98FBE4D8-5583-4233-B219-70FF8C7FBBBD}");
 
         /// <summary>
         /// The GUID for the MySQL Database Provider.
         /// </summary>
-        public static readonly Guid MySQLDataProvider = new Guid("{C6882346-E592-4da5-80BA-D2EADCDA0359}");
+        public static Guid MySQLDataProvider { get; } = new Guid("{C6882346-E592-4da5-80BA-D2EADCDA0359}");
+
+        public static string FormatServerConnectionString(string server) => $"server={server}";
+
+        public static CloudSqlInstanceConnection ParseConnection(string connection)
+        {
+            var values = connection.Split(';');
+            string server = null;
+            string database = null;
+
+            foreach (var value in values)
+            {
+                var parsedValue = value.Split('=');
+                if (parsedValue.Length != 2)
+                {
+                    Debug.WriteLine($"Invalid value in connection string: {value}");
+                    continue;
+                }
+
+                switch (parsedValue[0])
+                {
+                    case "server":
+                        server = parsedValue[1];
+                        break;
+
+                    case "database":
+                        database = parsedValue[1];
+                        break;
+                }
+            }
+
+            return new CloudSqlInstanceConnection(server: server, database: database);
+        }
     }
 }
