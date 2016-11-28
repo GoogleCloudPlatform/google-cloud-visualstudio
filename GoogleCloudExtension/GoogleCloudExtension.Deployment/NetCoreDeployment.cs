@@ -43,7 +43,7 @@ namespace GoogleCloudExtension.Deployment
         /// All of the files composing the app are copied to the /app path, then it is set as the working directory.
         /// </summary>
         private const string DockerfileDefaultContent =
-            "FROM microsoft/dotnet:1.0.0-core\n" +
+            "FROM b.gcr.io/aspnet-docker/aspnet:1.0.1\n" +
             "COPY . /app\n" +
             "WORKDIR /app\n" +
             "EXPOSE 8080\n" +
