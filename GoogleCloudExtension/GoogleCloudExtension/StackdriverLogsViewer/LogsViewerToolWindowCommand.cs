@@ -68,9 +68,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                         !string.IsNullOrWhiteSpace(CredentialsStore.Default?.CurrentProjectId));
                 };
 
-                // Not using BeforeQueryStatus for the event may not be fired in some cases.
-                CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => setEnabled();
                 setEnabled();
+                menuItem.BeforeQueryStatus += (sender, e) => setEnabled();
             };
         }
 
