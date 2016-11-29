@@ -1,4 +1,6 @@
 ﻿using Google.Apis.Storage.v1.Data;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -13,6 +15,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
     {
         private Bucket _bucket;
         private IEnumerable<string> _pathSteps;
+        private GcsDataSource _dataSource;
+        private IEnumerable<GcsItem> _items;
+        private bool _isLoading;
 
         public Bucket Bucket
         {
@@ -27,14 +32,59 @@ namespace GoogleCloudExtension.GcsFileBrowser
         public IEnumerable<string> PathSteps
         {
             get { return _pathSteps; }
-            set { SetValueAndRaise(ref _pathSteps, value); }
+            private set { SetValueAndRaise(ref _pathSteps, value); }
         }
 
-        public ObservableCollection<GcsItem> Items { get; } = new ObservableCollection<GcsItem>();
+        public string CurrentPath => String.Join("/", PathSteps);
+
+        public IEnumerable<GcsItem> Items
+        {
+            get { return _items; }
+            private set { SetValueAndRaise(ref _items, value); }
+        }
+
+        public bool IsLoading
+        {
+            get { return _isLoading; }
+            private set
+            {
+                SetValueAndRaise(ref _isLoading, value);
+                RaisePropertyChanged(nameof(IsReady));
+            }
+        }
+
+        public bool IsReady => !IsLoading;
 
         private void InvalidateBucket()
         {
-                        
+            _dataSource = new GcsDataSource(
+                CredentialsStore.Default.CurrentProjectId,
+                CredentialsStore.Default.CurrentGoogleCredential,
+                GoogleCloudExtensionPackage.ApplicationName);
+            PathSteps = Enumerable.Empty<string>();
+            ReloadItems();
+        }
+
+        private async void ReloadItems()
+        {
+            if (IsLoading)
+            {
+                return;
+            }
+
+            try
+            {
+                IsLoading = true;
+
+                var dir = await _dataSource.GetDirectoryListAsync(Bucket.Name, CurrentPath);
+                Items = Enumerable.Concat<GcsItem>(
+                    dir.Prefixes.OrderBy(x => x).Select(x => new GcsItem(x)),
+                    dir.Items.OrderBy(x=> x.Name).Select(x => new GcsItem(x)));
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
     }
 }

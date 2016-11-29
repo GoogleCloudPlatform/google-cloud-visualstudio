@@ -83,7 +83,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         private void UpdateBucket(Bucket bucket)
         {
             ViewModel.Bucket = bucket;
-            Caption = $"Browsing {bucket.Name}";
+            Caption = bucket.Name;
         }
     }
 }

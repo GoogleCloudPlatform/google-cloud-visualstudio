@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Storage.v1;
 using Google.Apis.Storage.v1.Data;
@@ -61,6 +62,44 @@ namespace GoogleCloudExtension.DataSources
                 },
                 x => x.Items,
                 x => x.NextPageToken);
+        }
+
+        public async Task<GcsDirectory> GetDirectoryListAsync(string bucket, string prefix)
+        {
+            var request = Service.Objects.List(bucket);
+            request.Prefix = prefix;
+            request.Delimiter = "/";
+
+            try
+            {
+                string pageToken = null;
+                List<string> prefixes = new List<string>();
+                List<Google.Apis.Storage.v1.Data.Object> items = new List<Google.Apis.Storage.v1.Data.Object>();
+                do
+                {
+                    request.PageToken = pageToken;
+                    var response = await request.ExecuteAsync();
+
+                    if (response.Prefixes != null)
+                    {
+                        prefixes.AddRange(response.Prefixes);
+                    }
+
+                    if (response.Items != null)
+                    {
+                        items.AddRange(response.Items);
+                    }
+
+                    pageToken = response.NextPageToken;
+                } while (!String.IsNullOrEmpty(pageToken));
+
+                return new GcsDirectory(items, prefixes);
+            }
+            catch (GoogleApiException ex)
+            {
+                Debug.WriteLine($"Failed to read GCS directory {prefix} in bucket {bucket}");
+                throw new DataSourceException(ex.Message, ex);
+            }
         }
     }
 }
