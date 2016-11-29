@@ -68,6 +68,13 @@
         <!-- The main area for the data. -->
         <DataGrid Grid.Row="2"
                   IsReadOnly="True"
-                  ItemsSource="{Binding Items}" />
+                  AutoGenerateColumns="False"
+                  ItemsSource="{Binding Items}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Name}" Header="Name" />
+                <DataGridTextColumn Binding="{Binding Size}" Header="Size" />
+                <DataGridTextColumn Binding="{Binding LastModified}" Header="Last Modified" />
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>
