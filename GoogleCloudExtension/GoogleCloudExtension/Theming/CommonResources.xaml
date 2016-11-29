@@ -15,6 +15,11 @@
         <Setter Property="Foreground" Value="Black" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
+    
+    <!-- Large text style. -->
+    <Style x:Key="CommonTextStyleLarge" BasedOn="{StaticResource CommonTextStyle}" TargetType="{x:Type TextBlock}">
+        <Setter Property="TextElement.FontSize" Value="20px" />
+    </Style>
 
     <!-- Text style to be used inside of a tooltip. -->
     <Style x:Key="CommonToolTipTextStyle" BasedOn="{StaticResource CommonTextStyle}" TargetType="{x:Type TextBlock}">
