@@ -5,9 +5,11 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
@@ -35,7 +37,18 @@ namespace GoogleCloudExtension.GcsFileBrowser
             private set { SetValueAndRaise(ref _pathSteps, value); }
         }
 
-        public string CurrentPath => String.Join("/", PathSteps);
+        public string CurrentPath
+        {
+            get
+            {
+                var path = String.Join("/", PathSteps);
+                if (String.IsNullOrEmpty(path))
+                {
+                    return path;
+                }
+                return path + "/";
+            }
+        }
 
         public IEnumerable<GcsItem> Items
         {
@@ -54,6 +67,20 @@ namespace GoogleCloudExtension.GcsFileBrowser
         }
 
         public bool IsReady => !IsLoading;
+
+        public ICommand ShowDirectoryCommand { get; }
+
+        public GcsBrowserViewModel()
+        {
+            ShowDirectoryCommand = new ProtectedCommand<GcsItem>(OnShowDirectoryCommand);
+        }
+
+        private void OnShowDirectoryCommand(GcsItem dir)
+        {
+            Debug.Assert(dir.Name.Last() == '/');
+            PathSteps = dir.Name.Substring(0, dir.Name.Length - 1).Split('/');
+            ReloadItems();
+        }
 
         private void InvalidateBucket()
         {

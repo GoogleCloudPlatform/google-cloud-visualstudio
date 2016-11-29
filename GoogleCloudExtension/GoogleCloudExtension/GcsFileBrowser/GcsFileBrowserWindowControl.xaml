@@ -81,7 +81,9 @@
                                            Style="{StaticResource CommonTextStyle}" />
                                 <TextBlock Visibility="{Binding IsDirectory, Converter={utils:VisibilityConverter}}"
                                            Style="{StaticResource CommonTextStyle}">
-                                    <Hyperlink Style="{StaticResource CommonHyperlinkStyle}">
+                                    <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
+                                               Command="{Binding DataContext.ShowDirectoryCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                               CommandParameter="{Binding}">
                                         <TextBlock Text="{Binding Name}" />
                                     </Hyperlink>
                                 </TextBlock>
