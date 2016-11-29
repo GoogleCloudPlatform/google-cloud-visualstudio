@@ -158,6 +158,10 @@
       <DependentUpon>PortManagerWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="FirewallManagement\PortModel.cs" />
+    <Compile Include="GcsFileBrowser\GcsFileBrowserWindow.cs" />
+    <Compile Include="GcsFileBrowser\GcsFileBrowserWindowControl.xaml.cs">
+      <DependentUpon>GcsFileBrowserWindowControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsViewModel.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindow.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml.cs">
@@ -582,6 +586,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="FirewallManagement\PortManagerWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GcsFileBrowser\GcsFileBrowserWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
