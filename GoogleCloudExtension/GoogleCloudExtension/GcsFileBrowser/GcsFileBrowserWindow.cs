@@ -28,6 +28,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
     [Guid("374b786d-6f94-4bab-8ca1-74faca9c4f88")]
     public class GcsFileBrowserWindow : ToolWindowPane
     {
+        private static int s_nextWindowId = 0;
+
         private GcsBrowserViewModel ViewModel { get; }
 
         /// <summary>
@@ -45,17 +47,28 @@ namespace GoogleCloudExtension.GcsFileBrowser
             this.Content = new GcsFileBrowserWindowControl { DataContext = ViewModel };
         }
 
-        public static void ShowWindow(Bucket bucket)
+        public static void BrowseBucket(Bucket bucket)
         {
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
-            var window = GoogleCloudExtensionPackage.Instance.FindToolWindow(typeof(GcsFileBrowserWindow), 0, create: true);
-            if ((null == window) || (null == window.Frame))
+            var window = GoogleCloudExtensionPackage.Instance.FindToolWindow(
+                typeof(GcsFileBrowserWindow),
+                s_nextWindowId,
+                create: false);
+            if (window == null)
             {
-                Debug.WriteLine("Cannot create window.");
-                return;
+                window = GoogleCloudExtensionPackage.Instance.FindToolWindow(
+                    typeof(GcsFileBrowserWindow),
+                    s_nextWindowId,
+                    create: true);
+                if (window == null || window.Frame == null)
+                {
+                    Debug.WriteLine($"Could not create window with id {s_nextWindowId}");
+                    return;
+                }
             }
+            s_nextWindowId++;
 
             var browserWindow = window as GcsFileBrowserWindow;
             if (browserWindow == null)
@@ -63,10 +76,16 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 Debug.WriteLine($"Invalid window found {window.GetType().FullName}");
                 return;
             }
-            browserWindow.ViewModel.Bucket = bucket;
+            browserWindow.UpdateBucket(bucket);
 
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
-            ErrorHandlerUtils.HandleExceptions(() => windowFrame.Show());
+            windowFrame.Show();
+        }
+
+        private void UpdateBucket(Bucket bucket)
+        {
+            ViewModel.Bucket = bucket;
+            Caption = $"Browsing {bucket.Name}";
         }
     }
 }

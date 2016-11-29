@@ -70,7 +70,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         private void OnBrowseCommand()
         {
-            GcsFileBrowserWindow.ShowWindow(_bucket);
+            GcsFileBrowserWindow.BrowseBucket(_bucket);
         }
 
         private void OnPropertiesCommand()
