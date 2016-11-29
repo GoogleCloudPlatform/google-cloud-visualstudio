@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:GoogleCloudExtension.GcsFileBrowser"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              Padding="5"
@@ -71,7 +72,23 @@
                   AutoGenerateColumns="False"
                   ItemsSource="{Binding Items}">
             <DataGrid.Columns>
-                <DataGridTextColumn Binding="{Binding Name}" Header="Name" />
+                <DataGridTemplateColumn Header="Name">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <TextBlock Text="{Binding Name}"
+                                           Visibility="{Binding IsDirectory, Converter={utils:VisibilityConverter IsNegated=True}}"
+                                           Style="{StaticResource CommonTextStyle}" />
+                                <TextBlock Visibility="{Binding IsDirectory, Converter={utils:VisibilityConverter}}"
+                                           Style="{StaticResource CommonTextStyle}">
+                                    <Hyperlink Style="{StaticResource CommonHyperlinkStyle}">
+                                        <TextBlock Text="{Binding Name}" />
+                                    </Hyperlink>
+                                </TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTextColumn Binding="{Binding Size}" Header="Size" />
                 <DataGridTextColumn Binding="{Binding LastModified}" Header="Last Modified" />
             </DataGrid.Columns>
