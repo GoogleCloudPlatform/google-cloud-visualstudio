@@ -68,11 +68,20 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         public bool IsReady => !IsLoading;
 
+        public ICommand PopAllCommand { get; }
+
         public ICommand ShowDirectoryCommand { get; }
 
         public GcsBrowserViewModel()
         {
+            PopAllCommand = new ProtectedCommand(OnPopAllCommand);
             ShowDirectoryCommand = new ProtectedCommand<GcsItem>(OnShowDirectoryCommand);
+        }
+
+        private void OnPopAllCommand()
+        {
+            PathSteps = Enumerable.Empty<string>();
+            ReloadItems();
         }
 
         private void OnShowDirectoryCommand(GcsItem dir)

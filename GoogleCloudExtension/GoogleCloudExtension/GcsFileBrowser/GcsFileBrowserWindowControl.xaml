@@ -30,9 +30,14 @@
         <StackPanel Orientation="Horizontal" Height="30px">
 
             <!-- The name of the bucket. -->
-            <TextBlock Text="{Binding Bucket.Name}"
-                       VerticalAlignment="Center"
-                       Style="{StaticResource CommonTextStyle}" />
+            <TextBlock VerticalAlignment="Center"
+                       Style="{StaticResource CommonTextStyle}">
+                <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
+                           Command="{Binding PopAllCommand}">
+                    <TextBlock Text="{Binding Bucket.Name}" />
+                </Hyperlink>
+            </TextBlock>
+
             <TextBlock Text="/"
                        Style="{StaticResource CommonTextStyle}"
                        VerticalAlignment="Center"
