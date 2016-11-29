@@ -22,38 +22,49 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
-        <!-- The name of the bucket. -->
-        <TextBlock Text="{Binding Bucket.Name}" Style="{StaticResource CommonTextStyleLarge}" />
-        
-        <!-- The current path. -->
-        <ItemsControl Grid.Row="1"
-                      Height="30px"
-                      Margin="0,5,0,0"
-                      ItemsSource="{Binding PathSteps}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center"/>
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
 
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
-                        <TextBlock Text="/" Style="{StaticResource CommonTextStyle}"/>
-                        <TextBlock Margin="10,0,0,0" Style="{StaticResource CommonTextStyle}">
-                            <Hyperlink Style="{StaticResource CommonHyperlinkStyle}">
-                                <TextBlock Text="{Binding}" />
-                            </Hyperlink>
-                        </TextBlock>
-                    </StackPanel>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
-        
+        <!-- The navigation bar. -->
+        <StackPanel Orientation="Horizontal" Height="30px">
+
+            <!-- The name of the bucket. -->
+            <TextBlock Text="{Binding Bucket.Name}"
+                       VerticalAlignment="Center"
+                       Style="{StaticResource CommonTextStyle}" />
+            <TextBlock Text="/"
+                       Style="{StaticResource CommonTextStyle}"
+                       VerticalAlignment="Center"
+                       Margin="10,0,0,0"/>
+
+            <!-- The current path. -->
+            <ItemsControl VerticalAlignment="Center"
+                          ItemsSource="{Binding PathSteps}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
+                            <TextBlock Style="{StaticResource CommonTextStyle}">
+                                <Hyperlink Style="{StaticResource CommonHyperlinkStyle}">
+                                    <TextBlock Text="{Binding}" />
+                                </Hyperlink>
+                            </TextBlock>
+                            <TextBlock Text="/"
+                                       Style="{StaticResource CommonTextStyle}"
+                                       Margin="10,0,0,0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </StackPanel>
+
+
         <!-- The main area for the data. -->
         <DataGrid Grid.Row="2"
                   IsReadOnly="True"
