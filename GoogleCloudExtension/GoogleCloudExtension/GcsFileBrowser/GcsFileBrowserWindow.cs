@@ -37,8 +37,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
         /// </summary>
         public GcsFileBrowserWindow() : base(null)
         {
-            this.Caption = "GcsFileBrowserWindow";
-
             ViewModel = new GcsBrowserViewModel();
 
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
