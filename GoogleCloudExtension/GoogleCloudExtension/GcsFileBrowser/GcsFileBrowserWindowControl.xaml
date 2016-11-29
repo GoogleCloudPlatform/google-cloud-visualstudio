@@ -76,7 +76,7 @@
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
-                                <TextBlock Text="{Binding Name}"
+                                <TextBlock Text="{Binding FileName}"
                                            Visibility="{Binding IsDirectory, Converter={utils:VisibilityConverter IsNegated=True}}"
                                            Style="{StaticResource CommonTextStyle}" />
                                 <TextBlock Visibility="{Binding IsDirectory, Converter={utils:VisibilityConverter}}"
@@ -84,7 +84,7 @@
                                     <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
                                                Command="{Binding DataContext.ShowDirectoryCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
                                                CommandParameter="{Binding}">
-                                        <TextBlock Text="{Binding Name}" />
+                                        <TextBlock Text="{Binding FileName}" />
                                     </Hyperlink>
                                 </TextBlock>
                             </Grid>
