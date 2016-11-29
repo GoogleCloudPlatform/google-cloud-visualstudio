@@ -17,6 +17,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.GcsFileBrowser;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -38,7 +39,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         private readonly GcsSourceRootViewModel _owner;
         private readonly Bucket _bucket;
         private readonly Lazy<BucketItem> _item;
-        private readonly ProtectedCommand _openOnCloudConsoleCommand;
 
         public object Item
         {
@@ -55,17 +55,22 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             _owner = owner;
             _bucket = bucket;
             _item = new Lazy<BucketItem>(GetItem);
-            _openOnCloudConsoleCommand = new ProtectedCommand(OnOpenConCloudConsoleCommand);
 
             Caption = _bucket.Name;
             Icon = s_bucketIcon.Value;
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = _openOnCloudConsoleCommand },
+                new MenuItem { Header = "Browse", Command = new ProtectedCommand(OnBrowseCommand) },
+                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenConCloudConsoleCommand) },
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void OnBrowseCommand()
+        {
+            GcsFileBrowserWindow.ShowWindow(_bucket);
         }
 
         private void OnPropertiesCommand()

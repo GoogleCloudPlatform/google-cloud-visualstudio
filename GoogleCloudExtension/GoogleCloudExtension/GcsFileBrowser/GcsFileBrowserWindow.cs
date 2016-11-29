@@ -12,6 +12,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
     using System.Diagnostics;
     using Microsoft.VisualStudio.Shell.Interop;
     using Utils;
+    using Google.Apis.Storage.v1.Data;
 
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.
@@ -27,6 +28,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
     [Guid("374b786d-6f94-4bab-8ca1-74faca9c4f88")]
     public class GcsFileBrowserWindow : ToolWindowPane
     {
+        private GcsBrowserViewModel ViewModel { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="GcsFileBrowserWindow"/> class.
         /// </summary>
@@ -34,13 +37,15 @@ namespace GoogleCloudExtension.GcsFileBrowser
         {
             this.Caption = "GcsFileBrowserWindow";
 
+            ViewModel = new GcsBrowserViewModel();
+
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
-            this.Content = new GcsFileBrowserWindowControl();
+            this.Content = new GcsFileBrowserWindowControl { DataContext = ViewModel };
         }
 
-        public static void ShowWindow()
+        public static void ShowWindow(Bucket bucket)
         {
             // Get the instance number 0 of this tool window. This window is single instance so this instance
             // is actually the only one.
@@ -51,6 +56,14 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 Debug.WriteLine("Cannot create window.");
                 return;
             }
+
+            var browserWindow = window as GcsFileBrowserWindow;
+            if (browserWindow == null)
+            {
+                Debug.WriteLine($"Invalid window found {window.GetType().FullName}");
+                return;
+            }
+            browserWindow.ViewModel.Bucket = bucket;
 
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
             ErrorHandlerUtils.HandleExceptions(() => windowFrame.Show());
