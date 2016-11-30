@@ -9,7 +9,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
 {
     public class GcsBrowserState
     {
-        public IEnumerable<GcsItem> Items { get; }
+        public IList<GcsItem> Items { get; }
 
         public IEnumerable<string> PathSteps { get; }
 
@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         public GcsBrowserState(IEnumerable<GcsItem> items, string name)
         {
-            Items = items;
+            Items = items.ToList();
 
             if (String.IsNullOrEmpty(name))
             {

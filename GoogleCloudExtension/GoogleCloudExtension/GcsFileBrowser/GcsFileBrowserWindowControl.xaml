@@ -79,9 +79,12 @@
         <DataGrid Grid.Row="2"
                   IsReadOnly="True"
                   AutoGenerateColumns="False"
+                  utils:DataGridBehaviors.HasCustomSort="True"
                   ItemsSource="{Binding Source={StaticResource cvs}}">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Name" SortMemberPath="FileName">
+                <DataGridTemplateColumn Header="Name"
+                                        SortMemberPath="FileName"
+                                        utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter FileName, SortDirectories=True}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
@@ -100,8 +103,12 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Binding="{Binding Size}" Header="Size" />
-                <DataGridTextColumn Binding="{Binding LastModified}" Header="Last Modified" />
+                <DataGridTextColumn Binding="{Binding Size}"
+                                    utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter Size}"
+                                    Header="Size" />
+                <DataGridTextColumn Binding="{Binding LastModified}"
+                                    utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter LastModified}"
+                                    Header="Last Modified" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

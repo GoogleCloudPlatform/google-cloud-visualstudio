@@ -160,6 +160,7 @@
     <Compile Include="FirewallManagement\PortModel.cs" />
     <Compile Include="GcsFileBrowser\GcsBrowserState.cs" />
     <Compile Include="GcsFileBrowser\GcsBrowserViewModel.cs" />
+    <Compile Include="GcsFileBrowser\GcsColumnSorter.cs" />
     <Compile Include="GcsFileBrowser\GcsFileBrowserWindow.cs" />
     <Compile Include="GcsFileBrowser\GcsFileBrowserWindowControl.xaml.cs">
       <DependentUpon>GcsFileBrowserWindowControl.xaml</DependentUpon>
