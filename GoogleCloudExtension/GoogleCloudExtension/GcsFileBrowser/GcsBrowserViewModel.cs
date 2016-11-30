@@ -70,15 +70,26 @@ namespace GoogleCloudExtension.GcsFileBrowser
             ShowDirectoryCommand = new ProtectedCommand<GcsItem>(OnShowDirectoryCommand);
         }
 
-        private void OnNavigateToCommand(string step)
-        {
-            PopToState(step);
-        }
+        #region Command handlers
 
         private void OnPopAllCommand()
         {
             PopToRoot();
         }
+
+        private void OnNavigateToCommand(string step)
+        {
+            PopToState(step);
+        }
+
+        private void OnShowDirectoryCommand(GcsItem dir)
+        {
+            PushToDirectory(dir.Name);
+        }
+
+        #endregion
+
+        #region Navigation stack methods
 
         private void PopToRoot()
         {
@@ -105,10 +116,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             RaisePropertyChanged(nameof(Top));
         }
 
-        private void OnShowDirectoryCommand(GcsItem dir)
-        {
-            PushToDirectory(dir.Name);
-        }
+        #endregion
 
         private void InvalidateBucket()
         {
