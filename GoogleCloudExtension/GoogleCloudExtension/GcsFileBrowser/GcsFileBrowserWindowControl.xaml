@@ -17,6 +17,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <CollectionViewSource x:Key="cvs" Source="{Binding Top.Items}" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -77,9 +79,9 @@
         <DataGrid Grid.Row="2"
                   IsReadOnly="True"
                   AutoGenerateColumns="False"
-                  ItemsSource="{Binding Top.Items}">
+                  ItemsSource="{Binding Source={StaticResource cvs}}">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Name">
+                <DataGridTemplateColumn Header="Name" SortMemberPath="FileName">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <Grid>
