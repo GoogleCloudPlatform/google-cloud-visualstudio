@@ -6,6 +6,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
 {
     public class GcsRow
     {
+        public string Bucket { get; }
+
         public string Name { get; }
 
         public string FileName { get; }
@@ -25,6 +27,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         public GcsRow(Object obj)
         {
+            Bucket = obj.Bucket;
             Name = obj.Name;
             IsDirectory = false;
             Size = obj.Size ?? 0;

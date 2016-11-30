@@ -15,6 +15,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         [Category("Directory")]
         [DisplayName("Name")]
+        [Description("The name of the directory.")]
         public string Name => _directory.FileName;
     }
 }
