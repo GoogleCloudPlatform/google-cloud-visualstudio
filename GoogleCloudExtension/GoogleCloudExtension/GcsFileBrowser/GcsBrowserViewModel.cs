@@ -176,5 +176,10 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 IsLoading = false;
             }
         }
+
+        public void StartFileUpload(string[] files)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

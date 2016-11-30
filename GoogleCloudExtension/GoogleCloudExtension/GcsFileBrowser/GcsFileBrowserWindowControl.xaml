@@ -8,6 +8,8 @@
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              Padding="5"
+             AllowDrop="True"
+             Drop="UserControl_Drop"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type local:GcsBrowserViewModel}}"
              d:DesignHeight="500" d:DesignWidth="500">
@@ -47,6 +49,7 @@
 
             <!-- The current path. -->
             <ItemsControl VerticalAlignment="Center"
+                          Focusable="False"
                           ItemsSource="{Binding Top.PathSteps}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
