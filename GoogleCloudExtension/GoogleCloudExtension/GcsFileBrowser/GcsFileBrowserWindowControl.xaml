@@ -45,7 +45,7 @@
 
             <!-- The current path. -->
             <ItemsControl VerticalAlignment="Center"
-                          ItemsSource="{Binding PathSteps}">
+                          ItemsSource="{Binding Top.PathSteps}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center"/>
@@ -56,7 +56,9 @@
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="10,0,0,0">
                             <TextBlock Style="{StaticResource CommonTextStyle}">
-                                <Hyperlink Style="{StaticResource CommonHyperlinkStyle}">
+                                <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
+                                           Command="{Binding DataContext.NavigateToCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
+                                           CommandParameter="{Binding}">
                                     <TextBlock Text="{Binding}" />
                                 </Hyperlink>
                             </TextBlock>
@@ -75,7 +77,7 @@
         <DataGrid Grid.Row="2"
                   IsReadOnly="True"
                   AutoGenerateColumns="False"
-                  ItemsSource="{Binding Items}">
+                  ItemsSource="{Binding Top.Items}">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Name">
                     <DataGridTemplateColumn.CellTemplate>

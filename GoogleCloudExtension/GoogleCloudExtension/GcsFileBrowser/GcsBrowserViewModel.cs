@@ -15,11 +15,13 @@ namespace GoogleCloudExtension.GcsFileBrowser
 {
     public class GcsBrowserViewModel : ViewModelBase
     {
+        private readonly static GcsBrowserState s_emptyState =
+            new GcsBrowserState(Enumerable.Empty<GcsItem>(), "/");
+
         private Bucket _bucket;
-        private IEnumerable<string> _pathSteps;
         private GcsDataSource _dataSource;
-        private IEnumerable<GcsItem> _items;
         private bool _isLoading;
+        private readonly List<GcsBrowserState> _stateStack = new List<GcsBrowserState>();
 
         public Bucket Bucket
         {
@@ -29,31 +31,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 SetValueAndRaise(ref _bucket, value);
                 InvalidateBucket();
             }
-        }
-
-        public IEnumerable<string> PathSteps
-        {
-            get { return _pathSteps; }
-            private set { SetValueAndRaise(ref _pathSteps, value); }
-        }
-
-        public string CurrentPath
-        {
-            get
-            {
-                var path = String.Join("/", PathSteps);
-                if (String.IsNullOrEmpty(path))
-                {
-                    return path;
-                }
-                return path + "/";
-            }
-        }
-
-        public IEnumerable<GcsItem> Items
-        {
-            get { return _items; }
-            private set { SetValueAndRaise(ref _items, value); }
         }
 
         public bool IsLoading
@@ -66,29 +43,71 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
         }
 
+        public GcsBrowserState Top
+        {
+            get
+            {
+                if (_stateStack.Count == 0)
+                {
+                    return s_emptyState;
+                }
+                return _stateStack.Last();
+            }
+        }
+
         public bool IsReady => !IsLoading;
 
         public ICommand PopAllCommand { get; }
+
+        public ICommand NavigateToCommand { get; }
 
         public ICommand ShowDirectoryCommand { get; }
 
         public GcsBrowserViewModel()
         {
             PopAllCommand = new ProtectedCommand(OnPopAllCommand);
+            NavigateToCommand = new ProtectedCommand<string>(OnNavigateToCommand);
             ShowDirectoryCommand = new ProtectedCommand<GcsItem>(OnShowDirectoryCommand);
+        }
+
+        private void OnNavigateToCommand(string step)
+        {
+            PopToState(step);
         }
 
         private void OnPopAllCommand()
         {
-            PathSteps = Enumerable.Empty<string>();
-            ReloadItems();
+            PopToRoot();
+        }
+
+        private void PopToRoot()
+        {
+            _stateStack.RemoveRange(1, _stateStack.Count - 1);
+            RaisePropertyChanged(nameof(Top));
+        }
+
+        private void PopToState(string step)
+        {
+            var idx = _stateStack.FindIndex(x => x.Name == step);
+            if (idx == -1)
+            {
+                Debug.WriteLine($"Could not find {step}");
+            }
+
+            _stateStack.RemoveRange(idx + 1, _stateStack.Count - (idx + 1));
+            RaisePropertyChanged(nameof(Top));
+        }
+
+        private async void PushToDirectory(string name)
+        {
+            var state = await LoadStateForDirectoryAsync(name);
+            _stateStack.Add(state);
+            RaisePropertyChanged(nameof(Top));
         }
 
         private void OnShowDirectoryCommand(GcsItem dir)
         {
-            Debug.Assert(dir.Name.Last() == '/');
-            PathSteps = dir.Name.Substring(0, dir.Name.Length - 1).Split('/');
-            ReloadItems();
+            PushToDirectory(dir.Name);
         }
 
         private void InvalidateBucket()
@@ -97,25 +116,21 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
-            PathSteps = Enumerable.Empty<string>();
-            ReloadItems();
+            PushToDirectory("");
         }
 
-        private async void ReloadItems()
+        private async Task<GcsBrowserState> LoadStateForDirectoryAsync(string name)
         {
-            if (IsLoading)
-            {
-                return;
-            }
-
             try
             {
                 IsLoading = true;
 
-                var dir = await _dataSource.GetDirectoryListAsync(Bucket.Name, CurrentPath);
-                Items = Enumerable.Concat<GcsItem>(
+                var dir = await _dataSource.GetDirectoryListAsync(Bucket.Name, name);
+                var items = Enumerable.Concat<GcsItem>(
                     dir.Prefixes.OrderBy(x => x).Select(x => new GcsItem(x)),
                     dir.Items.OrderBy(x=> x.Name).Select(x => new GcsItem(x)));
+
+                return new GcsBrowserState(items, name);
             }
             finally
             {
