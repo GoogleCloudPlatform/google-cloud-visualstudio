@@ -16,12 +16,14 @@ namespace GoogleCloudExtension.GcsFileBrowser
     public class GcsBrowserViewModel : ViewModelBase
     {
         private readonly static GcsBrowserState s_emptyState =
-            new GcsBrowserState(Enumerable.Empty<GcsItem>(), "/");
+            new GcsBrowserState(Enumerable.Empty<GcsRow>(), "/");
 
+        private readonly SelectionUtils _selectionUtils;
         private Bucket _bucket;
         private GcsDataSource _dataSource;
         private bool _isLoading;
         private readonly List<GcsBrowserState> _stateStack = new List<GcsBrowserState>();
+        private GcsRow _selectedItem;
 
         public Bucket Bucket
         {
@@ -57,17 +59,29 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         public bool IsReady => !IsLoading;
 
+        public GcsRow SelectedItem
+        {
+            get { return _selectedItem; }
+            set
+            {
+                SetValueAndRaise(ref _selectedItem, value);
+                InvalidateSelectedItem();
+            }
+        }
+
         public ICommand PopAllCommand { get; }
 
         public ICommand NavigateToCommand { get; }
 
         public ICommand ShowDirectoryCommand { get; }
 
-        public GcsBrowserViewModel()
+        public GcsBrowserViewModel(GcsFileBrowserWindow owner)
         {
+            _selectionUtils = new SelectionUtils(owner);
+
             PopAllCommand = new ProtectedCommand(OnPopAllCommand);
             NavigateToCommand = new ProtectedCommand<string>(OnNavigateToCommand);
-            ShowDirectoryCommand = new ProtectedCommand<GcsItem>(OnShowDirectoryCommand);
+            ShowDirectoryCommand = new ProtectedCommand<GcsRow>(OnShowDirectoryCommand);
         }
 
         #region Command handlers
@@ -82,7 +96,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             PopToState(step);
         }
 
-        private void OnShowDirectoryCommand(GcsItem dir)
+        private void OnShowDirectoryCommand(GcsRow dir)
         {
             PushToDirectory(dir.Name);
         }
@@ -127,6 +141,23 @@ namespace GoogleCloudExtension.GcsFileBrowser
             PushToDirectory("");
         }
 
+        private void InvalidateSelectedItem()
+        {
+            if (SelectedItem != null)
+            {
+                PropertyWindowItemBase item;
+                if (SelectedItem.IsDirectory)
+                {
+                    item = new GcsDirectoryItem(SelectedItem);
+                }
+                else
+                {
+                    item = new GcsFileItem(SelectedItem);
+                }
+                _selectionUtils.SelectItem(item);
+            }
+        }
+
         private async Task<GcsBrowserState> LoadStateForDirectoryAsync(string name)
         {
             try
@@ -134,9 +165,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 IsLoading = true;
 
                 var dir = await _dataSource.GetDirectoryListAsync(Bucket.Name, name);
-                var items = Enumerable.Concat<GcsItem>(
-                    dir.Prefixes.OrderBy(x => x).Select(x => new GcsItem(x)),
-                    dir.Items.OrderBy(x=> x.Name).Select(x => new GcsItem(x)));
+                var items = Enumerable.Concat<GcsRow>(
+                    dir.Prefixes.OrderBy(x => x).Select(x => new GcsRow(x)),
+                    dir.Items.OrderBy(x => x.Name).Select(x => new GcsRow(x)));
 
                 return new GcsBrowserState(items, name);
             }

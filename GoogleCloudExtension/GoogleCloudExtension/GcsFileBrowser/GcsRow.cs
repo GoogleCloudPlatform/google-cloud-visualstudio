@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
-    public class GcsItem
+    public class GcsRow
     {
         public string Name { get; }
 
@@ -16,14 +16,14 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         public string LastModified { get; }
 
-        public GcsItem(string name)
+        public GcsRow(string name)
         {
             Name = name;
             IsDirectory = true;
             FileName = GetLeafName(Name);
         }
 
-        public GcsItem(Object obj)
+        public GcsRow(Object obj)
         {
             Name = obj.Name;
             IsDirectory = false;

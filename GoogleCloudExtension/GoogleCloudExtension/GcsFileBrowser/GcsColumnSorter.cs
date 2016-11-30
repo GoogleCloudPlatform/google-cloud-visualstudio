@@ -37,8 +37,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         public int Compare(object x, object y, bool descending)
         {
-            var lhs = x as GcsItem;
-            var rhs = y as GcsItem;
+            var lhs = x as GcsRow;
+            var rhs = y as GcsRow;
             if (lhs == null || rhs == null)
             {
                 Debug.WriteLine($"Unknown types passed to the {nameof(GcsColumnSorter)}");
@@ -96,9 +96,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         #endregion
 
-        private PropertyInfo GetColumnPropertyInfo() => typeof(GcsItem).GetProperty(Column);
+        private PropertyInfo GetColumnPropertyInfo() => typeof(GcsRow).GetProperty(Column);
 
-        private object GetValue(GcsItem item)
+        private object GetValue(GcsRow item)
         {
             return _columnProperty.Value.GetValue(item);
         }
