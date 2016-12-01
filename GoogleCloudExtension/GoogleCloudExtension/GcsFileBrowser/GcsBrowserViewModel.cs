@@ -76,6 +76,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         public ICommand ShowDirectoryCommand { get; }
 
+        public ICommand RefreshCommand { get; }
+
         public GcsBrowserViewModel(GcsFileBrowserWindow owner)
         {
             _selectionUtils = new SelectionUtils(owner);
@@ -83,6 +85,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             PopAllCommand = new ProtectedCommand(OnPopAllCommand);
             NavigateToCommand = new ProtectedCommand<string>(OnNavigateToCommand);
             ShowDirectoryCommand = new ProtectedCommand<GcsRow>(OnShowDirectoryCommand);
+            RefreshCommand = new ProtectedCommand(OnRefreshCommand);
         }
 
         public void StartFileUpload(string[] files)
@@ -115,13 +118,53 @@ namespace GoogleCloudExtension.GcsFileBrowser
             PushToDirectory(dir.Name);
         }
 
+        private void OnRefreshCommand()
+        {
+            RefreshTopState();
+        }
+
         #endregion
 
         #region Navigation stack methods
 
+        private async void RefreshTopState()
+        {
+            GcsBrowserState newState;
+            try
+            {
+                IsLoading = true;
+
+                newState = await LoadStateForDirectoryAsync(Top.Name);
+            }
+            catch (DataSourceException ex)
+            {
+                Debug.WriteLine($"Failed to refersh directory {Top.Name}: {ex.Message}");
+                newState = CreateErrorState(Top.Name);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+
+            _stateStack[_stateStack.Count - 1] = newState;
+            RaisePropertyChanged(nameof(Top));
+        }
+
+
         private void PopToRoot()
         {
             _stateStack.RemoveRange(1, _stateStack.Count - 1);
+            RaisePropertyChanged(nameof(Top));
+        }
+
+        private void PopState()
+        {
+            if (_stateStack.Count == 1)
+            {
+                return;
+            }
+
+            _stateStack.RemoveRange(_stateStack.Count - 1, 1);
             RaisePropertyChanged(nameof(Top));
         }
 
@@ -146,8 +189,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
             catch (DataSourceException ex)
             {
-                Debug.WriteLine($"Failed to load directory {name} with error {ex.Message}");
-                state = CreateErrorState(ex, name);
+                Debug.WriteLine($"Failed to load directory {name}: {ex.Message}");
+                state = CreateErrorState(name);
             }
 
             _stateStack.Add(state);
@@ -201,7 +244,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
         }
 
-        private static GcsBrowserState CreateErrorState(DataSourceException ex, string name) =>
+        private static GcsBrowserState CreateErrorState(string name) =>
             new GcsBrowserState(new List<GcsRow> { GcsRow.CreateErrorRow($"Failed to load directory {name}.") }, name);
     }
 }

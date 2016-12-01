@@ -88,6 +88,7 @@
         <Button Grid.Column="1"
                 HorizontalAlignment="Right"
                 Style="{StaticResource CommonButtonDynamicStyle}"
+                Command="{Binding RefreshCommand}"
                 Margin="10,0,0,0">
             <Image Source="{mb:ImageResource GcsFileBrowser/Resources/refresh.png}" />
         </Button>
