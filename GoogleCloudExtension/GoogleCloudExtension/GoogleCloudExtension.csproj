@@ -240,6 +240,12 @@
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
     <Compile Include="SolutionUtils\ISolutionProject.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
+    <Compile Include="UploadProgressDialog\UploadOperation.cs" />
+    <Compile Include="UploadProgressDialog\UploadProgressDialogViewModel.cs" />
+    <Compile Include="UploadProgressDialog\UploadProgressDialogWindow.cs" />
+    <Compile Include="UploadProgressDialog\UploadProgressDialogWindowContent.xaml.cs">
+      <DependentUpon>UploadProgressDialogWindowContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utils\GaeUtils.cs" />
     <Compile Include="Utils\ProgressBarHelper.cs" />
     <Compile Include="Utils\ShellUtils.cs" />
@@ -638,6 +644,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UploadProgressDialog\UploadProgressDialogWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

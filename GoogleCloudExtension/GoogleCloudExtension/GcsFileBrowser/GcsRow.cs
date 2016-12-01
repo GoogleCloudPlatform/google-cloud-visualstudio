@@ -38,6 +38,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 Bucket = obj.Bucket,
                 Name = obj.Name,
                 IsFile = true,
+                Size = obj.Size.HasValue ? obj.Size.Value : 0ul,
                 LastModified = obj.Updated?.ToString() ?? "Unknown",
                 FileName = GetLeafName(obj.Name),
             };

@@ -10,12 +10,15 @@ namespace GoogleCloudExtension.GcsFileBrowser
     using System.Diagnostics.CodeAnalysis;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Linq;
 
     /// <summary>
     /// Interaction logic for GcsFileBrowserWindowControl.
     /// </summary>
     public partial class GcsFileBrowserWindowControl : UserControl
     {
+        private GcsBrowserViewModel ViewModel => (GcsBrowserViewModel)DataContext;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="GcsFileBrowserWindowControl"/> class.
         /// </summary>
@@ -32,8 +35,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
 
             var files = (string[])e.Data.GetData(DataFormats.FileDrop, autoConvert: false);
-            var viewModel = (GcsBrowserViewModel)DataContext;
-            viewModel.StartFileUpload(files);
+            ViewModel.StartFileUpload(files);
 
             e.Handled = true;
         }
@@ -41,6 +43,12 @@ namespace GoogleCloudExtension.GcsFileBrowser
         private void UserControl_DragOver(object sender, DragEventArgs e)
         {
             e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;  
+        }
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var self = (DataGrid)e.Source;
+            ViewModel.InvalidateSelectedItems(self.SelectedItems.Cast<GcsRow>());
         }
     }
 }

@@ -105,11 +105,11 @@ namespace GoogleCloudExtension.DataSources
             }
         }
 
-        public async Task UploadFileAsync(
+        public async void StartUploadOperation(
             string sourcePath,
             string bucket,
             string name,
-            IProgress<double> progress,
+            IUploadOperation operation,
             CancellationToken token)
         {
             try
@@ -126,22 +126,27 @@ namespace GoogleCloudExtension.DataSources
                         bucket,
                         stream,
                         null);
-                    request.ProgressChanged += (p) => OnProgressChanged(p, totalSize, progress);
+                    request.ProgressChanged += (p) => OnProgressChanged(p, totalSize, operation);
                     var response = await request.UploadAsync(token);
+                    operation.Completed();
                 }
             }
             catch (GoogleApiException ex)
             {
-                throw new DataSourceException(ex.Message, ex);
+                operation.Error(new DataSourceException(ex.Message, ex));
+            }
+            catch (TaskCanceledException)
+            {
+                operation.Cancelled();
             }
         }
 
         private static void OnProgressChanged(
             IUploadProgress uploadProgress,
             ulong totalSize,
-            IProgress<double> reporter)
+            IUploadOperation operation)
         {
-            reporter.Report((double)uploadProgress.BytesSent / (double)totalSize);
+            operation.Progress((double)uploadProgress.BytesSent / totalSize);
         }
     }
 }

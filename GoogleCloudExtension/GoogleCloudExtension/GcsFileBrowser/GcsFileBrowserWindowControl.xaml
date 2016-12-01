@@ -101,8 +101,7 @@
                   AutoGenerateColumns="False"
                   utils:DataGridBehaviors.HasCustomSort="True"
                   ItemsSource="{Binding Source={StaticResource cvs}}"
-                  SelectedItem="{Binding SelectedItem, Mode=OneWayToSource}"
-                  IsSynchronizedWithCurrentItem="True">
+                  SelectionChanged="DataGrid_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Name"
                                         SortMemberPath="FileName"

@@ -1,6 +1,7 @@
 ﻿using Google.Apis.Storage.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.UploadProgressDialog;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -19,12 +21,13 @@ namespace GoogleCloudExtension.GcsFileBrowser
         private readonly static GcsBrowserState s_emptyState =
             new GcsBrowserState(Enumerable.Empty<GcsRow>(), "/");
 
+        private readonly GcsFileBrowserWindow _owner;
         private readonly SelectionUtils _selectionUtils;
         private Bucket _bucket;
         private GcsDataSource _dataSource;
         private bool _isLoading;
         private readonly List<GcsBrowserState> _stateStack = new List<GcsBrowserState>();
-        private GcsRow _selectedItem;
+        private IList<GcsRow> _selectedItems;
 
         public Bucket Bucket
         {
@@ -60,15 +63,17 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         public bool IsReady => !IsLoading;
 
-        public GcsRow SelectedItem
+        public IList<GcsRow> SelectedItems
         {
-            get { return _selectedItem; }
-            set
+            get { return _selectedItems; }
+            private set
             {
-                SetValueAndRaise(ref _selectedItem, value);
+                SetValueAndRaise(ref _selectedItems, value);
                 InvalidateSelectedItem();
             }
         }
+
+        public GcsRow SelectedItem => SelectedItems.FirstOrDefault();
 
         public ICommand PopAllCommand { get; }
 
@@ -80,6 +85,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         public GcsBrowserViewModel(GcsFileBrowserWindow owner)
         {
+            _owner = owner;
             _selectionUtils = new SelectionUtils(owner);
 
             PopAllCommand = new ProtectedCommand(OnPopAllCommand);
@@ -88,17 +94,36 @@ namespace GoogleCloudExtension.GcsFileBrowser
             RefreshCommand = new ProtectedCommand(OnRefreshCommand);
         }
 
-        public void StartFileUpload(string[] files)
+        public async void StartFileUpload(string[] files)
         {
-            var uploads = files.Select((x) =>
+            var uploadOperations = files.Select((x) =>
             {
-                return new GcsUpload(sourcePath: x, bucket: Bucket.Name, namePrefix: Top.CurrentPath);
-            });
+                return new UploadOperation(
+                    SynchronizationContext.Current,
+                    source: x,
+                    bucket: Bucket.Name,
+                    destination: $"{Top.CurrentPath}{Path.GetFileName(x)}");
+            }).ToList();
 
-            foreach (var upload in uploads)
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            foreach (var operation in uploadOperations)
             {
-                Debug.WriteLine($"Uploading {upload.SourcePath} to {upload.DestGcsPath}");
+                _dataSource.StartUploadOperation(
+                    sourcePath: operation.Source,
+                    bucket: operation.Bucket,
+                    name: operation.Destination,
+                    operation: operation,
+                    token: tokenSource.Token);
             }
+
+            UploadProgressDialogWindow.PromptUser(uploadOperations, tokenSource);
+
+            RefreshTopState();
+        }
+
+        public void InvalidateSelectedItems(IEnumerable<GcsRow> selectedRows)
+        {
+            SelectedItems = selectedRows.ToList();
         }
 
         #region Command handlers
@@ -210,6 +235,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         private void InvalidateSelectedItem()
         {
+            RaisePropertyChanged(nameof(SelectedItem));
+
             if (SelectedItem != null)
             {
                 PropertyWindowItemBase item;
@@ -222,6 +249,10 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     item = new GcsFileItem(SelectedItem);
                 }
                 _selectionUtils.SelectItem(item);
+            }
+            else
+            {
+                _selectionUtils.ClearSelection();
             }
         }
 
