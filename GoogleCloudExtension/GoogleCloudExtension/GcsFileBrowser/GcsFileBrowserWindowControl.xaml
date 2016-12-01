@@ -4,7 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:GoogleCloudExtension.GcsFileBrowser"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+             xmlns:mb="clr-namespace:GoogleCloudExtension.Extensions"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              Padding="5"
@@ -26,6 +28,11 @@
     </UserControl.Resources>
 
     <Grid IsEnabled="{Binding IsReady}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="auto" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
@@ -75,12 +82,20 @@
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-
         </StackPanel>
+
+        <!-- The refresh button. -->
+        <Button Grid.Column="1"
+                HorizontalAlignment="Right"
+                Style="{StaticResource CommonButtonDynamicStyle}"
+                Margin="10,0,0,0">
+            <Image Source="{mb:ImageResource GcsFileBrowser/Resources/refresh.png}" />
+        </Button>
 
 
         <!-- The main area for the data. -->
         <DataGrid Grid.Row="2"
+                  Grid.ColumnSpan="2"
                   IsReadOnly="True"
                   AutoGenerateColumns="False"
                   utils:DataGridBehaviors.HasCustomSort="True"

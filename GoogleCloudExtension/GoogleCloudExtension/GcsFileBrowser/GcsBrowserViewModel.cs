@@ -202,6 +202,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
         }
 
         private static GcsBrowserState CreateErrorState(DataSourceException ex, string name) =>
-            new GcsBrowserState(new List<GcsRow> { GcsRow.CreateErrorRow(ex.Message) }, name);
+            new GcsBrowserState(new List<GcsRow> { GcsRow.CreateErrorRow($"Failed to load directory {name}.") }, name);
     }
 }
