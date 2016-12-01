@@ -16,9 +16,12 @@ using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Storage.v1;
 using Google.Apis.Storage.v1.Data;
+using Google.Apis.Upload;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
@@ -100,6 +103,45 @@ namespace GoogleCloudExtension.DataSources
                 Debug.WriteLine($"Failed to read GCS directory {prefix} in bucket {bucket}");
                 throw new DataSourceException(ex.Message, ex);
             }
+        }
+
+        public async Task UploadFileAsync(
+            string sourcePath,
+            string bucket,
+            string name,
+            IProgress<double> progress,
+            CancellationToken token)
+        {
+            try
+            {
+                using (var stream = new FileStream(sourcePath, FileMode.Open, FileAccess.Read))
+                {
+                    var totalSize = (ulong)stream.Length;
+                    var request = Service.Objects.Insert(
+                        new Google.Apis.Storage.v1.Data.Object
+                        {
+                            Name = name,
+                            Size = totalSize,
+                        },
+                        bucket,
+                        stream,
+                        null);
+                    request.ProgressChanged += (p) => OnProgressChanged(p, totalSize, progress);
+                    var response = await request.UploadAsync(token);
+                }
+            }
+            catch (GoogleApiException ex)
+            {
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        private static void OnProgressChanged(
+            IUploadProgress uploadProgress,
+            ulong totalSize,
+            IProgress<double> reporter)
+        {
+            reporter.Report((double)uploadProgress.BytesSent / (double)totalSize);
         }
     }
 }
