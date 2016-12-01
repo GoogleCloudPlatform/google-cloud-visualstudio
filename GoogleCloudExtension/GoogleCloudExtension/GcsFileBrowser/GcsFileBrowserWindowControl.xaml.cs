@@ -37,5 +37,10 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
             e.Handled = true;
         }
+
+        private void UserControl_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;  
+        }
     }
 }

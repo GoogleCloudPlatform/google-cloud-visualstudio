@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -84,6 +85,19 @@ namespace GoogleCloudExtension.GcsFileBrowser
             ShowDirectoryCommand = new ProtectedCommand<GcsRow>(OnShowDirectoryCommand);
         }
 
+        public void StartFileUpload(string[] files)
+        {
+            var uploads = files.Select((x) =>
+            {
+                return new GcsUpload(sourcePath: x, bucket: Bucket.Name, namePrefix: Top.CurrentPath);
+            });
+
+            foreach (var upload in uploads)
+            {
+                Debug.WriteLine($"Uploading {upload.SourcePath} to {upload.DestGcsPath}");
+            }
+        }
+
         #region Command handlers
 
         private void OnPopAllCommand()
@@ -125,7 +139,17 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         private async void PushToDirectory(string name)
         {
-            var state = await LoadStateForDirectoryAsync(name);
+            GcsBrowserState state;
+            try
+            {
+                state = await LoadStateForDirectoryAsync(name);
+            }
+            catch (DataSourceException ex)
+            {
+                Debug.WriteLine($"Failed to load directory {name} with error {ex.Message}");
+                state = CreateErrorState(ex, name);
+            }
+
             _stateStack.Add(state);
             RaisePropertyChanged(nameof(Top));
         }
@@ -166,8 +190,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
                 var dir = await _dataSource.GetDirectoryListAsync(Bucket.Name, name);
                 var items = Enumerable.Concat<GcsRow>(
-                    dir.Prefixes.OrderBy(x => x).Select(x => new GcsRow(x)),
-                    dir.Items.OrderBy(x => x.Name).Select(x => new GcsRow(x)));
+                    dir.Prefixes.OrderBy(x => x).Select(GcsRow.CreateDirectoryRow),
+                    dir.Items.OrderBy(x => x.Name).Select(GcsRow.CreateFileRow));
 
                 return new GcsBrowserState(items, name);
             }
@@ -177,9 +201,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
         }
 
-        public void StartFileUpload(string[] files)
-        {
-            throw new NotImplementedException();
-        }
+        private static GcsBrowserState CreateErrorState(DataSourceException ex, string name) =>
+            new GcsBrowserState(new List<GcsRow> { GcsRow.CreateErrorRow(ex.Message) }, name);
     }
 }

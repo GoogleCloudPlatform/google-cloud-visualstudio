@@ -6,34 +6,48 @@ namespace GoogleCloudExtension.GcsFileBrowser
 {
     public class GcsRow
     {
-        public string Bucket { get; }
+        public string Bucket { get; private set; }
 
-        public string Name { get; }
+        public string Name { get; private set; }
 
-        public string FileName { get; }
+        public string FileName { get; private set; }
 
-        public bool IsDirectory { get; }
+        public bool IsError { get; private set; }
 
-        public ulong Size { get; }
+        public bool IsFile { get; private set; }
 
-        public string LastModified { get; }
+        public bool IsDirectory { get; private set; }
 
-        public GcsRow(string name)
-        {
-            Name = name;
-            IsDirectory = true;
-            FileName = GetLeafName(Name);
-        }
+        public ulong Size { get; private set; }
 
-        public GcsRow(Object obj)
-        {
-            Bucket = obj.Bucket;
-            Name = obj.Name;
-            IsDirectory = false;
-            Size = obj.Size ?? 0;
-            LastModified = obj.Updated?.ToString() ?? "Unknown";
-            FileName = GetLeafName(Name);
-        }
+        public string LastModified { get; private set; }
+
+        public GcsRow() { }
+
+        public static GcsRow CreateDirectoryRow(string name) =>
+            new GcsRow
+            {
+                Name = name,
+                FileName = GetLeafName(name),
+                IsDirectory = true,
+            };
+
+        public static GcsRow CreateFileRow(Object obj) =>
+            new GcsRow
+            {
+                Bucket = obj.Bucket,
+                Name = obj.Name,
+                IsFile = true,
+                LastModified = obj.Updated?.ToString() ?? "Unknown",
+                FileName = GetLeafName(obj.Name),
+            };
+
+        public static GcsRow CreateErrorRow(string message) =>
+            new GcsRow
+            {
+                FileName = message,
+                IsError = true
+            };
 
         private static string GetLeafName(string name)
         {

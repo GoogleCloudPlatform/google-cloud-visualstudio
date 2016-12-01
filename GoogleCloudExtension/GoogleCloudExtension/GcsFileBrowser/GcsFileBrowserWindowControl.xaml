@@ -10,6 +10,7 @@
              Padding="5"
              AllowDrop="True"
              Drop="UserControl_Drop"
+             DragOver="UserControl_DragOver"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type local:GcsBrowserViewModel}}"
              d:DesignHeight="500" d:DesignWidth="500">
