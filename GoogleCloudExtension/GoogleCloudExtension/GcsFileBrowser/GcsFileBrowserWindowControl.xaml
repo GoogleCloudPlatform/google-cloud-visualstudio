@@ -102,6 +102,7 @@
                   IsReadOnly="True"
                   AutoGenerateColumns="False"
                   utils:DataGridBehaviors.HasCustomSort="True"
+                  ContextMenu="{Binding ContextMenu}"
                   ItemsSource="{Binding Source={StaticResource cvs}}"
                   SelectionChanged="DataGrid_SelectionChanged">
             <DataGrid.Columns>

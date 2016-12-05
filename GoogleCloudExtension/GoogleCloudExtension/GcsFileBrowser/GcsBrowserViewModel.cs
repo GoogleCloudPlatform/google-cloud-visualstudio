@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace GoogleCloudExtension.GcsFileBrowser
@@ -28,6 +29,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         private bool _isLoading;
         private readonly List<GcsBrowserState> _stateStack = new List<GcsBrowserState>();
         private IList<GcsRow> _selectedItems;
+        private ContextMenu _contextMenu;
 
         public Bucket Bucket
         {
@@ -71,6 +73,12 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 SetValueAndRaise(ref _selectedItems, value);
                 InvalidateSelectedItem();
             }
+        }
+
+        public ContextMenu ContextMenu
+        {
+            get { return _contextMenu; }
+            private set { SetValueAndRaise(ref _contextMenu, value); }
         }
 
         public GcsRow SelectedItem => SelectedItems.FirstOrDefault();
@@ -161,6 +169,35 @@ namespace GoogleCloudExtension.GcsFileBrowser
         public void InvalidateSelectedItems(IEnumerable<GcsRow> selectedRows)
         {
             SelectedItems = selectedRows.ToList();
+
+            UpdateContextMenu();
+        }
+
+        private void UpdateContextMenu()
+        {
+            var menuItems = new List<MenuItem>
+            {
+                new MenuItem { Header = "New Folder...", Command=new ProtectedCommand(OnNewFolderCommand) },
+                new MenuItem { Header = "Download...", Command=new ProtectedCommand(OnDownloadCommand, canExecuteCommand: SelectedItems != null &&  SelectedItems.Count > 0) },
+                new MenuItem { Header = "Delete", Command = new ProtectedCommand(OnDeleteCommand, canExecuteCommand: SelectedItems != null && SelectedItems.Count > 0) },
+            };
+
+            ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void OnDownloadCommand()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnDeleteCommand()
+        {
+            throw new NotImplementedException();
+        }
+
+        private void OnNewFolderCommand()
+        {
+            throw new NotImplementedException();
         }
 
         #region Command handlers
