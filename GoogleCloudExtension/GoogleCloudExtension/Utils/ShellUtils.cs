@@ -67,6 +67,26 @@ namespace GoogleCloudExtension.Utils
             return new Disposable(SetShellNormal);
         }
 
+        /// <summary>
+        /// Updates the UI state of all commands in the VS shell. This is useful when the state that determines
+        /// if a command is enabled/disabled (or visible/invisiable) changes and the commands in the menus need
+        /// to be updated.
+        /// In essence this method will cause the <seealso cref="OnBeforeQueryStatus"/> method in all commands to be
+        /// called again.
+        /// </summary>
+        public static void InvalidateCommandsState()
+        {
+            var shell = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
+            if (shell == null)
+            {
+                Debug.WriteLine($"Could not acquire {nameof(SVsUIShell)}");
+                return;
+            }
+
+            // Updates the UI asynchronously.
+            shell.UpdateCommandUI(fImmediateUpdate: 0);
+        }
+
         private static void SetShellNormal()
         {
             var monitorSelection = GetMonitorSelectionService();
