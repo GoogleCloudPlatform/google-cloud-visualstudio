@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
 {
-    public interface IUploadOperation
+    public interface IGcsFileOperation
     {
         void Progress(double value);
 

@@ -13,14 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace GoogleCloudExtension.UploadProgressDialog
+namespace GoogleCloudExtension.GcsFileProgressDialog
 {
     /// <summary>
     /// Interaction logic for UploadProgressDialogWindowContent.xaml
     /// </summary>
-    public partial class UploadProgressDialogWindowContent : UserControl
+    public partial class GcsFileProgressDialogWindowContent : UserControl
     {
-        public UploadProgressDialogWindowContent()
+        public GcsFileProgressDialogWindowContent()
         {
             InitializeComponent();
         }

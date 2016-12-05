@@ -8,16 +8,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace GoogleCloudExtension.UploadProgressDialog
+namespace GoogleCloudExtension.GcsFileProgressDialog
 {
-    class UploadProgressDialogViewModel : ViewModelBase
+    class GcsFileProgressDialogViewModel : ViewModelBase
     {
-        private readonly UploadProgressDialogWindow _owner;
+        private readonly GcsFileProgressDialogWindow _owner;
         private readonly CancellationTokenSource _tokenSource;
         private int _completed = 0;
         private string _caption = Resources.UiCancelButtonCaption;
 
-        public ObservableCollection<UploadOperation> Operations { get; }
+        public ObservableCollection<GcsFileOperation> Operations { get; }
 
         public string Caption
         {
@@ -29,15 +29,15 @@ namespace GoogleCloudExtension.UploadProgressDialog
 
         private bool IsComplete => _completed >= Operations.Count;
 
-        public UploadProgressDialogViewModel(
-            UploadProgressDialogWindow owner,
-            IEnumerable<UploadOperation> operations,
+        public GcsFileProgressDialogViewModel(
+            GcsFileProgressDialogWindow owner,
+            IEnumerable<GcsFileOperation> operations,
             CancellationTokenSource tokenSource)
         {
             _owner = owner;
             _tokenSource = tokenSource;
 
-            Operations = new ObservableCollection<UploadOperation>(operations);
+            Operations = new ObservableCollection<GcsFileOperation>(operations);
             foreach (var operation in Operations)
             {
                 operation.Completed += OnOperationCompleted;

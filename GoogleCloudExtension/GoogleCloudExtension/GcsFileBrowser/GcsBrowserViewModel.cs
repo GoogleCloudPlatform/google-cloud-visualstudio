@@ -1,8 +1,9 @@
 ﻿using Google.Apis.Storage.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.UploadProgressDialog;
+using GoogleCloudExtension.GcsFileProgressDialog;
 using GoogleCloudExtension.Utils;
+using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -13,6 +14,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using FBD = System.Windows.Forms.FolderBrowserDialog;
 using System.Windows.Input;
 
 namespace GoogleCloudExtension.GcsFileBrowser
@@ -117,14 +119,14 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     token: tokenSource.Token);
             }
 
-            UploadProgressDialogWindow.PromptUser(uploadOperations, tokenSource);
+            GcsFileProgressDialogWindow.PromptUser(uploadOperations, tokenSource);
 
             RefreshTopState();
         }
 
-        private List<UploadOperation> CreateUploadOperations(string[] files)
+        private List<GcsFileOperation> CreateUploadOperations(string[] files)
         {
-            var result = new List<UploadOperation>();
+            var result = new List<GcsFileOperation>();
 
             foreach (var input in files)
             {
@@ -137,7 +139,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 }
                 else
                 {
-                    result.Add(new UploadOperation(
+                    result.Add(new GcsFileOperation(
                         source: info.FullName,
                         bucket: Bucket.Name,
                         destination: $"{Top.CurrentPath}{info.Name}"));
@@ -147,11 +149,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
             return result;
         }
 
-        private IEnumerable<UploadOperation> CreateUploadOperationsForDirectory(string dir, string localPath)
+        private IEnumerable<GcsFileOperation> CreateUploadOperationsForDirectory(string dir, string localPath)
         {
             foreach (var file in Directory.EnumerateFiles(dir))
             {
-                yield return new UploadOperation(
+                yield return new GcsFileOperation(
                     source: file,
                     bucket: Bucket.Name,
                     destination: $"{Top.CurrentPath}{localPath}/{Path.GetFileName(file)}");
@@ -178,16 +180,50 @@ namespace GoogleCloudExtension.GcsFileBrowser
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = "New Folder...", Command=new ProtectedCommand(OnNewFolderCommand) },
-                new MenuItem { Header = "Download...", Command=new ProtectedCommand(OnDownloadCommand, canExecuteCommand: SelectedItems != null &&  SelectedItems.Count > 0) },
+                new MenuItem { Header = "Download...", Command=new ProtectedCommand(OnDownloadCommand, canExecuteCommand: CanDownloadItems()) },
                 new MenuItem { Header = "Delete", Command = new ProtectedCommand(OnDeleteCommand, canExecuteCommand: SelectedItems != null && SelectedItems.Count > 0) },
             };
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
+        private bool CanDownloadItems()
+        {
+            return SelectedItems != null && SelectedItems.Where(x => x.IsFile).Count() > 0;
+        }
+
         private void OnDownloadCommand()
         {
-            throw new NotImplementedException();
+            FBD dialog = new FBD();
+            dialog.Description = "Download files";
+            dialog.ShowNewFolderButton = true;
+
+            var result = dialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.Cancel)
+            {
+                return;
+            }
+
+            var downloadOperations = SelectedItems
+                .Where(x => x.IsFile)
+                .Select(x => new GcsFileOperation(
+                    source: x.Name,
+                    bucket: Bucket.Name,
+                    destination: Path.Combine(dialog.SelectedPath, x.FileName)))
+                .ToList();
+
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            foreach (var operation in downloadOperations)
+            {
+                _dataSource.StartDownloadOperation(
+                    bucket: Bucket.Name,
+                    name: operation.Source,
+                    destPath: operation.Destination,
+                    operation: operation,
+                    token: tokenSource.Token);
+            }
+
+            GcsFileProgressDialogWindow.PromptUser(downloadOperations, tokenSource);
         }
 
         private void OnDeleteCommand()

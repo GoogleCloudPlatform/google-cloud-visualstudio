@@ -10,9 +10,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.UploadProgressDialog
+namespace GoogleCloudExtension.GcsFileProgressDialog
 {
-    public class UploadOperation : Model, IUploadOperation
+    public class GcsFileOperation : Model, IGcsFileOperation
     {
         private readonly SynchronizationContext _context;
         private double _progress = 0;
@@ -38,11 +38,9 @@ namespace GoogleCloudExtension.UploadProgressDialog
 
         public string Destination { get; }
 
-        public string FullGcsPath => $"gs://{Bucket}/{Destination}";
-
         public event EventHandler Completed;
 
-        public UploadOperation(
+        public GcsFileOperation(
             string source,
             string bucket,
             string destination)
@@ -56,22 +54,22 @@ namespace GoogleCloudExtension.UploadProgressDialog
 
         #region IUploadOperation implementation.
 
-        void IUploadOperation.Progress(double value)
+        void IGcsFileOperation.Progress(double value)
         {
             _context.Send((x) => Progress = value, null);
         }
 
-        void IUploadOperation.Completed()
+        void IGcsFileOperation.Completed()
         {
             _context.Send((x) => Completed?.Invoke(this, EventArgs.Empty), null);
         }
 
-        void IUploadOperation.Cancelled()
+        void IGcsFileOperation.Cancelled()
         {
             Debug.WriteLine($"Operation or {Source} cancelled.");
         }
 
-        void IUploadOperation.Error(DataSourceException ex)
+        void IGcsFileOperation.Error(DataSourceException ex)
         {
             IsError = true;
         }

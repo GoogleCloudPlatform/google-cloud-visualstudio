@@ -240,11 +240,11 @@
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
     <Compile Include="SolutionUtils\ISolutionProject.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
-    <Compile Include="UploadProgressDialog\UploadOperation.cs" />
-    <Compile Include="UploadProgressDialog\UploadProgressDialogViewModel.cs" />
-    <Compile Include="UploadProgressDialog\UploadProgressDialogWindow.cs" />
-    <Compile Include="UploadProgressDialog\UploadProgressDialogWindowContent.xaml.cs">
-      <DependentUpon>UploadProgressDialogWindowContent.xaml</DependentUpon>
+    <Compile Include="GcsFileProgressDialog\GcsFileOperation.cs" />
+    <Compile Include="GcsFileProgressDialog\GcsFileProgressDialogViewModel.cs" />
+    <Compile Include="GcsFileProgressDialog\GcsFileProgressDialogWindow.cs" />
+    <Compile Include="GcsFileProgressDialog\GcsFileProgressDialogWindowContent.xaml.cs">
+      <DependentUpon>GcsFileProgressDialogWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\GaeUtils.cs" />
     <Compile Include="Utils\ProgressBarHelper.cs" />
@@ -649,7 +649,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UploadProgressDialog\UploadProgressDialogWindowContent.xaml">
+    <Page Include="GcsFileProgressDialog\GcsFileProgressDialogWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

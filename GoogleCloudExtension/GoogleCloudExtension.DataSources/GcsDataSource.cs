@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Apis.Download;
 
 namespace GoogleCloudExtension.DataSources
 {
@@ -109,7 +110,7 @@ namespace GoogleCloudExtension.DataSources
             string sourcePath,
             string bucket,
             string name,
-            IUploadOperation operation,
+            IGcsFileOperation operation,
             CancellationToken token)
         {
             try
@@ -126,7 +127,7 @@ namespace GoogleCloudExtension.DataSources
                         bucket,
                         stream,
                         null);
-                    request.ProgressChanged += (p) => OnProgressChanged(p, totalSize, operation);
+                    request.ProgressChanged += (p) => OnUploadProgress(p, totalSize, operation);
                     var response = await request.UploadAsync(token);
                     operation.Completed();
                 }
@@ -141,10 +142,50 @@ namespace GoogleCloudExtension.DataSources
             }
         }
 
-        private static void OnProgressChanged(
+        public async void StartDownloadOperation(
+            string bucket,
+            string name,
+            string destPath,
+            IGcsFileOperation operation,
+            CancellationToken token)
+        {
+            try
+            {
+                using (var stream = new FileStream(destPath, FileMode.OpenOrCreate, FileAccess.Write))
+                {
+                    // Find out the total size of the file to download.
+                    var request = Service.Objects.Get(bucket, name);
+                    var obj = await request.ExecuteAsync(token);
+                    ulong totalSize = obj.Size ?? 0;
+
+                    // Hookup the progress indicator.
+                    request.MediaDownloader.ProgressChanged += (p) => OnDownloadProgress(p, totalSize, operation);
+                    var response = await request.DownloadAsync(stream, token);
+                    operation.Completed();
+                }
+            }
+            catch (GoogleApiException ex)
+            {
+                operation.Error(new DataSourceException(ex.Message, ex));
+            }
+            catch (TaskCanceledException)
+            {
+                operation.Cancelled();
+            }
+        }
+
+        private void OnDownloadProgress(
+            IDownloadProgress downloadProgress,
+            ulong totalSize,
+            IGcsFileOperation operation)
+        {
+            operation.Progress((double)downloadProgress.BytesDownloaded / totalSize);
+        }
+
+        private static void OnUploadProgress(
             IUploadProgress uploadProgress,
             ulong totalSize,
-            IUploadOperation operation)
+            IGcsFileOperation operation)
         {
             operation.Progress((double)uploadProgress.BytesSent / totalSize);
         }
