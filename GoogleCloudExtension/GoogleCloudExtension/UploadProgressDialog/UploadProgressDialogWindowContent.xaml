@@ -50,7 +50,9 @@
 
                             <TextBlock Text="{Binding SourceName}"
                                        TextWrapping="NoWrap"
+                                       MaxWidth="300px"
                                        TextTrimming="CharacterEllipsis" 
+                                       HorizontalAlignment="Left"
                                        Style="{StaticResource CommonTextStyle}" />
                             <ProgressBar Grid.Column="1"
                                          Minimum="0.0"
