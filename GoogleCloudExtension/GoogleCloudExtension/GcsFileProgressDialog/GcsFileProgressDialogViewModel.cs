@@ -14,6 +14,8 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         private int _completed = 0;
         private string _caption = Resources.UiCancelButtonCaption;
 
+        public string Message { get; }
+
         public ObservableCollection<GcsFileOperation> Operations { get; }
 
         public string Caption
@@ -27,6 +29,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         private bool IsComplete => _completed >= Operations.Count;
 
         public GcsFileProgressDialogViewModel(
+            string message,
             GcsFileProgressDialogWindow owner,
             IEnumerable<GcsFileOperation> operations,
             CancellationTokenSource tokenSource)
@@ -34,6 +37,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
             _owner = owner;
             _tokenSource = tokenSource;
 
+            Message = message;
             Operations = new ObservableCollection<GcsFileOperation>(operations);
             foreach (var operation in Operations)
             {

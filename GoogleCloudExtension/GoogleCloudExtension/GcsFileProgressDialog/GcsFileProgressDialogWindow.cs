@@ -6,19 +6,22 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
 {
     internal class GcsFileProgressDialogWindow : CommonDialogWindowBase
     {
-        private GcsFileProgressDialogWindow(IEnumerable<GcsFileOperation> operations, CancellationTokenSource tokenSource) :
-            base("Uploading Files")
+        private GcsFileProgressDialogWindow(
+            string caption,
+            string message,
+            IEnumerable<GcsFileOperation> operations,
+            CancellationTokenSource tokenSource) : base(caption)
         {
-            var viewModel = new GcsFileProgressDialogViewModel(this, operations, tokenSource);
+            var viewModel = new GcsFileProgressDialogViewModel(message, this, operations, tokenSource);
             Content = new GcsFileProgressDialogWindowContent
             {
                 DataContext = viewModel
             };
         }
 
-        public static void PromptUser(IEnumerable<GcsFileOperation> operations, CancellationTokenSource tokenSource)
+        public static void PromptUser(string caption, string message, IEnumerable<GcsFileOperation> operations, CancellationTokenSource tokenSource)
         {
-            var dialog = new GcsFileProgressDialogWindow(operations, tokenSource);
+            var dialog = new GcsFileProgressDialogWindow(caption, message, operations, tokenSource);
             dialog.ShowModal();
         }
     }

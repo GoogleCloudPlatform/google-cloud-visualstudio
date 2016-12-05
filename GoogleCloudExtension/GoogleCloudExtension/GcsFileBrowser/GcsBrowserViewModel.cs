@@ -116,7 +116,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     token: tokenSource.Token);
             }
 
-            GcsFileProgressDialogWindow.PromptUser(uploadOperations, tokenSource);
+            GcsFileProgressDialogWindow.PromptUser(
+                caption: "Upload Files",
+                message: "Files being uploaded",
+                operations: uploadOperations,
+                tokenSource: tokenSource);
 
             RefreshTopState();
         }
@@ -220,7 +224,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     token: tokenSource.Token);
             }
 
-            GcsFileProgressDialogWindow.PromptUser(downloadOperations, tokenSource);
+            GcsFileProgressDialogWindow.PromptUser(
+                caption: "Download Files",
+                message: "Files being downloaded",
+                operations: downloadOperations,
+                tokenSource: tokenSource);
         }
 
         private void OnDeleteCommand()
@@ -252,7 +260,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     token: tokenSource.Token);
             }
 
-            GcsFileProgressDialogWindow.PromptUser(deleteOperations, tokenSource);
+            GcsFileProgressDialogWindow.PromptUser(
+                caption: "Deleting Files",
+                message: "Files being deleted",
+                operations: deleteOperations,
+                tokenSource: tokenSource);
 
             RefreshTopState();
         }

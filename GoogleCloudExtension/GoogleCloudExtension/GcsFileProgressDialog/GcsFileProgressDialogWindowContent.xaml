@@ -34,7 +34,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <Label Content="_File uploads:" Style="{StaticResource CommonLabelStyle}" />
+            <Label Content="{Binding Message}" Style="{StaticResource CommonLabelStyle}" />
 
             <ListBox Grid.Row="1"
                  ItemsSource="{Binding Operations}"
