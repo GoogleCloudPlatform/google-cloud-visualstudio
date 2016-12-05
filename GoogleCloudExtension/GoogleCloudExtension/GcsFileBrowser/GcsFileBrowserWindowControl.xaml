@@ -24,6 +24,8 @@
             </ResourceDictionary.MergedDictionaries>
 
             <CollectionViewSource x:Key="cvs" Source="{Binding Top.Items}" />
+
+            <utils:VisibilityConverter x:Key="commonVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -108,19 +110,30 @@
                                         utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter FileName, SortDirectories=True}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Grid>
-                                <TextBlock Text="{Binding FileName}"
-                                           Visibility="{Binding IsDirectory, Converter={utils:VisibilityConverter IsNegated=True}}"
-                                           Style="{StaticResource CommonTextStyle}" />
-                                <TextBlock Visibility="{Binding IsDirectory, Converter={utils:VisibilityConverter}}"
-                                           Style="{StaticResource CommonTextStyle}">
-                                    <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
-                                               Command="{Binding DataContext.ShowDirectoryCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                               CommandParameter="{Binding}">
-                                        <TextBlock Text="{Binding FileName}" />
-                                    </Hyperlink>
-                                </TextBlock>
-                            </Grid>
+                            <StackPanel Orientation="Horizontal">
+                                <!-- Icon for the name. -->
+                                <Grid>
+                                    <Image Source="{mb:ImageResource GcsFileBrowser/Resources/file.png}" Margin="0,0,5,0"
+                                           Visibility="{Binding IsFile, Converter={StaticResource commonVisibilityConverter}}"/>
+                                    <Image Source="{mb:ImageResource GcsFileBrowser/Resources/folder.png}" Margin="0,0,5,0"
+                                           Visibility="{Binding IsDirectory, Converter={StaticResource commonVisibilityConverter}}"/>
+                                </Grid>
+
+                                <!-- The name itself. Which can be a hyperlink if the item is a directory. -->
+                                <Grid>
+                                    <TextBlock Text="{Binding FileName}"
+                                               Visibility="{Binding IsFile, Converter={StaticResource commonVisibilityConverter}}"
+                                               Style="{StaticResource CommonTextStyle}" />
+                                    <TextBlock Visibility="{Binding IsDirectory, Converter={StaticResource commonVisibilityConverter}}"
+                                               Style="{StaticResource CommonTextStyle}">
+                                        <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
+                                                   Command="{Binding DataContext.ShowDirectoryCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
+                                                   CommandParameter="{Binding}">
+                                            <TextBlock Text="{Binding FileName}" />
+                                        </Hyperlink>
+                                    </TextBlock>
+                                </Grid>
+                            </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
