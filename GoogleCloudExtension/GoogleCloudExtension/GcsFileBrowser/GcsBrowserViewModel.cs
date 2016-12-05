@@ -234,7 +234,27 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 return;
             }
 
+            var deleteOperations = SelectedItems
+               .Where(x => x.IsFile)
+               .Select(x => new GcsFileOperation(
+                   source: x.Name,
+                   bucket: Bucket.Name,
+                   destination: null))
+               .ToList();
 
+            CancellationTokenSource tokenSource = new CancellationTokenSource();
+            foreach (var operation in deleteOperations)
+            {
+                _dataSource.StartDeleteOperation(
+                    bucket: Bucket.Name,
+                    name: operation.Source,
+                    operation: operation,
+                    token: tokenSource.Token);
+            }
+
+            GcsFileProgressDialogWindow.PromptUser(deleteOperations, tokenSource);
+
+            RefreshTopState();
         }
 
         private void OnNewFolderCommand()
@@ -275,7 +295,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             {
                 IsLoading = true;
 
-                newState = await LoadStateForDirectoryAsync(Top.Name);
+                newState = await LoadStateForDirectoryAsync(Top.CurrentPath);
             }
             catch (DataSourceException ex)
             {

@@ -174,7 +174,7 @@ namespace GoogleCloudExtension.DataSources
             }
         }
 
-        public async void StartDeleteOperation(string bucket, string name, IDeleteOperation operation, CancellationToken token)
+        public async void StartDeleteOperation(string bucket, string name, IGcsFileOperation operation, CancellationToken token)
         {
             try
             {

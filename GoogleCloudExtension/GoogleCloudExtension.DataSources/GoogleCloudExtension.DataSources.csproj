@@ -116,7 +116,6 @@
     <Compile Include="GaeVersionExtensions.cs" />
     <Compile Include="GceDataSource.cs" />
     <Compile Include="GcsDirectory.cs" />
-    <Compile Include="IDeleteOperation.cs" />
     <Compile Include="InstanceExtensions.cs" />
     <Compile Include="GceOperation.cs" />
     <Compile Include="GPlusDataSource.cs" />

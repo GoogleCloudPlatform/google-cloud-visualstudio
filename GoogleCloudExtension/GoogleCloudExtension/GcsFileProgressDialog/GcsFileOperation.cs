@@ -56,7 +56,11 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
 
         void IGcsFileOperation.Completed()
         {
-            _context.Send((x) => Completed?.Invoke(this, EventArgs.Empty), null);
+            _context.Send((x) =>
+            {
+                Progress = 1.0;
+                Completed?.Invoke(this, EventArgs.Empty);
+            }, null);
         }
 
         void IGcsFileOperation.Cancelled()
