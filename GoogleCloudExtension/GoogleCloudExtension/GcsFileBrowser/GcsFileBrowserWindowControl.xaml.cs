@@ -1,4 +1,8 @@
-﻿//------------------------------------------------------------------------------
+﻿
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+//------------------------------------------------------------------------------
 // <copyright file="GcsFileBrowserWindowControl.xaml.cs" company="Company">
 //     Copyright (c) Company.  All rights reserved.
 // </copyright>
@@ -6,10 +10,6 @@
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
-    using System.Linq;
-    using System.Windows;
-    using System.Windows.Controls;
-
     /// <summary>
     /// Interaction logic for GcsFileBrowserWindowControl.
     /// </summary>
@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         private void UserControl_DragOver(object sender, DragEventArgs e)
         {
-            e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;  
+            e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
         }
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)

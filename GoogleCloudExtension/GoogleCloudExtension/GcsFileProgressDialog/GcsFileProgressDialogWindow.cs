@@ -18,7 +18,7 @@ using System.Threading;
 
 namespace GoogleCloudExtension.GcsFileProgressDialog
 {
-    internal class GcsFileProgressDialogWindow : CommonDialogWindowBase
+    public class GcsFileProgressDialogWindow : CommonDialogWindowBase
     {
         private GcsFileProgressDialogWindow(
             string caption,

@@ -1,4 +1,11 @@
-﻿//------------------------------------------------------------------------------
+﻿
+using Google.Apis.Storage.v1.Data;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
+using System;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
+//------------------------------------------------------------------------------
 // <copyright file="GcsFileBrowserWindow.cs" company="Company">
 //     Copyright (c) Company.  All rights reserved.
 // </copyright>
@@ -6,13 +13,6 @@
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
-    using Google.Apis.Storage.v1.Data;
-    using Microsoft.VisualStudio.Shell;
-    using Microsoft.VisualStudio.Shell.Interop;
-    using System;
-    using System.Diagnostics;
-    using System.Runtime.InteropServices;
-
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.
     /// </summary>

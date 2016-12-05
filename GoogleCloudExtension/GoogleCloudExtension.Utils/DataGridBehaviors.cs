@@ -104,7 +104,7 @@ namespace GoogleCloudExtension.Utils
             column.SortDirection = newIsDescending ? System.ComponentModel.ListSortDirection.Descending : System.ComponentModel.ListSortDirection.Ascending;
             collectionView.CustomSort = new DataGridColumnCustomSorter(customSorter, newIsDescending);
 
-            e.Handled = true;   
+            e.Handled = true;
         }
     }
 }

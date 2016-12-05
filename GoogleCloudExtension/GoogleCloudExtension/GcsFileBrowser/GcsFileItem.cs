@@ -46,6 +46,5 @@ namespace GoogleCloudExtension.GcsFileBrowser
         [DisplayName("GCS Path")]
         [Description("The full path to the blob.")]
         public string GcsPath => $"gs://{_row.Bucket}/{_row.Name}";
-           
     }
 }

@@ -21,7 +21,7 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.GcsFileProgressDialog
 {
-    class GcsFileProgressDialogViewModel : ViewModelBase
+    public class GcsFileProgressDialogViewModel : ViewModelBase
     {
         private readonly GcsFileProgressDialogWindow _owner;
         private readonly CancellationTokenSource _tokenSource;
