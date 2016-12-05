@@ -3,19 +3,16 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GcsFileProgressDialog;
 using GoogleCloudExtension.Utils;
-using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using FBD = System.Windows.Forms.FolderBrowserDialog;
 using System.Windows.Input;
+using FBD = System.Windows.Forms.FolderBrowserDialog;
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
@@ -228,7 +225,16 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         private void OnDeleteCommand()
         {
-            throw new NotImplementedException();
+            if (!UserPromptUtils.ActionPrompt(
+                prompt: "Are you sure you want to delete these files?",
+                title: "Delete",
+                actionCaption: Resources.UiDeleteButtonCaption,
+                cancelCaption: Resources.UiCancelButtonCaption))
+            {
+                return;
+            }
+
+
         }
 
         private void OnNewFolderCommand()

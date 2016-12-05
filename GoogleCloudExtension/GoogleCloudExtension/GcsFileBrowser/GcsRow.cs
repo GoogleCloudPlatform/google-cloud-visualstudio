@@ -1,5 +1,4 @@
 ﻿using Google.Apis.Storage.v1.Data;
-using GoogleCloudExtension.Utils;
 using System.Linq;
 
 namespace GoogleCloudExtension.GcsFileBrowser

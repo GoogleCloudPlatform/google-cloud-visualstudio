@@ -14,6 +14,7 @@
 
 using Google;
 using Google.Apis.Auth.OAuth2;
+using Google.Apis.Download;
 using Google.Apis.Storage.v1;
 using Google.Apis.Storage.v1.Data;
 using Google.Apis.Upload;
@@ -23,7 +24,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Apis.Download;
 
 namespace GoogleCloudExtension.DataSources
 {
@@ -163,6 +163,23 @@ namespace GoogleCloudExtension.DataSources
                     var response = await request.DownloadAsync(stream, token);
                     operation.Completed();
                 }
+            }
+            catch (GoogleApiException ex)
+            {
+                operation.Error(new DataSourceException(ex.Message, ex));
+            }
+            catch (TaskCanceledException)
+            {
+                operation.Cancelled();
+            }
+        }
+
+        public async void StartDeleteOperation(string bucket, string name, IDeleteOperation operation, CancellationToken token)
+        {
+            try
+            {
+                var response = await Service.Objects.Delete(bucket, name).ExecuteAsync();
+                operation.Completed();
             }
             catch (GoogleApiException ex)
             {

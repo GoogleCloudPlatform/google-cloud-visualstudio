@@ -1,9 +1,7 @@
 ﻿namespace GoogleCloudExtension.DataSources
 {
-    public interface IGcsFileOperation
+    public interface IDeleteOperation
     {
-        void Progress(double value);
-
         void Completed();
 
         void Cancelled();

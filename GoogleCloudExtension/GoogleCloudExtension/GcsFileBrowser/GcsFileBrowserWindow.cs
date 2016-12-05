@@ -6,13 +6,12 @@
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
-    using System;
-    using System.Runtime.InteropServices;
-    using Microsoft.VisualStudio.Shell;
-    using System.Diagnostics;
-    using Microsoft.VisualStudio.Shell.Interop;
-    using Utils;
     using Google.Apis.Storage.v1.Data;
+    using Microsoft.VisualStudio.Shell;
+    using Microsoft.VisualStudio.Shell.Interop;
+    using System;
+    using System.Diagnostics;
+    using System.Runtime.InteropServices;
 
     /// <summary>
     /// This class implements the tool window exposed by this package and hosts a user control.

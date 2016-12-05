@@ -17,7 +17,6 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
-using GoogleCloudExtension.GcsFileBrowser;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
