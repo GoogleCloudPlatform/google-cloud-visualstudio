@@ -96,14 +96,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         public async void StartFileUpload(string[] files)
         {
-            var uploadOperations = files.Select((x) =>
-            {
-                return new UploadOperation(
-                    SynchronizationContext.Current,
-                    source: x,
-                    bucket: Bucket.Name,
-                    destination: $"{Top.CurrentPath}{Path.GetFileName(x)}");
-            }).ToList();
+            var uploadOperations = CreateUploadOperations(files);
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             foreach (var operation in uploadOperations)
@@ -119,6 +112,50 @@ namespace GoogleCloudExtension.GcsFileBrowser
             UploadProgressDialogWindow.PromptUser(uploadOperations, tokenSource);
 
             RefreshTopState();
+        }
+
+        private List<UploadOperation> CreateUploadOperations(string[] files)
+        {
+            var result = new List<UploadOperation>();
+
+            foreach (var input in files)
+            {
+                var info = new FileInfo(input);
+                var isDirectory = (info.Attributes & FileAttributes.Directory) != 0;
+
+                if (isDirectory)
+                {
+                    result.AddRange(CreateUploadOperationsForDirectory(info.FullName, info.Name));
+                }
+                else
+                {
+                    result.Add(new UploadOperation(
+                        source: info.FullName,
+                        bucket: Bucket.Name,
+                        destination: $"{Top.CurrentPath}{info.Name}"));
+                }
+            }
+
+            return result;
+        }
+
+        private IEnumerable<UploadOperation> CreateUploadOperationsForDirectory(string dir, string localPath)
+        {
+            foreach (var file in Directory.EnumerateFiles(dir))
+            {
+                yield return new UploadOperation(
+                    source: file,
+                    bucket: Bucket.Name,
+                    destination: $"{Top.CurrentPath}{localPath}/{Path.GetFileName(file)}");
+            }
+
+            foreach (var subDir in Directory.EnumerateDirectories(dir))
+            {
+                foreach (var operation in CreateUploadOperationsForDirectory(subDir, $"{localPath}/{Path.GetFileName(subDir)}"))
+                {
+                    yield return operation;
+                }
+            }
         }
 
         public void InvalidateSelectedItems(IEnumerable<GcsRow> selectedRows)

@@ -43,12 +43,11 @@ namespace GoogleCloudExtension.UploadProgressDialog
         public event EventHandler Completed;
 
         public UploadOperation(
-            SynchronizationContext context,
             string source,
             string bucket,
             string destination)
         {
-            _context = context;
+            _context = SynchronizationContext.Current;
 
             Source = source;
             Bucket = bucket;
