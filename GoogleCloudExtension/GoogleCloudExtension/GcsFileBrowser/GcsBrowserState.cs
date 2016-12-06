@@ -25,6 +25,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         public IEnumerable<string> PathSteps { get; }
 
+        public bool NeedsRefresh { get; set; }
+
         public string Name => PathSteps.LastOrDefault() ?? "";
 
         public string CurrentPath

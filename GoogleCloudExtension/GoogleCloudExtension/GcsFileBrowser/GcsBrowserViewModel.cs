@@ -245,7 +245,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 tokenSource: tokenSource);
         }
 
-        private void OnDeleteCommand()
+        private async void OnDeleteCommand()
         {
             if (!UserPromptUtils.ActionPrompt(
                 prompt: "Are you sure you want to delete these files?",
@@ -256,22 +256,38 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 return;
             }
 
-            var deleteOperations = SelectedItems
-               .Where(x => x.IsFile)
-               .Select(x => new GcsFileOperation(
-                   source: x.Name,
-                   bucket: Bucket.Name,
-                   destination: null))
-               .ToList();
 
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
-            foreach (var operation in deleteOperations)
+            var deleteOperations = new List<GcsFileOperation>();
+            var tokenSource = new CancellationTokenSource();
+
+            try
             {
-                _dataSource.StartDeleteOperation(
-                    bucket: Bucket.Name,
-                    name: operation.Source,
-                    operation: operation,
-                    token: tokenSource.Token);
+                IsLoading = true;
+
+                deleteOperations.AddRange(SelectedItems
+                   .Where(x => x.IsFile)
+                   .Select(x => new GcsFileOperation(
+                       source: x.Name,
+                       bucket: Bucket.Name,
+                       destination: null)));
+                deleteOperations.AddRange(await GetSubDirectoryFiles(SelectedItems.Where(x => x.IsDirectory)));
+
+                foreach (var operation in deleteOperations)
+                {
+                    _dataSource.StartDeleteOperation(
+                        bucket: Bucket.Name,
+                        name: operation.Source,
+                        operation: operation,
+                        token: tokenSource.Token);
+                }
+            }
+            catch (DataSourceException ex)
+            {
+
+            }
+            finally
+            {
+                IsLoading = false;
             }
 
             GcsFileProgressDialogWindow.PromptUser(
@@ -280,15 +296,32 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 operations: deleteOperations,
                 tokenSource: tokenSource);
 
+            InvalidateStack();
             RefreshTopState();
         }
+
+        private async Task<IEnumerable<GcsFileOperation>> GetSubDirectoryFiles(IEnumerable<GcsRow> rows)
+        {
+            var result = new List<GcsFileOperation>();
+
+            foreach (var row in rows)
+            {
+                var files = await _dataSource.GetObjectLisAsync(Bucket.Name, row.Name);
+                result.AddRange(files.Select(x => new GcsFileOperation(
+                    source: x.Name,
+                    bucket: Bucket.Name,
+                    destination: null)));
+            }
+
+            return result;
+        }
+
+        #region Command handlers
 
         private void OnNewFolderCommand()
         {
             throw new NotImplementedException();
         }
-
-        #region Command handlers
 
         private void OnPopAllCommand()
         {
@@ -313,6 +346,26 @@ namespace GoogleCloudExtension.GcsFileBrowser
         #endregion
 
         #region Navigation stack methods
+
+        private void InvalidateStack()
+        {
+            foreach (var entry in _stateStack)
+            {
+                entry.NeedsRefresh = true;
+            }
+        }
+
+        private void InvalidateTop()
+        {
+            if (Top.NeedsRefresh)
+            {
+                RefreshTopState();
+            }
+            else
+            {
+                RaisePropertyChanged(nameof(Top));
+            }
+        }
 
         private async void RefreshTopState()
         {
@@ -341,7 +394,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
         private void PopToRoot()
         {
             _stateStack.RemoveRange(1, _stateStack.Count - 1);
-            RaisePropertyChanged(nameof(Top));
+
+            InvalidateTop();
         }
 
         private void PopState()
@@ -352,7 +406,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
 
             _stateStack.RemoveRange(_stateStack.Count - 1, 1);
-            RaisePropertyChanged(nameof(Top));
+            InvalidateTop();
         }
 
         private void PopToState(string step)
@@ -364,7 +418,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
 
             _stateStack.RemoveRange(idx + 1, _stateStack.Count - (idx + 1));
-            RaisePropertyChanged(nameof(Top));
+            InvalidateTop();
         }
 
         private async void PushToDirectory(string name)
@@ -381,7 +435,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
 
             _stateStack.Add(state);
-            RaisePropertyChanged(nameof(Top));
+            InvalidateTop();
         }
 
         #endregion

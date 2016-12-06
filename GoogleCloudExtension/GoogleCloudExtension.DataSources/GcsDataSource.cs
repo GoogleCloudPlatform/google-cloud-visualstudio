@@ -68,6 +68,21 @@ namespace GoogleCloudExtension.DataSources
                 x => x.NextPageToken);
         }
 
+        public async Task<IEnumerable<Google.Apis.Storage.v1.Data.Object>> GetObjectLisAsync(string bucket, string prefix)
+        {
+            var request = Service.Objects.List(bucket);
+            request.Prefix = prefix;
+
+            return await LoadPagedListAsync(
+                (token) =>
+                {
+                    request.PageToken = token;
+                    return request.ExecuteAsync();
+                },
+                x => x.Items,
+                x => x.NextPageToken);
+        }
+
         public async Task<GcsDirectory> GetDirectoryListAsync(string bucket, string prefix)
         {
             var request = Service.Objects.List(bucket);

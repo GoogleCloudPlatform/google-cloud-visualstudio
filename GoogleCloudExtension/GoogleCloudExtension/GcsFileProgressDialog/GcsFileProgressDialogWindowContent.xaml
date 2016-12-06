@@ -44,13 +44,12 @@
                     <DataTemplate>
                         <Grid HorizontalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="2*" />
+                                <ColumnDefinition Width="300px" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Text="{Binding SourceName}"
+                            <TextBlock Text="{Binding Source}"
                                        TextWrapping="NoWrap"
-                                       MaxWidth="300px"
                                        TextTrimming="CharacterEllipsis" 
                                        HorizontalAlignment="Left"
                                        Style="{StaticResource CommonTextStyle}" />
