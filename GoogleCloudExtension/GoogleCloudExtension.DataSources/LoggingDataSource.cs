@@ -46,21 +46,6 @@ namespace GoogleCloudExtension.DataSources
         public string OrderBy;
     }
 
-    /// <summary>
-    /// Wrap up Log Entries list and the next page token as get log entry list methods result.
-    /// </summary>
-    public class LogEntryRequestResult
-    {
-        /// <summary>
-        /// The returned log entries.  It could be null if no logs found by the filter condition.
-        /// </summary>
-        public IList<LogEntry> LogEntries;
-
-        /// <summary>
-        /// A token is returned if available logs count exceeds the page size.
-        /// </summary>
-        public string NextPageToken;
-    }
 
     /// <summary>
     /// Data source that returns data from Stackdriver Logging API.
@@ -86,13 +71,11 @@ namespace GoogleCloudExtension.DataSources
         /// The page token from last list request response.
         /// </param>
         /// <returns>
-        ///     LogEntryRequestResult object that contains log entries and next page token.
+        ///     <seealso ref="LogEntryRequestResult" /> object that contains log entries and next page token.
         /// </returns>
         public async Task<LogEntryRequestResult> GetNextPageLogEntryListAsync(
             LogEntryRequestParams requestParams, string nextPageToken)
         {
-            Debug.Assert(requestParams != null);
-            Debug.Assert(nextPageToken != null);
             if (requestParams == null)
             {
                 throw new ArgumentNullException(nameof(requestParams));
@@ -114,11 +97,10 @@ namespace GoogleCloudExtension.DataSources
         /// NextPageToken i
         /// </param>
         /// <returns>
-        ///     LogEntryRequestResult object that contains log entries and next page token.
+        ///     <seealso ref="LogEntryRequestResult" /> object that contains log entries and next page token.
         /// </returns>
         public async Task<LogEntryRequestResult> GetLogEntryListAsync(LogEntryRequestParams requestParams)
         {
-            Debug.Assert(requestParams != null);
             if (requestParams == null)
             {
                 throw new ArgumentNullException(nameof(requestParams));
@@ -145,32 +127,23 @@ namespace GoogleCloudExtension.DataSources
                 x => x.NextPageToken);
         }
 
-        private ListLogEntriesRequest CreateRequestFromParams(LogEntryRequestParams requestParams)
-        {
-            string projectsFilter = $"projects/{ProjectId}";
-
-            return new ListLogEntriesRequest()
-            {
-                ResourceNames = new List<string>(new string[] { projectsFilter }),
-                Filter = requestParams.Filter,
-                PageSize = requestParams.PageSize,
-                OrderBy = requestParams.OrderBy
-            };
-        }
-
         private async Task<LogEntryRequestResult> ListLogEntriesAsync(
             LogEntryRequestParams requestParams, string nextPageToken = null)
         {
             try
             {
-                ListLogEntriesRequest requestData = CreateRequestFromParams(requestParams);
+                string projectsFilter = $"projects/{ProjectId}";
+                var requestData = new ListLogEntriesRequest
+                {
+                    ResourceNames = new List<string>(new string[] { projectsFilter }),
+                    Filter = requestParams.Filter,
+                    PageSize = requestParams.PageSize,
+                    OrderBy = requestParams.OrderBy
+                };
+
                 requestData.PageToken = nextPageToken;
                 var response = await Service.Entries.List(requestData).ExecuteAsync();
-                return new LogEntryRequestResult()
-                {
-                    LogEntries = response.Entries,
-                    NextPageToken = response.NextPageToken
-                };
+                return new LogEntryRequestResult(response.Entries, response.NextPageToken);
             }
             catch (GoogleApiException ex)
             {
