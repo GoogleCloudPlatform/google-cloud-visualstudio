@@ -144,6 +144,9 @@
                 <DataGridTextColumn Binding="{Binding LastModified}"
                                     utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter LastModified}"
                                     Header="Last Modified" />
+                <DataGridTextColumn Binding="{Binding ContentType}"
+                                    utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter ContentType}"
+                                    Header="Content Type" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

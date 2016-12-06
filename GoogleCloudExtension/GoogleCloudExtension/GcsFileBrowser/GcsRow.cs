@@ -35,6 +35,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         public string LastModified { get; private set; }
 
+        public string ContentType { get; private set; }
+
         public GcsRow() { }
 
         public static GcsRow CreateDirectoryRow(string name) =>
@@ -54,6 +56,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 Size = obj.Size.HasValue ? obj.Size.Value : 0ul,
                 LastModified = obj.Updated?.ToString() ?? "Unknown",
                 FileName = GetLeafName(obj.Name),
+                ContentType = obj.ContentType ?? "application/octet-stream",
             };
 
         public static GcsRow CreateErrorRow(string message) =>
