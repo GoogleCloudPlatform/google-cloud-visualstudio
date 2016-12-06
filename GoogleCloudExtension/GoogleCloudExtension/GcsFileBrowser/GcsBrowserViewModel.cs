@@ -281,9 +281,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
                         token: tokenSource.Token);
                 }
             }
-            catch (DataSourceException ex)
+            catch (DataSourceException)
             {
-
+                UserPromptUtils.ErrorPrompt(message: "Failed to list objects to delete.", title: "Error");
             }
             finally
             {
