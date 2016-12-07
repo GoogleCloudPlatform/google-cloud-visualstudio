@@ -53,7 +53,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             else
             {
                 Debug.Assert(name.Last() == '/');
-                PathSteps = name.Substring(0, name.Length - 1).Split('/');
+                PathSteps = GcsDataSourceExtensions.ParsePath(name);
             }
         }
     }

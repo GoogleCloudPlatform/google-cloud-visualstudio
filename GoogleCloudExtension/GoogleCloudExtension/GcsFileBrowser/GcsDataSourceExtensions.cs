@@ -82,6 +82,15 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 contentType: "application/x-www-form-urlencoded;charset=UTF-8");
         }
 
+        public static IEnumerable<string> ParsePath(string name)
+        {
+            if (String.IsNullOrEmpty(name))
+            {
+                return Enumerable.Empty<string>();
+            }
+           return name.Substring(0, name.Length - 1).Split('/');
+        }
+
         private static string GetNameLeaf(string name)
         {
             if (String.IsNullOrEmpty(name))
