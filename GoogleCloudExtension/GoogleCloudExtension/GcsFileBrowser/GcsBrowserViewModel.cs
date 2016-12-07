@@ -16,6 +16,7 @@ using Google.Apis.Storage.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GcsFileProgressDialog;
+using GoogleCloudExtension.NamePrompt;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -123,7 +124,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             foreach (var operation in uploadOperations)
             {
-                _dataSource.StartUploadOperation(
+                _dataSource.StartFileUploadOperation(
                     sourcePath: operation.Source,
                     bucket: operation.Bucket,
                     name: operation.Destination,
@@ -282,7 +283,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             var tokenSource = new CancellationTokenSource();
             foreach (var operation in downloadOperations)
             {
-                _dataSource.StartDownloadOperation(
+                _dataSource.StartFileDownloadOperation(
                     bucket: Bucket.Name,
                     name: operation.Source,
                     destPath: operation.Destination,
@@ -371,9 +372,26 @@ namespace GoogleCloudExtension.GcsFileBrowser
             RefreshTopState();
         }
 
-        private void OnNewFolderCommand()
+        private async void OnNewFolderCommand()
         {
-            throw new NotImplementedException();
+            var name = NamePromptWindow.PromptUser();
+            if (name == null)
+            {
+                return;
+            }
+
+            try
+            {
+                IsLoading = true;
+
+                await _dataSource.CreateDirectoryAsync(Bucket.Name, $"{Top.CurrentPath}{name}/");
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+
+            RefreshTopState();
         }
 
         private void OnPopAllCommand()

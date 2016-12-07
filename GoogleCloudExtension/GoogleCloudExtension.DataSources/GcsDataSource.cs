@@ -121,7 +121,29 @@ namespace GoogleCloudExtension.DataSources
             }
         }
 
-        public async void StartUploadOperation(
+        public async Task UploadStreamAsync(string bucket, string name, Stream stream, string contentType = null)
+        {
+            try
+            {
+                var request = Service.Objects.Insert(
+                    new Google.Apis.Storage.v1.Data.Object
+                    {
+                        Name = name,
+                        Size = (ulong)stream.Length,
+                        ContentType = contentType,
+                    },
+                    bucket,
+                    stream,
+                    null);
+                await request.UploadAsync();
+            }
+            catch (GoogleApiException ex)
+            {
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        public async void StartFileUploadOperation(
             string sourcePath,
             string bucket,
             string name,
@@ -157,7 +179,7 @@ namespace GoogleCloudExtension.DataSources
             }
         }
 
-        public async void StartDownloadOperation(
+        public async void StartFileDownloadOperation(
             string bucket,
             string name,
             string destPath,

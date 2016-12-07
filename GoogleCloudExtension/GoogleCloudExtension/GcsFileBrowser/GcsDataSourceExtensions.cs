@@ -1,6 +1,7 @@
 ﻿using GoogleCloudExtension.DataSources;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -57,6 +58,29 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 result.AddRange(await self.GetGcsFilesFromPrefixAsync(bucket, prefix));
             }
             return result;
+        }
+
+        public static async Task CreateDirectoryAsync(this GcsDataSource self, string bucket, string prefix)
+        {
+            using (var stream = new MemoryStream())
+            {
+                await self.UploadStreamAsync(
+                    bucket: bucket,
+                    name: prefix,
+                    stream: stream,
+                    contentType: "application/x-www-form-urlencoded;charset=UTF-8");
+            }
+        }
+
+        private static string GetNameLeaf(string name)
+        {
+            if (String.IsNullOrEmpty(name))
+            {
+                return name;
+            }
+
+            var cleanName = name.Substring(0, name.Length - 1);
+            return cleanName.Split('/').LastOrDefault() ?? "";
         }
     }
 }
