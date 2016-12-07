@@ -32,6 +32,9 @@ using GcsObject = Google.Apis.Storage.v1.Data.Object;
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
+    /// <summary>
+    /// The view model for the file brwoser.
+    /// </summary>
     public class GcsBrowserViewModel : ViewModelBase
     {
         private readonly static GcsBrowserState s_emptyState =
@@ -46,6 +49,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
         private IList<GcsRow> _selectedItems;
         private ContextMenu _contextMenu;
 
+        /// <summary>
+        /// The bucket that is being shown in the window.
+        /// </summary>
         public Bucket Bucket
         {
             get { return _bucket; }
@@ -56,6 +62,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
         }
 
+        /// <summary>
+        /// Whether the window is busy loading data.
+        /// </summary>
         public bool IsLoading
         {
             get { return _isLoading; }
@@ -66,6 +75,14 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
         }
 
+        /// <summary>
+        /// Utility property used to determine if the window is ready for user input.
+        /// </summary>
+        public bool IsReady => !IsLoading;
+
+        /// <summary>
+        /// The top of the navigation stack, which is what is being shown in the window.
+        /// </summary>
         public GcsBrowserState Top
         {
             get
@@ -78,8 +95,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
         }
 
-        public bool IsReady => !IsLoading;
-
+        /// <summary>
+        /// The list of selected items.
+        /// </summary>
         public IList<GcsRow> SelectedItems
         {
             get { return _selectedItems; }
@@ -90,20 +108,38 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
         }
 
+        /// <summary>
+        /// The context menu to show.
+        /// </summary>
         public ContextMenu ContextMenu
         {
             get { return _contextMenu; }
             private set { SetValueAndRaise(ref _contextMenu, value); }
         }
 
+        /// <summary>
+        /// The first selected item.
+        /// </summary>
         public GcsRow SelectedItem => SelectedItems.FirstOrDefault();
 
+        /// <summary>
+        /// Command to execute when poping up all levels in the stack.
+        /// </summary>
         public ICommand PopAllCommand { get; }
 
+        /// <summary>
+        /// Command to execute when navigating to a particular level in the navigation stack.
+        /// </summary>
         public ICommand NavigateToCommand { get; }
 
+        /// <summary>
+        /// Command to execute when refreshing the currently loaded level.
+        /// </summary>
         public ICommand RefreshCommand { get; }
 
+        /// <summary>
+        /// The command to execute when a double click happens.
+        /// </summary>
         public ICommand DoubleClickCommand { get; }
 
         public GcsBrowserViewModel(GcsFileBrowserWindow owner)
@@ -117,21 +153,13 @@ namespace GoogleCloudExtension.GcsFileBrowser
             DoubleClickCommand = new ProtectedCommand<GcsRow>(OnDoubleClickCommand);
         }
 
-        private void OnDoubleClickCommand(GcsRow row)
+        /// <summary>
+        /// Method called to upload the given set of files.
+        /// </summary>
+        /// <param name="files"></param>
+        public void StartFileUpload(IEnumerable<string> files)
         {
-            if (row.IsDirectory)
-            {
-                PushToDirectory(row.Name);
-            }
-            else
-            {
-                // TODO: Show the file.
-            }
-        }
-
-        public async void StartFileUpload(string[] files)
-        {
-            var uploadOperations = CreateUploadOperations(files);
+            IList<GcsFileOperation> uploadOperations = CreateUploadOperations(files).ToList();
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
             foreach (var operation in uploadOperations)
@@ -153,56 +181,59 @@ namespace GoogleCloudExtension.GcsFileBrowser
             RefreshTopState();
         }
 
-        private List<GcsFileOperation> CreateUploadOperations(string[] files)
-        {
-            var result = new List<GcsFileOperation>();
-
-            foreach (var input in files)
-            {
-                var info = new FileInfo(input);
-                var isDirectory = (info.Attributes & FileAttributes.Directory) != 0;
-
-                if (isDirectory)
-                {
-                    result.AddRange(CreateUploadOperationsForDirectory(info.FullName, info.Name));
-                }
-                else
-                {
-                    result.Add(new GcsFileOperation(
-                        source: info.FullName,
-                        bucket: Bucket.Name,
-                        destination: $"{Top.CurrentPath}{info.Name}"));
-                }
-            }
-
-            return result;
-        }
-
-        private IEnumerable<GcsFileOperation> CreateUploadOperationsForDirectory(string dir, string localPath)
-        {
-            foreach (var file in Directory.EnumerateFiles(dir))
-            {
-                yield return new GcsFileOperation(
-                    source: file,
-                    bucket: Bucket.Name,
-                    destination: $"{Top.CurrentPath}{localPath}/{Path.GetFileName(file)}");
-            }
-
-            foreach (var subDir in Directory.EnumerateDirectories(dir))
-            {
-                foreach (var operation in CreateUploadOperationsForDirectory(subDir, $"{localPath}/{Path.GetFileName(subDir)}"))
-                {
-                    yield return operation;
-                }
-            }
-        }
-
+        /// <summary>
+        /// Method called whenever the selection changes to udpate the view model.
+        /// </summary>
         public void InvalidateSelectedItems(IEnumerable<GcsRow> selectedRows)
         {
             SelectedItems = selectedRows.ToList();
 
             UpdateContextMenu();
         }
+
+        /// <summary>
+        /// This method creates the <seealso cref="GcsFileOperation"/> instances that represent the upload
+        /// operations for the given paths of files. If the <paramref name="sources"/> entry represents a directory
+        /// then it will recurse into the directories to create the upload operations for those files as well.
+        /// </summary>
+        private IEnumerable<GcsFileOperation> CreateUploadOperations(IEnumerable<string> sources)
+            => sources
+               .Select(src =>
+               {
+                   var info = new FileInfo(src);
+                   var isDirectory = (info.Attributes & FileAttributes.Directory) != 0;
+
+                   if (isDirectory)
+                   {
+                       return CreateUploadOperationsForDirectory(info.FullName, info.Name);
+                   }
+                   else
+                   {
+                       return new GcsFileOperation[]
+                          {
+                            new GcsFileOperation(
+                                source: info.FullName,
+                                bucket: Bucket.Name,
+                                destination: $"{Top.CurrentPath}{info.Name}"),
+                          };
+                   }
+               })
+               .SelectMany(x => x);
+
+        /// <summary>
+        /// Creates the <seealso cref="GcsFileOperation"/> instances for all of the files in the given directory. The
+        /// target directory will be ased on <paramref name="basePath"/>.
+        /// </summary>
+        private IEnumerable<GcsFileOperation> CreateUploadOperationsForDirectory(string dir, string basePath)
+            => Enumerable.Concat(
+                Directory.EnumerateFiles(dir)
+                    .Select(file => new GcsFileOperation(
+                        source: file,
+                        bucket: Bucket.Name,
+                        destination: $"{Top.CurrentPath}{basePath}/{Path.GetFileName(file)}")),
+                Directory.EnumerateDirectories(dir)
+                    .Select(subDir => CreateUploadOperationsForDirectory(subDir, $"{basePath}/{Path.GetFileName(subDir)}"))
+                    .SelectMany(x => x));
 
         private void UpdateContextMenu()
         {
@@ -217,6 +248,18 @@ namespace GoogleCloudExtension.GcsFileBrowser
         }
 
         #region Command handlers
+
+        private void OnDoubleClickCommand(GcsRow row)
+        {
+            if (row.IsDirectory)
+            {
+                PushToDirectory(row.Name);
+            }
+            else
+            {
+                // TODO: Show the file.
+            }
+        }
 
         /// <summary>
         /// The download command is implemented with the following steps:
