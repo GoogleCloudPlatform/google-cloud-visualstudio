@@ -203,8 +203,19 @@ namespace GoogleCloudExtension.GcsFileBrowser
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
+        #region Command handlers
+
+        /// <summary>
+        /// The download command is implemented with the following steps:
+        /// 1) The user is prompted for the directory that will serve as the root of all of the downloads.
+        /// 2) The list of files to be downloaded, including subdirectories is collected.
+        /// 3) The subdirectories that will receive downloads are created under the download root.
+        /// 4) The file operations are started and the progress dialog is shown to the user. The same <seealso cref="CancellationToken"/>
+        ///    is used for all operations so the progress dialog can be used to cancel all operations.
+        /// </summary>
         private async void OnDownloadCommand()
         {
+            // 1) The user is prompted for the download root where to store the downloaded files.
             FBD dialog = new FBD();
             dialog.Description = "Download files";
             dialog.ShowNewFolderButton = true;
@@ -216,9 +227,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
             var downloadRoot = dialog.SelectedPath;
 
+            // 2) The files to be downloaded and directories to be created are collected.
             var downloadOperations = new List<GcsFileOperation>();
-            var tokenSource = new CancellationTokenSource();
-
             try
             {
                 IsLoading = true;
@@ -250,7 +260,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     }
                 }
 
-                // Create all of the subdirectories.
+                // 3) Create all of the subdirectories.
                 foreach (var dir in subDirs)
                 {
                     try
@@ -262,22 +272,23 @@ namespace GoogleCloudExtension.GcsFileBrowser
                         UserPromptUtils.ErrorPrompt($"Failed to create directory {dir}", "Error");
                     }
                 }
-
-                foreach (var operation in downloadOperations)
-                {
-                    _dataSource.StartDownloadOperation(
-                        bucket: Bucket.Name,
-                        name: operation.Source,
-                        destPath: operation.Destination,
-                        operation: operation,
-                        token: tokenSource.Token);
-                }
             }
             finally
             {
                 IsLoading = false;
             }
 
+            // 4) Start the download operations and open the progress dialog to show the progress to the user.
+            var tokenSource = new CancellationTokenSource();
+            foreach (var operation in downloadOperations)
+            {
+                _dataSource.StartDownloadOperation(
+                    bucket: Bucket.Name,
+                    name: operation.Source,
+                    destPath: operation.Destination,
+                    operation: operation,
+                    token: tokenSource.Token);
+            }
             GcsFileProgressDialogWindow.PromptUser(
                 caption: "Download Files",
                 message: "Files being downloaded",
@@ -285,8 +296,20 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 tokenSource: tokenSource);
         }
 
+        /// <summary>
+        /// The delete command is implemented with the following steps:
+        /// 1) The user is asked to confirm the operation.
+        /// 2) The files to be deleted are collected, this involves listing requests sent to the server for
+        ///    the subdirectories being deleted. For each file to be deleted a <seealso cref="GcsFileOperation"/> instance
+        ///    is created to track the progress of the operation. Each delete operation is independent.
+        /// 3) The operations are started and the progress dialog that tracks the progress of all operations is opened. All of
+        ///    operations use the same <seealso cref="CancellationToken"/> and the <seealso cref="CancellationTokenSource"/> is
+        ///    passed to the progress dialog so the user can cancel the operations.
+        /// 4) The listing of objects is invalidated and the window refreshed.  
+        /// </summary>
         private async void OnDeleteCommand()
         {
+            // 1) The user is asked to confirm the deletion operation.
             if (!UserPromptUtils.ActionPrompt(
                 prompt: "Are you sure you want to delete these files?",
                 title: "Delete",
@@ -298,12 +321,12 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
 
             var deleteOperations = new List<GcsFileOperation>();
-            var tokenSource = new CancellationTokenSource();
-
             try
             {
                 IsLoading = true;
 
+                // 2) Collect all of the files to be deleted and create the delete operations to track
+                //    the delete progress.
                 deleteOperations.AddRange(SelectedItems
                    .Where(x => x.IsFile)
                    .Select(x => new GcsFileOperation(
@@ -317,15 +340,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 deleteOperations.AddRange(filesInSubdirectories.Select(x => new GcsFileOperation(
                     source: x.Name,
                     bucket: Bucket.Name)));
-
-                foreach (var operation in deleteOperations)
-                {
-                    _dataSource.StartDeleteOperation(
-                        bucket: Bucket.Name,
-                        name: operation.Source,
-                        operation: operation,
-                        token: tokenSource.Token);
-                }
             }
             catch (DataSourceException)
             {
@@ -336,17 +350,26 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 IsLoading = false;
             }
 
+            // 3) start the deletion operations and open the progress dialog.
+            var tokenSource = new CancellationTokenSource();
+            foreach (var operation in deleteOperations)
+            {
+                _dataSource.StartDeleteOperation(
+                    bucket: Bucket.Name,
+                    name: operation.Source,
+                    operation: operation,
+                    token: tokenSource.Token);
+            }
             GcsFileProgressDialogWindow.PromptUser(
                 caption: "Deleting Files",
                 message: "Files being deleted",
                 operations: deleteOperations,
                 tokenSource: tokenSource);
 
+            // 4) refresh the window with the contents of the server.
             InvalidateStack();
             RefreshTopState();
         }
-
-        #region Command handlers
 
         private void OnNewFolderCommand()
         {
