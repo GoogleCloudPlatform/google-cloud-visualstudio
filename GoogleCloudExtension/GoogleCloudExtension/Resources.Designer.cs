@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -1839,6 +1839,15 @@ namespace GoogleCloudExtension
         public static string GcePublishSuccessMessage {
             get {
                 return ResourceManager.GetString("GcePublishSuccessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Stackdriver Logging.
+        /// </summary>
+        public static string LogViewerToolWindowCaption {
+            get {
+                return ResourceManager.GetString("LogViewerToolWindowCaption", resourceCulture);
             }
         }
         

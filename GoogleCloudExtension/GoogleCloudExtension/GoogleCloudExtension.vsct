@@ -55,7 +55,7 @@
       
       <!-- This group contains all of the commands added to the project's context menu. -->
       <Group guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpProjectContextMenu" priority="0x600">
-        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE"/>
+        <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE" />
       </Group>
     </Groups>
 
@@ -65,6 +65,15 @@
         <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" />
         <Strings>
           <ButtonText>Show Google Cloud Explorer</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- This command shows the Stackdriver Logs Viewer tool window. -->
+      <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidLogsViewerToolWindowCommand" priority="0x0550" type="Button">
+        <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Show Stackdriver Logs Viewer</ButtonText>
         </Strings>
       </Button>
 
@@ -114,7 +123,8 @@
       <IDSymbol value="4224" name="GcpToolsGroupMenu" />
       <IDSymbol value="4225" name="cmdidPublishProjectToolsMenuCommand" />
       <IDSymbol value="4226" name="cmdidPublishProjectContextMenuCommand" />
-      <IDSymbol value="4230" name="GcpProjectContextMenu"/>
+      <IDSymbol value="4230" name="GcpProjectContextMenu" />
+      <IDSymbol value="4231" name="cmdidLogsViewerToolWindowCommand" />
     </GuidSymbol>
   
   </Symbols>

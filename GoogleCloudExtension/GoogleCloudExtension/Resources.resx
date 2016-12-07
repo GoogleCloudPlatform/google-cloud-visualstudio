@@ -1291,6 +1291,10 @@
     <value>_Open</value>
     <comment>Caption for the open button in dialogs.</comment>
   </data>
+  <data name="LogViewerToolWindowCaption" xml:space="preserve">
+    <value>Google Stackdriver Logging</value>
+    <comment>The Logs Viewer Tool Window caption. Keep it short because the tab is narrow.</comment>
+  </data>
   <data name="AddGaeTrafficSplitInvalidValueMessage" xml:space="preserve">
     <value>Invalid value for allocation, must be a number: {0}</value>
     <comment>Message shown when an invalid value is detected. {0} is the invalid value.</comment>
