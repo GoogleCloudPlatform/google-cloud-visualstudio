@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using FBD = System.Windows.Forms.FolderBrowserDialog;
+using GcsObject = Google.Apis.Storage.v1.Data.Object;
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
@@ -207,7 +208,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             return SelectedItems != null && SelectedItems.Where(x => x.IsFile).Count() > 0;
         }
 
-        private void OnDownloadCommand()
+        private async void OnDownloadCommand()
         {
             FBD dialog = new FBD();
             dialog.Description = "Download files";
@@ -219,23 +220,33 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 return;
             }
 
-            var downloadOperations = SelectedItems
-                .Where(x => x.IsFile)
-                .Select(x => new GcsFileOperation(
-                    source: x.Name,
-                    bucket: Bucket.Name,
-                    destination: Path.Combine(dialog.SelectedPath, x.FileName)))
-                .ToList();
+            var downloadOperations = new List<GcsFileOperation>();
+            var tokenSource = new CancellationTokenSource();
 
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
-            foreach (var operation in downloadOperations)
+            try
             {
-                _dataSource.StartDownloadOperation(
-                    bucket: Bucket.Name,
-                    name: operation.Source,
-                    destPath: operation.Destination,
-                    operation: operation,
-                    token: tokenSource.Token);
+                IsLoading = true;
+
+                downloadOperations.AddRange(SelectedItems
+                    .Where(x => x.IsFile)
+                    .Select(x => new GcsFileOperation(
+                        source: x.Name,
+                        bucket: Bucket.Name,
+                        destination: Path.Combine(dialog.SelectedPath, x.FileName))));
+
+                foreach (var operation in downloadOperations)
+                {
+                    _dataSource.StartDownloadOperation(
+                        bucket: Bucket.Name,
+                        name: operation.Source,
+                        destPath: operation.Destination,
+                        operation: operation,
+                        token: tokenSource.Token);
+                }
+            }
+            finally
+            {
+                IsLoading = false;
             }
 
             GcsFileProgressDialogWindow.PromptUser(
@@ -270,7 +281,13 @@ namespace GoogleCloudExtension.GcsFileBrowser
                        source: x.Name,
                        bucket: Bucket.Name,
                        destination: null)));
-                deleteOperations.AddRange(await GetSubDirectoryFiles(SelectedItems.Where(x => x.IsDirectory)));
+
+                var filesInSubdirectories = await _dataSource.GetGcsFilesFromPrefixesAsync(
+                    Bucket.Name,
+                    SelectedItems.Where(x => x.IsDirectory).Select(x => x.Name));
+                deleteOperations.AddRange(filesInSubdirectories.Select(x => new GcsFileOperation(
+                    source: x.Name,
+                    bucket: Bucket.Name)));
 
                 foreach (var operation in deleteOperations)
                 {
@@ -298,22 +315,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
             InvalidateStack();
             RefreshTopState();
-        }
-
-        private async Task<IEnumerable<GcsFileOperation>> GetSubDirectoryFiles(IEnumerable<GcsRow> rows)
-        {
-            var result = new List<GcsFileOperation>();
-
-            foreach (var row in rows)
-            {
-                var files = await _dataSource.GetObjectLisAsync(Bucket.Name, row.Name);
-                result.AddRange(files.Select(x => new GcsFileOperation(
-                    source: x.Name,
-                    bucket: Bucket.Name,
-                    destination: null)));
-            }
-
-            return result;
         }
 
         #region Command handlers

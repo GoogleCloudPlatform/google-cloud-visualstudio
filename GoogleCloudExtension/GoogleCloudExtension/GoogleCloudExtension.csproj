@@ -161,6 +161,7 @@
     <Compile Include="GcsFileBrowser\GcsBrowserState.cs" />
     <Compile Include="GcsFileBrowser\GcsBrowserViewModel.cs" />
     <Compile Include="GcsFileBrowser\GcsColumnSorter.cs" />
+    <Compile Include="GcsFileBrowser\GcsDataSourceExtensions.cs" />
     <Compile Include="GcsFileBrowser\GcsDirectoryItem.cs" />
     <Compile Include="GcsFileBrowser\GcsFileBrowserWindow.cs" />
     <Compile Include="GcsFileBrowser\GcsFileBrowserWindowControl.xaml.cs">

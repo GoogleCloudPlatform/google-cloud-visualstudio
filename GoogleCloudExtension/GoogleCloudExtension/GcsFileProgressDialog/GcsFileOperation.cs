@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         public GcsFileOperation(
             string source,
             string bucket,
-            string destination)
+            string destination = null)
         {
             _context = SynchronizationContext.Current;
 
