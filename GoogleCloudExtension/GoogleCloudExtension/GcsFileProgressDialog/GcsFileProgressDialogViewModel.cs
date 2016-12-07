@@ -63,7 +63,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
 
         private void OnOperationCompleted(object sender, EventArgs e)
         {
-            _completed++;
+            _completed += 1;
             if (IsComplete)
             {
                 Caption = Resources.UiCloseButtonCaption;

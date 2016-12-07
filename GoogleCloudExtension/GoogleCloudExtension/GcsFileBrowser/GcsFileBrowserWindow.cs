@@ -73,7 +73,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     return;
                 }
             }
-            s_nextWindowId++;
+            s_nextWindowId += 1;
 
             var browserWindow = window as GcsFileBrowserWindow;
             if (browserWindow == null)
