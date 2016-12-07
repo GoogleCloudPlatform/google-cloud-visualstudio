@@ -31,8 +31,11 @@
         </theming:CommonDialogWindowBaseContent.Buttons>
         
         <StackPanel>
-            <Label Content="_Enter name:" Style="{StaticResource CommonLabelStyle}" />
-            <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            <Label Content="_Enter name:"
+                   Target="{Binding ElementName=_nameBox}"
+                   Style="{StaticResource CommonLabelStyle}" />
+            <TextBox x:Name="_nameBox"
+                     Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      Style="{StaticResource CommonTextBoxStyle}" />
         </StackPanel>
     </theming:CommonDialogWindowBaseContent>

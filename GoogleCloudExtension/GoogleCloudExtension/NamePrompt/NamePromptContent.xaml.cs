@@ -23,6 +23,8 @@ namespace GoogleCloudExtension.NamePrompt
         public NamePromptContent()
         {
             InitializeComponent();
+
+            _nameBox.Focus();
         }
     }
 }
