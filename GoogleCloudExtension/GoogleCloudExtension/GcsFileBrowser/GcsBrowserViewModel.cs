@@ -102,9 +102,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         public ICommand NavigateToCommand { get; }
 
-        public ICommand ShowDirectoryCommand { get; }
-
         public ICommand RefreshCommand { get; }
+
+        public ICommand DoubleClickCommand { get; }
 
         public GcsBrowserViewModel(GcsFileBrowserWindow owner)
         {
@@ -113,8 +113,20 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
             PopAllCommand = new ProtectedCommand(OnPopAllCommand);
             NavigateToCommand = new ProtectedCommand<string>(OnNavigateToCommand);
-            ShowDirectoryCommand = new ProtectedCommand<GcsRow>(OnShowDirectoryCommand);
             RefreshCommand = new ProtectedCommand(OnRefreshCommand);
+            DoubleClickCommand = new ProtectedCommand<GcsRow>(OnDoubleClickCommand);
+        }
+
+        private void OnDoubleClickCommand(GcsRow row)
+        {
+            if (row.IsDirectory)
+            {
+                PushToDirectory(row.Name);
+            }
+            else
+            {
+                // TODO: Show the file.
+            }
         }
 
         public async void StartFileUpload(string[] files)
@@ -402,11 +414,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
         private void OnNavigateToCommand(string step)
         {
             PopToState(step);
-        }
-
-        private void OnShowDirectoryCommand(GcsRow dir)
-        {
-            PushToDirectory(dir.Name);
         }
 
         private void OnRefreshCommand()

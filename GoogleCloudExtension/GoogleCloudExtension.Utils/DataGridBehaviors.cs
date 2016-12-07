@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -75,6 +77,58 @@ namespace GoogleCloudExtension.Utils
         public static void SetCustomSort(DataGridColumn self, IColumnSorter value)
         {
             self.SetValue(CustomSortProperty, value);
+        }
+
+        #endregion
+
+        #region Double click command.
+
+        public static readonly DependencyProperty DoubleClickCommandProperty =
+            DependencyProperty.RegisterAttached(
+                "DoubleClickCommand",
+                typeof(ICommand),
+                typeof(DataGridBehaviors),
+                new PropertyMetadata(OnDoubleClickCommandPropertyChanged));
+
+        public static ICommand GetDoubleClickCommand(DataGrid self) => (ICommand)self.GetValue(DoubleClickCommandProperty);
+
+        public static void SetDoubleClickCommand(DataGrid self, ICommand value)
+        {
+            self.SetValue(DoubleClickCommandProperty, value);
+        }
+
+        private static void OnDoubleClickCommandPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            var self = (DataGrid)d;
+
+            if (e.OldValue != null)
+            {
+                self.MouseDoubleClick -= OnDataGridDoubleClick;
+            }
+
+            if (e.NewValue != null)
+            {
+                self.MouseDoubleClick += OnDataGridDoubleClick;
+            }
+        }
+
+        private static void OnDataGridDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var self = (DataGrid)sender;
+
+            var selected = self.SelectedItem;
+            if (selected == null)
+            {
+                return;
+            }
+
+            ICommand command = GetDoubleClickCommand(self);
+            if (!command.CanExecute(selected))
+            {
+                return;
+            }
+
+            command.Execute(selected);
         }
 
         #endregion

@@ -104,6 +104,7 @@
                   utils:DataGridBehaviors.HasCustomSort="True"
                   ContextMenu="{Binding ContextMenu}"
                   ItemsSource="{Binding Source={StaticResource cvs}}"
+                  utils:DataGridBehaviors.DoubleClickCommand="{Binding DoubleClickCommand}"
                   SelectionChanged="DataGrid_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="Name"
@@ -113,27 +114,15 @@
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
                                 <!-- Icon for the name. -->
-                                <Grid>
-                                    <Image Source="{mb:ImageResource GcsFileBrowser/Resources/file.png}" Margin="0,0,5,0"
+                                <Grid Margin="0,0,5,0">
+                                    <Image Source="{mb:ImageResource GcsFileBrowser/Resources/file.png}"
                                            Visibility="{Binding IsFile, Converter={StaticResource commonVisibilityConverter}}"/>
-                                    <Image Source="{mb:ImageResource GcsFileBrowser/Resources/folder.png}" Margin="0,0,5,0"
+                                    <Image Source="{mb:ImageResource GcsFileBrowser/Resources/folder.png}"
                                            Visibility="{Binding IsDirectory, Converter={StaticResource commonVisibilityConverter}}"/>
                                 </Grid>
-
-                                <!-- The name itself. Which can be a hyperlink if the item is a directory. -->
-                                <Grid>
-                                    <TextBlock Text="{Binding FileName}"
-                                               Visibility="{Binding IsFile, Converter={StaticResource commonVisibilityConverter}}"
-                                               Style="{StaticResource CommonTextStyle}" />
-                                    <TextBlock Visibility="{Binding IsDirectory, Converter={StaticResource commonVisibilityConverter}}"
-                                               Style="{StaticResource CommonTextStyle}">
-                                        <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
-                                                   Command="{Binding DataContext.ShowDirectoryCommand, RelativeSource={RelativeSource AncestorType={x:Type DataGrid}}}"
-                                                   CommandParameter="{Binding}">
-                                            <TextBlock Text="{Binding FileName}" />
-                                        </Hyperlink>
-                                    </TextBlock>
-                                </Grid>
+                                
+                                <!-- The name of the object. -->
+                                <TextBlock Text="{Binding FileName}" Style="{StaticResource CommonTextStyle}" />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
