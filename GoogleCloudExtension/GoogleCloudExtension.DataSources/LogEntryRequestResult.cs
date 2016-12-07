@@ -23,6 +23,16 @@ namespace GoogleCloudExtension.DataSources
     public class LogEntryRequestResult
     {
         /// <summary>
+        /// The returned log entries.  It could be null if no logs found by the filter condition.
+        /// </summary>
+        public IList<LogEntry> LogEntries { get; }
+
+        /// <summary>
+        /// A token is returned if available logs count exceeds the page size.
+        /// </summary>
+        public string NextPageToken { get; }
+
+        /// <summary>
         /// Initializes an instance of LogEntryRequestResult.
         /// </summary>
         /// <param name="logEntries">A list of LogEntry objects. Null is valid input.</param>
@@ -32,15 +42,5 @@ namespace GoogleCloudExtension.DataSources
             LogEntries = logEntries;
             NextPageToken = nextPageToken;
         }
-
-        /// <summary>
-        /// The returned log entries.  It could be null if no logs found by the filter condition.
-        /// </summary>
-        public IList<LogEntry> LogEntries { get; }
-
-        /// <summary>
-        /// A token is returned if available logs count exceeds the page size.
-        /// </summary>
-        public string NextPageToken { get; }
     }
 }
