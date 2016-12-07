@@ -24,30 +24,6 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtension.DataSources
 {
     /// <summary>
-    /// LogEntry request parameters.
-    /// </summary>
-    public class LogEntryRequestParams
-    {
-        /// <summary>
-        /// Optional
-        /// Refert to https://cloud.google.com/logging/docs/view/advanced_filters. 
-        /// </summary>
-        public string Filter;
-
-        /// <summary>
-        /// Optional
-        /// If page size is not specified, a server side default value is used. 
-        /// </summary>
-        public int? PageSize;
-
-        /// <summary>
-        /// Optional "timestamp desc" or "timestamp asc"
-        /// </summary>
-        public string OrderBy;
-    }
-
-
-    /// <summary>
     /// Data source that returns data from Stackdriver Logging API.
     /// The API is described at https://cloud.google.com/logging/docs/api/reference/rest
     /// </summary>
@@ -61,53 +37,6 @@ namespace GoogleCloudExtension.DataSources
         public LoggingDataSource(string projectId, GoogleCredential credential, string appName)
             : base(projectId, credential, init => new LoggingService(init), appName)
         { }
-
-        /// <summary>
-        /// Returns the next page of all LogEntry items of the project id.
-        /// Please note, when calling this method, the filter, pageSize must be same as prior call.
-        /// </summary>
-        /// <param name="requestParams">The request parameters.</param>
-        /// <param name="nextPageToken">
-        /// The page token from last list request response.
-        /// </param>
-        /// <returns>
-        ///     <seealso ref="LogEntryRequestResult" /> object that contains log entries and next page token.
-        /// </returns>
-        public async Task<LogEntryRequestResult> GetNextPageLogEntryListAsync(
-            LogEntryRequestParams requestParams, string nextPageToken)
-        {
-            if (requestParams == null)
-            {
-                throw new ArgumentNullException(nameof(requestParams));
-            }
-
-            if (string.IsNullOrWhiteSpace(nextPageToken))
-            {
-                throw new ArgumentException(nameof(nextPageToken));
-            }
-
-            return await ListLogEntriesAsync(requestParams, nextPageToken);
-        }
-
-        /// <summary>
-        /// Returns the first page of log entries of the project id.
-        /// </summary>
-        /// <param name="requestParams">
-        /// The request parameters.
-        /// NextPageToken i
-        /// </param>
-        /// <returns>
-        ///     <seealso ref="LogEntryRequestResult" /> object that contains log entries and next page token.
-        /// </returns>
-        public async Task<LogEntryRequestResult> GetLogEntryListAsync(LogEntryRequestParams requestParams)
-        {
-            if (requestParams == null)
-            {
-                throw new ArgumentNullException(nameof(requestParams));
-            }
-
-            return await ListLogEntriesAsync(requestParams);
-        }
 
         /// <summary>
         /// Returns the list of MonitoredResourceDescriptor.
@@ -127,8 +56,32 @@ namespace GoogleCloudExtension.DataSources
                 x => x.NextPageToken);
         }
 
-        private async Task<LogEntryRequestResult> ListLogEntriesAsync(
-            LogEntryRequestParams requestParams, string nextPageToken = null)
+        /// <summary>
+        /// Returns the first page of log entries of the project id.
+        /// </summary>
+        /// <param name="filter">
+        /// Optional,
+        /// Refert to https://cloud.google.com/logging/docs/view/advanced_filters. 
+        /// </param>
+        /// <param name="orderBy">
+        /// Optional, "timestamp desc" or "timestamp asc"
+        /// </param>
+        /// <param name="pageSize">
+        /// Optional,
+        /// If page size is not specified, a server side default value is used. 
+        /// </param>
+        /// <param name="nextPageToken">
+        /// Optional,
+        /// The page token from last list request response.
+        /// If the value is null, fetch the first page results.
+        /// If the value is not null, it is hard requirement that the filter, orderBy and pageSize parameters
+        /// must stay same as the prior call.
+        /// </param>
+        /// <returns>
+        ///     <seealso ref="LogEntryRequestResult" /> object that contains log entries and next page token.
+        /// </returns>
+        public async Task<LogEntryRequestResult> ListLogEntriesAsync(
+            string filter = null, string orderBy = null, int? pageSize = null, string nextPageToken = null)
         {
             try
             {
@@ -136,9 +89,9 @@ namespace GoogleCloudExtension.DataSources
                 var requestData = new ListLogEntriesRequest
                 {
                     ResourceNames = new List<string>(new string[] { projectsFilter }),
-                    Filter = requestParams.Filter,
-                    PageSize = requestParams.PageSize,
-                    OrderBy = requestParams.OrderBy
+                    Filter = filter,
+                    OrderBy = orderBy,
+                    PageSize = pageSize
                 };
 
                 requestData.PageToken = nextPageToken;
