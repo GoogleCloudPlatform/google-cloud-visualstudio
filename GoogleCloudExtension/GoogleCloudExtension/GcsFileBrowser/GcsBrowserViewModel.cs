@@ -196,16 +196,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = "New Folder...", Command=new ProtectedCommand(OnNewFolderCommand) },
-                new MenuItem { Header = "Download...", Command=new ProtectedCommand(OnDownloadCommand, canExecuteCommand: CanDownloadItems()) },
+                new MenuItem { Header = "Download...", Command=new ProtectedCommand(OnDownloadCommand, canExecuteCommand: SelectedItems != null && SelectedItems.Count > 0) },
                 new MenuItem { Header = "Delete", Command = new ProtectedCommand(OnDeleteCommand, canExecuteCommand: SelectedItems != null && SelectedItems.Count > 0) },
             };
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
-        }
-
-        private bool CanDownloadItems()
-        {
-            return SelectedItems != null && SelectedItems.Where(x => x.IsFile).Count() > 0;
         }
 
         private async void OnDownloadCommand()
@@ -219,6 +214,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             {
                 return;
             }
+            var downloadRoot = dialog.SelectedPath;
 
             var downloadOperations = new List<GcsFileOperation>();
             var tokenSource = new CancellationTokenSource();
@@ -232,7 +228,40 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     .Select(x => new GcsFileOperation(
                         source: x.Name,
                         bucket: Bucket.Name,
-                        destination: Path.Combine(dialog.SelectedPath, x.FileName))));
+                        destination: Path.Combine(downloadRoot, x.FileName))));
+
+                var subDirs = new HashSet<string>();
+                foreach (var dir in SelectedItems.Where(x => x.IsDirectory))
+                {
+                    var files = await _dataSource.GetGcsFilesFromPrefixAsync(Bucket.Name, dir.Name);
+                    foreach (var file in files)
+                    {
+                        var relativeFilePath = Path.Combine(dir.FileName, file.RelativeName.Replace('/', '\\'));
+                        var absoluteFilePath = Path.Combine(downloadRoot, relativeFilePath);
+
+                        // Create the file operation for this file.
+                        downloadOperations.Add(new GcsFileOperation(
+                            source: file.Name,
+                            bucket: Bucket.Name,
+                            destination: absoluteFilePath));
+
+                        // Collects the list of directories to create.
+                        subDirs.Add(Path.GetDirectoryName(absoluteFilePath));
+                    }
+                }
+
+                // Create all of the subdirectories.
+                foreach (var dir in subDirs)
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(dir);
+                    }
+                    catch (IOException)
+                    {
+                        UserPromptUtils.ErrorPrompt($"Failed to create directory {dir}", "Error");
+                    }
+                }
 
                 foreach (var operation in downloadOperations)
                 {
