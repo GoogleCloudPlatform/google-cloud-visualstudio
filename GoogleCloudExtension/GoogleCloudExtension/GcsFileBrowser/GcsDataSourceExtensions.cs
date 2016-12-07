@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GcsFileBrowser
@@ -62,14 +61,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         public static async Task CreateDirectoryAsync(this GcsDataSource self, string bucket, string prefix)
         {
-            using (var stream = new MemoryStream())
-            {
-                await self.UploadStreamAsync(
-                    bucket: bucket,
-                    name: prefix,
-                    stream: stream,
-                    contentType: "application/x-www-form-urlencoded;charset=UTF-8");
-            }
+            await self.UploadStreamAsync(
+                bucket: bucket,
+                name: prefix,
+                stream: Stream.Null,
+                contentType: "application/x-www-form-urlencoded;charset=UTF-8");
         }
 
         private static string GetNameLeaf(string name)

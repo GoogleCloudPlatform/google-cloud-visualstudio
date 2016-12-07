@@ -18,7 +18,6 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GcsFileProgressDialog;
 using GoogleCloudExtension.NamePrompt;
 using GoogleCloudExtension.Utils;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -28,7 +27,6 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using FBD = System.Windows.Forms.FolderBrowserDialog;
-using GcsObject = Google.Apis.Storage.v1.Data.Object;
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
