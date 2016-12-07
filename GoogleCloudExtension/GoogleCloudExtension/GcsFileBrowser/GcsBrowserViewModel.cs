@@ -237,11 +237,12 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         private void UpdateContextMenu()
         {
+            var hasItems = SelectedItems != null && SelectedItems.Count > 0;
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = "New Folder...", Command=new ProtectedCommand(OnNewFolderCommand) },
-                new MenuItem { Header = "Download...", Command=new ProtectedCommand(OnDownloadCommand, canExecuteCommand: SelectedItems != null && SelectedItems.Count > 0) },
-                new MenuItem { Header = "Delete", Command = new ProtectedCommand(OnDeleteCommand, canExecuteCommand: SelectedItems != null && SelectedItems.Count > 0) },
+                new MenuItem { Header = "Download...", Command=new ProtectedCommand(OnDownloadCommand, canExecuteCommand: hasItems) },
+                new MenuItem { Header = "Delete", Command = new ProtectedCommand(OnDeleteCommand, canExecuteCommand: hasItems) },
             };
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
