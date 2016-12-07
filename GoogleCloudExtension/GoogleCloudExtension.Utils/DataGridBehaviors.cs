@@ -101,12 +101,12 @@ namespace GoogleCloudExtension.Utils
         {
             var self = (DataGrid)d;
 
-            if (e.OldValue != null)
+            if (e.OldValue != null && e.NewValue == null)
             {
                 self.MouseDoubleClick -= OnDataGridDoubleClick;
             }
 
-            if (e.NewValue != null)
+            if (e.NewValue != null && e.OldValue == null)
             {
                 self.MouseDoubleClick += OnDataGridDoubleClick;
             }
