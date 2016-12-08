@@ -120,7 +120,7 @@
 
                     <!-- Toggle expand details of all log entries. -->
                     <Expander x:Name="allExpander" HorizontalAlignment="Right" VerticalAlignment="Top"
-                              IsExpanded="{Binding Path=ToggleExapandAllExpanded,Mode=OneWayToSource}" 
+                              IsExpanded="{Binding Path=ToggleExapandAllExpanded,Mode=TwoWay}" 
                               ToolTip="{Binding Path=ToggleExapandAllToolTip}" />
                 </StackPanel>
             </Border>
@@ -131,19 +131,19 @@
                       Background="White" BorderThickness="1" BorderBrush="LightGray"
                       GridLinesVisibility="None" 
                       CanUserResizeRows="False"                  
-                      RowDetailsVisibilityMode="{Binding Path=ToggleExpandHideAll,Mode=OneWay}"
+                      RowDetailsVisibilityMode="{Binding Path=DataGridRowDetailsVisibility,Mode=OneWay}"
                       RowStyle="{StaticResource rowStyle}" 
                       CellStyle="{StaticResource cellStyle}"
                       AutoGenerateColumns="False" 
                       IsReadOnly="True" 
                       HeadersVisibility="Column" 
                       ColumnHeaderHeight="18" 
-                      ItemsSource="{Binding Path=LogEntryList}"   
+                      ItemsSource="{Binding Path=LogItemCollection}"   
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                       PreviewMouseDown="dataGrid_PreviewMouseDown"    
                       AlternationCount="2"
                       MouseMove="dataGrid_MouseMove"
-                      ScrollViewer.ScrollChanged="dtGrid_ScrollChanged"
+                      ScrollViewer.ScrollChanged="dataGrid_ScrollChanged"
                       SelectionChanged="dataGrid_SelectionChanged">
 
                 <!-- Group log items by log dates. -->
@@ -197,7 +197,7 @@
                 <DataGrid.RowDetailsTemplate>
                     <DataTemplate>
                         <!-- The detail view takes the LogItem object as input and display it. -->
-                        <TreeView BorderThickness="0" Margin="30, 0, 0 , 0">
+                        <TreeView BorderThickness="0" Margin="30, 0, 0, 2">
                             <TreeView.Template>
                                 <ControlTemplate>
                                     <ItemsPresenter />
@@ -216,27 +216,6 @@
         </Grid>
         
         <!-- Displays log list requesting hint, or request error. -->
-        <Grid Grid.Row="3" Margin="12, 0, 12, 0" Background="White">
-            
-            <!-- Display request error. -->
-            <TextBlock Margin="0, 0, 0, 12" VerticalAlignment="Bottom" Foreground="Red"   
-                       
-                       TextAlignment="Left" MaxHeight="120" Padding="8, 5, 8, 5"  TextWrapping="Wrap" 
-                       Text="{Binding ErrorMessage}" Visibility="{Binding Path=ProgressErrorMessageVisibility}" />
-            
-            <!-- Shows it is requesting log items. -->
-            <StackPanel Margin="0, 0, 0, 12" Orientation="Horizontal" HorizontalAlignment="Center"
-                        Visibility="{Binding Path=CancelLoadingVisibility}">
-                
-                <!-- Loading or Cancelling. -->
-                <TextBlock Text="{Binding LogLoddingProgress}" Padding="8, 5, 8, 5" Foreground="Red" />
-                
-                <!-- Cancel request button. -->
-                <Button Margin="12, 0, 12, 0" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                        Content="{Binding Path=CancelButtonText}" Command="{Binding Path=CancelLoadingCommand}" 
-                        Visibility="{Binding Path=CancelLoadingVisibility}" 
-                        Style="{StaticResource CommonButtonStandardStyle}" />
-            </StackPanel>
-        </Grid>
+        <Grid Grid.Row="3" Margin="12, 0, 12, 0" Background="White" />
     </Grid>
 </UserControl>

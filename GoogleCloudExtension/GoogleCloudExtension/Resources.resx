@@ -1315,4 +1315,16 @@
     <value>_Allocations:</value>
     <comment>Label shown in the split traffic window to indicate the list of allocations.</comment>
   </data>
+  <data name="LogViewerCollapseAllTip" xml:space="preserve">
+    <value>Click to hide all log items detail.</value>
+    <comment>Tool tip to toggle expand all button when it is expanded.</comment>
+  </data>
+  <data name="LogViewerExpandAllTip" xml:space="preserve">
+    <value>Click to see all log items detail.</value>
+    <comment>Tool tip to toggle expand all button when it is collapsed.</comment>
+  </data>
+  <data name="LogViewerRefreshButtonToolTip" xml:space="preserve">
+    <value>Get newest log (in descending order).</value>
+    <comment>Log viewer window referesh image button tool tip.</comment>
+  </data>
 </root>

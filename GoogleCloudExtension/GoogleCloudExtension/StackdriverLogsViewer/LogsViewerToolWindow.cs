@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             var control = Content as LogsViewerToolWindowControl;
             var newModel = new LogsViewerViewModel();
             control.ViewModel = newModel;
-            newModel.LoadOnStartup();
+            newModel.InvalidateAllControls();
         }
 
         public override void OnToolWindowCreated()

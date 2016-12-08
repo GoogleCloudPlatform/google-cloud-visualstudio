@@ -1843,6 +1843,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Click to hide all log items detail..
+        /// </summary>
+        public static string LogViewerCollapseAllTip {
+            get {
+                return ResourceManager.GetString("LogViewerCollapseAllTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to see all log items detail..
+        /// </summary>
+        public static string LogViewerExpandAllTip {
+            get {
+                return ResourceManager.GetString("LogViewerExpandAllTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get newest log (in descending order)..
+        /// </summary>
+        public static string LogViewerRefreshButtonToolTip {
+            get {
+                return ResourceManager.GetString("LogViewerRefreshButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Google Stackdriver Logging.
         /// </summary>
         public static string LogViewerToolWindowCaption {
