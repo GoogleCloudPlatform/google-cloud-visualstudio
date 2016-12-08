@@ -3,12 +3,240 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:viewer="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
+             xmlns:jlinq="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json"
+             xmlns:collection="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"            
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
+             d:DesignHeight="1024" d:DesignWidth="860"             
              Name="LogsViewerToolWindow" 
              >
-    <Grid>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- DataGrid Styles. -->
+
+            <!-- DataGrid cell style.  Add padding to text. Add padding at row style does not work. -->
+            <Style x:Key="cellStyle" TargetType="DataGridCell">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="DataGridCell">
+                            <Border  BorderThickness="0">
+                                <Border x:Name="border" Padding="0, 2, 0, 2" >
+                                    <ContentPresenter />
+                                </Border>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- DataGrid row style. -->
+            <Style x:Key="rowStyle" TargetType="DataGridRow">
+                <Setter Property="TextBlock.TextWrapping" Value="NoWrap" />
+                <Setter Property="Margin" Value="0, 0, 0, 1"/>
+                <Setter Property="BorderThickness" Value="0, 0, 0, 0"/>
+                <Setter Property="BorderBrush" Value="LightGray" />
+                <Setter Property="Background" Value="#FFFDFDFD" />
+                <Style.Triggers>
+
+                    <!-- The Alternation Background must be set here when IsMouseOver trigger is defined. -->
+                    <Trigger Property="AlternationIndex" Value="1">
+                        <Setter Property="Background" Value="AliceBlue"/>
+                    </Trigger>
+
+                    <!-- Highlight the log line on mouse hovers the item. -->
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#F2A600" />
+                        <Setter Property="Foreground" Value="White" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <!-- Style to be applied to the command bar, uses the right theming resource keys. -->
+            <!-- TODO: put this into common style shared by Cloud Explorer too. -->
+            <Style x:Key="CommandBarStyle" TargetType="{x:Type StackPanel}">
+                <Setter Property="Orientation" Value="Horizontal" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarGradientKey}}" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid Background="White" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"  />
+        </Grid.RowDefinitions>
+
+        <!-- Display Google Logo, GCP project id, GCP account name. -->
+        <StackPanel Margin="0, 0, 0, 6" Style="{StaticResource CommandBarStyle}">
+            <Image Source="{Binding Path=CloudLogo}" Height="20" Width="20" HorizontalAlignment="Left" Margin="12, 0, 6, 0"/>
+            <TextBlock Text="Project:" VerticalAlignment="Center" Padding="0, 5, 0, 5"/>
+            <TextBlock Text="{Binding Path=Project}" VerticalAlignment="Center" Margin="6, 0, 0, 0"/>
+            <TextBlock Text="Account:" VerticalAlignment="Center" Margin="12, 0, 0, 0"/>
+            <TextBlock Text="{Binding Path=Account}" VerticalAlignment="Center" Margin="6, 0, 0, 0"/>
+        </StackPanel>
+
+        <!-- Filters -->
+        <StackPanel Grid.Row="1" Margin="12, 6, 12, 6"  VerticalAlignment="Center" HorizontalAlignment="Stretch" 
+                    Orientation="Vertical">
+            <!-- Advanced Filter. -->
+            <Grid />
+
+            <!-- Basic Filters. -->
+            <StackPanel Margin="0" Visibility="{Binding Path=BasicFilterVisibility}">
+                <!-- TODO: Add ComboBoxes. -->
+                <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" 
+                             Margin="0, 0, 0, 6">
+                    <!-- TODO: replace with a image button. -->
+                    <Button Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"
+                            ToolTip="{Binding Path=RefreshCommandToolTip}" Margin="6, 0, 16, 0"
+                            Style="{StaticResource CommonButtonStandardStyle}" Command="{Binding Path=RefreshCommand}"
+                            Content="Refresh"
+                            />
+                </StackPanel>
+
+                <!-- TODO: Add basic text search filter box. -->
+            </StackPanel>
+        </StackPanel>
+
+        <Grid Grid.Row="2" Margin="12, 6, 12, 12">
+
+            <!-- Displayed on top right corner of DataGrid. -->
+            <Border Background="Transparent" Panel.ZIndex="20" HorizontalAlignment="Right"  VerticalAlignment="Top" >
+                <StackPanel Orientation="Horizontal">
+
+                    <!-- Current selected log entry date. -->
+                    <TextBlock Text="{Binding Path=SelectedDate}" Margin="12, 3, 3, 0" VerticalAlignment="Top" />
+
+                    <!-- Toggle expand details of all log entries. -->
+                    <Expander x:Name="allExpander" HorizontalAlignment="Right" VerticalAlignment="Top"
+                              IsExpanded="{Binding Path=ToggleExapandAllExpanded,Mode=OneWayToSource}" 
+                              ToolTip="{Binding Path=ToggleExapandAllToolTip}" />
+                </StackPanel>
+            </Border>
+
+            <!-- DataGrid, displays all log entries. -->
+            <DataGrid Panel.ZIndex="10" x:Name="dataGridLogEntries" Padding="0,0, 0, 0" 
+                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                      Background="White" BorderThickness="1" BorderBrush="LightGray"
+                      GridLinesVisibility="None" 
+                      CanUserResizeRows="False"                  
+                      RowDetailsVisibilityMode="{Binding Path=ToggleExpandHideAll,Mode=OneWay}"
+                      RowStyle="{StaticResource rowStyle}" 
+                      CellStyle="{StaticResource cellStyle}"
+                      AutoGenerateColumns="False" 
+                      IsReadOnly="True" 
+                      HeadersVisibility="Column" 
+                      ColumnHeaderHeight="18" 
+                      ItemsSource="{Binding Path=LogEntryList}"   
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                      PreviewMouseDown="dataGrid_PreviewMouseDown"    
+                      AlternationCount="2"
+                      MouseMove="dataGrid_MouseMove"
+                      ScrollViewer.ScrollChanged="dtGrid_ScrollChanged"
+                      SelectionChanged="dataGrid_SelectionChanged">
+
+                <!-- Group log items by log dates. -->
+                <DataGrid.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                                            <StackPanel  Background="LightGray" >
+                                                <StackPanel.Resources>
+                                                    <Style TargetType="TextBlock" >
+                                                        <Setter Property="FontWeight" Value="Bold" />
+                                                    </Style>
+                                                </StackPanel.Resources>
+                                                <StackPanel Orientation="Horizontal" Margin="9, 1, 0, 1" >
+                                                    <TextBlock Text="{Binding Path=Name}"  Padding="0, 5, 4, 5" />
+                                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=ItemCount}" Padding="4, 5, 2, 5"/>
+                                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Element(s)" Padding="0, 5, 8, 5"/>
+                                                </StackPanel>
+                                                <ItemsPresenter />
+                                            </StackPanel>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </DataGrid.GroupStyle>
+
+                <DataGrid.Columns>
+
+                    <!-- Log Severity (Log Level) column. Display an icon. -->
+                    <DataGridTemplateColumn IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding Path=SeverityLevel}" Width="12" Margin="9, 1, 8, 1" 
+                                       ToolTip="{Binding Path=SeverityTip}"/>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <!-- Log time column. -->
+                    <DataGridTextColumn Binding="{Binding Time,StringFormat='HH:mm:ss.fff'}" Width="90"/>
+
+                    <!-- The custom message column. -->
+                    <DataGridTextColumn Binding="{Binding Message}" />
+                </DataGrid.Columns>
+
+                <DataGrid.RowDetailsTemplate>
+                    <DataTemplate>
+                        <!-- The detail view takes the LogItem object as input and display it. -->
+                        <TreeView BorderThickness="0" Margin="30, 0, 0 , 0">
+                            <TreeView.Template>
+                                <ControlTemplate>
+                                    <ItemsPresenter />
+                                </ControlTemplate>
+                            </TreeView.Template>
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="{x:Type TreeViewItem}" >
+                                    <Setter Property="IsExpanded" Value="True" />
+                                    <Setter Property="Foreground" Value="DarkSlateGray" />
+                                </Style>
+                            </TreeView.ItemContainerStyle>
+                        </TreeView>
+                    </DataTemplate>
+                </DataGrid.RowDetailsTemplate>
+            </DataGrid>
+        </Grid>
+        
+        <!-- Displays log list requesting hint, or request error. -->
+        <Grid Grid.Row="3" Margin="12, 0, 12, 0" Background="White">
+            
+            <!-- Display request error. -->
+            <TextBlock Margin="0, 0, 0, 12" VerticalAlignment="Bottom" Foreground="Red"   
+                       
+                       TextAlignment="Left" MaxHeight="120" Padding="8, 5, 8, 5"  TextWrapping="Wrap" 
+                       Text="{Binding ErrorMessage}" Visibility="{Binding Path=ProgressErrorMessageVisibility}" />
+            
+            <!-- Shows it is requesting log items. -->
+            <StackPanel Margin="0, 0, 0, 12" Orientation="Horizontal" HorizontalAlignment="Center"
+                        Visibility="{Binding Path=CancelLoadingVisibility}">
+                
+                <!-- Loading or Cancelling. -->
+                <TextBlock Text="{Binding LogLoddingProgress}" Padding="8, 5, 8, 5" Foreground="Red" />
+                
+                <!-- Cancel request button. -->
+                <Button Margin="12, 0, 12, 0" HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                        Content="{Binding Path=CancelButtonText}" Command="{Binding Path=CancelLoadingCommand}" 
+                        Visibility="{Binding Path=CancelLoadingVisibility}" 
+                        Style="{StaticResource CommonButtonStandardStyle}" />
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>

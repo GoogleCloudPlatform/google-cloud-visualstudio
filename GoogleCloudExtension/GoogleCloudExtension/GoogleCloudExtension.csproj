@@ -226,11 +226,14 @@
     <Compile Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml.cs">
       <DependentUpon>SplitTrafficWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StackdriverLogsViewer\LogItem.cs" />
+    <Compile Include="StackdriverLogsViewer\LogSeverity.cs" />
     <Compile Include="StackdriverLogsViewer\LogsViewerToolWindow.cs" />
     <Compile Include="StackdriverLogsViewer\LogsViewerToolWindowCommand.cs" />
     <Compile Include="StackdriverLogsViewer\LogsViewerToolWindowControl.xaml.cs">
       <DependentUpon>LogsViewerToolWindowControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StackdriverLogsViewer\LogsViewerViewModel.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
     <Compile Include="SolutionUtils\ISolutionProject.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
@@ -291,6 +294,13 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_any.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_debug.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_error.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_fatal.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_info.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_warning.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\logo_cloud.png" />
     <Resource Include="Theming\Resources\ic_help_black_14px.png" />
     <Resource Include="PublishDialogSteps\ChoiceStep\Resources\AppEngine_128px_Retina.png" />
     <Resource Include="PublishDialogSteps\ChoiceStep\Resources\ComputeEngine_128px_Retina.png" />
@@ -422,6 +432,10 @@
     </Reference>
     <Reference Include="Google.Apis.Core, Version=1.19.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Core.1.19.0\lib\net45\Google.Apis.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Google.Apis.Logging.v2, Version=1.19.0.685, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Logging.v2.1.19.0.685\lib\net45\Google.Apis.Logging.v2.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Apis.PlatformServices, Version=1.19.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">

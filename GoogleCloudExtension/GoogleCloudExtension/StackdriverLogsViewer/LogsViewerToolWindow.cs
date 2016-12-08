@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Accounts;
 using System;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
@@ -44,6 +45,22 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
             this.Content = new LogsViewerToolWindowControl();
+
+            CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => CreateNewViewModel();
+        }
+
+        private void CreateNewViewModel()
+        {
+            var control = Content as LogsViewerToolWindowControl;
+            var newModel = new LogsViewerViewModel();
+            control.ViewModel = newModel;
+            newModel.LoadOnStartup();
+        }
+
+        public override void OnToolWindowCreated()
+        {
+            base.OnToolWindowCreated();
+            CreateNewViewModel();
         }
     }
 }
