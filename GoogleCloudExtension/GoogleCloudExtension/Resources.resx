@@ -1311,6 +1311,26 @@
     <value>_Allocations:</value>
     <comment>Label shown in the split traffic window to indicate the list of allocations.</comment>
   </data>
+  <data name="AuthorizedNetworksNetworkHeader" xml:space="preserve">
+    <value>Network</value>
+    <comment>Header for the control groupin.</comment>
+  </data>
+  <data name="CloudExplorerGceZoneCaption" xml:space="preserve">
+    <value>{0} ({1})</value>
+    <comment>Caption for the zone node. {0} is the zone name, {1} is the number of instances in the zone.</comment>
+  </data>
+  <data name="CloudExplorerGcsBucketLocationCaption" xml:space="preserve">
+    <value>{0} ({1})</value>
+    <comment>Caption for the bucket location node, {0} is the name of the location, {1} is the number of buckets in the location.</comment>
+  </data>
+  <data name="CloudExplorerNoLoggedInMessage" xml:space="preserve">
+    <value>No credentials, please login.</value>
+    <comment>Shown in the cloud explorer when there are no credentials available.</comment>
+  </data>
+  <data name="CloudExplorerNoProjectMessage" xml:space="preserve">
+    <value>No project selected.</value>
+    <comment>Shown in the cloud explorer when no project is selected.</comment>
+  </data>
   <data name="GcsFileBrowserContentTypeHeader" xml:space="preserve">
     <value>Content Type</value>
     <comment>The header for the Content Type column in the data grid.</comment>
@@ -1378,6 +1398,10 @@
   <data name="GcsFileBrowserUploadingProgressMessage" xml:space="preserve">
     <value>_Files being uploaded:</value>
     <comment>Message for the progress dialog for the upload operations.</comment>
+  </data>
+  <data name="ShowPasswordWindowPasswordCopiedMessage" xml:space="preserve">
+    <value>Password copied to clipboard.</value>
+    <comment>Message shown to the user when the password is copied to the clipboard.</comment>
   </data>
   <data name="UiBrowseMenuHeader" xml:space="preserve">
     <value>Browse</value>

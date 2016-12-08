@@ -3,8 +3,6 @@
 # the code.
 #   $1, the root directory where to start.
 
-echo Arg: $1
-
 readonly workspace=$(dirname $0)/../
 
 # Look for literal strings on .cs files.

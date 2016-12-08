@@ -214,6 +214,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Network.
+        /// </summary>
+        public static string AuthorizedNetworksNetworkHeader {
+            get {
+                return ResourceManager.GetString("AuthorizedNetworksNetworkHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Add Authorized Network.
         /// </summary>
         public static string AuthorizedNetworksWindowAddNetworkButton {
@@ -1330,6 +1339,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}).
+        /// </summary>
+        public static string CloudExplorerGceZoneCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceZoneCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Zone Properties.
         /// </summary>
         public static string CloudExplorerGceZoneCategory {
@@ -1389,6 +1407,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGcsBucketCreatedDescription {
             get {
                 return ResourceManager.GetString("CloudExplorerGcsBucketCreatedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}).
+        /// </summary>
+        public static string CloudExplorerGcsBucketLocationCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerGcsBucketLocationCaption", resourceCulture);
             }
         }
         
@@ -1555,11 +1582,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No credentials, please login..
+        /// </summary>
+        public static string CloudExplorerNoLoggedInMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerNoLoggedInMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Go to the Cloud Platform Console.
         /// </summary>
         public static string CloudExplorerNoProjectButtonCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerNoProjectButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No project selected..
+        /// </summary>
+        public static string CloudExplorerNoProjectMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerNoProjectMessage", resourceCulture);
             }
         }
         
@@ -2613,6 +2658,15 @@ namespace GoogleCloudExtension {
         public static string ShowPasswordShowPasswordTooltip {
             get {
                 return ResourceManager.GetString("ShowPasswordShowPasswordTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password copied to clipboard..
+        /// </summary>
+        public static string ShowPasswordWindowPasswordCopiedMessage {
+            get {
+                return ResourceManager.GetString("ShowPasswordWindowPasswordCopiedMessage", resourceCulture);
             }
         }
         
