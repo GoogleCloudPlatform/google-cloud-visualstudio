@@ -9,7 +9,7 @@ image: Visual Studio 2015
 # Perform the build.
 # TODO: Fetch the output of the build and publish it.
 build_script:
-  - bash -c ./tools/ensure_no_literals.sh
+  - bash -c ./tools/ensure_strings_extracted.sh
   - nuget restore .\GoogleCloudExtension
   - msbuild .\GoogleCloudExtension\GoogleCloudExtension.sln /p:Configuration=Debug
   - msbuild .\GoogleCloudExtension\GoogleCloudExtension.sln /p:Configuration=Release
