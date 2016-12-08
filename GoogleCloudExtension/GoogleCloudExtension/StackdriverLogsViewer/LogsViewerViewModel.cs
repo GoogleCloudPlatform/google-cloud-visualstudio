@@ -52,7 +52,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         #region DataGrid top right corner private members
         private string _selectedDate = string.Empty;
-        private string _toggleExpandAllToolTip;
         private bool _toggleExpandAllExpanded = false;
         #endregion
 
@@ -118,8 +117,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 DataGridRowDetailsVisibility =
                     value ? DataGridRowDetailsVisibilityMode.Visible : DataGridRowDetailsVisibilityMode.Collapsed;
-                ToggleExapandAllToolTip = value ? Resources.LogViewerCollapseAllTip : Resources.LogViewerExpandAllTip;
                 SetValueAndRaise(ref _toggleExpandAllExpanded, value);
+                RaisePropertyChanged(nameof(ToggleExapandAllToolTip));
             }
         }
 
@@ -128,8 +127,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public string ToggleExapandAllToolTip
         {
-            get { return _toggleExpandAllToolTip; }
-            set { SetValueAndRaise(ref _toggleExpandAllToolTip, value); }
+            get {
+                return _toggleExpandAllExpanded ? Resources.LogViewerCollapseAllTip : Resources.LogViewerExpandAllTip;
+            }
         }
 
         public string SelectedDate
@@ -181,6 +181,21 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
+        /// When a new view model is created and attached to Window, invalidate controls and re-load first page
+        /// of log entries.
+        /// </summary>
+        public async void InvalidateAllControls()
+        {
+            if (string.IsNullOrWhiteSpace(CredentialsStore.Default?.CurrentAccount?.AccountName) ||
+                string.IsNullOrWhiteSpace(CredentialsStore.Default?.CurrentProjectId))
+            {
+                return;
+            }
+
+            await Reload();
+        }
+
+        /// <summary>
         /// Update the current log item date.
         /// </summary>
         /// <param name="item">Current selected log item </param>
@@ -193,23 +208,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             SelectedDate = log.Date;
-        }
-
-        /// <summary>
-        /// When a new view model is created and attached to Window, invalidate controls and re-load first page
-        /// of log entries.
-        /// </summary>
-        public async void InvalidateAllControls()
-        {
-            RaiseAllPropertyChanged();
-
-            if (string.IsNullOrWhiteSpace(CredentialsStore.Default?.CurrentAccount?.AccountName) || 
-                string.IsNullOrWhiteSpace(CredentialsStore.Default?.CurrentProjectId))
-            {
-                return;
-            }
-
-            await Reload();
         }
 
         #region DataGrid public methods

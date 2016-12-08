@@ -140,9 +140,7 @@
                       ColumnHeaderHeight="18" 
                       ItemsSource="{Binding Path=LogItemCollection}"   
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                      PreviewMouseDown="dataGrid_PreviewMouseDown"    
                       AlternationCount="2"
-                      MouseMove="dataGrid_MouseMove"
                       ScrollViewer.ScrollChanged="dataGrid_ScrollChanged"
                       SelectionChanged="dataGrid_SelectionChanged">
 
