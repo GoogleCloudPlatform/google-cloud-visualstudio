@@ -3,15 +3,16 @@
 # the code.
 #   $1, the root directory where to start.
 
+echo Arg: $1
+
+readonly workspace=$(dirname $0)/../
+
 # Look for literal strings on .cs files.
-find $1 -name '*.cs' | xargs grep -HnE \
+${workspace}/tools/find_files.py -d $1 -e .cs | xargs grep -HnE \
     "caption: \"|message: \"|title: \"|Header = \"|Caption = \""
-find $1 -name '*.cs' | xargs grep -HnE \
+${workspace}/tools/find_files.py -d $1 -e .cs | xargs grep -HnE \
     "caption: \\$\"|message: \\$\"|title: \"|Header = \\$\"|Caption = \\$\""
 
 # Look for literal strings on .xaml files.
-find $1 -name '*.xaml' | xargs grep -HnE \
+${workspace}/tools/find_files.py -d $1 -e .xaml | xargs grep -HnE \
     "Header=\"[A-Z]|Content=\"[A-Z]|Text=\"[A-Z]"
-
-
-
