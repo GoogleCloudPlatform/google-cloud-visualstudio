@@ -16,6 +16,10 @@ using System.Collections;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// Implementation of <seealso cref="IComparer"/> that delegates the comparison
+    /// to a <seealso cref="IColumnSorter"/>.
+    /// </summary>
     internal class DataGridColumnCustomSorter : IComparer
     {
         private readonly IColumnSorter _sorter;

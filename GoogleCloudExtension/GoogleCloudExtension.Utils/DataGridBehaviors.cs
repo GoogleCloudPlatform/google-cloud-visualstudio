@@ -20,10 +20,20 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// This class implements WPF behaviors that make working with MVVM and <seealso cref="DataGrid"/> much easier. These
+    /// behaviors are implemented as a set of attached properties that will add the necessary event handlers
+    /// to the <seealso cref="DataGrid"/> without having to write code behind.
+    /// </summary>
     public static class DataGridBehaviors
     {
         #region HasCustomSort property.
 
+        /// <summary>
+        /// This property allows the user to define a <seealso cref="IColumnSorter"/> to be used to
+        /// sort the columns. Setting this property to <code>true</code> enables the feature. Otherwise
+        /// the property <seealso cref="CustomSortProperty"/> will not do anything.
+        /// </summary>
         public static readonly DependencyProperty HasCustomSortProperty =
             DependencyProperty.RegisterAttached(
                 "HasCustomSort",
@@ -31,8 +41,14 @@ namespace GoogleCloudExtension.Utils
                 typeof(DataGridBehaviors),
                 new PropertyMetadata(false, OnHasCustomSortPropertyChanged));
 
+        /// <summary>
+        /// Getter for the attached property.
+        /// </summary>
         public static bool GetHasCustomSort(DataGrid self) => (bool)self.GetValue(HasCustomSortProperty);
 
+        /// <summary>
+        /// Setter for the attached property.
+        /// </summary>
         public static void SetHasCustomSort(DataGrid self, bool value)
         {
             self.SetValue(HasCustomSortProperty, value);
@@ -65,14 +81,23 @@ namespace GoogleCloudExtension.Utils
 
         #region CustomSort property.
 
+        /// <summary>
+        /// This attached property is meant to applied to <seealso cref="DataGridColumn"/> instances, and contains
+        /// the <see cref="IColumnSorter"/> instance to use to sort this column.
+        /// </summary>
         public static readonly DependencyProperty CustomSortProperty =
             DependencyProperty.RegisterAttached(
                 "CustomSort",
                 typeof(IColumnSorter),
                 typeof(DataGridBehaviors));
 
+        /// <summary>
+        /// The getter for the attached property.
         public static IColumnSorter GetCustomSort(DataGridColumn self) => (IColumnSorter)self.GetValue(CustomSortProperty);
 
+        /// <summary>
+        /// The setter for the attached property.
+        /// </summary>
         public static void SetCustomSort(DataGridColumn self, IColumnSorter value)
         {
             self.SetValue(CustomSortProperty, value);
@@ -82,6 +107,10 @@ namespace GoogleCloudExtension.Utils
 
         #region Double click command.
 
+        /// <summary>
+        /// This attached property transforms the <seealso cref="DataGrid.MouseDoubleClick" /> event into a
+        /// <see cref="ICommand"/> invokation. This makes it possible to implement the necessary code in the view model.
+        /// </summary>
         public static readonly DependencyProperty DoubleClickCommandProperty =
             DependencyProperty.RegisterAttached(
                 "DoubleClickCommand",
@@ -89,8 +118,14 @@ namespace GoogleCloudExtension.Utils
                 typeof(DataGridBehaviors),
                 new PropertyMetadata(OnDoubleClickCommandPropertyChanged));
 
+        /// <summary>
+        /// The getter for the attached property.
+        /// </summary>
         public static ICommand GetDoubleClickCommand(DataGrid self) => (ICommand)self.GetValue(DoubleClickCommandProperty);
 
+        /// <summary>
+        /// The setter for the attached property.
+        /// </summary>
         public static void SetDoubleClickCommand(DataGrid self, ICommand value)
         {
             self.SetValue(DoubleClickCommandProperty, value);
