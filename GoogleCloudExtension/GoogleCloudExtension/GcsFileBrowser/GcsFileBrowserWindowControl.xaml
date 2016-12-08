@@ -7,6 +7,7 @@
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:mb="clr-namespace:GoogleCloudExtension.Extensions"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              Padding="5"
@@ -107,7 +108,7 @@
                   utils:DataGridBehaviors.DoubleClickCommand="{Binding DoubleClickCommand}"
                   SelectionChanged="DataGrid_SelectionChanged">
             <DataGrid.Columns>
-                <DataGridTemplateColumn Header="Name"
+                <DataGridTemplateColumn Header="{x:Static ext:Resources.GcsFileBrowserNameHeader}"
                                         SortMemberPath="FileName"
                                         utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter FileName, SortDirectories=True}">
                     <DataGridTemplateColumn.CellTemplate>
@@ -129,13 +130,13 @@
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Binding="{Binding Size}"
                                     utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter Size}"
-                                    Header="Size" />
+                                    Header="{x:Static ext:Resources.GcsFileBrowserSizeHeader}" />
                 <DataGridTextColumn Binding="{Binding LastModified}"
                                     utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter LastModified}"
-                                    Header="Last Modified" />
+                                    Header="{x:Static ext:Resources.GcsFileBrowserLastModifiedHeader}" />
                 <DataGridTextColumn Binding="{Binding ContentType}"
                                     utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter ContentType}"
-                                    Header="Content Type" />
+                                    Header="{x:Static ext:Resources.GcsFileBrowserContentTypeHeader}" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

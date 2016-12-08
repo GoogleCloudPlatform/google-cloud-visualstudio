@@ -1843,6 +1843,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Content Type.
+        /// </summary>
+        public static string GcsFileBrowserContentTypeHeader {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserContentTypeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to list objects to delete..
         /// </summary>
         public static string GcsFileBrowserDeleteListErrorMessage {
@@ -1933,11 +1942,38 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Last Modified.
+        /// </summary>
+        public static string GcsFileBrowserLastModifiedHeader {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserLastModifiedHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string GcsFileBrowserNameHeader {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserNameHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to New Folder....
         /// </summary>
         public static string GcsFileBrowserNewFolderHeader {
             get {
                 return ResourceManager.GetString("GcsFileBrowserNewFolderHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string GcsFileBrowserSizeHeader {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserSizeHeader", resourceCulture);
             }
         }
         

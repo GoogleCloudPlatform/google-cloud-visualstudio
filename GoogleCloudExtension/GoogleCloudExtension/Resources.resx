@@ -1311,6 +1311,10 @@
     <value>_Allocations:</value>
     <comment>Label shown in the split traffic window to indicate the list of allocations.</comment>
   </data>
+  <data name="GcsFileBrowserContentTypeHeader" xml:space="preserve">
+    <value>Content Type</value>
+    <comment>The header for the Content Type column in the data grid.</comment>
+  </data>
   <data name="GcsFileBrowserDeleteListErrorMessage" xml:space="preserve">
     <value>Failed to list objects to delete.</value>
     <comment>Error message shown when failed to list all the files to be deleted.</comment>
@@ -1351,9 +1355,21 @@
     <value>Download files</value>
     <comment>Messagefor the dialog used to select a target folder.</comment>
   </data>
+  <data name="GcsFileBrowserLastModifiedHeader" xml:space="preserve">
+    <value>Last Modified</value>
+    <comment>The header for the Last Modified column in the data grid.</comment>
+  </data>
+  <data name="GcsFileBrowserNameHeader" xml:space="preserve">
+    <value>Name</value>
+    <comment>The header for the Name column in the data grid.</comment>
+  </data>
   <data name="GcsFileBrowserNewFolderHeader" xml:space="preserve">
     <value>New Folder...</value>
     <comment>Header for the New Folder option in the context menu.</comment>
+  </data>
+  <data name="GcsFileBrowserSizeHeader" xml:space="preserve">
+    <value>Size</value>
+    <comment>The header for the Size column in the data grid.</comment>
   </data>
   <data name="GcsFileBrowserUploadingProgressCaption" xml:space="preserve">
     <value>Uploading Files</value>
