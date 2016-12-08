@@ -173,8 +173,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
 
             GcsFileProgressDialogWindow.PromptUser(
-                caption: "Upload Files",
-                message: "Files being uploaded",
+                caption: Resources.GcsFileBrowserUploadingProgressCaption,
+                message: Resources.GcsFileBrowserUploadingProgressMessage,
                 operations: uploadOperations,
                 tokenSource: tokenSource);
 
@@ -240,9 +240,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
             var hasItems = SelectedItems != null && SelectedItems.Count > 0;
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = "New Folder...", Command=new ProtectedCommand(OnNewFolderCommand) },
-                new MenuItem { Header = "Download...", Command=new ProtectedCommand(OnDownloadCommand, canExecuteCommand: hasItems) },
-                new MenuItem { Header = "Delete", Command = new ProtectedCommand(OnDeleteCommand, canExecuteCommand: hasItems) },
+                new MenuItem { Header = Resources.GcsFileBrowserNewFolderHeader, Command=new ProtectedCommand(OnNewFolderCommand) },
+                new MenuItem { Header = Resources.GcsFileBrowserDonwloadHeader, Command=new ProtectedCommand(OnDownloadCommand, canExecuteCommand: hasItems) },
+                new MenuItem { Header = Resources.UiDeleteButtonCaption, Command = new ProtectedCommand(OnDeleteCommand, canExecuteCommand: hasItems) },
             };
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
@@ -274,7 +274,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         {
             // 1) The user is prompted for the download root where to store the downloaded files.
             FBD dialog = new FBD();
-            dialog.Description = "Download files";
+            dialog.Description = Resources.GcsFileBrowserFolderSelectionMessage;
             dialog.ShowNewFolderButton = true;
 
             var result = dialog.ShowDialog();
@@ -326,7 +326,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     }
                     catch (IOException)
                     {
-                        UserPromptUtils.ErrorPrompt($"Failed to create directory {dir}", "Error");
+                        UserPromptUtils.ErrorPrompt(
+                            message: String.Format(Resources.GcsFileBrowserFailedToCreateDirMessage, dir),
+                            title: Resources.UiErrorCaption);
                     }
                 }
             }
@@ -347,8 +349,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     token: tokenSource.Token);
             }
             GcsFileProgressDialogWindow.PromptUser(
-                caption: "Download Files",
-                message: "Files being downloaded",
+                caption: Resources.GcsFileBrowserDownloadingProgressCaption,
+                message: Resources.GcsFileBrowserDownloadingProgressMessage,
                 operations: downloadOperations,
                 tokenSource: tokenSource);
         }
@@ -368,8 +370,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
         {
             // 1) The user is asked to confirm the deletion operation.
             if (!UserPromptUtils.ActionPrompt(
-                prompt: "Are you sure you want to delete these files?",
-                title: "Delete",
+                prompt: Resources.GcsFileBrowserDeletePromptMessage,
+                title: Resources.UiDeleteButtonCaption,
                 actionCaption: Resources.UiDeleteButtonCaption,
                 cancelCaption: Resources.UiCancelButtonCaption))
             {
@@ -400,7 +402,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
             catch (DataSourceException)
             {
-                UserPromptUtils.ErrorPrompt(message: "Failed to list objects to delete.", title: "Error");
+                UserPromptUtils.ErrorPrompt(
+                    message: Resources.GcsFileBrowserDeleteListErrorMessage,
+                    title: Resources.UiErrorCaption);
             }
             finally
             {
@@ -418,8 +422,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     token: tokenSource.Token);
             }
             GcsFileProgressDialogWindow.PromptUser(
-                caption: "Deleting Files",
-                message: "Files being deleted",
+                caption: Resources.GcsFileBrowserDeletingProgressCaption,
+                message: Resources.GcsFileBrowserDeletingProgressMessage,
                 operations: deleteOperations,
                 tokenSource: tokenSource);
 
@@ -614,6 +618,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
         }
 
         private static GcsBrowserState CreateErrorState(string name) =>
-            new GcsBrowserState(new List<GcsRow> { GcsRow.CreateErrorRow($"Failed to load directory {name}.") }, name);
+            new GcsBrowserState(
+                new List<GcsRow>
+                {
+                    GcsRow.CreateErrorRow(String.Format(Resources.GcsFileBrowserFailedDirectoryLoadMessage, name))
+                },
+                name);
     }
 }

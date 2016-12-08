@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -1843,6 +1843,123 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to list objects to delete..
+        /// </summary>
+        public static string GcsFileBrowserDeleteListErrorMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDeleteListErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you want to delete these files?.
+        /// </summary>
+        public static string GcsFileBrowserDeletePromptMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDeletePromptMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deleting Files.
+        /// </summary>
+        public static string GcsFileBrowserDeletingProgressCaption {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDeletingProgressCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files being deleted.
+        /// </summary>
+        public static string GcsFileBrowserDeletingProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDeletingProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download....
+        /// </summary>
+        public static string GcsFileBrowserDonwloadHeader {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDonwloadHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Downloading Files.
+        /// </summary>
+        public static string GcsFileBrowserDownloadingProgressCaption {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDownloadingProgressCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files being downloaded:.
+        /// </summary>
+        public static string GcsFileBrowserDownloadingProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDownloadingProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load directory {0}..
+        /// </summary>
+        public static string GcsFileBrowserFailedDirectoryLoadMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFailedDirectoryLoadMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to create directory {0}..
+        /// </summary>
+        public static string GcsFileBrowserFailedToCreateDirMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFailedToCreateDirMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download files.
+        /// </summary>
+        public static string GcsFileBrowserFolderSelectionMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFolderSelectionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Folder....
+        /// </summary>
+        public static string GcsFileBrowserNewFolderHeader {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserNewFolderHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Uploading Files.
+        /// </summary>
+        public static string GcsFileBrowserUploadingProgressCaption {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserUploadingProgressCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Files being uploaded:.
+        /// </summary>
+        public static string GcsFileBrowserUploadingProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserUploadingProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The user account {0} already exists..
         /// </summary>
         public static string ManageAccountsAccountAlreadyExistsPromptMessage {
@@ -2599,6 +2716,15 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Browse.
+        /// </summary>
+        public static string UiBrowseMenuHeader {
+            get {
+                return ResourceManager.GetString("UiBrowseMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string UiCancelButtonCaption {
@@ -2631,6 +2757,15 @@ namespace GoogleCloudExtension
         public static string UiDownloadButtonCaption {
             get {
                 return ResourceManager.GetString("UiDownloadButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string UiErrorCaption {
+            get {
+                return ResourceManager.GetString("UiErrorCaption", resourceCulture);
             }
         }
         

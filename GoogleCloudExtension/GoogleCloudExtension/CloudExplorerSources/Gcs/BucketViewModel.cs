@@ -61,7 +61,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = "Browse", Command = new ProtectedCommand(OnBrowseCommand) },
+                new MenuItem { Header = Resources.UiBrowseMenuHeader, Command = new ProtectedCommand(OnBrowseCommand) },
                 new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenConCloudConsoleCommand) },
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesCommand) },
             };

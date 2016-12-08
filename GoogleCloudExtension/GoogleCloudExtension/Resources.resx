@@ -1311,4 +1311,64 @@
     <value>_Allocations:</value>
     <comment>Label shown in the split traffic window to indicate the list of allocations.</comment>
   </data>
+  <data name="GcsFileBrowserDeleteListErrorMessage" xml:space="preserve">
+    <value>Failed to list objects to delete.</value>
+    <comment>Error message shown when failed to list all the files to be deleted.</comment>
+  </data>
+  <data name="GcsFileBrowserDeletePromptMessage" xml:space="preserve">
+    <value>Are you sure you want to delete these files?</value>
+    <comment>Message for the delete confirmation prompt for GCS files.</comment>
+  </data>
+  <data name="GcsFileBrowserDeletingProgressCaption" xml:space="preserve">
+    <value>Deleting Files</value>
+    <comment>Caption for the progress dialog for the delete file operations.</comment>
+  </data>
+  <data name="GcsFileBrowserDeletingProgressMessage" xml:space="preserve">
+    <value>Files being deleted</value>
+    <comment>Message for the progress dialog for the delete file operations.</comment>
+  </data>
+  <data name="GcsFileBrowserDonwloadHeader" xml:space="preserve">
+    <value>Download...</value>
+    <comment>Header for the Download option in the context menu.</comment>
+  </data>
+  <data name="GcsFileBrowserDownloadingProgressCaption" xml:space="preserve">
+    <value>Downloading Files</value>
+    <comment>Caption for the progress dialog for the download operations.</comment>
+  </data>
+  <data name="GcsFileBrowserDownloadingProgressMessage" xml:space="preserve">
+    <value>Files being downloaded:</value>
+    <comment>Message for the prgoress dialog for the download operations.</comment>
+  </data>
+  <data name="GcsFileBrowserFailedDirectoryLoadMessage" xml:space="preserve">
+    <value>Failed to load directory {0}.</value>
+    <comment>Error message shown when failed to load a directory.</comment>
+  </data>
+  <data name="GcsFileBrowserFailedToCreateDirMessage" xml:space="preserve">
+    <value>Failed to create directory {0}.</value>
+    <comment>Error message displayed when there's a failure creating a directory while downloading files.</comment>
+  </data>
+  <data name="GcsFileBrowserFolderSelectionMessage" xml:space="preserve">
+    <value>Download files</value>
+    <comment>Messagefor the dialog used to select a target folder.</comment>
+  </data>
+  <data name="GcsFileBrowserNewFolderHeader" xml:space="preserve">
+    <value>New Folder...</value>
+    <comment>Header for the New Folder option in the context menu.</comment>
+  </data>
+  <data name="GcsFileBrowserUploadingProgressCaption" xml:space="preserve">
+    <value>Uploading Files</value>
+    <comment>Caption for the progress dialog for the upload operations.</comment>
+  </data>
+  <data name="GcsFileBrowserUploadingProgressMessage" xml:space="preserve">
+    <value>_Files being uploaded:</value>
+    <comment>Message for the progress dialog for the upload operations.</comment>
+  </data>
+  <data name="UiBrowseMenuHeader" xml:space="preserve">
+    <value>Browse</value>
+    <comment>Header for a browse menu item.</comment>
+  </data>
+  <data name="UiErrorCaption" xml:space="preserve">
+    <value>Error</value>
+    <comment>Generic error caption for error dialogs.</comment>
+  </data>
 </root>
