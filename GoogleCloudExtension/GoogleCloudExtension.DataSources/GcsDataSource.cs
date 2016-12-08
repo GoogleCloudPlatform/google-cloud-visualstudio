@@ -68,6 +68,12 @@ namespace GoogleCloudExtension.DataSources
                 x => x.NextPageToken);
         }
 
+        /// <summary>
+        /// Lists all of the objects that exist under the given <paramref name="prefix"/>.
+        /// </summary>
+        /// <param name="bucket">The bucket that owns the objects.</param>
+        /// <param name="prefix">The prefix to start looking, can be null if no prefix is to be used.</param>
+        /// <returns>A list of all of the objects found, can be empty.</returns>
         public async Task<IEnumerable<Google.Apis.Storage.v1.Data.Object>> GetObjectLisAsync(string bucket, string prefix)
         {
             var request = Service.Objects.List(bucket);
@@ -83,6 +89,14 @@ namespace GoogleCloudExtension.DataSources
                 x => x.NextPageToken);
         }
 
+        /// <summary>
+        /// Lists all of the objects "directly" under the given <paramref name="prefix"/> together with all of the
+        /// sub-prefixes directly under the same <paramref name="prefix."/>. This method acts as if listing a directory
+        /// in the file system.
+        /// </summary>
+        /// <param name="bucket">The bucket that owns the files.</param>
+        /// <param name="prefix">The prefix to look for, can be null or empty.</param>
+        /// <returns>The "directory" defined by <paramref name="prefix"/>.</returns>
         public async Task<GcsDirectory> GetDirectoryListAsync(string bucket, string prefix)
         {
             var request = Service.Objects.List(bucket);
@@ -121,6 +135,13 @@ namespace GoogleCloudExtension.DataSources
             }
         }
 
+        /// <summary>
+        /// Uploads the given <paramref name="stream"/> to the <paramref name="bucket"/> with the given <paramref name="name"/>.
+        /// </summary>
+        /// <param name="bucket">The bucket that will own the file.</param>
+        /// <param name="name">The name to use.</param>
+        /// <param name="stream">The stream with the contents.</param>
+        /// <param name="contentType">The c ontent type to use, optional.</param>
         public async Task UploadStreamAsync(string bucket, string name, Stream stream, string contentType = null)
         {
             try
@@ -143,6 +164,14 @@ namespace GoogleCloudExtension.DataSources
             }
         }
 
+        /// <summary>
+        /// Starts a file upload operation reporting the status and progress to the given <paramref name="operation"/>.
+        /// </summary>
+        /// <param name="sourcePath">The path to the file to open, should a full path.</param>
+        /// <param name="bucket">The bucket that will own the file.</param>
+        /// <param name="name">The name to use.</param>
+        /// <param name="operation">The operation that will receive the status and progress notifications.</param>
+        /// <param name="token">The cancellation token to cancel the operation.</param>
         public async void StartFileUploadOperation(
             string sourcePath,
             string bucket,
@@ -179,6 +208,14 @@ namespace GoogleCloudExtension.DataSources
             }
         }
 
+        /// <summary>
+        /// Starts a file download operation, reporting the status and progress to the given <paramref name="operation"/>.
+        /// </summary>
+        /// <param name="bucket">The bucket that owns the file.</param>
+        /// <param name="name">The file name.</param>
+        /// <param name="destPath">Where to save the file, this should be a full path.</param>
+        /// <param name="operation">The operation that will receive the status and progress notifications.</param>
+        /// <param name="token">The cancellation token to cancel the operation.</param>
         public async void StartFileDownloadOperation(
             string bucket,
             string name,
@@ -211,6 +248,13 @@ namespace GoogleCloudExtension.DataSources
             }
         }
 
+        /// <summary>
+        /// Starts a delete operation, sending the notifications to the given <paramref name="operation"/>.
+        /// </summary>
+        /// <param name="bucket">The bucket that owns the file.</param>
+        /// <param name="name">The name of the file.</param>
+        /// <param name="operation">The operation that will recieve the status.</param>
+        /// <param name="token">The cancellation token to cancel the operation.</param>
         public async void StartDeleteOperation(string bucket, string name, IGcsFileOperation operation, CancellationToken token)
         {
             try
