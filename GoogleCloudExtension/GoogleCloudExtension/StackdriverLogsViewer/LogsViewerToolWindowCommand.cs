@@ -84,9 +84,29 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
+        /// Gets the service provider from the owner package.
+        /// </summary>
+        private IServiceProvider ServiceProvider
+        {
+            get
+            {
+                return this.package;
+            }
+        }
+
+        /// <summary>
+        /// Initializes the singleton instance of the command.
+        /// </summary>
+        /// <param name="package">Owner package, not null.</param>
+        public static void Initialize(Package package)
+        {
+            Instance = new LogsViewerToolWindowCommand(package);
+        }
+
+        /// <summary>
         /// Close the LogsViewerToolWindow when there is no account available.
         /// </summary>
-        public static void CloseWindow()
+        private static void CloseWindow()
         {
             ErrorHandlerUtils.HandleExceptions(() =>
             {
@@ -106,26 +126,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                         (uint)__FRAMECLOSE.FRAMECLOSE_NoSave));
                 }
             });
-        }
-
-        /// <summary>
-        /// Gets the service provider from the owner package.
-        /// </summary>
-        private IServiceProvider ServiceProvider
-        {
-            get
-            {
-                return this.package;
-            }
-        }
-
-        /// <summary>
-        /// Initializes the singleton instance of the command.
-        /// </summary>
-        /// <param name="package">Owner package, not null.</param>
-        public static void Initialize(Package package)
-        {
-            Instance = new LogsViewerToolWindowCommand(package);
         }
 
         /// <summary>

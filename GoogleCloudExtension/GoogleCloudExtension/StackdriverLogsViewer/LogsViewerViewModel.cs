@@ -60,7 +60,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private ObservableCollection<LogItem> _logs = new ObservableCollection<LogItem>();
         private ListCollectionView _collectionView;
         private object _collectionViewLock = new object();
-        private bool descendingOrder;
         #endregion
 
         #region Simple filter area public properties
@@ -127,6 +126,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
         }
 
+        /// <summary>
+        /// Gets the current selected item date string.
+        /// </summary>
         public string SelectedDate
         {
             get { return _selectedDate; }
@@ -149,6 +151,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             get { return _collectionView; }
         }
 
+        /// <summary>
+        /// Gets the data grid detail view visibility mode. 
+        /// This controls "Expand All", "Collapse All".
+        /// </summary>
         public DataGridRowDetailsVisibilityMode DataGridRowDetailsVisibility
         {
             get { return _expandAll; }
@@ -232,7 +238,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// Disable all filters, refresh buttons when a request is pending.
+        /// Disable all filters, refresh button etc, when a request is pending.
         /// </summary>
         private void DisableControls()
         {
@@ -266,7 +272,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// 
+        /// Repeatedly make list log entries request till it gets desired number of logs or it reaches end.
         /// </summary>
         /// <param name="firstPage">
         /// Tell if it is requesting for first page or geting subsequent pages.
@@ -319,6 +325,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             });
         }
 
+        /// <summary>
+        /// Create <seealso cref="LoggingDataSource"/> object with current project id.
+        /// </summary>
         private LoggingDataSource CreateDataSource()
         {
             if (CredentialsStore.Default.CurrentProjectId != null)

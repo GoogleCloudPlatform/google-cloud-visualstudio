@@ -49,18 +49,21 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => CreateNewViewModel();
         }
 
+        /// <summary>
+        /// Create view mode when window object is created. 
+        /// </summary>
+        public override void OnToolWindowCreated()
+        {
+            base.OnToolWindowCreated();
+            CreateNewViewModel();
+        }
+
         private void CreateNewViewModel()
         {
             var control = Content as LogsViewerToolWindowControl;
             var newModel = new LogsViewerViewModel();
             control.ViewModel = newModel;
             newModel.InvalidateAllControls();
-        }
-
-        public override void OnToolWindowCreated()
-        {
-            base.OnToolWindowCreated();
-            CreateNewViewModel();
         }
     }
 }

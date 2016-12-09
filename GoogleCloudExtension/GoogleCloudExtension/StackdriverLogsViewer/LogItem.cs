@@ -85,7 +85,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
                 switch (logLevel)
                 {
-                    // EMERGENCY, CRITICAL both map to fatal.
+                    // EMERGENCY, CRITICAL both map to fatal icon.
                     case LogSeverity.CRITICAL:
                     case LogSeverity.EMERGENCY:
                         return s_fatal_icon.Value;
