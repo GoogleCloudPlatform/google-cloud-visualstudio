@@ -50,7 +50,7 @@ def find_string(line, idx):
     return line[begin:end]
 
 
-def find_strings(file):
+def get_used_strings(file):
     result = set()
     with open(file, 'r') as src:
         for line in src.readlines():
@@ -75,7 +75,7 @@ def main(params):
     strings = load_strings(params.strings)
     files = list_all_files(params.directory)
     for file in files:
-        used = find_strings(file)
+        used = get_used_strings(file)
         strings = strings - used
     if len(strings) > 0:
         print("Strings that are not used:")
