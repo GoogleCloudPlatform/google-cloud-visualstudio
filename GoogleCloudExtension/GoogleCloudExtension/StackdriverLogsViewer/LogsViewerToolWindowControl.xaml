@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:viewer="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:jlinq="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json"
              xmlns:collection="clr-namespace:System.Collections.Generic;assembly=mscorlib"
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"            
@@ -59,11 +60,10 @@
                 </Style.Triggers>
             </Style>
 
-            <!-- Style to be applied to the command bar, uses the right theming resource keys. -->
-            <!-- TODO: put this into common style shared by Cloud Explorer too. -->
-            <Style x:Key="CommandBarStyle" TargetType="{x:Type StackPanel}">
+            <!-- Style to be applied to the page title bar. -->
+            <Style x:Key="PageTitleBarStyle" TargetType="{x:Type StackPanel}">
                 <Setter Property="Orientation" Value="Horizontal" />
-                <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarGradientKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.PanelTitleBarKey}}" />
                 <Setter Property="HorizontalAlignment" Value="Stretch" />
             </Style>
         </ResourceDictionary>
@@ -78,8 +78,8 @@
         </Grid.RowDefinitions>
 
         <!-- Display Google Logo, GCP project id, GCP account name. -->
-        <StackPanel Margin="0, 0, 0, 6" Style="{StaticResource CommandBarStyle}">
-            <Image Source="{Binding Path=CloudLogo}" Height="20" Width="20" HorizontalAlignment="Left" Margin="12, 0, 6, 0"/>
+        <StackPanel Margin="0, 0, 0, 6" Style="{StaticResource PageTitleBarStyle}">
+            <Image Source="{Binding Path=CloudLogo}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12, 0, 6, 0"/>
             <TextBlock Text="Project:" VerticalAlignment="Center" Padding="0, 5, 0, 5"/>
             <TextBlock Text="{Binding Path=Project}" VerticalAlignment="Center" Margin="6, 0, 0, 0"/>
             <TextBlock Text="Account:" VerticalAlignment="Center" Margin="12, 0, 0, 0"/>
@@ -99,7 +99,7 @@
                              Margin="0, 0, 0, 6">
                     <!-- TODO: replace with a image button. -->
                     <Button Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"
-                            ToolTip="{Binding Path=RefreshCommandToolTip}" Margin="6, 0, 16, 0"
+                            ToolTip="{x:Static ext:Resources.LogViewerRefreshButtonToolTip}" Margin="6, 0, 16, 0"
                             Style="{StaticResource CommonButtonStandardStyle}" Command="{Binding Path=RefreshCommand}"
                             Content="Refresh"
                             />

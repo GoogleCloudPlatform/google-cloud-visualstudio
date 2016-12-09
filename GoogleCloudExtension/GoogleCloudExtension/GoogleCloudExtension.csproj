@@ -294,13 +294,14 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="StackdriverLogsViewer\Resources\logo_cloud.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_any.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_debug.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_error.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_fatal.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_info.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_warning.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\logo_cloud.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\logo_cloud_20.png" />
     <Resource Include="Theming\Resources\ic_help_black_14px.png" />
     <Resource Include="PublishDialogSteps\ChoiceStep\Resources\AppEngine_128px_Retina.png" />
     <Resource Include="PublishDialogSteps\ChoiceStep\Resources\ComputeEngine_128px_Retina.png" />

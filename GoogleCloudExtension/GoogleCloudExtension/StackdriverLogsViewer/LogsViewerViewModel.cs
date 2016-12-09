@@ -68,11 +68,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Gets the refresh button command.
         /// </summary>
         public ICommand RefreshCommand => _refreshCommand;
-
-        /// <summary>
-        /// Refresh button tool tip.
-        /// </summary>
-        public string RefreshCommandToolTip => Resources.LogViewerRefreshButtonToolTip;
         #endregion   
 
         #region Window top command bar area public properties
