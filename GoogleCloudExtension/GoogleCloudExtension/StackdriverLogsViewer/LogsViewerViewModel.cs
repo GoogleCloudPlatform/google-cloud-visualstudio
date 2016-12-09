@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public class LogsViewerViewModel : ViewModelBase
     {
-        private const string CloudLogo20Path = "StackdriverLogsViewer/Resources/logo_cloud.png";
+        private const string CloudLogo20Path = "CloudExplorer/Resources/logo_cloud.png";
 
         private static readonly int _defaultPageSize = 100;
 
