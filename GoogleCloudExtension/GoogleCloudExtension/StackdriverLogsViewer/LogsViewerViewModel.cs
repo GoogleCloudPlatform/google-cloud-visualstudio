@@ -36,12 +36,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public class LogsViewerViewModel : ViewModelBase
     {
-        private const string CloudLogo20Path = "CloudExplorer/Resources/logo_cloud.png";
+        private const string CloudLogoPath = "CloudExplorer/Resources/logo_cloud.png";
 
         private static readonly int _defaultPageSize = 100;
 
         private static readonly Lazy<ImageSource> s_cloud_logo_icon =
-            new Lazy<ImageSource>(() => ResourceUtils.LoadImage(CloudLogo20Path));
+            new Lazy<ImageSource>(() => ResourceUtils.LoadImage(CloudLogoPath));
 
         private Lazy<LoggingDataSource> _dataSource;
         private string _nextPageToken;

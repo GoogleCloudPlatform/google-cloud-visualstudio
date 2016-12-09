@@ -294,14 +294,12 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="StackdriverLogsViewer\Resources\logo_cloud.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_any.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_debug.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_error.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_fatal.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_info.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_warning.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\logo_cloud_20.png" />
     <Resource Include="Theming\Resources\ic_help_black_14px.png" />
     <Resource Include="PublishDialogSteps\ChoiceStep\Resources\AppEngine_128px_Retina.png" />
     <Resource Include="PublishDialogSteps\ChoiceStep\Resources\ComputeEngine_128px_Retina.png" />
@@ -325,7 +323,6 @@
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_transition.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\service_icon.png" />
     <Resource Include="CloudExplorer\Resources\warning_icon.png" />
-    <Resource Include="CloudExplorer\Resources\logo_cloud.png" />
     <Resource Include="Controls\Resources\step_10_dark.png" />
     <Resource Include="Controls\Resources\step_11_dark.png" />
     <Resource Include="Controls\Resources\step_12_dark.png" />
@@ -339,6 +336,7 @@
     <Resource Include="Controls\Resources\step_8_dark.png" />
     <Resource Include="Controls\Resources\step_9_dark.png" />
     <Resource Include="CloudExplorerSources\Gcs\Resources\zone_icon.png" />
+    <Resource Include="CloudExplorer\Resources\logo_cloud.png" />
     <Content Include="ProjectTemplates\Google Cloud Platform\GoogleAspnetMvc.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
