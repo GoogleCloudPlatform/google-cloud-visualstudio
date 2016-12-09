@@ -14,14 +14,31 @@
 
 namespace GoogleCloudExtension.DataSources
 {
+    /// <summary>
+    /// This interface encapsulates all of the callbacks for an operation to display progress.
+    /// </summary>
     public interface IGcsFileOperation
     {
+        /// <summary>
+        /// Called to update of the progress so far of the operation.
+        /// </summary>
+        /// <param name="value">A value between 0.0 to 1.0 representing the fraction of the operation finished.</param>
         void Progress(double value);
 
+        /// <summary>
+        /// Called when the operation is completed.
+        /// </summary>
         void Completed();
 
+        /// <summary>
+        /// Called if the user cancelled the operation.
+        /// </summary>
         void Cancelled();
 
+        /// <summary>
+        /// Called when the operation failed.
+        /// </summary>
+        /// <param name="ex"></param>
         void Error(DataSourceException ex);
     }
 }

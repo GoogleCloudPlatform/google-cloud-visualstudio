@@ -606,8 +606,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
                 var dir = await _dataSource.GetDirectoryListAsync(Bucket.Name, name);
                 var items = Enumerable.Concat<GcsRow>(
-                    dir.Prefixes.OrderBy(x => x).Select(GcsRow.CreateDirectoryRow),
-                    dir.Items.Where(x => x.Name.Last() != '/').OrderBy(x => x.Name).Select(GcsRow.CreateFileRow));
+                    dir.Directories.OrderBy(x => x).Select(GcsRow.CreateDirectoryRow),
+                    dir.Files.Where(x => x.Name.Last() != '/').OrderBy(x => x.Name).Select(GcsRow.CreateFileRow));
 
                 return new GcsBrowserState(items, name);
             }

@@ -17,16 +17,25 @@ using System.Collections.Generic;
 
 namespace GoogleCloudExtension.DataSources
 {
+    /// <summary>
+    /// This class represents a directory entry in GCS in a similar fashion as it would be in the file system.
+    /// </summary>
     public class GcsDirectory
     {
-        public IList<Object> Items { get; }
+        /// <summary>
+        /// The files stored directly in the directory.
+        /// </summary>
+        public IList<Object> Files { get; }
 
-        public IList<string> Prefixes { get; }
+        /// <summary>
+        /// The prefixes that are contained within this directory, the sub directories.
+        /// </summary>
+        public IList<string> Directories { get; }
 
-        public GcsDirectory(IList<Object> items, IList<string> prefixes)
+        public GcsDirectory(IList<Object> files, IList<string> directories)
         {
-            Items = items;
-            Prefixes = prefixes;
+            Files = files;
+            Directories = directories;
         }
     }
 }
