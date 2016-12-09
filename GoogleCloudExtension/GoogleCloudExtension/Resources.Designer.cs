@@ -1602,9 +1602,9 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to No project selected..
         /// </summary>
-        public static string CloudExplorerNoProjectMessage {
+        public static string CloudExplorerNoProjectSelectedMessage {
             get {
-                return ResourceManager.GetString("CloudExplorerNoProjectMessage", resourceCulture);
+                return ResourceManager.GetString("CloudExplorerNoProjectSelectedMessage", resourceCulture);
             }
         }
         

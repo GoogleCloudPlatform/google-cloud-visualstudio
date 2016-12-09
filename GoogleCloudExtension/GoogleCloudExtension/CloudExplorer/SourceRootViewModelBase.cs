@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.CloudExplorer
             new TreeLeaf
             {
                 IsError = true,
-                Caption = Resources.CloudExplorerNoProjectMessage,
+                Caption = Resources.CloudExplorerNoProjectSelectedMessage,
             };
         private static readonly Lazy<ImageSource> s_nodeIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(NodeIconPath));
 

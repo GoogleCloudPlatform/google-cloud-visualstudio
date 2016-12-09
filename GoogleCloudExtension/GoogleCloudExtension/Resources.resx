@@ -1327,7 +1327,7 @@
     <value>No credentials, please login.</value>
     <comment>Shown in the cloud explorer when there are no credentials available.</comment>
   </data>
-  <data name="CloudExplorerNoProjectMessage" xml:space="preserve">
+  <data name="CloudExplorerNoProjectSelectedMessage" xml:space="preserve">
     <value>No project selected.</value>
     <comment>Shown in the cloud explorer when no project is selected.</comment>
   </data>

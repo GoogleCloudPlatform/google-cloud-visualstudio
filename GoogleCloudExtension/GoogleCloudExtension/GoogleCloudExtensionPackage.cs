@@ -213,6 +213,10 @@ namespace GoogleCloudExtension
 
             // Update the installation status of the package.
             CheckInstallationStatus();
+
+            // Ensure the commands UI state is updated when the GCP project changes.
+            CredentialsStore.Default.Reset += (o, e) => ShellUtils.InvalidateCommandsState();
+            CredentialsStore.Default.CurrentProjectIdChanged += (o, e) => ShellUtils.InvalidateCommandsState();
         }
 
         public static GoogleCloudExtensionPackage Instance { get; private set; }

@@ -24,7 +24,7 @@ parser.add_argument('-e', '--extension',
 
 
 def print_all_files(dir):
-    for root, dirnames, filenames in os.walk(dir):
+    for root, _, filenames in os.walk(dir):
         for name in filenames:
             filename, ext = os.path.splitext(name)
             if ext == params.extension:
