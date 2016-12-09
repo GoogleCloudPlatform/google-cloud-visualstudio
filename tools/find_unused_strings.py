@@ -9,6 +9,7 @@ recursively filtering by the given extension.
 import argparse
 import os
 import sys
+import xml.etree.ElementTree as ET
 
 # Parse for the program.
 parser = argparse.ArgumentParser()
@@ -59,14 +60,27 @@ def find_strings(file):
                 if is_valid_string_name(name):
                     result.add(name)
     return result
-    
+
+
+def load_strings(src):
+    tree = ET.parse(src)
+    root = tree.getroot()
+    result = set()
+    for child in root.findall("data"):
+        result.add(child.attrib["name"])
+    return result
+
 
 def main(params):
+    strings = load_strings(params.strings)
     files = list_all_files(params.directory)
     for file in files:
-        strings = find_strings(file)
-        for str in strings:
-            print(str)
+        used = find_strings(file)
+        strings = strings - used
+    if len(strings) > 0:
+        print("Strings that are not used:")
+        for s in strings:
+            print(s)
 
 
 # Entrypoint into the script.
