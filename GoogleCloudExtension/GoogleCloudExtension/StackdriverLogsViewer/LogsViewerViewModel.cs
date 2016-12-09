@@ -164,6 +164,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             _dataSource = new Lazy<LoggingDataSource>(CreateDataSource);
             _refreshCommand = new ProtectedCommand(() => Reload(), canExecuteCommand: false);
             _collectionView = new ListCollectionView(_logs);
+            _collectionView.GroupDescriptions.Add(new PropertyGroupDescription("Date"));
         }
 
         /// <summary>

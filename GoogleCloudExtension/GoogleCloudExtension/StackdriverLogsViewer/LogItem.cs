@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the log item timestamp Date string in local time. Data binding to a view property.
         /// </summary>
-        public string Date => _timestamp.ToShortDateString();
+        public string Date => _timestamp.ToString("MM-dd-yyyy");
 
         /// <summary>
         /// Gets a log item timestamp in local time. Data binding to a view property.
