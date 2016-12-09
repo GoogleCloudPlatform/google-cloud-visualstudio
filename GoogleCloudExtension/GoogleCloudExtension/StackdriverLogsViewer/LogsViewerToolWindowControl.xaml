@@ -160,8 +160,6 @@
                                                 </StackPanel.Resources>
                                                 <StackPanel Orientation="Horizontal" Margin="9, 1, 0, 1" >
                                                     <TextBlock Text="{Binding Path=Name}"  Padding="0, 5, 4, 5" />
-                                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=ItemCount}" Padding="4, 5, 2, 5"/>
-                                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Element(s)" Padding="0, 5, 8, 5"/>
                                                 </StackPanel>
                                                 <ItemsPresenter />
                                             </StackPanel>

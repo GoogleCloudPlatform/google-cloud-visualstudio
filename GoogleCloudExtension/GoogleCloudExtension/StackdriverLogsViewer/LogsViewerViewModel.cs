@@ -146,17 +146,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public ListCollectionView LogItemCollection
         {
-            get
-            {
-                lock (_collectionViewLock)
-                {
-                    var sorted = descendingOrder ? _logs.OrderByDescending(x => x.Time) : _logs.OrderBy(x => x.Time);
-                    var sorted_collection = new ObservableCollection<LogItem>(sorted);
-                    _collectionView = new ListCollectionView(sorted_collection);
-                    _collectionView.GroupDescriptions.Add(new PropertyGroupDescription("Date"));
-                    return _collectionView;
-                }
-            }
+            get { return _collectionView; }
         }
 
         public DataGridRowDetailsVisibilityMode DataGridRowDetailsVisibility
@@ -173,6 +163,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             _dataSource = new Lazy<LoggingDataSource>(CreateDataSource);
             _refreshCommand = new ProtectedCommand(() => Reload(), canExecuteCommand: false);
+            _collectionView = new ListCollectionView(_logs);
         }
 
         /// <summary>
@@ -207,26 +198,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         #region DataGrid public methods
         /// <summary>
-        /// Replace the current log entries with the new set.
-        /// </summary>
-        /// <param name="logEntries">The log entries list.</param>
-        /// <param name="descending">True: Descending order by TimeStamp, False: Ascending order by TimeStamp </param>
-        public void SetLogs(IList<LogEntry> logEntries, bool descending)
-        {
-            descendingOrder = descending;
-            _logs.Clear();
-            _collectionView = new ListCollectionView(new List<LogItem>());
-
-            if (logEntries == null)
-            {
-                RaisePropertyChanged(nameof(LogItemCollection));
-                return;
-            }
-
-            AddLogs(logEntries);
-        }
-
-        /// <summary>
         /// Append a set of log entries.
         /// </summary>
         public void AddLogs(IList<LogEntry> logEntries)
@@ -240,8 +211,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 _logs.Add(new LogItem(log));
             }
-
-            RaisePropertyChanged(nameof(LogItemCollection));
         }
         #endregion
 
@@ -314,9 +283,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 {
                     firstPage = false;
                     _nextPageToken = null;
-
-                    // This clears DataGrid contents
-                    SetLogs(null, descending:true);
+                    _logs.Clear();
                 }
 
                 var results = await _dataSource.Value.ListLogEntriesAsync(
