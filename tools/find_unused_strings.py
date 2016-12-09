@@ -33,32 +33,40 @@ def list_all_files(dir):
 
 
 def is_valid_char(src):
-    return src.isalpha()
+    return src.isalpha() or src.isdigit()
 
 
 def is_valid_string_name(src):
     return src[0].isupper()
 
 
-def find_string(line, idx):
-    begin=idx + len(string_prefix)
-    end=-1
+def extract_string(line, idx, result):
+    begin = line.find(string_prefix, idx)
+    if begin == -1:
+        return -1
+    
+    begin = begin + len(string_prefix)
+    end = -1
     for i in range(begin, len(line)):
         if not is_valid_char(line[i]):
-            end=i
+            end = i
             break
-    return line[begin:end]
+
+    result.add(line[begin:end])
+    return end
+        
+
+def find_strings(line, result):
+    idx = 0
+    while idx != -1:
+        idx = extract_string(line, idx, result)
 
 
 def get_used_strings(file):
     result = set()
     with open(file, 'r') as src:
         for line in src.readlines():
-            idx = line.find(string_prefix)
-            if idx != -1:
-                name = find_string(line, idx)
-                if is_valid_string_name(name):
-                    result.add(name)
+            find_strings(line, result)
     return result
 
 
