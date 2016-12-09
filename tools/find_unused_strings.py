@@ -20,9 +20,13 @@ parser.add_argument('-s', '--strings',
                     help='The strings (.resx) file to check.',
                     required=True)
 
+
 string_prefix="Resources."
 
+
 def list_all_files(dir):
+    """Lists all of the source files (.cs and .xaml) under the given directory"""
+
     result = []
     for root, _, filenames in os.walk(dir):
         for name in filenames:
@@ -33,14 +37,20 @@ def list_all_files(dir):
 
 
 def is_valid_char(src):
+    """Determins if the given char is valid as an identifier char."""
+
     return src.isalpha() or src.isdigit()
 
 
 def is_valid_string_name(src):
+    """All string names start with an uppercase char."""
+
     return src[0].isupper()
 
 
 def extract_string(line, idx, result):
+    """Extracts the first string reference on, or after, idx in line."""
+
     begin = line.find(string_prefix, idx)
     if begin == -1:
         return -1
@@ -57,12 +67,16 @@ def extract_string(line, idx, result):
         
 
 def find_strings(line, result):
+    """Finds all of the string references in the given line."""
+
     idx = 0
     while idx != -1:
         idx = extract_string(line, idx, result)
 
 
 def get_used_strings(file):
+    """Returns all of the strings being used by the given file."""
+
     result = set()
     with open(file, 'r') as src:
         for line in src.readlines():
@@ -71,6 +85,8 @@ def get_used_strings(file):
 
 
 def load_strings(src):
+    """Loads the .resx file and extracts all of the string names."""
+
     tree = ET.parse(src)
     root = tree.getroot()
     result = set()
