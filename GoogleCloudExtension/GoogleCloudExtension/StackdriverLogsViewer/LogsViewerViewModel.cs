@@ -20,9 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -50,8 +48,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private ProtectedCommand _refreshCommand;
         #endregion
 
-        #region DataGrid top right corner private members
-        private string _selectedDate = string.Empty;
+        #region DataGrid top information bar private members
+        private string _firstRowDate = string.Empty;
         private bool _toggleExpandAllExpanded = false;
         #endregion
 
@@ -100,7 +98,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
         #endregion
 
-        #region DataGrid top right corner public properties
+        #region DataGrid top information bar public properties
         /// <summary>
         /// Route the expander IsExpanded state to control expand all or collapse all.
         /// </summary>
@@ -127,16 +125,18 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// Gets the current selected item date string.
+        /// Gets the visible view top row date in string.
+        /// When data grid vertical scroll moves, the displaying rows move. 
+        /// This is to return the top row date
         /// </summary>
-        public string SelectedDate
+        public string FirstRowDate
         {
-            get { return _selectedDate; }
+            get { return _firstRowDate; }
             set
             {
-                if (value != _selectedDate)
+                if (value != _firstRowDate)
                 {
-                    SetValueAndRaise(ref _selectedDate, value);
+                    SetValueAndRaise(ref _firstRowDate, value);
                 }
             }
         }
@@ -199,8 +199,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 return;
             }
-
-            SelectedDate = log.Date;
         }
 
         #region DataGrid public methods
