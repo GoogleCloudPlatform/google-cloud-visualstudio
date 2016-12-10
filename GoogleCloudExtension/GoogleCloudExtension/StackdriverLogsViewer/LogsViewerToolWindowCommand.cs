@@ -68,11 +68,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                         !string.IsNullOrWhiteSpace(CredentialsStore.Default?.CurrentProjectId));
                 };
 
-                // Not using BeforeQueryStatus for the event may not be fired in some cases.
-                CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => setEnabled();
-                CredentialsStore.Default.Reset += (sender, e) => setEnabled();
-                CredentialsStore.Default.Reset += (sender, e) => CloseWindow();
                 setEnabled();
+                menuItem.BeforeQueryStatus += (sender, e) => setEnabled();
+                CredentialsStore.Default.Reset += (sender, e) => CloseWindow();
             };
         }
 
@@ -83,31 +81,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             get;
             private set;
-        }
-
-        /// <summary>
-        /// Close the LogsViewerToolWindow when there is no account available.
-        /// </summary>
-        public static void CloseWindow()
-        {
-            ErrorHandlerUtils.HandleExceptions(() =>
-            {
-                // Get the instance number 0 of this tool window. This window is single instance so this instance
-                // is actually the only one.
-                // The last flag is set to true so that if the tool window does not exists it will be created.
-                ToolWindowPane window = GoogleCloudExtensionPackage.Instance.FindToolWindow(
-                    typeof(LogsViewerToolWindow), 0, false);
-                if (null == window?.Frame)
-                {
-                    Debug.WriteLine("Does not find LogsViewerToolWindow instance.");
-                }
-                else
-                {
-                    IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
-                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.CloseFrame(
-                        (uint)__FRAMECLOSE.FRAMECLOSE_NoSave));
-                }
-            });
         }
 
         /// <summary>
@@ -128,6 +101,31 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public static void Initialize(Package package)
         {
             Instance = new LogsViewerToolWindowCommand(package);
+        }
+
+        /// <summary>
+        /// Close the LogsViewerToolWindow when there is no account available.
+        /// </summary>
+        private static void CloseWindow()
+        {
+            ErrorHandlerUtils.HandleExceptions(() =>
+            {
+                // Get the instance number 0 of this tool window. This window is single instance so this instance
+                // is actually the only one.
+                // The last flag is set to true so that if the tool window does not exists it will be created.
+                ToolWindowPane window = GoogleCloudExtensionPackage.Instance.FindToolWindow(
+                    typeof(LogsViewerToolWindow), 0, false);
+                if (null == window?.Frame)
+                {
+                    Debug.WriteLine("Does not find LogsViewerToolWindow instance.");
+                }
+                else
+                {
+                    IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
+                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.CloseFrame(
+                        (uint)__FRAMECLOSE.FRAMECLOSE_NoSave));
+                }
+            });
         }
 
         /// <summary>

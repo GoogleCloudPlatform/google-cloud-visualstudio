@@ -1,4 +1,10 @@
-﻿//     http://www.apache.org/licenses/LICENSE-2.0
+﻿// Copyright 2016 Google Inc. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,7 +23,7 @@ using System.Windows.Media;
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
     /// <summary>
-    /// An adaptor to LogEntry so as to privide properties for data binding.
+    /// An adaptor to LogEntry so as to provide properties for data binding.
     /// </summary>
     internal class LogItem
     {
@@ -41,94 +47,37 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private static readonly Lazy<ImageSource> s_warning_icon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
 
-
         private DateTime _timestamp;
         private string _message;
 
-        public LogItem(LogEntry logEntry)
-        {
-            Entry = logEntry;
-            ConvertTimestamp(logEntry.Timestamp);
-            _message = ComposeMessage();
-        }
-
-        public string Date => _timestamp.ToShortDateString();
-        public DateTime Time => _timestamp;
+        /// <summary>
+        /// Gets a log entry object.
+        /// </summary>
         public LogEntry Entry { get; private set; }
 
-        private string ComposePayloadMessage(IDictionary<string, object> dictPayload)
-        {
-            Debug.Assert(dictPayload != null);
-            if (null == dictPayload)
-            {
-                return string.Empty;
-            }
+        /// <summary>
+        /// Gets the log item timestamp Date string in local time. Data binding to a view property.
+        /// </summary>
+        public string Date => _timestamp.ToString("MM-dd-yyyy");
 
-            StringBuilder text = new StringBuilder();
-            foreach (var kv in dictPayload)
-            {
-                text.Append($"{kv.Key}: {kv.Value}  ");
-            }
+        /// <summary>
+        /// Gets a log item timestamp in local time. Data binding to a view property.
+        /// </summary>
+        public DateTime Time => _timestamp;
 
-            var s = text.ToString().Replace(Environment.NewLine, "\\n");
-            return s.Replace("\t", "\\t");
-        }
+        /// <summary>
+        /// Gets the log message to be displayed at top level.
+        /// </summary>
+        public string Message => _message;
 
-        private string ComposeMessage()
-        {
-            if (Entry?.JsonPayload != null)
-            {
-                if (Entry.JsonPayload.ContainsKey("message"))
-                {
-                    return Entry.JsonPayload["message"].ToString();
-                }
-                else
-                {
-                    return ComposePayloadMessage(Entry.JsonPayload);
-                }
-            }
-
-            if (Entry?.ProtoPayload != null)
-            {
-                return ComposePayloadMessage(Entry.ProtoPayload);
-            }
-
-            if (Entry?.TextPayload != null)
-            {
-                return Entry.TextPayload.Replace(Environment.NewLine, " ");
-            }
-
-            if (Entry?.Labels != null)
-            {
-                return string.Join(";", Entry?.Labels.Values).Replace(Environment.NewLine, " ");
-            }
-
-            if (Entry?.Resource?.Labels != null)
-            {
-                return string.Join(";", Entry?.Resource.Labels).Replace(Environment.NewLine, " ");
-            }
-
-            return string.Empty;
-        }
-
-        public string Message
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(_message))
-                {
-                    // TODO: make sure what makes sense if there is no payload.
-                    return "The log does not contain valid payload";
-                }
-                else
-                {
-                    return _message;
-                }
-            }
-        }
-
+        /// <summary>
+        /// Gets the log severity tooltip. Data binding to the severity icon tool tip.
+        /// </summary>
         public string SeverityTip => string.IsNullOrWhiteSpace(Entry?.Severity) ? "Any" : Entry.Severity;
 
+        /// <summary>
+        /// Gets the log item severity level. The data binding source to severity column in the data grid.
+        /// </summary>
         public ImageSource SeverityLevel
         {
             get
@@ -142,6 +91,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
                 switch (logLevel)
                 {
+                    // EMERGENCY, CRITICAL both map to fatal icon.
                     case LogSeverity.CRITICAL:
                     case LogSeverity.EMERGENCY:
                         return s_fatal_icon.Value;
@@ -159,6 +109,68 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <seealso cref="LogItem"/> class.
+        /// </summary>
+        /// <param name="logEntry">A log entry.</param>
+        public LogItem(LogEntry logEntry)
+        {
+            Entry = logEntry;
+            ConvertTimestamp(logEntry.Timestamp);
+            _message = ComposeMessage();
+        }
+
+        private string ComposeDictionaryPayloadMessage(IDictionary<string, object> dictPayload)
+        {
+            Debug.Assert(dictPayload != null);
+            if (dictPayload == null)
+            {
+                return string.Empty;
+            }
+
+            StringBuilder text = new StringBuilder();
+            foreach (var kv in dictPayload)
+            {
+                text.Append($"{kv.Key}: {kv.Value}  ");
+            }
+
+            return text.ToString();
+        }
+
+        private string ComposeMessage()
+        {
+            string message = string.Empty;
+            if (Entry?.JsonPayload != null)
+            {
+                // If the JsonPload has message filed, display this field.
+                if (Entry.JsonPayload.ContainsKey("message"))
+                {
+                    message = Entry.JsonPayload["message"].ToString();
+                }
+                else
+                {
+                    message = ComposeDictionaryPayloadMessage(Entry.JsonPayload);
+                }
+            }
+            else if (Entry?.ProtoPayload != null)
+            {
+                message = ComposeDictionaryPayloadMessage(Entry.ProtoPayload);
+            }
+            else if (Entry?.TextPayload != null)
+            {
+                message = Entry.TextPayload;
+            }
+            else if (Entry?.Labels != null)
+            {
+                message = string.Join(";", Entry?.Labels.Values);
+            }
+            else if (Entry?.Resource?.Labels != null)
+            {
+                message = string.Join(";", Entry?.Resource.Labels);
+            }
+
+            return message.Replace(Environment.NewLine, "\\n").Replace("\t", "\\t");
+        }
 
         private void ConvertTimestamp(object timestamp)
         {
@@ -182,6 +194,5 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             _timestamp = _timestamp.ToLocalTime();
         }
-
     }
 }

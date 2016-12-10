@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:viewer="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:jlinq="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json"
              xmlns:collection="clr-namespace:System.Collections.Generic;assembly=mscorlib"
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"            
@@ -48,22 +49,20 @@
 
                     <!-- The Alternation Background must be set here when IsMouseOver trigger is defined. -->
                     <Trigger Property="AlternationIndex" Value="1">
-                        <Setter Property="Background" Value="AliceBlue"/>
+                        <Setter Property="Background" Value="#F5F5F5"/>
                     </Trigger>
 
                     <!-- Highlight the log line on mouse hovers the item. -->
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#F2A600" />
-                        <Setter Property="Foreground" Value="White" />
+                        <Setter Property="Background" Value="#FFFFD6" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
 
-            <!-- Style to be applied to the command bar, uses the right theming resource keys. -->
-            <!-- TODO: put this into common style shared by Cloud Explorer too. -->
-            <Style x:Key="CommandBarStyle" TargetType="{x:Type StackPanel}">
+            <!-- Style to be applied to the page title bar. -->
+            <Style x:Key="PageTitleBarStyle" TargetType="{x:Type StackPanel}">
                 <Setter Property="Orientation" Value="Horizontal" />
-                <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.CommandBarGradientKey}}" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.PanelTitleBarKey}}" />
                 <Setter Property="HorizontalAlignment" Value="Stretch" />
             </Style>
         </ResourceDictionary>
@@ -78,8 +77,8 @@
         </Grid.RowDefinitions>
 
         <!-- Display Google Logo, GCP project id, GCP account name. -->
-        <StackPanel Margin="0, 0, 0, 6" Style="{StaticResource CommandBarStyle}">
-            <Image Source="{Binding Path=CloudLogo}" Height="20" Width="20" HorizontalAlignment="Left" Margin="12, 0, 6, 0"/>
+        <StackPanel Margin="0, 0, 0, 6" Style="{StaticResource PageTitleBarStyle}">
+            <Image Source="{Binding Path=CloudLogo}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12, 0, 6, 0"/>
             <TextBlock Text="Project:" VerticalAlignment="Center" Padding="0, 5, 0, 5"/>
             <TextBlock Text="{Binding Path=Project}" VerticalAlignment="Center" Margin="6, 0, 0, 0"/>
             <TextBlock Text="Account:" VerticalAlignment="Center" Margin="12, 0, 0, 0"/>
@@ -99,7 +98,7 @@
                              Margin="0, 0, 0, 6">
                     <!-- TODO: replace with a image button. -->
                     <Button Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"
-                            ToolTip="{Binding Path=RefreshCommandToolTip}" Margin="6, 0, 16, 0"
+                            ToolTip="{x:Static ext:Resources.LogViewerRefreshButtonToolTip}" Margin="6, 0, 16, 0"
                             Style="{StaticResource CommonButtonStandardStyle}" Command="{Binding Path=RefreshCommand}"
                             Content="Refresh"
                             />
@@ -111,18 +110,28 @@
 
         <Grid Grid.Row="2" Margin="12, 6, 12, 12">
 
-            <!-- Displayed on top right corner of DataGrid. -->
-            <Border Background="Transparent" Panel.ZIndex="20" HorizontalAlignment="Right"  VerticalAlignment="Top" >
-                <StackPanel Orientation="Horizontal">
-
+            <!--Data grid top information bar, right under the grid header, set top margin to 19 (18 + border 1)-->
+            <Border Margin="0, 19, 0, 0"  Panel.ZIndex="20" HorizontalAlignment="Stretch"  VerticalAlignment="Top" 
+                    Background="LightGray">
+                
+                <!-- Dock Date and timezone to left, Expand All button to right. -->
+                <DockPanel  Margin="9, 1, 0, 1">
                     <!-- Current selected log entry date. -->
-                    <TextBlock Text="{Binding Path=SelectedDate}" Margin="12, 3, 3, 0" VerticalAlignment="Top" />
-
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                        <TextBlock Margin="12, 3, 3, 0" FontWeight="Bold"
+                               Text="{Binding Path=FirstRowDate}" VerticalAlignment="Top" />
+                        
+                        <!-- Displays the timezone. Placeholder, items will be added later -->
+                        <ComboBox Margin="3, 0, 18, 0" VerticalAlignment="Center" BorderThickness="0" 
+                                  Background="Transparent" x:Name="comboTimeZone" Loaded="ComboBox_Loaded"                                 
+                                  ToolTip="{x:Static ext:Resources.LogViewerTimeZoneSelectionToolTip}"/>
+                    </StackPanel>
+                    
                     <!-- Toggle expand details of all log entries. -->
-                    <Expander x:Name="allExpander" HorizontalAlignment="Right" VerticalAlignment="Top"
-                              IsExpanded="{Binding Path=ToggleExapandAllExpanded,Mode=OneWayToSource}" 
-                              ToolTip="{Binding Path=ToggleExapandAllToolTip}" />
-                </StackPanel>
+                    <Expander DockPanel.Dock="Right" Margin="0, 0, 8, 0" HorizontalAlignment="Right" 
+                              VerticalAlignment="Top" ToolTip="{Binding Path=ToggleExapandAllToolTip}"
+                              IsExpanded="{Binding Path=ToggleExapandAllExpanded,Mode=TwoWay}"/>
+                </DockPanel>
             </Border>
 
             <!-- DataGrid, displays all log entries. -->
@@ -131,7 +140,7 @@
                       Background="White" BorderThickness="1" BorderBrush="LightGray"
                       GridLinesVisibility="None" 
                       CanUserResizeRows="False"                  
-                      RowDetailsVisibilityMode="{Binding Path=ToggleExpandHideAll,Mode=OneWay}"
+                      RowDetailsVisibilityMode="{Binding Path=DataGridRowDetailsVisibility,Mode=OneWay}"
                       RowStyle="{StaticResource rowStyle}" 
                       CellStyle="{StaticResource cellStyle}"
                       AutoGenerateColumns="False" 
@@ -162,8 +171,6 @@
                                                 </StackPanel.Resources>
                                                 <StackPanel Orientation="Horizontal" Margin="9, 1, 0, 1" >
                                                     <TextBlock Text="{Binding Path=Name}"  Padding="0, 5, 4, 5" />
-                                                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Path=ItemCount}" Padding="4, 5, 2, 5"/>
-                                                    <TextBlock Grid.Row="0" Grid.Column="2" Text="Element(s)" Padding="0, 5, 8, 5"/>
                                                 </StackPanel>
                                                 <ItemsPresenter />
                                             </StackPanel>
@@ -197,7 +204,7 @@
                 <DataGrid.RowDetailsTemplate>
                     <DataTemplate>
                         <!-- The detail view takes the LogItem object as input and display it. -->
-                        <TreeView BorderThickness="0" Margin="30, 0, 0 , 0">
+                        <TreeView BorderThickness="0" Margin="30, 0, 0, 2">
                             <TreeView.Template>
                                 <ControlTemplate>
                                     <ItemsPresenter />

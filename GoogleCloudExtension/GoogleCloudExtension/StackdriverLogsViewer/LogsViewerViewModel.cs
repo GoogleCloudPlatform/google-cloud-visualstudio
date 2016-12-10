@@ -20,9 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -36,75 +34,164 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public class LogsViewerViewModel : ViewModelBase
     {
-        private const string CloudLogo20Path = "StackdriverLogsViewer/Resources/logo_cloud.png";
+        private const string CloudLogoPath = "CloudExplorer/Resources/logo_cloud.png";
+
+        private static readonly int _defaultPageSize = 100;
 
         private static readonly Lazy<ImageSource> s_cloud_logo_icon =
-            new Lazy<ImageSource>(() => ResourceUtils.LoadImage(CloudLogo20Path));
+            new Lazy<ImageSource>(() => ResourceUtils.LoadImage(CloudLogoPath));
 
+        private Lazy<LoggingDataSource> _dataSource;
+        private string _nextPageToken;
 
+        #region Simple filter area private members
+        private ProtectedCommand _refreshCommand;
+        #endregion
+
+        #region DataGrid top information bar private members
+        private string _firstRowDate = string.Empty;
+        private bool _toggleExpandAllExpanded = false;
+        #endregion
+
+        #region DataGrid private members
+        private DataGridRowDetailsVisibilityMode _expandAll = DataGridRowDetailsVisibilityMode.Collapsed;
+        private ObservableCollection<LogItem> _logs = new ObservableCollection<LogItem>();
+        private ListCollectionView _collectionView;
+        private object _collectionViewLock = new object();
+        #endregion
+
+        #region Simple filter area public properties
+        /// <summary>
+        /// Gets the refresh button command.
+        /// </summary>
+        public ICommand RefreshCommand => _refreshCommand;
+        #endregion   
+
+        #region Window top command bar area public properties
+        /// <summary>
+        /// Gets the Google Cloud Platform Logo image.
+        /// </summary>
         public ImageSource CloudLogo => s_cloud_logo_icon.Value;
 
-
-        private string _nextPageToken;
-        private string _loadingProgress;
-        private Lazy<LoggingDataSource> _dataSource;
-        private ProtectedCommand _cancelLoadingCommand;
-        private ProtectedCommand _toggleExpandAllCommand;
-        private DataGridRowDetailsVisibilityMode _expandAll = DataGridRowDetailsVisibilityMode.Collapsed;
-        public string CancelButtonText => "Cancel";
-
-        private bool _canCallNextPage = false;
-        public ICommand CancelLoadingCommand => _cancelLoadingCommand;
-        private Visibility _cancelLoadingVisible = Visibility.Collapsed;
-        public Visibility CancelLoadingVisibility
+        /// <summary>
+        /// Gets the account name.
+        /// </summary>
+        public string Account
         {
             get
             {
-                return _cancelLoadingVisible;
-            }
-
-            set
-            {
-                SetValueAndRaise(ref _cancelLoadingVisible, value);
+                return string.IsNullOrWhiteSpace(CredentialsStore.Default?.CurrentAccount?.AccountName) ? 
+                    string.Empty : CredentialsStore.Default?.CurrentAccount?.AccountName;
             }
         }
 
-        private Visibility _messageBoradVisibility = Visibility.Collapsed;
-        public Visibility ProgressErrorMessageVisibility
+        /// <summary>
+        /// Gets the project id.
+        /// </summary>
+        public string Project
         {
             get
             {
-                return _messageBoradVisibility;
-            }
-
-            set
-            {
-                SetValueAndRaise(ref _messageBoradVisibility, value);
+                return string.IsNullOrWhiteSpace(CredentialsStore.Default?.CurrentProjectId) ? string.Empty :
+                    CredentialsStore.Default.CurrentProjectId;
             }
         }
+        #endregion
 
-        private Visibility _loadingBlockVisibility = Visibility.Collapsed;
-        public Visibility LoadingBlockVisibility
+        #region DataGrid top information bar public properties
+        /// <summary>
+        /// Route the expander IsExpanded state to control expand all or collapse all.
+        /// </summary>
+        public bool ToggleExapandAllExpanded
         {
-            get
-            {
-                return _loadingBlockVisibility;
-            }
-
+            get { return _toggleExpandAllExpanded; }
             set
             {
-                SetValueAndRaise(ref _loadingBlockVisibility, value);
+                DataGridRowDetailsVisibility =
+                    value ? DataGridRowDetailsVisibilityMode.Visible : DataGridRowDetailsVisibilityMode.Collapsed;
+                SetValueAndRaise(ref _toggleExpandAllExpanded, value);
+                RaisePropertyChanged(nameof(ToggleExapandAllToolTip));
             }
         }
 
+        /// <summary>
+        /// Gets the tool tip for Toggle Expand All button.
+        /// </summary>
+        public string ToggleExapandAllToolTip
+        {
+            get {
+                return _toggleExpandAllExpanded ? Resources.LogViewerCollapseAllTip : Resources.LogViewerExpandAllTip;
+            }
+        }
 
-        public bool ToggleExapandAllExpanded { private get; set; }
+        /// <summary>
+        /// Gets the visible view top row date in string.
+        /// When data grid vertical scroll moves, the displaying rows move. 
+        /// This is to return the top row date
+        /// </summary>
+        public string FirstRowDate
+        {
+            get { return _firstRowDate; }
+            set
+            {
+                if (value != _firstRowDate)
+                {
+                    SetValueAndRaise(ref _firstRowDate, value);
+                }
+            }
+        }
+        #endregion
 
+        #region DataGrid public properties
+        /// <summary>
+        /// Gets the LogItem collection
+        /// </summary>
+        public ListCollectionView LogItemCollection
+        {
+            get { return _collectionView; }
+        }
 
-        public ICommand ToggleExpandAllCommand => _toggleExpandAllCommand;
+        /// <summary>
+        /// Gets the data grid detail view visibility mode. 
+        /// This controls "Expand All", "Collapse All".
+        /// </summary>
+        public DataGridRowDetailsVisibilityMode DataGridRowDetailsVisibility
+        {
+            get { return _expandAll; }
+            set { SetValueAndRaise(ref _expandAll, value); }
+        }
+        #endregion    
 
-        private string _selectedDate = string.Empty;
+        /// <summary>
+        /// Initializes an instance of <seealso cref="LogsViewerViewModel"/> class.
+        /// </summary>
+        public LogsViewerViewModel()
+        {
+            _dataSource = new Lazy<LoggingDataSource>(CreateDataSource);
+            _refreshCommand = new ProtectedCommand(() => Reload(), canExecuteCommand: false);
+            _collectionView = new ListCollectionView(_logs);
+            _collectionView.GroupDescriptions.Add(new PropertyGroupDescription("Date"));
+        }
 
+        /// <summary>
+        /// When a new view model is created and attached to Window, invalidate controls and re-load first page
+        /// of log entries.
+        /// </summary>
+        public async void InvalidateAllControls()
+        {
+            if (string.IsNullOrWhiteSpace(CredentialsStore.Default?.CurrentAccount?.AccountName) ||
+                string.IsNullOrWhiteSpace(CredentialsStore.Default?.CurrentProjectId))
+            {
+                return;
+            }
+
+            await Reload();
+        }
+
+        /// <summary>
+        /// Update the current log item date.
+        /// </summary>
+        /// <param name="item">Current selected log item </param>
         public void SetSelectedChanged(object item)
         {
             var log = item as LogItem;
@@ -112,35 +199,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 return;
             }
-
-            SelectedDate = log.Date;
         }
 
-        public string SelectedDate
-        {
-            get
-            {
-                return _selectedDate;
-            }
-            set
-            {
-                if (value != _selectedDate)
-                {
-                    SetValueAndRaise(ref _selectedDate, value);
-                }
-            }
-        }
-
-        private ObservableCollection<LogItem> _logs = new ObservableCollection<LogItem>();
-        ListCollectionView _collectionView;
-        private Object _collectionViewLock = new Object();
-        private string _filter;
-
-        private const string ShuffleIconPath = "StackdriverLogsViewer/Resources/shuffle.png";
-        private static readonly Lazy<ImageSource> s_shuffle_icon =
-            new Lazy<ImageSource>(() => ResourceUtils.LoadImage(ShuffleIconPath));
-        public ImageSource ShuffleImage => s_shuffle_icon.Value;
-
+        #region DataGrid public methods
         /// <summary>
         /// Append a set of log entries.
         /// </summary>
@@ -154,317 +215,80 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             foreach (var log in logEntries)
             {
                 _logs.Add(new LogItem(log));
-                // _collectionView.AddNewItem(new LogItem(log));
             }
-
-            RaisePropertyChanged(nameof(LogEntryList));
         }
-
-        private bool descendingOrder;
+        #endregion
 
         /// <summary>
-        /// Replace the current log entries with the new set.
+        /// Send request to get logs following prior requests.
         /// </summary>
-        /// <param name="logEntries">The log entries list.</param>
-        /// <param name="descending">True: Descending order by TimeStamp, False: Ascending order by TimeStamp </param>
-        public void SetLogs(IList<LogEntry> logEntries, bool descending)
+        public async void LoadNextPage()
         {
-            descendingOrder = descending;
-            _logs.Clear();
-            _collectionView = new ListCollectionView(new List<LogItem>());
-
-            if (logEntries == null)
+            if (string.IsNullOrWhiteSpace(_nextPageToken) || Project == null)
             {
-                RaisePropertyChanged(nameof(LogEntryList));
                 return;
             }
 
-            AddLogs(logEntries);
-        }
-
-        public ListCollectionView LogEntryList
-        {
-            get
+            await LogLoaddingWrapper(async () =>
             {
-                lock (_collectionViewLock)
-                {
-                    var sorted = descendingOrder ? _logs.OrderByDescending(x => x.Time) : _logs.OrderBy(x => x.Time);
-                    var sorted_collection = new ObservableCollection<LogItem>(sorted);
-                    _collectionView = new ListCollectionView(sorted_collection);
-                    _collectionView.GroupDescriptions.Add(new PropertyGroupDescription("Date"));
-                    return _collectionView;
-                }
-            }
-        }
-
-        public string MessageFilter
-        {
-            get
-            {
-                return _filter;
-            }
-
-            set
-            {
-                _filter = value;
-                Debug.WriteLine($"MessageFilter is called {_filter}");
-                if (_collectionView == null)
-                {
-                    Debug.WriteLine($"set MessageFilter, _collectionView is still null");
-                    return;
-                }
-
-                if (string.IsNullOrWhiteSpace(_filter))
-                {
-                    _collectionView.Filter = null;
-                    return;
-                }
-
-                lock (_collectionViewLock)
-                {
-                    var splits = _filter.Split(new Char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    _collectionView.Filter = new Predicate<object>(item => {
-                        foreach (var subFilter in splits)
-                        {
-                            if (((LogItem)item).Message.Contains(subFilter))
-                            {
-                                return true;
-                            }
-                        }
-
-                        return false;
-                    });
-
-                    // TODO: Add filter changed event handler
-                    // So that LogsViewerViewModel can disable the next page button.
-                    _canCallNextPage = false;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Initializes the class.
-        /// </summary>
-        public LogsViewerViewModel()
-        {
-            _toggleExpandAllCommand = new ProtectedCommand(ToggleExpandAll, canExecuteCommand: true);
-            _cancelLoadingCommand = new ProtectedCommand(() => 
-            {
-                Debug.WriteLine("Cancel is called");
-                LogLoddingProgress = "Cancelling . . .";
-                CancelLoadingVisibility = Visibility.Collapsed;
-                _cancelled = true;
+                await LoadLogs(firstPage: false);
             });
-
-            _refreshCommand = new ProtectedCommand(OnRefreshCommand, canExecuteCommand: false);
-
-            _dataSource = new Lazy<LoggingDataSource>(CreateDataSource);            
         }
 
-        public async void LoadOnStartup()
+        /// <summary>
+        /// Disable all filters, refresh button etc, when a request is pending.
+        /// </summary>
+        private void DisableControls()
         {
-            RaiseAllPropertyChanged();
-
-            if (string.IsNullOrWhiteSpace(CredentialsStore.Default?.CurrentAccount?.AccountName) || 
-                string.IsNullOrWhiteSpace(CredentialsStore.Default?.CurrentProjectId))
-            {
-                return;
-            }
-
-            await Reload();
+            _refreshCommand.CanExecuteCommand = false;
         }
 
-        public DataGridRowDetailsVisibilityMode ToggleExpandHideAll
+        /// <summary>
+        /// Enable all controls when request is complete.
+        /// </summary>
+        private void EnableControls()
         {
-            get
-            {
-                return _expandAll;
-            }
-            set
-            {
-                SetValueAndRaise(ref _expandAll, value);    
-            }
-        } 
-
-        public string Account
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(CredentialsStore.Default?.CurrentAccount?.AccountName))
-                {
-                    return null;
-                }
-                else
-                {
-                    return CredentialsStore.Default?.CurrentAccount?.AccountName;
-                }
-            }
+            _refreshCommand.CanExecuteCommand = true;
         }
 
-        public string Project
-        {
-            get
-            {
-                if (string.IsNullOrWhiteSpace(CredentialsStore.Default?.CurrentProjectId))
-                {
-                    return Account == null ? null : "Go to Google Cloud Explore to choose an account";
-                }
-                else
-                {
-                    return CredentialsStore.Default.CurrentProjectId;
-                }
-            }
-        }
-
-        private string _errorMessage;
-        public string ErrorMessage
-        {
-            get
-            {
-                return _errorMessage;
-            }
-
-            private set
-            {
-                SetValueAndRaise(ref _errorMessage, value);
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    ProgressErrorMessageVisibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    ProgressErrorMessageVisibility = Visibility.Visible;
-                }
-            }
-        }
-
-        public string LogLoddingProgress
-        {
-            get
-            {
-                return _loadingProgress;
-            }
-
-            private set
-            {
-                SetValueAndRaise(ref _loadingProgress, value);
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    LoadingBlockVisibility = Visibility.Collapsed;
-                }
-                else
-                {
-                    LoadingBlockVisibility = Visibility.Visible;
-                }
-            }
-        }
-
-
-        private async Task<bool> ShouldKeepResourceType(MonitoredResourceDescriptor resourceDescriptor)
-        {
-            if (resourceDescriptor == null)
-            {
-                Debug.Assert(false);
-                return false;
-            }
-
-            string filter = $"resource.type=\"{resourceDescriptor.Type}\"";
-            try
-            {
-                var result =  await _dataSource.Value.ListLogEntriesAsync(filter, pageSize: 1);
-                return result?.LogEntries != null && result.LogEntries.Count > 0;
-            }
-            catch (Exception ex)
-            {
-                // If exception happens. Keep the type.
-                Debug.WriteLine($"Check Resource Type Log Entry failed {ex.ToString()}");
-                return true;
-            }
-        }
-
-        private ProtectedCommand _refreshCommand;
-        public ProtectedCommand RefreshCommand => _refreshCommand;
-        public string RefreshCommandToolTip => "Get newest log (descending order)";
-
-        private void OnRefreshCommand()
-        {
-            Reload();
-        }
-
-        private object _isLoadingLockObj = new object();
-        private bool _isLoading = false;
+        /// <summary>
+        /// A wrapper to LoadLogs.
+        /// This is to make the try/catch statement conscise and easy to read.
+        /// </summary>
+        /// <param name="callback">A function to execute.</param>
         private async Task LogLoaddingWrapper(Func<Task> callback)
         {
-            lock (_isLoadingLockObj)
-            {
-                if (_isLoading)
-                {
-                    Debug.WriteLine($"_isLoading is true.  Fatal error. fix the code.");
-                    return;
-                }
-
-                ErrorMessage = null;
-                Console.WriteLine("Setting _isLoading to true");
-                _isLoading = true;
-            }
-
-
             try
             {
-                _canCallNextPage = false;
-                RefreshCommand.CanExecuteCommand = false;
-                //// TODO: using ... animation or adding it to Resources.
-                //LogLoddingProgress = "Loading ... ";
-
+                DisableControls();
                 await callback();
-                LogLoddingProgress = string.Empty;
-                ErrorMessage = string.Empty;
-            }
-            catch (DataSourceException ex)
-            {
-                ErrorMessage = ex.Message;
-            }
-            catch (Exception ex)
-            {
-                ErrorMessage = ex.ToString();
             }
             finally
             {
-                Console.WriteLine("Setting _isLoading to false");
-                _isLoading = false;
-                CancelLoadingVisibility = Visibility.Collapsed;
-                LogLoddingProgress = string.Empty;
-                // Disable fetching next page if cancelled or _nextPageToken is empty
-                // This is critical otherwise cancelling a "fetch" won't work
-                // Because at the time "Cancelled", a scroll down to the bottom event is raised and triggers
-                // another automatic NextPage call.
-                _canCallNextPage = (!_cancelled && !string.IsNullOrWhiteSpace(_nextPageToken));
-                RefreshCommand.CanExecuteCommand = true;
+                EnableControls();
             }
         }
 
-        private static readonly int _defaultPageSize = 100;
-        private bool _cancelled = false;
+        /// <summary>
+        /// Repeatedly make list log entries request till it gets desired number of logs or it reaches end.
+        /// </summary>
+        /// <param name="firstPage">
+        /// Tell if it is requesting for first page or geting subsequent pages.
+        /// On complex filters, scanning through logs take time. The server returns empty results 
+        ///   with a next page token. Continue to send request till some logs are found.
+        /// </param>
         private async Task LoadLogs(bool firstPage)
         {
-
             int count = 0;
-            _cancelled = false;
-            //var reqParams = CurrentRequestParameters();
 
-            while (count < _defaultPageSize && !_cancelled)
+            while (count < _defaultPageSize)
             {
                 Debug.WriteLine($"LoadLogs, count={count}, firstPage={firstPage}");
-
-                CancelLoadingVisibility = Visibility.Visible;
-                LogLoddingProgress = "Loading . . .";
-
                 if (firstPage)
                 {
                     firstPage = false;
                     _nextPageToken = null;
-                    SetLogs(null, descending:true);
-                    SetSelectedChanged(0);
+                    _logs.Clear();
                 }
 
                 var results = await _dataSource.Value.ListLogEntriesAsync(
@@ -484,8 +308,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }            
         }
 
-
-
+        /// <summary>
+        /// Send request to get logs using new filters, orders etc.
+        /// </summary>
         private async Task Reload()
         {
             if (Project == null)
@@ -498,32 +323,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             });
         }
 
-
-        public async void LoadNextPage()
-        {
-            if (!_canCallNextPage || string.IsNullOrWhiteSpace(_nextPageToken))
-            {
-                return;
-            }
-
-            await LogLoaddingWrapper(async () =>
-            {
-                await LoadLogs(firstPage: false);
-            });
-        }
-
-        private void ToggleExpandAll()
-        {
-            if (ToggleExpandHideAll == DataGridRowDetailsVisibilityMode.Collapsed)
-            {
-                ToggleExpandHideAll = DataGridRowDetailsVisibilityMode.Visible;
-            }
-            else
-            {
-                ToggleExpandHideAll = DataGridRowDetailsVisibilityMode.Collapsed;
-            }
-        }
-
+        /// <summary>
+        /// Create <seealso cref="LoggingDataSource"/> object with current project id.
+        /// </summary>
         private LoggingDataSource CreateDataSource()
         {
             if (CredentialsStore.Default.CurrentProjectId != null)

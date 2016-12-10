@@ -68,145 +68,37 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
         }
 
-        private DataGridRow preSelected;
-        private int preSelectedRowInex;
-
-        private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        /// <summary>
+        /// On Windows8, the combobox backgroud property does not work.
+        /// This is a workaround to fix the problem.
+        /// </summary>
+        private void ComboBox_Loaded(Object sender, RoutedEventArgs e)
         {
-
-            if (dataGridLogEntries.SelectedIndex >= 0)
-            {
-                DataGridRow row = (DataGridRow)dataGridLogEntries.ItemContainerGenerator.ContainerFromIndex(dataGridLogEntries.SelectedIndex);
-                preSelected = row;
-                preSelectedRowInex = dataGridLogEntries.SelectedIndex;
-            }
-
-
-            if (_turnOnDebugWriteLine)
-            {
-                Debug.WriteLine($"dg_selectionchanged {dataGridLogEntries.SelectedIndex}");
-            }
-
-            // This is necessary to fix:
-            // By default DataGrid opens detail view on selected row. 
-            // It automatically opens detail view on mouse move
-            DebugWriteLine($"dg_selectionchanged UnselectAll");
-            dataGridLogEntries.UnselectAll();
-        }
-
-        private void dataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            DependencyObject dep = (DependencyObject)e.OriginalSource;
-
-            // iteratively traverse the visual tree
-            while ((dep != null) && !(dep is DataGridCell))
-            {
-                dep = VisualTreeHelper.GetParent(dep);
-            }
-
-            if (dep == null)
-                return;
-
-
-            DataGridCell cell = dep as DataGridCell;
-            // do something
-
-            // navigate further up the tree
-            while ((dep != null) && !(dep is DataGridRow))
-            {
-                dep = VisualTreeHelper.GetParent(dep);
-            }
-
-            DataGridRow row = dep as DataGridRow;
-            if (row != null)
-            {
-                row.DetailsVisibility = row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-            }
-        }
-
-        private DataGridRow SelectedRow()
-        {
-            return (DataGridRow)dataGridLogEntries.ItemContainerGenerator.ContainerFromIndex(dataGridLogEntries.SelectedIndex);
-        }
-
-        private DataGridRow previousHighlighted;
-
-        private DataGridRow MouseOverRow(MouseEventArgs e)
-        {
-            // Use HitTest to resolve the row under the cursor
-            var ele = dataGridLogEntries.InputHitTest(e.GetPosition(null));
-            if (_turnOnDebugWriteLine)
-            {
-                Debug.WriteLine($"InputHitTest element {ele?.GetType()}");
-            }
-            return ele as DataGridRow;
+            var comboBox = sender as ComboBox;
+            var comboBoxTemplate = comboBox.Template;
+            var toggleButton = comboBoxTemplate.FindName("toggleButton", comboBox) as ToggleButton;
+            var toggleButtonTemplate = toggleButton.Template;
+            var border = toggleButtonTemplate.FindName("templateRoot", toggleButton) as Border;
+            var backgroud = comboBox.Background;
+            border.Background = backgroud;
         }
 
         /// <summary>
-        /// Somehow this is neccessary to change the seleted item
-        /// Otherwise the "SelectedItem" become white blank.
+        /// By default DataGrid opens detail view on selected row.
+        /// This is a workaround to fix the problem:
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void dataGrid_MouseMove(object sender, MouseEventArgs e)
+        private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            //Debug.WriteLine("dg_MouseMove Unselected All");
-            //dg.UnselectAll();
-
-            // MouseOverRow(e);
-
-            if (true)
-            {
-                DependencyObject dep = (DependencyObject)e.OriginalSource;
-
-                // iteratively traverse the visual tree
-                while ((dep != null) && !(dep is DataGridCell))
-                {
-                    dep = VisualTreeHelper.GetParent(dep);
-                }
-
-                if (dep == null)
-                    return;
-
-
-                DataGridCell cell = dep as DataGridCell;
-                // do something
-
-                // navigate further up the tree
-                while ((dep != null) && !(dep is DataGridRow))
-                {
-                    dep = VisualTreeHelper.GetParent(dep);
-                }
-
-                DataGridRow row = dep as DataGridRow;
-                if (row != null)
-                {
-                    int rowIndex = dataGridLogEntries.ItemContainerGenerator.IndexFromContainer(row);
-                    if (_turnOnDebugWriteLine)
-                    {
-                        Debug.WriteLine($"Set Selected to row {rowIndex}, previous selected {dataGridLogEntries.SelectedIndex} ");
-                    }
-                    if (previousHighlighted != row)
-                    {
-                        previousHighlighted?.InvalidateVisual();
-                        previousHighlighted = row;
-                    }
-
-                    if (preSelected != row)
-                    {
-                        DebugWriteLine($"pre selected row {preSelectedRowInex} {preSelected}");
-                        preSelected?.InvalidateVisual();
-                        preSelected?.InvalidateMeasure();
-                    }
-
-                    object item = dataGridLogEntries.Items[rowIndex];
-                    ViewModel.SetSelectedChanged(item);
-                    dataGridLogEntries.SelectedItem = item;
-                }
-            }
+            DebugWriteLine($"dg_selectionchanged {dataGridLogEntries.SelectedIndex}");
+            dataGridLogEntries.UnselectAll();
         }
 
-        private void dtGrid_ScrollChanged(object sender, ScrollChangedEventArgs e)
+ 
+        /// <summary>
+        /// Response to data grid scroll change event.
+        /// Auto load more logs when it scrolls down to bottom.
+        /// </summary>
+        private void dataGrid_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             var grid = sender as DataGrid;
 

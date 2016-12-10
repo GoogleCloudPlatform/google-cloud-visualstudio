@@ -15,8 +15,8 @@
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
     /// <summary>
-    /// The LogEntry returns the Severity as string.
-    /// Define log severity that matches to corresponding icons
+    /// Define log severity that matches to corresponding icons.
+    /// Note, the LogEntry contains the severity as string not a defined enum.
     /// </summary>
     internal enum LogSeverity
     {
