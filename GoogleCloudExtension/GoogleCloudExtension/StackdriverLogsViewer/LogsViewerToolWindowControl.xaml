@@ -222,26 +222,27 @@
             </DataGrid>
         </Grid>
         
-        <!-- Displays log list requesting hint, or request error. -->
+        <!-- Displays request status. -->
         <Grid Grid.Row="3" Margin="12, 0, 12, 0" Background="White">
             
-            <!-- Display request error. -->
-            <TextBlock Margin="0, 0, 0, 12" VerticalAlignment="Bottom" Foreground="Red"   
-                       
-                       TextAlignment="Left" MaxHeight="120" Padding="8, 5, 8, 5"  TextWrapping="Wrap" 
-                       Text="{Binding ErrorMessage}" Visibility="{Binding Path=ProgressErrorMessageVisibility}" />
+            <!-- Display request errors. -->
+            <TextBlock Margin="0, 0, 0, 12" VerticalAlignment="Bottom" TextAlignment="Left" TextWrapping="Wrap"
+                       Foreground="Red" MaxHeight="120" Padding="8, 5, 8, 5"  
+                       Text="{Binding RequestErrorMessage}" 
+                       Visibility="{Binding Path=ProgressErrorMessageVisibility}" />
             
-            <!-- Shows it is requesting log items. -->
+            <!-- Shows it is making or cancelling a request. -->
             <StackPanel Margin="0, 0, 0, 12" Orientation="Horizontal" HorizontalAlignment="Center"
-                        Visibility="{Binding Path=CancelLoadingVisibility}">
+                        Visibility="{Binding Path=RequestStatusVisibility}">
                 
                 <!-- Loading or Cancelling. -->
-                <TextBlock Text="{Binding LogLoddingProgress}" Padding="8, 5, 8, 5" Foreground="Red" />
+                <TextBlock Text="{Binding Path=LogLoddingProgressText}" Padding="8, 5, 8, 5" Foreground="Red" />
                 
                 <!-- Cancel request button. -->
                 <Button Margin="12, 0, 12, 0" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                        Content="{Binding Path=CancelButtonText}" Command="{Binding Path=CancelLoadingCommand}" 
-                        Visibility="{Binding Path=CancelLoadingVisibility}" 
+                        Content="{Binding Path={x:Static ext:Resources.UiCancelButtonCaption}}" 
+                        Command="{Binding Path=CancelLoadingCommand}" 
+                        Visibility="{Binding Path=CancelLoadingButtonVisibility}" 
                         Style="{StaticResource CommonButtonStandardStyle}" />
             </StackPanel>
         </Grid>
