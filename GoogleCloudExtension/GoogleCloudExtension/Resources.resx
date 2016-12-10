@@ -1327,4 +1327,8 @@
     <value>Get newest log (in descending order).</value>
     <comment>Log viewer window referesh image button tool tip.</comment>
   </data>
+  <data name="LogViewerTimeZoneSelectionToolTip" xml:space="preserve">
+    <value>Click To Select Different Timezone.</value>
+    <comment>Tool tip to the select time zone combo box.</comment>
+  </data>
 </root>

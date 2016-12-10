@@ -18,9 +18,6 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Input;
-using System.Windows.Media;
-
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -63,18 +60,34 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
         }
 
+        /// <summary>
+        /// On Windows8, the combobox backgroud property does not work.
+        /// This is a workaround to fix the problem.
+        /// </summary>
+        private void ComboBox_Loaded(Object sender, RoutedEventArgs e)
+        {
+            var comboBox = sender as ComboBox;
+            var comboBoxTemplate = comboBox.Template;
+            var toggleButton = comboBoxTemplate.FindName("toggleButton", comboBox) as ToggleButton;
+            var toggleButtonTemplate = toggleButton.Template;
+            var border = toggleButtonTemplate.FindName("templateRoot", toggleButton) as Border;
+            var backgroud = comboBox.Background;
+            border.Background = backgroud;
+        }
+
+        /// <summary>
+        /// By default DataGrid opens detail view on selected row.
+        /// This is a workaround to fix the problem:
+        /// </summary>
         private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             DebugWriteLine($"dg_selectionchanged {dataGridLogEntries.SelectedIndex}");
-
-            // This is necessary to fix the problem:
-            // By default DataGrid opens detail view on selected row.
             dataGridLogEntries.UnselectAll();
         }
 
  
         /// <summary>
-        /// Responses to data grid scroll change event.
+        /// Response to data grid scroll change event.
         /// Auto load more logs when it scrolls down to bottom.
         /// </summary>
         private void dataGrid_ScrollChanged(object sender, ScrollChangedEventArgs e)

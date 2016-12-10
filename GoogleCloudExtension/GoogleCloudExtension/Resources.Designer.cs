@@ -1870,6 +1870,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Click To Select Different Timezone..
+        /// </summary>
+        public static string LogViewerTimeZoneSelectionToolTip {
+            get {
+                return ResourceManager.GetString("LogViewerTimeZoneSelectionToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Google Stackdriver Logging.
         /// </summary>
         public static string LogViewerToolWindowCaption {

@@ -49,13 +49,12 @@
 
                     <!-- The Alternation Background must be set here when IsMouseOver trigger is defined. -->
                     <Trigger Property="AlternationIndex" Value="1">
-                        <Setter Property="Background" Value="AliceBlue"/>
+                        <Setter Property="Background" Value="#F5F5F5"/>
                     </Trigger>
 
                     <!-- Highlight the log line on mouse hovers the item. -->
                     <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#F2A600" />
-                        <Setter Property="Foreground" Value="White" />
+                        <Setter Property="Background" Value="#FFFFD6" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
@@ -111,18 +110,28 @@
 
         <Grid Grid.Row="2" Margin="12, 6, 12, 12">
 
-            <!-- Displayed on top right corner of DataGrid. -->
-            <Border Background="Transparent" Panel.ZIndex="20" HorizontalAlignment="Right"  VerticalAlignment="Top" >
-                <StackPanel Orientation="Horizontal">
-
+            <!--Data grid top information bar, right under the grid header, set top margin to 19 (18 + border 1)-->
+            <Border Margin="0, 19, 0, 0"  Panel.ZIndex="20" HorizontalAlignment="Stretch"  VerticalAlignment="Top" 
+                    Background="LightGray">
+                
+                <!-- Dock Date and timezone to left, Expand All button to right. -->
+                <DockPanel  Margin="9, 1, 0, 1">
                     <!-- Current selected log entry date. -->
-                    <TextBlock Text="{Binding Path=SelectedDate}" Margin="12, 3, 3, 0" VerticalAlignment="Top" />
-
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                        <TextBlock Margin="12, 3, 3, 0" FontWeight="Bold"
+                               Text="{Binding Path=FirstRowDate}" VerticalAlignment="Top" />
+                        
+                        <!-- Displays the timezone. Placeholder, items will be added later -->
+                        <ComboBox Margin="3, 0, 18, 0" VerticalAlignment="Center" BorderThickness="0" 
+                                  Background="Transparent" x:Name="comboTimeZone" Loaded="ComboBox_Loaded"                                 
+                                  ToolTip="{x:Static ext:Resources.LogViewerTimeZoneSelectionToolTip}"/>
+                    </StackPanel>
+                    
                     <!-- Toggle expand details of all log entries. -->
-                    <Expander x:Name="allExpander" HorizontalAlignment="Right" VerticalAlignment="Top"
-                              IsExpanded="{Binding Path=ToggleExapandAllExpanded,Mode=TwoWay}" 
-                              ToolTip="{Binding Path=ToggleExapandAllToolTip}" />
-                </StackPanel>
+                    <Expander DockPanel.Dock="Right" Margin="0, 0, 8, 0" HorizontalAlignment="Right" 
+                              VerticalAlignment="Top" ToolTip="{Binding Path=ToggleExapandAllToolTip}"
+                              IsExpanded="{Binding Path=ToggleExapandAllExpanded,Mode=TwoWay}"/>
+                </DockPanel>
             </Border>
 
             <!-- DataGrid, displays all log entries. -->
@@ -143,7 +152,13 @@
                       AlternationCount="2"
                       ScrollViewer.ScrollChanged="dataGrid_ScrollChanged"
                       SelectionChanged="dataGrid_SelectionChanged">
-
+                
+                <!-- Override the text highlight color. -->
+                <DataGrid.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
+                   Color="Black"/>
+                </DataGrid.Resources>
+                
                 <!-- Group log items by log dates. -->
                 <DataGrid.GroupStyle>
                     <GroupStyle>
