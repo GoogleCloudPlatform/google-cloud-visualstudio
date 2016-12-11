@@ -234,6 +234,9 @@
       <DependentUpon>LogsViewerToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\TreeViewConverters\LogItemConverter.cs" />
+    <Compile Include="StackdriverLogsViewer\TreeViewConverters\Payload.cs" />
+    <Compile Include="StackdriverLogsViewer\TreeViewConverters\TreeObjectNode.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
     <Compile Include="SolutionUtils\ISolutionProject.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
