@@ -160,8 +160,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             get { return _expandAll; }
             set { SetValueAndRaise(ref _expandAll, value); }
         }
-        #endregion    
+        #endregion
 
+        #region constructor, startup, initialization
         /// <summary>
         /// Initializes an instance of <seealso cref="LogsViewerViewModel"/> class.
         /// </summary>
@@ -187,19 +188,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             await Reload();
         }
-
-        /// <summary>
-        /// Update the current log item date.
-        /// </summary>
-        /// <param name="item">Current selected log item </param>
-        public void SetSelectedChanged(object item)
-        {
-            var log = item as LogItem;
-            if (log == null)
-            {
-                return;
-            }
-        }
+        #endregion
 
         #region DataGrid public methods
         /// <summary>
