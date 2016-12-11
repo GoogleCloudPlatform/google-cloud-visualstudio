@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -41,23 +42,37 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private static readonly Lazy<ImageSource> s_cloud_logo_icon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(CloudLogoPath));
 
+        private object _isLoadingLockObj = new object();
+        private bool _isLoading = false;
         private Lazy<LoggingDataSource> _dataSource;
         private string _nextPageToken;
 
-        #region Simple filter area private members
+        #region  private fields
+        #region Simple filter area private fields
         private ProtectedCommand _refreshCommand;
         #endregion
 
-        #region DataGrid top information bar private members
+        #region DataGrid top information bar private fields
         private string _firstRowDate = string.Empty;
         private bool _toggleExpandAllExpanded = false;
         #endregion
 
-        #region DataGrid private members
+        #region DataGrid private fields
         private DataGridRowDetailsVisibilityMode _expandAll = DataGridRowDetailsVisibilityMode.Collapsed;
         private ObservableCollection<LogItem> _logs = new ObservableCollection<LogItem>();
         private ListCollectionView _collectionView;
         private object _collectionViewLock = new object();
+        #endregion
+
+        #region Request status bar private fields
+        private string _requestStatusText;
+        private string _requestErrorMessage;
+        private Visibility _messageBoradVisibility = Visibility.Collapsed;
+        private Visibility _requestStatusVisibility = Visibility.Collapsed;
+        private ProtectedCommand _cancelRequestCommand;
+        private Visibility _cancelRequestVisible = Visibility.Collapsed;
+        private bool _requestCancelled;
+        #endregion
         #endregion
 
         #region Simple filter area public properties
@@ -160,8 +175,77 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             get { return _expandAll; }
             set { SetValueAndRaise(ref _expandAll, value); }
         }
-        #endregion    
+        #endregion
 
+        #region Request status bar public properties
+        /// <summary>
+        /// Gets the cancel request button ICommand interface.
+        /// </summary>
+        public ICommand CancelRequestCommand => _cancelRequestCommand;
+
+        /// <summary>
+        /// Gets the cancel request button visibility
+        /// </summary>
+        public Visibility CancelRequestButtonVisibility
+        {
+            get { return _cancelRequestVisible; }
+            private set { SetValueAndRaise(ref _cancelRequestVisible, value); }
+        }
+
+        /// <summary>
+        /// Gets the request error message visibility.
+        /// </summary>
+        public Visibility RequestErrorMessageVisibility
+        {
+            get { return _messageBoradVisibility; }
+            private set { SetValueAndRaise(ref _messageBoradVisibility, value); }
+        }
+
+        /// <summary>
+        /// Gets the request error message.
+        /// </summary>
+        public string RequestErrorMessage
+        {
+            get { return _requestErrorMessage; }
+            private set
+            {
+                SetValueAndRaise(ref _requestErrorMessage, value);
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    RequestErrorMessageVisibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    RequestErrorMessageVisibility = Visibility.Visible;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets the request status text message.
+        /// </summary>
+        public string RequestStatusText
+        {
+            get { return _requestStatusText; }
+            private set {
+                SetValueAndRaise(ref _requestStatusText, value);
+                RequestStatusVisibility = 
+                    string.IsNullOrWhiteSpace(_requestStatusText) ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the request status block visibility. 
+        /// It includes the request status text block and cancel request button.
+        /// </summary>
+        public Visibility RequestStatusVisibility
+        {
+            get { return _requestStatusVisibility; }
+            private set { SetValueAndRaise(ref _requestStatusVisibility, value); }
+        }
+        #endregion
+
+        #region constructor, startup, initialization
         /// <summary>
         /// Initializes an instance of <seealso cref="LogsViewerViewModel"/> class.
         /// </summary>
@@ -171,6 +255,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             _refreshCommand = new ProtectedCommand(() => Reload(), canExecuteCommand: false);
             _collectionView = new ListCollectionView(_logs);
             _collectionView.GroupDescriptions.Add(new PropertyGroupDescription("Date"));
+            _cancelRequestCommand = new ProtectedCommand(CancelRequest);
         }
 
         /// <summary>
@@ -187,19 +272,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             await Reload();
         }
-
-        /// <summary>
-        /// Update the current log item date.
-        /// </summary>
-        /// <param name="item">Current selected log item </param>
-        public void SetSelectedChanged(object item)
-        {
-            var log = item as LogItem;
-            if (log == null)
-            {
-                return;
-            }
-        }
+        #endregion
 
         #region DataGrid public methods
         /// <summary>
@@ -217,7 +290,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 _logs.Add(new LogItem(log));
             }
         }
-        #endregion
 
         /// <summary>
         /// Send request to get logs following prior requests.
@@ -231,8 +303,31 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             await LogLoaddingWrapper(async () =>
             {
-                await LoadLogs(firstPage: false);
+                await LoadLogs(isFirstPage: false);
             });
+        }
+        #endregion
+
+        #region private methods
+        /// <summary>
+        /// Cancel request button command.
+        /// </summary>
+        private void CancelRequest()
+        {
+            Debug.WriteLine("Cancel command is called");
+            RequestStatusText = Resources.LogViewerRequestCancellingMessage;
+            CancelRequestButtonVisibility = Visibility.Collapsed;
+            _requestCancelled = true;
+        }
+
+        /// <summary>
+        /// Show request status bar.
+        /// </summary>
+        private void InitAndShowRequestStatus()
+        {
+            RequestErrorMessage = string.Empty;
+            RequestStatusText = Resources.LogViewerRequestProgressMessage;
+            CancelRequestButtonVisibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -258,13 +353,37 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="callback">A function to execute.</param>
         private async Task LogLoaddingWrapper(Func<Task> callback)
         {
+            lock (_isLoadingLockObj)
+            {
+                if (_isLoading)
+                {
+                    Debug.WriteLine($"_isLoading is true. There is a fatal code bug.");
+                    return;
+                }
+
+                Console.WriteLine("Setting _isLoading to true");
+                _isLoading = true;
+            }
+
+            InitAndShowRequestStatus();
             try
             {
                 DisableControls();
                 await callback();
             }
+            catch (DataSourceException ex)
+            {
+                RequestErrorMessage = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                RequestErrorMessage = ex.ToString();
+            }
             finally
             {
+                Console.WriteLine("Setting _isLoading to false");
+                _isLoading = false;
+                RequestStatusText = string.Empty;
                 EnableControls();
             }
         }
@@ -272,21 +391,22 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Repeatedly make list log entries request till it gets desired number of logs or it reaches end.
         /// </summary>
-        /// <param name="firstPage">
+        /// <param name="isFirstPage">
         /// Tell if it is requesting for first page or geting subsequent pages.
         /// On complex filters, scanning through logs take time. The server returns empty results 
         ///   with a next page token. Continue to send request till some logs are found.
         /// </param>
-        private async Task LoadLogs(bool firstPage)
+        private async Task LoadLogs(bool isFirstPage)
         {
             int count = 0;
+            _requestCancelled = false;
 
-            while (count < _defaultPageSize)
+            while (count < _defaultPageSize && !_requestCancelled)
             {
-                Debug.WriteLine($"LoadLogs, count={count}, firstPage={firstPage}");
-                if (firstPage)
+                Debug.WriteLine($"LoadLogs, count={count}, firstPage={isFirstPage}");
+                if (isFirstPage)
                 {
-                    firstPage = false;
+                    isFirstPage = false;
                     _nextPageToken = null;
                     _logs.Clear();
                 }
@@ -319,7 +439,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             await LogLoaddingWrapper(async () => {
-                await LoadLogs(firstPage: true);
+                await LoadLogs(isFirstPage: true);
             });
         }
 
@@ -340,5 +460,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return null;
             }
         }
+        #endregion
     }
 }

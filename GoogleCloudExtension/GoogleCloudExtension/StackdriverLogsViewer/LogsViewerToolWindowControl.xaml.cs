@@ -18,9 +18,6 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Input;
-using System.Windows.Media;
-
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -29,11 +26,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public partial class LogsViewerToolWindowControl : UserControl
     {
-        /// <summary>
-        /// Used to manually turn off debug messagge of this file. 
-        /// </summary>
-        private bool _turnOnDebugWriteLine = false;
-
         /// <summary>
         /// Sets or resets the control with a new ViewModel object.
         /// </summary>
@@ -62,7 +54,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private void DebugWriteLine(string traceLine)
         {
-            if (_turnOnDebugWriteLine)
+            if (false)
             {
                 Debug.WriteLine(traceLine);
             }

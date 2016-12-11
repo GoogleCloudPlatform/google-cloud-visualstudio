@@ -21,8 +21,6 @@
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- DataGrid Styles. -->
-
             <!-- DataGrid cell style.  Add padding to text. Add padding at row style does not work. -->
             <Style x:Key="cellStyle" TargetType="DataGridCell">
                 <Setter Property="Template">
@@ -147,14 +145,18 @@
                       IsReadOnly="True" 
                       HeadersVisibility="Column" 
                       ColumnHeaderHeight="18" 
-                      ItemsSource="{Binding Path=LogEntryList}"   
+                      ItemsSource="{Binding Path=LogItemCollection}"   
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                      PreviewMouseDown="dataGrid_PreviewMouseDown"    
                       AlternationCount="2"
-                      MouseMove="dataGrid_MouseMove"
-                      ScrollViewer.ScrollChanged="dtGrid_ScrollChanged"
+                      ScrollViewer.ScrollChanged="dataGrid_ScrollChanged"
                       SelectionChanged="dataGrid_SelectionChanged">
-
+                
+                <!-- Override the text highlight color. -->
+                <DataGrid.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
+                   Color="Black"/>
+                </DataGrid.Resources>
+                
                 <!-- Group log items by log dates. -->
                 <DataGrid.GroupStyle>
                     <GroupStyle>
@@ -227,22 +229,21 @@
             
             <!-- Display request errors. -->
             <TextBlock Margin="0, 0, 0, 12" VerticalAlignment="Bottom" TextAlignment="Left" TextWrapping="Wrap"
-                       Foreground="Red" MaxHeight="120" Padding="8, 5, 8, 5"  
-                       Text="{Binding RequestErrorMessage}" 
-                       Visibility="{Binding Path=ProgressErrorMessageVisibility}" />
+                       Foreground="Red" MaxHeight="120" Padding="8, 5, 8, 5" Text="{Binding RequestErrorMessage}" 
+                       Visibility="{Binding Path=RequestErrorMessageVisibility}" />
             
             <!-- Shows it is making or cancelling a request. -->
             <StackPanel Margin="0, 0, 0, 12" Orientation="Horizontal" HorizontalAlignment="Center"
                         Visibility="{Binding Path=RequestStatusVisibility}">
                 
                 <!-- Loading or Cancelling. -->
-                <TextBlock Text="{Binding Path=LogLoddingProgressText}" Padding="8, 5, 8, 5" Foreground="Red" />
+                <TextBlock Text="{Binding Path=RequestStatusText}" Padding="8, 5, 8, 5" Foreground="Red" />
                 
                 <!-- Cancel request button. -->
-                <Button Margin="12, 0, 12, 0" HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                        Content="{Binding Path={x:Static ext:Resources.UiCancelButtonCaption}}" 
-                        Command="{Binding Path=CancelLoadingCommand}" 
-                        Visibility="{Binding Path=CancelLoadingButtonVisibility}" 
+                <Button Margin="12, 0, 12, 0" VerticalAlignment="Bottom"
+                        Content="{x:Static ext:Resources.UiCancelButtonCaption}" 
+                        Command="{Binding Path=CancelRequestCommand}" 
+                        Visibility="{Binding Path=CancelRequestButtonVisibility}" 
                         Style="{StaticResource CommonButtonStandardStyle}" />
             </StackPanel>
         </Grid>
