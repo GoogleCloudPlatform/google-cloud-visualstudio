@@ -21,7 +21,8 @@ parser.add_argument('-s', '--strings',
                     required=True)
 
 
-string_prefix="Resources."
+# All string references are of the form: Resource.<string name>
+resource_string_prefix='Resources.'
 
 
 def list_all_files(dir):
@@ -31,7 +32,7 @@ def list_all_files(dir):
     for root, _, filenames in os.walk(dir):
         for name in filenames:
             filename, ext = os.path.splitext(name)
-            if ext == ".cs" or ext == ".xaml":
+            if ext == '.cs' or ext == '.xaml':
                 result.append(os.path.join(root, name))
     return result
 
@@ -39,7 +40,7 @@ def list_all_files(dir):
 def is_valid_char(src):
     """Determins if the given char is valid as an identifier char."""
 
-    return src.isalpha() or src.isdigit()
+    return src.isalnum()
 
 
 def is_valid_string_name(src):
@@ -51,11 +52,11 @@ def is_valid_string_name(src):
 def extract_string(line, idx, result):
     """Extracts the first string reference on, or after, idx in line."""
 
-    begin = line.find(string_prefix, idx)
+    begin = line.find(resource_string_prefix, idx)
     if begin == -1:
         return -1
     
-    begin = begin + len(string_prefix)
+    begin = begin + len(resource_string_prefix)
     end = -1
     for i in range(begin, len(line)):
         if not is_valid_char(line[i]):
@@ -90,8 +91,8 @@ def load_strings(src):
     tree = ET.parse(src)
     root = tree.getroot()
     result = set()
-    for child in root.findall("data"):
-        result.add(child.attrib["name"])
+    for child in root.findall('data'):
+        result.add(child.attrib['name'])
     return result
 
 
@@ -102,11 +103,11 @@ def main(params):
         used = get_used_strings(file)
         strings = strings - used
     if len(strings) > 0:
-        print("Strings that are not used:")
+        print('Strings that are not used:')
         for s in strings:
             print(s)
 
 
 # Entrypoint into the script.
-if __name__ == "__main__":
+if __name__ == '__main__':
     main(parser.parse_args())
