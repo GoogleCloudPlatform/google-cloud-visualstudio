@@ -2086,15 +2086,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Delete.
-        /// </summary>
-        public static string ManageAccountsDeleteAccountButtonCaption {
-            get {
-                return ResourceManager.GetString("ManageAccountsDeleteAccountButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete the account {0}?.
         /// </summary>
         public static string ManageAccountsDeleteAccountPromptMessage {
@@ -2581,15 +2572,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Setting password for user {0}.
-        /// </summary>
-        public static string ResetWindowSettingPasswordProgressMessage {
-            get {
-                return ResourceManager.GetString("ResetWindowSettingPasswordProgressMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Password copied to clipboard..
         /// </summary>
         public static string ShowPasswordCopiedMessage {
@@ -2617,24 +2599,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy Password.
-        /// </summary>
-        public static string ShowPasswordCopyPasswordButtonCaption {
-            get {
-                return ResourceManager.GetString("ShowPasswordCopyPasswordButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hide password.
-        /// </summary>
-        public static string ShowPasswordHidePasswordTooltip {
-            get {
-                return ResourceManager.GetString("ShowPasswordHidePasswordTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} password:.
         /// </summary>
         public static string ShowPasswordMessage {
@@ -2653,38 +2617,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show password.
-        /// </summary>
-        public static string ShowPasswordShowPasswordTooltip {
-            get {
-                return ResourceManager.GetString("ShowPasswordShowPasswordTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Password copied to clipboard..
-        /// </summary>
-        public static string ShowPasswordWindowPasswordCopiedMessage {
-            get {
-                return ResourceManager.GetString("ShowPasswordWindowPasswordCopiedMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Password for {0}.
         /// </summary>
         public static string ShowPasswordWindowTitle {
             get {
                 return ResourceManager.GetString("ShowPasswordWindowTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add Version to Traffic Split.
-        /// </summary>
-        public static string SplitTrafficWindowAddVersionMessage {
-            get {
-                return ResourceManager.GetString("SplitTrafficWindowAddVersionMessage", resourceCulture);
             }
         }
         
@@ -2739,15 +2676,6 @@ namespace GoogleCloudExtension {
         public static string SplitTrafficWindowIpAddressLabel {
             get {
                 return ResourceManager.GetString("SplitTrafficWindowIpAddressLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to %.
-        /// </summary>
-        public static string SplitTrafficWindowPercentLabel {
-            get {
-                return ResourceManager.GetString("SplitTrafficWindowPercentLabel", resourceCulture);
             }
         }
         

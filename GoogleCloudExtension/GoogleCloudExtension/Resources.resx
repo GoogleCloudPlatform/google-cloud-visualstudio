@@ -161,10 +161,6 @@
     <value>Failed to stop instance {0}. {1}</value>
     <comment>Message shown when failed to stop an instance. {0} is the instance name, {1} is the error message.</comment>
   </data>
-  <data name="CloudExplorerGceFailedToUpdateFirewallCaption" xml:space="preserve">
-    <value>Error Updating Firewall</value>
-    <comment>Caption for the message shown when failed to update firewall.</comment>
-  </data>
   <data name="CloudExplorerGceFailedToUpdateFirewallMessage" xml:space="preserve">
     <value>Failed to update Firewall rules for instance.</value>
     <comment>Message shown when failed to update firewall.</comment>
@@ -481,10 +477,6 @@
     <value>Instance Properties</value>
     <comment>Category for the SQL instance properties.</comment>
   </data>
-  <data name="CloudExplorerSqlInstanceIp6AddressDisplayName" xml:space="preserve">
-    <value>IPv6 Address (First Gen)</value>
-    <comment>The display name for the IP v6 address.</comment>
-  </data>
   <data name="CloudExplorerSqlInstanceIpAddressDisplayName" xml:space="preserve">
     <value>IP Address</value>
     <comment>The display name for the instance IP address.</comment>
@@ -548,10 +540,6 @@
   <data name="ManageAccountsCurrentAccountMessage" xml:space="preserve">
     <value>Current Account</value>
     <comment>Message shown in the current account.</comment>
-  </data>
-  <data name="ManageAccountsDeleteAccountButtonCaption" xml:space="preserve">
-    <value>_Delete</value>
-    <comment>Caption for the delete account button.</comment>
   </data>
   <data name="ManageAccountsDeleteAccountPromptMessage" xml:space="preserve">
     <value>Are you sure you want to delete the account {0}?</value>
@@ -673,21 +661,9 @@
     <value>Copy Failed</value>
     <comment>Title of the prompt shown when the copy operation fails.</comment>
   </data>
-  <data name="ShowPasswordCopyPasswordButtonCaption" xml:space="preserve">
-    <value>Copy Password</value>
-    <comment>Caption for the copy password button.</comment>
-  </data>
-  <data name="ShowPasswordHidePasswordTooltip" xml:space="preserve">
-    <value>Hide password</value>
-    <comment>The tooltip shown to hide the password.</comment>
-  </data>
   <data name="ShowPasswordMessage" xml:space="preserve">
     <value>{0} password:</value>
     <comment>The message shown for the password textblock. {0} is the user name.</comment>
-  </data>
-  <data name="ShowPasswordShowPasswordTooltip" xml:space="preserve">
-    <value>Show password</value>
-    <comment>The tooltip shown to show the password.</comment>
   </data>
   <data name="ShowPasswordWindowTitle" xml:space="preserve">
     <value>Password for {0}</value>
@@ -913,10 +889,6 @@
     <value>I have a password for this user</value>
     <comment>Message shown in the radio button of the Reset Password dialog to signify that the user will provide the password.</comment>
   </data>
-  <data name="ResetWindowSettingPasswordProgressMessage" xml:space="preserve">
-    <value>Setting password for user {0}</value>
-    <comment>Message shown to the user when the password for the Windows user is being set. {0} is the user name.</comment>
-  </data>
   <data name="WindowsCredentialsChooserManageCredentialsCaption" xml:space="preserve">
     <value>Manage Windows credentials</value>
     <comment>Caption used in the hyperlink shown in the Windows credentials chooser dialog.</comment>
@@ -1141,10 +1113,6 @@
     <value>Updating traffic split...</value>
     <comment>Message shown when a traffic split is being updated.</comment>
   </data>
-  <data name="SplitTrafficWindowAddVersionMessage" xml:space="preserve">
-    <value>Add Version to Traffic Split</value>
-    <comment>Button label to add a version to the traffic splits.</comment>
-  </data>
   <data name="SplitTrafficWindowInvalidPercentRangeErrorMessage" xml:space="preserve">
     <value>Invalid traffic allocation {0}. Each traffic allocation must be greater than or equal to 1% and less than or equal to 100%</value>
     <comment>Message for an error message in the split traffic dialog for an invalid percentage out of range. {0} is the name of the traffic allocation outside of the valid range.</comment>
@@ -1156,10 +1124,6 @@
   <data name="SplitTrafficWindowInvalidPercentTitle" xml:space="preserve">
     <value>Invalid Percent</value>
     <comment>Title for an error message in the split traffic dialog for an invalid percent.</comment>
-  </data>
-  <data name="SplitTrafficWindowPercentLabel" xml:space="preserve">
-    <value>%</value>
-    <comment>Label to denoate a percentage.</comment>
   </data>
   <data name="SplitTrafficWindowSplitByMessage" xml:space="preserve">
     <value>Manage traffic splitting of versions by:</value>
@@ -1331,6 +1295,10 @@
     <value>No project selected.</value>
     <comment>Shown in the cloud explorer when no project is selected.</comment>
   </data>
+  <data name="CloudExplorerGceFailedToUpdateFirewallCaption" xml:space="preserve">
+    <value>Error Updating Firewall</value>
+    <comment>Caption for the message shown when failed to update firewall.</comment>
+  </data>
   <data name="GcsFileBrowserContentTypeHeader" xml:space="preserve">
     <value>Content Type</value>
     <comment>The header for the Content Type column in the data grid.</comment>
@@ -1399,9 +1367,9 @@
     <value>_Files being uploaded:</value>
     <comment>Message for the progress dialog for the upload operations.</comment>
   </data>
-  <data name="ShowPasswordWindowPasswordCopiedMessage" xml:space="preserve">
-    <value>Password copied to clipboard.</value>
-    <comment>Message shown to the user when the password is copied to the clipboard.</comment>
+  <data name="CloudExplorerSqlInstanceIp6AddressDisplayName" xml:space="preserve">
+    <value>IPv6 Address (First Gen)</value>
+    <comment>The display name for the IP v6 address.</comment>
   </data>
   <data name="UiBrowseMenuHeader" xml:space="preserve">
     <value>Browse</value>
