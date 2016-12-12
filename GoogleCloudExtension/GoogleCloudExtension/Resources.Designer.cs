@@ -196,6 +196,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Usage Report.
+        /// </summary>
+        public static string AnalyticsOptionsCategory {
+            get {
+                return ResourceManager.GetString("AnalyticsOptionsCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Whether to report usage statistics to Google.
+        /// </summary>
+        public static string AnalyticsOptionsOptInDescription {
+            get {
+                return ResourceManager.GetString("AnalyticsOptionsOptInDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report Usage Statistics Enabled.
+        /// </summary>
+        public static string AnalyticsOptionsOptInDisplayName {
+            get {
+                return ResourceManager.GetString("AnalyticsOptionsOptInDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to help Google by reporting usage statics?.
         /// </summary>
         public static string AnalyticsPromptMessage {

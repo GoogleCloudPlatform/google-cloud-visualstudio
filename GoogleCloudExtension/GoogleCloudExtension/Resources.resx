@@ -1303,4 +1303,16 @@
     <value>IPv6 Address (First Gen)</value>
     <comment>The display name for the IP v6 address.</comment>
   </data>
+  <data name="AnalyticsOptionsCategory" xml:space="preserve">
+    <value>Usage Report</value>
+    <comment>The category for the analytics options in the options page.</comment>
+  </data>
+  <data name="AnalyticsOptionsOptInDescription" xml:space="preserve">
+    <value>Whether to report usage statistics to Google</value>
+    <comment>Description for the opt-in option in the analytics options.</comment>
+  </data>
+  <data name="AnalyticsOptionsOptInDisplayName" xml:space="preserve">
+    <value>Report Usage Statistics Enabled</value>
+    <comment>The display name of the opt-in for the analytics options page.</comment>
+  </data>
 </root>
