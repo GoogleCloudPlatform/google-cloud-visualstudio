@@ -36,17 +36,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private const string InfoIconPath = "StackdriverLogsViewer/Resources/ic_log_level_info.png";
         private const string WarningIconPath = "StackdriverLogsViewer/Resources/ic_log_level_warning.png";
 
-        private static readonly Lazy<ImageSource> s_any_icon =
+        private static readonly Lazy<ImageSource> s_anyIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(AnyIconPath));
-        private static readonly Lazy<ImageSource> s_debug_icon =
+        private static readonly Lazy<ImageSource> s_debugIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(DebugIconPath));
-        private static readonly Lazy<ImageSource> s_error_icon =
+        private static readonly Lazy<ImageSource> s_errorIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(ErrorIconPath));
-        private static readonly Lazy<ImageSource> s_fatal_icon =
+        private static readonly Lazy<ImageSource> s_fatalIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(FatalIconPath));
-        private static readonly Lazy<ImageSource> s_info_icon =
+        private static readonly Lazy<ImageSource> s_infoIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(InfoIconPath));
-        private static readonly Lazy<ImageSource> s_warning_icon =
+        private static readonly Lazy<ImageSource> s_warningIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
 
         private readonly DateTime _timestamp;
@@ -74,7 +74,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the log severity tooltip. Data binding to the severity icon tool tip.
         /// </summary>
-        public string SeverityTip => string.IsNullOrWhiteSpace(Entry?.Severity) ? 
+        public string SeverityTip => String.IsNullOrWhiteSpace(Entry?.Severity) ? 
             Resources.LogViewerAnyOtherSeverityLevelTip : Entry.Severity;
 
         /// <summary>
@@ -85,10 +85,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             get
             {
                 LogSeverity logLevel;
-                if (string.IsNullOrWhiteSpace(Entry?.Severity) ||
+                if (String.IsNullOrWhiteSpace(Entry?.Severity) ||
                     !Enum.TryParse<LogSeverity>(Entry?.Severity, out logLevel))
                 {
-                    return s_any_icon.Value;
+                    return s_anyIcon.Value;
                 }
 
                 switch (logLevel)
@@ -96,17 +96,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     // EMERGENCY, CRITICAL both map to fatal icon.
                     case LogSeverity.CRITICAL:
                     case LogSeverity.EMERGENCY:
-                        return s_fatal_icon.Value;
+                        return s_fatalIcon.Value;
                     case LogSeverity.DEBUG:
-                        return s_debug_icon.Value;
+                        return s_debugIcon.Value;
                     case LogSeverity.ERROR:
-                        return s_error_icon.Value;
+                        return s_errorIcon.Value;
                     case LogSeverity.INFO:
-                        return s_info_icon.Value;
+                        return s_infoIcon.Value;
                     case LogSeverity.WARNING:
-                        return s_warning_icon.Value;
+                        return s_warningIcon.Value;
                     default:
-                        return s_any_icon.Value;
+                        return s_anyIcon.Value;
                 }
             }
         }
@@ -124,10 +124,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private string ComposeDictionaryPayloadMessage(IDictionary<string, object> dictPayload)
         {
-            Debug.Assert(dictPayload != null);
             if (dictPayload == null)
             {
-                return String.Empty;
+                return "";
             }
 
             StringBuilder text = new StringBuilder();
@@ -164,11 +163,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
             else if (Entry?.Labels != null)
             {
-                message = string.Join(";", Entry?.Labels.Values);
+                message = String.Join(";", Entry?.Labels.Values);
             }
             else if (Entry?.Resource?.Labels != null)
             {
-                message = string.Join(";", Entry?.Resource.Labels);
+                message = String.Join(";", Entry?.Resource.Labels);
             }
 
             return message?.Replace(Environment.NewLine, "\\n").Replace("\t", "\\t");

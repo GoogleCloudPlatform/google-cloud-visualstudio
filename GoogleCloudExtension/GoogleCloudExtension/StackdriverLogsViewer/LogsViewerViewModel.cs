@@ -34,7 +34,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public class LogsViewerViewModel : ViewModelBase
     {
-        #region fields
         private const int DefaultPageSize = 100;
 
         private Lazy<LoggingDataSource> _dataSource;
@@ -45,9 +44,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private DataGridRowDetailsVisibilityMode _expandAll = DataGridRowDetailsVisibilityMode.Collapsed;
         private ObservableCollection<LogItem> _logs = new ObservableCollection<LogItem>();
-        #endregion
 
-        #region properties
         /// <summary>
         /// Gets the refresh button command.
         /// </summary>
@@ -90,16 +87,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public string FirstRowDate
         {
             get { return _firstRowDate; }
-            set { SetValueAndRaise(ref _firstRowDate, value); }
+            private set { SetValueAndRaise(ref _firstRowDate, value); }
         }
 
         /// <summary>
         /// Gets the LogItem collection
         /// </summary>
         public ListCollectionView LogItemCollection { get; }
-        #endregion
 
-        #region public methods
         /// <summary>
         /// Initializes an instance of <seealso cref="LogsViewerViewModel"/> class.
         /// </summary>
@@ -115,10 +110,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// When a new view model is created and attached to Window, invalidate controls and re-load first page
         /// of log entries.
         /// </summary>
-        public void InvalidateAllControls()
+        public void InvalidateAllProperties()
         {
-            if (string.IsNullOrWhiteSpace(CredentialsStore.Default?.CurrentAccount?.AccountName) ||
-                string.IsNullOrWhiteSpace(CredentialsStore.Default?.CurrentProjectId))
+            if (String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentAccount?.AccountName) ||
+                String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId))
             {
                 return;
             }
@@ -147,19 +142,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public void LoadNextPage()
         {
-            if (string.IsNullOrWhiteSpace(_nextPageToken) || Project == null)
+            if (String.IsNullOrWhiteSpace(_nextPageToken) || String.IsNullOrWhiteSpace(Project))
             {
                 return;
             }
 
-            LogLoaddingWrapperAsync(async () =>
-            {
-                await LoadLogsAsync();
-            });
+            LogLoaddingWrapperAsync(LoadLogsAsync);
         }
-        #endregion
 
-        #region private methods
         /// <summary>
         /// Disable all filters, refresh button etc, when a request is pending.
         /// </summary>
@@ -220,7 +210,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     count += results.LogEntries.Count;
                 }
 
-                if (string.IsNullOrWhiteSpace(_nextPageToken))
+                if (String.IsNullOrWhiteSpace(_nextPageToken))
                 {
                     _nextPageToken = null;
                     break;
@@ -262,6 +252,5 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return null;
             }
         }
-        #endregion
     }
 }
