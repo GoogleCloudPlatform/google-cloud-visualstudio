@@ -12,22 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+using GoogleCloudExtension.Utils;
+using System;
+using System.Windows.Media;
+
+namespace GoogleCloudExtension.Theming
 {
     /// <summary>
-    /// Define log severity that matches to corresponding icons.
-    /// Note, the LogEntry contains the severity as string not a defined enum.
-    /// Refer to Stackdriver Logging API, LogEntry LogSeverity definition.
-    /// Upper case is used here to be consistent to Stackdriver Logging API
+    /// Define all shared images here.
     /// </summary>
-    internal enum LogSeverity
+    public class CommonImageResources
     {
-        DEFAULT,
-        DEBUG,
-        INFO,
-        WARNING,
-        ERROR,
-        CRITICAL,
-        EMERGENCY,
+        private const string CloudLogoIconPath = "Theming/Resources/logo_cloud.png";
+
+        private static readonly Lazy<ImageSource> s_logoIcon = new Lazy<ImageSource>(
+            () => ResourceUtils.LoadImage(CloudLogoIconPath));
+
+        /// <summary>
+        /// The 16x16 size cloud logo ImageSource.
+        /// </summary>
+        public static ImageSource CloudLogo16By16 => s_logoIcon.Value;
     }
 }

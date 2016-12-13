@@ -1331,4 +1331,32 @@
     <value>Click To Select Different Timezone.</value>
     <comment>Tool tip to the select time zone combo box.</comment>
   </data>
+  <data name="LogViewerAnyOtherSeverityLevelTip" xml:space="preserve">
+    <value>Any</value>
+    <comment>The tool tip for 'any other log level/severity level' .</comment>
+  </data>
+  <data name="LogViewerDictionaryPayloadFormatString" xml:space="preserve">
+    <value>{0}: {1}</value>
+    <comment>The format of log payload of IDictionary name value pair.</comment>
+  </data>
+  <data name="LogViewerLogItemDateFormat" xml:space="preserve">
+    <value>MM-dd-yyyy</value>
+    <comment>Log item date format.</comment>
+  </data>
+  <data name="LogViewerLogItemTimeFormat" xml:space="preserve">
+    <value>HH:mm:ss.fff</value>
+    <comment>Log item time format.</comment>
+  </data>
+  <data name="LogViewerRefreshButtonCaption" xml:space="preserve">
+    <value>Refresh</value>
+    <comment>Refresh button caption.</comment>
+  </data>
+  <data name="LogViewerTitleBarAccountLabel" xml:space="preserve">
+    <value>Account</value>
+    <comment>Label for account name label.</comment>
+  </data>
+  <data name="LogViewerTitleBarProjectIdLabel" xml:space="preserve">
+    <value>Project</value>
+    <comment>Label for project id label.</comment>
+  </data>
 </root>

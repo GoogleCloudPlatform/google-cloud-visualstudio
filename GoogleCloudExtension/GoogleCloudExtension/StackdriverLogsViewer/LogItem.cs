@@ -17,6 +17,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 using System.Windows.Media;
 
@@ -25,8 +26,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// <summary>
     /// An adaptor to LogEntry so as to provide properties for data binding.
     /// </summary>
-    internal class LogItem
+    internal class LogItem : ViewModelBase
     {
+        private const string JasonPayloadMessageFieldName = "message";
         private const string AnyIconPath = "StackdriverLogsViewer/Resources/ic_log_level_any.png";
         private const string DebugIconPath = "StackdriverLogsViewer/Resources/ic_log_level_debug.png";
         private const string ErrorIconPath = "StackdriverLogsViewer/Resources/ic_log_level_error.png";
@@ -47,33 +49,33 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private static readonly Lazy<ImageSource> s_warning_icon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
 
-        private DateTime _timestamp;
-        private string _message;
+        private readonly DateTime _timestamp;
 
         /// <summary>
         /// Gets a log entry object.
         /// </summary>
-        public LogEntry Entry { get; private set; }
+        public LogEntry Entry { get; }
 
         /// <summary>
         /// Gets the log item timestamp Date string in local time. Data binding to a view property.
         /// </summary>
-        public string Date => _timestamp.ToString("MM-dd-yyyy");
+        public string Date => _timestamp.ToString(Resources.LogViewerLogItemDateFormat);
 
         /// <summary>
         /// Gets a log item timestamp in local time. Data binding to a view property.
         /// </summary>
-        public DateTime Time => _timestamp;
+        public string Time => _timestamp.ToString(Resources.LogViewerLogItemTimeFormat);
 
         /// <summary>
         /// Gets the log message to be displayed at top level.
         /// </summary>
-        public string Message => _message;
+        public string Message { get; }
 
         /// <summary>
         /// Gets the log severity tooltip. Data binding to the severity icon tool tip.
         /// </summary>
-        public string SeverityTip => string.IsNullOrWhiteSpace(Entry?.Severity) ? "Any" : Entry.Severity;
+        public string SeverityTip => string.IsNullOrWhiteSpace(Entry?.Severity) ? 
+            Resources.LogViewerAnyOtherSeverityLevelTip : Entry.Severity;
 
         /// <summary>
         /// Gets the log item severity level. The data binding source to severity column in the data grid.
@@ -103,9 +105,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                         return s_info_icon.Value;
                     case LogSeverity.WARNING:
                         return s_warning_icon.Value;
+                    default:
+                        return s_any_icon.Value;
                 }
-
-                return s_any_icon.Value;
             }
         }
 
@@ -116,8 +118,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public LogItem(LogEntry logEntry)
         {
             Entry = logEntry;
-            ConvertTimestamp(logEntry.Timestamp);
-            _message = ComposeMessage();
+            Message = ComposeMessage();
+            _timestamp = ConvertTimestamp(logEntry.Timestamp);
         }
 
         private string ComposeDictionaryPayloadMessage(IDictionary<string, object> dictPayload)
@@ -125,13 +127,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             Debug.Assert(dictPayload != null);
             if (dictPayload == null)
             {
-                return string.Empty;
+                return String.Empty;
             }
 
             StringBuilder text = new StringBuilder();
             foreach (var kv in dictPayload)
             {
-                text.Append($"{kv.Key}: {kv.Value}  ");
+                text.AppendFormat(Resources.LogViewerDictionaryPayloadFormatString, kv.Key, kv.Value);
             }
 
             return text.ToString();
@@ -139,13 +141,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private string ComposeMessage()
         {
-            string message = string.Empty;
+            string message = null;
             if (Entry?.JsonPayload != null)
             {
                 // If the JsonPload has message filed, display this field.
-                if (Entry.JsonPayload.ContainsKey("message"))
+                if (Entry.JsonPayload.ContainsKey(JasonPayloadMessageFieldName))
                 {
-                    message = Entry.JsonPayload["message"].ToString();
+                    message = Entry.JsonPayload[JasonPayloadMessageFieldName].ToString();
                 }
                 else
                 {
@@ -169,30 +171,34 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 message = string.Join(";", Entry?.Resource.Labels);
             }
 
-            return message.Replace(Environment.NewLine, "\\n").Replace("\t", "\\t");
+            return message?.Replace(Environment.NewLine, "\\n").Replace("\t", "\\t");
         }
 
-        private void ConvertTimestamp(object timestamp)
+        private DateTime ConvertTimestamp(object timestamp)
         {
+            DateTime datetime;
             if (timestamp == null)
             {
                 Debug.Assert(false, "Entry Timestamp is null");
-                _timestamp = DateTime.MaxValue;
+                datetime = DateTime.MaxValue;
             }
             else if (timestamp is DateTime)
             {
-                _timestamp = (DateTime)timestamp;
+                datetime = (DateTime)timestamp;
             }
             else
             {
-                if (!DateTime.TryParse(timestamp.ToString(), out _timestamp))
+                // From Stackdriver Logging API reference,
+                // A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. 
+                // Example: "2014-10-02T15:01:23.045123456Z".
+                if (!DateTime.TryParse(timestamp.ToString(), 
+                    CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out datetime))
                 {
-                    Debug.Assert(false, "Failed to parse Entry Timestamp");
-                    _timestamp = DateTime.MaxValue;
+                    datetime = DateTime.MaxValue;
                 }
             }
 
-            _timestamp = _timestamp.ToLocalTime();
+            return datetime.ToLocalTime();
         }
     }
 }

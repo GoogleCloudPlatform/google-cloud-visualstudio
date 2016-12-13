@@ -4,8 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
-             xmlns:viewer="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:viewer="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
+             xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"
              xmlns:jlinq="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json"
              xmlns:collection="clr-namespace:System.Collections.Generic;assembly=mscorlib"
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"            
@@ -13,17 +14,15 @@
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
              d:DesignHeight="1024" d:DesignWidth="860"             
-             Name="LogsViewerToolWindow" 
-             >
+             Name="LogsViewerToolWindow" >
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <!-- DataGrid Styles. -->
-
-            <!-- DataGrid cell style.  Add padding to text. Add padding at row style does not work. -->
+            <!-- DataGrid cell style. 
+                 Note: Add padding to text, padding at row style does not work. -->
             <Style x:Key="cellStyle" TargetType="DataGridCell">
                 <Setter Property="Template">
                     <Setter.Value>
@@ -38,7 +37,6 @@
                 </Setter>
             </Style>
 
-            <!-- DataGrid row style. -->
             <Style x:Key="rowStyle" TargetType="DataGridRow">
                 <Setter Property="TextBlock.TextWrapping" Value="NoWrap" />
                 <Setter Property="Margin" Value="0, 0, 0, 1"/>
@@ -46,20 +44,17 @@
                 <Setter Property="BorderBrush" Value="LightGray" />
                 <Setter Property="Background" Value="#FFFDFDFD" />
                 <Style.Triggers>
-
                     <!-- The Alternation Background must be set here when IsMouseOver trigger is defined. -->
                     <Trigger Property="AlternationIndex" Value="1">
                         <Setter Property="Background" Value="#F5F5F5"/>
                     </Trigger>
-
-                    <!-- Highlight the log line on mouse hovers the item. -->
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background" Value="#FFFFD6" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
 
-            <!-- Style to be applied to the page title bar. -->
+            <!-- Page title bar style. -->
             <Style x:Key="PageTitleBarStyle" TargetType="{x:Type StackPanel}">
                 <Setter Property="Orientation" Value="Horizontal" />
                 <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.PanelTitleBarKey}}" />
@@ -68,7 +63,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Background="White" >
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
@@ -76,78 +71,120 @@
             <RowDefinition Height="Auto"  />
         </Grid.RowDefinitions>
 
-        <!-- Display Google Logo, GCP project id, GCP account name. -->
+        <!-- Title bar. -->
         <StackPanel Margin="0, 0, 0, 6" Style="{StaticResource PageTitleBarStyle}">
-            <Image Source="{Binding Path=CloudLogo}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="12, 0, 6, 0"/>
-            <TextBlock Text="Project:" VerticalAlignment="Center" Padding="0, 5, 0, 5"/>
-            <TextBlock Text="{Binding Path=Project}" VerticalAlignment="Center" Margin="6, 0, 0, 0"/>
-            <TextBlock Text="Account:" VerticalAlignment="Center" Margin="12, 0, 0, 0"/>
-            <TextBlock Text="{Binding Path=Account}" VerticalAlignment="Center" Margin="6, 0, 0, 0"/>
+            <Image Margin="12, 0, 6, 0"
+                   HorizontalAlignment="Left" 
+                   VerticalAlignment="Center" 
+                   Source="{mp:ImageResource Theming/Resources/logo_cloud.png}" />
+            <TextBlock VerticalAlignment="Center" 
+                       Style="{StaticResource CommonTextStyle}"     
+                       Padding="0, 5, 0, 5"
+                       Text="{x:Static ext:Resources.LogViewerTitleBarAccountLabel}" />
+            <TextBlock Margin="6, 0, 0, 0"
+                       VerticalAlignment="Center" 
+                       Style="{StaticResource CommonTextStyle}" 
+                       Text="{Binding Project}" />
+            <TextBlock Margin="12, 0, 0, 0"
+                       VerticalAlignment="Center" 
+                       Style="{StaticResource CommonTextStyle}"
+                       Text="{x:Static ext:Resources.LogViewerTitleBarProjectIdLabel}" />
+            <TextBlock Margin="6, 0, 0, 0" 
+                       VerticalAlignment="Center" 
+                       Style="{StaticResource CommonTextStyle}" 
+                       Text="{Binding Account}" />
         </StackPanel>
 
         <!-- Filters -->
-        <StackPanel Grid.Row="1" Margin="12, 6, 12, 6"  VerticalAlignment="Center" HorizontalAlignment="Stretch" 
+        <StackPanel Grid.Row="1" 
+                    Margin="12, 6, 12, 6"  
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Stretch" 
                     Orientation="Vertical">
-            <!-- Advanced Filter. -->
-            <Grid />
 
             <!-- Basic Filters. -->
-            <StackPanel Margin="0" Visibility="{Binding Path=BasicFilterVisibility}">
-                <!-- TODO: Add ComboBoxes. -->
-                <StackPanel  Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" 
-                             Margin="0, 0, 0, 6">
-                    <!-- TODO: replace with a image button. -->
-                    <Button Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right"
-                            ToolTip="{x:Static ext:Resources.LogViewerRefreshButtonToolTip}" Margin="6, 0, 16, 0"
-                            Style="{StaticResource CommonButtonStandardStyle}" Command="{Binding Path=RefreshCommand}"
-                            Content="Refresh"
-                            />
+            <StackPanel Visibility="{Binding BasicFilterVisibility}">
+                <StackPanel Margin="0, 0, 0, 6"
+                            Orientation="Horizontal" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Center" >
+                    <Button Grid.Column="1"
+                            Margin="6, 0, 16, 0"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Style="{StaticResource CommonButtonStandardStyle}" 
+                            Command="{Binding RefreshCommand}"
+                            Content="{x:Static ext:Resources.LogViewerRefreshButtonCaption}" >
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static ext:Resources.LogViewerRefreshButtonToolTip}" 
+                                     Style="{StaticResource CommonTooltipStyle}"/>
+                        </Button.ToolTip>                        
+                    </Button>
                 </StackPanel>
-
-                <!-- TODO: Add basic text search filter box. -->
             </StackPanel>
         </StackPanel>
 
         <Grid Grid.Row="2" Margin="12, 6, 12, 12">
 
-            <!--Data grid top information bar, right under the grid header, set top margin to 19 (18 + border 1)-->
-            <Border Margin="0, 19, 0, 0"  Panel.ZIndex="20" HorizontalAlignment="Stretch"  VerticalAlignment="Top" 
+            <!--Data grid top information bar.
+                Set margin to (data grid header height 18 + border 1) -->
+            <Border Margin="0, 19, 0, 0"  
+                    Panel.ZIndex="20" 
+                    HorizontalAlignment="Stretch"  
+                    VerticalAlignment="Top" 
                     Background="LightGray">
-                
-                <!-- Dock Date and timezone to left, Expand All button to right. -->
                 <DockPanel  Margin="9, 1, 0, 1">
-                    <!-- Current selected log entry date. -->
-                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                        <TextBlock Margin="12, 3, 3, 0" FontWeight="Bold"
-                               Text="{Binding Path=FirstRowDate}" VerticalAlignment="Top" />
-                        
-                        <!-- Displays the timezone. Placeholder, items will be added later -->
-                        <ComboBox Margin="3, 0, 18, 0" VerticalAlignment="Center" BorderThickness="0" 
-                                  Background="Transparent" x:Name="comboTimeZone" Loaded="ComboBox_Loaded"                                 
-                                  ToolTip="{x:Static ext:Resources.LogViewerTimeZoneSelectionToolTip}"/>
+                    <StackPanel DockPanel.Dock="Left" 
+                                Orientation="Horizontal">
+                        <TextBlock Margin="12, 3, 3, 0" 
+                                   VerticalAlignment="Center"
+                                   FontWeight="Bold"
+                                   Text="{Binding FirstRowDate}" />
+                        <ComboBox Margin="3, 0, 18, 0" 
+                                  VerticalAlignment="Center" 
+                                  BorderThickness="0" 
+                                  Background="Transparent" 
+                                  x:Name="comboTimeZone" 
+                                  Loaded="ComboBox_Loaded" >
+                            <ComboBox.ToolTip>
+                                <ToolTip Content="{x:Static ext:Resources.LogViewerTimeZoneSelectionToolTip}"
+                                         Style="{StaticResource CommonTooltipStyle}" />
+                            </ComboBox.ToolTip> 
+                        </ComboBox>
                     </StackPanel>
-                    
-                    <!-- Toggle expand details of all log entries. -->
-                    <Expander DockPanel.Dock="Right" Margin="0, 0, 8, 0" HorizontalAlignment="Right" 
-                              VerticalAlignment="Top" ToolTip="{Binding Path=ToggleExapandAllToolTip}"
-                              IsExpanded="{Binding Path=ToggleExapandAllExpanded,Mode=TwoWay}"/>
+
+                    <Expander DockPanel.Dock="Right" 
+                              x:Name="allExpander"
+                              Margin="0, 0, 8, 0" 
+                              HorizontalAlignment="Right" 
+                              VerticalAlignment="Top" 
+                              IsExpanded="{Binding ToggleExapandAllExpanded}">
+                        <Expander.ToolTip>
+                            <ToolTip Content="{Binding ToggleExapandAllToolTip}" 
+                                     Style="{StaticResource CommonTooltipStyle}"/>
+                        </Expander.ToolTip>
+                    </Expander>
                 </DockPanel>
             </Border>
 
             <!-- DataGrid, displays all log entries. -->
-            <DataGrid Panel.ZIndex="10" x:Name="dataGridLogEntries" Padding="0,0, 0, 0" 
-                      HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                      Background="White" BorderThickness="1" BorderBrush="LightGray"
+            <DataGrid Panel.ZIndex="10" 
+                      x:Name="dataGridLogEntries"
+                      HorizontalAlignment="Stretch" 
+                      VerticalAlignment="Stretch" 
+                      Background="White" 
+                      BorderThickness="1" 
+                      BorderBrush="LightGray"
                       GridLinesVisibility="None" 
                       CanUserResizeRows="False"                  
-                      RowDetailsVisibilityMode="{Binding Path=DataGridRowDetailsVisibility,Mode=OneWay}"
+                      RowDetailsVisibilityMode="{Binding DataGridRowDetailsVisibility}"
                       RowStyle="{StaticResource rowStyle}" 
                       CellStyle="{StaticResource cellStyle}"
                       AutoGenerateColumns="False" 
                       IsReadOnly="True" 
                       HeadersVisibility="Column" 
                       ColumnHeaderHeight="18" 
-                      ItemsSource="{Binding Path=LogItemCollection}"   
+                      ItemsSource="{Binding LogItemCollection}"   
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                       AlternationCount="2"
                       ScrollViewer.ScrollChanged="dataGrid_ScrollChanged"
@@ -156,8 +193,19 @@
                 <!-- Override the text highlight color. -->
                 <DataGrid.Resources>
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
-                   Color="Black"/>
+                                     Color="Black"/>
                 </DataGrid.Resources>
+
+                <DataGrid.Style>
+                    <Style TargetType="DataGrid">
+                        <Setter Property="RowDetailsVisibilityMode" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsExpanded, ElementName=allExpander}" Value="True">
+                                <Setter Property="RowDetailsVisibilityMode" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.Style>
                 
                 <!-- Group log items by log dates. -->
                 <DataGrid.GroupStyle>
@@ -169,12 +217,13 @@
                                         <ControlTemplate TargetType="{x:Type GroupItem}">
                                             <StackPanel  Background="LightGray" >
                                                 <StackPanel.Resources>
-                                                    <Style TargetType="TextBlock" >
+                                                    <Style TargetType="TextBlock" 
+                                                           BasedOn="{StaticResource CommonTextStyle}">
                                                         <Setter Property="FontWeight" Value="Bold" />
                                                     </Style>
                                                 </StackPanel.Resources>
                                                 <StackPanel Orientation="Horizontal" Margin="9, 1, 0, 1" >
-                                                    <TextBlock Text="{Binding Path=Name}"  Padding="0, 5, 4, 5" />
+                                                    <TextBlock Text="{Binding Name}"  Padding="0, 5, 4, 5" />
                                                 </StackPanel>
                                                 <ItemsPresenter />
                                             </StackPanel>
@@ -187,21 +236,23 @@
                 </DataGrid.GroupStyle>
 
                 <DataGrid.Columns>
-
-                    <!-- Log Severity (Log Level) column. Display an icon. -->
                     <DataGridTemplateColumn IsReadOnly="True">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <Image Source="{Binding Path=SeverityLevel}" Width="12" Margin="9, 1, 8, 1" 
-                                       ToolTip="{Binding Path=SeverityTip}"/>
+                                <Image Source="{Binding SeverityLevel}" 
+                                       Width="12" 
+                                       Margin="9, 1, 8, 1" >
+                                    <Image.ToolTip>
+                                        <ToolTip Content="{Binding SeverityTip}" 
+                                                 Style="{StaticResource CommonTooltipStyle}"/>
+                                    </Image.ToolTip>
+                                </Image>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <!-- Log time column. -->
-                    <DataGridTextColumn Binding="{Binding Time,StringFormat='HH:mm:ss.fff'}" Width="90"/>
+                    <DataGridTextColumn Binding="{Binding Time}" Width="90"/>
 
-                    <!-- The custom message column. -->
                     <DataGridTextColumn Binding="{Binding Message}" />
                 </DataGrid.Columns>
 
@@ -226,7 +277,7 @@
             </DataGrid>
         </Grid>
         
-        <!-- Displays log list requesting hint, or request error. -->
+        <!-- TODO: Displays log list requesting hint, or request error. -->
         <Grid Grid.Row="3" Margin="12, 0, 12, 0" Background="White" />
     </Grid>
 </UserControl>

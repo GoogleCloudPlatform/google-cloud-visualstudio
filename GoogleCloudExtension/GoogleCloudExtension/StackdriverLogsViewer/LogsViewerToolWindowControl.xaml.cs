@@ -26,22 +26,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public partial class LogsViewerToolWindowControl : UserControl
     {
-        /// <summary>
-        /// Sets or resets the control with a new ViewModel object.
-        /// </summary>
-        public LogsViewerViewModel ViewModel
-        {
-            private get
-            {
-                return DataContext as LogsViewerViewModel;
-            }
-
-            set
-            {
-                Debug.Assert(value is ViewModelBase);
-                DataContext = value;
-            }
-        }
+        private LogsViewerViewModel ViewModel => DataContext as LogsViewerViewModel;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="LogsViewerToolWindowControl"/> class.
@@ -51,17 +36,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             this.InitializeComponent();
         }
 
-
-        private void DebugWriteLine(string traceLine)
-        {
-            if (false)
-            {
-                Debug.WriteLine(traceLine);
-            }
-        }
-
         /// <summary>
-        /// On Windows8, the combobox backgroud property does not work.
+        /// On Windows8, Windows10, the combobox backgroud property does not work.
         /// This is a workaround to fix the problem.
         /// </summary>
         private void ComboBox_Loaded(Object sender, RoutedEventArgs e)
@@ -81,10 +57,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            DebugWriteLine($"dg_selectionchanged {dataGridLogEntries.SelectedIndex}");
+            Debug.WriteLine($"dg_selectionchanged {dataGridLogEntries.SelectedIndex}");
             dataGridLogEntries.UnselectAll();
         }
-
  
         /// <summary>
         /// Response to data grid scroll change event.
@@ -97,14 +72,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             ScrollViewer sv = e.OriginalSource as ScrollViewer;
             if (sv == null)
             {
-                Debug.Assert(false);
                 return;
             }
 
-            DebugWriteLine($"e.VerticalOffset={e.VerticalOffset}, ScrollableHeight={sv.ScrollableHeight}, e.VerticalChange={e.VerticalChange}, e.ViewportHeight={e.ViewportHeight}");
+            Debug.WriteLine($"e.VerticalOffset={e.VerticalOffset}, ScrollableHeight={sv.ScrollableHeight}, e.VerticalChange={e.VerticalChange}, e.ViewportHeight={e.ViewportHeight}");
             if (e.VerticalOffset == sv.ScrollableHeight)
             {
-                DebugWriteLine("Now it is at bottom");
+                Debug.WriteLine("Now it is at bottom");
                 ViewModel?.LoadNextPage();
             }
         }
