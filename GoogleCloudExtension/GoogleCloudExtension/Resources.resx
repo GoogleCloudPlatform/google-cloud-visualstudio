@@ -1379,4 +1379,68 @@
     <value>Error</value>
     <comment>Generic error caption for error dialogs.</comment>
   </data>
+  <data name="AnalyticsOptionsCategory" xml:space="preserve">
+    <value>Usage Report</value>
+    <comment>The category for the analytics options in the options page.</comment>
+  </data>
+  <data name="AnalyticsOptionsOptInDescription" xml:space="preserve">
+    <value>Whether to report usage statistics to Google</value>
+    <comment>Description for the opt-in option in the analytics options.</comment>
+  </data>
+  <data name="AnalyticsOptionsOptInDisplayName" xml:space="preserve">
+    <value>Report Usage Statistics Enabled</value>
+    <comment>The display name of the opt-in for the analytics options page.</comment>
+  </data>
+  <data name="GcsFileBrowserDirectoryCategory" xml:space="preserve">
+    <value>Directory</value>
+    <comment>The category for the directory properties.</comment>
+  </data>
+  <data name="GcsFileBrowserDirectoryNameDescription" xml:space="preserve">
+    <value>The name of the directory.</value>
+    <comment>The description for the directory name property.</comment>
+  </data>
+  <data name="GcsFileBrowserFileCategory" xml:space="preserve">
+    <value>File</value>
+    <comment>The category for the file properties.</comment>
+  </data>
+  <data name="GcsFileBrowserFileContentTypeDescription" xml:space="preserve">
+    <value>The type of the file.</value>
+    <comment>The description of the content type of the file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileContentTypeDisplayName" xml:space="preserve">
+    <value>Content Type</value>
+    <comment>The display name for the content type property of the file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileFullPathDescription" xml:space="preserve">
+    <value>The full path to the blob.</value>
+    <comment>Description for the file full path for the file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileFullPathDisplayName" xml:space="preserve">
+    <value>GCS Path</value>
+    <comment>The display name for the full path for the file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileLastModifiedDescription" xml:space="preserve">
+    <value>The last modified time stamp of the blob.</value>
+    <comment>The description for the last modified property of the file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileLastModifiedDisplayName" xml:space="preserve">
+    <value>Last Modified</value>
+    <comment>The display name for the LastModified property of the file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileNameDescription" xml:space="preserve">
+    <value>Name of the blob.</value>
+    <comment>The description for the file name.</comment>
+  </data>
+  <data name="GcsFileBrowserFileSizeDescription" xml:space="preserve">
+    <value>Size of the blob in bytes.</value>
+    <comment>The description for the size property of a file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileSizeDisplayName" xml:space="preserve">
+    <value>Size</value>
+    <comment>The display name for the size property of a file.</comment>
+  </data>
+  <data name="GcsFileBrowserNameDisplayName" xml:space="preserve">
+    <value>Name</value>
+    <comment>The display name for the name of the item.</comment>
+  </data>
 </root>

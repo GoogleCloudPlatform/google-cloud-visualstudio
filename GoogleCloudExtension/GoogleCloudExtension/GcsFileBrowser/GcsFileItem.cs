@@ -27,29 +27,29 @@ namespace GoogleCloudExtension.GcsFileBrowser
             _row = row;
         }
 
-        [Category("File")]
-        [DisplayName("Name")]
-        [Description("Name of the blob.")]
+        [LocalizedCategory(nameof(Resources.GcsFileBrowserFileCategory))]
+        [LocalizedDisplayName(nameof(Resources.GcsFileBrowserNameDisplayName))]
+        [LocalizedDescription(nameof(Resources.GcsFileBrowserFileNameDescription))]
         public string Name => _row.FileName;
 
-        [Category("File")]
-        [DisplayName("Size")]
-        [Description("Size of the blob in bytes.")]
+        [LocalizedCategory(nameof(Resources.GcsFileBrowserFileCategory))]
+        [LocalizedDisplayName(nameof(Resources.GcsFileBrowserFileSizeDisplayName))]
+        [LocalizedDescription(nameof(Resources.GcsFileBrowserFileSizeDescription))]
         public string Size => _row.Size.ToString();
 
-        [Category("File")]
-        [DisplayName("Last Modified")]
-        [Description("The last modified time stamp of the blob.")]
+        [LocalizedCategory(nameof(Resources.GcsFileBrowserFileCategory))]
+        [LocalizedDisplayName(nameof(Resources.GcsFileBrowserFileLastModifiedDisplayName))]
+        [LocalizedDescription(nameof(Resources.GcsFileBrowserFileLastModifiedDescription))]
         public string LasModified => _row.LastModified;
 
-        [Category("File")]
-        [DisplayName("GCS Path")]
-        [Description("The full path to the blob.")]
+        [LocalizedCategory(nameof(Resources.GcsFileBrowserFileCategory))]
+        [LocalizedDisplayName(nameof(Resources.GcsFileBrowserFileFullPathDisplayName))]
+        [LocalizedDescription(nameof(Resources.GcsFileBrowserFileFullPathDescription))]
         public string GcsPath => $"gs://{_row.Bucket}/{_row.Name}";
 
-        [Category("File")]
-        [DisplayName("Content Type")]
-        [Description("The type of the file.")]
+        [LocalizedCategory(nameof(Resources.GcsFileBrowserFileCategory))]
+        [LocalizedDisplayName(nameof(Resources.GcsFileBrowserFileContentTypeDisplayName))]
+        [LocalizedDescription(nameof(Resources.GcsFileBrowserFileContentTypeDescription))]
         public string ContentType => _row.ContentType;
     }
 }

@@ -196,6 +196,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Usage Report.
+        /// </summary>
+        public static string AnalyticsOptionsCategory {
+            get {
+                return ResourceManager.GetString("AnalyticsOptionsCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Whether to report usage statistics to Google.
+        /// </summary>
+        public static string AnalyticsOptionsOptInDescription {
+            get {
+                return ResourceManager.GetString("AnalyticsOptionsOptInDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report Usage Statistics Enabled.
+        /// </summary>
+        public static string AnalyticsOptionsOptInDisplayName {
+            get {
+                return ResourceManager.GetString("AnalyticsOptionsOptInDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to help Google by reporting usage statics?.
         /// </summary>
         public static string AnalyticsPromptMessage {
@@ -1933,6 +1960,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Directory.
+        /// </summary>
+        public static string GcsFileBrowserDirectoryCategory {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDirectoryCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The name of the directory..
+        /// </summary>
+        public static string GcsFileBrowserDirectoryNameDescription {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDirectoryNameDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download....
         /// </summary>
         public static string GcsFileBrowserDonwloadHeader {
@@ -1978,6 +2023,96 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File.
+        /// </summary>
+        public static string GcsFileBrowserFileCategory {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The type of the file..
+        /// </summary>
+        public static string GcsFileBrowserFileContentTypeDescription {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileContentTypeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Content Type.
+        /// </summary>
+        public static string GcsFileBrowserFileContentTypeDisplayName {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileContentTypeDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The full path to the blob..
+        /// </summary>
+        public static string GcsFileBrowserFileFullPathDescription {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileFullPathDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GCS Path.
+        /// </summary>
+        public static string GcsFileBrowserFileFullPathDisplayName {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileFullPathDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The last modified time stamp of the blob..
+        /// </summary>
+        public static string GcsFileBrowserFileLastModifiedDescription {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileLastModifiedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last Modified.
+        /// </summary>
+        public static string GcsFileBrowserFileLastModifiedDisplayName {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileLastModifiedDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name of the blob..
+        /// </summary>
+        public static string GcsFileBrowserFileNameDescription {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileNameDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size of the blob in bytes..
+        /// </summary>
+        public static string GcsFileBrowserFileSizeDescription {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileSizeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Size.
+        /// </summary>
+        public static string GcsFileBrowserFileSizeDisplayName {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileSizeDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download files.
         /// </summary>
         public static string GcsFileBrowserFolderSelectionMessage {
@@ -1992,6 +2127,15 @@ namespace GoogleCloudExtension {
         public static string GcsFileBrowserLastModifiedHeader {
             get {
                 return ResourceManager.GetString("GcsFileBrowserLastModifiedHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string GcsFileBrowserNameDisplayName {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserNameDisplayName", resourceCulture);
             }
         }
         

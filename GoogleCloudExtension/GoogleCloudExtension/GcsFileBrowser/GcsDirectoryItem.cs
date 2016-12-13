@@ -27,9 +27,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
             _directory = row;
         }
 
-        [Category("Directory")]
-        [DisplayName("Name")]
-        [Description("The name of the directory.")]
+        [LocalizedCategory(nameof(Resources.GcsFileBrowserDirectoryCategory))]
+        [LocalizedDisplayName(nameof(Resources.GcsFileBrowserNameDisplayName))]
+        [LocalizedDescription(nameof(Resources.GcsFileBrowserDirectoryNameDescription))]
         public string Name => _directory.FileName;
     }
 }
