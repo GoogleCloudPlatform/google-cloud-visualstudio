@@ -21,10 +21,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Input;
-using System.Windows.Media;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -42,7 +39,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private string _firstRowDate;
         private bool _toggleExpandAllExpanded = false;
 
-        private DataGridRowDetailsVisibilityMode _expandAll = DataGridRowDetailsVisibilityMode.Collapsed;
         private ObservableCollection<LogItem> _logs = new ObservableCollection<LogItem>();
 
         /// <summary>

@@ -18,16 +18,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// Define log severity that matches to corresponding icons.
     /// Note, the LogEntry contains the severity as string not a defined enum.
     /// Refer to Stackdriver Logging API, LogEntry LogSeverity definition.
-    /// Upper case is used here to be consistent to Stackdriver Logging API
     /// </summary>
     internal enum LogSeverity
     {
-        DEFAULT,
-        DEBUG,
-        INFO,
-        WARNING,
-        ERROR,
-        CRITICAL,
-        EMERGENCY,
+        Default,
+        Debug,
+        Info,
+        Notice,
+        Warning,
+        Error,
+        Critical,
+        Alert,
+        Emergency,
     }
 }

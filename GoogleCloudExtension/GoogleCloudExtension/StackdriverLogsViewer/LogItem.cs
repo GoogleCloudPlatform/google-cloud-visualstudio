@@ -86,25 +86,32 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 LogSeverity logLevel;
                 if (String.IsNullOrWhiteSpace(Entry?.Severity) ||
-                    !Enum.TryParse<LogSeverity>(Entry?.Severity, out logLevel))
+                    !Enum.TryParse<LogSeverity>(Entry?.Severity, ignoreCase: true, result: out logLevel))
                 {
                     return s_anyIcon.Value;
                 }
 
                 switch (logLevel)
                 {
-                    // EMERGENCY, CRITICAL both map to fatal icon.
-                    case LogSeverity.CRITICAL:
-                    case LogSeverity.EMERGENCY:
+                    // EMERGENCY, CRITICAL, Alert all map to fatal icon.
+                    case LogSeverity.Alert:
+                    case LogSeverity.Critical:
+                    case LogSeverity.Emergency:
                         return s_fatalIcon.Value;
-                    case LogSeverity.DEBUG:
+
+                    case LogSeverity.Debug:
                         return s_debugIcon.Value;
-                    case LogSeverity.ERROR:
+
+                    case LogSeverity.Error:
                         return s_errorIcon.Value;
-                    case LogSeverity.INFO:
+
+                    case LogSeverity.Notice:
+                    case LogSeverity.Info:
                         return s_infoIcon.Value;
-                    case LogSeverity.WARNING:
+
+                    case LogSeverity.Warning:
                         return s_warningIcon.Value;
+
                     default:
                         return s_anyIcon.Value;
                 }
