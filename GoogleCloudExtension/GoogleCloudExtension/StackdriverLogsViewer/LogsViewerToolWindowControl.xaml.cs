@@ -50,16 +50,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             var backgroud = comboBox.Background;
             border.Background = backgroud;
         }
-
-        /// <summary>
-        /// By default DataGrid opens detail view on selected row.
-        /// This is a workaround to fix the problem:
-        /// </summary>
-        private void dataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            Debug.WriteLine($"dg_selectionchanged {dataGridLogEntries.SelectedIndex}");
-            dataGridLogEntries.UnselectAll();
-        }
  
         /// <summary>
         /// Response to data grid scroll change event.

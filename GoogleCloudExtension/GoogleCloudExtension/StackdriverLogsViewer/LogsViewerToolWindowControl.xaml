@@ -187,8 +187,7 @@
                       ItemsSource="{Binding LogItemCollection}"   
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                       AlternationCount="2"
-                      ScrollViewer.ScrollChanged="dataGrid_ScrollChanged"
-                      SelectionChanged="dataGrid_SelectionChanged">
+                      ScrollViewer.ScrollChanged="dataGrid_ScrollChanged">
                 
                 <!-- Override the text highlight color. -->
                 <DataGrid.Resources>
