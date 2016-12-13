@@ -1843,6 +1843,105 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Any.
+        /// </summary>
+        public static string LogViewerAnyOtherSeverityLevelTip {
+            get {
+                return ResourceManager.GetString("LogViewerAnyOtherSeverityLevelTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to hide all log items detail..
+        /// </summary>
+        public static string LogViewerCollapseAllTip {
+            get {
+                return ResourceManager.GetString("LogViewerCollapseAllTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: {1}.
+        /// </summary>
+        public static string LogViewerDictionaryPayloadFormatString {
+            get {
+                return ResourceManager.GetString("LogViewerDictionaryPayloadFormatString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to see all log items detail..
+        /// </summary>
+        public static string LogViewerExpandAllTip {
+            get {
+                return ResourceManager.GetString("LogViewerExpandAllTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MM-dd-yyyy.
+        /// </summary>
+        public static string LogViewerLogItemDateFormat {
+            get {
+                return ResourceManager.GetString("LogViewerLogItemDateFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HH:mm:ss.fff.
+        /// </summary>
+        public static string LogViewerLogItemTimeFormat {
+            get {
+                return ResourceManager.GetString("LogViewerLogItemTimeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string LogViewerRefreshButtonCaption {
+            get {
+                return ResourceManager.GetString("LogViewerRefreshButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get newest log (in descending order)..
+        /// </summary>
+        public static string LogViewerRefreshButtonToolTip {
+            get {
+                return ResourceManager.GetString("LogViewerRefreshButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click To Select Different Timezone..
+        /// </summary>
+        public static string LogViewerTimeZoneSelectionToolTip {
+            get {
+                return ResourceManager.GetString("LogViewerTimeZoneSelectionToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account.
+        /// </summary>
+        public static string LogViewerTitleBarAccountLabel {
+            get {
+                return ResourceManager.GetString("LogViewerTitleBarAccountLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project.
+        /// </summary>
+        public static string LogViewerTitleBarProjectIdLabel {
+            get {
+                return ResourceManager.GetString("LogViewerTitleBarProjectIdLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Google Stackdriver Logging.
         /// </summary>
         public static string LogViewerToolWindowCaption {

@@ -3,12 +3,280 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:viewer="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
+             xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"
+             xmlns:jlinq="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json"
+             xmlns:collection="clr-namespace:System.Collections.Generic;assembly=mscorlib"
+             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"            
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
-             d:DesignHeight="300" d:DesignWidth="300"
-             Name="LogsViewerToolWindow" 
-             >
+             d:DesignHeight="1024" d:DesignWidth="860"             
+             Name="LogsViewerToolWindow" >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <!-- DataGrid cell style. 
+                 Note: Add padding to text, padding at row style does not work. -->
+            <Style x:Key="cellStyle" TargetType="DataGridCell">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="DataGridCell">
+                            <Border  BorderThickness="0">
+                                <Border x:Name="border" Padding="0, 2, 0, 2" >
+                                    <ContentPresenter />
+                                </Border>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <Style x:Key="rowStyle" TargetType="DataGridRow">
+                <Setter Property="TextBlock.TextWrapping" Value="NoWrap" />
+                <Setter Property="Margin" Value="0, 0, 0, 1"/>
+                <Setter Property="BorderThickness" Value="0, 0, 0, 0"/>
+                <Setter Property="BorderBrush" Value="LightGray" />
+                <Setter Property="Background" Value="#FFFDFDFD" />
+                <Style.Triggers>
+                    <!-- The Alternation Background must be set here when IsMouseOver trigger is defined. -->
+                    <Trigger Property="AlternationIndex" Value="1">
+                        <Setter Property="Background" Value="#F5F5F5"/>
+                    </Trigger>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="#FFFFD6" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+
+            <!-- Page title bar style. -->
+            <Style x:Key="PageTitleBarStyle" TargetType="{x:Type StackPanel}">
+                <Setter Property="Orientation" Value="Horizontal" />
+                <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.PanelTitleBarKey}}" />
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"  />
+        </Grid.RowDefinitions>
+
+        <!-- Title bar. -->
+        <StackPanel Margin="0, 0, 0, 6" Style="{StaticResource PageTitleBarStyle}">
+            <Image Margin="12, 0, 6, 0"
+                   HorizontalAlignment="Left" 
+                   VerticalAlignment="Center" 
+                   Source="{mp:ImageResource Theming/Resources/logo_cloud.png}" />
+            <TextBlock VerticalAlignment="Center" 
+                       Style="{StaticResource CommonTextStyle}"     
+                       Padding="0, 5, 0, 5"
+                       Text="{x:Static ext:Resources.LogViewerTitleBarAccountLabel}" />
+            <TextBlock Margin="6, 0, 0, 0"
+                       VerticalAlignment="Center" 
+                       Style="{StaticResource CommonTextStyle}" 
+                       Text="{Binding Project}" />
+            <TextBlock Margin="12, 0, 0, 0"
+                       VerticalAlignment="Center" 
+                       Style="{StaticResource CommonTextStyle}"
+                       Text="{x:Static ext:Resources.LogViewerTitleBarProjectIdLabel}" />
+            <TextBlock Margin="6, 0, 0, 0" 
+                       VerticalAlignment="Center" 
+                       Style="{StaticResource CommonTextStyle}" 
+                       Text="{Binding Account}" />
+        </StackPanel>
+
+        <!-- Filters -->
+        <StackPanel Grid.Row="1" 
+                    Margin="12, 6, 12, 6"  
+                    VerticalAlignment="Center" 
+                    HorizontalAlignment="Stretch" 
+                    Orientation="Vertical">
+
+            <!-- Basic Filters. -->
+            <StackPanel Visibility="{Binding BasicFilterVisibility}">
+                <StackPanel Margin="0, 0, 0, 6"
+                            Orientation="Horizontal" 
+                            HorizontalAlignment="Left" 
+                            VerticalAlignment="Center" >
+                    <Button Grid.Column="1"
+                            Margin="6, 0, 16, 0"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Style="{StaticResource CommonButtonStandardStyle}" 
+                            Command="{Binding RefreshCommand}"
+                            Content="{x:Static ext:Resources.LogViewerRefreshButtonCaption}" >
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static ext:Resources.LogViewerRefreshButtonToolTip}" 
+                                     Style="{StaticResource CommonTooltipStyle}"/>
+                        </Button.ToolTip>                        
+                    </Button>
+                </StackPanel>
+            </StackPanel>
+        </StackPanel>
+
+        <Grid Grid.Row="2" Margin="12, 6, 12, 12">
+
+            <!--Data grid top information bar.
+                Set margin to (data grid header height 18 + border 1) -->
+            <Border Margin="0, 19, 0, 0"  
+                    Panel.ZIndex="20" 
+                    HorizontalAlignment="Stretch"  
+                    VerticalAlignment="Top" 
+                    Background="LightGray">
+                <DockPanel  Margin="9, 1, 0, 1">
+                    <StackPanel DockPanel.Dock="Left" 
+                                Orientation="Horizontal">
+                        <TextBlock Margin="12, 3, 3, 0" 
+                                   VerticalAlignment="Center"
+                                   FontWeight="Bold"
+                                   Text="{Binding FirstRowDate}" />
+                        <ComboBox Margin="3, 0, 18, 0" 
+                                  VerticalAlignment="Center" 
+                                  BorderThickness="0" 
+                                  Background="Transparent" 
+                                  x:Name="comboTimeZone" 
+                                  Loaded="ComboBox_Loaded" >
+                            <ComboBox.ToolTip>
+                                <ToolTip Content="{x:Static ext:Resources.LogViewerTimeZoneSelectionToolTip}"
+                                         Style="{StaticResource CommonTooltipStyle}" />
+                            </ComboBox.ToolTip> 
+                        </ComboBox>
+                    </StackPanel>
+
+                    <Expander DockPanel.Dock="Right" 
+                              x:Name="allExpander"
+                              Margin="0, 0, 8, 0" 
+                              HorizontalAlignment="Right" 
+                              VerticalAlignment="Top" 
+                              IsExpanded="{Binding ToggleExapandAllExpanded}">
+                        <Expander.ToolTip>
+                            <ToolTip Content="{Binding ToggleExapandAllToolTip}" 
+                                     Style="{StaticResource CommonTooltipStyle}"/>
+                        </Expander.ToolTip>
+                    </Expander>
+                </DockPanel>
+            </Border>
+
+            <!-- DataGrid, displays all log entries. -->
+            <DataGrid Panel.ZIndex="10" 
+                      x:Name="dataGridLogEntries"
+                      HorizontalAlignment="Stretch" 
+                      VerticalAlignment="Stretch" 
+                      Background="White" 
+                      BorderThickness="1" 
+                      BorderBrush="LightGray"
+                      GridLinesVisibility="None" 
+                      CanUserResizeRows="False"                  
+                      RowDetailsVisibilityMode="{Binding DataGridRowDetailsVisibility}"
+                      RowStyle="{StaticResource rowStyle}" 
+                      CellStyle="{StaticResource cellStyle}"
+                      AutoGenerateColumns="False" 
+                      IsReadOnly="True" 
+                      HeadersVisibility="Column" 
+                      ColumnHeaderHeight="18" 
+                      ItemsSource="{Binding LogItemCollection}"   
+                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                      AlternationCount="2"
+                      ScrollViewer.ScrollChanged="dataGrid_ScrollChanged">
+                
+                <!-- Override the text highlight color. -->
+                <DataGrid.Resources>
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
+                                     Color="Black"/>
+                </DataGrid.Resources>
+
+                <DataGrid.Style>
+                    <Style TargetType="DataGrid">
+                        <Setter Property="RowDetailsVisibilityMode" Value="Collapsed"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsExpanded, ElementName=allExpander}" Value="True">
+                                <Setter Property="RowDetailsVisibilityMode" Value="Visible" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </DataGrid.Style>
+                
+                <!-- Group log items by log dates. -->
+                <DataGrid.GroupStyle>
+                    <GroupStyle>
+                        <GroupStyle.ContainerStyle>
+                            <Style TargetType="{x:Type GroupItem}">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type GroupItem}">
+                                            <StackPanel  Background="LightGray" >
+                                                <StackPanel.Resources>
+                                                    <Style TargetType="TextBlock" 
+                                                           BasedOn="{StaticResource CommonTextStyle}">
+                                                        <Setter Property="FontWeight" Value="Bold" />
+                                                    </Style>
+                                                </StackPanel.Resources>
+                                                <StackPanel Orientation="Horizontal" Margin="9, 1, 0, 1" >
+                                                    <TextBlock Text="{Binding Name}"  Padding="0, 5, 4, 5" />
+                                                </StackPanel>
+                                                <ItemsPresenter />
+                                            </StackPanel>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </GroupStyle.ContainerStyle>
+                    </GroupStyle>
+                </DataGrid.GroupStyle>
+
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn IsReadOnly="True">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <Image Source="{Binding SeverityLevel}" 
+                                       Width="12" 
+                                       Margin="9, 1, 8, 1" >
+                                    <Image.ToolTip>
+                                        <ToolTip Content="{Binding SeverityTip}" 
+                                                 Style="{StaticResource CommonTooltipStyle}"/>
+                                    </Image.ToolTip>
+                                </Image>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridTextColumn Binding="{Binding Time}" Width="90"/>
+
+                    <DataGridTextColumn Binding="{Binding Message}" />
+                </DataGrid.Columns>
+
+                <DataGrid.RowDetailsTemplate>
+                    <DataTemplate>
+                        <!-- The detail view takes the LogItem object as input and display it. -->
+                        <TreeView BorderThickness="0" Margin="30, 0, 0, 2">
+                            <TreeView.Template>
+                                <ControlTemplate>
+                                    <ItemsPresenter />
+                                </ControlTemplate>
+                            </TreeView.Template>
+                            <TreeView.ItemContainerStyle>
+                                <Style TargetType="{x:Type TreeViewItem}" >
+                                    <Setter Property="IsExpanded" Value="True" />
+                                    <Setter Property="Foreground" Value="DarkSlateGray" />
+                                </Style>
+                            </TreeView.ItemContainerStyle>
+                        </TreeView>
+                    </DataTemplate>
+                </DataGrid.RowDetailsTemplate>
+            </DataGrid>
+        </Grid>
+        
+        <!-- TODO: Displays log list requesting hint, or request error. -->
+        <Grid Grid.Row="3" Margin="12, 0, 12, 0" Background="White" />
     </Grid>
 </UserControl>
