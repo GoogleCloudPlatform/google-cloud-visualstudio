@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props')" />
   <PropertyGroup>
@@ -302,7 +302,7 @@
     <Compile Include="Utils\LocalizedCategoryAttribute.cs" />
     <Compile Include="Utils\LocalizedDescriptionAttribute.cs" />
     <Compile Include="Utils\LocalizedDisplayNameAttribute.cs" />
-    <Compile Include="Utils\MySQLUtils.cs" />
+    <Compile Include="Utils\CloudSqlUtils.cs" />
     <Compile Include="Utils\PropertyWindowItemBase.cs" />
     <Compile Include="Utils\ResourceUtils.cs" />
     <Compile Include="Utils\SelectionUtils.cs" />
@@ -350,6 +350,9 @@
     <Resource Include="GcsFileBrowser\Resources\refresh.png" />
     <Resource Include="GcsFileBrowser\Resources\folder.png" />
     <Resource Include="GcsFileBrowser\Resources\file.png" />
+    <Content Include="Licenses.txt">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="ProjectTemplates\Google Cloud Platform\GoogleAspnetMvc.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -548,10 +551,6 @@
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Validation, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Validation.14.1.111\lib\net45\Microsoft.VisualStudio.Validation.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
