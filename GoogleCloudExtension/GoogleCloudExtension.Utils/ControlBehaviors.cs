@@ -43,16 +43,16 @@ namespace GoogleCloudExtension.Utils
 
             if (e.OldValue != null && e.NewValue == null)
             {
-                self.MouseDoubleClick -= OnDataGridDoubleClick;
+                self.MouseDoubleClick -= OnControlDoubleClick;
             }
 
             if (e.NewValue != null && e.OldValue == null)
             {
-                self.MouseDoubleClick += OnDataGridDoubleClick;
+                self.MouseDoubleClick += OnControlDoubleClick;
             }
         }
 
-        private static void OnDataGridDoubleClick(object sender, MouseButtonEventArgs e)
+        private static void OnControlDoubleClick(object sender, MouseButtonEventArgs e)
         {
             var self = (Control)sender;
 

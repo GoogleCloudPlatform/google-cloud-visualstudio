@@ -172,6 +172,8 @@ namespace GoogleCloudExtension.CloudExplorer
             set { SetValueAndRaise(ref _emptyStateCommand, value); }
         }
 
+        public ICommand DoubleClickCommand { get; }
+
         #region ICloudSourceContext implementation.
 
         Project ICloudSourceContext.CurrentProject => _currentProject as Project;
@@ -223,6 +225,7 @@ namespace GoogleCloudExtension.CloudExplorer
             Buttons = Enumerable.Concat(refreshButtonEnumerable, _sources.SelectMany(x => x.Buttons));
 
             ManageAccountsCommand = new ProtectedCommand(OnManageAccountsCommand);
+            DoubleClickCommand = new ProtectedCommand<IAcceptInput>(OnDoubleClickCommand);
 
             CredentialsStore.Default.CurrentAccountChanged += OnCurrentAccountChanged;
             CredentialsStore.Default.CurrentProjectIdChanged += OnCurrentProjectIdChanged;
@@ -262,6 +265,11 @@ namespace GoogleCloudExtension.CloudExplorer
         }
 
         #region Command handlers
+
+        private void OnDoubleClickCommand(IAcceptInput obj)
+        {
+            obj.OnDoubleClick();
+        }
 
         private void OnManageAccountsCommand()
         {

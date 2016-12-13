@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
     /// This class is the view model for a GCS bucket. Defines the possible operations on the
     /// bucket, accessible through the context menu.
     /// </summary>
-    internal class BucketViewModel : TreeHierarchy, ICloudExplorerItemSource
+    internal class BucketViewModel : TreeHierarchy, ICloudExplorerItemSource, IAcceptInput
     {
         private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/bucket_icon.png";
         private static readonly Lazy<ImageSource> s_bucketIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
@@ -88,5 +88,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         }
 
         private BucketItem GetItem() => new BucketItem(_bucket);
+
+        public void OnDoubleClick()
+        {
+            GcsFileBrowserWindow.BrowseBucket(_bucket);
+        }
     }
 }

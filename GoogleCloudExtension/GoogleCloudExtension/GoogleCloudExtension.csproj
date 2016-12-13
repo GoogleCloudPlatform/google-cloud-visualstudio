@@ -127,6 +127,7 @@
     <Compile Include="CloudExplorerSources\CloudSQL\InstanceViewModel.cs" />
     <Compile Include="CloudExplorer\CloudConsoleSource.cs" />
     <Compile Include="CloudExplorer\CloudExplorerSourceException.cs" />
+    <Compile Include="CloudExplorer\IAcceptInput.cs" />
     <Compile Include="CloudExplorer\ICloudSourceContext.cs" />
     <Compile Include="CloudExplorer\SourceRootViewModelBase.cs" />
     <Compile Include="CloudExplorer\ButtonDefinition.cs" />
