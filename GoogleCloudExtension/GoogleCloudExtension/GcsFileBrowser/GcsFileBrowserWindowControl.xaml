@@ -105,7 +105,8 @@
                   utils:DataGridBehaviors.HasCustomSort="True"
                   ContextMenu="{Binding ContextMenu}"
                   ItemsSource="{Binding Source={StaticResource cvs}}"
-                  utils:DataGridBehaviors.DoubleClickCommand="{Binding DoubleClickCommand}"
+                  utils:ControlBehaviors.DoubleClickCommand="{Binding DoubleClickCommand}"
+                  utils:ControlBehaviors.DoubleClickCommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Self}}"
                   SelectionChanged="DataGrid_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{x:Static ext:Resources.GcsFileBrowserNameHeader}"

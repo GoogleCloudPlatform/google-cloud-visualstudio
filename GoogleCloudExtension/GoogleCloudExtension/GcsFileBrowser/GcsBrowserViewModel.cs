@@ -120,7 +120,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         /// <summary>
         /// The first selected item.
         /// </summary>
-        public GcsRow SelectedItem => SelectedItems.FirstOrDefault();
+        public GcsRow SelectedItem => SelectedItems?.FirstOrDefault();
 
         /// <summary>
         /// Command to execute when poping up all levels in the stack.

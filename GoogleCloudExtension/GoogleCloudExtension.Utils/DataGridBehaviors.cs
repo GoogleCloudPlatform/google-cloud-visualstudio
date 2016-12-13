@@ -105,68 +105,6 @@ namespace GoogleCloudExtension.Utils
 
         #endregion
 
-        #region Double click command.
-
-        /// <summary>
-        /// This attached property transforms the <seealso cref="DataGrid.MouseDoubleClick" /> event into a
-        /// <see cref="ICommand"/> invokation. This makes it possible to implement the necessary code in the view model.
-        /// </summary>
-        public static readonly DependencyProperty DoubleClickCommandProperty =
-            DependencyProperty.RegisterAttached(
-                "DoubleClickCommand",
-                typeof(ICommand),
-                typeof(DataGridBehaviors),
-                new PropertyMetadata(OnDoubleClickCommandPropertyChanged));
-
-        /// <summary>
-        /// The getter for the attached property.
-        /// </summary>
-        public static ICommand GetDoubleClickCommand(DataGrid self) => (ICommand)self.GetValue(DoubleClickCommandProperty);
-
-        /// <summary>
-        /// The setter for the attached property.
-        /// </summary>
-        public static void SetDoubleClickCommand(DataGrid self, ICommand value)
-        {
-            self.SetValue(DoubleClickCommandProperty, value);
-        }
-
-        private static void OnDoubleClickCommandPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            var self = (DataGrid)d;
-
-            if (e.OldValue != null && e.NewValue == null)
-            {
-                self.MouseDoubleClick -= OnDataGridDoubleClick;
-            }
-
-            if (e.NewValue != null && e.OldValue == null)
-            {
-                self.MouseDoubleClick += OnDataGridDoubleClick;
-            }
-        }
-
-        private static void OnDataGridDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            var self = (DataGrid)sender;
-
-            var selected = self.SelectedItem;
-            if (selected == null)
-            {
-                return;
-            }
-
-            ICommand command = GetDoubleClickCommand(self);
-            if (!command.CanExecute(selected))
-            {
-                return;
-            }
-
-            command.Execute(selected);
-        }
-
-        #endregion
-
         private static void OnDataGridSorting(object sender, DataGridSortingEventArgs e)
         {
             var self = (DataGrid)sender;
