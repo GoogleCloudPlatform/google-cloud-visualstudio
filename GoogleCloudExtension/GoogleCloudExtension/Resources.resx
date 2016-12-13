@@ -1415,7 +1415,7 @@
     <value>The full path to the blob.</value>
     <comment>Description for the file full path for the file.</comment>
   </data>
-  <data name="GcsFileBrowserFileFullPathDisplayName" xml:space="preserve">
+  <data name="GcsFileBrowserFullPathDisplayName" xml:space="preserve">
     <value>GCS Path</value>
     <comment>The display name for the full path for the file.</comment>
   </data>
@@ -1442,5 +1442,9 @@
   <data name="GcsFileBrowserNameDisplayName" xml:space="preserve">
     <value>Name</value>
     <comment>The display name for the name of the item.</comment>
+  </data>
+  <data name="GcsFileBrowserDirectoryFullPathDescription" xml:space="preserve">
+    <value>The full path to the directory.</value>
+    <comment>Description of the GcsPath property of the directory.</comment>
   </data>
 </root>

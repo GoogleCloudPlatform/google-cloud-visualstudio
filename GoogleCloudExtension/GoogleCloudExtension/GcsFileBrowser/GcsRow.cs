@@ -37,11 +37,14 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         public string ContentType { get; private set; }
 
+        public string GcsPath => $"gs://{Bucket}/{Name}";
+
         public GcsRow() { }
 
-        public static GcsRow CreateDirectoryRow(string name) =>
+        public static GcsRow CreateDirectoryRow(string bucket, string name) =>
             new GcsRow
             {
+                Bucket = bucket,
                 Name = name,
                 FileName = GetLeafName(name),
                 IsDirectory = true,

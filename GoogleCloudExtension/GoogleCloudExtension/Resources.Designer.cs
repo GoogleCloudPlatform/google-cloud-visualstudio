@@ -1969,6 +1969,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The full path to the directory..
+        /// </summary>
+        public static string GcsFileBrowserDirectoryFullPathDescription {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDirectoryFullPathDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The name of the directory..
         /// </summary>
         public static string GcsFileBrowserDirectoryNameDescription {
@@ -2059,15 +2068,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to GCS Path.
-        /// </summary>
-        public static string GcsFileBrowserFileFullPathDisplayName {
-            get {
-                return ResourceManager.GetString("GcsFileBrowserFileFullPathDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The last modified time stamp of the blob..
         /// </summary>
         public static string GcsFileBrowserFileLastModifiedDescription {
@@ -2118,6 +2118,15 @@ namespace GoogleCloudExtension {
         public static string GcsFileBrowserFolderSelectionMessage {
             get {
                 return ResourceManager.GetString("GcsFileBrowserFolderSelectionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to GCS Path.
+        /// </summary>
+        public static string GcsFileBrowserFullPathDisplayName {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFullPathDisplayName", resourceCulture);
             }
         }
         
