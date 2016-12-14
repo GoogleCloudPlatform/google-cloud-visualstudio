@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel;
@@ -28,9 +29,9 @@ namespace GoogleCloudExtension
         /// <summary>
         /// Whether the user is opt-in or not into report usage statistics. By default is false.
         /// </summary>
-        [Category("Usage Report")]
-        [DisplayName("Report Usage Statistics Enabled")]
-        [Description("Whether to report usage statistics to Google")]
+        [LocalizedCategory(nameof(Resources.AnalyticsOptionsCategory))]
+        [LocalizedDisplayName(nameof(Resources.AnalyticsOptionsOptInDisplayName))]
+        [LocalizedDescription(nameof(Resources.AnalyticsOptionsOptInDescription))]
         public bool OptIn { get; set; }
 
         /// <summary>
