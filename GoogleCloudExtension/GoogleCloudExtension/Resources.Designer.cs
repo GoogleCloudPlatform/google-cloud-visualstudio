@@ -1987,6 +1987,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancelling . . ..
+        /// </summary>
+        public static string LogViewerRequestCancellingMessage {
+            get {
+                return ResourceManager.GetString("LogViewerRequestCancellingMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading . . ..
+        /// </summary>
+        public static string LogViewerRequestProgressMessage {
+            get {
+                return ResourceManager.GetString("LogViewerRequestProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Click To Select Different Timezone..
         /// </summary>
         public static string LogViewerTimeZoneSelectionToolTip {

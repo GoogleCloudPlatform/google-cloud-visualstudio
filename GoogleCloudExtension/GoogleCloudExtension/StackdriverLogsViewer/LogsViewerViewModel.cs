@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Data;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
@@ -33,6 +34,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     {
         private const int DefaultPageSize = 100;
 
+        private object _isLoadingLockObj = new object();
+        private bool _isLoading = false;
         private Lazy<LoggingDataSource> _dataSource;
         private string _nextPageToken;
 
@@ -40,6 +43,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private bool _toggleExpandAllExpanded = false;
 
         private ObservableCollection<LogItem> _logs = new ObservableCollection<LogItem>();
+
+        private string _requestStatusText;
+        private string _requestErrorMessage;
+        private Visibility _requestErrorMessageVisibility = Visibility.Collapsed;
+        private Visibility _requestStatusVisibility = Visibility.Collapsed;
+        private Visibility _cancelRequestVisible = Visibility.Collapsed;
+        private bool _requestCancelled;
 
         /// <summary>
         /// Gets the refresh button command.
@@ -92,6 +102,60 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public ListCollectionView LogItemCollection { get; }
 
         /// <summary>
+        /// Gets the cancel request button ICommand interface.
+        /// </summary>
+        public ProtectedCommand CancelRequestCommand { get; }
+
+        /// <summary>
+        /// Gets the cancel request button visibility
+        /// </summary>
+        public Visibility CancelRequestButtonVisibility
+        {
+            get { return _cancelRequestVisible; }
+            private set { SetValueAndRaise(ref _cancelRequestVisible, value); }
+        }
+
+        /// <summary>
+        /// Gets the request error message visibility.
+        /// </summary>
+        public Visibility RequestErrorMessageVisibility
+        {
+            get { return _requestErrorMessageVisibility; }
+            private set { SetValueAndRaise(ref _requestErrorMessageVisibility, value); }
+        }
+
+        /// <summary>
+        /// Gets the request error message.
+        /// </summary>
+        public string RequestErrorMessage
+        {
+            get { return _requestErrorMessage; }
+            private set {
+                SetValueAndRaise(ref _requestErrorMessage, value);
+                RequestErrorMessageVisibility = Visibility.Visible;
+            }
+        }
+
+        /// <summary>
+        /// Gets the request status text message.
+        /// </summary>
+        public string RequestStatusText
+        {
+            get { return _requestStatusText; }
+            private set { SetValueAndRaise(ref _requestStatusText, value); }
+        }
+
+        /// <summary>
+        /// Gets the request status block visibility. 
+        /// It includes the request status text block and cancel request button.
+        /// </summary>
+        public Visibility RequestStatusVisibility
+        {
+            get { return _requestStatusVisibility; }
+            private set { SetValueAndRaise(ref _requestStatusVisibility, value); }
+        }
+
+        /// <summary>
         /// Initializes an instance of <seealso cref="LogsViewerViewModel"/> class.
         /// </summary>
         public LogsViewerViewModel()
@@ -100,6 +164,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             RefreshCommand = new ProtectedCommand(() => Reload(), canExecuteCommand: false);
             LogItemCollection = new ListCollectionView(_logs);
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
+            CancelRequestCommand = new ProtectedCommand(CancelRequest);
         }
 
         /// <summary>
@@ -147,6 +212,38 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
+        /// Cancel request button command.
+        /// </summary>
+        private void CancelRequest()
+        {
+            Debug.WriteLine("Cancel command is called");
+
+            // Double check lock.
+            if (_isLoading)
+            {
+                lock (_isLoadingLockObj)
+                {
+                    if (_isLoading)
+                    {
+                        RequestStatusText = Resources.LogViewerRequestCancellingMessage;
+                        CancelRequestButtonVisibility = Visibility.Collapsed;
+                        _requestCancelled = true;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Show request status bar.
+        /// </summary>
+        private void InitAndShowRequestStatus()
+        {
+            RequestErrorMessageVisibility = Visibility.Collapsed;
+            RequestStatusText = Resources.LogViewerRequestProgressMessage;
+            CancelRequestButtonVisibility = Visibility.Visible;
+        }
+
+        /// <summary>
         /// Disable all filters, refresh button etc, when a request is pending.
         /// </summary>
         private void DisableControls()
@@ -169,13 +266,40 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="callback">A function to execute.</param>
         private async Task LogLoaddingWrapperAsync(Func<Task> callback)
         {
+            lock (_isLoadingLockObj)
+            {
+                if (_isLoading)
+                {
+                    Debug.WriteLine($"_isLoading is true. There is a fatal code bug.");
+                    return;
+                }
+
+                Debug.WriteLine("Setting _isLoading to true");
+                _isLoading = true;
+            }
+
+            InitAndShowRequestStatus();
+            DisableControls();
             try
             {
-                DisableControls();
                 await callback();
+            }
+            catch (DataSourceException ex)
+            {
+                RequestErrorMessage = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                RequestErrorMessage = ex.ToString();
             }
             finally
             {
+                lock (_isLoadingLockObj)
+                {
+                    Debug.WriteLine("Setting _isLoading to false");
+                    _isLoading = false;
+                }
+                RequestStatusVisibility = Visibility.Collapsed;
                 EnableControls();
             }
         }
@@ -190,8 +314,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private async Task LoadLogsAsync()
         {
             int count = 0;
+            _requestCancelled = false;
 
-            while (count < DefaultPageSize)
+            while (count < DefaultPageSize && !_requestCancelled)
             {
                 Debug.WriteLine($"LoadLogs, count={count}, firstPage={_nextPageToken==null}");
 

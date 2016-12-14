@@ -276,7 +276,37 @@
             </DataGrid>
         </Grid>
         
-        <!-- TODO: Displays log list requesting hint, or request error. -->
-        <Grid Grid.Row="3" Margin="12, 0, 12, 0" Background="White" />
+        <!-- Displays request status. -->
+        <Grid Grid.Row="3" Margin="12, 0, 12, 0" Background="White">
+            
+            <TextBox Margin="0, 0, 0, 12" 
+                     Padding="8, 5, 8, 5" 
+                     VerticalAlignment="Bottom" 
+                     TextAlignment="Left" 
+                     TextWrapping="Wrap"
+                     MaxHeight="120" 
+                     Foreground="Red" 
+                     Text="{Binding RequestErrorMessage, Mode=OneWay}" 
+                     Visibility="{Binding RequestErrorMessageVisibility}" 
+                     IsReadOnly="True" />
+
+            <StackPanel Margin="0, 0, 0, 12" 
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Center"
+                        Visibility="{Binding RequestStatusVisibility}">
+                
+                <TextBlock Padding="8, 5, 8, 5" 
+                           Foreground="Red" 
+                           Text="{Binding RequestStatusText}"
+                           Style="{StaticResource CommonTextStyle}" />
+                
+                <Button Margin="12, 0, 12, 0" 
+                        VerticalAlignment="Center"
+                        Content="{x:Static ext:Resources.UiCancelButtonCaption}" 
+                        Command="{Binding CancelRequestCommand}" 
+                        Visibility="{Binding CancelRequestButtonVisibility}" 
+                        Style="{StaticResource CommonButtonStandardStyle}" />
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>

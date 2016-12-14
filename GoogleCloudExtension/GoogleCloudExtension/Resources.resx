@@ -1363,4 +1363,12 @@
     <value>Project</value>
     <comment>Label for project id label.</comment>
   </data>
+  <data name="LogViewerRequestCancellingMessage" xml:space="preserve">
+    <value>Cancelling . . .</value>
+    <comment>Show a cancelling message after cancel request button is clicked.</comment>
+  </data>
+  <data name="LogViewerRequestProgressMessage" xml:space="preserve">
+    <value>Loading . . .</value>
+    <comment>List log entries can take seconds to complete, show a status message.</comment>
+  </data>
 </root>
