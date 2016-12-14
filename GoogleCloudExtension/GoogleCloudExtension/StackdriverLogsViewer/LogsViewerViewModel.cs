@@ -130,10 +130,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public string RequestErrorMessage
         {
             get { return _requestErrorMessage; }
-            private set
-            {
+            private set {
                 SetValueAndRaise(ref _requestErrorMessage, value);
-                RequestErrorMessageVisibility = value == null ? Visibility.Collapsed : Visibility.Visible;
+                RequestErrorMessageVisibility = Visibility.Visible;
             }
         }
 
@@ -143,10 +142,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public string RequestStatusText
         {
             get { return _requestStatusText; }
-            private set {
-                SetValueAndRaise(ref _requestStatusText, value);
-                RequestStatusVisibility = value == null ? Visibility.Collapsed : Visibility.Visible;
-            }
+            private set { SetValueAndRaise(ref _requestStatusText, value); }
         }
 
         /// <summary>
@@ -242,7 +238,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void InitAndShowRequestStatus()
         {
-            RequestErrorMessage = null;
+            RequestErrorMessageVisibility = Visibility.Collapsed;
             RequestStatusText = Resources.LogViewerRequestProgressMessage;
             CancelRequestButtonVisibility = Visibility.Visible;
         }
@@ -278,7 +274,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     return;
                 }
 
-                Console.WriteLine("Setting _isLoading to true");
+                Debug.WriteLine("Setting _isLoading to true");
                 _isLoading = true;
             }
 
@@ -298,12 +294,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
             finally
             {
-                Console.WriteLine("Setting _isLoading to false");
                 lock (_isLoadingLockObj)
                 {
+                    Debug.WriteLine("Setting _isLoading to false");
                     _isLoading = false;
                 }
-                RequestStatusText = null;
+                RequestStatusVisibility = Visibility.Collapsed;
                 EnableControls();
             }
         }
