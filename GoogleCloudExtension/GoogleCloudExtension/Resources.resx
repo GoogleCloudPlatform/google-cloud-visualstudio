@@ -1320,7 +1320,7 @@
     <comment>Shown in the cloud explorer when no project is selected.</comment>
   </data>
   <data name="LogViewerDictionaryPayloadFormatString" xml:space="preserve">
-    <value>{0}: {1}</value>
+    <value>{0}: {1}  </value>
     <comment>The format of log payload of IDictionary name value pair.</comment>
   </data>
   <data name="CloudExplorerGceFailedToUpdateFirewallCaption" xml:space="preserve">
