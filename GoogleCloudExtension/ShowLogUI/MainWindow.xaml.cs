@@ -25,8 +25,8 @@ namespace ShowLogUI
         {
             InitializeComponent();
             var newModel = new LogsViewerViewModel();
-            logViewer.ViewModel = newModel;
-            newModel.InvalidateAllControls();
+            logViewer.DataContext = newModel;
+            newModel.InvalidateAllProperties();
         }
     }
 }

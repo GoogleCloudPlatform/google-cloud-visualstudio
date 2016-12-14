@@ -29,7 +29,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="DataGridCell">
                             <Border  BorderThickness="0">
-                                <Border x:Name="border" Padding="0, 2, 0, 2" >
+                                <Border x:Name="border" Padding="0, 4, 0, 4" >
                                     <ContentPresenter />
                                 </Border>
                             </Border>
@@ -40,6 +40,7 @@
 
             <Style x:Key="rowStyle" TargetType="DataGridRow">
                 <Setter Property="TextBlock.TextWrapping" Value="NoWrap" />
+                <Setter Property="TextBlock.FontSize" Value="12" />
                 <Setter Property="Margin" Value="0, 0, 0, 1"/>
                 <Setter Property="BorderThickness" Value="0, 0, 0, 0"/>
                 <Setter Property="BorderBrush" Value="LightGray" />
@@ -54,23 +55,41 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            <!-- End Region -->
 
-            <!-- Region Datagrid detail view TreeView styles, converters etc. -->
+            <!-- Region, TreeView styles, converters. -->
             <vct:LogItemConverter x:Key="LogItemConverter"/>
 
-            <HierarchicalDataTemplate DataType="{x:Type vct:TreeObjectNode}" 
-                                      ItemsSource="{Binding Path=Children}">
+            <Style x:Key="TreeNodeText" 
+                   TargetType="TextBlock" 
+                   BasedOn="{StaticResource CommonTextStyle}" >
+                <Setter Property="Padding" Value="3, 0, 3, 1"/>
+            </Style>
+
+            <Style x:Key="TreeNodeLabel" 
+                   TargetType="TextBlock" 
+                   BasedOn="{StaticResource TreeNodeText}">
+                <Setter Property="Margin" Value="0, 0, 5, 0" />
+            </Style>
+
+            <HierarchicalDataTemplate DataType="{x:Type vct:ObjectNodeTree}" 
+                                      ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal" >
-                    <TextBlock Text="{Binding Path=Name}" Padding="3, 0, 3, 1"   Margin="0,0,5,0"/>
-                    <TextBlock Text=":" Padding="3, 0, 3, 1"   Margin="0,0,5,0" Visibility="{Binding ValueVisibility}"/>
-                    <TextBlock Text="{Binding Path=DisplayValue}"/>
+                    <TextBlock Text="{Binding Name}" 
+                               Style="{StaticResource TreeNodeLabel}"/>
+                    <TextBlock Text=":" 
+                               Style="{StaticResource TreeNodeLabel}" 
+                               Visibility="{Binding ValueVisibility}"/>
+                    <TextBlock Text="{Binding NodeValue}" 
+                               Style="{StaticResource TreeNodeText}"
+                               Visibility="{Binding ValueVisibility}"/>
                 </StackPanel>
             </HierarchicalDataTemplate>
             
-            <HierarchicalDataTemplate DataType="{x:Type vct:Payload}" ItemsSource="{Binding Path=Value}">
+            <HierarchicalDataTemplate DataType="{x:Type vct:Payload}" 
+                                      ItemsSource="{Binding Value}">
                 <StackPanel Orientation="Horizontal" >
-                    <TextBlock Text="{Binding Path=Name}" Padding="3, 0, 3, 1"   Margin="0,0,5,0" />
+                    <TextBlock Text="{Binding Name}" 
+                               Style="{StaticResource TreeNodeLabel}" />
                 </StackPanel>
             </HierarchicalDataTemplate>
             <!-- End Region -->
@@ -208,7 +227,7 @@
                       ItemsSource="{Binding LogItemCollection}"   
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                       AlternationCount="2"
-                      ScrollViewer.ScrollChanged="dataGrid_ScrollChanged">
+                      ScrollViewer.ScrollChanged="dataGrid_ScrollChanged"
                       PreviewMouseDown="dg_PreviewMouseDown">
                 
                 <!-- Override the text highlight color. -->
@@ -277,15 +296,14 @@
                     <DataGridTextColumn Binding="{Binding Message}" />
                 </DataGrid.Columns>
 
-                <!-- Define a tree view as row detail. -->
                 <DataGrid.RowDetailsTemplate>
                     <DataTemplate>
                         <!-- Use a border to make the background right. -->
                         <Border Background="White" Padding="30, 0, 0 , 0" Margin="0" >
                             
-                            <!-- The detail view takes the LogItem object as input and display it. -->
-                            <TreeView Foreground="Brown" 
-                                      ItemsSource="{Binding Converter={StaticResource LogItemConverter}}">
+                            <!-- Override the template to disable inner scrollbar -->
+                            <TreeView BorderThickness="0" 
+                                ItemsSource="{Binding Converter={StaticResource LogItemConverter}}">
                                 <TreeView.Template>
                                     <ControlTemplate>
                                         <ItemsPresenter />
@@ -294,7 +312,6 @@
                                 <TreeView.ItemContainerStyle>
                                     <Style TargetType="{x:Type TreeViewItem}" >
                                         <Setter Property="IsExpanded" Value="True" />
-                                        <Setter Property="Foreground" Value="DarkSlateGray" />
                                     </Style>
                                 </TreeView.ItemContainerStyle>
                             </TreeView>
@@ -325,8 +342,7 @@
                 
                 <TextBlock Padding="8, 5, 8, 5" 
                            Foreground="Red" 
-                           Text="{Binding RequestStatusText}"
-                           Style="{StaticResource CommonTextStyle}" />
+                           Text="{Binding RequestStatusText}" />
                 
                 <Button Margin="12, 0, 12, 0" 
                         VerticalAlignment="Center"

@@ -19,9 +19,9 @@ using System.Windows.Data;
 namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
 {
     /// <summary>
-    /// Convert LogItem object to an "collection" object that treeview can display
+    /// Convert LogItem object to a collection of <seealso cref="ObjectNodeTree"/> that treeview can display.
     /// </summary>
-    public sealed class LogItemConverter : IValueConverter
+    internal sealed class LogItemConverter : IValueConverter
     {
         /// <summary>
         /// Impletement the Convert method of IValueConverter.
@@ -44,7 +44,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             }
 
             LogItem log = value as LogItem;
-            var objNode = new TreeObjectNode(log.Entry);
+            var objNode = new ObjectNodeTree(log.Entry);
             return objNode.Children;
         }
 

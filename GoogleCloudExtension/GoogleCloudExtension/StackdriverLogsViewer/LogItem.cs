@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// <summary>
     /// An adaptor to LogEntry so as to provide properties for data binding.
     /// </summary>
-    internal class LogItem : ViewModelBase
+    internal class LogItem : Model
     {
         private const string JasonPayloadMessageFieldName = "message";
         private const string AnyIconPath = "StackdriverLogsViewer/Resources/ic_log_level_any.png";

@@ -22,199 +22,231 @@ using System.Windows;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
 {
-    internal class TreeObjectNode
+    /// <summary>
+    /// Utility methods primarily used by ObjectNodeTree 
+    /// </summary>
+    public static class TypeUtil
     {
-        #region Private Properties
+        /// <summary>
+        /// Check if the type is a IList generic type.
+        /// </summary>
+        public static bool IsListType(this Type type)
+        {
+            return type.IsGenericType && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(IList<>));
+        }
 
-        private string _name;
-        private object _displayValue;
+        /// <summary>
+        /// Check if the type is IDictionary type.
+        /// </summary>
+        public static bool IsDictionaryType(this Type type)
+        {
+            return type.IsGenericType && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(IDictionary<,>));
+        }
+
+        /// <summary>
+        /// Check if the object is a IList type
+        /// </summary>
+        public static bool IsListObject(this object obj)
+        {
+            return obj != null && obj is IList && obj.GetType().IsListType();
+        }
+
+        /// <summary>
+        /// Check if the object is IDictionary
+        /// </summary>
+        public static bool IsDictionaryObject(this object obj)
+        {
+            return obj != null && obj.GetType().IsDictionaryType();
+        }
+
+        /// <summary>
+        /// Check if the object is Numeric type
+        /// </summary>
+        public static bool IsNumericType(this object obj)
+        {
+            switch (Type.GetTypeCode(obj.GetType()))
+            {
+                case TypeCode.Byte:
+                case TypeCode.SByte:
+                case TypeCode.UInt16:
+                case TypeCode.UInt32:
+                case TypeCode.UInt64:
+                case TypeCode.Int16:
+                case TypeCode.Int32:
+                case TypeCode.Int64:
+                case TypeCode.Decimal:
+                case TypeCode.Double:
+                case TypeCode.Single:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Log Viewer detail tree view object node.
+    /// An object node contains the object name, obj and object properties as children.
+    /// The object properties are of ObjectNodeTree type or Payload type. 
+    /// With the children, the ObjectNodeTree itself forms a tree structure.
+    /// </summary>
+    internal class ObjectNodeTree
+    {
         private Type _type;
 
-        #endregion
+        /// <summary>
+        /// Gets the DisplayValue
+        /// Tree node displays label in format of Name : DisplayValue.  
+        /// </summary>
+        public object NodeValue { get; private set; }
 
-        #region Constructor
+        /// <summary>
+        /// Gets the obj visibility. 
+        /// This is to control whether ":" is displayed.
+        /// </summary>
+        public Visibility ValueVisibility => 
+            String.IsNullOrWhiteSpace(NodeValue?.ToString()) ? Visibility.Hidden : Visibility.Visible;
 
-        public TreeObjectNode(object value)
+        /// <summary>
+        /// Gets the object name.
+        /// </summary>
+        public string Name { get; private set; }
+
+        /// <summary>
+        /// Gets tree node children.
+        /// It contains all properties of the node object.
+        /// </summary>
+        public ObservableCollection<object> Children { get; private set; }
+
+        /// <summary>
+        /// Create an instance of the <seealso cref="ObjectNodeTree"/> class.
+        /// </summary>
+        /// <param name="obj">An object</param>
+        public ObjectNodeTree(object obj)
         {
-            ParseObjectTree("root", value, value.GetType());
+            ParseObjectTree("root", obj, obj.GetType());
         }
 
-        public TreeObjectNode(string name, object value)
+        /// <summary>
+        /// Create an instance of the <seealso cref="ObjectNodeTree"/> class.
+        /// </summary>
+        /// <param name="name">object name</param>
+        /// <param name="obj">An object</param>
+        public ObjectNodeTree(string name, object obj)
         {
-            ParseObjectTree(name, value, value.GetType());
+            ParseObjectTree(name, obj, obj.GetType());
         }
 
-        public TreeObjectNode(object value, Type t)
+        /// <summary>
+        /// Create an instance of the <seealso cref="ObjectNodeTree"/> class.
+        /// </summary>
+        /// <param name="obj">An object</param>
+        /// <param name="type">object type.</param>
+        public ObjectNodeTree(object obj, Type type)
         {
-            ParseObjectTree("root", value, t);
+            ParseObjectTree("root", obj, type);
         }
 
-        public TreeObjectNode(string name, object value, Type t)
+        /// <summary>
+        /// Create an instance of the <seealso cref="ObjectNodeTree"/> class.
+        /// </summary>
+        /// <param name="name">object name</param>
+        /// <param name="obj">An object</param>
+        /// <param name="type">object type.</param>
+        public ObjectNodeTree(string name, object obj, Type type)
         {
-            ParseObjectTree(name, value, t);
+            ParseObjectTree(name, obj, type);
         }
 
-        #endregion
-
-        #region Public Properties
-
-        public string Name
+        /// <summary>
+        /// Parse the object properties recursively.
+        /// </summary>
+        private void ParseObjectTree(string name, object obj, Type type)
         {
-            get
-            {
-                return _name;
-            }
-        }
-
-        public Visibility ValueVisibility
-        {
-            get
-            {
-                if (DisplayValue == null || string.IsNullOrWhiteSpace(DisplayValue.ToString()))
-                {
-                    return Visibility.Hidden;
-                }
-
-                return Visibility.Visible;
-            }
-        }
-
-        public object DisplayValue
-        {
-            get
-            {
-                return _displayValue;
-            }
-        }
-
-        public Type Type
-        {
-            get
-            {
-                return _type;
-            }
-        }
-
-        public ObservableCollection<object> Children { get; set; }
-
-        #endregion
-
-        #region Private Methods
-
-        private bool IsList(Type t)
-        {
-            return t.IsGenericType && t.GetGenericTypeDefinition().IsAssignableFrom(typeof(IList<>));
-        }
-
-        private bool IsDictionary(Type t)
-        {
-            return t.IsGenericType && t.GetGenericTypeDefinition().IsAssignableFrom(typeof(IDictionary<,>));
-        }
-
-        private bool IsListObject(object o)
-        {
-            if (o == null) return false;
-            return o is IList &&
-                   o.GetType().IsGenericType &&
-                   o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(IList<>));
-        }
-
-        private bool IsDictionaryObject(object o)
-        {
-            if (o == null) return false;
-            return o is IDictionary &&
-                   o.GetType().IsGenericType &&
-                   o.GetType().GetGenericTypeDefinition().IsAssignableFrom(typeof(IDictionary<,>));
-        }
-
-        private void ParseObjectTree(string name, object value, Type type)
-        {
-            ParseObjectTreeImpl(name, value, type);
+            ParseObjectTreeImpl(name, obj, type);
             if (Children?.Count > 0)
             {
-                _displayValue = string.Empty;
+                NodeValue = null;
             }
             else
             {
-                if (_displayValue == null && value != null)
+                if (NodeValue == null && obj != null)
                 {
-                    _displayValue = value.ToString();
+                    NodeValue = obj.ToString();
                 }
             }
         }
 
-        private void ParseObjectTreeImpl(string name, object value, Type type)
+        /// <summary>
+        /// The major logic of parsing the object properties as a tree.
+        /// </summary>
+        /// <param name="name">object name label.</param>
+        /// <param name="obj">object obj, the object itself.</param>
+        /// <param name="type">object type.</param>
+        private void ParseObjectTreeImpl(string name, object obj, Type type)
         {
+            _type = type;
+            Name = name;
             Children = new ObservableCollection<object>();
 
-            _type = type;
-            _name = name;
-
-            if (value == null)
+            if (obj == null)
             {
                 return;
             }
 
-            if (IsDictionaryObject(value) || IsListObject(value))
+            //if (type != obj.GetType())
+            //{
+            //    Debug.Assert(false);
+            //}
+
+            // There is no easy way to parse generic Dictionary or List type into ObjectNodeTree.
+            // Display them as Payload object.
+            if (obj.IsDictionaryObject() || obj.IsListObject())
             {
-                // _value = type.Name;
-                Children.Add(new Payload(name, value));
+                Children.Add(new Payload(name, obj));
                 return;
             }
 
-            if (value != null)
+            if (obj is string && type != typeof(object))
             {
-                if (value is string && type != typeof(object))
-                {
-                    if (value != null)
-                    {
-                        _displayValue = "\"" + value + "\"";
-                    }
-                }
-                else if (value is double || value is bool || value is int || value is float || value is long || value is decimal)
-                {
-                    _displayValue = value;
-                }
-                else
-                {
-                    _displayValue = "{" + value.ToString() + "}";
-                }
+                NodeValue = $"\"{obj}\"";
+            }
+            else
+            if (obj.IsNumericType())
+            {
+                NodeValue = obj;
+            }
+            else
+            {
+                NodeValue = "{" + obj.ToString() + "}";
             }
 
-            // Add some well known types that need to be excluded here.
-            if (type == typeof(string))
+            PropertyInfo[] properties = type.GetProperties();
+
+            if (properties.Length == 0 && type.IsClass && obj is IEnumerable)
             {
-                return;
-            }
-
-            PropertyInfo[] props = type.GetProperties();
-
-            if (props.Length == 0 && type.IsClass && value is IEnumerable && !(value is string))
-            {
-                IEnumerable arr = value as IEnumerable;
-
+                IEnumerable arr = obj as IEnumerable;
                 if (arr != null)
                 {
                     int i = 0;
                     foreach (object element in arr)
                     {
-                        Children.Add(new TreeObjectNode("[" + i + "]", element, element.GetType()));
-                        i++;
+                        Children.Add(new ObjectNodeTree("[" + i + "]", element, element.GetType()));
+                        ++i;
                     }
-
                 }
             }
 
-            foreach (PropertyInfo p in props)
+            foreach (PropertyInfo p in properties)
             {
                 if (!p.PropertyType.IsPublic)
                 {
                     continue;
                 }
 
-                if (IsDictionary(p.PropertyType) || IsList(p.PropertyType))
+                if (p.PropertyType.IsDictionaryType() || p.PropertyType.IsListType())
                 {
-                    object v = p.GetValue(value, null);
+                    object v = p.GetValue(obj, null);
                     if (v != null)
                     {
                         Children.Add(new Payload(p.Name, v));
@@ -226,29 +258,29 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
                     {
                         try
                         {
-                            object v = p.GetValue(value);
+                            object v = p.GetValue(obj);
                             IEnumerable arr = v as IEnumerable;
 
-                            TreeObjectNode arrayNode = new TreeObjectNode(p.Name, arr.ToString(), typeof(object));
+                            ObjectNodeTree arrayNode = new ObjectNodeTree(p.Name, arr.ToString(), typeof(object));
 
                             if (arr != null)
                             {
                                 int i = 0, k = 0;
-                                TreeObjectNode arrayNode2;
+                                ObjectNodeTree arrayNode2;
 
                                 foreach (object element in arr)
                                 {
                                     //Handle 2D arrays
                                     if (element is IEnumerable && !(element is string))
                                     {
-                                        arrayNode2 = new TreeObjectNode("[" + i + "]", element.ToString(), typeof(object));
+                                        arrayNode2 = new ObjectNodeTree("[" + i + "]", element.ToString(), typeof(object));
 
                                         IEnumerable arr2 = element as IEnumerable;
                                         k = 0;
 
                                         foreach (object e in arr2)
                                         {
-                                            arrayNode2.Children.Add(new TreeObjectNode("[" + k + "]", e, e.GetType()));
+                                            arrayNode2.Children.Add(new ObjectNodeTree("[" + k + "]", e, e.GetType()));
                                             k++;
                                         }
 
@@ -256,7 +288,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
                                     }
                                     else
                                     {
-                                        arrayNode.Children.Add(new TreeObjectNode("[" + i + "]", element, element.GetType()));
+                                        arrayNode.Children.Add(new ObjectNodeTree("[" + i + "]", element, element.GetType()));
                                     }
                                     i++;
                                 }
@@ -274,11 +306,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
                     {
                         try
                         {
-                            // String value is added here
-                            object v = p.GetValue(value, null);
+                            // String obj is added here
+                            object v = p.GetValue(obj, null);
                             if (v != null)
                             {
-                                Children.Add(new TreeObjectNode(p.Name, v, p.PropertyType));
+                                Children.Add(new ObjectNodeTree(p.Name, v, p.PropertyType));
                             }
                         }
                         catch (Exception ex)
@@ -287,15 +319,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
                         }
                     }
                 }
-                else if (p.PropertyType.IsValueType && !(value is string))
+                else if (p.PropertyType.IsValueType && !(obj is string))
                 {
                     try
                     {
-                        object v = p.GetValue(value);
+                        object v = p.GetValue(obj);
 
                         if (v != null)
                         {
-                            Children.Add(new TreeObjectNode(p.Name, v, p.PropertyType));
+                            Children.Add(new ObjectNodeTree(p.Name, v, p.PropertyType));
                         }
                     }
                     catch (Exception ex)
@@ -307,10 +339,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
                 {
                     try
                     {
-                        object v = p.GetValue(value);
+                        object v = p.GetValue(obj);
                         if (v != null)
                         {
-                            Children.Add(new TreeObjectNode(p.Name, v, p.PropertyType));
+                            Children.Add(new ObjectNodeTree(p.Name, v, p.PropertyType));
                         }
                     }
                     catch (Exception ex)
@@ -321,7 +353,5 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
                 }
             }
         }
-
-        #endregion
     }
 }
