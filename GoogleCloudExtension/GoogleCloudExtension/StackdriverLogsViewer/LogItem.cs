@@ -17,6 +17,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
 using System.Windows.Media;
 
@@ -25,8 +26,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// <summary>
     /// An adaptor to LogEntry so as to provide properties for data binding.
     /// </summary>
-    internal class LogItem
+    internal class LogItem : ViewModelBase
     {
+        private const string JasonPayloadMessageFieldName = "message";
         private const string AnyIconPath = "StackdriverLogsViewer/Resources/ic_log_level_any.png";
         private const string DebugIconPath = "StackdriverLogsViewer/Resources/ic_log_level_debug.png";
         private const string ErrorIconPath = "StackdriverLogsViewer/Resources/ic_log_level_error.png";
@@ -34,46 +36,46 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private const string InfoIconPath = "StackdriverLogsViewer/Resources/ic_log_level_info.png";
         private const string WarningIconPath = "StackdriverLogsViewer/Resources/ic_log_level_warning.png";
 
-        private static readonly Lazy<ImageSource> s_any_icon =
+        private static readonly Lazy<ImageSource> s_anyIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(AnyIconPath));
-        private static readonly Lazy<ImageSource> s_debug_icon =
+        private static readonly Lazy<ImageSource> s_debugIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(DebugIconPath));
-        private static readonly Lazy<ImageSource> s_error_icon =
+        private static readonly Lazy<ImageSource> s_errorIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(ErrorIconPath));
-        private static readonly Lazy<ImageSource> s_fatal_icon =
+        private static readonly Lazy<ImageSource> s_fatalIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(FatalIconPath));
-        private static readonly Lazy<ImageSource> s_info_icon =
+        private static readonly Lazy<ImageSource> s_infoIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(InfoIconPath));
-        private static readonly Lazy<ImageSource> s_warning_icon =
+        private static readonly Lazy<ImageSource> s_warningIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
 
-        private DateTime _timestamp;
-        private string _message;
+        private readonly DateTime _timestamp;
 
         /// <summary>
         /// Gets a log entry object.
         /// </summary>
-        public LogEntry Entry { get; private set; }
+        public LogEntry Entry { get; }
 
         /// <summary>
         /// Gets the log item timestamp Date string in local time. Data binding to a view property.
         /// </summary>
-        public string Date => _timestamp.ToString("MM-dd-yyyy");
+        public string Date => _timestamp.ToString(Resources.LogViewerLogItemDateFormat);
 
         /// <summary>
         /// Gets a log item timestamp in local time. Data binding to a view property.
         /// </summary>
-        public DateTime Time => _timestamp;
+        public string Time => _timestamp.ToString(Resources.LogViewerLogItemTimeFormat);
 
         /// <summary>
         /// Gets the log message to be displayed at top level.
         /// </summary>
-        public string Message => _message;
+        public string Message { get; }
 
         /// <summary>
         /// Gets the log severity tooltip. Data binding to the severity icon tool tip.
         /// </summary>
-        public string SeverityTip => string.IsNullOrWhiteSpace(Entry?.Severity) ? "Any" : Entry.Severity;
+        public string SeverityTip => String.IsNullOrWhiteSpace(Entry?.Severity) ? 
+            Resources.LogViewerAnyOtherSeverityLevelTip : Entry.Severity;
 
         /// <summary>
         /// Gets the log item severity level. The data binding source to severity column in the data grid.
@@ -83,29 +85,36 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             get
             {
                 LogSeverity logLevel;
-                if (string.IsNullOrWhiteSpace(Entry?.Severity) ||
-                    !Enum.TryParse<LogSeverity>(Entry?.Severity, out logLevel))
+                if (String.IsNullOrWhiteSpace(Entry?.Severity) ||
+                    !Enum.TryParse<LogSeverity>(Entry?.Severity, ignoreCase: true, result: out logLevel))
                 {
-                    return s_any_icon.Value;
+                    return s_anyIcon.Value;
                 }
 
                 switch (logLevel)
                 {
-                    // EMERGENCY, CRITICAL both map to fatal icon.
-                    case LogSeverity.CRITICAL:
-                    case LogSeverity.EMERGENCY:
-                        return s_fatal_icon.Value;
-                    case LogSeverity.DEBUG:
-                        return s_debug_icon.Value;
-                    case LogSeverity.ERROR:
-                        return s_error_icon.Value;
-                    case LogSeverity.INFO:
-                        return s_info_icon.Value;
-                    case LogSeverity.WARNING:
-                        return s_warning_icon.Value;
-                }
+                    // EMERGENCY, CRITICAL, Alert all map to fatal icon.
+                    case LogSeverity.Alert:
+                    case LogSeverity.Critical:
+                    case LogSeverity.Emergency:
+                        return s_fatalIcon.Value;
 
-                return s_any_icon.Value;
+                    case LogSeverity.Debug:
+                        return s_debugIcon.Value;
+
+                    case LogSeverity.Error:
+                        return s_errorIcon.Value;
+
+                    case LogSeverity.Notice:
+                    case LogSeverity.Info:
+                        return s_infoIcon.Value;
+
+                    case LogSeverity.Warning:
+                        return s_warningIcon.Value;
+
+                    default:
+                        return s_anyIcon.Value;
+                }
             }
         }
 
@@ -116,22 +125,21 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public LogItem(LogEntry logEntry)
         {
             Entry = logEntry;
-            ConvertTimestamp(logEntry.Timestamp);
-            _message = ComposeMessage();
+            Message = ComposeMessage();
+            _timestamp = ConvertTimestamp(logEntry.Timestamp);
         }
 
         private string ComposeDictionaryPayloadMessage(IDictionary<string, object> dictPayload)
         {
-            Debug.Assert(dictPayload != null);
             if (dictPayload == null)
             {
-                return string.Empty;
+                return "";
             }
 
             StringBuilder text = new StringBuilder();
             foreach (var kv in dictPayload)
             {
-                text.Append($"{kv.Key}: {kv.Value}  ");
+                text.AppendFormat(Resources.LogViewerDictionaryPayloadFormatString, kv.Key, kv.Value);
             }
 
             return text.ToString();
@@ -139,13 +147,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private string ComposeMessage()
         {
-            string message = string.Empty;
+            string message = null;
             if (Entry?.JsonPayload != null)
             {
                 // If the JsonPload has message filed, display this field.
-                if (Entry.JsonPayload.ContainsKey("message"))
+                if (Entry.JsonPayload.ContainsKey(JasonPayloadMessageFieldName))
                 {
-                    message = Entry.JsonPayload["message"].ToString();
+                    message = Entry.JsonPayload[JasonPayloadMessageFieldName].ToString();
                 }
                 else
                 {
@@ -162,37 +170,41 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
             else if (Entry?.Labels != null)
             {
-                message = string.Join(";", Entry?.Labels.Values);
+                message = String.Join(";", Entry?.Labels.Values);
             }
             else if (Entry?.Resource?.Labels != null)
             {
-                message = string.Join(";", Entry?.Resource.Labels);
+                message = String.Join(";", Entry?.Resource.Labels);
             }
 
-            return message.Replace(Environment.NewLine, "\\n").Replace("\t", "\\t");
+            return message?.Replace(Environment.NewLine, "\\n").Replace("\t", "\\t");
         }
 
-        private void ConvertTimestamp(object timestamp)
+        private DateTime ConvertTimestamp(object timestamp)
         {
+            DateTime datetime;
             if (timestamp == null)
             {
                 Debug.Assert(false, "Entry Timestamp is null");
-                _timestamp = DateTime.MaxValue;
+                datetime = DateTime.MaxValue;
             }
             else if (timestamp is DateTime)
             {
-                _timestamp = (DateTime)timestamp;
+                datetime = (DateTime)timestamp;
             }
             else
             {
-                if (!DateTime.TryParse(timestamp.ToString(), out _timestamp))
+                // From Stackdriver Logging API reference,
+                // A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. 
+                // Example: "2014-10-02T15:01:23.045123456Z".
+                if (!DateTime.TryParse(timestamp.ToString(), 
+                    CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out datetime))
                 {
-                    Debug.Assert(false, "Failed to parse Entry Timestamp");
-                    _timestamp = DateTime.MaxValue;
+                    datetime = DateTime.MaxValue;
                 }
             }
 
-            _timestamp = _timestamp.ToLocalTime();
+            return datetime.ToLocalTime();
         }
     }
 }

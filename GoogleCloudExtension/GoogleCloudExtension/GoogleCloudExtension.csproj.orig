@@ -234,9 +234,6 @@
       <DependentUpon>LogsViewerToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModel.cs" />
-    <Compile Include="StackdriverLogsViewer\TreeViewConverters\LogItemConverter.cs" />
-    <Compile Include="StackdriverLogsViewer\TreeViewConverters\Payload.cs" />
-    <Compile Include="StackdriverLogsViewer\TreeViewConverters\TreeObjectNode.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
     <Compile Include="SolutionUtils\ISolutionProject.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
@@ -341,9 +338,12 @@
     <Resource Include="Controls\Resources\step_9_dark.png" />
     <Resource Include="CloudExplorerSources\Gcs\Resources\zone_icon.png" />
     <Resource Include="Theming\Resources\logo_cloud.png" />
+<<<<<<< HEAD
+=======
     <Content Include="Licenses.txt">
        <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+>>>>>>> q1_logging
     <Content Include="ProjectTemplates\Google Cloud Platform\GoogleAspnetMvc.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -438,10 +438,6 @@
     </Reference>
     <Reference Include="Google.Apis.Core, Version=1.19.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Core.1.19.0\lib\net45\Google.Apis.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="Google.Apis.Logging.v2, Version=1.19.0.685, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Logging.v2.1.19.0.685\lib\net45\Google.Apis.Logging.v2.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Apis.Logging.v2, Version=1.19.0.685, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">

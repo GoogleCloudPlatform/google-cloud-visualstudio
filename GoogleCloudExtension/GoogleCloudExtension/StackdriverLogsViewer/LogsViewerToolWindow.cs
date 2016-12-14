@@ -62,8 +62,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             var control = Content as LogsViewerToolWindowControl;
             var newModel = new LogsViewerViewModel();
-            control.ViewModel = newModel;
-            newModel.InvalidateAllControls();
+            control.DataContext = newModel;
+            newModel.InvalidateAllProperties();
         }
     }
 }

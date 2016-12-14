@@ -196,6 +196,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Usage Report.
+        /// </summary>
+        public static string AnalyticsOptionsCategory {
+            get {
+                return ResourceManager.GetString("AnalyticsOptionsCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Whether to report usage statistics to Google.
+        /// </summary>
+        public static string AnalyticsOptionsOptInDescription {
+            get {
+                return ResourceManager.GetString("AnalyticsOptionsOptInDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Report Usage Statistics Enabled.
+        /// </summary>
+        public static string AnalyticsOptionsOptInDisplayName {
+            get {
+                return ResourceManager.GetString("AnalyticsOptionsOptInDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Do you want to help Google by reporting usage statics?.
         /// </summary>
         public static string AnalyticsPromptMessage {
@@ -210,6 +237,15 @@ namespace GoogleCloudExtension {
         public static string AnalyticsPromptTitle {
             get {
                 return ResourceManager.GetString("AnalyticsPromptTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Network.
+        /// </summary>
+        public static string AuthorizedNetworksNetworkHeader {
+            get {
+                return ResourceManager.GetString("AuthorizedNetworksNetworkHeader", resourceCulture);
             }
         }
         
@@ -1330,6 +1366,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}).
+        /// </summary>
+        public static string CloudExplorerGceZoneCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceZoneCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Zone Properties.
         /// </summary>
         public static string CloudExplorerGceZoneCategory {
@@ -1389,6 +1434,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGcsBucketCreatedDescription {
             get {
                 return ResourceManager.GetString("CloudExplorerGcsBucketCreatedDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}).
+        /// </summary>
+        public static string CloudExplorerGcsBucketLocationCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerGcsBucketLocationCaption", resourceCulture);
             }
         }
         
@@ -1555,11 +1609,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No credentials, please login..
+        /// </summary>
+        public static string CloudExplorerNoLoggedInMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerNoLoggedInMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Go to the Cloud Platform Console.
         /// </summary>
         public static string CloudExplorerNoProjectButtonCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerNoProjectButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No project selected..
+        /// </summary>
+        public static string CloudExplorerNoProjectSelectedMessage {
+            get {
+                return ResourceManager.GetString("CloudExplorerNoProjectSelectedMessage", resourceCulture);
             }
         }
         
@@ -1843,6 +1915,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Any.
+        /// </summary>
+        public static string LogViewerAnyOtherSeverityLevelTip {
+            get {
+                return ResourceManager.GetString("LogViewerAnyOtherSeverityLevelTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Click to hide all log items detail..
         /// </summary>
         public static string LogViewerCollapseAllTip {
@@ -1852,11 +1933,47 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}: {1}.
+        /// </summary>
+        public static string LogViewerDictionaryPayloadFormatString {
+            get {
+                return ResourceManager.GetString("LogViewerDictionaryPayloadFormatString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Click to see all log items detail..
         /// </summary>
         public static string LogViewerExpandAllTip {
             get {
                 return ResourceManager.GetString("LogViewerExpandAllTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MM-dd-yyyy.
+        /// </summary>
+        public static string LogViewerLogItemDateFormat {
+            get {
+                return ResourceManager.GetString("LogViewerLogItemDateFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HH:mm:ss.fff.
+        /// </summary>
+        public static string LogViewerLogItemTimeFormat {
+            get {
+                return ResourceManager.GetString("LogViewerLogItemTimeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string LogViewerRefreshButtonCaption {
+            get {
+                return ResourceManager.GetString("LogViewerRefreshButtonCaption", resourceCulture);
             }
         }
         
@@ -1893,6 +2010,24 @@ namespace GoogleCloudExtension {
         public static string LogViewerTimeZoneSelectionToolTip {
             get {
                 return ResourceManager.GetString("LogViewerTimeZoneSelectionToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account.
+        /// </summary>
+        public static string LogViewerTitleBarAccountLabel {
+            get {
+                return ResourceManager.GetString("LogViewerTitleBarAccountLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project.
+        /// </summary>
+        public static string LogViewerTitleBarProjectIdLabel {
+            get {
+                return ResourceManager.GetString("LogViewerTitleBarProjectIdLabel", resourceCulture);
             }
         }
         
@@ -1947,15 +2082,6 @@ namespace GoogleCloudExtension {
         public static string ManageAccountsCurrentAccountMessage {
             get {
                 return ResourceManager.GetString("ManageAccountsCurrentAccountMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Delete.
-        /// </summary>
-        public static string ManageAccountsDeleteAccountButtonCaption {
-            get {
-                return ResourceManager.GetString("ManageAccountsDeleteAccountButtonCaption", resourceCulture);
             }
         }
         
@@ -2446,15 +2572,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Setting password for user {0}.
-        /// </summary>
-        public static string ResetWindowSettingPasswordProgressMessage {
-            get {
-                return ResourceManager.GetString("ResetWindowSettingPasswordProgressMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Password copied to clipboard..
         /// </summary>
         public static string ShowPasswordCopiedMessage {
@@ -2482,24 +2599,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Copy Password.
-        /// </summary>
-        public static string ShowPasswordCopyPasswordButtonCaption {
-            get {
-                return ResourceManager.GetString("ShowPasswordCopyPasswordButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Hide password.
-        /// </summary>
-        public static string ShowPasswordHidePasswordTooltip {
-            get {
-                return ResourceManager.GetString("ShowPasswordHidePasswordTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to {0} password:.
         /// </summary>
         public static string ShowPasswordMessage {
@@ -2518,29 +2617,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Show password.
-        /// </summary>
-        public static string ShowPasswordShowPasswordTooltip {
-            get {
-                return ResourceManager.GetString("ShowPasswordShowPasswordTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Password for {0}.
         /// </summary>
         public static string ShowPasswordWindowTitle {
             get {
                 return ResourceManager.GetString("ShowPasswordWindowTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Add Version to Traffic Split.
-        /// </summary>
-        public static string SplitTrafficWindowAddVersionMessage {
-            get {
-                return ResourceManager.GetString("SplitTrafficWindowAddVersionMessage", resourceCulture);
             }
         }
         
@@ -2595,15 +2676,6 @@ namespace GoogleCloudExtension {
         public static string SplitTrafficWindowIpAddressLabel {
             get {
                 return ResourceManager.GetString("SplitTrafficWindowIpAddressLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to %.
-        /// </summary>
-        public static string SplitTrafficWindowPercentLabel {
-            get {
-                return ResourceManager.GetString("SplitTrafficWindowPercentLabel", resourceCulture);
             }
         }
         

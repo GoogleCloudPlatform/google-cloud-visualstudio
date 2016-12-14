@@ -12,20 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Utils;
 using System;
+using System.Windows.Media;
 
-namespace GoogleCloudExtension.Utils
+namespace GoogleCloudExtension.Theming
 {
-    internal static class MySQLUtils
+    /// <summary>
+    /// Define all shared images here.
+    /// </summary>
+    public class CommonImageResources
     {
-        /// <summary>
-        /// The GUID for the MySQL Database.
-        /// </summary>
-        public static readonly Guid MySQLDataSource = new Guid("{98FBE4D8-5583-4233-B219-70FF8C7FBBBD}");
+        private const string CloudLogoIconPath = "Theming/Resources/logo_cloud.png";
+
+        private static readonly Lazy<ImageSource> s_logoIcon = new Lazy<ImageSource>(
+            () => ResourceUtils.LoadImage(CloudLogoIconPath));
 
         /// <summary>
-        /// The GUID for the MySQL Database Provider.
+        /// The 16x16 size cloud logo ImageSource.
         /// </summary>
-        public static readonly Guid MySQLDataProvider = new Guid("{C6882346-E592-4da5-80BA-D2EADCDA0359}");
+        public static ImageSource CloudLogo16By16 => s_logoIcon.Value;
     }
 }
