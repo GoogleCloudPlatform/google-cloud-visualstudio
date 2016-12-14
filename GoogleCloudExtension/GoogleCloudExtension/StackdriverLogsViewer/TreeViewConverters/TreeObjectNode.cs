@@ -216,6 +216,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             if (obj.IsNumericType())
             {
                 NodeValue = obj;
+                return;
             }
             else
             {
@@ -307,7 +308,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
                     {
                         try
                         {
-                            // String obj is added here
                             object v = p.GetValue(obj, null);
                             if (v != null)
                             {
