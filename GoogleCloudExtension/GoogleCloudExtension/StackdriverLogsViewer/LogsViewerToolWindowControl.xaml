@@ -56,7 +56,7 @@
                 </Style.Triggers>
             </Style>
 
-            <!-- Region, TreeView styles, converters. -->
+            <!-- Region TreeView styles, converters. -->
             <vct:LogItemConverter x:Key="LogItemConverter"/>
 
             <Style x:Key="TreeNodeText" 
@@ -86,7 +86,7 @@
             </HierarchicalDataTemplate>
             
             <HierarchicalDataTemplate DataType="{x:Type vct:Payload}" 
-                                      ItemsSource="{Binding Value}">
+                                      ItemsSource="{Binding Content}">
                 <StackPanel Orientation="Horizontal" >
                     <TextBlock Text="{Binding Name}" 
                                Style="{StaticResource TreeNodeLabel}" />

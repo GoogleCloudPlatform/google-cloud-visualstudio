@@ -207,9 +207,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
                 return;
             }
 
-            if (obj is string && type != typeof(object))
+            if (obj is string)
             {
                 NodeValue = $"\"{obj}\"";
+                return;
             }
             else
             if (obj.IsNumericType())
