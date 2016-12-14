@@ -42,7 +42,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             _owner = owner;
             _zone = zone;
 
-            Caption = $"{zone.Name} ({instances.Count()})";
+            Caption = String.Format(Resources.CloudExplorerGceZoneCaption, zone.Name, instances.Count());
             Icon = s_zoneIcon.Value;
 
             foreach (var instance in instances)
