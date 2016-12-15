@@ -295,7 +295,7 @@
                 <DataGrid.RowDetailsTemplate>
                     <DataTemplate>
                         <!-- Use a border to make the background right. -->
-                        <Border Background="White" Padding="30, 0, 0 , 2" Margin="0" >
+                        <Border Background="White" Padding="30, 0, 0 , 2">
                             
                             <!-- Override the template to disable inner scrollbar -->
                             <TreeView BorderThickness="0" 
@@ -338,8 +338,8 @@
 
                 <TextBlock Padding="8, 5, 8, 5" 
                            Foreground="Red" 
-                           Text="{Binding RequestStatusText}" 
-                           Style="{StaticResource CommonTextStyle}"/>
+                           Text="{Binding RequestStatusText}"
+                           Style="{StaticResource CommonTextStyle}" />
                 
                 <Button Margin="12, 0, 12, 0" 
                         VerticalAlignment="Center"
