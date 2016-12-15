@@ -59,7 +59,7 @@
                 </Style.Triggers>
             </Style>
 
-            <!-- Region TreeView styles, converters. -->
+            <!-- Region TreeView styles and converters. -->
             <vct:LogItemConverter x:Key="LogItemConverter"/>
 
             <Style x:Key="TreeNodeText" 
@@ -84,14 +84,6 @@
                                Visibility="{Binding ValueVisibility}"/>
                 </StackPanel>
             </HierarchicalDataTemplate>
-
-            <DataTemplate x:Key="KeyValuePair">
-                <StackPanel Orientation="Horizontal" Margin="1">
-                    <TextBlock Text="{Binding Path=Key}" Style="{StaticResource TreeNodeLabel}" />
-                    <TextBlock Text=": " Style="{StaticResource TreeNodeLabel}" />
-                    <TextBlock Text="{Binding Path=Value}" Style="{StaticResource TreeNodeText}"/>
-                </StackPanel>
-            </DataTemplate>
             <!-- End Region -->
             
             <!-- Page title bar style. -->

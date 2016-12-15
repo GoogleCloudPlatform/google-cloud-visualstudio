@@ -15,7 +15,6 @@
 using Google.Apis.Logging.v2.Data;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -25,77 +24,17 @@ using System.Windows;
 namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
 {
     /// <summary>
-    /// Utility methods primarily used by ObjectNodeTree 
-    /// </summary>
-    public static class TypeUtil
-    {
-        /// <summary>
-        /// Check if the type is a IList generic type.
-        /// </summary>
-        public static bool IsListType(this Type type)
-        {
-            return type.IsGenericType && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>));
-        }
-
-        /// <summary>
-        /// Check if the type is IDictionary type.
-        /// </summary>
-        public static bool IsDictionaryType(this Type type)
-        {
-            return type.IsGenericType && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(Dictionary<,>));
-        }
-
-        /// <summary>
-        /// Check if the object is a IList type
-        /// </summary>
-        public static bool IsListObject(this object obj)
-        {
-            return obj != null && obj is IList && obj.GetType().IsListType();
-        }
-
-        /// <summary>
-        /// Check if the object is IDictionary
-        /// </summary>
-        public static bool IsDictionaryObject(this object obj)
-        {
-            return obj != null && obj.GetType().IsDictionaryType();
-        }
-
-        /// <summary>
-        /// Check if the object is Numeric type
-        /// </summary>
-        public static bool IsNumericType(this object obj)
-        {
-            switch (Type.GetTypeCode(obj.GetType()))
-            {
-                case TypeCode.Byte:
-                case TypeCode.SByte:
-                case TypeCode.UInt16:
-                case TypeCode.UInt32:
-                case TypeCode.UInt64:
-                case TypeCode.Int16:
-                case TypeCode.Int32:
-                case TypeCode.Int64:
-                case TypeCode.Decimal:
-                case TypeCode.Double:
-                case TypeCode.Single:
-                    return true;
-                default:
-                    return false;
-            }
-        }
-    }
-
-    /// <summary>
     /// Log Viewer detail tree view object node.
-    /// An object node contains the object name, obj and object properties as children.
-    /// The object properties are of ObjectNodeTree type or Payload type. 
-    /// With the children, the ObjectNodeTree itself forms a tree structure.
+    /// An object node contains the object name, optional object.ToString() as value,
+    /// and optional object properties as Children.
+    /// 
+    /// The object properties are of ObjectNodeTree type too,
+    /// thus the ObjectNodeTree forms a tree structure.
     /// </summary>
     internal class ObjectNodeTree
     {
         /// <summary>
-        /// The list of supported class. 
+        /// The list of supported classes.
         /// </summary>
         private readonly static Type[] s_supportedTypes = new Type[]
         {
@@ -115,7 +54,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
 
         /// <summary>
         /// Gets the obj visibility. 
-        /// Do not display ":" if the NodeValue 
+        /// Do not display ":" if the NodeValue is empty
         /// </summary>
         public Visibility ValueVisibility => 
             String.IsNullOrWhiteSpace(NodeValue) ? Visibility.Hidden : Visibility.Visible;
@@ -135,7 +74,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
         /// Create an instance of the <seealso cref="ObjectNodeTree"/> class.
         /// </summary>
         /// <param name="obj">An object</param>
-        public ObjectNodeTree(object obj): this("root", obj)
+        public ObjectNodeTree(object obj): this("", obj)
         { }
 
         /// <summary>
@@ -225,7 +164,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             int i = 0;
             foreach (var ele in arr)
             {
-                collection.Add(new ObjectNodeTree("[" + i + "]", ele));
+                collection.Add(new ObjectNodeTree($"[{i}]", ele));
                 ++i;
             }
 
@@ -288,7 +227,5 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             }
         }
         #endregion
-
-
     }
 }
