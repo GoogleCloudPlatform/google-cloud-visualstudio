@@ -298,7 +298,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private async Task LoadLogsAsync(CancellationToken cancellationToken)
         {
             int count = 0;
-            while (count < DefaultPageSize)
+            while (count < DefaultPageSize && !cancellationToken.IsCancellationRequested)
             {
                 Debug.WriteLine($"LoadLogs, count={count}, firstPage={_nextPageToken == null}");
 

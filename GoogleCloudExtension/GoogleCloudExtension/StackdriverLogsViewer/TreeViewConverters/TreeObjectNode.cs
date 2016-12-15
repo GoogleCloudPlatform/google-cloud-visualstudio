@@ -12,11 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Logging.v2.Data;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection;
 using System.Windows;
 
@@ -93,6 +95,19 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
     internal class ObjectNodeTree
     {
         /// <summary>
+        /// The list of supported class. 
+        /// </summary>
+        private readonly static Type[] s_supportedTypes = new Type[]
+        {
+            typeof(MonitoredResource),
+            typeof(HttpRequest),
+            typeof(LogEntryOperation),
+            typeof(SourceLocation),
+            typeof(LogLine),
+            typeof(LogEntry)
+        };
+
+        /// <summary>
         /// Gets the DisplayValue
         /// Tree node displays label in format of Name : DisplayValue.  
         /// </summary>
@@ -150,7 +165,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             }
         }
 
-        private void ParseArrayEnumerable(object obj)
+        private void ParseEnumerable(object obj)
         {
             IEnumerable arr = obj as IEnumerable;
             int i = 0;
@@ -163,6 +178,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             NodeValue = $"[{i}]";
         }
         #endregion
+
+
 
         /// <summary>
         /// Parse the object properties recursively.
@@ -207,24 +224,24 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             }
             else if (type.IsArray)
             {
-                ParseArrayEnumerable(obj);
+                ParseEnumerable(obj);
                 return;
             }            
-            // There is no easy way to parse generic Dictionary or List type into ObjectNodeTree.
+            // There is no easy way to parse generic IDictionarytype into ObjectNodeTree.
             // Display them as Payload object.
-            else if (obj.IsDictionaryObject() || obj.IsListObject())
+            else if (obj.IsDictionaryObject())
             {
                 Children.Add(new Payload(name, obj));
                 return;
             }
-
-            PropertyInfo[] properties = type.GetProperties();
-            if (type.IsClass && obj is IEnumerable)
+            else if (!s_supportedTypes.Contains(type))
             {
-                ParseArrayEnumerable(obj);
+                // Try the best effort.
+                NodeValue = obj.ToString();
                 return;
             }
 
+            PropertyInfo[] properties = type.GetProperties();
             foreach (PropertyInfo p in properties)
             {
                 if (!p.PropertyType.IsPublic)
@@ -242,8 +259,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
                 }
                 catch (Exception ex)
                 {
-                    Children.Add(new Payload(p.Name, $"Type: {p.PropertyType}. PropertyInfo.GetValue failed"));
-                    Debug.WriteLine(ex.ToString());
+                    if (ex is ArgumentException || ex is TargetException || ex is TargetParameterCountException
+                        || ex is MethodAccessException || ex is TargetInvocationException)
+                    {
+                        Children.Add(new Payload(p.Name, $"Type: {p.PropertyType}. PropertyInfo.GetValue failed."));
+                        Debug.WriteLine(ex.ToString());
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
             }
         }
