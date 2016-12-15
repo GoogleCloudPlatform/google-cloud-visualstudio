@@ -129,19 +129,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
         }
 
         #region parser
-        private void TryParse(Action parser)
-        {
-            try
-            {
-                parser();
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.ToString());
-                Debug.Assert(false);
-            }
-        }
-
         private ObservableCollection<object> CreateCollectionChildren()
         {
             var collection = new ObservableCollection<object>();
