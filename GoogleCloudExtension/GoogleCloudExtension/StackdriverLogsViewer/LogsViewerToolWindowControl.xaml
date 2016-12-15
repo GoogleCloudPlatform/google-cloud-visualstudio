@@ -77,24 +77,21 @@
             <HierarchicalDataTemplate DataType="{x:Type vct:ObjectNodeTree}" 
                                       ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal" >
-                    <TextBlock Text="{Binding Name}" 
-                               Style="{StaticResource TreeNodeLabel}"/>
-                    <TextBlock Text=":" 
-                               Style="{StaticResource TreeNodeLabel}" 
+                    <TextBlock Text="{Binding Name}" Style="{StaticResource TreeNodeLabel}"/>
+                    <TextBlock Text=":" Style="{StaticResource TreeNodeLabel}" 
                                Visibility="{Binding ValueVisibility}"/>
-                    <TextBlock Text="{Binding NodeValue}" 
-                               Style="{StaticResource TreeNodeText}"
+                    <TextBlock Text="{Binding NodeValue}" Style="{StaticResource TreeNodeText}"
                                Visibility="{Binding ValueVisibility}"/>
                 </StackPanel>
             </HierarchicalDataTemplate>
-            
-            <HierarchicalDataTemplate DataType="{x:Type vct:Payload}" 
-                                      ItemsSource="{Binding Content}">
-                <StackPanel Orientation="Horizontal" >
-                    <TextBlock Text="{Binding Name}" 
-                               Style="{StaticResource TreeNodeLabel}" />
+
+            <DataTemplate x:Key="KeyValuePair">
+                <StackPanel Orientation="Horizontal" Margin="1">
+                    <TextBlock Text="{Binding Path=Key}" Style="{StaticResource TreeNodeLabel}" />
+                    <TextBlock Text=": " Style="{StaticResource TreeNodeLabel}" />
+                    <TextBlock Text="{Binding Path=Value}" Style="{StaticResource TreeNodeText}"/>
                 </StackPanel>
-            </HierarchicalDataTemplate>
+            </DataTemplate>
             <!-- End Region -->
             
             <!-- Page title bar style. -->

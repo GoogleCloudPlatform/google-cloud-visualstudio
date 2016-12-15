@@ -156,8 +156,40 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             ParseObjectTree(obj);
         }
 
-        #region parser
+        /// <summary>
+        /// Parsing the object properties recursively as a tree.
+        /// </summary>
+        private void ParseObjectTree(object obj)
+        {
+            Type type = obj.GetType();
 
+            if (obj.IsNumericType() || obj is string || obj is DateTime)
+            {
+                NodeValue = obj.ToString();
+            }
+            else if (type.IsArray)
+            {
+                ParseEnumerable(obj);
+            }
+            // There is no easy way to parse generic IDictionarytype into ObjectNodeTree.
+            // Display them as Payload object.
+            else if (obj.IsDictionaryObject())
+            {
+                // Children.Add(new Payload(name, obj));
+                ParseDictionary(obj);
+            }
+            else if (s_supportedTypes.Contains(type))
+            {
+                ParseClassProperties(obj, type);
+            }
+            else
+            {
+                // The best effort.
+                NodeValue = obj.ToString();
+            }
+        }
+
+        #region parser
         private void TryParse(Action parser)
         {
             try
@@ -171,11 +203,25 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             }
         }
 
-        private void ParseEnumerable(object obj)
+        private ObservableCollection<object> CreateCollectionChildren()
         {
             var collection = new ObservableCollection<object>();
             Children = collection;
+            return collection;
+        }
+
+        private void ParseEnumerable(object obj)
+        {
+            var collection = CreateCollectionChildren();
             IEnumerable arr = obj as IEnumerable;
+            Debug.Assert(arr != null);
+            if (arr == null)
+            {
+                // Don't expect null. Be protective
+                NodeValue = obj.ToString();
+                return;
+            }
+
             int i = 0;
             foreach (var ele in arr)
             {
@@ -188,14 +234,26 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
 
         private void ParseDictionary(object obj)
         {
-            //var dict = obj as IDictionary<string, object>;
-            Children = obj;
+            var collection = CreateCollectionChildren();
+            var dict = obj as IDictionary;
+            Debug.Assert(dict != null);
+            if (dict == null)
+            {
+                // Don't expect null. Be protective
+                NodeValue = obj.ToString();
+                return;
+            }
+
+            foreach (var key in dict.Keys)
+            {
+                string name = key.ToString();
+                collection.Add(new ObjectNodeTree(name, dict[key]));
+            }
         }
 
         private void ParseClassProperties(object obj, Type type)
         {
-            var collection = new ObservableCollection<object>();
-            Children = collection;
+            var collection = CreateCollectionChildren();
             PropertyInfo[] properties = type.GetProperties();
             foreach (PropertyInfo p in properties)
             {
@@ -217,7 +275,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
                     if (ex is ArgumentException || ex is TargetException || ex is TargetParameterCountException
                         || ex is MethodAccessException || ex is TargetInvocationException)
                     {
-                        collection.Add(new Payload(p.Name, $"Type: {p.PropertyType}. PropertyInfo.GetValue failed."));
+                        // Value convertion error, display for awarness.
+                        collection.Add(
+                            new ObjectNodeTree(p.Name, $"Type: {p.PropertyType}. PropertyInfo.GetValue failed."));
                         Debug.WriteLine(ex.ToString());
                     }
                     else
@@ -230,59 +290,5 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
         #endregion
 
 
-
-        /// <summary>
-        /// Parse the object properties recursively.
-        /// </summary>
-        private void ParseObjectTree_2_delete(string name, object obj)
-        {
-            ParseObjectTree(obj);
-
-            //// To be sure NodeValue
-            //if (Children?.Count > 0)
-            //{
-            //    // NodeValue = null;
-            //}
-            //else
-            //{
-            //    if (NodeValue == null && obj != null)
-            //    {
-            //        NodeValue = obj.ToString();
-            //    }
-            //}
-        }
-
-        /// <summary>
-        /// Parsing the object properties as a tree.
-        /// </summary>
-        private void ParseObjectTree(object obj)
-        {
-            Type type = obj.GetType();
-
-            if (obj.IsNumericType() || obj is string || obj is DateTime)
-            {
-                NodeValue = obj.ToString();
-            }
-            else if (type.IsArray)
-            {
-                ParseEnumerable(obj);
-            }            
-            // There is no easy way to parse generic IDictionarytype into ObjectNodeTree.
-            // Display them as Payload object.
-            else if (obj.IsDictionaryObject())
-            {
-                // Children.Add(new Payload(name, obj));
-                ParseDictionary(obj);
-            }
-            else if (s_supportedTypes.Contains(type))
-            {
-                ParseClassProperties(obj, type);
-            }
-            else
-            {
-                // The best effort.
-                NodeValue = obj.ToString();
-            }
-        }
     }
 }
