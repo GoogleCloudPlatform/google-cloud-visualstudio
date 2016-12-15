@@ -1,0 +1,88 @@
+﻿<UserControl x:Class="GoogleCloudExtension.SplitTrafficManagement.SplitTrafficWindowContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.SplitTrafficManagement"
+             xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
+             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance {x:Type local:SplitTrafficViewModel}}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.Style>
+        <Binding Source="{StaticResource CommonDialogStyleLarge}" />
+    </UserControl.Style>
+
+    <theming:CommonDialogWindowBaseContent HasBanner="True">
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="_Add Allocation" Command="{Binding AddTrafficAllocationCommand}" />
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiDeleteButtonCaption}"
+                                      Command="{Binding DeleteAllocationCommand}" />
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiSaveButtonCaption}"
+                                      IsDefault="True"
+                                      Command="{Binding SaveCommand}"/>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
+        </theming:CommonDialogWindowBaseContent.Buttons>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <!-- Radio buttons group. -->
+            <GroupBox Header="{x:Static ext:Resources.SplitTrafficWindowSplitByMessage}"
+                      Style="{StaticResource CommonGroupBoxStyle}"
+                      Margin="0,0,0,24">
+                <StackPanel>
+                    <RadioButton Content="{x:Static ext:Resources.SplitTrafficWindowIpAddressLabel}"
+                                 GroupName="ShardBy"
+                                 IsChecked="{Binding IsIpChecked}"
+                                 Style="{StaticResource CommonRadioButton}"
+                                 Margin="{StaticResource CommonRadioButtonMargin}"/>
+                    <RadioButton Content="{x:Static ext:Resources.SplitTrafficWindowCookieLabel}"
+                                 GroupName="ShardBy"
+                                 IsChecked="{Binding IsCookieChecked}"
+                                 Style="{StaticResource CommonRadioButton}"/>
+                </StackPanel>
+            </GroupBox>
+            
+            <!-- The list of allocations. -->
+            <Label Content="{x:Static ext:Resources.SplitTrafficWindowAllocationsLabel}"
+                   Grid.Row="1"
+                   Target="{Binding ElementName=_allocations}"
+                   Style="{StaticResource CommonLabelStyle}" />
+
+            <ListBox x:Name="_allocations"
+                     Grid.Row="2"
+                     ItemsSource="{Binding Allocations}"
+                     SelectedItem="{Binding SelectedSplit, Mode=OneWayToSource}"
+                     IsSynchronizedWithCurrentItem="True"
+                     Style="{StaticResource CommonListBoxStyle}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Style="{StaticResource CommonTextStyle}">
+                            <TextBlock.Text>
+                                <MultiBinding StringFormat="{}{0} {1} %">
+                                    <Binding Path="VersionId" />
+                                    <Binding Path="TrafficAllocation" />
+                                </MultiBinding>
+                            </TextBlock.Text>
+                        </TextBlock>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+    </theming:CommonDialogWindowBaseContent>
+</UserControl>

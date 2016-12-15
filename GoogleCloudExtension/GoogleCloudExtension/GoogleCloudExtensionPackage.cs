@@ -18,6 +18,7 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.ManageAccounts;
+using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -200,6 +201,8 @@ namespace GoogleCloudExtension
             // Register the command handlers.
             CloudExplorerCommand.Initialize(this);
             ManageAccountsCommand.Initialize(this);
+            PublishProjectMainMenuCommand.Initialize(this);
+            PublishProjectContextMenuCommand.Initialize(this);
 
             // Activity log utils, to aid in debugging.
             ActivityLogUtils.Initialize(this);
@@ -209,6 +212,10 @@ namespace GoogleCloudExtension
 
             // Update the installation status of the package.
             CheckInstallationStatus();
+
+            // Ensure the commands UI state is updated when the GCP project changes.
+            CredentialsStore.Default.Reset += (o, e) => ShellUtils.InvalidateCommandsState();
+            CredentialsStore.Default.CurrentProjectIdChanged += (o, e) => ShellUtils.InvalidateCommandsState();
         }
 
         public static GoogleCloudExtensionPackage Instance { get; private set; }

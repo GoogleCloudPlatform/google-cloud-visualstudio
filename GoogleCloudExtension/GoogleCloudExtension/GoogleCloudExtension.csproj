@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props')" />
   <PropertyGroup>
@@ -56,6 +56,12 @@
     <Compile Include="Accounts\CredentialsStore.cs" />
     <Compile Include="Accounts\CredentialsStoreException.cs" />
     <Compile Include="Accounts\DefaultCredentials.cs" />
+    <Compile Include="AddTrafficSplit\AddTrafficSplitResult.cs" />
+    <Compile Include="AddTrafficSplit\AddTrafficSplitViewModel.cs" />
+    <Compile Include="AddTrafficSplit\AddTrafficSplitWindow.cs" />
+    <Compile Include="AddTrafficSplit\AddTrafficSplitWindowContent.xaml.cs">
+      <DependentUpon>AddTrafficSplitWindowContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddWindowsCredential\AddWindowsCredentialResult.cs" />
     <Compile Include="Analytics\AnalyticsEvent.cs" />
     <Compile Include="Analytics\CommandStatus.cs" />
@@ -65,6 +71,13 @@
     <Compile Include="Analytics\Events\ChangedFirewallPortsEvent.cs" />
     <Compile Include="Analytics\Events\CloudExplorerInteractionEvent.cs" />
     <Compile Include="Analytics\Events\CloudSQLInstancesLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeInstancesLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeServiceDeletedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeServicesLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeTrafficSplitUpdatedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeVersionDeletedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeVersionServingStatusUpdatedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeVersionsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GceVMsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GcsBucketsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\ManageCloudSqlAuthorizedNetworkEvent.cs" />
@@ -86,6 +99,14 @@
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksWindowContent.xaml.cs">
       <DependentUpon>AuthorizedNetworksWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CloudExplorerSources\Gae\GaeSource.cs" />
+    <Compile Include="CloudExplorerSources\Gae\GaeSourceRootViewModel.cs" />
+    <Compile Include="CloudExplorerSources\Gae\InstanceItem.cs" />
+    <Compile Include="CloudExplorerSources\Gae\InstanceViewModel.cs" />
+    <Compile Include="CloudExplorerSources\Gae\ServiceItem.cs" />
+    <Compile Include="CloudExplorerSources\Gae\ServiceViewModel.cs" />
+    <Compile Include="CloudExplorerSources\Gae\VersionItem.cs" />
+    <Compile Include="CloudExplorerSources\Gae\VersionViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gcs\BucketLocationViewModel.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
@@ -124,6 +145,7 @@
     <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
     <Compile Include="Controls\IconButton.cs" />
+    <Compile Include="Controls\LabelWithHelp.cs" />
     <Compile Include="Controls\PasswordBoxWithReveal.cs" />
     <Compile Include="Controls\PressButton.cs" />
     <Compile Include="Controls\ProgressIndicator.xaml.cs">
@@ -162,6 +184,29 @@
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PublishDialogSteps\ChoiceStep\Choice.cs" />
+    <Compile Include="PublishDialogSteps\ChoiceStep\ChoiceStepContent.xaml.cs">
+      <DependentUpon>ChoiceStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialogSteps\ChoiceStep\ChoiceStepViewModel.cs" />
+    <Compile Include="PublishDialogSteps\FlexStep\FlexStepContent.xaml.cs">
+      <DependentUpon>FlexStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialogSteps\FlexStep\FlexStepViewModel.cs" />
+    <Compile Include="PublishDialogSteps\GceStep\GceStepViewModel.cs" />
+    <Compile Include="PublishDialogSteps\GceStep\GceStepContent.xaml.cs">
+      <DependentUpon>GceStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\IPublishDialog.cs" />
+    <Compile Include="PublishDialog\IPublishDialogStep.cs" />
+    <Compile Include="PublishDialog\PublishDialogStepBase.cs" />
+    <Compile Include="PublishDialog\PublishDialogWindow.cs" />
+    <Compile Include="PublishDialog\PublishDialogWindowContent.xaml.cs">
+      <DependentUpon>PublishDialogWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialog\PublishDialogWindowViewModel.cs" />
+    <Compile Include="PublishDialog\PublishProjectContextMenuCommand.cs" />
+    <Compile Include="PublishDialog\PublishProjectMainMenuCommand.cs" />
     <Compile Include="ProgressDialog\ProgressDialogWindow.cs" />
     <Compile Include="ProgressDialog\ProgressDialogWindowContent.xaml.cs">
       <DependentUpon>ProgressDialogWindowContent.xaml</DependentUpon>
@@ -172,7 +217,22 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SolutionUtils\KnownProjectTypes.cs" />
+    <Compile Include="SolutionUtils\NetCoreProject.cs" />
+    <Compile Include="SolutionUtils\VsProject.cs" />
+    <Compile Include="SplitTrafficManagement\SplitTrafficWindow.cs" />
+    <Compile Include="SplitTrafficManagement\SplitTrafficModel.cs" />
+    <Compile Include="SplitTrafficManagement\SplitTrafficViewModel.cs" />
+    <Compile Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml.cs">
+      <DependentUpon>SplitTrafficWindowContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
+    <Compile Include="SolutionUtils\ISolutionProject.cs" />
+    <Compile Include="SolutionUtils\SolutionHelper.cs" />
+    <Compile Include="Utils\GaeUtils.cs" />
+    <Compile Include="Utils\ProgressBarHelper.cs" />
+    <Compile Include="Utils\ShellUtils.cs" />
+    <Compile Include="Utils\StatusbarHelper.cs" />
     <Compile Include="Theming\ButtonsList.cs" />
     <Compile Include="Theming\ButtonTemplateSelector.cs" />
     <Compile Include="Theming\CommonDialogWindowBaseContent.cs" />
@@ -226,6 +286,9 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Theming\Resources\ic_help_black_14px.png" />
+    <Resource Include="PublishDialogSteps\ChoiceStep\Resources\AppEngine_128px_Retina.png" />
+    <Resource Include="PublishDialogSteps\ChoiceStep\Resources\ComputeEngine_128px_Retina.png" />
     <Resource Include="Theming\Resources\ic_copy_blue_14px.png" />
     <Resource Include="Theming\Resources\ic_hide_blue_14px.png" />
     <Resource Include="Theming\Resources\ic_inspect_blue_14px.png" />
@@ -241,6 +304,10 @@
     <None Include="Key.snk" />
     <None Include="packages.config" />
     <Resource Include="CloudExplorerSources\Gce\Resources\filter.png" />
+    <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_running.png" />
+    <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_stoped.png" />
+    <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_transition.png" />
+    <Resource Include="CloudExplorerSources\Gae\Resources\service_icon.png" />
     <Resource Include="CloudExplorer\Resources\warning_icon.png" />
     <Resource Include="CloudExplorer\Resources\logo_cloud.png" />
     <Resource Include="Controls\Resources\step_10_dark.png" />
@@ -326,6 +393,10 @@
     </Reference>
     <Reference Include="EnvDTE90, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
+    </Reference>
+    <Reference Include="Google.Apis.Appengine.v1, Version=1.19.0.670, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Appengine.v1.1.19.0.670\lib\portable-net45+netcore45+wpa81+wp8\Google.Apis.Appengine.v1.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Google.Apis, Version=1.19.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.1.19.0\lib\net45\Google.Apis.dll</HintPath>
@@ -493,6 +564,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="AddTrafficSplit\AddTrafficSplitWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AuthorizedNetworkManagement\AuthorizedNetworksWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -529,6 +604,30 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PublishDialogSteps\ChoiceStep\ChoiceStepContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialogSteps\FlexStep\FlexStepContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialogSteps\GceStep\GceStepContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialog\PublishDialogWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Resource Include="Theming\ThemingResources.xaml">
       <SubType>Designer</SubType>
     </Resource>
@@ -540,10 +639,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserPrompt\UserPromptWindowContent.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -564,6 +659,10 @@
     <ProjectReference Include="..\GoogleAnalyticsUtils\GoogleAnalyticsUtils.csproj">
       <Project>{a2d9ac4e-9621-4385-a175-316832f7bfdc}</Project>
       <Name>GoogleAnalyticsUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.Deployment\GoogleCloudExtension.Deployment.csproj">
+      <Project>{92c6e0d0-41d8-4ecc-87e1-ae72fca891fc}</Project>
+      <Name>GoogleCloudExtension.Deployment</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.GCloud\GoogleCloudExtension.GCloud.csproj">
       <Project>{95efac7e-4f6e-46f0-bcc8-90ee1487e1e1}</Project>

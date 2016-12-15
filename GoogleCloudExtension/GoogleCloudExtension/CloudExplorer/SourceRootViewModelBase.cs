@@ -34,13 +34,13 @@ namespace GoogleCloudExtension.CloudExplorer
             new TreeLeaf
             {
                 IsError = true,
-                Caption = "No credentials, please login.",
+                Caption = Resources.CloudExplorerNoLoggedInMessage,
             };
         private static readonly TreeLeaf s_noProjectPlaceholder =
             new TreeLeaf
             {
                 IsError = true,
-                Caption = "No project selected.",
+                Caption = Resources.CloudExplorerNoProjectSelectedMessage,
             };
         private static readonly Lazy<ImageSource> s_nodeIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(NodeIconPath));
 

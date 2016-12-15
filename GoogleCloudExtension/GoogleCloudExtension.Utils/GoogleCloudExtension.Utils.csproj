@@ -57,6 +57,7 @@
     <Compile Include="AsyncPropertyValue.cs" />
     <Compile Include="BindableList.cs" />
     <Compile Include="BooleanConverter.cs" />
+    <Compile Include="Disposable.cs" />
     <Compile Include="JsonOutputException.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="PlaceholderMessage.cs" />

@@ -21,6 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.OAuth"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.GCloud", "GoogleCloudExtension.GCloud\GoogleCloudExtension.GCloud.csproj", "{95EFAC7E-4F6E-46F0-BCC8-90EE1487E1E1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.Deployment", "GoogleCloudExtension.Deployment\GoogleCloudExtension.Deployment.csproj", "{92C6E0D0-41D8-4ECC-87E1-AE72FCA891FC}"
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleAnalyticsUtilsTests", "GoogleAnalyticsUtilsTests\GoogleAnalyticsUtilsTests.csproj", "{99E068D6-3586-461A-9291-9315319AF237}"
 EndProject
 Global
@@ -53,6 +54,10 @@ Global
 		{95EFAC7E-4F6E-46F0-BCC8-90EE1487E1E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95EFAC7E-4F6E-46F0-BCC8-90EE1487E1E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95EFAC7E-4F6E-46F0-BCC8-90EE1487E1E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{92C6E0D0-41D8-4ECC-87E1-AE72FCA891FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{92C6E0D0-41D8-4ECC-87E1-AE72FCA891FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{92C6E0D0-41D8-4ECC-87E1-AE72FCA891FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{92C6E0D0-41D8-4ECC-87E1-AE72FCA891FC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{99E068D6-3586-461A-9291-9315319AF237}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{99E068D6-3586-461A-9291-9315319AF237}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99E068D6-3586-461A-9291-9315319AF237}.Release|Any CPU.ActiveCfg = Release|Any CPU

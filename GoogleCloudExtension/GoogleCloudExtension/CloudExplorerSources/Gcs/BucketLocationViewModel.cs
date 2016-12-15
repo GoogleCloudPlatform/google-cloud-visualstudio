@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             _owner = owner;
             _buckets = buckets;
 
-            Caption = $"{name} ({buckets.Count()})";
+            Caption = String.Format(Resources.CloudExplorerGcsBucketLocationCaption, name, buckets.Count());
             Icon = s_zoneIcon.Value;
             foreach (var bucket in _buckets)
             {
