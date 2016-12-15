@@ -38,13 +38,10 @@
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.1.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
-<<<<<<< HEAD
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Apis.Appengine.v1, Version=1.19.0.670, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Appengine.v1.1.19.0.670\lib\portable-net45+netcore45+wpa81+wp8\Google.Apis.Appengine.v1.dll</HintPath>
-=======
->>>>>>> upstream/master
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Apis, Version=1.19.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
