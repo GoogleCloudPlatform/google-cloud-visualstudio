@@ -248,7 +248,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             if (_isLoading)
             {
-                Debug.WriteLine($"_isLoading is true. Skip.");
+                Debug.WriteLine("_isLoading is true. Skip.");
                 return;
             }
 
