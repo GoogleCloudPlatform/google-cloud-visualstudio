@@ -81,7 +81,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Note, it is necessay to find cell before find row. 
         /// Otherwise when clicking at the detail view area, it 'finds' the DataGridRow too.
         /// </summary>
-        private void dg_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        private void dataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             DependencyObject dep = (DependencyObject)e.OriginalSource;
 
