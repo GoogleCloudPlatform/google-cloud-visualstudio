@@ -224,7 +224,7 @@
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                       AlternationCount="2"
                       ScrollViewer.ScrollChanged="dataGrid_ScrollChanged"
-                      PreviewMouseDown="dg_PreviewMouseDown">
+                      PreviewMouseDown="dataGrid_PreviewMouseDown">
                 
                 <!-- Override the text highlight color. -->
                 <DataGrid.Resources>
