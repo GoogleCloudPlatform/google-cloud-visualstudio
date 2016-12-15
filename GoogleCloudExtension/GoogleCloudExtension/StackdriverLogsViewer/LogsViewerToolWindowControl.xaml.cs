@@ -76,15 +76,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
+        /// When mouse click on a row, toggle display the row detail.
         /// 
-        /// TODO:  make a helper method to find ROW
         /// Note, it is necessay to find cell before find row. 
         /// Otherwise when clicking at the detail view area, it 'finds' the DataGridRow too.
-        /// 
-        /// When mouse click on a row, toggle display the row detail.
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void dg_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             DependencyObject dep = (DependencyObject)e.OriginalSource;
@@ -110,7 +106,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             DataGridRow row = dep as DataGridRow;
             if (row != null)
             {
-                row.DetailsVisibility = row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+                row.DetailsVisibility = 
+                    row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
             }
         }
     }
