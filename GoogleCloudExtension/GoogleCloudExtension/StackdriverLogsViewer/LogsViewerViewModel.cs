@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
@@ -33,13 +34,22 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     {
         private const int DefaultPageSize = 100;
 
+        private bool _isLoading = false;
         private Lazy<LoggingDataSource> _dataSource;
         private string _nextPageToken;
 
         private string _firstRowDate;
         private bool _toggleExpandAllExpanded = false;
+        private bool _isControlEnabled = true;
 
         private ObservableCollection<LogItem> _logs = new ObservableCollection<LogItem>();
+
+        private string _requestStatusText;
+        private string _requestErrorMessage;
+        private bool _showRequestErrorMessage = false;
+        private bool _showRequestStatus = false;
+        private bool _showCancelRequestButton = false;
+        private CancellationTokenSource _cancellationTokenSource;
 
         /// <summary>
         /// Gets the refresh button command.
@@ -54,7 +64,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the project id.
         /// </summary>
-        public string Project => CredentialsStore.Default?.CurrentProjectId ?? "";
+        public string Project => CredentialsStore.Default.CurrentProjectId ?? "";
 
         /// <summary>
         /// Route the expander IsExpanded state to control expand all or collapse all.
@@ -92,14 +102,75 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public ListCollectionView LogItemCollection { get; }
 
         /// <summary>
+        /// Gets the cancel request button ICommand interface.
+        /// </summary>
+        public ProtectedCommand CancelRequestCommand { get; }
+
+        /// <summary>
+        /// Gets the cancel request button visibility
+        /// </summary>
+        public bool ShowCancelRequestButton
+        {
+            get { return _showCancelRequestButton; }
+            private set { SetValueAndRaise(ref _showCancelRequestButton, value); }
+        }
+
+        /// <summary>
+        /// Gets the request error message visibility.
+        /// </summary>
+        public bool ShowRequestErrorMessage
+        {
+            get { return _showRequestErrorMessage; }
+            private set { SetValueAndRaise(ref _showRequestErrorMessage, value); }
+        }
+
+        /// <summary>
+        /// Gets the request error message.
+        /// </summary>
+        public string RequestErrorMessage
+        {
+            get { return _requestErrorMessage; }
+            private set { SetValueAndRaise(ref _requestErrorMessage, value); }
+        }
+
+        /// <summary>
+        /// Gets the request status text message.
+        /// </summary>
+        public string RequestStatusText
+        {
+            get { return _requestStatusText; }
+            private set { SetValueAndRaise(ref _requestStatusText, value); }
+        }
+
+        /// <summary>
+        /// Gets the request status block visibility. 
+        /// It includes the request status text block and cancel request button.
+        /// </summary>
+        public bool ShowRequestStatus
+        {
+            get { return _showRequestStatus; }
+            private set { SetValueAndRaise(ref _showRequestStatus, value); }
+        }
+
+        /// <summary>
+        /// Gets if it is making request to remote servers or not.
+        /// </summary>
+        public bool IsControlEnabled
+        {
+            get { return _isControlEnabled; }
+            private set { SetValueAndRaise(ref _isControlEnabled, value); }
+        }
+
+        /// <summary>
         /// Initializes an instance of <seealso cref="LogsViewerViewModel"/> class.
         /// </summary>
         public LogsViewerViewModel()
         {
             _dataSource = new Lazy<LoggingDataSource>(CreateDataSource);
-            RefreshCommand = new ProtectedCommand(() => Reload(), canExecuteCommand: false);
+            RefreshCommand = new ProtectedCommand(() => Reload());
             LogItemCollection = new ListCollectionView(_logs);
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
+            CancelRequestCommand = new ProtectedCommand(CancelRequest);
         }
 
         /// <summary>
@@ -143,23 +214,29 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            LogLoaddingWrapperAsync(LoadLogsAsync);
+            LogLoaddingWrapperAsync(async (cancelToken) => await LoadLogsAsync(cancelToken));
         }
 
         /// <summary>
-        /// Disable all filters, refresh button etc, when a request is pending.
+        /// Cancel request button command.
         /// </summary>
-        private void DisableControls()
+        private void CancelRequest()
         {
-            RefreshCommand.CanExecuteCommand = false;
+            Debug.WriteLine("Cancel command is called");
+            RequestStatusText = Resources.LogViewerRequestCancellingMessage;
+            ShowCancelRequestButton = false;
+            _cancellationTokenSource?.Cancel();
         }
 
         /// <summary>
-        /// Enable all controls when request is complete.
+        /// Show request status bar.
         /// </summary>
-        private void EnableControls()
+        private void InitAndShowRequestStatus()
         {
-            RefreshCommand.CanExecuteCommand = true;
+            ShowRequestErrorMessage = false;
+            RequestStatusText = Resources.LogViewerRequestProgressMessage;
+            ShowRequestStatus = true;
+            ShowCancelRequestButton = true;
         }
 
         /// <summary>
@@ -167,16 +244,47 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// This is to make the try/catch statement conscise and easy to read.
         /// </summary>
         /// <param name="callback">A function to execute.</param>
-        private async Task LogLoaddingWrapperAsync(Func<Task> callback)
+        private async Task LogLoaddingWrapperAsync(Func<CancellationToken, Task> callback)
         {
+            if (_isLoading)
+            {
+                Debug.WriteLine($"_isLoading is true. Skip.");
+                return;
+            }
+
+            Debug.WriteLine("Setting _isLoading to true");
+            _isLoading = true;
+
+            _cancellationTokenSource = new CancellationTokenSource();
+            IsControlEnabled = false;
+            InitAndShowRequestStatus();
             try
             {
-                DisableControls();
-                await callback();
+                await callback(_cancellationTokenSource.Token);
+            }
+            catch (Exception ex)
+            {
+                _nextPageToken = null;
+
+                if (ex is TaskCanceledException && _cancellationTokenSource.IsCancellationRequested)
+                {
+                    // Expected cancellation. Log and continue.
+                    Debug.WriteLine("Request was cancelled");
+                }
+                else if (ex is DataSourceException)
+                {
+                    ShowRequestErrorMessage = true;
+                    RequestErrorMessage = ex.Message;
+                }
+
+                throw;
             }
             finally
             {
-                EnableControls();
+                IsControlEnabled = true;
+                ShowRequestStatus = false;
+                Debug.WriteLine("Setting _isLoading to false");
+                _isLoading = false;
             }
         }
 
@@ -187,10 +295,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// On complex filters, scanning through logs take time. The server returns empty results 
         ///   with a next page token. Continue to send request till some logs are found.
         /// </summary>
-        private async Task LoadLogsAsync()
+        private async Task LoadLogsAsync(CancellationToken cancellationToken)
         {
             int count = 0;
-
             while (count < DefaultPageSize)
             {
                 Debug.WriteLine($"LoadLogs, count={count}, firstPage={_nextPageToken==null}");
@@ -198,7 +305,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 // Here, it does not do pageSize: _defaultPageSize - count, 
                 // Because this is requried to use same page size for getting next page. 
                 var results = await _dataSource.Value.ListLogEntriesAsync(
-                    pageSize: DefaultPageSize, nextPageToken: _nextPageToken);
+                    pageSize: DefaultPageSize, nextPageToken: _nextPageToken, cancelToken: cancellationToken);
                 AddLogs(results?.LogEntries);
                 _nextPageToken = results.NextPageToken;
                 if (results?.LogEntries != null)
@@ -219,15 +326,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void Reload()
         {
-            if (Project == null)
+            if (String.IsNullOrWhiteSpace(Project))
             {
                 return;
             }
 
-            LogLoaddingWrapperAsync(async () => {
+            LogLoaddingWrapperAsync(async (cancelToken) => {
                 _nextPageToken = null;
                 _logs.Clear();
-                await LoadLogsAsync();
+                await LoadLogsAsync(cancelToken);
             });
         }
 

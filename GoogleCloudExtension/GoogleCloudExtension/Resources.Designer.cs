@@ -1933,7 +1933,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0}: {1}.
+        ///   Looks up a localized string similar to {0}: {1}  .
         /// </summary>
         public static string LogViewerDictionaryPayloadFormatString {
             get {
@@ -1983,6 +1983,24 @@ namespace GoogleCloudExtension {
         public static string LogViewerRefreshButtonToolTip {
             get {
                 return ResourceManager.GetString("LogViewerRefreshButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancelling . . ..
+        /// </summary>
+        public static string LogViewerRequestCancellingMessage {
+            get {
+                return ResourceManager.GetString("LogViewerRequestCancellingMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading . . ..
+        /// </summary>
+        public static string LogViewerRequestProgressMessage {
+            get {
+                return ResourceManager.GetString("LogViewerRequestProgressMessage", resourceCulture);
             }
         }
         
