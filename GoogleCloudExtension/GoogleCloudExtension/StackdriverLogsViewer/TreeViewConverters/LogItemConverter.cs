@@ -44,8 +44,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             }
 
             LogItem log = value as LogItem;
-            var objNode = new ObjectNodeTree(log.Entry);
-            return objNode.Children;
+            return new ObjectNodeTree(log.Entry).Children;
         }
 
         /// <summary>
