@@ -16,9 +16,9 @@ using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
@@ -77,11 +77,13 @@ namespace GoogleCloudExtension.DataSources
         /// If the value is not null, it is hard requirement that the filter, orderBy and pageSize parameters
         /// must stay same as the prior call.
         /// </param>
+        /// <param name="cancelToken">Optional. A cancellation token.</param>
         /// <returns>
         ///     <seealso ref="LogEntryRequestResult" /> object that contains log entries and next page token.
         /// </returns>
         public async Task<LogEntryRequestResult> ListLogEntriesAsync(
-            string filter = null, string orderBy = null, int? pageSize = null, string nextPageToken = null)
+            string filter = null, string orderBy = null, int? pageSize = null, string nextPageToken = null,
+            CancellationToken cancelToken = default(CancellationToken))
         {
             try
             {
@@ -95,7 +97,7 @@ namespace GoogleCloudExtension.DataSources
                 };
 
                 requestData.PageToken = nextPageToken;
-                var response = await Service.Entries.List(requestData).ExecuteAsync();
+                var response = await Service.Entries.List(requestData).ExecuteAsync(cancelToken);
                 return new LogEntryRequestResult(response.Entries, response.NextPageToken);
             }
             catch (GoogleApiException ex)

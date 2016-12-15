@@ -68,7 +68,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            Debug.WriteLine($"e.VerticalOffset={e.VerticalOffset}, ScrollableHeight={sv.ScrollableHeight}, e.VerticalChange={e.VerticalChange}, e.ViewportHeight={e.ViewportHeight}");
             if (e.VerticalOffset == sv.ScrollableHeight)
             {
                 Debug.WriteLine("Now it is at bottom");
