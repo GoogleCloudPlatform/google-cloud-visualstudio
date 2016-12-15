@@ -22,7 +22,6 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Data;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
@@ -35,7 +34,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     {
         private const int DefaultPageSize = 100;
 
-        private bool _isLoading = false;
         private bool _isLoading = false;
         private Lazy<LoggingDataSource> _dataSource;
         private string _nextPageToken;
@@ -84,7 +82,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the tool tip for Toggle Expand All button.
         /// </summary>
-        public string ToggleExapandAllToolTip => _toggleExpandAllExpanded ? 
+        public string ToggleExapandAllToolTip => _toggleExpandAllExpanded ?
             Resources.LogViewerCollapseAllTip : Resources.LogViewerExpandAllTip;
 
         /// <summary>
@@ -225,37 +223,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private void CancelRequest()
         {
             Debug.WriteLine("Cancel command is called");
-
-            // Double check lock.
-            if (_isLoading)
-            {
-                lock (_isLoadingLockObj)
-                {
-                    if (_isLoading)
-                    {
-                        RequestStatusText = Resources.LogViewerRequestCancellingMessage;
-                        CancelRequestButtonVisibility = Visibility.Collapsed;
-                        _requestCancelled = true;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Show request status bar.
-        /// </summary>
-        private void InitAndShowRequestStatus()
-        {
-            RequestErrorMessageVisibility = Visibility.Collapsed;
-            RequestStatusText = Resources.LogViewerRequestProgressMessage;
-            CancelRequestButtonVisibility = Visibility.Visible;
-        }
-
-        /// <summary>
-        /// </summary>
-        private void CancelRequest()
-        {
-            Debug.WriteLine("Cancel command is called");
             RequestStatusText = Resources.LogViewerRequestCancellingMessage;
             ShowCancelRequestButton = false;
             _cancellationTokenSource?.Cancel();
@@ -291,7 +258,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             _cancellationTokenSource = new CancellationTokenSource();
             IsControlEnabled = false;
             InitAndShowRequestStatus();
-                {
+            try
+            {
                 await callback(_cancellationTokenSource.Token);
             }
             catch (Exception ex)
@@ -311,22 +279,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
                 throw;
             }
-            catch (DataSourceException ex)
-            {
-                RequestErrorMessage = ex.Message;
-            }
-            catch (Exception ex)
-            {
-                RequestErrorMessage = ex.ToString();
-            }
             finally
             {
                 IsControlEnabled = true;
                 ShowRequestStatus = false;
                 Debug.WriteLine("Setting _isLoading to false");
                 _isLoading = false;
-                }
-                RequestStatusVisibility = Visibility.Collapsed;
             }
         }
 
@@ -340,10 +298,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private async Task LoadLogsAsync(CancellationToken cancellationToken)
         {
             int count = 0;
-            _requestCancelled = false;
-            while (count < DefaultPageSize && !_requestCancelled)
+            while (count < DefaultPageSize)
             {
-                Debug.WriteLine($"LoadLogs, count={count}, firstPage={_nextPageToken==null}");
+                Debug.WriteLine($"LoadLogs, count={count}, firstPage={_nextPageToken == null}");
 
                 // Here, it does not do pageSize: _defaultPageSize - count, 
                 // Because this is requried to use same page size for getting next page. 
@@ -361,7 +318,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     _nextPageToken = null;
                     break;
                 }
-            }            
+            }
         }
 
         /// <summary>
