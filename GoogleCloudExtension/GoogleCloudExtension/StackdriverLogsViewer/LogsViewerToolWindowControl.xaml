@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
+             xmlns:vct="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:viewer="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
@@ -31,7 +32,7 @@
                     <Setter.Value>
                         <ControlTemplate TargetType="DataGridCell">
                             <Border  BorderThickness="0">
-                                <Border x:Name="border" Padding="0, 2, 0, 2" >
+                                <Border x:Name="border" Padding="0, 4, 0, 4" >
                                     <ContentPresenter />
                                 </Border>
                             </Border>
@@ -42,6 +43,7 @@
 
             <Style x:Key="rowStyle" TargetType="DataGridRow">
                 <Setter Property="TextBlock.TextWrapping" Value="NoWrap" />
+                <Setter Property="TextBlock.FontSize" Value="12" />
                 <Setter Property="Margin" Value="0, 0, 0, 1"/>
                 <Setter Property="BorderThickness" Value="0, 0, 0, 0"/>
                 <Setter Property="BorderBrush" Value="LightGray" />
@@ -57,6 +59,34 @@
                 </Style.Triggers>
             </Style>
 
+            <!-- Region TreeView styles and converters. -->
+            <vct:LogItemConverter x:Key="LogItemConverter"/>
+
+            <Style x:Key="TreeNodeText" 
+                   TargetType="TextBlock" 
+                   BasedOn="{StaticResource CommonTextStyle}" >
+                <Setter Property="Padding" Value="3, 0, 3, 1"/>
+                <Setter Property="Foreground" Value="DarkSlateGray"/>
+            </Style>
+
+            <Style x:Key="TreeNodeLabel" 
+                   TargetType="TextBlock" 
+                   BasedOn="{StaticResource TreeNodeText}">
+                <Setter Property="Margin" Value="0, 0, 5, 0" />
+            </Style>
+
+            <HierarchicalDataTemplate DataType="{x:Type vct:ObjectNodeTree}" 
+                                      ItemsSource="{Binding Children}">
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Text="{Binding Name}" Style="{StaticResource TreeNodeLabel}"/>
+                    <TextBlock Text=":" Style="{StaticResource TreeNodeLabel}" 
+                               Visibility="{Binding ValueVisibility}"/>
+                    <TextBlock Text="{Binding NodeValue}" Style="{StaticResource TreeNodeText}"
+                               Visibility="{Binding ValueVisibility}"/>
+                </StackPanel>
+            </HierarchicalDataTemplate>
+            <!-- End Region -->
+            
             <!-- Page title bar style. -->
             <Style x:Key="PageTitleBarStyle" TargetType="{x:Type StackPanel}">
                 <Setter Property="Orientation" Value="Horizontal" />
@@ -193,7 +223,8 @@
                       ItemsSource="{Binding LogItemCollection}"   
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                       AlternationCount="2"
-                      ScrollViewer.ScrollChanged="dataGrid_ScrollChanged">
+                      ScrollViewer.ScrollChanged="dataGrid_ScrollChanged"
+                      PreviewMouseDown="dg_PreviewMouseDown">
                 
                 <!-- Override the text highlight color. -->
                 <DataGrid.Resources>
@@ -263,20 +294,24 @@
 
                 <DataGrid.RowDetailsTemplate>
                     <DataTemplate>
-                        <!-- The detail view takes the LogItem object as input and display it. -->
-                        <TreeView BorderThickness="0" Margin="30, 0, 0, 2">
-                            <TreeView.Template>
-                                <ControlTemplate>
-                                    <ItemsPresenter />
-                                </ControlTemplate>
-                            </TreeView.Template>
-                            <TreeView.ItemContainerStyle>
-                                <Style TargetType="{x:Type TreeViewItem}" >
-                                    <Setter Property="IsExpanded" Value="True" />
-                                    <Setter Property="Foreground" Value="DarkSlateGray" />
-                                </Style>
-                            </TreeView.ItemContainerStyle>
-                        </TreeView>
+                        <!-- Use a border to make the background right. -->
+                        <Border Background="White" Padding="30, 0, 0 , 2">
+                            
+                            <!-- Override the template to disable inner scrollbar -->
+                            <TreeView BorderThickness="0" 
+                                ItemsSource="{Binding Converter={StaticResource LogItemConverter}}">
+                                <TreeView.Template>
+                                    <ControlTemplate>
+                                        <ItemsPresenter />
+                                    </ControlTemplate>
+                                </TreeView.Template>
+                                <TreeView.ItemContainerStyle>
+                                    <Style TargetType="{x:Type TreeViewItem}" >
+                                        <Setter Property="IsExpanded" Value="True" />
+                                    </Style>
+                                </TreeView.ItemContainerStyle>
+                            </TreeView>
+                        </Border>
                     </DataTemplate>
                 </DataGrid.RowDetailsTemplate>
             </DataGrid>

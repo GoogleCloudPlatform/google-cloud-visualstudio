@@ -18,6 +18,8 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -52,6 +54,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
  
         /// <summary>
+
         /// Response to data grid scroll change event.
         /// Auto load more logs when it scrolls down to bottom.
         /// </summary>
@@ -69,6 +72,42 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 Debug.WriteLine("Now it is at bottom");
                 ViewModel?.LoadNextPage();
+            }
+        }
+
+        /// <summary>
+        /// When mouse click on a row, toggle display the row detail.
+        /// 
+        /// Note, it is necessay to find cell before find row. 
+        /// Otherwise when clicking at the detail view area, it 'finds' the DataGridRow too.
+        /// </summary>
+        private void dg_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            DependencyObject dep = (DependencyObject)e.OriginalSource;
+
+            // iteratively traverse the visual tree
+            while ((dep != null) && !(dep is DataGridCell))
+            {
+                dep = VisualTreeHelper.GetParent(dep);
+            }
+
+            if (dep == null)
+                return;
+
+
+            DataGridCell cell = dep as DataGridCell;
+
+            // navigate further up the tree
+            while ((dep != null) && !(dep is DataGridRow))
+            {
+                dep = VisualTreeHelper.GetParent(dep);
+            }
+
+            DataGridRow row = dep as DataGridRow;
+            if (row != null)
+            {
+                row.DetailsVisibility = 
+                    row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
             }
         }
     }
