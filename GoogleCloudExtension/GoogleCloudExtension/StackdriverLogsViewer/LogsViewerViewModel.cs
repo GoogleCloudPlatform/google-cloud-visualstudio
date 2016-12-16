@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// <summary>
     /// The view model for LogsViewerToolWindow.
     /// </summary>
-    public class LogsViewerViewModel : ViewModelBase
+    public partial class LogsViewerViewModel : ViewModelBase
     {
         private const int DefaultPageSize = 100;
 
@@ -174,8 +174,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// When a new view model is created and attached to Window, invalidate controls and re-load first page
-        /// of log entries.
+        /// When a new view model is created and attached to Window, 
+        /// invalidate controls and re-load first page of log entries.
         /// </summary>
         public void InvalidateAllProperties()
         {
@@ -185,23 +185,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            Reload();
-        }
-
-        /// <summary>
-        /// Append a set of log entries.
-        /// </summary>
-        public void AddLogs(IList<LogEntry> logEntries)
-        {
-            if (logEntries == null)
-            {
-                return;
-            }
-
-            foreach (var log in logEntries)
-            {
-                _logs.Add(new LogItem(log));
-            }
+            PopulateResourceTypes();
         }
 
         /// <summary>
@@ -215,6 +199,22 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             LogLoaddingWrapperAsync(async (cancelToken) => await LoadLogsAsync(cancelToken));
+        }
+
+        /// <summary>
+        /// Append a set of log entries.
+        /// </summary>
+        private void AddLogs(IList<LogEntry> logEntries)
+        {
+            if (logEntries == null)
+            {
+                return;
+            }
+
+            foreach (var log in logEntries)
+            {
+                _logs.Add(new LogItem(log));
+            }
         }
 
         /// <summary>
@@ -304,7 +304,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
                 // Here, it does not do pageSize: _defaultPageSize - count, 
                 // Because this is requried to use same page size for getting next page. 
-                var results = await _dataSource.Value.ListLogEntriesAsync(
+                var results = await _dataSource.Value.ListLogEntriesAsync(_filter,
                     pageSize: DefaultPageSize, nextPageToken: _nextPageToken, cancelToken: cancellationToken);
                 AddLogs(results?.LogEntries);
                 _nextPageToken = results.NextPageToken;
@@ -328,6 +328,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             if (String.IsNullOrWhiteSpace(Project))
             {
+                Debug.Assert(false, "Project should not be null if the viewer is visible and enabled.");
+                return;
+            }
+
+            if (_resourceDescriptors?[0] == null)
+            {
+                PopulateResourceTypes();
                 return;
             }
 

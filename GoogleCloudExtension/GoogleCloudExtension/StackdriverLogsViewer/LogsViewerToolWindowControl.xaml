@@ -94,6 +94,7 @@
                 <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.PanelTitleBarKey}}" />
                 <Setter Property="HorizontalAlignment" Value="Stretch" />
             </Style>
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -142,7 +143,25 @@
                 <StackPanel Margin="0, 0, 0, 6"
                             Orientation="Horizontal" 
                             HorizontalAlignment="Left" 
-                            VerticalAlignment="Center" >
+                            VerticalAlignment="Center">
+                    
+                    <StackPanel.Resources>
+                        <Style TargetType="ComboBox" BasedOn="{StaticResource CommonComboBoxStyle}">
+                            <Setter Property="Margin" Value="0, 0, 6, 0" />
+                            <Setter Property="Padding" Value="8, 5, 8, 5" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <ComboBox 
+                        Name="comboResource" 
+                        Width="160" 
+                        Background="White"
+                        ItemsSource="{Binding ResourceDescriptors}"
+                        SelectedItem="{Binding SelectedResource, Mode=TwoWay}"
+                        DisplayMemberPath="DisplayName" 
+                        Loaded="ComboBox_Loaded" >
+                    </ComboBox>
                     
                     <controls:ImageButton 
                         Grid.Column="1" 
@@ -156,7 +175,7 @@
                         Command="{Binding RefreshCommand}">
                         <controls:ImageButton.ToolTip>
                             <ToolTip Content="{x:Static ext:Resources.LogViewerRefreshButtonToolTip}" 
-                                     Style="{StaticResource CommonTooltipStyle}"/>
+                                     Style="{StaticResource CommonTooltipStyle}" />
                         </controls:ImageButton.ToolTip>
                     </controls:ImageButton>
                 </StackPanel>
