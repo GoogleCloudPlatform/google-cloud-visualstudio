@@ -213,7 +213,6 @@
                       BorderBrush="LightGray"
                       GridLinesVisibility="None" 
                       CanUserResizeRows="False"                  
-                      RowDetailsVisibilityMode="{Binding DataGridRowDetailsVisibility}"
                       RowStyle="{StaticResource rowStyle}" 
                       CellStyle="{StaticResource cellStyle}"
                       AutoGenerateColumns="False" 
