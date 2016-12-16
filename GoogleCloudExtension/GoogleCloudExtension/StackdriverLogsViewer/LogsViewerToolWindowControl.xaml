@@ -66,7 +66,7 @@
             <Style x:Key="TreeNodeText" 
                    TargetType="TextBlock" 
                    BasedOn="{StaticResource CommonTextStyle}" >
-                <Setter Property="Padding" Value="3, 0, 3, 1"/>
+                <Setter Property="Padding" Value="3, 2, 3, 2"/>
                 <Setter Property="Foreground" Value="DarkSlateGray"/>
             </Style>
 
@@ -237,7 +237,6 @@
                       BorderBrush="LightGray"
                       GridLinesVisibility="None" 
                       CanUserResizeRows="False"                  
-                      RowDetailsVisibilityMode="{Binding DataGridRowDetailsVisibility}"
                       RowStyle="{StaticResource rowStyle}" 
                       CellStyle="{StaticResource cellStyle}"
                       AutoGenerateColumns="False" 
