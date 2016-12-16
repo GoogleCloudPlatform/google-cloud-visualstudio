@@ -7,6 +7,7 @@
              xmlns:vct="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"             
              xmlns:viewer="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
              xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"
              xmlns:jlinq="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json"
@@ -142,18 +143,22 @@
                             Orientation="Horizontal" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Center" >
-                    <Button Grid.Column="1"
-                            Margin="6, 0, 16, 0"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Right"
-                            Style="{StaticResource CommonButtonStandardStyle}" 
-                            Command="{Binding RefreshCommand}"
-                            Content="{x:Static ext:Resources.LogViewerRefreshButtonCaption}" >
-                        <Button.ToolTip>
+                    
+                    <controls:ImageButton 
+                        Grid.Column="1" 
+                        Margin="6, 0, 16, 0"
+                        Width="32" Height="32"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Right"                                              
+                        NormalImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh.png}"
+                        MouseOverImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh-mouseover.png}"
+                        MouseDownImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh-mouse-down.png}"
+                        Command="{Binding RefreshCommand}">
+                        <controls:ImageButton.ToolTip>
                             <ToolTip Content="{x:Static ext:Resources.LogViewerRefreshButtonToolTip}" 
                                      Style="{StaticResource CommonTooltipStyle}"/>
-                        </Button.ToolTip>                        
-                    </Button>
+                        </controls:ImageButton.ToolTip>
+                    </controls:ImageButton>
                 </StackPanel>
             </StackPanel>
         </StackPanel>

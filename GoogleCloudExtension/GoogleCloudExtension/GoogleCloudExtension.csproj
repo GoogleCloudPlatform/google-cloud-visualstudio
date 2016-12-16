@@ -145,6 +145,7 @@
     <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
     <Compile Include="Controls\IconButton.cs" />
+    <Compile Include="Controls\ImageButton.cs" />
     <Compile Include="Controls\LabelWithHelp.cs" />
     <Compile Include="Controls\PasswordBoxWithReveal.cs" />
     <Compile Include="Controls\PressButton.cs" />
@@ -298,6 +299,9 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="StackdriverLogsViewer\Resources\refresh-mouse-down.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\refresh-mouseover.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\refresh.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_any.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_debug.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_error.png" />

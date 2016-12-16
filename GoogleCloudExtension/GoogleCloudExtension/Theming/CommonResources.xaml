@@ -420,6 +420,40 @@
         </Setter>
     </Style>
 
+    <!-- Style for ImageButton -->
+
+    <Style TargetType="{x:Type controls:ImageButton}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:ImageButton}">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}">
+                        <Image x:Name="buttonImage" HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Height="{TemplateBinding Height}"
+                               Width="{TemplateBinding Width}"
+                               Source="{TemplateBinding NormalImage}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Source" TargetName="buttonImage" 
+                                    Value="{Binding MouseOverImage, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter Property="Source" TargetName="buttonImage" 
+                                    Value="{Binding MouseDownImage, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.6" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Common PasswordWithReveal style. -->
 
     <!-- Ultra simple template for the TextBox used to display the password. -->
