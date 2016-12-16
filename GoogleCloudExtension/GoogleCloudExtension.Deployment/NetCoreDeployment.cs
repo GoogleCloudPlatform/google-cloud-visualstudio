@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.Deployment
 
         private const string AppYamlDefaultContent =
             "runtime: custom\n" +
-            "vm: true\n";
+            "env: flex\n";
 
         private const string DockerfileName = "Dockerfile";
 
