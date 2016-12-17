@@ -200,8 +200,8 @@
                     <ComboBox 
                         Name="comboSeverity" 
                         Width="160"
-                        ItemsSource="{Binding Path=LogSeverityList}"
-                        SelectedItem="{Binding Path=SelectedLogSeverity}"
+                        ItemsSource="{Binding LogSeverityList}"
+                        SelectedItem="{Binding SelectedLogSeverity}"
                         Loaded="ComboBox_Loaded" />
                     
                     <controls:ImageButton 
