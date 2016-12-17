@@ -28,6 +28,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public partial class LogsViewerViewModel : ViewModelBase
     {
+        private const string AdvancedHelpLink = "https://cloud.google.com/logging/docs/view/advanced_filters";
+
         private static readonly string[] s_defaultResourceSelections = new string[] { "global", "gce_instance" };
         private static readonly string[] s_logSeverityList =
             new string[] { "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL", "EMERGENCY",
@@ -154,7 +156,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private void ShowAdvancedFilterHelp()
         {
-            Process.Start(new ProcessStartInfo("https://cloud.google.com/logging/docs/view/advanced_filters"));
+            Process.Start(new ProcessStartInfo(AdvancedHelpLink));
         }
 
         private void SwapFilter()
