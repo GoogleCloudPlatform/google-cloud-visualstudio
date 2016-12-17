@@ -1343,10 +1343,6 @@
     <value>Usage Report</value>
     <comment>The category for the analytics options in the options page.</comment>
   </data>
-  <data name="LogViewerRefreshButtonCaption" xml:space="preserve">
-    <value>Refresh</value>
-    <comment>Refresh button caption.</comment>
-  </data>
   <data name="AnalyticsOptionsOptInDescription" xml:space="preserve">
     <value>Whether to report usage statistics to Google</value>
     <comment>Description for the opt-in option in the analytics options.</comment>
