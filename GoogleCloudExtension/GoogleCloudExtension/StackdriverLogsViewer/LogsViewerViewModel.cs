@@ -167,10 +167,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public LogsViewerViewModel()
         {
             _dataSource = new Lazy<LoggingDataSource>(CreateDataSource);
-            RefreshCommand = new ProtectedCommand(() => Reload());
+            RefreshCommand = new ProtectedCommand(Reload);
             LogItemCollection = new ListCollectionView(_logs);
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
             CancelRequestCommand = new ProtectedCommand(CancelRequest);
+            SimpleTextSearchCommand = new ProtectedCommand(Reload);
         }
 
         /// <summary>
@@ -337,6 +338,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 PopulateResourceTypes();
                 return;
             }
+
+            _filter = ComposeSimpleFilters();
 
             LogLoaddingWrapperAsync(async (cancelToken) => {
                 _nextPageToken = null;

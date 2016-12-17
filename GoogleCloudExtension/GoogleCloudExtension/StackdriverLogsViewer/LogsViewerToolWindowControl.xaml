@@ -11,6 +11,7 @@
              xmlns:viewer="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
              xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"
              xmlns:jlinq="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"             
              xmlns:collection="clr-namespace:System.Collections.Generic;assembly=mscorlib"
              xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"            
              Background="{DynamicResource VsBrush.Window}"
@@ -93,6 +94,39 @@
                 <Setter Property="Orientation" Value="Horizontal" />
                 <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.PanelTitleBarKey}}" />
                 <Setter Property="HorizontalAlignment" Value="Stretch" />
+            </Style>
+
+            <ControlTemplate x:Key="FilterSwitchButton" TargetType="{x:Type Button}">
+                <Button Style="{StaticResource CommonButtonDynamicStyle}"
+                        Command="{Binding Path=FilterSwitchCommand}" >
+                    <ContentPresenter />
+                </Button>
+            </ControlTemplate>
+
+            <Style x:Key="WartermarkedTextBox" 
+                   TargetType="TextBox">
+                <Style.Resources>
+                    <VisualBrush x:Key="CueBannerBrush" 
+                                 AlignmentX="Left" 
+                                 AlignmentY="Center" 
+                                 Stretch="None">
+                        <VisualBrush.Visual>
+                            <Label Content="{x:Static ext:Resources.LogViewerSimpleTextSearchWatermarkMessage}" 
+                                   Foreground="Gray" />
+                        </VisualBrush.Visual>
+                    </VisualBrush>
+                </Style.Resources>
+                <Style.Triggers>
+                    <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
+                        <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                    </Trigger>
+                    <Trigger Property="Text" Value="{x:Null}">
+                        <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
+                    </Trigger>
+                    <Trigger Property="IsKeyboardFocused" Value="True">
+                        <Setter Property="Background" Value="White" />
+                    </Trigger>
+                </Style.Triggers>
             </Style>
 
         </ResourceDictionary>
@@ -187,6 +221,53 @@
                     </controls:ImageButton>
                 </StackPanel>
             </StackPanel>
+
+            <Grid Margin="0, 6, 0, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0"
+                        BorderThickness="1" 
+                        BorderBrush="LightGray">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Column="0"
+                             BorderThickness="0"
+                             TextWrapping="Wrap"    
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Stretch"
+                             Text="{Binding SimpleSearchText, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"                                               
+                             Style="{StaticResource WartermarkedTextBox}">
+                        </TextBox>
+                        <controls:ImageButton 
+                            Grid.Column="1" 
+                            Padding="2, 0, 2, 0"
+                            BorderThickness="0"
+                            Width="24"
+                            Background="Transparent"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Stretch"
+                            Command="{Binding SimpleTextSearchCommand}"
+                            NormalImage="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}"
+                            MouseOverImage="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}"
+                            MouseDownImage="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}">
+                            <controls:ImageButton.ToolTip>
+                                <ToolTip Content="{x:Static ext:Resources.LogViewerSimpleTextSearchIconButtonToolTip}"/>
+                            </controls:ImageButton.ToolTip>
+                        </controls:ImageButton>                        
+                    </Grid>
+                </Border>
+                <Button Grid.Column="1" 
+                        Margin="12,0,0,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Template="{StaticResource FilterSwitchButton}"
+                        Content="{x:Static ext:Resources.LogViewerSwitchToAdvancedFilterCaption}"/>
+            </Grid>
         </StackPanel>
 
         <Grid Grid.Row="2" 

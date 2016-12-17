@@ -15,6 +15,7 @@
 using Google.Apis.Logging.v2.Data;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -39,8 +40,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private MonitoredResourceDescriptor _selectedResource;
         private IList<MonitoredResourceDescriptor> _resourceDescriptors;
-
         private string _selectedLogSeverity = Resources.LogViewerAllLogLevelSelection;
+        private string _simpleSearchText;
 
         /// <summary>
         /// Gets the list of Log Level selectors.
@@ -48,12 +49,39 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public IEnumerable<string> LogSeverityList => s_logSeverityList;
 
         /// <summary>
-        /// 
+        /// The simple text search icon command button.
+        /// </summary>
+        public ProtectedCommand SimpleTextSearchCommand { get; }
+
+        /// <summary>
+        /// Set simple search text box content.
+        /// </summary>
+        public string SimpleSearchText
+        { 
+            set
+            {
+                // This disables loading next page that is based on prior filters. 
+                _nextPageToken = null;
+
+                _simpleSearchText = value;
+                if (String.IsNullOrWhiteSpace(_simpleSearchText))
+                {
+                    LogItemCollection.Filter = null;
+                    SimpleTextSearchCommand.CanExecuteCommand = false;
+                    return;
+                }
+
+                SimpleTextSearchCommand.CanExecuteCommand = true;
+                DataGridQuickSearch(value);
+            }
+        }
+
+        /// <summary>
+        /// Gets or sets the log severity current selection.
         /// </summary>
         public string SelectedLogSeverity
         {
             get { return _selectedLogSeverity; }
-
             set
             {
                 if (value != null && _selectedLogSeverity != value)
@@ -87,6 +115,43 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     OnFiltersChanged();
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns the current filter for final list log entry request.
+        /// </summary>
+        /// <returns>
+        /// A text filter string.
+        /// Or null if it is empty.
+        /// </returns>
+        private string ComposeTextSearchFilter()
+        {
+            var splits = _simpleSearchText?.Split(new Char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (splits == null || splits.Count() == 0)
+            {
+                return null;
+            }
+
+            return $"( {String.Join(" OR ", splits.Select(x => $"\"{x}\""))} )";
+        }
+
+        /// <summary>
+        /// Apply text search filter at data grid collection view.
+        /// </summary>
+        private void DataGridQuickSearch(string searchText)
+        {
+            var splits = searchText.Split(new Char[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+            LogItemCollection.Filter = new Predicate<object>(item => {
+                foreach (var subFilter in splits)
+                {
+                    if (((LogItem)item).Message.IndexOf(subFilter, StringComparison.InvariantCultureIgnoreCase) != -1)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
         }
 
         /// <summary>
@@ -142,7 +207,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private void OnFiltersChanged()
         {
             Debug.WriteLine("NotifyFiltersChanged");
-            _filter = ComposeSimpleFilters();
             Reload();
         }
 
@@ -160,6 +224,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (_selectedLogSeverity != null && _selectedLogSeverity != Resources.LogViewerAllLogLevelSelection)
             {
                 filter.AppendLine($"severity>={_selectedLogSeverity}");
+            }
+
+            var textFilter = ComposeTextSearchFilter();
+            if (textFilter != null)
+            {
+                filter.AppendLine(textFilter);
             }
 
             return filter.Length > 0 ? filter.ToString() : null;

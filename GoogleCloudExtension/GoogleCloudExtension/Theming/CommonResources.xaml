@@ -423,30 +423,32 @@
     <!-- Style for ImageButton -->
 
     <Style TargetType="{x:Type controls:ImageButton}">
-        <Setter Property="Background" Value="Transparent" />
         <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:ImageButton}">
-                    <Border x:Name="border"
-                            Background="{TemplateBinding Background}">
+                    <Border x:Name="imageButtonBorder"
+                            Background="{TemplateBinding Background}"
+                            Width="{TemplateBinding Width}"
+                            Height="{TemplateBinding Height}">
                         <Image x:Name="buttonImage" HorizontalAlignment="Center"
                                VerticalAlignment="Center"
-                               Height="{TemplateBinding Height}"
-                               Width="{TemplateBinding Width}"
+                               Stretch="None"
                                Source="{TemplateBinding NormalImage}" />
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Background" TargetName="imageButtonBorder" Value="Gold" />
                             <Setter Property="Source" TargetName="buttonImage" 
                                     Value="{Binding MouseOverImage, RelativeSource={RelativeSource TemplatedParent}}" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="true">
+                            <Setter Property="Background" TargetName="imageButtonBorder" Value="Goldenrod" />
                             <Setter Property="Source" TargetName="buttonImage" 
                                     Value="{Binding MouseDownImage, RelativeSource={RelativeSource TemplatedParent}}" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
-                            <Setter Property="Opacity" Value="0.6" />
+                            <Setter Property="Opacity" Value="0.5" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

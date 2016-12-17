@@ -1371,4 +1371,16 @@
     <value>All Log Levels</value>
     <comment>Log viwer log severity combo box item that indicates to show logs of any level</comment>
   </data>
+  <data name="LogViewerSimpleTextSearchIconButtonToolTip" xml:space="preserve">
+    <value>Apply text search on server and refresh results</value>
+    <comment>Log viewer simple text search icon button tooltip.</comment>
+  </data>
+  <data name="LogViewerSimpleTextSearchWatermarkMessage" xml:space="preserve">
+    <value>Log message text search</value>
+    <comment>The watermark message when simple text search box is empty.</comment>
+  </data>
+  <data name="LogViewerSwitchToAdvancedFilterCaption" xml:space="preserve">
+    <value>To Advanced Filter</value>
+    <comment>Caption for switch to advanced filter button.</comment>
+  </data>
 </root>

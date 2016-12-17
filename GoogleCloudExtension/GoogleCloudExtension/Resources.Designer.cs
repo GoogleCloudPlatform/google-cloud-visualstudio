@@ -2005,6 +2005,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Apply text search on server and refresh results.
+        /// </summary>
+        public static string LogViewerSimpleTextSearchIconButtonToolTip {
+            get {
+                return ResourceManager.GetString("LogViewerSimpleTextSearchIconButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Log message text search.
+        /// </summary>
+        public static string LogViewerSimpleTextSearchWatermarkMessage {
+            get {
+                return ResourceManager.GetString("LogViewerSimpleTextSearchWatermarkMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To Advanced Filter.
+        /// </summary>
+        public static string LogViewerSwitchToAdvancedFilterCaption {
+            get {
+                return ResourceManager.GetString("LogViewerSwitchToAdvancedFilterCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Click To Select Different Timezone..
         /// </summary>
         public static string LogViewerTimeZoneSelectionToolTip {
