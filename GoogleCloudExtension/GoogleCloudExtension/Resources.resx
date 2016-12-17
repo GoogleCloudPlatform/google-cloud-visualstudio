@@ -1376,7 +1376,7 @@
     <comment>Log viewer simple text search icon button tooltip.</comment>
   </data>
   <data name="LogViewerSimpleTextSearchWatermarkMessage" xml:space="preserve">
-    <value>Log message text search</value>
+    <value>search</value>
     <comment>The watermark message when simple text search box is empty.</comment>
   </data>
   <data name="LogViewerSwitchToAdvancedFilterCaption" xml:space="preserve">

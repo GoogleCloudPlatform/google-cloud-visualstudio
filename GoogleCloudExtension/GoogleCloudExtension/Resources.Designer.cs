@@ -2014,7 +2014,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Log message text search.
+        ///   Looks up a localized string similar to search.
         /// </summary>
         public static string LogViewerSimpleTextSearchWatermarkMessage {
             get {
