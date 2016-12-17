@@ -300,6 +300,8 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="StackdriverLogsViewer\Resources\help_mouse_over_icon.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\help_icon.png" />
     <Resource Include="StackdriverLogsViewer\Resources\search.png" />
     <Resource Include="StackdriverLogsViewer\Resources\refresh-mouse-down.png" />
     <Resource Include="StackdriverLogsViewer\Resources\refresh-mouseover.png" />

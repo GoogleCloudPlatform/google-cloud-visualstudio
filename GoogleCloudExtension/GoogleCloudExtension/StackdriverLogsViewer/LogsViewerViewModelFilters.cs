@@ -42,6 +42,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private IList<MonitoredResourceDescriptor> _resourceDescriptors;
         private string _selectedLogSeverity = Resources.LogViewerAllLogLevelSelection;
         private string _simpleSearchText;
+        private bool _showAdvancedFilter = false;
+
+        public bool ShowAdvancedFilter
+        {
+            get { return _showAdvancedFilter; }
+            private set { SetValueAndRaise(ref _showAdvancedFilter, value); }
+        }
+
+        public ProtectedCommand FilterSwitchCommand { get; }
 
         /// <summary>
         /// Gets the list of Log Level selectors.

@@ -172,8 +172,57 @@
                     HorizontalAlignment="Stretch" 
                     Orientation="Vertical">
 
+            <!-- Advanced Filter -->
+            <StackPanel Visibility="{Binding ShowAdvancedFilter, Converter={StaticResource visibilityConverter}}">
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <TextBox  
+                        Grid.Column="0" Grid.Row="0"
+                        VerticalAlignment="Center" 
+                        Padding="8, 5, 8, 5"
+                        TextWrapping="Wrap" 
+                        AcceptsReturn="True"
+                        Text="{Binding AdvancedFilter}"
+                        MinLines="3" 
+                        MaxLines="30" />
+                    <controls:IconButton 
+                        Grid.Column="0" Grid.Row="1" 
+                        Margin="0, 1, 3, 0"
+                        HorizontalAlignment="Right" 
+                        VerticalAlignment="Top"
+                        Command="{Binding AdvancedFilterHelpCommand}"
+                        NormalIcon="{mp:ImageResource StackdriverLogsViewer/Resources/help_icon.png}"
+                        MouseOverIcon="{mp:ImageResource StackdriverLogsViewer/Resources/help_mouse_over_icon.png}" />
+
+                    <Button 
+                        Grid.Column="1" Grid.Row="0" 
+                        Margin="12, 0, 0, 0" 
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Content="{x:Static ext:Resources.LogViewerSwitchToSimpleFilterCaption}"
+                        Template="{StaticResource FilterSwitchButton}" />
+                </Grid>
+
+                <Button 
+                    Grid.Column="1"
+                    Margin="0, -6, 6, 6"
+                    VerticalAlignment="Bottom"
+                    HorizontalAlignment="Left"
+                    Command="{Binding SubmitAdvancedFilterCommand}" 
+                    Style="{StaticResource CommonButtonDynamicStyle}"
+                    Content="{x:Static ext:Resources.LogViewerSubmitAdvancedFilterCaption}" />
+            </StackPanel>
+            
             <!-- Basic Filters. -->
-            <StackPanel Visibility="{Binding BasicFilterVisibility}">
+            <StackPanel Visibility="{Binding ShowAdvancedFilter, Converter={utils:VisibilityConverter IsNegated=True}}">
                 <StackPanel Margin="0, 0, 0, 6"
                             Orientation="Horizontal" 
                             HorizontalAlignment="Left" 
@@ -220,30 +269,29 @@
                         </controls:ImageButton.ToolTip>
                     </controls:ImageButton>
                 </StackPanel>
-            </StackPanel>
 
-            <Grid Margin="0, 6, 0, 0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Border Grid.Column="0"
+                <Grid Margin="0, 6, 0, 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0"
                         BorderThickness="1" 
                         BorderBrush="LightGray">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <TextBox Grid.Column="0"
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Grid.Column="0"
                              BorderThickness="0"
                              TextWrapping="Wrap"    
                              VerticalAlignment="Center"
                              HorizontalAlignment="Stretch"
                              Text="{Binding SimpleSearchText, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"                                               
                              Style="{StaticResource WartermarkedTextBox}">
-                        </TextBox>
-                        <controls:ImageButton 
+                            </TextBox>
+                            <controls:ImageButton 
                             Grid.Column="1" 
                             Padding="2, 0, 2, 0"
                             BorderThickness="0"
@@ -255,19 +303,21 @@
                             NormalImage="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}"
                             MouseOverImage="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}"
                             MouseDownImage="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}">
-                            <controls:ImageButton.ToolTip>
-                                <ToolTip Content="{x:Static ext:Resources.LogViewerSimpleTextSearchIconButtonToolTip}"/>
-                            </controls:ImageButton.ToolTip>
-                        </controls:ImageButton>                        
-                    </Grid>
-                </Border>
-                <Button Grid.Column="1" 
+                                <controls:ImageButton.ToolTip>
+                                    <ToolTip Content="{x:Static ext:Resources.LogViewerSimpleTextSearchIconButtonToolTip}"/>
+                                </controls:ImageButton.ToolTip>
+                            </controls:ImageButton>
+                        </Grid>
+                    </Border>
+                    <Button Grid.Column="1" 
                         Margin="12,0,0,0"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Bottom"
                         Template="{StaticResource FilterSwitchButton}"
                         Content="{x:Static ext:Resources.LogViewerSwitchToAdvancedFilterCaption}"/>
-            </Grid>
+                </Grid>
+            </StackPanel>
+
         </StackPanel>
 
         <Grid Grid.Row="2" 

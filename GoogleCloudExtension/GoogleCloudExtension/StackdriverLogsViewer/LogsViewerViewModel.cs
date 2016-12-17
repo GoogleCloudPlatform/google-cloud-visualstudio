@@ -172,6 +172,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
             CancelRequestCommand = new ProtectedCommand(CancelRequest);
             SimpleTextSearchCommand = new ProtectedCommand(Reload);
+            FilterSwitchCommand = new ProtectedCommand(() => ShowAdvancedFilter = !_showAdvancedFilter);
         }
 
         /// <summary>
