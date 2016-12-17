@@ -162,6 +162,13 @@
                         DisplayMemberPath="DisplayName" 
                         Loaded="ComboBox_Loaded" >
                     </ComboBox>
+
+                    <ComboBox Name="comboSeverity" Width="160"
+                          ItemsSource="{Binding Path=LogSeverityList}"
+                          SelectedItem="{Binding Path=SelectedLogSeverity}"
+                          Loaded="ComboBox_Loaded"
+                              VerticalAlignment="Center"
+                          />
                     
                     <controls:ImageButton 
                         Grid.Column="1" 
