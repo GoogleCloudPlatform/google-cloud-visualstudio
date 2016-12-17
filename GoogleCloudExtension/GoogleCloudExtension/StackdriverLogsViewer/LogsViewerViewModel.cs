@@ -172,7 +172,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
             CancelRequestCommand = new ProtectedCommand(CancelRequest);
             SimpleTextSearchCommand = new ProtectedCommand(Reload);
-            FilterSwitchCommand = new ProtectedCommand(() => ShowAdvancedFilter = !_showAdvancedFilter);
+            FilterSwitchCommand = new ProtectedCommand(SwapFilter);
+            SubmitAdvancedFilterCommand = new ProtectedCommand(Reload);
+            AdvancedFilterHelpCommand = new ProtectedCommand(ShowAdvancedFilterHelp);
         }
 
         /// <summary>
@@ -340,9 +342,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            _filter = ComposeSimpleFilters();
+            _filter = _showAdvancedFilter ? AdvancedFilterText : ComposeSimpleFilters();
 
-            LogLoaddingWrapperAsync(async (cancelToken) => {
+            LogLoaddingWrapperAsync(async (cancelToken) =>
+            {
                 _nextPageToken = null;
                 _logs.Clear();
                 await LoadLogsAsync(cancelToken);

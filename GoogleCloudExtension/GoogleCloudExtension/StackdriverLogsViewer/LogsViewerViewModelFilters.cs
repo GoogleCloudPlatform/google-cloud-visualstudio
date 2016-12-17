@@ -42,15 +42,41 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private IList<MonitoredResourceDescriptor> _resourceDescriptors;
         private string _selectedLogSeverity = Resources.LogViewerAllLogLevelSelection;
         private string _simpleSearchText;
+        private string _advacedFilterText;
         private bool _showAdvancedFilter = false;
 
+        /// <summary>
+        /// Gets the advanced filter help icon button command.
+        /// </summary>
+        public ProtectedCommand AdvancedFilterHelpCommand { get; }
+
+        /// <summary>
+        /// Gets the submit advanced filter button command.
+        /// </summary>
+        public ProtectedCommand SubmitAdvancedFilterCommand { get; }
+
+        /// <summary>
+        /// Gets the toggle advanced and simple filters button Command.
+        /// </summary>
+        public ProtectedCommand FilterSwitchCommand { get; }
+
+        /// <summary>
+        /// Gets or sets the advanced filter text box content.
+        /// </summary>
+        public string AdvancedFilterText
+        {
+            get { return _advacedFilterText; }
+            set { SetValueAndRaise(ref _advacedFilterText, value); }
+        }
+        
+        /// <summary>
+        /// Gets the visbility of advanced filter or simple filter.
+        /// </summary>
         public bool ShowAdvancedFilter
         {
             get { return _showAdvancedFilter; }
             private set { SetValueAndRaise(ref _showAdvancedFilter, value); }
         }
-
-        public ProtectedCommand FilterSwitchCommand { get; }
 
         /// <summary>
         /// Gets the list of Log Level selectors.
@@ -124,6 +150,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     OnFiltersChanged();
                 }
             }
+        }
+
+        private void ShowAdvancedFilterHelp()
+        {
+            Process.Start(new ProcessStartInfo("https://cloud.google.com/logging/docs/view/advanced_filters"));
+        }
+
+        private void SwapFilter()
+        {
+            ShowAdvancedFilter = !_showAdvancedFilter;
+            AdvancedFilterText = _showAdvancedFilter ? ComposeSimpleFilters() : null;
         }
 
         /// <summary>

@@ -190,7 +190,7 @@
                         Padding="8, 5, 8, 5"
                         TextWrapping="Wrap" 
                         AcceptsReturn="True"
-                        Text="{Binding AdvancedFilter}"
+                        Text="{Binding AdvancedFilterText}"
                         MinLines="3" 
                         MaxLines="30" />
                     <controls:IconButton 
