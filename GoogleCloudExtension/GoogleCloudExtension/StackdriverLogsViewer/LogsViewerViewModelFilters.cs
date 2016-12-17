@@ -28,14 +28,41 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     public partial class LogsViewerViewModel : ViewModelBase
     {
         private static readonly string[] s_defaultResourceSelections = new string[] { "global", "gce_instance" };
-
-        private MonitoredResourceDescriptor _selectedResource;
-        private IList<MonitoredResourceDescriptor> _resourceDescriptors;
+        private static readonly string[] s_logSeverityList =
+            new string[] { "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL", "EMERGENCY",
+                Resources.LogViewerAllLogLevelSelection};
 
         /// <summary>
         /// This is the filters combined by all selectors.
         /// </summary>
         private string _filter;
+
+        private MonitoredResourceDescriptor _selectedResource;
+        private IList<MonitoredResourceDescriptor> _resourceDescriptors;
+
+        private string _selectedLogSeverity = Resources.LogViewerAllLogLevelSelection;
+
+        /// <summary>
+        /// Gets the list of Log Level selectors.
+        /// </summary>
+        public IEnumerable<string> LogSeverityList => s_logSeverityList;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string SelectedLogSeverity
+        {
+            get { return _selectedLogSeverity; }
+
+            set
+            {
+                if (value != null && _selectedLogSeverity != value)
+                {
+                    _selectedLogSeverity = value;
+                    OnFiltersChanged();
+                }
+            }
+        }
 
         /// <summary>
         /// Gets all resources types.
@@ -128,6 +155,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (_selectedResource != null)
             {
                 filter.AppendLine($"resource.type=\"{_selectedResource.Type}\"");
+            }
+
+            if (_selectedLogSeverity != null && _selectedLogSeverity != Resources.LogViewerAllLogLevelSelection)
+            {
+                filter.AppendLine($"severity>={_selectedLogSeverity}");
             }
 
             return filter.Length > 0 ? filter.ToString() : null;

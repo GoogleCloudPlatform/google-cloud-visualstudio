@@ -150,25 +150,25 @@
                             <Setter Property="Margin" Value="0, 0, 6, 0" />
                             <Setter Property="Padding" Value="8, 5, 8, 5" />
                             <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="Background" Value="White" />
                         </Style>
                     </StackPanel.Resources>
 
                     <ComboBox 
                         Name="comboResource" 
                         Width="160" 
-                        Background="White"
                         ItemsSource="{Binding ResourceDescriptors}"
                         SelectedItem="{Binding SelectedResource, Mode=TwoWay}"
                         DisplayMemberPath="DisplayName" 
                         Loaded="ComboBox_Loaded" >
                     </ComboBox>
 
-                    <ComboBox Name="comboSeverity" Width="160"
-                          ItemsSource="{Binding Path=LogSeverityList}"
-                          SelectedItem="{Binding Path=SelectedLogSeverity}"
-                          Loaded="ComboBox_Loaded"
-                              VerticalAlignment="Center"
-                          />
+                    <ComboBox 
+                        Name="comboSeverity" 
+                        Width="160"
+                        ItemsSource="{Binding Path=LogSeverityList}"
+                        SelectedItem="{Binding Path=SelectedLogSeverity}"
+                        Loaded="ComboBox_Loaded" />
                     
                     <controls:ImageButton 
                         Grid.Column="1" 
