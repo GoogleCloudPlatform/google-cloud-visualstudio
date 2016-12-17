@@ -52,7 +52,7 @@
       <Group guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" priority="0x0000">
         <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpMenu" />
       </Group>
-      
+
       <!-- This group contains all of the commands added to the project's context menu. -->
       <Group guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpProjectContextMenu" priority="0x600">
         <Parent guid="guidSHLMainMenu" id="IDM_VS_CTXT_PROJNODE" />
@@ -71,6 +71,7 @@
       <!-- This command shows the Stackdriver Logs Viewer tool window. -->
       <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidLogsViewerToolWindowCommand" priority="0x0550" type="Button">
         <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" />
+        <Icon guid="guidGoogleCloudExtensionPackageIcon" id="stackdriverLoggingIcon" />
         <CommandFlag>DefaultDisabled</CommandFlag>
         <Strings>
           <ButtonText>Show Stackdriver Logs Viewer</ButtonText>
@@ -84,7 +85,7 @@
           <ButtonText>Manage Accounts...</ButtonText>
         </Strings>
       </Button>
-     
+
       <!-- This command publishes the current project to Google Cloud from the tools menu. -->
       <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidPublishProjectToolsMenuCommand" priority="0x0500" type="Button">
         <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" />
@@ -108,6 +109,12 @@
       </Button>
 
     </Buttons>
+
+    <!-- Add menu icon images. -->
+    <Bitmaps>
+      <Bitmap guid="guidGoogleCloudExtensionPackageIcon"
+              href="StackdriverLogsViewer\Resources\logging_menu_icon_16.png" usedList="stackdriverLoggingIcon" />
+    </Bitmaps>
   </Commands>
 
   <Symbols>
@@ -126,6 +133,10 @@
       <IDSymbol value="4230" name="GcpProjectContextMenu" />
       <IDSymbol value="4231" name="cmdidLogsViewerToolWindowCommand" />
     </GuidSymbol>
-  
+
+    <GuidSymbol name="guidGoogleCloudExtensionPackageIcon" value="{1014A04F-F8DA-48E4-9C20-380AEC85F3F8}">
+      <IDSymbol name="stackdriverLoggingIcon" value="1" />
+    </GuidSymbol>
+
   </Symbols>
 </CommandTable>

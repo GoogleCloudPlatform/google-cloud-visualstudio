@@ -301,6 +301,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="StackdriverLogsViewer\Resources\search.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\logging_menu_icon_16.png" />
     <Resource Include="StackdriverLogsViewer\Resources\refresh-mouse-down.png" />
     <Resource Include="StackdriverLogsViewer\Resources\refresh-mouseover.png" />
     <Resource Include="StackdriverLogsViewer\Resources\refresh.png" />
