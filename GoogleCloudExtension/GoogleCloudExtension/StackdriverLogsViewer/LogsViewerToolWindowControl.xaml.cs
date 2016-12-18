@@ -39,6 +39,22 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
+        /// Get the first ancestor control element of type TControl.
+        /// </summary>
+        /// <typeparam name="TControl">A <seealso cref="Control"/> type.</typeparam>
+        /// <param name="dependencyObj">A <seealso cref="DependencyObject"/> element. </param>
+        /// <returns>null or TControl object.</returns>
+        private TControl FindAncestorControl<TControl>(DependencyObject dependencyObj) where TControl : Control
+        {
+            while ((dependencyObj != null) && !(dependencyObj is TControl))
+            {
+                dependencyObj = VisualTreeHelper.GetParent(dependencyObj);
+            }
+
+            return dependencyObj as TControl;  // Note, null as Class is val 
+        }
+
+        /// <summary>
         /// On Windows8, Windows10, the combobox backgroud property does not work.
         /// This is a workaround to fix the problem.
         /// </summary>
@@ -83,20 +99,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void dataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            DependencyObject dep = (DependencyObject)e.OriginalSource;
-
-            // iteratively traverse the visual tree
-            while ((dep != null) && !(dep is DataGridCell))
-            {
-                dep = VisualTreeHelper.GetParent(dep);
-            }
-
-            while ((dep != null) && !(dep is DataGridRow))
-            {
-                dep = VisualTreeHelper.GetParent(dep);
-            }
-
-            DataGridRow row = dep as DataGridRow;  // Note, null as won't throw exception.
+            var cell = FindAncestorControl<DataGridCell>(e.OriginalSource as DependencyObject);
+            DataGridRow row = FindAncestorControl<DataGridRow>(cell);
             if (row != null)
             {
                 row.DetailsVisibility = 
