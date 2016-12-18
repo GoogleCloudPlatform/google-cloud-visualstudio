@@ -235,14 +235,17 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
+                        
                         <TextBox Grid.Column="0"
                              BorderThickness="0"
                              TextWrapping="Wrap"    
                              VerticalAlignment="Center"
                              HorizontalAlignment="Stretch"
+                             Padding="8, 5, 8, 5"    
                              Text="{Binding SimpleSearchText, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"                                               
                              Style="{StaticResource WartermarkedTextBox}">
                         </TextBox>
+                        
                         <controls:ImageButton 
                             Grid.Column="1" 
                             Padding="2, 0, 2, 0"
@@ -258,7 +261,8 @@
                             <controls:ImageButton.ToolTip>
                                 <ToolTip Content="{x:Static ext:Resources.LogViewerSimpleTextSearchIconButtonToolTip}"/>
                             </controls:ImageButton.ToolTip>
-                        </controls:ImageButton>                        
+                        </controls:ImageButton>  
+                        
                     </Grid>
                 </Border>
                 <Button Grid.Column="1" 
