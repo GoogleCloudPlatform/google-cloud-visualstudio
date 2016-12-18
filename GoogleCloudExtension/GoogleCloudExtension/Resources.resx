@@ -1391,4 +1391,28 @@
     <value>To Simple Filters</value>
     <comment>Caption for switch to simple filters button.</comment>
   </data>
+  <data name="LogViewerTimeOrderPickAsceSelection" xml:space="preserve">
+    <value>after</value>
+    <comment>The selection item that indicates to list logs after the time stamp.</comment>
+  </data>
+  <data name="LogViewerTimeOrderPickDescSelection" xml:space="preserve">
+    <value>before</value>
+    <comment>The selection item that indicates to list logs before the time stamp.</comment>
+  </data>
+  <data name="LogViewerTimeOrderPickLabelHead" xml:space="preserve">
+    <value>Get log</value>
+    <comment>Head part of the label for picking the list log time order.</comment>
+  </data>
+  <data name="LogViewerTimeOrderPickLabelTail" xml:space="preserve">
+    <value>this time stamp.</value>
+    <comment>Tail part of the label for picking the list log time order.</comment>
+  </data>
+  <data name="UiGoButtonCaption" xml:space="preserve">
+    <value>Go</value>
+    <comment>Caption for Go buttons.</comment>
+  </data>
+  <data name="LogViewerDateTimePickerLabel" xml:space="preserve">
+    <value>Jump To Time</value>
+    <comment>The label for the date time picker control.</comment>
+  </data>
 </root>

@@ -8,7 +8,7 @@
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"             
-             xmlns:viewer="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
+             xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
              xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"
              xmlns:jlinq="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json"
              xmlns:sys="clr-namespace:System;assembly=mscorlib"             
@@ -229,7 +229,7 @@
                             VerticalAlignment="Center">
                     
                     <StackPanel.Resources>
-                        <Style TargetType="ComboBox">
+                        <Style TargetType="local:CustomComboBox">
                             <Setter Property="Margin" Value="0, 0, 6, 0" />
                             <Setter Property="Padding" Value="8, 5, 8, 5" />
                             <Setter Property="VerticalAlignment" Value="Center" />
@@ -237,22 +237,22 @@
                         </Style>
                     </StackPanel.Resources>
 
-                    <ComboBox 
-                        Name="comboResource" 
+                    <local:CustomComboBox 
+                        x:Name="comboResource" 
                         Width="160" 
                         ItemsSource="{Binding ResourceDescriptors}"
                         SelectedItem="{Binding SelectedResource, Mode=TwoWay}"
-                        DisplayMemberPath="DisplayName" 
-                        Loaded="ComboBox_Loaded" >
-                    </ComboBox>
+                        DisplayMemberPath="DisplayName" >
+                    </local:CustomComboBox>
 
-                    <ComboBox 
-                        Name="comboSeverity" 
+                    <local:CustomComboBox 
+                        x:Name="comboSeverity" 
                         Width="160"
                         ItemsSource="{Binding LogSeverityList}"
-                        SelectedItem="{Binding SelectedLogSeverity}"
-                        Loaded="ComboBox_Loaded" />
-                    
+                        SelectedItem="{Binding SelectedLogSeverity}" />
+
+                    <local:DateTimePicker />
+
                     <controls:ImageButton 
                         Grid.Column="1" 
                         Margin="6, 0, 16, 0"
@@ -338,17 +338,16 @@
                                    VerticalAlignment="Center"
                                    FontWeight="Bold"
                                    Text="{Binding FirstRowDate}" />
-                        <ComboBox Margin="3, 0, 18, 0" 
+                        <local:CustomComboBox Margin="3, 0, 18, 0" 
                                   VerticalAlignment="Center" 
                                   BorderThickness="0" 
                                   Background="Transparent" 
-                                  x:Name="comboTimeZone" 
-                                  Loaded="ComboBox_Loaded" >
-                            <ComboBox.ToolTip>
+                                  x:Name="comboTimeZone">
+                            <local:CustomComboBox.ToolTip>
                                 <ToolTip Content="{x:Static ext:Resources.LogViewerTimeZoneSelectionToolTip}"
                                          Style="{StaticResource CommonTooltipStyle}" />
-                            </ComboBox.ToolTip> 
-                        </ComboBox>
+                            </local:CustomComboBox.ToolTip> 
+                        </local:CustomComboBox>
                     </StackPanel>
 
                     <Expander DockPanel.Dock="Right" 

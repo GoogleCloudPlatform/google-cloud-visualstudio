@@ -1942,6 +1942,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Jump To Time.
+        /// </summary>
+        public static string LogViewerDateTimePickerLabel {
+            get {
+                return ResourceManager.GetString("LogViewerDateTimePickerLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0}: {1}  .
         /// </summary>
         public static string LogViewerDictionaryPayloadFormatString {
@@ -2046,6 +2055,42 @@ namespace GoogleCloudExtension {
         public static string LogViewerSwitchToSimpleFilterCaption {
             get {
                 return ResourceManager.GetString("LogViewerSwitchToSimpleFilterCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to after.
+        /// </summary>
+        public static string LogViewerTimeOrderPickAsceSelection {
+            get {
+                return ResourceManager.GetString("LogViewerTimeOrderPickAsceSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to before.
+        /// </summary>
+        public static string LogViewerTimeOrderPickDescSelection {
+            get {
+                return ResourceManager.GetString("LogViewerTimeOrderPickDescSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get log.
+        /// </summary>
+        public static string LogViewerTimeOrderPickLabelHead {
+            get {
+                return ResourceManager.GetString("LogViewerTimeOrderPickLabelHead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to this time stamp..
+        /// </summary>
+        public static string LogViewerTimeOrderPickLabelTail {
+            get {
+                return ResourceManager.GetString("LogViewerTimeOrderPickLabelTail", resourceCulture);
             }
         }
         
@@ -2811,6 +2856,15 @@ namespace GoogleCloudExtension {
         public static string UiDownloadButtonCaption {
             get {
                 return ResourceManager.GetString("UiDownloadButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Go.
+        /// </summary>
+        public static string UiGoButtonCaption {
+            get {
+                return ResourceManager.GetString("UiGoButtonCaption", resourceCulture);
             }
         }
         
