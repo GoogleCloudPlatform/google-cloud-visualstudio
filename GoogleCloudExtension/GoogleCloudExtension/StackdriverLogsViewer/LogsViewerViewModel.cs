@@ -73,6 +73,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     }
 
                     LogItemCollection.Refresh();
+                    DateTimePickerModel.ChangeTimeZone(_selectedTimeZone);
                 }
             }
         }
