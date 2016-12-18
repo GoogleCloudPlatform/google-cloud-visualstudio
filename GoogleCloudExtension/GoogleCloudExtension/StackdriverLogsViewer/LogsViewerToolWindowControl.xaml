@@ -251,7 +251,9 @@
                         ItemsSource="{Binding LogSeverityList}"
                         SelectedItem="{Binding SelectedLogSeverity}" />
 
-                    <local:DateTimePicker />
+                    <local:DateTimePicker 
+                        Margin="0, 0, 6, 0"
+                        DataContext="{Binding Path=DateTimePickerModel}" />
 
                     <controls:ImageButton 
                         Grid.Column="1" 

@@ -124,7 +124,7 @@
                                          Width="90"
                                          HorizontalAlignment="Left"
                                          VerticalAlignment="Center"                             
-                                         Text="{Binding UiElementDate, StringFormat=MM-dd-yyyy}" />
+                                         Text="{Binding UiElementDate, StringFormat={x:Static ext:Resources.LogViewerLogItemDateFormat}}" />
                                     <TextBox Grid.Column="1" Grid.Row="1" 
                                          x:Name="timeBox"
                                          Margin="6, 0, 0, 0"
@@ -170,18 +170,21 @@
                                 <StackPanel 
                                     Grid.Row="3" 
                                     Margin="12, 6, 0, 12"
-                                    Orientation="Horizontal"  >
+                                    Orientation="Horizontal">
+                                    
                                     <Button 
+                                        Margin="0, 0, 6, 0" 
+                                        Width="35"
                                         Content="{x:Static ext:Resources.UiGoButtonCaption}" 
                                         HorizontalAlignment="Left" 
                                         Style="{StaticResource CommonButtonStandardStyle}"        
-                                        Command="{Binding Path=OKCommand}"
-                                        Width="35"
-                                        Margin="0, 0, 6, 0" />
+                                        Command="{Binding Path=GoCommand}" />
+                                    
                                     <Button HorizontalAlignment="Left"
                                             Content="{x:Static ext:Resources.UiCancelButtonCaption}" 
                                             Click="Cancel_Button_Click"
                                             Style="{StaticResource CommonButtonStandardStyle}" />
+                                    
                                 </StackPanel>
                             </Grid>
                         </Button>

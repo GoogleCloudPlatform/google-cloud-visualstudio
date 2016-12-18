@@ -48,6 +48,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private bool _showAdvancedFilter = false;
 
         /// <summary>
+        /// Gets the DateTimePicker view model object.
+        /// </summary>
+        public DateTimePickerViewModel DateTimePickerModel { get; }
+
+        /// <summary>
         /// Gets the advanced filter help icon button command.
         /// </summary>
         public ProtectedCommand AdvancedFilterHelpCommand { get; }
@@ -272,6 +277,18 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (_selectedLogSeverity != null && _selectedLogSeverity != Resources.LogViewerAllLogLevelSelection)
             {
                 filter.AppendLine($"severity>={_selectedLogSeverity}");
+            }
+
+            if (DateTimePickerModel.IsDecendingOrder)
+            {
+                if (DateTimePickerModel.DateTimeUtc < DateTime.UtcNow)
+                {
+                    filter.AppendLine($"timestamp<=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
+                }
+            }
+            else
+            {
+                filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
             }
 
             var textFilter = ComposeTextSearchFilter();

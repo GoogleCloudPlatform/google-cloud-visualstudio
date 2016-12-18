@@ -175,6 +175,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             FilterSwitchCommand = new ProtectedCommand(SwapFilter);
             SubmitAdvancedFilterCommand = new ProtectedCommand(Reload);
             AdvancedFilterHelpCommand = new ProtectedCommand(ShowAdvancedFilterHelp);
+            DateTimePickerModel = new DateTimePickerViewModel(
+                TimeZoneInfo.Local, DateTime.UtcNow, isDescendingOrder: true);
+            DateTimePickerModel.DateTimeFilterChange += (sender, e) => Reload();
         }
 
         /// <summary>
@@ -301,6 +304,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private async Task LoadLogsAsync(CancellationToken cancellationToken)
         {
+            var order = DateTimePickerModel.IsDecendingOrder ? "timestamp desc" : "timestamp asc";
             int count = 0;
             while (count < DefaultPageSize && !cancellationToken.IsCancellationRequested)
             {
@@ -308,7 +312,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
                 // Here, it does not do pageSize: _defaultPageSize - count, 
                 // Because this is requried to use same page size for getting next page. 
-                var results = await _dataSource.Value.ListLogEntriesAsync(_filter,
+                var results = await _dataSource.Value.ListLogEntriesAsync(_filter, order,
                     pageSize: DefaultPageSize, nextPageToken: _nextPageToken, cancelToken: cancellationToken);
                 AddLogs(results?.LogEntries);
                 _nextPageToken = results.NextPageToken;
