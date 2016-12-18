@@ -39,19 +39,62 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
  
         /// <summary>
+        /// Get the first ancestor control element of type TControl.
+        /// </summary>
+        /// <typeparam name="TControl">A <seealso cref="Control"/> type.</typeparam>
+        /// <param name="dependencyObj">A <seealso cref="DependencyObject"/> element. </param>
+        /// <returns>null or TControl object.</returns>
+        private TControl FindAncestorControl<TControl>(DependencyObject dependencyObj) where TControl : Control
+        {
+            while ((dependencyObj != null) && !(dependencyObj is TControl))
+            {
+                dependencyObj = VisualTreeHelper.GetParent(dependencyObj);
+            }
 
+            return dependencyObj as TControl;  // Note, null as Class is val 
+        }
+
+        /// <summary>
+        /// Gets the first log item of the current data grid view.
+        /// </summary>
+        private object GetFirstRow()
+        {
+            var ele = dataGridLogEntries.InputHitTest(new Point(5, 50));
+            var row = FindAncestorControl<DataGridRow>(ele as DependencyObject);
+            Debug.WriteLine($"FindRowByPoint(5, 50) returns {row}");
+            if (null == row)
+            {
+                return null;
+            }
+
+            int itemIndex = dataGridLogEntries.ItemContainerGenerator.IndexFromContainer(row);
+            if (itemIndex < 0)
+            {
+                Debug.WriteLine($"Find first IndexFromContainer returns {itemIndex} ");
+                return null;
+            }
+            else
+            {
+                var item = dataGridLogEntries.Items[itemIndex];
+                Debug.WriteLine($"Find first row returns object {item.ToString()}");
+                return item;
+            }
+        }
+
+        /// <summary>
         /// Response to data grid scroll change event.
         /// Auto load more logs when it scrolls down to bottom.
         /// </summary>
         private void dataGrid_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             var grid = sender as DataGrid;
-
             ScrollViewer sv = e.OriginalSource as ScrollViewer;
             if (sv == null)
             {
                 return;
             }
+
+            ViewModel?.OnFirstRowChanged(GetFirstRow());
 
             if (e.VerticalOffset == sv.ScrollableHeight)
             {
@@ -68,27 +111,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void dataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            DependencyObject dep = (DependencyObject)e.OriginalSource;
-
-            // iteratively traverse the visual tree
-            while ((dep != null) && !(dep is DataGridCell))
-            {
-                dep = VisualTreeHelper.GetParent(dep);
-            }
-
-            if (dep == null)
-                return;
-
-
-            DataGridCell cell = dep as DataGridCell;
-
-            // navigate further up the tree
-            while ((dep != null) && !(dep is DataGridRow))
-            {
-                dep = VisualTreeHelper.GetParent(dep);
-            }
-
-            DataGridRow row = dep as DataGridRow;
+            var cell = FindAncestorControl<DataGridCell>(e.OriginalSource as DependencyObject);
+            DataGridRow row = FindAncestorControl<DataGridRow>(cell);
             if (row != null)
             {
                 row.DetailsVisibility = 

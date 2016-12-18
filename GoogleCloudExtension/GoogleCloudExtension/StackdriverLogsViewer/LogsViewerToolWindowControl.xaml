@@ -348,6 +348,9 @@
                                   VerticalAlignment="Center" 
                                   BorderThickness="0" 
                                   Background="Transparent" 
+                                  FontWeight="Bold"
+                                  ItemsSource="{Binding SystemTimeZones}"
+                                  SelectedItem="{Binding SelectedTimeZone}"
                                   x:Name="comboTimeZone">
                             <local:CustomComboBox.ToolTip>
                                 <ToolTip Content="{x:Static ext:Resources.LogViewerTimeZoneSelectionToolTip}"
