@@ -91,19 +91,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 dep = VisualTreeHelper.GetParent(dep);
             }
 
-            if (dep == null)
-                return;
-
-
-            DataGridCell cell = dep as DataGridCell;
-
-            // navigate further up the tree
             while ((dep != null) && !(dep is DataGridRow))
             {
                 dep = VisualTreeHelper.GetParent(dep);
             }
 
-            DataGridRow row = dep as DataGridRow;
+            DataGridRow row = dep as DataGridRow;  // Note, null as won't throw exception.
             if (row != null)
             {
                 row.DetailsVisibility = 
