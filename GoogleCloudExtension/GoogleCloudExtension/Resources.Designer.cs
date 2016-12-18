@@ -2095,7 +2095,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to click to select different timezone..
+        ///   Looks up a localized string similar to Click to select different timezone..
         /// </summary>
         public static string LogViewerTimeZoneSelectionToolTip {
             get {
@@ -2842,6 +2842,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Date.
+        /// </summary>
+        public static string UiDateLabel {
+            get {
+                return ResourceManager.GetString("UiDateLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Delete.
         /// </summary>
         public static string UiDeleteButtonCaption {
@@ -2955,6 +2964,15 @@ namespace GoogleCloudExtension {
         public static string UiStopButtonCaption {
             get {
                 return ResourceManager.GetString("UiStopButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time.
+        /// </summary>
+        public static string UiTimeLabel {
+            get {
+                return ResourceManager.GetString("UiTimeLabel", resourceCulture);
             }
         }
         

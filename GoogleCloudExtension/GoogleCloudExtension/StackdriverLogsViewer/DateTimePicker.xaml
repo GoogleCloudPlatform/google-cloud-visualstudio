@@ -110,11 +110,11 @@
                                     </Grid.RowDefinitions>
                                     <TextBlock 
                                         Grid.Column="0" Grid.Row="0" 
-                                        Text="Date:"  
+                                        Text="{x:Static ext:Resources.UiDateLabel}"  
                                         Margin="0, 0, 6, 5"/>
                                     <TextBlock 
                                         Grid.Column="1" Grid.Row="0" 
-                                        Text="Time:" 
+                                        Text="{x:Static ext:Resources.UiTimeLabel}" 
                                         Margin="6, 0, 0, 5" />
                                     <TextBox 
                                         Grid.Column="0" Grid.Row="1"  

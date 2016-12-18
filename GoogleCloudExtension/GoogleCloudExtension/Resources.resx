@@ -1415,4 +1415,12 @@
     <value>Jump To Time</value>
     <comment>The label for the date time picker control.</comment>
   </data>
+  <data name="UiDateLabel" xml:space="preserve">
+    <value>Date</value>
+    <comment>Label to a text box that shows date.</comment>
+  </data>
+  <data name="UiTimeLabel" xml:space="preserve">
+    <value>Time</value>
+    <comment>Label to the time input control</comment>
+  </data>
 </root>
