@@ -26,7 +26,6 @@ using System.Windows.Data;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
-
     /// <summary>
     /// The view model for LogsViewerToolWindow.
     /// </summary>
@@ -50,6 +49,33 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private bool _showRequestStatus = false;
         private bool _showCancelRequestButton = false;
         private CancellationTokenSource _cancellationTokenSource;
+        private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
+
+        /// <summary>
+        /// The time zone selector items.
+        /// </summary>
+        public IEnumerable<TimeZoneInfo> SystemTimeZones => TimeZoneInfo.GetSystemTimeZones();
+
+        /// <summary>
+        /// Selected time zone.
+        /// </summary>
+        public TimeZoneInfo SelectedTimeZone
+        {
+            get { return _selectedTimeZone; }
+            set
+            {
+                if (value != _selectedTimeZone)
+                {
+                    _selectedTimeZone = value;
+                    foreach (var log in _logs)
+                    {
+                        log.ChangeTimeZone(_selectedTimeZone);
+                    }
+
+                    LogItemCollection.Refresh();
+                }
+            }
+        }
 
         /// <summary>
         /// Gets the refresh button command.
@@ -216,6 +242,22 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 _logs.Add(new LogItem(log));
             }
+        }
+
+        /// <summary>
+        /// When scrolling the current data grid view, the frist row changes.
+        /// Update the first row date.
+        /// </summary>
+        /// <param name="item">The DataGrid row item.</param>
+        public void OnFirstRowChanged(object item)
+        {
+            var log = item as LogItem;
+            if (log == null)
+            {
+                return;
+            }
+
+            FirstRowDate = log.Date;
         }
 
         /// <summary>
