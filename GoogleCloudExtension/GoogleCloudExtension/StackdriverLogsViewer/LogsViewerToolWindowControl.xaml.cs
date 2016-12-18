@@ -39,6 +39,51 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
+        /// Using InputHitTest and VisualTreeHelper.GetParent to get the control element
+        ///   of the type TControl at the point.
+        /// </summary>
+        /// <typeparam name="TControl">A Control type.</typeparam>
+        /// <param name="point">A position relates to dataGridLogEntries. </param>
+        /// <returns>null or TControl object.</returns>
+        private TControl FindControlByPoint<TControl> (Point point) where TControl : Control
+        {
+            var ele = dataGridLogEntries.InputHitTest(point);
+            DependencyObject dep = (DependencyObject)ele;
+            while ((dep != null) && !(dep is TControl))
+            {
+                dep = VisualTreeHelper.GetParent(dep);
+            }
+
+            return dep == null ? dep as TControl : null;
+        }
+
+        /// <summary>
+        /// Gets the first log item of the current data grid view.
+        /// </summary>
+        private object GetFirstRow()
+        {
+            var row = FindControlByPoint<DataGridRow>(new Point(5, 50));
+            Debug.WriteLine($"FindRowByPoint(5, 50) returns {row}");
+            if (null == row)
+            {
+                return null;
+            }
+
+            int itemIndex = dataGridLogEntries.ItemContainerGenerator.IndexFromContainer(row);
+            if (itemIndex < 0)
+            {
+                Debug.WriteLine($"Find first IndexFromContainer returns {itemIndex} ");
+                return null;
+            }
+            else
+            {
+                var item = dataGridLogEntries.Items[itemIndex];
+                Debug.WriteLine($"Find first row returns object {item.ToString()}");
+                return item;
+            }
+        }
+
+        /// <summary>
         /// On Windows8, Windows10, the combobox backgroud property does not work.
         /// This is a workaround to fix the problem.
         /// </summary>
@@ -54,19 +99,19 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
  
         /// <summary>
-
         /// Response to data grid scroll change event.
         /// Auto load more logs when it scrolls down to bottom.
         /// </summary>
         private void dataGrid_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             var grid = sender as DataGrid;
-
             ScrollViewer sv = e.OriginalSource as ScrollViewer;
             if (sv == null)
             {
                 return;
             }
+
+            ViewModel?.OnFirstRowChanged(GetFirstRow());
 
             if (e.VerticalOffset == sv.ScrollableHeight)
             {
