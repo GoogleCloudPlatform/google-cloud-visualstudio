@@ -2005,7 +2005,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click To Select Different Timezone..
+        ///   Looks up a localized string similar to Click to select different timezone..
         /// </summary>
         public static string LogViewerTimeZoneSelectionToolTip {
             get {

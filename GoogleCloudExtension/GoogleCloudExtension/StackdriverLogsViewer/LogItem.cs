@@ -49,7 +49,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private static readonly Lazy<ImageSource> s_warningIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
 
-        private readonly DateTime _timestamp;
+        private DateTime _timestamp;
 
         /// <summary>
         /// Gets a log entry object.
@@ -127,6 +127,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             Entry = logEntry;
             Message = ComposeMessage();
             _timestamp = ConvertTimestamp(logEntry.Timestamp);
+        }
+
+        /// <summary>
+        /// Change time zone of log item.
+        /// </summary>
+        /// <param name="newTimeZone">The new time zone.</param>
+        public void ChangeTimeZone(TimeZoneInfo newTimeZone)
+        {
+            _timestamp = TimeZoneInfo.ConvertTime(_timestamp, newTimeZone);
         }
 
         private string ComposeDictionaryPayloadMessage(IDictionary<string, object> dictPayload)
