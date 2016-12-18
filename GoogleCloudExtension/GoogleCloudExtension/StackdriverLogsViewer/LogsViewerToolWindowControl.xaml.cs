@@ -39,22 +39,19 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// Using InputHitTest and VisualTreeHelper.GetParent to get the control element
-        ///   of the type TControl at the point.
+        /// Get the first ancestor control element of type TControl.
         /// </summary>
-        /// <typeparam name="TControl">A Control type.</typeparam>
-        /// <param name="point">A position relates to dataGridLogEntries. </param>
+        /// <typeparam name="TControl">A <seealso cref="Control"/> type.</typeparam>
+        /// <param name="dependencyObj">A <seealso cref="DependencyObject"/> element. </param>
         /// <returns>null or TControl object.</returns>
-        private TControl FindControlByPoint<TControl> (Point point) where TControl : Control
+        private TControl FindAncestorControl<TControl>(DependencyObject dependencyObj) where TControl : Control
         {
-            var ele = dataGridLogEntries.InputHitTest(point);
-            DependencyObject dep = (DependencyObject)ele;
-            while ((dep != null) && !(dep is TControl))
+            while ((dependencyObj != null) && !(dependencyObj is TControl))
             {
-                dep = VisualTreeHelper.GetParent(dep);
+                dependencyObj = VisualTreeHelper.GetParent(dependencyObj);
             }
 
-            return dep == null ? dep as TControl : null;
+            return dependencyObj as TControl;  // Note, null as Class is val 
         }
 
         /// <summary>
@@ -62,7 +59,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private object GetFirstRow()
         {
-            var row = FindControlByPoint<DataGridRow>(new Point(5, 50));
+            var ele = dataGridLogEntries.InputHitTest(new Point(5, 50));
+            var row = FindAncestorControl<DataGridRow>(ele as DependencyObject);
             Debug.WriteLine($"FindRowByPoint(5, 50) returns {row}");
             if (null == row)
             {
@@ -128,27 +126,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void dataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            DependencyObject dep = (DependencyObject)e.OriginalSource;
-
-            // iteratively traverse the visual tree
-            while ((dep != null) && !(dep is DataGridCell))
-            {
-                dep = VisualTreeHelper.GetParent(dep);
-            }
-
-            if (dep == null)
-                return;
-
-
-            DataGridCell cell = dep as DataGridCell;
-
-            // navigate further up the tree
-            while ((dep != null) && !(dep is DataGridRow))
-            {
-                dep = VisualTreeHelper.GetParent(dep);
-            }
-
-            DataGridRow row = dep as DataGridRow;
+            var cell = FindAncestorControl<DataGridCell>(e.OriginalSource as DependencyObject);
+            DataGridRow row = FindAncestorControl<DataGridRow>(cell);
             if (row != null)
             {
                 row.DetailsVisibility = 
