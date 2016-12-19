@@ -219,7 +219,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            PopulateResourceTypes();
+            RequestLogFiltersWrapperAsync(PopulateResourceTypes);
         }
 
         /// <summary>
@@ -289,12 +289,24 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Show request status bar.
         /// </summary>
-        private void InitAndShowRequestStatus()
+        /// <param name="IsCanceButtonVisible">Indicate if the cancel button should be shown</param>
+        private void SetServerRequestStartStatus(bool IsCanceButtonVisible = true)
         {
+            IsControlEnabled = false;
+            RequestErrorMessage = null;
             ShowRequestErrorMessage = false;
             RequestStatusText = Resources.LogViewerRequestProgressMessage;
             ShowRequestStatus = true;
-            ShowCancelRequestButton = true;
+            ShowCancelRequestButton = IsCanceButtonVisible;
+        }
+
+        /// <summary>
+        /// Hide request status bar, enable controls.
+        /// </summary>
+        private void SetServerRequestCompleteStatus()
+        {
+            IsControlEnabled = true;
+            ShowRequestStatus = false;
         }
 
         /// <summary>
@@ -314,8 +326,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             _isLoading = true;
 
             _cancellationTokenSource = new CancellationTokenSource();
-            IsControlEnabled = false;
-            InitAndShowRequestStatus();
+            SetServerRequestStartStatus();
             try
             {
                 await callback(_cancellationTokenSource.Token);
@@ -339,8 +350,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
             finally
             {
-                IsControlEnabled = true;
-                ShowRequestStatus = false;
+                SetServerRequestCompleteStatus();
                 Debug.WriteLine("Setting _isLoading to false");
                 _isLoading = false;
             }
@@ -393,7 +403,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             if (_resourceDescriptors?[0] == null)
             {
-                PopulateResourceTypes();
+                RequestLogFiltersWrapperAsync(PopulateResourceTypes);
+                return;
+            }
+
+            if (LogIdList == null)
+            {
+                RequestLogFiltersWrapperAsync(PopulateLogIds);
                 return;
             }
 

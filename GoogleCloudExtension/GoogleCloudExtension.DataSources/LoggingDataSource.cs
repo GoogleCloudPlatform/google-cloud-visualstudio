@@ -67,7 +67,7 @@ namespace GoogleCloudExtension.DataSources
         /// The size of entire set of log names is small. 
         /// Batch all in one request in unlikely case it spans multiple pages.
         /// </summary>
-        public async Task<IList<string>> ListProjectLogNameAsync()
+        public async Task<IList<string>> ListProjectLogNamesAsync()
         {
             return await LoadPagedListAsync(
                 (token) =>
