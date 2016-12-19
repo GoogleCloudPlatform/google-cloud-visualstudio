@@ -204,7 +204,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             AdvancedFilterHelpCommand = new ProtectedCommand(ShowAdvancedFilterHelp);
             DateTimePickerModel = new DateTimePickerViewModel(
                 TimeZoneInfo.Local, DateTime.UtcNow, isDescendingOrder: true);
-            DateTimePickerModel.DateTimeFilterChange += (sender, e) => Reload();
+            DateTimePickerModel.DateTimeFilterChange += (sender, e) => OnFiltersChanged();
         }
 
         /// <summary>
