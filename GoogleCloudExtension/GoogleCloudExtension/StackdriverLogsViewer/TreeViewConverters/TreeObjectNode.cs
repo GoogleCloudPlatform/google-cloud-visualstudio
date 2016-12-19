@@ -121,6 +121,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             {
                 ParseClassProperties(obj, type);
             }
+            else if (type.Namespace.StartsWith("Newtonsoft.Json"))
+            {
+                NodeValue = null;
+                Children = obj;
+            }
             else
             {
                 // The best effort.
