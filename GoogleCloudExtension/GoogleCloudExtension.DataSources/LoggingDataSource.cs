@@ -30,6 +30,11 @@ namespace GoogleCloudExtension.DataSources
     public class LoggingDataSource : DataSourceBase<LoggingService>
     {
         /// <summary>
+        /// Google cloud uses format of projects/{project_id} as projects filter.
+        /// </summary>
+        private string ProjectFilter => $"projects/{ProjectId}";
+
+        /// <summary>
         /// Initializes an instance of the data source.
         /// </summary>
         /// <param name="projectId">The Google Cloud Platform project id of the current user account .</param>
@@ -53,6 +58,25 @@ namespace GoogleCloudExtension.DataSources
                     return request.ExecuteAsync();
                 },
                 x => x.ResourceDescriptors,
+                x => x.NextPageToken);
+        }
+
+        /// <summary>
+        /// Returns a list of log names of current Google Cloud project.
+        /// Only logs that have entries are listed.
+        /// The size of entire set of log names is small. 
+        /// Batch all in one request in unlikely case it spans multiple pages.
+        /// </summary>
+        public async Task<IList<string>> ListProjectLogNamesAsync()
+        {
+            return await LoadPagedListAsync(
+                (token) =>
+                {
+                    var request = Service.Projects.Logs.List(ProjectFilter);
+                    request.PageToken = token;
+                    return request.ExecuteAsync();
+                },
+                x => x.LogNames,
                 x => x.NextPageToken);
         }
 
@@ -87,10 +111,9 @@ namespace GoogleCloudExtension.DataSources
         {
             try
             {
-                string projectsFilter = $"projects/{ProjectId}";
                 var requestData = new ListLogEntriesRequest
                 {
-                    ResourceNames = new List<string>(new string[] { projectsFilter }),
+                    ResourceNames = new List<string>(new string[] { ProjectFilter }),
                     Filter = filter,
                     OrderBy = orderBy,
                     PageSize = pageSize

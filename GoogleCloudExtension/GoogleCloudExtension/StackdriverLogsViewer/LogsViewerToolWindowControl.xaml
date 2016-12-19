@@ -327,10 +327,10 @@
 
                     <local:CustomComboBox 
                         x:Name="comboLogID" 
-                        Width="160"
-                        SelectedIndex="0">
-                        <ComboBoxItem Content="{x:Static ext:Resources.LogViewerLogIdSelectAllLabel}" />
-                    </local:CustomComboBox>
+                        Width="160" 
+                        DataContext="{Binding LogIdList}"
+                        ItemsSource="{Binding LogIDs}"
+                        SelectedItem="{Binding SelectedLogId}" />
                     
                     <local:CustomComboBox 
                         x:Name="comboSeverity" 

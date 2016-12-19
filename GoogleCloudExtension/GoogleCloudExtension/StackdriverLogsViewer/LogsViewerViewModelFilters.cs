@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -40,12 +41,21 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private string _filter;
 
+        private LogIdsList _logIdList;
         private MonitoredResourceDescriptor _selectedResource;
         private IList<MonitoredResourceDescriptor> _resourceDescriptors;
         private string _selectedLogSeverity = Resources.LogViewerAllLogLevelSelection;
         private string _simpleSearchText;
         private string _advacedFilterText;
         private bool _showAdvancedFilter = false;
+
+        /// <summary>
+        /// Gets the LogIdList for log id selector binding source.
+        /// </summary>
+        public LogIdsList LogIdList {
+            get { return _logIdList; }
+            private set { SetValueAndRaise(ref _logIdList, value); }
+        }
 
         /// <summary>
         /// Gets the DateTimePicker view model object.
@@ -129,7 +139,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 if (value != null && _selectedLogSeverity != value)
                 {
                     _selectedLogSeverity = value;
-                    OnFiltersChanged();
+                    Reload();
                 }
             }
         }
@@ -154,7 +164,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 if (value != null && _selectedResource != value)
                 {
                     SetValueAndRaise(ref _selectedResource, value);
-                    OnFiltersChanged();
+                    Reload();
                 }
             }
         }
@@ -208,6 +218,30 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
+        /// A wrapper for common getting filters API calls.
+        /// </summary>
+        /// <param name="apiCall">The api call to get resource descriptors or log names etc.</param>
+        private async Task RequestLogFiltersWrapperAsync(Func<Task> apiCall)
+        {
+            SetServerRequestStartStatus(IsCanceButtonVisible: false);
+            try
+            {
+                await apiCall();
+            }
+            catch (DataSourceException ex)
+            {
+                /// If it fails, show a tip, let refresh button retry it.
+                RequestErrorMessage = ex.Message;
+                ShowRequestErrorMessage = true;
+                return;
+            }
+            finally
+            {
+                SetServerRequestCompleteStatus();
+            }
+        }
+
+        /// <summary>
         /// Populate resource type selection list.
         /// 
         /// The control flow is as following. 
@@ -222,27 +256,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         ///     2. Reload() checks ResourceDescriptors is null or empty.
         ///     3. Reload calls PopulateResourceTypes() which does a manual retry.
         /// </summary>
-        private async void PopulateResourceTypes()
+        private async Task PopulateResourceTypes()
         {
-            RequestErrorMessage = null;
-            ShowRequestErrorMessage = false;
-            IsControlEnabled = false;
-            try
-            {
-                ResourceDescriptors = await _dataSource.Value.GetResourceDescriptorsAsync();
-            }
-            catch (DataSourceException ex)
-            {
-                /// If it fails, show a tip, let refresh button retry it.
-                RequestErrorMessage = ex.Message;
-                ShowRequestErrorMessage = true;
-                return;
-            }
-            finally
-            {
-                IsControlEnabled = true;
-            }
-
+            ResourceDescriptors = await _dataSource.Value.GetResourceDescriptorsAsync();
             foreach (var defaultSelection in s_defaultResourceSelections)
             {
                 var desc = _resourceDescriptors?.First(x => x.Type == defaultSelection);
@@ -257,9 +273,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             SelectedResource = _resourceDescriptors?[0];
         }
 
-        private void OnFiltersChanged()
+        /// <summary>
+        /// This method uses similar logic as populating resource descriptors.
+        /// Refers to <seealso cref="PopulateResourceTypes"/>.
+        /// </summary>
+        private async Task PopulateLogIds()
         {
-            Debug.WriteLine("NotifyFiltersChanged");
+            IList<string> logIdRequestResult = null;
+            logIdRequestResult = await _dataSource.Value.ListProjectLogNamesAsync();
+            LogIdList = new LogIdsList(logIdRequestResult, Reload);
             Reload();
         }
 
@@ -289,6 +311,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             else
             {
                 filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
+            }
+
+            Debug.Assert(LogIdList != null, "LogIDList should not be null.");
+            if (LogIdList.SelectedLogIdFullName != null)
+            {
+                filter.Append($"logName=\"{LogIdList.SelectedLogIdFullName}\"");
             }
 
             var textFilter = ComposeTextSearchFilter();
