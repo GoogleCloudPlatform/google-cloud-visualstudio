@@ -91,7 +91,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
                 return;
             }
 
-            // Children = new ObservableCollection<object>();
             ParseObjectTree(obj);
         }
 
@@ -114,7 +113,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             // Display them as Payload object.
             else if (obj.IsDictionaryObject())
             {
-                // Children.Add(new Payload(name, obj));
                 ParseDictionary(obj);
             }
             else if (s_supportedTypes.Contains(type))
