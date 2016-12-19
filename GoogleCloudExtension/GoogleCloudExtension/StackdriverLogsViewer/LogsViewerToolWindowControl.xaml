@@ -251,9 +251,15 @@
                         ItemsSource="{Binding LogSeverityList}"
                         SelectedItem="{Binding SelectedLogSeverity}" />
 
+                    <local:CustomComboBox 
+                        x:Name="comboLogID" 
+                        Width="160"
+                        ItemsSource="{Binding LogIDs}"
+                        SelectedItem="{Binding SelectedLogID, Mode=TwoWay}" />
+                    
                     <local:DateTimePicker 
                         Margin="0, 0, 6, 0"
-                        DataContext="{Binding Path=DateTimePickerModel}" />
+                        DataContext="{Binding DateTimePickerModel}" />
 
                     <controls:ImageButton 
                         Grid.Column="1" 

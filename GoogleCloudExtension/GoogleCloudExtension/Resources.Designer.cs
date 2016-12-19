@@ -1969,6 +1969,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All log.
+        /// </summary>
+        public static string LogViewerLogIdSelectAllLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogIdSelectAllLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MM-dd-yyyy.
         /// </summary>
         public static string LogViewerLogItemDateFormat {
@@ -2095,6 +2104,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Click to select different timezone..
         /// </summary>
         public static string LogViewerTimeZoneSelectionToolTip {
             get {
