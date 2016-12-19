@@ -194,7 +194,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public LogsViewerViewModel()
         {
             _dataSource = new Lazy<LoggingDataSource>(CreateDataSource);
-            RefreshCommand = new ProtectedCommand(Reload);
+            RefreshCommand = new ProtectedCommand(OnRefreshCommand);
             LogItemCollection = new ListCollectionView(_logs);
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
             CancelRequestCommand = new ProtectedCommand(CancelRequest);
@@ -236,22 +236,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// Append a set of log entries.
-        /// </summary>
-        private void AddLogs(IList<LogEntry> logEntries)
-        {
-            if (logEntries == null)
-            {
-                return;
-            }
-
-            foreach (var log in logEntries)
-            {
-                _logs.Add(new LogItem(log));
-            }
-        }
-
-        /// <summary>
         /// When scrolling the current data grid view, the frist row changes.
         /// Update the first row date.
         /// </summary>
@@ -265,6 +249,30 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             FirstRowDate = log.Date;
+        }
+
+
+        private void OnRefreshCommand()
+        {
+            DateTimePickerModel.IsDescendingOrder = true;
+            DateTimePickerModel.DateTimeUtc = DateTime.UtcNow;
+            Reload();
+        }
+
+        /// <summary>
+        /// Append a set of log entries.
+        /// </summary>
+        private void AddLogs(IList<LogEntry> logEntries)
+        {
+            if (logEntries == null)
+            {
+                return;
+            }
+
+            foreach (var log in logEntries)
+            {
+                _logs.Add(new LogItem(log));
+            }
         }
 
         /// <summary>
@@ -347,7 +355,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private async Task LoadLogsAsync(CancellationToken cancellationToken)
         {
-            var order = DateTimePickerModel.IsDecendingOrder ? "timestamp desc" : "timestamp asc";
+            var order = DateTimePickerModel.IsDescendingOrder ? "timestamp desc" : "timestamp asc";
             int count = 0;
             while (count < DefaultPageSize && !cancellationToken.IsCancellationRequested)
             {

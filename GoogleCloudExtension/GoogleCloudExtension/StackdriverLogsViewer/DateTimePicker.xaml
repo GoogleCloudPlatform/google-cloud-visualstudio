@@ -118,19 +118,22 @@
                                         Margin="6, 0, 0, 5" />
                                     <TextBox 
                                         Grid.Column="0" Grid.Row="1"  
-                                         Padding="8, 5, 8, 5" 
-                                         Margin="0, 0, 6, 0" 
-                                         IsEnabled="False"
-                                         Width="90"
-                                         HorizontalAlignment="Left"
-                                         VerticalAlignment="Center"                             
-                                         Text="{Binding UiElementDate, StringFormat={x:Static ext:Resources.LogViewerLogItemDateFormat}}" />
-                                    <TextBox Grid.Column="1" Grid.Row="1" 
-                                         x:Name="timeBox"
-                                         Margin="6, 0, 0, 0"
-                                         HorizontalAlignment="Left"
-                                         VerticalAlignment="Center"   
-                                         Width="145" />
+                                        Padding="8, 5, 8, 5" 
+                                        Margin="0, 0, 6, 0" 
+                                        IsEnabled="False"
+                                        Width="90"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"  
+                                        HorizontalContentAlignment="Center"
+                                        Text="{Binding UiElementDate, StringFormat={x:Static ext:Resources.LogViewerLogItemDateFormat}}" />
+                                    <local:TimeBox 
+                                        Grid.Column="1" Grid.Row="1" 
+                                        x:Name="timeBox"
+                                        DataContext="{Binding TimeBoxModel}"          
+                                        Margin="6, 0, 0, 0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"   
+                                        Width="145" />
                                 </Grid>
 
                                 <Calendar Grid.Row="1" 

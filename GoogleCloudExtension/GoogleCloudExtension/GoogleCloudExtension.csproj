@@ -241,6 +241,10 @@
     </Compile>
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModelFilters.cs" />
+    <Compile Include="StackdriverLogsViewer\TimeBox.xaml.cs">
+      <DependentUpon>TimeBox.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverLogsViewer\TimeBoxViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\LogItemConverter.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TreeObjectNode.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TypeUtil.cs" />
@@ -667,6 +671,10 @@
     <Page Include="StackdriverLogsViewer\LogsViewerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StackdriverLogsViewer\TimeBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml">
       <SubType>Designer</SubType>

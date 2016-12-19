@@ -18,8 +18,8 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Text;
 using System.Linq;
+using System.Text;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -279,7 +279,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 filter.AppendLine($"severity>={_selectedLogSeverity}");
             }
 
-            if (DateTimePickerModel.IsDecendingOrder)
+            if (DateTimePickerModel.IsDescendingOrder)
             {
                 if (DateTimePickerModel.DateTimeUtc < DateTime.UtcNow)
                 {

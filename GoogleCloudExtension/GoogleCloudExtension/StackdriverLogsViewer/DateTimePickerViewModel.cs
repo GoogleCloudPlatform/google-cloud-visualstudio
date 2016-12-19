@@ -29,28 +29,32 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private TimeZoneInfo _timeZone;
 
         private DateTime _uiElementDate;
-        private TimeSpan _uiElementtime;
         private int _uiSelectedOrderIndex;
         private bool _isDropDownOpen = false;
 
         /// <summary>   
-        /// Gets if using descending order by timestamp. 
+        /// Gets or sets if using descending order by timestamp. 
         /// true: descending order,  false: ascending order.
         /// Go button reset it. Cancel button leave the value not changed.
         /// </summary>
-        public bool IsDecendingOrder { get; private set; }
+        public bool IsDescendingOrder { get; set; }
 
         /// <summary>
-        /// Gets the datetime in UTC.  
+        /// Gets or sets the datetime in UTC.  
         /// The current active date time.
         /// Go button reset it. Cancel button leave the value not changed.        
         /// </summary>
-        public DateTime DateTimeUtc { get; private set; }
+        public DateTime DateTimeUtc { get; set; }
 
         /// <summary>
         /// The command to execute to accept the changes.
         /// </summary>
         public ProtectedCommand GoCommand { get; }
+
+        /// <summary>
+        /// Gets the time box view model.
+        /// </summary>
+        public TimeBoxViewModel TimeBoxModel { get; }
 
         /// <summary>
         /// Gets or sets the UI control date box value of <seealso cref="_timeZone"/>
@@ -63,15 +67,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 _uiElementDate = value > Now ? Now : value;
                 RaisePropertyChanged(nameof(UiElementDate));
             }
-        }
-
-        /// <summary>
-        /// Gets or sets the UI control time box value.
-        /// </summary>
-        public TimeSpan UiElementTime
-        {
-            get { return _uiElementtime; }
-            set { SetValueAndRaise(ref _uiElementtime, value); }
         }
 
         /// <summary>
@@ -105,8 +100,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 {
                     DateTime dt = TimeZoneInfo.ConvertTimeFromUtc(DateTimeUtc, _timeZone);
                     UiElementDate = dt.Date;
-                    UiElementTime = dt.TimeOfDay;
-                    SelectedOrderIndex = IsDecendingOrder ? 0 : 1;
+                    TimeBoxModel.Time = dt.TimeOfDay;
+                    SelectedOrderIndex = IsDescendingOrder ? 0 : 1;
                 }
 
                 SetValueAndRaise(ref _isDropDownOpen, value);
@@ -123,8 +118,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             _timeZone = timeZone;
             DateTimeUtc = dateTimeUtc;
-            IsDecendingOrder = isDescendingOrder;
+            IsDescendingOrder = isDescendingOrder;
             GoCommand = new ProtectedCommand(OnGoButtonCommand);
+            TimeBoxModel = new TimeBoxViewModel();
         }
 
         /// <summary>
@@ -141,13 +137,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void OnGoButtonCommand()
         {
-            DateTime newDateTimeUtc = TimeZoneInfo.ConvertTimeToUtc(_uiElementDate.Date.Add(_uiElementtime));
+            DateTime newDateTimeUtc = TimeZoneInfo.ConvertTimeToUtc(_uiElementDate.Date.Add(TimeBoxModel.Time));
             bool newOrder = _uiSelectedOrderIndex == 0;
-            if (DateTimeUtc != newDateTimeUtc || newOrder != IsDecendingOrder)
+            if (DateTimeUtc != newDateTimeUtc || newOrder != IsDescendingOrder)
             {
                 Debug.WriteLine("OnChangedDateTime Invoke DateTimeFilterChange , changed");
                 DateTimeUtc = newDateTimeUtc;
-                IsDecendingOrder = newOrder;
+                IsDescendingOrder = newOrder;
                 DateTimeFilterChange?.Invoke(this, new EventArgs());
             }
             else

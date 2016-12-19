@@ -1,0 +1,131 @@
+﻿<UserControl x:Class="GoogleCloudExtension.StackdriverLogsViewer.TimeBox"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="MaxLength" Value="2" />
+            <Setter Property="MaxLines" Value="1" />
+            <Setter Property="MinWidth" Value="2" />
+            <Setter Property="HorizontalContentAlignment" Value="Center"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Padding" Value="2, 5, 2, 5" />
+            <Setter Property="AcceptsReturn" Value="False" />
+        </Style>
+
+        <Style x:Key="SeparatorStyle" TargetType="ContentControl">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ContentControl">
+                        <TextBlock VerticalAlignment="Center" Text=":"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="UpButtonStyle" TargetType="RepeatButton">
+            <Setter Property="ClickMode" Value="Press"/>
+            <Setter Property="Margin" Value="1,2,1,0.5"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RepeatButton">
+                        <Label Background="White" BorderThickness="0" Margin="0" Padding="0">
+                            <Path Fill="Gray" Data="M5,1 L1,9 L9,9 z"/>
+                        </Label>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="DownButtonStyle" TargetType="RepeatButton">
+            <Setter Property="ClickMode" Value="Press"/>
+            <Setter Property="Margin" Value="1,0.5,1,2"/>
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RepeatButton">
+                        <Label Background="White" BorderThickness="0" Margin="0" Padding="0">
+                            <Path Fill="Gray" Data="M5,9 L1,1 L9,1 z"/>
+                        </Label>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <ObjectDataProvider x:Key="TimeTypes" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="local:TimeType" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+
+        <Style TargetType="local:TimeBox">
+            <Setter Property="Focusable" Value="False"/>
+            <Setter Property="IsTabStop" Value="False"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        </Style>
+
+    </UserControl.Resources>
+    
+    <Grid MinWidth="135" VerticalAlignment="Center">
+        <Border BorderBrush="LightBlue" 
+                BorderThickness="1" 
+                CornerRadius="3">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.20*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="0.20*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="0.20*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="50"/>
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="hourBox" 
+                         Grid.Column="0"
+                         Text="{Binding Hour, ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=PropertyChanged}" />
+
+                <ContentControl Grid.Column="1" Style="{StaticResource SeparatorStyle}" />
+                
+                <TextBox x:Name="minuteBox"
+                         Grid.Column="2"
+                         Text="{Binding Minute,  ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=PropertyChanged}" />
+
+                <ContentControl Grid.Column="3" Style="{StaticResource SeparatorStyle}"/>
+                
+                <TextBox x:Name="secondBox" 
+                         Grid.Column="4"
+                         Text="{Binding Second,  ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=PropertyChanged}" />
+                
+                <StackPanel Grid.Column="5" Margin="4, 0, 4, 0" >
+                    <RepeatButton x:Name="upButton" Style="{StaticResource UpButtonStyle}"/>
+                    <RepeatButton x:Name="downButton" Style="{StaticResource DownButtonStyle}"/>
+                </StackPanel>
+
+                <local:CustomComboBox 
+                    x:Name="timeTypeBox" 
+                    Grid.Column="6"   
+                    Margin="0" 
+                    HorizontalAlignment="Right"
+                    ItemsSource="{Binding Source={StaticResource TimeTypes}}" 
+                    SelectedItem="{Binding TimeType, ValidatesOnExceptions=True}"/>
+            </Grid>
+        </Border>
+    </Grid>
+</UserControl>
