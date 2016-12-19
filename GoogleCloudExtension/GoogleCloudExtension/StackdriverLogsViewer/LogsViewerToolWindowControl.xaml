@@ -254,8 +254,9 @@
                     <local:CustomComboBox 
                         x:Name="comboLogID" 
                         Width="160"
-                        ItemsSource="{Binding LogIDs}"
-                        SelectedItem="{Binding SelectedLogID, Mode=TwoWay}" />
+                        SelectedIndex="0">
+                        <ComboBoxItem Content="{x:Static ext:Resources.LogViewerAllLogLevelSelection}" />
+                    </local:CustomComboBox>
                     
                     <local:DateTimePicker 
                         Margin="0, 0, 6, 0"
