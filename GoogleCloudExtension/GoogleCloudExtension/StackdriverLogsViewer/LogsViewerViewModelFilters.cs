@@ -129,7 +129,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 if (value != null && _selectedLogSeverity != value)
                 {
                     _selectedLogSeverity = value;
-                    OnFiltersChanged();
+                    Reload();
                 }
             }
         }
@@ -154,7 +154,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 if (value != null && _selectedResource != value)
                 {
                     SetValueAndRaise(ref _selectedResource, value);
-                    OnFiltersChanged();
+                    Reload();
                 }
             }
         }
@@ -255,12 +255,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             // Select first one if type of global or gce_instance does not exists.
             SelectedResource = _resourceDescriptors?[0];
-        }
-
-        private void OnFiltersChanged()
-        {
-            Debug.WriteLine("NotifyFiltersChanged");
-            Reload();
         }
 
         /// <summary>
