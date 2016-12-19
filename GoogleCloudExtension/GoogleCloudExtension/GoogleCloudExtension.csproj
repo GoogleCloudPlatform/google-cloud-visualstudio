@@ -248,9 +248,7 @@
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ComplexPropertyMethodToValueConverter.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\JArrayLengthConverter.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\JPropertyDataTemplateSelector.cs" />
-    <Compile Include="StackdriverLogsViewer\TreeViewConverters\JPropertyTypeToColorConverter.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\JValueConverter.cs" />
-    <Compile Include="StackdriverLogsViewer\TreeViewConverters\JValueTypeToColorConverter.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\LogItemConverter.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\MethodToValueConverter.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TreeObjectNode.cs" />

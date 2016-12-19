@@ -50,44 +50,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
 
                 }
             }
-
-            if (type.Name == "KeyValuePair`2")
-            {
-
-                try
-                {
-                    object value = ((dynamic)item).Value;
-                    // var keyValuePair = (System.Collections.Generic.KeyValuePair<string, object>)item;
-                    if (value.GetType().Namespace.StartsWith("Newtonsoft.Json"))
-                    {
-                        return frameworkElement.FindResource("KeyValuePairJObject") as DataTemplate;
-                    }
-                    else if (value is string || value.GetType().IsValueType)
-                    {
-                        return frameworkElement.FindResource("KeyValuePair") as DataTemplate;
-                    }
-                    else
-                    {
-                        Debug.WriteLine($"type.Name value.GetType()");
-                    }
-                }
-                catch
-                {
-                    Debug.WriteLine("Exception at converting keyValuePair");
-
-                }
-
-            }
-
             var key = new DataTemplateKey(type);
-            try
-            {
-                return frameworkElement.FindResource(key) as DataTemplate;
-            }
-            catch
-            {
-                return null;
-            }
+            return frameworkElement.FindResource(key) as DataTemplate;
         }
     }
 }
