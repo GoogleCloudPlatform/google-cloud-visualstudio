@@ -1969,7 +1969,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All log.
+        ///   Looks up a localized string similar to All logs.
         /// </summary>
         public static string LogViewerLogIdSelectAllLabel {
             get {

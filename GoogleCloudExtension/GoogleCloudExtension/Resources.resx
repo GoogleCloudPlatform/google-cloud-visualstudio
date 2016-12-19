@@ -1424,7 +1424,7 @@
     <comment>Label to the time input control</comment>
   </data>
   <data name="LogViewerLogIdSelectAllLabel" xml:space="preserve">
-    <value>All log</value>
+    <value>All logs</value>
     <comment>The log name (log id) selection label for select all logs.</comment>
   </data>
 </root>

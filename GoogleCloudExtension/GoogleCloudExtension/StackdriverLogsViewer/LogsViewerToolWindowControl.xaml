@@ -246,18 +246,18 @@
                     </local:CustomComboBox>
 
                     <local:CustomComboBox 
+                        x:Name="comboLogID" 
+                        Width="160"
+                        SelectedIndex="0">
+                        <ComboBoxItem Content="{x:Static ext:Resources.LogViewerLogIdSelectAllLabel}" />
+                    </local:CustomComboBox>
+                    
+                    <local:CustomComboBox 
                         x:Name="comboSeverity" 
                         Width="160"
                         ItemsSource="{Binding LogSeverityList}"
                         SelectedItem="{Binding SelectedLogSeverity}" />
 
-                    <local:CustomComboBox 
-                        x:Name="comboLogID" 
-                        Width="160"
-                        SelectedIndex="0">
-                        <ComboBoxItem Content="{x:Static ext:Resources.LogViewerAllLogLevelSelection}" />
-                    </local:CustomComboBox>
-                    
                     <local:DateTimePicker 
                         Margin="0, 0, 6, 0"
                         DataContext="{Binding DateTimePickerModel}" />
