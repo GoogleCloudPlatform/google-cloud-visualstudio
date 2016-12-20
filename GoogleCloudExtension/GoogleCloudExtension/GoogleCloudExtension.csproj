@@ -250,7 +250,6 @@
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\JsonDataTemplateSelector.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\JValueObjectConverter.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\LogItemConverter.cs" />
-    <Compile Include="StackdriverLogsViewer\TreeViewConverters\MethodToValueConverter.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TreeObjectNode.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TypeUtil.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
