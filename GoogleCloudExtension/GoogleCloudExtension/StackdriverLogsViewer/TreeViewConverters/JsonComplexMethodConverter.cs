@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Data;
@@ -20,27 +21,40 @@ using Newtonsoft.Json.Linq;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
 {
-    public sealed class JArrayLengthConverter : IValueConverter
+    /// <summary>
+    /// This converter for JProperty tokens whose Value is Array or Object.
+    /// </summary>
+    class JsonComplexMethodConverter : IValueConverter
     {
+        /// <summary>
+        /// Impletement the Convert method of IValueConverter.
+        /// Convert JProperty tokens.
+        /// </summary>
+        /// <returns>Json Array or Json Object.</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var jToken = value as JToken;
-            if(jToken == null)
-                throw new Exception("Wrong type for this converter");
-
-            switch (jToken.Type)
+            var methodName = parameter as string;
+            if (value == null || methodName == null)
             {
-                case JTokenType.Array:
-                    var arrayLen = jToken.Children().Count();
-                    return string.Format("[{0}]", arrayLen);
-                case JTokenType.Property:
-                    var propertyArrayLen = jToken.Children().FirstOrDefault().Children().Count();
-                    return string.Format("[ {0} ]", propertyArrayLen);
-                default:
-                    throw new Exception("Type should be JProperty or JArray");
+                return null;
             }
+
+            var methodInfo = value.GetType().GetMethod(methodName, new Type[0]);
+            if (methodInfo == null)
+            {
+                return null;
+            }
+
+            var invocationResult = methodInfo.Invoke(value, new object[0]);
+            var jTokens = (IEnumerable<JToken>) invocationResult;
+            return jTokens.First().Children() ;
         }
 
+        /// <summary>
+        /// Placeholder of of ConvertBack method of IValueConverter. 
+        /// Not needed and hence not supported.
+        /// </summary>
+        /// <exception cref="NotSupportedException">Throw for the ConvertBack is not supported.</exception>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotSupportedException(GetType().Name + " can only be used for one way conversion.");

@@ -88,36 +88,32 @@
                 </StackPanel>
             </HierarchicalDataTemplate>
 
-            <vct:MethodToValueConverter x:Key="MethodToValueConverter"/>
-            <vct:ComplexPropertyMethodToValueConverter x:Key="ComplexPropertyMethodToValueConverter"/>
-            <vct:JValueConverter x:Key="JValueConverter"/>
-            <vct:JArrayLengthConverter x:Key="JArrayLengthConverter"/>
+            <vct:JsonComplexMethodConverter x:Key="JsonComplexMethodConverter"/>
+            <vct:JValueObjectConverter x:Key="JValueObjectConverter"/>
 
             <HierarchicalDataTemplate 
                 DataType="{x:Type jlinq:JArray}" 
                 ItemsSource="{Binding Converter={StaticResource MethodToValueConverter}, ConverterParameter='Children'}">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="array" Style="{StaticResource TreeNodeLabel}"/>
-                    <TextBlock Text="{Binding Converter={StaticResource JArrayLengthConverter}}" />
                 </StackPanel>
             </HierarchicalDataTemplate>
             
             <HierarchicalDataTemplate  
                 x:Key="ArrayPropertyTemplate" 
                 DataType="{x:Type jlinq:JProperty}" 
-                ItemsSource="{Binding Converter={StaticResource ComplexPropertyMethodToValueConverter}, ConverterParameter='Children'}">
+                ItemsSource="{Binding Converter={StaticResource JsonComplexMethodConverter}, ConverterParameter='Children'}">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{Binding Name, Mode=OneWay}" Style="{StaticResource TreeNodeLabel}" />
                     <TextBlock Text=":" Style="{StaticResource TreeNodeLabel}"/>
                     <TextBlock Text="array" Style="{StaticResource TreeNodeText}"/>
-                    <TextBlock Text="{Binding Converter={StaticResource JArrayLengthConverter}}" />
                 </StackPanel>
             </HierarchicalDataTemplate>
             
             <HierarchicalDataTemplate  
                 x:Key="ObjectPropertyTemplate" 
                 DataType="{x:Type jlinq:JProperty}" 
-                ItemsSource="{Binding Converter={StaticResource ComplexPropertyMethodToValueConverter}, ConverterParameter='Children'}">
+                ItemsSource="{Binding Converter={StaticResource JsonComplexMethodConverter}, ConverterParameter='Children'}">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{Binding Name, Mode=OneWay}" Style="{StaticResource TreeNodeLabel}" />
                     <TextBlock Text=":" Style="{StaticResource TreeNodeLabel}"/>
@@ -131,7 +127,7 @@
                     <TextBlock Text=":" Style="{StaticResource TreeNodeLabel}" />
                     <TextBlock  Width="600"  
                                 TextWrapping="Wrap" 
-                                Text="{Binding Value, Converter={StaticResource JValueConverter}}"/>
+                                Text="{Binding Value, Converter={StaticResource JValueObjectConverter}}"/>
                 </StackPanel>
             </DataTemplate>
             
@@ -143,20 +139,8 @@
                 </StackPanel>
             </HierarchicalDataTemplate>
             
-            <HierarchicalDataTemplate 
-                DataType="{x:Type jlinq:JConstructor}" 
-                ItemsSource="{Binding Converter={StaticResource MethodToValueConverter}, ConverterParameter='Children'}">
-                <TextBlock Text="Constructor"/>
-            </HierarchicalDataTemplate>
-            
-            <HierarchicalDataTemplate 
-                DataType="{x:Type jlinq:JRaw}" 
-                ItemsSource="{Binding Converter={StaticResource MethodToValueConverter}, ConverterParameter='Children'}">
-                <TextBlock Text="Raw" />
-            </HierarchicalDataTemplate>
-
-            <vct:JPropertyDataTemplateSelector 
-                x:Key="JPropertyDataTemplateSelector" 
+            <vct:JsonDataTemplateSelector 
+                x:Key="JsonDataTemplateSelector" 
                 ArrayPropertyTemplate="{StaticResource ArrayPropertyTemplate}"
                 ObjectPropertyTemplate="{StaticResource ObjectPropertyTemplate}"
                 PrimitivePropertyTemplate ="{StaticResource PrimitivePropertyTemplate}" />
@@ -164,7 +148,7 @@
             <DataTemplate DataType="{x:Type jlinq:JValue}">
                 <TextBlock Width="600" 
                            TextWrapping="Wrap" 
-                           Text="{Binding Converter={StaticResource JValueConverter}}" 
+                           Text="{Binding Converter={StaticResource JValueObjectConverter}}" 
                            Style="{StaticResource TreeNodeText}"/>
             </DataTemplate>
             <!-- End Region -->
@@ -556,7 +540,7 @@
                             <!-- Override the template to disable inner scrollbar -->
                             <TreeView BorderThickness="0" 
                                       ItemsSource="{Binding Converter={StaticResource LogItemConverter}}"
-                                      ItemTemplateSelector="{StaticResource JPropertyDataTemplateSelector}" >
+                                      ItemTemplateSelector="{StaticResource JsonDataTemplateSelector}" >
                                 <TreeView.Template>
                                     <ControlTemplate>
                                         <ItemsPresenter />

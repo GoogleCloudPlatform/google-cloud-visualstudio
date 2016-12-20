@@ -15,25 +15,52 @@
 using System.Windows;
 using System.Windows.Controls;
 using Newtonsoft.Json.Linq;
-using System.Diagnostics;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
 {
-    public sealed class JPropertyDataTemplateSelector : DataTemplateSelector
+    /// <summary>
+    /// DataTemplate selector for Json converters.
+    /// </summary>
+    public sealed class JsonDataTemplateSelector : DataTemplateSelector
     {
+        /// <summary>
+        /// Gets or sets Primitive Property DataTemplate.
+        /// </summary>
         public DataTemplate PrimitivePropertyTemplate { get; set; }
+
+        /// <summary>
+        /// Gets or sets Complex Property DataTemplate.
+        /// </summary>
         public DataTemplate ComplexPropertyTemplate { get; set; }
+
+        /// <summary>
+        /// Gets or sets Array Property DataTemplate.
+        /// </summary>
         public DataTemplate ArrayPropertyTemplate { get; set; }
+
+        /// <summary>
+        /// Gets or sets Object Property DataTemplate.
+        /// </summary>
         public DataTemplate ObjectPropertyTemplate { get; set; }
 
+        /// <summary>
+        /// Help WPF view to select a DataTemplate for the given Json object.
+        /// </summary>
+        /// <param name="item">A Json object</param>
+        /// <param name="container">The container of the DataTemplate </param>
+        /// <returns>The selected <seealso cref="DataTemplate"/></returns>
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
-            if(item == null)
+            if (item == null)
+            {
                 return null;
+            }
 
             var frameworkElement = container as FrameworkElement;
-            if(frameworkElement == null)
+            if (frameworkElement == null)
+            {
                 return null;
+            }
 
             var type = item.GetType();
             if (type == typeof(JProperty))
@@ -47,9 +74,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
                         return frameworkElement.FindResource("ArrayPropertyTemplate") as DataTemplate;
                     default:
                         return frameworkElement.FindResource("PrimitivePropertyTemplate") as DataTemplate;
-
                 }
             }
+
             var key = new DataTemplateKey(type);
             return frameworkElement.FindResource(key) as DataTemplate;
         }

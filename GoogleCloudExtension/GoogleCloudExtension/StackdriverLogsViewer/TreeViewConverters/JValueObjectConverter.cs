@@ -15,23 +15,43 @@
 using System;
 using System.Globalization;
 using System.Windows.Data;
+using Newtonsoft.Json.Linq;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
 {
-    public sealed class MethodToValueConverter : IValueConverter
+    /// <summary>
+    /// Convert JValue to tree view display string.
+    /// </summary>
+    public sealed class JValueObjectConverter : IValueConverter
     {
+        /// <summary>
+        /// Impletement the Convert method of IValueConverter.
+        /// Converts a JValue.
+        /// </summary>
+        /// <returns>A Jason value as string.</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var methodName = parameter as string;
-            if (value == null || methodName == null)
-                return null;
-            var methodInfo = value.GetType().GetMethod(methodName, new Type[0]);
-            if (methodInfo == null)
-                return null;
-            var returnValue = methodInfo.Invoke(value, new object[0]);
-            return returnValue;
+            var jVal = value as JValue;
+            if (jVal != null)
+            {
+                switch (jVal.Type)
+                {
+                    case JTokenType.String:
+                        return $"\"{jVal.Value}\"";
+
+                    case JTokenType.Null:
+                        return "Null";
+                }
+            }
+
+            return value;
         }
 
+        /// <summary>
+        /// Placeholder of of ConvertBack method of IValueConverter. 
+        /// Not needed and hence not supported.
+        /// </summary>
+        /// <exception cref="NotSupportedException">Throw for the ConvertBack is not supported.</exception>
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             throw new NotSupportedException(GetType().Name + " can only be used for one way conversion.");

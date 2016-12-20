@@ -34,8 +34,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
         /// <param name="targetType">Ignored. The type of the binding target property.</param>
         /// <param name="parameter">Ignored. The converter parameter to use. .</param>
         /// <param name="culture">Ignored. The culture to use in the converter.</param>
-        /// <returns></returns>
-
+        /// <returns>A collection of ObjectNodeTree objects.</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (!(value is LogItem))
