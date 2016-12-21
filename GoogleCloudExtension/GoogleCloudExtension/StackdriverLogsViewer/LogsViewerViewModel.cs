@@ -371,10 +371,21 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 Debug.WriteLine($"LoadLogs, count={count}, firstPage={_nextPageToken == null}");
 
-                // Here, it does not do pageSize: _defaultPageSize - count, 
-                // Because this is requried to use same page size for getting next page. 
-                var results = await _dataSource.Value.ListLogEntriesAsync(_filter, order,
-                    pageSize: DefaultPageSize, nextPageToken: _nextPageToken, cancelToken: cancellationToken);
+                LogEntryRequestResult results = null;
+                ShowRequestStatus = true;
+                try
+                {
+                    // Here, it does not do pageSize: _defaultPageSize - count, 
+                    // Because this is requried to use same page size for getting next page. 
+                    results = await _dataSource.Value.ListLogEntriesAsync(_filter, order,
+                        pageSize: DefaultPageSize, nextPageToken: _nextPageToken, cancelToken: cancellationToken);
+                }
+                finally
+                {
+                    // AddLogs hangs the UI for up to several seconds. Hide the status bar.
+                    ShowRequestStatus = false;
+                }
+
                 AddLogs(results?.LogEntries);
                 _nextPageToken = results.NextPageToken;
                 if (results?.LogEntries != null)
