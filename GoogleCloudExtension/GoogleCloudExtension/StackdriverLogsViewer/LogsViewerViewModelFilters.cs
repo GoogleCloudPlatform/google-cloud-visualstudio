@@ -316,7 +316,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             Debug.Assert(LogIdList != null, "LogIDList should not be null.");
             if (LogIdList.SelectedLogIdFullName != null)
             {
-                filter.Append($"logName=\"{LogIdList.SelectedLogIdFullName}\"");
+                filter.AppendLine($"logName=\"{LogIdList.SelectedLogIdFullName}\"");
             }
 
             var textFilter = ComposeTextSearchFilter();
