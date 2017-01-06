@@ -1915,6 +1915,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Data conversion error. Log entry may contain invalid properties..
+        /// </summary>
+        public static string LogsViewerDataConversionGenericError {
+            get {
+                return ResourceManager.GetString("LogsViewerDataConversionGenericError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [{0}].
+        /// </summary>
+        public static string LogsViewerDetailTreeViewArrayIndexFormat {
+            get {
+                return ResourceManager.GetString("LogsViewerDetailTreeViewArrayIndexFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Any.
         /// </summary>
         public static string LogViewerAnyOtherSeverityLevelTip {

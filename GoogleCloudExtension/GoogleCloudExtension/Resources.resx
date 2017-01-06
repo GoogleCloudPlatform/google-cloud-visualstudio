@@ -1371,4 +1371,12 @@
     <value>Loading . . .</value>
     <comment>List log entries can take seconds to complete, show a status message.</comment>
   </data>
+  <data name="LogsViewerDataConversionGenericError" xml:space="preserve">
+    <value>Data conversion error. Log entry may contain invalid properties.</value>
+    <comment>Showing generic error for parsing LogEntry property tree.</comment>
+  </data>
+  <data name="LogsViewerDetailTreeViewArrayIndexFormat" xml:space="preserve">
+    <value>[{0}]</value>
+    <comment>The detail tree view array index format.</comment>
+  </data>
 </root>

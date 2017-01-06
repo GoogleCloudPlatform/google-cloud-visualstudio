@@ -15,7 +15,7 @@
 using Google.Apis.Logging.v2.Data;
 using System;
 using System.Collections;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
@@ -33,6 +33,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
     /// </summary>
     internal class ObjectNodeTree
     {
+        private const string JsonObjectNameSpace = "Newtonsoft.Json";
+
         /// <summary>
         /// The list of supported classes.
         /// </summary>
@@ -53,22 +55,22 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
         public string NodeValue { get; private set; }
 
         /// <summary>
-        /// Gets the obj visibility. 
+        /// Gets the Colon visibility. 
         /// Do not display ":" if the NodeValue is empty
         /// </summary>
-        public Visibility ValueVisibility => 
-            String.IsNullOrWhiteSpace(NodeValue) ? Visibility.Hidden : Visibility.Visible;
+        public Visibility ColonVisibility =>
+            String.IsNullOrWhiteSpace(NodeValue) ? Visibility.Collapsed : Visibility.Visible;
 
         /// <summary>
         /// Gets the object name.
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; }
 
         /// <summary>
         /// Gets tree node children.
         /// It contains all properties of the node object.
         /// </summary>
-        public object Children { get; private set; }
+        public List<ObjectNodeTree> Children { get; private set; }
 
         /// <summary>
         /// Create an instance of the <seealso cref="ObjectNodeTree"/> class.
@@ -87,7 +89,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             Name = name;
             if (obj == null)
             {
-                NodeValue = null;
                 return;
             }
 
@@ -101,83 +102,60 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
         {
             Type type = obj.GetType();
 
-            if (obj.IsNumericType() || obj is string || obj is DateTime)
+            if (obj.IsNumericType() || obj is string || obj is DateTime || obj is Boolean)
             {
                 NodeValue = obj.ToString();
             }
             else if (type.IsArray)
             {
-                ParseEnumerable(obj);
+                ParseArray(obj as IEnumerable);
             }
-            // There is no easy way to parse generic IDictionarytype into ObjectNodeTree.
-            // Display them as Payload object.
-            else if (obj.IsDictionaryObject())
+            else if (obj is IDictionary)
             {
-                ParseDictionary(obj);
+                ParseDictionary(obj as IDictionary);
             }
             else if (s_supportedTypes.Contains(type))
             {
                 ParseClassProperties(obj, type);
             }
+            else if (type.Namespace.StartsWith(JsonObjectNameSpace))
+            {
+                NodeValue = obj.ToString();
+            }
             else
             {
-                // The best effort.
-                NodeValue = obj.ToString();
+                Debug.Assert(false, $"Unexpected type found, ${type}");
             }
         }
 
         #region parser
-        private ObservableCollection<object> CreateCollectionChildren()
+        private void ParseArray(IEnumerable arr)
         {
-            var collection = new ObservableCollection<object>();
-            Children = collection;
-            return collection;
-        }
-
-        private void ParseEnumerable(object obj)
-        {
-            var collection = CreateCollectionChildren();
-            IEnumerable arr = obj as IEnumerable;
-            Debug.Assert(arr != null);
-            if (arr == null)
-            {
-                // Don't expect null. Be protective
-                NodeValue = obj.ToString();
-                return;
-            }
-
+            Children = new List<ObjectNodeTree>();
             int i = 0;
             foreach (var ele in arr)
             {
-                collection.Add(new ObjectNodeTree($"[{i}]", ele));
+                Children.Add(
+                    new ObjectNodeTree(String.Format(Resources.LogsViewerDetailTreeViewArrayIndexFormat, i), ele));
                 ++i;
             }
 
-            NodeValue = $"[{i}]";
+            NodeValue = String.Format(Resources.LogsViewerDetailTreeViewArrayIndexFormat, i);
         }
 
-        private void ParseDictionary(object obj)
+        private void ParseDictionary(IDictionary dict)
         {
-            var collection = CreateCollectionChildren();
-            var dict = obj as IDictionary;
-            Debug.Assert(dict != null);
-            if (dict == null)
-            {
-                // Don't expect null. Be protective
-                NodeValue = obj.ToString();
-                return;
-            }
-
+            Children = new List<ObjectNodeTree>();
             foreach (var key in dict.Keys)
             {
                 string name = key.ToString();
-                collection.Add(new ObjectNodeTree(name, dict[key]));
+                Children.Add(new ObjectNodeTree(name, dict[key]));
             }
         }
 
         private void ParseClassProperties(object obj, Type type)
         {
-            var collection = CreateCollectionChildren();
+            Children = new List<ObjectNodeTree>();
             PropertyInfo[] properties = type.GetProperties();
             foreach (PropertyInfo p in properties)
             {
@@ -191,7 +169,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
                     object v = p.GetValue(obj);
                     if (v != null)
                     {
-                        collection.Add(new ObjectNodeTree(p.Name, v));
+                        Children.Add(new ObjectNodeTree(p.Name, v));
                     }
                 }
                 catch (Exception ex)
@@ -199,9 +177,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
                     if (ex is ArgumentException || ex is TargetException || ex is TargetParameterCountException
                         || ex is MethodAccessException || ex is TargetInvocationException)
                     {
-                        // Value convertion error, display for awarness.
-                        collection.Add(
-                            new ObjectNodeTree(p.Name, $"Type: {p.PropertyType}. PropertyInfo.GetValue failed."));
+                        // Value convertion error, display a general error so as not to hide the problem.
+                        Children.Add(
+                            new ObjectNodeTree(p.Name, Resources.LogsViewerDataConversionGenericError));
                         Debug.WriteLine(ex.ToString());
                     }
                     else
