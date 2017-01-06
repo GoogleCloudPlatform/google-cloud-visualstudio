@@ -14,7 +14,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="DataGridCell">
                     <Border  BorderThickness="0">
-                        <Border x:Name="border" Padding="0, 4, 0, 4" >
+                        <Border x:Name="border" Padding="0,4,0,4" >
                             <ContentPresenter />
                         </Border>
                     </Border>
@@ -24,8 +24,8 @@
     </Style>
 
     <Style x:Key="rowStyle" TargetType="DataGridRow">
-        <Setter Property="Margin" Value="0, 0, 0, 1"/>
-        <Setter Property="BorderThickness" Value="0, 0, 0, 0"/>
+        <Setter Property="Margin" Value="0,0,0,1"/>
+        <Setter Property="BorderThickness" Value="0,0,0,0"/>
         <Setter Property="BorderBrush" Value="LightGray" />
         <Setter Property="Background" Value="#FFFDFDFD" />
         <Style.Triggers>
@@ -39,20 +39,13 @@
         </Style.Triggers>
     </Style>
 
-    <!--Region Log entry detail treeView styles. -->
+    <!-- Log entry detail tree view item text style. -->
     <Style x:Key="TreeNodeTextStyle" 
-                   TargetType="TextBlock" 
-                   BasedOn="{StaticResource CommonTextStyle}" >
-        <Setter Property="Padding" Value="3, 2, 3, 2"/>
+           TargetType="TextBlock" 
+           BasedOn="{StaticResource CommonTextStyle}" >
+        <Setter Property="Margin" Value="3,2,3,2"/>
         <Setter Property="Foreground" Value="DarkSlateGray"/>
     </Style>
-
-    <Style x:Key="TreeNodeColonStyle" 
-                   TargetType="TextBlock" 
-                   BasedOn="{StaticResource TreeNodeTextStyle}" >
-        <Setter Property="Padding" Value="0, 2, 6, 2"/>
-    </Style>
-    <!--End Region-->
     
     <!-- Page title bar style. -->
     <Style x:Key="PageTitleBarStyle" TargetType="{x:Type StackPanel}">

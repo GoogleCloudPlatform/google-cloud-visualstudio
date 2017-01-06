@@ -1372,11 +1372,15 @@
     <comment>List log entries can take seconds to complete, show a status message.</comment>
   </data>
   <data name="LogsViewerDataConversionGenericError" xml:space="preserve">
-    <value>Data conversion error. Log entry may contain invalid properties.</value>
+    <value>Error displaying the entry. Log entry may contain invalid properties.</value>
     <comment>Showing generic error for parsing LogEntry property tree.</comment>
   </data>
   <data name="LogsViewerDetailTreeViewArrayIndexFormat" xml:space="preserve">
     <value>[{0}]</value>
-    <comment>The detail tree view array index format.</comment>
+    <comment>The detail tree view array index format. The {0} is index of the array element.</comment>
+  </data>
+  <data name="LogsViewerDetailTreeViewNameLabelFormat" xml:space="preserve">
+    <value>{0} :</value>
+    <comment>When displaying a tree view item, it contains Name , colon, and value.  This is to format the name colon part. Note, there is a space between  name and colon.</comment>
   </data>
 </root>

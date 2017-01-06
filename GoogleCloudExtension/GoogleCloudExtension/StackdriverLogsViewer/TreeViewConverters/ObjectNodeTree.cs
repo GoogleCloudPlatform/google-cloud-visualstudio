@@ -49,34 +49,38 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
         };
 
         /// <summary>
+        /// For lazy creation of children object.
+        /// </summary>
+        private Lazy<List<ObjectNodeTree>> _children = new Lazy<List<ObjectNodeTree>>();
+
+        /// <summary>
+        /// The display name of the object.
+        /// </summary>
+        private string _name;
+
+        /// <summary>
         /// Gets the DisplayValue
         /// Tree node displays label in format of Name : DisplayValue.  
         /// </summary>
         public string NodeValue { get; private set; }
 
         /// <summary>
-        /// Gets the Colon visibility. 
-        /// Do not display ":" if the NodeValue is empty
+        /// Gets the object name with optional colon.
         /// </summary>
-        public Visibility ColonVisibility =>
-            String.IsNullOrWhiteSpace(NodeValue) ? Visibility.Collapsed : Visibility.Visible;
-
-        /// <summary>
-        /// Gets the object name.
-        /// </summary>
-        public string Name { get; }
+        public string NameLabel => String.IsNullOrWhiteSpace(NodeValue) ? _name :
+            String.Format(Resources.LogsViewerDetailTreeViewNameLabelFormat, _name);
 
         /// <summary>
         /// Gets tree node children.
         /// It contains all properties of the node object.
         /// </summary>
-        public List<ObjectNodeTree> Children { get; private set; }
+        public List<ObjectNodeTree> Children => _children.Value;
 
         /// <summary>
         /// Create an instance of the <seealso cref="ObjectNodeTree"/> class.
         /// </summary>
         /// <param name="obj">An object</param>
-        public ObjectNodeTree(object obj): this("", obj)
+        public ObjectNodeTree(object obj) : this("", obj)
         { }
 
         /// <summary>
@@ -86,7 +90,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
         /// <param name="obj">An object</param>
         private ObjectNodeTree(string name, object obj)
         {
-            Name = name;
+            _name = name;
             if (obj == null)
             {
                 return;
@@ -129,33 +133,36 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
         }
 
         #region parser
-        private void ParseArray(IEnumerable arr)
+        private void ParseArray(IEnumerable arrayObject)
         {
-            Children = new List<ObjectNodeTree>();
             int i = 0;
-            foreach (var ele in arr)
+            foreach (var element in arrayObject)
             {
                 Children.Add(
-                    new ObjectNodeTree(String.Format(Resources.LogsViewerDetailTreeViewArrayIndexFormat, i), ele));
+                    new ObjectNodeTree(String.Format(Resources.LogsViewerDetailTreeViewArrayIndexFormat, i), element));
                 ++i;
             }
 
             NodeValue = String.Format(Resources.LogsViewerDetailTreeViewArrayIndexFormat, i);
         }
 
-        private void ParseDictionary(IDictionary dict)
+        private void ParseDictionary(IDictionary dictionaryObject)
         {
-            Children = new List<ObjectNodeTree>();
-            foreach (var key in dict.Keys)
+            foreach (var key in dictionaryObject.Keys)
             {
                 string name = key.ToString();
-                Children.Add(new ObjectNodeTree(name, dict[key]));
+                Children.Add(new ObjectNodeTree(name, dictionaryObject[key]));
             }
+        }
+
+        private bool IsPropertyInfoGetValueException(Exception ex)
+        {
+            return ex is ArgumentException || ex is TargetException || ex is TargetParameterCountException 
+                   || ex is MethodAccessException || ex is TargetInvocationException;
         }
 
         private void ParseClassProperties(object obj, Type type)
         {
-            Children = new List<ObjectNodeTree>();
             PropertyInfo[] properties = type.GetProperties();
             foreach (PropertyInfo p in properties)
             {
@@ -172,20 +179,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
                         Children.Add(new ObjectNodeTree(p.Name, v));
                     }
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (IsPropertyInfoGetValueException(ex))
                 {
-                    if (ex is ArgumentException || ex is TargetException || ex is TargetParameterCountException
-                        || ex is MethodAccessException || ex is TargetInvocationException)
-                    {
-                        // Value convertion error, display a general error so as not to hide the problem.
-                        Children.Add(
-                            new ObjectNodeTree(p.Name, Resources.LogsViewerDataConversionGenericError));
-                        Debug.WriteLine(ex.ToString());
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    // Value convertion error, display a general error so as not to hide the problem.
+                    Children.Add(
+                        new ObjectNodeTree(p.Name, Resources.LogsViewerDataConversionGenericError));
+                    Debug.WriteLine(ex.ToString());
                 }
             }
         }
