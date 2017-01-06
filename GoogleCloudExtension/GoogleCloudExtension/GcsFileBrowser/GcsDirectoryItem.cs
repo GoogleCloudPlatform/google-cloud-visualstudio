@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         private readonly GcsRow _directory;
 
         public GcsDirectoryItem(GcsRow row) :
-            base("GCS Directory", row.FileName)
+            base(Resources.GcsFileBrowserDirectoryItemDisplayName, row.FileName)
         {
             _directory = row;
         }

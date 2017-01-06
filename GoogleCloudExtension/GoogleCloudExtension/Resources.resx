@@ -1447,4 +1447,24 @@
     <value>The full path to the directory.</value>
     <comment>Description of the GcsPath property of the directory.</comment>
   </data>
+  <data name="GcsFileBrowserDirectoryItemDisplayName" xml:space="preserve">
+    <value>Cloud Storage Directory</value>
+    <comment>Display name for a directory item.</comment>
+  </data>
+  <data name="GcsFileBrowserFileItemDisplayName" xml:space="preserve">
+    <value>Cloud Storage File</value>
+    <comment>Display name for a file item.</comment>
+  </data>
+  <data name="NamePromptCaption" xml:space="preserve">
+    <value>Enter name</value>
+    <comment>Caption for the name prompt dialog.</comment>
+  </data>
+  <data name="NamePromptEmptyNameMessage" xml:space="preserve">
+    <value>Name cannot be empty.</value>
+    <comment>Message shown when a name is empty in the name prompt.</comment>
+  </data>
+  <data name="NamePromptInvalidCharsMessage" xml:space="preserve">
+    <value>Name cannot contain invalid chars '/'</value>
+    <comment>Message shown when a name contains invalid chars.</comment>
+  </data>
 </root>

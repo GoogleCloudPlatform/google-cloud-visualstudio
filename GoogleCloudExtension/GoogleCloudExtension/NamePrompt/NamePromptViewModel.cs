@@ -53,13 +53,13 @@ namespace GoogleCloudExtension.NamePrompt
         {
             if (String.IsNullOrEmpty(Name))
             {
-                UserPromptUtils.ErrorPrompt("Name cannot be empty.", "Error");
+                UserPromptUtils.ErrorPrompt(Resources.NamePromptEmptyNameMessage, Resources.UiErrorCaption);
                 return false;
             }
 
             if (Name.Contains('/'))
             {
-                UserPromptUtils.ErrorPrompt("Name cannot contain invalid chars '/'", "Error");
+                UserPromptUtils.ErrorPrompt(Resources.NamePromptInvalidCharsMessage, Resources.UiErrorCaption);
                 return false;
             }
 

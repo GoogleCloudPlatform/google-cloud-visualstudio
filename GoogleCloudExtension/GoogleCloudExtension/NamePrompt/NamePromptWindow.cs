@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.NamePrompt
     {
         private NamePromptViewModel ViewModel { get; }
 
-        private NamePromptWindow() : base("Enter name")
+        private NamePromptWindow() : base(GoogleCloudExtension.Resources.NamePromptCaption)
         {
             ViewModel = new NamePromptViewModel(this);
             Content = new NamePromptContent

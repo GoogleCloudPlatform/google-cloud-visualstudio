@@ -1978,6 +1978,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cloud Storage Directory.
+        /// </summary>
+        public static string GcsFileBrowserDirectoryItemDisplayName {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDirectoryItemDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The name of the directory..
         /// </summary>
         public static string GcsFileBrowserDirectoryNameDescription {
@@ -2064,6 +2073,15 @@ namespace GoogleCloudExtension {
         public static string GcsFileBrowserFileFullPathDescription {
             get {
                 return ResourceManager.GetString("GcsFileBrowserFileFullPathDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cloud Storage File.
+        /// </summary>
+        public static string GcsFileBrowserFileItemDisplayName {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFileItemDisplayName", resourceCulture);
             }
         }
         
@@ -2379,6 +2397,33 @@ namespace GoogleCloudExtension {
         public static string MySqlInstallerWindowTopMessage {
             get {
                 return ResourceManager.GetString("MySqlInstallerWindowTopMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enter name.
+        /// </summary>
+        public static string NamePromptCaption {
+            get {
+                return ResourceManager.GetString("NamePromptCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name cannot be empty..
+        /// </summary>
+        public static string NamePromptEmptyNameMessage {
+            get {
+                return ResourceManager.GetString("NamePromptEmptyNameMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name cannot contain invalid chars &apos;/&apos;.
+        /// </summary>
+        public static string NamePromptInvalidCharsMessage {
+            get {
+                return ResourceManager.GetString("NamePromptInvalidCharsMessage", resourceCulture);
             }
         }
         

@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         private readonly GcsRow _file;
 
         public GcsFileItem(GcsRow row) :
-            base("GCS File", row.FileName)
+            base(Resources.GcsFileBrowserFileItemDisplayName, row.FileName)
         {
             _file = row;
         }
