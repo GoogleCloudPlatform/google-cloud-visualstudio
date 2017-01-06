@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils;
-using System.ComponentModel;
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {

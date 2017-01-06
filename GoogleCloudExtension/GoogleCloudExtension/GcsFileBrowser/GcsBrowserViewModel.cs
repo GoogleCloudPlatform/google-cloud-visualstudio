@@ -28,7 +28,6 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using FBD = System.Windows.Forms.FolderBrowserDialog;
-using GcsObject = Google.Apis.Storage.v1.Data.Object;
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
@@ -38,16 +37,25 @@ namespace GoogleCloudExtension.GcsFileBrowser
     public class GcsBrowserViewModel : ViewModelBase
     {
         private readonly static GcsBrowserState s_emptyState =
-            new GcsBrowserState(Enumerable.Empty<GcsRow>(), "/");
+            new GcsBrowserState(Enumerable.Empty<GcsRow>(), "");
 
         private readonly GcsFileBrowserWindow _owner;
         private readonly SelectionUtils _selectionUtils;
         private Bucket _bucket;
         private GcsDataSource _dataSource;
         private bool _isLoading;
-        private readonly List<GcsBrowserState> _stateStack = new List<GcsBrowserState>();
         private IList<GcsRow> _selectedItems;
         private ContextMenu _contextMenu;
+        private GcsBrowserState _currentState;
+
+        /// <summary>
+        /// The current navigation state for the browser.
+        /// </summary>
+        public GcsBrowserState CurrentState
+        {
+            get { return _currentState; }
+            set { SetValueAndRaise(ref _currentState, value); }
+        }
 
         /// <summary>
         /// The bucket that is being shown in the window.
@@ -81,21 +89,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
         public bool IsReady => !IsLoading;
 
         /// <summary>
-        /// The top of the navigation stack, which is what is being shown in the window.
-        /// </summary>
-        public GcsBrowserState Top
-        {
-            get
-            {
-                if (_stateStack.Count == 0)
-                {
-                    return s_emptyState;
-                }
-                return _stateStack.Last();
-            }
-        }
-
-        /// <summary>
         /// The list of selected items.
         /// </summary>
         public IList<GcsRow> SelectedItems
@@ -123,17 +116,17 @@ namespace GoogleCloudExtension.GcsFileBrowser
         public GcsRow SelectedItem => SelectedItems?.FirstOrDefault();
 
         /// <summary>
-        /// Command to execute when poping up all levels in the stack.
+        /// Command to execute to navigate to the root of the bucket.
         /// </summary>
-        public ICommand PopAllCommand { get; }
+        public ICommand NavigateToRootCommand { get; }
 
         /// <summary>
-        /// Command to execute when navigating to a particular level in the navigation stack.
+        /// Command to execute when navigating to a step in the path into the bucket.
         /// </summary>
         public ICommand NavigateToCommand { get; }
 
         /// <summary>
-        /// Command to execute when refreshing the currently loaded level.
+        /// Command to execute when refreshing the currently loaded path.
         /// </summary>
         public ICommand RefreshCommand { get; }
 
@@ -146,9 +139,10 @@ namespace GoogleCloudExtension.GcsFileBrowser
         {
             _owner = owner;
             _selectionUtils = new SelectionUtils(owner);
+            _currentState = s_emptyState;
 
-            PopAllCommand = new ProtectedCommand(OnPopAllCommand);
-            NavigateToCommand = new ProtectedCommand<string>(OnNavigateToCommand);
+            NavigateToRootCommand = new ProtectedCommand(OnNavigateToRootCommand);
+            NavigateToCommand = new ProtectedCommand<PathStep>(OnNavigateToCommand);
             RefreshCommand = new ProtectedCommand(OnRefreshCommand);
             DoubleClickCommand = new ProtectedCommand<GcsRow>(OnDoubleClickCommand);
         }
@@ -182,7 +176,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 operations: uploadOperations,
                 tokenSource: tokenSource);
 
-            RefreshTopState();
+            UpdateCurrentState();
         }
 
         /// <summary>
@@ -218,7 +212,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                             new GcsFileOperation(
                                 source: info.FullName,
                                 bucket: Bucket.Name,
-                                destination: $"{Top.CurrentPath}{info.Name}"),
+                                destination: $"{CurrentState.CurrentPath}{info.Name}"),
                           };
                    }
                })
@@ -234,7 +228,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     .Select(file => new GcsFileOperation(
                         source: file,
                         bucket: Bucket.Name,
-                        destination: $"{Top.CurrentPath}{basePath}/{Path.GetFileName(file)}")),
+                        destination: $"{_currentState.CurrentPath}{basePath}/{Path.GetFileName(file)}")),
                 Directory.EnumerateDirectories(dir)
                     .Select(subDir => CreateUploadOperationsForDirectory(subDir, $"{basePath}/{Path.GetFileName(subDir)}"))
                     .SelectMany(x => x));
@@ -258,7 +252,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         {
             if (row.IsDirectory)
             {
-                PushToDirectory(row.Name);
+                UpdateCurrentState(row.Name);
             }
             else
             {
@@ -432,8 +426,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 tokenSource: tokenSource);
 
             // 4) refresh the window with the contents of the server.
-            InvalidateStack();
-            RefreshTopState();
+            UpdateCurrentState();
         }
 
         private async void OnNewFolderCommand()
@@ -448,127 +441,58 @@ namespace GoogleCloudExtension.GcsFileBrowser
             {
                 IsLoading = true;
 
-                await _dataSource.CreateDirectoryAsync(Bucket.Name, $"{Top.CurrentPath}{name}/");
+                await _dataSource.CreateDirectoryAsync(Bucket.Name, $"{CurrentState.CurrentPath}{name}/");
             }
             finally
             {
                 IsLoading = false;
             }
 
-            RefreshTopState();
+            UpdateCurrentState();
         }
 
-        private void OnPopAllCommand()
+        private void OnNavigateToRootCommand()
         {
-            PopToRoot();
+            UpdateCurrentState("");
         }
 
-        private void OnNavigateToCommand(string step)
+        private void OnNavigateToCommand(PathStep step)
         {
-            PopToState(step);
+            UpdateCurrentState(step.Path);
         }
 
         private void OnRefreshCommand()
         {
-            RefreshTopState();
+            UpdateCurrentState();
         }
 
         #endregion
 
-        #region Navigation stack methods
-
-        private void InvalidateStack()
+        private void UpdateCurrentState()
         {
-            foreach (var entry in _stateStack)
-            {
-                entry.NeedsRefresh = true;
-            }
+            UpdateCurrentState(CurrentState.CurrentPath);
         }
 
-        private void InvalidateTop()
-        {
-            if (Top.NeedsRefresh)
-            {
-                RefreshTopState();
-            }
-            else
-            {
-                RaisePropertyChanged(nameof(Top));
-            }
-        }
-
-        private async void RefreshTopState()
+        private async void UpdateCurrentState(string newPath)
         {
             GcsBrowserState newState;
             try
             {
                 IsLoading = true;
-
-                newState = await LoadStateForDirectoryAsync(Top.CurrentPath);
+                newState = await LoadStateForDirectoryAsync(newPath);
             }
             catch (DataSourceException ex)
             {
-                Debug.WriteLine($"Failed to refersh directory {Top.Name}: {ex.Message}");
-                newState = CreateErrorState(Top.Name);
+                Debug.WriteLine($"Failed to update to path {newPath}: {ex.Message}");
+                newState = CreateErrorState(newPath);
             }
             finally
             {
                 IsLoading = false;
             }
 
-            _stateStack[_stateStack.Count - 1] = newState;
-            RaisePropertyChanged(nameof(Top));
+            CurrentState = newState;
         }
-
-
-        private void PopToRoot()
-        {
-            _stateStack.RemoveRange(1, _stateStack.Count - 1);
-
-            InvalidateTop();
-        }
-
-        private void PopState()
-        {
-            if (_stateStack.Count == 1)
-            {
-                return;
-            }
-
-            _stateStack.RemoveRange(_stateStack.Count - 1, 1);
-            InvalidateTop();
-        }
-
-        private void PopToState(string step)
-        {
-            var idx = _stateStack.FindIndex(x => x.Name == step);
-            if (idx == -1)
-            {
-                Debug.WriteLine($"Could not find {step}");
-            }
-
-            _stateStack.RemoveRange(idx + 1, _stateStack.Count - (idx + 1));
-            InvalidateTop();
-        }
-
-        private async void PushToDirectory(string name)
-        {
-            GcsBrowserState state;
-            try
-            {
-                state = await LoadStateForDirectoryAsync(name);
-            }
-            catch (DataSourceException ex)
-            {
-                Debug.WriteLine($"Failed to load directory {name}: {ex.Message}");
-                state = CreateErrorState(name);
-            }
-
-            _stateStack.Add(state);
-            InvalidateTop();
-        }
-
-        #endregion
 
         private void InvalidateBucket()
         {
@@ -576,7 +500,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
-            PushToDirectory("");
+            UpdateCurrentState("");
         }
 
         private void InvalidateSelectedItem()

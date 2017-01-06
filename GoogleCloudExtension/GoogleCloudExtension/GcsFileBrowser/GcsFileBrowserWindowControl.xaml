@@ -24,7 +24,7 @@
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <CollectionViewSource x:Key="cvs" Source="{Binding Top.Items}" />
+            <CollectionViewSource x:Key="cvs" Source="{Binding CurrentState.Items}" />
 
             <utils:VisibilityConverter x:Key="commonVisibilityConverter" />
         </ResourceDictionary>
@@ -48,7 +48,7 @@
             <TextBlock VerticalAlignment="Center"
                        Style="{StaticResource CommonTextStyle}">
                 <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
-                           Command="{Binding PopAllCommand}">
+                           Command="{Binding NavigateToRootCommand}">
                     <TextBlock Text="{Binding Bucket.Name}" />
                 </Hyperlink>
             </TextBlock>
@@ -61,7 +61,7 @@
             <!-- The current path. -->
             <ItemsControl VerticalAlignment="Center"
                           Focusable="False"
-                          ItemsSource="{Binding Top.PathSteps}">
+                          ItemsSource="{Binding CurrentState.PathSteps}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center"/>
@@ -75,7 +75,7 @@
                                 <Hyperlink Style="{StaticResource CommonHyperlinkStyle}"
                                            Command="{Binding DataContext.NavigateToCommand, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"
                                            CommandParameter="{Binding}">
-                                    <TextBlock Text="{Binding}" />
+                                    <TextBlock Text="{Binding Name}" />
                                 </Hyperlink>
                             </TextBlock>
                             <TextBlock Text="/"

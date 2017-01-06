@@ -19,21 +19,30 @@ using System.Linq;
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
+    public class PathStep
+    {
+        public string Name { get; }
+
+        public string Path { get; }
+
+        public PathStep(string name, string path)
+        {
+            Name = name;
+            Path = path;
+        }
+    }
+
     public class GcsBrowserState
     {
         public IList<GcsRow> Items { get; }
 
-        public IEnumerable<string> PathSteps { get; }
-
-        public bool NeedsRefresh { get; set; }
-
-        public string Name => PathSteps.LastOrDefault() ?? "";
+        public IEnumerable<PathStep> PathSteps { get; }
 
         public string CurrentPath
         {
             get
             {
-                var path = String.Join("/", PathSteps);
+                var path = String.Join("/", PathSteps.Select(x => x.Name));
                 if (String.IsNullOrEmpty(path))
                 {
                     return path;
@@ -48,12 +57,20 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
             if (String.IsNullOrEmpty(name))
             {
-                PathSteps = Enumerable.Empty<string>();
+                PathSteps = Enumerable.Empty<PathStep>();
             }
             else
             {
                 Debug.Assert(name.Last() == '/');
-                PathSteps = GcsDataSourceExtensions.ParsePath(name);
+                var stepNames = GcsDataSourceExtensions.ParsePath(name);
+                var steps = new List<PathStep>();
+                string currentPath = "";
+                foreach (var stepName in stepNames)
+                {
+                    currentPath = currentPath + $"{stepName}/";
+                    steps.Add(new PathStep(name: stepName, path: currentPath));
+                }
+                PathSteps = steps;
             }
         }
     }
