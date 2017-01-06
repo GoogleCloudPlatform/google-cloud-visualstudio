@@ -53,7 +53,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
  
         /// <summary>
-
         /// Response to data grid scroll change event.
         /// Auto load more logs when it scrolls down to bottom.
         /// </summary>
