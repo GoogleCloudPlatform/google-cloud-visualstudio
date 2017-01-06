@@ -87,6 +87,24 @@ namespace GoogleCloudExtension.Utils
             shell.UpdateCommandUI(fImmediateUpdate: 0);
         }
 
+        /// <summary>
+        /// Attempts to move the VS window to the foreground.
+        /// </summary>
+        public static void SetForegroundWindow()
+        {
+            var shell = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
+            if (shell == null)
+            {
+                Debug.WriteLine($"Could not acquire {nameof(SVsUIShell)}");
+                return;
+            }
+
+            if (shell.SetForegroundWindow() != VSConstants.S_OK)
+            {
+                Debug.WriteLine($"Failed to call SetForegroundWindow.");
+            }
+        }
+
         private static void SetShellNormal()
         {
             var monitorSelection = GetMonitorSelectionService();

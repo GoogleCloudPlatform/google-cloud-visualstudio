@@ -46,7 +46,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
 
             var files = (string[])e.Data.GetData(DataFormats.FileDrop, autoConvert: false);
-            ViewModel.StartFileUpload(files);
+            ViewModel.StartDroppedFilesUpload(files);
 
             e.Handled = true;
         }

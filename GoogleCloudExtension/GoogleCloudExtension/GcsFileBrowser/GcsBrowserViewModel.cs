@@ -157,8 +157,12 @@ namespace GoogleCloudExtension.GcsFileBrowser
         /// Method called to upload the given set of files.
         /// </summary>
         /// <param name="files"></param>
-        public void StartFileUpload(IEnumerable<string> files)
+        public void StartDroppedFilesUpload(IEnumerable<string> files)
         {
+            // Attempts to set VS as the foreground window so the user can see the progress
+            // of the upload operation. Similar to what is done in the Windows explorer.
+            ShellUtils.SetForegroundWindow();
+
             IList<GcsFileOperation> uploadOperations = CreateUploadOperations(files).ToList();
 
             CancellationTokenSource tokenSource = new CancellationTokenSource();
