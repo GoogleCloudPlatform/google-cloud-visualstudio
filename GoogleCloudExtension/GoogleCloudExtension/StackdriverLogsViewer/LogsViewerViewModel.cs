@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// <summary>
     /// The view model for LogsViewerToolWindow.
     /// </summary>
-    public partial class LogsViewerViewModel : ViewModelBase
+    public class LogsViewerViewModel : ViewModelBase
     {
         private const int DefaultPageSize = 100;
 
