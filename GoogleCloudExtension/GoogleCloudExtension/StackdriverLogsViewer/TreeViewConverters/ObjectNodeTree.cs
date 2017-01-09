@@ -19,7 +19,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
 {
@@ -67,7 +66,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
         /// <summary>
         /// Gets the object name with optional colon.
         /// </summary>
-        public string NameLabel => String.IsNullOrWhiteSpace(NodeValue) ? _name :
+        public string Name => String.IsNullOrWhiteSpace(NodeValue) ? _name :
             String.Format(Resources.LogsViewerDetailTreeViewNameLabelFormat, _name);
 
         /// <summary>
@@ -133,10 +132,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
         }
 
         #region parser
-        private void ParseArray(IEnumerable arrayObject)
+        private void ParseArray(IEnumerable enumerable)
         {
             int i = 0;
-            foreach (var element in arrayObject)
+            foreach (var element in enumerable)
             {
                 Children.Add(
                     new ObjectNodeTree(String.Format(Resources.LogsViewerDetailTreeViewArrayIndexFormat, i), element));
@@ -155,9 +154,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             }
         }
 
-        private bool IsPropertyInfoGetValueException(Exception ex)
+        private static bool IsPropertyInfoGetValueException(Exception ex)
         {
-            return ex is ArgumentException || ex is TargetException || ex is TargetParameterCountException 
+            return ex is ArgumentException || ex is TargetException || ex is TargetParameterCountException
                    || ex is MethodAccessException || ex is TargetInvocationException;
         }
 

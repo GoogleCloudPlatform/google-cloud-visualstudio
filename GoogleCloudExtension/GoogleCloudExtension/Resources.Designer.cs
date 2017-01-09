@@ -1915,7 +1915,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error displaying the entry. Log entry may contain invalid properties..
+        ///   Looks up a localized string similar to Error displaying the entry. .
         /// </summary>
         public static string LogsViewerDataConversionGenericError {
             get {

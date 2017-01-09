@@ -24,7 +24,7 @@
             <HierarchicalDataTemplate DataType="{x:Type vct:ObjectNodeTree}" 
                                       ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="{Binding NameLabel}" Style="{StaticResource TreeNodeTextStyle}" />
+                    <TextBlock Text="{Binding Name}" Style="{StaticResource TreeNodeTextStyle}" />
                     <TextBlock Text="{Binding NodeValue}" Style="{StaticResource TreeNodeTextStyle}" />
                 </StackPanel>
             </HierarchicalDataTemplate>
