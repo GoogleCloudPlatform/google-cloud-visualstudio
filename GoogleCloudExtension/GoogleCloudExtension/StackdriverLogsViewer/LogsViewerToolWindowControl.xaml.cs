@@ -27,6 +27,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public partial class LogsViewerToolWindowControl : UserControl
     {
+        private const double FirstRowHitTestPointMargin = 5; 
+
         private LogsViewerViewModel ViewModel => DataContext as LogsViewerViewModel;
 
         /// <summary>
@@ -35,6 +37,36 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public LogsViewerToolWindowControl()
         {
             this.InitializeComponent();
+        }
+
+        /// <summary>
+        /// Gets the first log item of the current data grid view.
+        /// The first row content changes when scrolling the data grid.
+        /// </summary>
+        private object GetFirstVisibleRowItem()
+        {
+            var point = new Point(FirstRowHitTestPointMargin, FirstRowHitTestPointMargin + 
+                _dataGridInformationBar.ActualHeight + _dataGridLogEntries.ColumnHeaderHeight);
+            var uiElement = _dataGridLogEntries.InputHitTest(point);
+            var row = DataGridUtils.FindAncestorControl<DataGridRow>(uiElement as DependencyObject);
+            Debug.WriteLine($"FindRowByPoint {point} returns {row}");
+            if (null == row)
+            {
+                return null;
+            }
+
+            int itemIndex = _dataGridLogEntries.ItemContainerGenerator.IndexFromContainer(row);
+            if (itemIndex < 0)
+            {
+                Debug.WriteLine($"Find first IndexFromContainer returns {itemIndex} ");
+                return null;
+            }
+            else
+            {
+                var item = _dataGridLogEntries.Items[itemIndex];
+                Debug.WriteLine($"Find first row returns object {item.ToString()}");
+                return item;
+            }
         }
 
         /// <summary>
@@ -59,12 +91,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private void dataGrid_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             var grid = sender as DataGrid;
-
             ScrollViewer sv = e.OriginalSource as ScrollViewer;
             if (sv == null)
             {
                 return;
             }
+
+            ViewModel?.OnFirstVisibleRowChanged(GetFirstVisibleRowItem());
 
             if (e.VerticalOffset == sv.ScrollableHeight)
             {

@@ -6,6 +6,7 @@
              xmlns:vct="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"             
              xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
@@ -78,18 +79,22 @@
                             Orientation="Horizontal" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Center" >
-                    <Button Grid.Column="1"
-                            Margin="6, 0, 16, 0"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Right"
-                            Style="{StaticResource CommonButtonStandardStyle}" 
-                            Command="{Binding RefreshCommand}"
-                            Content="{x:Static ext:Resources.LogViewerRefreshButtonCaption}" >
-                        <Button.ToolTip>
+                    
+                    <controls:ImageButton 
+                        Grid.Column="1" 
+                        Margin="6, 0, 16, 0"
+                        Width="32" Height="32"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Right"                                              
+                        NormalImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh.png}"
+                        MouseOverImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh_mouse_over.png}"
+                        MouseDownImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh_mouse_down.png}"
+                        Command="{Binding RefreshCommand}">
+                        <controls:ImageButton.ToolTip>
                             <ToolTip Content="{x:Static ext:Resources.LogViewerRefreshButtonToolTip}" 
                                      Style="{StaticResource CommonTooltipStyle}"/>
-                        </Button.ToolTip>                        
-                    </Button>
+                        </controls:ImageButton.ToolTip>
+                    </controls:ImageButton>
                 </StackPanel>
             </StackPanel>
         </StackPanel>
@@ -102,6 +107,7 @@
                 Set margin to (data grid header height 18 + border 1) -->
             <Border Margin="0, 19, 0, 0"  
                     Panel.ZIndex="20" 
+                    x:Name="_dataGridInformationBar"
                     HorizontalAlignment="Stretch"  
                     VerticalAlignment="Top" 
                     Background="LightGray">
@@ -116,7 +122,10 @@
                                   VerticalAlignment="Center" 
                                   BorderThickness="0" 
                                   Background="Transparent" 
+                                  FontWeight="Bold"
                                   x:Name="comboTimeZone" 
+                                  ItemsSource="{Binding SystemTimeZones}"
+                                  SelectedItem="{Binding SelectedTimeZone}"
                                   Loaded="ComboBox_Loaded" >
                             <ComboBox.ToolTip>
                                 <ToolTip Content="{x:Static ext:Resources.LogViewerTimeZoneSelectionToolTip}"
@@ -141,7 +150,7 @@
 
             <!-- DataGrid, displays all log entries. -->
             <DataGrid Panel.ZIndex="10" 
-                      x:Name="dataGridLogEntries"
+                      x:Name="_dataGridLogEntries"
                       HorizontalAlignment="Stretch" 
                       VerticalAlignment="Stretch" 
                       Background="White" 
@@ -212,6 +221,7 @@
                             <DataTemplate>
                                 <Image Source="{Binding SeverityLevel}" 
                                        Width="12" 
+                                       Height="12"
                                        Margin="9, 1, 8, 1" >
                                     <Image.ToolTip>
                                         <ToolTip Content="{Binding SeverityTip}" 
