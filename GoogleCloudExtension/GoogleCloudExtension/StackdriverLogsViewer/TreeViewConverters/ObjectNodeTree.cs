@@ -15,11 +15,10 @@
 using Google.Apis.Logging.v2.Data;
 using System;
 using System.Collections;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
 {
@@ -33,6 +32,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
     /// </summary>
     internal class ObjectNodeTree
     {
+        private const string JsonObjectNameSpace = "Newtonsoft.Json";
+
         /// <summary>
         /// The list of supported classes.
         /// </summary>
@@ -47,34 +48,38 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
         };
 
         /// <summary>
+        /// For lazy creation of children object.
+        /// </summary>
+        private Lazy<List<ObjectNodeTree>> _children = new Lazy<List<ObjectNodeTree>>();
+
+        /// <summary>
+        /// The display name of the object.
+        /// </summary>
+        private string _name;
+
+        /// <summary>
         /// Gets the DisplayValue
         /// Tree node displays label in format of Name : DisplayValue.  
         /// </summary>
         public string NodeValue { get; private set; }
 
         /// <summary>
-        /// Gets the obj visibility. 
-        /// Do not display ":" if the NodeValue is empty
+        /// Gets the object name with optional colon.
         /// </summary>
-        public Visibility ValueVisibility => 
-            String.IsNullOrWhiteSpace(NodeValue) ? Visibility.Hidden : Visibility.Visible;
-
-        /// <summary>
-        /// Gets the object name.
-        /// </summary>
-        public string Name { get; private set; }
+        public string Name => String.IsNullOrWhiteSpace(NodeValue) ? _name :
+            String.Format(Resources.LogsViewerDetailTreeViewNameLabelFormat, _name);
 
         /// <summary>
         /// Gets tree node children.
         /// It contains all properties of the node object.
         /// </summary>
-        public object Children { get; private set; }
+        public List<ObjectNodeTree> Children => _children.Value;
 
         /// <summary>
         /// Create an instance of the <seealso cref="ObjectNodeTree"/> class.
         /// </summary>
         /// <param name="obj">An object</param>
-        public ObjectNodeTree(object obj): this("", obj)
+        public ObjectNodeTree(object obj) : this("", obj)
         { }
 
         /// <summary>
@@ -84,10 +89,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
         /// <param name="obj">An object</param>
         private ObjectNodeTree(string name, object obj)
         {
-            Name = name;
+            _name = name;
             if (obj == null)
             {
-                NodeValue = null;
                 return;
             }
 
@@ -101,83 +105,63 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
         {
             Type type = obj.GetType();
 
-            if (obj.IsNumericType() || obj is string || obj is DateTime)
+            if (obj.IsNumericType() || obj is string || obj is DateTime || obj is Boolean)
             {
                 NodeValue = obj.ToString();
             }
             else if (type.IsArray)
             {
-                ParseEnumerable(obj);
+                ParseArray(obj as IEnumerable);
             }
-            // There is no easy way to parse generic IDictionarytype into ObjectNodeTree.
-            // Display them as Payload object.
-            else if (obj.IsDictionaryObject())
+            else if (obj is IDictionary)
             {
-                ParseDictionary(obj);
+                ParseDictionary(obj as IDictionary);
             }
             else if (s_supportedTypes.Contains(type))
             {
                 ParseClassProperties(obj, type);
             }
+            else if (type.Namespace.StartsWith(JsonObjectNameSpace))
+            {
+                NodeValue = obj.ToString();
+            }
             else
             {
-                // The best effort.
-                NodeValue = obj.ToString();
+                Debug.Assert(false, $"Unexpected type found, ${type}");
             }
         }
 
         #region parser
-        private ObservableCollection<object> CreateCollectionChildren()
+        private void ParseArray(IEnumerable enumerable)
         {
-            var collection = new ObservableCollection<object>();
-            Children = collection;
-            return collection;
-        }
-
-        private void ParseEnumerable(object obj)
-        {
-            var collection = CreateCollectionChildren();
-            IEnumerable arr = obj as IEnumerable;
-            Debug.Assert(arr != null);
-            if (arr == null)
-            {
-                // Don't expect null. Be protective
-                NodeValue = obj.ToString();
-                return;
-            }
-
             int i = 0;
-            foreach (var ele in arr)
+            foreach (var element in enumerable)
             {
-                collection.Add(new ObjectNodeTree($"[{i}]", ele));
+                Children.Add(
+                    new ObjectNodeTree(String.Format(Resources.LogsViewerDetailTreeViewArrayIndexFormat, i), element));
                 ++i;
             }
 
-            NodeValue = $"[{i}]";
+            NodeValue = String.Format(Resources.LogsViewerDetailTreeViewArrayIndexFormat, i);
         }
 
-        private void ParseDictionary(object obj)
+        private void ParseDictionary(IDictionary dictionaryObject)
         {
-            var collection = CreateCollectionChildren();
-            var dict = obj as IDictionary;
-            Debug.Assert(dict != null);
-            if (dict == null)
-            {
-                // Don't expect null. Be protective
-                NodeValue = obj.ToString();
-                return;
-            }
-
-            foreach (var key in dict.Keys)
+            foreach (var key in dictionaryObject.Keys)
             {
                 string name = key.ToString();
-                collection.Add(new ObjectNodeTree(name, dict[key]));
+                Children.Add(new ObjectNodeTree(name, dictionaryObject[key]));
             }
+        }
+
+        private static bool IsPropertyInfoGetValueException(Exception ex)
+        {
+            return ex is ArgumentException || ex is TargetException || ex is TargetParameterCountException
+                   || ex is MethodAccessException || ex is TargetInvocationException;
         }
 
         private void ParseClassProperties(object obj, Type type)
         {
-            var collection = CreateCollectionChildren();
             PropertyInfo[] properties = type.GetProperties();
             foreach (PropertyInfo p in properties)
             {
@@ -191,23 +175,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
                     object v = p.GetValue(obj);
                     if (v != null)
                     {
-                        collection.Add(new ObjectNodeTree(p.Name, v));
+                        Children.Add(new ObjectNodeTree(p.Name, v));
                     }
                 }
-                catch (Exception ex)
+                catch (Exception ex) when (IsPropertyInfoGetValueException(ex))
                 {
-                    if (ex is ArgumentException || ex is TargetException || ex is TargetParameterCountException
-                        || ex is MethodAccessException || ex is TargetInvocationException)
-                    {
-                        // Value convertion error, display for awarness.
-                        collection.Add(
-                            new ObjectNodeTree(p.Name, $"Type: {p.PropertyType}. PropertyInfo.GetValue failed."));
-                        Debug.WriteLine(ex.ToString());
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    // Value convertion error, display a general error so as not to hide the problem.
+                    Children.Add(
+                        new ObjectNodeTree(p.Name, Resources.LogsViewerDataConversionGenericError));
+                    Debug.WriteLine(ex.ToString());
                 }
             }
         }

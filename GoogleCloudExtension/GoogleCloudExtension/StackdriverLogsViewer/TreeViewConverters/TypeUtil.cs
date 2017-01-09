@@ -24,38 +24,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
     public static class TypeUtil
     {
         /// <summary>
-        /// Check if the type is a IList generic type.
-        /// </summary>
-        public static bool IsListType(this Type type)
-        {
-            return type.IsGenericType && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(List<>));
-        }
-
-        /// <summary>
-        /// Check if the type is IDictionary type.
-        /// </summary>
-        public static bool IsDictionaryType(this Type type)
-        {
-            return type.IsGenericType && type.GetGenericTypeDefinition().IsAssignableFrom(typeof(Dictionary<,>));
-        }
-
-        /// <summary>
-        /// Check if the object is a IList type
-        /// </summary>
-        public static bool IsListObject(this object obj)
-        {
-            return obj != null && obj is IList && obj.GetType().IsListType();
-        }
-
-        /// <summary>
-        /// Check if the object is IDictionary
-        /// </summary>
-        public static bool IsDictionaryObject(this object obj)
-        {
-            return obj != null && obj.GetType().IsDictionaryType();
-        }
-
-        /// <summary>
         /// Check if the object is Numeric type
         /// </summary>
         public static bool IsNumericType(this object obj)

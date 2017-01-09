@@ -3,16 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:scm="clr-namespace:System.ComponentModel;assembly=WindowsBase"
              xmlns:vct="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"             
-             xmlns:viewer="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
              xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"
-             xmlns:jlinq="clr-namespace:Newtonsoft.Json.Linq;assembly=Newtonsoft.Json"
-             xmlns:collection="clr-namespace:System.Collections.Generic;assembly=mscorlib"
-             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"            
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -22,78 +17,19 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+                <ResourceDictionary Source="./LogsViewerResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <utils:VisibilityConverter x:Key="visibilityConverter" />
 
-            <!-- DataGrid cell style. 
-                 Note: Add padding to text, padding at row style does not work. -->
-            <Style x:Key="cellStyle" TargetType="DataGridCell">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="DataGridCell">
-                            <Border  BorderThickness="0">
-                                <Border x:Name="border" Padding="0, 4, 0, 4" >
-                                    <ContentPresenter />
-                                </Border>
-                            </Border>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-
-            <Style x:Key="rowStyle" TargetType="DataGridRow">
-                <Setter Property="TextBlock.TextWrapping" Value="NoWrap" />
-                <Setter Property="TextBlock.FontSize" Value="12" />
-                <Setter Property="Margin" Value="0, 0, 0, 1"/>
-                <Setter Property="BorderThickness" Value="0, 0, 0, 0"/>
-                <Setter Property="BorderBrush" Value="LightGray" />
-                <Setter Property="Background" Value="#FFFDFDFD" />
-                <Style.Triggers>
-                    <!-- The Alternation Background must be set here when IsMouseOver trigger is defined. -->
-                    <Trigger Property="AlternationIndex" Value="1">
-                        <Setter Property="Background" Value="#F5F5F5"/>
-                    </Trigger>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Background" Value="#FFFFD6" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
-
-            <!-- Region TreeView styles and converters. -->
-            <vct:LogItemConverter x:Key="LogItemConverter"/>
-
-            <Style x:Key="TreeNodeText" 
-                   TargetType="TextBlock" 
-                   BasedOn="{StaticResource CommonTextStyle}" >
-                <Setter Property="Padding" Value="3, 2, 3, 2"/>
-                <Setter Property="Foreground" Value="DarkSlateGray"/>
-            </Style>
-
-            <Style x:Key="TreeNodeLabel" 
-                   TargetType="TextBlock" 
-                   BasedOn="{StaticResource TreeNodeText}">
-                <Setter Property="Margin" Value="0, 0, 5, 0" />
-            </Style>
-
             <HierarchicalDataTemplate DataType="{x:Type vct:ObjectNodeTree}" 
                                       ItemsSource="{Binding Children}">
-                <StackPanel Orientation="Horizontal" >
-                    <TextBlock Text="{Binding Name}" Style="{StaticResource TreeNodeLabel}"/>
-                    <TextBlock Text=":" Style="{StaticResource TreeNodeLabel}" 
-                               Visibility="{Binding ValueVisibility}"/>
-                    <TextBlock Text="{Binding NodeValue}" Style="{StaticResource TreeNodeText}"
-                               Visibility="{Binding ValueVisibility}"/>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Name}" Style="{StaticResource TreeNodeTextStyle}" />
+                    <TextBlock Text="{Binding NodeValue}" Style="{StaticResource TreeNodeTextStyle}" />
                 </StackPanel>
             </HierarchicalDataTemplate>
-            <!-- End Region -->
             
-            <!-- Page title bar style. -->
-            <Style x:Key="PageTitleBarStyle" TargetType="{x:Type StackPanel}">
-                <Setter Property="Orientation" Value="Horizontal" />
-                <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.PanelTitleBarKey}}" />
-                <Setter Property="HorizontalAlignment" Value="Stretch" />
-            </Style>
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -170,8 +106,8 @@
                         VerticalAlignment="Center"
                         HorizontalAlignment="Right"                                              
                         NormalImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh.png}"
-                        MouseOverImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh-mouseover.png}"
-                        MouseDownImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh-mouse-down.png}"
+                        MouseOverImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh_mouse_over.png}"
+                        MouseDownImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh_mouse_down.png}"
                         Command="{Binding RefreshCommand}">
                         <controls:ImageButton.ToolTip>
                             <ToolTip Content="{x:Static ext:Resources.LogViewerRefreshButtonToolTip}" 
@@ -190,6 +126,7 @@
                 Set margin to (data grid header height 18 + border 1) -->
             <Border Margin="0, 19, 0, 0"  
                     Panel.ZIndex="20" 
+                    x:Name="_dataGridInformationBar"
                     HorizontalAlignment="Stretch"  
                     VerticalAlignment="Top" 
                     Background="LightGray">
@@ -232,7 +169,7 @@
 
             <!-- DataGrid, displays all log entries. -->
             <DataGrid Panel.ZIndex="10" 
-                      x:Name="dataGridLogEntries"
+                      x:Name="_dataGridLogEntries"
                       HorizontalAlignment="Stretch" 
                       VerticalAlignment="Stretch" 
                       Background="White" 
@@ -303,6 +240,7 @@
                             <DataTemplate>
                                 <Image Source="{Binding SeverityLevel}" 
                                        Width="12" 
+                                       Height="12"
                                        Margin="9, 1, 8, 1" >
                                     <Image.ToolTip>
                                         <ToolTip Content="{Binding SeverityTip}" 
@@ -325,7 +263,7 @@
                             
                             <!-- Override the template to disable inner scrollbar -->
                             <TreeView BorderThickness="0" 
-                                ItemsSource="{Binding Converter={StaticResource LogItemConverter}}">
+                                ItemsSource="{Binding TreeViewObjects}">
                                 <TreeView.Template>
                                     <ControlTemplate>
                                         <ItemsPresenter />

@@ -236,13 +236,13 @@
     </Compile>
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModelFilters.cs" />
-    <Compile Include="StackdriverLogsViewer\TreeViewConverters\LogItemConverter.cs" />
-    <Compile Include="StackdriverLogsViewer\TreeViewConverters\TreeObjectNode.cs" />
+    <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTree.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TypeUtil.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
     <Compile Include="SolutionUtils\ISolutionProject.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
     <Compile Include="Theming\CommonImageResources.cs" />
+    <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
     <Compile Include="Utils\ProgressBarHelper.cs" />
     <Compile Include="Utils\ShellUtils.cs" />
@@ -300,16 +300,16 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_any_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_debug_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_error_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_fatal_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_info_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_warning_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\refresh_mouse_over.png" />
     <Resource Include="StackdriverLogsViewer\Resources\logging_menu_icon_16.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\refresh-mouse-down.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\refresh-mouseover.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\refresh_mouse_down.png" />
     <Resource Include="StackdriverLogsViewer\Resources\refresh.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_any.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_debug.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_error.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_fatal.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_info.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_warning.png" />
     <Resource Include="Theming\Resources\ic_help_black_14px.png" />
     <Resource Include="PublishDialogSteps\ChoiceStep\Resources\AppEngine_128px_Retina.png" />
     <Resource Include="PublishDialogSteps\ChoiceStep\Resources\ComputeEngine_128px_Retina.png" />
@@ -652,6 +652,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Resource Include="StackdriverLogsViewer\LogsViewerResources.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="StackdriverLogsViewer\LogsViewerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

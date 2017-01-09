@@ -19,7 +19,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -28,6 +27,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public partial class LogsViewerToolWindowControl : UserControl
     {
+        private const double FirstRowHitTestPointMargin = 5; 
+
         private LogsViewerViewModel ViewModel => DataContext as LogsViewerViewModel;
 
         /// <summary>
@@ -39,35 +40,22 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// Get the first ancestor control element of type TControl.
-        /// </summary>
-        /// <typeparam name="TControl">A <seealso cref="Control"/> type.</typeparam>
-        /// <param name="dependencyObj">A <seealso cref="DependencyObject"/> element. </param>
-        /// <returns>null or TControl object.</returns>
-        private TControl FindAncestorControl<TControl>(DependencyObject dependencyObj) where TControl : Control
-        {
-            while ((dependencyObj != null) && !(dependencyObj is TControl))
-            {
-                dependencyObj = VisualTreeHelper.GetParent(dependencyObj);
-            }
-
-            return dependencyObj as TControl;  // Note, null as Class is val 
-        }
-
-        /// <summary>
         /// Gets the first log item of the current data grid view.
+        /// The first row content changes when scrolling the data grid.
         /// </summary>
-        private object GetFirstRow()
+        private object GetFirstVisibleRowItem()
         {
-            var ele = dataGridLogEntries.InputHitTest(new Point(5, 50));
-            var row = FindAncestorControl<DataGridRow>(ele as DependencyObject);
-            Debug.WriteLine($"FindRowByPoint(5, 50) returns {row}");
+            var point = new Point(FirstRowHitTestPointMargin, FirstRowHitTestPointMargin + 
+                _dataGridInformationBar.ActualHeight + _dataGridLogEntries.ColumnHeaderHeight);
+            var uiElement = _dataGridLogEntries.InputHitTest(point);
+            var row = DataGridUtils.FindAncestorControl<DataGridRow>(uiElement as DependencyObject);
+            Debug.WriteLine($"FindRowByPoint {point} returns {row}");
             if (null == row)
             {
                 return null;
             }
 
-            int itemIndex = dataGridLogEntries.ItemContainerGenerator.IndexFromContainer(row);
+            int itemIndex = _dataGridLogEntries.ItemContainerGenerator.IndexFromContainer(row);
             if (itemIndex < 0)
             {
                 Debug.WriteLine($"Find first IndexFromContainer returns {itemIndex} ");
@@ -75,7 +63,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
             else
             {
-                var item = dataGridLogEntries.Items[itemIndex];
+                var item = _dataGridLogEntries.Items[itemIndex];
                 Debug.WriteLine($"Find first row returns object {item.ToString()}");
                 return item;
             }
@@ -109,7 +97,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            ViewModel?.OnFirstRowChanged(GetFirstRow());
+            ViewModel?.OnFirstVisibleRowChanged(GetFirstVisibleRowItem());
 
             if (e.VerticalOffset == sv.ScrollableHeight)
             {
@@ -119,19 +107,20 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// When mouse click on a row, toggle display the row detail.
-        /// 
-        /// Note, it is necessay to find cell before find row. 
-        /// Otherwise when clicking at the detail view area, it 'finds' the DataGridRow too.
+        /// When mouse clicks on a row, toggle display the row detail.
+        /// If the mouse is clikcing on detail panel, does not collapse it.        
         /// </summary>
         private void dataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            var cell = FindAncestorControl<DataGridCell>(e.OriginalSource as DependencyObject);
-            DataGridRow row = FindAncestorControl<DataGridRow>(cell);
+            var dependencyObj = e.OriginalSource as DependencyObject;
+            DataGridRow row = DataGridUtils.FindAncestorControl<DataGridRow>(dependencyObj);
             if (row != null)
             {
-                row.DetailsVisibility = 
-                    row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+                if (null == DataGridUtils.FindAncestorControl<DataGridDetailsPresenter>(dependencyObj))
+                {
+                    row.DetailsVisibility =
+                        row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+                }
             }
         }
     }

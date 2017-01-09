@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
+using GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -29,12 +30,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     internal class LogItem : Model
     {
         private const string JasonPayloadMessageFieldName = "message";
-        private const string AnyIconPath = "StackdriverLogsViewer/Resources/ic_log_level_any.png";
-        private const string DebugIconPath = "StackdriverLogsViewer/Resources/ic_log_level_debug.png";
-        private const string ErrorIconPath = "StackdriverLogsViewer/Resources/ic_log_level_error.png";
-        private const string FatalIconPath = "StackdriverLogsViewer/Resources/ic_log_level_fatal.png";
-        private const string InfoIconPath = "StackdriverLogsViewer/Resources/ic_log_level_info.png";
-        private const string WarningIconPath = "StackdriverLogsViewer/Resources/ic_log_level_warning.png";
+        private const string AnyIconPath = "StackdriverLogsViewer/Resources/ic_log_level_any_12.png";
+        private const string DebugIconPath = "StackdriverLogsViewer/Resources/ic_log_level_debug_12.png";
+        private const string ErrorIconPath = "StackdriverLogsViewer/Resources/ic_log_level_error_12.png";
+        private const string FatalIconPath = "StackdriverLogsViewer/Resources/ic_log_level_fatal_12.png";
+        private const string InfoIconPath = "StackdriverLogsViewer/Resources/ic_log_level_info_12.png";
+        private const string WarningIconPath = "StackdriverLogsViewer/Resources/ic_log_level_warning_12.png";
 
         private static readonly Lazy<ImageSource> s_anyIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(AnyIconPath));
@@ -49,6 +50,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private static readonly Lazy<ImageSource> s_warningIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
 
+        private readonly Lazy<List<ObjectNodeTree>> _treeViewObjects;
         private DateTime _timestamp;
 
         /// <summary>
@@ -76,6 +78,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public string SeverityTip => String.IsNullOrWhiteSpace(Entry?.Severity) ? 
             Resources.LogViewerAnyOtherSeverityLevelTip : Entry.Severity;
+
+        /// <summary>
+        /// Gets the list of ObjectNodeTree for detail tree view.
+        /// </summary>
+        public List<ObjectNodeTree> TreeViewObjects => _treeViewObjects.Value;
 
         /// <summary>
         /// Gets the log item severity level. The data binding source to severity column in the data grid.
@@ -127,6 +134,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             Entry = logEntry;
             Message = ComposeMessage();
             _timestamp = ConvertTimestamp(logEntry.Timestamp);
+            _treeViewObjects = new Lazy<List<ObjectNodeTree>>(CreateTreeObject);
+        }
+
+        private List<ObjectNodeTree> CreateTreeObject()
+        {
+            return new ObjectNodeTree(Entry).Children;
         }
 
         /// <summary>

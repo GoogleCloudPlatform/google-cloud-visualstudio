@@ -248,7 +248,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Update the first row date.
         /// </summary>
         /// <param name="item">The DataGrid row item.</param>
-        public void OnFirstRowChanged(object item)
+        public void OnFirstVisibleRowChanged(object item)
         {
             var log = item as LogItem;
             if (log == null)
