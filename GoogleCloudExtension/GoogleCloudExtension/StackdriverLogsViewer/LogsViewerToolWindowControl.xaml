@@ -87,8 +87,8 @@
                         VerticalAlignment="Center"
                         HorizontalAlignment="Right"                                              
                         NormalImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh.png}"
-                        MouseOverImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh-mouseover.png}"
-                        MouseDownImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh-mouse-down.png}"
+                        MouseOverImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh_mouse_over.png}"
+                        MouseDownImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh_mouse_down.png}"
                         Command="{Binding RefreshCommand}">
                         <controls:ImageButton.ToolTip>
                             <ToolTip Content="{x:Static ext:Resources.LogViewerRefreshButtonToolTip}" 
@@ -107,6 +107,7 @@
                 Set margin to (data grid header height 18 + border 1) -->
             <Border Margin="0, 19, 0, 0"  
                     Panel.ZIndex="20" 
+                    x:Name="_dataGridInformationBar"
                     HorizontalAlignment="Stretch"  
                     VerticalAlignment="Top" 
                     Background="LightGray">
@@ -149,7 +150,7 @@
 
             <!-- DataGrid, displays all log entries. -->
             <DataGrid Panel.ZIndex="10" 
-                      x:Name="dataGridLogEntries"
+                      x:Name="_dataGridLogEntries"
                       HorizontalAlignment="Stretch" 
                       VerticalAlignment="Stretch" 
                       Background="White" 

@@ -27,6 +27,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public partial class LogsViewerToolWindowControl : UserControl
     {
+        private const double FirstRowHitTestPointMargin = 5; 
+
+        private static readonly Point s_firstRowHitTestPoint = new Point(5, 5);
+
         private LogsViewerViewModel ViewModel => DataContext as LogsViewerViewModel;
 
         /// <summary>
@@ -39,18 +43,21 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         /// <summary>
         /// Gets the first log item of the current data grid view.
+        /// The first row content changes when scrolling the data grid.
         /// </summary>
-        private object GetFirstRow()
+        private object GetFirstVisibleRowItem()
         {
-            var ele = dataGridLogEntries.InputHitTest(new Point(5, 50));
-            var row = FindAncestorControl<DataGridRow>(ele as DependencyObject);
-            Debug.WriteLine($"FindRowByPoint(5, 50) returns {row}");
+            var point = new Point(FirstRowHitTestPointMargin, FirstRowHitTestPointMargin + 
+                _dataGridInformationBar.ActualHeight + _dataGridLogEntries.ColumnHeaderHeight);
+            var uiElement = _dataGridLogEntries.InputHitTest(point);
+            var row = DataGridUtils.FindAncestorControl<DataGridRow>(uiElement as DependencyObject);
+            Debug.WriteLine($"FindRowByPoint {point} returns {row}");
             if (null == row)
             {
                 return null;
             }
 
-            int itemIndex = dataGridLogEntries.ItemContainerGenerator.IndexFromContainer(row);
+            int itemIndex = _dataGridLogEntries.ItemContainerGenerator.IndexFromContainer(row);
             if (itemIndex < 0)
             {
                 Debug.WriteLine($"Find first IndexFromContainer returns {itemIndex} ");
@@ -58,7 +65,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
             else
             {
-                var item = dataGridLogEntries.Items[itemIndex];
+                var item = _dataGridLogEntries.Items[itemIndex];
                 Debug.WriteLine($"Find first row returns object {item.ToString()}");
                 return item;
             }
@@ -92,7 +99,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            ViewModel?.OnFirstRowChanged(GetFirstRow());
+            ViewModel?.OnFirstVisibleRowChanged(GetFirstVisibleRowItem());
 
             if (e.VerticalOffset == sv.ScrollableHeight)
             {

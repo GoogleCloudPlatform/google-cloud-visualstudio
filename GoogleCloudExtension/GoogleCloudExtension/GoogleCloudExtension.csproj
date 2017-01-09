@@ -299,9 +299,9 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="StackdriverLogsViewer\Resources\refresh_mouse_over.png" />
     <Resource Include="StackdriverLogsViewer\Resources\logging_menu_icon_16.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\refresh-mouse-down.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\refresh-mouseover.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\refresh_mouse_down.png" />
     <Resource Include="StackdriverLogsViewer\Resources\refresh.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_any.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_debug.png" />

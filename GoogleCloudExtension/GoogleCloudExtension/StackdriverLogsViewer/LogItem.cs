@@ -51,6 +51,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
 
         private readonly Lazy<List<ObjectNodeTree>> _treeViewObjects;
+        private DateTime _timestamp;
 
         /// <summary>
         /// Gets a log entry object.
