@@ -1915,6 +1915,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error displaying the entry. .
+        /// </summary>
+        public static string LogsViewerDataConversionGenericError {
+            get {
+                return ResourceManager.GetString("LogsViewerDataConversionGenericError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [{0}].
+        /// </summary>
+        public static string LogsViewerDetailTreeViewArrayIndexFormat {
+            get {
+                return ResourceManager.GetString("LogsViewerDetailTreeViewArrayIndexFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} :.
+        /// </summary>
+        public static string LogsViewerDetailTreeViewNameLabelFormat {
+            get {
+                return ResourceManager.GetString("LogsViewerDetailTreeViewNameLabelFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Any.
         /// </summary>
         public static string LogViewerAnyOtherSeverityLevelTip {
