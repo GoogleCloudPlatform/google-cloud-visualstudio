@@ -88,7 +88,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             {
                 return Enumerable.Empty<string>();
             }
-           return name.Substring(0, name.Length - 1).Split('/');
+            return name.Substring(0, name.Length - 1).Split('/');
         }
 
         private static string GetNameLeaf(string name)
