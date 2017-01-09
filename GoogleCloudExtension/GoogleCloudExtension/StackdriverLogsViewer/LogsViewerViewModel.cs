@@ -20,6 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -32,6 +34,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     public partial class LogsViewerViewModel : ViewModelBase
     {
         private const int DefaultPageSize = 100;
+
+        private static readonly string[] s_defaultResourceSelections = new string[] { "global", "gce_instance" };
+
+        /// <summary>
+        /// This is the filters combined by all selectors.
+        /// </summary>
+        private string _filter;
+        private MonitoredResourceDescriptor _selectedResource;
+        private IList<MonitoredResourceDescriptor> _resourceDescriptors;
 
         private bool _isLoading = false;
         private Lazy<LoggingDataSource> _dataSource;
@@ -50,6 +61,31 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private bool _showCancelRequestButton = false;
         private CancellationTokenSource _cancellationTokenSource;
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
+
+        /// <summary>
+        /// Gets all resources types.
+        /// </summary>
+        public IList<MonitoredResourceDescriptor> ResourceDescriptors
+        {
+            get { return _resourceDescriptors; }
+            private set { SetValueAndRaise(ref _resourceDescriptors, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets current selected resource types.
+        /// </summary>
+        public MonitoredResourceDescriptor SelectedResource
+        {
+            get { return _selectedResource; }
+            set
+            {
+                if (value != null && _selectedResource != value)
+                {
+                    SetValueAndRaise(ref _selectedResource, value);
+                    OnFiltersChanged();
+                }
+            }
+        }
 
         /// <summary>
         /// The time zone selector items.
@@ -248,7 +284,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Update the first row date.
         /// </summary>
         /// <param name="item">The DataGrid row item.</param>
-        public void OnFirstRowChanged(object item)
+        public void OnFirstVisibleRowChanged(object item)
         {
             var log = item as LogItem;
             if (log == null)
@@ -403,6 +439,77 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Populate resource type selection list.
+        /// 
+        /// The control flow is as following. 
+        ///     1. PopulateResourceTypes().
+        ///         1.1 Failed. An error message is displayed. 
+        ///              Goto error handling logic.
+        ///     2. Set selected resource type.
+        ///     3. When selected resource type is changed, it calls Reload().
+        ///     
+        /// Error handling.
+        ///     1. User click Refresh. Refrsh button calls Reload().
+        ///     2. Reload() checks ResourceDescriptors is null or empty.
+        ///     3. Reload calls PopulateResourceTypes() which does a manual retry.
+        /// </summary>
+        private async void PopulateResourceTypes()
+        {
+            RequestErrorMessage = null;
+            ShowRequestErrorMessage = false;
+            IsControlEnabled = false;
+            try
+            {
+                ResourceDescriptors = await _dataSource.Value.GetResourceDescriptorsAsync();
+            }
+            catch (DataSourceException ex)
+            {
+                /// If it fails, show a tip, let refresh button retry it.
+                RequestErrorMessage = ex.Message;
+                ShowRequestErrorMessage = true;
+                return;
+            }
+            finally
+            {
+                IsControlEnabled = true;
+            }
+
+            foreach (var defaultSelection in s_defaultResourceSelections)
+            {
+                var desc = _resourceDescriptors?.First(x => x.Type == defaultSelection);
+                if (desc != null)
+                {
+                    SelectedResource = desc;
+                    return;
+                }
+            }
+
+            // Select first one if type of global or gce_instance does not exists.
+            SelectedResource = _resourceDescriptors?[0];
+        }
+
+        private void OnFiltersChanged()
+        {
+            Debug.WriteLine("NotifyFiltersChanged");
+            _filter = ComposeSimpleFilters();
+            Reload();
+        }
+
+        /// <summary>
+        /// Aggregate all selections into filter string.
+        /// </summary>
+        private string ComposeSimpleFilters()
+        {
+            StringBuilder filter = new StringBuilder();
+            if (_selectedResource != null)
+            {
+                filter.AppendLine($"resource.type=\"{_selectedResource.Type}\"");
+            }
+
+            return filter.Length > 0 ? filter.ToString() : null;
         }
     }
 }

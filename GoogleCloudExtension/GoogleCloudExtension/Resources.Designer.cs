@@ -1913,13 +1913,40 @@ namespace GoogleCloudExtension {
                 return ResourceManager.GetString("GcePublishSuccessMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to All Log Levels.
         /// </summary>
         public static string LogViewerAllLogLevelSelection {
             get {
                 return ResourceManager.GetString("LogViewerAllLogLevelSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error displaying the entry. .
+        /// </summary>
+        public static string LogsViewerDataConversionGenericError {
+            get {
+                return ResourceManager.GetString("LogsViewerDataConversionGenericError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [{0}].
+        /// </summary>
+        public static string LogsViewerDetailTreeViewArrayIndexFormat {
+            get {
+                return ResourceManager.GetString("LogsViewerDetailTreeViewArrayIndexFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} :.
+        /// </summary>
+        public static string LogsViewerDetailTreeViewNameLabelFormat {
+            get {
+                return ResourceManager.GetString("LogsViewerDetailTreeViewNameLabelFormat", resourceCulture);
             }
         }
         
