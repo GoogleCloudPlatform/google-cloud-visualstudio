@@ -221,6 +221,7 @@
                             <DataTemplate>
                                 <Image Source="{Binding SeverityLevel}" 
                                        Width="12" 
+                                       Height="12"
                                        Margin="9, 1, 8, 1" >
                                     <Image.ToolTip>
                                         <ToolTip Content="{Binding SeverityTip}" 

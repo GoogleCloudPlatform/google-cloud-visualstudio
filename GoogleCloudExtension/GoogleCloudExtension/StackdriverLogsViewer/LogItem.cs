@@ -30,12 +30,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     internal class LogItem : Model
     {
         private const string JasonPayloadMessageFieldName = "message";
-        private const string AnyIconPath = "StackdriverLogsViewer/Resources/ic_log_level_any.png";
-        private const string DebugIconPath = "StackdriverLogsViewer/Resources/ic_log_level_debug.png";
-        private const string ErrorIconPath = "StackdriverLogsViewer/Resources/ic_log_level_error.png";
-        private const string FatalIconPath = "StackdriverLogsViewer/Resources/ic_log_level_fatal.png";
-        private const string InfoIconPath = "StackdriverLogsViewer/Resources/ic_log_level_info.png";
-        private const string WarningIconPath = "StackdriverLogsViewer/Resources/ic_log_level_warning.png";
+        private const string AnyIconPath = "StackdriverLogsViewer/Resources/ic_log_level_any_12.png";
+        private const string DebugIconPath = "StackdriverLogsViewer/Resources/ic_log_level_debug_12.png";
+        private const string ErrorIconPath = "StackdriverLogsViewer/Resources/ic_log_level_error_12.png";
+        private const string FatalIconPath = "StackdriverLogsViewer/Resources/ic_log_level_fatal_12.png";
+        private const string InfoIconPath = "StackdriverLogsViewer/Resources/ic_log_level_info_12.png";
+        private const string WarningIconPath = "StackdriverLogsViewer/Resources/ic_log_level_warning_12.png";
 
         private static readonly Lazy<ImageSource> s_anyIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(AnyIconPath));

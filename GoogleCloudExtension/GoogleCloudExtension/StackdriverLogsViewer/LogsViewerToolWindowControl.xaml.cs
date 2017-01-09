@@ -29,8 +29,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     {
         private const double FirstRowHitTestPointMargin = 5; 
 
-        private static readonly Point s_firstRowHitTestPoint = new Point(5, 5);
-
         private LogsViewerViewModel ViewModel => DataContext as LogsViewerViewModel;
 
         /// <summary>
