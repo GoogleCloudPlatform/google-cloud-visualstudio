@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
+using GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -26,7 +27,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// <summary>
     /// An adaptor to LogEntry so as to provide properties for data binding.
     /// </summary>
-    internal class LogItem : ViewModelBase
+    internal class LogItem : Model
     {
         private const string JasonPayloadMessageFieldName = "message";
         private const string AnyIconPath = "StackdriverLogsViewer/Resources/ic_log_level_any.png";
@@ -49,6 +50,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private static readonly Lazy<ImageSource> s_warningIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
 
+        private readonly Lazy<List<ObjectNodeTree>> _treeViewObjects;
         private readonly DateTime _timestamp;
 
         /// <summary>
@@ -76,6 +78,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public string SeverityTip => String.IsNullOrWhiteSpace(Entry?.Severity) ? 
             Resources.LogViewerAnyOtherSeverityLevelTip : Entry.Severity;
+
+        /// <summary>
+        /// Gets the list of ObjectNodeTree for detail tree view.
+        /// </summary>
+        public List<ObjectNodeTree> TreeViewObjects => _treeViewObjects.Value;
 
         /// <summary>
         /// Gets the log item severity level. The data binding source to severity column in the data grid.
@@ -127,6 +134,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             Entry = logEntry;
             Message = ComposeMessage();
             _timestamp = ConvertTimestamp(logEntry.Timestamp);
+            _treeViewObjects = new Lazy<List<ObjectNodeTree>>(CreateTreeObject);
+        }
+
+        private List<ObjectNodeTree> CreateTreeObject()
+        {
+            return new ObjectNodeTree(Entry).Children;
         }
 
         private string ComposeDictionaryPayloadMessage(IDictionary<string, object> dictPayload)

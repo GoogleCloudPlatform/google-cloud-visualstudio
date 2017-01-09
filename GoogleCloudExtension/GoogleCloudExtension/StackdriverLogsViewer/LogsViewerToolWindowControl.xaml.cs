@@ -18,6 +18,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -69,6 +70,24 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 Debug.WriteLine("Now it is at bottom");
                 ViewModel?.LoadNextPage();
+            }
+        }
+
+        /// <summary>
+        /// When mouse clicks on a row, toggle display the row detail.
+        /// If the mouse is clikcing on detail panel, does not collapse it.        
+        /// </summary>
+        private void dataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            var dependencyObj = e.OriginalSource as DependencyObject;
+            DataGridRow row = DataGridUtils.FindAncestorControl<DataGridRow>(dependencyObj);
+            if (row != null)
+            {
+                if (null == DataGridUtils.FindAncestorControl<DataGridDetailsPresenter>(dependencyObj))
+                {
+                    row.DetailsVisibility =
+                        row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+                }
             }
         }
     }

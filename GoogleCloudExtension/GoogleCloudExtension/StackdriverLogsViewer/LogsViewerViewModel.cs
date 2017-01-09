@@ -82,7 +82,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the tool tip for Toggle Expand All button.
         /// </summary>
-        public string ToggleExapandAllToolTip => _toggleExpandAllExpanded ? 
+        public string ToggleExapandAllToolTip => _toggleExpandAllExpanded ?
             Resources.LogViewerCollapseAllTip : Resources.LogViewerExpandAllTip;
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             if (_isLoading)
             {
-                Debug.WriteLine($"_isLoading is true. Skip.");
+                Debug.WriteLine("_isLoading is true. Skip.");
                 return;
             }
 
@@ -298,9 +298,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private async Task LoadLogsAsync(CancellationToken cancellationToken)
         {
             int count = 0;
-            while (count < DefaultPageSize)
+            while (count < DefaultPageSize && !cancellationToken.IsCancellationRequested)
             {
-                Debug.WriteLine($"LoadLogs, count={count}, firstPage={_nextPageToken==null}");
+                Debug.WriteLine($"LoadLogs, count={count}, firstPage={_nextPageToken == null}");
 
                 // Here, it does not do pageSize: _defaultPageSize - count, 
                 // Because this is requried to use same page size for getting next page. 
@@ -318,7 +318,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     _nextPageToken = null;
                     break;
                 }
-            }            
+            }
         }
 
         /// <summary>
