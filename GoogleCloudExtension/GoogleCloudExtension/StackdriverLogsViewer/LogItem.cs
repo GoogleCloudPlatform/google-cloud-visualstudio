@@ -13,11 +13,14 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
+using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows.Media;
 
@@ -28,6 +31,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     internal class LogItem : Model
     {
+        private const string SourceFileFieldName = "source_file";
+        private const string SourceLineFieldName = "source_line";
         private const string JasonPayloadMessageFieldName = "message";
         private const string AnyIconPath = "StackdriverLogsViewer/Resources/ic_log_level_any.png";
         private const string DebugIconPath = "StackdriverLogsViewer/Resources/ic_log_level_debug.png";
@@ -50,6 +55,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
 
         private DateTime _timestamp;
+        private readonly string _sourceFilePath;
+        private readonly int _sourceLine;
 
         /// <summary>
         /// Gets a log entry object.
@@ -69,13 +76,23 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the log message to be displayed at top level.
         /// </summary>
-        public string Message { get; }
+        public string Message => ComposeMessage();
 
         /// <summary>
         /// Gets the log severity tooltip. Data binding to the severity icon tool tip.
         /// </summary>
-        public string SeverityTip => String.IsNullOrWhiteSpace(Entry?.Severity) ? 
+        public string SeverityTip => String.IsNullOrWhiteSpace(Entry?.Severity) ?
             Resources.LogViewerAnyOtherSeverityLevelTip : Entry.Severity;
+
+        /// <summary>
+        /// Gets the formated source location as content of data grid column.
+        /// </summary>
+        public string SourceLocation { get; }
+
+        /// <summary>
+        /// Command responses to source link button click event.
+        /// </summary>
+        public ProtectedCommand SourceLinkCommand { get; }
 
         /// <summary>
         /// Gets the log item severity level. The data binding source to severity column in the data grid.
@@ -125,8 +142,20 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public LogItem(LogEntry logEntry)
         {
             Entry = logEntry;
-            Message = ComposeMessage();
             _timestamp = ConvertTimestamp(logEntry.Timestamp);
+
+            SourceLinkCommand = new ProtectedCommand(OnSourceLinkClick);
+            _sourceLine = -1;
+            if (null != Entry?.Labels)
+            {
+                _sourceFilePath = Entry.Labels.ContainsKey(SourceFileFieldName) ? Entry.Labels[SourceFileFieldName] : null;
+                var line = Entry.Labels.ContainsKey(SourceLineFieldName) ? Entry.Labels[SourceLineFieldName] : null;
+                Int32.TryParse(line, out _sourceLine);
+                if (!String.IsNullOrWhiteSpace(_sourceFilePath) && _sourceLine != -1)
+                {
+                    SourceLocation = $"{Path.GetFileName(_sourceFilePath)} ({_sourceLine})";
+                }
+            }
         }
 
         /// <summary>
@@ -214,6 +243,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             return datetime.ToLocalTime();
+        }
+
+        private void OnSourceLinkClick()
+        {
+            Debug.Assert(_sourceLine != -1 && _sourceFilePath != null, 
+                "There is a code bug if source file or source line is invalid");
+            var sourceFiles = SolutionHelper.CurrentSolution?.FindMatchingSourceFile(_sourceFilePath);
+            if (sourceFiles.Count() > 0)
+            {
+                sourceFiles.First().GotoLine(_sourceLine);
+            }
         }
     }
 }

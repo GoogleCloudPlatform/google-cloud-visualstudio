@@ -18,7 +18,7 @@
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
              d:DesignHeight="1024" d:DesignWidth="860"             
-             Name="LogsViewerToolWindow" >
+             Name="_logsViewerToolWindow" >
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -45,7 +45,6 @@
 
             <Style x:Key="rowStyle" TargetType="DataGridRow">
                 <Setter Property="TextBlock.TextWrapping" Value="NoWrap" />
-                <Setter Property="TextBlock.FontSize" Value="12" />
                 <Setter Property="Margin" Value="0, 0, 0, 1"/>
                 <Setter Property="BorderThickness" Value="0, 0, 0, 0"/>
                 <Setter Property="BorderBrush" Value="LightGray" />
@@ -60,6 +59,48 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
+
+            <Style x:Key="LinkButton" TargetType="Button">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <TextBlock >
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsMouseOver,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}}" Value="True">
+                                                <Setter Property="TextDecorations" Value="Underline" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>                                    
+                                <ContentPresenter />
+                            </TextBlock>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="Foreground" Value="Black" />
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="true">
+                        <Setter Property="Foreground" Value="Blue" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            
+            <DataGridTemplateColumn
+                x:Key="SourceLinkColumn"
+                Visibility="{Binding ShowSourceLink, Source={x:Reference _logsViewerToolWindow}, 
+                            Converter={StaticResource visibilityConverter}}">
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate >
+                        <Button
+                            Margin="6,0,6,0"
+                            Style="{StaticResource LinkButton}"
+                            Content="{Binding SourceLocation}" 
+                            Command="{Binding SourceLinkCommand}"/>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
 
             <!-- Region TreeView styles and converters. -->
             <vct:LogItemConverter x:Key="LogItemConverter"/>
@@ -529,6 +570,8 @@
 
                     <DataGridTextColumn Binding="{Binding Time}" Width="90"/>
 
+                    <StaticResource ResourceKey="SourceLinkColumn" />
+                    
                     <DataGridTextColumn Binding="{Binding Message}" />
                 </DataGrid.Columns>
 

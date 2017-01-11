@@ -220,6 +220,7 @@
     </Compile>
     <Compile Include="SolutionUtils\KnownProjectTypes.cs" />
     <Compile Include="SolutionUtils\NetCoreProject.cs" />
+    <Compile Include="SolutionUtils\ProjectSourceFile.cs" />
     <Compile Include="SolutionUtils\VsProject.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficWindow.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficModel.cs" />

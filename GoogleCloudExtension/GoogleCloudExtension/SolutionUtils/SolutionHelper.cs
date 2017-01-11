@@ -19,7 +19,9 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Diagnostics;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace GoogleCloudExtension.SolutionUtils
@@ -60,6 +62,37 @@ namespace GoogleCloudExtension.SolutionUtils
         /// Returns the selected project in the Solution Explorer.
         /// </summary>
         public ISolutionProject SelectedProject => GetSelectedProject();
+
+        public IEnumerable<ProjectSourceFile> FindMatchingSourceFile(string sourceLocationFilePath)
+        {
+            //return from project in (_solution.Projects as IEnumerable<Project>)
+            //       from item in (project.ProjectItems as IEnumerable<ProjectItem>)
+            //       where ProjectSourceFile.DoesPathMatch(item, sourceLocationFilePath)
+            //       select ProjectSourceFile.Create(item);
+            List<ProjectSourceFile> items = new List<ProjectSourceFile>();
+            foreach (Project project in _solution.Projects)
+            {
+                foreach (ProjectItem projectItem in project.ProjectItems)
+                {
+                    NavigateProjectItem(projectItem, sourceLocationFilePath, items);
+                }
+            }
+
+            return items;
+        }
+
+        public void NavigateProjectItem(ProjectItem projectItem, string sourceLocationFilePath, List<ProjectSourceFile> items)
+        {
+            if (ProjectSourceFile.DoesPathMatch(projectItem, sourceLocationFilePath))
+            {
+                items.Add(ProjectSourceFile.Create(projectItem));
+            }
+
+            foreach (ProjectItem nestedItem in projectItem.ProjectItems)
+            {
+                NavigateProjectItem(nestedItem, sourceLocationFilePath, items);
+            }            
+        }
 
         /// <summary>
         /// Returns the <seealso cref="SolutionBuild2"/> associated with the current solution.

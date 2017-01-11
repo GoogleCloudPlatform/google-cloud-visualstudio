@@ -48,8 +48,19 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private bool _showRequestErrorMessage = false;
         private bool _showRequestStatus = false;
         private bool _showCancelRequestButton = false;
+        private bool _showSourceLocationLink = true;
         private CancellationTokenSource _cancellationTokenSource;
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
+
+        /// <summary>
+        /// Controls if a source file link column is displayed in data grid.
+        /// </summary>
+        public bool ShowSourceLink
+        {
+            get { return _showSourceLocationLink; }
+            set { SetValueAndRaise(ref _showSourceLocationLink, value); }
+        }
+
 
         /// <summary>
         /// The time zone selector items.

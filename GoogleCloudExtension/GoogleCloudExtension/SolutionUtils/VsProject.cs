@@ -56,7 +56,7 @@ namespace GoogleCloudExtension.SolutionUtils
                 .Elements(XName.Get("PropertyGroup", MsbuildNamespace))
                 .Descendants(XName.Get("ProjectTypeGuids", MsbuildNamespace))
                 .Select(x => x.Value)
-                .FirstOrDefault();
+                .FirstOrDefault();  
 
             if (projectGuids == null)
             {
@@ -70,5 +70,6 @@ namespace GoogleCloudExtension.SolutionUtils
             }
             return KnownProjectTypes.None;
         }
+
     }
 }

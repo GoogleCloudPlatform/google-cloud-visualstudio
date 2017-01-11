@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
 using System.Windows;
@@ -111,6 +110,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void dataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
+            var linkButton = FindAncestorControl<Button>(e.OriginalSource as DependencyObject);
+            if (null != linkButton)
+            {
+                return;
+            }
+
             var cell = FindAncestorControl<DataGridCell>(e.OriginalSource as DependencyObject);
             DataGridRow row = FindAncestorControl<DataGridRow>(cell);
             if (row != null)
@@ -118,6 +123,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 row.DetailsVisibility = 
                     row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
             }
+
+            // e.Handled = false;
         }
     }
 }
