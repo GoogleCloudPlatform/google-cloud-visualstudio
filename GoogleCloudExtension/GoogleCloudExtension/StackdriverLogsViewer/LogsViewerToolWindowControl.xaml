@@ -12,7 +12,7 @@
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
              d:DesignHeight="1024" d:DesignWidth="860"             
-             Name="LogsViewerToolWindow" >
+             Name="_logsViewerToolWindow" >
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -29,6 +29,42 @@
                     <TextBlock Text="{Binding NodeValue}" Style="{StaticResource TreeNodeTextStyle}" />
                 </StackPanel>
             </HierarchicalDataTemplate>
+
+            <!-- data grid group item.-->
+            <ControlTemplate x:Key="groupItemTemplate" TargetType="{x:Type GroupItem}">
+                <StackPanel>
+                    <StackPanel 
+                        Orientation="Horizontal" 
+                        Background="#E0E0E0">
+
+                        <TextBlock 
+                            Text="{Binding Name}"  
+                            Padding="6,5,6,5" 
+                            FontWeight="DemiBold"
+                            Style="{StaticResource CommonTextStyle}"/>
+
+                        <ComboBox                         
+                            DockPanel.Dock="Left"
+                            x:Name="comboTimeZone" 
+                            Margin="6,0,0,0" 
+                            VerticalAlignment="Center" 
+                            BorderThickness="0" 
+                            Background="Transparent" 
+                            FontWeight="DemiBold"
+                            DataContext="{Binding DataContext, ElementName=_logsViewerToolWindow}"
+                            ItemsSource="{Binding SystemTimeZones}"
+                            SelectedItem="{Binding SelectedTimeZone}"
+                            Loaded="ComboBox_Loaded" >
+                            <ComboBox.ToolTip>
+                                <ToolTip Content="{x:Static ext:Resources.LogViewerTimeZoneSelectionToolTip}"
+                                     Style="{StaticResource CommonTooltipStyle}" />
+                            </ComboBox.ToolTip>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <ItemsPresenter />
+                </StackPanel>
+            </ControlTemplate>
             
         </ResourceDictionary>
     </UserControl.Resources>
@@ -101,55 +137,24 @@
             </StackPanel>
         </StackPanel>
 
+        <Expander 
+            Grid.Row="2" 
+            Panel.ZIndex="20"             
+            x:Name="allExpander"
+            Margin="0,6,30,0" 
+            HorizontalAlignment="Right" 
+            VerticalAlignment="Top" 
+            IsExpanded="{Binding ToggleExapandAllExpanded}">
+            <Expander.ToolTip>
+                <ToolTip Content="{Binding ToggleExapandAllToolTip}" 
+                         Style="{StaticResource CommonTooltipStyle}"/>
+            </Expander.ToolTip>
+        </Expander>
+        
         <Grid Grid.Row="2" 
               Margin="12,6,12,12" 
               IsEnabled="{Binding IsControlEnabled}">
             
-            <!--Data grid top information bar.
-                Set margin to (data grid header height 18 + border 1) -->
-            <Border Margin="0,19,0,0"  
-                    Panel.ZIndex="20" 
-                    x:Name="_dataGridInformationBar"
-                    HorizontalAlignment="Stretch"  
-                    VerticalAlignment="Top" 
-                    Background="LightGray">
-                <DockPanel  Margin="9,1,0,1">
-                    <StackPanel DockPanel.Dock="Left" 
-                                Orientation="Horizontal">
-                        <TextBlock Margin="12,3,3,0" 
-                                   VerticalAlignment="Center"
-                                   FontWeight="Bold"
-                                   Text="{Binding FirstRowDate}" />
-                        <ComboBox Margin="3,0,18,0" 
-                                  VerticalAlignment="Center" 
-                                  BorderThickness="0" 
-                                  Background="Transparent" 
-                                  FontWeight="Bold"
-                                  x:Name="comboTimeZone" 
-                                  ItemsSource="{Binding SystemTimeZones}"
-                                  SelectedItem="{Binding SelectedTimeZone}"
-                                  Loaded="ComboBox_Loaded" >
-                            <ComboBox.ToolTip>
-                                <ToolTip Content="{x:Static ext:Resources.LogViewerTimeZoneSelectionToolTip}"
-                                         Style="{StaticResource CommonTooltipStyle}" />
-                            </ComboBox.ToolTip> 
-                        </ComboBox>
-                    </StackPanel>
-
-                    <Expander DockPanel.Dock="Right" 
-                              x:Name="allExpander"
-                              Margin="0,0,8,0" 
-                              HorizontalAlignment="Right" 
-                              VerticalAlignment="Top" 
-                              IsExpanded="{Binding ToggleExapandAllExpanded}">
-                        <Expander.ToolTip>
-                            <ToolTip Content="{Binding ToggleExapandAllToolTip}" 
-                                     Style="{StaticResource CommonTooltipStyle}"/>
-                        </Expander.ToolTip>
-                    </Expander>
-                </DockPanel>
-            </Border>
-
             <!-- DataGrid, displays all log entries. -->
             <DataGrid Panel.ZIndex="10" 
                       x:Name="_dataGridLogEntries"
@@ -165,7 +170,7 @@
                       AutoGenerateColumns="False" 
                       IsReadOnly="True" 
                       HeadersVisibility="Column" 
-                      ColumnHeaderHeight="18" 
+                      ColumnHeaderHeight="22" 
                       ItemsSource="{Binding LogItemCollection}"   
                       ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                       AlternationCount="2"
@@ -189,34 +194,16 @@
                     </Style>
                 </DataGrid.Style>
                 
-                <!-- Group log items by log dates. -->
                 <DataGrid.GroupStyle>
-                    <GroupStyle>
-                        <GroupStyle.ContainerStyle>
-                            <Style TargetType="{x:Type GroupItem}">
-                                <Setter Property="Template">
-                                    <Setter.Value>
-                                        <ControlTemplate TargetType="{x:Type GroupItem}">
-                                            <StackPanel  Background="LightGray" >
-                                                <StackPanel.Resources>
-                                                    <Style TargetType="TextBlock" 
-                                                           BasedOn="{StaticResource CommonTextStyle}">
-                                                        <Setter Property="FontWeight" Value="Bold" />
-                                                    </Style>
-                                                </StackPanel.Resources>
-                                                <StackPanel Orientation="Horizontal" Margin="9,1,0,1" >
-                                                    <TextBlock Text="{Binding Name}"  Padding="0,5,4,5" />
-                                                </StackPanel>
-                                                <ItemsPresenter />
-                                            </StackPanel>
-                                        </ControlTemplate>
-                                    </Setter.Value>
-                                </Setter>
+                    <GroupStyle >
+                        <GroupStyle.ContainerStyle >
+                            <Style TargetType="{x:Type GroupItem}" >
+                                <Setter Property="Template" Value="{StaticResource groupItemTemplate}" />
                             </Style>
                         </GroupStyle.ContainerStyle>
                     </GroupStyle>
                 </DataGrid.GroupStyle>
-
+                
                 <DataGrid.Columns>
                     <DataGridTemplateColumn IsReadOnly="True">
                         <DataGridTemplateColumn.CellTemplate>
@@ -234,8 +221,23 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
 
-                    <DataGridTextColumn Binding="{Binding Time}" Width="90"/>
-
+                    <DataGridTemplateColumn 
+                        IsReadOnly="True" 
+                        SortMemberPath="TimeStamp" >
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Time}" 
+                                           TextWrapping="NoWrap"
+                                           Margin="6,0,6,0">
+                                    <TextBlock.ToolTip>
+                                        <ToolTip Content="{Binding Date}" 
+                                                 Style="{StaticResource CommonTooltipStyle}" />
+                                    </TextBlock.ToolTip>
+                                </TextBlock>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    
                     <DataGridTextColumn Binding="{Binding Message}" />
                 </DataGrid.Columns>
 

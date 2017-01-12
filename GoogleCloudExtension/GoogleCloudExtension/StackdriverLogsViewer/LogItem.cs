@@ -51,7 +51,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
 
         private readonly Lazy<List<ObjectNodeTree>> _treeViewObjects;
-        private DateTime _timestamp;
+
+        /// <summary>
+        /// Gets the time stamp.
+        /// </summary>
+        public DateTime TimeStamp { get; private set; }
 
         /// <summary>
         /// Gets a log entry object.
@@ -61,12 +65,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the log item timestamp Date string in local time. Data binding to a view property.
         /// </summary>
-        public string Date => _timestamp.ToString(Resources.LogViewerLogItemDateFormat);
+        public string Date => TimeStamp.ToString(Resources.LogViewerLogItemDateFormat);
 
         /// <summary>
         /// Gets a log item timestamp in local time. Data binding to a view property.
         /// </summary>
-        public string Time => _timestamp.ToString(Resources.LogViewerLogItemTimeFormat);
+        public string Time => TimeStamp.ToString(Resources.LogViewerLogItemTimeFormat);
 
         /// <summary>
         /// Gets the log message to be displayed at top level.
@@ -76,7 +80,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the log severity tooltip. Data binding to the severity icon tool tip.
         /// </summary>
-        public string SeverityTip => String.IsNullOrWhiteSpace(Entry?.Severity) ? 
+        public string SeverityTip => String.IsNullOrWhiteSpace(Entry?.Severity) ?
             Resources.LogViewerAnyOtherSeverityLevelTip : Entry.Severity;
 
         /// <summary>
@@ -133,7 +137,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             Entry = logEntry;
             Message = ComposeMessage();
-            _timestamp = ConvertTimestamp(logEntry.Timestamp);
+            TimeStamp = ConvertTimestamp(logEntry.Timestamp);
             _treeViewObjects = new Lazy<List<ObjectNodeTree>>(CreateTreeObject);
         }
 
@@ -148,7 +152,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="newTimeZone">The new time zone.</param>
         public void ChangeTimeZone(TimeZoneInfo newTimeZone)
         {
-            _timestamp = TimeZoneInfo.ConvertTime(_timestamp, newTimeZone);
+            TimeStamp = TimeZoneInfo.ConvertTime(TimeStamp, newTimeZone);
             RaisePropertyChanged(nameof(Time));
         }
 
@@ -220,7 +224,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 // From Stackdriver Logging API reference,
                 // A timestamp in RFC3339 UTC "Zulu" format, accurate to nanoseconds. 
                 // Example: "2014-10-02T15:01:23.045123456Z".
-                if (!DateTime.TryParse(timestamp.ToString(), 
+                if (!DateTime.TryParse(timestamp.ToString(),
                     CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out datetime))
                 {
                     datetime = DateTime.MaxValue;

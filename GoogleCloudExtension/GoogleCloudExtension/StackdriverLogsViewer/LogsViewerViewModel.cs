@@ -37,7 +37,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private Lazy<LoggingDataSource> _dataSource;
         private string _nextPageToken;
 
-        private string _firstRowDate;
         private bool _toggleExpandAllExpanded;
         private bool _isControlEnabled = true;
 
@@ -110,17 +109,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public string ToggleExapandAllToolTip => _toggleExpandAllExpanded ?
             Resources.LogViewerCollapseAllTip : Resources.LogViewerExpandAllTip;
-
-        /// <summary>
-        /// Gets the visible view top row date in string.
-        /// When data grid vertical scroll moves, the displaying rows move. 
-        /// This is to return the top row date
-        /// </summary>
-        public string FirstRowDate
-        {
-            get { return _firstRowDate; }
-            private set { SetValueAndRaise(ref _firstRowDate, value); }
-        }
 
         /// <summary>
         /// Gets the LogItem collection
@@ -241,22 +229,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             LogLoaddingWrapperAsync(async (cancelToken) => await LoadLogsAsync(cancelToken));
-        }
-
-        /// <summary>
-        /// When scrolling the current data grid view, the frist row changes.
-        /// Update the first row date.
-        /// </summary>
-        /// <param name="item">The DataGrid row item.</param>
-        public void OnFirstVisibleRowChanged(object item)
-        {
-            var log = item as LogItem;
-            if (log == null)
-            {
-                return;
-            }
-
-            FirstRowDate = log.Date;
         }
 
         /// <summary>

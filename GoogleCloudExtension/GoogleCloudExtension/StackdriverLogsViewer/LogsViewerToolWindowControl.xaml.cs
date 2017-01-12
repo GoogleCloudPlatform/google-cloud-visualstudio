@@ -38,40 +38,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// Gets the first log item of the current data grid view.
-        /// The first row content changes when scrolling the data grid.
-        /// </summary>
-        private object GetFirstVisibleRowItem()
-        {
-            var point = new Point(_dataGridLogEntries.BorderThickness.Left, 
-                                  _dataGridInformationBar.ActualHeight + _dataGridLogEntries.ColumnHeaderHeight);
-            var uiElement = _dataGridLogEntries.InputHitTest(point);
-            var group = DataGridUtils.FindAncestorControl<GroupItem>(uiElement as DependencyObject);
-            if (group == null)
-            {
-                return null;
-            }
-
-            var row = DataGridUtils.GetVisualChild<DataGridRow>(group);
-            if (null == row)
-            {
-                return null;
-            }
-
-            int itemIndex = _dataGridLogEntries.ItemContainerGenerator.IndexFromContainer(row);
-            if (itemIndex < 0 || itemIndex >= _dataGridLogEntries.Items.Count)
-            {
-                return null;
-            }
-            else
-            {
-                var item = _dataGridLogEntries.Items[itemIndex];
-                Debug.WriteLine($"Find first row returns object {item.ToString()}");
-                return item;
-            }
-        }
-
-        /// <summary>
         /// On Windows8, Windows10, the combobox backgroud property does not work.
         /// This is a workaround to fix the problem.
         /// </summary>
@@ -98,8 +64,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 return;
             }
-
-            ViewModel?.OnFirstVisibleRowChanged(GetFirstVisibleRowItem());
 
             if (e.VerticalOffset == sv.ScrollableHeight)
             {
