@@ -5,8 +5,45 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialogSteps.GkeStep"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
-    <Grid>
-            
-    </Grid>
+             d:DataContext="{x:Type local:GkeStepViewModel}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <StackPanel IsEnabled="{Binding Clusters.IsCompleted}">
+        <Label Content="_Clusters:"
+               Target="{Binding ElementName=_clusters}"
+               Style="{StaticResource CommonLabelStyle}"/>
+        <ComboBox x:Name="_clusters"
+                  ItemsSource="{Binding Clusters.Value}"
+                  DisplayMemberPath="Name"
+                  IsSynchronizedWithCurrentItem="True"
+                  Margin="0,0,0,15"
+                  Style="{StaticResource CommonComboBoxStyle}"/>
+
+        <Label Content="_Service name:"
+               Target="{Binding ElementName=_serviceName}"
+               Style="{StaticResource CommonLabelStyle}" />
+        <TextBox x:Name="_serviceName"
+                 Text="{Binding ServiceName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Margin="0,0,0,15"
+                 Style="{StaticResource CommonTextBoxStyle}" />
+
+        <Label Content="Service _version:"
+               Target="{Binding ElementName=_serviceVersion}"
+               Style="{StaticResource CommonLabelStyle}" />
+        <TextBox x:Name="_serviceVersion"
+                 Text="{Binding ServiceVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Margin="0,0,0,8"
+                 Style="{StaticResource CommonTextBoxStyle}" />
+
+        <CheckBox Content="Expose the service to the public internet"
+                  IsChecked="{Binding ExposeService, Mode=TwoWay}"
+                  Style="{StaticResource CommonTextStyleBase}" />
+    </StackPanel>
 </UserControl>

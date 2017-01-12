@@ -24,7 +24,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public Cluster SelectedCluster
         {
             get { return _selectedCluster; }
-            set { SetValueAndRaise(ref _selectedCluster, value); }
+            set
+            {
+                SetValueAndRaise(ref _selectedCluster, value);
+                CanPublish = value != null;
+            }
         }
 
         public string ServiceName
@@ -57,6 +61,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public override void OnPushedToDialog(IPublishDialog dialog)
         {
             _publishDialog = dialog;
+        }
+
+        public override void Publish()
+        {
+            
         }
 
         #endregion
