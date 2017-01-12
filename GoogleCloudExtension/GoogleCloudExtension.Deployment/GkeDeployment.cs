@@ -69,7 +69,15 @@ namespace GoogleCloudExtension.Deployment
                     imageName: options.DeploymentName,
                     imageVersion: options.DeploymentVersion,
                     buildFilePath: buildFilePath);
-                progress.Report(0.4);
+
+                if (!await ProgressHelper.UpdateProgress(
+                    GCloudWrapper.BuildContainerAsync(buildFilePath, appRootPath, outputAction, options.Context),
+                    progress,
+                    from: 0.4, to: 0.7))
+                {
+                    Debug.WriteLine("Failed to build container.");
+                    return false;
+                }
 
                 if (!await GCloudWrapper.CreateCredentialsForClusterAsync(
                     cluster: options.Cluster,
@@ -80,7 +88,7 @@ namespace GoogleCloudExtension.Deployment
                     Debug.WriteLine("Failed to create kubectl config file.");
                     return false;
                 }
-                progress.Report(0.6);
+                progress.Report(0.7);
 
                 if (!await KubectlWrapper.CreateDeploymentAsync(
                         name: options.DeploymentName,

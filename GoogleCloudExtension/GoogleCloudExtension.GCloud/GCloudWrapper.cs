@@ -104,6 +104,21 @@ namespace GoogleCloudExtension.GCloud
         }
 
         /// <summary>
+        /// Builds a container using the Container Builder service.
+        /// </summary>
+        /// <param name="buildFilePath">The path to the cloudbuild.yaml file.</param>
+        /// <param name="contentsPath">The contents of the container.</param>
+        /// <param name="context">The context under which the command is executed.</param>
+        /// <returns></returns>
+        public static Task<bool> BuildContainerAsync(string buildFilePath, string contentsPath, Action<string> outputAction, GCloudContext context)
+        {
+            return RunCommandAsync(
+                $"container builds submit --config=\"{buildFilePath}\" \"{contentsPath}\"",
+                outputAction,
+                context);
+        }
+
+        /// <summary>
         /// Returns true if the <seealso cref="ResetWindowsCredentialsAsync(string, string, string, GCloudContext)"/> method can
         /// be used safely.
         /// </summary>
