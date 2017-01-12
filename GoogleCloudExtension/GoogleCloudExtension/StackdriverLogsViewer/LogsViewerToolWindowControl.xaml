@@ -140,7 +140,7 @@
         <Expander 
             Grid.Row="2" 
             Panel.ZIndex="20"             
-            x:Name="allExpander"
+            x:Name="_allExpander"
             Margin="0,6,30,0" 
             HorizontalAlignment="Right" 
             VerticalAlignment="Top" 
@@ -187,7 +187,7 @@
                     <Style TargetType="DataGrid">
                         <Setter Property="RowDetailsVisibilityMode" Value="Collapsed"/>
                         <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsExpanded, ElementName=allExpander}" Value="True">
+                            <DataTrigger Binding="{Binding IsExpanded, ElementName=_allExpander}" Value="True">
                                 <Setter Property="RowDetailsVisibilityMode" Value="Visible" />
                             </DataTrigger>
                         </Style.Triggers>
