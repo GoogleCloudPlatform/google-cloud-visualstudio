@@ -145,7 +145,6 @@
     <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
     <Compile Include="Controls\IconButton.cs" />
-    <Compile Include="Controls\ImageButton.cs" />
     <Compile Include="Controls\LabelWithHelp.cs" />
     <Compile Include="Controls\PasswordBoxWithReveal.cs" />
     <Compile Include="Controls\PressButton.cs" />

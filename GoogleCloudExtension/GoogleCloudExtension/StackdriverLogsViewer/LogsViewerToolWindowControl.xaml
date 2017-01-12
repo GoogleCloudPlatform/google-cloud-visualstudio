@@ -67,7 +67,7 @@
 
         <!-- Filters -->
         <StackPanel Grid.Row="1"                    
-                    Margin="12, 6, 12, 6"  
+                    Margin="12,6,12,6"  
                     IsEnabled="{Binding IsControlEnabled}"
                     VerticalAlignment="Center" 
                     HorizontalAlignment="Stretch" 
@@ -75,50 +75,52 @@
 
             <!-- Basic Filters. -->
             <StackPanel Visibility="{Binding BasicFilterVisibility}">
-                <StackPanel Margin="0, 0, 0, 6"
+                <StackPanel Margin="0,0,0,6"
                             Orientation="Horizontal" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Center" >
                     
-                    <controls:ImageButton 
+                    <controls:IconButton 
                         Grid.Column="1" 
-                        Margin="6, 0, 16, 0"
-                        Width="32" Height="32"
+                        Margin="6,0,16,0"
+                        Width="32" 
+                        Height="32"
                         VerticalAlignment="Center"
-                        HorizontalAlignment="Right"                                              
-                        NormalImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh.png}"
-                        MouseOverImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh_mouse_over.png}"
-                        MouseDownImage="{mp:ImageResource StackdriverLogsViewer/Resources/refresh_mouse_down.png}"
+                        HorizontalAlignment="Right"
+                        Style="{StaticResource ImageButtonStyle}"
+                        NormalIcon="{mp:ImageResource StackdriverLogsViewer/Resources/refresh.png}"
+                        MouseOverIcon="{mp:ImageResource StackdriverLogsViewer/Resources/refresh_mouse_over.png}"
+                        MouseDownIcon="{mp:ImageResource StackdriverLogsViewer/Resources/refresh_mouse_down.png}"
                         Command="{Binding RefreshCommand}">
-                        <controls:ImageButton.ToolTip>
+                        <controls:IconButton.ToolTip>
                             <ToolTip Content="{x:Static ext:Resources.LogViewerRefreshButtonToolTip}" 
                                      Style="{StaticResource CommonTooltipStyle}"/>
-                        </controls:ImageButton.ToolTip>
-                    </controls:ImageButton>
+                        </controls:IconButton.ToolTip>
+                    </controls:IconButton>
                 </StackPanel>
             </StackPanel>
         </StackPanel>
 
         <Grid Grid.Row="2" 
-              Margin="12, 6, 12, 12" 
+              Margin="12,6,12,12" 
               IsEnabled="{Binding IsControlEnabled}">
             
             <!--Data grid top information bar.
                 Set margin to (data grid header height 18 + border 1) -->
-            <Border Margin="0, 19, 0, 0"  
+            <Border Margin="0,19,0,0"  
                     Panel.ZIndex="20" 
                     x:Name="_dataGridInformationBar"
                     HorizontalAlignment="Stretch"  
                     VerticalAlignment="Top" 
                     Background="LightGray">
-                <DockPanel  Margin="9, 1, 0, 1">
+                <DockPanel  Margin="9,1,0,1">
                     <StackPanel DockPanel.Dock="Left" 
                                 Orientation="Horizontal">
-                        <TextBlock Margin="12, 3, 3, 0" 
+                        <TextBlock Margin="12,3,3,0" 
                                    VerticalAlignment="Center"
                                    FontWeight="Bold"
                                    Text="{Binding FirstRowDate}" />
-                        <ComboBox Margin="3, 0, 18, 0" 
+                        <ComboBox Margin="3,0,18,0" 
                                   VerticalAlignment="Center" 
                                   BorderThickness="0" 
                                   Background="Transparent" 
@@ -136,7 +138,7 @@
 
                     <Expander DockPanel.Dock="Right" 
                               x:Name="allExpander"
-                              Margin="0, 0, 8, 0" 
+                              Margin="0,0,8,0" 
                               HorizontalAlignment="Right" 
                               VerticalAlignment="Top" 
                               IsExpanded="{Binding ToggleExapandAllExpanded}">
@@ -202,8 +204,8 @@
                                                         <Setter Property="FontWeight" Value="Bold" />
                                                     </Style>
                                                 </StackPanel.Resources>
-                                                <StackPanel Orientation="Horizontal" Margin="9, 1, 0, 1" >
-                                                    <TextBlock Text="{Binding Name}"  Padding="0, 5, 4, 5" />
+                                                <StackPanel Orientation="Horizontal" Margin="9,1,0,1" >
+                                                    <TextBlock Text="{Binding Name}"  Padding="0,5,4,5" />
                                                 </StackPanel>
                                                 <ItemsPresenter />
                                             </StackPanel>
@@ -222,7 +224,7 @@
                                 <Image Source="{Binding SeverityLevel}" 
                                        Width="12" 
                                        Height="12"
-                                       Margin="9, 1, 8, 1" >
+                                       Margin="9,1,8,1" >
                                     <Image.ToolTip>
                                         <ToolTip Content="{Binding SeverityTip}" 
                                                  Style="{StaticResource CommonTooltipStyle}"/>
@@ -240,7 +242,7 @@
                 <DataGrid.RowDetailsTemplate>
                     <DataTemplate>
                         <!-- Use a border to make the background right. -->
-                        <Border Background="White" Padding="30, 0, 0 , 2">
+                        <Border Background="White" Padding="30,0,0,2">
                             
                             <!-- Override the template to disable inner scrollbar -->
                             <TreeView BorderThickness="0" 

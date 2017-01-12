@@ -149,6 +149,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public void ChangeTimeZone(TimeZoneInfo newTimeZone)
         {
             _timestamp = TimeZoneInfo.ConvertTime(_timestamp, newTimeZone);
+            RaisePropertyChanged(nameof(Time));
         }
 
         private string ComposeDictionaryPayloadMessage(IDictionary<string, object> dictPayload)

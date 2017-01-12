@@ -33,21 +33,21 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     {
         private const int DefaultPageSize = 100;
 
-        private bool _isLoading = false;
+        private bool _isLoading;
         private Lazy<LoggingDataSource> _dataSource;
         private string _nextPageToken;
 
         private string _firstRowDate;
-        private bool _toggleExpandAllExpanded = false;
+        private bool _toggleExpandAllExpanded;
         private bool _isControlEnabled = true;
 
         private ObservableCollection<LogItem> _logs = new ObservableCollection<LogItem>();
 
         private string _requestStatusText;
         private string _requestErrorMessage;
-        private bool _showRequestErrorMessage = false;
-        private bool _showRequestStatus = false;
-        private bool _showCancelRequestButton = false;
+        private bool _showRequestErrorMessage;
+        private bool _showRequestStatus;
+        private bool _showCancelRequestButton;
         private CancellationTokenSource _cancellationTokenSource;
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
 
