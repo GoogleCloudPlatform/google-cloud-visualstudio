@@ -14,7 +14,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="DataGridCell">
-                    <Border  BorderThickness="0">
+                    <Border >
                         <Border x:Name="border" Padding="0,4,0,4" >
                             <ContentPresenter />
                         </Border>
@@ -26,7 +26,6 @@
 
     <Style x:Key="rowStyle" TargetType="DataGridRow">
         <Setter Property="Margin" Value="0,0,0,1"/>
-        <Setter Property="BorderThickness" Value="0,0,0,0"/>
         <Setter Property="BorderBrush" Value="LightGray" />
         <Setter Property="Background" Value="#FFFDFDFD" />
         <Style.Triggers>

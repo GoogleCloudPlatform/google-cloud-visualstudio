@@ -27,8 +27,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public partial class LogsViewerToolWindowControl : UserControl
     {
-        private const double FirstRowHitTestPointMargin = 5; 
-
         private LogsViewerViewModel ViewModel => DataContext as LogsViewerViewModel;
 
         /// <summary>
@@ -45,20 +43,24 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private object GetFirstVisibleRowItem()
         {
-            var point = new Point(FirstRowHitTestPointMargin, FirstRowHitTestPointMargin + 
-                _dataGridInformationBar.ActualHeight + _dataGridLogEntries.ColumnHeaderHeight);
+            var point = new Point(_dataGridLogEntries.BorderThickness.Left, 
+                                  _dataGridInformationBar.ActualHeight + _dataGridLogEntries.ColumnHeaderHeight);
             var uiElement = _dataGridLogEntries.InputHitTest(point);
-            var row = DataGridUtils.FindAncestorControl<DataGridRow>(uiElement as DependencyObject);
-            Debug.WriteLine($"FindRowByPoint {point} returns {row}");
+            var group = DataGridUtils.FindAncestorControl<GroupItem>(uiElement as DependencyObject);
+            if (group == null)
+            {
+                return null;
+            }
+
+            var row = DataGridUtils.GetVisualChild<DataGridRow>(group);
             if (null == row)
             {
                 return null;
             }
 
             int itemIndex = _dataGridLogEntries.ItemContainerGenerator.IndexFromContainer(row);
-            if (itemIndex < 0)
+            if (itemIndex < 0 || itemIndex >= _dataGridLogEntries.Items.Count)
             {
-                Debug.WriteLine($"Find first IndexFromContainer returns {itemIndex} ");
                 return null;
             }
             else
