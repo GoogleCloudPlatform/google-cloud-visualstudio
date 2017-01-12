@@ -29,8 +29,12 @@ namespace GoogleCloudExtension.GCloud
     /// </summary>
     public static class GCloudWrapper
     {
+        // These variables specify the environment to be reported by gcloud when reporting metrics.
         private const string GCloudMetricsVariable = "CLOUDSDK_METRICS_ENVIRONMENT";
         private const string GCloudMetricsVersionVariable = "CLOUDSDK_METRICS_ENVIRONMENT_VERSION";
+
+        // This variable contains the path to the configuration to be used for kubernetes operations.
+        private const string GCloudKubeConfigVariable = "KUBECONFIG";
 
         /// <summary>
         /// Finds the location of gcloud.cmd by following all of the directories in the PATH environment
@@ -78,6 +82,25 @@ namespace GoogleCloudExtension.GCloud
             var versionParameter = version != null ? $"--version={version}" : "";
             var promoteParameter = promote ? "--promote" : "--no-promote";
             return RunCommandAsync($"app deploy \"{appYaml}\" {versionParameter} {promoteParameter} --quiet", outputAction, context);
+        }
+
+        /// <summary>
+        /// Creates a file with the cluster credentials at the given <paramref name="path"/>
+        /// </summary>
+        /// <param name="cluster">The name of the cluster for which to create credentials.</param>
+        /// <param name="zone">The zone of the cluster.</param>
+        /// <param name="path">The path where to store the credentials.</param>
+        /// <param name="context">The context under which the command is executed.</param>
+        /// <returns></returns>
+        public static Task<bool> CreateCredentialsForClusterAsync(string cluster, string zone, string path, Context context)
+        {
+            return RunCommandAsync(
+                $"container clusters get-credentials {cluster} --zone={zone}",
+                context: context,
+                extraEnvironment: new Dictionary<string, string>
+                {
+                    [GCloudKubeConfigVariable] = path
+                });
         }
 
         /// <summary>
@@ -160,7 +183,11 @@ namespace GoogleCloudExtension.GCloud
             }
         }
 
-        private static Task<bool> RunCommandAsync(string command, Action<string> outputAction, Context context = null)
+        private static Task<bool> RunCommandAsync(
+            string command,
+            Action<string> outputAction = null,
+            Context context = null,
+            Dictionary<string, string> extraEnvironment = null)
         {
             var actualCommand = FormatCommand(command, context, jsonFormat: false);
             Dictionary<string, string> environment = null;
@@ -171,11 +198,19 @@ namespace GoogleCloudExtension.GCloud
                 {
                     environment[GCloudMetricsVersionVariable] = context?.AppVersion;
                 }
+
+                if (extraEnvironment != null)
+                {
+                    foreach (var entry in extraEnvironment)
+                    {
+                        environment.Add(entry.Key, entry.Value);
+                    }
+                }
             }
 
             // This code depends on the fact that gcloud.cmd is a batch file.
             Debug.Write($"Executing gcloud command: {actualCommand}");
-            return ProcessUtils.RunCommandAsync("cmd.exe", $"/c {actualCommand}", (o, e) => outputAction(e.Line), environment);
+            return ProcessUtils.RunCommandAsync("cmd.exe", $"/c {actualCommand}", (o, e) => outputAction?.Invoke(e.Line), environment);
         }
     }
 }
