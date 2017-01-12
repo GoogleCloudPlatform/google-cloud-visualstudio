@@ -39,7 +39,7 @@
 
                         <TextBlock 
                             Text="{Binding Name}"  
-                            Padding="6,5,6,5" 
+                            Padding="6" 
                             FontWeight="DemiBold"
                             Style="{StaticResource CommonTextStyle}"/>
 
