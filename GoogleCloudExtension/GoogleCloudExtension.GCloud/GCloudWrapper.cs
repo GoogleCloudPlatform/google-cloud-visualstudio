@@ -58,7 +58,7 @@ namespace GoogleCloudExtension.GCloud
             string instanceName,
             string zoneName,
             string userName,
-            Context context) =>
+            GCloudContext context) =>
             GetJsonOutputAsync<WindowsInstanceCredentials>(
                 $"beta compute reset-windows-password {instanceName} --zone={zoneName} --user=\"{userName}\" --quiet ",
                 context);
@@ -77,7 +77,7 @@ namespace GoogleCloudExtension.GCloud
             string version,
             bool promote,
             Action<string> outputAction,
-            Context context)
+            GCloudContext context)
         {
             var versionParameter = version != null ? $"--version={version}" : "";
             var promoteParameter = promote ? "--promote" : "--no-promote";
@@ -92,7 +92,7 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="path">The path where to store the credentials.</param>
         /// <param name="context">The context under which the command is executed.</param>
         /// <returns></returns>
-        public static Task<bool> CreateCredentialsForClusterAsync(string cluster, string zone, string path, Context context)
+        public static Task<bool> CreateCredentialsForClusterAsync(string cluster, string zone, string path, GCloudContext context)
         {
             return RunCommandAsync(
                 $"container clusters get-credentials {cluster} --zone={zone}",
@@ -104,7 +104,7 @@ namespace GoogleCloudExtension.GCloud
         }
 
         /// <summary>
-        /// Returns true if the <seealso cref="ResetWindowsCredentialsAsync(string, string, string, Context)"/> method can
+        /// Returns true if the <seealso cref="ResetWindowsCredentialsAsync(string, string, string, GCloudContext)"/> method can
         /// be used safely.
         /// </summary>
         /// <returns>A task that will be fulfilled to true if the method can be called, false otherwise.</returns>
@@ -149,7 +149,7 @@ namespace GoogleCloudExtension.GCloud
             return installedComponents.Contains(component);
         }
 
-        private static string FormatCommand(string command, Context context, bool jsonFormat)
+        private static string FormatCommand(string command, GCloudContext context, bool jsonFormat)
         {
             var projectId = context?.ProjectId != null ? $"--project={context.ProjectId}" : "";
             var credentialsPath = context?.CredentialsPath != null ? $"--credential-file-override=\"{context.CredentialsPath}\"" : "";
@@ -158,7 +158,7 @@ namespace GoogleCloudExtension.GCloud
             return $"gcloud {command} {projectId} {credentialsPath} {format}";
         }
 
-        private static async Task<T> GetJsonOutputAsync<T>(string command, Context context = null)
+        private static async Task<T> GetJsonOutputAsync<T>(string command, GCloudContext context = null)
         {
             var actualCommand = FormatCommand(command, context, jsonFormat: true);
             try
@@ -186,7 +186,7 @@ namespace GoogleCloudExtension.GCloud
         private static Task<bool> RunCommandAsync(
             string command,
             Action<string> outputAction = null,
-            Context context = null,
+            GCloudContext context = null,
             Dictionary<string, string> extraEnvironment = null)
         {
             var actualCommand = FormatCommand(command, context, jsonFormat: false);

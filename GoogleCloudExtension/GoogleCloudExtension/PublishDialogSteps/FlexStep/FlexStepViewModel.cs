@@ -79,7 +79,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         public override async void Publish()
         {
-            var context = new Context
+            var context = new GCloudContext
             {
                 CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
                 ProjectId = CredentialsStore.Default.CurrentProjectId,

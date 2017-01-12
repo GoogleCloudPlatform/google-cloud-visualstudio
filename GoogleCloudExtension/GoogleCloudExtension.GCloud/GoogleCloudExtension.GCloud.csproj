@@ -56,7 +56,7 @@
     <Compile Include="GCloudWrapper.cs" />
     <Compile Include="WindowsInstanceCredentials.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Context.cs" />
+    <Compile Include="GCloudContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

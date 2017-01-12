@@ -73,7 +73,7 @@ namespace GoogleCloudExtension.Deployment
             /// <summary>
             /// The context on which to execute the underlying gcloud command.
             /// </summary>
-            public Context Context { get; set; }
+            public GCloudContext Context { get; set; }
         }
 
         /// <summary>
@@ -233,7 +233,7 @@ namespace GoogleCloudExtension.Deployment
             string stageDirectory,
             string version,
             bool promote,
-            Context context,
+            GCloudContext context,
             Action<string> outputAction)
         {
             var appYamlPath = Path.Combine(stageDirectory, AppYamlName);
