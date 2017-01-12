@@ -15,6 +15,7 @@
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.PublishDialogSteps.FlexStep;
 using GoogleCloudExtension.PublishDialogSteps.GceStep;
+using GoogleCloudExtension.PublishDialogSteps.GkeStep;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
 using System;
@@ -72,6 +73,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
                 },
                 new Choice
                 {
+                    Name = "Google Container Engine",
+                    Command = new ProtectedCommand(
+                        OnGkeChoiceCommand,
+                        canExecuteCommand: projectType == KnownProjectTypes.NetCoreWebApplication),
+                },
+                new Choice
+                {
                     Name = Resources.PublishDialogChoiceStepGceName,
                     Command = new ProtectedCommand(
                         OnGceChoiceCommand,
@@ -80,6 +88,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
                     ToolTip = Resources.PublishDialogChoiceStepGceToolTip
                 },
             };
+        }
+
+        private void OnGkeChoiceCommand()
+        {
+            var nextStep = GkeStepViewModel.CreateStep();
+            _dialog.NavigateToStep(nextStep);
         }
 
         private void OnAppEngineChoiceCommand()
