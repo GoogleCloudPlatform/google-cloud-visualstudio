@@ -73,7 +73,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
                 },
                 new Choice
                 {
-                    Name = "Google Container Engine",
+                    Name = "Container Engine",
                     Command = new ProtectedCommand(
                         OnGkeChoiceCommand,
                         canExecuteCommand: projectType == KnownProjectTypes.NetCoreWebApplication),

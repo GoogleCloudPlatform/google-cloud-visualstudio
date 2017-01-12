@@ -65,6 +65,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public override void OnPushedToDialog(IPublishDialog dialog)
         {
             _publishDialog = dialog;
+
+            var now = DateTime.Now;
+            ServiceName = _publishDialog.Project.Name.ToLower();
+            ServiceVersion = $"{now.Year}{now.Month}{now.Day}{now.Hour}{now.Minute}";
         }
 
         public override void Publish()
