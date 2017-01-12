@@ -1,4 +1,6 @@
 ﻿using Google.Apis.Container.v1.Data;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using System;
@@ -48,10 +50,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             get { return _exposeService; }
             set { SetValueAndRaise(ref _exposeService, value); }
         }
-        
+
         public GkeStepViewModel(GkeStepContent content)
         {
             _content = content;
+
+            Clusters = new AsyncPropertyValue<IList<Cluster>>(GetAllClusters());
         }
 
         #region IPublishDialogStep overrides
@@ -65,10 +69,21 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         public override void Publish()
         {
-            
+
         }
 
         #endregion
+
+        private async Task<IList<Cluster>> GetAllClusters()
+        {
+            var dataSource = new GkeDataSource(
+                CredentialsStore.Default.CurrentProjectId,
+                CredentialsStore.Default.CurrentGoogleCredential,
+                GoogleCloudExtensionPackage.ApplicationName);
+            var clusters = await dataSource.GetClusterListAsync();
+            return clusters.OrderBy(x => x.Name).ToList();
+
+        }
 
         /// <summary>
         /// Creates a GKE step complete with behavior and visuals.

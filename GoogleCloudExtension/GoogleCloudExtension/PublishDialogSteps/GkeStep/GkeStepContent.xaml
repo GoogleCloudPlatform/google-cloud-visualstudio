@@ -21,6 +21,7 @@
                Style="{StaticResource CommonLabelStyle}"/>
         <ComboBox x:Name="_clusters"
                   ItemsSource="{Binding Clusters.Value}"
+                  SelectedItem="{Binding SelectedCluster, Mode=OneWayToSource}"
                   DisplayMemberPath="Name"
                   IsSynchronizedWithCurrentItem="True"
                   Margin="0,0,0,15"
