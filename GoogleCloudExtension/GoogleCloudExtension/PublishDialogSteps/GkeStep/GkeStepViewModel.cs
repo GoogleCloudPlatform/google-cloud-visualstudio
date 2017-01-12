@@ -17,8 +17,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private readonly GkeStepContent _content;
         private IPublishDialog _publishDialog;
         private Cluster _selectedCluster;
-        private string _serviceName;
-        private string _serviceVersion;
+        private string _deploymentName;
+        private string _deploymentVersion;
         private bool _exposeService = true;
 
         public AsyncPropertyValue<IList<Cluster>> Clusters { get; }
@@ -33,16 +33,16 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             }
         }
 
-        public string ServiceName
+        public string DeploymentName
         {
-            get { return _serviceName; }
-            set { SetValueAndRaise(ref _serviceName, value); }
+            get { return _deploymentName; }
+            set { SetValueAndRaise(ref _deploymentName, value); }
         }
 
-        public string ServiceVersion
+        public string DeploymentVersion
         {
-            get { return _serviceVersion; }
-            set { SetValueAndRaise(ref _serviceVersion, value); }
+            get { return _deploymentVersion; }
+            set { SetValueAndRaise(ref _deploymentVersion, value); }
         }
 
         public bool ExposeService
@@ -67,8 +67,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             _publishDialog = dialog;
 
             var now = DateTime.Now;
-            ServiceName = _publishDialog.Project.Name.ToLower();
-            ServiceVersion = $"{now.Year}{now.Month}{now.Day}{now.Hour}{now.Minute}";
+            DeploymentName = _publishDialog.Project.Name.ToLower();
+            DeploymentVersion = $"{now.Year}{now.Month}{now.Day}{now.Hour}{now.Minute}";
         }
 
         public override void Publish()

@@ -27,19 +27,19 @@
                   Margin="0,0,0,15"
                   Style="{StaticResource CommonComboBoxStyle}"/>
 
-        <Label Content="_Service name:"
-               Target="{Binding ElementName=_serviceName}"
+        <Label Content="_Deployment name:"
+               Target="{Binding ElementName=_deploymentName}"
                Style="{StaticResource CommonLabelStyle}" />
-        <TextBox x:Name="_serviceName"
-                 Text="{Binding ServiceName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+        <TextBox x:Name="_deploymentName"
+                 Text="{Binding DeploymentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  Margin="0,0,0,15"
                  Style="{StaticResource CommonTextBoxStyle}" />
 
-        <Label Content="Service _version:"
-               Target="{Binding ElementName=_serviceVersion}"
+        <Label Content="Deployment _version:"
+               Target="{Binding ElementName=_deploymentVersion}"
                Style="{StaticResource CommonLabelStyle}" />
-        <TextBox x:Name="_serviceVersion"
-                 Text="{Binding ServiceVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+        <TextBox x:Name="_deploymentVersion"
+                 Text="{Binding DeploymentVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  Margin="0,0,0,8"
                  Style="{StaticResource CommonTextBoxStyle}" />
 
