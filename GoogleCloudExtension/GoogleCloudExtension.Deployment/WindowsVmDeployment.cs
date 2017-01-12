@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.Deployment
     /// <summary>
     /// This class offers services to perform deployments for ASP.NET 4.x applications to a GCE VM.
     /// </summary>
-    public static class AspnetDeployment
+    public static class WindowsVmDeployment
     {
         private static readonly Lazy<string> s_msbuildPath = new Lazy<string>(GetMsbuildPath);
         private static readonly Lazy<string> s_msdeployPath = new Lazy<string>(GetMsdeployPath);

@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.Deployment
     /// This class implements all of the necessary details to deploy an ASP.NET Core application
     /// to the App Engine Flex environment.
     /// </summary>
-    public static class NetCoreDeployment
+    public static class AppEngineFlexDeployment
     {
         private const string AppYamlName = "app.yaml";
 
@@ -84,7 +84,7 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="progress">The progress indicator.</param>
         /// <param name="outputAction">The action to call with lines from the command output.</param>
         /// <returns></returns>
-        public static async Task<NetCorePublishResult> PublishProjectAsync(
+        public static async Task<AppEngineFlexDeploymentResult> PublishProjectAsync(
             string projectPath,
             DeploymentOptions options,
             IProgress<double> progress,
@@ -133,7 +133,7 @@ namespace GoogleCloudExtension.Deployment
                 progress.Report(1.0);
 
                 var service = GetAppEngineService(projectPath);
-                return new NetCorePublishResult(
+                return new AppEngineFlexDeploymentResult(
                     projectId: options.Context.ProjectId,
                     service: service,
                     version: effectiveVersion,

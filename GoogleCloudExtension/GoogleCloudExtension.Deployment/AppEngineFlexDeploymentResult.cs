@@ -17,7 +17,7 @@ namespace GoogleCloudExtension.Deployment
     /// <summary>
     /// This class represents the result of publishing an ASP.NET Core app to App Engine Flex.
     /// </summary>
-    public class NetCorePublishResult
+    public class AppEngineFlexDeploymentResult
     {
         /// <summary>
         /// The project ID to which the app was deployed.
@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.Deployment
         /// </summary>
         public bool Promoted { get; }
 
-        public NetCorePublishResult(string projectId, string service, string version, bool promoted)
+        public AppEngineFlexDeploymentResult(string projectId, string service, string version, bool promoted)
         {
             ProjectId = projectId;
             Service = service;

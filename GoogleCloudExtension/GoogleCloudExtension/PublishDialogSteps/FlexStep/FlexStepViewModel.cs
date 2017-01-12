@@ -86,7 +86,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 AppName = GoogleCloudExtensionPackage.ApplicationName,
                 AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
             };
-            var options = new NetCoreDeployment.DeploymentOptions
+            var options = new AppEngineFlexDeployment.DeploymentOptions
             {
                 Version = Version,
                 Promote = Promote,
@@ -100,13 +100,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
             _publishDialog.FinishFlow();
 
-            NetCorePublishResult result;
+            AppEngineFlexDeploymentResult result;
             using (var frozen = StatusbarHelper.Freeze())
             using (var animationShown = StatusbarHelper.ShowDeployAnimation())
             using (var progress = StatusbarHelper.ShowProgressBar(Resources.FlexPublishProgressMessage))
             using (var deployingOperation = ShellUtils.SetShellUIBusy())
             {
-                result = await NetCoreDeployment.PublishProjectAsync(
+                result = await AppEngineFlexDeployment.PublishProjectAsync(
                     project.FullPath,
                     options,
                     progress,
