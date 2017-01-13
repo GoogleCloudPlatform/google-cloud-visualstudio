@@ -7,6 +7,7 @@ using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private string _deploymentName;
         private string _deploymentVersion;
         private bool _exposeService = true;
+        private bool _openWebsite = true;
 
         public AsyncPropertyValue<IList<Cluster>> Clusters { get; }
 
@@ -51,6 +53,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         {
             get { return _exposeService; }
             set { SetValueAndRaise(ref _exposeService, value); }
+        }
+
+        public bool OpenWebsite
+        {
+            get { return _openWebsite; }
+            set { SetValueAndRaise(ref _openWebsite, value); }
         }
 
         public GkeStepViewModel(GkeStepContent content)
@@ -128,6 +136,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                     }
                 }
                 StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
+
+                if (OpenWebsite && result.WasExposed && result.ServiceIpAddress != null)
+                {
+                    Process.Start($"http://{result.ServiceIpAddress}");
+                }
             }
             else
             {

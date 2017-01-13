@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialogSteps.GkeStep"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
              d:DataContext="{x:Type local:GkeStepViewModel}">
 
@@ -46,5 +47,10 @@
         <CheckBox Content="Expose the service to the public internet"
                   IsChecked="{Binding ExposeService, Mode=TwoWay}"
                   Style="{StaticResource CommonTextStyleBase}" />
+        <CheckBox IsChecked="{Binding OpenWebsite, Mode=TwoWay}"
+                  Margin="0,5,0,0"
+                  IsEnabled="{Binding ExposeService}"
+                  Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
+                  Style="{StaticResource CommonTextStyleBase}"/>
     </StackPanel>
 </UserControl>
