@@ -202,7 +202,6 @@ namespace GoogleCloudExtension.Deployment
 
         private static void Cleanup(string stageDirectory)
         {
-
         }
     }
 }

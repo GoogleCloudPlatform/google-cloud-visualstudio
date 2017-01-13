@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.DataSources
     {
         private const string AllZonesValue = "-";
 
-        public GkeDataSource(string projectId, GoogleCredential credential, string appName):
+        public GkeDataSource(string projectId, GoogleCredential credential, string appName) :
             base(projectId, credential, init => new ContainerService(init), appName)
         { }
 

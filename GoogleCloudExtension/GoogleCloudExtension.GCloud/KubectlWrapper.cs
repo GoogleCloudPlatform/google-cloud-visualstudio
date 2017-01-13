@@ -73,7 +73,7 @@ namespace GoogleCloudExtension.GCloud
                 outputAction,
                 context);
         }
-            
+
         private static Task<bool> RunCommandAsync(string command, Action<string> outputAction, KubectlContext context)
         {
             var actualCommand = FormatCommand(command, context);

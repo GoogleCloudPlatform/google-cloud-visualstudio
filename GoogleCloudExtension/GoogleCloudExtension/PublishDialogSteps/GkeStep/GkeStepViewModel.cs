@@ -171,7 +171,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 GoogleCloudExtensionPackage.ApplicationName);
             var clusters = await dataSource.GetClusterListAsync();
             return clusters.OrderBy(x => x.Name).ToList();
-
         }
 
         /// <summary>
