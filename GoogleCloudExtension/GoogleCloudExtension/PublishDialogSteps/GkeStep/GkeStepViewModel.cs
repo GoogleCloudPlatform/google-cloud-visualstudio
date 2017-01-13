@@ -76,9 +76,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         {
             _publishDialog = dialog;
 
-            var now = DateTime.Now;
             DeploymentName = _publishDialog.Project.Name.ToLower();
-            DeploymentVersion = $"{now.Year}{now.Month}{now.Day}{now.Hour}{now.Minute}";
+            DeploymentVersion = GetDefaultVersion();
         }
 
         public override async void Publish()
@@ -173,6 +172,15 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             content.DataContext = viewModel;
 
             return viewModel;
+        }
+
+        private static string GetDefaultVersion()
+        {
+            var now = DateTime.Now;
+            return String.Format(
+                "{0:0000}{1:00}{2:00}t{3:00}{4:00}{5:00}",
+                now.Year, now.Month, now.Day,
+                now.Hour, now.Minute, now.Second);
         }
     }
 }
