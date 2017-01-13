@@ -55,7 +55,7 @@ namespace GoogleCloudExtension.Deployment
                 };
 
                 if (!await ProgressHelper.UpdateProgress(
-                        NetCoreAppUtils.CreateAppBundleAsync(projectPath, stageDirectory, outputAction),
+                        NetCoreAppUtils.CreateAppBundleAsync(projectPath, appRootPath, outputAction),
                         progress,
                         from: 0.1, to: 0.3))
                 {
@@ -63,9 +63,9 @@ namespace GoogleCloudExtension.Deployment
                     return false;
                 }
 
-                NetCoreAppUtils.CopyOrCreateDockerfile(projectPath, stageDirectory);
+                NetCoreAppUtils.CopyOrCreateDockerfile(projectPath, appRootPath);
                 var image = CloudBuilderUtils.CreateBuildFile(
-                    project: projectName,
+                    project: options.Context.ProjectId,
                     imageName: options.DeploymentName,
                     imageVersion: options.DeploymentVersion,
                     buildFilePath: buildFilePath);
@@ -109,17 +109,15 @@ namespace GoogleCloudExtension.Deployment
                         return false;
                     }
                 }
-
-                // All done.
-                return true;
             }
 
-            return false;
+            // All done.
+            return true;
         }
 
         private static void Cleanup(string stageDirectory)
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

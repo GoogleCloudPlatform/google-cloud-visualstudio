@@ -1,6 +1,8 @@
 ﻿using Google.Apis.Container.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using System;
@@ -71,9 +73,55 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             DeploymentVersion = $"{now.Year}{now.Month}{now.Day}{now.Hour}{now.Minute}";
         }
 
-        public override void Publish()
+        public override async void Publish()
         {
+            var context = new GCloudContext
+            {
+                CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
+                ProjectId = CredentialsStore.Default.CurrentProjectId,
+                AppName = GoogleCloudExtensionPackage.ApplicationName,
+                AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
+            };
+            var options = new GkeDeployment.DeploymentOptions
+            {
+                Cluster = SelectedCluster.Name,
+                Zone = SelectedCluster.Zone,
+                DeploymentName = DeploymentName,
+                DeploymentVersion = DeploymentVersion,
+                ExposeService = ExposeService,
+                Context = context
+            };
+            var project = _publishDialog.Project;
 
+            GcpOutputWindow.Activate();
+            GcpOutputWindow.Clear();
+            GcpOutputWindow.OutputLine($"Deploying {project.Name} to Container Engine");
+
+            _publishDialog.FinishFlow();
+
+            bool result = false;
+            using (var frozen = StatusbarHelper.Freeze())
+            using (var animationShown = StatusbarHelper.ShowDeployAnimation())
+            using (var progress = StatusbarHelper.ShowProgressBar("Deploying to Container Engine"))
+            using (var deployingOperation = ShellUtils.SetShellUIBusy())
+            {
+                result = await GkeDeployment.PublishProjectAsync(
+                    project.FullPath,
+                    options,
+                    progress,
+                    GcpOutputWindow.OutputLine);
+            }
+
+            if (result)
+            {
+                GcpOutputWindow.OutputLine($"Project {project.Name} deployed to Container Engine");
+                StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
+            }
+            else
+            {
+                GcpOutputWindow.OutputLine($"Failed to deploy {project.Name} to Container Engine");
+                StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+            }
         }
 
         #endregion
