@@ -94,7 +94,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Route the expander IsExpanded state to control expand all or collapse all.
         /// </summary>
-        public bool ToggleExapandAllExpanded
+        public bool ToggleExpandAllExpanded
         {
             get { return _toggleExpandAllExpanded; }
             set
