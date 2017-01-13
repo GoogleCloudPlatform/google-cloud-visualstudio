@@ -38,6 +38,29 @@ namespace GoogleCloudExtension.GCloud
         {
             return GetJsonOutputAsync<GkeService>($"get service {name}", context);
         }
+
+        public static Task<GkeDeployment> GetDeploymentAsync(string name, KubectlContext context)
+        {
+            return GetJsonOutputAsync<GkeDeployment>($"get deployment {name}", context);
+        }
+
+        public static async Task<IList<GkeDeployment>> GetDeploymentsAsync(KubectlContext context)
+        {
+            var deployments = await GetJsonOutputAsync<GkeList<GkeDeployment>>($"get deployments", context);
+            return deployments.Items;
+        }
+
+        public static Task<bool> UpdateDeploymentImageAsync(
+            string name,
+            string image,
+            Action<string> outputAction,
+            KubectlContext context)
+        {
+            return RunCommandAsync(
+                $"set image deployment/{name} {name}={image} --record",
+                outputAction,
+                context);
+        }
             
         private static Task<bool> RunCommandAsync(string command, Action<string> outputAction, KubectlContext context)
         {

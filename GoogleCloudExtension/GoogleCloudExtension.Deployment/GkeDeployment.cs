@@ -92,33 +92,69 @@ namespace GoogleCloudExtension.Deployment
                 }
                 progress.Report(0.7);
 
-                if (!await KubectlWrapper.CreateDeploymentAsync(
-                        name: options.DeploymentName,
-                        image: image,
-                        outputAction: outputAction,
-                        context: kubectlContext))
-                {
-                    Debug.WriteLine($"Failed to create deployment {options.DeploymentName}");
-                    return null;
-                }
-                progress.Report(0.8);
-
                 string ipAddress = null;
+                bool deploymentUpdated = false;
+                bool serviceExposed = false;
+
+                // Create or update the deployment.
+                var deployments = await KubectlWrapper.GetDeploymentsAsync(kubectlContext);
+                var deployment = deployments?.FirstOrDefault(x => x.Metadata.Name == options.DeploymentName);
+                if (deployment == null)
+                {
+                    Debug.WriteLine($"Creating new deployment {options.DeploymentName}");
+                    if (!await KubectlWrapper.CreateDeploymentAsync(
+                            name: options.DeploymentName,
+                            image: image,
+                            outputAction: outputAction,
+                            context: kubectlContext))
+                    {
+                        Debug.WriteLine($"Failed to create deployment {options.DeploymentName}");
+                        return null;
+                    }
+                    progress.Report(0.8);
+                }
+                else
+                {
+                    Debug.WriteLine($"Updating existing deployment {options.DeploymentName}");
+                    if (!await KubectlWrapper.UpdateDeploymentImageAsync(
+                            options.DeploymentName,
+                            image,
+                            outputAction,
+                            kubectlContext))
+                    {
+                        Debug.WriteLine($"Failed to update deployemnt {options.DeploymentName}");
+                        return null;
+                    }
+                    deploymentUpdated = true;
+                }
+
+                // Expose the service if requested and it is not already exposed.
                 if (options.ExposeService)
                 {
-                    if (!await KubectlWrapper.ExposeServiceAsync(options.DeploymentName, outputAction, kubectlContext))
+                    var services = await KubectlWrapper.GetServicesAsync(kubectlContext);
+                    var service = services?.FirstOrDefault(x => x.Metadata.Name == options.DeploymentName);
+                    if (service == null)
                     {
-                        Debug.WriteLine($"Failed to expose service {options.DeploymentName}");
-                        return null;
+                        if (!await KubectlWrapper.ExposeServiceAsync(options.DeploymentName, outputAction, kubectlContext))
+                        {
+                            Debug.WriteLine($"Failed to expose service {options.DeploymentName}");
+                            return null;
+                        }
                     }
 
                     ipAddress = await WaitForServiceAddressAsync(
                         options.DeploymentName,
                         options.WaitingForServiceIpCallback,
                         kubectlContext);
+
+                    serviceExposed = true;
                 }
 
-                return new GkeDeploymentResult(ipAddress, options.ExposeService);
+
+                return new GkeDeploymentResult(
+                    serviceIpAddress: ipAddress,
+                    wasExposed: serviceExposed,
+                    deploymentUpdated: deploymentUpdated);
             }
         }
 

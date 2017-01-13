@@ -50,6 +50,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\GkeDeployment.cs" />
     <Compile Include="KubectlContext.cs" />
     <Compile Include="KubectlWrapper.cs" />
     <Compile Include="Models\CloudSdkComponent.cs" />

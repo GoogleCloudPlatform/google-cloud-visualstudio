@@ -12,10 +12,13 @@ namespace GoogleCloudExtension.Deployment
 
         public bool WasExposed { get; }
 
-        public GkeDeploymentResult(string serviceIpAddress, bool wasExposed)
+        public bool DeploymentUpdated { get; }
+
+        public GkeDeploymentResult(string serviceIpAddress, bool wasExposed, bool deploymentUpdated)
         {
             ServiceIpAddress = serviceIpAddress;
             WasExposed = wasExposed;
+            DeploymentUpdated = deploymentUpdated;
         }
     }
 }

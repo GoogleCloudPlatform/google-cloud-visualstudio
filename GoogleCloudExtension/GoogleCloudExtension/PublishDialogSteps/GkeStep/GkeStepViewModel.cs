@@ -116,7 +116,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             if (result != null)
             {
                 GcpOutputWindow.OutputLine($"Project {project.Name} deployed to Container Engine");
-                if (ExposeService)
+                if (result.WasExposed)
                 {
                     if (result.ServiceIpAddress != null)
                     {
