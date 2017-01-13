@@ -89,7 +89,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 DeploymentName = DeploymentName,
                 DeploymentVersion = DeploymentVersion,
                 ExposeService = ExposeService,
-                Context = context
+                Context = context,
+                WaitingForServiceIpCallback = () => GcpOutputWindow.OutputLine("Waiting for Service IP address...")
             };
             var project = _publishDialog.Project;
 
@@ -115,9 +116,16 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             if (result != null)
             {
                 GcpOutputWindow.OutputLine($"Project {project.Name} deployed to Container Engine");
-                if (result.ServiceIpAddress != null)
+                if (ExposeService)
                 {
-                    GcpOutputWindow.OutputLine($"Service {DeploymentName} ip address {result.ServiceIpAddress}");
+                    if (result.ServiceIpAddress != null)
+                    {
+                        GcpOutputWindow.OutputLine($"Service {DeploymentName} ip address {result.ServiceIpAddress}");
+                    }
+                    else
+                    {
+                        GcpOutputWindow.OutputLine("Time out waiting for service ip address.");
+                    }
                 }
                 StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
             }

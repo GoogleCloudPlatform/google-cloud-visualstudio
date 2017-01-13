@@ -25,6 +25,8 @@ namespace GoogleCloudExtension.Deployment
             public bool ExposeService { get; set; }
 
             public GCloudContext Context { get; set; }
+
+            public Action WaitingForServiceIpCallback { get; set; }
         }
 
         public static async Task<GkeDeploymentResult> PublishProjectAsync(
@@ -110,19 +112,23 @@ namespace GoogleCloudExtension.Deployment
                         return null;
                     }
 
-                    ipAddress = await WaitForServiceAddressAsync(options.DeploymentName, kubectlContext);
+                    ipAddress = await WaitForServiceAddressAsync(
+                        options.DeploymentName,
+                        options.WaitingForServiceIpCallback,
+                        kubectlContext);
                 }
 
                 return new GkeDeploymentResult(ipAddress, options.ExposeService);
             }
         }
 
-        private static async Task<string> WaitForServiceAddressAsync(string name, KubectlContext kubectlContext)
+        private static async Task<string> WaitForServiceAddressAsync(string name, Action waitingCallback, KubectlContext kubectlContext)
         {
             DateTime start = DateTime.Now;
             TimeSpan actualTime = DateTime.Now - start;
             while (actualTime.TotalMinutes < 5)
             {
+                waitingCallback();
                 var service = await KubectlWrapper.GetServiceAsync(name, kubectlContext);
                 if (service?.Status?.LoadBalancer.Ingress != null)
                 {
