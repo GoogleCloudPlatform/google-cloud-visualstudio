@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.Deployment
                     File.Delete(buildFilePath);
                 }
             }
-            catch (IOException ex)
+            catch (IOException)
             {
                 Debug.WriteLine($"Failed to cleanup file {buildFilePath}");
             }

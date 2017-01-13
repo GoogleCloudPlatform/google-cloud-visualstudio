@@ -1,4 +1,5 @@
-﻿using GoogleCloudExtension.Utils;
+﻿using GoogleCloudExtension.GCloud.Models;
+using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -26,12 +27,44 @@ namespace GoogleCloudExtension.GCloud
                 outputAction,
                 context);
         }
+
+        public static async Task<IList<GkeService>> GetServicesAsync(KubectlContext context)
+        {
+            var services = await GetJsonOutputAsync<GkeList<GkeService>>("get services", context);
+            return services.Items;
+        }
+
+        public static Task<GkeService> GetServiceAsync(string name, KubectlContext context)
+        {
+            return GetJsonOutputAsync<GkeService>($"get service {name}", context);
+        }
             
         private static Task<bool> RunCommandAsync(string command, Action<string> outputAction, KubectlContext context)
         {
-            var actualCommand = $"{command} --kubeconfig={context.Config}";
+            var actualCommand = FormatCommand(command, context);
             Debug.WriteLine($"Executing kubectl command: kubectl {actualCommand}");
             return ProcessUtils.RunCommandAsync("kubectl", actualCommand, (o, e) => outputAction(e.Line));
+        }
+
+        private static async Task<T> GetJsonOutputAsync<T>(string command, KubectlContext context)
+        {
+            var actualCommand = FormatCommand(command, context, jsonOutput: true);
+            try
+            {
+                Debug.WriteLine($"Executing kubectl command: kubectl {actualCommand}");
+                return await ProcessUtils.GetJsonOutputAsync<T>("kubectl", actualCommand);
+            }
+            catch (JsonOutputException ex)
+            {
+                throw new GCloudException($"Failed to exectue command {actualCommand}\nInner exception: {ex.Message}", ex);
+            }
+        }
+
+        private static string FormatCommand(string command, KubectlContext context, bool jsonOutput = false)
+        {
+            var format = jsonOutput ? "--output=json" : "";
+
+            return $"{command} --kubeconfig=\"{context.Config}\" {format}";
         }
     }
 }

@@ -99,7 +99,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
             _publishDialog.FinishFlow();
 
-            bool result = false;
+            GkeDeploymentResult result;
             using (var frozen = StatusbarHelper.Freeze())
             using (var animationShown = StatusbarHelper.ShowDeployAnimation())
             using (var progress = StatusbarHelper.ShowProgressBar("Deploying to Container Engine"))
@@ -112,9 +112,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                     GcpOutputWindow.OutputLine);
             }
 
-            if (result)
+            if (result != null)
             {
                 GcpOutputWindow.OutputLine($"Project {project.Name} deployed to Container Engine");
+                if (result.ServiceIpAddress != null)
+                {
+                    GcpOutputWindow.OutputLine($"Service {DeploymentName} ip address {result.ServiceIpAddress}");
+                }
                 StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
             }
             else

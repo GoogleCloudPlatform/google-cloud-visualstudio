@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.Deployment
             public GCloudContext Context { get; set; }
         }
 
-        public static async Task<bool> PublishProjectAsync(
+        public static async Task<GkeDeploymentResult> PublishProjectAsync(
             string projectPath,
             DeploymentOptions options,
             IProgress<double> progress,
@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.Deployment
             if (!File.Exists(projectPath))
             {
                 Debug.WriteLine($"Cannot find {projectPath}, not a valid project.");
-                return false;
+                return null;
             }
 
             var stageDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
@@ -60,7 +60,7 @@ namespace GoogleCloudExtension.Deployment
                         from: 0.1, to: 0.3))
                 {
                     Debug.WriteLine("Failed to create app bundle.");
-                    return false;
+                    return null;
                 }
 
                 NetCoreAppUtils.CopyOrCreateDockerfile(projectPath, appRootPath);
@@ -76,7 +76,7 @@ namespace GoogleCloudExtension.Deployment
                     from: 0.4, to: 0.7))
                 {
                     Debug.WriteLine("Failed to build container.");
-                    return false;
+                    return null;
                 }
 
                 if (!await GCloudWrapper.CreateCredentialsForClusterAsync(
@@ -86,7 +86,7 @@ namespace GoogleCloudExtension.Deployment
                     context: options.Context))
                 {
                     Debug.WriteLine("Failed to create kubectl config file.");
-                    return false;
+                    return null;
                 }
                 progress.Report(0.7);
 
@@ -97,27 +97,58 @@ namespace GoogleCloudExtension.Deployment
                         context: kubectlContext))
                 {
                     Debug.WriteLine($"Failed to create deployment {options.DeploymentName}");
-                    return false;
+                    return null;
                 }
                 progress.Report(0.8);
 
+                string ipAddress = null;
                 if (options.ExposeService)
                 {
                     if (!await KubectlWrapper.ExposeServiceAsync(options.DeploymentName, outputAction, kubectlContext))
                     {
                         Debug.WriteLine($"Failed to expose service {options.DeploymentName}");
-                        return false;
+                        return null;
+                    }
+
+                    ipAddress = await WaitForServiceAddressAsync(options.DeploymentName, kubectlContext);
+                }
+
+                return new GkeDeploymentResult(ipAddress, options.ExposeService);
+            }
+        }
+
+        private static async Task<string> WaitForServiceAddressAsync(string name, KubectlContext kubectlContext)
+        {
+            DateTime start = DateTime.Now;
+            TimeSpan actualTime = DateTime.Now - start;
+            while (actualTime.TotalMinutes < 5)
+            {
+                var service = await KubectlWrapper.GetServiceAsync(name, kubectlContext);
+                if (service?.Status?.LoadBalancer.Ingress != null)
+                {
+                    var ingress = service?.Status?.LoadBalancer.Ingress.FirstOrDefault();
+                    if (ingress != null)
+                    {
+                        string ipAddress = null;
+                        if (ingress.TryGetValue("ip", out ipAddress))
+                        {
+                            Debug.WriteLine($"Found service IP address: {ipAddress}");
+                            return ipAddress;
+                        }
                     }
                 }
+                Debug.WriteLine("Waiting for service to be public.");
+                await Task.Delay(2000);
+                actualTime = DateTime.Now - start;
             }
 
-            // All done.
-            return true;
+            Debug.WriteLine("Timeout while waiting for the ip address.");
+            return null;
         }
 
         private static void Cleanup(string stageDirectory)
         {
-            
+
         }
     }
 }
