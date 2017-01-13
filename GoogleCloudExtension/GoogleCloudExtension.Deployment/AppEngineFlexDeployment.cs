@@ -15,7 +15,6 @@
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
