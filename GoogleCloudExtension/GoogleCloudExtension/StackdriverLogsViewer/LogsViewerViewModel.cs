@@ -26,7 +26,6 @@ using System.Windows.Data;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
-
     /// <summary>
     /// The view model for LogsViewerToolWindow.
     /// </summary>
@@ -34,22 +33,48 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     {
         private const int DefaultPageSize = 100;
 
-        private bool _isLoading = false;
+        private bool _isLoading;
         private Lazy<LoggingDataSource> _dataSource;
         private string _nextPageToken;
 
-        private string _firstRowDate;
-        private bool _toggleExpandAllExpanded = false;
+        private bool _toggleExpandAllExpanded;
         private bool _isControlEnabled = true;
 
         private ObservableCollection<LogItem> _logs = new ObservableCollection<LogItem>();
 
         private string _requestStatusText;
         private string _requestErrorMessage;
-        private bool _showRequestErrorMessage = false;
-        private bool _showRequestStatus = false;
-        private bool _showCancelRequestButton = false;
+        private bool _showRequestErrorMessage;
+        private bool _showRequestStatus;
+        private bool _showCancelRequestButton;
         private CancellationTokenSource _cancellationTokenSource;
+        private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
+
+        /// <summary>
+        /// The time zone selector items.
+        /// </summary>
+        public IEnumerable<TimeZoneInfo> SystemTimeZones => TimeZoneInfo.GetSystemTimeZones();
+
+        /// <summary>
+        /// Selected time zone.
+        /// </summary>
+        public TimeZoneInfo SelectedTimeZone
+        {
+            get { return _selectedTimeZone; }
+            set
+            {
+                if (value != _selectedTimeZone)
+                {
+                    _selectedTimeZone = value;
+                    foreach (var log in _logs)
+                    {
+                        log.ChangeTimeZone(_selectedTimeZone);
+                    }
+
+                    LogItemCollection.Refresh();
+                }
+            }
+        }
 
         /// <summary>
         /// Gets the refresh button command.
@@ -69,7 +94,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Route the expander IsExpanded state to control expand all or collapse all.
         /// </summary>
-        public bool ToggleExapandAllExpanded
+        public bool ToggleExpandAllExpanded
         {
             get { return _toggleExpandAllExpanded; }
             set
@@ -84,17 +109,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public string ToggleExapandAllToolTip => _toggleExpandAllExpanded ?
             Resources.LogViewerCollapseAllTip : Resources.LogViewerExpandAllTip;
-
-        /// <summary>
-        /// Gets the visible view top row date in string.
-        /// When data grid vertical scroll moves, the displaying rows move. 
-        /// This is to return the top row date
-        /// </summary>
-        public string FirstRowDate
-        {
-            get { return _firstRowDate; }
-            private set { SetValueAndRaise(ref _firstRowDate, value); }
-        }
 
         /// <summary>
         /// Gets the LogItem collection

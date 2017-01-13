@@ -1304,7 +1304,7 @@
     <comment>Caption for the bucket location node, {0} is the name of the location, {1} is the number of buckets in the location.</comment>
   </data>
   <data name="LogViewerTimeZoneSelectionToolTip" xml:space="preserve">
-    <value>Click To Select Different Timezone.</value>
+    <value>Click to select different timezone.</value>
     <comment>Tool tip to the select time zone combo box.</comment>
   </data>
   <data name="CloudExplorerNoLoggedInMessage" xml:space="preserve">
@@ -1342,10 +1342,6 @@
   <data name="AnalyticsOptionsCategory" xml:space="preserve">
     <value>Usage Report</value>
     <comment>The category for the analytics options in the options page.</comment>
-  </data>
-  <data name="LogViewerRefreshButtonCaption" xml:space="preserve">
-    <value>Refresh</value>
-    <comment>Refresh button caption.</comment>
   </data>
   <data name="AnalyticsOptionsOptInDescription" xml:space="preserve">
     <value>Whether to report usage statistics to Google</value>

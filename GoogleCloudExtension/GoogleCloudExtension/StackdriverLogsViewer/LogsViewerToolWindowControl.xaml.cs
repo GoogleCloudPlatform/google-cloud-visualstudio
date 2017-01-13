@@ -59,7 +59,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private void dataGrid_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
             var grid = sender as DataGrid;
-
             ScrollViewer sv = e.OriginalSource as ScrollViewer;
             if (sv == null)
             {
