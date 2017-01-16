@@ -141,6 +141,7 @@
                         SelectedItem="{Binding SelectedLogSeverity}"
                         Loaded="ComboBox_Loaded" />
                     
+                    <controls:IconButton
                         Grid.Column="1" 
                         Margin="6,0,16,0"
                         Width="32" 
