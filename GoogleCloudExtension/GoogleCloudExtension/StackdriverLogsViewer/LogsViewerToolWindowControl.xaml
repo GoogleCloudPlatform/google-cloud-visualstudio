@@ -111,8 +111,7 @@
 
             <!-- Basic Filters. -->
             <StackPanel Visibility="{Binding BasicFilterVisibility}">
-                <StackPanel Margin="0,0,0,6"
-                            Orientation="Horizontal" 
+                <StackPanel Orientation="Horizontal" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Center">
                     
