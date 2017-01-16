@@ -118,8 +118,8 @@
                     
                     <StackPanel.Resources>
                         <Style TargetType="ComboBox">
-                            <Setter Property="Margin" Value="0, 0, 6, 0" />
-                            <Setter Property="Padding" Value="8, 5, 8, 5" />
+                            <Setter Property="Margin" Value="0,0,6,0" />
+                            <Setter Property="Padding" Value="8,5,8,5" />
                             <Setter Property="VerticalAlignment" Value="Center" />
                             <Setter Property="Background" Value="White" />
                         </Style>

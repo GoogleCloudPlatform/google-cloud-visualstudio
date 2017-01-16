@@ -36,9 +36,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private const int DefaultPageSize = 100;
 
         private static readonly string[] s_defaultResourceSelections = new string[] { "global", "gce_instance" };
-        private bool _isLoading;
-        private static readonly string[] s_logSeverityList = new string[] {
-            "DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL", "EMERGENCY", Resources.LogViewerAllLogLevelSelection};
+        private static readonly LogSeverity[] s_logSeveritySelections = new LogSeverity[] {LogSeverity.Debug,
+            LogSeverity.Info, LogSeverity.Warning, LogSeverity.Error, LogSeverity.Critical, LogSeverity.Emergency };
 
         /// <summary>
         /// This is the filters combined by all selectors.
@@ -48,6 +47,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private IList<MonitoredResourceDescriptor> _resourceDescriptors;
         private string _selectedLogSeverity = Resources.LogViewerAllLogLevelSelection;
 
+        private bool _isLoading;
         private Lazy<LoggingDataSource> _dataSource;
         private string _nextPageToken;
 
@@ -65,17 +65,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
 
         /// <summary>
-        /// Gets the list of Log Level selectors.
+        /// Gets the list of Log Level items.
         /// </summary>
-        public IEnumerable<string> LogSeverityList => s_logSeverityList;
+        public IEnumerable<string> LogSeverityList => InitializeLogSeveritySelection();
 
         /// <summary>
-        /// 
+        /// Gets or sets the selected log severity value.
         /// </summary>
         public string SelectedLogSeverity
         {
             get { return _selectedLogSeverity; }
-
             set
             {
                 if (value != null && _selectedLogSeverity != value)
@@ -439,6 +438,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
+        /// Creates the list of log severity selection items.
+        /// </summary>
+        private List<string> InitializeLogSeveritySelection()
+        {
+            List<string> items = new List<string>(
+                s_logSeveritySelections.Select(x => x.ToString("G").ToUpperInvariant()));
+            items.Add(Resources.LogViewerAllLogLevelSelection);
+            return items;
+        }
+
+        /// <summary>
         /// Populate resource type selection list.
         /// 
         /// The control flow is as following. 
@@ -449,7 +459,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         ///     3. When selected resource type is changed, it calls Reload().
         ///     
         /// Error handling.
-        ///     1. User click Refresh. Refrsh button calls Reload().
+        ///     1. User click Refresh. Refresh button calls Reload().
         ///     2. Reload() checks ResourceDescriptors is null or empty.
         ///     3. Reload calls PopulateResourceTypes() which does a manual retry.
         /// </summary>
