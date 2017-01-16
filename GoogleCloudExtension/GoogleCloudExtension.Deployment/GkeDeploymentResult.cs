@@ -14,12 +14,26 @@
 
 namespace GoogleCloudExtension.Deployment
 {
+    /// <summary>
+    /// This class contains the result of a GKE deployment.
+    /// </summary>
     public class GkeDeploymentResult
     {
+        /// <summary>
+        /// The IP address of the public service if one was exposed. This property will be null if:
+        ///   * There was a timeout while waiting for the service to go up.
+        ///   * No service was exposed.
+        /// </summary>
         public string ServiceIpAddress { get; }
 
+        /// <summary>
+        /// Is true if the a service was exposed publicly.
+        /// </summary>
         public bool WasExposed { get; }
 
+        /// <summary>
+        /// Is true if the deployment was replaced, false if a new deployment was created.
+        /// </summary>
         public bool DeploymentUpdated { get; }
 
         public GkeDeploymentResult(string serviceIpAddress, bool wasExposed, bool deploymentUpdated)
