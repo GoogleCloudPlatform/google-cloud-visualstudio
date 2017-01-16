@@ -162,7 +162,6 @@ namespace GoogleCloudExtension.Deployment
                     serviceExposed = true;
                 }
 
-
                 return new GkeDeploymentResult(
                     serviceIpAddress: ipAddress,
                     wasExposed: serviceExposed,
