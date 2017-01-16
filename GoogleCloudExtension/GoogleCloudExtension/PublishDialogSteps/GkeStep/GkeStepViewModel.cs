@@ -17,6 +17,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.LinkPrompt;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using System;
@@ -40,6 +41,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private string _deploymentVersion;
         private bool _exposeService = true;
         private bool _openWebsite = true;
+        private bool _isBusy;
 
         /// <summary>
         /// The list of clusters that serve as the target for deployment.
@@ -96,6 +98,18 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             set { SetValueAndRaise(ref _openWebsite, value); }
         }
 
+        public bool IsBusy
+        {
+            get { return _isBusy; }
+            set
+            {
+                SetValueAndRaise(ref _isBusy, value);
+                RaisePropertyChanged(nameof(IsReady));
+            }
+        }
+
+        public bool IsReady => !IsBusy;
+
         public GkeStepViewModel(GkeStepContent content)
         {
             _content = content;
@@ -107,12 +121,15 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         public override FrameworkElement Content => _content;
 
-        public override void OnPushedToDialog(IPublishDialog dialog)
+        public override async void OnPushedToDialog(IPublishDialog dialog)
         {
             _publishDialog = dialog;
 
             DeploymentName = _publishDialog.Project.Name.ToLower();
             DeploymentVersion = GetDefaultVersion();
+
+            // Mark that the dialog is going to be busy until we have loaded the data.
+            _publishDialog.FollowTask(Clusters.SourceCompleted);
         }
 
         /// <summary>
@@ -120,6 +137,15 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// </summary>
         public override async void Publish()
         {
+            var verifyGCloudTask = VerifyGCloudDependencies();
+            _publishDialog.FollowTask(verifyGCloudTask);
+            if (!await verifyGCloudTask)
+            {
+                Debug.WriteLine("Aborting deployment, no kubectl was found.");
+                _publishDialog.FinishFlow();
+                return;
+            }
+
             var context = new GCloudContext
             {
                 CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
@@ -219,6 +245,29 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 "{0:0000}{1:00}{2:00}t{3:00}{4:00}{5:00}",
                 now.Year, now.Month, now.Day,
                 now.Hour, now.Minute, now.Second);
+        }
+
+        private async Task<bool> VerifyGCloudDependencies()
+        {
+            if (!await GCloudWrapper.CanUseKubectlAsync())
+            {
+                if (!GCloudWrapper.IsGCloudCliInstalled())
+                {
+                    LinkPromptDialogWindow.PromptUser(
+                        Resources.ResetPasswordMissingGcloudTitle,
+                        Resources.ResetPasswordGcloudMissingMessage,
+                        new LinkInfo(link: "https://cloud.google.com/sdk/", caption: Resources.ResetPasswordGcloudLinkCaption));
+                }
+                else
+                {
+                    UserPromptUtils.ErrorPrompt(
+                        message: "Missing kubectl",
+                        title: Resources.ResetPasswordGcloudMissingComponentTitle);
+                }
+                return false;
+            }
+
+            return true;
         }
     }
 }

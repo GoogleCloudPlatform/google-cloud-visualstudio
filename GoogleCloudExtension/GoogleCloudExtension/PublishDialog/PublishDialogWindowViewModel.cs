@@ -16,6 +16,7 @@ using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace GoogleCloudExtension.PublishDialog
@@ -30,6 +31,7 @@ namespace GoogleCloudExtension.PublishDialog
         private readonly ISolutionProject _project;
         private readonly Stack<IPublishDialogStep> _stack = new Stack<IPublishDialogStep>();
         private FrameworkElement _content;
+        private bool _isReady = true;
 
         /// <summary>
         /// The content to display to the user, the content of the active <seealso cref="IPublishDialogStep"/> .
@@ -54,6 +56,12 @@ namespace GoogleCloudExtension.PublishDialog
         /// The command to execute when presing the "Publish" button.
         /// </summary>
         public ProtectedCommand PublishCommand { get; }
+
+        public bool IsReady
+        {
+            get { return _isReady; }
+            set { SetValueAndRaise(ref _isReady, value); }
+        }
 
         /// <summary>
         /// The current <seealso cref="IPublishDialogStep"/> being shown.
@@ -143,6 +151,13 @@ namespace GoogleCloudExtension.PublishDialog
         }
 
         #region IPublishDialog
+
+        async void IPublishDialog.FollowTask(Task task)
+        {
+            IsReady = false;
+            await task;
+            IsReady = true;
+        }
 
         ISolutionProject IPublishDialog.Project => _project;
 

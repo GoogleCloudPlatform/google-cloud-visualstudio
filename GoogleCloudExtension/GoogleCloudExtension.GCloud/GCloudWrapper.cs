@@ -125,6 +125,8 @@ namespace GoogleCloudExtension.GCloud
         /// <returns>A task that will be fulfilled to true if the method can be called, false otherwise.</returns>
         public static Task<bool> CanUseResetWindowsCredentialsAsync() => IsComponentInstalledAsync("beta");
 
+        public static Task<bool> CanUseKubectlAsync() => IsComponentInstalledAsync("kubectl");
+
         /// <summary>
         /// Returns the list of components that gcloud knows about.
         /// </summary>
