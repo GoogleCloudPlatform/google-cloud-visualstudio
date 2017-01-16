@@ -12,16 +12,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Diagnostics;
 using System.IO;
 
 namespace GoogleCloudExtension.Deployment
 {
     internal static class CommonUtils
     {
+        /// <summary>
+        /// Returns the project name given the path to the project.json.
+        /// </summary>
+        /// <param name="projectPath">The full path to the project.json of the project.</param>
+        /// <returns></returns>
         internal static string GetProjectName(string projectPath)
         {
             var directory = Path.GetDirectoryName(projectPath);
             return Path.GetFileName(directory);
+        }
+
+        /// <summary>
+        /// Deletes the given directory in a safe way.
+        /// </summary>
+        /// <param name="dir">The path to the directory to delete.</param>
+        internal static void Cleanup(string dir)
+        {
+            try
+            {
+                if (Directory.Exists(dir))
+                {
+                    Directory.Delete(dir, recursive: true);
+                }
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine($"Failed to cleanup: {ex.Message}");
+            }
         }
     }
 }

@@ -81,7 +81,7 @@ namespace GoogleCloudExtension.Deployment
             Directory.CreateDirectory(stageDirectory);
             progress.Report(0.1);
 
-            using (var cleanup = new Disposable(() => Cleanup(stageDirectory)))
+            using (var cleanup = new Disposable(() => CommonUtils.Cleanup(stageDirectory)))
             {
                 // Wait for the bundle creation operation to finish, updating progress as it goes.
                 if (!await ProgressHelper.UpdateProgress(
@@ -119,21 +119,6 @@ namespace GoogleCloudExtension.Deployment
                     service: service,
                     version: effectiveVersion,
                     promoted: options.Promote);
-            }
-        }
-
-        private static void Cleanup(string stageDirectory)
-        {
-            try
-            {
-                if (Directory.Exists(stageDirectory))
-                {
-                    Directory.Delete(stageDirectory, recursive: true);
-                }
-            }
-            catch (IOException ex)
-            {
-                Debug.WriteLine($"Failed to cleanup: {ex.Message}");
             }
         }
 

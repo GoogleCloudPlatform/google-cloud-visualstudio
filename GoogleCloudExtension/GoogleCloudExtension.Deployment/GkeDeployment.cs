@@ -22,25 +22,62 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Deployment
 {
+    /// <summary>
+    /// This class contains the logic to deploy ASP.NET Core apps to GKE.
+    /// </summary>
     public static class GkeDeployment
     {
+        /// <summary>
+        /// The options that define an app's deployment.
+        /// </summary>
         public class DeploymentOptions
         {
+            /// <summary>
+            /// The cluster where to deploy the app.
+            /// </summary>
             public string Cluster { get; set; }
 
+            /// <summary>
+            /// The zone on which the cluster resides.
+            /// </summary>
             public string Zone { get; set; }
 
+            /// <summary>
+            /// The name to use for the deployment.
+            /// </summary>
             public string DeploymentName { get; set; }
 
+            /// <summary>
+            /// The version to use for the deployment, will also be used as the version part
+            /// in the Docker image tag created.
+            /// </summary>
             public string DeploymentVersion { get; set; }
 
+            /// <summary>
+            /// Whether to expose a Kubernetes service based on the deployment created. This will be an HTTP service.
+            /// </summary>
             public bool ExposeService { get; set; }
 
+            /// <summary>
+            /// The context for any gcloud calls to use.
+            /// </summary>
             public GCloudContext Context { get; set; }
 
+            /// <summary>
+            /// Callback to be invoked when waiting for a public IP for a service.
+            /// </summary>
             public Action WaitingForServiceIpCallback { get; set; }
         }
 
+        /// <summary>
+        /// Publishes the ASP.NET Core app using the <paramref name="options"/> to produce the right deployment
+        /// and service (if needed).
+        /// </summary>
+        /// <param name="projectPath">The full path to the project.json file of the startup project.</param>
+        /// <param name="options">The options to use for the deployment.</param>
+        /// <param name="progress">The progress interface for progress notifications.</param>
+        /// <param name="outputAction">The output callback to invoke for output from the process.</param>
+        /// <returns></returns>
         public static async Task<GkeDeploymentResult> PublishProjectAsync(
             string projectPath,
             DeploymentOptions options,
@@ -57,7 +94,7 @@ namespace GoogleCloudExtension.Deployment
             Directory.CreateDirectory(stageDirectory);
             progress.Report(0.1);
 
-            using (var cleanup = new Disposable(() => Cleanup(stageDirectory)))
+            using (var cleanup = new Disposable(() => CommonUtils.Cleanup(stageDirectory)))
             {
                 var appRootPath = Path.Combine(stageDirectory, "app");
                 var buildFilePath = Path.Combine(stageDirectory, "cloudbuild.yaml");
@@ -197,10 +234,6 @@ namespace GoogleCloudExtension.Deployment
 
             Debug.WriteLine("Timeout while waiting for the ip address.");
             return null;
-        }
-
-        private static void Cleanup(string stageDirectory)
-        {
         }
     }
 }
