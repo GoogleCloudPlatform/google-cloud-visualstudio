@@ -18,8 +18,14 @@ using System.IO;
 
 namespace GoogleCloudExtension.Deployment
 {
+    /// <summary>
+    /// This class contains helper functions to deal with the Google Cloud Container Builder functionality.
+    /// </summary>
     internal static class CloudBuilderUtils
     {
+        /// <summary>
+        /// The template to produce a cloudbuild.yaml file to build an image using the the container builder.
+        /// </summary>
         private const string CloudBuildFileContent =
            "steps:\n" +
             "- name: gcr.io/cloud-builders/docker\n" +
@@ -27,6 +33,14 @@ namespace GoogleCloudExtension.Deployment
             "images:\n" +
             "  ['{0}']\n";
 
+        /// <summary>
+        /// Creates a cloudbuild.yaml for the given <paramref name="imageName"/> in the given <paramref name="project"/>.
+        /// </summary>
+        /// <param name="project">The project on which the image should be built.</param>
+        /// <param name="imageName">The name of the image to build.</param>
+        /// <param name="imageVersion">The version tag to use.</param>
+        /// <param name="buildFilePath">Where to store the produced build file.</param>
+        /// <returns>The tag to identify the image to be built.</returns>
         internal static string CreateBuildFile(string project, string imageName, string imageVersion, string buildFilePath)
         {
             var tag = GetDeploymentTag(
@@ -37,21 +51,6 @@ namespace GoogleCloudExtension.Deployment
             var content = String.Format(CloudBuildFileContent, tag);
             File.WriteAllText(buildFilePath, content);
             return tag;
-        }
-
-        private static void Cleanup(string buildFilePath)
-        {
-            try
-            {
-                if (File.Exists(buildFilePath))
-                {
-                    File.Delete(buildFilePath);
-                }
-            }
-            catch (IOException)
-            {
-                Debug.WriteLine($"Failed to cleanup file {buildFilePath}");
-            }
         }
 
         private static string GetDeploymentTag(string project, string imageName, string imageVersion)

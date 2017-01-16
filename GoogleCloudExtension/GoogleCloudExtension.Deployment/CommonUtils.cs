@@ -17,6 +17,9 @@ using System.IO;
 
 namespace GoogleCloudExtension.Deployment
 {
+    /// <summary>
+    /// This class contains common utils methods shared between the deployments.
+    /// </summary>
     internal static class CommonUtils
     {
         /// <summary>

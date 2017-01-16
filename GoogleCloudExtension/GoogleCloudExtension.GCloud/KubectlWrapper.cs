@@ -21,8 +21,21 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GCloud
 {
+    /// <summary>
+    /// This class contains methods that wrap the functionality implemented by kubectl into something
+    /// that can be called from the extension.
+    /// </summary>
     public static class KubectlWrapper
     {
+        /// <summary>
+        /// Creates a deployment for the given image and with the given name. The deployment is created with pods that
+        /// contains a single container running <paramref name="image"/>.
+        /// </summary>
+        /// <param name="name">The name of the deployemnt to be created.</param>
+        /// <param name="image">The image to use for the deployment.</param>
+        /// <param name="outputAction">The output callback to be called with output from the command.</param>
+        /// <param name="context">The context for invoking kubectl.</param>
+        /// <returns>True if the operation succeeded false otherwise.</returns>
         public static Task<bool> CreateDeploymentAsync(
             string name,
             string image,
@@ -32,6 +45,14 @@ namespace GoogleCloudExtension.GCloud
             return RunCommandAsync($"run {name} --image={image} --port=8080 --record", outputAction, context);
         }
 
+        /// <summary>
+        /// Exposes the service targetting the deployemnt <paramref name="deployment"/>. The ports being exposed are fixed
+        /// to 80 for the service and 8080 for the target pods.
+        /// </summary>
+        /// <param name="deployment">The deployment for which to create and expose the service.</param>
+        /// <param name="outputAction">The output callback to be called with output from the command.</param>
+        /// <param name="context">The context for invoking kubectl.</param>
+        /// <returns>True if the operation succeeded false otherwise.</returns>
         public static Task<bool> ExposeServiceAsync(string deployment, Action<string> outputAction, KubectlContext context)
         {
             return RunCommandAsync(
@@ -40,28 +61,47 @@ namespace GoogleCloudExtension.GCloud
                 context);
         }
 
+        /// <summary>
+        /// Returns the list of services running in the current cluster.
+        /// </summary>
+        /// <param name="context">The context for invoking kubectl.</param>
+        /// <returns>The list of services.</returns>
         public static async Task<IList<GkeService>> GetServicesAsync(KubectlContext context)
         {
             var services = await GetJsonOutputAsync<GkeList<GkeService>>("get services", context);
             return services.Items;
         }
 
+        /// <summary>
+        /// Returns the service with the given <paramref name="name"/>.
+        /// </summary>
+        /// <param name="name">The name of the service to return.</param>
+        /// <param name="context">The context for invoking kubectl.</param>
+        /// <returns>The service.</returns>
         public static Task<GkeService> GetServiceAsync(string name, KubectlContext context)
         {
             return GetJsonOutputAsync<GkeService>($"get service {name}", context);
         }
 
-        public static Task<GkeDeployment> GetDeploymentAsync(string name, KubectlContext context)
-        {
-            return GetJsonOutputAsync<GkeDeployment>($"get deployment {name}", context);
-        }
-
+        /// <summary>
+        /// Returns the list of deployments for the current cluster.
+        /// </summary>
+        /// <param name="context">The context for invoking kubectl.</param>
+        /// <returns>The list of deployments.</returns>
         public static async Task<IList<GkeDeployment>> GetDeploymentsAsync(KubectlContext context)
         {
             var deployments = await GetJsonOutputAsync<GkeList<GkeDeployment>>($"get deployments", context);
             return deployments.Items;
         }
 
+        /// <summary>
+        /// Updates an existing deployemnt given by <paramref name="name"/> with <paramref name="image"/>.
+        /// </summary>
+        /// <param name="name">The name of the deployment to update.</param>
+        /// <param name="image">The image to update to.</param>
+        /// <param name="outputAction">The output callback to be called with output from the command.</param>
+        /// <param name="context">The context for invoking kubectl.</param>
+        /// <returns>True if the operation succeeded false otherwise.</returns>
         public static Task<bool> UpdateDeploymentImageAsync(
             string name,
             string image,

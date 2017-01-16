@@ -21,6 +21,9 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Deployment
 {
+    /// <summary>
+    /// This class contains methods used to maniuplate ASP.NET Core projects.
+    /// </summary>
     internal static class NetCoreAppUtils
     {
         private const string DockerfileName = "Dockerfile";
@@ -41,6 +44,13 @@ namespace GoogleCloudExtension.Deployment
             "ENV ASPNETCORE_URLS=http://*:8080\n" +
             "ENTRYPOINT [\"dotnet\", \"{0}.dll\"]\n";
 
+        /// <summary>
+        /// Creates an app bundle by publishing it to the given directory. It only publishes the release configuration.
+        /// </summary>
+        /// <param name="projectPath">The full path to the project to publish.</param>
+        /// <param name="stageDirectory">The directory to which to publish.</param>
+        /// <param name="outputAction">The callback to call with output from the command.</param>
+        /// <returns></returns>
         internal static Task<bool> CreateAppBundleAsync(string projectPath, string stageDirectory, Action<string> outputAction)
         {
             var arguments = $"publish \"{projectPath}\" " +
@@ -57,6 +67,12 @@ namespace GoogleCloudExtension.Deployment
             return ProcessUtils.RunCommandAsync(s_dotnetPath.Value, arguments, (o, e) => outputAction(e.Line), env);
         }
 
+        /// <summary>
+        /// Creates the Dockerfile necessary to package up an ASP.NET Core app if one is not already present at the root
+        /// path of the project.
+        /// </summary>
+        /// <param name="projectPath">The full path to the project.json.</param>
+        /// <param name="stageDirectory">The directory where to save the Dockerfile.</param>
         internal static void CopyOrCreateDockerfile(string projectPath, string stageDirectory)
         {
             var sourceDir = Path.GetDirectoryName(projectPath);
