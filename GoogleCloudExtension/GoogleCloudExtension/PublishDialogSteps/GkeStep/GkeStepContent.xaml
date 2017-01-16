@@ -17,7 +17,7 @@
     </UserControl.Resources>
 
     <StackPanel IsEnabled="{Binding Clusters.IsCompleted}">
-        <Label Content="_Clusters:"
+        <Label Content="{x:Static ext:Resources.GkePublishClusterMessage}"
                Target="{Binding ElementName=_clusters}"
                Style="{StaticResource CommonLabelStyle}"/>
         <ComboBox x:Name="_clusters"
@@ -28,7 +28,7 @@
                   Margin="0,0,0,15"
                   Style="{StaticResource CommonComboBoxStyle}"/>
 
-        <Label Content="_Deployment name:"
+        <Label Content="{x:Static ext:Resources.GkePublishDeploymentNameMessage}"
                Target="{Binding ElementName=_deploymentName}"
                Style="{StaticResource CommonLabelStyle}" />
         <TextBox x:Name="_deploymentName"
@@ -36,7 +36,7 @@
                  Margin="0,0,0,15"
                  Style="{StaticResource CommonTextBoxStyle}" />
 
-        <Label Content="Deployment _version:"
+        <Label Content="{x:Static ext:Resources.GkePublishDeploymentVersionMessage}"
                Target="{Binding ElementName=_deploymentVersion}"
                Style="{StaticResource CommonLabelStyle}" />
         <TextBox x:Name="_deploymentVersion"
@@ -44,7 +44,7 @@
                  Margin="0,0,0,8"
                  Style="{StaticResource CommonTextBoxStyle}" />
 
-        <CheckBox Content="Expose the service to the public internet"
+        <CheckBox Content="{x:Static ext:Resources.GkePublishExposeServiceCaption}"
                   IsChecked="{Binding ExposeService, Mode=TwoWay}"
                   Style="{StaticResource CommonTextStyleBase}" />
         <CheckBox IsChecked="{Binding OpenWebsite, Mode=TwoWay}"

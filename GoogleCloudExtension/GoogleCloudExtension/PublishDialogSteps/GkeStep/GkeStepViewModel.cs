@@ -28,6 +28,9 @@ using System.Windows;
 
 namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 {
+    /// <summary>
+    /// This class represents the deployment wizard's step to deploy an app to GKE.
+    /// </summary>
     public class GkeStepViewModel : PublishDialogStepBase
     {
         private readonly GkeStepContent _content;
@@ -38,8 +41,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private bool _exposeService = true;
         private bool _openWebsite = true;
 
+        /// <summary>
+        /// The list of clusters that serve as the target for deployment.
+        /// </summary>
         public AsyncPropertyValue<IList<Cluster>> Clusters { get; }
 
+        /// <summary>
+        /// The currently selected cluster to use for deployment.
+        /// </summary>
         public Cluster SelectedCluster
         {
             get { return _selectedCluster; }
@@ -50,24 +59,37 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             }
         }
 
+        /// <summary>
+        /// The name to use for the deployment, by default the name of the project.
+        /// </summary>
         public string DeploymentName
         {
             get { return _deploymentName; }
             set { SetValueAndRaise(ref _deploymentName, value); }
         }
 
+        /// <summary>
+        /// The version to use for the deployment, by default the date in a similar way to what gcloud uses for 
+        /// app engine.
+        /// </summary>
         public string DeploymentVersion
         {
             get { return _deploymentVersion; }
             set { SetValueAndRaise(ref _deploymentVersion, value); }
         }
 
+        /// <summary>
+        /// Whether a public service should be exposed for this deployment.
+        /// </summary>
         public bool ExposeService
         {
             get { return _exposeService; }
             set { SetValueAndRaise(ref _exposeService, value); }
         }
 
+        /// <summary>
+        /// Whether the website should be open once a succesful deployment happens.
+        /// </summary>
         public bool OpenWebsite
         {
             get { return _openWebsite; }
@@ -93,6 +115,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             DeploymentVersion = GetDefaultVersion();
         }
 
+        /// <summary>
+        /// Start the publish operation.
+        /// </summary>
         public override async void Publish()
         {
             var context = new GCloudContext
@@ -110,20 +135,20 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 DeploymentVersion = DeploymentVersion,
                 ExposeService = ExposeService,
                 Context = context,
-                WaitingForServiceIpCallback = () => GcpOutputWindow.OutputLine("Waiting for Service IP address...")
+                WaitingForServiceIpCallback = () => GcpOutputWindow.OutputLine(Resources.GkePublishWaitingForServiceIpMessage)
             };
             var project = _publishDialog.Project;
 
             GcpOutputWindow.Activate();
             GcpOutputWindow.Clear();
-            GcpOutputWindow.OutputLine($"Deploying {project.Name} to Container Engine");
+            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeployingToGkeMessage, project.Name));
 
             _publishDialog.FinishFlow();
 
             GkeDeploymentResult result;
             using (var frozen = StatusbarHelper.Freeze())
             using (var animationShown = StatusbarHelper.ShowDeployAnimation())
-            using (var progress = StatusbarHelper.ShowProgressBar("Deploying to Container Engine"))
+            using (var progress = StatusbarHelper.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
             using (var deployingOperation = ShellUtils.SetShellUIBusy())
             {
                 result = await GkeDeployment.PublishProjectAsync(
@@ -135,16 +160,17 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
             if (result != null)
             {
-                GcpOutputWindow.OutputLine($"Project {project.Name} deployed to Container Engine");
+                GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentSuccessMessage, project.Name));
                 if (result.WasExposed)
                 {
                     if (result.ServiceIpAddress != null)
                     {
-                        GcpOutputWindow.OutputLine($"Service {DeploymentName} ip address {result.ServiceIpAddress}");
+                        GcpOutputWindow.OutputLine(
+                            String.Format(Resources.GkePublishServiceIpMessage, DeploymentName, result.ServiceIpAddress));
                     }
                     else
                     {
-                        GcpOutputWindow.OutputLine("Time out waiting for service ip address.");
+                        GcpOutputWindow.OutputLine(Resources.GkePublishServiceIpTimeoutMessage);
                     }
                 }
                 StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
@@ -156,7 +182,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             }
             else
             {
-                GcpOutputWindow.OutputLine($"Failed to deploy {project.Name} to Container Engine");
+                GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
             }
         }

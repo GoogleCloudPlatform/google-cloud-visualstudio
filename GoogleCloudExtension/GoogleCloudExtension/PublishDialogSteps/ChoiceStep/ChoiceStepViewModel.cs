@@ -75,12 +75,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
                 },
                 new Choice
                 {
-                    Name = "Container Engine",
+                    Name = Resources.PublishDialogChoiceStepGkeName,
                     Command = new ProtectedCommand(
                         OnGkeChoiceCommand,
                         canExecuteCommand: projectType == KnownProjectTypes.NetCoreWebApplication),
                     Icon = s_gkeIcon.Value,
-                    ToolTip = "Deploy as a service to Container Engine"
+                    ToolTip = Resources.PublishDialogChoiceStepGkeToolTip
                 },
                 new Choice
                 {
