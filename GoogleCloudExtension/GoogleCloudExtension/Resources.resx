@@ -1367,6 +1367,10 @@
     <value>Loading . . .</value>
     <comment>List log entries can take seconds to complete, show a status message.</comment>
   </data>
+  <data name="LogViewerAllLogLevelSelection" xml:space="preserve">
+    <value>All Log Levels</value>
+    <comment>Log viwer log severity combo box item that indicates to show logs of any level</comment>
+  </data>
   <data name="LogsViewerDataConversionGenericError" xml:space="preserve">
     <value>Error displaying the entry. </value>
     <comment>Showing generic error for parsing LogEntry property tree.</comment>

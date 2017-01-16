@@ -20,6 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -32,6 +34,18 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     public class LogsViewerViewModel : ViewModelBase
     {
         private const int DefaultPageSize = 100;
+
+        private static readonly string[] s_defaultResourceSelections = new string[] { "global", "gce_instance" };
+        private static readonly LogSeverity[] s_logSeveritySelections = new LogSeverity[] {LogSeverity.Debug,
+            LogSeverity.Info, LogSeverity.Warning, LogSeverity.Error, LogSeverity.Critical, LogSeverity.Emergency };
+
+        /// <summary>
+        /// This is the filters combined by all selectors.
+        /// </summary>
+        private string _filter;
+        private MonitoredResourceDescriptor _selectedResource;
+        private IList<MonitoredResourceDescriptor> _resourceDescriptors;
+        private string _selectedLogSeverity = Resources.LogViewerAllLogLevelSelection;
 
         private bool _isLoading;
         private Lazy<LoggingDataSource> _dataSource;
@@ -49,6 +63,52 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private bool _showCancelRequestButton;
         private CancellationTokenSource _cancellationTokenSource;
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
+
+        /// <summary>
+        /// Gets the list of Log Level items.
+        /// </summary>
+        public IEnumerable<string> LogSeverityList => InitializeLogSeveritySelection();
+
+        /// <summary>
+        /// Gets or sets the selected log severity value.
+        /// </summary>
+        public string SelectedLogSeverity
+        {
+            get { return _selectedLogSeverity; }
+            set
+            {
+                if (value != null && _selectedLogSeverity != value)
+                {
+                    _selectedLogSeverity = value;
+                    OnFiltersChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets all resources types.
+        /// </summary>
+        public IList<MonitoredResourceDescriptor> ResourceDescriptors
+        {
+            get { return _resourceDescriptors; }
+            private set { SetValueAndRaise(ref _resourceDescriptors, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets current selected resource types.
+        /// </summary>
+        public MonitoredResourceDescriptor SelectedResource
+        {
+            get { return _selectedResource; }
+            set
+            {
+                if (value != null && _selectedResource != value)
+                {
+                    SetValueAndRaise(ref _selectedResource, value);
+                    OnFiltersChanged();
+                }
+            }
+        }
 
         /// <summary>
         /// The time zone selector items.
@@ -188,8 +248,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// When a new view model is created and attached to Window, invalidate controls and re-load first page
-        /// of log entries.
+        /// When a new view model is created and attached to Window, 
+        /// invalidate controls and re-load first page of log entries.
         /// </summary>
         public void InvalidateAllProperties()
         {
@@ -199,23 +259,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            Reload();
-        }
-
-        /// <summary>
-        /// Append a set of log entries.
-        /// </summary>
-        public void AddLogs(IList<LogEntry> logEntries)
-        {
-            if (logEntries == null)
-            {
-                return;
-            }
-
-            foreach (var log in logEntries)
-            {
-                _logs.Add(new LogItem(log));
-            }
+            PopulateResourceTypes();
         }
 
         /// <summary>
@@ -229,6 +273,22 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             LogLoaddingWrapperAsync(async (cancelToken) => await LoadLogsAsync(cancelToken));
+        }
+
+        /// <summary>
+        /// Append a set of log entries.
+        /// </summary>
+        private void AddLogs(IList<LogEntry> logEntries)
+        {
+            if (logEntries == null)
+            {
+                return;
+            }
+
+            foreach (var log in logEntries)
+            {
+                _logs.Add(new LogItem(log));
+            }
         }
 
         /// <summary>
@@ -318,7 +378,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
                 // Here, it does not do pageSize: _defaultPageSize - count, 
                 // Because this is requried to use same page size for getting next page. 
-                var results = await _dataSource.Value.ListLogEntriesAsync(
+                var results = await _dataSource.Value.ListLogEntriesAsync(_filter,
                     pageSize: DefaultPageSize, nextPageToken: _nextPageToken, cancelToken: cancellationToken);
                 AddLogs(results?.LogEntries);
                 _nextPageToken = results.NextPageToken;
@@ -342,6 +402,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             if (String.IsNullOrWhiteSpace(Project))
             {
+                Debug.Assert(false, "Project should not be null if the viewer is visible and enabled.");
+                return;
+            }
+
+            if (_resourceDescriptors?[0] == null)
+            {
+                PopulateResourceTypes();
                 return;
             }
 
@@ -368,6 +435,93 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Creates the list of log severity selection items.
+        /// </summary>
+        private List<string> InitializeLogSeveritySelection()
+        {
+            List<string> items = new List<string>(
+                s_logSeveritySelections.Select(x => x.ToString("G").ToUpperInvariant()));
+            items.Add(Resources.LogViewerAllLogLevelSelection);
+            return items;
+        }
+
+        /// <summary>
+        /// Populate resource type selection list.
+        /// 
+        /// The control flow is as following. 
+        ///     1. PopulateResourceTypes().
+        ///         1.1 Failed. An error message is displayed. 
+        ///              Goto error handling logic.
+        ///     2. Set selected resource type.
+        ///     3. When selected resource type is changed, it calls Reload().
+        ///     
+        /// Error handling.
+        ///     1. User click Refresh. Refresh button calls Reload().
+        ///     2. Reload() checks ResourceDescriptors is null or empty.
+        ///     3. Reload calls PopulateResourceTypes() which does a manual retry.
+        /// </summary>
+        private async void PopulateResourceTypes()
+        {
+            RequestErrorMessage = null;
+            ShowRequestErrorMessage = false;
+            IsControlEnabled = false;
+            try
+            {
+                ResourceDescriptors = await _dataSource.Value.GetResourceDescriptorsAsync();
+            }
+            catch (DataSourceException ex)
+            {
+                /// If it fails, show a tip, let refresh button retry it.
+                RequestErrorMessage = ex.Message;
+                ShowRequestErrorMessage = true;
+                return;
+            }
+            finally
+            {
+                IsControlEnabled = true;
+            }
+
+            foreach (var defaultSelection in s_defaultResourceSelections)
+            {
+                var desc = _resourceDescriptors?.First(x => x.Type == defaultSelection);
+                if (desc != null)
+                {
+                    SelectedResource = desc;
+                    return;
+                }
+            }
+
+            // Select first one if type of global or gce_instance does not exists.
+            SelectedResource = _resourceDescriptors?[0];
+        }
+
+        private void OnFiltersChanged()
+        {
+            Debug.WriteLine("NotifyFiltersChanged");
+            _filter = ComposeSimpleFilters();
+            Reload();
+        }
+
+        /// <summary>
+        /// Aggregate all selections into filter string.
+        /// </summary>
+        private string ComposeSimpleFilters()
+        {
+            StringBuilder filter = new StringBuilder();
+            if (_selectedResource != null)
+            {
+                filter.AppendLine($"resource.type=\"{_selectedResource.Type}\"");
+            }
+
+            if (_selectedLogSeverity != null && _selectedLogSeverity != Resources.LogViewerAllLogLevelSelection)
+            {
+                filter.AppendLine($"severity>={_selectedLogSeverity}");
+            }
+
+            return filter.Length > 0 ? filter.ToString() : null;
         }
     }
 }

@@ -1913,6 +1913,15 @@ namespace GoogleCloudExtension {
                 return ResourceManager.GetString("GcePublishSuccessMessage", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to All Log Levels.
+        /// </summary>
+        public static string LogViewerAllLogLevelSelection {
+            get {
+                return ResourceManager.GetString("LogViewerAllLogLevelSelection", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Error displaying the entry. .

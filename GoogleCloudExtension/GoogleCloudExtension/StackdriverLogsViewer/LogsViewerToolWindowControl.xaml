@@ -114,9 +114,34 @@
                 <StackPanel Margin="0,0,0,6"
                             Orientation="Horizontal" 
                             HorizontalAlignment="Left" 
-                            VerticalAlignment="Center" >
+                            VerticalAlignment="Center">
                     
-                    <controls:IconButton 
+                    <StackPanel.Resources>
+                        <Style TargetType="ComboBox">
+                            <Setter Property="Margin" Value="0,0,6,0" />
+                            <Setter Property="Padding" Value="8,5,8,5" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="Background" Value="White" />
+                        </Style>
+                    </StackPanel.Resources>
+
+                    <ComboBox 
+                        Name="comboResource" 
+                        Width="160" 
+                        ItemsSource="{Binding ResourceDescriptors}"
+                        SelectedItem="{Binding SelectedResource, Mode=TwoWay}"
+                        DisplayMemberPath="DisplayName" 
+                        Loaded="ComboBox_Loaded" >
+                    </ComboBox>
+
+                    <ComboBox 
+                        Name="comboSeverity" 
+                        Width="160"
+                        ItemsSource="{Binding LogSeverityList}"
+                        SelectedItem="{Binding SelectedLogSeverity}"
+                        Loaded="ComboBox_Loaded" />
+                    
+                    <controls:IconButton
                         Grid.Column="1" 
                         Margin="6,0,16,0"
                         Width="32" 
@@ -130,7 +155,7 @@
                         Command="{Binding RefreshCommand}">
                         <controls:IconButton.ToolTip>
                             <ToolTip Content="{x:Static ext:Resources.LogViewerRefreshButtonToolTip}" 
-                                     Style="{StaticResource CommonTooltipStyle}"/>
+                                     Style="{StaticResource CommonTooltipStyle}" />
                         </controls:IconButton.ToolTip>
                     </controls:IconButton>
                 </StackPanel>
