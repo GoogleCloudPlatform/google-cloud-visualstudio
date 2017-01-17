@@ -57,6 +57,9 @@ namespace GoogleCloudExtension.PublishDialog
         /// </summary>
         public ProtectedCommand PublishCommand { get; }
 
+        /// <summary>
+        /// Whether the dialog is ready to process user input (enabled) or not.
+        /// </summary>
         public bool IsReady
         {
             get { return _isReady; }
