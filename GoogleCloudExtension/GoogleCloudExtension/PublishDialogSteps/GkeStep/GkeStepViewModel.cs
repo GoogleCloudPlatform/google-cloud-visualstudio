@@ -245,7 +245,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private async Task<bool> VerifyGCloudDependencies()
         {
-            if (!await GCloudWrapper.CanUseKubectlAsync())
+            if (!await GCloudWrapper.CanUseGKEAsync())
             {
                 if (!GCloudWrapper.IsGCloudCliInstalled())
                 {
