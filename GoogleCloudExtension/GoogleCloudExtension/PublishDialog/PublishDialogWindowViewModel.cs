@@ -152,11 +152,27 @@ namespace GoogleCloudExtension.PublishDialog
 
         #region IPublishDialog
 
-        async void IPublishDialog.FollowTask(Task task)
+        async void IPublishDialog.TrackTask(Task task)
         {
-            IsReady = false;
-            await task;
-            IsReady = true;
+            try
+            {
+                IsReady = false;
+                await task;
+            }
+            catch (Exception ex)
+            {
+                // This method is not interested at all in the exceptions thrown from the task. Other parts of the
+                // extension will handle that error. But if we detect that there's a critical error we will let it
+                // propagate.
+                if (ErrorHandlerUtils.IsCriticalException(ex))
+                {
+                    throw;
+                }
+            }
+            finally
+            {
+                IsReady = true;
+            }
         }
 
         ISolutionProject IPublishDialog.Project => _project;

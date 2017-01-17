@@ -19,6 +19,7 @@ using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.LinkPrompt;
 using GoogleCloudExtension.PublishDialog;
+using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -41,7 +42,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private string _deploymentVersion;
         private bool _exposeService = true;
         private bool _openWebsite = true;
-        private bool _isBusy;
 
         /// <summary>
         /// The list of clusters that serve as the target for deployment.
@@ -98,18 +98,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             set { SetValueAndRaise(ref _openWebsite, value); }
         }
 
-        public bool IsBusy
-        {
-            get { return _isBusy; }
-            set
-            {
-                SetValueAndRaise(ref _isBusy, value);
-                RaisePropertyChanged(nameof(IsReady));
-            }
-        }
-
-        public bool IsReady => !IsBusy;
-
         public GkeStepViewModel(GkeStepContent content)
         {
             _content = content;
@@ -121,7 +109,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         public override FrameworkElement Content => _content;
 
-        public override async void OnPushedToDialog(IPublishDialog dialog)
+        public override void OnPushedToDialog(IPublishDialog dialog)
         {
             _publishDialog = dialog;
 
@@ -129,7 +117,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             DeploymentVersion = GetDefaultVersion();
 
             // Mark that the dialog is going to be busy until we have loaded the data.
-            _publishDialog.FollowTask(Clusters.SourceCompleted);
+            _publishDialog.TrackTask(Clusters.SourceCompleted);
         }
 
         /// <summary>
@@ -137,76 +125,84 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// </summary>
         public override async void Publish()
         {
-            var verifyGCloudTask = VerifyGCloudDependencies();
-            _publishDialog.FollowTask(verifyGCloudTask);
-            if (!await verifyGCloudTask)
-            {
-                Debug.WriteLine("Aborting deployment, no kubectl was found.");
-                _publishDialog.FinishFlow();
-                return;
-            }
-
-            var context = new GCloudContext
-            {
-                CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
-                ProjectId = CredentialsStore.Default.CurrentProjectId,
-                AppName = GoogleCloudExtensionPackage.ApplicationName,
-                AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
-            };
-            var options = new GkeDeployment.DeploymentOptions
-            {
-                Cluster = SelectedCluster.Name,
-                Zone = SelectedCluster.Zone,
-                DeploymentName = DeploymentName,
-                DeploymentVersion = DeploymentVersion,
-                ExposeService = ExposeService,
-                Context = context,
-                WaitingForServiceIpCallback = () => GcpOutputWindow.OutputLine(Resources.GkePublishWaitingForServiceIpMessage)
-            };
             var project = _publishDialog.Project;
-
-            GcpOutputWindow.Activate();
-            GcpOutputWindow.Clear();
-            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeployingToGkeMessage, project.Name));
-
-            _publishDialog.FinishFlow();
-
-            GkeDeploymentResult result;
-            using (var frozen = StatusbarHelper.Freeze())
-            using (var animationShown = StatusbarHelper.ShowDeployAnimation())
-            using (var progress = StatusbarHelper.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
-            using (var deployingOperation = ShellUtils.SetShellUIBusy())
+            try
             {
-                result = await GkeDeployment.PublishProjectAsync(
-                    project.FullPath,
-                    options,
-                    progress,
-                    GcpOutputWindow.OutputLine);
-            }
-
-            if (result != null)
-            {
-                GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentSuccessMessage, project.Name));
-                if (result.WasExposed)
+                var verifyGCloudTask = VerifyGCloudDependencies();
+                _publishDialog.TrackTask(verifyGCloudTask);
+                if (!await verifyGCloudTask)
                 {
-                    if (result.ServiceIpAddress != null)
+                    Debug.WriteLine("Aborting deployment, no kubectl was found.");
+                    _publishDialog.FinishFlow();
+                    return;
+                }
+
+                var context = new GCloudContext
+                {
+                    CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
+                    ProjectId = CredentialsStore.Default.CurrentProjectId,
+                    AppName = GoogleCloudExtensionPackage.ApplicationName,
+                    AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
+                };
+                var options = new GkeDeployment.DeploymentOptions
+                {
+                    Cluster = SelectedCluster.Name,
+                    Zone = SelectedCluster.Zone,
+                    DeploymentName = DeploymentName,
+                    DeploymentVersion = DeploymentVersion,
+                    ExposeService = ExposeService,
+                    Context = context,
+                    WaitingForServiceIpCallback = () => GcpOutputWindow.OutputLine(Resources.GkePublishWaitingForServiceIpMessage)
+                };
+
+                GcpOutputWindow.Activate();
+                GcpOutputWindow.Clear();
+                GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeployingToGkeMessage, project.Name));
+
+                _publishDialog.FinishFlow();
+
+                GkeDeploymentResult result;
+                using (var frozen = StatusbarHelper.Freeze())
+                using (var animationShown = StatusbarHelper.ShowDeployAnimation())
+                using (var progress = StatusbarHelper.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
+                using (var deployingOperation = ShellUtils.SetShellUIBusy())
+                {
+                    result = await GkeDeployment.PublishProjectAsync(
+                        project.FullPath,
+                        options,
+                        progress,
+                        GcpOutputWindow.OutputLine);
+                }
+
+                if (result != null)
+                {
+                    GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentSuccessMessage, project.Name));
+                    if (result.WasExposed)
                     {
-                        GcpOutputWindow.OutputLine(
-                            String.Format(Resources.GkePublishServiceIpMessage, DeploymentName, result.ServiceIpAddress));
+                        if (result.ServiceIpAddress != null)
+                        {
+                            GcpOutputWindow.OutputLine(
+                                String.Format(Resources.GkePublishServiceIpMessage, DeploymentName, result.ServiceIpAddress));
+                        }
+                        else
+                        {
+                            GcpOutputWindow.OutputLine(Resources.GkePublishServiceIpTimeoutMessage);
+                        }
                     }
-                    else
+                    StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
+
+                    if (OpenWebsite && result.WasExposed && result.ServiceIpAddress != null)
                     {
-                        GcpOutputWindow.OutputLine(Resources.GkePublishServiceIpTimeoutMessage);
+                        Process.Start($"http://{result.ServiceIpAddress}");
                     }
                 }
-                StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
-
-                if (OpenWebsite && result.WasExposed && result.ServiceIpAddress != null)
+                else
                 {
-                    Process.Start($"http://{result.ServiceIpAddress}");
+                    GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
+                    StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
                 }
             }
-            else
+            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
                 GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
@@ -261,7 +257,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 else
                 {
                     UserPromptUtils.ErrorPrompt(
-                        message: "Missing kubectl",
+                        message: Resources.GkePublishMissingKubectlMessage,
                         title: Resources.ResetPasswordGcloudMissingComponentTitle);
                 }
                 return false;

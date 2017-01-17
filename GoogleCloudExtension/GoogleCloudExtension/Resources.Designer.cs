@@ -1987,6 +1987,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to To use this feature you need to have the &quot;lubectl&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl.
+        /// </summary>
+        public static string GkePublishMissingKubectlMessage {
+            get {
+                return ResourceManager.GetString("GkePublishMissingKubectlMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Service {0} ip address {1}.
         /// </summary>
         public static string GkePublishServiceIpMessage {

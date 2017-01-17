@@ -44,9 +44,9 @@ namespace GoogleCloudExtension.PublishDialog
         void FinishFlow();
 
         /// <summary>
-        /// Set the busy state following the given task.
+        /// Makes the dialog look "busy" as long as <paramref name="task"/> is not completed.
         /// </summary>
-        /// <param name="task">The task to follow, the dialog will be busy until the task is completed.</param>
-        void FollowTask(Task task);
+        /// <param name="task">The task.</param>
+        void TrackTask(Task task);
     }
 }
