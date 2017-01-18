@@ -16,11 +16,20 @@ using Newtonsoft.Json;
 
 namespace GoogleCloudExtension.GCloud.Models
 {
+    /// <summary>
+    /// This class contains the definition of a service.
+    /// </summary>
     public class GkeService
     {
+        /// <summary>
+        /// The metadata for the service.
+        /// </summary>
         [JsonProperty("metadata")]
         public GkeMetadata Metadata { get; set; }
 
+        /// <summary>
+        /// The status of the service.
+        /// </summary>
         [JsonProperty("status")]
         public GkeStatus Status { get; set; }
     }

@@ -16,8 +16,14 @@ using Newtonsoft.Json;
 
 namespace GoogleCloudExtension.GCloud.Models
 {
+    /// <summary>
+    /// This class contains the metadat for Kubernetes entities.
+    /// </summary>
     public class GkeMetadata
     {
+        /// <summary>
+        /// The name of an entity.
+        /// </summary>
         [JsonProperty("name")]
         public string Name { get; set; }
     }

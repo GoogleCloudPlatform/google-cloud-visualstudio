@@ -174,7 +174,7 @@ namespace GoogleCloudExtension.Accounts
         /// Stores a new set of user credentials in the credentials store.
         /// </summary>
         /// <param name="userAccount"></param>
-        /// <returns></returns>
+        
         public void AddAccount(UserAccount userAccount)
         {
             EnsureCredentialsRootExist();

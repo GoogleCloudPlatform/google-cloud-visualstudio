@@ -17,8 +17,14 @@ using System.Collections.Generic;
 
 namespace GoogleCloudExtension.GCloud.Models
 {
+    /// <summary>
+    /// This class contains the definition of a load balancer.
+    /// </summary>
     public class GkeLoadBalancer
     {
+        /// <summary>
+        /// The properties of the load balancer.
+        /// </summary>
         [JsonProperty("ingress")]
         public IList<IDictionary<string, string>> Ingress { get; set; }
     }

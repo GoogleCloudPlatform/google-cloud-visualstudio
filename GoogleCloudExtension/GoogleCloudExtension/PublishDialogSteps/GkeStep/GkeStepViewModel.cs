@@ -96,11 +96,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             set { SetValueAndRaise(ref _openWebsite, value); }
         }
 
-        public GkeStepViewModel(GkeStepContent content)
+        private GkeStepViewModel(GkeStepContent content)
         {
             _content = content;
 
-            Clusters = new AsyncPropertyValue<IList<Cluster>>(GetAllClusters());
+            Clusters = new AsyncPropertyValue<IList<Cluster>>(GetAllClustersAsync());
         }
 
         #region IPublishDialogStep overrides
@@ -189,7 +189,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         #endregion
 
-        private async Task<IList<Cluster>> GetAllClusters()
+        private async Task<IList<Cluster>> GetAllClustersAsync()
         {
             var dataSource = new GkeDataSource(
                 CredentialsStore.Default.CurrentProjectId,

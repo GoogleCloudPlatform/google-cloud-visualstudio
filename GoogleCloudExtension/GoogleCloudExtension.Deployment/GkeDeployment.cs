@@ -27,8 +27,14 @@ namespace GoogleCloudExtension.Deployment
     /// </summary>
     public static class GkeDeployment
     {
+        // Wait for up to 5 mins when waiting for a new service's IP address.
+        private static readonly TimeSpan s_newServiceIpTimeout = new TimeSpan(0, 5, 0);
+
+        // Wait for up to 2 seconds in between calls when polling.
+        private static readonly TimeSpan s_pollingDelay = new TimeSpan(0, 0, 2);
+
         /// <summary>
-        /// The options that define an app's deployment.
+        /// The options that define an app's deployment. All options are required.
         /// </summary>
         public class DeploymentOptions
         {
@@ -153,7 +159,7 @@ namespace GoogleCloudExtension.Deployment
                     Debug.WriteLine($"Creating new deployment {options.DeploymentName}");
                     if (!await KubectlWrapper.CreateDeploymentAsync(
                             name: options.DeploymentName,
-                            image: image,
+                            imageTag: image,
                             outputAction: outputAction,
                             context: kubectlContext))
                     {
@@ -210,25 +216,22 @@ namespace GoogleCloudExtension.Deployment
         {
             DateTime start = DateTime.Now;
             TimeSpan actualTime = DateTime.Now - start;
-            while (actualTime.TotalMinutes < 5)
+            while (actualTime < s_newServiceIpTimeout)
             {
                 waitingCallback();
                 var service = await KubectlWrapper.GetServiceAsync(name, kubectlContext);
-                if (service?.Status?.LoadBalancer.Ingress != null)
+                var ingress = service?.Status?.LoadBalancer?.Ingress?.FirstOrDefault();
+                if (ingress != null)
                 {
-                    var ingress = service?.Status?.LoadBalancer.Ingress.FirstOrDefault();
-                    if (ingress != null)
+                    string ipAddress = null;
+                    if (ingress.TryGetValue("ip", out ipAddress))
                     {
-                        string ipAddress = null;
-                        if (ingress.TryGetValue("ip", out ipAddress))
-                        {
-                            Debug.WriteLine($"Found service IP address: {ipAddress}");
-                            return ipAddress;
-                        }
+                        Debug.WriteLine($"Found service IP address: {ipAddress}");
+                        return ipAddress;
                     }
                 }
                 Debug.WriteLine("Waiting for service to be public.");
-                await Task.Delay(2000);
+                await Task.Delay(s_pollingDelay);
                 actualTime = DateTime.Now - start;
             }
 
