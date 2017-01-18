@@ -49,7 +49,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 new LogSeverityItem(LogSeverity.Warning, Resources.LogViewerLogLevelWarningLabel),
                 new LogSeverityItem(LogSeverity.Error, Resources.LogViewerLogLevelErrorLabel),
                 new LogSeverityItem(LogSeverity.Critical, Resources.LogViewerLogLevelCriticalLabel),
-                new LogSeverityItem(LogSeverity.Emergency, Resources.LogViewerLogLevelErrorLabel),
+                new LogSeverityItem(LogSeverity.Emergency, Resources.LogViewerLogLevelEmergencyLabel),
                 new LogSeverityItem(LogSeverity.All, Resources.LogViewerLogLevelAllLabel)
             };
 
