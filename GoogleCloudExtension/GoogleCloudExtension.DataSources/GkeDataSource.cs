@@ -27,6 +27,8 @@ namespace GoogleCloudExtension.DataSources
     /// </summary>
     public class GkeDataSource : DataSourceBase<ContainerService>
     {
+        // This value means to fetch data from all the zones, instead of specifying the
+        // specific zones.
         private const string AllZonesValue = "-";
 
         public GkeDataSource(string projectId, GoogleCredential credential, string appName) :

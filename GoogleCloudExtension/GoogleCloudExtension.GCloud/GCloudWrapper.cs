@@ -41,7 +41,6 @@ namespace GoogleCloudExtension.GCloud
         /// variable until it finds it. With this we assume that in order to run the extension gcloud.cmd is
         /// in the PATH.
         /// </summary>
-        /// <returns></returns>
         public static string GetGCloudPath() =>
             Environment.GetEnvironmentVariable("PATH")
                 .Split(';')
@@ -53,7 +52,6 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="instanceName"></param>
         /// <param name="zoneName"></param>
         /// <param name="userName"></param>
-        /// <returns></returns>
         public static Task<WindowsInstanceCredentials> ResetWindowsCredentialsAsync(
             string instanceName,
             string zoneName,
@@ -71,7 +69,6 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="promote">Whether to promote the app or not.</param>
         /// <param name="outputAction">The action to call with output from the command.</param>
         /// <param name="context">The context under which the command is executed.</param>
-        /// <returns></returns>
         public static Task<bool> DeployAppAsync(
             string appYaml,
             string version,
@@ -91,7 +88,6 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="zone">The zone of the cluster.</param>
         /// <param name="path">The path where to store the credentials.</param>
         /// <param name="context">The context under which the command is executed.</param>
-        /// <returns></returns>
         public static Task<bool> CreateCredentialsForClusterAsync(string cluster, string zone, string path, GCloudContext context)
         {
             return RunCommandAsync(
@@ -109,7 +105,6 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="buildFilePath">The path to the cloudbuild.yaml file.</param>
         /// <param name="contentsPath">The contents of the container.</param>
         /// <param name="context">The context under which the command is executed.</param>
-        /// <returns></returns>
         public static Task<bool> BuildContainerAsync(string buildFilePath, string contentsPath, Action<string> outputAction, GCloudContext context)
         {
             return RunCommandAsync(
@@ -134,7 +129,6 @@ namespace GoogleCloudExtension.GCloud
         /// <summary>
         /// Returns the list of components that gcloud knows about.
         /// </summary>
-        /// <returns></returns>
         public static async Task<IList<string>> GetInstalledComponentsAsync()
         {
             Debug.WriteLine("Reading list of components.");
@@ -145,7 +139,6 @@ namespace GoogleCloudExtension.GCloud
         /// <summary>
         /// Detects if gcloud is present in the system.
         /// </summary>
-        /// <returns></returns>
         public static bool IsGCloudCliInstalled()
         {
             Debug.WriteLine("Validating GCloud installation.");

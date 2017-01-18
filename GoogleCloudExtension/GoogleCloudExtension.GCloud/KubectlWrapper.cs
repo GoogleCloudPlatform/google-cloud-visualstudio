@@ -29,20 +29,20 @@ namespace GoogleCloudExtension.GCloud
     {
         /// <summary>
         /// Creates a deployment for the given image and with the given name. The deployment is created with pods that
-        /// contains a single container running <paramref name="image"/>.
+        /// contain a single container running <paramref name="imageTag"/>.
         /// </summary>
         /// <param name="name">The name of the deployemnt to be created.</param>
-        /// <param name="image">The image to use for the deployment.</param>
+        /// <param name="imageTag">The Docker image tag to use for the deployment.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <param name="context">The context for invoking kubectl.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
         public static Task<bool> CreateDeploymentAsync(
             string name,
-            string image,
+            string imageTag,
             Action<string> outputAction,
             KubectlContext context)
         {
-            return RunCommandAsync($"run {name} --image={image} --port=8080 --record", outputAction, context);
+            return RunCommandAsync($"run {name} --image={imageTag} --port=8080 --record", outputAction, context);
         }
 
         /// <summary>
@@ -95,21 +95,21 @@ namespace GoogleCloudExtension.GCloud
         }
 
         /// <summary>
-        /// Updates an existing deployemnt given by <paramref name="name"/> with <paramref name="image"/>.
+        /// Updates an existing deployemnt given by <paramref name="name"/> with <paramref name="imageTag"/>.
         /// </summary>
         /// <param name="name">The name of the deployment to update.</param>
-        /// <param name="image">The image to update to.</param>
+        /// <param name="imageTag">The Docker image tag to update to.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <param name="context">The context for invoking kubectl.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
         public static Task<bool> UpdateDeploymentImageAsync(
             string name,
-            string image,
+            string imageTag,
             Action<string> outputAction,
             KubectlContext context)
         {
             return RunCommandAsync(
-                $"set image deployment/{name} {name}={image} --record",
+                $"set image deployment/{name} {name}={imageTag} --record",
                 outputAction,
                 context);
         }

@@ -50,7 +50,6 @@ namespace GoogleCloudExtension.Deployment
         /// <summary>
         /// Returns the expected URL for the deployed app.
         /// </summary>
-        /// <returns></returns>
         public string GetDeploymentUrl()
         {
             if (Promoted)

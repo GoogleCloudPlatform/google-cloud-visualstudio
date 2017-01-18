@@ -138,7 +138,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// Creates a new step instance. This method will also create the necessary view and conect both
         /// objects together.
         /// </summary>
-        /// <returns></returns>
         internal static FlexStepViewModel CreateStep()
         {
             var content = new FlexStepContent();

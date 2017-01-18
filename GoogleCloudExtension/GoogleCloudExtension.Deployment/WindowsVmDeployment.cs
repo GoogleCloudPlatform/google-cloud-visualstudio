@@ -39,7 +39,6 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="credentials">The Windows credentials to use to deploy to the <paramref name="targetInstance"/>.</param>
         /// <param name="progress">The progress indicator.</param>
         /// <param name="outputAction">The action to call with lines of output.</param>
-        /// <returns></returns>
         public static async Task<bool> PublishProjectAsync(
             string projectPath,
             Instance targetInstance,

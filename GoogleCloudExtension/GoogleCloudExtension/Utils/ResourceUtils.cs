@@ -31,14 +31,12 @@ namespace GoogleCloudExtension.Utils
         /// Returns the resource Uri given its local path in the project.
         /// </summary>
         /// <param name="path">The local path in the project.</param>
-        /// <returns></returns>
         public static Uri GetResourceUri(string path) => new Uri($"pack://application:,,,/{s_assemblyName.Value};component/{path}");
 
         /// <summary>
         /// Loads an image resource given its relative path in the resources.
         /// </summary>
         /// <param name="path">The path of the resource to load.</param>
-        /// <returns></returns>
         public static ImageSource LoadImage(string path)
         {
             var uri = GetResourceUri(path);

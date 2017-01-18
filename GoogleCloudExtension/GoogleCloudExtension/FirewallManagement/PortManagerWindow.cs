@@ -37,7 +37,6 @@ namespace GoogleCloudExtension.FirewallManagement
         /// Shows the dialog to the user and returns the changes requested.
         /// </summary>
         /// <param name="instance">The instance on which open/close ports.</param>
-        /// <returns></returns>
         public static PortChanges PromptUser(Instance instance)
         {
             var window = new PortManagerWindow(instance);

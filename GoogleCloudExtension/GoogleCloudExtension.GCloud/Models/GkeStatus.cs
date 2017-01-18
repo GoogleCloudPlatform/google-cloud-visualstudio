@@ -16,8 +16,14 @@ using Newtonsoft.Json;
 
 namespace GoogleCloudExtension.GCloud.Models
 {
+    /// <summary>
+    /// This class contains the status of an Kubernetes entity.
+    /// </summary>
     public class GkeStatus
     {
+        /// <summary>
+        /// The load balancer status for the entity.
+        /// </summary>
         [JsonProperty("loadBalancer")]
         public GkeLoadBalancer LoadBalancer { get; set; }
     }

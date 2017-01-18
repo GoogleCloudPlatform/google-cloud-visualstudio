@@ -26,7 +26,6 @@ namespace GoogleCloudExtension.Deployment
         /// Returns the project name given the path to the project.json.
         /// </summary>
         /// <param name="projectPath">The full path to the project.json of the project.</param>
-        /// <returns></returns>
         internal static string GetProjectName(string projectPath)
         {
             var directory = Path.GetDirectoryName(projectPath);

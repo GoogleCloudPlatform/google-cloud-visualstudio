@@ -14,8 +14,14 @@
 
 namespace GoogleCloudExtension.GCloud
 {
+    /// <summary>
+    /// This class contains the context on which to run kubectl commands.
+    /// </summary>
     public class KubectlContext
     {
+        /// <summary>
+        /// Path to the config file that identifies the cluster for kubcectl commands.
+        /// </summary>
         public string Config { get; set; }
     }
 }

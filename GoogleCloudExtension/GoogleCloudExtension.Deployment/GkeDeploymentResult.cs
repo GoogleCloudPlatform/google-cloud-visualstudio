@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.Deployment
         public bool WasExposed { get; }
 
         /// <summary>
-        /// Is true if the deployment was replaced, false if a new deployment was created.
+        /// Is true if the deployment was updated, false if a new deployment was created.
         /// </summary>
         public bool DeploymentUpdated { get; }
 
