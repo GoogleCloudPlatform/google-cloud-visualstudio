@@ -1913,42 +1913,6 @@ namespace GoogleCloudExtension {
                 return ResourceManager.GetString("GcePublishSuccessMessage", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to All Log Levels.
-        /// </summary>
-        public static string LogViewerAllLogLevelSelection {
-            get {
-                return ResourceManager.GetString("LogViewerAllLogLevelSelection", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Error displaying the entry. .
-        /// </summary>
-        public static string LogsViewerDataConversionGenericError {
-            get {
-                return ResourceManager.GetString("LogsViewerDataConversionGenericError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [{0}].
-        /// </summary>
-        public static string LogsViewerDetailTreeViewArrayIndexFormat {
-            get {
-                return ResourceManager.GetString("LogsViewerDetailTreeViewArrayIndexFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} :.
-        /// </summary>
-        public static string LogsViewerDetailTreeViewNameLabelFormat {
-            get {
-                return ResourceManager.GetString("LogsViewerDetailTreeViewNameLabelFormat", resourceCulture);
-            }
-        }
         
         /// <summary>
         ///   Looks up a localized string similar to Any.
@@ -1965,6 +1929,33 @@ namespace GoogleCloudExtension {
         public static string LogViewerCollapseAllTip {
             get {
                 return ResourceManager.GetString("LogViewerCollapseAllTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error displaying the entry. .
+        /// </summary>
+        public static string LogViewerDataConversionGenericError {
+            get {
+                return ResourceManager.GetString("LogViewerDataConversionGenericError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [{0}].
+        /// </summary>
+        public static string LogViewerDetailTreeViewArrayIndexFormat {
+            get {
+                return ResourceManager.GetString("LogViewerDetailTreeViewArrayIndexFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} :.
+        /// </summary>
+        public static string LogViewerDetailTreeViewNameLabelFormat {
+            get {
+                return ResourceManager.GetString("LogViewerDetailTreeViewNameLabelFormat", resourceCulture);
             }
         }
         
@@ -2001,6 +1992,69 @@ namespace GoogleCloudExtension {
         public static string LogViewerLogItemTimeFormat {
             get {
                 return ResourceManager.GetString("LogViewerLogItemTimeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Log Levels.
+        /// </summary>
+        public static string LogViewerLogLevelAllLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelAllLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CRITICAL.
+        /// </summary>
+        public static string LogViewerLogLevelCriticalLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelCriticalLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DEBUG.
+        /// </summary>
+        public static string LogViewerLogLevelDebugLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelDebugLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EMERGENCY.
+        /// </summary>
+        public static string LogViewerLogLevelEmergencyLabe {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelEmergencyLabe", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ERROR.
+        /// </summary>
+        public static string LogViewerLogLevelErrorLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelErrorLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INFO.
+        /// </summary>
+        public static string LogViewerLogLevelInfoLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelInfoLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WARNING.
+        /// </summary>
+        public static string LogViewerLogLevelWarningLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelWarningLabel", resourceCulture);
             }
         }
         

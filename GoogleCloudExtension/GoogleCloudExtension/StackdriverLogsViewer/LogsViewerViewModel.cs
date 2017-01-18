@@ -35,9 +35,24 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     {
         private const int DefaultPageSize = 100;
 
-        private static readonly string[] s_defaultResourceSelections = new string[] { "global", "gce_instance" };
-        private static readonly LogSeverity[] s_logSeveritySelections = new LogSeverity[] {LogSeverity.Debug,
-            LogSeverity.Info, LogSeverity.Warning, LogSeverity.Error, LogSeverity.Critical, LogSeverity.Emergency };
+        private static readonly string[] s_defaultResourceSelections = 
+            new string[] {
+                "gce_instance",
+                "gae_app",
+                "global"
+            };
+
+        private static readonly LogSeverityItem[] s_logSeveritySelections = 
+            new LogSeverityItem[] {
+                new LogSeverityItem(LogSeverity.Debug, Resources.LogViewerLogLevelDebugLabel),
+                new LogSeverityItem(LogSeverity.Info, Resources.LogViewerLogLevelInfoLabel),
+                new LogSeverityItem(LogSeverity.Warning, Resources.LogViewerLogLevelWarningLabel),
+                new LogSeverityItem(LogSeverity.Error, Resources.LogViewerLogLevelDebugLabel),
+                new LogSeverityItem(LogSeverity.Critical, Resources.LogViewerLogLevelDebugLabel),
+                new LogSeverityItem(LogSeverity.Emergency, Resources.LogViewerLogLevelDebugLabel),
+                new LogSeverityItem(LogSeverity.All, Resources.LogViewerLogLevelAllLabel)
+            };
+
 
         /// <summary>
         /// This is the filters combined by all selectors.
@@ -45,7 +60,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private string _filter;
         private MonitoredResourceDescriptor _selectedResource;
         private IList<MonitoredResourceDescriptor> _resourceDescriptors;
-        private string _selectedLogSeverity = Resources.LogViewerAllLogLevelSelection;
+        private LogSeverityItem _selectedLogSeverity = s_logSeveritySelections.LastOrDefault();
 
         private bool _isLoading;
         private Lazy<LoggingDataSource> _dataSource;
@@ -67,19 +82,20 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the list of Log Level items.
         /// </summary>
-        public IEnumerable<string> LogSeverityList => InitializeLogSeveritySelection();
+        public IEnumerable<LogSeverityItem> LogSeverityList => s_logSeveritySelections;
 
         /// <summary>
         /// Gets or sets the selected log severity value.
         /// </summary>
-        public string SelectedLogSeverity
+        public LogSeverityItem SelectedLogSeverity
         {
             get { return _selectedLogSeverity; }
             set
             {
-                if (value != null && _selectedLogSeverity != value)
+                var old_value = _selectedLogSeverity;
+                SetValueAndRaise(ref _selectedLogSeverity, value);
+                if (value != null && old_value != value)
                 {
-                    _selectedLogSeverity = value;
                     OnFiltersChanged();
                 }
             }
@@ -102,9 +118,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             get { return _selectedResource; }
             set
             {
-                if (value != null && _selectedResource != value)
+                var old_value = _selectedResource;
+                SetValueAndRaise(ref _selectedResource, value);
+                // if old_value == null,  this is the first time when ResourceDescriptors is assigned.
+                // Ignore this change because the SelectedResource will be set to default value immediately.
+                if (old_value != null && value != null && old_value != value)
                 {
-                    SetValueAndRaise(ref _selectedResource, value);
                     OnFiltersChanged();
                 }
             }
@@ -406,7 +425,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            if (_resourceDescriptors?[0] == null)
+            if (_resourceDescriptors?.FirstOrDefault() == null)
             {
                 PopulateResourceTypes();
                 return;
@@ -435,17 +454,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 return null;
             }
-        }
-
-        /// <summary>
-        /// Creates the list of log severity selection items.
-        /// </summary>
-        private List<string> InitializeLogSeveritySelection()
-        {
-            List<string> items = new List<string>(
-                s_logSeveritySelections.Select(x => x.ToString("G").ToUpperInvariant()));
-            items.Add(Resources.LogViewerAllLogLevelSelection);
-            return items;
         }
 
         /// <summary>
@@ -486,7 +494,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             foreach (var defaultSelection in s_defaultResourceSelections)
             {
-                var desc = _resourceDescriptors?.First(x => x.Type == defaultSelection);
+                var desc = _resourceDescriptors?.FirstOrDefault(x => x.Type == defaultSelection);
                 if (desc != null)
                 {
                     SelectedResource = desc;
@@ -495,7 +503,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             // Select first one if type of global or gce_instance does not exists.
-            SelectedResource = _resourceDescriptors?[0];
+            SelectedResource = _resourceDescriptors?.FirstOrDefault();
         }
 
         private void OnFiltersChanged()
@@ -511,14 +519,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private string ComposeSimpleFilters()
         {
             StringBuilder filter = new StringBuilder();
-            if (_selectedResource != null)
+            if (SelectedResource != null)
             {
-                filter.AppendLine($"resource.type=\"{_selectedResource.Type}\"");
+                filter.AppendLine($"resource.type=\"{SelectedResource.Type}\"");
             }
 
-            if (_selectedLogSeverity != null && _selectedLogSeverity != Resources.LogViewerAllLogLevelSelection)
+            if (SelectedLogSeverity != null && SelectedLogSeverity.Severity != LogSeverity.All)
             {
-                filter.AppendLine($"severity>={_selectedLogSeverity}");
+                filter.AppendLine($"severity>={SelectedLogSeverity.Severity.ToString("G")}");
             }
 
             return filter.Length > 0 ? filter.ToString() : null;

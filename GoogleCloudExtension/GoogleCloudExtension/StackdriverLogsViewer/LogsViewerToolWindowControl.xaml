@@ -115,29 +115,25 @@
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Center">
                     
-                    <StackPanel.Resources>
-                        <Style TargetType="ComboBox">
-                            <Setter Property="Margin" Value="0,0,6,0" />
-                            <Setter Property="Padding" Value="8,5,8,5" />
-                            <Setter Property="VerticalAlignment" Value="Center" />
-                            <Setter Property="Background" Value="White" />
-                        </Style>
-                    </StackPanel.Resources>
-
                     <ComboBox 
                         Name="comboResource" 
                         Width="160" 
+                        Style="{StaticResource CommonDocumentComboBoxStyle}"
                         ItemsSource="{Binding ResourceDescriptors}"
                         SelectedItem="{Binding SelectedResource, Mode=TwoWay}"
                         DisplayMemberPath="DisplayName" 
+                        IsSynchronizedWithCurrentItem="true"
                         Loaded="ComboBox_Loaded" >
                     </ComboBox>
 
                     <ComboBox 
                         Name="comboSeverity" 
                         Width="160"
+                        Style="{StaticResource CommonDocumentComboBoxStyle}"
                         ItemsSource="{Binding LogSeverityList}"
                         SelectedItem="{Binding SelectedLogSeverity}"
+                        DisplayMemberPath="DisplayName" 
+                        IsSynchronizedWithCurrentItem="true"
                         Loaded="ComboBox_Loaded" />
                     
                     <controls:IconButton

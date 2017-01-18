@@ -67,7 +67,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
         /// Gets the object name with optional colon.
         /// </summary>
         public string Name => String.IsNullOrWhiteSpace(NodeValue) ? _name :
-            String.Format(Resources.LogsViewerDetailTreeViewNameLabelFormat, _name);
+            String.Format(Resources.LogViewerDetailTreeViewNameLabelFormat, _name);
 
         /// <summary>
         /// Gets tree node children.
@@ -138,11 +138,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             foreach (var element in enumerable)
             {
                 Children.Add(
-                    new ObjectNodeTree(String.Format(Resources.LogsViewerDetailTreeViewArrayIndexFormat, i), element));
+                    new ObjectNodeTree(String.Format(Resources.LogViewerDetailTreeViewArrayIndexFormat, i), element));
                 ++i;
             }
 
-            NodeValue = String.Format(Resources.LogsViewerDetailTreeViewArrayIndexFormat, i);
+            NodeValue = String.Format(Resources.LogViewerDetailTreeViewArrayIndexFormat, i);
         }
 
         private void ParseDictionary(IDictionary dictionaryObject)
@@ -182,7 +182,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
                 {
                     // Value convertion error, display a general error so as not to hide the problem.
                     Children.Add(
-                        new ObjectNodeTree(p.Name, Resources.LogsViewerDataConversionGenericError));
+                        new ObjectNodeTree(p.Name, Resources.LogViewerDataConversionGenericError));
                     Debug.WriteLine(ex.ToString());
                 }
             }
