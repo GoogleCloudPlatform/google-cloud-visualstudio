@@ -8,7 +8,8 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="600" 
         BorderThickness="1" BorderBrush="OrangeRed"
-        Background="White">
+        Background="White"
+        MaxWidth="800">
     <Border.Resources>
         <vct:LogItemConverter x:Key="LogItemConverter"/>
 
