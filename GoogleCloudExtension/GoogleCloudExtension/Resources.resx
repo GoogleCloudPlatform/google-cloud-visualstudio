@@ -1367,16 +1367,44 @@
     <value>Loading . . .</value>
     <comment>List log entries can take seconds to complete, show a status message.</comment>
   </data>
-  <data name="LogsViewerDataConversionGenericError" xml:space="preserve">
+  <data name="LogViewerLogLevelAllLabel" xml:space="preserve">
+    <value>All Log Levels</value>
+    <comment>Log viwer log severity combo box item that indicates to show logs of any level</comment>
+  </data>
+  <data name="LogViewerDataConversionGenericError" xml:space="preserve">
     <value>Error displaying the entry. </value>
     <comment>Showing generic error for parsing LogEntry property tree.</comment>
   </data>
-  <data name="LogsViewerDetailTreeViewArrayIndexFormat" xml:space="preserve">
+  <data name="LogViewerDetailTreeViewArrayIndexFormat" xml:space="preserve">
     <value>[{0}]</value>
     <comment>The detail tree view array index format. The {0} is index of the array element.</comment>
   </data>
-  <data name="LogsViewerDetailTreeViewNameLabelFormat" xml:space="preserve">
+  <data name="LogViewerDetailTreeViewNameLabelFormat" xml:space="preserve">
     <value>{0} :</value>
     <comment>When displaying a tree view item, it contains Name , colon, and value.  This is to format the name colon part. Note, there is a space between  name and colon.</comment>
+  </data>
+  <data name="LogViewerLogLevelCriticalLabel" xml:space="preserve">
+    <value>CRITICAL</value>
+    <comment>The Log Severity selection , critical log level item text.</comment>
+  </data>
+  <data name="LogViewerLogLevelDebugLabel" xml:space="preserve">
+    <value>DEBUG</value>
+    <comment>The Log Severity selection , debug log level item text.</comment>
+  </data>
+  <data name="LogViewerLogLevelEmergencyLabel" xml:space="preserve">
+    <value>EMERGENCY</value>
+    <comment>The Log Severity selection , emergency log level item text.</comment>
+  </data>
+  <data name="LogViewerLogLevelErrorLabel" xml:space="preserve">
+    <value>ERROR</value>
+    <comment>The Log Severity selection , error log level item text.</comment>
+  </data>
+  <data name="LogViewerLogLevelInfoLabel" xml:space="preserve">
+    <value>INFO</value>
+    <comment>The Log Severity selection , info log level item text.</comment>
+  </data>
+  <data name="LogViewerLogLevelWarningLabel" xml:space="preserve">
+    <value>WARNING</value>
+    <comment>The Log Severity selection , warning log level item text.</comment>
   </data>
 </root>

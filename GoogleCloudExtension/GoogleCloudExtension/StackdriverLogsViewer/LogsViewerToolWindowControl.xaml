@@ -111,12 +111,34 @@
 
             <!-- Basic Filters. -->
             <StackPanel Visibility="{Binding BasicFilterVisibility}">
-                <StackPanel Margin="0,0,0,6"
-                            Orientation="Horizontal" 
+                <StackPanel Orientation="Horizontal" 
                             HorizontalAlignment="Left" 
-                            VerticalAlignment="Center" >
+                            VerticalAlignment="Center">
                     
-                    <controls:IconButton 
+                    <ComboBox 
+                        Name="comboResource" 
+                        Margin="0,0,6,0"
+                        Width="160" 
+                        Style="{StaticResource CommonDocumentComboBoxStyle}"
+                        ItemsSource="{Binding ResourceDescriptors}"
+                        SelectedItem="{Binding SelectedResource, Mode=TwoWay}"
+                        DisplayMemberPath="DisplayName" 
+                        IsSynchronizedWithCurrentItem="true"
+                        Loaded="ComboBox_Loaded" >
+                    </ComboBox>
+
+                    <ComboBox 
+                        Name="comboSeverity" 
+                        Margin="0,0,6,0"
+                        Width="160"
+                        Style="{StaticResource CommonDocumentComboBoxStyle}"
+                        ItemsSource="{Binding LogSeverityList}"
+                        SelectedItem="{Binding SelectedLogSeverity}"
+                        DisplayMemberPath="DisplayName" 
+                        IsSynchronizedWithCurrentItem="true"
+                        Loaded="ComboBox_Loaded" />
+                    
+                    <controls:IconButton
                         Grid.Column="1" 
                         Margin="6,0,16,0"
                         Width="32" 
@@ -130,7 +152,7 @@
                         Command="{Binding RefreshCommand}">
                         <controls:IconButton.ToolTip>
                             <ToolTip Content="{x:Static ext:Resources.LogViewerRefreshButtonToolTip}" 
-                                     Style="{StaticResource CommonTooltipStyle}"/>
+                                     Style="{StaticResource CommonTooltipStyle}" />
                         </controls:IconButton.ToolTip>
                     </controls:IconButton>
                 </StackPanel>
