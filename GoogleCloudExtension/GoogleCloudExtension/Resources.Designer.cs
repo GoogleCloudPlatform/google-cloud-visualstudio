@@ -1924,33 +1924,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error displaying the entry. .
-        /// </summary>
-        public static string LogsViewerDataConversionGenericError {
-            get {
-                return ResourceManager.GetString("LogsViewerDataConversionGenericError", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to [{0}].
-        /// </summary>
-        public static string LogsViewerDetailTreeViewArrayIndexFormat {
-            get {
-                return ResourceManager.GetString("LogsViewerDetailTreeViewArrayIndexFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} :.
-        /// </summary>
-        public static string LogsViewerDetailTreeViewNameLabelFormat {
-            get {
-                return ResourceManager.GetString("LogsViewerDetailTreeViewNameLabelFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Any.
         /// </summary>
         public static string LogViewerAnyOtherSeverityLevelTip {
@@ -1965,6 +1938,33 @@ namespace GoogleCloudExtension {
         public static string LogViewerCollapseAllTip {
             get {
                 return ResourceManager.GetString("LogViewerCollapseAllTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error displaying the entry. .
+        /// </summary>
+        public static string LogViewerDataConversionGenericError {
+            get {
+                return ResourceManager.GetString("LogViewerDataConversionGenericError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [{0}].
+        /// </summary>
+        public static string LogViewerDetailTreeViewArrayIndexFormat {
+            get {
+                return ResourceManager.GetString("LogViewerDetailTreeViewArrayIndexFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} :.
+        /// </summary>
+        public static string LogViewerDetailTreeViewNameLabelFormat {
+            get {
+                return ResourceManager.GetString("LogViewerDetailTreeViewNameLabelFormat", resourceCulture);
             }
         }
         
@@ -2001,6 +2001,69 @@ namespace GoogleCloudExtension {
         public static string LogViewerLogItemTimeFormat {
             get {
                 return ResourceManager.GetString("LogViewerLogItemTimeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Log Levels.
+        /// </summary>
+        public static string LogViewerLogLevelAllLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelAllLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CRITICAL.
+        /// </summary>
+        public static string LogViewerLogLevelCriticalLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelCriticalLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DEBUG.
+        /// </summary>
+        public static string LogViewerLogLevelDebugLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelDebugLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EMERGENCY.
+        /// </summary>
+        public static string LogViewerLogLevelEmergencyLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelEmergencyLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ERROR.
+        /// </summary>
+        public static string LogViewerLogLevelErrorLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelErrorLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INFO.
+        /// </summary>
+        public static string LogViewerLogLevelInfoLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelInfoLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WARNING.
+        /// </summary>
+        public static string LogViewerLogLevelWarningLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelWarningLabel", resourceCulture);
             }
         }
         
@@ -2347,7 +2410,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to App Engine Flex.
+        ///   Looks up a localized string similar to _App Engine Flex.
         /// </summary>
         public static string PublishDialogChoiceStepAppEngineFlexName {
             get {
@@ -2365,7 +2428,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Compute Engine.
+        ///   Looks up a localized string similar to _Compute Engine.
         /// </summary>
         public static string PublishDialogChoiceStepGceName {
             get {
@@ -2392,7 +2455,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Promote version.
+        ///   Looks up a localized string similar to P_romote version.
         /// </summary>
         public static string PublishDialogFlexPromoteVersionCaption {
             get {
@@ -2401,7 +2464,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Version name:.
+        ///   Looks up a localized string similar to _Version name:.
         /// </summary>
         public static string PublishDialogFlexVersionNameCaption {
             get {
@@ -2410,7 +2473,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select account:.
+        ///   Looks up a localized string similar to Select _account:.
         /// </summary>
         public static string PublishDialogGceStepSelectCredentialsMessage {
             get {
@@ -2419,7 +2482,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select instance:.
+        ///   Looks up a localized string similar to _Select instance:.
         /// </summary>
         public static string PublishDialogGceStepSelectInstanceMessage {
             get {
@@ -2437,7 +2500,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Next.
+        ///   Looks up a localized string similar to _Next.
         /// </summary>
         public static string PublishDialogNextButtonCaption {
             get {
@@ -2446,7 +2509,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Open website after publish process finishes.
+        ///   Looks up a localized string similar to _Open website after publish process finishes.
         /// </summary>
         public static string PublishDialogOpenWebsiteCaption {
             get {
@@ -2455,7 +2518,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Prev.
+        ///   Looks up a localized string similar to _Prev.
         /// </summary>
         public static string PublishDialogPrevButtonCaption {
             get {
@@ -2473,7 +2536,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Publish.
+        ///   Looks up a localized string similar to P_ublish.
         /// </summary>
         public static string PublishDialogPublishButtonCaption {
             get {

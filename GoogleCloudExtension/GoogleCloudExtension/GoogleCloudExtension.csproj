@@ -228,6 +228,7 @@
     </Compile>
     <Compile Include="StackdriverLogsViewer\LogItem.cs" />
     <Compile Include="StackdriverLogsViewer\LogSeverity.cs" />
+    <Compile Include="StackdriverLogsViewer\LogSeverityItem.cs" />
     <Compile Include="StackdriverLogsViewer\LogsViewerToolWindow.cs" />
     <Compile Include="StackdriverLogsViewer\LogsViewerToolWindowCommand.cs" />
     <Compile Include="StackdriverLogsViewer\LogsViewerToolWindowControl.xaml.cs">

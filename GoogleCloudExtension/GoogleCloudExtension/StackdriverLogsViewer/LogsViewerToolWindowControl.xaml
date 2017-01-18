@@ -90,7 +90,7 @@
             <TextBlock Margin="6, 0, 0, 0"
                        VerticalAlignment="Center" 
                        Style="{StaticResource CommonTextStyle}" 
-                       Text="{Binding Project}" />
+                       Text="{Binding Account}" />
             <TextBlock Margin="12, 0, 0, 0"
                        VerticalAlignment="Center" 
                        Style="{StaticResource CommonTextStyle}"
@@ -98,7 +98,7 @@
             <TextBlock Margin="6, 0, 0, 0" 
                        VerticalAlignment="Center" 
                        Style="{StaticResource CommonTextStyle}" 
-                       Text="{Binding Account}" />
+                       Text="{Binding Project}" />
         </StackPanel>
 
         <!-- Filters -->
@@ -115,29 +115,29 @@
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Center">
                     
-                    <StackPanel.Resources>
-                        <Style TargetType="ComboBox">
-                            <Setter Property="Margin" Value="0,0,6,0" />
-                            <Setter Property="Padding" Value="8,5,8,5" />
-                            <Setter Property="VerticalAlignment" Value="Center" />
-                            <Setter Property="Background" Value="White" />
-                        </Style>
-                    </StackPanel.Resources>
-
                     <ComboBox 
                         Name="comboResource" 
+                        Margin="0,0,6,0"
                         Width="160" 
+                        Style="{StaticResource CommonDocumentComboBoxStyle}"
                         ItemsSource="{Binding ResourceDescriptors}"
                         SelectedItem="{Binding SelectedResource, Mode=TwoWay}"
                         DisplayMemberPath="DisplayName" 
+                        IsSynchronizedWithCurrentItem="true"
                         Loaded="ComboBox_Loaded" >
                     </ComboBox>
 
                     <ComboBox 
                         Name="comboSeverity" 
+                        Margin="0,0,6,0"
                         Width="160"
+                        Style="{StaticResource CommonDocumentComboBoxStyle}"
                         ItemsSource="{Binding LogSeverityList}"
                         SelectedItem="{Binding SelectedLogSeverity}"
+                        DisplayMemberPath="DisplayName" 
+                        IsSynchronizedWithCurrentItem="true"
+                        Loaded="ComboBox_Loaded" />
+                    
                         Loaded="ComboBox_Loaded" />
                     
                     <controls:IconButton
