@@ -186,6 +186,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         public override void OnPushedToDialog(IPublishDialog dialog)
         {
             _publishDialog = dialog;
+
+            _publishDialog.TrackTask(Instances.SourceCompleted);
         }
 
         #endregion
