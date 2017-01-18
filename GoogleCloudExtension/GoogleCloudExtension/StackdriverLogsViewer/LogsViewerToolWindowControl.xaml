@@ -117,6 +117,7 @@
                     
                     <ComboBox 
                         Name="comboResource" 
+                        Margin="0,0,6,0"
                         Width="160" 
                         Style="{StaticResource CommonDocumentComboBoxStyle}"
                         ItemsSource="{Binding ResourceDescriptors}"
@@ -128,6 +129,7 @@
 
                     <ComboBox 
                         Name="comboSeverity" 
+                        Margin="0,0,6,0"
                         Width="160"
                         Style="{StaticResource CommonDocumentComboBoxStyle}"
                         ItemsSource="{Binding LogSeverityList}"
