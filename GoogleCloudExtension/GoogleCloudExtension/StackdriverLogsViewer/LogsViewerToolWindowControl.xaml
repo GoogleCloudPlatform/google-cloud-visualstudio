@@ -137,9 +137,7 @@
                         DisplayMemberPath="DisplayName" 
                         IsSynchronizedWithCurrentItem="true"
                         Loaded="ComboBox_Loaded" />
-                    
-                        Loaded="ComboBox_Loaded" />
-                    
+                                        
                     <controls:IconButton
                         Grid.Column="1" 
                         Margin="6,0,16,0"
