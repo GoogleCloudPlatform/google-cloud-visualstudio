@@ -47,9 +47,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 new LogSeverityItem(LogSeverity.Debug, Resources.LogViewerLogLevelDebugLabel),
                 new LogSeverityItem(LogSeverity.Info, Resources.LogViewerLogLevelInfoLabel),
                 new LogSeverityItem(LogSeverity.Warning, Resources.LogViewerLogLevelWarningLabel),
-                new LogSeverityItem(LogSeverity.Error, Resources.LogViewerLogLevelDebugLabel),
-                new LogSeverityItem(LogSeverity.Critical, Resources.LogViewerLogLevelDebugLabel),
-                new LogSeverityItem(LogSeverity.Emergency, Resources.LogViewerLogLevelDebugLabel),
+                new LogSeverityItem(LogSeverity.Error, Resources.LogViewerLogLevelErrorLabel),
+                new LogSeverityItem(LogSeverity.Critical, Resources.LogViewerLogLevelCriticalLabel),
+                new LogSeverityItem(LogSeverity.Emergency, Resources.LogViewerLogLevelErrorLabel),
                 new LogSeverityItem(LogSeverity.All, Resources.LogViewerLogLevelAllLabel)
             };
 
@@ -120,9 +120,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 var old_value = _selectedResource;
                 SetValueAndRaise(ref _selectedResource, value);
-                // if old_value == null,  this is the first time when ResourceDescriptors is assigned.
-                // Ignore this change because the SelectedResource will be set to default value immediately.
-                if (old_value != null && value != null && old_value != value)
+                if (value != null && old_value != value)
                 {
                     OnFiltersChanged();
                 }
@@ -478,7 +476,18 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             IsControlEnabled = false;
             try
             {
-                ResourceDescriptors = await _dataSource.Value.GetResourceDescriptorsAsync();
+                var descriptors = await _dataSource.Value.GetResourceDescriptorsAsync();
+                List<MonitoredResourceDescriptor> newOrderDescriptors = new List<MonitoredResourceDescriptor>();
+                foreach (var defaultSelection in s_defaultResourceSelections)
+                {
+                    var desc = descriptors?.FirstOrDefault(x => x.Type == defaultSelection);
+                    if (desc != null)
+                    {
+                        newOrderDescriptors.Add(desc);
+                    }
+                }
+                newOrderDescriptors.AddRange(descriptors.Where(x => !s_defaultResourceSelections.Contains(x.Type)));
+                ResourceDescriptors = newOrderDescriptors;  // This will set the selected item to first element.
             }
             catch (DataSourceException ex)
             {
@@ -491,19 +500,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 IsControlEnabled = true;
             }
-
-            foreach (var defaultSelection in s_defaultResourceSelections)
-            {
-                var desc = _resourceDescriptors?.FirstOrDefault(x => x.Type == defaultSelection);
-                if (desc != null)
-                {
-                    SelectedResource = desc;
-                    return;
-                }
-            }
-
-            // Select first one if type of global or gce_instance does not exists.
-            SelectedResource = _resourceDescriptors?.FirstOrDefault();
         }
 
         private void OnFiltersChanged()

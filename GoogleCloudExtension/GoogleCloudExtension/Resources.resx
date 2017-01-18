@@ -1391,7 +1391,7 @@
     <value>DEBUG</value>
     <comment>The Log Severity selection , debug log level item text.</comment>
   </data>
-  <data name="LogViewerLogLevelEmergencyLabe" xml:space="preserve">
+  <data name="LogViewerLogLevelEmergencyLabel" xml:space="preserve">
     <value>EMERGENCY</value>
     <comment>The Log Severity selection , emergency log level item text.</comment>
   </data>

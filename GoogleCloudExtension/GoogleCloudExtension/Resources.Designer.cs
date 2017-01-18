@@ -2025,9 +2025,9 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to EMERGENCY.
         /// </summary>
-        public static string LogViewerLogLevelEmergencyLabe {
+        public static string LogViewerLogLevelEmergencyLabel {
             get {
-                return ResourceManager.GetString("LogViewerLogLevelEmergencyLabe", resourceCulture);
+                return ResourceManager.GetString("LogViewerLogLevelEmergencyLabel", resourceCulture);
             }
         }
         
