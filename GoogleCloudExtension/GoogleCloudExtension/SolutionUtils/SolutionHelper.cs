@@ -15,6 +15,7 @@
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;
+using VSOLEInterop = Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
@@ -48,6 +49,31 @@ namespace GoogleCloudExtension.SolutionUtils
             }
         }
 
+        internal static ServiceProvider GetGloblalServiceProvider()
+        {
+            var dte2 = (DTE2)Package.GetGlobalService(typeof(SDTE));
+            VSOLEInterop.IServiceProvider sp = (VSOLEInterop.IServiceProvider)dte2;
+            return new ServiceProvider(sp);
+        }
+
+        public List<ProjectHelper> Projects { get; } 
+        private List<ProjectHelper> GetProjectList()
+        {
+            List<ProjectHelper> list = new List<ProjectHelper>();
+            foreach (Project project in _solution.Projects)
+            {
+                var helper = ProjectHelper.Create(project);
+                if (helper != null)
+                {
+                    list.Add(helper);
+                }
+            }
+
+            return list;
+        }
+
+        public Solution solution => _solution;
+
         /// <summary>
         /// Returns the path to the root of the solution.
         /// </summary>
@@ -63,12 +89,8 @@ namespace GoogleCloudExtension.SolutionUtils
         /// </summary>
         public ISolutionProject SelectedProject => GetSelectedProject();
 
-        public IEnumerable<ProjectSourceFile> FindMatchingSourceFile(string sourceLocationFilePath)
+        public List<ProjectSourceFile> FindMatchingSourceFile(string sourceLocationFilePath)
         {
-            //return from project in (_solution.Projects as IEnumerable<Project>)
-            //       from item in (project.ProjectItems as IEnumerable<ProjectItem>)
-            //       where ProjectSourceFile.DoesPathMatch(item, sourceLocationFilePath)
-            //       select ProjectSourceFile.Create(item);
             List<ProjectSourceFile> items = new List<ProjectSourceFile>();
             foreach (Project project in _solution.Projects)
             {
@@ -102,6 +124,7 @@ namespace GoogleCloudExtension.SolutionUtils
         private SolutionHelper(Solution solution)
         {
             _solution = solution;
+            Projects = GetProjectList();
         }
 
         private ISolutionProject GetSelectedProject()

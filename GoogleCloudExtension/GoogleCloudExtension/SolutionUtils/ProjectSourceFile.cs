@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.SolutionUtils
 
         public static string NormalizePath(string path)
         {
-            return IOPath.GetFileName(new Uri(path).LocalPath).ToLower(System.Globalization.CultureInfo.InvariantCulture);
+            return IOPath.GetFileName(path).ToLower(System.Globalization.CultureInfo.InvariantCulture);
             //return Path.GetFullPath(new Uri(path).LocalPath)
             //           .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
             //           .ToUpperInvariant();
@@ -96,24 +96,25 @@ namespace GoogleCloudExtension.SolutionUtils
             return new ProjectSourceFile(projectItem);
         }
 
-        public void GotoLine(int line)
+        public Window GotoLine(int line)
         {
             Open();
             TextSelection selection = _window.Document.Selection as TextSelection;
             TextPoint tp = selection.TopPoint;
             selection.GotoLine(line, Select: false);
+            return _window;
         }
 
         private void Open()
         {
-            _window = _projectItem.Open(Constants.vsViewKindPrimary);  // TODO: should it be Constants.vsViewKindCode ?
+            _window = _projectItem.Open(EnvDTE.Constants.vsViewKindPrimary);  // TODO: should it be Constants.vsViewKindCode ?
             Debug.Assert(_window != null, "If the _window is null, there is a code bug");
             _window.Visible = true;
         }
 
         private static bool IsValidSupportedItem(ProjectItem projectItem)
         {
-            if (Constants.vsProjectItemKindPhysicalFile != projectItem?.Kind ||
+            if (EnvDTE.Constants.vsProjectItemKindPhysicalFile != projectItem?.Kind ||
                 !s_supportedFileExtension.Contains(IOPath.GetExtension(projectItem.Name).ToLower()))
             {
                 return false;

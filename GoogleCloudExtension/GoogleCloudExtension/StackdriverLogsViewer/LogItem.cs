@@ -23,6 +23,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Media;
+using Microsoft.VisualStudio.Text.Editor;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -57,6 +58,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private DateTime _timestamp;
         private readonly string _sourceFilePath;
         private readonly int _sourceLine;
+
+        public static LogItem CurrentSourceLineLogItem { get; private set; }
+        public IWpfTextView SourceLineTextView { get; private set; }
 
         /// <summary>
         /// Gets a log entry object.
@@ -252,7 +256,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             var sourceFiles = SolutionHelper.CurrentSolution?.FindMatchingSourceFile(_sourceFilePath);
             if (sourceFiles.Count() > 0)
             {
-                sourceFiles.First().GotoLine(_sourceLine);
+                CurrentSourceLineLogItem = this;
+                var window = sourceFiles.First().GotoLine(_sourceLine);
+                SourceLineTextView = HighlightLogger.ShowTip(window);
             }
         }
     }
