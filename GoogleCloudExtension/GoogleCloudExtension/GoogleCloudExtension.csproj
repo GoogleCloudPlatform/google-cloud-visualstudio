@@ -238,6 +238,9 @@
     </Compile>
     <Compile Include="StackdriverLogsViewer\DateTimePickerViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\HighlightLogger.cs" />
+    <Compile Include="StackdriverLogsViewer\LoggerTooltip.xaml.cs">
+      <DependentUpon>LoggerTooltip.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StackdriverLogsViewer\LoggingTagger.cs" />
     <Compile Include="StackdriverLogsViewer\LogIdsList.cs" />
     <Compile Include="StackdriverLogsViewer\LogItem.cs" />
@@ -684,6 +687,10 @@
     <Page Include="StackdriverLogsViewer\DateTimePicker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StackdriverLogsViewer\LoggerTooltip.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="StackdriverLogsViewer\LogsViewerToolWindowControl.xaml">
       <SubType>Designer</SubType>

@@ -13,6 +13,8 @@ using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 using System.Diagnostics;
 
+using GoogleCloudExtension.SolutionUtils;
+
 using Microsoft.VisualStudio.Text.Adornments;
 
 using System.Windows.Controls;
@@ -141,7 +143,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     {
                         yield return new TagSpan<LoggingTag>(span, new LoggingTag());
                         showToolTip = true;
-                        ShowToolTip(span);
+                        string text;
+
+                        // TODO: handle null return of GetTextViewLineSpan
+                        ShowToolTip(EditorSpanHelpers.GetTextViewLineSpan(_view, _currentViewLine, out text).Value);
                     }
                 }
             }
@@ -155,20 +160,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
         }
 
-        private void ShowToolTip(SnapshotSpan span)
+        private UIElement ToolTipControlDefault(LogItem logItem)
         {
-            this._toolTipProvider.ClearToolTip();
-            this._toolTipProvider.ShowToolTip(
-                span.Snapshot.CreateTrackingSpan(
-                    span, SpanTrackingMode.EdgeExclusive),
-                new Border
+            return new Border
+            {
+                Background = new SolidColorBrush(Colors.LightGray),
+                Padding = new Thickness(10),
+                Child = new StackPanel
                 {
-                    Background = new SolidColorBrush(Colors.LightGray),
-                    Padding = new Thickness(10),
-                    Child = new StackPanel
-                    {
-                        Orientation = Orientation.Horizontal,
-                        Children =
+                    Orientation = Orientation.Horizontal,
+                    Children =
                         {
                             new Rectangle
                             {
@@ -181,13 +182,29 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                                 Margin = new Thickness(10, 0, 0, 0),
                                 Inlines =
                                 {
-                                    new Run(LogItem.CurrentSourceLineLogItem?.Message)
+                                    new Run(logItem.Message)
                                 }
                             }
                         }
-                    }
-                }, 
-                PopupStyles.None);
+                }
+            };
+        }
+
+        private UIElement ToolTipControl(LogItem logItem)
+        {
+            var control = new LoggerTooltip();
+            control.DataContext = logItem;
+            return control;
+        }
+
+        private void ShowToolTip(SnapshotSpan span)
+        {
+            this._toolTipProvider.ClearToolTip();
+            this._toolTipProvider.ShowToolTip(
+                span.Snapshot.CreateTrackingSpan(
+                    span, SpanTrackingMode.EdgeExclusive),
+                    ToolTipControl(LogItem.CurrentSourceLineLogItem), 
+                    PopupStyles.PositionClosest);
         }
     }
 
