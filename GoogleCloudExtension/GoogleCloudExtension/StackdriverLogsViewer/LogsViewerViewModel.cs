@@ -35,6 +35,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     {
         private const int DefaultPageSize = 100;
 
+        /// <summary>
+        /// The default resource types to show. 
+        /// Order matters, if a resource type in the list does not have logs, fall back to the next one. 
+        /// </summary>
         private static readonly string[] s_defaultResourceSelections = 
             new string[] {
                 "gce_instance",
@@ -478,6 +482,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 var descriptors = await _dataSource.Value.GetResourceDescriptorsAsync();
                 List<MonitoredResourceDescriptor> newOrderDescriptors = new List<MonitoredResourceDescriptor>();
+                // Keep the order.
                 foreach (var defaultSelection in s_defaultResourceSelections)
                 {
                     var desc = descriptors?.FirstOrDefault(x => x.Type == defaultSelection);
