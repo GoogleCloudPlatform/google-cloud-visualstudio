@@ -90,7 +90,7 @@
             <TextBlock Margin="6, 0, 0, 0"
                        VerticalAlignment="Center" 
                        Style="{StaticResource CommonTextStyle}" 
-                       Text="{Binding Project}" />
+                       Text="{Binding Account}" />
             <TextBlock Margin="12, 0, 0, 0"
                        VerticalAlignment="Center" 
                        Style="{StaticResource CommonTextStyle}"
@@ -98,7 +98,7 @@
             <TextBlock Margin="6, 0, 0, 0" 
                        VerticalAlignment="Center" 
                        Style="{StaticResource CommonTextStyle}" 
-                       Text="{Binding Account}" />
+                       Text="{Binding Project}" />
         </StackPanel>
 
         <!-- Filters -->
