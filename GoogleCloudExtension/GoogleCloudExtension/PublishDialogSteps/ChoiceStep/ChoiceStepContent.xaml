@@ -8,25 +8,36 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{x:Type local:ChoiceStepViewModel}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="{x:Static ext:Resources.PublishDialogChoiceStepMessage}" />
+        <TextBlock Text="{x:Static ext:Resources.PublishDialogChoiceStepMessage}"  Style="{StaticResource CommonTextStyle}" />
 
         <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
-            <ItemsControl ItemsSource="{Binding Choices}">
+            <ItemsControl ItemsSource="{Binding Choices}" Focusable="False">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <Button Content="{Binding}"
-                                    Height="60" Width="200"
-                                    Grid.Column="1"
-                                    HorizontalContentAlignment="Stretch"
-                                    VerticalContentAlignment="Stretch"
-                                    ToolTip="{Binding ToolTip}"
-                                    Command="{Binding Command}" Margin="0,0,0,20">
+                                Height="60" Width="200"
+                                Grid.Column="1"
+                                HorizontalContentAlignment="Stretch"
+                                VerticalContentAlignment="Stretch"
+                                ToolTip="{Binding ToolTip}"
+                                Command="{Binding Command}"
+                                Margin="0,0,0,20"
+                                Style="{StaticResource CommonButtonDynamicStyle}">
                             <Button.ContentTemplate>
                                 <DataTemplate>
                                     <Grid Margin="5,0,0,0">
@@ -38,6 +49,7 @@
                                         <Image Source="{Binding Icon}" VerticalAlignment="Center" HorizontalAlignment="Center" />
                                         <ContentPresenter Content="{Binding Name}"
                                                           Grid.Column="1"
+                                                          RecognizesAccessKey="True"
                                                           VerticalAlignment="Center"
                                                           Margin="5,0,0,0"/>
                                     </Grid>
