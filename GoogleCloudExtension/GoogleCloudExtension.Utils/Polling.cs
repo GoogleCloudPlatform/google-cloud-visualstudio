@@ -74,7 +74,6 @@ namespace GoogleCloudExtension.Utils
         /// <param name="token">Optional, A cancelation token used to stop polling manually.</param>
         /// <exception cref="TimeoutException">If the polling passes the timeout threshold.</exception>>
         /// <exception cref="OperationCanceledException">If the operation is canceled.</exception>>
-        /// <returns></returns>
         public static async Task<T> Poll(T resource, Func<T, Task<T>> fetch, Predicate<T> stopPolling,
             PollingConfiguration config = null, CancellationToken token = default(CancellationToken))
         {

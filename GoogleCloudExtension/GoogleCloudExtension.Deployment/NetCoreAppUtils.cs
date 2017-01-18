@@ -50,7 +50,6 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="projectPath">The full path to the project to publish.</param>
         /// <param name="stageDirectory">The directory to which to publish.</param>
         /// <param name="outputAction">The callback to call with output from the command.</param>
-        /// <returns></returns>
         internal static Task<bool> CreateAppBundleAsync(string projectPath, string stageDirectory, Action<string> outputAction)
         {
             var arguments = $"publish \"{projectPath}\" " +

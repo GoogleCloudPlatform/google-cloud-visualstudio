@@ -202,7 +202,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// <summary>
         /// Creates a GKE step complete with behavior and visuals.
         /// </summary>
-        /// <returns></returns>
         internal static GkeStepViewModel CreateStep()
         {
             var content = new GkeStepContent();

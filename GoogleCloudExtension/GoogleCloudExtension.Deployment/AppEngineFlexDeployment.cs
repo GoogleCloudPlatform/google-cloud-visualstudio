@@ -64,7 +64,6 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="options">The <seealso cref="DeploymentOptions"/> to use.</param>
         /// <param name="progress">The progress indicator.</param>
         /// <param name="outputAction">The action to call with lines from the command output.</param>
-        /// <returns></returns>
         public static async Task<AppEngineFlexDeploymentResult> PublishProjectAsync(
             string projectPath,
             DeploymentOptions options,
