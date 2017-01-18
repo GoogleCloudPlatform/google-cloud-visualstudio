@@ -420,10 +420,6 @@
         </Setter>
     </Style>
 
-                            Width="{TemplateBinding Width}"
-                            Height="{TemplateBinding Height}">
-                            <Setter Property="Background" TargetName="imageButtonBorder" Value="Gold" />
-                            <Setter Property="Background" TargetName="imageButtonBorder" Value="Goldenrod" />
     <!-- Common PasswordWithReveal style. -->
 
     <!-- Ultra simple template for the TextBox used to display the password. -->

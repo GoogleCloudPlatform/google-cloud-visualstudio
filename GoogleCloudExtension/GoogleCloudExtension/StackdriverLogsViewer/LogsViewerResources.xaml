@@ -60,7 +60,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:IconButton}">
-                    <Border x:Name="border"
+                    <Border x:Name="_imageButtonBorder"
                             Background="{TemplateBinding Background}">
                         <Image x:Name="imagePresenter" 
                                HorizontalAlignment="Center"
@@ -73,10 +73,12 @@
                         <Trigger Property="IsMouseOver" Value="true">
                             <Setter Property="Source" TargetName="imagePresenter" 
                                     Value="{Binding MouseOverIcon, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Setter Property="Background" TargetName="_imageButtonBorder" Value="Gold" />
                         </Trigger>
                         <Trigger Property="IsPressed" Value="true">
                             <Setter Property="Source" TargetName="imagePresenter" 
                                     Value="{Binding MouseDownIcon, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Setter Property="Background" TargetName="_imageButtonBorder" Value="Goldenrod" />
                         </Trigger>
                         <Trigger Property="IsEnabled" Value="False">
                             <Setter Property="Opacity" Value="0.6" />

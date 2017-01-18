@@ -216,7 +216,7 @@
                              Style="{StaticResource WartermarkedTextBox}">
                         </TextBox>
                         
-                        <controls:ImageButton 
+                        <controls:IconButton 
                             Grid.Column="1" 
                             Padding="2, 0, 2, 0"
                             BorderThickness="0"
@@ -225,13 +225,13 @@
                             HorizontalAlignment="Right"
                             VerticalAlignment="Stretch"
                             Command="{Binding SimpleTextSearchCommand}"
-                            NormalImage="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}"
-                            MouseOverImage="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}"
-                            MouseDownImage="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}">
-                            <controls:ImageButton.ToolTip>
+                            NormalIcon="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}"
+                            MouseOverIcon="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}"
+                            MouseDownIcon="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}">
+                            <controls:IconButton.ToolTip>
                                 <ToolTip Content="{x:Static ext:Resources.LogViewerSimpleTextSearchIconButtonToolTip}"/>
-                            </controls:ImageButton.ToolTip>
-                        </controls:ImageButton>  
+                            </controls:IconButton.ToolTip>
+                        </controls:IconButton>  
                         
                     </Grid>
                 </Border>
