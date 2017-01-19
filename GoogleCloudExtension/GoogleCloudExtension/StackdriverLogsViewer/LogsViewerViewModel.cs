@@ -180,7 +180,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 SetValueAndRaise(ref _selectedLogSeverity, value);
                 if (value != null && old_value != value)
                 {
-                    OnFiltersChanged();
+                    Reload();
                 }
             }
         }
@@ -206,7 +206,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 SetValueAndRaise(ref _selectedResource, value);
                 if (value != null && old_value != value)
                 {
-                    OnFiltersChanged();
+                    Reload();
                 }
             }
         }
@@ -533,7 +533,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            if (_resourceDescriptors?.FirstOrDefault() == null)
+            if (ResourceDescriptors?.FirstOrDefault() == null)
             {
                 RequestLogFiltersWrapperAsync(PopulateResourceTypes);
                 return;
@@ -686,13 +686,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             IList<string> logIdRequestResult = null;
             logIdRequestResult = await _dataSource.Value.ListProjectLogNamesAsync();
             LogIdList = new LogIdsList(logIdRequestResult, Reload);
-            Reload();
-        }
-
-        private void OnFiltersChanged()
-        {
-            Debug.WriteLine("NotifyFiltersChanged");
-            _filter = ComposeSimpleFilters();
             Reload();
         }
 
