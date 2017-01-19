@@ -256,9 +256,6 @@
       <DependentUpon>TimeBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverLogsViewer\TimeBoxViewModel.cs" />
-    <Compile Include="StackdriverLogsViewer\TreeViewConverters\JsonComplexMethodConverter.cs" />
-    <Compile Include="StackdriverLogsViewer\TreeViewConverters\JsonDataTemplateSelector.cs" />
-    <Compile Include="StackdriverLogsViewer\TreeViewConverters\JValueObjectConverter.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\LogItemConverter.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TreeObjectNode.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TypeUtil.cs" />
