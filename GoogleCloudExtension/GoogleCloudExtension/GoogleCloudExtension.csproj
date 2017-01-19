@@ -145,7 +145,6 @@
     <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
     <Compile Include="Controls\IconButton.cs" />
-    <Compile Include="Controls\ImageButton.cs" />
     <Compile Include="Controls\LabelWithHelp.cs" />
     <Compile Include="Controls\PasswordBoxWithReveal.cs" />
     <Compile Include="Controls\PressButton.cs" />
@@ -229,20 +228,20 @@
     </Compile>
     <Compile Include="StackdriverLogsViewer\LogItem.cs" />
     <Compile Include="StackdriverLogsViewer\LogSeverity.cs" />
+    <Compile Include="StackdriverLogsViewer\LogSeverityItem.cs" />
     <Compile Include="StackdriverLogsViewer\LogsViewerToolWindow.cs" />
     <Compile Include="StackdriverLogsViewer\LogsViewerToolWindowCommand.cs" />
     <Compile Include="StackdriverLogsViewer\LogsViewerToolWindowControl.xaml.cs">
       <DependentUpon>LogsViewerToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModel.cs" />
-    <Compile Include="StackdriverLogsViewer\LogsViewerViewModelFilters.cs" />
-    <Compile Include="StackdriverLogsViewer\TreeViewConverters\LogItemConverter.cs" />
-    <Compile Include="StackdriverLogsViewer\TreeViewConverters\TreeObjectNode.cs" />
+    <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTree.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TypeUtil.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
     <Compile Include="SolutionUtils\ISolutionProject.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
     <Compile Include="Theming\CommonImageResources.cs" />
+    <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
     <Compile Include="Utils\ProgressBarHelper.cs" />
     <Compile Include="Utils\ShellUtils.cs" />
@@ -300,19 +299,133 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Utils\GaeUtils.cs" />
+    <Compile Include="Utils\ProgressBarHelper.cs" />
+    <Compile Include="Utils\ShellUtils.cs" />
+    <Compile Include="Utils\StatusbarHelper.cs" />
+    <Compile Include="Theming\ButtonsList.cs" />
+    <Compile Include="Theming\ButtonTemplateSelector.cs" />
+    <Compile Include="Theming\CommonDialogWindowBaseContent.cs" />
+    <Compile Include="UserPrompt\UserPromptWindow.cs" />
+    <Compile Include="UserPrompt\UserPromptWindowContent.xaml.cs">
+      <DependentUpon>UserPromptWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserPrompt\UserPromptWindowViewModel.cs" />
+    <Compile Include="Utils\ErrorHandlerUtils.cs" />
+    <Compile Include="Utils\ProtectedAction.cs" />
+    <Compile Include="Utils\ProtectedCommand.cs" />
+    <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserViewModel.cs" />
+    <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindow.cs" />
+    <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml.cs">
+      <DependentUpon>WindowsCredentialsChooserWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Theming\ThemeManager.cs" />
+    <Compile Include="Utils\LinkInfo.cs" />
+    <Compile Include="LinkPrompt\LinkPromptDialogWindow.cs" />
+    <Compile Include="LinkPrompt\LinkPromptDialogWindowContent.xaml.cs">
+      <DependentUpon>LinkPromptDialogWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LinkPrompt\LinkPromptDialogWindowViewModel.cs" />
+    <Compile Include="Theming\CommonDialogWindowBase.cs" />
+    <Compile Include="Theming\DialogButtonInfo.cs" />
+    <Compile Include="AddWindowsCredential\AddWindowsCredentialViewModel.cs" />
+    <Compile Include="AddWindowsCredential\AddWindowsCredentialWindow.cs" />
+    <Compile Include="AddWindowsCredential\AddwindowsCredentialWindowContent.xaml.cs">
+      <DependentUpon>AddwindowsCredentialWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ShowPassword\ShowPasswordViewModel.cs" />
+    <Compile Include="ShowPassword\ShowPasswordWindow.cs" />
+    <Compile Include="ShowPassword\ShowPasswordWindowContent.xaml.cs">
+      <DependentUpon>ShowPasswordWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AnalyticsOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Utils\ActivityLogUtils.cs" />
+    <Compile Include="Utils\GcpOutputWindow.cs" />
+    <Compile Include="GoogleCloudExtensionPackage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\LocalizedCategoryAttribute.cs" />
+    <Compile Include="Utils\LocalizedDescriptionAttribute.cs" />
+    <Compile Include="Utils\LocalizedDisplayNameAttribute.cs" />
+    <Compile Include="Utils\CloudSqlUtils.cs" />
+    <Compile Include="Utils\PropertyWindowItemBase.cs" />
+    <Compile Include="Utils\ResourceUtils.cs" />
+    <Compile Include="Utils\SelectionUtils.cs" />
+    <Compile Include="Utils\UserPromptUtils.cs" />
+    <Compile Include="Utils\ViewModelBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Utils\GaeUtils.cs" />
+    <Compile Include="Utils\ProgressBarHelper.cs" />
+    <Compile Include="Utils\ShellUtils.cs" />
+    <Compile Include="Utils\StatusbarHelper.cs" />
+    <Compile Include="Theming\ButtonsList.cs" />
+    <Compile Include="Theming\ButtonTemplateSelector.cs" />
+    <Compile Include="Theming\CommonDialogWindowBaseContent.cs" />
+    <Compile Include="UserPrompt\UserPromptWindow.cs" />
+    <Compile Include="UserPrompt\UserPromptWindowContent.xaml.cs">
+      <DependentUpon>UserPromptWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserPrompt\UserPromptWindowViewModel.cs" />
+    <Compile Include="Utils\ErrorHandlerUtils.cs" />
+    <Compile Include="Utils\ProtectedAction.cs" />
+    <Compile Include="Utils\ProtectedCommand.cs" />
+    <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserViewModel.cs" />
+    <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindow.cs" />
+    <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml.cs">
+      <DependentUpon>WindowsCredentialsChooserWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Theming\ThemeManager.cs" />
+    <Compile Include="Utils\LinkInfo.cs" />
+    <Compile Include="LinkPrompt\LinkPromptDialogWindow.cs" />
+    <Compile Include="LinkPrompt\LinkPromptDialogWindowContent.xaml.cs">
+      <DependentUpon>LinkPromptDialogWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LinkPrompt\LinkPromptDialogWindowViewModel.cs" />
+    <Compile Include="Theming\CommonDialogWindowBase.cs" />
+    <Compile Include="Theming\DialogButtonInfo.cs" />
+    <Compile Include="AddWindowsCredential\AddWindowsCredentialViewModel.cs" />
+    <Compile Include="AddWindowsCredential\AddWindowsCredentialWindow.cs" />
+    <Compile Include="AddWindowsCredential\AddwindowsCredentialWindowContent.xaml.cs">
+      <DependentUpon>AddwindowsCredentialWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ShowPassword\ShowPasswordViewModel.cs" />
+    <Compile Include="ShowPassword\ShowPasswordWindow.cs" />
+    <Compile Include="ShowPassword\ShowPasswordWindowContent.xaml.cs">
+      <DependentUpon>ShowPasswordWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AnalyticsOptionsPage.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Utils\ActivityLogUtils.cs" />
+    <Compile Include="Utils\GcpOutputWindow.cs" />
+    <Compile Include="GoogleCloudExtensionPackage.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utils\LocalizedCategoryAttribute.cs" />
+    <Compile Include="Utils\LocalizedDescriptionAttribute.cs" />
+    <Compile Include="Utils\LocalizedDisplayNameAttribute.cs" />
+    <Compile Include="Utils\CloudSqlUtils.cs" />
+    <Compile Include="Utils\PropertyWindowItemBase.cs" />
+    <Compile Include="Utils\ResourceUtils.cs" />
+    <Compile Include="Utils\SelectionUtils.cs" />
+    <Compile Include="Utils\UserPromptUtils.cs" />
+    <Compile Include="Utils\ViewModelBase.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_any_12.png" />
     <Resource Include="StackdriverLogsViewer\Resources\help_mouse_over_icon.png" />
     <Resource Include="StackdriverLogsViewer\Resources\help_icon.png" />
     <Resource Include="StackdriverLogsViewer\Resources\search.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_debug_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_error_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_fatal_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_info_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_warning_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\refresh_mouse_over.png" />
     <Resource Include="StackdriverLogsViewer\Resources\logging_menu_icon_16.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\refresh-mouse-down.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\refresh-mouseover.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\refresh_mouse_down.png" />
     <Resource Include="StackdriverLogsViewer\Resources\refresh.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_any.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_debug.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_error.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_fatal.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_info.png" />
-    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_warning.png" />
     <Resource Include="Theming\Resources\ic_help_black_14px.png" />
     <Resource Include="PublishDialogSteps\ChoiceStep\Resources\AppEngine_128px_Retina.png" />
     <Resource Include="PublishDialogSteps\ChoiceStep\Resources\ComputeEngine_128px_Retina.png" />
@@ -655,6 +768,9 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Resource Include="StackdriverLogsViewer\LogsViewerResources.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="StackdriverLogsViewer\LogsViewerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

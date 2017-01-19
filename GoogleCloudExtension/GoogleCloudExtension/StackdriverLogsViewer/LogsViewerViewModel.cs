@@ -20,6 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -29,27 +31,134 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// <summary>
     /// The view model for LogsViewerToolWindow.
     /// </summary>
-    public partial class LogsViewerViewModel : ViewModelBase
+    public class LogsViewerViewModel : ViewModelBase
     {
         private const int DefaultPageSize = 100;
 
-        private bool _isLoading = false;
+        /// <summary>
+        /// The default resource types to show. 
+        /// Order matters, if a resource type in the list does not have logs, fall back to the next one. 
+        /// </summary>
+        private static readonly string[] s_defaultResourceSelections = 
+            new string[] {
+                "gce_instance",
+                "gae_app",
+                "global"
+            };
+
+        private static readonly LogSeverityItem[] s_logSeveritySelections = 
+            new LogSeverityItem[] {
+                new LogSeverityItem(LogSeverity.Debug, Resources.LogViewerLogLevelDebugLabel),
+                new LogSeverityItem(LogSeverity.Info, Resources.LogViewerLogLevelInfoLabel),
+                new LogSeverityItem(LogSeverity.Warning, Resources.LogViewerLogLevelWarningLabel),
+                new LogSeverityItem(LogSeverity.Error, Resources.LogViewerLogLevelErrorLabel),
+                new LogSeverityItem(LogSeverity.Critical, Resources.LogViewerLogLevelCriticalLabel),
+                new LogSeverityItem(LogSeverity.Emergency, Resources.LogViewerLogLevelEmergencyLabel),
+                new LogSeverityItem(LogSeverity.All, Resources.LogViewerLogLevelAllLabel)
+            };
+
+
+        /// <summary>
+        /// This is the filters combined by all selectors.
+        /// </summary>
+        private string _filter;
+        private MonitoredResourceDescriptor _selectedResource;
+        private IList<MonitoredResourceDescriptor> _resourceDescriptors;
+        private LogSeverityItem _selectedLogSeverity = s_logSeveritySelections.LastOrDefault();
+        private string _simpleSearchText;
+
+        private bool _isLoading;
         private Lazy<LoggingDataSource> _dataSource;
         private string _nextPageToken;
 
-        private string _firstRowDate;
-        private bool _toggleExpandAllExpanded = false;
+        private bool _toggleExpandAllExpanded;
         private bool _isControlEnabled = true;
 
         private ObservableCollection<LogItem> _logs = new ObservableCollection<LogItem>();
 
         private string _requestStatusText;
         private string _requestErrorMessage;
-        private bool _showRequestErrorMessage = false;
-        private bool _showRequestStatus = false;
-        private bool _showCancelRequestButton = false;
+        private bool _showRequestErrorMessage;
+        private bool _showRequestStatus;
+        private bool _showCancelRequestButton;
         private CancellationTokenSource _cancellationTokenSource;
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
+
+        /// <summary>
+        /// The simple text search icon command button.
+        /// </summary>
+        public ProtectedCommand SimpleTextSearchCommand { get; }
+
+        /// <summary>
+        /// Set simple search text box content.
+        /// </summary>
+        public string SimpleSearchText
+        {
+            set
+            {
+                // This disables loading next page that is based on prior filters. 
+                _nextPageToken = null;
+
+                _simpleSearchText = value;
+                if (String.IsNullOrWhiteSpace(_simpleSearchText))
+                {
+                    LogItemCollection.Filter = null;
+                    SimpleTextSearchCommand.CanExecuteCommand = false;
+                    return;
+                }
+
+                SimpleTextSearchCommand.CanExecuteCommand = true;
+                DataGridQuickSearch(value);
+            }
+        }
+
+        /// <summary>
+        /// Gets the list of Log Level items.
+        /// </summary>
+        public IEnumerable<LogSeverityItem> LogSeverityList => s_logSeveritySelections;
+
+        /// <summary>
+        /// Gets or sets the selected log severity value.
+        /// </summary>
+        public LogSeverityItem SelectedLogSeverity
+        {
+            get { return _selectedLogSeverity; }
+            set
+            {
+                var old_value = _selectedLogSeverity;
+                SetValueAndRaise(ref _selectedLogSeverity, value);
+                if (value != null && old_value != value)
+                {
+                    OnFiltersChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets all resources types.
+        /// </summary>
+        public IList<MonitoredResourceDescriptor> ResourceDescriptors
+        {
+            get { return _resourceDescriptors; }
+            private set { SetValueAndRaise(ref _resourceDescriptors, value); }
+        }
+
+        /// <summary>
+        /// Gets or sets current selected resource types.
+        /// </summary>
+        public MonitoredResourceDescriptor SelectedResource
+        {
+            get { return _selectedResource; }
+            set
+            {
+                var old_value = _selectedResource;
+                SetValueAndRaise(ref _selectedResource, value);
+                if (value != null && old_value != value)
+                {
+                    OnFiltersChanged();
+                }
+            }
+        }
 
         /// <summary>
         /// The time zone selector items.
@@ -95,7 +204,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Route the expander IsExpanded state to control expand all or collapse all.
         /// </summary>
-        public bool ToggleExapandAllExpanded
+        public bool ToggleExpandAllExpanded
         {
             get { return _toggleExpandAllExpanded; }
             set
@@ -110,17 +219,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public string ToggleExapandAllToolTip => _toggleExpandAllExpanded ?
             Resources.LogViewerCollapseAllTip : Resources.LogViewerExpandAllTip;
-
-        /// <summary>
-        /// Gets the visible view top row date in string.
-        /// When data grid vertical scroll moves, the displaying rows move. 
-        /// This is to return the top row date
-        /// </summary>
-        public string FirstRowDate
-        {
-            get { return _firstRowDate; }
-            private set { SetValueAndRaise(ref _firstRowDate, value); }
-        }
 
         /// <summary>
         /// Gets the LogItem collection
@@ -248,22 +346,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// When scrolling the current data grid view, the frist row changes.
-        /// Update the first row date.
-        /// </summary>
-        /// <param name="item">The DataGrid row item.</param>
-        public void OnFirstRowChanged(object item)
-        {
-            var log = item as LogItem;
-            if (log == null)
-            {
-                return;
-            }
-
-            FirstRowDate = log.Date;
-        }
-
-        /// <summary>
         /// Cancel request button command.
         /// </summary>
         private void CancelRequest()
@@ -378,7 +460,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            if (_resourceDescriptors?[0] == null)
+            if (_resourceDescriptors?.FirstOrDefault() == null)
             {
                 PopulateResourceTypes();
                 return;
@@ -410,6 +492,124 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Returns the current filter for final list log entry request.
+        /// </summary>
+        /// <returns>
+        /// Text filter string.
+        /// Or null if it is empty.
+        /// </returns>
+        private string ComposeTextSearchFilter()
+        {
+            var splits = _simpleSearchText?.Split(new Char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (splits == null || splits.Count() == 0)
+            {
+                return null;
+            }
+
+            return $"( {String.Join(" OR ", splits.Select(x => $"\"{x}\""))} )";
+        }
+
+        /// <summary>
+        /// Apply text search filter at data grid collection view.
+        /// </summary>
+        private void DataGridQuickSearch(string searchText)
+        {
+            var splits = searchText.Split(new Char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            LogItemCollection.Filter = new Predicate<object>(item => {
+                foreach (var subFilter in splits)
+                {
+                    if (((LogItem)item).Message.IndexOf(subFilter, StringComparison.InvariantCultureIgnoreCase) != -1)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+        }
+
+        /// <summary>
+        /// Populate resource type selection list.
+        /// 
+        /// The control flow is as following. 
+        ///     1. PopulateResourceTypes().
+        ///         1.1 Failed. An error message is displayed. 
+        ///              Goto error handling logic.
+        ///     2. Set selected resource type.
+        ///     3. When selected resource type is changed, it calls Reload().
+        ///     
+        /// Error handling.
+        ///     1. User click Refresh. Refresh button calls Reload().
+        ///     2. Reload() checks ResourceDescriptors is null or empty.
+        ///     3. Reload calls PopulateResourceTypes() which does a manual retry.
+        /// </summary>
+        private async void PopulateResourceTypes()
+        {
+            RequestErrorMessage = null;
+            ShowRequestErrorMessage = false;
+            IsControlEnabled = false;
+            try
+            {
+                var descriptors = await _dataSource.Value.GetResourceDescriptorsAsync();
+                List<MonitoredResourceDescriptor> newOrderDescriptors = new List<MonitoredResourceDescriptor>();
+                // Keep the order.
+                foreach (var defaultSelection in s_defaultResourceSelections)
+                {
+                    var desc = descriptors?.FirstOrDefault(x => x.Type == defaultSelection);
+                    if (desc != null)
+                    {
+                        newOrderDescriptors.Add(desc);
+                    }
+                }
+                newOrderDescriptors.AddRange(descriptors.Where(x => !s_defaultResourceSelections.Contains(x.Type)));
+                ResourceDescriptors = newOrderDescriptors;  // This will set the selected item to first element.
+            }
+            catch (DataSourceException ex)
+            {
+                /// If it fails, show a tip, let refresh button retry it.
+                RequestErrorMessage = ex.Message;
+                ShowRequestErrorMessage = true;
+                return;
+            }
+            finally
+            {
+                IsControlEnabled = true;
+            }
+        }
+
+        private void OnFiltersChanged()
+        {
+            Debug.WriteLine("NotifyFiltersChanged");
+            _filter = ComposeSimpleFilters();
+            Reload();
+        }
+
+        /// <summary>
+        /// Aggregate all selections into filter string.
+        /// </summary>
+        private string ComposeSimpleFilters()
+        {
+            StringBuilder filter = new StringBuilder();
+            if (SelectedResource != null)
+            {
+                filter.AppendLine($"resource.type=\"{SelectedResource.Type}\"");
+            }
+
+            if (SelectedLogSeverity != null && SelectedLogSeverity.Severity != LogSeverity.All)
+            {
+                filter.AppendLine($"severity>={SelectedLogSeverity.Severity.ToString("G")}");
+            }
+
+            var textFilter = ComposeTextSearchFilter();
+            if (textFilter != null)
+            {
+                filter.AppendLine(textFilter);
+            }
+
+            return filter.Length > 0 ? filter.ToString() : null;
         }
     }
 }
