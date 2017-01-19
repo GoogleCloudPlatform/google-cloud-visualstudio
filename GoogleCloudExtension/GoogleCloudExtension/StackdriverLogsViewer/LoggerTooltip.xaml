@@ -10,46 +10,7 @@
         BorderThickness="1" BorderBrush="OrangeRed"
         Background="White"
         MaxWidth="800">
-    <Border.Resources>
-        <vct:LogItemConverter x:Key="LogItemConverter"/>
-
-        <Style x:Key="TreeNodeText" 
-                   TargetType="TextBlock" >
-            <Setter Property="Padding" Value="3, 2, 3, 2"/>
-            <Setter Property="Foreground" Value="DarkSlateGray"/>
-        </Style>
-
-        <Style x:Key="TreeNodeLabel" 
-                   TargetType="TextBlock" 
-                   BasedOn="{StaticResource TreeNodeText}">
-            <Setter Property="Margin" Value="0, 0, 5, 0" />
-        </Style>
-
-        <HierarchicalDataTemplate DataType="{x:Type vct:ObjectNodeTree}" 
-                                      ItemsSource="{Binding Children}">
-            <StackPanel Orientation="Horizontal" >
-                <TextBlock Text="{Binding Name}" Style="{StaticResource TreeNodeLabel}"/>
-                <TextBlock Text=":" Style="{StaticResource TreeNodeLabel}" 
-                               Visibility="{Binding ValueVisibility}"/>
-                <TextBlock Text="{Binding NodeValue}" Style="{StaticResource TreeNodeText}"
-                               Visibility="{Binding ValueVisibility}"/>
-            </StackPanel>
-        </HierarchicalDataTemplate>
-    </Border.Resources>
     <StackPanel Margin="6">
         <TextBlock Text="{Binding Message}" Margin="0, 0, 0, 8" />
-        <TreeView BorderThickness="0" 
-                ItemsSource="{Binding Converter={StaticResource LogItemConverter}}" >
-            <TreeView.Template>
-                <ControlTemplate>
-                    <ItemsPresenter />
-                </ControlTemplate>
-            </TreeView.Template>
-            <TreeView.ItemContainerStyle>
-                <Style TargetType="{x:Type TreeViewItem}" >
-                    <Setter Property="IsExpanded" Value="True" />
-                </Style>
-            </TreeView.ItemContainerStyle>
-        </TreeView>
     </StackPanel>
 </Border>
