@@ -69,6 +69,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private string _simpleSearchText;
         private string _advacedFilterText;
         private bool _showAdvancedFilter;
+        private LogIdsList _logIdList;
 
         private bool _isLoading;
         private Lazy<LoggingDataSource> _dataSource;
@@ -86,6 +87,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private bool _showCancelRequestButton;
         private CancellationTokenSource _cancellationTokenSource;
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
+
+        /// <summary>
+        /// Gets the LogIdList for log id selector binding source.
+        /// </summary>
+        public LogIdsList LogIdList
+        {
+            get { return _logIdList; }
+            private set { SetValueAndRaise(ref _logIdList, value); }
+        }
 
         /// <summary>
         /// Gets the DateTimePicker view model object.
@@ -612,6 +622,30 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
+        /// A wrapper for common getting filters API calls.
+        /// </summary>
+        /// <param name="apiCall">The api call to get resource descriptors or log names etc.</param>
+        private async Task RequestLogFiltersWrapperAsync(Func<Task> apiCall)
+        {
+            SetServerRequestStartStatus(IsCanceButtonVisible: false);
+            try
+            {
+                await apiCall();
+            }
+            catch (DataSourceException ex)
+            {
+                /// If it fails, show a tip, let refresh button retry it.
+                RequestErrorMessage = ex.Message;
+                ShowRequestErrorMessage = true;
+                return;
+            }
+            finally
+            {
+                SetServerRequestCompleteStatus();
+            }
+        }
+
+        /// <summary>
         /// Populate resource type selection list.
         /// 
         /// The control flow is as following. 
@@ -626,38 +660,33 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         ///     2. Reload() checks ResourceDescriptors is null or empty.
         ///     3. Reload calls PopulateResourceTypes() which does a manual retry.
         /// </summary>
-        private async void PopulateResourceTypes()
+        private async Task PopulateResourceTypes()
         {
-            RequestErrorMessage = null;
-            ShowRequestErrorMessage = false;
-            IsControlEnabled = false;
-            try
+            var descriptors = await _dataSource.Value.GetResourceDescriptorsAsync();
+            List<MonitoredResourceDescriptor> newOrderDescriptors = new List<MonitoredResourceDescriptor>();
+            // Keep the order.
+            foreach (var defaultSelection in s_defaultResourceSelections)
             {
-                var descriptors = await _dataSource.Value.GetResourceDescriptorsAsync();
-                List<MonitoredResourceDescriptor> newOrderDescriptors = new List<MonitoredResourceDescriptor>();
-                // Keep the order.
-                foreach (var defaultSelection in s_defaultResourceSelections)
+                var desc = descriptors?.FirstOrDefault(x => x.Type == defaultSelection);
+                if (desc != null)
                 {
-                    var desc = descriptors?.FirstOrDefault(x => x.Type == defaultSelection);
-                    if (desc != null)
-                    {
-                        newOrderDescriptors.Add(desc);
-                    }
+                    newOrderDescriptors.Add(desc);
                 }
-                newOrderDescriptors.AddRange(descriptors.Where(x => !s_defaultResourceSelections.Contains(x.Type)));
-                ResourceDescriptors = newOrderDescriptors;  // This will set the selected item to first element.
             }
-            catch (DataSourceException ex)
-            {
-                /// If it fails, show a tip, let refresh button retry it.
-                RequestErrorMessage = ex.Message;
-                ShowRequestErrorMessage = true;
-                return;
-            }
-            finally
-            {
-                IsControlEnabled = true;
-            }
+            newOrderDescriptors.AddRange(descriptors.Where(x => !s_defaultResourceSelections.Contains(x.Type)));
+            ResourceDescriptors = newOrderDescriptors;  // This will set the selected item to first element.
+        }
+
+        /// <summary>
+        /// This method uses similar logic as populating resource descriptors.
+        /// Refers to <seealso cref="PopulateResourceTypes"/>.
+        /// </summary>
+        private async Task PopulateLogIds()
+        {
+            IList<string> logIdRequestResult = null;
+            logIdRequestResult = await _dataSource.Value.ListProjectLogNamesAsync();
+            LogIdList = new LogIdsList(logIdRequestResult, Reload);
+            Reload();
         }
 
         private void OnFiltersChanged()
@@ -693,6 +722,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             else
             {
                 filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
+            }
+
+            Debug.Assert(LogIdList != null, "Code bug. LogIDList should not be null.");
+            if (LogIdList.SelectedLogIdFullName != null)
+            {
+                filter.AppendLine($"logName=\"{LogIdList.SelectedLogIdFullName}\"");
             }
 
             var textFilter = ComposeTextSearchFilter();

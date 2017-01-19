@@ -177,7 +177,6 @@
                             VerticalAlignment="Center">
 
                     <controls:CustomComboBox 
-                        x:Name="comboResource" 
                         Margin="0,0,6,0"
                         Width="160" 
                         Style="{StaticResource CommonDocumentComboBoxStyle}"
@@ -187,14 +186,14 @@
                         IsSynchronizedWithCurrentItem="true" />
 
                     <controls:CustomComboBox 
-                        x:Name="comboLogID" 
                         Width="160" 
+                        Style="{StaticResource CommonDocumentComboBoxStyle}"
                         DataContext="{Binding LogIdList}"
                         ItemsSource="{Binding LogIDs}"
-                        SelectedItem="{Binding SelectedLogId}" />
+                        SelectedItem="{Binding SelectedLogId}" 
+                        IsSynchronizedWithCurrentItem="true" />
                     
-                    <local:CustomComboBox 
-                        x:Name="comboSeverity" 
+                    <controls:CustomComboBox 
                         Margin="0,0,6,0"
                         Width="160"
                         Style="{StaticResource CommonDocumentComboBoxStyle}"
