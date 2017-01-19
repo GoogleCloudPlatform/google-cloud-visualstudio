@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="60" d:DesignWidth="200">
     <UserControl.Resources>
@@ -78,7 +79,7 @@
     </UserControl.Resources>
     
     <Grid >
-        <local:CustomComboBox  x:Name="comboPickTime"
+        <controls:CustomComboBox  x:Name="comboPickTime"
                    HorizontalAlignment="Center" 
                    VerticalAlignment="Center"
                    HorizontalContentAlignment="Center"
@@ -155,13 +156,13 @@
                                         Style="{StaticResource CommonTextStyle}" 
                                         Text="{x:Static ext:Resources.LogViewerTimeOrderPickLabelHead}" />
 
-                                    <local:CustomComboBox
+                                    <controls:CustomComboBox
                                         VerticalAlignment="Center" 
                                         HorizontalContentAlignment="Center"
                                         SelectedIndex="{Binding SelectedOrderIndex}">
                                         <ComboBoxItem Content="{x:Static ext:Resources.LogViewerTimeOrderPickDescSelection}"/>
                                         <ComboBoxItem Content="{x:Static ext:Resources.LogViewerTimeOrderPickAsceSelection}"/>
-                                    </local:CustomComboBox>
+                                    </controls:CustomComboBox>
 
                                     <TextBlock 
                                         Margin="6, 0, 0, 0"
@@ -194,6 +195,6 @@
                     </ControlTemplate>
                 </ComboBoxItem.Template>
             </ComboBoxItem>
-        </local:CustomComboBox>
+        </controls:CustomComboBox>
     </Grid>
 </UserControl>

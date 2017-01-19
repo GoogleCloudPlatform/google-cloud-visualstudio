@@ -1931,7 +1931,18 @@ namespace GoogleCloudExtension {
                 return ResourceManager.GetString("LogViewerCollapseAllTip", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Jump To Time.
+        ///  </summary>
+        public static string LogViewerDateTimePickerLabel
+        {
+            get
+            {
+                return ResourceManager.GetString("LogViewerDateTimePickerLabel", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Error displaying the entry. .
         /// </summary>

@@ -88,6 +88,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
 
         /// <summary>
+        /// Gets the DateTimePicker view model object.
+        /// </summary>
+        public DateTimePickerViewModel DateTimePickerModel { get; }
+
+        /// <summary>
         /// Gets the advanced filter help icon button command.
         /// </summary>
         public ProtectedCommand AdvancedFilterHelpCommand { get; }
@@ -369,23 +374,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             LogLoaddingWrapperAsync(async (cancelToken) => await LoadLogsAsync(cancelToken));
         }
 
-        /// <summary>
-        /// When scrolling the current data grid view, the frist row changes.
-        /// Update the first row date.
-        /// </summary>
-        /// <param name="item">The DataGrid row item.</param>
-        public void OnFirstRowChanged(object item)
-        {
-            var log = item as LogItem;
-            if (log == null)
-            {
-                return;
-            }
-
-            FirstRowDate = log.Date;
-        }
-
-
         private void OnRefreshCommand()
         {
             DateTimePickerModel.IsDescendingOrder = true;
@@ -394,9 +382,22 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
+        /// Append a set of log entries.
+        /// </summary>
+        private void AddLogs(IList<LogEntry> logEntries)
+        {
+            if (logEntries == null)
+            {
+                return;
+            }
+
+            foreach (var log in logEntries)
             {
                 _logs.Add(new LogItem(log));
             }
+        }
+
+        /// <summary>
         /// Cancel request button command.
         /// </summary>
         private void CancelRequest()
@@ -664,6 +665,18 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (SelectedLogSeverity != null && SelectedLogSeverity.Severity != LogSeverity.All)
             {
                 filter.AppendLine($"severity>={SelectedLogSeverity.Severity.ToString("G")}");
+            }
+
+            if (DateTimePickerModel.IsDescendingOrder)
+            {
+                if (DateTimePickerModel.DateTimeUtc < DateTime.UtcNow)
+                {
+                    filter.AppendLine($"timestamp<=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
+                }
+            }
+            else
+            {
+                filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
             }
 
             var textFilter = ComposeTextSearchFilter();

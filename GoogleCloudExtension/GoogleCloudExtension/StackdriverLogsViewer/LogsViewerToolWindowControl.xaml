@@ -6,6 +6,7 @@
              xmlns:vct="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"             
              xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"
              Background="{DynamicResource VsBrush.Window}"
@@ -43,7 +44,7 @@
                             FontWeight="DemiBold"
                             Style="{StaticResource CommonTextStyle}"/>
 
-                        <ComboBox                         
+                        <controls:CustomComboBox                         
                             DockPanel.Dock="Left"
                             x:Name="comboTimeZone" 
                             Margin="6,0,0,0" 
@@ -53,13 +54,12 @@
                             FontWeight="DemiBold"
                             DataContext="{Binding DataContext, ElementName=_logsViewerToolWindow}"
                             ItemsSource="{Binding SystemTimeZones}"
-                            SelectedItem="{Binding SelectedTimeZone}"
-                            Loaded="ComboBox_Loaded" >
-                            <ComboBox.ToolTip>
+                            SelectedItem="{Binding SelectedTimeZone}" >
+                            <controls:CustomComboBox.ToolTip>
                                 <ToolTip Content="{x:Static ext:Resources.LogViewerTimeZoneSelectionToolTip}"
                                      Style="{StaticResource CommonTooltipStyle}" />
-                            </ComboBox.ToolTip>
-                        </ComboBox>
+                            </controls:CustomComboBox.ToolTip>
+                        </controls:CustomComboBox>
                     </StackPanel>
 
                     <ItemsPresenter />
@@ -175,27 +175,29 @@
                 <StackPanel Orientation="Horizontal" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Center">
-                    
-                    <local:CustomComboBox 
+
+                    <controls:CustomComboBox 
                         x:Name="comboResource" 
                         Margin="0,0,6,0"
                         Width="160" 
                         Style="{StaticResource CommonDocumentComboBoxStyle}"
                         ItemsSource="{Binding ResourceDescriptors}"
                         SelectedItem="{Binding SelectedResource, Mode=TwoWay}"
-                        DisplayMemberPath="DisplayName" >
-                        IsSynchronizedWithCurrentItem="true"
+                        DisplayMemberPath="DisplayName" 
+                        IsSynchronizedWithCurrentItem="true" />
 
-                    <local:CustomComboBox 
+                    <controls:CustomComboBox 
                         x:Name="comboSeverity" 
                         Margin="0,0,6,0"
                         Width="160"
                         Style="{StaticResource CommonDocumentComboBoxStyle}"
                         ItemsSource="{Binding LogSeverityList}"
-                        SelectedItem="{Binding SelectedLogSeverity}" />
+                        SelectedItem="{Binding SelectedLogSeverity}"
                         DisplayMemberPath="DisplayName" 
-                        IsSynchronizedWithCurrentItem="true"
-                        Margin="0, 0, 6, 0"
+                        IsSynchronizedWithCurrentItem="true" />
+                    
+                    <local:DateTimePicker
+                        Margin="0,0,6,0"
                         DataContext="{Binding Path=DateTimePickerModel}" />
                                         
                     <controls:IconButton

@@ -226,7 +226,7 @@
     <Compile Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml.cs">
       <DependentUpon>SplitTrafficWindowContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StackdriverLogsViewer\CustomComboBox.cs" />
+    <Compile Include="Controls\CustomComboBox.cs" />
     <Compile Include="StackdriverLogsViewer\DateTimePicker.xaml.cs">
       <DependentUpon>DateTimePicker.xaml</DependentUpon>
     </Compile>
@@ -662,7 +662,7 @@
     <Page Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>	
+    </Page>
     <Resource Include="StackdriverLogsViewer\LogsViewerResources.xaml">
       <SubType>Designer</SubType>
     </Resource>
