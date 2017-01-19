@@ -66,6 +66,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private IList<MonitoredResourceDescriptor> _resourceDescriptors;
         private LogSeverityItem _selectedLogSeverity = s_logSeveritySelections.LastOrDefault();
         private string _simpleSearchText;
+        private string _advacedFilterText;
+        private bool _showAdvancedFilter;
 
         private bool _isLoading;
         private Lazy<LoggingDataSource> _dataSource;
@@ -85,9 +87,37 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
 
         /// <summary>
+        /// Gets the advanced filter help icon button command.
+        /// </summary>
+        public ProtectedCommand AdvancedFilterHelpCommand { get; }
+
+        /// <summary>
+        /// Gets the submit advanced filter button command.
+        /// </summary>
+        public ProtectedCommand SubmitAdvancedFilterCommand { get; }
+
+        /// <summary>
         /// The simple text search icon command button.
         /// </summary>
         public ProtectedCommand SimpleTextSearchCommand { get; }
+
+        /// <summary>
+        /// Gets or sets the advanced filter text box content.
+        /// </summary>
+        public string AdvancedFilterText
+        {
+            get { return _advacedFilterText; }
+            set { SetValueAndRaise(ref _advacedFilterText, value); }
+        }
+
+        /// <summary>
+        /// Gets the visbility of advanced filter or simple filter.
+        /// </summary>
+        public bool ShowAdvancedFilter
+        {
+            get { return _showAdvancedFilter; }
+            private set { SetValueAndRaise(ref _showAdvancedFilter, value); }
+        }
 
         /// <summary>
         /// Set simple search text box content.
@@ -492,6 +522,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 return null;
             }
+        }
+
+        private void ShowAdvancedFilterHelp()
+        {
+            Process.Start(new ProcessStartInfo(AdvancedHelpLink));
+        }
+
+        private void SwapFilter()
+        {
+            ShowAdvancedFilter = !ShowAdvancedFilter;
+            AdvancedFilterText = _showAdvancedFilter ? ComposeSimpleFilters() : null;
         }
 
         /// <summary>
