@@ -5,8 +5,9 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              mc:Ignorable="d" 
-             d:DesignHeight="60" d:DesignWidth="200">
+             d:DesignHeight="60" d:DesignWidth="200" >
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -27,14 +28,15 @@
             </Style>
 
             <DataTemplate x:Key="DayTitle"  >
-                <TextBlock Foreground="#FF333333"
-                       FontWeight="Bold"
-                       FontSize="9.5"
-                       FontFamily="Verdana"
-                       Margin="0, 6, 0, 6"
-                       Text="{Binding}"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center" />
+                <TextBlock 
+                    Foreground="#FF333333"
+                    FontWeight="Bold"
+                    FontSize="9.5"
+                    FontFamily="Verdana"
+                    Margin="0,6,0,6"
+                    Text="{Binding}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" />
             </DataTemplate>
 
             <Style x:Key="StyleCalendar" TargetType="{x:Type Calendar}">
@@ -78,11 +80,12 @@
     </UserControl.Resources>
     
     <Grid >
-        <local:CustomComboBox  x:Name="comboPickTime"
+        <controls:CustomComboBox  x:Name="comboPickTime"
                    HorizontalAlignment="Center" 
                    VerticalAlignment="Center"
                    HorizontalContentAlignment="Center"
                    SelectedIndex="0"
+                   Style="{StaticResource CommonDocumentComboBoxStyle}"                                  
                    IsDropDownOpen="{Binding IsDropDownOpen}"
                    MaxDropDownHeight="500">
             <ComboBoxItem x:Name="ComboBoxItem" 
@@ -99,7 +102,8 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
 
-                                <Grid Grid.Row="0" Margin="12, 12, 12, 6" >
+                                <Grid Grid.Row="0" 
+                                      Margin="12,12,12,6" >
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
@@ -136,18 +140,20 @@
                                         Width="145" />
                                 </Grid>
 
-                                <Calendar Grid.Row="1" 
-                                          x:Name="calendar"
-                                          Margin="12, 4, 12, 4"
-                                          HorizontalAlignment="Center"
-                                          SelectedDate="{Binding UiElementDate}"
-                                          SelectionMode="SingleDate"
-                                          Style="{StaticResource StyleCalendar}" />
+                                <Calendar 
+                                    Grid.Row="1" 
+                                    x:Name="calendar"
+                                    Margin="12, 4, 12, 4"
+                                    HorizontalAlignment="Center"
+                                    SelectedDate="{Binding UiElementDate}"
+                                    SelectionMode="SingleDate"
+                                    Style="{StaticResource StyleCalendar}" />
 
-                                <StackPanel Grid.Row="2"
-                                            Margin="12, 6, 12, 6"
-                                            Orientation="Horizontal" 
-                                            HorizontalAlignment="Stretch">
+                                <StackPanel 
+                                    Grid.Row="2"
+                                    Margin="12, 6, 12, 6"
+                                    Orientation="Horizontal" 
+                                    HorizontalAlignment="Stretch">
 
                                     <TextBlock 
                                         Margin="0, 0, 6, 0"
@@ -155,13 +161,14 @@
                                         Style="{StaticResource CommonTextStyle}" 
                                         Text="{x:Static ext:Resources.LogViewerTimeOrderPickLabelHead}" />
 
-                                    <local:CustomComboBox
+                                    <controls:CustomComboBox
                                         VerticalAlignment="Center" 
                                         HorizontalContentAlignment="Center"
-                                        SelectedIndex="{Binding SelectedOrderIndex}">
+                                        SelectedIndex="{Binding SelectedOrderIndex}"
+                                        Style="{StaticResource CommonDocumentComboBoxStyle}">
                                         <ComboBoxItem Content="{x:Static ext:Resources.LogViewerTimeOrderPickDescSelection}"/>
                                         <ComboBoxItem Content="{x:Static ext:Resources.LogViewerTimeOrderPickAsceSelection}"/>
-                                    </local:CustomComboBox>
+                                    </controls:CustomComboBox>
 
                                     <TextBlock 
                                         Margin="6, 0, 0, 0"
@@ -194,6 +201,6 @@
                     </ControlTemplate>
                 </ComboBoxItem.Template>
             </ComboBoxItem>
-        </local:CustomComboBox>
+        </controls:CustomComboBox>
     </Grid>
 </UserControl>

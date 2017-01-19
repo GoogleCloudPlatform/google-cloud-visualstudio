@@ -36,6 +36,12 @@ namespace GoogleCloudExtension.Controls
                 typeof(ImageSource),
                 typeof(IconButton));
 
+        public static readonly DependencyProperty MouseDownIconProperty =
+            DependencyProperty.Register(
+                nameof(MouseDownIcon),
+                typeof(ImageSource),
+                typeof(IconButton));
+
         /// <summary>
         /// The icon to show in the normal state.
         /// </summary>
@@ -52,6 +58,15 @@ namespace GoogleCloudExtension.Controls
         {
             get { return (ImageSource)GetValue(MouseOverIconProperty); }
             set { SetValue(MouseOverIconProperty, value); }
+        }
+
+        /// <summary>
+        /// The image to show when mouse is pressed but not released.
+        /// </summary>
+        public ImageSource MouseDownIcon
+        {
+            get { return (ImageSource)GetValue(MouseDownIconProperty); }
+            set { SetValue(MouseDownIconProperty, value); }
         }
     }
 }

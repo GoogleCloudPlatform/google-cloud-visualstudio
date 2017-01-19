@@ -17,7 +17,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+namespace GoogleCloudExtension.Controls
 {
     /// <summary>
     /// A customized ComboBox.
@@ -42,6 +42,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             var comboBox = sender as ComboBox;
             var comboBoxTemplate = comboBox.Template;
             var toggleButton = comboBoxTemplate.FindName("toggleButton", comboBox) as ToggleButton;
+            if (toggleButton == null)
+            {
+                return;
+            }
             var toggleButtonTemplate = toggleButton.Template;
             var border = toggleButtonTemplate.FindName("templateRoot", toggleButton) as Border;
             var backgroud = comboBox.Background;
