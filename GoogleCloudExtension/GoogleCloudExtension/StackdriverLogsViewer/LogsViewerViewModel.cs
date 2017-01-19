@@ -33,6 +33,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public class LogsViewerViewModel : ViewModelBase
     {
+        private const string AdvancedHelpLink = "https://cloud.google.com/logging/docs/view/advanced_filters";
         private const int DefaultPageSize = 100;
 
         /// <summary>
@@ -100,6 +101,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// The simple text search icon command button.
         /// </summary>
         public ProtectedCommand SimpleTextSearchCommand { get; }
+
+        /// <summary>
+        /// Gets the toggle advanced and simple filters button Command.
+        /// </summary>
+        public ProtectedCommand FilterSwitchCommand { get; }
 
         /// <summary>
         /// Gets or sets the advanced filter text box content.
