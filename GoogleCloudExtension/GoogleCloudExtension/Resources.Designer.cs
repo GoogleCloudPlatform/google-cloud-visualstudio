@@ -2104,11 +2104,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Submit Filters.
+        /// </summary>
+        public static string LogViewerSubmitAdvancedFilterCaption {
+            get {
+                return ResourceManager.GetString("LogViewerSubmitAdvancedFilterCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To Advanced Filter.
         /// </summary>
         public static string LogViewerSwitchToAdvancedFilterCaption {
             get {
                 return ResourceManager.GetString("LogViewerSwitchToAdvancedFilterCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To Simple Filters.
+        /// </summary>
+        public static string LogViewerSwitchToSimpleFilterCaption {
+            get {
+                return ResourceManager.GetString("LogViewerSwitchToSimpleFilterCaption", resourceCulture);
             }
         }
         

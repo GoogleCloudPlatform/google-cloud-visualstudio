@@ -300,6 +300,8 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_any_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\help_mouse_over_icon.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\help_icon.png" />
     <Resource Include="StackdriverLogsViewer\Resources\search.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_debug_12.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_error_12.png" />
