@@ -84,6 +84,7 @@
                    VerticalAlignment="Center"
                    HorizontalContentAlignment="Center"
                    SelectedIndex="0"
+                   Style="{StaticResource CommonDocumentComboBoxStyle}"                                  
                    IsDropDownOpen="{Binding IsDropDownOpen}"
                    MaxDropDownHeight="500">
             <ComboBoxItem x:Name="ComboBoxItem" 
