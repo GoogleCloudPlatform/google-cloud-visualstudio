@@ -66,6 +66,13 @@
                 </StackPanel>
             </ControlTemplate>
             
+            <ControlTemplate x:Key="FilterSwitchButton" TargetType="{x:Type Button}">
+                <Button Style="{StaticResource CommonButtonDynamicStyle}"
+                        Command="{Binding Path=FilterSwitchCommand}" >
+                    <ContentPresenter />
+                </Button>
+            </ControlTemplate>
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -137,7 +144,7 @@
                         DisplayMemberPath="DisplayName" 
                         IsSynchronizedWithCurrentItem="true"
                         Loaded="ComboBox_Loaded" />
-                    
+                                        
                     <controls:IconButton
                         Grid.Column="1" 
                         Margin="6,0,16,0"
@@ -157,6 +164,55 @@
                     </controls:IconButton>
                 </StackPanel>
             </StackPanel>
+
+            <Grid Margin="0,6,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Border Grid.Column="0"
+                        BorderThickness="1" 
+                        BorderBrush="LightGray">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBox Grid.Column="0"
+                             BorderThickness="0"
+                             TextWrapping="Wrap"    
+                             VerticalAlignment="Center"
+                             HorizontalAlignment="Stretch"
+                             Padding="8,5,8,5"    
+                             Text="{Binding SimpleSearchText, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"                                               
+                             Style="{StaticResource WartermarkedTextBox}">
+                        </TextBox>
+
+                        <controls:IconButton 
+                            Grid.Column="1" 
+                            Padding="2,0,2,0"
+                            BorderThickness="0"
+                            Width="24"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Stretch"
+                            Style="{StaticResource SearchIconStyle}"
+                            Command="{Binding SimpleTextSearchCommand}"
+                            NormalIcon="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}">
+                            <controls:IconButton.ToolTip>
+                                <ToolTip Content="{x:Static ext:Resources.LogViewerSimpleTextSearchIconButtonToolTip}"/>
+                            </controls:IconButton.ToolTip>
+                        </controls:IconButton>  
+                        
+                    </Grid>
+                </Border>
+                <Button Grid.Column="1" 
+                        Margin="12,0,0,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Template="{StaticResource FilterSwitchButton}"
+                        Content="{x:Static ext:Resources.LogViewerSwitchToAdvancedFilterCaption}"/>
+            </Grid>
         </StackPanel>
 
         <Expander 

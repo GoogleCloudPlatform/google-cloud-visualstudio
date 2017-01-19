@@ -65,6 +65,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private MonitoredResourceDescriptor _selectedResource;
         private IList<MonitoredResourceDescriptor> _resourceDescriptors;
         private LogSeverityItem _selectedLogSeverity = s_logSeveritySelections.LastOrDefault();
+        private string _simpleSearchText;
 
         private bool _isLoading;
         private Lazy<LoggingDataSource> _dataSource;
@@ -82,6 +83,34 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private bool _showCancelRequestButton;
         private CancellationTokenSource _cancellationTokenSource;
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
+
+        /// <summary>
+        /// The simple text search icon command button.
+        /// </summary>
+        public ProtectedCommand SimpleTextSearchCommand { get; }
+
+        /// <summary>
+        /// Set simple search text box content.
+        /// </summary>
+        public string SimpleSearchText
+        {
+            set
+            {
+                // This disables loading next page that is based on prior filters. 
+                _nextPageToken = null;
+
+                _simpleSearchText = value;
+                if (String.IsNullOrWhiteSpace(_simpleSearchText))
+                {
+                    LogItemCollection.Filter = null;
+                    SimpleTextSearchCommand.CanExecuteCommand = false;
+                    return;
+                }
+
+                SimpleTextSearchCommand.CanExecuteCommand = true;
+                DataGridQuickSearch(value);
+            }
+        }
 
         /// <summary>
         /// Gets the list of Log Level items.
@@ -262,10 +291,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public LogsViewerViewModel()
         {
             _dataSource = new Lazy<LoggingDataSource>(CreateDataSource);
-            RefreshCommand = new ProtectedCommand(() => Reload());
+            RefreshCommand = new ProtectedCommand(Reload);
             LogItemCollection = new ListCollectionView(_logs);
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
             CancelRequestCommand = new ProtectedCommand(CancelRequest);
+            SimpleTextSearchCommand = new ProtectedCommand(Reload);
         }
 
         /// <summary>
@@ -433,6 +463,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
+            _filter = ComposeSimpleFilters();
+
             LogLoaddingWrapperAsync(async (cancelToken) => {
                 _nextPageToken = null;
                 _logs.Clear();
@@ -456,6 +488,43 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Returns the current filter for final list log entry request.
+        /// </summary>
+        /// <returns>
+        /// Text filter string.
+        /// Or null if it is empty.
+        /// </returns>
+        private string ComposeTextSearchFilter()
+        {
+            var splits = _simpleSearchText?.Split(new Char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            if (splits == null || splits.Count() == 0)
+            {
+                return null;
+            }
+
+            return $"( {String.Join(" OR ", splits.Select(x => $"\"{x}\""))} )";
+        }
+
+        /// <summary>
+        /// Apply text search filter at data grid collection view.
+        /// </summary>
+        private void DataGridQuickSearch(string searchText)
+        {
+            var splits = searchText.Split(new Char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            LogItemCollection.Filter = new Predicate<object>(item => {
+                foreach (var subFilter in splits)
+                {
+                    if (((LogItem)item).Message.IndexOf(subFilter, StringComparison.InvariantCultureIgnoreCase) != -1)
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
         }
 
         /// <summary>
@@ -528,6 +597,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (SelectedLogSeverity != null && SelectedLogSeverity.Severity != LogSeverity.All)
             {
                 filter.AppendLine($"severity>={SelectedLogSeverity.Severity.ToString("G")}");
+            }
+
+            var textFilter = ComposeTextSearchFilter();
+            if (textFilter != null)
+            {
+                filter.AppendLine(textFilter);
             }
 
             return filter.Length > 0 ? filter.ToString() : null;

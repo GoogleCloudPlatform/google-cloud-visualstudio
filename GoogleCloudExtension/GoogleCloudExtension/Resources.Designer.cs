@@ -2086,7 +2086,34 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click to select different timezone..
+        ///   Looks up a localized string similar to Apply text search on server and refresh results.
+        /// </summary>
+        public static string LogViewerSimpleTextSearchIconButtonToolTip {
+            get {
+                return ResourceManager.GetString("LogViewerSimpleTextSearchIconButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to search.
+        /// </summary>
+        public static string LogViewerSimpleTextSearchWatermarkMessage {
+            get {
+                return ResourceManager.GetString("LogViewerSimpleTextSearchWatermarkMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To Advanced Filter.
+        /// </summary>
+        public static string LogViewerSwitchToAdvancedFilterCaption {
+            get {
+                return ResourceManager.GetString("LogViewerSwitchToAdvancedFilterCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to click to select different timezone..
         /// </summary>
         public static string LogViewerTimeZoneSelectionToolTip {
             get {
