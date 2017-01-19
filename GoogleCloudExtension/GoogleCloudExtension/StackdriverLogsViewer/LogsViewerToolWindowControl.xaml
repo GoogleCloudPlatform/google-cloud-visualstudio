@@ -8,7 +8,6 @@
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"             
              xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"
-             xmlns:sys="clr-namespace:System;assembly=mscorlib"             
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -73,32 +72,6 @@
                     <ContentPresenter />
                 </Button>
             </ControlTemplate>
-
-            <Style x:Key="WartermarkedTextBox" 
-                   TargetType="TextBox">
-                <Style.Resources>
-                    <VisualBrush x:Key="CueBannerBrush" 
-                                 AlignmentX="Left" 
-                                 AlignmentY="Center" 
-                                 Stretch="None">
-                        <VisualBrush.Visual>
-                            <Label Content="{x:Static ext:Resources.LogViewerSimpleTextSearchWatermarkMessage}" 
-                                   Foreground="Gray" />
-                        </VisualBrush.Visual>
-                    </VisualBrush>
-                </Style.Resources>
-                <Style.Triggers>
-                    <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
-                        <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-                    </Trigger>
-                    <Trigger Property="Text" Value="{x:Null}">
-                        <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-                    </Trigger>
-                    <Trigger Property="IsKeyboardFocused" Value="True">
-                        <Setter Property="Background" Value="White" />
-                    </Trigger>
-                </Style.Triggers>
-            </Style>
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -211,23 +184,21 @@
                              TextWrapping="Wrap"    
                              VerticalAlignment="Center"
                              HorizontalAlignment="Stretch"
-                             Padding="8, 5, 8, 5"    
+                             Padding="8,5,8,5"    
                              Text="{Binding SimpleSearchText, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"                                               
                              Style="{StaticResource WartermarkedTextBox}">
                         </TextBox>
-                        
+
                         <controls:IconButton 
                             Grid.Column="1" 
-                            Padding="2, 0, 2, 0"
+                            Padding="2,0,2,0"
                             BorderThickness="0"
                             Width="24"
-                            Background="Transparent"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Stretch"
+                            Style="{StaticResource SearchIconStyle}"
                             Command="{Binding SimpleTextSearchCommand}"
-                            NormalIcon="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}"
-                            MouseOverIcon="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}"
-                            MouseDownIcon="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}">
+                            NormalIcon="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}">
                             <controls:IconButton.ToolTip>
                                 <ToolTip Content="{x:Static ext:Resources.LogViewerSimpleTextSearchIconButtonToolTip}"/>
                             </controls:IconButton.ToolTip>
