@@ -494,7 +494,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Returns the current filter for final list log entry request.
         /// </summary>
         /// <returns>
-        /// A text filter string.
+        /// Text filter string.
         /// Or null if it is empty.
         /// </returns>
         private string ComposeTextSearchFilter()
