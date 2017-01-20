@@ -46,7 +46,7 @@ def save_file(path, lines):
 
         
 def main():
-    print("Processing file %s" % params.source)
+    print('Processing file %s' % params.source)
     lines = load_file(params.source)
     lines = cleanup_file(lines)
     save_file(params.source, lines)
