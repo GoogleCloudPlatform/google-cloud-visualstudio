@@ -75,7 +75,6 @@ namespace GoogleCloudExtension.Utils
         /// <param name="valueSource">The task where the value comes from.</param>
         /// <param name="func">The function to apply to the result of the task.</param>
         /// <param name="defaultValue">The value to use while the task is executing.</param>
-        /// <returns></returns>
         public static AsyncPropertyValue<T> CreateAsyncProperty<TIn, T>(Task<TIn> valueSource, Func<TIn, T> func, T defaultValue = default(T))
         {
             return new AsyncPropertyValue<T>(valueSource.ContinueWith(t => func(t.Result)), defaultValue);

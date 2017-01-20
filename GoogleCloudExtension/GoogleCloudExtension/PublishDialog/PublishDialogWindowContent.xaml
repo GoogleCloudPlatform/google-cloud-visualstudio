@@ -18,7 +18,7 @@
     </UserControl.Resources>
 
     <UserControl.Style>
-        <Binding Source="{StaticResource CommonDialogStyleLarge}" />
+        <Binding Source="{StaticResource CommonDialogStyleDynamicLarge}" />
     </UserControl.Style>
 
     <theming:CommonDialogWindowBaseContent Content="{Binding Content}" HasBanner="True">

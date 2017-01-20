@@ -1315,4 +1315,56 @@
     <value>Report Usage Statistics Enabled</value>
     <comment>The display name of the opt-in for the analytics options page.</comment>
   </data>
+  <data name="GkePublishClusterMessage" xml:space="preserve">
+    <value>_Clusters:</value>
+    <comment>The message shown in the UI to choose cluster.</comment>
+  </data>
+  <data name="GkePublishDeployingToGkeMessage" xml:space="preserve">
+    <value>Deploying {0} to Container Engine</value>
+    <comment>Message printed to the output window when deploying to GKE. {0} is the name of the project.</comment>
+  </data>
+  <data name="GkePublishDeploymentFailureMessage" xml:space="preserve">
+    <value>Failed to deploy {0} to Container Engine</value>
+    <comment>Message printed in the output window when the deployment fails. {0} is the project name.</comment>
+  </data>
+  <data name="GkePublishDeploymentNameMessage" xml:space="preserve">
+    <value>_Deployment name:</value>
+    <comment>The message shown in the UI for deployment name textbox.</comment>
+  </data>
+  <data name="GkePublishDeploymentStatusMessage" xml:space="preserve">
+    <value>Deploying to Container Engine</value>
+    <comment>Message shown in the status bar while deploying.</comment>
+  </data>
+  <data name="GkePublishDeploymentSuccessMessage" xml:space="preserve">
+    <value>Project {0} deployed to Container Engine</value>
+    <comment>Message printed in the output window once the deployment finished succesfully. {0} is the project name.</comment>
+  </data>
+  <data name="GkePublishDeploymentVersionMessage" xml:space="preserve">
+    <value>Deployment _version:</value>
+    <comment>The message shown in the UI for the depoyment version textbox.</comment>
+  </data>
+  <data name="GkePublishExposeServiceCaption" xml:space="preserve">
+    <value>E_xpose the service to the public internet</value>
+    <comment>Caption for the checkbox to set if the GKE service is to be exposed or not.</comment>
+  </data>
+  <data name="GkePublishServiceIpMessage" xml:space="preserve">
+    <value>Service {0} ip address {1}</value>
+    <comment>Message printed in the output window to show the IP address of the service exposed. {0} is the deployment name, {1} is the IP address.</comment>
+  </data>
+  <data name="GkePublishServiceIpTimeoutMessage" xml:space="preserve">
+    <value>Time out waiting for service ip address.</value>
+    <comment>Message printed in the output window when there's a timeout waiting for the service IP address.</comment>
+  </data>
+  <data name="GkePublishWaitingForServiceIpMessage" xml:space="preserve">
+    <value>Waiting for Service IP address...</value>
+    <comment>Message shown while waiting for a public IP to be assigned to the exposed Kubernetes service.</comment>
+  </data>
+  <data name="PublishDialogChoiceStepGkeName" xml:space="preserve">
+    <value>C_ontainer Engine</value>
+    <comment>The name of the GKE choice.</comment>
+  </data>
+  <data name="PublishDialogChoiceStepGkeToolTip" xml:space="preserve">
+    <value>Deploy as a service to Container Engine</value>
+    <comment>The tooltip for the GKE choice.</comment>
+  </data>
 </root>

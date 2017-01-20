@@ -79,14 +79,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         public override async void Publish()
         {
-            var context = new Context
+            var context = new GCloudContext
             {
                 CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
                 ProjectId = CredentialsStore.Default.CurrentProjectId,
                 AppName = GoogleCloudExtensionPackage.ApplicationName,
                 AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
             };
-            var options = new NetCoreDeployment.DeploymentOptions
+            var options = new AppEngineFlexDeployment.DeploymentOptions
             {
                 Version = Version,
                 Promote = Promote,
@@ -100,13 +100,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
             _publishDialog.FinishFlow();
 
-            NetCorePublishResult result;
+            AppEngineFlexDeploymentResult result;
             using (var frozen = StatusbarHelper.Freeze())
             using (var animationShown = StatusbarHelper.ShowDeployAnimation())
             using (var progress = StatusbarHelper.ShowProgressBar(Resources.FlexPublishProgressMessage))
             using (var deployingOperation = ShellUtils.SetShellUIBusy())
             {
-                result = await NetCoreDeployment.PublishProjectAsync(
+                result = await AppEngineFlexDeployment.PublishProjectAsync(
                     project.FullPath,
                     options,
                     progress,
@@ -138,7 +138,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// Creates a new step instance. This method will also create the necessary view and conect both
         /// objects together.
         /// </summary>
-        /// <returns></returns>
         internal static FlexStepViewModel CreateStep()
         {
             var content = new FlexStepContent();

@@ -91,7 +91,6 @@ namespace GoogleCloudExtension.Utils
         /// <param name="handler">The callback to call with the line being oput by the process, it can be called outside
         /// of the UI thread. Must not be null.</param>
         /// <param name="environment">Optional parameter with values for environment variables to pass on to the child process.</param>
-        /// <returns></returns>
         public static Task<bool> RunCommandAsync(
             string file,
             string args,
@@ -118,7 +117,6 @@ namespace GoogleCloudExtension.Utils
         /// <param name="file">The path to the exectuable.</param>
         /// <param name="args">The arguments to pass to the executable.</param>
         /// <param name="environment">The environment variables to use for the executable.</param>
-        /// <returns></returns>
         public static Task<ProcessOutput> GetCommandOutputAsync(string file, string args, IDictionary<string, string> environment = null)
         {
             var startInfo = GetStartInfoForInteractiveProcess(file, args, environment);
@@ -162,7 +160,6 @@ namespace GoogleCloudExtension.Utils
         /// <param name="file">The path to the exectuable.</param>
         /// <param name="args">The arguments to pass to the executable.</param>
         /// <param name="environment">The environment to use for the executable.</param>
-        /// <returns></returns>
         public static async Task<T> GetJsonOutputAsync<T>(string file, string args, IDictionary<string, string> environment = null)
         {
             var output = await ProcessUtils.GetCommandOutputAsync(file, args, environment);

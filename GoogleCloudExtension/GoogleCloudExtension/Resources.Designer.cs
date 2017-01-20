@@ -1915,6 +1915,105 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Clusters:.
+        /// </summary>
+        public static string GkePublishClusterMessage {
+            get {
+                return ResourceManager.GetString("GkePublishClusterMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploying {0} to Container Engine.
+        /// </summary>
+        public static string GkePublishDeployingToGkeMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeployingToGkeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to deploy {0} to Container Engine.
+        /// </summary>
+        public static string GkePublishDeploymentFailureMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentFailureMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Deployment name:.
+        /// </summary>
+        public static string GkePublishDeploymentNameMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentNameMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploying to Container Engine.
+        /// </summary>
+        public static string GkePublishDeploymentStatusMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentStatusMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project {0} deployed to Container Engine.
+        /// </summary>
+        public static string GkePublishDeploymentSuccessMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentSuccessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deployment _version:.
+        /// </summary>
+        public static string GkePublishDeploymentVersionMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentVersionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E_xpose the service to the public internet.
+        /// </summary>
+        public static string GkePublishExposeServiceCaption {
+            get {
+                return ResourceManager.GetString("GkePublishExposeServiceCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Service {0} ip address {1}.
+        /// </summary>
+        public static string GkePublishServiceIpMessage {
+            get {
+                return ResourceManager.GetString("GkePublishServiceIpMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time out waiting for service ip address..
+        /// </summary>
+        public static string GkePublishServiceIpTimeoutMessage {
+            get {
+                return ResourceManager.GetString("GkePublishServiceIpTimeoutMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting for Service IP address....
+        /// </summary>
+        public static string GkePublishWaitingForServiceIpMessage {
+            get {
+                return ResourceManager.GetString("GkePublishWaitingForServiceIpMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The user account {0} already exists..
         /// </summary>
         public static string ManageAccountsAccountAlreadyExistsPromptMessage {
@@ -2226,6 +2325,24 @@ namespace GoogleCloudExtension {
         public static string PublishDialogChoiceStepGceToolTip {
             get {
                 return ResourceManager.GetString("PublishDialogChoiceStepGceToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to C_ontainer Engine.
+        /// </summary>
+        public static string PublishDialogChoiceStepGkeName {
+            get {
+                return ResourceManager.GetString("PublishDialogChoiceStepGkeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploy as a service to Container Engine.
+        /// </summary>
+        public static string PublishDialogChoiceStepGkeToolTip {
+            get {
+                return ResourceManager.GetString("PublishDialogChoiceStepGkeToolTip", resourceCulture);
             }
         }
         
