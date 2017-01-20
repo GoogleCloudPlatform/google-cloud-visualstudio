@@ -33,7 +33,6 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="progress">The progress indicator to update.</param>
         /// <param name="from">The initial value.</param>
         /// <param name="to">The final value.</param>
-        /// <returns></returns>
         internal static async Task<T> UpdateProgress<T>(
             Task<T> deployTask,
             IProgress<double> progress,

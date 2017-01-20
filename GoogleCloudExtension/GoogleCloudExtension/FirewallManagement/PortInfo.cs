@@ -47,7 +47,6 @@ namespace GoogleCloudExtension.FirewallManagement
         /// Returns the tag to be used for the port for the given <paramref name="instance"/>.
         /// </summary>
         /// <param name="instance">The instance that is going to be affected by the port.</param>
-        /// <returns></returns>
         public string GetTag(Instance instance) => $"{instance.Name}-tcp-{Port}";
     }
 }
