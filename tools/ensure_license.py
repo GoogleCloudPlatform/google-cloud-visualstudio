@@ -23,7 +23,10 @@ import os
 parser = argparse.ArgumentParser()
 parser.add_argument('-d', '--directory',
                     help='The directory where the source lives.',
-                    required=True)
+                    required=False)
+parser.add_argument('-s', '--source',
+                    help='The source file to be modified.',
+                    required=False)
 parser.add_argument('-l', '--license',
                     help='The license to use.',
                     required=True)
@@ -121,7 +124,10 @@ def load_all_files(dir):
 
 
 def main():
-    files = load_all_files(params.directory)
+    if params.directory:
+        files = load_all_files(params.directory)
+    else:
+        files = [ SourceFile(params.source) ]
     with open(params.license, 'r') as src:
         new_license = src.readlines()
     for file in files:
