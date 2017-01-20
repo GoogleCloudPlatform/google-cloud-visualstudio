@@ -187,7 +187,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         {
             _publishDialog = dialog;
 
-            _publishDialog.TrackTask(Instances.SourceCompleted);
+            _publishDialog.TrackTask(Instances.ValueTask);
         }
 
         #endregion
