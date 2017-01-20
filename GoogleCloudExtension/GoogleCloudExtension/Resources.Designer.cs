@@ -1915,6 +1915,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Missing Google Cloud SDK Component.
+        /// </summary>
+        public static string GcloudMissingComponentTitle {
+            get {
+                return ResourceManager.GetString("GcloudMissingComponentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Clusters:.
         /// </summary>
         public static string GkePublishClusterMessage {
@@ -2523,15 +2532,6 @@ namespace GoogleCloudExtension {
         public static string ResetPasswordGcloudMissingBetaMessage {
             get {
                 return ResourceManager.GetString("ResetPasswordGcloudMissingBetaMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Missing Google Cloud SDK Component.
-        /// </summary>
-        public static string ResetPasswordGcloudMissingComponentTitle {
-            get {
-                return ResourceManager.GetString("ResetPasswordGcloudMissingComponentTitle", resourceCulture);
             }
         }
         

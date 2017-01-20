@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.Utils
         /// Returns a task that will be completed once the wrapped task is completed. This task is
         /// not directly connected to the wrapped task and will never throw and error.
         /// </summary>
-        public Task SourceCompleted => _completionSource.Value.Task;
+        public Task ValueTask => _completionSource.Value.Task;
 
         public AsyncPropertyValue(Task<T> valueSource, T defaultValue = default(T))
         {
