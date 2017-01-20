@@ -36,33 +36,37 @@
                  Margin="0,0,0,15"
                  Style="{StaticResource CommonTextBoxStyle}" />
 
-        <Grid>
+        <Grid Margin="0,0,0,15">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*" />
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <StackPanel>
-                <Label Content="{x:Static ext:Resources.GkePublishDeploymentVersionMessage}"
-               Target="{Binding ElementName=_deploymentVersion}"
-               Style="{StaticResource CommonLabelStyle}" />
-                <TextBox x:Name="_deploymentVersion"
-                 Text="{Binding DeploymentVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Margin="0,0,0,15"
-                 Style="{StaticResource CommonTextBoxStyle}" />
-            </StackPanel>
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
 
-            <StackPanel Grid.Column="1" Margin="5,0,0,0">
-                <!-- TODO: Use an up/down textbox control. -->
-                <Label Content="Replicas:"
-               Target="{Binding ElementName=_replicas}"
-               Style="{StaticResource CommonLabelStyle}" />
-                <TextBox x:Name="_replicas"
-                 Text="{Binding Replicas, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Margin="0,0,0,8"
-                 Style="{StaticResource CommonTextBoxStyle}" />
-            </StackPanel>
+            <Label Content="{x:Static ext:Resources.GkePublishDeploymentVersionMessage}"
+                   Target="{Binding ElementName=_deploymentVersion}"
+                   Style="{StaticResource CommonLabelStyle}" />
+            <TextBox x:Name="_deploymentVersion"
+                     Grid.Row="1"
+                     Text="{Binding DeploymentVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{StaticResource CommonTextBoxStyle}" />
 
+            <!-- TODO: Use an up/down textbox control. -->
+            <Label Grid.Column="1"
+                   Content="Replic_as:"
+                   Target="{Binding ElementName=_replicas}"
+                   Margin="5,0,0,0"
+                   Style="{StaticResource CommonLabelStyle}" />
+            <TextBox x:Name="_replicas"
+                     Grid.Row="1"
+                     Grid.Column="1"
+                     Text="{Binding Replicas, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Margin="5,0,0,0"
+                     Style="{StaticResource CommonTextBoxStyle}" />
         </Grid>
 
         <CheckBox Content="{x:Static ext:Resources.GkePublishExposeServiceCaption}"
