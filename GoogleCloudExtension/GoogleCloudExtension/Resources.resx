@@ -633,7 +633,7 @@
     <value>To use this feature you need to have the "beta" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta.</value>
     <comment>Message shown when the beta component is missing.</comment>
   </data>
-  <data name="ResetPasswordGcloudMissingComponentTitle" xml:space="preserve">
+  <data name="GcloudMissingComponentTitle" xml:space="preserve">
     <value>Missing Google Cloud SDK Component</value>
     <comment>Title for the dialog that informs the user that a Cloud SDK component is needed but not installed.</comment>
   </data>
