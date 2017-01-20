@@ -121,7 +121,7 @@
         </Setter>
     </Style>
 
-    <Style x:Key="WartermarkedTextBox" 
+    <Style x:Key="WartermarkedTextBoxStyle" 
            TargetType="TextBox">
         <Style.Resources>
             <VisualBrush 
