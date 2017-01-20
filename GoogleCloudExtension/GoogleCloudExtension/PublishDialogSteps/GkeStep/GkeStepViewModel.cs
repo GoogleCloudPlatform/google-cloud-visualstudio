@@ -127,7 +127,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             DeploymentVersion = GetDefaultVersion();
 
             // Mark that the dialog is going to be busy until we have loaded the data.
-            _publishDialog.TrackTask(Clusters.SourceCompleted);
+            _publishDialog.TrackTask(Clusters.ValueTask);
         }
 
         /// <summary>
@@ -268,7 +268,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 {
                     UserPromptUtils.ErrorPrompt(
                         message: Resources.GkePublishMissingKubectlMessage,
-                        title: Resources.ResetPasswordGcloudMissingComponentTitle);
+                        title: Resources.GcloudMissingComponentTitle);
                 }
                 return false;
             }

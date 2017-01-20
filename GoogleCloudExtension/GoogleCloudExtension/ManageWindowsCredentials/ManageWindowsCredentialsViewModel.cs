@@ -237,7 +237,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                 {
                     UserPromptUtils.ErrorPrompt(
                         message: Resources.ResetPasswordGcloudMissingBetaMessage,
-                        title: Resources.ResetPasswordGcloudMissingComponentTitle);
+                        title: Resources.GcloudMissingComponentTitle);
                 }
                 return false;
             }
