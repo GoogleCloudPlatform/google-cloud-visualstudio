@@ -39,10 +39,11 @@ namespace GoogleCloudExtension.GCloud
         public static Task<bool> CreateDeploymentAsync(
             string name,
             string imageTag,
+            int replicas,
             Action<string> outputAction,
             KubectlContext context)
         {
-            return RunCommandAsync($"run {name} --image={imageTag} --port=8080 --record", outputAction, context);
+            return RunCommandAsync($"run {name} --image={imageTag} --replicas={replicas} --port=8080 --record", outputAction, context);
         }
 
         /// <summary>

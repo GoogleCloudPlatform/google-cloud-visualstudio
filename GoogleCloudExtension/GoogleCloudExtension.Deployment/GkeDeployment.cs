@@ -70,6 +70,11 @@ namespace GoogleCloudExtension.Deployment
             public GCloudContext Context { get; set; }
 
             /// <summary>
+            /// The number of replicas to create during the deployment.
+            /// </summary>
+            public int Replicas { get; set; }
+
+            /// <summary>
             /// Callback to be invoked when waiting for a public IP for a service.
             /// </summary>
             public Action WaitingForServiceIpCallback { get; set; }
@@ -160,6 +165,7 @@ namespace GoogleCloudExtension.Deployment
                     if (!await KubectlWrapper.CreateDeploymentAsync(
                             name: options.DeploymentName,
                             imageTag: image,
+                            replicas: options.Replicas,
                             outputAction: outputAction,
                             context: kubectlContext))
                     {

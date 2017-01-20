@@ -41,6 +41,15 @@
                Style="{StaticResource CommonLabelStyle}" />
         <TextBox x:Name="_deploymentVersion"
                  Text="{Binding DeploymentVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Margin="0,0,0,15"
+                 Style="{StaticResource CommonTextBoxStyle}" />
+
+        <!-- TODO: Use an up/down textbox control. -->
+        <Label Content="Replicas:"
+               Target="{Binding ElementName=_replicas}"
+               Style="{StaticResource CommonLabelStyle}" />
+        <TextBox x:Name="_replicas"
+                 Text="{Binding Replicas, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  Margin="0,0,0,8"
                  Style="{StaticResource CommonTextBoxStyle}" />
 

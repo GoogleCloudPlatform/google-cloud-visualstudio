@@ -42,6 +42,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private string _deploymentVersion;
         private bool _exposeService = true;
         private bool _openWebsite = true;
+        private string _replicas = "1";
 
         /// <summary>
         /// The list of clusters that serve as the target for deployment.
@@ -78,6 +79,15 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         {
             get { return _deploymentVersion; }
             set { SetValueAndRaise(ref _deploymentVersion, value); }
+        }
+
+        /// <summary>
+        /// The number of replicas to create.
+        /// </summary>
+        public string Replicas
+        {
+            get { return _replicas; }
+            set { SetValueAndRaise(ref _replicas, value); }
         }
 
         /// <summary>
@@ -152,6 +162,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                     DeploymentVersion = DeploymentVersion,
                     ExposeService = ExposeService,
                     Context = context,
+                    Replicas = int.Parse(Replicas),
                     WaitingForServiceIpCallback = () => GcpOutputWindow.OutputLine(Resources.GkePublishWaitingForServiceIpMessage)
                 };
 
