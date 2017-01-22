@@ -31,10 +31,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// <summary>
     /// An adaptor to LogEntry so as to provide properties for data binding.
     /// </summary>
-    internal class LogItem : Model
+    internal class LogItem : ViewModelBase
     {
         private const string SourceFileFieldName = "source_file";
         private const string SourceLineFieldName = "source_line";
+        private const string AssemblyNameFieldName = "assembly_name";
+        private const string AssemblyVersionFieldName = "assembly_version";
         private const string JasonPayloadMessageFieldName = "message";
         private const string AnyIconPath = "StackdriverLogsViewer/Resources/ic_log_level_any_12.png";
         private const string DebugIconPath = "StackdriverLogsViewer/Resources/ic_log_level_debug_12.png";
@@ -59,10 +61,19 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private readonly Lazy<List<ObjectNodeTree>> _treeViewObjects;
 
         private readonly string _sourceFilePath;
+        private readonly string _assemblyName;
+        private readonly string _assemblyVersion;
         private readonly int _sourceLine;
 
         public static LogItem CurrentSourceLineLogItem { get; private set; }
         public IWpfTextView SourceLineTextView { get; private set; }
+
+        private bool _filterLogsOfSourceLine = true;
+        public bool FilterLogsOfSourceLine
+        {
+            get { return _filterLogsOfSourceLine; }
+            set { SetValueAndRaise(ref _filterLogsOfSourceLine, value); }
+        }
 
         /// <summary>
         /// Gets the time stamp.
@@ -109,6 +120,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Command responses to source link button click event.
         /// </summary>
         public ProtectedCommand SourceLinkCommand { get; }
+
+        /// <summary>
+        /// Command responses to the back to logs viewer button.
+        /// </summary>
+        public ProtectedCommand BackToLogsViewerCommand { get; }
 
         /// <summary>
         /// Gets the log item severity level. The data binding source to severity column in the data grid.
@@ -160,24 +176,21 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             Entry = logEntry;
             TimeStamp = ConvertTimestamp(logEntry.Timestamp);
             _treeViewObjects = new Lazy<List<ObjectNodeTree>>(CreateTreeObject);
-
+            BackToLogsViewerCommand = new ProtectedCommand(BackToLogsViewer);
             SourceLinkCommand = new ProtectedCommand(OnSourceLinkClick);
             _sourceLine = -1;
             if (null != Entry?.Labels)
             {
-                _sourceFilePath = Entry.Labels.ContainsKey(SourceFileFieldName) ? Entry.Labels[SourceFileFieldName] : null;
-                var line = Entry.Labels.ContainsKey(SourceLineFieldName) ? Entry.Labels[SourceLineFieldName] : null;
+                _assemblyName = GetLabelField(AssemblyNameFieldName);
+                _sourceFilePath = GetLabelField(SourceFileFieldName);
+                _assemblyVersion = GetLabelField(AssemblyVersionFieldName);
+                var line = GetLabelField(SourceLineFieldName);
                 Int32.TryParse(line, out _sourceLine);
                 if (!String.IsNullOrWhiteSpace(_sourceFilePath) && _sourceLine != -1)
                 {
                     SourceLocation = $"{Path.GetFileName(_sourceFilePath)} ({_sourceLine})";
                 }
             }
-        }
-
-        private List<ObjectNodeTree> CreateTreeObject()
-        {
-            return new ObjectNodeTree(Entry).Children;
         }
 
         /// <summary>
@@ -188,6 +201,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             TimeStamp = TimeZoneInfo.ConvertTime(TimeStamp, newTimeZone);
             RaisePropertyChanged(nameof(Time));
+        }
+
+        private List<ObjectNodeTree> CreateTreeObject()
+        {
+            return new ObjectNodeTree(Entry).Children;
+        }
+
+        private string GetLabelField(string fieldName)
+        {
+            return Entry.Labels.ContainsKey(fieldName) ? Entry.Labels[fieldName] : null;
         }
 
         private string ComposeDictionaryPayloadMessage(IDictionary<string, object> dictPayload)
@@ -278,6 +301,33 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 CurrentSourceLineLogItem = this;
                 var window = sourceFiles.First().GotoLine(_sourceLine);
                 SourceLineTextView = HighlightLogger.ShowTip(window);
+            }
+        }
+
+        private void BackToLogsViewer()
+        {
+            var window = ToolWindowUtils.ShowToolWindow<LogsViewerToolWindow>();
+            if (Entry == null)
+            {
+                Debug.WriteLine("Entry is null, this is likely a code bug");
+                return;
+            }
+
+            if (window == null)
+            {
+                return;
+            }
+
+            if (FilterLogsOfSourceLine)
+            {
+                StringBuilder filter = new StringBuilder();
+                filter.AppendLine($"resource.type=\"{Entry.Resource.Type}\"");
+                filter.AppendLine($"logName=\"{Entry.LogName}\"");
+                filter.AppendLine($"labels.{SourceFileFieldName}=\"{_sourceFilePath.Replace(@"\", @"\\")}\"");
+                filter.AppendLine($"labels.{AssemblyNameFieldName}=\"{_assemblyName}\"");
+                filter.AppendLine($"labels.{AssemblyVersionFieldName}=\"{_assemblyVersion}\"");
+                filter.AppendLine($"labels.{SourceLineFieldName}=\"{_sourceLine}\"");
+                window.AdvancedFilter(filter.ToString());
             }
         }
     }

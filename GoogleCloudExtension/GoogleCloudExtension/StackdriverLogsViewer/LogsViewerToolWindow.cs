@@ -64,6 +64,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             CreateNewViewModel();
         }
 
+        public void AdvancedFilter(string advancedSearchText)
+        {
+            var control = Content as LogsViewerToolWindowControl;
+            var viewModel = control.DataContext as LogsViewerViewModel;
+            viewModel.FilterLog(advancedSearchText);
+        }
+
         private void CreateNewViewModel()
         {
             var control = Content as LogsViewerToolWindowControl;

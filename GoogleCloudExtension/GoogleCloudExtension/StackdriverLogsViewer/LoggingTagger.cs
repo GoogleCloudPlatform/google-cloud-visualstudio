@@ -71,6 +71,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 LoggingTaggerCollection[view] = this;
             }
+
         }
 
         /// <summary>
@@ -78,8 +79,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void ViewLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
         {
-            // If a new snapshot wasn't generated, then skip this layout
-            if (e.NewViewState.EditSnapshot != e.OldViewState.EditSnapshot)
+            //// If a new snapshot wasn't generated, then skip this layout
+            //if (e.NewViewState.EditSnapshot != e.OldViewState.EditSnapshot)
             {
                 UpdateAtCaretPosition(_view.Caret.ContainingTextViewLine);
             }
@@ -158,39 +159,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
         }
 
-        private UIElement ToolTipControlDefault(LogItem logItem)
-        {
-            return new Border
-            {
-                Background = new SolidColorBrush(Colors.LightGray),
-                Padding = new Thickness(10),
-                Child = new StackPanel
-                {
-                    Orientation = Orientation.Horizontal,
-                    Children =
-                        {
-                            new Rectangle
-                            {
-                                Height = 30,
-                                Width = 30,
-                                Fill = new SolidColorBrush(Colors.Red)
-                            },
-                            new TextBlock
-                            {
-                                Margin = new Thickness(10, 0, 0, 0),
-                                Inlines =
-                                {
-                                    new Run(logItem.Message)
-                                }
-                            }
-                        }
-                }
-            };
-        }
-
         private UIElement ToolTipControl(LogItem logItem)
         {
             var control = new LoggerTooltip();
+            control.Width = _view.ViewportWidth;
             control.DataContext = logItem;
             return control;
         }
@@ -234,18 +206,18 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
     internal class LoggingTag : TextMarkerTag
     {
-        public LoggingTag() : base("Logging") { }
+        public LoggingTag() : base("LoggingFormat") { }
     }
 
     [Export(typeof(EditorFormatDefinition))]
-    [Name("Logging")]
+    [Name("LoggingFormat")]
     [UserVisible(true)]
     internal class GotoFormatDefinition : MarkerFormatDefinition
     {
         public GotoFormatDefinition()
         {
-            BackgroundColor = Colors.Red;
-            ForegroundColor = Colors.White;
+            BackgroundColor = Colors.Yellow;
+            ForegroundColor = Colors.Black;
             DisplayName = "Logging Word";
             ZOrder = 5;
         }

@@ -396,6 +396,30 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             LogLoaddingWrapperAsync(async (cancelToken) => await LoadLogsAsync(cancelToken));
         }
 
+        public void FilterLog(string advancedSearchText)
+        {
+            ShowAdvancedFilter = true;
+            StringBuilder filter = new StringBuilder();
+            filter.AppendLine(advancedSearchText);
+            if (!advancedSearchText.ToLowerInvariant().Contains("timestamp"))
+            {
+                if (DateTimePickerModel.IsDescendingOrder)
+                {
+                    if (DateTimePickerModel.DateTimeUtc < DateTime.UtcNow)
+                    {
+                        filter.AppendLine($"timestamp<=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
+                    }
+                }
+                else
+                {
+                    filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
+                }
+            }
+
+            AdvancedFilterText = filter.ToString();
+            Reload();
+        }
+
         private void OnRefreshCommand()
         {
             DateTimePickerModel.IsDescendingOrder = true;
