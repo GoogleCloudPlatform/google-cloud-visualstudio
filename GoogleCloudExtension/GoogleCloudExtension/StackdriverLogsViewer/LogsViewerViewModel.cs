@@ -403,17 +403,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             filter.AppendLine(advancedSearchText);
             if (!advancedSearchText.ToLowerInvariant().Contains("timestamp"))
             {
-                if (DateTimePickerModel.IsDescendingOrder)
-                {
-                    if (DateTimePickerModel.DateTimeUtc < DateTime.UtcNow)
-                    {
-                        filter.AppendLine($"timestamp<=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
-                    }
-                }
-                else
-                {
-                    filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
-                }
+                filter.AppendLine($"timestamp<=\"{DateTime.UtcNow}\"");
             }
 
             AdvancedFilterText = filter.ToString();
