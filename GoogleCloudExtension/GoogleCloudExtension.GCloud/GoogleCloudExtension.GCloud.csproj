@@ -61,6 +61,7 @@
     <Compile Include="Models\GkeMetadata.cs" />
     <Compile Include="Models\GkeService.cs" />
     <Compile Include="Models\GkeList.cs" />
+    <Compile Include="Models\GkeSpec.cs" />
     <Compile Include="Models\GkeStatus.cs" />
     <Compile Include="WindowsInstanceCredentials.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

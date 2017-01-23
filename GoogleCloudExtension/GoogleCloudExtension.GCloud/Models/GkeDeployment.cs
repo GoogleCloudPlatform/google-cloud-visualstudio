@@ -20,5 +20,8 @@ namespace GoogleCloudExtension.GCloud.Models
     {
         [JsonProperty("metadata")]
         public GkeMetadata Metadata { get; set; }
+
+        [JsonProperty("spec")]
+        public GkeSpec Spec { get; set; }
     }
 }

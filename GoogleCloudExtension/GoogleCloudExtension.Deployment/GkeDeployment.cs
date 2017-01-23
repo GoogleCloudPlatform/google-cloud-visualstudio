@@ -187,6 +187,11 @@ namespace GoogleCloudExtension.Deployment
                         return null;
                     }
                     deploymentUpdated = true;
+
+                    if (deployment.Spec.Replicas != options.Replicas)
+                    {
+                        Debug.WriteLine($"Updating the replicas for the deployment.")
+                    }
                 }
 
                 // Expose the service if requested and it is not already exposed.
