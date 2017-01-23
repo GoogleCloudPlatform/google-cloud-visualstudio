@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 {
@@ -107,11 +108,19 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             set { SetValueAndRaise(ref _openWebsite, value); }
         }
 
+        public ICommand CreateClusterCommand { get; }
+        
         private GkeStepViewModel(GkeStepContent content)
         {
             _content = content;
 
             Clusters = new AsyncPropertyValue<IList<Cluster>>(GetAllClustersAsync());
+            CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand);
+        }
+
+        private void OnCreateClusterCommand()
+        {
+            Process.Start($"https://console.cloud.google.com/kubernetes/add?project={CredentialsStore.Default.CurrentProjectId}");
         }
 
         #region IPublishDialogStep overrides

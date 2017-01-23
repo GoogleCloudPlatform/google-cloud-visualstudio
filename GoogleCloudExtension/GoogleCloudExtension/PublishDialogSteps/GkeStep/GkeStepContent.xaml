@@ -25,8 +25,15 @@
                   SelectedItem="{Binding SelectedCluster, Mode=OneWayToSource}"
                   DisplayMemberPath="Name"
                   IsSynchronizedWithCurrentItem="True"
-                  Margin="0,0,0,15"
+                  Margin="0,0,0,5"
                   Style="{StaticResource CommonComboBoxStyle}"/>
+        <TextBlock Margin="0,0,0,15"
+                   Style="{StaticResource CommonTextStyle}">
+            <Hyperlink Command="{Binding CreateClusterCommand}"
+                       Style="{StaticResource CommonHyperlinkStyle}">
+                <TextBlock>Create new cluster</TextBlock>
+            </Hyperlink>
+        </TextBlock>
 
         <Label Content="{x:Static ext:Resources.GkePublishDeploymentNameMessage}"
                Target="{Binding ElementName=_deploymentName}"
