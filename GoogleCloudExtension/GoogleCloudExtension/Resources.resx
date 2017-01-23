@@ -1348,7 +1348,7 @@
     <comment>Caption for the checkbox to set if the GKE service is to be exposed or not.</comment>
   </data>
   <data name="GkePublishMissingKubectlMessage" xml:space="preserve">
-    <value>To use this feature you need to have the "lubectl" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl</value>
+    <value>To use this feature you need to have the "kubectl" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl</value>
     <comment>Message shown to the user when the kubectl component is not installed.</comment>
   </data>
   <data name="GkePublishServiceIpMessage" xml:space="preserve">
