@@ -154,6 +154,7 @@ namespace GoogleCloudExtension.Deployment
 
                 string ipAddress = null;
                 bool deploymentUpdated = false;
+                bool deploymentScaled = false;
                 bool serviceExposed = false;
 
                 // Create or update the deployment.
@@ -191,6 +192,16 @@ namespace GoogleCloudExtension.Deployment
                     if (deployment.Spec.Replicas != options.Replicas)
                     {
                         Debug.WriteLine($"Updating the replicas for the deployment.");
+                        if (!await KubectlWrapper.ScaleDeploymentAsync(
+                                options.DeploymentName,
+                                options.Replicas,
+                                outputAction,
+                                kubectlContext))
+                        {
+                            Debug.WriteLine($"Failed to scale up deployment {options.DeploymentName}");
+                            return null;
+                        }
+                        deploymentScaled = true;
                     }
                 }
 
@@ -219,7 +230,8 @@ namespace GoogleCloudExtension.Deployment
                 return new GkeDeploymentResult(
                     serviceIpAddress: ipAddress,
                     wasExposed: serviceExposed,
-                    deploymentUpdated: deploymentUpdated);
+                    deploymentUpdated: deploymentUpdated,
+                    deploymentScaled: deploymentScaled);
             }
         }
 

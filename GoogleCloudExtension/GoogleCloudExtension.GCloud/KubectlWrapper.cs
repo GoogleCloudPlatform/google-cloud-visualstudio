@@ -115,6 +115,26 @@ namespace GoogleCloudExtension.GCloud
                 context);
         }
 
+        /// <summary>
+        /// Changes the number of replicas for the given <paramref name="name"/>.
+        /// </summary>
+        /// <param name="name">The name of the deployment to update.</param>
+        /// <param name="replicas">The new number of replicas.</param>
+        /// <param name="outputAction">The output callback to be called with output from the command.</param>
+        /// <param name="context">The context for invoking kubectl.</param>
+        /// <returns>True if the operation succeeded false otherwise.</returns>
+        public static Task<bool> ScaleDeploymentAsync(
+            string name,
+            int replicas,
+            Action<string> outputAction,
+            KubectlContext context)
+        {
+            return RunCommandAsync(
+                $"scale deployment {name} --replicas={replicas}",
+                outputAction,
+                context);
+        }
+
         private static Task<bool> RunCommandAsync(string command, Action<string> outputAction, KubectlContext context)
         {
             var actualCommand = FormatCommand(command, context);

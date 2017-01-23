@@ -1371,4 +1371,12 @@
     <value>Deploy as a service to Container Engine</value>
     <comment>The tooltip for the GKE choice.</comment>
   </data>
+  <data name="GkePublishDeploymentScaledMessage" xml:space="preserve">
+    <value>Deployment {0} was scaled to {1} replicas.</value>
+    <comment>Message printed in the output window when the deployment is scaled to the given number of replicas. {0} is the name of the deployment, {1} is the number of replicas.</comment>
+  </data>
+  <data name="GkePublishDeploymentUpdatedMessage" xml:space="preserve">
+    <value>Deployment {0} was updated.</value>
+    <comment>Message printer in the output window when the deployment was updated. {0} is the name of the deployment.</comment>
+  </data>
 </root>

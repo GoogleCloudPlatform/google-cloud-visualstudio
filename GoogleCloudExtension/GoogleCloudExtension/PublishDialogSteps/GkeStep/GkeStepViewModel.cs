@@ -188,6 +188,15 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 if (result != null)
                 {
                     GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentSuccessMessage, project.Name));
+                    if (result.DeploymentUpdated)
+                    {
+                        GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentUpdatedMessage, options.DeploymentName));
+                    }
+                    if (result.DeploymentScaled)
+                    {
+                        GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentScaledMessage, options.DeploymentName, options.Replicas));
+                    }
+
                     if (result.WasExposed)
                     {
                         if (result.ServiceIpAddress != null)

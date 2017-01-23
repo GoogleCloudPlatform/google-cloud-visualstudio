@@ -1960,6 +1960,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deployment {0} was scaled to {1} replicas..
+        /// </summary>
+        public static string GkePublishDeploymentScaledMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentScaledMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deploying to Container Engine.
         /// </summary>
         public static string GkePublishDeploymentStatusMessage {
@@ -1974,6 +1983,15 @@ namespace GoogleCloudExtension {
         public static string GkePublishDeploymentSuccessMessage {
             get {
                 return ResourceManager.GetString("GkePublishDeploymentSuccessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deployment {0} was updated..
+        /// </summary>
+        public static string GkePublishDeploymentUpdatedMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentUpdatedMessage", resourceCulture);
             }
         }
         
