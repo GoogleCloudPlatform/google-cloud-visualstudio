@@ -31,7 +31,7 @@
                    Style="{StaticResource CommonTextStyle}">
             <Hyperlink Command="{Binding CreateClusterCommand}"
                        Style="{StaticResource CommonHyperlinkStyle}">
-                <TextBlock>Create new cluster</TextBlock>
+                <TextBlock Text="{x:Static ext:Resources.GkePublishNewClusterCaption}" />
             </Hyperlink>
         </TextBlock>
 

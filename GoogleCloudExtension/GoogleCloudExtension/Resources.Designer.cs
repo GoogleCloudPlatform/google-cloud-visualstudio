@@ -2032,6 +2032,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Create new cluster.
+        /// </summary>
+        public static string GkePublishNewClusterCaption {
+            get {
+                return ResourceManager.GetString("GkePublishNewClusterCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Replic_as:.
         /// </summary>
         public static string GkePublishReplicasCaption {

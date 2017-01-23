@@ -1391,4 +1391,8 @@
     <value>Invalid value</value>
     <comment>Generic title for validation error prompts.</comment>
   </data>
+  <data name="GkePublishNewClusterCaption" xml:space="preserve">
+    <value>Create new cluster</value>
+    <comment>Caption for the new cluster link.</comment>
+  </data>
 </root>
