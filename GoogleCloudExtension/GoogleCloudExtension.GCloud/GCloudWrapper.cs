@@ -121,6 +121,12 @@ namespace GoogleCloudExtension.GCloud
         public static Task<bool> CanUseResetWindowsCredentialsAsync() => IsComponentInstalledAsync("beta");
 
         /// <summary>
+        /// Returns true if the methods concerning kubectl and GKE can be used safely.
+        /// </summary>
+        /// <returns>A task that will be fullfilled to true if the GKE methods can be used.</returns>
+        public static Task<bool> CanUseGKEAsync() => IsComponentInstalledAsync("kubectl");
+
+        /// <summary>
         /// Returns the list of components that gcloud knows about.
         /// </summary>
         public static async Task<IList<string>> GetInstalledComponentsAsync()

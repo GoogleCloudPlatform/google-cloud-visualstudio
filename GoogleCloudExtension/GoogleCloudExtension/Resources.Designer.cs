@@ -1915,6 +1915,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Missing Google Cloud SDK Component.
+        /// </summary>
+        public static string GcloudMissingComponentTitle {
+            get {
+                return ResourceManager.GetString("GcloudMissingComponentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Clusters:.
         /// </summary>
         public static string GkePublishClusterMessage {
@@ -1983,6 +1992,15 @@ namespace GoogleCloudExtension {
         public static string GkePublishExposeServiceCaption {
             get {
                 return ResourceManager.GetString("GkePublishExposeServiceCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To use this feature you need to have the &quot;kubectl&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl.
+        /// </summary>
+        public static string GkePublishMissingKubectlMessage {
+            get {
+                return ResourceManager.GetString("GkePublishMissingKubectlMessage", resourceCulture);
             }
         }
         
@@ -2514,15 +2532,6 @@ namespace GoogleCloudExtension {
         public static string ResetPasswordGcloudMissingBetaMessage {
             get {
                 return ResourceManager.GetString("ResetPasswordGcloudMissingBetaMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Missing Google Cloud SDK Component.
-        /// </summary>
-        public static string ResetPasswordGcloudMissingComponentTitle {
-            get {
-                return ResourceManager.GetString("ResetPasswordGcloudMissingComponentTitle", resourceCulture);
             }
         }
         

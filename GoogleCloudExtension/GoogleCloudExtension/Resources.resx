@@ -633,7 +633,7 @@
     <value>To use this feature you need to have the "beta" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta.</value>
     <comment>Message shown when the beta component is missing.</comment>
   </data>
-  <data name="ResetPasswordGcloudMissingComponentTitle" xml:space="preserve">
+  <data name="GcloudMissingComponentTitle" xml:space="preserve">
     <value>Missing Google Cloud SDK Component</value>
     <comment>Title for the dialog that informs the user that a Cloud SDK component is needed but not installed.</comment>
   </data>
@@ -1346,6 +1346,10 @@
   <data name="GkePublishExposeServiceCaption" xml:space="preserve">
     <value>E_xpose the service to the public internet</value>
     <comment>Caption for the checkbox to set if the GKE service is to be exposed or not.</comment>
+  </data>
+  <data name="GkePublishMissingKubectlMessage" xml:space="preserve">
+    <value>To use this feature you need to have the "kubectl" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl</value>
+    <comment>Message shown to the user when the kubectl component is not installed.</comment>
   </data>
   <data name="GkePublishServiceIpMessage" xml:space="preserve">
     <value>Service {0} ip address {1}</value>

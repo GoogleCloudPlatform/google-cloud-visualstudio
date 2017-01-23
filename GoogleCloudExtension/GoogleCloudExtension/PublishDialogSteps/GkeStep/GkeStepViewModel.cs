@@ -17,7 +17,9 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.LinkPrompt;
 using GoogleCloudExtension.PublishDialog;
+using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -113,6 +115,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
             DeploymentName = _publishDialog.Project.Name.ToLower();
             DeploymentVersion = GetDefaultVersion();
+
+            // Mark that the dialog is going to be busy until we have loaded the data.
+            _publishDialog.TrackTask(Clusters.ValueTask);
         }
 
         /// <summary>
@@ -120,67 +125,84 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// </summary>
         public override async void Publish()
         {
-            var context = new GCloudContext
-            {
-                CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
-                ProjectId = CredentialsStore.Default.CurrentProjectId,
-                AppName = GoogleCloudExtensionPackage.ApplicationName,
-                AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
-            };
-            var options = new GkeDeployment.DeploymentOptions
-            {
-                Cluster = SelectedCluster.Name,
-                Zone = SelectedCluster.Zone,
-                DeploymentName = DeploymentName,
-                DeploymentVersion = DeploymentVersion,
-                ExposeService = ExposeService,
-                Context = context,
-                WaitingForServiceIpCallback = () => GcpOutputWindow.OutputLine(Resources.GkePublishWaitingForServiceIpMessage)
-            };
             var project = _publishDialog.Project;
-
-            GcpOutputWindow.Activate();
-            GcpOutputWindow.Clear();
-            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeployingToGkeMessage, project.Name));
-
-            _publishDialog.FinishFlow();
-
-            GkeDeploymentResult result;
-            using (var frozen = StatusbarHelper.Freeze())
-            using (var animationShown = StatusbarHelper.ShowDeployAnimation())
-            using (var progress = StatusbarHelper.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
-            using (var deployingOperation = ShellUtils.SetShellUIBusy())
+            try
             {
-                result = await GkeDeployment.PublishProjectAsync(
-                    project.FullPath,
-                    options,
-                    progress,
-                    GcpOutputWindow.OutputLine);
-            }
-
-            if (result != null)
-            {
-                GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentSuccessMessage, project.Name));
-                if (result.WasExposed)
+                var verifyGCloudTask = VerifyGCloudDependencies();
+                _publishDialog.TrackTask(verifyGCloudTask);
+                if (!await verifyGCloudTask)
                 {
-                    if (result.ServiceIpAddress != null)
+                    Debug.WriteLine("Aborting deployment, no kubectl was found.");
+                    _publishDialog.FinishFlow();
+                    return;
+                }
+
+                var context = new GCloudContext
+                {
+                    CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
+                    ProjectId = CredentialsStore.Default.CurrentProjectId,
+                    AppName = GoogleCloudExtensionPackage.ApplicationName,
+                    AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
+                };
+                var options = new GkeDeployment.DeploymentOptions
+                {
+                    Cluster = SelectedCluster.Name,
+                    Zone = SelectedCluster.Zone,
+                    DeploymentName = DeploymentName,
+                    DeploymentVersion = DeploymentVersion,
+                    ExposeService = ExposeService,
+                    Context = context,
+                    WaitingForServiceIpCallback = () => GcpOutputWindow.OutputLine(Resources.GkePublishWaitingForServiceIpMessage)
+                };
+
+                GcpOutputWindow.Activate();
+                GcpOutputWindow.Clear();
+                GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeployingToGkeMessage, project.Name));
+
+                _publishDialog.FinishFlow();
+
+                GkeDeploymentResult result;
+                using (var frozen = StatusbarHelper.Freeze())
+                using (var animationShown = StatusbarHelper.ShowDeployAnimation())
+                using (var progress = StatusbarHelper.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
+                using (var deployingOperation = ShellUtils.SetShellUIBusy())
+                {
+                    result = await GkeDeployment.PublishProjectAsync(
+                        project.FullPath,
+                        options,
+                        progress,
+                        GcpOutputWindow.OutputLine);
+                }
+
+                if (result != null)
+                {
+                    GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentSuccessMessage, project.Name));
+                    if (result.WasExposed)
                     {
-                        GcpOutputWindow.OutputLine(
-                            String.Format(Resources.GkePublishServiceIpMessage, DeploymentName, result.ServiceIpAddress));
+                        if (result.ServiceIpAddress != null)
+                        {
+                            GcpOutputWindow.OutputLine(
+                                String.Format(Resources.GkePublishServiceIpMessage, DeploymentName, result.ServiceIpAddress));
+                        }
+                        else
+                        {
+                            GcpOutputWindow.OutputLine(Resources.GkePublishServiceIpTimeoutMessage);
+                        }
                     }
-                    else
+                    StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
+
+                    if (OpenWebsite && result.WasExposed && result.ServiceIpAddress != null)
                     {
-                        GcpOutputWindow.OutputLine(Resources.GkePublishServiceIpTimeoutMessage);
+                        Process.Start($"http://{result.ServiceIpAddress}");
                     }
                 }
-                StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
-
-                if (OpenWebsite && result.WasExposed && result.ServiceIpAddress != null)
+                else
                 {
-                    Process.Start($"http://{result.ServiceIpAddress}");
+                    GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
+                    StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
                 }
             }
-            else
+            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
                 GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
@@ -218,6 +240,29 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 "{0:0000}{1:00}{2:00}t{3:00}{4:00}{5:00}",
                 now.Year, now.Month, now.Day,
                 now.Hour, now.Minute, now.Second);
+        }
+
+        private async Task<bool> VerifyGCloudDependencies()
+        {
+            if (!await GCloudWrapper.CanUseGKEAsync())
+            {
+                if (!GCloudWrapper.IsGCloudCliInstalled())
+                {
+                    LinkPromptDialogWindow.PromptUser(
+                        Resources.ResetPasswordMissingGcloudTitle,
+                        Resources.ResetPasswordGcloudMissingMessage,
+                        new LinkInfo(link: "https://cloud.google.com/sdk/", caption: Resources.ResetPasswordGcloudLinkCaption));
+                }
+                else
+                {
+                    UserPromptUtils.ErrorPrompt(
+                        message: Resources.GkePublishMissingKubectlMessage,
+                        title: Resources.GcloudMissingComponentTitle);
+                }
+                return false;
+            }
+
+            return true;
         }
     }
 }

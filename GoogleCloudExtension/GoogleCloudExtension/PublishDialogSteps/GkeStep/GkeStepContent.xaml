@@ -16,7 +16,7 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <StackPanel IsEnabled="{Binding Clusters.IsCompleted}">
+    <StackPanel>
         <Label Content="{x:Static ext:Resources.GkePublishClusterMessage}"
                Target="{Binding ElementName=_clusters}"
                Style="{StaticResource CommonLabelStyle}"/>
