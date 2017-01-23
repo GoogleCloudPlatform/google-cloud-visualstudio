@@ -190,7 +190,7 @@ namespace GoogleCloudExtension.Deployment
 
                     if (deployment.Spec.Replicas != options.Replicas)
                     {
-                        Debug.WriteLine($"Updating the replicas for the deployment.")
+                        Debug.WriteLine($"Updating the replicas for the deployment.");
                     }
                 }
 
