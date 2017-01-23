@@ -35,6 +35,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
     /// </summary>
     public class GkeStepViewModel : PublishDialogStepBase
     {
+        private static readonly Cluster s_placeholderCluster = new Cluster { Name = "No clusters found..." };
+
         private readonly GkeStepContent _content;
         private IPublishDialog _publishDialog;
         private Cluster _selectedCluster;
@@ -58,7 +60,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             set
             {
                 SetValueAndRaise(ref _selectedCluster, value);
-                CanPublish = value != null;
+                CanPublish = value != null && value != s_placeholderCluster;
             }
         }
 
@@ -264,7 +266,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
             var clusters = await dataSource.GetClusterListAsync();
-            return clusters.OrderBy(x => x.Name).ToList();
+
+            var result = clusters?.OrderBy(x => x.Name)?.ToList();
+            if (result == null || result.Count == 0)
+            {
+                CanPublish = false;
+                return new List<Cluster> { s_placeholderCluster };
+            }
+            return result;
         }
 
         /// <summary>
