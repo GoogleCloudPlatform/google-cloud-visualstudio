@@ -1996,7 +1996,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the &quot;lubectl&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl.
+        ///   Looks up a localized string similar to To use this feature you need to have the &quot;kubectl&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl.
         /// </summary>
         public static string GkePublishMissingKubectlMessage {
             get {
