@@ -135,6 +135,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// </summary>
         public override async void Publish()
         {
+            if (!ValidateInput())
+            {
+                Debug.WriteLine("Invalid input cancelled the operation.");
+                return;
+            }
+
             var project = _publishDialog.Project;
             try
             {
@@ -230,6 +236,18 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         }
 
         #endregion
+
+        private bool ValidateInput()
+        {
+            int replicas = 0;
+            if (!int.TryParse(Replicas, out replicas))
+            {
+                UserPromptUtils.ErrorPrompt("Invalid value for replicas, must be a number.", Resources.UiInvalidValueTitle);
+                return false;
+            }
+
+            return true;
+        }
 
         private async Task<IList<Cluster>> GetAllClustersAsync()
         {

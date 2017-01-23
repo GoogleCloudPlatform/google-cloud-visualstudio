@@ -1379,4 +1379,12 @@
     <value>Deployment {0} was updated.</value>
     <comment>Message printer in the output window when the deployment was updated. {0} is the name of the deployment.</comment>
   </data>
+  <data name="GkePublishInvalidReplicasMessage" xml:space="preserve">
+    <value>Invalid value for replicas, must be a number.</value>
+    <comment>Message shown when an invalid value for replicas is given.</comment>
+  </data>
+  <data name="UiInvalidValueTitle" xml:space="preserve">
+    <value>Invalid value</value>
+    <comment>Generic title for validation error prompts.</comment>
+  </data>
 </root>

@@ -2014,6 +2014,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid value for replicas, must be a number..
+        /// </summary>
+        public static string GkePublishInvalidReplicasMessage {
+            get {
+                return ResourceManager.GetString("GkePublishInvalidReplicasMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To use this feature you need to have the &quot;kubectl&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl.
         /// </summary>
         public static string GkePublishMissingKubectlMessage {
@@ -2784,6 +2793,15 @@ namespace GoogleCloudExtension {
         public static string UiDownloadButtonCaption {
             get {
                 return ResourceManager.GetString("UiDownloadButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid value.
+        /// </summary>
+        public static string UiInvalidValueTitle {
+            get {
+                return ResourceManager.GetString("UiInvalidValueTitle", resourceCulture);
             }
         }
         
