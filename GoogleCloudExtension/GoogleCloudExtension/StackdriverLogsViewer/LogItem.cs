@@ -291,18 +291,91 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             return datetime.ToLocalTime();
         }
 
+        #region source line matching
         private void OnSourceLinkClick()
         {
             Debug.Assert(_sourceLine != -1 && _sourceFilePath != null, 
                 "There is a code bug if source file or source line is invalid");
-            var sourceFiles = SolutionHelper.CurrentSolution?.FindMatchingSourceFile(_sourceFilePath);
-            if (sourceFiles.Count() > 0)
+            // var sourceFiles = SolutionHelper.CurrentSolution?.FindMatchingSourceFile(_sourceFilePath);
+
+            var project = FindProject();
+            if (project == null)
             {
-                CurrentSourceLineLogItem = this;
-                var window = sourceFiles.First().GotoLine(_sourceLine);
-                SourceLineTextView = HighlightLogger.ShowTip(window);
+                Debug.WriteLine($"Failed to find project of {_assemblyName}");
+                return;
             }
+
+            var sourceFiles = project.SourceFiles.Where(x => x.IsMatchingPath(_sourceFilePath));
+            if (!sourceFiles.Any())
+            {
+                PromptNotfound();
+                return;
+            }
+
+            CurrentSourceLineLogItem = this;
+            var window = sourceFiles.First().GotoLine(_sourceLine);
+            if (null == window)
+            {
+                PromptNotfound();
+                return;
+            }
+
+            SourceLineTextView = HighlightLogger.ShowTip(window);
         }
+
+        private const string PromptTitle = "Locating logging source";
+
+        private void PromptNotfound()
+        {
+            string errorPrompt = @"The log entry does not contain valid source information or the source line can not be located";
+            UserPromptUtils.ErrorPrompt(errorPrompt, PromptTitle);
+        }
+
+        private void OpenValidProjectPrompt()
+        {
+            UserPromptUtils.ErrorPrompt(
+                $@"The log entry was generated from assembly {_assemblyName}, version {_assemblyVersion}
+Please open the project in order to navigate to the logging method source location.", 
+                PromptTitle);
+        }
+
+        private ProjectHelper FindProject()
+        {
+            if (String.IsNullOrWhiteSpace(_assemblyName) || String.IsNullOrWhiteSpace(_assemblyVersion))
+            {
+                UserPromptUtils.ErrorPrompt(
+                    @"The log entry does not contain valid assembly name or assembly version", 
+                    PromptTitle);
+            }
+
+            if (SolutionHelper.CurrentSolution == null)
+            {
+                OpenValidProjectPrompt();
+                return null;
+            }
+
+            var project = SolutionHelper.CurrentSolution.Projects?.FirstOrDefault(x => x.AssemblyName == _assemblyName);
+            if (project == null)
+            {
+                OpenValidProjectPrompt();
+                return null;
+            }
+
+            if (project.Version != _assemblyVersion)
+            {
+                if (!UserPromptUtils.ActionPrompt(
+                        prompt: $@"The project {project.Name} is at version {project.Version} 
+    while log entry's version is {_assemblyVersion}. Do you want to continue anyway?",
+                    title: PromptTitle))
+                {
+                    return null;
+                }
+            }
+
+            return project;
+        }
+
+        #endregion
 
         private void BackToLogsViewer()
         {

@@ -32,6 +32,8 @@ namespace GoogleCloudExtension.SolutionUtils
 
         private readonly Project _project;
 
+        public List<ProjectSourceFile> SourceFiles => GetSourceFiles();
+        public string Name => _project.Name;
         public string Version { get; private set; }
         public string AssemblyName { get; private set; }
 
@@ -46,6 +48,30 @@ namespace GoogleCloudExtension.SolutionUtils
             ParseProperties();
         }
 
+        private List<ProjectSourceFile> GetSourceFiles()
+        {
+            var items = new List<ProjectSourceFile>();
+            foreach (ProjectItem projectItem in _project.ProjectItems)
+            {
+                SearchForSourceFiles(projectItem, items);
+            }
+
+            return items;
+        }
+
+        private void SearchForSourceFiles(ProjectItem projectItem, List<ProjectSourceFile> items)
+        {
+            var sourceFile = ProjectSourceFile.Create(projectItem);
+            if (sourceFile != null)
+            {
+                items.Add(sourceFile);
+            }
+
+            foreach (ProjectItem nestedItem in projectItem.ProjectItems)
+            {
+                SearchForSourceFiles(nestedItem, items);
+            }
+        }
 
         /// <summary>
         /// Create a <seealso cref="ProjectHelper"/> object wrapping up a Project interface.

@@ -49,6 +49,12 @@ namespace GoogleCloudExtension.SolutionUtils
             _projectItem = projectItem;
         }
 
+        public bool IsMatchingPath(string sourceLocationFilePath)
+        {
+            // TODO: Advanced matching algorithm.
+            // so as to rule out the root directory differ cases.
+            return NormalizePath(Path) == NormalizePath(sourceLocationFilePath);
+        }
 
         public static string NormalizePath(string path)
         {
