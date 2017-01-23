@@ -57,7 +57,7 @@
 
             <!-- TODO: Use an up/down textbox control. -->
             <Label Grid.Column="1"
-                   Content="Replic_as:"
+                   Content="{x:Static ext:Resources.GkePublishReplicasCaption}"
                    Target="{Binding ElementName=_replicas}"
                    Margin="5,0,0,0"
                    Style="{StaticResource CommonLabelStyle}" />

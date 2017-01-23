@@ -241,7 +241,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             int replicas = 0;
             if (!int.TryParse(Replicas, out replicas))
             {
-                UserPromptUtils.ErrorPrompt("Invalid value for replicas, must be a number.", Resources.UiInvalidValueTitle);
+                UserPromptUtils.ErrorPrompt(Resources.GkePublishInvalidReplicasMessage, Resources.UiInvalidValueTitle);
                 return false;
             }
 

@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2028,6 +2028,15 @@ namespace GoogleCloudExtension
         public static string GkePublishMissingKubectlMessage {
             get {
                 return ResourceManager.GetString("GkePublishMissingKubectlMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replic_as:.
+        /// </summary>
+        public static string GkePublishReplicasCaption {
+            get {
+                return ResourceManager.GetString("GkePublishReplicasCaption", resourceCulture);
             }
         }
         
