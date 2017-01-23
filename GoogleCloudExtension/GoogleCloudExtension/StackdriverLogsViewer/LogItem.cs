@@ -364,9 +364,13 @@ Please open the project in order to navigate to the logging method source locati
             if (project.Version != _assemblyVersion)
             {
                 if (!UserPromptUtils.ActionPrompt(
-                        prompt: $@"The project {project.Name} is at version {project.Version} 
-    while log entry's version is {_assemblyVersion}. Do you want to continue anyway?",
-                    title: PromptTitle))
+                        prompt: 
+$@"Version missmatch.
+The current project {project.Name} version is {project.Version},
+Pleae open the project of version {_assemblyVersion},
+in order to properly locating the logging source location.",
+                    title: PromptTitle,
+                    message: "Do you want to continue anyway?" ))
                 {
                     return null;
                 }
