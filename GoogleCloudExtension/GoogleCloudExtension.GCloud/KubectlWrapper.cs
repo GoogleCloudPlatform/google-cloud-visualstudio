@@ -17,6 +17,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GCloud
@@ -93,6 +94,18 @@ namespace GoogleCloudExtension.GCloud
         {
             var deployments = await GetJsonOutputAsync<GkeList<GkeDeployment>>($"get deployments", context);
             return deployments.Items;
+        }
+
+        /// <summary>
+        /// Determines if a deployment with the given name already exists.
+        /// </summary>
+        /// <param name="name">The name of the deployment to check.</param>
+        /// <param name="context">The context for invoking kubectl.</param>
+        /// <returns>True if the deployment exists, false otherwise.</returns>
+        public static async Task<bool> DeploymentExistsAsync(string name, KubectlContext context)
+        {
+            var deployments = await GetDeploymentsAsync(context);
+            return deployments.FirstOrDefault(x => x.Metadata.Name == name) != null;
         }
 
         /// <summary>

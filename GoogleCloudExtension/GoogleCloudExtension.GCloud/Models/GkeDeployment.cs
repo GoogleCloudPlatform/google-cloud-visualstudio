@@ -16,11 +16,20 @@ using Newtonsoft.Json;
 
 namespace GoogleCloudExtension.GCloud.Models
 {
+    /// <summary>
+    /// This class contains the data that describes a Kubernetes deployment.
+    /// </summary>
     public class GkeDeployment
     {
+        /// <summary>
+        /// The metadata for the deployment.
+        /// </summary>
         [JsonProperty("metadata")]
         public GkeMetadata Metadata { get; set; }
 
+        /// <summary>
+        /// The spec for the deployment.
+        /// </summary>
         [JsonProperty("spec")]
         public GkeSpec Spec { get; set; }
     }

@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension {
-    using System;
-    
-    
+namespace GoogleCloudExtension
+{
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -1942,6 +1942,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deployment {0} already exists, do you want to update it?.
+        /// </summary>
+        public static string GkePublishDeploymentAlreadyExistsMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentAlreadyExistsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update exising deployment.
+        /// </summary>
+        public static string GkePublishDeploymentAlreadyExistsTitle {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentAlreadyExistsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to deploy {0} to Container Engine.
         /// </summary>
         public static string GkePublishDeploymentFailureMessage {
@@ -2919,6 +2937,15 @@ namespace GoogleCloudExtension {
         public static string UiUndoButtonCaption {
             get {
                 return ResourceManager.GetString("UiUndoButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update.
+        /// </summary>
+        public static string UiUpdateButtonCaption {
+            get {
+                return ResourceManager.GetString("UiUpdateButtonCaption", resourceCulture);
             }
         }
         

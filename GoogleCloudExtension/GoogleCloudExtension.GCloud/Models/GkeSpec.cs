@@ -21,6 +21,9 @@ namespace GoogleCloudExtension.GCloud.Models
     /// </summary>
     public class GkeSpec
     {
+        /// <summary>
+        /// The number of replicas desired.
+        /// </summary>
         [JsonProperty("replicas")]
         public int Replicas { get; set; }
     }

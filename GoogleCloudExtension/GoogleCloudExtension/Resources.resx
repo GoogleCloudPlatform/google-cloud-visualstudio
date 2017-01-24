@@ -1395,4 +1395,16 @@
     <value>Create new cluster</value>
     <comment>Caption for the new cluster link.</comment>
   </data>
+  <data name="GkePublishDeploymentAlreadyExistsMessage" xml:space="preserve">
+    <value>Deployment {0} already exists, do you want to update it?</value>
+    <comment>Message shown to the user when the deployment already exists to confirm if it should be updated. {0} is the deployment name.</comment>
+  </data>
+  <data name="GkePublishDeploymentAlreadyExistsTitle" xml:space="preserve">
+    <value>Update exising deployment</value>
+    <comment>Title for the user confirmation prompt to udate deployments.</comment>
+  </data>
+  <data name="UiUpdateButtonCaption" xml:space="preserve">
+    <value>Update</value>
+    <comment>Caption for the Update buttons.</comment>
+  </data>
 </root>

@@ -67,7 +67,12 @@ namespace GoogleCloudExtension.Deployment
             /// <summary>
             /// The context for any gcloud calls to use.
             /// </summary>
-            public GCloudContext Context { get; set; }
+            public GCloudContext GCloudContext { get; set; }
+
+            /// <summary>
+            /// The context for any kubectl calls to use.
+            /// </summary>
+            public KubectlContext KubectlContext { get; set; }
 
             /// <summary>
             /// The number of replicas to create during the deployment.
@@ -109,12 +114,7 @@ namespace GoogleCloudExtension.Deployment
             {
                 var appRootPath = Path.Combine(stageDirectory, "app");
                 var buildFilePath = Path.Combine(stageDirectory, "cloudbuild.yaml");
-                var kubeconfigPath = Path.Combine(stageDirectory, "kube.config");
                 var projectName = CommonUtils.GetProjectName(projectPath);
-                var kubectlContext = new KubectlContext
-                {
-                    Config = kubeconfigPath
-                };
 
                 if (!await ProgressHelper.UpdateProgress(
                         NetCoreAppUtils.CreateAppBundleAsync(projectPath, appRootPath, outputAction),
@@ -127,27 +127,17 @@ namespace GoogleCloudExtension.Deployment
 
                 NetCoreAppUtils.CopyOrCreateDockerfile(projectPath, appRootPath);
                 var image = CloudBuilderUtils.CreateBuildFile(
-                    project: options.Context.ProjectId,
+                    project: options.GCloudContext.ProjectId,
                     imageName: options.DeploymentName,
                     imageVersion: options.DeploymentVersion,
                     buildFilePath: buildFilePath);
 
                 if (!await ProgressHelper.UpdateProgress(
-                    GCloudWrapper.BuildContainerAsync(buildFilePath, appRootPath, outputAction, options.Context),
+                    GCloudWrapper.BuildContainerAsync(buildFilePath, appRootPath, outputAction, options.GCloudContext),
                     progress,
                     from: 0.4, to: 0.7))
                 {
                     Debug.WriteLine("Failed to build container.");
-                    return null;
-                }
-
-                if (!await GCloudWrapper.CreateCredentialsForClusterAsync(
-                    cluster: options.Cluster,
-                    zone: options.Zone,
-                    path: kubeconfigPath,
-                    context: options.Context))
-                {
-                    Debug.WriteLine("Failed to create kubectl config file.");
                     return null;
                 }
                 progress.Report(0.7);
@@ -158,7 +148,7 @@ namespace GoogleCloudExtension.Deployment
                 bool serviceExposed = false;
 
                 // Create or update the deployment.
-                var deployments = await KubectlWrapper.GetDeploymentsAsync(kubectlContext);
+                var deployments = await KubectlWrapper.GetDeploymentsAsync(options.KubectlContext);
                 var deployment = deployments?.FirstOrDefault(x => x.Metadata.Name == options.DeploymentName);
                 if (deployment == null)
                 {
@@ -168,7 +158,7 @@ namespace GoogleCloudExtension.Deployment
                             imageTag: image,
                             replicas: options.Replicas,
                             outputAction: outputAction,
-                            context: kubectlContext))
+                            context: options.KubectlContext))
                     {
                         Debug.WriteLine($"Failed to create deployment {options.DeploymentName}");
                         return null;
@@ -182,13 +172,15 @@ namespace GoogleCloudExtension.Deployment
                             options.DeploymentName,
                             image,
                             outputAction,
-                            kubectlContext))
+                            options.KubectlContext))
                     {
                         Debug.WriteLine($"Failed to update deployemnt {options.DeploymentName}");
                         return null;
                     }
                     deploymentUpdated = true;
 
+                    // If the deployment already exists but the replicas number requested is not the
+                    // same as the existing number we will scale up/down the deployment.
                     if (deployment.Spec.Replicas != options.Replicas)
                     {
                         Debug.WriteLine($"Updating the replicas for the deployment.");
@@ -196,7 +188,7 @@ namespace GoogleCloudExtension.Deployment
                                 options.DeploymentName,
                                 options.Replicas,
                                 outputAction,
-                                kubectlContext))
+                                options.KubectlContext))
                         {
                             Debug.WriteLine($"Failed to scale up deployment {options.DeploymentName}");
                             return null;
@@ -208,11 +200,11 @@ namespace GoogleCloudExtension.Deployment
                 // Expose the service if requested and it is not already exposed.
                 if (options.ExposeService)
                 {
-                    var services = await KubectlWrapper.GetServicesAsync(kubectlContext);
+                    var services = await KubectlWrapper.GetServicesAsync(options.KubectlContext);
                     var service = services?.FirstOrDefault(x => x.Metadata.Name == options.DeploymentName);
                     if (service == null)
                     {
-                        if (!await KubectlWrapper.ExposeServiceAsync(options.DeploymentName, outputAction, kubectlContext))
+                        if (!await KubectlWrapper.ExposeServiceAsync(options.DeploymentName, outputAction, options.KubectlContext))
                         {
                             Debug.WriteLine($"Failed to expose service {options.DeploymentName}");
                             return null;
@@ -222,7 +214,7 @@ namespace GoogleCloudExtension.Deployment
                     ipAddress = await WaitForServiceAddressAsync(
                         options.DeploymentName,
                         options.WaitingForServiceIpCallback,
-                        kubectlContext);
+                        options.KubectlContext);
 
                     serviceExposed = true;
                 }
