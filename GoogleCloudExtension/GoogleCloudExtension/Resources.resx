@@ -1408,12 +1408,8 @@
     <comment>The Log Severity selection , warning log level item text.</comment>
   </data>
   <data name="LogViewerSimpleTextSearchIconButtonToolTip" xml:space="preserve">
-    <value>Apply text search on server and refresh results</value>
+    <value>Filter by label or text search.</value>
     <comment>Log viewer simple text search icon button tooltip.</comment>
-  </data>
-  <data name="LogViewerSimpleTextSearchWatermarkMessage" xml:space="preserve">
-    <value>search</value>
-    <comment>The watermark message when simple text search box is empty.</comment>
   </data>
   <data name="LogViewerSwitchToAdvancedFilterCaption" xml:space="preserve">
     <value>To Advanced Filter</value>
@@ -1426,5 +1422,13 @@
   <data name="LogViewerSwitchToSimpleFilterCaption" xml:space="preserve">
     <value>To Simple Filters</value>
     <comment>Caption for switch to simple filters button.</comment>
+  </data>
+  <data name="LogViewerAdvancedFilterHelpLinkCaption" xml:space="preserve">
+    <value>Advanced filter help</value>
+    <comment>The caption of advanced help link.</comment>
+  </data>
+  <data name="LogViewerToSimpleSearchButtonTooltip" xml:space="preserve">
+    <value>Clear filters and return to basic mode.</value>
+    <comment>The "To simple search"  button tooltip.</comment>
   </data>
 </root>

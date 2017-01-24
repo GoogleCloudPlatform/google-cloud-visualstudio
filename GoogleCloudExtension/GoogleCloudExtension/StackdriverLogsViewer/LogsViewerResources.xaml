@@ -121,31 +121,4 @@
         </Setter>
     </Style>
 
-    <Style x:Key="WartermarkedTextBoxStyle" 
-           TargetType="TextBox">
-        <Style.Resources>
-            <VisualBrush 
-                x:Key="CueBannerBrush" 
-                AlignmentX="Left" 
-                AlignmentY="Center" 
-                Stretch="None">
-                <VisualBrush.Visual>
-                    <Label Content="{x:Static ext:Resources.LogViewerSimpleTextSearchWatermarkMessage}" 
-                           Foreground="Gray" />
-                </VisualBrush.Visual>
-            </VisualBrush>
-        </Style.Resources>
-        <Style.Triggers>
-            <Trigger Property="Text" Value="{x:Static sys:String.Empty}">
-                <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-            </Trigger>
-            <Trigger Property="Text" Value="{x:Null}">
-                <Setter Property="Background" Value="{StaticResource CueBannerBrush}" />
-            </Trigger>
-            <Trigger Property="IsKeyboardFocused" Value="True">
-                <Setter Property="Background" Value="White" />
-            </Trigger>
-        </Style.Triggers>
-    </Style>
-    
 </ResourceDictionary>
