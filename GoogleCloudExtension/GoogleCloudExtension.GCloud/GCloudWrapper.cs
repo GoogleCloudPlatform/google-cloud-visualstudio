@@ -99,6 +99,23 @@ namespace GoogleCloudExtension.GCloud
                 });
         }
 
+        public static async Task<KubectlContext> GetKubectlContextForClusterAsync(
+            string cluster,
+            string zone,
+            GCloudContext context)
+        {
+            var tempPath = Path.GetTempFileName();
+            if (!await CreateCredentialsForClusterAsync(
+                    cluster: cluster,
+                    zone: zone,
+                    path: tempPath,
+                    context: context))
+            {
+                throw new GCloudException($"Failed to get credentials for cluster {cluster}");
+            }
+            return new KubectlContext(tempPath);            
+        }
+
         /// <summary>
         /// Builds a container using the Container Builder service.
         /// </summary>
