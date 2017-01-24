@@ -130,10 +130,10 @@
                     AcceptsReturn="True"
                     Text="{Binding AdvancedFilterText, UpdateSourceTrigger=PropertyChanged}"
                     MinLines="3" 
-                    MaxLines="30" />
+                    MaxLines="30"
+                    VerticalScrollBarVisibility="Auto" />
 
                 <Button 
-                    Grid.Row="0" 
                     Grid.Column="2" 
                     Margin="6,0,0,0" 
                     HorizontalAlignment="Right"
@@ -235,12 +235,12 @@
 
                             <TextBox 
                                 Grid.Column="0"
-                                 BorderThickness="0"
-                                 TextWrapping="Wrap"    
-                                 VerticalAlignment="Center"
-                                 HorizontalAlignment="Stretch"
-                                 Padding="8,5,8,5"    
-                                 Text="{Binding SimpleSearchText, UpdateSourceTrigger=PropertyChanged}" >
+                                BorderThickness="0"
+                                TextWrapping="Wrap"    
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Stretch"
+                                Padding="8,5,8,5"    
+                                Text="{Binding SimpleSearchText, UpdateSourceTrigger=PropertyChanged}" >
                                 <TextBox.InputBindings>
                                     <KeyBinding Key="Enter" Command="{Binding SimpleTextSearchCommand}"/>
                                 </TextBox.InputBindings>
@@ -417,7 +417,8 @@
                      Foreground="Red" 
                      Text="{Binding RequestErrorMessage, Mode=OneWay}" 
                      Visibility="{Binding ShowRequestErrorMessage, Converter={StaticResource visibilityConverter}}" 
-                     IsReadOnly="True" />
+                     IsReadOnly="True"
+                     VerticalScrollBarVisibility="Auto" />
 
             <StackPanel Margin="0, 0, 0, 12" 
                         Orientation="Horizontal" 

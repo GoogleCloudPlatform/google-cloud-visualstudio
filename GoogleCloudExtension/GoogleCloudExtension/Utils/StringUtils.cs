@@ -33,8 +33,23 @@ namespace GoogleCloudExtension.Utils
         /// (2) Single \  are escaped into double \\. 
         /// (3) Only accepting \" escaping.
         /// (3) If single " is found without escaping, it is skipped.
+        /// 
+        /// Brief explanation of the spliting algorithm.
+        ///     scannedTokens contains the list of divided sub-strings.
+        ///     currentToken contains the current working(appending) sub-string.
+        ///     currentToken can be either the sub-sting inside a double quotes pair,  
+        ///         or a single word separated by sapce.
+        ///          
+        ///     If it is a double quote character,  it could be 
+        ///         (a) left side of a double quotes pair. 
+        ///         (b) right side of a double quotes pair.
+        ///         (c) the very last alone double quote.  
+        ///         (e) the escaped double quote.
+        ///     If it is a single space, it could be
+        ///         (a) A space inside a double quotes pair.  Add it to currentToken.
+        ///         (b) else, it is a separator, add the currentToken to 
         /// </summary>
-        public static IEnumerable<string> SplitSearchString(string source)
+        public static IEnumerable<string> SplitStringBySpaceOrQuote(string source)
         {
             if (source == null)
             {
@@ -102,17 +117,10 @@ namespace GoogleCloudExtension.Utils
 
             if (currentToken.Length > 0)
             {
-                if (inDelimitedString)
-                {
-                    var splits = currentToken.ToString().Split(
-                        new char[] { ' ' },
-                        StringSplitOptions.RemoveEmptyEntries);
-                    scannedTokens.AddRange(splits);
-                }
-                else
-                {
-                    scannedTokens.Add(currentToken.ToString());
-                }
+                var splits = currentToken.ToString().Split(
+                    new char[] { ' ' },
+                    StringSplitOptions.RemoveEmptyEntries);
+                scannedTokens.AddRange(splits);
                 currentToken.Clear();
             }
 

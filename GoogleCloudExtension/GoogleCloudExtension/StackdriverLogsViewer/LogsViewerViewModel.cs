@@ -538,7 +538,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </returns>
         private string ComposeTextSearchFilter()
         {
-            var splits = StringUtils.SplitSearchString(SimpleSearchText);
+            var splits = StringUtils.SplitStringBySpaceOrQuote(SimpleSearchText);
             if (splits == null || splits.Count() == 0)
             {
                 return null;
