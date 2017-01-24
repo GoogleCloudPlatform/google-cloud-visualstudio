@@ -40,6 +40,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private readonly GkeStepContent _content;
         private IPublishDialog _publishDialog;
+        private AsyncPropertyValue<IList<Cluster>> _clusters;
         private Cluster _selectedCluster;
         private string _deploymentName;
         private string _deploymentVersion;
@@ -50,7 +51,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// <summary>
         /// The list of clusters that serve as the target for deployment.
         /// </summary>
-        public AsyncPropertyValue<IList<Cluster>> Clusters { get; }
+        public AsyncPropertyValue<IList<Cluster>> Clusters
+        {
+            get { return _clusters; }
+            private set { SetValueAndRaise(ref _clusters, value); }
+        }
 
         /// <summary>
         /// The currently selected cluster to use for deployment.
@@ -111,14 +116,30 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             set { SetValueAndRaise(ref _openWebsite, value); }
         }
 
+        /// <summary>
+        /// Command to execute to create a new cluster.
+        /// </summary>
         public ICommand CreateClusterCommand { get; }
-        
+
+        /// <summary>
+        /// Command to execute to refresh the list of clusters.
+        /// </summary>
+        public ICommand RefreshClustersListCommand { get; }
+                
         private GkeStepViewModel(GkeStepContent content)
         {
             _content = content;
 
             Clusters = new AsyncPropertyValue<IList<Cluster>>(GetAllClustersAsync());
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand);
+            RefreshClustersListCommand = new ProtectedCommand(OnRefreshClustersListCommand);
+        }
+
+        private void OnRefreshClustersListCommand()
+        {
+            var refreshTask = GetAllClustersAsync();
+            Clusters = new AsyncPropertyValue<IList<Cluster>>(refreshTask);
+            _publishDialog.TrackTask(refreshTask);
         }
 
         private void OnCreateClusterCommand()

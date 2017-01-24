@@ -5,6 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialogSteps.GkeStep"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
+             xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions;assembly=GoogleCloudExtension"
              mc:Ignorable="d" 
              d:DataContext="{x:Type local:GkeStepViewModel}">
 
@@ -20,13 +22,26 @@
         <Label Content="{x:Static ext:Resources.GkePublishClusterMessage}"
                Target="{Binding ElementName=_clusters}"
                Style="{StaticResource CommonLabelStyle}"/>
-        <ComboBox x:Name="_clusters"
-                  ItemsSource="{Binding Clusters.Value}"
-                  SelectedItem="{Binding SelectedCluster, Mode=OneWayToSource}"
-                  DisplayMemberPath="Name"
-                  IsSynchronizedWithCurrentItem="True"
-                  Margin="0,0,0,5"
-                  Style="{StaticResource CommonComboBoxStyle}"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            
+            <ComboBox x:Name="_clusters"
+                      ItemsSource="{Binding Clusters.Value}"
+                      SelectedItem="{Binding SelectedCluster, Mode=OneWayToSource}"
+                      DisplayMemberPath="Name"
+                      IsSynchronizedWithCurrentItem="True"
+                      Margin="0,0,0,5"
+                      Style="{StaticResource CommonComboBoxStyle}"/>
+
+            <controls:IconButton Grid.Column="1"
+                                 Command="{Binding RefreshClustersListCommand}"
+                                 VerticalAlignment="Top"
+                                 MouseOverIcon="{mp:ImageResource CloudExplorer/Resources/refresh.png}"
+                                 NormalIcon="{mp:ImageResource CloudExplorer/Resources/refresh.png}" />
+        </Grid>
         <TextBlock Margin="0,0,0,15"
                    Style="{StaticResource CommonTextStyle}">
             <Hyperlink Command="{Binding CreateClusterCommand}"
