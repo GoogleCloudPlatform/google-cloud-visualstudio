@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private string _deploymentVersion;
         private bool _exposeService = true;
         private bool _openWebsite = true;
-        private string _replicas = "1";
+        private string _replicas = "3";
 
         /// <summary>
         /// The list of clusters that serve as the target for deployment.
