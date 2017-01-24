@@ -99,6 +99,14 @@ namespace GoogleCloudExtension.GCloud
                 });
         }
 
+        /// <summary>
+        /// Returns the <seealso cref="KubectlContext"/> instance to use for the given <paramref name="cluster"/> when
+        /// performing Kubernetes operations.
+        /// </summary>
+        /// <param name="cluster">The name of the cluster for which to create credentials.</param>
+        /// <param name="zone">The zone of the cluster.</param>
+        /// <param name="context">The context under which the command is executed.</param>
+        /// <returns>The <seealso cref="KubectlContext"/> for the given <paramref name="cluster"/>.</returns>
         public static async Task<KubectlContext> GetKubectlContextForClusterAsync(
             string cluster,
             string zone,

@@ -19,9 +19,7 @@ using System.IO;
 namespace GoogleCloudExtension.GCloud
 {
     /// <summary>
-    /// This class contains the context on which to run kubectl commands.
-    /// This class must be disposed of to cleanup the temporary file created with the
-    /// configuration for the given cluster.
+    /// This class owns the context on which to run kubectl commands.
     /// </summary>
     public class KubectlContext : IDisposable
     {
@@ -35,6 +33,11 @@ namespace GoogleCloudExtension.GCloud
             Config = config;
         }
 
+        #region IDisposable implementation.
+
+        /// <summary>
+        /// Release the resources owned by this instance, deletes the files silently.
+        /// </summary>
         void IDisposable.Dispose()
         {
             if (Config == null)
@@ -55,5 +58,7 @@ namespace GoogleCloudExtension.GCloud
                 Config = null;
             }
         }
+
+        #endregion
     }
 }

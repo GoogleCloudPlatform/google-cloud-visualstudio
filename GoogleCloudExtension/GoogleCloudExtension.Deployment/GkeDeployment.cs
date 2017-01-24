@@ -179,6 +179,8 @@ namespace GoogleCloudExtension.Deployment
                     }
                     deploymentUpdated = true;
 
+                    // If the deployment already exists but the replicas number requested is not the
+                    // same as the existing number we will scale up/down the deployment.
                     if (deployment.Spec.Replicas != options.Replicas)
                     {
                         Debug.WriteLine($"Updating the replicas for the deployment.");
