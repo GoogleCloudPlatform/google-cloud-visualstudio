@@ -113,7 +113,7 @@ namespace GoogleCloudExtension.GCloud
             {
                 throw new GCloudException($"Failed to get credentials for cluster {cluster}");
             }
-            return new KubectlContext(tempPath);            
+            return new KubectlContext(tempPath);
         }
 
         /// <summary>
