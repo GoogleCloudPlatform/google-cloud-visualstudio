@@ -136,39 +136,47 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         {
             var project = _publishDialog.Project;
 
-            GcpOutputWindow.Activate();
-            GcpOutputWindow.Clear();
-            GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishStepStartMessage, project.Name));
-
-            _publishDialog.FinishFlow();
-
-            bool result;
-            using (var frozen = StatusbarHelper.Freeze())
-            using (var animationShown = StatusbarHelper.ShowDeployAnimation())
-            using (var progress = StatusbarHelper.ShowProgressBar(String.Format(Resources.GcePublishProgressMessage, SelectedInstance.Name)))
-            using (var deployingOperation = ShellUtils.SetShellUIBusy())
+            try
             {
-                result = await WindowsVmDeployment.PublishProjectAsync(
-                    project.FullPath,
-                    SelectedInstance,
-                    SelectedCredentials,
-                    progress,
-                    (l) => GcpOutputWindow.OutputLine(l));
-            }
+                GcpOutputWindow.Activate();
+                GcpOutputWindow.Clear();
+                GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishStepStartMessage, project.Name));
 
-            if (result)
-            {
-                GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishSuccessMessage, project.Name, SelectedInstance.Name));
-                StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
+                _publishDialog.FinishFlow();
 
-                var url = SelectedInstance.GetDestinationAppUri();
-                GcpOutputWindow.OutputLine(String.Format(Resources.PublishUrlMessage, url));
-                if (OpenWebsite)
+                bool result;
+                using (var frozen = StatusbarHelper.Freeze())
+                using (var animationShown = StatusbarHelper.ShowDeployAnimation())
+                using (var progress = StatusbarHelper.ShowProgressBar(String.Format(Resources.GcePublishProgressMessage, SelectedInstance.Name)))
+                using (var deployingOperation = ShellUtils.SetShellUIBusy())
                 {
-                    Process.Start(url);
+                    result = await WindowsVmDeployment.PublishProjectAsync(
+                        project.FullPath,
+                        SelectedInstance,
+                        SelectedCredentials,
+                        progress,
+                        (l) => GcpOutputWindow.OutputLine(l));
+                }
+
+                if (result)
+                {
+                    GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishSuccessMessage, project.Name, SelectedInstance.Name));
+                    StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
+
+                    var url = SelectedInstance.GetDestinationAppUri();
+                    GcpOutputWindow.OutputLine(String.Format(Resources.PublishUrlMessage, url));
+                    if (OpenWebsite)
+                    {
+                        Process.Start(url);
+                    }
+                }
+                else
+                {
+                    GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishFailedMessage, project.Name));
+                    StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
                 }
             }
-            else
+            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
                 GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
@@ -178,6 +186,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         public override void OnPushedToDialog(IPublishDialog dialog)
         {
             _publishDialog = dialog;
+
+            _publishDialog.TrackTask(Instances.ValueTask);
         }
 
         #endregion
