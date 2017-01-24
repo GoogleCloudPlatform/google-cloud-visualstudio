@@ -167,16 +167,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
                 using (var kubectlContext = await kubectlContextTask)
                 {
-                    var deploymentsTask = KubectlWrapper.GetDeploymentsAsync(kubectlContext);
-                    _publishDialog.TrackTask(deploymentsTask);
-                    var deployments = await deploymentsTask;
-                    var deployment = deployments.FirstOrDefault(x => x.Metadata.Name == DeploymentName);
-                    if (deployment != null)
+                    var deploymentExistsTask = KubectlWrapper.DeploymentExistsAsync(DeploymentName, kubectlContext);
+                    _publishDialog.TrackTask(deploymentExistsTask);
+                    if (await deploymentExistsTask)
                     {
                         if (!UserPromptUtils.ActionPrompt(
-                                $"Deployment {DeploymentName} already exists, do you want to update it?",
-                                "Update exising deployment",
-                                actionCaption: "Update"))
+                                String.Format(Resources.GkePublishDeploymentAlreadyExistsMessage, DeploymentName),
+                                Resources.GkePublishDeploymentAlreadyExistsTitle,
+                                actionCaption: Resources.UiUpdateButtonCaption))
                         {
                             return;
                         }
@@ -256,9 +254,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             {
                 GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
-            }
-            finally
-            {
                 _publishDialog.FinishFlow();
             }
         }
