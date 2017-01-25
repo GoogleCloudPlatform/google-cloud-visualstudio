@@ -17,6 +17,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GCloud
@@ -39,10 +40,11 @@ namespace GoogleCloudExtension.GCloud
         public static Task<bool> CreateDeploymentAsync(
             string name,
             string imageTag,
+            int replicas,
             Action<string> outputAction,
             KubectlContext context)
         {
-            return RunCommandAsync($"run {name} --image={imageTag} --port=8080 --record", outputAction, context);
+            return RunCommandAsync($"run {name} --image={imageTag} --replicas={replicas} --port=8080 --record", outputAction, context);
         }
 
         /// <summary>
@@ -95,6 +97,18 @@ namespace GoogleCloudExtension.GCloud
         }
 
         /// <summary>
+        /// Determines if a deployment with the given name already exists.
+        /// </summary>
+        /// <param name="name">The name of the deployment to check.</param>
+        /// <param name="context">The context for invoking kubectl.</param>
+        /// <returns>True if the deployment exists, false otherwise.</returns>
+        public static async Task<bool> DeploymentExistsAsync(string name, KubectlContext context)
+        {
+            var deployments = await GetDeploymentsAsync(context);
+            return deployments.FirstOrDefault(x => x.Metadata.Name == name) != null;
+        }
+
+        /// <summary>
         /// Updates an existing deployemnt given by <paramref name="name"/> with <paramref name="imageTag"/>.
         /// </summary>
         /// <param name="name">The name of the deployment to update.</param>
@@ -110,6 +124,26 @@ namespace GoogleCloudExtension.GCloud
         {
             return RunCommandAsync(
                 $"set image deployment/{name} {name}={imageTag} --record",
+                outputAction,
+                context);
+        }
+
+        /// <summary>
+        /// Changes the number of replicas for the given <paramref name="name"/>.
+        /// </summary>
+        /// <param name="name">The name of the deployment to update.</param>
+        /// <param name="replicas">The new number of replicas.</param>
+        /// <param name="outputAction">The output callback to be called with output from the command.</param>
+        /// <param name="context">The context for invoking kubectl.</param>
+        /// <returns>True if the operation succeeded false otherwise.</returns>
+        public static Task<bool> ScaleDeploymentAsync(
+            string name,
+            int replicas,
+            Action<string> outputAction,
+            KubectlContext context)
+        {
+            return RunCommandAsync(
+                $"scale deployment {name} --replicas={replicas}",
                 outputAction,
                 context);
         }
@@ -139,7 +173,7 @@ namespace GoogleCloudExtension.GCloud
         {
             var format = jsonOutput ? "--output=json" : "";
 
-            return $"{command} --kubeconfig=\"{context.Config}\" {format}";
+            return $"{command} --kubeconfig=\"{context.ConfigPath}\" {format}";
         }
     }
 }

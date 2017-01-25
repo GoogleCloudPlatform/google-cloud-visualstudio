@@ -1371,4 +1371,36 @@
     <value>Deploy as a service to Container Engine</value>
     <comment>The tooltip for the GKE choice.</comment>
   </data>
+  <data name="GkePublishDeploymentScaledMessage" xml:space="preserve">
+    <value>Deployment {0} was scaled to {1} replicas.</value>
+    <comment>Message printed in the output window when the deployment is scaled to the given number of replicas. {0} is the name of the deployment, {1} is the number of replicas.</comment>
+  </data>
+  <data name="GkePublishDeploymentUpdatedMessage" xml:space="preserve">
+    <value>Deployment {0} was updated.</value>
+    <comment>Message printer in the output window when the deployment was updated. {0} is the name of the deployment.</comment>
+  </data>
+  <data name="GkePublishInvalidReplicasMessage" xml:space="preserve">
+    <value>Invalid value for replicas, must be a number.</value>
+    <comment>Message shown when an invalid value for replicas is given.</comment>
+  </data>
+  <data name="GkePublishReplicasCaption" xml:space="preserve">
+    <value>Replic_as:</value>
+    <comment>The caption for the replicas label.</comment>
+  </data>
+  <data name="UiInvalidValueTitle" xml:space="preserve">
+    <value>Invalid value</value>
+    <comment>Generic title for validation error prompts.</comment>
+  </data>
+  <data name="GkePublishDeploymentAlreadyExistsMessage" xml:space="preserve">
+    <value>Deployment {0} already exists, do you want to update it?</value>
+    <comment>Message shown to the user when the deployment already exists to confirm if it should be updated. {0} is the deployment name.</comment>
+  </data>
+  <data name="GkePublishDeploymentAlreadyExistsTitle" xml:space="preserve">
+    <value>Update exising deployment</value>
+    <comment>Title for the user confirmation prompt to udate deployments.</comment>
+  </data>
+  <data name="UiUpdateButtonCaption" xml:space="preserve">
+    <value>Update</value>
+    <comment>Caption for the Update buttons.</comment>
+  </data>
 </root>

@@ -36,11 +36,17 @@ namespace GoogleCloudExtension.Deployment
         /// </summary>
         public bool DeploymentUpdated { get; }
 
-        public GkeDeploymentResult(string serviceIpAddress, bool wasExposed, bool deploymentUpdated)
+        /// <summary>
+        /// Is true if the deployment number of replicas was changed.
+        /// </summary>
+        public bool DeploymentScaled { get; }
+
+        public GkeDeploymentResult(string serviceIpAddress, bool wasExposed, bool deploymentUpdated, bool deploymentScaled)
         {
             ServiceIpAddress = serviceIpAddress;
             WasExposed = wasExposed;
             DeploymentUpdated = deploymentUpdated;
+            DeploymentScaled = deploymentScaled;
         }
     }
 }

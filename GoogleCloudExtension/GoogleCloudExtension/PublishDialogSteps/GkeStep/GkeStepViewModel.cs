@@ -19,7 +19,6 @@ using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.LinkPrompt;
 using GoogleCloudExtension.PublishDialog;
-using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -42,6 +41,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private string _deploymentVersion;
         private bool _exposeService = true;
         private bool _openWebsite = true;
+        private string _replicas = "3";
 
         /// <summary>
         /// The list of clusters that serve as the target for deployment.
@@ -78,6 +78,15 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         {
             get { return _deploymentVersion; }
             set { SetValueAndRaise(ref _deploymentVersion, value); }
+        }
+
+        /// <summary>
+        /// The number of replicas to create.
+        /// </summary>
+        public string Replicas
+        {
+            get { return _replicas; }
+            set { SetValueAndRaise(ref _replicas, value); }
         }
 
         /// <summary>
@@ -125,6 +134,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// </summary>
         public override async void Publish()
         {
+            if (!ValidateInput())
+            {
+                Debug.WriteLine("Invalid input cancelled the operation.");
+                return;
+            }
+
             var project = _publishDialog.Project;
             try
             {
@@ -133,83 +148,129 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 if (!await verifyGCloudTask)
                 {
                     Debug.WriteLine("Aborting deployment, no kubectl was found.");
-                    _publishDialog.FinishFlow();
                     return;
                 }
 
-                var context = new GCloudContext
+                var gcloudContext = new GCloudContext
                 {
                     CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
                     ProjectId = CredentialsStore.Default.CurrentProjectId,
                     AppName = GoogleCloudExtensionPackage.ApplicationName,
                     AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
                 };
-                var options = new GkeDeployment.DeploymentOptions
+
+                var kubectlContextTask = GCloudWrapper.GetKubectlContextForClusterAsync(
+                    cluster: SelectedCluster.Name,
+                    zone: SelectedCluster.Zone,
+                    context: gcloudContext);
+                _publishDialog.TrackTask(kubectlContextTask);
+
+                using (var kubectlContext = await kubectlContextTask)
                 {
-                    Cluster = SelectedCluster.Name,
-                    Zone = SelectedCluster.Zone,
-                    DeploymentName = DeploymentName,
-                    DeploymentVersion = DeploymentVersion,
-                    ExposeService = ExposeService,
-                    Context = context,
-                    WaitingForServiceIpCallback = () => GcpOutputWindow.OutputLine(Resources.GkePublishWaitingForServiceIpMessage)
-                };
-
-                GcpOutputWindow.Activate();
-                GcpOutputWindow.Clear();
-                GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeployingToGkeMessage, project.Name));
-
-                _publishDialog.FinishFlow();
-
-                GkeDeploymentResult result;
-                using (var frozen = StatusbarHelper.Freeze())
-                using (var animationShown = StatusbarHelper.ShowDeployAnimation())
-                using (var progress = StatusbarHelper.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
-                using (var deployingOperation = ShellUtils.SetShellUIBusy())
-                {
-                    result = await GkeDeployment.PublishProjectAsync(
-                        project.FullPath,
-                        options,
-                        progress,
-                        GcpOutputWindow.OutputLine);
-                }
-
-                if (result != null)
-                {
-                    GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentSuccessMessage, project.Name));
-                    if (result.WasExposed)
+                    var deploymentExistsTask = KubectlWrapper.DeploymentExistsAsync(DeploymentName, kubectlContext);
+                    _publishDialog.TrackTask(deploymentExistsTask);
+                    if (await deploymentExistsTask)
                     {
-                        if (result.ServiceIpAddress != null)
+                        if (!UserPromptUtils.ActionPrompt(
+                                String.Format(Resources.GkePublishDeploymentAlreadyExistsMessage, DeploymentName),
+                                Resources.GkePublishDeploymentAlreadyExistsTitle,
+                                actionCaption: Resources.UiUpdateButtonCaption))
                         {
-                            GcpOutputWindow.OutputLine(
-                                String.Format(Resources.GkePublishServiceIpMessage, DeploymentName, result.ServiceIpAddress));
-                        }
-                        else
-                        {
-                            GcpOutputWindow.OutputLine(Resources.GkePublishServiceIpTimeoutMessage);
+                            return;
                         }
                     }
-                    StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
 
-                    if (OpenWebsite && result.WasExposed && result.ServiceIpAddress != null)
+                    var options = new GkeDeployment.DeploymentOptions
                     {
-                        Process.Start($"http://{result.ServiceIpAddress}");
+                        Cluster = SelectedCluster.Name,
+                        Zone = SelectedCluster.Zone,
+                        DeploymentName = DeploymentName,
+                        DeploymentVersion = DeploymentVersion,
+                        ExposeService = ExposeService,
+                        GCloudContext = gcloudContext,
+                        KubectlContext = kubectlContext,
+                        Replicas = int.Parse(Replicas),
+                        WaitingForServiceIpCallback = () => GcpOutputWindow.OutputLine(Resources.GkePublishWaitingForServiceIpMessage)
+                    };
+
+                    GcpOutputWindow.Activate();
+                    GcpOutputWindow.Clear();
+                    GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeployingToGkeMessage, project.Name));
+
+                    _publishDialog.FinishFlow();
+
+                    GkeDeploymentResult result;
+                    using (var frozen = StatusbarHelper.Freeze())
+                    using (var animationShown = StatusbarHelper.ShowDeployAnimation())
+                    using (var progress = StatusbarHelper.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
+                    using (var deployingOperation = ShellUtils.SetShellUIBusy())
+                    {
+                        result = await GkeDeployment.PublishProjectAsync(
+                            project.FullPath,
+                            options,
+                            progress,
+                            GcpOutputWindow.OutputLine);
                     }
-                }
-                else
-                {
-                    GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
-                    StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+
+                    if (result != null)
+                    {
+                        GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentSuccessMessage, project.Name));
+                        if (result.DeploymentUpdated)
+                        {
+                            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentUpdatedMessage, options.DeploymentName));
+                        }
+                        if (result.DeploymentScaled)
+                        {
+                            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentScaledMessage, options.DeploymentName, options.Replicas));
+                        }
+
+                        if (result.WasExposed)
+                        {
+                            if (result.ServiceIpAddress != null)
+                            {
+                                GcpOutputWindow.OutputLine(
+                                    String.Format(Resources.GkePublishServiceIpMessage, DeploymentName, result.ServiceIpAddress));
+                            }
+                            else
+                            {
+                                GcpOutputWindow.OutputLine(Resources.GkePublishServiceIpTimeoutMessage);
+                            }
+                        }
+                        StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
+
+                        if (OpenWebsite && result.WasExposed && result.ServiceIpAddress != null)
+                        {
+                            Process.Start($"http://{result.ServiceIpAddress}");
+                        }
+                    }
+                    else
+                    {
+                        GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
+                        StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+                    }
                 }
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
                 GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+                _publishDialog.FinishFlow();
             }
         }
 
         #endregion
+
+        private bool ValidateInput()
+        {
+            int replicas = 0;
+            if (!int.TryParse(Replicas, out replicas))
+            {
+                UserPromptUtils.ErrorPrompt(Resources.GkePublishInvalidReplicasMessage, Resources.UiInvalidValueTitle);
+                return false;
+            }
+
+            return true;
+        }
 
         private async Task<IList<Cluster>> GetAllClustersAsync()
         {

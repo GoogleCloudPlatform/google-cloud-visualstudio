@@ -12,16 +12,53 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Diagnostics;
+using System.IO;
+
 namespace GoogleCloudExtension.GCloud
 {
     /// <summary>
-    /// This class contains the context on which to run kubectl commands.
+    /// This class owns the context on which to run kubectl commands.
     /// </summary>
-    public class KubectlContext
+    public class KubectlContext : IDisposable
     {
         /// <summary>
         /// Path to the config file that identifies the cluster for kubcectl commands.
         /// </summary>
-        public string Config { get; set; }
+        public string ConfigPath { get; private set; }
+
+        public KubectlContext(string configPath)
+        {
+            ConfigPath = configPath;
+        }
+
+        #region IDisposable implementation.
+
+        /// <summary>
+        /// Release the resources owned by this instance, deletes the files silently.
+        /// </summary>
+        void IDisposable.Dispose()
+        {
+            if (ConfigPath == null)
+            {
+                return;
+            }
+
+            try
+            {
+                File.Delete(ConfigPath);
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine($"Failed to delete {ConfigPath}: {ex.Message}");
+            }
+            finally
+            {
+                ConfigPath = null;
+            }
+        }
+
+        #endregion
     }
 }

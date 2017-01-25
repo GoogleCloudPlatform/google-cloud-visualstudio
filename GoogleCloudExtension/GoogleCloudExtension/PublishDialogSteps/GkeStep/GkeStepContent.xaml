@@ -36,13 +36,38 @@
                  Margin="0,0,0,15"
                  Style="{StaticResource CommonTextBoxStyle}" />
 
-        <Label Content="{x:Static ext:Resources.GkePublishDeploymentVersionMessage}"
-               Target="{Binding ElementName=_deploymentVersion}"
-               Style="{StaticResource CommonLabelStyle}" />
-        <TextBox x:Name="_deploymentVersion"
-                 Text="{Binding DeploymentVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 Margin="0,0,0,8"
-                 Style="{StaticResource CommonTextBoxStyle}" />
+        <Grid Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Label Content="{x:Static ext:Resources.GkePublishDeploymentVersionMessage}"
+                   Target="{Binding ElementName=_deploymentVersion}"
+                   Style="{StaticResource CommonLabelStyle}" />
+            <TextBox x:Name="_deploymentVersion"
+                     Grid.Row="1"
+                     Text="{Binding DeploymentVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{StaticResource CommonTextBoxStyle}" />
+
+            <!-- TODO: Use an up/down textbox control. -->
+            <Label Grid.Column="1"
+                   Content="{x:Static ext:Resources.GkePublishReplicasCaption}"
+                   Target="{Binding ElementName=_replicas}"
+                   Margin="5,0,0,0"
+                   Style="{StaticResource CommonLabelStyle}" />
+            <TextBox x:Name="_replicas"
+                     Grid.Row="1"
+                     Grid.Column="1"
+                     Text="{Binding Replicas, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Margin="5,0,0,0"
+                     Style="{StaticResource CommonTextBoxStyle}" />
+        </Grid>
 
         <CheckBox Content="{x:Static ext:Resources.GkePublishExposeServiceCaption}"
                   IsChecked="{Binding ExposeService, Mode=TwoWay}"

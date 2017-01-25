@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension {
-    using System;
-    
-    
+namespace GoogleCloudExtension
+{
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -1942,6 +1942,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deployment {0} already exists, do you want to update it?.
+        /// </summary>
+        public static string GkePublishDeploymentAlreadyExistsMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentAlreadyExistsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update exising deployment.
+        /// </summary>
+        public static string GkePublishDeploymentAlreadyExistsTitle {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentAlreadyExistsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to deploy {0} to Container Engine.
         /// </summary>
         public static string GkePublishDeploymentFailureMessage {
@@ -1956,6 +1974,15 @@ namespace GoogleCloudExtension {
         public static string GkePublishDeploymentNameMessage {
             get {
                 return ResourceManager.GetString("GkePublishDeploymentNameMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deployment {0} was scaled to {1} replicas..
+        /// </summary>
+        public static string GkePublishDeploymentScaledMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentScaledMessage", resourceCulture);
             }
         }
         
@@ -1978,6 +2005,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Deployment {0} was updated..
+        /// </summary>
+        public static string GkePublishDeploymentUpdatedMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentUpdatedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deployment _version:.
         /// </summary>
         public static string GkePublishDeploymentVersionMessage {
@@ -1996,11 +2032,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid value for replicas, must be a number..
+        /// </summary>
+        public static string GkePublishInvalidReplicasMessage {
+            get {
+                return ResourceManager.GetString("GkePublishInvalidReplicasMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to To use this feature you need to have the &quot;kubectl&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl.
         /// </summary>
         public static string GkePublishMissingKubectlMessage {
             get {
                 return ResourceManager.GetString("GkePublishMissingKubectlMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replic_as:.
+        /// </summary>
+        public static string GkePublishReplicasCaption {
+            get {
+                return ResourceManager.GetString("GkePublishReplicasCaption", resourceCulture);
             }
         }
         
@@ -2770,6 +2824,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid value.
+        /// </summary>
+        public static string UiInvalidValueTitle {
+            get {
+                return ResourceManager.GetString("UiInvalidValueTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _No.
         /// </summary>
         public static string UiNoButtonCaption {
@@ -2865,6 +2928,15 @@ namespace GoogleCloudExtension {
         public static string UiUndoButtonCaption {
             get {
                 return ResourceManager.GetString("UiUndoButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update.
+        /// </summary>
+        public static string UiUpdateButtonCaption {
+            get {
+                return ResourceManager.GetString("UiUpdateButtonCaption", resourceCulture);
             }
         }
         
