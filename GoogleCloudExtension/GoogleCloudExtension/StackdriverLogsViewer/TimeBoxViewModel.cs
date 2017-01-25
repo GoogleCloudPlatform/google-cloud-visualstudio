@@ -116,6 +116,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Implement <seealso cref="IDataErrorInfo"/> interface to perform binding data validation.
         /// </summary>
         /// <param name="columnName">The binding variable name</param>
+        /// <returns>
+        /// null if there validation passes.
+        /// Any non empty string if it fails validation.
+        /// </returns>
         public string this[string columnName]
         {
             get
