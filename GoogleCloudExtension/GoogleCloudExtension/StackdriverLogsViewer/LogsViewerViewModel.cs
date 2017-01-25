@@ -33,6 +33,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public class LogsViewerViewModel : ViewModelBase
     {
+        private const string AdvancedHelpLink = "https://cloud.google.com/logging/docs/view/advanced_filters";
         private const int DefaultPageSize = 100;
 
         /// <summary>
@@ -65,6 +66,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private MonitoredResourceDescriptor _selectedResource;
         private IList<MonitoredResourceDescriptor> _resourceDescriptors;
         private LogSeverityItem _selectedLogSeverity = s_logSeveritySelections.LastOrDefault();
+        private string _simpleSearchText;
+        private string _advacedFilterText;
+        private bool _showAdvancedFilter;
 
         private bool _isLoading;
         private Lazy<LoggingDataSource> _dataSource;
@@ -82,6 +86,53 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private bool _showCancelRequestButton;
         private CancellationTokenSource _cancellationTokenSource;
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
+
+        /// <summary>
+        /// Gets the advanced filter help icon button command.
+        /// </summary>
+        public ProtectedCommand AdvancedFilterHelpCommand { get; }
+
+        /// <summary>
+        /// Gets the submit advanced filter button command.
+        /// </summary>
+        public ProtectedCommand SubmitAdvancedFilterCommand { get; }
+
+        /// <summary>
+        /// The simple text search icon command button.
+        /// </summary>
+        public ProtectedCommand SimpleTextSearchCommand { get; }
+
+        /// <summary>
+        /// Gets the toggle advanced and simple filters button Command.
+        /// </summary>
+        public ProtectedCommand FilterSwitchCommand { get; }
+
+        /// <summary>
+        /// Gets or sets the advanced filter text box content.
+        /// </summary>
+        public string AdvancedFilterText
+        {
+            get { return _advacedFilterText; }
+            set { SetValueAndRaise(ref _advacedFilterText, value); }
+        }
+
+        /// <summary>
+        /// Gets the visbility of advanced filter or simple filter.
+        /// </summary>
+        public bool ShowAdvancedFilter
+        {
+            get { return _showAdvancedFilter; }
+            private set { SetValueAndRaise(ref _showAdvancedFilter, value); }
+        }
+
+        /// <summary>
+        /// Set simple search text box content.
+        /// </summary>
+        public string SimpleSearchText
+        {
+            get { return _simpleSearchText; }
+            set { SetValueAndRaise(ref _simpleSearchText, value); }
+        }
 
         /// <summary>
         /// Gets the list of Log Level items.
@@ -262,10 +313,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public LogsViewerViewModel()
         {
             _dataSource = new Lazy<LoggingDataSource>(CreateDataSource);
-            RefreshCommand = new ProtectedCommand(() => Reload());
+            RefreshCommand = new ProtectedCommand(Reload);
             LogItemCollection = new ListCollectionView(_logs);
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
             CancelRequestCommand = new ProtectedCommand(CancelRequest);
+            SimpleTextSearchCommand = new ProtectedCommand(Reload);
+            FilterSwitchCommand = new ProtectedCommand(SwapFilter);
+            SubmitAdvancedFilterCommand = new ProtectedCommand(Reload);
+            AdvancedFilterHelpCommand = new ProtectedCommand(ShowAdvancedFilterHelp);
         }
 
         /// <summary>
@@ -433,7 +488,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            LogLoaddingWrapperAsync(async (cancelToken) => {
+            _filter = ShowAdvancedFilter ? AdvancedFilterText : ComposeSimpleFilters();
+
+            LogLoaddingWrapperAsync(async (cancelToken) =>
+            {
                 _nextPageToken = null;
                 _logs.Clear();
                 await LoadLogsAsync(cancelToken);
@@ -456,6 +514,37 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 return null;
             }
+        }   
+
+        private void ShowAdvancedFilterHelp()
+        {
+            Process.Start(AdvancedHelpLink);
+        }
+
+        private void SwapFilter()
+        {
+            ShowAdvancedFilter = !ShowAdvancedFilter;
+            AdvancedFilterText = ShowAdvancedFilter ? ComposeSimpleFilters() : null;
+            SimpleSearchText = null;
+            Reload();
+        }
+
+        /// <summary>
+        /// Returns the current filter for final list log entry request.
+        /// </summary>
+        /// <returns>
+        /// Text filter string.
+        /// Or null if it is empty.
+        /// </returns>
+        private string ComposeTextSearchFilter()
+        {
+            var splits = StringUtils.SplitStringBySpaceOrQuote(SimpleSearchText);
+            if (splits == null || splits.Count() == 0)
+            {
+                return null;
+            }
+
+            return $"({String.Join(" OR ", splits.Select(x => $"\"{x}\""))})";
         }
 
         /// <summary>
@@ -528,6 +617,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (SelectedLogSeverity != null && SelectedLogSeverity.Severity != LogSeverity.All)
             {
                 filter.AppendLine($"severity>={SelectedLogSeverity.Severity.ToString("G")}");
+            }
+
+            var textFilter = ComposeTextSearchFilter();
+            if (textFilter != null)
+            {
+                filter.AppendLine(textFilter);
             }
 
             return filter.Length > 0 ? filter.ToString() : null;

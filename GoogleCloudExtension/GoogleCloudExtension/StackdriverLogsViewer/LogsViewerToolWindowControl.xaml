@@ -65,7 +65,7 @@
                     <ItemsPresenter />
                 </StackPanel>
             </ControlTemplate>
-            
+
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -90,7 +90,7 @@
             <TextBlock Margin="6, 0, 0, 0"
                        VerticalAlignment="Center" 
                        Style="{StaticResource CommonTextStyle}" 
-                       Text="{Binding Project}" />
+                       Text="{Binding Account}" />
             <TextBlock Margin="12, 0, 0, 0"
                        VerticalAlignment="Center" 
                        Style="{StaticResource CommonTextStyle}"
@@ -98,7 +98,7 @@
             <TextBlock Margin="6, 0, 0, 0" 
                        VerticalAlignment="Center" 
                        Style="{StaticResource CommonTextStyle}" 
-                       Text="{Binding Account}" />
+                       Text="{Binding Project}" />
         </StackPanel>
 
         <!-- Filters -->
@@ -109,8 +109,70 @@
                     HorizontalAlignment="Stretch" 
                     Orientation="Vertical">
 
+            <!-- Advanced Filter -->
+            <Grid Visibility="{Binding ShowAdvancedFilter, Converter={StaticResource visibilityConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+
+                <TextBox  
+                    Grid.ColumnSpan="2"
+                    Grid.Column="0"
+                    VerticalAlignment="Center" 
+                    Padding="8,5,8,5"
+                    TextWrapping="Wrap" 
+                    AcceptsReturn="True"
+                    Text="{Binding AdvancedFilterText, UpdateSourceTrigger=PropertyChanged}"
+                    MinLines="3" 
+                    MaxLines="30"
+                    VerticalScrollBarVisibility="Auto" />
+
+                <Button 
+                    Grid.Column="2" 
+                    Margin="6,0,0,0" 
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Style="{StaticResource CommonButtonWideStyle}"
+                    Command="{Binding Path=FilterSwitchCommand}"
+                    Content="{x:Static ext:Resources.LogViewerSwitchToSimpleFilterCaption}">
+                    <Button.ToolTip>
+                        <ToolTip Content="{x:Static ext:Resources.LogViewerToSimpleSearchButtonTooltip}"/>
+                    </Button.ToolTip>
+                </Button> 
+                    
+                <Button 
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="0,6,0,0"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Left"
+                    Command="{Binding SubmitAdvancedFilterCommand}" 
+                    Style="{StaticResource CommonButtonDynamicStyle}"
+                    Content="{x:Static ext:Resources.LogViewerSubmitAdvancedFilterCaption}" />
+
+                <TextBlock 
+                    Grid.Row="1"
+                    Grid.Column="1"  
+                    Margin="0,0,3,0"
+                    HorizontalAlignment="Right" 
+                    VerticalAlignment="Top" >
+                    <Hyperlink 
+                        Command="{Binding AdvancedFilterHelpCommand}" 
+                        Style="{StaticResource CommonHyperlinkStyle}">
+                        <TextBlock Text="{x:Static ext:Resources.LogViewerAdvancedFilterHelpLinkCaption}" />
+                    </Hyperlink>
+                </TextBlock>
+
+            </Grid>
+            
             <!-- Basic Filters. -->
-            <StackPanel Visibility="{Binding BasicFilterVisibility}">
+            <StackPanel Visibility="{Binding ShowAdvancedFilter, Converter={utils:VisibilityConverter IsNegated=True}}">
                 <StackPanel Orientation="Horizontal" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Center">
@@ -137,7 +199,7 @@
                         DisplayMemberPath="DisplayName" 
                         IsSynchronizedWithCurrentItem="true"
                         Loaded="ComboBox_Loaded" />
-                    
+                                        
                     <controls:IconButton
                         Grid.Column="1" 
                         Margin="6,0,16,0"
@@ -156,7 +218,61 @@
                         </controls:IconButton.ToolTip>
                     </controls:IconButton>
                 </StackPanel>
+
+            <Grid Margin="0,6,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Border Grid.Column="0"
+                        BorderThickness="1" 
+                        BorderBrush="LightGray">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+
+                            <TextBox 
+                                Grid.Column="0"
+                                BorderThickness="0"
+                                TextWrapping="Wrap"    
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Stretch"
+                                Padding="8,5,8,5"    
+                                Text="{Binding SimpleSearchText, UpdateSourceTrigger=PropertyChanged}" >
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Enter" Command="{Binding SimpleTextSearchCommand}"/>
+                                </TextBox.InputBindings>
+                            </TextBox>
+
+                            <controls:IconButton 
+                                Grid.Column="1" 
+                                Padding="2,0,2,0"
+                                BorderThickness="0"
+                                Width="24"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Stretch"
+                                Style="{StaticResource SearchIconStyle}"
+                                Command="{Binding SimpleTextSearchCommand}"
+                                NormalIcon="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}">
+                                <controls:IconButton.ToolTip>
+                                        <ToolTip Content="{x:Static ext:Resources.LogViewerSimpleTextSearchIconButtonToolTip}"/>
+                                </controls:IconButton.ToolTip>
+                            </controls:IconButton>  
+                        
+                        </Grid>
+                    </Border>
+                    <Button Grid.Column="1" 
+                        Margin="6,0,0,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Style="{StaticResource CommonButtonWideStyle}"
+                        Command="{Binding Path=FilterSwitchCommand}"                            
+                        Content="{x:Static ext:Resources.LogViewerSwitchToAdvancedFilterCaption}"/>
+                </Grid>
             </StackPanel>
+
         </StackPanel>
 
         <Expander 
@@ -301,7 +417,8 @@
                      Foreground="Red" 
                      Text="{Binding RequestErrorMessage, Mode=OneWay}" 
                      Visibility="{Binding ShowRequestErrorMessage, Converter={StaticResource visibilityConverter}}" 
-                     IsReadOnly="True" />
+                     IsReadOnly="True"
+                     VerticalScrollBarVisibility="Auto" />
 
             <StackPanel Margin="0, 0, 0, 12" 
                         Orientation="Horizontal" 

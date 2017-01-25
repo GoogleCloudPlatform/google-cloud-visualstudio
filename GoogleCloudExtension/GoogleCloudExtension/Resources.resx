@@ -1407,4 +1407,28 @@
     <value>WARNING</value>
     <comment>The Log Severity selection , warning log level item text.</comment>
   </data>
+  <data name="LogViewerSimpleTextSearchIconButtonToolTip" xml:space="preserve">
+    <value>Filter by label or text search.</value>
+    <comment>Log viewer simple text search icon button tooltip.</comment>
+  </data>
+  <data name="LogViewerSwitchToAdvancedFilterCaption" xml:space="preserve">
+    <value>To Advanced Filter</value>
+    <comment>Caption for switch to advanced filter button.</comment>
+  </data>
+  <data name="LogViewerSubmitAdvancedFilterCaption" xml:space="preserve">
+    <value>Submit Filters</value>
+    <comment>Caption for the submit advanced filters button.</comment>
+  </data>
+  <data name="LogViewerSwitchToSimpleFilterCaption" xml:space="preserve">
+    <value>To Simple Filters</value>
+    <comment>Caption for switch to simple filters button.</comment>
+  </data>
+  <data name="LogViewerAdvancedFilterHelpLinkCaption" xml:space="preserve">
+    <value>Advanced filter help</value>
+    <comment>The caption of advanced help link.</comment>
+  </data>
+  <data name="LogViewerToSimpleSearchButtonTooltip" xml:space="preserve">
+    <value>Clear filters and return to basic mode.</value>
+    <comment>The "To simple search"  button tooltip.</comment>
+  </data>
 </root>

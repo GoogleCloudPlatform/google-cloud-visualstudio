@@ -1915,6 +1915,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Advanced filter help.
+        /// </summary>
+        public static string LogViewerAdvancedFilterHelpLinkCaption {
+            get {
+                return ResourceManager.GetString("LogViewerAdvancedFilterHelpLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Any.
         /// </summary>
         public static string LogViewerAnyOtherSeverityLevelTip {
@@ -2086,6 +2095,42 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Filter by label or text search..
+        /// </summary>
+        public static string LogViewerSimpleTextSearchIconButtonToolTip {
+            get {
+                return ResourceManager.GetString("LogViewerSimpleTextSearchIconButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Submit Filters.
+        /// </summary>
+        public static string LogViewerSubmitAdvancedFilterCaption {
+            get {
+                return ResourceManager.GetString("LogViewerSubmitAdvancedFilterCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To Advanced Filter.
+        /// </summary>
+        public static string LogViewerSwitchToAdvancedFilterCaption {
+            get {
+                return ResourceManager.GetString("LogViewerSwitchToAdvancedFilterCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To Simple Filters.
+        /// </summary>
+        public static string LogViewerSwitchToSimpleFilterCaption {
+            get {
+                return ResourceManager.GetString("LogViewerSwitchToSimpleFilterCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Click to select different timezone..
         /// </summary>
         public static string LogViewerTimeZoneSelectionToolTip {
@@ -2118,6 +2163,15 @@ namespace GoogleCloudExtension {
         public static string LogViewerToolWindowCaption {
             get {
                 return ResourceManager.GetString("LogViewerToolWindowCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear filters and return to basic mode..
+        /// </summary>
+        public static string LogViewerToSimpleSearchButtonTooltip {
+            get {
+                return ResourceManager.GetString("LogViewerToSimpleSearchButtonTooltip", resourceCulture);
             }
         }
         
