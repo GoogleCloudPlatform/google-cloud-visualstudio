@@ -2059,6 +2059,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Refresh clusters.
+        /// </summary>
+        public static string GkePublishRefreshClustersCaption {
+            get {
+                return ResourceManager.GetString("GkePublishRefreshClustersCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Replic_as:.
         /// </summary>
         public static string GkePublishReplicasCaption {

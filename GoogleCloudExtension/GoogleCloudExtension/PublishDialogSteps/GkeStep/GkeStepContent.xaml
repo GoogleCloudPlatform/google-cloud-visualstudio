@@ -43,7 +43,7 @@
                        Style="{StaticResource CommonTextStyle}">
                 <Hyperlink Command="{Binding RefreshClustersListCommand}"
                            Style="{StaticResource CommonHyperlinkStyle}">
-                    <TextBlock Text="Refresh clusters" />
+                    <TextBlock Text="{x:Static ext:Resources.GkePublishRefreshClustersCaption}" />
                 </Hyperlink>
             </TextBlock>
         </StackPanel>

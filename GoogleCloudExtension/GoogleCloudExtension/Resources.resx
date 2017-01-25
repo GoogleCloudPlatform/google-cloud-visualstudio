@@ -1407,4 +1407,8 @@
     <value>Update</value>
     <comment>Caption for the Update buttons.</comment>
   </data>
+  <data name="GkePublishRefreshClustersCaption" xml:space="preserve">
+    <value>Refresh clusters</value>
+    <comment>Caption for the refresh clusters hyperlink</comment>
+  </data>
 </root>
