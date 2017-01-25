@@ -42,7 +42,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type Calendar}">
-                            <Viewbox  >
+                            <Viewbox>
                                 <CalendarItem 
                                     x:Name="PART_CalendarItem"
                                     BorderBrush="{TemplateBinding BorderBrush}"
@@ -60,7 +60,7 @@
                 <Setter Property="BorderBrush" Value="LightGray" />
             </Style>
 
-            <Style x:Key="BorderlessButton" TargetType="Button">
+            <Style x:Key="BorderlessButtonStyle" TargetType="Button">
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="Template">
@@ -92,7 +92,7 @@
                           Content="{x:Static ext:Resources.LogViewerDateTimePickerLabel}">
                 <ComboBoxItem.Template>
                     <ControlTemplate>
-                        <Button Style="{StaticResource BorderlessButton}" >
+                        <Button Style="{StaticResource BorderlessButtonStyle}" >
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
@@ -188,11 +188,11 @@
                                         Content="{x:Static ext:Resources.UiGoButtonCaption}" 
                                         HorizontalAlignment="Left" 
                                         Style="{StaticResource CommonButtonStandardStyle}"        
-                                        Command="{Binding Path=GoCommand}" />
+                                        Command="{Binding GoCommand}" />
                                     
                                     <Button HorizontalAlignment="Left"
                                             Content="{x:Static ext:Resources.UiCancelButtonCaption}" 
-                                            Click="Cancel_Button_Click"
+                                            Command="{Binding CancelCommand}"
                                             Style="{StaticResource CommonButtonStandardStyle}" />
                                     
                                 </StackPanel>
