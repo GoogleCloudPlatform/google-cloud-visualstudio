@@ -99,7 +99,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// Capture left, right key etc that moves focus easily.
+        /// There are three boxes in the time control. Hour, Minute, Second.
+        /// (1) Left, Up arrow keys move to prior box.
+        /// (2) Right, Down arrow keys move to next box.
+        /// (3) Press Enter key moves to next box.
+        /// (4) Input third digits at a box will automatically take it to next box.
         /// </summary>
         private void TextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
@@ -115,30 +119,28 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
+            // Down arrow, Enter key, move focus to next box.
             if ((e.Key == Key.Down || e.Key == Key.Enter) && index < 2)
             {
                 TextBoxParts[index + 1].Focus();
             }
 
+            // Up arrow, move focus to prior box.
             if (e.Key == Key.Up && index > 0)
             {
                 TextBoxParts[index - 1].Focus();
             }
 
-            if (e.Key == Key.Left && textBox.CaretIndex == 0)
+            // Left arrow, if the caret is at the begging of the text, move to prior box.
+            if (e.Key == Key.Left && textBox.CaretIndex == 0 && index > 0)
             {
-                if (index > 0)
-                {
-                    TextBoxParts[index - 1].Focus();
-                }
+                TextBoxParts[index - 1].Focus();
             }
 
-            if (e.Key == Key.Right && textBox.CaretIndex == textBox.Text.Length)
+            // Right arrow, if caret is at the end of the text, move to next box.
+            if (e.Key == Key.Right && textBox.CaretIndex == textBox.Text.Length && index < 2)
             {
-                if (index < 2)
-                {
-                    TextBoxParts[index + 1].Focus();
-                }
+                TextBoxParts[index + 1].Focus();
             }
         }
     }
