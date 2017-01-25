@@ -116,15 +116,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Implement <seealso cref="IDataErrorInfo"/> interface to perform binding data validation.
         /// </summary>
         /// <param name="columnName">The binding variable name</param>
-        /// <returns></returns>
         public string this[string columnName]
         {
             get
             {
-                string result = "Invalid input";
                 if (columnName == nameof(Hour))
                 {
-                    if (Hour >= 0 && Hour <= 12) return null;
+                    if (Hour >= 1 && Hour <= 12) return null;
                 }
                 if (columnName == nameof(Minute))
                 {
@@ -135,14 +133,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     if (Second >= 0 && Second <= 60) return null;
                 }
 
-                return result;
+                return "Invalid input";
             }
         }
         #endregion
 
         /// <summary>
         /// Sets the value in the given reference and raises the property changed event for the property.
-        /// Do a validation before setting the value. 
+        /// If the value is not within the range of [0, upperLimit], the value is not set.
         /// </summary>
         /// <param name="storage">The field that the value is set to.</param>
         /// <param name="value">The new value.</param>

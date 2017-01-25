@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Text.RegularExpressions;
+using GoogleCloudExtension.Utils;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -67,27 +67,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// Check if input is digits only.
-        /// </summary>
-        private static bool IsTextAllowed(string text)
-        {
-            foreach (var chr in text)
-            {
-                if (chr < '0' || chr > '9')
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        /// <summary>
         /// Disables non-digits input.
         /// </summary>
         private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
-            if (!IsTextAllowed(e.Text))
+            if (!StringUtils.IsDigitsOnly(e.Text))
             {
                 e.Handled = true;
                 return;
@@ -108,7 +92,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 ViewModel.Second = isUpButton ? ViewModel.Second + 1 : ViewModel.Second - 1;
             }
-            else
+            else if (hourBox.IsFocused)
             {
                 ViewModel.Hour = isUpButton ? ViewModel.Hour + 1 : ViewModel.Hour - 1;
             }
