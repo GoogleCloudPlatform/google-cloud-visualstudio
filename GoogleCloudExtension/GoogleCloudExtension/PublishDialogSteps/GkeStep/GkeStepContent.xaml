@@ -22,33 +22,33 @@
         <Label Content="{x:Static ext:Resources.GkePublishClusterMessage}"
                Target="{Binding ElementName=_clusters}"
                Style="{StaticResource CommonLabelStyle}"/>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="auto" />
-            </Grid.ColumnDefinitions>
-            
-            <ComboBox x:Name="_clusters"
-                      ItemsSource="{Binding Clusters.Value}"
-                      SelectedItem="{Binding SelectedCluster, Mode=OneWayToSource}"
-                      DisplayMemberPath="Name"
-                      IsSynchronizedWithCurrentItem="True"
-                      Margin="0,0,0,5"
-                      Style="{StaticResource CommonComboBoxStyle}"/>
 
-            <controls:IconButton Grid.Column="1"
-                                 Command="{Binding RefreshClustersListCommand}"
-                                 VerticalAlignment="Top"
-                                 MouseOverIcon="{mp:ImageResource CloudExplorer/Resources/refresh.png}"
-                                 NormalIcon="{mp:ImageResource CloudExplorer/Resources/refresh.png}" />
-        </Grid>
-        <TextBlock Margin="0,0,0,15"
-                   Style="{StaticResource CommonTextStyle}">
-            <Hyperlink Command="{Binding CreateClusterCommand}"
-                       Style="{StaticResource CommonHyperlinkStyle}">
-                <TextBlock Text="{x:Static ext:Resources.GkePublishNewClusterCaption}" />
-            </Hyperlink>
-        </TextBlock>
+        <ComboBox x:Name="_clusters"
+                  ItemsSource="{Binding Clusters.Value}"
+                  SelectedItem="{Binding SelectedCluster, Mode=OneWayToSource}"
+                  DisplayMemberPath="Name"
+                  IsSynchronizedWithCurrentItem="True"
+                  Margin="0,0,0,5"
+                  Style="{StaticResource CommonComboBoxStyle}"/>
+
+        <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
+
+            <TextBlock Margin="0,0,5,0"
+                       Style="{StaticResource CommonTextStyle}">
+                <Hyperlink Command="{Binding CreateClusterCommand}"
+                           Style="{StaticResource CommonHyperlinkStyle}">
+                    <TextBlock Text="{x:Static ext:Resources.GkePublishNewClusterCaption}" />
+                </Hyperlink>
+            </TextBlock>
+
+            <TextBlock Margin="5,0,0,0"
+                       Style="{StaticResource CommonTextStyle}">
+                <Hyperlink Command="{Binding RefreshClustersListCommand}"
+                           Style="{StaticResource CommonHyperlinkStyle}">
+                    <TextBlock Text="Refresh clusters" />
+                </Hyperlink>
+            </TextBlock>
+        </StackPanel>
 
         <Label Content="{x:Static ext:Resources.GkePublishDeploymentNameMessage}"
                Target="{Binding ElementName=_deploymentName}"
