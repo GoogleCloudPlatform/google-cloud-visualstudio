@@ -14,7 +14,6 @@
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <!--Region Calendar Style.  -->
             <Style x:Key="StyleCalanderDayButton" TargetType="{x:Type CalendarDayButton}">
                 <Setter Property="Height" Value="32"></Setter>
                 <Setter Property="Width" Value="32"></Setter>
@@ -60,7 +59,6 @@
                 <Setter Property="BorderThickness" Value="1"/>
                 <Setter Property="BorderBrush" Value="LightGray" />
             </Style>
-            <!--End Region -->
 
             <Style x:Key="BorderlessButton" TargetType="Button">
                 <Setter Property="BorderThickness" Value="0" />
@@ -80,14 +78,15 @@
     </UserControl.Resources>
     
     <Grid >
-        <controls:CustomComboBox  x:Name="comboPickTime"
-                   HorizontalAlignment="Center" 
-                   VerticalAlignment="Center"
-                   HorizontalContentAlignment="Center"
-                   SelectedIndex="0"
-                   Style="{StaticResource CommonDocumentComboBoxStyle}"                                  
-                   IsDropDownOpen="{Binding IsDropDownOpen}"
-                   MaxDropDownHeight="500">
+        <controls:CustomComboBox  
+            x:Name="_comboPickTime"
+            HorizontalAlignment="Center" 
+            VerticalAlignment="Center"
+            HorizontalContentAlignment="Center"
+            SelectedIndex="0"
+            Style="{StaticResource CommonDocumentComboBoxStyle}"                                  
+            IsDropDownOpen="{Binding IsDropDownOpen}"
+            MaxDropDownHeight="500">
             <ComboBoxItem x:Name="ComboBoxItem" 
                           HorizontalAlignment="Center" 
                           Content="{x:Static ext:Resources.LogViewerDateTimePickerLabel}">
@@ -113,15 +112,15 @@
                                         <RowDefinition/>
                                     </Grid.RowDefinitions>
                                     <TextBlock 
-                                        Grid.Column="0" Grid.Row="0" 
                                         Text="{x:Static ext:Resources.UiDateLabel}"  
                                         Margin="0, 0, 6, 5"/>
                                     <TextBlock 
-                                        Grid.Column="1" Grid.Row="0" 
+                                        Grid.Column="1"
                                         Text="{x:Static ext:Resources.UiTimeLabel}" 
                                         Margin="6, 0, 0, 5" />
                                     <TextBox 
-                                        Grid.Column="0" Grid.Row="1"  
+                                        Grid.Row="1"  
+                                        Grid.Column="0" 
                                         Padding="8, 5, 8, 5" 
                                         Margin="0, 0, 6, 0" 
                                         IsEnabled="False"
@@ -131,7 +130,8 @@
                                         HorizontalContentAlignment="Center"
                                         Text="{Binding UiElementDate, StringFormat={x:Static ext:Resources.LogViewerLogItemDateFormat}}" />
                                     <local:TimeBox 
-                                        Grid.Column="1" Grid.Row="1" 
+                                        Grid.Row="1" 
+                                        Grid.Column="1" 
                                         x:Name="timeBox"
                                         DataContext="{Binding TimeBoxModel}"          
                                         Margin="6, 0, 0, 0"
@@ -179,11 +179,11 @@
 
                                 <StackPanel 
                                     Grid.Row="3" 
-                                    Margin="12, 6, 0, 12"
+                                    Margin="12,6,0,12"
                                     Orientation="Horizontal">
                                     
                                     <Button 
-                                        Margin="0, 0, 6, 0" 
+                                        Margin="0,0,6,0" 
                                         Width="35"
                                         Content="{x:Static ext:Resources.UiGoButtonCaption}" 
                                         HorizontalAlignment="Left" 

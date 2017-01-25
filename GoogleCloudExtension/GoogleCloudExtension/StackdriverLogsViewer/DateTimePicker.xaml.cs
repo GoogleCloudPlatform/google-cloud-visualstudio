@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public DateTimePicker()
         {
             InitializeComponent();
-            comboPickTime.SelectedIndex = 0;
+            _comboPickTime.SelectedIndex = 0;
         }
 
 
@@ -39,11 +39,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void Cancel_Button_Click(object sender, RoutedEventArgs e)
         {
-            comboPickTime.IsDropDownOpen = false;
+            _comboPickTime.IsDropDownOpen = false;
         }
 
         /// <summary>
-        /// WPF Calendar Control holding on to the Mouse
+        /// Wpf calendar holds the mouse clicking event.
         /// For more information, refer to:
         /// http://stackoverflow.com/questions/6024372/wpf-calendar-control-holding-on-to-the-mouse
         /// </summary>

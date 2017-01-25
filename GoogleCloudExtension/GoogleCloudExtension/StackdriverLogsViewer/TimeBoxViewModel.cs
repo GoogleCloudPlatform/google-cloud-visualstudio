@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -103,6 +103,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
         }
 
+        #region IDataErrorInfo implementation
         /// <summary>
         /// Add empty implementation of Error method of <seealso cref="IDataErrorInfo"/> interface.
         /// </summary>
@@ -137,6 +138,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return result;
             }
         }
+        #endregion
 
         /// <summary>
         /// Sets the value in the given reference and raises the property changed event for the property.

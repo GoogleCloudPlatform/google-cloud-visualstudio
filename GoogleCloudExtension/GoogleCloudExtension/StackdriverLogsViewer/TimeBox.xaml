@@ -19,7 +19,7 @@
             <Setter Property="HorizontalContentAlignment" Value="Center" />
             <Setter Property="BorderThickness" Value="0"/>
             <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
-            <Setter Property="Padding" Value="2, 5, 2, 5" />
+            <Setter Property="Padding" Value="2,5,2,5" />
             <Setter Property="AcceptsReturn" Value="False" />
         </Style>
 
@@ -85,7 +85,7 @@
     </UserControl.Resources>
     
     <Grid MinWidth="135" VerticalAlignment="Center">
-        <Border BorderBrush="LightBlue" 
+        <Border BorderBrush="LightGray" 
                 BorderThickness="1" 
                 CornerRadius="3">
             <Grid>
@@ -114,9 +114,9 @@
                          Grid.Column="4"
                          Text="{Binding Second,  ValidatesOnDataErrors=true, NotifyOnValidationError=true, UpdateSourceTrigger=PropertyChanged}" />
                 
-                <StackPanel Grid.Column="5" Margin="4, 0, 4, 0" >
-                    <RepeatButton x:Name="upButton" Style="{StaticResource UpButtonStyle}"/>
-                    <RepeatButton x:Name="downButton" Style="{StaticResource DownButtonStyle}"/>
+                <StackPanel Grid.Column="5" Margin="4,0,4,0" >
+                    <RepeatButton x:Name="_upButton" Style="{StaticResource UpButtonStyle}"/>
+                    <RepeatButton x:Name="_downButton" Style="{StaticResource DownButtonStyle}"/>
                 </StackPanel>
 
                 <controls:CustomComboBox 

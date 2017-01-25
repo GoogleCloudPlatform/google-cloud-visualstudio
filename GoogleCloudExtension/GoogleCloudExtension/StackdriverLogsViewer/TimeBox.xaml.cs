@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -41,8 +41,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             this.InitializeComponent();
 
-            upButton.Click += RepeatButton_Click;
-            downButton.Click += RepeatButton_Click;
+            _upButton.Click += RepeatButton_Click;
+            _downButton.Click += RepeatButton_Click;
             foreach (var textBox in TextBoxParts)
             {
                 textBox.PreviewKeyDown += TextBox_PreviewKeyDown;
@@ -99,7 +99,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void RepeatButton_Click(object sender, RoutedEventArgs e)
         {
-            bool isUpButton = e.Source == this.upButton;
+            bool isUpButton = e.Source == this._upButton;
             if (minuteBox.IsFocused)
             {
                 ViewModel.Minute = isUpButton ? ViewModel.Minute + 1 : ViewModel.Minute - 1;
