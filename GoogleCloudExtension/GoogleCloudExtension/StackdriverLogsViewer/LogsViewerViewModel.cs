@@ -145,22 +145,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public string SimpleSearchText
         {
-            set
-            {
-                // This disables loading next page that is based on prior filters. 
-                _nextPageToken = null;
-
-                _simpleSearchText = value;
-                if (String.IsNullOrWhiteSpace(_simpleSearchText))
-                {
-                    LogItemCollection.Filter = null;
-                    SimpleTextSearchCommand.CanExecuteCommand = false;
-                    return;
-                }
-
-                SimpleTextSearchCommand.CanExecuteCommand = true;
-                DataGridQuickSearch(value);
-            }
+            get { return _simpleSearchText; }
+            set { SetValueAndRaise(ref _simpleSearchText, value); }
         }
 
         /// <summary>
@@ -545,7 +531,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            _filter = _showAdvancedFilter ? AdvancedFilterText : ComposeSimpleFilters();
+            _filter = ShowAdvancedFilter ? AdvancedFilterText : ComposeSimpleFilters();
 
             LogLoaddingWrapperAsync(async (cancelToken) =>
             {
@@ -571,17 +557,19 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 return null;
             }
-        }
+        }   
 
         private void ShowAdvancedFilterHelp()
         {
-            Process.Start(new ProcessStartInfo(AdvancedHelpLink));
+            Process.Start(AdvancedHelpLink);
         }
 
         private void SwapFilter()
         {
             ShowAdvancedFilter = !ShowAdvancedFilter;
-            AdvancedFilterText = _showAdvancedFilter ? ComposeSimpleFilters() : null;
+            AdvancedFilterText = ShowAdvancedFilter ? ComposeSimpleFilters() : null;
+            SimpleSearchText = null;
+            Reload();
         }
 
         /// <summary>
@@ -593,32 +581,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </returns>
         private string ComposeTextSearchFilter()
         {
-            var splits = _simpleSearchText?.Split(new Char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var splits = StringUtils.SplitStringBySpaceOrQuote(SimpleSearchText);
             if (splits == null || splits.Count() == 0)
             {
                 return null;
             }
 
-            return $"( {String.Join(" OR ", splits.Select(x => $"\"{x}\""))} )";
-        }
-
-        /// <summary>
-        /// Apply text search filter at data grid collection view.
-        /// </summary>
-        private void DataGridQuickSearch(string searchText)
-        {
-            var splits = searchText.Split(new Char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-            LogItemCollection.Filter = new Predicate<object>(item => {
-                foreach (var subFilter in splits)
-                {
-                    if (((LogItem)item).Message.IndexOf(subFilter, StringComparison.InvariantCultureIgnoreCase) != -1)
-                    {
-                        return true;
-                    }
-                }
-
-                return false;
-            });
+            return $"({String.Join(" OR ", splits.Select(x => $"\"{x}\""))})";
         }
 
         /// <summary>

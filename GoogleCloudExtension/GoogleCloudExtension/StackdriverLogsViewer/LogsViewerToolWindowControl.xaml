@@ -65,13 +65,6 @@
                     <ItemsPresenter />
                 </StackPanel>
             </ControlTemplate>
-            
-            <ControlTemplate x:Key="FilterSwitchButton" TargetType="{x:Type Button}">
-                <Button Style="{StaticResource CommonButtonWideStyle}"
-                        Command="{Binding Path=FilterSwitchCommand}" >
-                    <ContentPresenter />
-                </Button>
-            </ControlTemplate>
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -129,25 +122,29 @@
                 </Grid.RowDefinitions>
 
                 <TextBox  
-                    Grid.Row="0"
                     Grid.ColumnSpan="2"
                     Grid.Column="0"
                     VerticalAlignment="Center" 
                     Padding="8,5,8,5"
                     TextWrapping="Wrap" 
                     AcceptsReturn="True"
-                    Text="{Binding AdvancedFilterText}"
+                    Text="{Binding AdvancedFilterText, UpdateSourceTrigger=PropertyChanged}"
                     MinLines="3" 
-                    MaxLines="30" />
-                    
+                    MaxLines="30"
+                    VerticalScrollBarVisibility="Auto" />
+
                 <Button 
-                    Grid.Row="0" 
                     Grid.Column="2" 
                     Margin="6,0,0,0" 
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
-                    Content="{x:Static ext:Resources.LogViewerSwitchToSimpleFilterCaption}"
-                    Template="{StaticResource FilterSwitchButton}" />
+                    Style="{StaticResource CommonButtonWideStyle}"
+                    Command="{Binding Path=FilterSwitchCommand}"
+                    Content="{x:Static ext:Resources.LogViewerSwitchToSimpleFilterCaption}">
+                    <Button.ToolTip>
+                        <ToolTip Content="{x:Static ext:Resources.LogViewerToSimpleSearchButtonTooltip}"/>
+                    </Button.ToolTip>
+                </Button> 
                     
                 <Button 
                     Grid.Row="1"
@@ -159,15 +156,18 @@
                     Style="{StaticResource CommonButtonDynamicStyle}"
                     Content="{x:Static ext:Resources.LogViewerSubmitAdvancedFilterCaption}" />
 
-                <controls:IconButton
+                <TextBlock 
                     Grid.Row="1"
                     Grid.Column="1"  
-                    Margin="0,1,3,0"
+                    Margin="0,0,3,0"
                     HorizontalAlignment="Right" 
-                    VerticalAlignment="Top"
-                    Command="{Binding AdvancedFilterHelpCommand}"
-                    NormalIcon="{mp:ImageResource StackdriverLogsViewer/Resources/help_icon.png}"
-                    MouseOverIcon="{mp:ImageResource StackdriverLogsViewer/Resources/help_mouse_over_icon.png}" />
+                    VerticalAlignment="Top" >
+                    <Hyperlink 
+                        Command="{Binding AdvancedFilterHelpCommand}" 
+                        Style="{StaticResource CommonHyperlinkStyle}">
+                        <TextBlock Text="{x:Static ext:Resources.LogViewerAdvancedFilterHelpLinkCaption}" />
+                    </Hyperlink>
+                </TextBlock>
 
             </Grid>
             
@@ -240,31 +240,34 @@
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
-                        
-                            <TextBox Grid.Column="0"
-                             BorderThickness="0"
-                             TextWrapping="Wrap"    
-                             VerticalAlignment="Center"
-                             HorizontalAlignment="Stretch"
-                             Padding="8,5,8,5"    
-                             Text="{Binding SimpleSearchText, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}"                                               
-                             Style="{StaticResource WartermarkedTextBoxStyle}">
+
+                            <TextBox 
+                                Grid.Column="0"
+                                BorderThickness="0"
+                                TextWrapping="Wrap"    
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Stretch"
+                                Padding="8,5,8,5"    
+                                Text="{Binding SimpleSearchText, UpdateSourceTrigger=PropertyChanged}" >
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Enter" Command="{Binding SimpleTextSearchCommand}"/>
+                                </TextBox.InputBindings>
                             </TextBox>
 
-                        <controls:IconButton 
-                            Grid.Column="1" 
-                            Padding="2,0,2,0"
-                            BorderThickness="0"
-                            Width="24"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Stretch"
-                            Style="{StaticResource SearchIconStyle}"
-                            Command="{Binding SimpleTextSearchCommand}"
-                            NormalIcon="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}">
-                            <controls:IconButton.ToolTip>
-                                    <ToolTip Content="{x:Static ext:Resources.LogViewerSimpleTextSearchIconButtonToolTip}"/>
-                            </controls:IconButton.ToolTip>
-                        </controls:IconButton>  
+                            <controls:IconButton 
+                                Grid.Column="1" 
+                                Padding="2,0,2,0"
+                                BorderThickness="0"
+                                Width="24"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Stretch"
+                                Style="{StaticResource SearchIconStyle}"
+                                Command="{Binding SimpleTextSearchCommand}"
+                                NormalIcon="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}">
+                                <controls:IconButton.ToolTip>
+                                        <ToolTip Content="{x:Static ext:Resources.LogViewerSimpleTextSearchIconButtonToolTip}"/>
+                                </controls:IconButton.ToolTip>
+                            </controls:IconButton>  
                         
                         </Grid>
                     </Border>
@@ -272,7 +275,8 @@
                         Margin="6,0,0,0"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Bottom"
-                        Template="{StaticResource FilterSwitchButton}"
+                        Style="{StaticResource CommonButtonWideStyle}"
+                        Command="{Binding Path=FilterSwitchCommand}"                            
                         Content="{x:Static ext:Resources.LogViewerSwitchToAdvancedFilterCaption}"/>
                 </Grid>
             </StackPanel>
@@ -421,7 +425,8 @@
                      Foreground="Red" 
                      Text="{Binding RequestErrorMessage, Mode=OneWay}" 
                      Visibility="{Binding ShowRequestErrorMessage, Converter={StaticResource visibilityConverter}}" 
-                     IsReadOnly="True" />
+                     IsReadOnly="True"
+                     VerticalScrollBarVisibility="Auto" />
 
             <StackPanel Margin="0, 0, 0, 12" 
                         Orientation="Horizontal" 
