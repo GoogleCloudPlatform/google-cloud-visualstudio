@@ -1915,6 +1915,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Advanced filter help.
+        /// </summary>
+        public static string LogViewerAdvancedFilterHelpLinkCaption {
+            get {
+                return ResourceManager.GetString("LogViewerAdvancedFilterHelpLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Any.
         /// </summary>
         public static string LogViewerAnyOtherSeverityLevelTip {
@@ -2097,20 +2106,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Apply text search on server and refresh results.
+        ///   Looks up a localized string similar to Filter by label or text search..
         /// </summary>
         public static string LogViewerSimpleTextSearchIconButtonToolTip {
             get {
                 return ResourceManager.GetString("LogViewerSimpleTextSearchIconButtonToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to search.
-        /// </summary>
-        public static string LogViewerSimpleTextSearchWatermarkMessage {
-            get {
-                return ResourceManager.GetString("LogViewerSimpleTextSearchWatermarkMessage", resourceCulture);
             }
         }
         
@@ -2142,7 +2142,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to after.
+        ///   Looks up a localized string similar to Click to select different timezone..
         public static string LogViewerTimeOrderPickAsceSelection {
             get {
                 return ResourceManager.GetString("LogViewerTimeOrderPickAsceSelection", resourceCulture);
@@ -2209,6 +2209,15 @@ namespace GoogleCloudExtension {
         public static string LogViewerToolWindowCaption {
             get {
                 return ResourceManager.GetString("LogViewerToolWindowCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear filters and return to basic mode..
+        /// </summary>
+        public static string LogViewerToSimpleSearchButtonTooltip {
+            get {
+                return ResourceManager.GetString("LogViewerToSimpleSearchButtonTooltip", resourceCulture);
             }
         }
         
