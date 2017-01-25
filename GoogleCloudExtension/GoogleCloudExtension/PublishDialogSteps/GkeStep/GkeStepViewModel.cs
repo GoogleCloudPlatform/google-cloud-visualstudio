@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
     /// </summary>
     public class GkeStepViewModel : PublishDialogStepBase
     {
-        private static readonly Cluster s_placeholderCluster = new Cluster { Name = "No clusters found..." };
+        private static readonly Cluster s_placeholderCluster = new Cluster { Name = Resources.GkePublishNoClustersPlaceholder };
         private static readonly IList<Cluster> s_placeholderList = new List<Cluster> { s_placeholderCluster };
 
         private readonly GkeStepContent _content;

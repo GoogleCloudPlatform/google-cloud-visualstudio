@@ -2059,6 +2059,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No clusters found....
+        /// </summary>
+        public static string GkePublishNoClustersPlaceholder {
+            get {
+                return ResourceManager.GetString("GkePublishNoClustersPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refresh clusters.
         /// </summary>
         public static string GkePublishRefreshClustersCaption {

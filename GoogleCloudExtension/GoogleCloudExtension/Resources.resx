@@ -1407,6 +1407,10 @@
     <value>Update</value>
     <comment>Caption for the Update buttons.</comment>
   </data>
+  <data name="GkePublishNoClustersPlaceholder" xml:space="preserve">
+    <value>No clusters found...</value>
+    <comment>Placeholder for the case when no cluster is found.</comment>
+  </data>
   <data name="GkePublishRefreshClustersCaption" xml:space="preserve">
     <value>Refresh clusters</value>
     <comment>Caption for the refresh clusters hyperlink</comment>
