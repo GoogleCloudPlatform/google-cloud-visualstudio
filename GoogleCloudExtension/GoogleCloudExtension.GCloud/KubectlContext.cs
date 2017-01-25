@@ -26,11 +26,11 @@ namespace GoogleCloudExtension.GCloud
         /// <summary>
         /// Path to the config file that identifies the cluster for kubcectl commands.
         /// </summary>
-        public string Config { get; private set; }
+        public string ConfigPath { get; private set; }
 
-        public KubectlContext(string config)
+        public KubectlContext(string configPath)
         {
-            Config = config;
+            ConfigPath = configPath;
         }
 
         #region IDisposable implementation.
@@ -40,22 +40,22 @@ namespace GoogleCloudExtension.GCloud
         /// </summary>
         void IDisposable.Dispose()
         {
-            if (Config == null)
+            if (ConfigPath == null)
             {
                 return;
             }
 
             try
             {
-                File.Delete(Config);
+                File.Delete(ConfigPath);
             }
             catch (IOException ex)
             {
-                Debug.WriteLine($"Failed to delete {Config}: {ex.Message}");
+                Debug.WriteLine($"Failed to delete {ConfigPath}: {ex.Message}");
             }
             finally
             {
-                Config = null;
+                ConfigPath = null;
             }
         }
 

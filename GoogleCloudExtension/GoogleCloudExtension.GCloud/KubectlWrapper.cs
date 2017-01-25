@@ -173,7 +173,7 @@ namespace GoogleCloudExtension.GCloud
         {
             var format = jsonOutput ? "--output=json" : "";
 
-            return $"{command} --kubeconfig=\"{context.Config}\" {format}";
+            return $"{command} --kubeconfig=\"{context.ConfigPath}\" {format}";
         }
     }
 }
