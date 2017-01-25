@@ -2142,7 +2142,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click to select different timezone..
+        ///   Looks up a localized string similar to after..
         public static string LogViewerTimeOrderPickAsceSelection {
             get {
                 return ResourceManager.GetString("LogViewerTimeOrderPickAsceSelection", resourceCulture);
