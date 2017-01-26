@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 {
@@ -34,8 +35,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
     /// </summary>
     public class GkeStepViewModel : PublishDialogStepBase
     {
+        private static readonly Cluster s_placeholderCluster = new Cluster { Name = Resources.GkePublishNoClustersPlaceholder };
+        private static readonly IList<Cluster> s_placeholderList = new List<Cluster> { s_placeholderCluster };
+
         private readonly GkeStepContent _content;
         private IPublishDialog _publishDialog;
+        private AsyncPropertyValue<IList<Cluster>> _clusters;
         private Cluster _selectedCluster;
         private string _deploymentName;
         private string _deploymentVersion;
@@ -46,7 +51,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// <summary>
         /// The list of clusters that serve as the target for deployment.
         /// </summary>
-        public AsyncPropertyValue<IList<Cluster>> Clusters { get; }
+        public AsyncPropertyValue<IList<Cluster>> Clusters
+        {
+            get { return _clusters; }
+            private set { SetValueAndRaise(ref _clusters, value); }
+        }
 
         /// <summary>
         /// The currently selected cluster to use for deployment.
@@ -57,7 +66,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             set
             {
                 SetValueAndRaise(ref _selectedCluster, value);
-                CanPublish = value != null;
+                CanPublish = value != null && value != s_placeholderCluster;
             }
         }
 
@@ -107,11 +116,35 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             set { SetValueAndRaise(ref _openWebsite, value); }
         }
 
+        /// <summary>
+        /// Command to execute to create a new cluster.
+        /// </summary>
+        public ICommand CreateClusterCommand { get; }
+
+        /// <summary>
+        /// Command to execute to refresh the list of clusters.
+        /// </summary>
+        public ICommand RefreshClustersListCommand { get; }
+                
         private GkeStepViewModel(GkeStepContent content)
         {
             _content = content;
 
             Clusters = new AsyncPropertyValue<IList<Cluster>>(GetAllClustersAsync());
+            CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand);
+            RefreshClustersListCommand = new ProtectedCommand(OnRefreshClustersListCommand);
+        }
+
+        private void OnRefreshClustersListCommand()
+        {
+            var refreshTask = GetAllClustersAsync();
+            Clusters = new AsyncPropertyValue<IList<Cluster>>(refreshTask);
+            _publishDialog.TrackTask(refreshTask);
+        }
+
+        private void OnCreateClusterCommand()
+        {
+            Process.Start($"https://console.cloud.google.com/kubernetes/add?project={CredentialsStore.Default.CurrentProjectId}");
         }
 
         #region IPublishDialogStep overrides
@@ -279,7 +312,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
             var clusters = await dataSource.GetClusterListAsync();
-            return clusters.OrderBy(x => x.Name).ToList();
+
+            var result = clusters?.OrderBy(x => x.Name)?.ToList();
+            if (result == null || result.Count == 0)
+            {
+                return s_placeholderList;
+            }
+            return result;
         }
 
         /// <summary>

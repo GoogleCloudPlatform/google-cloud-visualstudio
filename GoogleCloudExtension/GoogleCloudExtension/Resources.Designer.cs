@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2046,6 +2046,33 @@ namespace GoogleCloudExtension
         public static string GkePublishMissingKubectlMessage {
             get {
                 return ResourceManager.GetString("GkePublishMissingKubectlMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create new cluster.
+        /// </summary>
+        public static string GkePublishNewClusterCaption {
+            get {
+                return ResourceManager.GetString("GkePublishNewClusterCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No clusters found....
+        /// </summary>
+        public static string GkePublishNoClustersPlaceholder {
+            get {
+                return ResourceManager.GetString("GkePublishNoClustersPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh clusters.
+        /// </summary>
+        public static string GkePublishRefreshClustersCaption {
+            get {
+                return ResourceManager.GetString("GkePublishRefreshClustersCaption", resourceCulture);
             }
         }
         
