@@ -33,17 +33,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             _comboPickTime.SelectedIndex = 0;
         }
 
-
         /// <summary>
-        /// When cancel button is clicked, simply closes the dropdown control.
-        /// </summary>
-        private void Cancel_Button_Click(object sender, RoutedEventArgs e)
-        {
-            _comboPickTime.IsDropDownOpen = false;
-        }
-
-        /// <summary>
-        /// Wpf calendar holds the mouse clicking event.
+        /// Wpf calendar holds the mouse clicking event. 
+        /// Once focus is inside the calendar control, clicking outside won't respond.
+        /// This is a workaround to fix the problem.
         /// For more information, refer to:
         /// http://stackoverflow.com/questions/6024372/wpf-calendar-control-holding-on-to-the-mouse
         /// </summary>

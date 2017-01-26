@@ -28,28 +28,46 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private TimeZoneInfo _timeZone;
 
+        /// <summary>
+        /// The date that binds to the calendar control and the date textbox.
+        /// </summary>
         private DateTime _uiElementDate;
+
+        /// <summary>
+        /// The selected item index of the "before/after" combo box.
+        /// </summary>
         private int _uiSelectedOrderIndex;
+
+        /// <summary>
+        /// The boolean data that binds to the IsDropDown property of the ComboBox. 
+        /// </summary>
         private bool _isDropDownOpen = false;
 
         /// <summary>   
         /// Gets or sets if using descending order by timestamp. 
         /// true: descending order,  false: ascending order.
-        /// Go button reset it. Cancel button leave the value not changed.
+        /// When Go button is clicked, the value is set to the UI selection.
+        /// While cancel button click event won't change this value.
         /// </summary>
         public bool IsDescendingOrder { get; set; }
 
         /// <summary>
         /// Gets or sets the datetime in UTC.  
         /// The current active date time.
-        /// Go button reset it. Cancel button leave the value not changed.        
+        /// When Go button is clicked, the value is set to the UI selection.
+        /// While cancel button click event won't change this value.
         /// </summary>
         public DateTime DateTimeUtc { get; set; }
 
         /// <summary>
-        /// The command to execute to accept the changes.
+        /// The command to execute to accept the changes, binding to Go button.
         /// </summary>
         public ProtectedCommand GoCommand { get; }
+
+        /// <summary>
+        /// The command binding to Cancel button.
+        /// </summary>
+        public ProtectedCommand CancelCommand { get; }
 
         /// <summary>
         /// Gets the time box view model.
@@ -79,7 +97,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// The event handler that notifies the date time or the time order is changed.
+        /// The event handler that notifies if the date time or the time order is changed.
         /// </summary>
         public event EventHandler DateTimeFilterChange;
 
@@ -88,23 +106,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public bool IsDropDownOpen
         {
-            get
-            {
-                Debug.WriteLine($"Get IsDropDownOpen {_isDropDownOpen}");
-                return _isDropDownOpen;
-            }
+            get { return _isDropDownOpen; }
             set
             {
-                Debug.WriteLine($"Set IsDropDownOpen {value}");
-                if (value)  // Now it is open
-                {
-                    DateTime dt = TimeZoneInfo.ConvertTimeFromUtc(DateTimeUtc, _timeZone);
-                    UiElementDate = dt.Date;
-                    TimeBoxModel.Time = dt.TimeOfDay;
-                    SelectedOrderIndex = IsDescendingOrder ? 0 : 1;
-                }
-
                 SetValueAndRaise(ref _isDropDownOpen, value);
+
+                Debug.WriteLine($"Set IsDropDownOpen {value}");
+                if (_isDropDownOpen)  
+                {
+                    UpdateViewData();
+                }
             }
         }
 
@@ -120,6 +131,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             DateTimeUtc = dateTimeUtc;
             IsDescendingOrder = isDescendingOrder;
             GoCommand = new ProtectedCommand(OnGoButtonCommand);
+            CancelCommand = new ProtectedCommand(() => IsDropDownOpen = false);
             TimeBoxModel = new TimeBoxViewModel();
         }
 
@@ -133,24 +145,39 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
+        /// When dropdown is open, update view data from model.
+        /// </summary>
+        private void UpdateViewData()
+        {
+            DateTime dt = TimeZoneInfo.ConvertTimeFromUtc(DateTimeUtc, _timeZone);
+            UiElementDate = dt.Date;
+            TimeBoxModel.Time = dt.TimeOfDay;
+            SelectedOrderIndex = IsDescendingOrder ? 0 : 1;
+        }
+
+        /// <summary>
+        /// When OK button is clicked, update the model data.
+        /// </summary>
+        private void SetDataFromView()
+        {
+            DateTime newDateTimeUtc = TimeZoneInfo.ConvertTimeToUtc(_uiElementDate.Date.Add(TimeBoxModel.Time));
+            bool newOrder = _uiSelectedOrderIndex == 0;
+
+            if (DateTimeUtc != newDateTimeUtc || newOrder != IsDescendingOrder)
+            {
+                Debug.WriteLine("OnChangedDateTime Invoke DateTimeFilterChange, changed");
+                DateTimeUtc = newDateTimeUtc;
+                IsDescendingOrder = newOrder;
+                DateTimeFilterChange?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        /// <summary>
         /// Go button command handler.
         /// </summary>
         private void OnGoButtonCommand()
         {
-            DateTime newDateTimeUtc = TimeZoneInfo.ConvertTimeToUtc(_uiElementDate.Date.Add(TimeBoxModel.Time));
-            bool newOrder = _uiSelectedOrderIndex == 0;
-            if (DateTimeUtc != newDateTimeUtc || newOrder != IsDescendingOrder)
-            {
-                Debug.WriteLine("OnChangedDateTime Invoke DateTimeFilterChange , changed");
-                DateTimeUtc = newDateTimeUtc;
-                IsDescendingOrder = newOrder;
-                DateTimeFilterChange?.Invoke(this, new EventArgs());
-            }
-            else
-            {
-                Debug.WriteLine("OnChangedDateTime, No Change");
-            }
-
+            SetDataFromView();
             IsDropDownOpen = false;
         }
 

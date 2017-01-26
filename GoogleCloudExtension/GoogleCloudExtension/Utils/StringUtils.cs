@@ -126,5 +126,14 @@ namespace GoogleCloudExtension.Utils
 
             return scannedTokens;
         }
+
+        /// <summary>
+        /// Check if input is digits only.
+        /// return false if it is null.
+        /// </summary>
+        public static bool IsDigitsOnly(string text)
+        {
+            return text == null ? false: text.All(char.IsDigit);
+        }
     }
 }
