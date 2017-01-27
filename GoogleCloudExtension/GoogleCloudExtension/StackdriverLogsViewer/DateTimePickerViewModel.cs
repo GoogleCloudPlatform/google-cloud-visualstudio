@@ -23,6 +23,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public class DateTimePickerViewModel : ViewModelBase
     {
+        private TimeSpan _uiElementTime;
+
         /// <summary>
         /// The current selected time zone. 
         /// </summary>
@@ -46,8 +48,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>   
         /// Gets or sets if using descending order by timestamp. 
         /// true: descending order,  false: ascending order.
-        /// When Go button is clicked, the value is set to the UI selection.
-        /// While cancel button click event won't change this value.
+        /// When the Go button is clicked, the value is set to the UI selection.
+        /// While the cancel button click event won't change this value.
         /// </summary>
         public bool IsDescendingOrder { get; set; }
 
@@ -69,10 +71,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public ProtectedCommand CancelCommand { get; }
 
-        /// <summary>
-        /// Gets the time box view model.
-        /// </summary>
-        public TimeBoxViewModel TimeBoxModel { get; }
+        public TimeSpan UiElementTime
+        {
+            get { return _uiElementTime; }
+            set { SetValueAndRaise(ref _uiElementTime, value); }
+        }
 
         /// <summary>
         /// Gets or sets the UI control date box value of <seealso cref="_timeZone"/>
@@ -132,7 +135,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             IsDescendingOrder = isDescendingOrder;
             GoCommand = new ProtectedCommand(OnGoButtonCommand);
             CancelCommand = new ProtectedCommand(() => IsDropDownOpen = false);
-            TimeBoxModel = new TimeBoxViewModel();
         }
 
         /// <summary>
@@ -151,16 +153,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             DateTime dt = TimeZoneInfo.ConvertTimeFromUtc(DateTimeUtc, _timeZone);
             UiElementDate = dt.Date;
-            TimeBoxModel.Time = dt.TimeOfDay;
+            UiElementTime = dt.TimeOfDay;
             SelectedOrderIndex = IsDescendingOrder ? 0 : 1;
         }
 
         /// <summary>
-        /// When OK button is clicked, update the model data.
+        /// When the GO button is clicked, update the model data.
         /// </summary>
         private void SetDataFromView()
         {
-            DateTime newDateTimeUtc = TimeZoneInfo.ConvertTimeToUtc(_uiElementDate.Date.Add(TimeBoxModel.Time));
+            DateTime newDateTimeUtc = TimeZoneInfo.ConvertTimeToUtc(UiElementDate.Date.Add(UiElementTime));
             bool newOrder = _uiSelectedOrderIndex == 0;
 
             if (DateTimeUtc != newDateTimeUtc || newOrder != IsDescendingOrder)

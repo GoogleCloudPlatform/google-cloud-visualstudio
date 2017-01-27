@@ -151,6 +151,7 @@
     <Compile Include="Controls\ProgressIndicator.xaml.cs">
       <DependentUpon>ProgressIndicator.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TimeBox.cs" />
     <Compile Include="FirewallManagement\PortInfo.cs" />
     <Compile Include="FirewallManagement\PortManagerViewModel.cs" />
     <Compile Include="FirewallManagement\PortManagerWindow.cs" />
@@ -226,7 +227,7 @@
     <Compile Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml.cs">
       <DependentUpon>SplitTrafficWindowContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\CustomComboBox.cs" />
+    <Compile Include="Controls\FixBackgroundComboBox.cs" />
     <Compile Include="StackdriverLogsViewer\DateTimePicker.xaml.cs">
       <DependentUpon>DateTimePicker.xaml</DependentUpon>
     </Compile>
@@ -241,10 +242,6 @@
     </Compile>
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTree.cs" />
-    <Compile Include="StackdriverLogsViewer\TimeBox.xaml.cs">
-      <DependentUpon>TimeBox.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="StackdriverLogsViewer\TimeBoxViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TypeUtil.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
     <Compile Include="SolutionUtils\ISolutionProject.cs" />
@@ -614,6 +611,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\TimeBoxResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\ProgressIndicator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -672,10 +673,6 @@
     <Page Include="StackdriverLogsViewer\LogsViewerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="StackdriverLogsViewer\TimeBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
     </Page>
     <Page Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml">
       <SubType>Designer</SubType>

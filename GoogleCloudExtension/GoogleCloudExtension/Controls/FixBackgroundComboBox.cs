@@ -23,12 +23,12 @@ namespace GoogleCloudExtension.Controls
     /// A customized ComboBox.
     /// This is to override the Loaded event so as to set the combo box backgroud correctly.
     /// </summary>
-    public class CustomComboBox : ComboBox
+    public class FixBackgroundComboBox : ComboBox
     {
         /// <summary>
-        /// Inistantialize an new instance of <seealso cref="CustomComboBox"/> class.
+        /// Inistantialize an new instance of <seealso cref="FixBackgroundComboBox"/> class.
         /// </summary>
-        public CustomComboBox() : base()
+        public FixBackgroundComboBox() : base()
         {
             this.Loaded += OnComboBoxLoaded;
         }

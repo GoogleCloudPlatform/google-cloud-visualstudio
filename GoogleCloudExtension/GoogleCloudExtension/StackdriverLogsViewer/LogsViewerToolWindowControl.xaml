@@ -44,7 +44,7 @@
                             FontWeight="DemiBold"
                             Style="{StaticResource CommonTextStyle}"/>
 
-                        <controls:CustomComboBox                         
+                        <controls:FixBackgroundComboBox                         
                             DockPanel.Dock="Left"
                             x:Name="comboTimeZone" 
                             Margin="6,0,0,0" 
@@ -55,11 +55,11 @@
                             DataContext="{Binding DataContext, ElementName=_logsViewerToolWindow}"
                             ItemsSource="{Binding SystemTimeZones}"
                             SelectedItem="{Binding SelectedTimeZone}" >
-                            <controls:CustomComboBox.ToolTip>
+                            <controls:FixBackgroundComboBox.ToolTip>
                                 <ToolTip Content="{x:Static ext:Resources.LogViewerTimeZoneSelectionToolTip}"
                                      Style="{StaticResource CommonTooltipStyle}" />
-                            </controls:CustomComboBox.ToolTip>
-                        </controls:CustomComboBox>
+                            </controls:FixBackgroundComboBox.ToolTip>
+                        </controls:FixBackgroundComboBox>
                     </StackPanel>
 
                     <ItemsPresenter />
@@ -177,7 +177,7 @@
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Center">
 
-                    <controls:CustomComboBox 
+                    <controls:FixBackgroundComboBox 
                         x:Name="comboResource" 
                         Margin="0,0,6,0"
                         Width="160" 
@@ -187,7 +187,7 @@
                         DisplayMemberPath="DisplayName" 
                         IsSynchronizedWithCurrentItem="true" />
 
-                    <controls:CustomComboBox 
+                    <controls:FixBackgroundComboBox 
                         x:Name="comboSeverity" 
                         Margin="0,0,6,0"
                         Width="160"
