@@ -119,7 +119,6 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
         /// to more easily display and manipulate the entries in the UI.
         /// </summary>
         /// <param name="instance"></param>
-        /// <returns></returns>
         private ObservableCollection<AuthorizedNetworkModel> GetAuthorizedNetworks(DatabaseInstance instance)
         {
             IEnumerable<AclEntry> acls = instance?.Settings?.IpConfiguration?.AuthorizedNetworks ??
