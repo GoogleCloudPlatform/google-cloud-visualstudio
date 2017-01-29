@@ -12,6 +12,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="./LogsViewerResources.xaml" />
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+                <ResourceDictionary Source="../Controls/TimeBoxResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
      

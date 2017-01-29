@@ -200,7 +200,7 @@
                                     Margin="12,12,12,6" >
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
                                     <RowDefinition/>
@@ -219,7 +219,7 @@
                                     Padding="8,5,8,5" 
                                     Margin="0,0,6,0" 
                                     IsEnabled="False"
-                                    Width="90"
+                                    Width="110"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"  
                                     HorizontalContentAlignment="Center"
@@ -232,7 +232,7 @@
                                     Margin="6,0,0,0"
                                     HorizontalAlignment="Left"
                                     VerticalAlignment="Center"   
-                                    Width="145" />
+                                    Width="120" />
                             </Grid>
 
                             <Calendar 

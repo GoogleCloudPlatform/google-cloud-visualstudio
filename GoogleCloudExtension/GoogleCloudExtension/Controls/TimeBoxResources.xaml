@@ -16,11 +16,6 @@
         <Setter Property="AcceptsReturn" Value="False" />
     </Style>
 
-    <Style x:Key="TimeSparatorStyle" TargetType="TextBlock" >
-        <Setter Property="VerticalAlignment" Value="Center" />
-        <Setter Property="Text" Value=":" />
-    </Style>
-
     <Style x:Key="UpButtonStyle" TargetType="RepeatButton">
         <Setter Property="ClickMode" Value="Press"/>
         <Setter Property="Margin" Value="1,2,1,0.5"/>
@@ -31,7 +26,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="RepeatButton">
                     <Label 
-                        Background="White" 
+                        Background="{TemplateBinding Background}" 
                         BorderThickness="0" 
                         Margin="0" 
                         Padding="0">
@@ -52,7 +47,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="RepeatButton">
                     <Label 
-                        Background="White" 
+                        Background="{TemplateBinding Background}" 
                         BorderThickness="0" 
                         Margin="0" 
                         Padding="0">
@@ -63,35 +58,29 @@
         </Setter>
     </Style>
 
-    <ObjectDataProvider x:Key="TimeTypes" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
-        <ObjectDataProvider.MethodParameters>
-            <x:Type TypeName="local:TimeType" />
-        </ObjectDataProvider.MethodParameters>
-    </ObjectDataProvider>
-
     <Style TargetType="local:TimeBox">
         <Setter Property="Focusable" Value="False"/>
         <Setter Property="IsTabStop" Value="False"/>
         <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
         <Setter Property="Background" Value="White" />
+        <Setter Property="BorderBrush" Value="LightGray" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:TimeBox">
                     <Border 
-                        BorderBrush="LightGray" 
+                        BorderBrush="{TemplateBinding BorderBrush}" 
                         BorderThickness="1" 
-                        MinWidth="145"
+                        MinWidth="90"
                         Background="{TemplateBinding Background}"
                         CornerRadius="3">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="0.20*"/>
+                                <ColumnDefinition Width="0.25*"/>
                                 <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="0.20*"/>
+                                <ColumnDefinition Width="0.25*"/>
                                 <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="0.20*"/>
+                                <ColumnDefinition Width="0.25*"/>
                                 <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="50"/>
                             </Grid.ColumnDefinitions>
                             <TextBox 
                                 Grid.Column="0"
@@ -103,7 +92,9 @@
                                     RelativeSource={RelativeSource Mode=FindAncestor, 
                                     AncestorType={x:Type local:TimeBox}}}" />
 
-                            <TextBlock Grid.Column="1" Style="{StaticResource TimeSparatorStyle}" />
+                            <TextBlock Grid.Column="1" 
+                                       Text=":"
+                                       VerticalAlignment="Center"/>
 
                             <TextBox 
                                 Grid.Column="2" 
@@ -115,8 +106,10 @@
                                     RelativeSource={RelativeSource Mode=FindAncestor, 
                                     AncestorType={x:Type local:TimeBox}}}" />
 
-                            <TextBlock Grid.Column="3" Style="{StaticResource TimeSparatorStyle}"  />
-                            
+                            <TextBlock Grid.Column="3" 
+                                       Text=":"
+                                       VerticalAlignment="Center"/>
+
                             <TextBox
                                 Grid.Column="4"
                                 x:Name="PART_SecondBox" 
@@ -126,27 +119,19 @@
                                     UpdateSourceTrigger=PropertyChanged,
                                     RelativeSource={RelativeSource Mode=FindAncestor, 
                                     AncestorType={x:Type local:TimeBox}}}" />
-                            
+
                             <StackPanel 
                                 Grid.Column="5"
                                 Margin="4,0,4,0" >
                                 <RepeatButton 
                                     x:Name="PART_UpArrow" 
+                                    Background="{TemplateBinding Background}"
                                     Style="{StaticResource UpButtonStyle}"/>
                                 <RepeatButton 
                                     x:Name="PART_DownArrow" 
+                                    Background="{TemplateBinding Background}"
                                     Style="{StaticResource DownButtonStyle}"/>
                             </StackPanel>
-
-                            <local:FixBackgroundComboBox 
-                                Grid.Column="6" 
-                                x:Name="PART_TimeType"   
-                                Background="White"
-                                IsSynchronizedWithCurrentItem="true"
-                                ItemsSource="{Binding Source={StaticResource TimeTypes}}" 
-                                SelectedItem="{Binding TimeType, ValidatesOnExceptions=True, 
-                                    RelativeSource={RelativeSource Mode=FindAncestor, 
-                                    AncestorType={x:Type local:TimeBox}}}"/>
                         </Grid>
                     </Border>
                 </ControlTemplate>
