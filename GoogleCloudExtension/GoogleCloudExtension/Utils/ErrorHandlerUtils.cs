@@ -37,17 +37,7 @@ namespace GoogleCloudExtension.Utils
             {
                 action();
             }
-            catch (AggregateException ex)
-            {
-                Debug.WriteLine($"Uncaught aggregate exception: {ex.Message}");
-                if (ErrorHandler.ContainsCriticalException(ex))
-                {
-                    throw;
-                }
-                EventsReporterWrapper.ReportEvent(UnhandledExceptionEvent.Create(ex));
-                UserPromptUtils.ExceptionPrompt(ex);
-            }
-            catch (Exception ex)
+            catch (Exception ex) when (!IsCriticalException(ex))
             {
                 Debug.WriteLine($"Uncaught exception: {ex.Message}");
                 if (ErrorHandler.IsCriticalException(ex))
@@ -56,6 +46,27 @@ namespace GoogleCloudExtension.Utils
                 }
                 EventsReporterWrapper.ReportEvent(UnhandledExceptionEvent.Create(ex));
                 UserPromptUtils.ExceptionPrompt(ex);
+            }
+        }
+
+        /// <summary>
+        /// Returns whether the given <paramref name="ex"/> is a critical exception according to the
+        /// <seealso cref="ErrorHandler"/> determination. Handles correctly the case of a normal exception vs.
+        /// an <seealso cref="AggregateException"/>.
+        /// Critical exceptions should not be handled by the extension code as typically they mean that the execution
+        /// environment is no longer suitable.
+        /// </summary>
+        /// <param name="ex">The exception to check.</param>
+        /// <returns>True if the exception is critical, false otherwise.</returns>
+        public static bool IsCriticalException(Exception ex)
+        {
+            if (ex is AggregateException)
+            {
+                return ErrorHandler.ContainsCriticalException(ex as AggregateException);
+            }
+            else
+            {
+                return ErrorHandler.IsCriticalException(ex);
             }
         }
     }

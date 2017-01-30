@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -86,13 +86,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AspnetDeployment.cs" />
-    <Compile Include="NetCoreDeployment.cs" />
-    <Compile Include="NetCorePublishResult.cs" />
+    <Compile Include="CloudBuilderUtils.cs" />
+    <Compile Include="CommonUtils.cs" />
+    <Compile Include="GkeDeployment.cs" />
+    <Compile Include="GkeDeploymentResult.cs" />
+    <Compile Include="NetCoreAppUtils.cs" />
+    <Compile Include="WindowsVmDeployment.cs" />
+    <Compile Include="AppEngineFlexDeployment.cs" />
+    <Compile Include="AppEngineFlexDeploymentResult.cs" />
     <Compile Include="ProgressHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="Key.snk" />
     <None Include="packages.config" />
   </ItemGroup>

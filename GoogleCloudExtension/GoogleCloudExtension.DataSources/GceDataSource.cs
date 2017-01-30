@@ -73,7 +73,6 @@ namespace GoogleCloudExtension.DataSources
         /// <summary>
         /// Returns all of the zones, and the instances within the zone, for the project.
         /// </summary>
-        /// <returns></returns>
         public async Task<IList<InstancesPerZone>> GetAllInstancesPerZonesAsync()
         {
             try
