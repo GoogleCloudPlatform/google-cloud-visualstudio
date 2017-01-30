@@ -33,6 +33,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public LogsViewerToolWindowControl()
         {
+            PackageUtils.ReferenceType(typeof(VisibilityConverter));
             this.InitializeComponent();
         }
  

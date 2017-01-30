@@ -2188,6 +2188,41 @@ namespace GoogleCloudExtension {
         
         /// <summary>
         ///  Looks up a localized string similar to Click to select different timezone..
+        public static string LogViewerTimeOrderPickAsceSelection {
+            get {
+                return ResourceManager.GetString("LogViewerTimeOrderPickAsceSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to before.
+        /// </summary>
+        public static string LogViewerTimeOrderPickDescSelection {
+            get {
+                return ResourceManager.GetString("LogViewerTimeOrderPickDescSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get log.
+        /// </summary>
+        public static string LogViewerTimeOrderPickLabelHead {
+            get {
+                return ResourceManager.GetString("LogViewerTimeOrderPickLabelHead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to this time stamp..
+        /// </summary>
+        public static string LogViewerTimeOrderPickLabelTail {
+            get {
+                return ResourceManager.GetString("LogViewerTimeOrderPickLabelTail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///  Looks up a localized string similar to Click to select different timezone..
         /// </summary>
         public static string LogViewerTimeZoneSelectionToolTip {
             get {

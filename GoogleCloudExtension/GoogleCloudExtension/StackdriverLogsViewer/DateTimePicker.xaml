@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              mc:Ignorable="d" 
@@ -11,85 +10,29 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="./LogsViewerResources.xaml" />
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+                <ResourceDictionary Source="../Controls/TimeBoxResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Style x:Key="StyleCalanderDayButton" TargetType="{x:Type CalendarDayButton}">
-                <Setter Property="Height" Value="32"></Setter>
-                <Setter Property="Width" Value="32"></Setter>
-                <Setter Property="FontSize" Value="12" />
-            </Style>
-
-            <Style x:Key="StyleCalanderButton" TargetType="{x:Type CalendarButton}">
-                <Setter Property="Height" Value="52"></Setter>
-                <Setter Property="Width" Value="52"></Setter>
-                <Setter Property="FontWeight" Value="Normal"/>
-            </Style>
-
-            <DataTemplate x:Key="DayTitle"  >
-                <TextBlock 
-                    Foreground="#FF333333"
-                    FontWeight="Bold"
-                    FontSize="9.5"
-                    FontFamily="Verdana"
-                    Margin="0,6,0,6"
-                    Text="{Binding}"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center" />
-            </DataTemplate>
-
-            <Style x:Key="StyleCalendar" TargetType="{x:Type Calendar}">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type Calendar}">
-                            <Viewbox>
-                                <CalendarItem 
-                                    x:Name="PART_CalendarItem"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="{TemplateBinding BorderThickness}"
-                                    FontStretch="Expanded" />
-                            </Viewbox>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-                <Setter Property="CalendarDayButtonStyle"  Value="{StaticResource StyleCalanderDayButton}"/>
-                <Setter Property="CalendarButtonStyle"  Value="{StaticResource StyleCalanderButton}"/>
-                <Setter Property="Foreground" Value="#FF333333"/>
-                <Setter Property="IsTodayHighlighted" Value="False" />
-                <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="BorderBrush" Value="LightGray" />
-            </Style>
-
-            <Style x:Key="BorderlessButtonStyle" TargetType="Button">
-                <Setter Property="BorderThickness" Value="0" />
-                <Setter Property="Background" Value="Transparent" />
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <Grid Background="{TemplateBinding Background}">
-                                <ContentPresenter />
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
      
         </ResourceDictionary>
     </UserControl.Resources>
     
-    <Grid >
-        <controls:CustomComboBox  
-            x:Name="_comboPickTime"
+    <controls:FixBackgroundComboBox  
+        x:Name="_comboPickTime"
+        HorizontalAlignment="Center" 
+        VerticalAlignment="Center"
+        HorizontalContentAlignment="Center"
+        SelectedIndex="0"
+        Style="{StaticResource CommonDocumentComboBoxStyle}"                                  
+        IsDropDownOpen="{Binding IsDropDownOpen}"
+        MaxDropDownHeight="500">
+        <ComboBoxItem 
+            x:Name="ComboBoxItem" 
             HorizontalAlignment="Center" 
-            VerticalAlignment="Center"
-            HorizontalContentAlignment="Center"
-            SelectedIndex="0"
-            Style="{StaticResource CommonDocumentComboBoxStyle}"                                  
-            IsDropDownOpen="{Binding IsDropDownOpen}"
-            MaxDropDownHeight="500">
-            <ComboBoxItem x:Name="ComboBoxItem" 
-                          HorizontalAlignment="Center" 
-                          Content="{x:Static ext:Resources.LogViewerDateTimePickerLabel}">
+            Style="{StaticResource DateTimePickerDropDownStyle}"
+            Content="{x:Static ext:Resources.LogViewerDateTimePickerLabel}">
                 <ComboBoxItem.Template>
                     <ControlTemplate>
                         <Button Style="{StaticResource BorderlessButtonStyle}" >
@@ -200,7 +143,6 @@
                         </Button>
                     </ControlTemplate>
                 </ComboBoxItem.Template>
-            </ComboBoxItem>
-        </controls:CustomComboBox>
-    </Grid>
+        </ComboBoxItem>
+    </controls:FixBackgroundComboBox>
 </UserControl>
