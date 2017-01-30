@@ -79,53 +79,61 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         public override async void Publish()
         {
-            var context = new Context
-            {
-                CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
-                ProjectId = CredentialsStore.Default.CurrentProjectId,
-                AppName = GoogleCloudExtensionPackage.ApplicationName,
-                AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
-            };
-            var options = new NetCoreDeployment.DeploymentOptions
-            {
-                Version = Version,
-                Promote = Promote,
-                Context = context
-            };
             var project = _publishDialog.Project;
-
-            GcpOutputWindow.Activate();
-            GcpOutputWindow.Clear();
-            GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishStepStartMessage, project.Name));
-
-            _publishDialog.FinishFlow();
-
-            NetCorePublishResult result;
-            using (var frozen = StatusbarHelper.Freeze())
-            using (var animationShown = StatusbarHelper.ShowDeployAnimation())
-            using (var progress = StatusbarHelper.ShowProgressBar(Resources.FlexPublishProgressMessage))
-            using (var deployingOperation = ShellUtils.SetShellUIBusy())
+            try
             {
-                result = await NetCoreDeployment.PublishProjectAsync(
-                    project.FullPath,
-                    options,
-                    progress,
-                    GcpOutputWindow.OutputLine);
-            }
-
-            if (result != null)
-            {
-                GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishSuccessMessage, project.Name));
-                StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
-
-                var url = result.GetDeploymentUrl();
-                GcpOutputWindow.OutputLine(String.Format(Resources.PublishUrlMessage, url));
-                if (OpenWebsite)
+                var context = new GCloudContext
                 {
-                    Process.Start(url);
+                    CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
+                    ProjectId = CredentialsStore.Default.CurrentProjectId,
+                    AppName = GoogleCloudExtensionPackage.ApplicationName,
+                    AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
+                };
+                var options = new AppEngineFlexDeployment.DeploymentOptions
+                {
+                    Version = Version,
+                    Promote = Promote,
+                    Context = context
+                };
+
+                GcpOutputWindow.Activate();
+                GcpOutputWindow.Clear();
+                GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishStepStartMessage, project.Name));
+
+                _publishDialog.FinishFlow();
+
+                AppEngineFlexDeploymentResult result;
+                using (var frozen = StatusbarHelper.Freeze())
+                using (var animationShown = StatusbarHelper.ShowDeployAnimation())
+                using (var progress = StatusbarHelper.ShowProgressBar(Resources.FlexPublishProgressMessage))
+                using (var deployingOperation = ShellUtils.SetShellUIBusy())
+                {
+                    result = await AppEngineFlexDeployment.PublishProjectAsync(
+                        project.FullPath,
+                        options,
+                        progress,
+                        GcpOutputWindow.OutputLine);
+                }
+
+                if (result != null)
+                {
+                    GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishSuccessMessage, project.Name));
+                    StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
+
+                    var url = result.GetDeploymentUrl();
+                    GcpOutputWindow.OutputLine(String.Format(Resources.PublishUrlMessage, url));
+                    if (OpenWebsite)
+                    {
+                        Process.Start(url);
+                    }
+                }
+                else
+                {
+                    GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishFailedMessage, project.Name));
+                    StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
                 }
             }
-            else
+            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
                 GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
@@ -138,7 +146,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// Creates a new step instance. This method will also create the necessary view and conect both
         /// objects together.
         /// </summary>
-        /// <returns></returns>
         internal static FlexStepViewModel CreateStep()
         {
             var content = new FlexStepContent();
