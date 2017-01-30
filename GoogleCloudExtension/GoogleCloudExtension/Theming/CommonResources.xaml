@@ -683,7 +683,7 @@
 
     <!-- Common ComboBox style V2 for document window -->
     <Style x:Key="CommonDocumentComboBoxStyle" 
-           TargetType="ComboBox">
+           TargetType="controls:FixBackgroundComboBox">
         <Setter Property="Padding" Value="8,5,8,5" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Background" Value="White" />

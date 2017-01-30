@@ -151,6 +151,7 @@
     <Compile Include="Controls\ProgressIndicator.xaml.cs">
       <DependentUpon>ProgressIndicator.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TimeBox.cs" />
     <Compile Include="FirewallManagement\PortInfo.cs" />
     <Compile Include="FirewallManagement\PortManagerViewModel.cs" />
     <Compile Include="FirewallManagement\PortManagerWindow.cs" />
@@ -226,6 +227,11 @@
     <Compile Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml.cs">
       <DependentUpon>SplitTrafficWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FixBackgroundComboBox.cs" />
+    <Compile Include="StackdriverLogsViewer\DateTimePicker.xaml.cs">
+      <DependentUpon>DateTimePicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverLogsViewer\DateTimePickerViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\LogItem.cs" />
     <Compile Include="StackdriverLogsViewer\LogSeverity.cs" />
     <Compile Include="StackdriverLogsViewer\LogSeverityItem.cs" />
@@ -606,6 +612,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\TimeBoxResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\ProgressIndicator.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -657,6 +667,10 @@
     <Resource Include="StackdriverLogsViewer\LogsViewerResources.xaml">
       <SubType>Designer</SubType>
     </Resource>
+    <Page Include="StackdriverLogsViewer\DateTimePicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="StackdriverLogsViewer\LogsViewerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

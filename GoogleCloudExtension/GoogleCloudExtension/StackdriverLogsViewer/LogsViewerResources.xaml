@@ -120,5 +120,184 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <!-- Region DateTimePicker Styles-->
+    <Style x:Key="CalendarDayButtonStyle" TargetType="{x:Type CalendarDayButton}">
+        <Setter Property="Height" Value="32"></Setter>
+        <Setter Property="Width" Value="32"></Setter>
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+
+    <Style x:Key="CalendarButtonStyle" TargetType="{x:Type CalendarButton}">
+        <Setter Property="Height" Value="52"></Setter>
+        <Setter Property="Width" Value="52"></Setter>
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+
+    <Style x:Key="StyleCalendar" TargetType="{x:Type Calendar}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Calendar}">
+                    <Viewbox>
+                        <CalendarItem 
+                                    x:Name="PART_CalendarItem"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    FontStretch="Expanded" />
+                    </Viewbox>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="CalendarDayButtonStyle"  Value="{StaticResource CalendarDayButtonStyle}"/>
+        <Setter Property="CalendarButtonStyle"  Value="{StaticResource CalendarButtonStyle}"/>
+        <Setter Property="Foreground" Value="#FF333333"/>
+        <Setter Property="IsTodayHighlighted" Value="False" />
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="LightGray" />
+    </Style>
+
+    <DataTemplate x:Key="DayTitle"  >
+        <TextBlock 
+                    Foreground="#FF333333"
+                    FontWeight="Bold"
+                    FontSize="9.5"
+                    FontFamily="Verdana"
+                    Margin="0,6,0,6"
+                    Text="{Binding}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" />
+    </DataTemplate>
+
+    <!-- Using a button so that clicking on it won't dismiss the dropdown. -->
+    <Style x:Key="ButtonPanelStyle" TargetType="Button">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid Background="{TemplateBinding Background}">
+                        <ContentPresenter />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DateTimePickerDropDownStyle" TargetType="ComboBoxItem" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Button Style="{StaticResource ButtonPanelStyle}" >
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" 
+                                    Margin="12,12,12,6" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock 
+                                    Text="{x:Static ext:Resources.UiDateLabel}"  
+                                    Margin="0,0,6,5"/>
+                                <TextBlock 
+                                    Grid.Column="1"
+                                    Text="{x:Static ext:Resources.UiTimeLabel}" 
+                                    Margin="6,0,0,5" />
+                                <TextBox 
+                                    Grid.Row="1"  
+                                    Grid.Column="0" 
+                                    Padding="8,5,8,5" 
+                                    Margin="0,0,6,0" 
+                                    IsEnabled="False"
+                                    Width="110"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"  
+                                    HorizontalContentAlignment="Center"
+                                    Text="{Binding UiElementDate, StringFormat={x:Static ext:Resources.LogViewerLogItemDateFormat}}" />
+                                <controls:TimeBox 
+                                    Grid.Row="1" 
+                                    Grid.Column="1" 
+                                    x:Name="timeBox"
+                                    Time="{Binding UiElementTime}"          
+                                    Margin="6,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"   
+                                    Width="120" />
+                            </Grid>
+
+                            <Calendar 
+                                Grid.Row="1" 
+                                x:Name="calendar"
+                                Margin="12, 4, 12, 4"
+                                HorizontalAlignment="Center"
+                                SelectedDate="{Binding UiElementDate}"
+                                SelectionMode="SingleDate"
+                                Style="{StaticResource StyleCalendar}" />
+
+                            <StackPanel 
+                                Grid.Row="2"
+                                Margin="12,6,12,6"
+                                Orientation="Horizontal" 
+                                HorizontalAlignment="Stretch">
+
+                                <TextBlock 
+                                    Margin="0,0,6,0"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource CommonTextStyle}" 
+                                    Text="{x:Static ext:Resources.LogViewerTimeOrderPickLabelHead}" />
+
+                                <controls:FixBackgroundComboBox
+                                    VerticalAlignment="Center" 
+                                    HorizontalContentAlignment="Center"
+                                    SelectedIndex="{Binding SelectedOrderIndex}"
+                                    Style="{StaticResource CommonDocumentComboBoxStyle}">
+                                    <ComboBoxItem Content="{x:Static ext:Resources.LogViewerTimeOrderPickDescSelection}"/>
+                                    <ComboBoxItem Content="{x:Static ext:Resources.LogViewerTimeOrderPickAsceSelection}"/>
+                                </controls:FixBackgroundComboBox>
+
+                                <TextBlock 
+                                    Margin="6,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Static ext:Resources.LogViewerTimeOrderPickLabelTail}" />
+
+                            </StackPanel>
+
+                            <StackPanel 
+                                Grid.Row="3" 
+                                Margin="12,6,0,12"
+                                Orientation="Horizontal">
+
+                                <Button 
+                                    Margin="0,0,6,0" 
+                                    Width="35"
+                                    Content="{x:Static ext:Resources.UiGoButtonCaption}" 
+                                    HorizontalAlignment="Left" 
+                                    Style="{StaticResource CommonButtonStandardStyle}"        
+                                    Command="{Binding GoCommand}" />
+
+                                <Button HorizontalAlignment="Left"
+                                        Content="{x:Static ext:Resources.UiCancelButtonCaption}" 
+                                        Command="{Binding CancelCommand}"
+                                        Style="{StaticResource CommonButtonStandardStyle}" />
+
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- EndRegion -->
 
 </ResourceDictionary>

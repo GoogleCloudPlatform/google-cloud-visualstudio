@@ -37,21 +37,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             PackageUtils.ReferenceType(typeof(VisibilityConverter));
             this.InitializeComponent();
         }
-
-        /// <summary>
-        /// On Windows8, Windows10, the combobox backgroud property does not work.
-        /// This is a workaround to fix the problem.
-        /// </summary>
-        private void ComboBox_Loaded(Object sender, RoutedEventArgs e)
-        {
-            var comboBox = sender as ComboBox;
-            var comboBoxTemplate = comboBox.Template;
-            var toggleButton = comboBoxTemplate.FindName("toggleButton", comboBox) as ToggleButton;
-            var toggleButtonTemplate = toggleButton.Template;
-            var border = toggleButtonTemplate.FindName("templateRoot", toggleButton) as Border;
-            var backgroud = comboBox.Background;
-            border.Background = backgroud;
-        }
  
         /// <summary>
         /// Response to data grid scroll change event.

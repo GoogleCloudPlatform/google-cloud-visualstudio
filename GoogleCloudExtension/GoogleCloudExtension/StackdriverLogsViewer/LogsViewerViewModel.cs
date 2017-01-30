@@ -88,6 +88,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
 
         /// <summary>
+        /// Gets the DateTimePicker view model object.
+        /// </summary>
+        public DateTimePickerViewModel DateTimePickerModel { get; }
+
+        /// <summary>
         /// Gets the advanced filter help icon button command.
         /// </summary>
         public ProtectedCommand AdvancedFilterHelpCommand { get; }
@@ -204,6 +209,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     }
 
                     LogItemCollection.Refresh();
+                    DateTimePickerModel.ChangeTimeZone(_selectedTimeZone);
                 }
             }
         }
@@ -313,7 +319,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public LogsViewerViewModel()
         {
             _dataSource = new Lazy<LoggingDataSource>(CreateDataSource);
-            RefreshCommand = new ProtectedCommand(Reload);
+            RefreshCommand = new ProtectedCommand(OnRefreshCommand);
             LogItemCollection = new ListCollectionView(_logs);
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
             CancelRequestCommand = new ProtectedCommand(CancelRequest);
@@ -321,6 +327,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             FilterSwitchCommand = new ProtectedCommand(SwapFilter);
             SubmitAdvancedFilterCommand = new ProtectedCommand(Reload);
             AdvancedFilterHelpCommand = new ProtectedCommand(ShowAdvancedFilterHelp);
+            DateTimePickerModel = new DateTimePickerViewModel(
+                TimeZoneInfo.Local, DateTime.UtcNow, isDescendingOrder: true);
+            DateTimePickerModel.DateTimeFilterChange += (sender, e) => Reload();
         }
 
         /// <summary>
@@ -349,6 +358,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             LogLoaddingWrapperAsync(async (cancelToken) => await LoadLogsAsync(cancelToken));
+        }
+
+        private void OnRefreshCommand()
+        {
+            DateTimePickerModel.IsDescendingOrder = true;
+            DateTimePickerModel.DateTimeUtc = DateTime.UtcNow;
+            Reload();
         }
 
         /// <summary>
@@ -447,6 +463,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private async Task LoadLogsAsync(CancellationToken cancellationToken)
         {
+            var order = DateTimePickerModel.IsDescendingOrder ? "timestamp desc" : "timestamp asc";
             int count = 0;
             while (count < DefaultPageSize && !cancellationToken.IsCancellationRequested)
             {
@@ -454,7 +471,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
                 // Here, it does not do pageSize: _defaultPageSize - count, 
                 // Because this is requried to use same page size for getting next page. 
-                var results = await _dataSource.Value.ListLogEntriesAsync(_filter,
+                var results = await _dataSource.Value.ListLogEntriesAsync(_filter, order,
                     pageSize: DefaultPageSize, nextPageToken: _nextPageToken, cancelToken: cancellationToken);
                 AddLogs(results?.LogEntries);
                 _nextPageToken = results.NextPageToken;
@@ -617,6 +634,18 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (SelectedLogSeverity != null && SelectedLogSeverity.Severity != LogSeverity.All)
             {
                 filter.AppendLine($"severity>={SelectedLogSeverity.Severity.ToString("G")}");
+            }
+
+            if (DateTimePickerModel.IsDescendingOrder)
+            {
+                if (DateTimePickerModel.DateTimeUtc < DateTime.UtcNow)
+                {
+                    filter.AppendLine($"timestamp<=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
+                }
+            }
+            else
+            {
+                filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
             }
 
             var textFilter = ComposeTextSearchFilter();
