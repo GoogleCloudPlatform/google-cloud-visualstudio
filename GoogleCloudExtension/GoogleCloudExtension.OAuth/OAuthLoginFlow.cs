@@ -167,7 +167,6 @@ namespace GoogleCloudExtension.OAuth
         /// <summary>
         /// This method selects a port on which to run.
         /// </summary>
-        /// <returns></returns>
         private Task<int> SelectPortAsync()
         {
             return Task.Run(() =>

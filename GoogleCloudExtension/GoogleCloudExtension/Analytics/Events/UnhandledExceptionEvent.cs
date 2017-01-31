@@ -24,18 +24,20 @@ namespace GoogleCloudExtension.Analytics.Events
         private const string UnhandledExceptionEventName = "unhandledException";
         private const string ExceptionProperty = "exception";
 
-        public static AnalyticsEvent Create(AggregateException ex)
-        {
-            return new AnalyticsEvent(
-                UnhandledExceptionEventName,
-                ExceptionProperty, ex.InnerException.GetType().Name);
-        }
-
         public static AnalyticsEvent Create(Exception ex)
         {
-            return new AnalyticsEvent(
-                UnhandledExceptionEventName,
-                ExceptionProperty, ex.GetType().Name);
+            if (ex is AggregateException)
+            {
+                return new AnalyticsEvent(
+                    UnhandledExceptionEventName,
+                    ExceptionProperty, ex.InnerException.GetType().Name);
+            }
+            else
+            {
+                return new AnalyticsEvent(
+                    UnhandledExceptionEventName,
+                    ExceptionProperty, ex.GetType().Name);
+            }
         }
     }
 }

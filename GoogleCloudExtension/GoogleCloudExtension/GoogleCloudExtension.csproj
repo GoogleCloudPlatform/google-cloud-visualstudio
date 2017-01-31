@@ -198,6 +198,10 @@
     <Compile Include="PublishDialogSteps\GceStep\GceStepContent.xaml.cs">
       <DependentUpon>GceStepContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PublishDialogSteps\GkeStep\GkeStepContent.xaml.cs">
+      <DependentUpon>GkeStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialogSteps\GkeStep\GkeStepViewModel.cs" />
     <Compile Include="PublishDialog\IPublishDialog.cs" />
     <Compile Include="PublishDialog\IPublishDialogStep.cs" />
     <Compile Include="PublishDialog\PublishDialogStepBase.cs" />
@@ -308,6 +312,7 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_any_12.png" />
+    <Resource Include="PublishDialogSteps\ChoiceStep\Resources\ContainerEngine_128px_Retina.png" />
     <Resource Include="StackdriverLogsViewer\Resources\search.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_debug_12.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_error_12.png" />
@@ -450,6 +455,10 @@
       <HintPath>..\packages\Google.Apis.Compute.v1.1.19.0.657\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Google.Apis.Container.v1, Version=1.19.0.476, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Container.v1.1.19.0.476\lib\net45\Google.Apis.Container.v1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Google.Apis.Core, Version=1.19.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Core.1.19.0\lib\net45\Google.Apis.Core.dll</HintPath>
       <Private>True</Private>
@@ -590,8 +599,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
@@ -653,6 +662,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PublishDialogSteps\GceStep\GceStepContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialogSteps\GkeStep\GkeStepContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

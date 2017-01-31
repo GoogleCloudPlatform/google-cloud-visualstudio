@@ -23,7 +23,6 @@
         <ComboBox x:Name="_instances"
                   ItemsSource="{Binding Instances.Value}"
                   DisplayMemberPath="Name"
-                  IsEnabled="{Binding Instances.IsCompleted}"
                   IsSynchronizedWithCurrentItem="True"
                   Margin="0,0,0,15"
                   SelectedItem="{Binding SelectedInstance, Mode=TwoWay}" />
@@ -33,7 +32,6 @@
                Style="{StaticResource CommonLabelStyle}"/>
         <ComboBox x:Name="_credentials"
                   ItemsSource="{Binding Credentials}"
-                  IsEnabled="{Binding Instances.IsCompleted}"
                   IsSynchronizedWithCurrentItem="True"
                   DisplayMemberPath="User"
                   SelectedItem="{Binding SelectedCredentials, Mode=TwoWay}" />
@@ -45,7 +43,6 @@
         </TextBlock>
 
         <CheckBox Margin="0,8,0,0"
-                  IsEnabled="{Binding Instances.IsCompleted}"
                   Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
                   IsChecked="{Binding OpenWebsite, Mode=TwoWay}"
                   Style="{StaticResource CommonTextStyleBase}"/>

@@ -1,4 +1,4 @@
-// Copyright 2017 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,3 +11,22 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
+using Newtonsoft.Json;
+using System.Collections.Generic;
+
+namespace GoogleCloudExtension.GCloud.Models
+{
+    /// <summary>
+    /// Common class for all of the lists returned from Kuberentes.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class GkeList<T>
+    {
+        /// <summary>
+        /// The items in the list.
+        /// </summary>
+        [JsonProperty("items")]
+        public IList<T> Items { get; set; }
+    }
+}
