@@ -1563,4 +1563,8 @@
     <value>Refresh clusters</value>
     <comment>Caption for the refresh clusters hyperlink</comment>
   </data>
+  <data name="LogViewerLogIdSelectAllLabel" xml:space="preserve">
+    <value>All logs</value>
+    <comment>The log name (log id) selection label for select all logs.</comment>
+  </data>
 </root>

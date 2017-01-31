@@ -30,13 +30,22 @@ namespace GoogleCloudExtension.DataSources
     public class LoggingDataSource : DataSourceBase<LoggingService>
     {
         /// <summary>
+        /// Google cloud uses format of projects/{project_id} as projects filter.
+        /// </summary>
+        private string ProjectFilter => $"projects/{ProjectId}";
+
+        private readonly List<string> _resourceNames;
+
+        /// <summary>
         /// Initializes an instance of the data source.
         /// </summary>
         /// <param name="projectId">The Google Cloud Platform project id of the current user account .</param>
         /// <param name="credential">The credentials to use for the call.</param>
         public LoggingDataSource(string projectId, GoogleCredential credential, string appName)
             : base(projectId, credential, init => new LoggingService(init), appName)
-        { }
+        {
+            _resourceNames = new List<string>(new string[] { ProjectFilter });
+        }
 
         /// <summary>
         /// Returns the list of MonitoredResourceDescriptor.
@@ -53,6 +62,25 @@ namespace GoogleCloudExtension.DataSources
                     return request.ExecuteAsync();
                 },
                 x => x.ResourceDescriptors,
+                x => x.NextPageToken);
+        }
+
+        /// <summary>
+        /// Returns a list of log names of current Google Cloud project.
+        /// Only logs that have entries are listed.
+        /// The size of entire set of log names is small. 
+        /// Batch all in one request in unlikely case it spans multiple pages.
+        /// </summary>
+        public Task<IList<string>> ListProjectLogNamesAsync()
+        {
+            return LoadPagedListAsync(
+                (token) =>
+                {
+                    var request = Service.Projects.Logs.List(ProjectFilter);
+                    request.PageToken = token;
+                    return request.ExecuteAsync();
+                },
+                x => x.LogNames,
                 x => x.NextPageToken);
         }
 
@@ -87,10 +115,9 @@ namespace GoogleCloudExtension.DataSources
         {
             try
             {
-                string projectsFilter = $"projects/{ProjectId}";
                 var requestData = new ListLogEntriesRequest
                 {
-                    ResourceNames = new List<string>(new string[] { projectsFilter }),
+                    ResourceNames = _resourceNames,
                     Filter = filter,
                     OrderBy = orderBy,
                     PageSize = pageSize

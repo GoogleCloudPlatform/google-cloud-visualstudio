@@ -33,7 +33,6 @@
             HorizontalAlignment="Center" 
             Style="{StaticResource DateTimePickerDropDownStyle}"
             Content="{x:Static ext:Resources.LogViewerDateTimePickerLabel}">
-
         </ComboBoxItem>
     </controls:FixBackgroundComboBox>
 </UserControl>

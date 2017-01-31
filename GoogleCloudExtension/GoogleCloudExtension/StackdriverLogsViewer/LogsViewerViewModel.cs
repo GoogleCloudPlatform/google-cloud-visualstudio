@@ -19,6 +19,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -69,6 +70,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private string _simpleSearchText;
         private string _advacedFilterText;
         private bool _showAdvancedFilter;
+        private LogIdsList _logIdList;
 
         private bool _isLoading;
         private Lazy<LoggingDataSource> _dataSource;
@@ -86,6 +88,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private bool _showCancelRequestButton;
         private CancellationTokenSource _cancellationTokenSource;
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
+
+        /// <summary>
+        /// Gets the LogIdList for log id selector binding source.
+        /// </summary>
+        public LogIdsList LogIdList
+        {
+            get { return _logIdList; }
+            private set { SetValueAndRaise(ref _logIdList, value); }
+        }
 
         /// <summary>
         /// Gets the DateTimePicker view model object.
@@ -150,15 +161,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public LogSeverityItem SelectedLogSeverity
         {
             get { return _selectedLogSeverity; }
-            set
-            {
-                var old_value = _selectedLogSeverity;
-                SetValueAndRaise(ref _selectedLogSeverity, value);
-                if (value != null && old_value != value)
-                {
-                    OnFiltersChanged();
-                }
-            }
+            set { SetValueAndRaise(ref _selectedLogSeverity, value); }
         }
 
         /// <summary>
@@ -176,15 +179,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public MonitoredResourceDescriptor SelectedResource
         {
             get { return _selectedResource; }
-            set
-            {
-                var old_value = _selectedResource;
-                SetValueAndRaise(ref _selectedResource, value);
-                if (value != null && old_value != value)
-                {
-                    OnFiltersChanged();
-                }
-            }
+            set { SetValueAndRaise(ref _selectedResource, value); }
         }
 
         /// <summary>
@@ -198,20 +193,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public TimeZoneInfo SelectedTimeZone
         {
             get { return _selectedTimeZone; }
-            set
-            {
-                if (value != _selectedTimeZone)
-                {
-                    _selectedTimeZone = value;
-                    foreach (var log in _logs)
-                    {
-                        log.ChangeTimeZone(_selectedTimeZone);
-                    }
-
-                    LogItemCollection.Refresh();
-                    DateTimePickerModel.ChangeTimeZone(_selectedTimeZone);
-                }
-            }
+            set { SetValueAndRaise(ref _selectedTimeZone, value); }
         }
 
         /// <summary>
@@ -330,6 +312,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             DateTimePickerModel = new DateTimePickerViewModel(
                 TimeZoneInfo.Local, DateTime.UtcNow, isDescendingOrder: true);
             DateTimePickerModel.DateTimeFilterChange += (sender, e) => Reload();
+            PropertyChanged += OnPropertyChanged;
         }
 
         /// <summary>
@@ -344,7 +327,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            PopulateResourceTypes();
+            RequestLogFiltersWrapperAsync(PopulateResourceTypes);
         }
 
         /// <summary>
@@ -397,12 +380,24 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Show request status bar.
         /// </summary>
-        private void InitAndShowRequestStatus()
+        /// <param name="IsCanceButtonVisible">Indicate if the cancel button should be shown</param>
+        private void SetServerRequestStartStatus(bool IsCanceButtonVisible = true)
         {
+            IsControlEnabled = false;
+            RequestErrorMessage = null;
             ShowRequestErrorMessage = false;
             RequestStatusText = Resources.LogViewerRequestProgressMessage;
             ShowRequestStatus = true;
-            ShowCancelRequestButton = true;
+            ShowCancelRequestButton = IsCanceButtonVisible;
+        }
+
+        /// <summary>
+        /// Hide request status bar, enable controls.
+        /// </summary>
+        private void SetServerRequestCompleteStatus()
+        {
+            IsControlEnabled = true;
+            ShowRequestStatus = false;
         }
 
         /// <summary>
@@ -422,8 +417,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             _isLoading = true;
 
             _cancellationTokenSource = new CancellationTokenSource();
-            IsControlEnabled = false;
-            InitAndShowRequestStatus();
+            SetServerRequestStartStatus();
             try
             {
                 await callback(_cancellationTokenSource.Token);
@@ -447,8 +441,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
             finally
             {
-                IsControlEnabled = true;
-                ShowRequestStatus = false;
+                SetServerRequestCompleteStatus();
                 Debug.WriteLine("Setting _isLoading to false");
                 _isLoading = false;
             }
@@ -493,15 +486,23 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void Reload()
         {
+            Debug.WriteLine("Entering Reload()");
+
             if (String.IsNullOrWhiteSpace(Project))
             {
                 Debug.Assert(false, "Project should not be null if the viewer is visible and enabled.");
                 return;
             }
 
-            if (_resourceDescriptors?.FirstOrDefault() == null)
+            if (ResourceDescriptors?.FirstOrDefault() == null)
             {
-                PopulateResourceTypes();
+                RequestLogFiltersWrapperAsync(PopulateResourceTypes);
+                return;
+            }
+
+            if (LogIdList == null)
+            {
+                RequestLogFiltersWrapperAsync(PopulateLogIds);
                 return;
             }
 
@@ -565,6 +566,30 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
+        /// A wrapper for common getting filters API calls.
+        /// </summary>
+        /// <param name="apiCall">The api call to get resource descriptors or log names etc.</param>
+        private async Task RequestLogFiltersWrapperAsync(Func<Task> apiCall)
+        {
+            SetServerRequestStartStatus(IsCanceButtonVisible: false);
+            try
+            {
+                await apiCall();
+            }
+            catch (DataSourceException ex)
+            {
+                /// If it fails, show a tip, let refresh button retry it.
+                RequestErrorMessage = ex.Message;
+                ShowRequestErrorMessage = true;
+                return;
+            }
+            finally
+            {
+                SetServerRequestCompleteStatus();
+            }
+        }
+
+        /// <summary>
         /// Populate resource type selection list.
         /// 
         /// The control flow is as following. 
@@ -579,45 +604,62 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         ///     2. Reload() checks ResourceDescriptors is null or empty.
         ///     3. Reload calls PopulateResourceTypes() which does a manual retry.
         /// </summary>
-        private async void PopulateResourceTypes()
+        private async Task PopulateResourceTypes()
         {
-            RequestErrorMessage = null;
-            ShowRequestErrorMessage = false;
-            IsControlEnabled = false;
-            try
+            var descriptors = await _dataSource.Value.GetResourceDescriptorsAsync();
+            List<MonitoredResourceDescriptor> newOrderDescriptors = new List<MonitoredResourceDescriptor>();
+            // Keep the order.
+            foreach (var defaultSelection in s_defaultResourceSelections)
             {
-                var descriptors = await _dataSource.Value.GetResourceDescriptorsAsync();
-                List<MonitoredResourceDescriptor> newOrderDescriptors = new List<MonitoredResourceDescriptor>();
-                // Keep the order.
-                foreach (var defaultSelection in s_defaultResourceSelections)
+                var desc = descriptors?.FirstOrDefault(x => x.Type == defaultSelection);
+                if (desc != null)
                 {
-                    var desc = descriptors?.FirstOrDefault(x => x.Type == defaultSelection);
-                    if (desc != null)
-                    {
-                        newOrderDescriptors.Add(desc);
-                    }
+                    newOrderDescriptors.Add(desc);
                 }
-                newOrderDescriptors.AddRange(descriptors.Where(x => !s_defaultResourceSelections.Contains(x.Type)));
-                ResourceDescriptors = newOrderDescriptors;  // This will set the selected item to first element.
             }
-            catch (DataSourceException ex)
-            {
-                /// If it fails, show a tip, let refresh button retry it.
-                RequestErrorMessage = ex.Message;
-                ShowRequestErrorMessage = true;
-                return;
-            }
-            finally
-            {
-                IsControlEnabled = true;
-            }
+            newOrderDescriptors.AddRange(descriptors.Where(x => !s_defaultResourceSelections.Contains(x.Type)));
+            ResourceDescriptors = newOrderDescriptors;  // This will set the selected item to first element.
         }
 
-        private void OnFiltersChanged()
+        /// <summary>
+        /// This method uses similar logic as populating resource descriptors.
+        /// Refers to <seealso cref="PopulateResourceTypes"/>.
+        /// </summary>
+        private async Task PopulateLogIds()
         {
-            Debug.WriteLine("NotifyFiltersChanged");
-            _filter = ComposeSimpleFilters();
+            IList<string> logIdRequestResult = null;
+            logIdRequestResult = await _dataSource.Value.ListProjectLogNamesAsync();
+            LogIdList = new LogIdsList(logIdRequestResult);
+            LogIdList.PropertyChanged += OnPropertyChanged;
             Reload();
+        }
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            string[] _filterProperties = new string[] {
+                nameof(SelectedLogSeverity),
+                nameof(SelectedResource),
+                nameof(LogIdsList.SelectedLogId),
+            };
+            if (_filterProperties.Contains(e.PropertyName))
+            {
+                Reload();
+            }
+            else if (e.PropertyName == nameof(SelectedTimeZone))
+            {
+                OnTimeZoneChanged();
+            }            
+        }
+
+        private void OnTimeZoneChanged()
+        {
+            foreach (var log in _logs)
+            {
+                log.ChangeTimeZone(SelectedTimeZone);
+            }
+
+            LogItemCollection.Refresh();
+            DateTimePickerModel.ChangeTimeZone(SelectedTimeZone);
         }
 
         /// <summary>
@@ -625,6 +667,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private string ComposeSimpleFilters()
         {
+            Debug.WriteLine("Entering ComposeSimpleFilters()");
+
             StringBuilder filter = new StringBuilder();
             if (SelectedResource != null)
             {
@@ -646,6 +690,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             else
             {
                 filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
+            }
+
+            if (LogIdList.SelectedLogIdFullName != null)
+            {
+                filter.AppendLine($"logName=\"{LogIdList.SelectedLogIdFullName}\"");
             }
 
             var textFilter = ComposeTextSearchFilter();
