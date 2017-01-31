@@ -190,9 +190,8 @@
                         Margin="0,0,6,0"
                         Width="160" 
                         Style="{StaticResource CommonDocumentComboBoxStyle}"
-                        DataContext="{Binding LogIdList}"
-                        ItemsSource="{Binding LogIDs}"
-                        SelectedItem="{Binding SelectedLogId}" 
+                        ItemsSource="{Binding LogIdList.LogIDs}"
+                        SelectedItem="{Binding LogIdList.SelectedLogId}" 
                         IsSynchronizedWithCurrentItem="true" />
                     
                     <controls:FixBackgroundComboBox 

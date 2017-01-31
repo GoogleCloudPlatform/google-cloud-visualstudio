@@ -19,6 +19,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -160,15 +161,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public LogSeverityItem SelectedLogSeverity
         {
             get { return _selectedLogSeverity; }
-            set
-            {
-                var old_value = _selectedLogSeverity;
-                SetValueAndRaise(ref _selectedLogSeverity, value);
-                if (value != null && old_value != value)
-                {
-                    Reload();
-                }
-            }
+            set { SetValueAndRaise(ref _selectedLogSeverity, value); }
         }
 
         /// <summary>
@@ -186,15 +179,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public MonitoredResourceDescriptor SelectedResource
         {
             get { return _selectedResource; }
-            set
-            {
-                var old_value = _selectedResource;
-                SetValueAndRaise(ref _selectedResource, value);
-                if (value != null && old_value != value)
-                {
-                    Reload();
-                }
-            }
+            set { SetValueAndRaise(ref _selectedResource, value); }
         }
 
         /// <summary>
@@ -208,20 +193,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public TimeZoneInfo SelectedTimeZone
         {
             get { return _selectedTimeZone; }
-            set
-            {
-                if (value != _selectedTimeZone)
-                {
-                    _selectedTimeZone = value;
-                    foreach (var log in _logs)
-                    {
-                        log.ChangeTimeZone(_selectedTimeZone);
-                    }
-
-                    LogItemCollection.Refresh();
-                    DateTimePickerModel.ChangeTimeZone(_selectedTimeZone);
-                }
-            }
+            set { SetValueAndRaise(ref _selectedTimeZone, value); }
         }
 
         /// <summary>
@@ -340,6 +312,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             DateTimePickerModel = new DateTimePickerViewModel(
                 TimeZoneInfo.Local, DateTime.UtcNow, isDescendingOrder: true);
             DateTimePickerModel.DateTimeFilterChange += (sender, e) => Reload();
+            PropertyChanged += OnPropertyChanged;
         }
 
         /// <summary>
@@ -513,6 +486,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void Reload()
         {
+            Debug.WriteLine("Entering Reload()");
+
             if (String.IsNullOrWhiteSpace(Project))
             {
                 Debug.Assert(false, "Project should not be null if the viewer is visible and enabled.");
@@ -654,8 +629,37 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             IList<string> logIdRequestResult = null;
             logIdRequestResult = await _dataSource.Value.ListProjectLogNamesAsync();
-            LogIdList = new LogIdsList(logIdRequestResult, Reload);
+            LogIdList = new LogIdsList(logIdRequestResult);
+            LogIdList.PropertyChanged += OnPropertyChanged;
             Reload();
+        }
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            string[] _filterProperties = new string[] {
+                nameof(SelectedLogSeverity),
+                nameof(SelectedResource),
+                nameof(LogIdsList.SelectedLogId),
+            };
+            if (_filterProperties.Contains(e.PropertyName))
+            {
+                Reload();
+            }
+            else if (e.PropertyName == nameof(SelectedTimeZone))
+            {
+                OnTimeZoneChanged();
+            }            
+        }
+
+        private void OnTimeZoneChanged()
+        {
+            foreach (var log in _logs)
+            {
+                log.ChangeTimeZone(SelectedTimeZone);
+            }
+
+            LogItemCollection.Refresh();
+            DateTimePickerModel.ChangeTimeZone(SelectedTimeZone);
         }
 
         /// <summary>
@@ -663,6 +667,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private string ComposeSimpleFilters()
         {
+            Debug.WriteLine("Entering ComposeSimpleFilters()");
+
             StringBuilder filter = new StringBuilder();
             if (SelectedResource != null)
             {

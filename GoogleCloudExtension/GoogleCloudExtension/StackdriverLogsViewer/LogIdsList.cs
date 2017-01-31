@@ -16,6 +16,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -25,9 +26,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     public class LogIdsList : Model
     {
         private string _selectedLogIDShortName;
-        private Dictionary<string, string> _logIDs = new Dictionary<string, string>();
-        private Dictionary<string, string> _logShortNameToIdLookup = new Dictionary<string, string>();
-        private Action _onSelectionChangeCallback;
+        private readonly Dictionary<string, string> _logIDs = new Dictionary<string, string>();
+        private readonly Dictionary<string, string> _logShortNameToIdLookup = new Dictionary<string, string>();
 
         /// <summary>
         /// Gets the list of log id short name as the selector items source. 
@@ -41,8 +41,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             get
             {
-                if (_selectedLogIDShortName == null
-                    || _selectedLogIDShortName == Resources.LogViewerLogIdSelectAllLabel)
+                if (_selectedLogIDShortName == null || _selectedLogIDShortName == Resources.LogViewerLogIdSelectAllLabel)
                 {
                     return null;
                 }
@@ -57,24 +56,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public string SelectedLogId
         {
             get { return _selectedLogIDShortName; }
-            set
-            {
-                var oldValue = _selectedLogIDShortName;
-                SetValueAndRaise(ref _selectedLogIDShortName, value);
-                if (value != null && oldValue != value)
-                {
-                    _onSelectionChangeCallback();
-                }
-            }
+            set { SetValueAndRaise(ref _selectedLogIDShortName, value); }
         }
 
         /// <summary>
         /// Instantialize a new instance of <seealso cref="LogIdsList"/> class.
         /// </summary>
-        public LogIdsList(IList<string> logIds, Action callbackOnSelectionChange)
+        public LogIdsList(IList<string> logIds)
         {
             LogIDs = new List<string>();
-            _onSelectionChangeCallback = callbackOnSelectionChange;
             foreach (var id in logIds)
             {
                 AddLogId(id);
@@ -84,10 +74,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             _selectedLogIDShortName = Resources.LogViewerLogIdSelectAllLabel;
         }
 
-        /// <summary>
-        /// Create log id short name as shown in selection items. 
-        /// </summary>
-        /// <param name="logId"></param>
         private void AddLogId(string logId)
         {
             if (String.IsNullOrWhiteSpace(logId))
@@ -95,14 +81,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            if (_logIDs.ContainsKey(logId.ToLower()))
+            var lowerCaseLogID = logId.ToLower();
+            if (_logIDs.ContainsKey(lowerCaseLogID))
             {
                 return;
             }
 
             var splits = logId.Split(new string[] { "/", "%2F", "%2f" }, StringSplitOptions.RemoveEmptyEntries);
-            string shortName = splits[splits.Length - 1];
-            _logIDs[logId.ToLower()] = shortName;
+            string shortName = splits.LastOrDefault();
+            _logIDs[lowerCaseLogID] = shortName;
             if (_logShortNameToIdLookup.ContainsKey(shortName))
             {
                 Debug.Assert(false, $"Found same short name of {_logShortNameToIdLookup[shortName]} and {logId}");
