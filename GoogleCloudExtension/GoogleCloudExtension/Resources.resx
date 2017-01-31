@@ -633,7 +633,7 @@
     <value>To use this feature you need to have the "beta" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta.</value>
     <comment>Message shown when the beta component is missing.</comment>
   </data>
-  <data name="ResetPasswordGcloudMissingComponentTitle" xml:space="preserve">
+  <data name="GcloudMissingComponentTitle" xml:space="preserve">
     <value>Missing Google Cloud SDK Component</value>
     <comment>Title for the dialog that informs the user that a Cloud SDK component is needed but not installed.</comment>
   </data>
@@ -1462,6 +1462,106 @@
   <data name="UiTimeLabel" xml:space="preserve">
     <value>Time</value>
     <comment>Label to the time input control</comment>
+  </data>
+  <data name="GkePublishClusterMessage" xml:space="preserve">
+    <value>_Clusters:</value>
+    <comment>The message shown in the UI to choose cluster.</comment>
+  </data>
+  <data name="GkePublishDeployingToGkeMessage" xml:space="preserve">
+    <value>Deploying {0} to Container Engine</value>
+    <comment>Message printed to the output window when deploying to GKE. {0} is the name of the project.</comment>
+  </data>
+  <data name="GkePublishDeploymentFailureMessage" xml:space="preserve">
+    <value>Failed to deploy {0} to Container Engine</value>
+    <comment>Message printed in the output window when the deployment fails. {0} is the project name.</comment>
+  </data>
+  <data name="GkePublishDeploymentNameMessage" xml:space="preserve">
+    <value>_Deployment name:</value>
+    <comment>The message shown in the UI for deployment name textbox.</comment>
+  </data>
+  <data name="GkePublishDeploymentStatusMessage" xml:space="preserve">
+    <value>Deploying to Container Engine</value>
+    <comment>Message shown in the status bar while deploying.</comment>
+  </data>
+  <data name="GkePublishDeploymentSuccessMessage" xml:space="preserve">
+    <value>Project {0} deployed to Container Engine</value>
+    <comment>Message printed in the output window once the deployment finished succesfully. {0} is the project name.</comment>
+  </data>
+  <data name="GkePublishDeploymentVersionMessage" xml:space="preserve">
+    <value>Deployment _version:</value>
+    <comment>The message shown in the UI for the depoyment version textbox.</comment>
+  </data>
+  <data name="GkePublishExposeServiceCaption" xml:space="preserve">
+    <value>E_xpose the service to the public internet</value>
+    <comment>Caption for the checkbox to set if the GKE service is to be exposed or not.</comment>
+  </data>
+  <data name="GkePublishMissingKubectlMessage" xml:space="preserve">
+    <value>To use this feature you need to have the "kubectl" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl</value>
+    <comment>Message shown to the user when the kubectl component is not installed.</comment>
+  </data>
+  <data name="GkePublishServiceIpMessage" xml:space="preserve">
+    <value>Service {0} ip address {1}</value>
+    <comment>Message printed in the output window to show the IP address of the service exposed. {0} is the deployment name, {1} is the IP address.</comment>
+  </data>
+  <data name="GkePublishServiceIpTimeoutMessage" xml:space="preserve">
+    <value>Time out waiting for service ip address.</value>
+    <comment>Message printed in the output window when there's a timeout waiting for the service IP address.</comment>
+  </data>
+  <data name="GkePublishWaitingForServiceIpMessage" xml:space="preserve">
+    <value>Waiting for Service IP address...</value>
+    <comment>Message shown while waiting for a public IP to be assigned to the exposed Kubernetes service.</comment>
+  </data>
+  <data name="PublishDialogChoiceStepGkeName" xml:space="preserve">
+    <value>C_ontainer Engine</value>
+    <comment>The name of the GKE choice.</comment>
+  </data>
+  <data name="PublishDialogChoiceStepGkeToolTip" xml:space="preserve">
+    <value>Deploy as a service to Container Engine</value>
+    <comment>The tooltip for the GKE choice.</comment>
+  </data>
+  <data name="GkePublishDeploymentScaledMessage" xml:space="preserve">
+    <value>Deployment {0} was scaled to {1} replicas.</value>
+    <comment>Message printed in the output window when the deployment is scaled to the given number of replicas. {0} is the name of the deployment, {1} is the number of replicas.</comment>
+  </data>
+  <data name="GkePublishDeploymentUpdatedMessage" xml:space="preserve">
+    <value>Deployment {0} was updated.</value>
+    <comment>Message printer in the output window when the deployment was updated. {0} is the name of the deployment.</comment>
+  </data>
+  <data name="GkePublishInvalidReplicasMessage" xml:space="preserve">
+    <value>Invalid value for replicas, must be a number.</value>
+    <comment>Message shown when an invalid value for replicas is given.</comment>
+  </data>
+  <data name="GkePublishReplicasCaption" xml:space="preserve">
+    <value>Replic_as:</value>
+    <comment>The caption for the replicas label.</comment>
+  </data>
+  <data name="UiInvalidValueTitle" xml:space="preserve">
+    <value>Invalid value</value>
+    <comment>Generic title for validation error prompts.</comment>
+  </data>
+  <data name="GkePublishNewClusterCaption" xml:space="preserve">
+    <value>Create new cluster</value>
+    <comment>Caption for the new cluster link.</comment>
+  </data>
+  <data name="GkePublishDeploymentAlreadyExistsMessage" xml:space="preserve">
+    <value>Deployment {0} already exists, do you want to update it?</value>
+    <comment>Message shown to the user when the deployment already exists to confirm if it should be updated. {0} is the deployment name.</comment>
+  </data>
+  <data name="GkePublishDeploymentAlreadyExistsTitle" xml:space="preserve">
+    <value>Update exising deployment</value>
+    <comment>Title for the user confirmation prompt to udate deployments.</comment>
+  </data>
+  <data name="UiUpdateButtonCaption" xml:space="preserve">
+    <value>Update</value>
+    <comment>Caption for the Update buttons.</comment>
+  </data>
+  <data name="GkePublishNoClustersPlaceholder" xml:space="preserve">
+    <value>No clusters found...</value>
+    <comment>Placeholder for the case when no cluster is found.</comment>
+  </data>
+  <data name="GkePublishRefreshClustersCaption" xml:space="preserve">
+    <value>Refresh clusters</value>
+    <comment>Caption for the refresh clusters hyperlink</comment>
   </data>
   <data name="LogViewerLogIdSelectAllLabel" xml:space="preserve">
     <value>All logs</value>

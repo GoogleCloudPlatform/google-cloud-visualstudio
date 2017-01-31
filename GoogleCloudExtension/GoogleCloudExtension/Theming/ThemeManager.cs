@@ -54,7 +54,6 @@ namespace GoogleCloudExtension.Theming
         /// Returns the current known theme to the caller. It will return <see cref="VsTheme.Unknown"/> for custom
         /// themes created by the user.
         /// </summary>
-        /// <returns></returns>
         public static VsTheme GetCurrentTheme()
         {
             dynamic themeService = GoogleCloudExtensionPackage.GetGlobalService(typeof(SVsColorThemeService));
