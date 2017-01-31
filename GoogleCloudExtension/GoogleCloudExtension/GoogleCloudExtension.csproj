@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props')" />
   <PropertyGroup>
@@ -215,6 +215,10 @@
     <Compile Include="PublishDialogSteps\GceStep\GceStepContent.xaml.cs">
       <DependentUpon>GceStepContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PublishDialogSteps\GkeStep\GkeStepContent.xaml.cs">
+      <DependentUpon>GkeStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialogSteps\GkeStep\GkeStepViewModel.cs" />
     <Compile Include="PublishDialog\IPublishDialog.cs" />
     <Compile Include="PublishDialog\IPublishDialogStep.cs" />
     <Compile Include="PublishDialog\PublishDialogStepBase.cs" />
@@ -310,6 +314,7 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="PublishDialogSteps\ChoiceStep\Resources\ContainerEngine_128px_Retina.png" />
     <Resource Include="Theming\Resources\ic_help_black_14px.png" />
     <Resource Include="PublishDialogSteps\ChoiceStep\Resources\AppEngine_128px_Retina.png" />
     <Resource Include="PublishDialogSteps\ChoiceStep\Resources\ComputeEngine_128px_Retina.png" />
@@ -443,6 +448,10 @@
     </Reference>
     <Reference Include="Google.Apis.Compute.v1, Version=1.19.0.657, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Compute.v1.1.19.0.657\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Google.Apis.Container.v1, Version=1.19.0.476, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Container.v1.1.19.0.476\lib\net45\Google.Apis.Container.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Apis.Core, Version=1.19.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
@@ -648,6 +657,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PublishDialogSteps\GceStep\GceStepContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialogSteps\GkeStep\GkeStepContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

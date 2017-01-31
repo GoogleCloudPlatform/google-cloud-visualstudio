@@ -1,0 +1,101 @@
+﻿<UserControl x:Class="GoogleCloudExtension.PublishDialogSteps.GkeStep.GkeStepContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialogSteps.GkeStep"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             mc:Ignorable="d" 
+             d:DataContext="{x:Type local:GkeStepViewModel}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <Label Content="{x:Static ext:Resources.GkePublishClusterMessage}"
+               Target="{Binding ElementName=_clusters}"
+               Style="{StaticResource CommonLabelStyle}"/>
+
+        <ComboBox x:Name="_clusters"
+                  ItemsSource="{Binding Clusters.Value}"
+                  SelectedItem="{Binding SelectedCluster, Mode=OneWayToSource}"
+                  DisplayMemberPath="Name"
+                  IsSynchronizedWithCurrentItem="True"
+                  Margin="0,0,0,5"
+                  Style="{StaticResource CommonComboBoxStyle}"/>
+
+        <StackPanel Margin="0,0,0,15" Orientation="Horizontal">
+
+            <TextBlock Margin="0,0,5,0"
+                       Style="{StaticResource CommonTextStyle}">
+                <Hyperlink Command="{Binding CreateClusterCommand}"
+                           Style="{StaticResource CommonHyperlinkStyle}">
+                    <TextBlock Text="{x:Static ext:Resources.GkePublishNewClusterCaption}" />
+                </Hyperlink>
+            </TextBlock>
+
+            <TextBlock Margin="5,0,0,0"
+                       Style="{StaticResource CommonTextStyle}">
+                <Hyperlink Command="{Binding RefreshClustersListCommand}"
+                           Style="{StaticResource CommonHyperlinkStyle}">
+                    <TextBlock Text="{x:Static ext:Resources.GkePublishRefreshClustersCaption}" />
+                </Hyperlink>
+            </TextBlock>
+        </StackPanel>
+
+        <Label Content="{x:Static ext:Resources.GkePublishDeploymentNameMessage}"
+               Target="{Binding ElementName=_deploymentName}"
+               Style="{StaticResource CommonLabelStyle}" />
+        <TextBox x:Name="_deploymentName"
+                 Text="{Binding DeploymentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Margin="0,0,0,15"
+                 Style="{StaticResource CommonTextBoxStyle}" />
+
+        <Grid Margin="0,0,0,15">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+
+            <Label Content="{x:Static ext:Resources.GkePublishDeploymentVersionMessage}"
+                   Target="{Binding ElementName=_deploymentVersion}"
+                   Style="{StaticResource CommonLabelStyle}" />
+            <TextBox x:Name="_deploymentVersion"
+                     Grid.Row="1"
+                     Text="{Binding DeploymentVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Style="{StaticResource CommonTextBoxStyle}" />
+
+            <!-- TODO: Use an up/down textbox control. -->
+            <Label Grid.Column="1"
+                   Content="{x:Static ext:Resources.GkePublishReplicasCaption}"
+                   Target="{Binding ElementName=_replicas}"
+                   Margin="5,0,0,0"
+                   Style="{StaticResource CommonLabelStyle}" />
+            <TextBox x:Name="_replicas"
+                     Grid.Row="1"
+                     Grid.Column="1"
+                     Text="{Binding Replicas, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Margin="5,0,0,0"
+                     Style="{StaticResource CommonTextBoxStyle}" />
+        </Grid>
+
+        <CheckBox Content="{x:Static ext:Resources.GkePublishExposeServiceCaption}"
+                  IsChecked="{Binding ExposeService, Mode=TwoWay}"
+                  Style="{StaticResource CommonTextStyleBase}" />
+        <CheckBox IsChecked="{Binding OpenWebsite, Mode=TwoWay}"
+                  Margin="0,5,0,0"
+                  IsEnabled="{Binding ExposeService}"
+                  Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
+                  Style="{StaticResource CommonTextStyleBase}"/>
+    </StackPanel>
+</UserControl>

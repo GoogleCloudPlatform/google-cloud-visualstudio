@@ -200,7 +200,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                     return null;
                 }
 
-                var context = new Context
+                var context = new GCloudContext
                 {
                     CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
                     ProjectId = CredentialsStore.Default.CurrentProjectId,
@@ -237,7 +237,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                 {
                     UserPromptUtils.ErrorPrompt(
                         message: Resources.ResetPasswordGcloudMissingBetaMessage,
-                        title: Resources.ResetPasswordGcloudMissingComponentTitle);
+                        title: Resources.GcloudMissingComponentTitle);
                 }
                 return false;
             }

@@ -48,7 +48,6 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Returns true if the shell is in a busy state.
         /// </summary>
-        /// <returns></returns>
         public static bool IsBusy() => IsDebugging() || IsBuilding();
 
         /// <summary>

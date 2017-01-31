@@ -15,7 +15,6 @@
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
@@ -26,7 +25,7 @@ namespace GoogleCloudExtension.Deployment
     /// This class implements all of the necessary details to deploy an ASP.NET Core application
     /// to the App Engine Flex environment.
     /// </summary>
-    public static class NetCoreDeployment
+    public static class AppEngineFlexDeployment
     {
         private const string AppYamlName = "app.yaml";
 
@@ -34,25 +33,7 @@ namespace GoogleCloudExtension.Deployment
             "runtime: custom\n" +
             "env: flex\n";
 
-        private const string DockerfileName = "Dockerfile";
-
-        /// <summary>
-        /// This template is the smallest possible Dockerfile needed to deploy an ASP.NET Core app to
-        /// App Engine Flex environment. It invokes the entry point .dll given by {0}, sets up the environment
-        /// so the app listens on port 8080.
-        /// All of the files composing the app are copied to the /app path, then it is set as the working directory.
-        /// </summary>
-        private const string DockerfileDefaultContent =
-            "FROM b.gcr.io/aspnet-docker/aspnet:1.0.3\n" +
-            "COPY . /app\n" +
-            "WORKDIR /app\n" +
-            "EXPOSE 8080\n" +
-            "ENV ASPNETCORE_URLS=http://*:8080\n" +
-            "ENTRYPOINT [\"dotnet\", \"{0}.dll\"]\n";
-
         private const string DefaultServiceName = "default";
-
-        private static readonly Lazy<string> s_dotnetPath = new Lazy<string>(GetDotnetPath);
 
         /// <summary>
         /// The options for the deployment operation.
@@ -73,7 +54,7 @@ namespace GoogleCloudExtension.Deployment
             /// <summary>
             /// The context on which to execute the underlying gcloud command.
             /// </summary>
-            public Context Context { get; set; }
+            public GCloudContext Context { get; set; }
         }
 
         /// <summary>
@@ -83,8 +64,7 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="options">The <seealso cref="DeploymentOptions"/> to use.</param>
         /// <param name="progress">The progress indicator.</param>
         /// <param name="outputAction">The action to call with lines from the command output.</param>
-        /// <returns></returns>
-        public static async Task<NetCorePublishResult> PublishProjectAsync(
+        public static async Task<AppEngineFlexDeploymentResult> PublishProjectAsync(
             string projectPath,
             DeploymentOptions options,
             IProgress<double> progress,
@@ -100,11 +80,11 @@ namespace GoogleCloudExtension.Deployment
             Directory.CreateDirectory(stageDirectory);
             progress.Report(0.1);
 
-            using (var cleanup = new Disposable(() => Cleanup(stageDirectory)))
+            using (var cleanup = new Disposable(() => CommonUtils.Cleanup(stageDirectory)))
             {
                 // Wait for the bundle creation operation to finish, updating progress as it goes.
                 if (!await ProgressHelper.UpdateProgress(
-                        CreateAppBundleAsync(projectPath, stageDirectory, outputAction),
+                        NetCoreAppUtils.CreateAppBundleAsync(projectPath, stageDirectory, outputAction),
                         progress,
                         from: 0.1, to: 0.3))
                 {
@@ -112,7 +92,7 @@ namespace GoogleCloudExtension.Deployment
                     return null;
                 }
 
-                CopyOrCreateDockerfile(projectPath, stageDirectory);
+                NetCoreAppUtils.CopyOrCreateDockerfile(projectPath, stageDirectory);
                 CopyOrCreateAppYaml(projectPath, stageDirectory);
                 progress.Report(0.4);
 
@@ -133,26 +113,11 @@ namespace GoogleCloudExtension.Deployment
                 progress.Report(1.0);
 
                 var service = GetAppEngineService(projectPath);
-                return new NetCorePublishResult(
+                return new AppEngineFlexDeploymentResult(
                     projectId: options.Context.ProjectId,
                     service: service,
                     version: effectiveVersion,
                     promoted: options.Promote);
-            }
-        }
-
-        private static void Cleanup(string stageDirectory)
-        {
-            try
-            {
-                if (Directory.Exists(stageDirectory))
-                {
-                    Directory.Delete(stageDirectory, recursive: true);
-                }
-            }
-            catch (IOException ex)
-            {
-                Debug.WriteLine($"Failed to cleanup: {ex.Message}");
             }
         }
 
@@ -180,22 +145,6 @@ namespace GoogleCloudExtension.Deployment
                 now.Hour, now.Minute, now.Second);
         }
 
-        private static Task<bool> CreateAppBundleAsync(string projectPath, string stageDirectory, Action<string> outputAction)
-        {
-            var arguments = $"publish \"{projectPath}\" " +
-                $"-o \"{stageDirectory}\" " +
-                "-c Release";
-            var externalTools = GetExternalToolsPath();
-            var env = new Dictionary<string, string>
-            {
-                { "PATH", $"{Environment.GetEnvironmentVariable("PATH")};{externalTools}" },
-            };
-
-            Debug.WriteLine($"Using tools from {externalTools}");
-            outputAction($"dotnet {arguments}");
-            return ProcessUtils.RunCommandAsync(s_dotnetPath.Value, arguments, (o, e) => outputAction(e.Line), env);
-        }
-
         private static void CopyOrCreateAppYaml(string projectPath, string stageDirectory)
         {
             var sourceDir = Path.GetDirectoryName(projectPath);
@@ -212,28 +161,11 @@ namespace GoogleCloudExtension.Deployment
             }
         }
 
-        private static void CopyOrCreateDockerfile(string projectPath, string stageDirectory)
-        {
-            var sourceDir = Path.GetDirectoryName(projectPath);
-            var sourceDockerfile = Path.Combine(sourceDir, DockerfileName);
-            var targetDockerfile = Path.Combine(stageDirectory, DockerfileName);
-
-            if (File.Exists(sourceDockerfile))
-            {
-                File.Copy(sourceDockerfile, targetDockerfile, overwrite: true);
-            }
-            else
-            {
-                var content = String.Format(DockerfileDefaultContent, GetProjectName(projectPath));
-                File.WriteAllText(targetDockerfile, content);
-            }
-        }
-
         private static Task<bool> DeployAppBundleAsync(
             string stageDirectory,
             string version,
             bool promote,
-            Context context,
+            GCloudContext context,
             Action<string> outputAction)
         {
             var appYamlPath = Path.Combine(stageDirectory, AppYamlName);
@@ -243,24 +175,6 @@ namespace GoogleCloudExtension.Deployment
                 promote: promote,
                 outputAction: outputAction,
                 context: context);
-        }
-
-        private static string GetDotnetPath()
-        {
-            var programFilesPath = Environment.ExpandEnvironmentVariables("%ProgramW6432%");
-            return Path.Combine(programFilesPath, @"dotnet\dotnet.exe");
-        }
-
-        private static string GetProjectName(string projectPath)
-        {
-            var directory = Path.GetDirectoryName(projectPath);
-            return Path.GetFileName(directory);
-        }
-
-        private static string GetExternalToolsPath()
-        {
-            var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
-            return Path.Combine(programFilesPath, @"Microsoft Visual Studio 14.0\Web\External");
         }
     }
 }
