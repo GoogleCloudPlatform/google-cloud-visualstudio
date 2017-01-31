@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.Utils;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -36,7 +37,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             PackageUtils.ReferenceType(typeof(VisibilityConverter));
             this.InitializeComponent();
         }
- 
+
         /// <summary>
         /// Response to data grid scroll change event.
         /// Auto load more logs when it scrolls down to bottom.
@@ -45,15 +46,30 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             var grid = sender as DataGrid;
             ScrollViewer sv = e.OriginalSource as ScrollViewer;
-            if (sv == null)
+            if (sv == null || sv.IsMouseOver == false)
             {
                 return;
             }
 
-            if (e.VerticalOffset == sv.ScrollableHeight)
+            if (e.VerticalOffset > 0 && e.VerticalOffset == sv.ScrollableHeight)
             {
-                Debug.WriteLine("Now it is at bottom");
-                ViewModel?.LoadNextPage();
+                Debug.WriteLine($"Now it is at bottom. {sv.VerticalOffset}, {sv.ScrollableHeight}");
+                AutoReload(sv);
+            }
+        }
+
+        /// <summary>
+        /// There are cases that reloading new items automatically trigger ScrollChanged event.
+        /// Then it might ends up into a deadloop.
+        /// This method forces to scroll back 1 pixel to prevent such a deadloop.
+        /// </summary>
+        private async Task AutoReload(ScrollViewer sv)
+        {
+            await ViewModel?.LoadNextPage();
+            Debug.WriteLine($"Now it is at bottom. {sv.VerticalOffset}, {sv.ScrollableHeight}");
+            if (sv.ScrollableHeight > 0 && sv.VerticalOffset >= sv.ScrollableHeight)
+            {
+                sv.ScrollToVerticalOffset(sv.ScrollableHeight - 1);
             }
         }
 
