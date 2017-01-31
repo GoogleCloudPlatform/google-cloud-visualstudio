@@ -178,9 +178,8 @@
                             VerticalAlignment="Center">
 
                     <controls:FixBackgroundComboBox 
-                        x:Name="comboResource" 
                         Margin="0,0,6,0"
-                        Width="160" 
+                        Width="200" 
                         Style="{StaticResource CommonDocumentComboBoxStyle}"
                         ItemsSource="{Binding ResourceDescriptors}"
                         SelectedItem="{Binding SelectedResource, Mode=TwoWay}"
@@ -188,7 +187,7 @@
                         IsSynchronizedWithCurrentItem="true" />
 
                     <controls:FixBackgroundComboBox 
-                        x:Name="comboSeverity" 
+                        Margin="0,0,6,0"
                         Width="160" 
                         Style="{StaticResource CommonDocumentComboBoxStyle}"
                         DataContext="{Binding LogIdList}"
@@ -196,9 +195,9 @@
                         SelectedItem="{Binding SelectedLogId}" 
                         IsSynchronizedWithCurrentItem="true" />
                     
-                    <controls:CustomComboBox 
+                    <controls:FixBackgroundComboBox 
                         Margin="0,0,6,0"
-                        Width="160"
+                        Width="120"
                         Style="{StaticResource CommonDocumentComboBoxStyle}"
                         ItemsSource="{Binding LogSeverityList}"
                         SelectedItem="{Binding SelectedLogSeverity}"

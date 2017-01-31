@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
@@ -40,12 +39,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public LogsViewerToolWindow() : base(null)
         {
-            // disposable does nothing.
-            // This is a hack to force load GoogleCloudExtension.Utils
-            using (var disposable = new Disposable())   
-            {
-                Caption = Resources.LogViewerToolWindowCaption;
-            }
+            Caption = Resources.LogViewerToolWindowCaption;
 
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
