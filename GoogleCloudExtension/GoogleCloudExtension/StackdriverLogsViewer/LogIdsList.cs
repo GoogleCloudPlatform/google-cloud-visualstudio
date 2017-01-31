@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -59,9 +59,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             get { return _selectedLogIDShortName; }
             set
             {
-                if (_selectedLogIDShortName != null && _selectedLogIDShortName != value)
+                var oldValue = _selectedLogIDShortName;
+                SetValueAndRaise(ref _selectedLogIDShortName, value);
+                if (value != null && oldValue != value)
                 {
-                    _selectedLogIDShortName = value;
                     _onSelectionChangeCallback();
                 }
             }
@@ -72,8 +73,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public LogIdsList(IList<string> logIds, Action callbackOnSelectionChange)
         {
-            _onSelectionChangeCallback = callbackOnSelectionChange;
             LogIDs = new List<string>();
+            _onSelectionChangeCallback = callbackOnSelectionChange;
             foreach (var id in logIds)
             {
                 AddLogId(id);
@@ -84,7 +85,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// Transform log id to short name as selection item. 
+        /// Create log id short name as shown in selection items. 
         /// </summary>
         /// <param name="logId"></param>
         private void AddLogId(string logId)

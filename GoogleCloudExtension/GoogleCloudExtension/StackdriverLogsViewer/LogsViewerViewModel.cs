@@ -686,7 +686,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
             }
 
-            Debug.Assert(LogIdList != null, "Code bug. LogIDList should not be null.");
             if (LogIdList.SelectedLogIdFullName != null)
             {
                 filter.AppendLine($"logName=\"{LogIdList.SelectedLogIdFullName}\"");
