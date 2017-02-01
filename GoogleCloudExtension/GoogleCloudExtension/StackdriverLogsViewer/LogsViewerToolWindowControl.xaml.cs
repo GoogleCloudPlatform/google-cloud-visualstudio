@@ -46,27 +46,27 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             var grid = sender as DataGrid;
             ScrollViewer sv = e.OriginalSource as ScrollViewer;
-            if (sv == null || sv.IsMouseOver == false)
+            if (ViewModel == null || sv == null || !sv.IsMouseOver)
             {
                 return;
             }
 
             if (e.VerticalOffset > 0 && e.VerticalOffset == sv.ScrollableHeight)
             {
-                Debug.WriteLine($"Now it is at bottom. {sv.VerticalOffset}, {sv.ScrollableHeight}");
+                Debug.WriteLine($"Now scrollbar is at bottom. {sv.VerticalOffset}, {sv.ScrollableHeight}");
                 AutoReload(sv);
             }
         }
 
         /// <summary>
         /// There are cases that reloading new items automatically trigger ScrollChanged event.
-        /// Then it might ends up into a deadloop.
-        /// This method forces to scroll back 1 pixel to prevent such a deadloop.
+        /// Then it might end up into a infinite loop.
+        /// This method forces to scroll back 1 pixel to prevent such a infinite loop.
         /// </summary>
         private async Task AutoReload(ScrollViewer sv)
         {
-            await ViewModel?.LoadNextPage();
-            Debug.WriteLine($"Now it is at bottom. {sv.VerticalOffset}, {sv.ScrollableHeight}");
+            await ViewModel.LoadNextPage();
+            Debug.WriteLine($"After LoadNextPage. {sv.VerticalOffset}, {sv.ScrollableHeight}");
             if (sv.ScrollableHeight > 0 && sv.VerticalOffset >= sv.ScrollableHeight)
             {
                 sv.ScrollToVerticalOffset(sv.ScrollableHeight - 1);
