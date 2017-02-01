@@ -1096,6 +1096,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Browse Stackdriver Logs.
+        /// </summary>
+        public static string CloudExplorerLaunchLogsViewerMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerLaunchLogsViewerMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Firewall options....
         /// </summary>
         public static string CloudExplorerGceManageFirewallPortsMenuHeader {
