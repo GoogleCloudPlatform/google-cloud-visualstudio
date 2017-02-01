@@ -27,8 +27,6 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Shows the tool window
         /// </summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event args.</param>
         /// <returns>The tool window object if it is found.</returns>
         public static TToolWindow ShowToolWindow<TToolWindow>() where TToolWindow : ToolWindowPane
         {

@@ -18,13 +18,16 @@ using System.Text;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
-    internal static class AdvancedFilterHelper
+    /// <summary>
+    /// Extensions/helper functions for applying advanced filters to Stackdriver Logs Viewer.
+    /// </summary>
+    internal static class AdvancedFilterExtension
     {
         private const string GCEInstanceResourceType = "gce_instance";
         private const string GAEAppResourceType = "gae_app";
 
         /// <summary>
-        /// Show logs that only contains the GCP VM Instance id label,
+        /// Show logs that only contain the GCE VM Instance id label,
         /// that is under resource type of gce_instance
         /// </summary>
         /// <param name="window">A <seealso cref="LogsViewerToolWindow"/> object. </param>
@@ -44,13 +47,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// Show logs that only contains the GAE service lable,
+        /// Show logs that only contain the GAE service id label,
         /// that is under resource type of gae_app.        
         /// </summary>
         /// <param name="window">A <seealso cref="LogsViewerToolWindow"/> object. </param>
-        /// <param name="serviceId">GAE service id</param>
-        /// <param name="version">GAE service version</param>
-        public static void FilterGceServiceLog(this LogsViewerToolWindow window, string serviceId, string version=null)
+        /// <param name="serviceId">GAE service id. Expect non null value input.</param>
+        /// <param name="version">
+        /// GAE service version. Null is valid input, that it will then return logs of all versions.
+        /// </param>
+        public static void FilterGAEServiceLog(this LogsViewerToolWindow window, string serviceId, string version = null)
         {
             if (window?.ViewModel == null || String.IsNullOrWhiteSpace(serviceId))
             {
