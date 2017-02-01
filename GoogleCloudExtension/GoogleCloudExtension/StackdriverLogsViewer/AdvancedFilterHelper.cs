@@ -34,6 +34,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (window?.ViewModel == null || String.IsNullOrWhiteSpace(instanceId))
             {
                 Debug.WriteLine("Invalid input at FilterVMInstanceLog");
+                return;
             }
 
             StringBuilder filter = new StringBuilder();
@@ -54,6 +55,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (window?.ViewModel == null || String.IsNullOrWhiteSpace(serviceId))
             {
                 Debug.WriteLine("Invalid input at FilterVMInstanceLog");
+                return;
             }
 
             StringBuilder filter = new StringBuilder();
