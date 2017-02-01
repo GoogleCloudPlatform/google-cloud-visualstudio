@@ -23,7 +23,7 @@ namespace GoogleCloudExtension.Utils
         #region Double click command.
 
         /// <summary>
-        /// This attached property transforms the <seealso cref="DataGrid.MouseDoubleClick" /> event into a
+        /// This attached property transforms the <seealso cref="Control.MouseDoubleClick" /> event into a
         /// <see cref="ICommand"/> invokation. This makes it possible to implement the necessary code in the view model.
         /// </summary>
         public static readonly DependencyProperty DoubleClickCommandProperty =

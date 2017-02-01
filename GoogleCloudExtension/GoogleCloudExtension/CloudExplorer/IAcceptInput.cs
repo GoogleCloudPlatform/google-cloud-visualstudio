@@ -14,8 +14,15 @@
 
 namespace GoogleCloudExtension.CloudExplorer
 {
+    /// <summary>
+    /// This interface is to be implemented by the <seealso cref="CloudExplorer"/> items that
+    /// accept user input.
+    /// </summary>
     public interface IAcceptInput
     {
+        /// <summary>
+        /// Called when the user double clicks in the item.
+        /// </summary>
         void OnDoubleClick();
     }
 }

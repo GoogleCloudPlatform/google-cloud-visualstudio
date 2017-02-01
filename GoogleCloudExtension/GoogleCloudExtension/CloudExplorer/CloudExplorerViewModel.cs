@@ -154,24 +154,36 @@ namespace GoogleCloudExtension.CloudExplorer
             }
         }
 
+        /// <summary>
+        /// Message to show when there's no data to show in the cloud explorer.
+        /// </summary>
         public string EmptyStateMessage
         {
             get { return _emptyStateMessage; }
             set { SetValueAndRaise(ref _emptyStateMessage, value); }
         }
 
+        /// <summary>
+        /// Caption for the empty state button.
+        /// </summary>
         public string EmptyStateButtonCaption
         {
             get { return _emptyStateButtonCaption; }
             set { SetValueAndRaise(ref _emptyStateButtonCaption, value); }
         }
 
+        /// <summary>
+        /// Command to execute when the user clicks on the emtpy state button.
+        /// </summary>
         public ICommand EmptyStateCommand
         {
             get { return _emptyStateCommand; }
             set { SetValueAndRaise(ref _emptyStateCommand, value); }
         }
 
+        /// <summary>
+        /// The command to execute when a user double clicks on an item.
+        /// </summary>
         public ICommand DoubleClickCommand { get; }
 
         #region ICloudSourceContext implementation.
