@@ -1567,4 +1567,8 @@
     <value>All logs</value>
     <comment>The log name (log id) selection label for select all logs.</comment>
   </data>
+  <data name="CloudExplorerLaunchLogsViewerMenuHeader" xml:space="preserve">
+    <value>Browse Stackdriver Logs</value>
+    <comment>Header for browsing Stackdriver Log context menu</comment>
+  </data>
 </root>

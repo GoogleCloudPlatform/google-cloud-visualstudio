@@ -343,6 +343,29 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             LogLoaddingWrapperAsync(async (cancelToken) => await LoadLogsAsync(cancelToken));
         }
 
+        /// <summary>
+        /// Send an advanced filter to Logs Viewer and display the results.
+        /// </summary>
+        /// <param name="advancedSearchText">The advance filter in text format.</param>
+        public void FilterLog(string advancedSearchText)
+        {
+            if (String.IsNullOrWhiteSpace(advancedSearchText))
+            {
+                return;
+            }
+
+            ShowAdvancedFilter = true;
+            StringBuilder filter = new StringBuilder();
+            filter.AppendLine(advancedSearchText);
+            if (!advancedSearchText.ToLowerInvariant().Contains("timestamp"))
+            {
+                filter.AppendLine($"timestamp<=\"{DateTime.UtcNow.AddDays(1).ToString("O")}\"");
+            }
+
+            AdvancedFilterText = filter.ToString();
+            Reload();
+        }
+
         private void OnRefreshCommand()
         {
             DateTimePickerModel.IsDescendingOrder = true;
