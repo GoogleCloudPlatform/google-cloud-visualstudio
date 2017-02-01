@@ -333,14 +333,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Send request to get logs following prior requests.
         /// </summary>
-        public async Task LoadNextPage()
+        public void LoadNextPage()
         {
             if (String.IsNullOrWhiteSpace(_nextPageToken) || String.IsNullOrWhiteSpace(Project))
             {
                 return;
             }
 
-            await LogLoaddingWrapperAsync(async (cancelToken) => await LoadLogsAsync(cancelToken));
+            LogLoaddingWrapperAsync(async (cancelToken) => await LoadLogsAsync(cancelToken));
         }
 
         private void OnRefreshCommand()
