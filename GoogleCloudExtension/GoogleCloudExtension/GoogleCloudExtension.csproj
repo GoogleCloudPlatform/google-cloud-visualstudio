@@ -232,7 +232,7 @@
       <DependentUpon>SplitTrafficWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\FixBackgroundComboBox.cs" />
-    <Compile Include="StackdriverLogsViewer\AdvancedFilterHelper.cs" />
+    <Compile Include="StackdriverLogsViewer\AdvancedFilterExtension.cs" />
     <Compile Include="StackdriverLogsViewer\DateTimePicker.xaml.cs">
       <DependentUpon>DateTimePicker.xaml</DependentUpon>
     </Compile>
