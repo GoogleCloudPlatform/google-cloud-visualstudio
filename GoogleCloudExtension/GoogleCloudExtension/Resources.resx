@@ -1571,40 +1571,4 @@
     <value>Browse Stackdriver Logs</value>
     <comment>Header for browsing Stackdriver Log context menu</comment>
   </data>
-  <data name="LogViewerTimeOrderPickAsceSelection" xml:space="preserve">
-    <value>after</value>
-    <comment>The selection item that indicates to list logs after the time stamp.</comment>
-  </data>
-  <data name="LogViewerTimeOrderPickDescSelection" xml:space="preserve">
-    <value>before</value>
-    <comment>The selection item that indicates to list logs before the time stamp.</comment>
-  </data>
-  <data name="LogViewerTimeOrderPickLabelHead" xml:space="preserve">
-    <value>Get log</value>
-    <comment>Head part of the label for picking the list log time order.</comment>
-  </data>
-  <data name="LogViewerTimeOrderPickLabelTail" xml:space="preserve">
-    <value>this time stamp.</value>
-    <comment>Tail part of the label for picking the list log time order.</comment>
-  </data>
-  <data name="UiGoButtonCaption" xml:space="preserve">
-    <value>Go</value>
-    <comment>Caption for Go buttons.</comment>
-  </data>
-  <data name="LogViewerDateTimePickerLabel" xml:space="preserve">
-    <value>Jump To Time</value>
-    <comment>The label for the date time picker control.</comment>
-  </data>
-  <data name="UiDateLabel" xml:space="preserve">
-    <value>Date</value>
-    <comment>Label to a text box that shows date.</comment>
-  </data>
-  <data name="UiTimeLabel" xml:space="preserve">
-    <value>Time</value>
-    <comment>Label to the time input control</comment>
-  </data>
-  <data name="LogViewerLogIdSelectAllLabel" xml:space="preserve">
-    <value>All logs</value>
-    <comment>The log name (log id) selection label for select all logs.</comment>
-  </data>
 </root>

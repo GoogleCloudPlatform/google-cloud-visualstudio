@@ -1096,15 +1096,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Browse Stackdriver Logs.
-        /// </summary>
-        public static string CloudExplorerLaunchLogsViewerMenuHeader {
-            get {
-                return ResourceManager.GetString("CloudExplorerLaunchLogsViewerMenuHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Firewall options....
         /// </summary>
         public static string CloudExplorerGceManageFirewallPortsMenuHeader {
@@ -1587,6 +1578,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGcsSourceApiDisabledMessage {
             get {
                 return ResourceManager.GetString("CloudExplorerGcsSourceApiDisabledMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse Stackdriver Logs.
+        /// </summary>
+        public static string CloudExplorerLaunchLogsViewerMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerLaunchLogsViewerMenuHeader", resourceCulture);
             }
         }
         
@@ -2147,24 +2147,22 @@ namespace GoogleCloudExtension {
                 return ResourceManager.GetString("LogViewerCollapseAllTip", resourceCulture);
             }
         }
-
-        /// <summary>
-        ///   Looks up a localized string similar to Jump To Time.
-        ///  </summary>
-        public static string LogViewerDateTimePickerLabel
-        {
-            get
-            {
-                return ResourceManager.GetString("LogViewerDateTimePickerLabel", resourceCulture);
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Error displaying the entry. .
         /// </summary>
         public static string LogViewerDataConversionGenericError {
             get {
                 return ResourceManager.GetString("LogViewerDataConversionGenericError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jump To Time.
+        /// </summary>
+        public static string LogViewerDateTimePickerLabel {
+            get {
+                return ResourceManager.GetString("LogViewerDateTimePickerLabel", resourceCulture);
             }
         }
         
@@ -2392,9 +2390,9 @@ namespace GoogleCloudExtension {
                 return ResourceManager.GetString("LogViewerTimeOrderPickLabelTail", resourceCulture);
             }
         }
-                
+        
         /// <summary>
-        ///  Looks up a localized string similar to Click to select different timezone..
+        ///   Looks up a localized string similar to Click to select different timezone..
         /// </summary>
         public static string LogViewerTimeZoneSelectionToolTip {
             get {
