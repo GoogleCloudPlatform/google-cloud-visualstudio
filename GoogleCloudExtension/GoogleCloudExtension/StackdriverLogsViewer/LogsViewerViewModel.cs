@@ -41,14 +41,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// The default resource types to show. 
         /// Order matters, if a resource type in the list does not have logs, fall back to the next one. 
         /// </summary>
-        private static readonly string[] s_defaultResourceSelections = 
+        private static readonly string[] s_defaultResourceSelections =
             new string[] {
                 "gce_instance",
                 "gae_app",
                 "global"
             };
 
-        private static readonly LogSeverityItem[] s_logSeveritySelections = 
+        private static readonly LogSeverityItem[] s_logSeveritySelections =
             new LogSeverityItem[] {
                 new LogSeverityItem(LogSeverity.Debug, Resources.LogViewerLogLevelDebugLabel),
                 new LogSeverityItem(LogSeverity.Info, Resources.LogViewerLogLevelInfoLabel),
@@ -91,6 +91,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
 
         /// <summary>
+        /// Controls if a source file link column is displayed in data grid.
+        /// </summary>
+        public bool ShowSourceLink
+        {
+            get { return _showSourceLocationLink; }
+            set { SetValueAndRaise(ref _showSourceLocationLink, value); }
+        }
+
+        /// <summary>
         /// Gets the LogIdList for log id selector binding source.
         /// </summary>
         public LogIdsList LogIdList
@@ -99,17 +108,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             private set { SetValueAndRaise(ref _logIdList, value); }
         }
 
-        /// <summary>
-        /// Gets the DateTimePicker view model object.
-        /// </summary>
-        public DateTimePickerViewModel DateTimePickerModel { get; }
-
-        /// <summary>
-            private set { SetValueAndRaise(ref _logIdList, value); }
-        }
-
-
-        /// <summary>
         /// <summary>
         /// Gets the DateTimePicker view model object.
         /// </summary>
@@ -206,7 +204,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             get { return _selectedTimeZone; }
             set { SetValueAndRaise(ref _selectedTimeZone, value); }
-                    DateTimePickerModel.ChangeTimeZone(_selectedTimeZone);
         }
 
         /// <summary>
@@ -356,27 +353,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             LogLoaddingWrapperAsync(async (cancelToken) => await LoadLogsAsync(cancelToken));
         }
 
-        public void FilterLog(string advancedSearchText)
-        {
-            ShowAdvancedFilter = true;
-            StringBuilder filter = new StringBuilder();
-            filter.AppendLine(advancedSearchText);
-            if (!advancedSearchText.ToLowerInvariant().Contains("timestamp"))
-            {
-                filter.AppendLine($"timestamp<=\"{DateTime.UtcNow.ToString("O")}\"");
-            }
-
-            AdvancedFilterText = filter.ToString();
-            Reload();
-        }
-
-        private void OnRefreshCommand()
-        {
-            DateTimePickerModel.IsDescendingOrder = true;
-            DateTimePickerModel.DateTimeUtc = DateTime.UtcNow;
-            Reload();
-        }
-
         /// <summary>
         /// Send an advanced filter to Logs Viewer and display the results.
         /// </summary>
@@ -519,21 +495,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 Debug.WriteLine($"LoadLogs, count={count}, firstPage={_nextPageToken == null}");
 
-                LogEntryRequestResult results = null;
-                ShowRequestStatus = true;
-                try
-                {
-                    // Here, it does not do pageSize: _defaultPageSize - count, 
-                    // Because this is requried to use same page size for getting next page. 
+                // Here, it does not do pageSize: _defaultPageSize - count, 
+                // Because this is requried to use same page size for getting next page. 
                 var results = await _dataSource.Value.ListLogEntriesAsync(_filter, order,
-                        pageSize: DefaultPageSize, nextPageToken: _nextPageToken, cancelToken: cancellationToken);
-                }
-                finally
-                {
-                    // AddLogs hangs the UI for up to several seconds. Hide the status bar.
-                    ShowRequestStatus = false;
-                }
-
+                    pageSize: DefaultPageSize, nextPageToken: _nextPageToken, cancelToken: cancellationToken);
                 AddLogs(results?.LogEntries);
                 _nextPageToken = results.NextPageToken;
                 if (results?.LogEntries != null)
@@ -600,7 +565,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 return null;
             }
-        }   
+        }
 
         private void ShowAdvancedFilterHelp()
         {
@@ -716,13 +681,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             else if (e.PropertyName == nameof(SelectedTimeZone))
             {
                 OnTimeZoneChanged();
-            }            
+            }
+        }
 
         private void OnTimeZoneChanged()
-        /// This method uses similar logic as populating resource descriptors.
-        /// Refers to <seealso cref="PopulateResourceTypes"/>.
-        /// </summary>
-        private async Task PopulateLogIds()
         {
             foreach (var log in _logs)
             {
@@ -765,7 +727,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             if (LogIdList.SelectedLogIdFullName != null)
             {
-                filter.AppendLine($"logName=\"{LogIdList.SelectedLogIdFullName}\"");
                 filter.AppendLine($"logName=\"{LogIdList.SelectedLogIdFullName}\"");
             }
 

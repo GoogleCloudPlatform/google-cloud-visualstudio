@@ -133,7 +133,5 @@ namespace GoogleCloudExtension.Utils
         /// Empty string is valid so it returns true.
         /// </summary>
         public static bool IsDigitsOnly(string text) => text == null ? false : text.All(char.IsDigit);
-            return text == null ? false: text.All(char.IsDigit);
-        }
     }
 }

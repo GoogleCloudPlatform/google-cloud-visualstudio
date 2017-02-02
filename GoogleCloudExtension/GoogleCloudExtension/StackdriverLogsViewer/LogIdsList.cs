@@ -62,11 +62,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Instantialize a new instance of <seealso cref="LogIdsList"/> class.
         /// </summary>
-        }
-
-        /// <summary>
-        /// Instantialize a new instance of <seealso cref="LogIdsList"/> class.
-        /// </summary>
         public LogIdsList(IList<string> logIds)
         {
             LogIDs = new List<string>();

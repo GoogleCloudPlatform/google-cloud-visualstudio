@@ -100,8 +100,6 @@
                             <controls:FixBackgroundComboBox.ToolTip>
                                 <ToolTip Content="{x:Static ext:Resources.LogViewerTimeZoneSelectionToolTip}"
                                      Style="{StaticResource CommonTooltipStyle}" />
-                                <ToolTip Content="{x:Static ext:Resources.LogViewerTimeZoneSelectionToolTip}"
-                                     Style="{StaticResource CommonTooltipStyle}" />
                             </controls:FixBackgroundComboBox.ToolTip>
                         </controls:FixBackgroundComboBox>
                     </StackPanel>
@@ -231,21 +229,13 @@
                         IsSynchronizedWithCurrentItem="true" />
 
                     <controls:FixBackgroundComboBox 
-                        Width="160" 
-                        Style="{StaticResource CommonDocumentComboBoxStyle}"
-                        DataContext="{Binding LogIdList}"
-                        ItemsSource="{Binding LogIDs}"
-                        SelectedItem="{Binding SelectedLogId}" 
-                        IsSynchronizedWithCurrentItem="true" />
-                    
-                    <controls:CustomComboBox 
                         Margin="0,0,6,0"
                         Width="160" 
                         Style="{StaticResource CommonDocumentComboBoxStyle}"
                         ItemsSource="{Binding LogIdList.LogIDs}"
                         SelectedItem="{Binding LogIdList.SelectedLogId}" 
                         IsSynchronizedWithCurrentItem="true" />
-                    
+
                     <controls:FixBackgroundComboBox 
                         Margin="0,0,6,0"
                         Width="120"
@@ -254,11 +244,11 @@
                         SelectedItem="{Binding SelectedLogSeverity}"
                         DisplayMemberPath="DisplayName" 
                         IsSynchronizedWithCurrentItem="true" />
-                    
+
                     <local:DateTimePicker
                         Margin="0,0,6,0"
                         DataContext="{Binding DateTimePickerModel}" />
-                                        
+
                     <controls:IconButton
                         Grid.Column="1" 
                         Margin="6,0,16,0"

@@ -2169,15 +2169,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Jump To Time.
-        /// </summary>
-        public static string LogViewerDateTimePickerLabel {
-            get {
-                return ResourceManager.GetString("LogViewerDateTimePickerLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to [{0}].
         /// </summary>
         public static string LogViewerDetailTreeViewArrayIndexFormat {
@@ -3299,15 +3290,6 @@ namespace GoogleCloudExtension {
         public static string UiStopButtonCaption {
             get {
                 return ResourceManager.GetString("UiStopButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Time.
-        /// </summary>
-        public static string UiTimeLabel {
-            get {
-                return ResourceManager.GetString("UiTimeLabel", resourceCulture);
             }
         }
         
