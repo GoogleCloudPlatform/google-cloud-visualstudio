@@ -21,6 +21,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace GoogleCloudExtension.Accounts
 {
@@ -40,6 +41,7 @@ namespace GoogleCloudExtension.Accounts
 
         private static readonly Lazy<WindowsCredentialsStore> s_defaultStore = new Lazy<WindowsCredentialsStore>();
         private static readonly string s_credentialsStoreRoot = GetCredentialsStoreRoot();
+        private static Regex s_invalidNameCharPattern = new Regex("[;:\\?\\\\]");
 
         /// <summary>
         /// In memory cache of the credentials for the current credentials (account and project pair).
@@ -154,7 +156,12 @@ namespace GoogleCloudExtension.Accounts
         private static string GetInstancePath(Instance instance)
         {
             var credentials = CredentialsStore.Default;
-            return $@"{credentials.CurrentProjectId}\{instance.GetZoneName()}\{instance.Name}";
+            return $@"{GetValidName(credentials.CurrentProjectId)}\{GetValidName(instance.GetZoneName())}\{GetValidName(instance.Name)}";
+        }
+
+        private static string GetValidName(string name)
+        {
+            return s_invalidNameCharPattern.Replace(name, "_");
         }
 
         private static string GetFileName(WindowsInstanceCredentials credentials) => $"{credentials.User}{PasswordFileExtension}";
