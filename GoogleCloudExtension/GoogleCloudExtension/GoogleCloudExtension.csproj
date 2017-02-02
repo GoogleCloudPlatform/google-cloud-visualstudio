@@ -152,6 +152,7 @@
     <Compile Include="Controls\ProgressIndicator.xaml.cs">
       <DependentUpon>ProgressIndicator.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TimeBox.cs" />
     <Compile Include="FirewallManagement\PortInfo.cs" />
     <Compile Include="FirewallManagement\PortManagerViewModel.cs" />
     <Compile Include="FirewallManagement\PortManagerWindow.cs" />
@@ -198,6 +199,10 @@
     <Compile Include="PublishDialogSteps\GceStep\GceStepContent.xaml.cs">
       <DependentUpon>GceStepContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PublishDialogSteps\GkeStep\GkeStepContent.xaml.cs">
+      <DependentUpon>GkeStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialogSteps\GkeStep\GkeStepViewModel.cs" />
     <Compile Include="PublishDialog\IPublishDialog.cs" />
     <Compile Include="PublishDialog\IPublishDialogStep.cs" />
     <Compile Include="PublishDialog\PublishDialogStepBase.cs" />
@@ -232,13 +237,13 @@
     <Compile Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml.cs">
       <DependentUpon>SplitTrafficWindowContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Controls\CustomComboBox.cs" />
+    <Compile Include="Controls\FixBackgroundComboBox.cs" />
+    <Compile Include="StackdriverLogsViewer\AdvancedFilterExtension.cs" />
     <Compile Include="StackdriverLogsViewer\DateTimePicker.xaml.cs">
       <DependentUpon>DateTimePicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverLogsViewer\DateTimePickerViewModel.cs" />
-    <Compile Include="StackdriverLogsViewer\HighlightLogger.cs" />
-    <Compile Include="StackdriverLogsViewer\LoggerTooltip.xaml.cs">
+    <Compile Include="StackdriverLogsViewer\LogIdsList.cs" />
       <DependentUpon>LoggerTooltip.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverLogsViewer\LoggingTagger.cs" />
@@ -262,6 +267,7 @@
     <Compile Include="Theming\CommonImageResources.cs" />
     <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
+    <Compile Include="Utils\PackageUtils.cs" />
     <Compile Include="Utils\ProgressBarHelper.cs" />
     <Compile Include="Utils\ShellUtils.cs" />
     <Compile Include="Utils\StatusbarHelper.cs" />
@@ -278,6 +284,7 @@
     <Compile Include="Utils\ProtectedCommand.cs" />
     <Compile Include="Utils\ToolWindowUtils.cs" />
     <Compile Include="Utils\StringUtils.cs" />
+    <Compile Include="Utils\ToolWindowUtils.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserViewModel.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindow.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml.cs">
@@ -322,6 +329,7 @@
   <ItemGroup>
     <Resource Include="StackdriverLogsViewer\Resources\back_icon_12.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_any_12.png" />
+    <Resource Include="PublishDialogSteps\ChoiceStep\Resources\ContainerEngine_128px_Retina.png" />
     <Resource Include="StackdriverLogsViewer\Resources\search.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_debug_12.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_error_12.png" />
@@ -462,6 +470,10 @@
     </Reference>
     <Reference Include="Google.Apis.Compute.v1, Version=1.20.0.692, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Compute.v1.1.20.0.692\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Google.Apis.Container.v1, Version=1.20.0.662, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Container.v1.1.20.0.662\lib\net45\Google.Apis.Container.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Apis.Core, Version=1.20.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
@@ -612,8 +624,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
@@ -633,6 +645,10 @@
     <Page Include="CloudExplorer\CloudExplorerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TimeBoxResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\ProgressIndicator.xaml">
       <SubType>Designer</SubType>
@@ -671,6 +687,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PublishDialogSteps\GceStep\GceStepContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PublishDialogSteps\GkeStep\GkeStepContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

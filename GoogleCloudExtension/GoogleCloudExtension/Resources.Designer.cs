@@ -1096,6 +1096,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Browse Stackdriver Logs.
+        /// </summary>
+        public static string CloudExplorerLaunchLogsViewerMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerLaunchLogsViewerMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Firewall options....
         /// </summary>
         public static string CloudExplorerGceManageFirewallPortsMenuHeader {
@@ -1915,6 +1924,204 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Missing Google Cloud SDK Component.
+        /// </summary>
+        public static string GcloudMissingComponentTitle {
+            get {
+                return ResourceManager.GetString("GcloudMissingComponentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Clusters:.
+        /// </summary>
+        public static string GkePublishClusterMessage {
+            get {
+                return ResourceManager.GetString("GkePublishClusterMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploying {0} to Container Engine.
+        /// </summary>
+        public static string GkePublishDeployingToGkeMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeployingToGkeMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deployment {0} already exists, do you want to update it?.
+        /// </summary>
+        public static string GkePublishDeploymentAlreadyExistsMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentAlreadyExistsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update exising deployment.
+        /// </summary>
+        public static string GkePublishDeploymentAlreadyExistsTitle {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentAlreadyExistsTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to deploy {0} to Container Engine.
+        /// </summary>
+        public static string GkePublishDeploymentFailureMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentFailureMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Deployment name:.
+        /// </summary>
+        public static string GkePublishDeploymentNameMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentNameMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deployment {0} was scaled to {1} replicas..
+        /// </summary>
+        public static string GkePublishDeploymentScaledMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentScaledMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploying to Container Engine.
+        /// </summary>
+        public static string GkePublishDeploymentStatusMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentStatusMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project {0} deployed to Container Engine.
+        /// </summary>
+        public static string GkePublishDeploymentSuccessMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentSuccessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deployment {0} was updated..
+        /// </summary>
+        public static string GkePublishDeploymentUpdatedMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentUpdatedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deployment _version:.
+        /// </summary>
+        public static string GkePublishDeploymentVersionMessage {
+            get {
+                return ResourceManager.GetString("GkePublishDeploymentVersionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to E_xpose the service to the public internet.
+        /// </summary>
+        public static string GkePublishExposeServiceCaption {
+            get {
+                return ResourceManager.GetString("GkePublishExposeServiceCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid value for replicas, must be a number..
+        /// </summary>
+        public static string GkePublishInvalidReplicasMessage {
+            get {
+                return ResourceManager.GetString("GkePublishInvalidReplicasMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To use this feature you need to have the &quot;kubectl&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl.
+        /// </summary>
+        public static string GkePublishMissingKubectlMessage {
+            get {
+                return ResourceManager.GetString("GkePublishMissingKubectlMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create new cluster.
+        /// </summary>
+        public static string GkePublishNewClusterCaption {
+            get {
+                return ResourceManager.GetString("GkePublishNewClusterCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No clusters found....
+        /// </summary>
+        public static string GkePublishNoClustersPlaceholder {
+            get {
+                return ResourceManager.GetString("GkePublishNoClustersPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh clusters.
+        /// </summary>
+        public static string GkePublishRefreshClustersCaption {
+            get {
+                return ResourceManager.GetString("GkePublishRefreshClustersCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Replic_as:.
+        /// </summary>
+        public static string GkePublishReplicasCaption {
+            get {
+                return ResourceManager.GetString("GkePublishReplicasCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Service {0} ip address {1}.
+        /// </summary>
+        public static string GkePublishServiceIpMessage {
+            get {
+                return ResourceManager.GetString("GkePublishServiceIpMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time out waiting for service ip address..
+        /// </summary>
+        public static string GkePublishServiceIpTimeoutMessage {
+            get {
+                return ResourceManager.GetString("GkePublishServiceIpTimeoutMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Waiting for Service IP address....
+        /// </summary>
+        public static string GkePublishWaitingForServiceIpMessage {
+            get {
+                return ResourceManager.GetString("GkePublishWaitingForServiceIpMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Advanced filter help.
         /// </summary>
         public static string LogViewerAdvancedFilterHelpLinkCaption {
@@ -1958,6 +2165,15 @@ namespace GoogleCloudExtension {
         public static string LogViewerDataConversionGenericError {
             get {
                 return ResourceManager.GetString("LogViewerDataConversionGenericError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jump To Time.
+        /// </summary>
+        public static string LogViewerDateTimePickerLabel {
+            get {
+                return ResourceManager.GetString("LogViewerDateTimePickerLabel", resourceCulture);
             }
         }
         
@@ -2152,7 +2368,7 @@ namespace GoogleCloudExtension {
         
         /// <summary>
         ///   Looks up a localized string similar to after.
-		/// </summary>
+        /// </summary>
         public static string LogViewerTimeOrderPickAsceSelection {
             get {
                 return ResourceManager.GetString("LogViewerTimeOrderPickAsceSelection", resourceCulture);
@@ -2185,7 +2401,7 @@ namespace GoogleCloudExtension {
                 return ResourceManager.GetString("LogViewerTimeOrderPickLabelTail", resourceCulture);
             }
         }
-        
+                
         /// <summary>
         ///  Looks up a localized string similar to Click to select different timezone..
         /// </summary>
@@ -2547,6 +2763,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to C_ontainer Engine.
+        /// </summary>
+        public static string PublishDialogChoiceStepGkeName {
+            get {
+                return ResourceManager.GetString("PublishDialogChoiceStepGkeName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Deploy as a service to Container Engine.
+        /// </summary>
+        public static string PublishDialogChoiceStepGkeToolTip {
+            get {
+                return ResourceManager.GetString("PublishDialogChoiceStepGkeToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose a target:.
         /// </summary>
         public static string PublishDialogChoiceStepMessage {
@@ -2714,15 +2948,6 @@ namespace GoogleCloudExtension {
         public static string ResetPasswordGcloudMissingBetaMessage {
             get {
                 return ResourceManager.GetString("ResetPasswordGcloudMissingBetaMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Missing Google Cloud SDK Component.
-        /// </summary>
-        public static string ResetPasswordGcloudMissingComponentTitle {
-            get {
-                return ResourceManager.GetString("ResetPasswordGcloudMissingComponentTitle", resourceCulture);
             }
         }
         
@@ -2979,6 +3204,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid value.
+        /// </summary>
+        public static string UiInvalidValueTitle {
+            get {
+                return ResourceManager.GetString("UiInvalidValueTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _No.
         /// </summary>
         public static string UiNoButtonCaption {
@@ -3078,11 +3312,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Time.
+        /// </summary>
+        public static string UiTimeLabel {
+            get {
+                return ResourceManager.GetString("UiTimeLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Undo.
         /// </summary>
         public static string UiUndoButtonCaption {
             get {
                 return ResourceManager.GetString("UiUndoButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Update.
+        /// </summary>
+        public static string UiUpdateButtonCaption {
+            get {
+                return ResourceManager.GetString("UiUpdateButtonCaption", resourceCulture);
             }
         }
         

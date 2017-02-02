@@ -130,9 +130,9 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Check if input is digits only.
         /// return false if it is null.
+        /// Empty string is valid so it returns true.
         /// </summary>
-        public static bool IsDigitsOnly(string text)
-        {
+        public static bool IsDigitsOnly(string text) => text == null ? false : text.All(char.IsDigit);
             return text == null ? false: text.All(char.IsDigit);
         }
     }

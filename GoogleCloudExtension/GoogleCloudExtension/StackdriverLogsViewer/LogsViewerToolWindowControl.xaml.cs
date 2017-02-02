@@ -33,6 +33,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public LogsViewerToolWindowControl()
         {
+            PackageUtils.ReferenceType(typeof(VisibilityConverter));
             this.InitializeComponent();
         }
  
@@ -44,14 +45,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             var grid = sender as DataGrid;
             ScrollViewer sv = e.OriginalSource as ScrollViewer;
-            if (sv == null)
+            if (sv == null || !sv.IsMouseOver)
             {
                 return;
             }
 
-            if (e.VerticalOffset == sv.ScrollableHeight)
+            if (e.VerticalOffset > 0 && e.VerticalOffset == sv.ScrollableHeight)
             {
-                Debug.WriteLine("Now it is at bottom");
+                Debug.WriteLine($"Now scrollbar is at bottom. {sv.VerticalOffset}, {sv.ScrollableHeight}");
                 ViewModel?.LoadNextPage();
             }
         }

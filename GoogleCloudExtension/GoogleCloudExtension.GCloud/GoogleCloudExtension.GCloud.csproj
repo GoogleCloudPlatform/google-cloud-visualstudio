@@ -50,13 +50,22 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\GkeDeployment.cs" />
+    <Compile Include="KubectlContext.cs" />
+    <Compile Include="KubectlWrapper.cs" />
     <Compile Include="Models\CloudSdkComponent.cs" />
     <Compile Include="Models\CloudSdkComponentState.cs" />
     <Compile Include="GCloudException.cs" />
     <Compile Include="GCloudWrapper.cs" />
+    <Compile Include="Models\GkeLoadBalancer.cs" />
+    <Compile Include="Models\GkeMetadata.cs" />
+    <Compile Include="Models\GkeService.cs" />
+    <Compile Include="Models\GkeList.cs" />
+    <Compile Include="Models\GkeSpec.cs" />
+    <Compile Include="Models\GkeStatus.cs" />
     <Compile Include="WindowsInstanceCredentials.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Context.cs" />
+    <Compile Include="GCloudContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

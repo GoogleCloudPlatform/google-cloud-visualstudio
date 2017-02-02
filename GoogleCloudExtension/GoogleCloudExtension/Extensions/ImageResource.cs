@@ -46,7 +46,6 @@ namespace GoogleCloudExtension.Extensions
         /// only going to be loaded once.
         /// </summary>
         /// <param name="serviceProvider"></param>
-        /// <returns></returns>
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
             ImageSource result = null;

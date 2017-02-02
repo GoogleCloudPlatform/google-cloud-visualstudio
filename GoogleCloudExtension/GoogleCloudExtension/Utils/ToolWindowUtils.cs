@@ -27,9 +27,7 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Shows the tool window
         /// </summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event args.</param>
-        /// <returns>The tool window object if found.</returns>
+        /// <returns>The tool window object if it is found.</returns>
         public static TToolWindow ShowToolWindow<TToolWindow>() where TToolWindow : ToolWindowPane
         {
             if (GoogleCloudExtensionPackage.Instance == null)
@@ -44,7 +42,7 @@ namespace GoogleCloudExtension.Utils
             ToolWindowPane window = GoogleCloudExtensionPackage.Instance.FindToolWindow(typeof(TToolWindow), 0, true);
             if ((null == window) || (null == window.Frame))
             {
-                throw new NotSupportedException("Cannot create tool window");
+                throw new NotSupportedException("Failed to create the tool window");
             }
 
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;

@@ -36,6 +36,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     public class LogsViewerToolWindow : ToolWindowPane
     {
         /// <summary>
+        /// Gets a <seealso cref="LogsViewerViewModel"/> object that is associated with the Logs Viewer Window.
+        /// </summary>
+        public LogsViewerViewModel ViewModel => (Content as LogsViewerToolWindowControl)?.DataContext as LogsViewerViewModel;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="LogsViewerToolWindow"/> class.
         /// </summary>
         public LogsViewerToolWindow() : base(null)

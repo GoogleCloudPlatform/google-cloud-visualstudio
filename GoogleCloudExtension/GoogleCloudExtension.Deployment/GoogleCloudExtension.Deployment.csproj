@@ -86,9 +86,14 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AspnetDeployment.cs" />
-    <Compile Include="NetCoreDeployment.cs" />
-    <Compile Include="NetCorePublishResult.cs" />
+    <Compile Include="CloudBuilderUtils.cs" />
+    <Compile Include="CommonUtils.cs" />
+    <Compile Include="GkeDeployment.cs" />
+    <Compile Include="GkeDeploymentResult.cs" />
+    <Compile Include="NetCoreAppUtils.cs" />
+    <Compile Include="WindowsVmDeployment.cs" />
+    <Compile Include="AppEngineFlexDeployment.cs" />
+    <Compile Include="AppEngineFlexDeploymentResult.cs" />
     <Compile Include="ProgressHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

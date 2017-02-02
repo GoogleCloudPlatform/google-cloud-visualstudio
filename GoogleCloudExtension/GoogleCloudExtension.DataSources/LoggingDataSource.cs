@@ -34,6 +34,8 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         private string ProjectFilter => $"projects/{ProjectId}";
 
+        private readonly List<string> _resourceNames;
+
         /// <summary>
         /// Initializes an instance of the data source.
         /// </summary>
@@ -41,7 +43,9 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="credential">The credentials to use for the call.</param>
         public LoggingDataSource(string projectId, GoogleCredential credential, string appName)
             : base(projectId, credential, init => new LoggingService(init), appName)
-        { }
+        {
+            _resourceNames = new List<string>(new string[] { ProjectFilter });
+        }
 
         /// <summary>
         /// Returns the list of MonitoredResourceDescriptor.
@@ -67,9 +71,9 @@ namespace GoogleCloudExtension.DataSources
         /// The size of entire set of log names is small. 
         /// Batch all in one request in unlikely case it spans multiple pages.
         /// </summary>
-        public async Task<IList<string>> ListProjectLogNamesAsync()
+        public Task<IList<string>> ListProjectLogNamesAsync()
         {
-            return await LoadPagedListAsync(
+            return LoadPagedListAsync(
                 (token) =>
                 {
                     var request = Service.Projects.Logs.List(ProjectFilter);
@@ -113,7 +117,7 @@ namespace GoogleCloudExtension.DataSources
             {
                 var requestData = new ListLogEntriesRequest
                 {
-                    ResourceNames = new List<string>(new string[] { ProjectFilter }),
+                    ResourceNames = _resourceNames,
                     Filter = filter,
                     OrderBy = orderBy,
                     PageSize = pageSize

@@ -19,6 +19,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
@@ -90,20 +91,20 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
 
         /// <summary>
-        /// Controls if a source file link column is displayed in data grid.
-        /// </summary>
-        public bool ShowSourceLink
-        {
-            get { return _showSourceLocationLink; }
-            set { SetValueAndRaise(ref _showSourceLocationLink, value); }
-        }
-
-        /// <summary>
         /// Gets the LogIdList for log id selector binding source.
         /// </summary>
         public LogIdsList LogIdList
         {
             get { return _logIdList; }
+            private set { SetValueAndRaise(ref _logIdList, value); }
+        }
+
+        /// <summary>
+        /// Gets the DateTimePicker view model object.
+        /// </summary>
+        public DateTimePickerViewModel DateTimePickerModel { get; }
+
+        /// <summary>
             private set { SetValueAndRaise(ref _logIdList, value); }
         }
 
@@ -172,15 +173,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public LogSeverityItem SelectedLogSeverity
         {
             get { return _selectedLogSeverity; }
-            set
-            {
-                var old_value = _selectedLogSeverity;
-                SetValueAndRaise(ref _selectedLogSeverity, value);
-                if (value != null && old_value != value)
-                {
-                    Reload();
-                }
-            }
+            set { SetValueAndRaise(ref _selectedLogSeverity, value); }
         }
 
         /// <summary>
@@ -198,15 +191,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public MonitoredResourceDescriptor SelectedResource
         {
             get { return _selectedResource; }
-            set
-            {
-                var old_value = _selectedResource;
-                SetValueAndRaise(ref _selectedResource, value);
-                if (value != null && old_value != value)
-                {
-                    Reload();
-                }
-            }
+            set { SetValueAndRaise(ref _selectedResource, value); }
         }
 
         /// <summary>
@@ -220,20 +205,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public TimeZoneInfo SelectedTimeZone
         {
             get { return _selectedTimeZone; }
-            set
-            {
-                if (value != _selectedTimeZone)
-                {
-                    _selectedTimeZone = value;
-                    foreach (var log in _logs)
-                    {
-                        log.ChangeTimeZone(_selectedTimeZone);
-                    }
-
-                    LogItemCollection.Refresh();
+            set { SetValueAndRaise(ref _selectedTimeZone, value); }
                     DateTimePickerModel.ChangeTimeZone(_selectedTimeZone);
-                }
-            }
         }
 
         /// <summary>
@@ -352,6 +325,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             DateTimePickerModel = new DateTimePickerViewModel(
                 TimeZoneInfo.Local, DateTime.UtcNow, isDescendingOrder: true);
             DateTimePickerModel.DateTimeFilterChange += (sender, e) => Reload();
+            PropertyChanged += OnPropertyChanged;
         }
 
         /// <summary>
@@ -390,6 +364,36 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (!advancedSearchText.ToLowerInvariant().Contains("timestamp"))
             {
                 filter.AppendLine($"timestamp<=\"{DateTime.UtcNow.ToString("O")}\"");
+            }
+
+            AdvancedFilterText = filter.ToString();
+            Reload();
+        }
+
+        private void OnRefreshCommand()
+        {
+            DateTimePickerModel.IsDescendingOrder = true;
+            DateTimePickerModel.DateTimeUtc = DateTime.UtcNow;
+            Reload();
+        }
+
+        /// <summary>
+        /// Send an advanced filter to Logs Viewer and display the results.
+        /// </summary>
+        /// <param name="advancedSearchText">The advance filter in text format.</param>
+        public void FilterLog(string advancedSearchText)
+        {
+            if (String.IsNullOrWhiteSpace(advancedSearchText))
+            {
+                return;
+            }
+
+            ShowAdvancedFilter = true;
+            StringBuilder filter = new StringBuilder();
+            filter.AppendLine(advancedSearchText);
+            if (!advancedSearchText.ToLowerInvariant().Contains("timestamp"))
+            {
+                filter.AppendLine($"timestamp<=\"{DateTime.UtcNow.AddDays(1).ToString("O")}\"");
             }
 
             AdvancedFilterText = filter.ToString();
@@ -521,7 +525,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 {
                     // Here, it does not do pageSize: _defaultPageSize - count, 
                     // Because this is requried to use same page size for getting next page. 
-                    results = await _dataSource.Value.ListLogEntriesAsync(_filter, order,
+                var results = await _dataSource.Value.ListLogEntriesAsync(_filter, order,
                         pageSize: DefaultPageSize, nextPageToken: _nextPageToken, cancelToken: cancellationToken);
                 }
                 finally
@@ -550,6 +554,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void Reload()
         {
+            Debug.WriteLine("Entering Reload()");
+
             if (String.IsNullOrWhiteSpace(Project))
             {
                 Debug.Assert(false, "Project should not be null if the viewer is visible and enabled.");
@@ -691,8 +697,40 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             IList<string> logIdRequestResult = null;
             logIdRequestResult = await _dataSource.Value.ListProjectLogNamesAsync();
-            LogIdList = new LogIdsList(logIdRequestResult, Reload);
+            LogIdList = new LogIdsList(logIdRequestResult);
+            LogIdList.PropertyChanged += OnPropertyChanged;
             Reload();
+        }
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            string[] _filterProperties = new string[] {
+                nameof(SelectedLogSeverity),
+                nameof(SelectedResource),
+                nameof(LogIdsList.SelectedLogId),
+            };
+            if (_filterProperties.Contains(e.PropertyName))
+            {
+                Reload();
+            }
+            else if (e.PropertyName == nameof(SelectedTimeZone))
+            {
+                OnTimeZoneChanged();
+            }            
+
+        private void OnTimeZoneChanged()
+        /// This method uses similar logic as populating resource descriptors.
+        /// Refers to <seealso cref="PopulateResourceTypes"/>.
+        /// </summary>
+        private async Task PopulateLogIds()
+        {
+            foreach (var log in _logs)
+            {
+                log.ChangeTimeZone(SelectedTimeZone);
+            }
+
+            LogItemCollection.Refresh();
+            DateTimePickerModel.ChangeTimeZone(SelectedTimeZone);
         }
 
         /// <summary>
@@ -700,6 +738,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private string ComposeSimpleFilters()
         {
+            Debug.WriteLine("Entering ComposeSimpleFilters()");
+
             StringBuilder filter = new StringBuilder();
             if (SelectedResource != null)
             {
@@ -723,9 +763,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
             }
 
-            Debug.Assert(LogIdList != null, "Code bug. LogIDList should not be null.");
             if (LogIdList.SelectedLogIdFullName != null)
             {
+                filter.AppendLine($"logName=\"{LogIdList.SelectedLogIdFullName}\"");
                 filter.AppendLine($"logName=\"{LogIdList.SelectedLogIdFullName}\"");
             }
 

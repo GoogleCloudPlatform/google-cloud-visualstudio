@@ -86,7 +86,7 @@
                             FontWeight="DemiBold"
                             Style="{StaticResource CommonTextStyle}"/>
 
-                        <controls:CustomComboBox                         
+                        <controls:FixBackgroundComboBox                         
                             DockPanel.Dock="Left"
                             x:Name="comboTimeZone" 
                             Margin="6,0,0,0" 
@@ -97,11 +97,13 @@
                             DataContext="{Binding DataContext, ElementName=_logsViewerToolWindow}"
                             ItemsSource="{Binding SystemTimeZones}"
                             SelectedItem="{Binding SelectedTimeZone}" >
-                            <controls:CustomComboBox.ToolTip>
+                            <controls:FixBackgroundComboBox.ToolTip>
                                 <ToolTip Content="{x:Static ext:Resources.LogViewerTimeZoneSelectionToolTip}"
                                      Style="{StaticResource CommonTooltipStyle}" />
-                            </controls:CustomComboBox.ToolTip>
-                        </controls:CustomComboBox>
+                                <ToolTip Content="{x:Static ext:Resources.LogViewerTimeZoneSelectionToolTip}"
+                                     Style="{StaticResource CommonTooltipStyle}" />
+                            </controls:FixBackgroundComboBox.ToolTip>
+                        </controls:FixBackgroundComboBox>
                     </StackPanel>
 
                     <ItemsPresenter />
@@ -181,7 +183,7 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Style="{StaticResource CommonButtonWideStyle}"
-                    Command="{Binding Path=FilterSwitchCommand}"
+                    Command="{Binding FilterSwitchCommand}"
                     Content="{x:Static ext:Resources.LogViewerSwitchToSimpleFilterCaption}">
                     <Button.ToolTip>
                         <ToolTip Content="{x:Static ext:Resources.LogViewerToSimpleSearchButtonTooltip}"/>
@@ -219,17 +221,16 @@
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Center">
 
-                    <controls:CustomComboBox 
+                    <controls:FixBackgroundComboBox 
                         Margin="0,0,6,0"
-                        Width="160" 
+                        Width="200" 
                         Style="{StaticResource CommonDocumentComboBoxStyle}"
                         ItemsSource="{Binding ResourceDescriptors}"
                         SelectedItem="{Binding SelectedResource, Mode=TwoWay}"
                         DisplayMemberPath="DisplayName" 
                         IsSynchronizedWithCurrentItem="true" />
 
-                    <controls:CustomComboBox 
-                        Margin="0,0,6,0"
+                    <controls:FixBackgroundComboBox 
                         Width="160" 
                         Style="{StaticResource CommonDocumentComboBoxStyle}"
                         DataContext="{Binding LogIdList}"
@@ -239,7 +240,15 @@
                     
                     <controls:CustomComboBox 
                         Margin="0,0,6,0"
-                        Width="160"
+                        Width="160" 
+                        Style="{StaticResource CommonDocumentComboBoxStyle}"
+                        ItemsSource="{Binding LogIdList.LogIDs}"
+                        SelectedItem="{Binding LogIdList.SelectedLogId}" 
+                        IsSynchronizedWithCurrentItem="true" />
+                    
+                    <controls:FixBackgroundComboBox 
+                        Margin="0,0,6,0"
+                        Width="120"
                         Style="{StaticResource CommonDocumentComboBoxStyle}"
                         ItemsSource="{Binding LogSeverityList}"
                         SelectedItem="{Binding SelectedLogSeverity}"

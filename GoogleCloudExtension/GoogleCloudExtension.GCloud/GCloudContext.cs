@@ -17,7 +17,7 @@ namespace GoogleCloudExtension.GCloud
     /// <summary>
     /// This class holds the credentials used to perform GCloud operations.
     /// </summary>
-    public sealed class Context
+    public sealed class GCloudContext
     {
         /// <summary>
         /// The path to the credentials .json file to use for the call. The .json file should be a
