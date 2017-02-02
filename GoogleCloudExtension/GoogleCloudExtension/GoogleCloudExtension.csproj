@@ -170,7 +170,6 @@
     </Compile>
     <Compile Include="GcsFileBrowser\GcsRow.cs" />
     <Compile Include="GcsFileBrowser\GcsFileItem.cs" />
-    <Compile Include="GcsFileBrowser\GcsUpload.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsViewModel.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindow.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml.cs">

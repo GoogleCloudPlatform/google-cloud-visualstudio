@@ -18,6 +18,9 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// This class defines general control behaviors implemented as attached <seealso cref="DependencyProperty"/> instances.
+    /// </summary>
     public static class ControlBehaviors
     {
         #region Double click command.
@@ -79,15 +82,29 @@ namespace GoogleCloudExtension.Utils
 
         #region Double click command paramater.
 
+        /// <summary>
+        /// This attached property will contain the parameter to be passed to the command stored in 
+        /// <seealso cref="DoubleClickCommandProperty"/>. It can be any object.
+        /// </summary>
         public static readonly DependencyProperty DoubleClickCommandParameterProperty =
             DependencyProperty.RegisterAttached(
                 "DoubleClickCommandParameter",
                 typeof(object),
                 typeof(ControlBehaviors));
 
+        /// <summary>
+        /// The getter for the <seealso cref="DoubleClickCommandParameterProperty"/>.
+        /// </summary>
+        /// <param name="self">The <seealso cref="Control"/>.</param>
+        /// <returns></returns>
         public static object GetDoubleClickCommandParameter(Control self) =>
             self.GetValue(DoubleClickCommandParameterProperty);
 
+        /// <summary>
+        /// The setter for the <seealso cref="DoubleClickCommandParameterProperty"/>.
+        /// </summary>
+        /// <param name="self">The <seealso cref="Control"/></param>
+        /// <param name="value">The new value for the property.</param>
         public static void SetDoubleClickCommandParameter(Control self, object value)
         {
             self.SetValue(DoubleClickCommandParameterProperty, value);

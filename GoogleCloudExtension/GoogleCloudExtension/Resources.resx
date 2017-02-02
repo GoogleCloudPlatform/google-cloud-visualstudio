@@ -1567,4 +1567,8 @@
     <value>Refresh clusters</value>
     <comment>Caption for the refresh clusters hyperlink</comment>
   </data>
+  <data name="EnterNameDialogNameMessage" xml:space="preserve">
+    <value>_Enter name:</value>
+    <comment>Message to show on the dialog for the name text box.</comment>
+  </data>
 </root>

@@ -16,6 +16,9 @@ using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.NamePrompt
 {
+    /// <summary>
+    /// This class represents the dialog used to prompt for a name.
+    /// </summary>
     public class NamePromptWindow : CommonDialogWindowBase
     {
         private NamePromptViewModel ViewModel { get; }
@@ -29,6 +32,10 @@ namespace GoogleCloudExtension.NamePrompt
             };
         }
 
+        /// <summary>
+        /// Prompts the user for a name.
+        /// </summary>
+        /// <returns></returns>
         public static string PromptUser()
         {
             var dialog = new NamePromptWindow();

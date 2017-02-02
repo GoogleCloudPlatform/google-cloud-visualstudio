@@ -21,12 +21,25 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
+    /// <summary>
+    /// This class is a reference to a file stored in a GCS bucket.
+    /// </summary>
     internal class GcsFileReference
     {
+        /// <summary>
+        /// The name of the bucket.
+        /// </summary>
         public string Bucket { get; }
 
+        /// <summary>
+        /// The name (or full path) of the file within the bucket.
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// The relative name of the file under a given prefix. Useful for when downloading/uploading
+        /// files from/to the bucket.
+        /// </summary>
         public string RelativeName { get; }
 
         public GcsFileReference(string bucket, string name, string prefix)
@@ -49,8 +62,18 @@ namespace GoogleCloudExtension.GcsFileBrowser
         }
     }
 
+    /// <summary>
+    /// Useful extensions for the <seealso cref="GcsDataSource"/> that are specific to the GCS file browser.
+    /// </summary>
     internal static class GcsDataSourceExtensions
     {
+        /// <summary>
+        /// Get all files that are descendants of the given <paramref name="prefix"/> in the given <paramref name="bucket"/>.
+        /// </summary>
+        /// <param name="self">The data source.</param>
+        /// <param name="bucket">The bucket that contains the files.</param>
+        /// <param name="prefix">The prefix (or directory) under which files are requiested.</param>
+        /// <returns>An <seealso cref="IEnumerable{GcsFileReference}"/> with all of the files found.</returns>
         public static async Task<IEnumerable<GcsFileReference>> GetGcsFilesFromPrefixAsync(
             this GcsDataSource self,
             string bucket,
@@ -60,6 +83,13 @@ namespace GoogleCloudExtension.GcsFileBrowser
             return files.Select(x => new GcsFileReference(bucket, x.Name, prefix)).ToList();
         }
 
+        /// <summary>
+        /// Utility method to get all of the files given the list of <paramref name="prefixes"/>.
+        /// </summary>
+        /// <param name="self">The data source.</param>
+        /// <param name="bucket">The bucket that contains the files.</param>
+        /// <param name="prefixes">The prefixes to query.</param>
+        /// <returns>A combined <seealso cref="IEnumerable{GcsFileReference}"/> with all of the files found.</returns>
         public static async Task<IEnumerable<GcsFileReference>> GetGcsFilesFromPrefixesAsync(
             this GcsDataSource self,
             string bucket,
@@ -73,6 +103,12 @@ namespace GoogleCloudExtension.GcsFileBrowser
             return result;
         }
 
+        /// <summary>
+        /// Create a directory placeholder blob with the given prefix.
+        /// </summary>
+        /// <param name="self">The data source.</param>
+        /// <param name="bucket">The bucket that owns the files.</param>
+        /// <param name="prefix">The directory path.</param>
         public static async Task CreateDirectoryAsync(this GcsDataSource self, string bucket, string prefix)
         {
             await self.UploadStreamAsync(
@@ -82,24 +118,18 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 contentType: "application/x-www-form-urlencoded;charset=UTF-8");
         }
 
-        public static IEnumerable<string> ParsePath(string name)
+        /// <summary>
+        /// Parses a diretory name into its steps.
+        /// </summary>
+        /// <param name="name">The directory name.</param>
+        /// <returns>The <seealso cref="IEnumerable{String}"/> with the steps.</returns>
+        public static IEnumerable<string> ParseDiretoryPath(string name)
         {
             if (String.IsNullOrEmpty(name))
             {
                 return Enumerable.Empty<string>();
             }
             return name.Substring(0, name.Length - 1).Split('/');
-        }
-
-        private static string GetNameLeaf(string name)
-        {
-            if (String.IsNullOrEmpty(name))
-            {
-                return name;
-            }
-
-            var cleanName = name.Substring(0, name.Length - 1);
-            return cleanName.Split('/').LastOrDefault() ?? "";
         }
     }
 }

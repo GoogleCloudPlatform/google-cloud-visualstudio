@@ -21,14 +21,21 @@ using System.Windows.Markup;
 namespace GoogleCloudExtension.GcsFileBrowser
 {
     /// <summary>
-    /// This class sorts the GcsItem instances in the right way, with directories always first.
+    /// This class sorts the GcsItem instances with directories always first. Because this class is
+    /// a <seealso cref="MarkupExtension"/> this class is intended to be used directly in Xaml.
     /// </summary>
     public class GcsColumnSorter : MarkupExtension, IColumnSorter
     {
         private readonly Lazy<PropertyInfo> _columnProperty;
 
+        /// <summary>
+        /// The name of the column to use to sort items.
+        /// </summary>
         public string Column { get; set; }
 
+        /// <summary>
+        /// Whether directories should always go first.
+        /// </summary>
         public bool SortDirectories { get; set; }
 
         public GcsColumnSorter(string column)
@@ -45,6 +52,14 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         #region IColumnSorter implementation.
 
+        /// <summary>
+        /// This method comapres to <seealso cref="GcsRow"/> instances returns the right ordering
+        /// depending <paramref name="descending"/> and <seealso cref="SortDirectories"/>.
+        /// </summary>
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        /// <param name="descending">The direction of comparison.</param>
+        /// <returns>See <seealso cref="IColumnSorter"/> for details.</returns>
         public int Compare(object x, object y, bool descending)
         {
             var lhs = x as GcsRow;

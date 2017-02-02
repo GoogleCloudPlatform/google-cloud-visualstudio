@@ -19,17 +19,26 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.NamePrompt
 {
+    /// <summary>
+    /// The view model for the name prompt window.
+    /// </summary>
     public class NamePromptViewModel : ViewModelBase
     {
         private readonly NamePromptWindow _owner;
         private string _name;
 
+        /// <summary>
+        /// The name being entered.
+        /// </summary>
         public string Name
         {
             get { return _name; }
             set { SetValueAndRaise(ref _name, value); }
         }
 
+        /// <summary>
+        /// The command for the ok button.
+        /// </summary>
         public ICommand OkCommand { get; }
 
         public NamePromptViewModel(NamePromptWindow owner)

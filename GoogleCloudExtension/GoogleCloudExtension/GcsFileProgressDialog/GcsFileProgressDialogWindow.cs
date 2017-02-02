@@ -18,6 +18,9 @@ using System.Threading;
 
 namespace GoogleCloudExtension.GcsFileProgressDialog
 {
+    /// <summary>
+    /// Class that represents the GCS progress dialog for file operations.
+    /// </summary>
     public class GcsFileProgressDialogWindow : CommonDialogWindowBase
     {
         private GcsFileProgressDialogWindow(
@@ -33,7 +36,18 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
             };
         }
 
-        public static void PromptUser(string caption, string message, IEnumerable<GcsFileOperation> operations, CancellationTokenSource tokenSource)
+        /// <summary>
+        /// Opens and shows the progress dialog.
+        /// </summary>
+        /// <param name="caption">The caption to use for the dialog.</param>
+        /// <param name="message">The message to use in the dialog.</param>
+        /// <param name="operations">The list of operations to track.</param>
+        /// <param name="tokenSource">The <seealso cref="CancellationTokenSource"/> to be used to cancel the operations.</param>
+        public static void PromptUser(
+            string caption,
+            string message,
+            IEnumerable<GcsFileOperation> operations,
+            CancellationTokenSource tokenSource)
         {
             var dialog = new GcsFileProgressDialogWindow(caption, message, operations, tokenSource);
             dialog.ShowModal();

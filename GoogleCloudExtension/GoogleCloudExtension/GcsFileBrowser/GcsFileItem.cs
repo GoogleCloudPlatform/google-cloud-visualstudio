@@ -16,7 +16,10 @@ using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
-    public class GcsFileItem : PropertyWindowItemBase
+    /// <summary>
+    /// This class represents a file to be shown in the property window in the VS shell.
+    /// </summary>
+    internal class GcsFileItem : PropertyWindowItemBase
     {
         private readonly GcsRow _file;
 
@@ -26,26 +29,41 @@ namespace GoogleCloudExtension.GcsFileBrowser
             _file = row;
         }
 
+        /// <summary>
+        /// The name of the file.
+        /// </summary>
         [LocalizedCategory(nameof(Resources.GcsFileBrowserFileCategory))]
         [LocalizedDisplayName(nameof(Resources.GcsFileBrowserNameDisplayName))]
         [LocalizedDescription(nameof(Resources.GcsFileBrowserFileNameDescription))]
         public string Name => _file.FileName;
 
+        /// <summary>
+        /// The size of the file.
+        /// </summary>
         [LocalizedCategory(nameof(Resources.GcsFileBrowserFileCategory))]
         [LocalizedDisplayName(nameof(Resources.GcsFileBrowserFileSizeDisplayName))]
         [LocalizedDescription(nameof(Resources.GcsFileBrowserFileSizeDescription))]
         public string Size => _file.Size.ToString();
 
+        /// <summary>
+        /// The last modified date for the file.
+        /// </summary>
         [LocalizedCategory(nameof(Resources.GcsFileBrowserFileCategory))]
         [LocalizedDisplayName(nameof(Resources.GcsFileBrowserFileLastModifiedDisplayName))]
         [LocalizedDescription(nameof(Resources.GcsFileBrowserFileLastModifiedDescription))]
         public string LasModified => _file.LastModified;
 
+        /// <summary>
+        /// The full gs://... path to the file.
+        /// </summary>
         [LocalizedCategory(nameof(Resources.GcsFileBrowserFileCategory))]
         [LocalizedDisplayName(nameof(Resources.GcsFileBrowserFullPathDisplayName))]
         [LocalizedDescription(nameof(Resources.GcsFileBrowserFileFullPathDescription))]
         public string GcsPath => _file.GcsPath;
 
+        /// <summary>
+        /// The content type for the file.
+        /// </summary>
         [LocalizedCategory(nameof(Resources.GcsFileBrowserFileCategory))]
         [LocalizedDisplayName(nameof(Resources.GcsFileBrowserFileContentTypeDisplayName))]
         [LocalizedDescription(nameof(Resources.GcsFileBrowserFileContentTypeDescription))]

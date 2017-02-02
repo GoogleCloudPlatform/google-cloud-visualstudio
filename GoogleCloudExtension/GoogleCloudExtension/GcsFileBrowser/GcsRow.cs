@@ -17,30 +17,69 @@ using System.Linq;
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
+    /// <summary>
+    /// This class contains the flat data to be shown in the file browser.
+    /// </summary>
     public class GcsRow
     {
+        /// <summary>
+        /// The name of the bucket.
+        /// </summary>
         public string Bucket { get; private set; }
 
+        /// <summary>
+        /// The name of the item, file or directory.
+        /// </summary>
         public string Name { get; private set; }
 
+        /// <summary>
+        /// The path to the item.
+        /// </summary>
         public string FileName { get; private set; }
 
+        /// <summary>
+        /// Whether this is an error message.
+        /// </summary>
         public bool IsError { get; private set; }
 
+        /// <summary>
+        /// Whether this row represents a file.
+        /// </summary>
         public bool IsFile { get; private set; }
 
+        /// <summary>
+        /// Whether this row represents a directory.
+        /// </summary>
         public bool IsDirectory { get; private set; }
 
+        /// <summary>
+        /// The size of the item.
+        /// </summary>
         public ulong Size { get; private set; }
 
+        /// <summary>
+        /// The last modified date for the item.
+        /// </summary>
         public string LastModified { get; private set; }
 
+        /// <summary>
+        /// The content type for the item.
+        /// </summary>
         public string ContentType { get; private set; }
 
+        /// <summary>
+        /// The full gs://... path to the item.
+        /// </summary>
         public string GcsPath => $"gs://{Bucket}/{Name}";
 
         public GcsRow() { }
 
+        /// <summary>
+        /// Creates the row given the directory name.
+        /// </summary>
+        /// <param name="bucket">The bucket that owns the directory.</param>
+        /// <param name="name">The name (path) to the directory.</param>
+        /// <returns>The newly created <seealso cref="GcsRow"/>.</returns>
         public static GcsRow CreateDirectoryRow(string bucket, string name) =>
             new GcsRow
             {
@@ -50,6 +89,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 IsDirectory = true,
             };
 
+        /// <summary>
+        /// Creates a file row from the given GCS <seealso cref="Object"/>.
+        /// </summary>
+        /// <param name="obj">The GCS <seealso cref="Object"/></param>
+        /// <returns>The newly created <seealso cref="GcsRow"/>.</returns>
         public static GcsRow CreateFileRow(Object obj) =>
             new GcsRow
             {
@@ -62,6 +106,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 ContentType = obj.ContentType ?? "application/octet-stream",
             };
 
+        /// <summary>
+        /// Creates a row that represents an error.
+        /// </summary>
+        /// <param name="message">The error message.</param>
+        /// <returns>The newly created <seealso cref="GcsRow"/>.</returns>
         public static GcsRow CreateErrorRow(string message) =>
             new GcsRow
             {

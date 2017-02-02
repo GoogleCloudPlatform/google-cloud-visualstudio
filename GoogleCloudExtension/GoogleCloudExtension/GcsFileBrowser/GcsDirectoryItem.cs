@@ -16,6 +16,9 @@ using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
+    /// <summary>
+    /// This class represents an directory to be shown in the property window in the VS shell.
+    /// </summary>
     internal class GcsDirectoryItem : PropertyWindowItemBase
     {
         private readonly GcsRow _directory;
@@ -26,11 +29,17 @@ namespace GoogleCloudExtension.GcsFileBrowser
             _directory = row;
         }
 
+        /// <summary>
+        /// The name of the directory.
+        /// </summary>
         [LocalizedCategory(nameof(Resources.GcsFileBrowserDirectoryCategory))]
         [LocalizedDisplayName(nameof(Resources.GcsFileBrowserNameDisplayName))]
         [LocalizedDescription(nameof(Resources.GcsFileBrowserDirectoryNameDescription))]
         public string Name => _directory.FileName;
 
+        /// <summary>
+        /// The full gs://... path to the directory.
+        /// </summary>
         [LocalizedCategory(nameof(Resources.GcsFileBrowserDirectoryCategory))]
         [LocalizedDisplayName(nameof(Resources.GcsFileBrowserFullPathDisplayName))]
         [LocalizedDescription(nameof(Resources.GcsFileBrowserDirectoryFullPathDescription))]

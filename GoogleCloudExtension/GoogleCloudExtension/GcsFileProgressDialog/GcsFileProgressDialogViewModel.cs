@@ -21,6 +21,9 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.GcsFileProgressDialog
 {
+    /// <summary>
+    /// The view model for the progress dialog.
+    /// </summary>
     public class GcsFileProgressDialogViewModel : ViewModelBase
     {
         private readonly GcsFileProgressDialogWindow _owner;
@@ -28,18 +31,33 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         private int _completed = 0;
         private string _caption = Resources.UiCancelButtonCaption;
 
+        /// <summary>
+        /// The message to display in the dialog.
+        /// </summary>
         public string Message { get; }
 
+        /// <summary>
+        /// The list of operations.
+        /// </summary>
         public ObservableCollection<GcsFileOperation> Operations { get; }
 
+        /// <summary>
+        /// The caption for the dialog.
+        /// </summary>
         public string Caption
         {
             get { return _caption; }
             set { SetValueAndRaise(ref _caption, value); }
         }
 
+        /// <summary>
+        /// The command to execute for the action button in the dialog.
+        /// </summary>
         public ICommand ActionCommand { get; }
 
+        /// <summary>
+        /// Returns whether the operation is complete.
+        /// </summary>
         private bool IsComplete => _completed >= Operations.Count;
 
         public GcsFileProgressDialogViewModel(

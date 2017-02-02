@@ -21,32 +21,56 @@ using System.Threading;
 
 namespace GoogleCloudExtension.GcsFileProgressDialog
 {
+    /// <summary>
+    /// This class represents an operation in flight for the GCS file browser.
+    /// </summary>
     public class GcsFileOperation : Model, IGcsFileOperation
     {
         private readonly SynchronizationContext _context;
         private double _progress = 0;
         private bool _isError;
 
+        /// <summary>
+        /// The current progress of the operation, between 0.0 (started) to 1.0 (completed).
+        /// </summary>
         public double Progress
         {
             get { return _progress; }
             set { SetValueAndRaise(ref _progress, value); }
         }
 
+        /// <summary>
+        /// Whether this operation is in error.
+        /// </summary>
         public bool IsError
         {
             get { return _isError; }
             set { SetValueAndRaise(ref _isError, value); }
         }
 
+        /// <summary>
+        /// The path to the source of the operation.
+        /// </summary>
         public string Source { get; }
 
+        /// <summary>
+        /// The name of the source, usually last element in the path.
+        /// </summary>
         public string SourceName => Path.GetFileName(Source);
 
+        /// <summary>
+        /// The name of the bucket where this operation applies.
+        /// </summary>
         public string Bucket { get; }
 
+        /// <summary>
+        /// The name of the destination for the operation.
+        /// </summary>
         public string Destination { get; }
 
+        /// <summary>
+        /// Event raised when the operation completes.
+        /// </summary>
         public event EventHandler Completed;
 
         public GcsFileOperation(
@@ -61,7 +85,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
             Destination = destination;
         }
 
-        #region IUploadOperation implementation.
+        #region IGcsFileOperation implementation.
 
         void IGcsFileOperation.Progress(double value)
         {

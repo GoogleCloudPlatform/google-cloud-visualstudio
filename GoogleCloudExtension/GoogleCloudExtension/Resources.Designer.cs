@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -1821,6 +1821,15 @@ namespace GoogleCloudExtension
         public static string CloudExplorerToolWindowCaptionNoAccount {
             get {
                 return ResourceManager.GetString("CloudExplorerToolWindowCaptionNoAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Enter name:.
+        /// </summary>
+        public static string EnterNameDialogNameMessage {
+            get {
+                return ResourceManager.GetString("EnterNameDialogNameMessage", resourceCulture);
             }
         }
         

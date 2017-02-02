@@ -19,10 +19,19 @@ using System.Linq;
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
+    /// <summary>
+    /// This class represents a single step in a path wihin a bucket.
+    /// </summary>
     public class PathStep
     {
+        /// <summary>
+        /// The name of the step, a single token in the path within a bucket.
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// The full path to this step, containing previous parts of the path within the bucket.
+        /// </summary>
         public string Path { get; }
 
         public PathStep(string name, string path)
@@ -32,12 +41,24 @@ namespace GoogleCloudExtension.GcsFileBrowser
         }
     }
 
+    /// <summary>
+    /// This class contains the browser state at a given step in the navigation path.
+    /// </summary>
     public class GcsBrowserState
     {
+        /// <summary>
+        /// The list of individual items (or blobs) at this part on the path.
+        /// </summary>
         public IList<GcsRow> Items { get; }
 
+        /// <summary>
+        /// The pathsteps to get this state.
+        /// </summary>
         public IEnumerable<PathStep> PathSteps { get; }
 
+        /// <summary>
+        /// The current path within the bucket.
+        /// </summary>
         public string CurrentPath
         {
             get
@@ -62,7 +83,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             else
             {
                 Debug.Assert(name.Last() == '/');
-                var stepNames = GcsDataSourceExtensions.ParsePath(name);
+                var stepNames = GcsDataSourceExtensions.ParseDiretoryPath(name);
                 var steps = new List<PathStep>();
                 string currentPath = "";
                 foreach (var stepName in stepNames)
