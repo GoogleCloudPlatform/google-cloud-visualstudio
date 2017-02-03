@@ -16,6 +16,7 @@ using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
@@ -48,13 +49,29 @@ namespace GoogleCloudExtension.DataSources
         }
 
         /// <summary>
+        /// List all resource keys for the project.
+        /// </summary>
+        public async Task<IList<ResourceKeys>> ListResourceKeysAsync()
+        {
+            return await LoadPagedListAsync(
+                (token) =>
+                {
+                    var request = Service.Projects.ResourceKeys.List(ProjectFilter);
+                    request.PageToken = token;
+                    return request.ExecuteAsync();
+                },
+                x => x.ResourceKeys,
+                x => x.NextPageToken);
+        }
+
+        /// <summary>
         /// Returns the list of MonitoredResourceDescriptor.
         /// The size of entire set of MonitoredResourceDescriptor is small. 
         /// Batch all in one request in case it spans multiple pages.
         /// </summary>
-        public async Task<IList<MonitoredResourceDescriptor>> GetResourceDescriptorsAsync()
+        public Task<IList<MonitoredResourceDescriptor>> GetResourceDescriptorsAsync()
         {
-            return await LoadPagedListAsync(
+            return LoadPagedListAsync(
                 (token) =>
                 {
                     var request = Service.MonitoredResourceDescriptors.List();

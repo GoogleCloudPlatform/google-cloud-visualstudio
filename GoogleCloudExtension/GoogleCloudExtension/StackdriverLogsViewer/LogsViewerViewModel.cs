@@ -64,6 +64,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// This is the filters combined by all selectors.
         /// </summary>
         private string _filter;
+
+        private IList<ResourceKeys> _resourceKeys;
         private MonitoredResourceDescriptor _selectedResource;
         private IList<MonitoredResourceDescriptor> _resourceDescriptors;
         private LogSeverityItem _selectedLogSeverity = s_logSeveritySelections.LastOrDefault();
@@ -629,7 +631,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private async Task PopulateResourceTypes()
         {
-            var descriptors = await _dataSource.Value.GetResourceDescriptorsAsync();
+            _resourceKeys = await _dataSource.Value.ListResourceKeysAsync();
+            var all = await _dataSource.Value.GetResourceDescriptorsAsync();
+            var descriptors = all.Where(x => _resourceKeys.Any(item => item?.Type == x.Type));
             List<MonitoredResourceDescriptor> newOrderDescriptors = new List<MonitoredResourceDescriptor>();
             // Keep the order.
             foreach (var defaultSelection in s_defaultResourceSelections)
