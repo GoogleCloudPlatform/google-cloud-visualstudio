@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.DataSources
         /// <summary>
         /// Called when the operation failed.
         /// </summary>
-        /// <param name="ex"></param>
+        /// <param name="ex">The exception thrown when the operaiton failed.</param>
         void Error(DataSourceException ex);
     }
 }

@@ -96,7 +96,6 @@ namespace GoogleCloudExtension.Utils
         /// The getter for the <seealso cref="DoubleClickCommandParameterProperty"/>.
         /// </summary>
         /// <param name="self">The <seealso cref="Control"/>.</param>
-        /// <returns></returns>
         public static object GetDoubleClickCommandParameter(Control self) =>
             self.GetValue(DoubleClickCommandParameterProperty);
 

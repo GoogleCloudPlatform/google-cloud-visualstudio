@@ -141,7 +141,7 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="bucket">The bucket that will own the file.</param>
         /// <param name="name">The name to use.</param>
         /// <param name="stream">The stream with the contents.</param>
-        /// <param name="contentType">The c ontent type to use, optional.</param>
+        /// <param name="contentType">The content type to use, optional.</param>
         public async Task UploadStreamAsync(string bucket, string name, Stream stream, string contentType = null)
         {
             try
@@ -167,7 +167,7 @@ namespace GoogleCloudExtension.DataSources
         /// <summary>
         /// Starts a file upload operation reporting the status and progress to the given <paramref name="operation"/>.
         /// </summary>
-        /// <param name="sourcePath">The path to the file to open, should a full path.</param>
+        /// <param name="sourcePath">The path to the file to open, should be a full path.</param>
         /// <param name="bucket">The bucket that will own the file.</param>
         /// <param name="name">The name to use.</param>
         /// <param name="operation">The operation that will receive the status and progress notifications.</param>
@@ -197,6 +197,10 @@ namespace GoogleCloudExtension.DataSources
                     var response = await request.UploadAsync(token);
                     operation.Completed();
                 }
+            }
+            catch (IOException ex)
+            {
+                operation.Error(new DataSourceException(ex.Message, ex));
             }
             catch (GoogleApiException ex)
             {
@@ -237,6 +241,10 @@ namespace GoogleCloudExtension.DataSources
                     var response = await request.DownloadAsync(stream, token);
                     operation.Completed();
                 }
+            }
+            catch (IOException ex)
+            {
+                operation.Error(new DataSourceException(ex.Message, ex));
             }
             catch (GoogleApiException ex)
             {

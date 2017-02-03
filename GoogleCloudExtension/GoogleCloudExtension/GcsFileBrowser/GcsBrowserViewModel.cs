@@ -150,7 +150,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         /// <summary>
         /// Method called to upload the given set of files.
         /// </summary>
-        /// <param name="files"></param>
+        /// <param name="files">The list of files to upload to the bucket.</param>
         public void StartDroppedFilesUpload(IEnumerable<string> files)
         {
             // Attempts to set VS as the foreground window so the user can see the progress
@@ -194,6 +194,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
         /// operations for the given paths of files. If the <paramref name="sources"/> entry represents a directory
         /// then it will recurse into the directories to create the upload operations for those files as well.
         /// </summary>
+        /// <param name="sources">
+        /// The path to the sources to upload. These can be either directories or files. It is better if these
+        /// are full file paths as the current directory in VS changes quite often.
+        /// </param>
+        /// <returns>The list of <seealso cref="GcsFileOperation"/> that represent the upload of the files.</returns>
         private IEnumerable<GcsFileOperation> CreateUploadOperations(IEnumerable<string> sources)
             => sources
                .Select(src =>
@@ -220,7 +225,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         /// <summary>
         /// Creates the <seealso cref="GcsFileOperation"/> instances for all of the files in the given directory. The
-        /// target directory will be ased on <paramref name="basePath"/>.
+        /// target directory will be based on <paramref name="basePath"/>.
         /// </summary>
         private IEnumerable<GcsFileOperation> CreateUploadOperationsForDirectory(string dir, string basePath)
             => Enumerable.Concat(
@@ -266,7 +271,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         /// 2) The list of files to be downloaded, including subdirectories is collected.
         /// 3) The subdirectories that will receive downloads are created under the download root.
         /// 4) The file operations are started and the progress dialog is shown to the user. The same <seealso cref="CancellationToken"/>
-        ///    is used for all operations so the progress dialog can be used to cancel all operations.
+        ///    is used for all of the operations so the progress dialog can be used to cancel all operations.
         /// </summary>
         private async void OnDownloadCommand()
         {
@@ -359,7 +364,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         /// 2) The files to be deleted are collected, this involves listing requests sent to the server for
         ///    the subdirectories being deleted. For each file to be deleted a <seealso cref="GcsFileOperation"/> instance
         ///    is created to track the progress of the operation. Each delete operation is independent.
-        /// 3) The operations are started and the progress dialog that tracks the progress of all operations is opened. All of
+        /// 3) The operations are started and the progress dialog that tracks the progress of all of the operations is opened. All of
         ///    operations use the same <seealso cref="CancellationToken"/> and the <seealso cref="CancellationTokenSource"/> is
         ///    passed to the progress dialog so the user can cancel the operations.
         /// 4) The listing of objects is invalidated and the window refreshed.  
@@ -375,7 +380,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
             {
                 return;
             }
-
 
             var deleteOperations = new List<GcsFileOperation>();
             try

@@ -81,7 +81,7 @@ namespace GoogleCloudExtension.Utils
         #region CustomSort property.
 
         /// <summary>
-        /// This attached property is meant to applied to <seealso cref="DataGridColumn"/> instances, and contains
+        /// This attached property  meant to be applied to <seealso cref="DataGridColumn"/> instances, and contains
         /// the <see cref="IColumnSorter"/> instance to use to sort this column.
         /// </summary>
         public static readonly DependencyProperty CustomSortProperty =
