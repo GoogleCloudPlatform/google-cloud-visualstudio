@@ -176,6 +176,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             var project = _publishDialog.Project;
             try
             {
+                ShellUtils.SaveAllFiles();
+
                 var verifyGCloudTask = VerifyGCloudDependencies();
                 _publishDialog.TrackTask(verifyGCloudTask);
                 if (!await verifyGCloudTask)

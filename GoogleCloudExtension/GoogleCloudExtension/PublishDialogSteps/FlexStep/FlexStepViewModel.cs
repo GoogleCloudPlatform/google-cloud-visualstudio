@@ -82,6 +82,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             var project = _publishDialog.Project;
             try
             {
+                ShellUtils.SaveAllFiles();
+
                 var context = new GCloudContext
                 {
                     CredentialsPath = CredentialsStore.Default.CurrentAccountPath,

@@ -138,6 +138,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
             try
             {
+                ShellUtils.SaveAllFiles();
+
                 GcpOutputWindow.Activate();
                 GcpOutputWindow.Clear();
                 GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishStepStartMessage, project.Name));
