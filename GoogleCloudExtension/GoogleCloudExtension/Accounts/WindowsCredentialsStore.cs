@@ -156,13 +156,10 @@ namespace GoogleCloudExtension.Accounts
         private static string GetInstancePath(Instance instance)
         {
             var credentials = CredentialsStore.Default;
-            return $@"{GetValidName(credentials.CurrentProjectId)}\{GetValidName(instance.GetZoneName())}\{GetValidName(instance.Name)}";
+            return $@"{ToValidPathName(credentials.CurrentProjectId)}\{ToValidPathName(instance.GetZoneName())}\{ToValidPathName(instance.Name)}";
         }
 
-        private static string GetValidName(string name)
-        {
-            return s_invalidNameCharPattern.Replace(name, "_");
-        }
+        private static string ToValidPathName(string name) => s_invalidNameCharPattern.Replace(name, "_");
 
         private static string GetFileName(WindowsInstanceCredentials credentials) => $"{credentials.User}{PasswordFileExtension}";
 
