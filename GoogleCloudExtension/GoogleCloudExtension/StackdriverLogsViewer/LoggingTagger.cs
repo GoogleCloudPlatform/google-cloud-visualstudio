@@ -89,11 +89,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void ViewLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
         {
-            //// If a new snapshot wasn't generated, then skip this layout
-            //if (e.NewViewState.EditSnapshot != e.OldViewState.EditSnapshot)
-            //{
-            //    UpdateAtCaretPosition(_view.Caret.ContainingTextViewLine);
-            //}
+            // If a new snapshot wasn't generated, then skip this layout
+            if (e.NewViewState.EditSnapshot != e.OldViewState.EditSnapshot)
+            {
+                if (CurrentLogItem != null)
+                {
+                    CurrentLogItem = null;
+                    UpdateAtCaretPosition(null);
+                }
+            }
+            else
             if (CurrentLogItem != null)
             {
                 UpdateAtCaretPosition(_view.Caret.ContainingTextViewLine);
