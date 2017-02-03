@@ -12,12 +12,31 @@ using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 using Microsoft.VisualStudio.Text;
-
+using GoogleCloudExtension.StackdriverLogsViewer;
 
 namespace GoogleCloudExtension.SolutionUtils
 {
     internal static class EditorSpanHelpers
     {
+        // Oddly, adding this as member function causes loading the LoggingTagger fails.
+        public static bool IsCaretAtLine(this LoggingTagger3 tagger)
+        {
+            if (LoggingTagger3.CurrentLogItem == null || LoggingTagger3.CurrentLogItem.SourceLine <= 0 || 
+                tagger._sourceBuffer == null)
+            {
+                return false;
+            }
+
+            ITextSnapshotLine textLine = tagger._sourceBuffer.CurrentSnapshot.GetLineFromLineNumber(
+                LoggingTagger3.CurrentLogItem.SourceLine-1);
+            //ITextViewLine viewLine = _view.Caret.ContainingTextViewLine;
+            //SnapshotSpan? span = EditorSpanHelpers.GetSpanAtMousePosition(_view as IWpfTextView, null);
+            var caretSnapshotPoint = tagger._view.Caret.Position.Point.GetPoint(tagger._sourceBuffer, 
+                tagger._view.Caret.Position.Affinity);
+            var textLineSpan = new SnapshotSpan(textLine.Start, textLine.Length);
+            return caretSnapshotPoint.HasValue && textLineSpan.Contains(caretSnapshotPoint.Value);
+        }
+
         public static SnapshotSpan? GetSpanAtMousePosition(IWpfTextView view, ITextStructureNavigator navigator)
         {
             CaretPosition caretPoisition = view.Caret.Position;

@@ -16,14 +16,33 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 {
     internal class HighlightLogger
     {
-        public static IWpfTextView ShowTip(EnvDTE.Window window)
+        public static void HideTooltip(IWpfTextView wpfView)
+        {
+            LoggingTagger3.CurrentLogItem = null;
+            if (LoggingTagger3.LoggingTaggerCollection != null)
+            {
+                LoggingTagger3 loggingTagger;
+                if (LoggingTagger3.LoggingTaggerCollection.TryGetValue(wpfView, out loggingTagger))
+                {
+                    loggingTagger.UpdateAtCaretPosition(null);
+                }
+            }
+        }
+
+        public static IWpfTextView ShowTip(EnvDTE.Window window, LogItem logItem)
         {
             IVsTextView textView = GetIVsTextView(window.Document.FullName);
             var wpfView = GetWpfTextView(textView);
-            if (LoggingTagger.LoggingTaggerCollection != null)
+            LoggingTagger3.CurrentLogItem = new LogItemWrapper()
             {
-                LoggingTagger loggingTagger;
-                if (LoggingTagger.LoggingTaggerCollection.TryGetValue(wpfView, out loggingTagger))
+                LogItem = logItem,
+                SourceLine = logItem.SourceLine,
+                SourceLineTextView = wpfView
+            };
+            if (LoggingTagger3.LoggingTaggerCollection != null)
+            {
+                LoggingTagger3 loggingTagger;
+                if (LoggingTagger3.LoggingTaggerCollection.TryGetValue(wpfView, out loggingTagger))
                 {
                     loggingTagger.UpdateAtCaretPosition(wpfView.Caret.ContainingTextViewLine);
                 }

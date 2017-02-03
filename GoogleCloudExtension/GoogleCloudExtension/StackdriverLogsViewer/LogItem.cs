@@ -63,10 +63,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private readonly string _sourceFilePath;
         private readonly string _assemblyName;
         private readonly string _assemblyVersion;
-        private readonly int _sourceLine;
+        public readonly int SourceLine;
 
-        public static LogItem CurrentSourceLineLogItem { get; private set; }
-        public IWpfTextView SourceLineTextView { get; private set; }
+        public IWpfTextView SourceLineTextView { get; private set; }    
 
         private bool _filterLogsOfSourceLine = true;
         public bool FilterLogsOfSourceLine
@@ -178,19 +177,21 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             _treeViewObjects = new Lazy<List<ObjectNodeTree>>(CreateTreeObject);
             BackToLogsViewerCommand = new ProtectedCommand(BackToLogsViewer);
             SourceLinkCommand = new ProtectedCommand(OnSourceLinkClick);
-            _sourceLine = -1;
+            SourceLine = -1;
             if (null != Entry?.Labels)
             {
                 _assemblyName = GetLabelField(AssemblyNameFieldName);
                 _sourceFilePath = GetLabelField(SourceFileFieldName);
                 _assemblyVersion = GetLabelField(AssemblyVersionFieldName);
                 var line = GetLabelField(SourceLineFieldName);
-                Int32.TryParse(line, out _sourceLine);
-                if (!String.IsNullOrWhiteSpace(_sourceFilePath) && _sourceLine != -1)
+                Int32.TryParse(line, out SourceLine);
+                if (!String.IsNullOrWhiteSpace(_sourceFilePath) && SourceLine != -1)
                 {
-                    SourceLocation = $"{Path.GetFileName(_sourceFilePath)} ({_sourceLine})";
+                    SourceLocation = $"{Path.GetFileName(_sourceFilePath)} ({SourceLine})";
                 }
             }
+
+            CloseButtonCommand = new ProtectedCommand(OnCloseTooltip);
         }
 
         /// <summary>
@@ -292,9 +293,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         #region source line matching
+
+        public ProtectedCommand CloseButtonCommand { get; }
+
+        private void OnCloseTooltip()
+        {
+            HighlightLogger.HideTooltip(SourceLineTextView);
+        }
+
         private void OnSourceLinkClick()
         {
-            Debug.Assert(_sourceLine != -1 && _sourceFilePath != null, 
+            Debug.Assert(SourceLine != -1 && _sourceFilePath != null, 
                 "There is a code bug if source file or source line is invalid");
             // var sourceFiles = SolutionHelper.CurrentSolution?.FindMatchingSourceFile(_sourceFilePath);
 
@@ -312,15 +321,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            CurrentSourceLineLogItem = this;
-            var window = sourceFiles.First().GotoLine(_sourceLine);
+            var window = sourceFiles.First().GotoLine(SourceLine);
             if (null == window)
             {
                 PromptNotfound();
                 return;
             }
 
-            SourceLineTextView = HighlightLogger.ShowTip(window);
+            SourceLineTextView = HighlightLogger.ShowTip(window, this);
         }
 
         private const string PromptTitle = "Locating logging source";
@@ -403,7 +411,7 @@ in order to properly locating the logging source location.",
                 filter.AppendLine($"labels.{SourceFileFieldName}=\"{_sourceFilePath.Replace(@"\", @"\\")}\"");
                 filter.AppendLine($"labels.{AssemblyNameFieldName}=\"{_assemblyName}\"");
                 filter.AppendLine($"labels.{AssemblyVersionFieldName}=\"{_assemblyVersion}\"");
-                filter.AppendLine($"labels.{SourceLineFieldName}=\"{_sourceLine}\"");
+                filter.AppendLine($"labels.{SourceLineFieldName}=\"{SourceLine}\"");
                 window.AdvancedFilter(filter.ToString());
             }
         }

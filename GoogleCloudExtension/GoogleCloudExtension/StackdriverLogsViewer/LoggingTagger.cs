@@ -24,25 +24,35 @@ using System.Linq;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
-    internal class LoggingTagger : ITagger<LoggingTag>
+    internal class LogItemWrapper
     {
-        private const string LogMethodName = "WriteLog";
+        public object LogItem { get; set; }
+        public IWpfTextView SourceLineTextView { get; set; }
+        public int SourceLine { get; set; }
+    }
 
-        private readonly ITextView _view;
+    internal class LoggingTagger3 : ITagger<LoggingTag>
+    {
+        //private static readonly HashSet<string> LogMethodName = new HashSet<string>(
+        //    new string[] { "WriteLog", "WriteLogV2" });
+        private const string LogMethodName = "WriteLogV2";
+
+        public readonly ITextView _view;
         private ITextSearchService _textSearchService;
         private ITextStructureNavigator _textStructureNavigator;
-        private readonly ITextBuffer _sourceBuffer;
+        public readonly ITextBuffer _sourceBuffer;
         private ITextViewLine _currentViewLine;
 
         private readonly IToolTipProvider _toolTipProvider;
 
-        public static Dictionary<ITextView, LoggingTagger> LoggingTaggerCollection;
+        public static Dictionary<ITextView, LoggingTagger3> LoggingTaggerCollection;
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
-        public LoggingTagger(ITextView view, ITextBuffer sourceBuffer, ITextSearchService textSearchService,
-                                   ITextStructureNavigator textStructureNavigator, 
-                                   IToolTipProviderFactory toolTipProviderFactory)
+        public static LogItemWrapper CurrentLogItem { get; set; }
+
+        public LoggingTagger3(ITextView view, ITextBuffer sourceBuffer, ITextSearchService textSearchService,
+            ITextStructureNavigator textStructureNavigator, IToolTipProviderFactory toolTipProviderFactory)
         {
             _sourceBuffer = sourceBuffer;
             _view = view;
@@ -53,7 +63,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             _view.Caret.PositionChanged += CaretPositionChanged;
             _view.LayoutChanged += ViewLayoutChanged;
             _toolTipProvider = toolTipProviderFactory.GetToolTipProvider(_view);
-            if (_view == LogItem.CurrentSourceLineLogItem?.SourceLineTextView)
+            if (_view == CurrentLogItem?.SourceLineTextView)
             {
                 UpdateAtCaretPosition(_view.Caret.ContainingTextViewLine);
             }
@@ -61,7 +71,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             // TODO: syncronized access.
             if (LoggingTaggerCollection == null)
             {
-                LoggingTaggerCollection = new Dictionary<ITextView, LoggingTagger>();
+                LoggingTaggerCollection = new Dictionary<ITextView, LoggingTagger3>();
             }
             if (!LoggingTaggerCollection.ContainsKey(view))
             {
@@ -81,6 +91,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             //// If a new snapshot wasn't generated, then skip this layout
             //if (e.NewViewState.EditSnapshot != e.OldViewState.EditSnapshot)
+            //{
+            //    UpdateAtCaretPosition(_view.Caret.ContainingTextViewLine);
+            //}
+            if (CurrentLogItem != null)
             {
                 UpdateAtCaretPosition(_view.Caret.ContainingTextViewLine);
             }
@@ -99,6 +113,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public void UpdateAtCaretPosition(ITextViewLine currentViewLine)
         {
+            if (CurrentLogItem == null && !showToolTip)
+            {
+                return;
+            }
+
             _currentViewLine = currentViewLine;
             var tempEvent = TagsChanged;
             if (tempEvent != null)
@@ -106,11 +125,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     new SnapshotSpan(_sourceBuffer.CurrentSnapshot, 0, _sourceBuffer.CurrentSnapshot.Length)));
         }
 
+        bool showToolTip = false;
 
         public IEnumerable<ITagSpan<LoggingTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
-            if (LogItem.CurrentSourceLineLogItem?.SourceLineTextView != _view)
+            if (CurrentLogItem?.SourceLineTextView != _view)
             {
+                _toolTipProvider.ClearToolTip();
                 Debug.WriteLine("LogItem.CurrentSourceLineLogItem?.SourceLineTextView != _view");
                 yield break;
             }
@@ -128,26 +149,51 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 yield break;
             }
 
-            bool showToolTip = false;
+            showToolTip = false;
 
-            if (spans.Count > 0)
+            if (spans.Count > 0 &&  this.IsCaretAtLine())
             {
-                // look for 'WriteLog' occurrences
-                foreach (SnapshotSpan span in _textSearchService.FindAll(new FindData(LogMethodName,
-                    spans[0].Snapshot, 
-                    FindOptions.WholeWord | FindOptions.MatchCase | FindOptions.SingleLine, 
-                    _textStructureNavigator)))
-                {
-                    if (_currentViewLine.ContainsBufferPosition(span.Start))
-                    {
-                        yield return new TagSpan<LoggingTag>(span, new LoggingTag());
-                        showToolTip = true;
-                        string text;
 
-                        // TODO: handle null return of GetTextViewLineSpan
-                        ShowToolTip(EditorSpanHelpers.GetTextViewLineSpan(_view, _currentViewLine, out text).Value);
-                    }
+                ITextSnapshotLine textLine = _sourceBuffer.CurrentSnapshot.GetLineFromLineNumber(
+                    CurrentLogItem.SourceLine - 1);
+                int pos = textLine.GetText().IndexOf(LogMethodName);
+                if (pos < 0)
+                {
+                    yield break;
                 }
+
+                var span = new SnapshotSpan(textLine.Start + pos, LogMethodName.Length);
+
+                if (_currentViewLine.ContainsBufferPosition(span.Start))
+                {
+
+                    yield return new TagSpan<LoggingTag>(span, new LoggingTag());
+                    showToolTip = true;
+                    string text;
+
+                    // TODO: handle null return of GetTextViewLineSpan
+                    ShowToolTip(EditorSpanHelpers.GetTextViewLineSpan(_view, _currentViewLine, out text).Value);
+                }
+
+                //_textSearchService.FindAll(new FindData(LogMethodName,,
+                //                    FindOptions.WholeWord | FindOptions.MatchCase | FindOptions.SingleLine,
+
+                //// look for 'WriteLog' occurrences
+                //foreach (SnapshotSpan span in _textSearchService.FindAll(new FindData(LogMethodName,
+                //    spans[0].Snapshot, 
+                //    FindOptions.WholeWord | FindOptions.MatchCase | FindOptions.SingleLine, 
+                //    _textStructureNavigator)))
+                //{
+                //    if (_currentViewLine.ContainsBufferPosition(span.Start))
+                //    {
+                //        yield return new TagSpan<LoggingTag>(span, new LoggingTag());
+                //        showToolTip = true;
+                //        string text;
+
+                //        // TODO: handle null return of GetTextViewLineSpan
+                //        ShowToolTip(EditorSpanHelpers.GetTextViewLineSpan(_view, _currentViewLine, out text).Value);
+                //    }
+                //}
             }
 
             if (showToolTip)
@@ -157,9 +203,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 _toolTipProvider.ClearToolTip();
             }
+
+            yield break;
         }
 
-        private UIElement ToolTipControl(LogItem logItem)
+        private UIElement ToolTipControl(object logItem)
         {
             var control = new LoggerTooltip();
             control.Width = _view.ViewportWidth;
@@ -169,11 +217,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private void ShowToolTip(SnapshotSpan span)
         {
-            this._toolTipProvider.ClearToolTip();
+            _toolTipProvider.ClearToolTip();
             this._toolTipProvider.ShowToolTip(
                 span.Snapshot.CreateTrackingSpan(
                     span, SpanTrackingMode.EdgeExclusive),
-                    ToolTipControl(LogItem.CurrentSourceLineLogItem), 
+                    ToolTipControl(CurrentLogItem?.LogItem), 
                     PopupStyles.PositionClosest);
         }
     }
@@ -182,7 +230,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     [Export(typeof(IViewTaggerProvider))]
     [TagType(typeof(TextMarkerTag))]
     [ContentType("text")] // only for code portion. Could be changed to csharp to colorize only C# code for example
-    internal class GotoTaggerProvider : IViewTaggerProvider
+    internal class LoggingTaggerProvider : IViewTaggerProvider
     {
         [Import]
         public IToolTipProviderFactory ToolTipProviderFactory { get; set; }
@@ -198,7 +246,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (textView.TextBuffer != buffer)
                 return null;
 
-            return new LoggingTagger(textView, buffer, TextSearchService, 
+            return new LoggingTagger3(textView, buffer, TextSearchService, 
                 TextStructureNavigatorSelector.GetTextStructureNavigator(buffer),
                 ToolTipProviderFactory) as ITagger<T>;
         }
