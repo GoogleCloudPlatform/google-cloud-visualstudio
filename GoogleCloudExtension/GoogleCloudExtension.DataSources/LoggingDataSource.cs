@@ -65,6 +65,33 @@ namespace GoogleCloudExtension.DataSources
         }
 
         /// <summary>
+        /// List all resource type values for the given resource type and resource key.
+        /// </summary>
+        /// <returns>
+        /// async Task. 
+        /// The result can be null if input is invalid.
+        /// </returns>
+        public async Task<IList<string>> ListResourceTypeValuesAsync(string resourceType, string resourceKey)
+        {
+            if (resourceType == null || resourceKey == null)
+            {
+                return null;
+            }
+
+            string parentParam = $"{ProjectFilter}/{resourceType}";
+            return await LoadPagedListAsync(
+                (token) =>
+                {
+                    var request = Service.Projects.ResourceTypes.Values.List(parentParam);
+                    request.PageToken = token;
+                    request.IndexPrefix = resourceKey;
+                    return request.ExecuteAsync();
+                },
+                x => x.ResourceValuePrefixes,
+                x => x.NextPageToken);
+        }
+
+        /// <summary>
         /// Returns the list of MonitoredResourceDescriptor.
         /// The size of entire set of MonitoredResourceDescriptor is small. 
         /// Batch all in one request in case it spans multiple pages.
@@ -88,13 +115,15 @@ namespace GoogleCloudExtension.DataSources
         /// The size of entire set of log names is small. 
         /// Batch all in one request in unlikely case it spans multiple pages.
         /// </summary>
-        public Task<IList<string>> ListProjectLogNamesAsync()
+        public Task<IList<string>> ListProjectLogNamesAsync(string resourceType, IList<string> resourceKeys)
         {
             return LoadPagedListAsync(
                 (token) =>
                 {
                     var request = Service.Projects.Logs.List(ProjectFilter);
                     request.PageToken = token;
+                    request.ResourceType = resourceType;
+                    request.ResourceIndexPrefix = resourceKeys == null ? null : String.Join("/", resourceKeys);
                     return request.ExecuteAsync();
                 },
                 x => x.LogNames,

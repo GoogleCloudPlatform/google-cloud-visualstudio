@@ -511,7 +511,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void Reload()
         {
-            Debug.WriteLine("Entering Reload()");
+            Debug.WriteLine($"Entering Reload(), thread id {Thread.CurrentThread.ManagedThreadId}");
 
             if (String.IsNullOrWhiteSpace(Project))
             {
@@ -522,12 +522,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (ResourceDescriptors?.FirstOrDefault() == null)
             {
                 RequestLogFiltersWrapperAsync(PopulateResourceTypes);
+                Debug.WriteLine("PopulateResourceTypes exit");
                 return;
             }
 
             if (LogIdList == null)
             {
                 RequestLogFiltersWrapperAsync(PopulateLogIds);
+                Debug.WriteLine("PopulateLogIds exit");
                 return;
             }
 
@@ -654,8 +656,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private async Task PopulateLogIds()
         {
-            IList<string> logIdRequestResult = null;
-            logIdRequestResult = await _dataSource.Value.ListProjectLogNamesAsync();
+            IList<string> logIdRequestResult
+                = await _dataSource.Value.ListProjectLogNamesAsync(SelectedResource.Type, null);
             LogIdList = new LogIdsList(logIdRequestResult);
             LogIdList.PropertyChanged += OnPropertyChanged;
             Reload();
@@ -663,19 +665,27 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            string[] _filterProperties = new string[] {
-                nameof(SelectedLogSeverity),
-                nameof(SelectedResource),
-                nameof(LogIdsList.SelectedLogId),
-            };
-            if (_filterProperties.Contains(e.PropertyName))
+            switch (e.PropertyName)
             {
-                Reload();
+                case nameof(SelectedTimeZone):
+                    OnTimeZoneChanged();
+                    break;
+                case nameof(SelectedResource):
+                    LogIdList = null;
+                    RequestLogFiltersWrapperAsync(PopulateLogIds);
+                    break;
+                case nameof(LogIdsList.SelectedLogId):
+                    if (LogIdList != null)
+                    {
+                        Reload();
+                    }
+                    break;
+                case nameof(SelectedLogSeverity):
+                    Reload();
+                    break;
+                default:
+                    break;
             }
-            else if (e.PropertyName == nameof(SelectedTimeZone))
-            {
-                OnTimeZoneChanged();
-            }            
         }
 
         private void OnTimeZoneChanged()
