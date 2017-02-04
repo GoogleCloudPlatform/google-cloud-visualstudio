@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
+using Google.Apis.Logging.v2.Data.Extensions;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
