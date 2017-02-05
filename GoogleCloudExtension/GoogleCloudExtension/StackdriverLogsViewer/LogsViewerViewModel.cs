@@ -167,6 +167,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             set { SetValueAndRaise(ref _selectedLogSeverity, value); }
         }
 
+        private List<MenuItemViewModel> _resourceKeysCollection;
+        public List<MenuItemViewModel> ResourceKeysCollection
+        {
+            get { return _resourceKeysCollection; }
+            private set { SetValueAndRaise(ref _resourceKeysCollection, value); }
+        }
+
         /// <summary>
         /// Gets all resources types.
         /// </summary>
@@ -649,6 +656,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
             newOrderDescriptors.AddRange(descriptors.Where(x => !s_defaultResourceSelections.Contains(x.Type)));
             ResourceDescriptors = newOrderDescriptors;  // This will set the selected item to first element.
+
+            var resourceKeyItems = ResourceDescriptors.Select(x => 
+                new ResourceTypeItem(_resourceKeys.FirstOrDefault(item => item.Type == x.Type)));
+
+            var menuViewModel = new MenuItemViewModel();
+            menuViewModel.Header = "Select Resource Type";
+            menuViewModel.MenuItems = new ObservableCollection<MenuItemViewModel>(resourceKeyItems);
+            var list = new List<MenuItemViewModel>();
+            list.Add(menuViewModel);
+            ResourceKeysCollection = list;
         }
 
         /// <summary>
