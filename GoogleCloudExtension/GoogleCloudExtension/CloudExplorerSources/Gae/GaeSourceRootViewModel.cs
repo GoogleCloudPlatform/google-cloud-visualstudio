@@ -119,20 +119,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 IList<ServiceViewModel> services = await LoadServiceList();
 
                 Children.Clear();
-                if (services == null)
+                foreach (var item in services)
                 {
-                    Children.Add(s_errorPlaceholder);
+                    Children.Add(item);
                 }
-                else
+                if (Children.Count == 0)
                 {
-                    foreach (var item in services)
-                    {
-                        Children.Add(item);
-                    }
-                    if (Children.Count == 0)
-                    {
-                        Children.Add(s_noItemsPlacehoder);
-                    }
+                    Children.Add(s_noItemsPlacehoder);
                 }
                 EventsReporterWrapper.ReportEvent(GaeServicesLoadedEvent.Create(CommandStatus.Success));
             }
