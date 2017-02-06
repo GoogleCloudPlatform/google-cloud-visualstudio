@@ -93,11 +93,11 @@ namespace GoogleCloudExtension.DataSources
                 {
                     var request = _resourceTypesResource.Values.List(parentParam);
                     request.PageToken = token;
-                    request.PageSize = 10;
-                    request.Depth = 1;
                     request.IndexPrefix = resourceKey;
                     return request.ExecuteAsync();
                 },
+                x => x.ResourceValuePrefixes,
+                x => x.NextPageToken);
                 x => x.ResourceValuePrefixes,
                 x => x.NextPageToken);
         }
