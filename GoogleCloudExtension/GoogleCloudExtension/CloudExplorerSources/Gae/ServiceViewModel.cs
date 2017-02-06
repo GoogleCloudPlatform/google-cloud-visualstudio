@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private bool _resourcesLoaded = false;
 
-        private bool _showOnlyFlexVersions = true;
+        private bool _showOnlyFlexVersions = false;
         private bool _showOnlyDotNetRuntimes = false;
         private bool _showOnlyVersionsWithTraffic = false;
 
@@ -216,12 +216,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 .OrderByDescending(x => x.TrafficAllocation);
             if (ShowOnlyFlexVersions)
             {
-                versions = versions.Where(x => x.version.Vm ?? false);
+                versions = versions.Where(x => x.version.Env == GaeVersionExtensions.FlexibleEnvironment);
             }
             if (ShowOnlyDotNetRuntimes)
             {
-                versions = versions.Where(
-                    x => x.version?.Runtime.Equals(GaeVersionExtensions.DotNetRuntime) ?? false);
+                versions = versions.Where(x => x.version.Runtime == GaeVersionExtensions.DotNetRuntime);
             }
             if (ShowOnlyVersionsWithTraffic)
             {

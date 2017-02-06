@@ -364,7 +364,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
                 Children.Add(s_errorPlaceholder);
                 EventsReporterWrapper.ReportEvent(GaeInstancesLoadedEvent.Create(CommandStatus.Failure));
-                throw new CloudExplorerSourceException(ex.Message, ex);
             }
         }
 

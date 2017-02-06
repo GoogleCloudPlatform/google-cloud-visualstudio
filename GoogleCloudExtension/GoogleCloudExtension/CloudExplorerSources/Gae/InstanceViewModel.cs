@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             _instance = instance;
             root = _owner.root;
 
-            Caption = _instance.VmName;
+            Caption = _instance.Id;
             UpdateIcon();
 
             var menuItems = new List<MenuItem>
