@@ -30,12 +30,12 @@ namespace GoogleCloudExtension.GcsFileBrowser
         /// <summary>
         /// The name of the item, file or directory.
         /// </summary>
-        public string Name { get; private set; }
+        public string BlobName { get; private set; }
 
         /// <summary>
         /// The leaf name in the path, i.e. "file.txt" if the path is "dir1/dir2/file.txt".
         /// </summary>
-        public string FileName { get; private set; }
+        public string LeafName { get; private set; }
 
         /// <summary>
         /// Whether this is an error message.
@@ -70,7 +70,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         /// <summary>
         /// The full gs://... path to the item.
         /// </summary>
-        public string GcsPath => $"gs://{Bucket}/{Name}";
+        public string GcsPath => $"gs://{Bucket}/{BlobName}";
 
         public GcsRow() { }
 
@@ -84,8 +84,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
             new GcsRow
             {
                 Bucket = bucket,
-                Name = name,
-                FileName = GetLeafName(name),
+                BlobName = name,
+                LeafName = GetLeafName(name),
                 IsDirectory = true,
             };
 
@@ -98,11 +98,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
             new GcsRow
             {
                 Bucket = obj.Bucket,
-                Name = obj.Name,
+                BlobName = obj.Name,
                 IsFile = true,
                 Size = obj.Size.HasValue ? obj.Size.Value : 0ul,
                 LastModified = obj.Updated?.ToString() ?? "Unknown",
-                FileName = GetLeafName(obj.Name),
+                LeafName = GetLeafName(obj.Name),
                 ContentType = obj.ContentType ?? "application/octet-stream",
             };
 
@@ -114,7 +114,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         public static GcsRow CreateErrorRow(string message) =>
             new GcsRow
             {
-                FileName = message,
+                LeafName = message,
                 IsError = true
             };
 

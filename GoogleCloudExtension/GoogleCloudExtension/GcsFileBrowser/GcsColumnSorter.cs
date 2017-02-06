@@ -81,7 +81,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             // If both items are directories then we always sort them alphabetically by name.
             if (lhs.IsDirectory && rhs.IsDirectory)
             {
-                var comparison = lhs.FileName.CompareTo(rhs.FileName);
+                var comparison = lhs.LeafName.CompareTo(rhs.LeafName);
                 return descending && SortDirectories ? -1 * comparison : comparison;
             }
 

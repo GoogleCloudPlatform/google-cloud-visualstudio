@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         private readonly GcsRow _directory;
 
         public GcsDirectoryItem(GcsRow row) :
-            base(Resources.GcsFileBrowserDirectoryItemDisplayName, row.FileName)
+            base(Resources.GcsFileBrowserDirectoryItemDisplayName, row.LeafName)
         {
             _directory = row;
         }
@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         [LocalizedCategory(nameof(Resources.GcsFileBrowserDirectoryCategory))]
         [LocalizedDisplayName(nameof(Resources.GcsFileBrowserNameDisplayName))]
         [LocalizedDescription(nameof(Resources.GcsFileBrowserDirectoryNameDescription))]
-        public string Name => _directory.FileName;
+        public string Name => _directory.LeafName;
 
         /// <summary>
         /// The full gs://... path to the directory.

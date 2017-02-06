@@ -110,7 +110,7 @@
                   SelectionChanged="DataGrid_SelectionChanged">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{x:Static ext:Resources.GcsFileBrowserNameHeader}"
-                                        SortMemberPath="FileName"
+                                        SortMemberPath="LeafName"
                                         utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter FileName, SortDirectories=True}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -124,7 +124,7 @@
                                 </Grid>
                                 
                                 <!-- The name of the object. -->
-                                <TextBlock Text="{Binding FileName}" Style="{StaticResource CommonTextStyle}" />
+                                <TextBlock Text="{Binding LeafName}" Style="{StaticResource CommonTextStyle}" />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>

@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.NamePrompt
         /// <summary>
         /// Prompts the user for a name.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The name chosen by the user.</returns>
         public static string PromptUser()
         {
             var dialog = new NamePromptWindow();

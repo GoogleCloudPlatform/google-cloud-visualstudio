@@ -257,7 +257,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         {
             if (row.IsDirectory)
             {
-                UpdateCurrentState(row.Name);
+                UpdateCurrentState(row.BlobName);
             }
             else
             {
@@ -296,17 +296,17 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 downloadOperations.AddRange(SelectedItems
                     .Where(x => x.IsFile)
                     .Select(x => new GcsFileOperation(
-                        source: x.Name,
+                        source: x.BlobName,
                         bucket: Bucket.Name,
-                        destination: Path.Combine(downloadRoot, x.FileName))));
+                        destination: Path.Combine(downloadRoot, x.LeafName))));
 
                 var subDirs = new HashSet<string>();
                 foreach (var dir in SelectedItems.Where(x => x.IsDirectory))
                 {
-                    var files = await _dataSource.GetGcsFilesFromPrefixAsync(Bucket.Name, dir.Name);
+                    var files = await _dataSource.GetGcsFilesFromPrefixAsync(Bucket.Name, dir.BlobName);
                     foreach (var file in files)
                     {
-                        var relativeFilePath = Path.Combine(dir.FileName, file.RelativeName.Replace('/', '\\'));
+                        var relativeFilePath = Path.Combine(dir.LeafName, file.RelativeName.Replace('/', '\\'));
                         var absoluteFilePath = Path.Combine(downloadRoot, relativeFilePath);
 
                         // Create the file operation for this file.
@@ -391,13 +391,13 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 deleteOperations.AddRange(SelectedItems
                    .Where(x => x.IsFile)
                    .Select(x => new GcsFileOperation(
-                       source: x.Name,
+                       source: x.BlobName,
                        bucket: Bucket.Name,
                        destination: null)));
 
                 var filesInSubdirectories = await _dataSource.GetGcsFilesFromPrefixesAsync(
                     Bucket.Name,
-                    SelectedItems.Where(x => x.IsDirectory).Select(x => x.Name));
+                    SelectedItems.Where(x => x.IsDirectory).Select(x => x.BlobName));
                 deleteOperations.AddRange(filesInSubdirectories.Select(x => new GcsFileOperation(
                     source: x.Name,
                     bucket: Bucket.Name)));

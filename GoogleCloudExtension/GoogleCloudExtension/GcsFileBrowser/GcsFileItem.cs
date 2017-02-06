@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         private readonly GcsRow _file;
 
         public GcsFileItem(GcsRow row) :
-            base(Resources.GcsFileBrowserFileItemDisplayName, row.FileName)
+            base(Resources.GcsFileBrowserFileItemDisplayName, row.LeafName)
         {
             _file = row;
         }
@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         [LocalizedCategory(nameof(Resources.GcsFileBrowserFileCategory))]
         [LocalizedDisplayName(nameof(Resources.GcsFileBrowserNameDisplayName))]
         [LocalizedDescription(nameof(Resources.GcsFileBrowserFileNameDescription))]
-        public string Name => _file.FileName;
+        public string Name => _file.LeafName;
 
         /// <summary>
         /// The size of the file.
