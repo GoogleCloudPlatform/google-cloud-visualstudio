@@ -128,10 +128,11 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="resourceType">The resource type, i.e gce_instance.</param>
         /// <param name="resourcePrefixList">
-        /// A list of resource prefixes.
+        /// Optional, can be null. 
+        /// A list of resource prefixes. 
         /// i.e,  for resource type app engine, the prefixe can be the module ids. 
         /// </param>
-        public Task<IList<string>> ListProjectLogNamesAsync(string resourceType, IList<string> resourcePrefixList)
+        public Task<IList<string>> ListProjectLogNamesAsync(string resourceType, IList<string> resourcePrefixList = null)
         {
             return LoadPagedListAsync(
                 (token) =>
