@@ -229,7 +229,7 @@
         </Setter>
     </Style>
     
-    <!-- TopLevelHeader Blue -->
+    <!-- TopLevelHeader  -->
     <ControlTemplate x:Key="{x:Static MenuItem.TopLevelHeaderTemplateKey}"
                  TargetType="local:SearchMenuItem">
         <Border Name="Border" BorderThickness="1" BorderBrush="LightGray"
@@ -257,7 +257,12 @@
                                               VerticalAlignment="Stretch"
                                                 Padding = "8,5,8,5"      
                                    Text="{TemplateBinding Header}"
-                                       >
+                                   TextWrapping="NoWrap"
+                                   TextTrimming="CharacterEllipsis"
+                                   >
+                            <TextBlock.ToolTip>
+                                <ToolTip Content="{TemplateBinding Header}" />
+                            </TextBlock.ToolTip>
                         </TextBlock>
                         <Border Grid.Column="1" HorizontalAlignment="Right" 
                                     >
@@ -340,10 +345,12 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <!-- SubmenuItem AliceBlue -->
+    <!-- SubmenuItem  -->
     <ControlTemplate  x:Key="{x:Static MenuItem.SubmenuItemTemplateKey}" 
   TargetType="local:SearchMenuItem">
-        <Border Name="Border" Width="160"  Background="AliceBlue">
+        <Border 
+            Name="Border"
+            Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Menu}}}">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" SharedSizeGroup="Icon"/>
@@ -376,6 +383,8 @@
                 <TextBlock 
                     Name="HeaderHost"
                     Grid.Column="1"
+                    HorizontalAlignment="Left"
+                    Padding="8,5,8,5"
                     Text="{TemplateBinding Header}"
                     />
                 <TextBlock x:Name="InputGestureText"
@@ -457,8 +466,12 @@
                                       BorderBrush="{StaticResource SolidBorderBrush}"
                                       BorderThickness="1" >
                         <StackPanel>
-                            <TextBox Name="PART_searchTextBox"  />
+                            <local:SearchMenuItem Header="All" />
                             <Separator />
+                            <StackPanel Margin="8,5,8,5">
+                                <TextBlock Text="Search in prefix:" Margin="0,0,0,3" />
+                                <TextBox Name="PART_searchTextBox" Padding="8,5,8,5"  />
+                            </StackPanel>
                             <ScrollViewer CanContentScroll="True" Style="{StaticResource MenuScrollViewer}">
                                 <StackPanel  
                                         IsItemsHost="True" 
@@ -503,7 +516,7 @@
     <!-- MenuItem Style -->
     <Style  TargetType="local:SearchMenuItem">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <Setter Property="Command" Value="{Binding Command}" />
+        <Setter Property="Command" Value="{Binding MenuCommand}" />
         <Setter Property="Header" Value="{Binding Header}" />
         <Style.Triggers>
             <Trigger Property="Role" Value="TopLevelHeader">

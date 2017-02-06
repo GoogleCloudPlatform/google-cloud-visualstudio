@@ -33,7 +33,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// <summary>
     /// The view model for LogsViewerToolWindow.
     /// </summary>
-    public class LogsViewerViewModel : ViewModelBase
+    public class LogsViewerViewModel : ViewModelBase, IMenuItem
     {
         private const string AdvancedHelpLink = "https://cloud.google.com/logging/docs/view/advanced_filters";
         private const int DefaultPageSize = 100;
@@ -167,11 +167,50 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             set { SetValueAndRaise(ref _selectedLogSeverity, value); }
         }
 
-        private List<MenuItemViewModel> _resourceKeysCollection;
-        public List<MenuItemViewModel> ResourceKeysCollection
+        private IMenuItem _selectedMenuItem;
+        private ResourceKeys _selectedResourceKey;
+        private string _selectedHealder;
+        public string Header
+        {
+            get { return _selectedHealder; }
+            set { SetValueAndRaise(ref _selectedHealder, value); }
+        }
+        private ObservableCollection<IMenuItem> _resourceKeysCollection;
+        public ObservableCollection<IMenuItem> MenuItems
         {
             get { return _resourceKeysCollection; }
             private set { SetValueAndRaise(ref _resourceKeysCollection, value); }
+        }
+        public IMenuItem MenuItemParent { get; }
+        public ProtectedCommand MenuCommand { get; }
+
+        public void MenuCommandBubblingCallback(IMenuItem caller)
+        {
+            if (caller == null || _selectedMenuItem == caller)
+            {
+                return;
+            }
+
+            _selectedMenuItem = caller;
+
+            StringBuilder selected = new StringBuilder();
+            while ( caller != this)
+            {
+                selected.Insert(0, caller.Header);
+                if (caller.MenuItemParent != this)
+                {
+                    selected.Insert(0, ".");
+                }
+                else
+                {
+                    _selectedResourceKey = (caller as ResourceTypeItem).ResourceTypeKeys;
+                }
+                caller = caller.MenuItemParent;
+            }
+
+            Header = selected.ToString();
+            LogIdList = null;
+            RequestLogFiltersWrapperAsync(PopulateLogIds);
         }
 
         /// <summary>
@@ -527,7 +566,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            if (ResourceDescriptors?.FirstOrDefault() == null)
+            if (ResourceDescriptors?.FirstOrDefault() == null || _selectedMenuItem == null)
             {
                 RequestLogFiltersWrapperAsync(PopulateResourceTypes);
                 Debug.WriteLine("PopulateResourceTypes exit");
@@ -658,14 +697,38 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             ResourceDescriptors = newOrderDescriptors;  // This will set the selected item to first element.
 
             var resourceKeyItems = ResourceDescriptors.Select(x => 
-                new ResourceTypeItem(_resourceKeys.FirstOrDefault(item => item.Type == x.Type)));
+                new ResourceTypeItem(_resourceKeys.FirstOrDefault(item => item.Type == x.Type), this));
 
-            var menuViewModel = new MenuItemViewModel();
-            menuViewModel.Header = "Select Resource Type";
-            menuViewModel.MenuItems = new ObservableCollection<MenuItemViewModel>(resourceKeyItems);
-            var list = new List<MenuItemViewModel>();
-            list.Add(menuViewModel);
-            ResourceKeysCollection = list;
+            MenuItems = new ObservableCollection<IMenuItem>(resourceKeyItems);
+            if (MenuItems.Count != 0)
+            {
+                MenuCommandBubblingCallback(MenuItems.FirstOrDefault());
+            }
+            else
+            {
+                // TODO: show warning.
+            }
+        }
+
+        public IEnumerable<string> GetResourceValues(ResourceKeys resourceKeys)
+        {
+            try
+            {
+                var values = _dataSource.Value.ListResourceTypeValues(resourceKeys.Type, null);
+                return values?.Select(x => x.Trim(new char[] { '/' }));
+            }
+            catch (Exception ex)
+            {
+                if (ex is DataSourceException)
+                {
+                    /// If it fails, show a tip, let refresh button retry it.
+                    RequestErrorMessage = ex.Message;
+                    ShowRequestErrorMessage = true;
+                    return null;
+                }
+
+                throw;
+            }
         }
 
         /// <summary>
@@ -674,8 +737,18 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private async Task PopulateLogIds()
         {
+            if (_selectedMenuItem == null)
+            {
+                Debug.WriteLine("Code bug, _selectedMenuItem should not be null");
+            }
+            List<string> keys = null;
+            if (_selectedMenuItem is ResourceValueItem)
+            {
+                keys = new List<string>();
+                keys.Add(_selectedMenuItem.Header);
+            }
             IList<string> logIdRequestResult
-                = await _dataSource.Value.ListProjectLogNamesAsync(SelectedResource.Type, null);
+                = await _dataSource.Value.ListProjectLogNamesAsync(_selectedResourceKey.Type, keys);
             LogIdList = new LogIdsList(logIdRequestResult);
             LogIdList.PropertyChanged += OnPropertyChanged;
             Reload();
@@ -725,9 +798,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             Debug.WriteLine("Entering ComposeSimpleFilters()");
 
             StringBuilder filter = new StringBuilder();
-            if (SelectedResource != null)
+            if (_selectedResourceKey != null)
             {
-                filter.AppendLine($"resource.type=\"{SelectedResource.Type}\"");
+                filter.AppendLine($"resource.type=\"{_selectedResourceKey.Type}\"");
+            }
+
+            if (_selectedMenuItem != null && _selectedMenuItem is ResourceValueItem)
+            {
+                var valueItem = _selectedMenuItem as ResourceValueItem;
+                string lableName = _selectedResourceKey.Keys?[0];
+                // resource.labels.firewall_rule_id="3944672754892959708"
+                filter.AppendLine($"resource.labels.{lableName}=\"{valueItem.Header}\"");
             }
 
             if (SelectedLogSeverity != null && SelectedLogSeverity.Severity != LogSeverity.All)

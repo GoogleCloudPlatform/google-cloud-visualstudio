@@ -186,20 +186,24 @@
                         SelectedItem="{Binding SelectedResource, Mode=TwoWay}"
                         DisplayMemberPath="DisplayName" 
                         IsSynchronizedWithCurrentItem="true" />-->
-                    <local:MyMenu 
+                    <Menu
                         Margin="0,0,6,0"
                         VerticalAlignment="Center"
-                        Width="200"
-                        ItemsSource="{Binding ResourceKeysCollection}" >
+                        Width="200" 
+                        >
+                        <local:SearchMenuItem Header="{Binding Header}"
+                            ItemsSource="{Binding MenuItems}" >
 
-                        <Menu.ItemTemplate>
-                            <HierarchicalDataTemplate 
-                                DataType="{x:Type local:MenuItemViewModel}" 
-                                ItemsSource="{Binding Path=MenuItems}">
-                                <TextBlock Text="{Binding Header}" />
-                            </HierarchicalDataTemplate>
-                        </Menu.ItemTemplate>
-                    </local:MyMenu>
+                            <local:SearchMenuItem.ItemTemplate>
+                                <HierarchicalDataTemplate 
+                                    DataType="{x:Type local:MenuItemViewModel}" 
+                                    ItemsSource="{Binding MenuItems}">
+                                    
+                                    <TextBlock Text="{Binding Header}" />
+                                </HierarchicalDataTemplate>
+                            </local:SearchMenuItem.ItemTemplate>
+                        </local:SearchMenuItem>
+                    </Menu>
 
                     <controls:FixBackgroundComboBox 
                         Margin="0,0,6,0"

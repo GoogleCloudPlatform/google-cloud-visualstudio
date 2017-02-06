@@ -17,20 +17,20 @@ using System.Diagnostics;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
-    public class MyMenu : Menu
-    {
-        public MyMenu()
-        {
-            // Should get the default style & template since styles are not inherited
-            Style = FindResource(typeof(Menu)) as Style;
-        }
+    //public class MyMenu : Menu
+    //{
+    //    public MyMenu()
+    //    {
+    //        // Should get the default style & template since styles are not inherited
+    //        // Style = FindResource(typeof(Menu)) as Style;
+    //    }
 
-        protected override DependencyObject GetContainerForItemOverride()
-        {
-            var container = new SearchMenuItem();
-            return container;
-        }
-    }
+    //    protected override DependencyObject GetContainerForItemOverride()
+    //    {
+    //        var container = new SearchMenuItem();
+    //        return container;
+    //    }
+    //}
 
     /// <summary>
     /// Follow steps 1a or 1b and then 2 to use this custom control in a XAML file.
@@ -100,6 +100,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             ////binding.Source = Command;  // view model?
 
             //BindingOperations.SetBinding(this, HeaderProperty, binding);
+
+            this.MouseEnter += SearchMenuItem_MouseEnter;
+        }
+
+        private void SearchMenuItem_MouseEnter(object sender, MouseEventArgs e)
+        {
+            // throw new NotImplementedException();
         }
 
         private void _searchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -108,11 +115,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (sender != _searchBox)
             {
                 Debug.WriteLine("Expect sender is _searchBox");
-                return;
-            }
-
-            if (String.IsNullOrWhiteSpace(_searchBox.Text))
-            {
                 return;
             }
 
@@ -128,7 +130,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     continue;
                 }
 
-                menuItem.Visibility = label.StartsWith(prefix, StringComparison.CurrentCultureIgnoreCase) ?  
+                menuItem.Visibility = prefix == "" || label.StartsWith(prefix, StringComparison.CurrentCultureIgnoreCase) ?  
                     Visibility.Visible : Visibility.Collapsed;
             }
         }

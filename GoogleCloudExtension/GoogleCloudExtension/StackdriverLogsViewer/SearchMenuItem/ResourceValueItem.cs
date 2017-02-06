@@ -14,7 +14,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 {
     public class ResourceValueItem : MenuItemViewModel
     {
-        public ResourceValueItem(string resourceKey)
+        public ResourceValueItem(string resourceKey, IMenuItem parent) :  base(parent)
         {
             Header = resourceKey;
         }

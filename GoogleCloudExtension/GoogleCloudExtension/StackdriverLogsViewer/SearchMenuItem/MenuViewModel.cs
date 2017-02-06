@@ -12,24 +12,46 @@ using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
-    public class MenuItemViewModel : Model
+    public interface IMenuItem 
     {
-        public MenuItemViewModel()
-        {
-            Command = new ProtectedCommand(Execute);
-        }
+        string Header { get; set; }
+
+        ObservableCollection<IMenuItem> MenuItems { get; }
+
+        ProtectedCommand MenuCommand { get; }
+
+        IMenuItem MenuItemParent { get; }
+
+        void MenuCommandBubblingCallback(IMenuItem caller);
+    }
+
+    public class MenuItemViewModel : Model, IMenuItem
+    {
+        public IMenuItem MenuItemParent { get; }
 
         public string Header { get; set; }
 
-        public ObservableCollection<MenuItemViewModel> MenuItems { get; set; }
+        public ObservableCollection<IMenuItem> MenuItems { get; }
 
-        public ProtectedCommand Command { get; }
+        public ProtectedCommand MenuCommand { get; }
 
+        public MenuItemViewModel(IMenuItem parent)
+        {
+            MenuItemParent = parent;
+            MenuCommand = new ProtectedCommand(Execute);
+            MenuItems = new ObservableCollection<IMenuItem>();
+        }
 
-        private void Execute()
+        public void MenuCommandBubblingCallback(IMenuItem caller)
+        {
+            MenuItemParent.MenuCommandBubblingCallback(caller);
+        }
+
+        protected virtual void Execute()
         {
             // (NOTE: In a view model, you normally should not use MessageBox.Show()).
-            MessageBox.Show("Clicked at " + Header);
+            // MessageBox.Show("Clicked at " + Header);
+            MenuItemParent.MenuCommandBubblingCallback(this);
         }
     }
 }
