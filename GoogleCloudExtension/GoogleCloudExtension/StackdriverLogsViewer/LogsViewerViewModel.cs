@@ -710,11 +710,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
         }
 
-        public IEnumerable<string> GetResourceValues(ResourceKeys resourceKeys)
+        public async Task<IEnumerable<string>> GetResourceValues(ResourceKeys resourceKeys)
         {
             try
             {
-                var values = _dataSource.Value.ListResourceTypeValues(resourceKeys.Type, null);
+                var values = await _dataSource.Value.ListResourceTypeValuesAsync(resourceKeys.Type, null);
                 return values?.Select(x => x.Trim(new char[] { '/' }));
             }
             catch (Exception ex)

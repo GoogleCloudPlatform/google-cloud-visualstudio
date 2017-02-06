@@ -76,19 +76,19 @@ namespace GoogleCloudExtension.DataSources
         /// <summary>
         /// List all resource type values for the given resource type and resource key.
         /// </summary>
-        /// <param name="resourceType">The resource type.</param>
+        /// <param name="resourceType">Required, the resource type.</param>
         /// <param name="resourceKey">Optional, the resource key as prefix.</param>
         /// <returns>
-        /// The result can be null if resourceType is null.
+        /// A task with result of a list of resource keys.
         /// </returns>
-        public IList<string> ListResourceTypeValues(string resourceType, string resourceKey)
+        public Task<IList<string>> ListResourceTypeValuesAsync(string resourceType, string resourceKey)
         {
             if (resourceType == null)
             {
                 throw new ArgumentNullException(nameof(resourceType));
             }
             string parentParam = $"{ProjectFilter}/resourceTypes/{resourceType}";
-            return LoadPagedList(
+            return LoadPagedListAsync(
                 (token) =>
                 {
                     var request = _resourceTypesResource.Values.List(parentParam);
@@ -96,7 +96,7 @@ namespace GoogleCloudExtension.DataSources
                     request.PageSize = 10;
                     request.Depth = 1;
                     request.IndexPrefix = resourceKey;
-                    return request.Execute();
+                    return request.ExecuteAsync();
                 },
                 x => x.ResourceValuePrefixes,
                 x => x.NextPageToken);

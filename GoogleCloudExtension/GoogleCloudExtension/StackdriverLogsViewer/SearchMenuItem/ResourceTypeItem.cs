@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,39 +15,40 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 {
     public class ResourceTypeItem : MenuItemViewModel
     {
-        private bool _hasLoadedValues;
+        private bool HasPopulatedSubMenus;
         public ResourceKeys ResourceTypeKeys { get; }
 
         public ResourceTypeItem(ResourceKeys resourceKeys, IMenuItem parent) : base(parent)
         {
             ResourceTypeKeys = resourceKeys;
             Header = ResourceTypeKeys.Type;
-            LoadSubMenuItem();
+            //LoadSubMenuItem();
         }
 
-        protected override void Execute()
-        {
-            if (_hasLoadedValues)
-            {
-                base.Execute();
-            }
-        }
+        //protected override void Execute()
+        //{
+        //    if (HasPopulatedSubMenus)
+        //    {
+        //        base.Execute();
+        //    }
+        //}
 
         private LogsViewerViewModel LogsViewerModel => MenuItemParent as LogsViewerViewModel;
 
-        private void LoadSubMenuItem()
+        private void LoadSubMenuItems(IEnumerable<string> resourceKeyValues)
         {
-            _hasLoadedValues = true;
-            if (ResourceTypeKeys.Keys != null && ResourceTypeKeys.Keys.Count > 0)
+            if (HasPopulatedSubMenus)
             {
-                var values = LogsViewerModel.GetResourceValues(ResourceTypeKeys);
-                if (values != null)
-                {
-                    foreach (var menuItem in values.Select(x => new ResourceValueItem(x, this)))
-                    {
-                        MenuItems.Add(menuItem);
-                    }
-                }
+                Debug.WriteLine("LoadSubMenuItems has already been called before, skip.");
+                return;
+            }
+            HasPopulatedSubMenus = true;
+            if (resourceKeyValues == null) {
+                return;
+            }
+            foreach (var menuItem in resourceKeyValues.Select(x => new ResourceValueItem(x, this)))
+            {
+                MenuItems.Add(menuItem);
             }
         }
     }

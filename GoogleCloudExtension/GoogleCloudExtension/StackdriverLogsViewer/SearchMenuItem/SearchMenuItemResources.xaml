@@ -516,6 +516,7 @@
     <!-- MenuItem Style -->
     <Style  TargetType="local:SearchMenuItem">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="IsSubmenuOpen" Value="{Binding IsSubmenuOpen}" />
         <Setter Property="Command" Value="{Binding MenuCommand}" />
         <Setter Property="Header" Value="{Binding Header}" />
         <Style.Triggers>
