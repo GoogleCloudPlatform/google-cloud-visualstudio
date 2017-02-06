@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         public event EventHandler ItemChanged;
 
-        public object Item => GetItem();
+        public object Item => new VersionItem(_version);
 
         public VersionViewModel(
             GaeSourceRootViewModel owner,
@@ -94,8 +94,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             UpdateIcon();
             UpdateMenu();
         }
-
-        public VersionItem GetItem() => new VersionItem(_version);
 
         /// <summary>
         /// Update the context menu based on the current state of the version.

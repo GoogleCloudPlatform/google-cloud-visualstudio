@@ -46,13 +46,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         };
 
         private readonly GaeSourceRootViewModel _owner;
-        private readonly IList<VersionViewModel> _versions;
+        private Service _service;
+        private IList<VersionViewModel> _versions;
 
         private bool _showOnlyFlexVersions = false;
         private bool _showOnlyDotNetRuntimes = false;
         private bool _showOnlyVersionsWithTraffic = false;
 
-        public Service Service { get; private set; }
+        public Service Service => _service;
 
         public event EventHandler ItemChanged;
 
@@ -109,22 +110,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             _owner = owner;
             _versions = versions;
-
-            Service = service;
+            _service = service;
 
             Caption = Service.Id;
             Icon = s_serviceIcon.Value;
 
-            foreach (var version in versions)
-            {
-                Children.Add(version);
-            }
-            if (Children.Count == 0)
-            {
-                Children.Add(s_noItemsPlacehoder);
-            }
-
             UpdateContextMenu();
+            PresentViewModels();
         }
 
         /// <summary>
@@ -337,7 +329,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 {
                     throw new DataSourceException(operation.Error.Message);
                 }
-                Service = await datasource.GetServiceAsync(Service.Id);
+                _service = await datasource.GetServiceAsync(Service.Id);
                 Caption = Service.Id;
 
                 EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Success));
