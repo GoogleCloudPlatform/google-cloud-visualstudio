@@ -21,7 +21,8 @@ using System.Windows.Markup;
 namespace GoogleCloudExtension.GcsFileBrowser
 {
     /// <summary>
-    /// This class sorts the GcsItem instances with directories always first. Because this class is
+    /// This class sorts the <seealso cref="GcsRow"/> instances ensuring that those <seealso cref="GcsRow"/> instances
+    /// that represent directories are always first in the sorting order. Because this class is
     /// a <seealso cref="MarkupExtension"/> this class is intended to be used directly in Xaml.
     /// </summary>
     public class GcsColumnSorter : MarkupExtension, IColumnSorter
@@ -34,7 +35,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         public string Column { get; set; }
 
         /// <summary>
-        /// Whether directories should always go first.
+        /// Whether directories should follow the direction of the sort or not.
         /// </summary>
         public bool SortDirectories { get; set; }
 
@@ -53,7 +54,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         #region IColumnSorter implementation.
 
         /// <summary>
-        /// This method comapres to <seealso cref="GcsRow"/> instances returns the right ordering
+        /// This method compares to <seealso cref="GcsRow"/> instances returns the right ordering
         /// depending <paramref name="descending"/> and <seealso cref="SortDirectories"/>.
         /// </summary>
         /// <param name="x">The first object to compare.</param>
@@ -77,7 +78,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 return lhs.IsDirectory ? -1 : 1;
             }
 
-            // If both items are directories then we always sort them alphabetically.
+            // If both items are directories then we always sort them alphabetically by name.
             if (lhs.IsDirectory && rhs.IsDirectory)
             {
                 var comparison = lhs.FileName.CompareTo(rhs.FileName);

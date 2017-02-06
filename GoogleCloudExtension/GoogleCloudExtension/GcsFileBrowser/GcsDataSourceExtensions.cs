@@ -49,17 +49,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
             RelativeName = GetRelativeName(name, prefix);
         }
 
-        private static string GetRelativeName(string fullName, string prefix)
-        {
-            if (fullName.StartsWith(prefix))
-            {
-                return fullName.Substring(prefix.Length);
-            }
-            else
-            {
-                return fullName;
-            }
-        }
+        private static string GetRelativeName(string fullName, string prefix) =>
+            fullName.StartsWith(prefix) ? fullName.Substring(prefix.Length) : fullName;
     }
 
     /// <summary>

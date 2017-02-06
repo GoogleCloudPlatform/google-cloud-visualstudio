@@ -33,7 +33,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         public string Name { get; private set; }
 
         /// <summary>
-        /// The path to the item.
+        /// The leaf name in the path, i.e. "file.txt" if the path is "dir1/dir2/file.txt".
         /// </summary>
         public string FileName { get; private set; }
 

@@ -15,11 +15,6 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-//------------------------------------------------------------------------------
-// <copyright file="GcsFileBrowserWindowControl.xaml.cs" company="Company">
-//     Copyright (c) Company.  All rights reserved.
-// </copyright>
-//------------------------------------------------------------------------------
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
