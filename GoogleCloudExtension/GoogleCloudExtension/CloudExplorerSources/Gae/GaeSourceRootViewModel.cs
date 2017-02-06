@@ -150,23 +150,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private async Task<IList<ServiceViewModel>> LoadServiceList()
         {
             var services = await _dataSource.Value.GetServiceListAsync();
-            var result = new List<ServiceViewModel>();
-            foreach (var service in services)
-            {
-                result.Add(await LoadService(service));
-            }
-            return result;
+            var resultTasks = services.Select(x => LoadService(x));
+            return await Task.WhenAll(resultTasks);
         }
 
         private async Task<ServiceViewModel> LoadService(Service service)
         {
             var versions = await _dataSource.Value.GetVersionListAsync(service.Id);
-            var result = new List<VersionViewModel>();
-            foreach (var version in versions)
-            {
-                result.Add(await LoadVersion(service, version));
-            }
-            return new ServiceViewModel(this, service, result);
+            var versionModels = await Task.WhenAll(versions.Select(x => LoadVersion(service, x)));
+            return new ServiceViewModel(
+                this,
+                service,
+                versionModels
+                .OrderByDescending(x => GaeServiceExtensions.GetTrafficAllocation(service, x.Version.Id) ?? 0.0)
+                .ToList());
         }
 
         private async Task<VersionViewModel> LoadVersion(Service service, Google.Apis.Appengine.v1.Data.Version version)
