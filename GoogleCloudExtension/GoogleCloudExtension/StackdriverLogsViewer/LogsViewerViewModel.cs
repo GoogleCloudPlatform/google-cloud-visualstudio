@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
+using Google.Apis.Logging.v2.Data.Extensions;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
@@ -64,6 +65,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// This is the filters combined by all selectors.
         /// </summary>
         private string _filter;
+
+        private IList<ResourceKeys> _resourceKeys;
         private MonitoredResourceDescriptor _selectedResource;
         private IList<MonitoredResourceDescriptor> _resourceDescriptors;
         private LogSeverityItem _selectedLogSeverity = s_logSeveritySelections.LastOrDefault();
@@ -509,7 +512,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void Reload()
         {
-            Debug.WriteLine("Entering Reload()");
+            Debug.WriteLine($"Entering Reload(), thread id {Thread.CurrentThread.ManagedThreadId}");
 
             if (String.IsNullOrWhiteSpace(Project))
             {
@@ -520,12 +523,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (ResourceDescriptors?.FirstOrDefault() == null)
             {
                 RequestLogFiltersWrapperAsync(PopulateResourceTypes);
+                Debug.WriteLine("PopulateResourceTypes exit");
                 return;
             }
 
             if (LogIdList == null)
             {
                 RequestLogFiltersWrapperAsync(PopulateLogIds);
+                Debug.WriteLine("PopulateLogIds exit");
                 return;
             }
 
@@ -629,7 +634,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private async Task PopulateResourceTypes()
         {
-            var descriptors = await _dataSource.Value.GetResourceDescriptorsAsync();
+            _resourceKeys = await _dataSource.Value.ListResourceKeysAsync();
+            var all = await _dataSource.Value.GetResourceDescriptorsAsync();
+            var descriptors = all.Where(x => _resourceKeys.Any(item => item?.Type == x.Type));
             List<MonitoredResourceDescriptor> newOrderDescriptors = new List<MonitoredResourceDescriptor>();
             // Keep the order.
             foreach (var defaultSelection in s_defaultResourceSelections)
@@ -650,8 +657,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private async Task PopulateLogIds()
         {
-            IList<string> logIdRequestResult = null;
-            logIdRequestResult = await _dataSource.Value.ListProjectLogNamesAsync();
+            IList<string> logIdRequestResult
+                = await _dataSource.Value.ListProjectLogNamesAsync(SelectedResource.Type, null);
             LogIdList = new LogIdsList(logIdRequestResult);
             LogIdList.PropertyChanged += OnPropertyChanged;
             Reload();
@@ -659,19 +666,27 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            string[] _filterProperties = new string[] {
-                nameof(SelectedLogSeverity),
-                nameof(SelectedResource),
-                nameof(LogIdsList.SelectedLogId),
-            };
-            if (_filterProperties.Contains(e.PropertyName))
+            switch (e.PropertyName)
             {
-                Reload();
+                case nameof(SelectedTimeZone):
+                    OnTimeZoneChanged();
+                    break;
+                case nameof(SelectedResource):
+                    LogIdList = null;
+                    RequestLogFiltersWrapperAsync(PopulateLogIds);
+                    break;
+                case nameof(LogIdsList.SelectedLogId):
+                    if (LogIdList != null)
+                    {
+                        Reload();
+                    }
+                    break;
+                case nameof(SelectedLogSeverity):
+                    Reload();
+                    break;
+                default:
+                    break;
             }
-            else if (e.PropertyName == nameof(SelectedTimeZone))
-            {
-                OnTimeZoneChanged();
-            }            
         }
 
         private void OnTimeZoneChanged()
