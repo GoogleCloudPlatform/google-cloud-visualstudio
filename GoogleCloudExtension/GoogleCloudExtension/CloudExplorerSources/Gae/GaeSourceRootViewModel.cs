@@ -49,9 +49,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             IsError = true
         };
 
-        public Lazy<GaeDataSource> DataSource;
+        private Lazy<GaeDataSource> _dataSource;
+        private Task<Application> _gaeApplication;
 
-        public Application GaeApplication;
+        public GaeDataSource DataSource => _dataSource.Value;
+
+        public Task<Application> GaeApplication => _gaeApplication;
 
         public override string RootCaption => Resources.CloudExplorerGaeRootNodeCaption;
 
@@ -89,7 +92,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         public override void InvalidateProjectOrAccount()
         {
             Debug.WriteLine("New credentials, invalidating the Google Cloud App Engine source.");
-            DataSource = new Lazy<GaeDataSource>(CreateDataSource);
+            _dataSource = new Lazy<GaeDataSource>(CreateDataSource);
         }
 
         private GaeDataSource CreateDataSource()
@@ -112,12 +115,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             try
             {
                 Debug.WriteLine("Loading list of services.");
-                Task<Application> gaeApplicationTask = DataSource.Value.GetApplicationAsync();
-                Task<List<ServiceViewModel>> servicesTask = LoadServiceList();
-                await Task.WhenAll(gaeApplicationTask, servicesTask);
+                _gaeApplication = _dataSource.Value.GetApplicationAsync();
+                IList<ServiceViewModel> services = await LoadServiceList();
 
-                GaeApplication = gaeApplicationTask.Result;
-                var services = servicesTask.Result;
                 Children.Clear();
                 if (services == null)
                 {
@@ -147,10 +147,32 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
         }
 
-        private async Task<List<ServiceViewModel>> LoadServiceList()
+        private async Task<IList<ServiceViewModel>> LoadServiceList()
         {
-            var services = await DataSource.Value.GetServiceListAsync();
-            return services?.Select(x => new ServiceViewModel(this, x)).ToList();
+            var services = await _dataSource.Value.GetServiceListAsync();
+            var result = new List<ServiceViewModel>();
+            foreach (var service in services)
+            {
+                result.Add(await LoadService(service));
+            }
+            return result;
+        }
+
+        private async Task<ServiceViewModel> LoadService(Service service)
+        {
+            var versions = await _dataSource.Value.GetVersionListAsync(service.Id);
+            var result = new List<VersionViewModel>();
+            foreach (var version in versions)
+            {
+                result.Add(await LoadVersion(service, version));
+            }
+            return new ServiceViewModel(this, service, result);
+        }
+
+        private async Task<VersionViewModel> LoadVersion(Service service, Google.Apis.Appengine.v1.Data.Version version)
+        {
+            var instances = await _dataSource.Value.GetInstanceListAsync(service.Id, version.Id);
+            return new VersionViewModel(this, service, version, instances.Select(x => new InstanceViewModel(this, x)).ToList());
         }
     }
 }

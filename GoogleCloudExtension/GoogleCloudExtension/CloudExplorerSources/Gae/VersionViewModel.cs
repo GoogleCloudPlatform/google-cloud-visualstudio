@@ -43,61 +43,50 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private static readonly Lazy<ImageSource> s_versionStopedIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconStopedResourcePath));
         private static readonly Lazy<ImageSource> s_versionTransitionIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconTransitionResourcePath));
 
-        private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
-        {
-            Caption = Resources.CloudExplorerGaeLoadingInstancesCaption,
-            IsLoading = true
-        };
         private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
         {
             Caption = Resources.CloudExplorerGaeNoInstancesFoundCaption,
             IsWarning = true
         };
-        private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
-        {
-            Caption = Resources.CloudExplorerGaeFailedToLoadInstancesCaption,
-            IsError = true
-        };
 
-        private bool HasTrafficAllocation => TrafficAllocation != null;
+        private readonly GaeSourceRootViewModel _owner;
+        private readonly Service _service;
+        private readonly Google.Apis.Appengine.v1.Data.Version _version;
+        private readonly IList<InstanceViewModel> _instances;
+        private readonly double _trafficAllocation;
+        private readonly bool _hasTrafficAllocation;
 
-        private readonly ServiceViewModel _owner;
+        public Google.Apis.Appengine.v1.Data.Version Version => _version;
 
-        public readonly GaeSourceRootViewModel root;
-
-        private bool _resourcesLoaded = false;
-
-        public Google.Apis.Appengine.v1.Data.Version version { get; private set; }
-
-        public double? TrafficAllocation { get; private set; }
+        public bool HasTrafficAllocation => _hasTrafficAllocation;
 
         public event EventHandler ItemChanged;
 
         public object Item => GetItem();
 
         public VersionViewModel(
-            ServiceViewModel owner, Google.Apis.Appengine.v1.Data.Version version)
+            GaeSourceRootViewModel owner,
+            Service service,
+            Google.Apis.Appengine.v1.Data.Version version,
+            IList<InstanceViewModel> instances)
         {
             _owner = owner;
-            this.version = version;
-            root = _owner.root;
+            _service = service;
+            _version = version;
+            _instances = instances;
 
-            Initialize();
-        }
+            var allocation = GaeServiceExtensions.GetTrafficAllocation(_service, _version.Id);
+            _trafficAllocation = allocation ?? 0.0;
+            _hasTrafficAllocation = allocation != null;
 
-        private void Initialize()
-        {
-            // Get the traffic allocation for the version
-            TrafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_owner.Service, version.Id);
-
-            // Reset the resources loaded and clear any children. 
-            _resourcesLoaded = false;
-            Children.Clear();
-
-            // If the version is serving allow instances to be loaded.
-            if (version.IsServing())
+            // Add the instances.
+            foreach (var instance in _instances)
             {
-                Children.Add(s_loadingPlaceholder);
+                Children.Add(instance);
+            }
+            if (Children.Count == 0)
+            {
+                Children.Add(s_noItemsPlacehoder);
             }
 
             // Update the view.
@@ -106,18 +95,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             UpdateMenu();
         }
 
+        public VersionItem GetItem() => new VersionItem(_version);
+
         /// <summary>
         /// Update the context menu based on the current state of the version.
         /// </summary>
         private void UpdateMenu()
         {
-            // Do not allow actions when the version is loading or in an error state.
-            if (IsLoading || IsError)
-            {
-                ContextMenu = null;
-                return;
-            }
-
             var menuItems = new List<FrameworkElement>
             {
                 new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand) },
@@ -125,24 +109,24 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             };
 
             // If the version has traffic allocated to it it can be opened.
-            if (HasTrafficAllocation)
+            if (_hasTrafficAllocation)
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeVersionOpen, Command = new ProtectedCommand(OnOpenVersion) });
             }
 
             menuItems.Add(new Separator());
 
-            if (version.IsServing())
+            if (_version.IsServing())
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeStopVersion, Command = new ProtectedCommand(OnStopVersion) });
             }
-            else if (version.IsStopped())
+            else if (_version.IsStopped())
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeStartVersion, Command = new ProtectedCommand(OnStartVersion) });
             }
 
             // If the version is stopped and has no traffic allocated to it allow it to be deleted.
-            if (!HasTrafficAllocation && version.IsStopped())
+            if (!_hasTrafficAllocation && _version.IsStopped())
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteVersion, Command = new ProtectedCommand(OnDeleteVersion) });
             }
@@ -152,22 +136,18 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private void OnStartVersion()
         {
-            UpdateServingStatus(
-                GaeVersionExtensions.ServingStatus,
-                Resources.CloudExplorerGaeVersionStartServingMessage);
+            // UpdateServingStatus(GaeVersionExtensions.ServingStatus, Resources.CloudExplorerGaeVersionStartServingMessage);
         }
 
         private void OnStopVersion()
         {
-            UpdateServingStatus(
-                GaeVersionExtensions.StoppedStatus,
-                Resources.CloudExplorerGaeVersionStopServingMessage);
+            // UpdateServingStatus(GaeVersionExtensions.StoppedStatus, Resources.CloudExplorerGaeVersionStopServingMessage);
         }
 
         private void OnDeleteVersion()
         {
             string confirmationMessage = String.Format(
-                Resources.CloudExplorerGaeDeleteVersionConfirmationPromptMessage, _owner.Service.Id, version.Id);
+                Resources.CloudExplorerGaeDeleteVersionConfirmationPromptMessage, _service.Id, _version.Id);
             if (!UserPromptUtils.ActionPrompt(
                 confirmationMessage,
                 Resources.CloudExplorerGaeDeleteVersion,
@@ -181,32 +161,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             DeleteVersion();
         }
 
-        protected override void OnIsExpandedChanged(bool newValue)
-        {
-            base.OnIsExpandedChanged(newValue);
-
-            // If this is the first time the node has been expanded load it's resources.
-            if (!_resourcesLoaded && newValue)
-            {
-                _resourcesLoaded = true;
-                UpdateChildren();
-            }
-        }
-
         private void OnOpenOnCloudConsoleCommand()
         {
-            var url = $"https://console.cloud.google.com/appengine/instances?project={root.Context.CurrentProject.ProjectId}&moduleId={_owner.Service.Id}&versionId={version.Id}";
+            var url = $"https://console.cloud.google.com/appengine/instances?project={_owner.Context.CurrentProject.ProjectId}&moduleId={_service.Id}&versionId={_version.Id}";
             Process.Start(url);
         }
 
         private void OnPropertiesWindowCommand()
         {
-            root.Context.ShowPropertiesWindow(Item);
+            _owner.Context.ShowPropertiesWindow(Item);
         }
 
         private void OnOpenVersion()
         {
-            Process.Start(version.VersionUrl);
+            Process.Start(_version.VersionUrl);
         }
 
         private async void DeleteVersion()
@@ -215,12 +183,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Children.Clear();
             UpdateMenu();
             Caption = Resources.CloudExplorerGaeVersionDeleteMessage;
-            GaeDataSource datasource = root.DataSource.Value;
+            GaeDataSource dataSource = _owner.DataSource;
 
             try
             {
-                Task<Operation> operationTask = root.DataSource.Value.DeleteVersionAsync(_owner.Service.Id, version.Id);
-                Func<Operation, Task<Operation>> fetch = (o) => datasource.GetOperationAsync(o.GetOperationId());
+                Task<Operation> operationTask = dataSource.DeleteVersionAsync(_service.Id, _version.Id);
+                Func<Operation, Task<Operation>> fetch = (o) => dataSource.GetOperationAsync(o.GetOperationId());
                 Predicate<Operation> stopPolling = (o) => o.Done ?? false;
                 Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);
                 if (operation.Error != null)
@@ -269,18 +237,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         /// </summary>
         /// <param name="status">The serving status to update the version to.</param>
         /// <param name="statusMessage">The message to display while updating the status</param>
+        /*
         private async void UpdateServingStatus(string status, string statusMessage)
         {
             IsLoading = true;
             Children.Clear();
             UpdateMenu();
             Caption = statusMessage;
-            GaeDataSource datasource = root.DataSource.Value;
+            GaeDataSource dataSource = _owner.DataSource;
 
             try
             {
-                Task<Operation> operationTask = datasource.UpdateVersionServingStatus(status, _owner.Service.Id, version.Id);
-                Func<Operation, Task<Operation>> fetch = (o) => datasource.GetOperationAsync(o.GetOperationId());
+                Task<Operation> operationTask = dataSource.UpdateVersionServingStatus(status, _service.Id, _version.Id);
+                Func<Operation, Task<Operation>> fetch = (o) => dataSource.GetOperationAsync(o.GetOperationId());
                 Predicate<Operation> stopPolling = (o) => o.Done ?? false;
                 Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);
                 if (operation.Error != null)
@@ -288,7 +257,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                     throw new DataSourceException(operation.Error.Message);
                 }
 
-                version = await datasource.GetVersionAsync(_owner.Service.Id, version.Id);
+                _version = await dataSource.GetVersionAsync(_service.Id, _version.Id);
                 EventsReporterWrapper.ReportEvent(
                     GaeVersionServingStatusUpdatedEvent.Create(CommandStatus.Success, statusMessage));
             }
@@ -326,55 +295,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 }
             }
         }
-
-        /// <summary>
-        /// Update the children (GAE instances) of this version.
-        /// </summary>
-        private async void UpdateChildren()
-        {
-            try
-            {
-                Children.Clear();
-                Children.Add(s_loadingPlaceholder);
-
-                var instances = await LoadInstanceList();
-                Children.Clear();
-                if (instances == null)
-                {
-                    Children.Add(s_errorPlaceholder);
-                }
-                else
-                {
-                    foreach (var item in instances)
-                    {
-                        Children.Add(item);
-                    }
-                    if (Children.Count == 0)
-                    {
-                        Children.Add(s_noItemsPlacehoder);
-                    }
-                }
-                EventsReporterWrapper.ReportEvent(GaeInstancesLoadedEvent.Create(CommandStatus.Success));
-            }
-            catch (DataSourceException ex)
-            {
-                GcpOutputWindow.OutputLine(Resources.CloudExplorerGaeFailedInstancesMessage);
-                GcpOutputWindow.OutputLine(ex.Message);
-                GcpOutputWindow.Activate();
-
-                Children.Add(s_errorPlaceholder);
-                EventsReporterWrapper.ReportEvent(GaeInstancesLoadedEvent.Create(CommandStatus.Failure));
-            }
-        }
-
-        /// <summary>
-        /// Load a list of instances.
-        /// </summary>
-        private async Task<List<InstanceViewModel>> LoadInstanceList()
-        {
-            var instances = await _owner.root.DataSource.Value.GetInstanceListAsync(_owner.Service.Id, version.Id);
-            return instances?.Select(x => new InstanceViewModel(this, x)).ToList();
-        }
+        */
 
         /// <summary>
         /// Get a caption for a the version.
@@ -382,17 +303,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         /// </summary>
         private string GetCaption()
         {
-            if (!HasTrafficAllocation)
+            if (!_hasTrafficAllocation)
             {
-                return version.Id;
+                return _version.Id;
             }
-            string percent = ((double)TrafficAllocation).ToString("P", CultureInfo.InvariantCulture);
-            return String.Format("{0} ({1})", version.Id, percent);
+            string percent = _trafficAllocation.ToString("P", CultureInfo.InvariantCulture);
+            return String.Format("{0} ({1})", _version.Id, percent);
         }
 
         private void UpdateIcon()
         {
-            switch (version.ServingStatus)
+            switch (_version.ServingStatus)
             {
                 case GaeVersionExtensions.ServingStatus:
                     Icon = s_versionRunningIcon.Value;
@@ -405,7 +326,5 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                     break;
             }
         }
-
-        public VersionItem GetItem() => new VersionItem(version);
     }
 }
