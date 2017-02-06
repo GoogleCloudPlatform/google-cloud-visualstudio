@@ -81,7 +81,7 @@ namespace GoogleCloudExtension.DataSources
         /// <returns>
         /// A task with result of a list of resource keys.
         /// </returns>
-        public Task<IList<string>> ListResourceTypeValuesAsync(string resourceType, string resourceKey)
+        public Task<IList<string>> ListResourceTypeValuesAsync(string resourceType, string resourceKey = null)
         {
             if (resourceType == null)
             {
@@ -126,7 +126,12 @@ namespace GoogleCloudExtension.DataSources
         /// The size of entire set of log names is small. 
         /// Batch all in one request in unlikely case it spans multiple pages.
         /// </summary>
-        public Task<IList<string>> ListProjectLogNamesAsync(string resourceType, IList<string> resourceKeys)
+        /// <param name="resourceType">The resource type, i.e gce_instance.</param>
+        /// <param name="resourcePrefixList">
+        /// A list of resource prefixes.
+        /// i.e,  for resource type app engine, the prefixe can be the module ids. 
+        /// </param>
+        public Task<IList<string>> ListProjectLogNamesAsync(string resourceType, IList<string> resourcePrefixList)
         {
             return LoadPagedListAsync(
                 (token) =>
@@ -134,8 +139,8 @@ namespace GoogleCloudExtension.DataSources
                     var request = _logsResource.List(ProjectFilter);
                     request.PageToken = token;
                     request.ResourceType = resourceType;
-                    request.ResourceIndexPrefix = resourceKeys == null ? null :
-                        String.Join("", resourceKeys.Select(x => $"/{x}"));
+                    request.ResourceIndexPrefix = resourcePrefixList == null ? null :
+                        String.Join("", resourcePrefixList.Select(x => $"/{x}"));
                     return request.ExecuteAsync();
                 },
                 x => x.LogNames,
