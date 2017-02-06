@@ -21,6 +21,7 @@ using Google.Apis.Logging.v2.Data.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -51,8 +52,8 @@ namespace GoogleCloudExtension.DataSources
             : base(projectId, credential, init => new LoggingService(init), appName)
         {
             _resourceNames = new List<string>(new string[] { ProjectFilter });
-            _resourceTypesResource = new ResourceTypesResource(Service);
             _resourceKeysResource = new ResourceKeysResource(Service);
+            _resourceTypesResource = new ResourceTypesResource(Service);
             _logsResource = new LogsResource(Service);
         }
 
@@ -75,19 +76,19 @@ namespace GoogleCloudExtension.DataSources
         /// <summary>
         /// List all resource type values for the given resource type and resource key.
         /// </summary>
+        /// <param name="resourceType">Required, the resource type.</param>
+        /// <param name="resourceKey">Optional, the resource key as prefix.</param>
         /// <returns>
-        /// async Task. 
-        /// The result can be null if input is invalid.
+        /// A task with result of a list of resource keys.
         /// </returns>
-        public async Task<IList<string>> ListResourceTypeValuesAsync(string resourceType, string resourceKey)
+        public Task<IList<string>> ListResourceTypeValuesAsync(string resourceType, string resourceKey)
         {
-            if (resourceType == null || resourceKey == null)
+            if (resourceType == null)
             {
-                return null;
+                throw new ArgumentNullException(nameof(resourceType));
             }
-
-            string parentParam = $"{ProjectFilter}/{resourceType}";
-            return await LoadPagedListAsync(
+            string parentParam = $"{ProjectFilter}/resourceTypes/{resourceType}";
+            return LoadPagedListAsync(
                 (token) =>
                 {
                     var request = _resourceTypesResource.Values.List(parentParam);
@@ -131,7 +132,8 @@ namespace GoogleCloudExtension.DataSources
                     var request = _logsResource.List(ProjectFilter);
                     request.PageToken = token;
                     request.ResourceType = resourceType;
-                    request.ResourceIndexPrefix = resourceKeys == null ? null : String.Join("/", resourceKeys);
+                    request.ResourceIndexPrefix = resourceKeys == null ? null :
+                        String.Join("", resourceKeys.Select(x => $"/{x}"));
                     return request.ExecuteAsync();
                 },
                 x => x.LogNames,
