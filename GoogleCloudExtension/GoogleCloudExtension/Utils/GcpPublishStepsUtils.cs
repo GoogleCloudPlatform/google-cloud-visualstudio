@@ -22,6 +22,12 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public static class GcpPublishStepsUtils
     {
+        /// <summary>
+        /// This regexp defines what names are valid for GCP deployments. Basically it defines a valid name
+        /// as only containing lowercase letters and numbers and optionally the - character. It also specifies
+        /// that the name has to be less than 100 chars.
+        /// This regexp is the same one used by gcloud to validate version names.
+        /// </summary>
         private static readonly Regex s_validNamePattern = new Regex(@"^(?!-)[a-z\d\-]{1,100}$");
 
         /// <summary>
