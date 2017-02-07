@@ -130,6 +130,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+
+            SyncContextMenuState();
         }
 
         private void OnStartVersion()

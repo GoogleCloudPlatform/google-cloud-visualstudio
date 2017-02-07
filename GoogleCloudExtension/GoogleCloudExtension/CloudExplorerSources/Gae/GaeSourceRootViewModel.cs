@@ -78,6 +78,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
+        /// <summary>
+        /// Invalidates the state of the service given by <paramref name="id"/> reloading the entire
+        /// service and updating the UI.
+        /// </summary>
+        /// <param name="id">The id of the service to update.</param>
         public async void InvalidateService(string id)
         {
             int idx = 0;
@@ -91,8 +96,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 }
                 ++idx;
             }
-            if (idx >= Children.Count)
+            if (oldService == null)
             {
+                Debug.WriteLine($"Could not find the service {id}");
                 return;
             }
 
