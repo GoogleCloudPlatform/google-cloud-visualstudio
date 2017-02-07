@@ -6,126 +6,15 @@
     xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer">
 
     <!-- Region colors -->
-    <LinearGradientBrush x:Key="NormalBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#FFF" Offset="0.0"/>
-                <GradientStop Color="#CCC" Offset="1.0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="HorizontalNormalBrush" StartPoint="0,0" EndPoint="1,0">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#FFF" Offset="0.0"/>
-                <GradientStop Color="#CCC" Offset="1.0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="LightBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#FFF" Offset="0.0"/>
-                <GradientStop Color="#EEE" Offset="1.0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="HorizontalLightBrush" StartPoint="0,0" EndPoint="1,0">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#FFF" Offset="0.0"/>
-                <GradientStop Color="#EEE" Offset="1.0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="DarkBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#FFF" Offset="0.0"/>
-                <GradientStop Color="#AAA" Offset="1.0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="PressedBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#BBB" Offset="0.0"/>
-                <GradientStop Color="#EEE" Offset="0.1"/>
-                <GradientStop Color="#EEE" Offset="0.9"/>
-                <GradientStop Color="#FFF" Offset="1.0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
-
-    <SolidColorBrush x:Key="DisabledForegroundBrush" Color="#888" />
-
-    <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#EEE" />
-
-    <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#FFF" />
-
-    <SolidColorBrush x:Key="SelectedBackgroundBrush" Color="#DDD" />
-
-    <!-- Border Brushes -->
-
-    <LinearGradientBrush x:Key="NormalBorderBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#CCC" Offset="0.0"/>
-                <GradientStop Color="#444" Offset="1.0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="HorizontalNormalBorderBrush" StartPoint="0,0" EndPoint="1,0">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#CCC" Offset="0.0"/>
-                <GradientStop Color="#444" Offset="1.0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="DefaultedBorderBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#777" Offset="0.0"/>
-                <GradientStop Color="#000" Offset="1.0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
-
-    <LinearGradientBrush x:Key="PressedBorderBrush" StartPoint="0,0" EndPoint="0,1">
-        <GradientBrush.GradientStops>
-            <GradientStopCollection>
-                <GradientStop Color="#444" Offset="0.0"/>
-                <GradientStop Color="#888" Offset="1.0"/>
-            </GradientStopCollection>
-        </GradientBrush.GradientStops>
-    </LinearGradientBrush>
-
-    <SolidColorBrush x:Key="DisabledBorderBrush" Color="#AAA" />
-
-    <SolidColorBrush x:Key="SolidBorderBrush" Color="#888" />
-
-    <SolidColorBrush x:Key="LightBorderBrush" Color="#AAA" />
-
-    <!-- Miscellaneous Brushes -->
-    <SolidColorBrush x:Key="GlyphBrush" Color="#444" />
-
-    <SolidColorBrush x:Key="LightColorBrush" Color="#DDD" />
-
-    <SolidColorBrush x:Key="HightlightBorder" Color="#7eb4ea" />
-
-    <!-- Endregion -->
-
+     <!-- Endregion -->
+     
     <Geometry x:Key="UpArrow">M 0,4 L 3.5,0 L 7,4 Z</Geometry>
-    <Style x:Key="MenuScrollButton" 
-           BasedOn="{x:Null}" TargetType="{x:Type RepeatButton}">
+    <Geometry x:Key="DownArrow">M 0,0 L 3.5,4 L 7,0 Z</Geometry>
+    <MenuScrollingVisibilityConverter x:Key="MenuScrollingVisibilityConverter"/>
+
+    <Style 
+        x:Key="MenuScrollButton" 
+        BasedOn="{x:Null}" TargetType="{x:Type RepeatButton}">
         <Setter Property="ClickMode" Value="Hover"/>
         <Setter Property="MinWidth" Value="0"/>
         <Setter Property="MinHeight" Value="0"/>
@@ -152,18 +41,14 @@
             </Setter.Value>
         </Setter>
     </Style>
-    <MenuScrollingVisibilityConverter x:Key="MenuScrollingVisibilityConverter"/>
-    <Geometry x:Key="DownArrow">M 0,0 L 3.5,4 L 7,0 Z</Geometry>
 
-    <!--ScrollViewer for a MenuItem-->
+    <!-- ScrollViewer for a MenuItem -->
     <Style x:Key="MenuScrollViewer"
          TargetType="{x:Type ScrollViewer}"
          BasedOn="{x:Null}">
         <Setter Property="MaxHeight" Value="600" />
-        <Setter Property="HorizontalScrollBarVisibility"
-            Value="Hidden" />
-        <Setter Property="VerticalScrollBarVisibility"
-            Value="Auto" />
+        <Setter Property="HorizontalScrollBarVisibility" Value="Hidden" />
+        <Setter Property="VerticalScrollBarVisibility" Value="Auto" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type ScrollViewer}">
@@ -176,55 +61,46 @@
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <Border Grid.Row="1"
-                    Grid.Column="0">
+                        <Border Grid.Row="1" Grid.Column="0">
                             <ScrollContentPresenter Margin="{TemplateBinding Padding}" />
                         </Border>
-                        <RepeatButton Style="{StaticResource MenuScrollButton}"
-                          Grid.Row="0"
-                          Grid.Column="0"
-                          Command="{x:Static ScrollBar.LineUpCommand}"
-                          CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
-                          Focusable="False">
+                        <RepeatButton 
+                            Style="{StaticResource MenuScrollButton}"
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Command="{x:Static ScrollBar.LineUpCommand}"
+                            CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                            Focusable="False">
                             <RepeatButton.Visibility>
-                                <MultiBinding FallbackValue="Visibility.Collapsed"
-                              Converter="{StaticResource MenuScrollingVisibilityConverter}"
-                              ConverterParameter="0">
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                           Path="ComputedVerticalScrollBarVisibility" />
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                           Path="VerticalOffset" />
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                           Path="ExtentHeight" />
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                           Path="ViewportHeight" />
+                                <MultiBinding 
+                                    FallbackValue="Visibility.Collapsed" 
+                                    Converter="{StaticResource MenuScrollingVisibilityConverter}" ConverterParameter="0">
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="ComputedVerticalScrollBarVisibility" />
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="VerticalOffset" />
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="ExtentHeight" />
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="ViewportHeight" />
                                 </MultiBinding>
                             </RepeatButton.Visibility>
-                            <Path Fill="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}"
-                    Data="{StaticResource UpArrow}" />
+                            <Path Fill="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}" Data="{StaticResource UpArrow}" />
                         </RepeatButton>
-                        <RepeatButton Style="{StaticResource MenuScrollButton}"
-                          Grid.Row="2"
-                          Grid.Column="0"
-                          Command="{x:Static ScrollBar.LineDownCommand}"
-                          CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
-                          Focusable="False">
+                        <RepeatButton 
+                            Style="{StaticResource MenuScrollButton}" 
+                            Grid.Row="2" 
+                            Grid.Column="0"
+                            Command="{x:Static ScrollBar.LineDownCommand}"
+                            CommandTarget="{Binding RelativeSource={RelativeSource TemplatedParent}}"
+                            Focusable="False">
                             <RepeatButton.Visibility>
-                                <MultiBinding FallbackValue="Visibility.Collapsed"
-                              Converter="{StaticResource MenuScrollingVisibilityConverter}"
-                              ConverterParameter="100">
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                           Path="ComputedVerticalScrollBarVisibility" />
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                           Path="VerticalOffset" />
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                           Path="ExtentHeight" />
-                                    <Binding RelativeSource="{RelativeSource TemplatedParent}"
-                           Path="ViewportHeight" />
+                                <MultiBinding 
+                                    FallbackValue="Visibility.Collapsed" 
+                                    Converter="{StaticResource MenuScrollingVisibilityConverter}" ConverterParameter="100">
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="ComputedVerticalScrollBarVisibility" />
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="VerticalOffset" />
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="ExtentHeight" />
+                                    <Binding RelativeSource="{RelativeSource TemplatedParent}" Path="ViewportHeight" />
                                 </MultiBinding>
                             </RepeatButton.Visibility>
-                            <Path Fill="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}"
-                    Data="{StaticResource DownArrow}" />
+                            <Path Fill="{DynamicResource {x:Static SystemColors.MenuTextBrushKey}}" Data="{StaticResource DownArrow}" />
                         </RepeatButton>
                     </Grid>
                 </ControlTemplate>
@@ -233,43 +109,36 @@
     </Style>
 
     <!-- TopLevelHeader  -->
-    <ControlTemplate x:Key="{x:Static MenuItem.TopLevelHeaderTemplateKey}"
-                 TargetType="local:SearchMenuItem">
-        <Border Name="Border" BorderThickness="1" BorderBrush="LightGray"
-                Background="Blue">
+    <ControlTemplate 
+        x:Key="{x:Static MenuItem.TopLevelHeaderTemplateKey}"
+        TargetType="local:SearchMenuItem">
+        <Border Name="Border" 
+                BorderThickness="1" 
+                BorderBrush="LightGray"
+                Background="White">
             <Grid>
-                <!--Margin="6,3,6,3"-->
-                <!--
-                <ContentPresenter 
-                    Margin="0,3,0,3"
-                        ContentSource="Header"
-                        RecognizesAccessKey="True" />-->
-                <!-- TopLevelHeader Content Style -->
-                <Border           
-                Background="White"
-                Width="200"
-                     >
-                    <Grid
-                              >
+                <Border>
+                    <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <!-- Yes, the access key works! Width="90"   -->
-                        <TextBlock Grid.Column="0" HorizontalAlignment="Center"  
-                                              VerticalAlignment="Stretch"
-                                                Padding = "8,5,8,5"      
-                                   Text="{TemplateBinding Header}"
-                                   TextWrapping="NoWrap"
-                                   TextTrimming="CharacterEllipsis"
-                                   >
+                        <TextBlock 
+                            HorizontalAlignment="Center"  
+                            VerticalAlignment="Stretch"
+                            Padding = "8,5,8,5"      
+                            Text="{TemplateBinding Header}"
+                            TextWrapping="NoWrap"
+                            TextTrimming="CharacterEllipsis" >
                             <TextBlock.ToolTip>
                                 <ToolTip Content="{TemplateBinding Header}" />
                             </TextBlock.ToolTip>
                         </TextBlock>
-                        <Border Grid.Column="1" HorizontalAlignment="Right" 
-                                    >
+
+                        <Border 
+                            Grid.Column="1" 
+                            HorizontalAlignment="Right">
                             <!-- The toggle button looks identical to the one used on a combo box
                                         because I based the definition below on the relevant portion of the
                                         combo box's default control template. -->
