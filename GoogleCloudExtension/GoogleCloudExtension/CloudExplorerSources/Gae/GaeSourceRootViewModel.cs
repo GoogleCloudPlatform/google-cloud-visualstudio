@@ -81,10 +81,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         public async void InvalidateService(string id)
         {
             int idx = 0;
+            ServiceViewModel oldService = null;
             foreach (ServiceViewModel service in Children)
             {
                 if (service.Service.Id == id)
                 {
+                    oldService = service;
                     break;
                 }
                 ++idx;
@@ -94,9 +96,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 return;
             }
 
+            var wasExpanded = oldService.IsExpanded;
             var newService = await _dataSource.Value.GetServiceAsync(id);
             var newModel = await LoadService(newService);
             Children[idx] = newModel;
+            newModel.IsExpanded = wasExpanded;
         }
 
         private void OnStatusCommand()
