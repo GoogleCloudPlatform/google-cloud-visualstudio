@@ -117,6 +117,7 @@
                 BorderBrush="LightGray"
                 Background="White">
             <Grid>
+                <!-- The top level box. -->
                 <Border>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -139,32 +140,26 @@
                         <Border 
                             Grid.Column="1" 
                             HorizontalAlignment="Right">
-                            <!-- The toggle button looks identical to the one used on a combo box
-                                        because I based the definition below on the relevant portion of the
-                                        combo box's default control template. -->
-                            <ToggleButton IsChecked="False" IsHitTestVisible="False" 
-                                        BorderBrush="{TemplateBinding Border.BorderBrush}"
-                                        Background="{TemplateBinding Panel.Background}"                                              
-                                          Margin="0, 0, 8, 0"
-                                          >
-
+                            <ToggleButton 
+                                IsChecked="False" 
+                                IsHitTestVisible="False" 
+                                BorderBrush="{TemplateBinding Border.BorderBrush}"
+                                Background="{TemplateBinding Panel.Background}"                                              
+                                Margin="0,0,8,0" >
                                 <ToggleButton.Style>
                                     <Style TargetType="ToggleButton">
                                         <Setter Property="OverridesDefaultStyle" Value="True" />
-
-
-                                        <!-- The toggle control just needs visually appear. It doesn't
-                    need to receive focus or be a tab stop.
-                                            -->
                                         <Setter Property="Focusable" Value="False" />
                                         <Setter Property="IsTabStop" Value="False" />
                                         <Setter Property="Control.Template">
                                             <Setter.Value>
                                                 <ControlTemplate TargetType="ToggleButton">
-                                                    <Path Data="M 0 0 L 3 3 L 6 0"  Stroke="#636363" Name="Arrow"
-                                                          Margin="3,1,0,0" 
-                                                          HorizontalAlignment="Center" 
-                                                          VerticalAlignment="Center" />
+                                                    <Path 
+                                                        Data="M 0 0 L 3 3 L 6 0" 
+                                                        Stroke="#636363" Name="Arrow"
+                                                        Margin="3,0,0,0" 
+                                                        HorizontalAlignment="Center" 
+                                                        VerticalAlignment="Center" />
                                                 </ControlTemplate>
                                             </Setter.Value>
                                         </Setter>
@@ -176,22 +171,20 @@
                 </Border>
 
                 <Popup 
-                        Name="Popup"
-                        Placement="Bottom"
-                        IsOpen="{TemplateBinding IsSubmenuOpen}"
-                        AllowsTransparency="True" 
-                        Focusable="False"
-                        PopupAnimation="Fade">
+                    Name="Popup"
+                    Placement="Bottom"
+                    IsOpen="{TemplateBinding IsSubmenuOpen}"
+                    AllowsTransparency="True" 
+                    Focusable="False"
+                    PopupAnimation="Fade">
                     <Border
-                              Name="SubmenuBorder"
-                              SnapsToDevicePixels="True"
-                              Background="{StaticResource WindowBackgroundBrush}"
-                              BorderBrush="{StaticResource SolidBorderBrush}"
-                              BorderThickness="1" >
-                        <ScrollViewer CanContentScroll="True"
-                        Style="{StaticResource MenuScrollViewer}">
-                            <StackPanel  
-                           
+                        Name="SubmenuBorder"
+                        SnapsToDevicePixels="True"
+                        Background="{StaticResource WindowBackgroundBrush}"
+                        BorderBrush="{StaticResource SolidBorderBrush}"
+                        BorderThickness="1" >
+                        <ScrollViewer CanContentScroll="True" Style="{StaticResource MenuScrollViewer}">
+                            <StackPanel                             
                                 IsItemsHost="True" 
                                 KeyboardNavigation.DirectionalNavigation="Cycle" />
                         </ScrollViewer>
