@@ -261,7 +261,7 @@
                         BorderBrush="{StaticResource SolidBorderBrush}"
                         BorderThickness="1" >
                         <StackPanel>
-                            <controls:SearchMenuItem Header="All" />
+                            <controls:SearchMenuItem Header="{TemplateBinding ChooseAllHeader}" />
                             <Separator />
                             <StackPanel Margin="6,5,6,5">
                                 <TextBlock Text="Search in prefix:" Margin="0,0,0,3" />
@@ -269,10 +269,7 @@
                             </StackPanel>
                             <controls:ProgressIndicator 
                                 Margin="3"
-                                Visibility="{Binding IsSubmenuPopulated, Mode=OneWay, 
-                                    RelativeSource={RelativeSource Mode=FindAncestor, 
-                                    AncestorType={x:Type controls:SearchMenuItem }}, 
-                                    Converter={utils:VisibilityConverter IsNegated=True}}" />
+                                Visibility="{TemplateBinding IsSubmenuPopulated, Converter={utils:VisibilityConverter IsNegated=True}}" />
                             <ScrollViewer 
                                 CanContentScroll="True" 
                                 Style="{StaticResource MenuScrollViewer}">
@@ -322,12 +319,13 @@
     </Style>
 
     <!-- SearchMenuItem Style -->
-    <Style  TargetType="controls:SearchMenuItem">
+    <Style TargetType="controls:SearchMenuItem">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
         <Setter Property="IsSubmenuPopulated" Value="{Binding IsSubmenuPopulated}" />
         <Setter Property="Command" Value="{Binding MenuCommand}" />
         <Setter Property="OnSubmenuOpenCommand" Value="{Binding OnSubmenuOpenCommand}" />
         <Setter Property="Header" Value="{Binding Header}" />
+        <Setter Property="ChooseAllHeader" Value="{Binding ChooseAllHeader}" />
         <Setter Property="Visibility" 
                 Value="{Binding IsFakeItem, Converter={utils:VisibilityConverter IsNegated=True}}" />
         <Style.Triggers>

@@ -247,7 +247,8 @@
       <DependentUpon>LogsViewerToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModel.cs" />
-    <Compile Include="StackdriverLogsViewer\SearchMenuItem\MenuViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\SearchMenuItem\MenuItemViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeMenuViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceValueItem.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeItem.cs" />
     <Compile Include="Controls\SearchMenuItem.cs" />

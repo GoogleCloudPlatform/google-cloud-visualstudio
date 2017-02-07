@@ -16,7 +16,6 @@ using System;
 using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
 
 namespace GoogleCloudExtension.Controls
@@ -29,22 +28,24 @@ namespace GoogleCloudExtension.Controls
     {
         private TextBox _searchBox;
 
-        //static SearchMenuItem()
-        //{
-        //    DefaultStyleKeyProperty.OverrideMetadata(typeof(SearchMenuItem), new FrameworkPropertyMetadata(typeof(SearchMenuItem)));
-        //}
-
         public static DependencyProperty OnSubmenuOpenCommandProperty = DependencyProperty.Register(
             "OnSubmenuOpenCommand", typeof(ICommand), typeof(SearchMenuItem));
 
         public static DependencyProperty IsSubmenuPopulatedProperty = DependencyProperty.Register(
-            "IsSubmenuPopulated", typeof(bool), typeof(SearchMenuItem),
-            new FrameworkPropertyMetadata()
-            {
-                DefaultValue = false,
-                BindsTwoWayByDefault = true,
-                DefaultUpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-            });
+            "IsSubmenuPopulated", typeof(bool), typeof(SearchMenuItem), new FrameworkPropertyMetadata(true));
+
+        public static DependencyProperty ChooseAllHeaderProperty = DependencyProperty.Register(
+            "ChooseAllHeader", typeof(string), typeof(SearchMenuItem), 
+            new FrameworkPropertyMetadata(GoogleCloudExtension.Resources.UiChooseAllMenuHeader));
+
+        /// <summary>
+        /// The choose all menu item header.
+        /// </summary>
+        public string ChooseAllHeader
+        {
+            get { return (string)GetValue(ChooseAllHeaderProperty); }
+            set { SetValue(ChooseAllHeaderProperty, value); }
+        }
 
         /// <summary>
         /// Get or set the dependency property <seealso cref="OnSubmenuOpenCommandProperty"/>.

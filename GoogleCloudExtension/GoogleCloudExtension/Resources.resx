@@ -1571,4 +1571,12 @@
     <value>Browse Stackdriver Logs</value>
     <comment>Header for browsing Stackdriver Log context menu</comment>
   </data>
+  <data name="LogsViewerChooseAllMenuHeaderFormat" xml:space="preserve">
+    <value>All {0}</value>
+    <comment>The choose all menu item header.  Example "All module_id", "All instance_id".</comment>
+  </data>
+  <data name="UiChooseAllMenuHeader" xml:space="preserve">
+    <value>All</value>
+    <comment>The choose all menu item default header. </comment>
+  </data>
 </root>

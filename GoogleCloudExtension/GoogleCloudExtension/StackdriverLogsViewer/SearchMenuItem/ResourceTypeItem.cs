@@ -24,11 +24,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 {
     public class ResourceTypeItem : MenuItemViewModel
     {
-        private LogsViewerViewModel LogsViewerModel => MenuItemParent as LogsViewerViewModel;
+        private ResourceTypeMenuViewModel _resourceTypeViewModel => MenuItemParent as ResourceTypeMenuViewModel;
 
         public ResourceKeys ResourceTypeKeys { get; }
 
-        public ResourceTypeItem(ResourceKeys resourceKeys, IMenuItem parent) : base(parent)
+        public string ChooseAllHeader => GetKeysAt(0) == null ? null : String.Format(Resources.LogsViewerChooseAllMenuHeaderFormat, GetKeysAt(0));
+
+        public ResourceTypeItem(ResourceKeys resourceKeys, MenuItemViewModel parent) : base(parent)
         {
             ResourceTypeKeys = resourceKeys;
             Header = ResourceTypeKeys.Type;
@@ -40,23 +42,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
         }
 
-        private async Task<IEnumerable<Tuple<string, string>>> GceInstanceIdToName(IEnumerable<string> instanceIds)
+        public string GetKeysAt(int index)
         {
-            var dataSource = new GceDataSource(
-                CredentialsStore.Default.CurrentProjectId,
-                CredentialsStore.Default.CurrentGoogleCredential,
-                GoogleCloudExtensionPackage.ApplicationName);
-            var allInstances = await dataSource.GetInstanceListAsync();
-            return from id in instanceIds
-                   join instance in allInstances on id equals instance.Id?.ToString() into joined
-                   from subInstance in joined.DefaultIfEmpty()
-                   orderby subInstance?.Name descending
-                   select new Tuple<string, string>(id,  subInstance == null ? id : subInstance.Name);
+            return ResourceTypeKeys?.Keys?[index];
         }
 
         protected override async Task LoadSubMenu()
         {
-            var keys = await LogsViewerModel.GetResourceValues(ResourceTypeKeys);
+            var keys = await _resourceTypeViewModel.GetResourceValues(ResourceTypeKeys);
             if (keys == null)
             {
                 return;
@@ -72,6 +65,20 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 MenuItems.Add(menuItem);
             }
+        }
+
+        private async Task<IEnumerable<Tuple<string, string>>> GceInstanceIdToName(IEnumerable<string> instanceIds)
+        {
+            var dataSource = new GceDataSource(
+                CredentialsStore.Default.CurrentProjectId,
+                CredentialsStore.Default.CurrentGoogleCredential,
+                GoogleCloudExtensionPackage.ApplicationName);
+            var allInstances = await dataSource.GetInstanceListAsync();
+            return from id in instanceIds
+                   join instance in allInstances on id equals instance.Id?.ToString() into joined
+                   from subInstance in joined.DefaultIfEmpty()
+                   orderby subInstance?.Name descending
+                   select new Tuple<string, string>(id,  subInstance == null ? id : subInstance.Name);
         }
     }
 }

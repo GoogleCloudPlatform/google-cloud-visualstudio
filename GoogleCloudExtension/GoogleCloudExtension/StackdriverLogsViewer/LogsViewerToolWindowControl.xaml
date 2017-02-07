@@ -183,8 +183,8 @@
                         Style="{StaticResource SelectorMenuStyle}"
                         Width="200">
                         <controls:SearchMenuItem 
-                            Header="{Binding Header}"
-                            ItemsSource="{Binding MenuItems}" >
+                            Header="{Binding ResourceTypeSelector.Header}"
+                            ItemsSource="{Binding ResourceTypeSelector.MenuItems}" >
 
                             <controls:SearchMenuItem.ItemTemplate>
                                 <HierarchicalDataTemplate 

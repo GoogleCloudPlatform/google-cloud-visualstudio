@@ -33,21 +33,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// <summary>
     /// The view model for LogsViewerToolWindow.
     /// </summary>
-    public class LogsViewerViewModel : ViewModelBase, IMenuItem
+    public class LogsViewerViewModel : ViewModelBase
     {
         private const string AdvancedHelpLink = "https://cloud.google.com/logging/docs/view/advanced_filters";
         private const int DefaultPageSize = 100;
-
-        /// <summary>
-        /// The default resource types to show. 
-        /// Order matters, if a resource type in the list does not have logs, fall back to the next one. 
-        /// </summary>
-        private static readonly string[] s_defaultResourceSelections = 
-            new string[] {
-                "gce_instance",
-                "gae_app",
-                "global"
-            };
 
         private static readonly LogSeverityItem[] s_logSeveritySelections = 
             new LogSeverityItem[] {
@@ -66,9 +55,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private string _filter;
 
-        private IList<ResourceKeys> _resourceKeys;
-        private MonitoredResourceDescriptor _selectedResource;
-        private IList<MonitoredResourceDescriptor> _resourceDescriptors;
         private LogSeverityItem _selectedLogSeverity = s_logSeveritySelections.LastOrDefault();
         private string _simpleSearchText;
         private string _advacedFilterText;
@@ -159,60 +145,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public IEnumerable<LogSeverityItem> LogSeverityList => s_logSeveritySelections;
 
         /// <summary>
+        /// Gets the resource type, resource key selector view model.
+        /// </summary>
+        public ResourceTypeMenuViewModel ResourceTypeSelector { get; }
+
+        /// <summary>
         /// Gets or sets the selected log severity value.
         /// </summary>
         public LogSeverityItem SelectedLogSeverity
         {
             get { return _selectedLogSeverity; }
             set { SetValueAndRaise(ref _selectedLogSeverity, value); }
-        }
-
-        private IMenuItem _selectedMenuItem;
-        private ResourceKeys _selectedResourceKey;
-        private string _selectedHealder;
-        public string Header
-        {
-            get { return _selectedHealder; }
-            set { SetValueAndRaise(ref _selectedHealder, value); }
-        }
-        private ObservableCollection<IMenuItem> _resourceKeysCollection = 
-            new ObservableCollection<IMenuItem>(new MenuItemViewModel[] { MenuItemViewModel.FakeItem });
-
-        public ObservableCollection<IMenuItem> MenuItems
-        {
-            get { return _resourceKeysCollection; }
-            private set { SetValueAndRaise(ref _resourceKeysCollection, value); }
-        }
-        public IMenuItem MenuItemParent { get; }
-        public ProtectedCommand MenuCommand { get; }
-
-        public void MenuCommandBubblingCallback(IMenuItem caller)
-        {
-            if (caller == null || _selectedMenuItem == caller)
-            {
-                return;
-            }
-
-            _selectedMenuItem = caller;
-
-            StringBuilder selected = new StringBuilder();
-            while ( caller != this)
-            {
-                selected.Insert(0, caller.Header);
-                if (caller.MenuItemParent != this)
-                {
-                    selected.Insert(0, ".");
-                }
-                else
-                {
-                    _selectedResourceKey = (caller as ResourceTypeItem).ResourceTypeKeys;
-                }
-                caller = caller.MenuItemParent;
-            }
-
-            Header = selected.ToString();
-            LogIdList = null;
-            RequestLogFiltersWrapperAsync(PopulateLogIds);
         }
 
         /// <summary>
@@ -346,6 +289,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 TimeZoneInfo.Local, DateTime.UtcNow, isDescendingOrder: true);
             DateTimePickerModel.DateTimeFilterChange += (sender, e) => Reload();
             PropertyChanged += OnPropertyChanged;
+            ResourceTypeSelector = new ResourceTypeMenuViewModel(_dataSource);
+            ResourceTypeSelector.PropertyChanged += OnPropertyChanged;
         }
 
         /// <summary>
@@ -550,7 +495,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            if (MenuItems?.FirstOrDefault() == null || _selectedMenuItem == null)
+            if (!ResourceTypeSelector.Populated)
             {
                 RequestLogFiltersWrapperAsync(PopulateResourceTypes);
                 Debug.WriteLine("PopulateResourceTypes exit");
@@ -662,58 +607,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         ///     2. Reload() checks ResourceDescriptors is null or empty.
         ///     3. Reload calls PopulateResourceTypes() which does a manual retry.
         /// </summary>
-        private async Task PopulateResourceTypes()
-        {
-            _resourceKeys = await _dataSource.Value.ListResourceKeysAsync();
-            var all = await _dataSource.Value.GetResourceDescriptorsAsync();
-            var descriptors = all.Where(x => _resourceKeys.Any(item => item?.Type == x.Type));
-            List<MonitoredResourceDescriptor> newOrderDescriptors = new List<MonitoredResourceDescriptor>();
-            // Keep the order.
-            foreach (var defaultSelection in s_defaultResourceSelections)
-            {
-                var desc = descriptors?.FirstOrDefault(x => x.Type == defaultSelection);
-                if (desc != null)
-                {
-                    newOrderDescriptors.Add(desc);
-                }
-            }
-            newOrderDescriptors.AddRange(descriptors.Where(x => !s_defaultResourceSelections.Contains(x.Type)));
-            _resourceDescriptors = newOrderDescriptors;  // This will set the selected item to first element.
-
-            var resourceKeyItems = _resourceDescriptors.Select(x => 
-                new ResourceTypeItem(_resourceKeys.FirstOrDefault(item => item.Type == x.Type), this));
-
-            MenuItems = new ObservableCollection<IMenuItem>(resourceKeyItems);
-            if (MenuItems.Count != 0)
-            {
-                MenuCommandBubblingCallback(MenuItems.FirstOrDefault());
-            }
-            else
-            {
-                // TODO: show warning.
-            }
-        }
-
-        public async Task<IEnumerable<string>> GetResourceValues(ResourceKeys resourceKeys)
-        {
-            try
-            {
-                var values = await _dataSource.Value.ListResourceTypeValuesAsync(resourceKeys.Type, null);
-                return values?.Select(x => x.Trim(new char[] { '/' }));
-            }
-            catch (Exception ex)
-            {
-                if (ex is DataSourceException)
-                {
-                    /// If it fails, show a tip, let refresh button retry it.
-                    RequestErrorMessage = ex.Message;
-                    ShowRequestErrorMessage = true;
-                    return null;
-                }
-
-                throw;
-            }
-        }
+        private async Task PopulateResourceTypes() => await ResourceTypeSelector.PopulateResourceTypes();
 
         /// <summary>
         /// This method uses similar logic as populating resource descriptors.
@@ -721,18 +615,18 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private async Task PopulateLogIds()
         {
-            if (_selectedMenuItem == null)
+            if (ResourceTypeSelector.SelectedMenuItem == null)
             {
-                Debug.WriteLine("Code bug, _selectedMenuItem should not be null");
+                Debug.WriteLine("Code bug, _selectedMenuItem should not be null.");
+                return;
             }
             List<string> keys = null;
-            if (_selectedMenuItem is ResourceValueItem)
+            if (ResourceTypeSelector.SelectedMenuItem is ResourceValueItem)
             {
                 keys = new List<string>();
-                keys.Add(_selectedMenuItem.Header);
+                keys.Add(ResourceTypeSelector.SelectedMenuItem.Header);
             }
-            IList<string> logIdRequestResult
-                = await _dataSource.Value.ListProjectLogNamesAsync(_selectedResourceKey.Type, keys);
+            IList<string> logIdRequestResult = await _dataSource.Value.ListProjectLogNamesAsync(ResourceTypeSelector.SelectedTypeNmae, keys);
             LogIdList = new LogIdsList(logIdRequestResult);
             LogIdList.PropertyChanged += OnPropertyChanged;
             Reload();
@@ -750,6 +644,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     {
                         Reload();
                     }
+                    break;
+                case nameof(ResourceTypeMenuViewModel.SelectedMenuItem):
+                    LogIdList = null;
+                    RequestLogFiltersWrapperAsync(PopulateLogIds);
                     break;
                 case nameof(SelectedLogSeverity):
                     Reload();
@@ -778,17 +676,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             Debug.WriteLine("Entering ComposeSimpleFilters()");
 
             StringBuilder filter = new StringBuilder();
-            if (_selectedResourceKey != null)
+            if (ResourceTypeSelector.SelectedResourceType != null)
             {
-                filter.AppendLine($"resource.type=\"{_selectedResourceKey.Type}\"");
+                filter.AppendLine($"resource.type=\"{ResourceTypeSelector.SelectedResourceType.ResourceTypeKeys.Type}\"");
             }
 
-            if (_selectedMenuItem != null && _selectedMenuItem is ResourceValueItem)
+            var valueItem = ResourceTypeSelector.SelectedMenuItem as ResourceValueItem;
+            if (valueItem != null)
             {
-                var valueItem = _selectedMenuItem as ResourceValueItem;
-                string lableName = _selectedResourceKey.Keys?[0];
-                // resource.labels.firewall_rule_id="3944672754892959708"
-                filter.AppendLine($"resource.labels.{lableName}=\"{valueItem.KeyValue}\"");
+                // Example: resource.labels.module_id="my_gae_default_service"
+                filter.AppendLine($"resource.labels.{ResourceTypeSelector.SelectedResourceType.GetKeysAt(0)}=\"{valueItem.KeyValue}\"");
             }
 
             if (SelectedLogSeverity != null && SelectedLogSeverity.Severity != LogSeverity.All)
@@ -806,7 +703,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             else
             {
                 filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
-            }
+            }   
 
             if (LogIdList.SelectedLogIdFullName != null)
             {

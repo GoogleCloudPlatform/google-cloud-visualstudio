@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
-    public class MenuItemViewModel : ViewModelBase, IMenuItem
+    public class MenuItemViewModel : ViewModelBase
     {
         private bool _isSubmenuPopulated = false;
 
@@ -27,11 +27,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         public bool IsFakeItem { get; private set; }
 
-        public IMenuItem MenuItemParent { get; }
+        public MenuItemViewModel MenuItemParent { get; }
 
-        public string Header { get; set; }
+        private string _header;
+        public string Header
+        {
+            get { return _header; }
+            set { SetValueAndRaise(ref _header, value); }
+        }
 
-        public ObservableCollection<IMenuItem> MenuItems { get; }
+        public ObservableCollection<MenuItemViewModel> MenuItems { get; }
 
         public ProtectedCommand MenuCommand { get; }
 
@@ -43,28 +48,23 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             set { SetValueAndRaise(ref _isSubmenuPopulated, value); }
         }
 
-        public MenuItemViewModel(IMenuItem parent)
+        public MenuItemViewModel(MenuItemViewModel parent)
         {
             IsFakeItem = false;
             MenuItemParent = parent;
-            MenuCommand = new ProtectedCommand(Execute);
-            MenuItems = new ObservableCollection<IMenuItem>();
+            MenuCommand = new ProtectedCommand(() => CommandBubblingHandler(this));
+            MenuItems = new ObservableCollection<MenuItemViewModel>();
             OnSubmenuOpenCommand = new ProtectedCommand(() => AddItems());
         }
 
-        public void MenuCommandBubblingCallback(IMenuItem caller)
+        protected virtual void CommandBubblingHandler(MenuItemViewModel originalSource)
         {
-            MenuItemParent?.MenuCommandBubblingCallback(caller);
+            MenuItemParent?.CommandBubblingHandler(originalSource);
         }
 
         protected virtual async Task LoadSubMenu() 
-        {
+        {   
             return;
-        }
-
-        protected virtual void Execute()
-        {
-            MenuItemParent?.MenuCommandBubblingCallback(this);
         }
 
         private async Task AddItems()
