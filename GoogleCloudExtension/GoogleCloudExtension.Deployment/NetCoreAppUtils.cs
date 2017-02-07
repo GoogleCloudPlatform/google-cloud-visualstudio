@@ -89,6 +89,14 @@ namespace GoogleCloudExtension.Deployment
             }
         }
 
+        internal static void GenerateDockerfile(string projectPath)
+        {
+            var projectDirectory = Path.GetDirectoryName(projectPath);
+            var targetDockerfile = Path.Combine(projectDirectory, DockerfileName);
+            var content = String.Format(DockerfileDefaultContent, CommonUtils.GetProjectName(projectPath));
+            File.WriteAllText(targetDockerfile, content);
+        }
+
         private static string GetExternalToolsPath()
         {
             var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);

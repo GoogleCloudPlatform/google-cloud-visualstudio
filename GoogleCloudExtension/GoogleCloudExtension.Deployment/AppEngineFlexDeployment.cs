@@ -121,6 +121,19 @@ namespace GoogleCloudExtension.Deployment
             }
         }
 
+        public static void GenerateConfigurationFiles(string projectPath)
+        {
+            GenerateAppYaml(projectPath);
+            NetCoreAppUtils.GenerateDockerfile(projectPath);
+        }
+
+        private static void GenerateAppYaml(string projectPath)
+        {
+            var projectDirectory = Path.GetDirectoryName(projectPath);
+            var targetAppYaml = Path.Combine(projectDirectory, AppYamlName);
+            File.WriteAllText(targetAppYaml, AppYamlDefaultContent);
+        }
+
         private static string GetAppEngineService(string projectPath)
         {
             var projectDirectory = Path.GetDirectoryName(projectPath);

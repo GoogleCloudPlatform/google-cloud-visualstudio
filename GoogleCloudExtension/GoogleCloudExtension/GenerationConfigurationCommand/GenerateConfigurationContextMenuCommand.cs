@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
@@ -62,7 +63,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
             if (commandService != null)
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
-                var menuItem = new OleMenuCommand(OnGenerateCondiguration, menuCommandID);
+                var menuItem = new OleMenuCommand(OnGenerateConfiguration, menuCommandID);
                 menuItem.BeforeQueryStatus += OnBeforeQueryStatus;
                 commandService.AddCommand(menuItem);
             }
@@ -104,10 +105,11 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private void OnGenerateCondiguration(object sender, EventArgs e)
+        private void OnGenerateConfiguration(object sender, EventArgs e)
         {
             var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
-            Debug.WriteLine($"Deploying project: {selectedProject.FullPath}");
+            Debug.WriteLine($"Generating configuration for project: {selectedProject.FullPath}");
+            AppEngineFlexDeployment.GenerateConfigurationFiles(selectedProject.FullPath);
         }
 
         private void OnBeforeQueryStatus(object sender, EventArgs e)
