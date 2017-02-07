@@ -109,6 +109,39 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
         {
             var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
             Debug.WriteLine($"Generating configuration for project: {selectedProject.FullPath}");
+            var configurationStatus = AppEngineFlexDeployment.CheckProjectConfiguration(selectedProject.FullPath);
+
+            if (configurationStatus.HasAppYaml && configurationStatus.HasDockerfile)
+            {
+                if (!UserPromptUtils.ActionPrompt(
+                    prompt: "The files app.yaml and Dockerfile already exist in your project, are you sure you want to overwrite them?",
+                    title: "Configuration files already exist",
+                    actionCaption: "Overwrite"))
+                {
+                    return;
+                }
+            }
+            else if (configurationStatus.HasAppYaml)
+            {
+                if (!UserPromptUtils.ActionPrompt(
+                    prompt: "The file app.yaml already exists in your project, are you sure you want to overwrite it?",
+                    title: "Configuration files already exist",
+                    actionCaption: "Overwrite"))
+                {
+                    return;
+                }
+            }
+            else if (configurationStatus.HasDockerfile)
+            {
+                if (!UserPromptUtils.ActionPrompt(
+                    prompt: "The file Dockerfile already exists in your project, are you sure you want to overwrite it?",
+                    title: "Configuration files already exist",
+                    actionCaption: "Overwrite"))
+                {
+                    return;
+                }
+            }
+
             AppEngineFlexDeployment.GenerateConfigurationFiles(selectedProject.FullPath);
         }
 

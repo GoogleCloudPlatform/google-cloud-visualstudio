@@ -97,6 +97,13 @@ namespace GoogleCloudExtension.Deployment
             File.WriteAllText(targetDockerfile, content);
         }
 
+        internal static bool CheckDockerfile(string projectPath)
+        {
+            var projectDirectory = Path.GetDirectoryName(projectPath);
+            var targetDockerfile = Path.Combine(projectDirectory, DockerfileName);
+            return File.Exists(targetDockerfile);
+        }
+
         private static string GetExternalToolsPath()
         {
             var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
