@@ -1415,4 +1415,8 @@
     <value>Refresh clusters</value>
     <comment>Caption for the refresh clusters hyperlink</comment>
   </data>
+  <data name="GenerateConfigurationMenuHeader" xml:space="preserve">
+    <value>Generate configuration files for {0}</value>
+    <comment>Header for the generate configuration command. {0} is the name of the project.</comment>
+  </data>
 </root>

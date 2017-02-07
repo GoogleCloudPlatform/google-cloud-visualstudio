@@ -1924,6 +1924,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Generate configuration files for {0}.
+        /// </summary>
+        public static string GenerateConfigurationMenuHeader {
+            get {
+                return ResourceManager.GetString("GenerateConfigurationMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Clusters:.
         /// </summary>
         public static string GkePublishClusterMessage {
