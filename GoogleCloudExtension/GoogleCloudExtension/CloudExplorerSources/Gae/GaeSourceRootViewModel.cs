@@ -78,6 +78,27 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
 
+        public async void InvalidateService(string id)
+        {
+            int idx = 0;
+            foreach (ServiceViewModel service in Children)
+            {
+                if (service.Service.Id == id)
+                {
+                    break;
+                }
+                ++idx;
+            }
+            if (idx >= Children.Count)
+            {
+                return;
+            }
+
+            var newService = await _dataSource.Value.GetServiceAsync(id);
+            var newModel = await LoadService(newService);
+            Children[idx] = newModel;
+        }
+
         private void OnStatusCommand()
         {
             Process.Start("https://status.cloud.google.com/");

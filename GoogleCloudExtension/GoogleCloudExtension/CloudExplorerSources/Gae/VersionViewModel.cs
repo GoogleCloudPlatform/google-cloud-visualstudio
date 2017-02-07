@@ -106,8 +106,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesWindowCommand) },
             };
 
-            // If the version has traffic allocated to it it can be opened.
-            if (_hasTrafficAllocation)
+            // If the version is running it can be opened.
+            if (_version.IsServing())
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeVersionOpen, Command = new ProtectedCommand(OnOpenVersion) });
             }
@@ -134,12 +134,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private void OnStartVersion()
         {
-            // UpdateServingStatus(GaeVersionExtensions.ServingStatus, Resources.CloudExplorerGaeVersionStartServingMessage);
+            UpdateServingStatus(GaeVersionExtensions.ServingStatus, Resources.CloudExplorerGaeVersionStartServingMessage);
         }
 
         private void OnStopVersion()
         {
-            // UpdateServingStatus(GaeVersionExtensions.StoppedStatus, Resources.CloudExplorerGaeVersionStopServingMessage);
+            UpdateServingStatus(GaeVersionExtensions.StoppedStatus, Resources.CloudExplorerGaeVersionStopServingMessage);
         }
 
         private void OnDeleteVersion()
@@ -194,10 +194,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                     throw new DataSourceException(operation.Error.Message);
                 }
                 EventsReporterWrapper.ReportEvent(GaeVersionDeletedEvent.Create(CommandStatus.Success));
+                _owner.InvalidateService(_service.Id);
             }
             catch (Exception ex) when (ex is DataSourceException || ex is TimeoutException || ex is OperationCanceledException)
             {
                 EventsReporterWrapper.ReportEvent(GaeVersionDeletedEvent.Create(CommandStatus.Failure));
+                IsLoading = false;
                 IsError = true;
 
                 if (ex is DataSourceException)
@@ -213,21 +215,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                     Caption = Resources.CloudExploreOperationCanceledMessage;
                 }
             }
-            finally
-            {
-                IsLoading = false;
-
-                // Re-initialize the instance as it will have a new version.
-                if (!IsError)
-                {
-                    // Remove the deleted child.
-                    _owner.Children.Remove(this);
-                }
-                else
-                {
-                    Caption = GetCaption();
-                }
-            }
         }
 
         /// <summary>
@@ -235,7 +222,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         /// </summary>
         /// <param name="status">The serving status to update the version to.</param>
         /// <param name="statusMessage">The message to display while updating the status</param>
-        /*
         private async void UpdateServingStatus(string status, string statusMessage)
         {
             IsLoading = true;
@@ -255,14 +241,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                     throw new DataSourceException(operation.Error.Message);
                 }
 
-                _version = await dataSource.GetVersionAsync(_service.Id, _version.Id);
                 EventsReporterWrapper.ReportEvent(
                     GaeVersionServingStatusUpdatedEvent.Create(CommandStatus.Success, statusMessage));
+                _owner.InvalidateService(_service.Id);
             }
             catch (Exception ex) when (ex is DataSourceException || ex is TimeoutException || ex is OperationCanceledException)
             {
                 EventsReporterWrapper.ReportEvent(
                     GaeVersionServingStatusUpdatedEvent.Create(CommandStatus.Failure, statusMessage));
+                IsLoading = false;
                 IsError = true;
 
                 if (ex is DataSourceException)
@@ -278,22 +265,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                     Caption = Resources.CloudExploreOperationCanceledMessage;
                 }
             }
-            finally
-            {
-                IsLoading = false;
-
-                // Re-initialize the instance as it will have a new version.
-                if (!IsError)
-                {
-                    Initialize();
-                }
-                else
-                {
-                    Caption = GetCaption();
-                }
-            }
         }
-        */
 
         /// <summary>
         /// Get a caption for a the version.
