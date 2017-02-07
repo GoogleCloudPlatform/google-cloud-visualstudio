@@ -304,6 +304,32 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 return false;
             }
 
+            if (String.IsNullOrEmpty(DeploymentName))
+            {
+                UserPromptUtils.ErrorPrompt(Resources.GkePublishEmptyDeploymentNameMessage, Resources.UiInvalidValueTitle);
+                return false;
+            }
+            if (String.IsNullOrEmpty(DeploymentVersion))
+            {
+                UserPromptUtils.ErrorPrompt(Resources.GkePublishEmptyDeploymentVersionMessage, Resources.UiInvalidValueTitle);
+                return false;
+            }
+
+            if (!GcpPublishStepsUtils.IsValidName(DeploymentName))
+            {
+                UserPromptUtils.ErrorPrompt(
+                    String.Format(Resources.GkePublishInvalidDeploymentNameMessage, DeploymentName),
+                    Resources.UiInvalidValueTitle);
+                return false;
+            }
+            if (!GcpPublishStepsUtils.IsValidName(DeploymentVersion))
+            {
+                UserPromptUtils.ErrorPrompt(
+                    String.Format(Resources.GkePublishInvalidDeploymentVersionMessage, DeploymentVersion),
+                    Resources.UiInvalidValueTitle);
+                return false;
+            }
+
             return true;
         }
 

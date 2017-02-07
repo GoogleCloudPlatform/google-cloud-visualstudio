@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2023,11 +2023,47 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The deployment name cannot be empty..
+        /// </summary>
+        public static string GkePublishEmptyDeploymentNameMessage {
+            get {
+                return ResourceManager.GetString("GkePublishEmptyDeploymentNameMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The deployment version cannot be empty..
+        /// </summary>
+        public static string GkePublishEmptyDeploymentVersionMessage {
+            get {
+                return ResourceManager.GetString("GkePublishEmptyDeploymentVersionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to E_xpose the service to the public internet.
         /// </summary>
         public static string GkePublishExposeServiceCaption {
             get {
                 return ResourceManager.GetString("GkePublishExposeServiceCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid deployment name {0}. The name must only user lowercase letters, digits and the - character..
+        /// </summary>
+        public static string GkePublishInvalidDeploymentNameMessage {
+            get {
+                return ResourceManager.GetString("GkePublishInvalidDeploymentNameMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid deployment version {0}. The name must only user lowercase letters, digits and the - character..
+        /// </summary>
+        public static string GkePublishInvalidDeploymentVersionMessage {
+            get {
+                return ResourceManager.GetString("GkePublishInvalidDeploymentVersionMessage", resourceCulture);
             }
         }
         

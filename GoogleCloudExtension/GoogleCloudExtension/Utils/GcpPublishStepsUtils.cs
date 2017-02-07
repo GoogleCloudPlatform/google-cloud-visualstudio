@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Text.RegularExpressions;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -21,6 +22,8 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public static class GcpPublishStepsUtils
     {
+        private static readonly Regex s_validNamePattern = new Regex(@"^(?!-)[a-z\d\-]{1,100}$");
+
         /// <summary>
         /// Returns a default version name suitable for publishing to GKE and Flex.
         /// </summary>
@@ -32,6 +35,16 @@ namespace GoogleCloudExtension.Utils
                 "{0:0000}{1:00}{2:00}t{3:00}{4:00}{5:00}",
                 now.Year, now.Month, now.Day,
                 now.Hour, now.Minute, now.Second);
+        }
+        
+        /// <summary>
+        /// Determines if the given name is a valid name.
+        /// </summary>
+        /// <param name="name">The name to check.</param>
+        /// <returns>True if the name is valid, false otherwise.</returns>
+        public static bool IsValidName(string name)
+        {
+            return !String.IsNullOrEmpty(name) && s_validNamePattern.IsMatch(name);
         }
     }
 }
