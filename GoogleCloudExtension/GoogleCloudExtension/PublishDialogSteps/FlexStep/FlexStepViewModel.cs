@@ -79,6 +79,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         public override async void Publish()
         {
+            if (!ValidateInput())
+            {
+                Debug.WriteLine("Invalid input cancelled the operation.");
+                return;
+            }
+
             var project = _publishDialog.Project;
             try
             {
@@ -140,6 +146,24 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
             }
+        }
+
+        private bool ValidateInput()
+        {
+            if (String.IsNullOrEmpty(Version))
+            {
+                UserPromptUtils.ErrorPrompt(Resources.FlexPublishEmptyVersionMessage, Resources.UiInvalidValueTitle);
+                return false;
+            }
+            if (!GcpPublishStepsUtils.IsValidName(Version))
+            {
+                UserPromptUtils.ErrorPrompt(
+                    String.Format(Resources.FlexPublishInvalidVersionMessage, Version),
+                    Resources.UiInvalidValueTitle);
+                return false;
+            }
+
+            return true;
         }
 
         #endregion

@@ -1843,11 +1843,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The version name cannot be empty..
+        /// </summary>
+        public static string FlexPublishEmptyVersionMessage {
+            get {
+                return ResourceManager.GetString("FlexPublishEmptyVersionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to deploy project {0} to App Engine Flex..
         /// </summary>
         public static string FlexPublishFailedMessage {
             get {
                 return ResourceManager.GetString("FlexPublishFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid version {0}. The name must only user lowercase letters, digits and the - character..
+        /// </summary>
+        public static string FlexPublishInvalidVersionMessage {
+            get {
+                return ResourceManager.GetString("FlexPublishInvalidVersionMessage", resourceCulture);
             }
         }
         
