@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
     {
         private readonly FlexStepContent _content;
         private IPublishDialog _publishDialog;
-        private string _version;
+        private string _version = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _promote = true;
         private bool _openWebsite = true;
 
