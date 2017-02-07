@@ -10,6 +10,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using GoogleCloudExtension.Utils;
 using Google.Apis.Logging.v2.Data.Extensions;
+using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.DataSources;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -31,18 +33,35 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
         }
 
+        private async Task<IEnumerable<string>> GceInstanceIdToName(IEnumerable<string> instanceIds)
+        {
+            var dataSource = new GceDataSource(
+                CredentialsStore.Default.CurrentProjectId,
+                CredentialsStore.Default.CurrentGoogleCredential,
+                GoogleCloudExtensionPackage.ApplicationName);
+            var allInstances = await dataSource.GetInstanceListAsync();
+            return from id in instanceIds
+                   join instance in allInstances on id equals instance.Id?.ToString() into joined
+                   from subInstance in joined.DefaultIfEmpty()
+                   orderby subInstance?.Name descending
+                   select subInstance == null ? id : subInstance.Name;
+        }
+
         protected override async Task LoadSubMenu()
         {
-            // TODO: remove before checkin. Test only.
-            await System.Threading.Tasks.Task.Delay(2000);
-
             var keys = await LogsViewerModel.GetResourceValues(ResourceTypeKeys);
             if (keys == null)
             {
                 return;
             }
 
-            foreach (var menuItem in keys.Select(x => new ResourceValueItem(x, this)))
+            IEnumerable<string> headers = keys;
+            if (ResourceTypeKeys.Type == "gce_instance")
+            {
+                headers = await GceInstanceIdToName(keys);
+            }
+
+            foreach (var menuItem in headers.Select(x => new ResourceValueItem(x, this)))
             {
                 MenuItems.Add(menuItem);
             }
