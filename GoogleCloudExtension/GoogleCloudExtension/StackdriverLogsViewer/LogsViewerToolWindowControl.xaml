@@ -19,7 +19,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
                 <ResourceDictionary Source="./LogsViewerResources.xaml" />
-                <ResourceDictionary Source="./SearchMenuItem/SearchMenuItemResources.xaml" />
+                <ResourceDictionary Source="../Controls/SearchMenuItemResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <utils:VisibilityConverter x:Key="visibilityConverter" />
@@ -178,30 +178,21 @@
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Center">
 
-                    <!--<controls:FixBackgroundComboBox 
-                        Margin="0,0,6,0"
-                        Width="200" 
-                        Style="{StaticResource CommonDocumentComboBoxStyle}"
-                        ItemsSource="{Binding ResourceDescriptors}"
-                        SelectedItem="{Binding SelectedResource, Mode=TwoWay}"
-                        DisplayMemberPath="DisplayName" 
-                        IsSynchronizedWithCurrentItem="true" />-->
                     <Menu
                         Margin="0,0,6,0"
-                        VerticalAlignment="Center"
-                        Width="200" 
-                        >
-                        <local:SearchMenuItem Header="{Binding Header}"
+                        Style="{StaticResource SelectorMenuStyle}"
+                        Width="200">
+                        <controls:SearchMenuItem 
+                            Header="{Binding Header}"
                             ItemsSource="{Binding MenuItems}" >
 
-                            <local:SearchMenuItem.ItemTemplate>
+                            <controls:SearchMenuItem.ItemTemplate>
                                 <HierarchicalDataTemplate 
                                     DataType="{x:Type local:MenuItemViewModel}" 
                                     ItemsSource="{Binding MenuItems}">
-
                                 </HierarchicalDataTemplate>
-                            </local:SearchMenuItem.ItemTemplate>
-                        </local:SearchMenuItem>
+                            </controls:SearchMenuItem.ItemTemplate>
+                        </controls:SearchMenuItem>
                     </Menu>
 
                     <controls:FixBackgroundComboBox 

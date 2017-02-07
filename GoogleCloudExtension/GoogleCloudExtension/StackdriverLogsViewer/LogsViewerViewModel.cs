@@ -176,7 +176,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             set { SetValueAndRaise(ref _selectedHealder, value); }
         }
         private ObservableCollection<IMenuItem> _resourceKeysCollection = 
-            new ObservableCollection<IMenuItem>(new MenuItemViewModel[] { MenuItemViewModel.CreateFakeItem() });
+            new ObservableCollection<IMenuItem>(new MenuItemViewModel[] { MenuItemViewModel.FakeItem });
 
         public ObservableCollection<IMenuItem> MenuItems
         {
@@ -213,24 +213,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             Header = selected.ToString();
             LogIdList = null;
             RequestLogFiltersWrapperAsync(PopulateLogIds);
-        }
-
-        /// <summary>
-        /// Gets all resources types.
-        /// </summary>
-        public IList<MonitoredResourceDescriptor> ResourceDescriptors
-        {
-            get { return _resourceDescriptors; }
-            private set { SetValueAndRaise(ref _resourceDescriptors, value); }
-        }
-
-        /// <summary>
-        /// Gets or sets current selected resource types.
-        /// </summary>
-        public MonitoredResourceDescriptor SelectedResource
-        {
-            get { return _selectedResource; }
-            set { SetValueAndRaise(ref _selectedResource, value); }
         }
 
         /// <summary>
@@ -568,7 +550,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            if (ResourceDescriptors?.FirstOrDefault() == null || _selectedMenuItem == null)
+            if (MenuItems?.FirstOrDefault() == null || _selectedMenuItem == null)
             {
                 RequestLogFiltersWrapperAsync(PopulateResourceTypes);
                 Debug.WriteLine("PopulateResourceTypes exit");
@@ -696,9 +678,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 }
             }
             newOrderDescriptors.AddRange(descriptors.Where(x => !s_defaultResourceSelections.Contains(x.Type)));
-            ResourceDescriptors = newOrderDescriptors;  // This will set the selected item to first element.
+            _resourceDescriptors = newOrderDescriptors;  // This will set the selected item to first element.
 
-            var resourceKeyItems = ResourceDescriptors.Select(x => 
+            var resourceKeyItems = _resourceDescriptors.Select(x => 
                 new ResourceTypeItem(_resourceKeys.FirstOrDefault(item => item.Type == x.Type), this));
 
             MenuItems = new ObservableCollection<IMenuItem>(resourceKeyItems);
@@ -763,10 +745,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 case nameof(SelectedTimeZone):
                     OnTimeZoneChanged();
                     break;
-                case nameof(SelectedResource):
-                    LogIdList = null;
-                    RequestLogFiltersWrapperAsync(PopulateLogIds);
-                    break;
                 case nameof(LogIdsList.SelectedLogId):
                     if (LogIdList != null)
                     {
@@ -810,7 +788,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 var valueItem = _selectedMenuItem as ResourceValueItem;
                 string lableName = _selectedResourceKey.Keys?[0];
                 // resource.labels.firewall_rule_id="3944672754892959708"
-                filter.AppendLine($"resource.labels.{lableName}=\"{valueItem.Header}\"");
+                filter.AppendLine($"resource.labels.{lableName}=\"{valueItem.KeyValue}\"");
             }
 
             if (SelectedLogSeverity != null && SelectedLogSeverity.Severity != LogSeverity.All)
