@@ -198,8 +198,7 @@
                                 <HierarchicalDataTemplate 
                                     DataType="{x:Type local:MenuItemViewModel}" 
                                     ItemsSource="{Binding MenuItems}">
-                                    
-                                    <TextBlock Text="{Binding Header}" />
+
                                 </HierarchicalDataTemplate>
                             </local:SearchMenuItem.ItemTemplate>
                         </local:SearchMenuItem>

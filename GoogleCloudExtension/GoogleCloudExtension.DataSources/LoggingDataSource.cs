@@ -98,8 +98,6 @@ namespace GoogleCloudExtension.DataSources
                 },
                 x => x.ResourceValuePrefixes,
                 x => x.NextPageToken);
-                x => x.ResourceValuePrefixes,
-                x => x.NextPageToken);
         }
 
         /// <summary>

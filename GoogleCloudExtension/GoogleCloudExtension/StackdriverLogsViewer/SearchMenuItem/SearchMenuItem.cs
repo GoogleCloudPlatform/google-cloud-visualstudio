@@ -14,6 +14,8 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 using System.Diagnostics;
+using System.Collections.ObjectModel;
+
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -81,6 +83,50 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             return container;
         }
 
+        public static DependencyProperty OnSubmenuOpenCommandProperty
+            = DependencyProperty.Register(
+                "OnSubmenuOpenCommand",
+                typeof(ICommand),
+                typeof(SearchMenuItem));
+
+        public ICommand OnSubmenuOpenCommand
+        {
+            get
+            {
+                return (ICommand)GetValue(OnSubmenuOpenCommandProperty);
+            }
+
+            set
+            {
+                SetValue(OnSubmenuOpenCommandProperty, value);
+            }
+        }
+
+        public static DependencyProperty IsSubmenuPopulatedProperty
+            = DependencyProperty.Register(
+                "IsSubmenuPopulated",
+                typeof(bool),
+                typeof(SearchMenuItem),
+                new FrameworkPropertyMetadata()
+                {
+                    DefaultValue = false,
+                    BindsTwoWayByDefault = true,
+                    DefaultUpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                });
+
+        public bool IsSubmenuPopulated
+        {
+            get
+            {
+                return (bool)GetValue(IsSubmenuPopulatedProperty);
+            }
+
+            set
+            {
+                Debug.WriteLine($"{Header} SetValue(IsSubmenuPopulatedProperty, {value}");
+                SetValue(IsSubmenuPopulatedProperty, value);
+            }
+        }
         private TextBox _searchBox;
 
         /// Create bindings and event handlers on named items.
@@ -95,18 +141,18 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 _searchBox.TextChanged += _searchBox_TextChanged;
             }
 
-            //Binding binding = new Binding();
-            //binding.Path = new PropertyPath("Header");
-            ////binding.Source = Command;  // view model?
-
-            //BindingOperations.SetBinding(this, HeaderProperty, binding);
-
-            this.MouseEnter += SearchMenuItem_MouseEnter;
+            this.SubmenuOpened += SearchMenuItem_SubmenuOpened;
         }
 
-        private void SearchMenuItem_MouseEnter(object sender, MouseEventArgs e)
+        private void SearchMenuItem_SubmenuOpened(object sender, RoutedEventArgs e)
         {
-            // throw new NotImplementedException();
+            Debug.WriteLine($"{Header} submenu opened");
+            // OnInit = true;
+            Debug.WriteLine($"{Header} adding sub menu");
+            if (OnSubmenuOpenCommand != null && OnSubmenuOpenCommand.CanExecute(null) && !IsSubmenuPopulated)
+            {
+                OnSubmenuOpenCommand.Execute(null);
+            }
         }
 
         private void _searchBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -130,7 +176,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     continue;
                 }
 
-                menuItem.Visibility = prefix == "" || label.StartsWith(prefix, StringComparison.CurrentCultureIgnoreCase) ?  
+                menuItem.Visibility = prefix == "" || label.StartsWith(prefix, StringComparison.CurrentCultureIgnoreCase) ?
                     Visibility.Visible : Visibility.Collapsed;
             }
         }

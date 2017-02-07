@@ -1,5 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:control="clr-namespace:GoogleCloudExtension.Controls"
+                    xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
                     xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer">
 
     <!-- Region colors -->
@@ -228,14 +230,15 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <!-- TopLevelHeader  -->
     <ControlTemplate x:Key="{x:Static MenuItem.TopLevelHeaderTemplateKey}"
                  TargetType="local:SearchMenuItem">
         <Border Name="Border" BorderThickness="1" BorderBrush="LightGray"
                 Background="Blue">
             <Grid>
-                <!--Margin="6,3,6,3"--><!--
+                <!--Margin="6,3,6,3"-->
+                <!--
                 <ContentPresenter 
                     Margin="0,3,0,3"
                         ContentSource="Header"
@@ -384,7 +387,9 @@
                     Name="HeaderHost"
                     Grid.Column="1"
                     HorizontalAlignment="Left"
-                    Padding="8,5,8,5"
+                    Padding="0,5,0,5"
+                    TextWrapping="NoWrap"
+                    TextTrimming="CharacterEllipsis"
                     Text="{TemplateBinding Header}"
                     />
                 <TextBlock x:Name="InputGestureText"
@@ -437,6 +442,8 @@
                 <TextBlock 
                     Name="HeaderHost"
                     Grid.Column="1"
+                    TextWrapping="NoWrap"
+                    TextTrimming="CharacterEllipsis"
                     Text="{TemplateBinding Header}"
                     />
                 <TextBlock x:Name="InputGestureText"
@@ -472,6 +479,12 @@
                                 <TextBlock Text="Search in prefix:" Margin="0,0,0,3" />
                                 <TextBox Name="PART_searchTextBox" Padding="8,5,8,5"  />
                             </StackPanel>
+
+                            <control:ProgressIndicator 
+                                 Margin="3"
+                                Visibility="{Binding IsSubmenuPopulated,Mode=OneWay, RelativeSource={RelativeSource Mode=FindAncestor, 
+                                    AncestorType={x:Type local:SearchMenuItem }}, Converter={utils:VisibilityConverter IsNegated=True}}" />
+
                             <ScrollViewer CanContentScroll="True" Style="{StaticResource MenuScrollViewer}">
                                 <StackPanel  
                                         IsItemsHost="True" 
@@ -500,24 +513,14 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-
-    <!--<Style x:Key="SearchMenuItemStyle" TargetType="local:SearchMenuItem">
-        <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <Setter Property="Template" Value="{StaticResource {x:Static MenuItem.SubmenuHeaderTemplateKey}}"/>
-        <Style.Triggers>
-            <Trigger Property="Role" Value="SubmenuHeader">
-                <Setter Property="Template"
-              Value="{StaticResource {x:Static MenuItem.SubmenuHeaderTemplateKey}}"/>
-            </Trigger>
-        </Style.Triggers>
-
-    </Style>-->
-    
     <!-- MenuItem Style -->
     <Style  TargetType="local:SearchMenuItem">
         <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <Setter Property="IsSubmenuOpen" Value="{Binding IsSubmenuOpen}" />
+        <Setter Property="IsSubmenuPopulated" Value="{Binding IsSubmenuPopulated}" />
         <Setter Property="Command" Value="{Binding MenuCommand}" />
+        <Setter Property="OnSubmenuOpenCommand" Value="{Binding OnSubmenuOpenCommand}" />
+        <Setter Property="Visibility" 
+                Value="{Binding IsFakeItem, Converter={utils:VisibilityConverter IsNegated=True}}" />
         <Setter Property="Header" Value="{Binding Header}" />
         <Style.Triggers>
             <Trigger Property="Role" Value="TopLevelHeader">

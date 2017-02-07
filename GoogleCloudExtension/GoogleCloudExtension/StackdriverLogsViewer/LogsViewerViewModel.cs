@@ -175,7 +175,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             get { return _selectedHealder; }
             set { SetValueAndRaise(ref _selectedHealder, value); }
         }
-        private ObservableCollection<IMenuItem> _resourceKeysCollection;
+        private ObservableCollection<IMenuItem> _resourceKeysCollection = 
+            new ObservableCollection<IMenuItem>(new MenuItemViewModel[] { MenuItemViewModel.CreateFakeItem() });
+
         public ObservableCollection<IMenuItem> MenuItems
         {
             get { return _resourceKeysCollection; }

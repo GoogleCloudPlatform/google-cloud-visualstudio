@@ -15,38 +15,34 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 {
     public class ResourceTypeItem : MenuItemViewModel
     {
-        private bool HasPopulatedSubMenus;
+        private LogsViewerViewModel LogsViewerModel => MenuItemParent as LogsViewerViewModel;
+
         public ResourceKeys ResourceTypeKeys { get; }
 
         public ResourceTypeItem(ResourceKeys resourceKeys, IMenuItem parent) : base(parent)
         {
             ResourceTypeKeys = resourceKeys;
             Header = ResourceTypeKeys.Type;
-            //LoadSubMenuItem();
+            IsSubmenuPopulated = ResourceTypeKeys.Keys?.FirstOrDefault() == null;
+            // The resource type contains keys, add a fake item to make it submenuheader Role.
+            if (!IsSubmenuPopulated)
+            {
+                MenuItems.Add(MenuItemViewModel.CreateFakeItem());
+            }
         }
 
-        //protected override void Execute()
-        //{
-        //    if (HasPopulatedSubMenus)
-        //    {
-        //        base.Execute();
-        //    }
-        //}
-
-        private LogsViewerViewModel LogsViewerModel => MenuItemParent as LogsViewerViewModel;
-
-        private void LoadSubMenuItems(IEnumerable<string> resourceKeyValues)
+        protected override async Task LoadSubMenu()
         {
-            if (HasPopulatedSubMenus)
+            // TODO: remove before checkin. Test only.
+            await System.Threading.Tasks.Task.Delay(2000);
+
+            var keys = await LogsViewerModel.GetResourceValues(ResourceTypeKeys);
+            if (keys == null)
             {
-                Debug.WriteLine("LoadSubMenuItems has already been called before, skip.");
                 return;
             }
-            HasPopulatedSubMenus = true;
-            if (resourceKeyValues == null) {
-                return;
-            }
-            foreach (var menuItem in resourceKeyValues.Select(x => new ResourceValueItem(x, this)))
+
+            foreach (var menuItem in keys.Select(x => new ResourceValueItem(x, this)))
             {
                 MenuItems.Add(menuItem);
             }
