@@ -141,6 +141,11 @@ namespace GoogleCloudExtension.Deployment
             NetCoreAppUtils.GenerateDockerfile(projectPath);
         }
 
+        /// <summary>
+        /// Checks the project configuration files to see if they exist.
+        /// </summary>
+        /// <param name="projectPath">The full path to the project.json for the project.</param>
+        /// <returns>An instance of <seealso cref="ProjectConfigurationStatus"/> with the status of the config.</returns>
         public static ProjectConfigurationStatus CheckProjectConfiguration(string projectPath)
         {
             var projectDirectory = Path.GetDirectoryName(projectPath);

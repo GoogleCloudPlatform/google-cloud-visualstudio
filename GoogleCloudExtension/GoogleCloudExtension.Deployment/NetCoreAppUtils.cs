@@ -89,6 +89,10 @@ namespace GoogleCloudExtension.Deployment
             }
         }
 
+        /// <summary>
+        /// Generates the Dockerfile for this .NET Core project.
+        /// </summary>
+        /// <param name="projectPath">The full path to the project.json file for the project.</param>
         internal static void GenerateDockerfile(string projectPath)
         {
             var projectDirectory = Path.GetDirectoryName(projectPath);
@@ -97,6 +101,11 @@ namespace GoogleCloudExtension.Deployment
             File.WriteAllText(targetDockerfile, content);
         }
 
+        /// <summary>
+        /// Checks if the Dockerfile for the project was created.
+        /// </summary>
+        /// <param name="projectPath">The full path to the project.json for the project.</param>
+        /// <returns>True if the Dockerfile exists, false otherwise.</returns>
         internal static bool CheckDockerfile(string projectPath)
         {
             var projectDirectory = Path.GetDirectoryName(projectPath);

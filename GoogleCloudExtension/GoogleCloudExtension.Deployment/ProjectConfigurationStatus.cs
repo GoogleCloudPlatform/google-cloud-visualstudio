@@ -14,10 +14,19 @@
 
 namespace GoogleCloudExtension.Deployment
 {
+    /// <summary>
+    /// This class contains the status for the configuration files (app.yaml and Dockerfile) for a project.
+    /// </summary>
     public class ProjectConfigurationStatus
     {
+        /// <summary>
+        /// Set to True if the project has an app.yaml file, false otherwise.
+        /// </summary>
         public bool HasAppYaml { get; }
 
+        /// <summary>
+        /// Set fo true if the project has a Dockerfile file, false otherwise.
+        /// </summary>
         public bool HasDockerfile { get; }
 
         public ProjectConfigurationStatus(bool hasAppYaml, bool hasDockerfile)
