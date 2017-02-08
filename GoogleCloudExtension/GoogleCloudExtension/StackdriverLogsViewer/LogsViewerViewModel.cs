@@ -38,18 +38,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private const string AdvancedHelpLink = "https://cloud.google.com/logging/docs/view/advanced_filters";
         private const int DefaultPageSize = 100;
 
-        /// <summary>
-        /// The default resource types to show. 
-        /// Order matters, if a resource type in the list does not have logs, fall back to the next one. 
-        /// </summary>
-        private static readonly string[] s_defaultResourceSelections = 
-            new string[] {
-                "gce_instance",
-                "gae_app",
-                "global"
-            };
-
-        private static readonly LogSeverityItem[] s_logSeveritySelections = 
+        private static readonly LogSeverityItem[] s_logSeveritySelections =
             new LogSeverityItem[] {
                 new LogSeverityItem(LogSeverity.Debug, Resources.LogViewerLogLevelDebugLabel),
                 new LogSeverityItem(LogSeverity.Info, Resources.LogViewerLogLevelInfoLabel),
@@ -66,9 +55,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private string _filter;
 
-        private IList<ResourceKeys> _resourceKeys;
-        private MonitoredResourceDescriptor _selectedResource;
-        private IList<MonitoredResourceDescriptor> _resourceDescriptors;
         private LogSeverityItem _selectedLogSeverity = s_logSeveritySelections.LastOrDefault();
         private string _simpleSearchText;
         private string _advacedFilterText;
@@ -159,30 +145,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public IEnumerable<LogSeverityItem> LogSeverityList => s_logSeveritySelections;
 
         /// <summary>
+        /// Gets the resource type, resource key selector view model.
+        /// </summary>
+        public ResourceTypeMenuViewModel ResourceTypeSelector { get; }
+
+        /// <summary>
         /// Gets or sets the selected log severity value.
         /// </summary>
         public LogSeverityItem SelectedLogSeverity
         {
             get { return _selectedLogSeverity; }
             set { SetValueAndRaise(ref _selectedLogSeverity, value); }
-        }
-
-        /// <summary>
-        /// Gets all resources types.
-        /// </summary>
-        public IList<MonitoredResourceDescriptor> ResourceDescriptors
-        {
-            get { return _resourceDescriptors; }
-            private set { SetValueAndRaise(ref _resourceDescriptors, value); }
-        }
-
-        /// <summary>
-        /// Gets or sets current selected resource types.
-        /// </summary>
-        public MonitoredResourceDescriptor SelectedResource
-        {
-            get { return _selectedResource; }
-            set { SetValueAndRaise(ref _selectedResource, value); }
         }
 
         /// <summary>
@@ -316,6 +289,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 TimeZoneInfo.Local, DateTime.UtcNow, isDescendingOrder: true);
             DateTimePickerModel.DateTimeFilterChange += (sender, e) => Reload();
             PropertyChanged += OnPropertyChanged;
+            ResourceTypeSelector = new ResourceTypeMenuViewModel(_dataSource);
+            ResourceTypeSelector.PropertyChanged += OnPropertyChanged;
         }
 
         /// <summary>
@@ -520,7 +495,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            if (ResourceDescriptors?.FirstOrDefault() == null)
+            if (!ResourceTypeSelector.IsSubmenuPopulated)
             {
                 RequestLogFiltersWrapperAsync(PopulateResourceTypes);
                 Debug.WriteLine("PopulateResourceTypes exit");
@@ -560,7 +535,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 return null;
             }
-        }   
+        }
 
         private void ShowAdvancedFilterHelp()
         {
@@ -632,24 +607,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         ///     2. Reload() checks ResourceDescriptors is null or empty.
         ///     3. Reload calls PopulateResourceTypes() which does a manual retry.
         /// </summary>
-        private async Task PopulateResourceTypes()
-        {
-            _resourceKeys = await _dataSource.Value.ListResourceKeysAsync();
-            var all = await _dataSource.Value.GetResourceDescriptorsAsync();
-            var descriptors = all.Where(x => _resourceKeys.Any(item => item?.Type == x.Type));
-            List<MonitoredResourceDescriptor> newOrderDescriptors = new List<MonitoredResourceDescriptor>();
-            // Keep the order.
-            foreach (var defaultSelection in s_defaultResourceSelections)
-            {
-                var desc = descriptors?.FirstOrDefault(x => x.Type == defaultSelection);
-                if (desc != null)
-                {
-                    newOrderDescriptors.Add(desc);
-                }
-            }
-            newOrderDescriptors.AddRange(descriptors.Where(x => !s_defaultResourceSelections.Contains(x.Type)));
-            ResourceDescriptors = newOrderDescriptors;  // This will set the selected item to first element.
-        }
+        private async Task PopulateResourceTypes() => await ResourceTypeSelector.PopulateResourceTypes();
 
         /// <summary>
         /// This method uses similar logic as populating resource descriptors.
@@ -657,8 +615,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private async Task PopulateLogIds()
         {
-            IList<string> logIdRequestResult
-                = await _dataSource.Value.ListProjectLogNamesAsync(SelectedResource.Type, null);
+            if (ResourceTypeSelector.SelectedMenuItem == null)
+            {
+                Debug.WriteLine("Code bug, _selectedMenuItem should not be null.");
+                return;
+            }
+
+            var item = ResourceTypeSelector.SelectedMenuItem as ResourceValueItemViewModel;
+            var keys = item == null ? null : new List<string>(new string[] { item.ResourceValue });
+            IList<string> logIdRequestResult = await _dataSource.Value.ListProjectLogNamesAsync(ResourceTypeSelector.SelectedTypeNmae, keys);
             LogIdList = new LogIdsList(logIdRequestResult);
             LogIdList.PropertyChanged += OnPropertyChanged;
             Reload();
@@ -671,15 +636,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 case nameof(SelectedTimeZone):
                     OnTimeZoneChanged();
                     break;
-                case nameof(SelectedResource):
-                    LogIdList = null;
-                    RequestLogFiltersWrapperAsync(PopulateLogIds);
-                    break;
                 case nameof(LogIdsList.SelectedLogId):
                     if (LogIdList != null)
                     {
                         Reload();
                     }
+                    break;
+                case nameof(ResourceTypeMenuViewModel.SelectedMenuItem):
+                    LogIdList = null;
+                    RequestLogFiltersWrapperAsync(PopulateLogIds);
                     break;
                 case nameof(SelectedLogSeverity):
                     Reload();
@@ -708,9 +673,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             Debug.WriteLine("Entering ComposeSimpleFilters()");
 
             StringBuilder filter = new StringBuilder();
-            if (SelectedResource != null)
+            if (ResourceTypeSelector.SelectedResourceType != null)
             {
-                filter.AppendLine($"resource.type=\"{SelectedResource.Type}\"");
+                filter.AppendLine($"resource.type=\"{ResourceTypeSelector.SelectedResourceType.ResourceTypeKeys.Type}\"");
+            }
+
+            var valueItem = ResourceTypeSelector.SelectedMenuItem as ResourceValueItemViewModel;
+            if (valueItem != null)
+            {
+                // Example: resource.labels.module_id="my_gae_default_service"
+                filter.AppendLine($"resource.labels.{ResourceTypeSelector.SelectedResourceType.GetKeyAt(0)}=\"{valueItem.ResourceValue}\"");
             }
 
             if (SelectedLogSeverity != null && SelectedLogSeverity.Severity != LogSeverity.All)

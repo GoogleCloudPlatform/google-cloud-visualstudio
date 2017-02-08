@@ -1096,15 +1096,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Browse Stackdriver Logs.
-        /// </summary>
-        public static string CloudExplorerLaunchLogsViewerMenuHeader {
-            get {
-                return ResourceManager.GetString("CloudExplorerLaunchLogsViewerMenuHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Firewall options....
         /// </summary>
         public static string CloudExplorerGceManageFirewallPortsMenuHeader {
@@ -1587,6 +1578,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGcsSourceApiDisabledMessage {
             get {
                 return ResourceManager.GetString("CloudExplorerGcsSourceApiDisabledMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Browse Stackdriver Logs.
+        /// </summary>
+        public static string CloudExplorerLaunchLogsViewerMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerLaunchLogsViewerMenuHeader", resourceCulture);
             }
         }
         
@@ -2122,6 +2122,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All {0}.
+        /// </summary>
+        public static string LogsViewerChooseAllMenuHeaderFormat {
+            get {
+                return ResourceManager.GetString("LogsViewerChooseAllMenuHeaderFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Advanced filter help.
         /// </summary>
         public static string LogViewerAdvancedFilterHelpLinkCaption {
@@ -2390,7 +2399,7 @@ namespace GoogleCloudExtension {
                 return ResourceManager.GetString("LogViewerTimeOrderPickLabelTail", resourceCulture);
             }
         }
-                
+        
         /// <summary>
         ///   Looks up a localized string similar to Click to select different timezone..
         /// </summary>
@@ -3148,6 +3157,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        public static string UiChooseAllMenuHeader {
+            get {
+                return ResourceManager.GetString("UiChooseAllMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
         public static string UiCloseButtonCaption {
@@ -3270,6 +3288,15 @@ namespace GoogleCloudExtension {
         public static string UiSaveButtonCaption {
             get {
                 return ResourceManager.GetString("UiSaveButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Search by prefix.
+        /// </summary>
+        public static string UiSearchMenuSearchBoxLabel {
+            get {
+                return ResourceManager.GetString("UiSearchMenuSearchBoxLabel", resourceCulture);
             }
         }
         

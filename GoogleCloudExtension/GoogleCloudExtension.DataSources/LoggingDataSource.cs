@@ -130,7 +130,7 @@ namespace GoogleCloudExtension.DataSources
         /// A list of resource prefixes. 
         /// i.e,  for resource type app engine, the prefixe can be the module ids. 
         /// </param>
-        public Task<IList<string>> ListProjectLogNamesAsync(string resourceType, IList<string> resourcePrefixList = null)
+        public Task<IList<string>> ListProjectLogNamesAsync(string resourceType, IEnumerable<string> resourcePrefixList = null)
         {
             return LoadPagedListAsync(
                 (token) =>

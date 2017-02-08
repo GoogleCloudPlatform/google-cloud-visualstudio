@@ -19,6 +19,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
                 <ResourceDictionary Source="./LogsViewerResources.xaml" />
+                <ResourceDictionary Source="../Controls/SearchMenuItemResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <utils:VisibilityConverter x:Key="visibilityConverter" />
@@ -177,14 +178,22 @@
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Center">
 
-                    <controls:FixBackgroundComboBox 
+                    <Menu
                         Margin="0,0,6,0"
-                        Width="200" 
-                        Style="{StaticResource CommonDocumentComboBoxStyle}"
-                        ItemsSource="{Binding ResourceDescriptors}"
-                        SelectedItem="{Binding SelectedResource, Mode=TwoWay}"
-                        DisplayMemberPath="DisplayName" 
-                        IsSynchronizedWithCurrentItem="true" />
+                        Style="{StaticResource SelectorMenuStyle}"
+                        Width="200">
+                        <controls:SearchMenuItem 
+                            Header="{Binding ResourceTypeSelector.Header}"
+                            ItemsSource="{Binding ResourceTypeSelector.MenuItems}" >
+
+                            <controls:SearchMenuItem.ItemTemplate>
+                                <HierarchicalDataTemplate 
+                                    DataType="{x:Type local:MenuItemViewModel}" 
+                                    ItemsSource="{Binding MenuItems}">
+                                </HierarchicalDataTemplate>
+                            </controls:SearchMenuItem.ItemTemplate>
+                        </controls:SearchMenuItem>
+                    </Menu>
 
                     <controls:FixBackgroundComboBox 
                         Margin="0,0,6,0"
