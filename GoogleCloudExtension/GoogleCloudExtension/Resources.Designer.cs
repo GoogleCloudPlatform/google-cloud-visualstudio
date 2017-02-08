@@ -412,15 +412,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to load the list of Google Cloud App Engine instances.
-        /// </summary>
-        public static string CloudExplorerGaeFailedInstancesMessage {
-            get {
-                return ResourceManager.GetString("CloudExplorerGaeFailedInstancesMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to load the list of Google Cloud App Engine services.
         /// </summary>
         public static string CloudExplorerGaeFailedServicesMessage {
@@ -430,38 +421,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to load instances..
-        /// </summary>
-        public static string CloudExplorerGaeFailedToLoadInstancesCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerGaeFailedToLoadInstancesCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to load services..
         /// </summary>
         public static string CloudExplorerGaeFailedToLoadServicesCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeFailedToLoadServicesCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to load versions..
-        /// </summary>
-        public static string CloudExplorerGaeFailedToLoadVersionsCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerGaeFailedToLoadVersionsCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to load the list of Google Cloud App Engine versions.
-        /// </summary>
-        public static string CloudExplorerGaeFailedVersionsMessage {
-            get {
-                return ResourceManager.GetString("CloudExplorerGaeFailedVersionsMessage", resourceCulture);
             }
         }
         
@@ -556,29 +520,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading instances....
-        /// </summary>
-        public static string CloudExplorerGaeLoadingInstancesCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerGaeLoadingInstancesCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Loading services....
         /// </summary>
         public static string CloudExplorerGaeLoadingServicesCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeLoadingServicesCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Loading versions....
-        /// </summary>
-        public static string CloudExplorerGaeLoadingVersionCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerGaeLoadingVersionCaption", resourceCulture);
             }
         }
         

@@ -893,45 +893,21 @@
     <value>Manage Windows credentials</value>
     <comment>Caption used in the hyperlink shown in the Windows credentials chooser dialog.</comment>
   </data>
-  <data name="CloudExplorerGaeFailedInstancesMessage" xml:space="preserve">
-    <value>Failed to load the list of Google Cloud App Engine instances</value>
-    <comment>Message shown in the output window when failed to load list of GAE instances</comment>
-  </data>
   <data name="CloudExplorerGaeFailedServicesMessage" xml:space="preserve">
     <value>Failed to load the list of Google Cloud App Engine services</value>
     <comment>Message shown in the output window when failed to load list of GAE services.</comment>
-  </data>
-  <data name="CloudExplorerGaeFailedToLoadInstancesCaption" xml:space="preserve">
-    <value>Failed to load instances.</value>
-    <comment>Caption shown when failed to load GAE instances.</comment>
   </data>
   <data name="CloudExplorerGaeFailedToLoadServicesCaption" xml:space="preserve">
     <value>Failed to load services.</value>
     <comment>Caption shown when failed to load GAE services,</comment>
   </data>
-  <data name="CloudExplorerGaeFailedToLoadVersionsCaption" xml:space="preserve">
-    <value>Failed to load versions.</value>
-    <comment>Caption shown when failed to load GAE versions.</comment>
-  </data>
-  <data name="CloudExplorerGaeFailedVersionsMessage" xml:space="preserve">
-    <value>Failed to load the list of Google Cloud App Engine versions</value>
-    <comment>Message shown in the output window when failed to load list of GAE versions</comment>
-  </data>
   <data name="CloudExplorerGaeInstanceCategory" xml:space="preserve">
     <value>Instance Properties</value>
     <comment>Category for the GAE instance properties.</comment>
   </data>
-  <data name="CloudExplorerGaeLoadingInstancesCaption" xml:space="preserve">
-    <value>Loading instances...</value>
-    <comment>Caption shown when loading GAE instances.</comment>
-  </data>
   <data name="CloudExplorerGaeLoadingServicesCaption" xml:space="preserve">
     <value>Loading services...</value>
     <comment>Caption shown when loading GAE services.</comment>
-  </data>
-  <data name="CloudExplorerGaeLoadingVersionCaption" xml:space="preserve">
-    <value>Loading versions...</value>
-    <comment>Caption shown when loading GAE versions.</comment>
   </data>
   <data name="CloudExplorerGaeNoInstancesFoundCaption" xml:space="preserve">
     <value>No instances found.</value>
