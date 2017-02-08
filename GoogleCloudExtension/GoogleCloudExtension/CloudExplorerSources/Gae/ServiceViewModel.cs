@@ -46,8 +46,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         };
 
         private readonly GaeSourceRootViewModel _owner;
-        private Service _service;
-        private IList<VersionViewModel> _versions;
+        private readonly Service _service;
+        private readonly IList<VersionViewModel> _versions;
 
         private bool _showOnlyFlexVersions = false;
         private bool _showOnlyDotNetRuntimes = false;
