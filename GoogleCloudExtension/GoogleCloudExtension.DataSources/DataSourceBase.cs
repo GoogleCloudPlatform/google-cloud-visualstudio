@@ -113,29 +113,5 @@ namespace GoogleCloudExtension.DataSources
                 throw new DataSourceException(ex.Message, ex);
             }
         }
-
-        protected static IList<TItem> LoadPagedList<TItem, TItemsPage>(
-            Func<string, TItemsPage> fetchPageFunc,
-            Func<TItemsPage, IEnumerable<TItem>> itemsFunc,
-            Func<TItemsPage, string> nextPageTokenFunc)
-        {
-            try
-            {
-                var result = new List<TItem>();
-                string nextPageToken = null;
-                do
-                {
-                    var page = fetchPageFunc(nextPageToken);
-                    result.AddRange(itemsFunc(page) ?? Enumerable.Empty<TItem>());
-                    nextPageToken = nextPageTokenFunc(page);
-                } while (!String.IsNullOrEmpty(nextPageToken));
-                return result;
-            }
-            catch (GoogleApiException ex)
-            {
-                Debug.WriteLine($"Failed to get page of items: {ex.Message}");
-                throw new DataSourceException(ex.Message, ex);
-            }
-        }
     }
 }

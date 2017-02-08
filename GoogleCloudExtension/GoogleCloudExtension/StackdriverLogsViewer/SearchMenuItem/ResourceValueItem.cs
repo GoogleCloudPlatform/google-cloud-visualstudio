@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Gets the resource key value.
         /// Example: key is module_id,  the values can be "defaultservice", "my-test-service" etc.
         /// </summary>
-        public string KeyValue { get; }
+        public string ResourceValue { get; }
 
         /// <summary>
         /// Initializes an instance of <seealso cref="ResourceValueItem"/> class.
@@ -39,8 +39,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             MenuItemViewModel parent, 
             string displayName = null) :  base(parent)
         {
-            KeyValue = resourceKeyValue;
-            Header = displayName ?? KeyValue;
+            ResourceValue = resourceKeyValue;
+            Header = displayName ?? ResourceValue;
         }
     }
 }

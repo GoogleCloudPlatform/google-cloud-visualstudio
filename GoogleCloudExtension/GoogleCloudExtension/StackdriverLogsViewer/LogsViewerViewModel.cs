@@ -685,7 +685,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (valueItem != null)
             {
                 // Example: resource.labels.module_id="my_gae_default_service"
-                filter.AppendLine($"resource.labels.{ResourceTypeSelector.SelectedResourceType.GetKeysAt(0)}=\"{valueItem.KeyValue}\"");
+                filter.AppendLine($"resource.labels.{ResourceTypeSelector.SelectedResourceType.GetKeysAt(0)}=\"{valueItem.ResourceValue}\"");
             }
 
             if (SelectedLogSeverity != null && SelectedLogSeverity.Severity != LogSeverity.All)
