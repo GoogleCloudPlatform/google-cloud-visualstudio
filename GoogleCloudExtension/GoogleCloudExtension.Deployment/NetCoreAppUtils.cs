@@ -63,7 +63,12 @@ namespace GoogleCloudExtension.Deployment
 
             Debug.WriteLine($"Using tools from {externalTools}");
             outputAction($"dotnet {arguments}");
-            return ProcessUtils.RunCommandAsync(s_dotnetPath.Value, arguments, (o, e) => outputAction(e.Line), env);
+            return ProcessUtils.RunCommandAsync(
+                file: s_dotnetPath.Value,
+                args: arguments,
+                workingDir: Path.GetDirectoryName(projectPath),
+                handler: (o, e) => outputAction(e.Line),
+                environment: env);
         }
 
         /// <summary>

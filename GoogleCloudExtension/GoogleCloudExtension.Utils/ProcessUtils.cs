@@ -90,14 +90,16 @@ namespace GoogleCloudExtension.Utils
         /// <param name="args">The arguments to pass to the binary to execute, it can be null.</param>
         /// <param name="handler">The callback to call with the line being oput by the process, it can be called outside
         /// of the UI thread. Must not be null.</param>
+        /// <param name="workingDir">The working directory to use, optional.</param>
         /// <param name="environment">Optional parameter with values for environment variables to pass on to the child process.</param>
         public static Task<bool> RunCommandAsync(
             string file,
             string args,
             EventHandler<OutputHandlerEventArgs> handler,
+            string workingDir = null,
             IDictionary<string, string> environment = null)
         {
-            var startInfo = GetStartInfoForInteractiveProcess(file, args, environment);
+            var startInfo = GetStartInfoForInteractiveProcess(file, args, workingDir, environment);
 
             return Task.Run(async () =>
             {
@@ -116,10 +118,19 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="file">The path to the exectuable.</param>
         /// <param name="args">The arguments to pass to the executable.</param>
+        /// <param name="workingDir">The working directory to use, optional.</param>
         /// <param name="environment">The environment variables to use for the executable.</param>
-        public static Task<ProcessOutput> GetCommandOutputAsync(string file, string args, IDictionary<string, string> environment = null)
+        public static Task<ProcessOutput> GetCommandOutputAsync(
+            string file,
+            string args,
+            string workingDir = null,
+            IDictionary<string, string> environment = null)
         {
-            var startInfo = GetStartInfoForInteractiveProcess(file, args, environment);
+            var startInfo = GetStartInfoForInteractiveProcess(
+                file: file,
+                args: args,
+                workingDir: workingDir,
+                environment: environment);
 
             return Task.Run(async () =>
             {
@@ -136,33 +147,24 @@ namespace GoogleCloudExtension.Utils
         }
 
         /// <summary>
-        /// Launches a process with the given parameters and environment, does not parse the output.
-        /// </summary>
-        /// <param name="file">The file with the process to execute.</param>
-        /// <param name="args">The arguments for the process.</param>
-        /// <param name="environment">The environment to use for executing the proces.</param>
-        /// <returns>A task that will resolve to the exit code of the process.</returns>
-        public static Task<int> LaunchCommandAsync(string file, string args, IDictionary<string, string> environment)
-        {
-            var startInfo = GetBaseStartInfo(file, args, environment);
-            return Task.Run(() =>
-            {
-                var process = Process.Start(startInfo);
-                process.WaitForExit();
-                return process.ExitCode;
-            });
-        }
-
-        /// <summary>
         /// Launches a process and parses its stdout stream as a json value to an instance of <typeparamref name="T"/>.
         /// </summary>
         /// <typeparam name="T">The type to use to deserialize the stdout stream.</typeparam>
         /// <param name="file">The path to the exectuable.</param>
         /// <param name="args">The arguments to pass to the executable.</param>
+        /// <param name="workingDir">The working directory to use, optional.</param>
         /// <param name="environment">The environment to use for the executable.</param>
-        public static async Task<T> GetJsonOutputAsync<T>(string file, string args, IDictionary<string, string> environment = null)
+        public static async Task<T> GetJsonOutputAsync<T>(
+            string file,
+            string args,
+            string workingDir = null,
+            IDictionary<string, string> environment = null)
         {
-            var output = await ProcessUtils.GetCommandOutputAsync(file, args, environment);
+            var output = await ProcessUtils.GetCommandOutputAsync(
+                file: file,
+                args: args,
+                workingDir: workingDir,
+                environment: environment);
             if (!output.Succeeded)
             {
                 throw new JsonOutputException($"Failed to execute command: {file} {args}\n{output.StandardError}");
@@ -177,15 +179,19 @@ namespace GoogleCloudExtension.Utils
             }
         }
 
-        private static ProcessStartInfo GetBaseStartInfo(string file, string args, IDictionary<string, string> environment)
+        private static ProcessStartInfo GetStartInfoForInteractiveProcess(
+            string file,
+            string args,
+            string workingDir,
+            IDictionary<string, string> environment)
         {
-            // Always start the tool in the user's home directory, avoid random directories
-            // coming from Visual Studio.
-            ProcessStartInfo result = new ProcessStartInfo
+            // If the caller provides a working directory use it otherwise default to the user's profile directory
+            // random intereference from Visual Studio changing the working directory often.
+            ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 FileName = file,
                 Arguments = args,
-                WorkingDirectory = Environment.GetEnvironmentVariable("USERPROFILE"),
+                WorkingDirectory = workingDir ?? Environment.GetEnvironmentVariable("USERPROFILE"),
             };
 
             // Customize the environment for the incoming process.
@@ -193,16 +199,10 @@ namespace GoogleCloudExtension.Utils
             {
                 foreach (var entry in environment)
                 {
-                    result.EnvironmentVariables[entry.Key] = entry.Value;
+                    startInfo.EnvironmentVariables[entry.Key] = entry.Value;
                 }
             }
 
-            return result;
-        }
-
-        private static ProcessStartInfo GetStartInfoForInteractiveProcess(string file, string args, IDictionary<string, string> environment)
-        {
-            ProcessStartInfo startInfo = GetBaseStartInfo(file, args, environment);
             startInfo.UseShellExecute = false;
             startInfo.CreateNoWindow = true;
             startInfo.RedirectStandardError = true;
