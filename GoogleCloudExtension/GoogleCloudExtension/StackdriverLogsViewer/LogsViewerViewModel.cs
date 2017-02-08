@@ -620,12 +620,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 Debug.WriteLine("Code bug, _selectedMenuItem should not be null.");
                 return;
             }
-            List<string> keys = null;
-            if (ResourceTypeSelector.SelectedMenuItem is ResourceValueItem)
-            {
-                keys = new List<string>();
-                keys.Add(ResourceTypeSelector.SelectedMenuItem.Header);
-            }
+
+            var item = ResourceTypeSelector.SelectedMenuItem as ResourceValueItem;
+            var keys = item == null ? null : new List<string>(new string[] { item.ResourceValue });
             IList<string> logIdRequestResult = await _dataSource.Value.ListProjectLogNamesAsync(ResourceTypeSelector.SelectedTypeNmae, keys);
             LogIdList = new LogIdsList(logIdRequestResult);
             LogIdList.PropertyChanged += OnPropertyChanged;
