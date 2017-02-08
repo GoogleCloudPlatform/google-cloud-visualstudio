@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.DataSources
         /// <summary>
         /// The value of a .Net runtime for a GAE version.
         /// </summary>
-        public const string DotNetRuntime = "aspnetcore";
+        public const string AspNetCoreRuntime = "aspnetcore";
 
         /// <summary>
         /// The serving status for a GAE version serving.

@@ -194,7 +194,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
             if (ShowOnlyDotNetRuntimes)
             {
-                versions = versions.Where(x => x.Version.Runtime == GaeVersionExtensions.DotNetRuntime);
+                versions = versions.Where(x => x.Version.Runtime == GaeVersionExtensions.AspNetCoreRuntime);
             }
             if (ShowOnlyVersionsWithTraffic)
             {
