@@ -1392,7 +1392,7 @@
     <comment>Caption for the refresh clusters hyperlink</comment>
   </data>
   <data name="GenerateConfigurationMenuHeader" xml:space="preserve">
-    <value>Generate configuration files for {0}</value>
+    <value>Generate app.yaml and Dockerfile for {0}</value>
     <comment>Header for the generate configuration command. {0} is the name of the project.</comment>
   </data>
   <data name="FlexPublishEmptyVersionMessage" xml:space="preserve">

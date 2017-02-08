@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -1924,7 +1924,7 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generate configuration files for {0}.
+        ///   Looks up a localized string similar to Generate app.yaml and Dockerfile for {0}.
         /// </summary>
         public static string GenerateConfigurationMenuHeader {
             get {
