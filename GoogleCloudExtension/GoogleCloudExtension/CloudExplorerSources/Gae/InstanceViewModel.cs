@@ -38,23 +38,19 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private static readonly Lazy<ImageSource> s_instanceStopedIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconStopedResourcePath));
         private static readonly Lazy<ImageSource> s_instanceTransitionIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconTransitionResourcePath));
 
-        private readonly VersionViewModel _owner;
-
-        public readonly GaeSourceRootViewModel root;
-
+        private readonly GaeSourceRootViewModel _owner;
         private readonly Instance _instance;
 
         public event EventHandler ItemChanged;
 
         public object Item => GetItem();
 
-        public InstanceViewModel(VersionViewModel owner, Instance instance)
+        public InstanceViewModel(GaeSourceRootViewModel owner, Instance instance)
         {
             _owner = owner;
             _instance = instance;
-            root = _owner.root;
-
-            Caption = _instance.VmName;
+            
+            Caption = _instance.Id;
             UpdateIcon();
 
             var menuItems = new List<MenuItem>
@@ -66,7 +62,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private void OnPropertiesWindowCommand()
         {
-            root.Context.ShowPropertiesWindow(Item);
+            _owner.Context.ShowPropertiesWindow(Item);
         }
 
         private void UpdateIcon()

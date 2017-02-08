@@ -412,15 +412,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to load the list of Google Cloud App Engine instances.
-        /// </summary>
-        public static string CloudExplorerGaeFailedInstancesMessage {
-            get {
-                return ResourceManager.GetString("CloudExplorerGaeFailedInstancesMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to load the list of Google Cloud App Engine services.
         /// </summary>
         public static string CloudExplorerGaeFailedServicesMessage {
@@ -430,38 +421,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to load instances..
-        /// </summary>
-        public static string CloudExplorerGaeFailedToLoadInstancesCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerGaeFailedToLoadInstancesCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to load services..
         /// </summary>
         public static string CloudExplorerGaeFailedToLoadServicesCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeFailedToLoadServicesCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to load versions..
-        /// </summary>
-        public static string CloudExplorerGaeFailedToLoadVersionsCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerGaeFailedToLoadVersionsCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Failed to load the list of Google Cloud App Engine versions.
-        /// </summary>
-        public static string CloudExplorerGaeFailedVersionsMessage {
-            get {
-                return ResourceManager.GetString("CloudExplorerGaeFailedVersionsMessage", resourceCulture);
             }
         }
         
@@ -556,29 +520,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading instances....
-        /// </summary>
-        public static string CloudExplorerGaeLoadingInstancesCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerGaeLoadingInstancesCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Loading services....
         /// </summary>
         public static string CloudExplorerGaeLoadingServicesCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeLoadingServicesCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Loading versions....
-        /// </summary>
-        public static string CloudExplorerGaeLoadingVersionCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerGaeLoadingVersionCaption", resourceCulture);
             }
         }
         
@@ -1843,11 +1789,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The version name cannot be empty..
+        /// </summary>
+        public static string FlexPublishEmptyVersionMessage {
+            get {
+                return ResourceManager.GetString("FlexPublishEmptyVersionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to deploy project {0} to App Engine Flex..
         /// </summary>
         public static string FlexPublishFailedMessage {
             get {
                 return ResourceManager.GetString("FlexPublishFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid version {0}. The version must only use lowercase letters, digits and the - character..
+        /// </summary>
+        public static string FlexPublishInvalidVersionMessage {
+            get {
+                return ResourceManager.GetString("FlexPublishInvalidVersionMessage", resourceCulture);
             }
         }
         
@@ -2032,11 +1996,47 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The deployment name cannot be empty..
+        /// </summary>
+        public static string GkePublishEmptyDeploymentNameMessage {
+            get {
+                return ResourceManager.GetString("GkePublishEmptyDeploymentNameMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The deployment version cannot be empty..
+        /// </summary>
+        public static string GkePublishEmptyDeploymentVersionMessage {
+            get {
+                return ResourceManager.GetString("GkePublishEmptyDeploymentVersionMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to E_xpose the service to the public internet.
         /// </summary>
         public static string GkePublishExposeServiceCaption {
             get {
                 return ResourceManager.GetString("GkePublishExposeServiceCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid deployment name {0}. The name must only user lowercase letters, digits and the - character..
+        /// </summary>
+        public static string GkePublishInvalidDeploymentNameMessage {
+            get {
+                return ResourceManager.GetString("GkePublishInvalidDeploymentNameMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid deployment version {0}. The version must only use lowercase letters, digits and the - character..
+        /// </summary>
+        public static string GkePublishInvalidDeploymentVersionMessage {
+            get {
+                return ResourceManager.GetString("GkePublishInvalidDeploymentVersionMessage", resourceCulture);
             }
         }
         

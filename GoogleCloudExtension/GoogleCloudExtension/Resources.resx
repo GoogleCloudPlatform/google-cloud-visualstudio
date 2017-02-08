@@ -893,45 +893,21 @@
     <value>Manage Windows credentials</value>
     <comment>Caption used in the hyperlink shown in the Windows credentials chooser dialog.</comment>
   </data>
-  <data name="CloudExplorerGaeFailedInstancesMessage" xml:space="preserve">
-    <value>Failed to load the list of Google Cloud App Engine instances</value>
-    <comment>Message shown in the output window when failed to load list of GAE instances</comment>
-  </data>
   <data name="CloudExplorerGaeFailedServicesMessage" xml:space="preserve">
     <value>Failed to load the list of Google Cloud App Engine services</value>
     <comment>Message shown in the output window when failed to load list of GAE services.</comment>
-  </data>
-  <data name="CloudExplorerGaeFailedToLoadInstancesCaption" xml:space="preserve">
-    <value>Failed to load instances.</value>
-    <comment>Caption shown when failed to load GAE instances.</comment>
   </data>
   <data name="CloudExplorerGaeFailedToLoadServicesCaption" xml:space="preserve">
     <value>Failed to load services.</value>
     <comment>Caption shown when failed to load GAE services,</comment>
   </data>
-  <data name="CloudExplorerGaeFailedToLoadVersionsCaption" xml:space="preserve">
-    <value>Failed to load versions.</value>
-    <comment>Caption shown when failed to load GAE versions.</comment>
-  </data>
-  <data name="CloudExplorerGaeFailedVersionsMessage" xml:space="preserve">
-    <value>Failed to load the list of Google Cloud App Engine versions</value>
-    <comment>Message shown in the output window when failed to load list of GAE versions</comment>
-  </data>
   <data name="CloudExplorerGaeInstanceCategory" xml:space="preserve">
     <value>Instance Properties</value>
     <comment>Category for the GAE instance properties.</comment>
   </data>
-  <data name="CloudExplorerGaeLoadingInstancesCaption" xml:space="preserve">
-    <value>Loading instances...</value>
-    <comment>Caption shown when loading GAE instances.</comment>
-  </data>
   <data name="CloudExplorerGaeLoadingServicesCaption" xml:space="preserve">
     <value>Loading services...</value>
     <comment>Caption shown when loading GAE services.</comment>
-  </data>
-  <data name="CloudExplorerGaeLoadingVersionCaption" xml:space="preserve">
-    <value>Loading versions...</value>
-    <comment>Caption shown when loading GAE versions.</comment>
   </data>
   <data name="CloudExplorerGaeNoInstancesFoundCaption" xml:space="preserve">
     <value>No instances found.</value>
@@ -1418,5 +1394,29 @@
   <data name="GenerateConfigurationMenuHeader" xml:space="preserve">
     <value>Generate configuration files for {0}</value>
     <comment>Header for the generate configuration command. {0} is the name of the project.</comment>
+  </data>
+  <data name="FlexPublishEmptyVersionMessage" xml:space="preserve">
+    <value>The version name cannot be empty.</value>
+    <comment>Message shown when the version name is empty.</comment>
+  </data>
+  <data name="FlexPublishInvalidVersionMessage" xml:space="preserve">
+    <value>Invalid version {0}. The version must only use lowercase letters, digits and the - character.</value>
+    <comment>Message shown for an invalid version name. {0} is the version name provided by the user.</comment>
+  </data>
+  <data name="GkePublishEmptyDeploymentNameMessage" xml:space="preserve">
+    <value>The deployment name cannot be empty.</value>
+    <comment>Message shown when the deployment name is empty.</comment>
+  </data>
+  <data name="GkePublishEmptyDeploymentVersionMessage" xml:space="preserve">
+    <value>The deployment version cannot be empty.</value>
+    <comment>Message shown when the deployment version is empty.</comment>
+  </data>
+  <data name="GkePublishInvalidDeploymentNameMessage" xml:space="preserve">
+    <value>Invalid deployment name {0}. The name must only user lowercase letters, digits and the - character.</value>
+    <comment>Message shown for an invalid deployment name. {0} is the deployment name given by the user.</comment>
+  </data>
+  <data name="GkePublishInvalidDeploymentVersionMessage" xml:space="preserve">
+    <value>Invalid deployment version {0}. The version must only use lowercase letters, digits and the - character.</value>
+    <comment>Message shown for an invalid deployment version. {0} is the deployment version given by the user.</comment>
   </data>
 </root>
