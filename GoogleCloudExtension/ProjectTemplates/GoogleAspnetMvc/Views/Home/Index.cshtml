@@ -1,7 +1,13 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
-
+@if (ViewBag.DatabaseError)
+{
+    <div class="alert alert-danger">
+        <p>Database connection failed.  Configure DefaultConnection in Web.config.</p>
+        <pre>@ViewBag.DatabaseErrorMessage</pre>
+    </div>
+}
 <div class="jumbotron">
     <h1>ASP.NET on Google Cloud</h1>
     <p class="lead">Use this template to develop ASP.NET applications to run on Google Cloud Platform.</p>
