@@ -121,9 +121,23 @@ namespace GoogleCloudExtension.Deployment
             }
         }
 
-        public static void GenerateConfigurationFiles(string projectPath)
+        /// <summary>
+        /// Generates the app.yaml for the given project.json file.
+        /// </summary>
+        /// <param name="projectPath">The full path to the project.json for the project.</param>
+        public static void GenerateAppYaml(string projectPath)
         {
-            GenerateAppYaml(projectPath);
+            var projectDirectory = Path.GetDirectoryName(projectPath);
+            var targetAppYaml = Path.Combine(projectDirectory, AppYamlName);
+            File.WriteAllText(targetAppYaml, AppYamlDefaultContent);
+        }
+
+        /// <summary>
+        /// Generates the Dockerfile for the given project.json file.
+        /// </summary>
+        /// <param name="projectPath">The full path to the project.json for the project.</param>
+        public static void GenerateDockerfile(string projectPath)
+        {
             NetCoreAppUtils.GenerateDockerfile(projectPath);
         }
 
@@ -135,13 +149,6 @@ namespace GoogleCloudExtension.Deployment
             var hasDockefile = NetCoreAppUtils.CheckDockerfile(projectPath);
 
             return new ProjectConfigurationStatus(hasAppYaml: hasAppYaml, hasDockerfile: hasDockefile);
-        }
-
-        private static void GenerateAppYaml(string projectPath)
-        {
-            var projectDirectory = Path.GetDirectoryName(projectPath);
-            var targetAppYaml = Path.Combine(projectDirectory, AppYamlName);
-            File.WriteAllText(targetAppYaml, AppYamlDefaultContent);
         }
 
         private static string GetAppEngineService(string projectPath)

@@ -111,38 +111,31 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
             Debug.WriteLine($"Generating configuration for project: {selectedProject.FullPath}");
             var configurationStatus = AppEngineFlexDeployment.CheckProjectConfiguration(selectedProject.FullPath);
 
-            if (configurationStatus.HasAppYaml && configurationStatus.HasDockerfile)
+            // If the app.yaml already exists allow the user to skip its generation to preserve the existing file.
+            if (!configurationStatus.HasAppYaml ||
+                UserPromptUtils.ActionPrompt(
+                    prompt: Resources.GenerateConfigurationAppYamlOverwriteMessage,
+                    title: Resources.GenerateConfigurationOverwritePromptTitle,
+                    actionCaption: Resources.UiOverwriteButtonCaption,
+                    cancelCaption: Resources.UiSkipFileButtonCaption))
             {
-                if (!UserPromptUtils.ActionPrompt(
-                    prompt: "The files app.yaml and Dockerfile already exist in your project, are you sure you want to overwrite them?",
-                    title: "Configuration files already exist",
-                    actionCaption: "Overwrite"))
-                {
-                    return;
-                }
-            }
-            else if (configurationStatus.HasAppYaml)
-            {
-                if (!UserPromptUtils.ActionPrompt(
-                    prompt: "The file app.yaml already exists in your project, are you sure you want to overwrite it?",
-                    title: "Configuration files already exist",
-                    actionCaption: "Overwrite"))
-                {
-                    return;
-                }
-            }
-            else if (configurationStatus.HasDockerfile)
-            {
-                if (!UserPromptUtils.ActionPrompt(
-                    prompt: "The file Dockerfile already exists in your project, are you sure you want to overwrite it?",
-                    title: "Configuration files already exist",
-                    actionCaption: "Overwrite"))
-                {
-                    return;
-                }
+                Debug.WriteLine($"Generating app.yaml for {selectedProject.FullPath}");
+                AppEngineFlexDeployment.GenerateAppYaml(selectedProject.FullPath);
+                GcpOutputWindow.OutputLine(Resources.GenerateConfigurationAppYamlGeneratedMessage);
             }
 
-            AppEngineFlexDeployment.GenerateConfigurationFiles(selectedProject.FullPath);
+            // If the Dockerfile already exists allow the user to skip its generation to preserve the existing file.
+            if (!configurationStatus.HasDockerfile ||
+                UserPromptUtils.ActionPrompt(
+                    prompt: Resources.GenerateConfigurationDockerfileOverwriteMessage,
+                    title: Resources.GenerateConfigurationOverwritePromptTitle,
+                    actionCaption: Resources.UiOverwriteButtonCaption,
+                    cancelCaption: Resources.UiSkipFileButtonCaption))
+            {
+                Debug.WriteLine($"Generating Dockerfile for {selectedProject.FullPath}");
+                AppEngineFlexDeployment.GenerateDockerfile(selectedProject.FullPath);
+                GcpOutputWindow.OutputLine(Resources.GenerateConfigurationDockerfileGeneratedMessage);
+            }
         }
 
         private void OnBeforeQueryStatus(object sender, EventArgs e)

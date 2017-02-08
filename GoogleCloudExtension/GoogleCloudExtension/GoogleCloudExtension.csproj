@@ -209,7 +209,7 @@
       <DependentUpon>PublishDialogWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="PublishDialog\PublishDialogWindowViewModel.cs" />
-    <Compile Include="GenerationConfigurationCommand\GenerateConfigurationContextMenuCommand.cs" />
+    <Compile Include="GenerateConfigurationCommand\GenerateConfigurationContextMenuCommand.cs" />
     <Compile Include="PublishDialog\PublishProjectContextMenuCommand.cs" />
     <Compile Include="PublishDialog\PublishProjectMainMenuCommand.cs" />
     <Compile Include="ProgressDialog\ProgressDialogWindow.cs" />

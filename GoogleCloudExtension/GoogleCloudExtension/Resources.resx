@@ -1419,4 +1419,32 @@
     <value>Invalid deployment version {0}. The version must only use lowercase letters, digits and the - character.</value>
     <comment>Message shown for an invalid deployment version. {0} is the deployment version given by the user.</comment>
   </data>
+  <data name="GenerateConfigurationAppYamlGeneratedMessage" xml:space="preserve">
+    <value>The file app.yaml was generated succesfully.</value>
+    <comment>Message shown to the user when the app.yaml is generated.</comment>
+  </data>
+  <data name="GenerateConfigurationAppYamlOverwriteMessage" xml:space="preserve">
+    <value>The file app.yaml already exists in your project. Are you sure you want to overwrite it?</value>
+    <comment>Message shown to the user to confirm the overwrite of the existing app.yaml.</comment>
+  </data>
+  <data name="GenerateConfigurationDockerfileGeneratedMessage" xml:space="preserve">
+    <value>The file Dockerfile was generated succesfully.</value>
+    <comment>Messaghe shown to the user when the Dockerfile is generated.</comment>
+  </data>
+  <data name="GenerateConfigurationDockerfileOverwriteMessage" xml:space="preserve">
+    <value>The file Dockerfile already exists in your project. Are you sure you want to overwrite it?</value>
+    <comment>Message shown to the user to confirm the overwrite of the existing Dockerfile.</comment>
+  </data>
+  <data name="GenerateConfigurationOverwritePromptTitle" xml:space="preserve">
+    <value>Configuration files already exist</value>
+    <comment>Title of the prompt used to advice the user that a file will be overwritten.</comment>
+  </data>
+  <data name="UiOverwriteButtonCaption" xml:space="preserve">
+    <value>_Overwrite</value>
+    <comment>Caption for overwrite buttons in prompts.</comment>
+  </data>
+  <data name="UiSkipFileButtonCaption" xml:space="preserve">
+    <value>_Skip file</value>
+    <comment>Caption for the skip file button in prompts.</comment>
+  </data>
 </root>
