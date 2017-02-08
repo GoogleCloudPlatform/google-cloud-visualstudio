@@ -1579,4 +1579,8 @@
     <value>All</value>
     <comment>The choose all menu item default header. </comment>
   </data>
+  <data name="UiSearchMenuSearchBoxLabel" xml:space="preserve">
+    <value>Search by prefix:</value>
+    <comment>The label for search box of search menu item.</comment>
+  </data>
 </root>

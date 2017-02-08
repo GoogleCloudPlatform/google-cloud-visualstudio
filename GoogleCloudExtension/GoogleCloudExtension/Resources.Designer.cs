@@ -3292,6 +3292,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Search by prefix:.
+        /// </summary>
+        public static string UiSearchMenuSearchBoxLabel {
+            get {
+                return ResourceManager.GetString("UiSearchMenuSearchBoxLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Start.
         /// </summary>
         public static string UiStartButtonCaption {
