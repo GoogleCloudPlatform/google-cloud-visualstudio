@@ -52,21 +52,21 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="outputAction">The callback to call with output from the command.</param>
         internal static Task<bool> CreateAppBundleAsync(string projectPath, string stageDirectory, Action<string> outputAction)
         {
-            var arguments = $"publish \"{projectPath}\" " +
-                $"-o \"{stageDirectory}\" " +
-                "-c Release";
+            var arguments = $"publish -o \"{stageDirectory}\" -c Release";
             var externalTools = GetExternalToolsPath();
+            var workingDir = Path.GetDirectoryName(projectPath);
             var env = new Dictionary<string, string>
             {
                 { "PATH", $"{Environment.GetEnvironmentVariable("PATH")};{externalTools}" },
             };
 
             Debug.WriteLine($"Using tools from {externalTools}");
+            Debug.WriteLine($"Setting working directory to {workingDir}");
             outputAction($"dotnet {arguments}");
             return ProcessUtils.RunCommandAsync(
                 file: s_dotnetPath.Value,
                 args: arguments,
-                workingDir: Path.GetDirectoryName(projectPath),
+                workingDir: workingDir,
                 handler: (o, e) => outputAction(e.Line),
                 environment: env);
         }
