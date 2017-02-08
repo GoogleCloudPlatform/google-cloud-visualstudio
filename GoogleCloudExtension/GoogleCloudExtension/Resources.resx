@@ -1415,4 +1415,28 @@
     <value>Refresh clusters</value>
     <comment>Caption for the refresh clusters hyperlink</comment>
   </data>
+  <data name="FlexPublishEmptyVersionMessage" xml:space="preserve">
+    <value>The version name cannot be empty.</value>
+    <comment>Message shown when the version name is empty.</comment>
+  </data>
+  <data name="FlexPublishInvalidVersionMessage" xml:space="preserve">
+    <value>Invalid version {0}. The version must only use lowercase letters, digits and the - character.</value>
+    <comment>Message shown for an invalid version name. {0} is the version name provided by the user.</comment>
+  </data>
+  <data name="GkePublishEmptyDeploymentNameMessage" xml:space="preserve">
+    <value>The deployment name cannot be empty.</value>
+    <comment>Message shown when the deployment name is empty.</comment>
+  </data>
+  <data name="GkePublishEmptyDeploymentVersionMessage" xml:space="preserve">
+    <value>The deployment version cannot be empty.</value>
+    <comment>Message shown when the deployment version is empty.</comment>
+  </data>
+  <data name="GkePublishInvalidDeploymentNameMessage" xml:space="preserve">
+    <value>Invalid deployment name {0}. The name must only user lowercase letters, digits and the - character.</value>
+    <comment>Message shown for an invalid deployment name. {0} is the deployment name given by the user.</comment>
+  </data>
+  <data name="GkePublishInvalidDeploymentVersionMessage" xml:space="preserve">
+    <value>Invalid deployment version {0}. The version must only use lowercase letters, digits and the - character.</value>
+    <comment>Message shown for an invalid deployment version. {0} is the deployment version given by the user.</comment>
+  </data>
 </root>

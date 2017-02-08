@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.Accounts
 
         private static readonly Lazy<WindowsCredentialsStore> s_defaultStore = new Lazy<WindowsCredentialsStore>();
         private static readonly string s_credentialsStoreRoot = GetCredentialsStoreRoot();
-        private static Regex s_invalidNameCharPattern = new Regex("[;:\\?\\\\]");
+        private static readonly Regex s_invalidNameCharPattern = new Regex("[;:\\?\\\\]");
 
         /// <summary>
         /// In memory cache of the credentials for the current credentials (account and project pair).
