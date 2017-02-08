@@ -1861,7 +1861,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid version {0}. The name must only user lowercase letters, digits and the - character..
+        ///   Looks up a localized string similar to Invalid version {0}. The version must only use lowercase letters, digits and the - character..
         /// </summary>
         public static string FlexPublishInvalidVersionMessage {
             get {
@@ -2077,7 +2077,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid deployment version {0}. The name must only user lowercase letters, digits and the - character..
+        ///   Looks up a localized string similar to Invalid deployment version {0}. The version must only use lowercase letters, digits and the - character..
         /// </summary>
         public static string GkePublishInvalidDeploymentVersionMessage {
             get {

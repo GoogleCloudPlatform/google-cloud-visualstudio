@@ -1420,7 +1420,7 @@
     <comment>Message shown when the version name is empty.</comment>
   </data>
   <data name="FlexPublishInvalidVersionMessage" xml:space="preserve">
-    <value>Invalid version {0}. The name must only user lowercase letters, digits and the - character.</value>
+    <value>Invalid version {0}. The version must only use lowercase letters, digits and the - character.</value>
     <comment>Message shown for an invalid version name. {0} is the version name provided by the user.</comment>
   </data>
   <data name="GkePublishEmptyDeploymentNameMessage" xml:space="preserve">
@@ -1436,7 +1436,7 @@
     <comment>Message shown for an invalid deployment name. {0} is the deployment name given by the user.</comment>
   </data>
   <data name="GkePublishInvalidDeploymentVersionMessage" xml:space="preserve">
-    <value>Invalid deployment version {0}. The name must only user lowercase letters, digits and the - character.</value>
+    <value>Invalid deployment version {0}. The version must only use lowercase letters, digits and the - character.</value>
     <comment>Message shown for an invalid deployment version. {0} is the deployment version given by the user.</comment>
   </data>
 </root>
