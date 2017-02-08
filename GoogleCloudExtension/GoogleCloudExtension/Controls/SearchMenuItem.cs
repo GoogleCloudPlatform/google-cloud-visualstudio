@@ -114,9 +114,9 @@ namespace GoogleCloudExtension.Controls
 
         /// <summary>
         /// Loop through all menu items, 
-        /// if the prefix of header text of the menu item matches the search string, the menu item is shown. 
+        /// if the prefix of the header text of the menu item matches the search string, the menu item is shown. 
         /// Otherwise, hide the menu item.
-        /// If the search text is empty, whitespace only, it does not filter out any menu item.
+        /// If the search text is empty or whitespace only, it does not filter out any menu item.
         /// </summary>
         private void OnSearchBoxTextChanged(object sender, TextChangedEventArgs e)
         {
