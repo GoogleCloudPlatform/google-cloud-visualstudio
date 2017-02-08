@@ -727,6 +727,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Email address of the user who created this version..
+        /// </summary>
+        public static string CloudExplorerGaeVersionCreatedByDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionCreatedByDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Created By.
+        /// </summary>
+        public static string CloudExplorerGaeVersionCreatedByDisplayName {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionCreatedByDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Time that this version was created..
+        /// </summary>
+        public static string CloudExplorerGaeVersionCreateTimeDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionCreateTimeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Creation Time.
         /// </summary>
         public static string CloudExplorerGaeVersionCreationTimeDisplayName {
@@ -745,11 +772,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Relative name of the version within the service..
+        /// </summary>
+        public static string CloudExplorerGaeVersionIdDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionIdDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Instance Class.
         /// </summary>
         public static string CloudExplorerGaeVersionInstanceClassDisplayName {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeVersionInstanceClassDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full path to the Version resource in the API..
+        /// </summary>
+        public static string CloudExplorerGaeVersionNameDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionNameDescription", resourceCulture);
             }
         }
         
@@ -786,6 +831,24 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGaeVersionResourcesCategory {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeVersionResourcesCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current serving status of this version..
+        /// </summary>
+        public static string CloudExplorerGaeVersionServingStatusDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionServingStatusDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Serving Status.
+        /// </summary>
+        public static string CloudExplorerGaeVersionServingStatusDisplayName {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionServingStatusDisplayName", resourceCulture);
             }
         }
         

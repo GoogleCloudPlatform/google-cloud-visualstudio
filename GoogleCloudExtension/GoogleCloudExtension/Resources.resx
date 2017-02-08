@@ -1423,6 +1423,34 @@
     <value>Full path to the Service resource in the API.</value>
     <comment>The description of the name property for a service item.</comment>
   </data>
+  <data name="CloudExplorerGaeVersionCreatedByDescription" xml:space="preserve">
+    <value>Email address of the user who created this version.</value>
+    <comment>The description for the CreatedBy property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionCreatedByDisplayName" xml:space="preserve">
+    <value>Created By</value>
+    <comment>The display name for the CreatedBy property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionCreateTimeDescription" xml:space="preserve">
+    <value>Time that this version was created.</value>
+    <comment>The descripton for the CreationTime property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionIdDescription" xml:space="preserve">
+    <value>Relative name of the version within the service.</value>
+    <comment>Description of the id property in a version.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionNameDescription" xml:space="preserve">
+    <value>Full path to the Version resource in the API.</value>
+    <comment>Description of the name property in a version.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionServingStatusDescription" xml:space="preserve">
+    <value>Current serving status of this version.</value>
+    <comment>The description for the serving status property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionServingStatusDisplayName" xml:space="preserve">
+    <value>Serving Status</value>
+    <comment>The display name for the serving status property.</comment>
+  </data>
   <data name="PropertyWindowItemIdDisplayName" xml:space="preserve">
     <value>Id</value>
     <comment>General display name for the Id property.</comment>

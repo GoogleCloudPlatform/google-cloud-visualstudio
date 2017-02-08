@@ -30,16 +30,29 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         }
 
         [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionCategory))]
+        [LocalizedDisplayName(nameof(Resources.PropertyWindowItemNameDisplayName))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGaeVersionNameDescription))]
         public string Name => _version.Name;
 
         [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionCategory))]
+        [LocalizedDisplayName(nameof(Resources.PropertyWindowItemIdDisplayName))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGaeVersionIdDescription))]
         public string Id => _version.Id;
 
         [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionCategory))]
-        public string Status => _version.ServingStatus;
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerGaeVersionServingStatusDisplayName))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGaeVersionServingStatusDescription))]
+        public string ServingStatus => _version.ServingStatus;
 
         [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionCategory))]
-        public string Deployer => _version.CreatedBy;
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerGaeVersionCreatedByDisplayName))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGaeVersionCreatedByDescription))]
+        public string CreatedBy => _version.CreatedBy;
+
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerGaeVersionCreationTimeDisplayName))]
+        [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionCategory))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGaeVersionCreateTimeDescription))]
+        public string CreateTime => _version.CreateTime;
 
         [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionCategory))]
         public string Url => _version.VersionUrl;
@@ -49,29 +62,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionCategory))]
         public string Environment => _version.Env;
-
-        [LocalizedDisplayName(nameof(Resources.CloudExplorerGaeVersionInstanceClassDisplayName))]
-        [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionCategory))]
-        public string InstanceClass => _version.InstanceClass;
-
-        [LocalizedDisplayName(nameof(Resources.CloudExplorerGaeVersionCreationTimeDisplayName))]
-        [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionCategory))]
-        public string CreationTime => _version.CreateTime;
-
-        [LocalizedDisplayName(nameof(Resources.CloudExplorerGaeVersionVirtualMachineDisplayName))]
-        [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionCategory))]
-        public bool? VirtualMachine => _version.Vm;
-
-        [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionResourcesCategory))]
-        public double? CPU => _version.Resources?.Cpu;
-
-        [LocalizedDisplayName(nameof(Resources.CloudExplorerGaeVersionResoucesDiskDisplayName))]
-        [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionResourcesCategory))]
-        public double? Disk => _version.Resources?.DiskGb;
-
-        [LocalizedDisplayName(nameof(Resources.CloudExplorerGaeVersionResoucesMemoryDisplayName))]
-        [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionResourcesCategory))]
-        public double? Memory => _version.Resources?.MemoryGb;
 
         public override string ToString() => _version.Id;
     }
