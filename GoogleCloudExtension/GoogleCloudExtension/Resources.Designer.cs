@@ -583,6 +583,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Relative name of the service within the application..
+        /// </summary>
+        public static string CloudExplorerGaeServiceIdDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeServiceIdDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Full path to the Service resource in the API..
+        /// </summary>
+        public static string CloudExplorerGaeServiceNameDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeServiceNameDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Open Running Service.
         /// </summary>
         public static string CloudExplorerGaeServiceOpen {
@@ -2379,6 +2397,24 @@ namespace GoogleCloudExtension {
         public static string PortManagerWindowMessage {
             get {
                 return ResourceManager.GetString("PortManagerWindowMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Id.
+        /// </summary>
+        public static string PropertyWindowItemIdDisplayName {
+            get {
+                return ResourceManager.GetString("PropertyWindowItemIdDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string PropertyWindowItemNameDisplayName {
+            get {
+                return ResourceManager.GetString("PropertyWindowItemNameDisplayName", resourceCulture);
             }
         }
         

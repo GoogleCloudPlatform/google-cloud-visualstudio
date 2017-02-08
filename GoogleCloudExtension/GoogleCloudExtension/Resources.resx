@@ -1415,4 +1415,20 @@
     <value>Invalid deployment version {0}. The version must only use lowercase letters, digits and the - character.</value>
     <comment>Message shown for an invalid deployment version. {0} is the deployment version given by the user.</comment>
   </data>
+  <data name="CloudExplorerGaeServiceIdDescription" xml:space="preserve">
+    <value>Relative name of the service within the application.</value>
+    <comment>The description of the Id property.</comment>
+  </data>
+  <data name="CloudExplorerGaeServiceNameDescription" xml:space="preserve">
+    <value>Full path to the Service resource in the API.</value>
+    <comment>The description of the name property for a service item.</comment>
+  </data>
+  <data name="PropertyWindowItemIdDisplayName" xml:space="preserve">
+    <value>Id</value>
+    <comment>General display name for the Id property.</comment>
+  </data>
+  <data name="PropertyWindowItemNameDisplayName" xml:space="preserve">
+    <value>Name</value>
+    <comment>General display name used for the property.</comment>
+  </data>
 </root>

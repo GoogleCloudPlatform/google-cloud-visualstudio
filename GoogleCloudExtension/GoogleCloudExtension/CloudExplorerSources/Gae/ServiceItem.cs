@@ -30,9 +30,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         }
 
         [LocalizedCategory(nameof(Resources.CloudExplorerGaeServiceCategory))]
+        [LocalizedDisplayName(nameof(Resources.PropertyWindowItemNameDisplayName))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGaeServiceNameDescription))]
         public string Name => _service.Name;
 
         [LocalizedCategory(nameof(Resources.CloudExplorerGaeServiceCategory))]
+        [LocalizedDisplayName(nameof(Resources.PropertyWindowItemIdDisplayName))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGaeServiceIdDescription))]
         public string Id => _service.Id;
 
         public override string ToString() => _service.Id;
