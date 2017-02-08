@@ -3292,7 +3292,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Search by prefix:.
+        ///   Looks up a localized string similar to Search by prefix.
         /// </summary>
         public static string UiSearchMenuSearchBoxLabel {
             get {

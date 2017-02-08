@@ -25,9 +25,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// <summary>
     /// View model for resource type menu item.
     /// This item represents a single resource type and contains sub menu items for resource key values.
-    /// It is tightly coupled with ResourceTypeMenuViewModel.
+    /// It is tightly coupled with <seealso cref="ResourceTypeMenuViewModel"/> .
     /// </summary>
-    public class ResourceTypeItem : MenuItemViewModel
+    public class ResourceTypeItemViewModel : MenuItemViewModel
     {
         private readonly Lazy<LoggingDataSource> _dataSource;
 
@@ -40,22 +40,23 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Choose all submenu item header.
         /// Example:  All instance_id.
         /// </summary>
-        public string ChooseAllHeader => GetKeysAt(0) == null ? null : String.Format(Resources.LogsViewerChooseAllMenuHeaderFormat, GetKeysAt(0));
+        public string ChooseAllHeader => GetKeyAt(0) == null ? null : String.Format(Resources.LogsViewerChooseAllMenuHeaderFormat, GetKeyAt(0));
 
         /// <summary>
-        /// Create an instance of <seealso cref="ResourceTypeItem"/> class.
+        /// Create an instance of <seealso cref="ResourceTypeItemViewModel"/> class.
         /// </summary>
         /// <param name="resourceKeys"><seealso cref="ResourceTypeKeys"/> object.</param>
         /// <param name="dataSource">The logging data source.</param>
         /// <param name="parent">The parent menu item view model object.</param>
-        public ResourceTypeItem(ResourceKeys resourceKeys, Lazy<LoggingDataSource> dataSource, MenuItemViewModel parent) : base(parent)
+        public ResourceTypeItemViewModel(ResourceKeys resourceKeys, Lazy<LoggingDataSource> dataSource, MenuItemViewModel parent) : base(parent)
         {
             _dataSource = dataSource;
             ResourceTypeKeys = resourceKeys;
             Header = ResourceTypeKeys.Type;
             IsSubmenuPopulated = ResourceTypeKeys.Keys?.FirstOrDefault() == null;
             // MenuItem determins the MenuRole of SubmenuItem or SubMenuItemHeader by checking if it has sub menuitems.
-            // Adding an invisible item for delay load menu items. 
+            // Adding an invisible item for delay load menu items so that it is recognized as SubMenuItemHeader role.
+            // By setting this role, popup is visible. Otherwise popup is invisible.
             if (!IsSubmenuPopulated)
             {
                 MenuItems.Add(MenuItemViewModel.InvisibleItem);
@@ -66,13 +67,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Gets the key name.
         /// </summary>
         /// <param name="index">Index of the keys list.</param>
-        public string GetKeysAt(int index)
-        {
-            return ResourceTypeKeys?.Keys?[index];
-        }
+        public string GetKeyAt(int index) => ResourceTypeKeys?.Keys?[index];
 
         /// <summary>
-        /// Perform delay load of sub menu items.
+        /// Perform delayed load of sub menu items.
         /// TODO: handle DataSourceException.
         /// </summary>
         protected override async Task LoadSubMenu()
@@ -86,11 +84,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             switch (ResourceTypeKeys.Type)
             {
-                case "gce_instance":
+                case ResourceTypeNameConsts.GceInstanceType:
                     await AddGceInstanceSubMenu(trimedValues);
                     break;
                 default:
-                    foreach (var menuItem in trimedValues.Select(x => new ResourceValueItem(x, this)))
+                    foreach (var menuItem in trimedValues.Select(x => new ResourceValueItemViewModel(x, this)))
                     {
                         MenuItems.Add(menuItem);
                     }
@@ -105,13 +103,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
             var allInstances = await dataSource.GetInstanceListAsync();
+            // Left join instanceIds to allInstances on Id.  
+            // Select instance name if id is found in allInstances.
             var menuItems =  
                 from id in instanceIds
                 join instance in allInstances 
                     on id equals instance.Id?.ToString() into joined
                 from subInstance in joined.DefaultIfEmpty()
                 orderby subInstance?.Name descending
-                select new ResourceValueItem(id, this, subInstance == null ? id : subInstance.Name);
+                select new ResourceValueItemViewModel(id, this, subInstance == null ? id : subInstance.Name);
             menuItems.ToList().ForEach(x => MenuItems.Add(x));
         }
     }

@@ -21,25 +21,37 @@ using System.Windows.Input;
 namespace GoogleCloudExtension.Controls
 {
     /// <summary>
-    /// Custom menu item that use a search box to filter the list of items.
+    /// Custom menu item that uses a search box to filter the list of items.
+    /// It shows menu items whose prefix matches the search box text. 
+    /// If the search box text is null, show all menu items.
     /// </summary>
     [TemplatePart(Name = "PART_searchTextBox", Type = typeof(TextBox))]
     public class SearchMenuItem : MenuItem
     {
         private TextBox _searchBox;
 
-        public static DependencyProperty OnSubmenuOpenCommandProperty = DependencyProperty.Register(
-            "OnSubmenuOpenCommand", typeof(ICommand), typeof(SearchMenuItem));
+        public static DependencyProperty OnSubmenuOpenCommandProperty = 
+            DependencyProperty.Register(
+                nameof(OnSubmenuOpenCommand), 
+                typeof(ICommand), 
+                typeof(SearchMenuItem));
 
-        public static DependencyProperty IsSubmenuPopulatedProperty = DependencyProperty.Register(
-            "IsSubmenuPopulated", typeof(bool), typeof(SearchMenuItem), new FrameworkPropertyMetadata(true));
+        public static DependencyProperty IsSubmenuPopulatedProperty = 
+            DependencyProperty.Register(
+                nameof(IsSubmenuPopulated), 
+                typeof(bool), 
+                typeof(SearchMenuItem), 
+                new FrameworkPropertyMetadata(true));
 
-        public static DependencyProperty ChooseAllHeaderProperty = DependencyProperty.Register(
-            "ChooseAllHeader", typeof(string), typeof(SearchMenuItem), 
-            new FrameworkPropertyMetadata(GoogleCloudExtension.Resources.UiChooseAllMenuHeader));
+        public static DependencyProperty ChooseAllHeaderProperty = 
+            DependencyProperty.Register(
+                nameof(ChooseAllHeader), 
+                typeof(string), 
+                typeof(SearchMenuItem), 
+                new FrameworkPropertyMetadata(GoogleCloudExtension.Resources.UiChooseAllMenuHeader));
 
         /// <summary>
-        /// Gets or sets the choose all menu item header depenedency propoerty.
+        /// Gets or sets the choose all menu item header depenedency propoerty, <seealso cref="ChooseAllHeaderProperty"/>
         /// </summary>
         public string ChooseAllHeader
         {
@@ -49,7 +61,7 @@ namespace GoogleCloudExtension.Controls
 
         /// <summary>
         /// Get or set the dependency property <seealso cref="OnSubmenuOpenCommandProperty"/>.
-        /// The command is called when submenu popup opens.
+        /// The command is called when the submenu popup opens.
         /// </summary>
         public ICommand OnSubmenuOpenCommand
         {
@@ -84,7 +96,8 @@ namespace GoogleCloudExtension.Controls
         }
 
         /// <summary>
-        /// By default it returns MenuItem. Override to return SearchMenuItem.
+        /// By default <seealso cref="MenuItem.GetContainerForItemOverride"/> returns MenuItem object. 
+        /// Override to return SearchMenuItem object.
         /// The is the key part to make the HierarchicalDataTemplate data binding work.
         /// </summary>
         /// <returns>A <seealso cref="SearchMenuItem"/> object.</returns>
@@ -99,9 +112,15 @@ namespace GoogleCloudExtension.Controls
             }
         }
 
+        /// <summary>
+        /// Loop through all menu items, 
+        /// if the prefix of header text of the menu item matches the search string, the menu item is shown. 
+        /// Otherwise, hide the menu item.
+        /// If the search text is empty, whitespace only, it does not filter out any menu item.
+        /// </summary>
         private void OnSearchBoxTextChanged(object sender, TextChangedEventArgs e)
         {
-            var prefix = _searchBox.Text.Trim();
+            var prefix = _searchBox.Text?.Trim();
             for (int i = 0; i < Items.Count; i++)
             {
                 MenuItem menuItem = ItemContainerGenerator.ContainerFromIndex(i) as MenuItem;
@@ -111,7 +130,7 @@ namespace GoogleCloudExtension.Controls
                     continue;
                 }
 
-                menuItem.Visibility = prefix == "" ||
+                menuItem.Visibility = String.IsNullOrEmpty(prefix) ||
                     label.StartsWith(prefix, StringComparison.CurrentCultureIgnoreCase) ?
                     Visibility.Visible : Visibility.Collapsed;
             }

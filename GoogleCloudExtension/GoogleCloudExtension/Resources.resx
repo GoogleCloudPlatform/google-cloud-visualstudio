@@ -1573,14 +1573,14 @@
   </data>
   <data name="LogsViewerChooseAllMenuHeaderFormat" xml:space="preserve">
     <value>All {0}</value>
-    <comment>The choose all menu item header.  Example "All module_id", "All instance_id".</comment>
+    <comment>The choose all menu item header format. The log resource label name is used to fill the format.  Example "All module_id", "All instance_id".</comment>
   </data>
   <data name="UiChooseAllMenuHeader" xml:space="preserve">
     <value>All</value>
     <comment>The choose all menu item default header. </comment>
   </data>
   <data name="UiSearchMenuSearchBoxLabel" xml:space="preserve">
-    <value>Search by prefix:</value>
+    <value>Search by prefix</value>
     <comment>The label for search box of search menu item.</comment>
   </data>
 </root>

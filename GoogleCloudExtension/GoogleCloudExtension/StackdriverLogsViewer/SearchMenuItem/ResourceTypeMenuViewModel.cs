@@ -32,12 +32,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// The default resource types to show. 
         /// Order matters, if a resource type in the list does not have logs, fall back to the next one. 
+        /// First item shows first.
         /// </summary>
         private static readonly string[] s_defaultResourceSelections =
             new string[] {
-                "gce_instance",
-                "gae_app",
-                "global"
+                ResourceTypeNameConsts.GceInstanceType,
+                ResourceTypeNameConsts.GaeAppType,
+                ResourceTypeNameConsts.GlobalType
             };
 
         private readonly Lazy<LoggingDataSource> _dataSource;
@@ -53,7 +54,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the selected resource type menu item view model.
         /// </summary>
-        public ResourceTypeItem SelectedResourceType { get; private set; }
+        public ResourceTypeItemViewModel SelectedResourceType { get; private set; }
 
         /// <summary>
         /// Gets, sets the selected menu item.
@@ -76,6 +77,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         /// <summary>
         /// Refers to <seealso cref="LogsViewerViewModel.PopulateResourceTypes"/>
+        /// Exception is handled by the caller.
         /// </summary>
         public async Task PopulateResourceTypes()
         {
@@ -102,7 +104,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 from desc in newOrderDescriptors
                 join keys in _resourceKeys
                     on desc.Type equals keys.Type
-                select new ResourceTypeItem(keys, _dataSource, this) { Header = desc.DisplayName };
+                select new ResourceTypeItemViewModel(keys, _dataSource, this) { Header = desc.DisplayName };
             items.ToList().ForEach(x => MenuItems.Add(x));
             if (MenuItems.Count != 0)
             {
@@ -112,7 +114,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// Hanle menu item selected event.
+        /// Handle menu item selection event.
         /// </summary>
         /// <param name="originalSource">The original selected menu item.</param>
         protected override void CommandBubblingHandler(MenuItemViewModel originalSource)
@@ -134,7 +136,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 else
                 {
                     // Every direct children is ResourceTypeItem type.
-                    SelectedResourceType = menuItem as ResourceTypeItem;
+                    SelectedResourceType = menuItem as ResourceTypeItemViewModel;
                 }
                 menuItem = menuItem.MenuItemParent;
             }

@@ -17,7 +17,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// <summary>
     /// Resource value menu item view mode.
     /// </summary>
-    public class ResourceValueItem : MenuItemViewModel
+    public class ResourceValueItemViewModel : MenuItemViewModel
     {
         /// <summary>
         /// Gets the resource key value.
@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public string ResourceValue { get; }
 
         /// <summary>
-        /// Initializes an instance of <seealso cref="ResourceValueItem"/> class.
+        /// Initializes an instance of <seealso cref="ResourceValueItemViewModel"/> class.
         /// </summary>
         /// <param name="resourceKeyValue">The resource value.</param>
         /// <param name="parent">The parent menu item.</param>
@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// The display name of the resource key value.
         /// Example:  instance_id value is integer as string.  The display name is the instance name.
         /// </param>
-        public ResourceValueItem(
+        public ResourceValueItemViewModel(
             string resourceKeyValue, 
             MenuItemViewModel parent, 
             string displayName = null) :  base(parent)

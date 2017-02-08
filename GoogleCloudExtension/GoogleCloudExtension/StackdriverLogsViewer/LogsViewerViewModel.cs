@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private const string AdvancedHelpLink = "https://cloud.google.com/logging/docs/view/advanced_filters";
         private const int DefaultPageSize = 100;
 
-        private static readonly LogSeverityItem[] s_logSeveritySelections = 
+        private static readonly LogSeverityItem[] s_logSeveritySelections =
             new LogSeverityItem[] {
                 new LogSeverityItem(LogSeverity.Debug, Resources.LogViewerLogLevelDebugLabel),
                 new LogSeverityItem(LogSeverity.Info, Resources.LogViewerLogLevelInfoLabel),
@@ -535,7 +535,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 return null;
             }
-        }   
+        }
 
         private void ShowAdvancedFilterHelp()
         {
@@ -621,7 +621,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            var item = ResourceTypeSelector.SelectedMenuItem as ResourceValueItem;
+            var item = ResourceTypeSelector.SelectedMenuItem as ResourceValueItemViewModel;
             var keys = item == null ? null : new List<string>(new string[] { item.ResourceValue });
             IList<string> logIdRequestResult = await _dataSource.Value.ListProjectLogNamesAsync(ResourceTypeSelector.SelectedTypeNmae, keys);
             LogIdList = new LogIdsList(logIdRequestResult);
@@ -678,11 +678,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 filter.AppendLine($"resource.type=\"{ResourceTypeSelector.SelectedResourceType.ResourceTypeKeys.Type}\"");
             }
 
-            var valueItem = ResourceTypeSelector.SelectedMenuItem as ResourceValueItem;
+            var valueItem = ResourceTypeSelector.SelectedMenuItem as ResourceValueItemViewModel;
             if (valueItem != null)
             {
                 // Example: resource.labels.module_id="my_gae_default_service"
-                filter.AppendLine($"resource.labels.{ResourceTypeSelector.SelectedResourceType.GetKeysAt(0)}=\"{valueItem.ResourceValue}\"");
+                filter.AppendLine($"resource.labels.{ResourceTypeSelector.SelectedResourceType.GetKeyAt(0)}=\"{valueItem.ResourceValue}\"");
             }
 
             if (SelectedLogSeverity != null && SelectedLogSeverity.Severity != LogSeverity.All)
@@ -700,7 +700,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             else
             {
                 filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
-            }   
+            }
 
             if (LogIdList.SelectedLogIdFullName != null)
             {

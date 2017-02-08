@@ -69,7 +69,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Indicate if the submenu list is populated.
         /// Set to true disables loading submenu items.
-        /// False: It loads submenu items when popup menu item opens.
+        /// False: It loads submenu items when the popup menu item opens.
         /// Default is true. 
         /// </summary>
         public bool IsSubmenuPopulated
@@ -95,10 +95,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Child menu item calls parent's bubbling handler when it is clicked.
         /// </summary>
         /// <param name="originalSource">The original menu item that fires the selected event.</param>
-        protected virtual void CommandBubblingHandler(MenuItemViewModel originalSource)
-        {
-            MenuItemParent?.CommandBubblingHandler(originalSource);
-        }
+        protected virtual void CommandBubblingHandler(MenuItemViewModel originalSource) 
+            => MenuItemParent?.CommandBubblingHandler(originalSource);
 
         /// <summary>
         /// Inherited classes implement this to perform delay loading of sub menu items. 
