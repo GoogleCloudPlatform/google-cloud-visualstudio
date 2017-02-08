@@ -19,6 +19,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
                 <ResourceDictionary Source="./LogsViewerResources.xaml" />
+                <ResourceDictionary Source="../Controls/SearchMenuItemResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <utils:VisibilityConverter x:Key="visibilityConverter" />
@@ -120,24 +121,24 @@
         </Grid.RowDefinitions>
 
         <!-- Title bar. -->
-        <StackPanel Margin="0, 0, 0, 6" Style="{StaticResource PageTitleBarStyle}">
-            <Image Margin="12, 0, 6, 0"
+        <StackPanel Margin="0,0,0,6" Style="{StaticResource PageTitleBarStyle}">
+            <Image Margin="12,0,6,0"
                    HorizontalAlignment="Left" 
                    VerticalAlignment="Center" 
                    Source="{mp:ImageResource Theming/Resources/logo_cloud.png}" />
             <TextBlock VerticalAlignment="Center" 
                        Style="{StaticResource CommonTextStyle}"     
-                       Padding="0, 5, 0, 5"
+                       Padding="0,5,0,5"
                        Text="{x:Static ext:Resources.LogViewerTitleBarAccountLabel}" />
-            <TextBlock Margin="6, 0, 0, 0"
+            <TextBlock Margin="6,0,0,0"
                        VerticalAlignment="Center" 
                        Style="{StaticResource CommonTextStyle}" 
                        Text="{Binding Account}" />
-            <TextBlock Margin="12, 0, 0, 0"
+            <TextBlock Margin="12,0,0,0"
                        VerticalAlignment="Center" 
                        Style="{StaticResource CommonTextStyle}"
                        Text="{x:Static ext:Resources.LogViewerTitleBarProjectIdLabel}" />
-            <TextBlock Margin="6, 0, 0, 0" 
+            <TextBlock Margin="6,0,0,0" 
                        VerticalAlignment="Center" 
                        Style="{StaticResource CommonTextStyle}" 
                        Text="{Binding Project}" />
@@ -219,14 +220,22 @@
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Center">
 
-                    <controls:FixBackgroundComboBox 
+                    <Menu
                         Margin="0,0,6,0"
-                        Width="200" 
-                        Style="{StaticResource CommonDocumentComboBoxStyle}"
-                        ItemsSource="{Binding ResourceDescriptors}"
-                        SelectedItem="{Binding SelectedResource, Mode=TwoWay}"
-                        DisplayMemberPath="DisplayName" 
-                        IsSynchronizedWithCurrentItem="true" />
+                        Style="{StaticResource SelectorMenuStyle}"
+                        Width="200">
+                        <controls:SearchMenuItem 
+                            Header="{Binding ResourceTypeSelector.Header}"
+                            ItemsSource="{Binding ResourceTypeSelector.MenuItems}" >
+
+                            <controls:SearchMenuItem.ItemTemplate>
+                                <HierarchicalDataTemplate 
+                                    DataType="{x:Type local:MenuItemViewModel}" 
+                                    ItemsSource="{Binding MenuItems}">
+                                </HierarchicalDataTemplate>
+                            </controls:SearchMenuItem.ItemTemplate>
+                        </controls:SearchMenuItem>
+                    </Menu>
 
                     <controls:FixBackgroundComboBox 
                         Margin="0,0,6,0"

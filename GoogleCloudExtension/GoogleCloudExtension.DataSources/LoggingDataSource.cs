@@ -16,8 +16,12 @@ using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
+using Google.Apis.Logging.v2.Extensions;
+using Google.Apis.Logging.v2.Data.Extensions;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -35,6 +39,9 @@ namespace GoogleCloudExtension.DataSources
         private string ProjectFilter => $"projects/{ProjectId}";
 
         private readonly List<string> _resourceNames;
+        private readonly ResourceKeysResource _resourceKeysResource;
+        private readonly ResourceTypesResource _resourceTypesResource;
+        private readonly LogsResource _logsResource;
 
         /// <summary>
         /// Initializes an instance of the data source.
@@ -45,6 +52,52 @@ namespace GoogleCloudExtension.DataSources
             : base(projectId, credential, init => new LoggingService(init), appName)
         {
             _resourceNames = new List<string>(new string[] { ProjectFilter });
+            _resourceKeysResource = new ResourceKeysResource(Service);
+            _resourceTypesResource = new ResourceTypesResource(Service);
+            _logsResource = new LogsResource(Service);
+        }
+
+        /// <summary>
+        /// List all resource keys for the project.
+        /// </summary>
+        public async Task<IList<ResourceKeys>> ListResourceKeysAsync()
+        {
+            return await LoadPagedListAsync(
+                (token) =>
+                {
+                    var request = _resourceKeysResource.List(ProjectFilter);
+                    request.PageToken = token;
+                    return request.ExecuteAsync();
+                },
+                x => x.ResourceKeys,
+                x => x.NextPageToken);
+        }
+
+        /// <summary>
+        /// List all resource type values for the given resource type and resource key.
+        /// </summary>
+        /// <param name="resourceType">Required, the resource type.</param>
+        /// <param name="resourceKey">Optional, the resource key as prefix.</param>
+        /// <returns>
+        /// A task with result of a list of resource keys.
+        /// </returns>
+        public Task<IList<string>> ListResourceTypeValuesAsync(string resourceType, string resourceKey = null)
+        {
+            if (resourceType == null)
+            {
+                throw new ArgumentNullException(nameof(resourceType));
+            }
+            string parentParam = $"{ProjectFilter}/resourceTypes/{resourceType}";
+            return LoadPagedListAsync(
+                (token) =>
+                {
+                    var request = _resourceTypesResource.Values.List(parentParam);
+                    request.PageToken = token;
+                    request.IndexPrefix = resourceKey;
+                    return request.ExecuteAsync();
+                },
+                x => x.ResourceValuePrefixes,
+                x => x.NextPageToken);
         }
 
         /// <summary>
@@ -52,9 +105,9 @@ namespace GoogleCloudExtension.DataSources
         /// The size of entire set of MonitoredResourceDescriptor is small. 
         /// Batch all in one request in case it spans multiple pages.
         /// </summary>
-        public async Task<IList<MonitoredResourceDescriptor>> GetResourceDescriptorsAsync()
+        public Task<IList<MonitoredResourceDescriptor>> GetResourceDescriptorsAsync()
         {
-            return await LoadPagedListAsync(
+            return LoadPagedListAsync(
                 (token) =>
                 {
                     var request = Service.MonitoredResourceDescriptors.List();
@@ -71,13 +124,22 @@ namespace GoogleCloudExtension.DataSources
         /// The size of entire set of log names is small. 
         /// Batch all in one request in unlikely case it spans multiple pages.
         /// </summary>
-        public Task<IList<string>> ListProjectLogNamesAsync()
+        /// <param name="resourceType">The resource type, i.e gce_instance.</param>
+        /// <param name="resourcePrefixList">
+        /// Optional, can be null. 
+        /// A list of resource prefixes. 
+        /// i.e,  for resource type app engine, the prefixe can be the module ids. 
+        /// </param>
+        public Task<IList<string>> ListProjectLogNamesAsync(string resourceType, IEnumerable<string> resourcePrefixList = null)
         {
             return LoadPagedListAsync(
                 (token) =>
                 {
-                    var request = Service.Projects.Logs.List(ProjectFilter);
+                    var request = _logsResource.List(ProjectFilter);
                     request.PageToken = token;
+                    request.ResourceType = resourceType;
+                    request.ResourceIndexPrefix = resourcePrefixList == null ? null :
+                        String.Join("", resourcePrefixList.Select(x => $"/{x}"));
                     return request.ExecuteAsync();
                 },
                 x => x.LogNames,

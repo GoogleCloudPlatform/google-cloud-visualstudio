@@ -122,6 +122,7 @@
     <Compile Include="GaeDataSource.cs" />
     <Compile Include="GaeServiceExtensions.cs" />
     <Compile Include="GaeVersionExtensions.cs" />
+    <Compile Include="Google.Apis.Logging.v2.extensions.cs" />
     <Compile Include="LogEntryRequestResult.cs" />
     <Compile Include="GceDataSource.cs" />
     <Compile Include="GkeDataSource.cs" />

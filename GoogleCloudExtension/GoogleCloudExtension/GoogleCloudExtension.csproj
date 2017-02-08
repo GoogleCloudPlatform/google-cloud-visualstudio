@@ -258,6 +258,12 @@
       <DependentUpon>LogsViewerToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\SearchMenuItem\MenuItemViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeMenuViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeNameConsts.cs" />
+    <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceValueItemViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeItemViewModel.cs" />
+    <Compile Include="Controls\SearchMenuItem.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTree.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TypeUtil.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
@@ -712,6 +718,10 @@
     <Page Include="StackdriverLogsViewer\LogsViewerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SearchMenuItemResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml">
       <SubType>Designer</SubType>
