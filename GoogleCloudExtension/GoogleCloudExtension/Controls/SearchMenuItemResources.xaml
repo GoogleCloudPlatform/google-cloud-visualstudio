@@ -45,7 +45,7 @@
     </Style>
 
     <!--ScrollViewer for a MenuItem-->
-    <Style x:Key="MenuScrollViewer"
+    <Style x:Key="MenuScrollViewerStyle"
            TargetType="{x:Type ScrollViewer}"
            BasedOn="{x:Null}">
         <Setter Property="MaxHeight" Value="650" />
@@ -182,7 +182,7 @@
                         BorderBrush="{StaticResource SolidBorderBrush}"
                         BorderThickness="1" >
                         <ScrollViewer CanContentScroll="True"
-                        Style="{StaticResource MenuScrollViewer}">
+                        Style="{StaticResource MenuScrollViewerStyle}">
                             <StackPanel 
                                 IsItemsHost="True" 
                                 KeyboardNavigation.DirectionalNavigation="Cycle" />
@@ -272,7 +272,7 @@
                                 Visibility="{TemplateBinding IsSubmenuPopulated, Converter={utils:VisibilityConverter IsNegated=True}}" />
                             <ScrollViewer 
                                 CanContentScroll="True" 
-                                Style="{StaticResource MenuScrollViewer}">
+                                Style="{StaticResource MenuScrollViewerStyle}">
                                 <StackPanel  
                                     IsItemsHost="True" 
                                     KeyboardNavigation.DirectionalNavigation="Cycle" />
@@ -305,7 +305,6 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-
     <Style x:Key="SelectorMenuStyle" TargetType="Menu">
         <Setter Property="Background" Value="White" />
         <Setter Property="BorderThickness" Value="1" />
@@ -326,8 +325,7 @@
         <Setter Property="OnSubmenuOpenCommand" Value="{Binding OnSubmenuOpenCommand}" />
         <Setter Property="Header" Value="{Binding Header}" />
         <Setter Property="ChooseAllHeader" Value="{Binding ChooseAllHeader}" />
-        <Setter Property="Visibility" 
-                Value="{Binding IsFakeItem, Converter={utils:VisibilityConverter IsNegated=True}}" />
+        <Setter Property="Visibility" Value="{Binding IsVisible, Converter={utils:VisibilityConverter}}" />
         <Style.Triggers>
             <Trigger Property="Role" Value="TopLevelHeader">
                 <Setter Property="Template" Value="{StaticResource {x:Static MenuItem.TopLevelHeaderTemplateKey}}"/>

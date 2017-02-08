@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.Controls
             new FrameworkPropertyMetadata(GoogleCloudExtension.Resources.UiChooseAllMenuHeader));
 
         /// <summary>
-        /// The choose all menu item header.
+        /// Gets or sets the choose all menu item header depenedency propoerty.
         /// </summary>
         public string ChooseAllHeader
         {
@@ -80,10 +80,14 @@ namespace GoogleCloudExtension.Controls
             {
                 _searchBox.TextChanged += OnSearchBoxTextChanged;
             }
-
             SubmenuOpened += OnSubmenuOpened;
         }
 
+        /// <summary>
+        /// By default it returns MenuItem. Override to return SearchMenuItem.
+        /// The is the key part to make the HierarchicalDataTemplate data binding work.
+        /// </summary>
+        /// <returns>A <seealso cref="SearchMenuItem"/> object.</returns>
         protected override DependencyObject GetContainerForItemOverride() => new SearchMenuItem();
 
         private void OnSubmenuOpened(object sender, RoutedEventArgs e)

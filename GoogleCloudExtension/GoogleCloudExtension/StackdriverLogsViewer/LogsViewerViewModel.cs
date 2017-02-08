@@ -495,7 +495,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            if (!ResourceTypeSelector.Populated)
+            if (!ResourceTypeSelector.IsSubmenuPopulated)
             {
                 RequestLogFiltersWrapperAsync(PopulateResourceTypes);
                 Debug.WriteLine("PopulateResourceTypes exit");

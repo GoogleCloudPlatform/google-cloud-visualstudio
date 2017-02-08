@@ -14,19 +14,12 @@
 
 using Google.Apis.Logging.v2.Data;
 using Google.Apis.Logging.v2.Data.Extensions;
-using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Data;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -47,43 +40,52 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 "global"
             };
 
-        public string SelectedTypeNmae => SelectedResourceType?.ResourceTypeKeys?.Type;
         private readonly Lazy<LoggingDataSource> _dataSource;
-        public bool Populated { get; private set; }
-
-
-        private IList<ResourceKeys> _resourceKeys;
-        private IList<MonitoredResourceDescriptor> _resourceDescriptors;
-
         private MenuItemViewModel _selectedMenuItem;
-        public ResourceTypeItem SelectedResourceType { get; private set; }
-        private ObservableCollection<MenuItemViewModel> _resourceKeysCollection =
-            new ObservableCollection<MenuItemViewModel>(new MenuItemViewModel[] { MenuItemViewModel.FakeItem });
+        private IList<ResourceKeys> _resourceKeys;
 
+        /// <summary>
+        /// Gets the selected resource type name.
+        /// Example: gae_app,  gce_instance.
+        /// </summary>
+        public string SelectedTypeNmae => SelectedResourceType?.ResourceTypeKeys?.Type;
+
+        /// <summary>
+        /// Gets the selected resource type menu item view model.
+        /// </summary>
+        public ResourceTypeItem SelectedResourceType { get; private set; }
+
+        /// <summary>
+        /// Gets, sets the selected menu item.
+        /// </summary>
         public MenuItemViewModel SelectedMenuItem
         {
             get { return _selectedMenuItem; }
             set { SetValueAndRaise(ref _selectedMenuItem, value); }
         }
 
+        /// <summary>
+        /// Initializes an instance of <seealso cref="ResourceTypeMenuViewModel"/> class.
+        /// </summary>
+        /// <param name="dataSource">Logging data source.</param>
         public ResourceTypeMenuViewModel(Lazy<LoggingDataSource> dataSource) : base(null)
         {
+            IsSubmenuPopulated = false;
             _dataSource = dataSource;
-            Populated = false;
         }
 
+        /// <summary>
+        /// Refers to <seealso cref="LogsViewerViewModel.PopulateResourceTypes"/>
+        /// </summary>
         public async Task PopulateResourceTypes()
         {
-            if (Populated)
+            if (IsSubmenuPopulated)
             {
                 return;
             }
 
-            _resourceKeys = await _dataSource.Value.ListResourceKeysAsync();
-
-            var all = await _dataSource.Value.GetResourceDescriptorsAsync();
-            var descriptors = all.Where(x => _resourceKeys.Any(item => item?.Type == x.Type));
-            List<MonitoredResourceDescriptor> newOrderDescriptors = new List<MonitoredResourceDescriptor>();
+            var descriptors = await _dataSource.Value.GetResourceDescriptorsAsync();
+            var newOrderDescriptors = new List<MonitoredResourceDescriptor>();
             // Keep the order.
             foreach (var defaultSelection in s_defaultResourceSelections)
             {
@@ -93,35 +95,26 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     newOrderDescriptors.Add(desc);
                 }
             }
-            newOrderDescriptors.AddRange(descriptors.Where(x => !s_defaultResourceSelections.Contains(x.Type)));
-            _resourceDescriptors = newOrderDescriptors;  // This will set the selected item to first element.
+            newOrderDescriptors.AddRange(descriptors.Where(x => !s_defaultResourceSelections.Contains(x.Type)).OrderBy(x => x.DisplayName));
 
-            foreach(var item in _resourceDescriptors.Select(
-                x => new ResourceTypeItem(_resourceKeys.FirstOrDefault(item => item.Type == x.Type), this)))
-            {
-                MenuItems.Add(item);
-            }
-
+            _resourceKeys = await _dataSource.Value.ListResourceKeysAsync();
+            var items =
+                from desc in newOrderDescriptors
+                join keys in _resourceKeys
+                    on desc.Type equals keys.Type
+                select new ResourceTypeItem(keys, _dataSource, this) { Header = desc.DisplayName };
+            items.ToList().ForEach(x => MenuItems.Add(x));
             if (MenuItems.Count != 0)
             {
                 CommandBubblingHandler(MenuItems.FirstOrDefault());
-                Populated = true;
+                IsSubmenuPopulated = true;
             }
         }
 
-        public async Task<IEnumerable<string>> GetResourceValues(ResourceKeys resourceKeys)
-        {
-            try
-            {
-                var values = await _dataSource.Value.ListResourceTypeValuesAsync(resourceKeys.Type, null);
-                return values?.Select(x => x.Trim(new char[] { '/' }));
-            }
-            catch (DataSourceException ex)
-            {
-                throw;
-            }
-        }
-
+        /// <summary>
+        /// Hanle menu item selected event.
+        /// </summary>
+        /// <param name="originalSource">The original selected menu item.</param>
         protected override void CommandBubblingHandler(MenuItemViewModel originalSource)
         {
             if (originalSource == null || _selectedMenuItem == originalSource)
@@ -129,9 +122,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            var menuItem = originalSource;
-
             StringBuilder selected = new StringBuilder();
+            var menuItem = originalSource;
             while (menuItem != this)
             {
                 selected.Insert(0, menuItem.Header);
@@ -141,12 +133,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 }
                 else
                 {
-                    // The direct children are of type ResourceTypeItem.
+                    // Every direct children is ResourceTypeItem type.
                     SelectedResourceType = menuItem as ResourceTypeItem;
                 }
                 menuItem = menuItem.MenuItemParent;
             }
-
             Header = selected.ToString();
 
             // Note, parent LogsViewerViewModel subscribes to PropertyChanged event.

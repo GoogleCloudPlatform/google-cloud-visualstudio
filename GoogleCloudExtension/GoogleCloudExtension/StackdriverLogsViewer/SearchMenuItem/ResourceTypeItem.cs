@@ -22,63 +22,97 @@ using System.Linq;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
+    /// <summary>
+    /// View model for resource type menu item.
+    /// This item represents a single resource type and contains sub menu items for resource key values.
+    /// It is tightly coupled with ResourceTypeMenuViewModel.
+    /// </summary>
     public class ResourceTypeItem : MenuItemViewModel
     {
-        private ResourceTypeMenuViewModel _resourceTypeViewModel => MenuItemParent as ResourceTypeMenuViewModel;
+        private readonly Lazy<LoggingDataSource> _dataSource;
 
+        /// <summary>
+        /// The <seealso cref="ResourceTypeKeys"/> object that this menu item represents.
+        /// </summary>
         public ResourceKeys ResourceTypeKeys { get; }
 
+        /// <summary>
+        /// Choose all submenu item header.
+        /// Example:  All instance_id.
+        /// </summary>
         public string ChooseAllHeader => GetKeysAt(0) == null ? null : String.Format(Resources.LogsViewerChooseAllMenuHeaderFormat, GetKeysAt(0));
 
-        public ResourceTypeItem(ResourceKeys resourceKeys, MenuItemViewModel parent) : base(parent)
+        /// <summary>
+        /// Create an instance of <seealso cref="ResourceTypeItem"/> class.
+        /// </summary>
+        /// <param name="resourceKeys"><seealso cref="ResourceTypeKeys"/> object.</param>
+        /// <param name="dataSource">The logging data source.</param>
+        /// <param name="parent">The parent menu item view model object.</param>
+        public ResourceTypeItem(ResourceKeys resourceKeys, Lazy<LoggingDataSource> dataSource, MenuItemViewModel parent) : base(parent)
         {
+            _dataSource = dataSource;
             ResourceTypeKeys = resourceKeys;
             Header = ResourceTypeKeys.Type;
             IsSubmenuPopulated = ResourceTypeKeys.Keys?.FirstOrDefault() == null;
-            // The resource type contains keys, add a fake item to make it submenuheader Role.
+            // MenuItem determins the MenuRole of SubmenuItem or SubMenuItemHeader by checking if it has sub menuitems.
+            // Adding an invisible item for delay load menu items. 
             if (!IsSubmenuPopulated)
             {
-                MenuItems.Add(MenuItemViewModel.FakeItem);
+                MenuItems.Add(MenuItemViewModel.InvisibleItem);
             }
         }
 
+        /// <summary>
+        /// Gets the key name.
+        /// </summary>
+        /// <param name="index">Index of the keys list.</param>
         public string GetKeysAt(int index)
         {
             return ResourceTypeKeys?.Keys?[index];
         }
 
+        /// <summary>
+        /// Perform delay load of sub menu items.
+        /// TODO: handle DataSourceException.
+        /// </summary>
         protected override async Task LoadSubMenu()
         {
-            var keys = await _resourceTypeViewModel.GetResourceValues(ResourceTypeKeys);
-            if (keys == null)
+            var values = await _dataSource.Value.ListResourceTypeValuesAsync(ResourceTypeKeys.Type);
+            var trimedValues = values?.Select(x => x.Trim(new char[] { '/' })).Where(y => !String.IsNullOrWhiteSpace(y));
+            if (trimedValues?.FirstOrDefault() == null)
             {
                 return;
             }
 
-            IEnumerable<Tuple<string, string>> headers = keys.Select(x => new Tuple<string, string>(x, x));
-            if (ResourceTypeKeys.Type == "gce_instance")
+            switch (ResourceTypeKeys.Type)
             {
-                headers = await GceInstanceIdToName(keys);
-            }
-
-            foreach (var menuItem in headers.Select(x => new ResourceValueItem(x.Item1, this, x.Item2)))
-            {
-                MenuItems.Add(menuItem);
+                case "gce_instance":
+                    await AddGceInstanceSubMenu(trimedValues);
+                    break;
+                default:
+                    foreach (var menuItem in trimedValues.Select(x => new ResourceValueItem(x, this)))
+                    {
+                        MenuItems.Add(menuItem);
+                    }
+                    break;
             }
         }
 
-        private async Task<IEnumerable<Tuple<string, string>>> GceInstanceIdToName(IEnumerable<string> instanceIds)
+        private async Task AddGceInstanceSubMenu(IEnumerable<string> instanceIds)
         {
             var dataSource = new GceDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
             var allInstances = await dataSource.GetInstanceListAsync();
-            return from id in instanceIds
-                   join instance in allInstances on id equals instance.Id?.ToString() into joined
-                   from subInstance in joined.DefaultIfEmpty()
-                   orderby subInstance?.Name descending
-                   select new Tuple<string, string>(id,  subInstance == null ? id : subInstance.Name);
+            var menuItems =  
+                from id in instanceIds
+                join instance in allInstances 
+                    on id equals instance.Id?.ToString() into joined
+                from subInstance in joined.DefaultIfEmpty()
+                orderby subInstance?.Name descending
+                select new ResourceValueItem(id, this, subInstance == null ? id : subInstance.Name);
+            menuItems.ToList().ForEach(x => MenuItems.Add(x));
         }
     }
 }
