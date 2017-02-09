@@ -23,6 +23,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Media;
 using Microsoft.VisualStudio.Text.Editor;
 
@@ -33,10 +34,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     internal class LogItem : ViewModelBase
     {
-        private const string SourceFileFieldName = "source_file";
-        private const string SourceLineFieldName = "source_line";
-        private const string AssemblyNameFieldName = "assembly_name";
-        private const string AssemblyVersionFieldName = "assembly_version";
         private const string JasonPayloadMessageFieldName = "message";
         private const string AnyIconPath = "StackdriverLogsViewer/Resources/ic_log_level_any_12.png";
         private const string DebugIconPath = "StackdriverLogsViewer/Resources/ic_log_level_debug_12.png";
@@ -60,10 +57,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private readonly Lazy<List<ObjectNodeTree>> _treeViewObjects;
 
-        private readonly string _sourceFilePath;
+        private string _sourceFilePath => Entry?.SourceLocation?.File;
+        private string _function => Entry?.SourceLocation?.Function;        
         private readonly string _assemblyName;
         private readonly string _assemblyVersion;
-        public readonly int SourceLine;
+        public long? SourceLine => Entry?.SourceLocation?.Line;
 
         public IWpfTextView SourceLineTextView { get; private set; }    
 
@@ -125,6 +123,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public ProtectedCommand BackToLogsViewerCommand { get; }
 
+        public readonly LogSeverity LogLevel;
+
         /// <summary>
         /// Gets the log item severity level. The data binding source to severity column in the data grid.
         /// </summary>
@@ -132,14 +132,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             get
             {
-                LogSeverity logLevel;
-                if (String.IsNullOrWhiteSpace(Entry?.Severity) ||
-                    !Enum.TryParse<LogSeverity>(Entry?.Severity, ignoreCase: true, result: out logLevel))
-                {
-                    return s_anyIcon.Value;
-                }
-
-                switch (logLevel)
+                switch (LogLevel)
                 {
                     // EMERGENCY, CRITICAL, Alert all map to fatal icon.
                     case LogSeverity.Alert:
@@ -174,24 +167,56 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             Entry = logEntry;
             TimeStamp = ConvertTimestamp(logEntry.Timestamp);
-            _treeViewObjects = new Lazy<List<ObjectNodeTree>>(CreateTreeObject);
+
+            if (String.IsNullOrWhiteSpace(Entry?.Severity) ||
+                !Enum.TryParse<LogSeverity>(Entry?.Severity, ignoreCase: true, result: out LogLevel))
+            {
+                LogLevel = LogSeverity.Default;
+            }
+
+                _treeViewObjects = new Lazy<List<ObjectNodeTree>>(CreateTreeObject);
             BackToLogsViewerCommand = new ProtectedCommand(BackToLogsViewer);
             SourceLinkCommand = new ProtectedCommand(OnSourceLinkClick);
-            SourceLine = -1;
-            if (null != Entry?.Labels)
+            if (_function != null)
             {
-                _assemblyName = GetLabelField(AssemblyNameFieldName);
-                _sourceFilePath = GetLabelField(SourceFileFieldName);
-                _assemblyVersion = GetLabelField(AssemblyVersionFieldName);
-                var line = GetLabelField(SourceLineFieldName);
-                Int32.TryParse(line, out SourceLine);
-                if (!String.IsNullOrWhiteSpace(_sourceFilePath) && SourceLine != -1)
+                // Example:  [Log4NetSample.Program, Log4NetExample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null].WriteRandomSeverityLog
+                const string validFunction = @"[\w\-. ]+";
+                //string function = "[Log4NetSample.Program, Log4NetExample, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null].WriteRandomSeverityLog";
+                Regex regex = new Regex($@"^\[(.*),\s*(.*),\s*Version\s*=\s*(.*)\s*,(.*),(.*)\]\.({validFunction})$");
+                Match match = regex.Match(_function);
+                Debug.WriteLine($"{match.Groups[1].Value},{match.Groups[2].Value}, {match.Groups[3].Value}");
+                if (match.Success)
                 {
-                    SourceLocation = $"{Path.GetFileName(_sourceFilePath)} ({SourceLine})";
+                    _assemblyName = match.Groups[2].Value;
+                    _assemblyVersion = match.Groups[3].Value;
                 }
             }
 
+            if (_sourceFilePath != null && SourceLine.HasValue)
+            {
+                SourceLocation = $"{Path.GetFileName(_sourceFilePath)} ({SourceLine})";
+            }
+
             CloseButtonCommand = new ProtectedCommand(OnCloseTooltip);
+        }
+
+        public static string MethodName(LogItem item)
+        {
+            switch (item.LogLevel)
+            {
+                case LogSeverity.Debug:
+                    return ".Debug";
+                case LogSeverity.Emergency:
+                    return ".Fatal";
+                case LogSeverity.Warning:
+                    return ".Warn";
+                case LogSeverity.Info:
+                    return ".Info";
+                case LogSeverity.Error:
+                    return ".Error";
+                default:
+                    return "";
+            }
         }
 
         /// <summary>
@@ -209,7 +234,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             return new ObjectNodeTree(Entry).Children;
         }
 
-        private string GetLabelField(string fieldName)
+        private string GetSourceLocationField(string fieldName)
         {
             return Entry.Labels.ContainsKey(fieldName) ? Entry.Labels[fieldName] : null;
         }
@@ -303,7 +328,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private void OnSourceLinkClick()
         {
-            Debug.Assert(SourceLine != -1 && _sourceFilePath != null, 
+            Debug.Assert(SourceLine.HasValue && _sourceFilePath != null, 
                 "There is a code bug if source file or source line is invalid");
             // var sourceFiles = SolutionHelper.CurrentSolution?.FindMatchingSourceFile(_sourceFilePath);
 
@@ -321,7 +346,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            var window = sourceFiles.First().GotoLine(SourceLine);
+            var window = sourceFiles.First().GotoLine((int)SourceLine);
             if (null == window)
             {
                 PromptNotfound();
@@ -402,16 +427,15 @@ in order to properly locating the logging source location.",
             {
                 return;
             }
-
+            string sourceLocation = "sourceLocation";
             if (FilterLogsOfSourceLine)
             {
                 StringBuilder filter = new StringBuilder();
                 filter.AppendLine($"resource.type=\"{Entry.Resource.Type}\"");
                 filter.AppendLine($"logName=\"{Entry.LogName}\"");
-                filter.AppendLine($"labels.{SourceFileFieldName}=\"{_sourceFilePath.Replace(@"\", @"\\")}\"");
-                filter.AppendLine($"labels.{AssemblyNameFieldName}=\"{_assemblyName}\"");
-                filter.AppendLine($"labels.{AssemblyVersionFieldName}=\"{_assemblyVersion}\"");
-                filter.AppendLine($"labels.{SourceLineFieldName}=\"{SourceLine}\"");
+                filter.AppendLine($"{sourceLocation}.{nameof(LogEntrySourceLocation.File)}=\"{_sourceFilePath.Replace(@"\", @"\\")}\"");
+                filter.AppendLine($"{sourceLocation}.{nameof(LogEntrySourceLocation.Function)}=\"{_function}\"");
+                filter.AppendLine($"{sourceLocation}.{nameof(LogEntrySourceLocation.Line)}=\"{SourceLine}\"");
                 window.AdvancedFilter(filter.ToString());
             }
         }

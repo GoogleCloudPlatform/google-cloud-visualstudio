@@ -28,14 +28,22 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     {
         public object LogItem { get; set; }
         public IWpfTextView SourceLineTextView { get; set; }
-        public int SourceLine { get; set; }
+        public long? SourceLine { get; set; }
     }
 
     internal class LoggingTagger3 : ITagger<LoggingTag>
     {
         //private static readonly HashSet<string> LogMethodName = new HashSet<string>(
         //    new string[] { "WriteLog", "WriteLogV2" });
-        private const string LogMethodName = "WriteLogV2";
+        private readonly string[] LogMethodName = 
+            new string[] {
+                "WriteLogV2",
+                ".Info",
+                ".Debug",
+                ".Error",
+                ".Warn",
+                ".Fatal"
+            };
 
         public readonly ITextView _view;
         private ITextSearchService _textSearchService;
@@ -160,14 +168,23 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
 
                 ITextSnapshotLine textLine = _sourceBuffer.CurrentSnapshot.GetLineFromLineNumber(
-                    CurrentLogItem.SourceLine - 1);
-                int pos = textLine.GetText().IndexOf(LogMethodName);
-                if (pos < 0)
+                    (int)CurrentLogItem.SourceLine - 1);
+                SnapshotSpan span;
+                string methodName = LogItem.MethodName(CurrentLogItem.LogItem as LogItem);
+                if (String.IsNullOrWhiteSpace(methodName))
                 {
-                    yield break;
+                    span = new SnapshotSpan(textLine.Start, textLine.Length);
                 }
+                else
+                {
+                    int pos = textLine.GetText().IndexOf(methodName);
+                    if (pos < 0)
+                    {
+                        yield break;
+                    }
 
-                var span = new SnapshotSpan(textLine.Start + pos, LogMethodName.Length);
+                    span = new SnapshotSpan(textLine.Start + pos, methodName.Length);
+                }
 
                 if (_currentViewLine.ContainsBufferPosition(span.Start))
                 {

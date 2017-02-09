@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.SolutionUtils
             }
 
             ITextSnapshotLine textLine = tagger._sourceBuffer.CurrentSnapshot.GetLineFromLineNumber(
-                LoggingTagger3.CurrentLogItem.SourceLine-1);
+                (int)LoggingTagger3.CurrentLogItem.SourceLine.Value-1);
             //ITextViewLine viewLine = _view.Caret.ContainingTextViewLine;
             //SnapshotSpan? span = EditorSpanHelpers.GetSpanAtMousePosition(_view as IWpfTextView, null);
             var caretSnapshotPoint = tagger._view.Caret.Position.Point.GetPoint(tagger._sourceBuffer, 
