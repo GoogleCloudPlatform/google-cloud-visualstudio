@@ -24,7 +24,7 @@ using System.Diagnostics;
 namespace GoogleCloudExtension.GenerateConfigurationCommand
 {
     /// <summary>
-    /// This class implements the command handler for the menu item shown in the project's context
+    /// This class implements the command handler for the generate app.yaml and Dockerfile menu item shown in the project's context
     /// menu in the "Solution Exlorer".
     /// </summary>
     internal sealed class GenerateConfigurationContextMenuCommand
@@ -107,35 +107,50 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
         /// <param name="e">Event args.</param>
         private void OnGenerateConfiguration(object sender, EventArgs e)
         {
-            var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
-            Debug.WriteLine($"Generating configuration for project: {selectedProject.FullPath}");
-            var configurationStatus = AppEngineFlexDeployment.CheckProjectConfiguration(selectedProject.FullPath);
-
-            // If the app.yaml already exists allow the user to skip its generation to preserve the existing file.
-            if (!configurationStatus.HasAppYaml ||
-                UserPromptUtils.ActionPrompt(
-                    prompt: Resources.GenerateConfigurationAppYamlOverwriteMessage,
-                    title: Resources.GenerateConfigurationOverwritePromptTitle,
-                    actionCaption: Resources.UiOverwriteButtonCaption,
-                    cancelCaption: Resources.UiSkipFileButtonCaption))
+            ErrorHandlerUtils.HandleExceptions(() =>
             {
-                Debug.WriteLine($"Generating app.yaml for {selectedProject.FullPath}");
-                AppEngineFlexDeployment.GenerateAppYaml(selectedProject.FullPath);
-                GcpOutputWindow.OutputLine(Resources.GenerateConfigurationAppYamlGeneratedMessage);
-            }
+                var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
+                Debug.WriteLine($"Generating configuration for project: {selectedProject.FullPath}");
+                var configurationStatus = AppEngineFlexDeployment.CheckProjectConfiguration(selectedProject.FullPath);
 
-            // If the Dockerfile already exists allow the user to skip its generation to preserve the existing file.
-            if (!configurationStatus.HasDockerfile ||
-                UserPromptUtils.ActionPrompt(
-                    prompt: Resources.GenerateConfigurationDockerfileOverwriteMessage,
-                    title: Resources.GenerateConfigurationOverwritePromptTitle,
-                    actionCaption: Resources.UiOverwriteButtonCaption,
-                    cancelCaption: Resources.UiSkipFileButtonCaption))
-            {
-                Debug.WriteLine($"Generating Dockerfile for {selectedProject.FullPath}");
-                AppEngineFlexDeployment.GenerateDockerfile(selectedProject.FullPath);
-                GcpOutputWindow.OutputLine(Resources.GenerateConfigurationDockerfileGeneratedMessage);
-            }
+                // If the app.yaml already exists allow the user to skip its generation to preserve the existing file.
+                if (!configurationStatus.HasAppYaml ||
+                    UserPromptUtils.ActionPrompt(
+                        prompt: Resources.GenerateConfigurationAppYamlOverwriteMessage,
+                        title: Resources.GenerateConfigurationOverwritePromptTitle,
+                        actionCaption: Resources.UiOverwriteButtonCaption,
+                        cancelCaption: Resources.UiSkipFileButtonCaption))
+                {
+                    Debug.WriteLine($"Generating app.yaml for {selectedProject.FullPath}");
+                    if (!AppEngineFlexDeployment.GenerateAppYaml(selectedProject.FullPath))
+                    {
+                        UserPromptUtils.ErrorPrompt(
+                            String.Format(Resources.GenerateConfigurationFileGenerationErrorMessage, AppEngineFlexDeployment.AppYamlName),
+                            Resources.GenerateConfigurationFileGeneratinErrorTitle);
+                        return;
+                    }
+                    GcpOutputWindow.OutputLine(Resources.GenerateConfigurationAppYamlGeneratedMessage);
+                }
+
+                // If the Dockerfile already exists allow the user to skip its generation to preserve the existing file.
+                if (!configurationStatus.HasDockerfile ||
+                    UserPromptUtils.ActionPrompt(
+                        prompt: Resources.GenerateConfigurationDockerfileOverwriteMessage,
+                        title: Resources.GenerateConfigurationOverwritePromptTitle,
+                        actionCaption: Resources.UiOverwriteButtonCaption,
+                        cancelCaption: Resources.UiSkipFileButtonCaption))
+                {
+                    Debug.WriteLine($"Generating Dockerfile for {selectedProject.FullPath}");
+                    if (!AppEngineFlexDeployment.GenerateDockerfile(selectedProject.FullPath))
+                    {
+                        UserPromptUtils.ErrorPrompt(
+                            String.Format(Resources.GenerateConfigurationFileGenerationErrorMessage, AppEngineFlexDeployment.DockerfileName),
+                            Resources.GenerateConfigurationFileGeneratinErrorTitle);
+                        return;
+                    }
+                    GcpOutputWindow.OutputLine(Resources.GenerateConfigurationDockerfileGeneratedMessage);
+                }
+            });
         }
 
         private void OnBeforeQueryStatus(object sender, EventArgs e)

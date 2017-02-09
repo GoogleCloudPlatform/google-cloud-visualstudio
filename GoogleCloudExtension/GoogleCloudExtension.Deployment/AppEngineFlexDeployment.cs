@@ -27,7 +27,8 @@ namespace GoogleCloudExtension.Deployment
     /// </summary>
     public static class AppEngineFlexDeployment
     {
-        private const string AppYamlName = "app.yaml";
+        public const string AppYamlName = "app.yaml";
+        public const string DockerfileName = NetCoreAppUtils.DockerfileName;
 
         private const string AppYamlDefaultContent =
             "runtime: custom\n" +
@@ -125,20 +126,38 @@ namespace GoogleCloudExtension.Deployment
         /// Generates the app.yaml for the given project.json file.
         /// </summary>
         /// <param name="projectPath">The full path to the project.json for the project.</param>
-        public static void GenerateAppYaml(string projectPath)
+        public static bool GenerateAppYaml(string projectPath)
         {
-            var projectDirectory = Path.GetDirectoryName(projectPath);
-            var targetAppYaml = Path.Combine(projectDirectory, AppYamlName);
-            File.WriteAllText(targetAppYaml, AppYamlDefaultContent);
+            try
+            {
+                var projectDirectory = Path.GetDirectoryName(projectPath);
+                var targetAppYaml = Path.Combine(projectDirectory, AppYamlName);
+                File.WriteAllText(targetAppYaml, AppYamlDefaultContent);
+                return true;
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine($"Failed to generate app.yaml: {ex.Message}");
+                return false;
+            }
         }
 
         /// <summary>
         /// Generates the Dockerfile for the given project.json file.
         /// </summary>
         /// <param name="projectPath">The full path to the project.json for the project.</param>
-        public static void GenerateDockerfile(string projectPath)
+        public static bool GenerateDockerfile(string projectPath)
         {
-            NetCoreAppUtils.GenerateDockerfile(projectPath);
+            try
+            {
+                NetCoreAppUtils.GenerateDockerfile(projectPath);
+                return true;
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine($"Failed to generate Dockerfile: {ex.Message}");
+                return false;
+            }
         }
 
         /// <summary>

@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.Deployment
     /// </summary>
     internal static class NetCoreAppUtils
     {
-        private const string DockerfileName = "Dockerfile";
+        internal const string DockerfileName = "Dockerfile";
 
         private static readonly Lazy<string> s_dotnetPath = new Lazy<string>(GetDotnetPath);
 

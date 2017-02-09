@@ -1924,6 +1924,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to generate file.
+        /// </summary>
+        public static string GenerateConfigurationFileGeneratinErrorTitle {
+            get {
+                return ResourceManager.GetString("GenerateConfigurationFileGeneratinErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to generate file {0}..
+        /// </summary>
+        public static string GenerateConfigurationFileGenerationErrorMessage {
+            get {
+                return ResourceManager.GetString("GenerateConfigurationFileGenerationErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Generate app.yaml and Dockerfile for {0}.
         /// </summary>
         public static string GenerateConfigurationMenuHeader {
