@@ -781,15 +781,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Instance Class.
-        /// </summary>
-        public static string CloudExplorerGaeVersionInstanceClassDisplayName {
-            get {
-                return ResourceManager.GetString("CloudExplorerGaeVersionInstanceClassDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Full path to the Version resource in the API..
         /// </summary>
         public static string CloudExplorerGaeVersionNameDescription {
@@ -804,33 +795,6 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGaeVersionOpen {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeVersionOpen", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Disk (GB).
-        /// </summary>
-        public static string CloudExplorerGaeVersionResoucesDiskDisplayName {
-            get {
-                return ResourceManager.GetString("CloudExplorerGaeVersionResoucesDiskDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Memory (GB).
-        /// </summary>
-        public static string CloudExplorerGaeVersionResoucesMemoryDisplayName {
-            get {
-                return ResourceManager.GetString("CloudExplorerGaeVersionResoucesMemoryDisplayName", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Version Resouces Properties.
-        /// </summary>
-        public static string CloudExplorerGaeVersionResourcesCategory {
-            get {
-                return ResourceManager.GetString("CloudExplorerGaeVersionResourcesCategory", resourceCulture);
             }
         }
         
@@ -867,15 +831,6 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGaeVersionStopServingMessage {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeVersionStopServingMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Virtual Machine.
-        /// </summary>
-        public static string CloudExplorerGaeVersionVirtualMachineDisplayName {
-            get {
-                return ResourceManager.GetString("CloudExplorerGaeVersionVirtualMachineDisplayName", resourceCulture);
             }
         }
         

@@ -977,26 +977,6 @@
     <value>Creation Time</value>
     <comment>The display name for the GAE version creation time</comment>
   </data>
-  <data name="CloudExplorerGaeVersionInstanceClassDisplayName" xml:space="preserve">
-    <value>Instance Class</value>
-    <comment>The display name for the GAE version instance class</comment>
-  </data>
-  <data name="CloudExplorerGaeVersionResoucesDiskDisplayName" xml:space="preserve">
-    <value>Disk (GB)</value>
-    <comment>The display name for the GAE version resource disk.</comment>
-  </data>
-  <data name="CloudExplorerGaeVersionResoucesMemoryDisplayName" xml:space="preserve">
-    <value>Memory (GB)</value>
-    <comment>The display name for the GAE version resource memory.</comment>
-  </data>
-  <data name="CloudExplorerGaeVersionResourcesCategory" xml:space="preserve">
-    <value>Version Resouces Properties</value>
-    <comment>Category for the GAE version resources properties.</comment>
-  </data>
-  <data name="CloudExplorerGaeVersionVirtualMachineDisplayName" xml:space="preserve">
-    <value>Virtual Machine</value>
-    <comment>The display name for the GAE version virtual machine</comment>
-  </data>
   <data name="CloudExplorerGaeVersionOpen" xml:space="preserve">
     <value>Open Running Version</value>
     <comment>Header for the menu that opens the version in a browser.</comment>
