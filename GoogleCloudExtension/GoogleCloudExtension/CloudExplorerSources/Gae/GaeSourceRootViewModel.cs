@@ -181,19 +181,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private async Task<ServiceViewModel> LoadService(Service service)
         {
             var versions = await _dataSource.Value.GetVersionListAsync(service.Id);
-            var versionModels = await Task.WhenAll(versions.Select(x => LoadVersion(service, x)));
-            return new ServiceViewModel(
-                this,
-                service,
-                versionModels
+            var versionModels = versions
+                .Select(x => new VersionViewModel(this, service, x))
                 .OrderByDescending(x => GaeServiceExtensions.GetTrafficAllocation(service, x.Version.Id) ?? 0.0)
-                .ToList());
-        }
-
-        private async Task<VersionViewModel> LoadVersion(Service service, Google.Apis.Appengine.v1.Data.Version version)
-        {
-            var instances = await _dataSource.Value.GetInstanceListAsync(service.Id, version.Id);
-            return new VersionViewModel(this, service, version, instances.Select(x => new InstanceViewModel(this, x)).ToList());
+                .ToList();
+            return new ServiceViewModel(this, service, versionModels);
         }
     }
 }
