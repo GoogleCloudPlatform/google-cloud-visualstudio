@@ -55,12 +55,18 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         public string CreateTime => _version.CreateTime;
 
         [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionCategory))]
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerGaeVersionUrlDisplayName))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGaeVersionUrlDescription))]
         public string Url => _version.VersionUrl;
 
         [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionCategory))]
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerGaeVersionRuntimeDisplayName))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGaeVersionRuntimeDescription))]
         public string Runtime => _version.Runtime;
 
         [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionCategory))]
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerGaeVersionEnvironmentDisplayName))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGaeVersionEnvironmentDescription))]
         public string Environment => _version.Env;
 
         public override string ToString() => _version.Id;

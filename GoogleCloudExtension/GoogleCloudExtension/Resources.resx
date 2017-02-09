@@ -1479,4 +1479,32 @@
     <value>Failed to generate file {0}.</value>
     <comment>Error message shown when a configuration file cannot be generated.</comment>
   </data>
+  <data name="CloudExplorerGaeVersionRuntimeDescription" xml:space="preserve">
+    <value>The desired runtime for this version.</value>
+    <comment>The description for the Runtime property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionRuntimeDisplayName" xml:space="preserve">
+    <value>Desired Runtime</value>
+    <comment>The display name for the Runtime property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionUrlDescription" xml:space="preserve">
+    <value>The address for this version.</value>
+    <comment>The description for the Url property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionUrlDisplayName" xml:space="preserve">
+    <value>Address</value>
+    <comment>The display name for the Url property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionEnvironmentDescription" xml:space="preserve">
+    <value>App Engine execution environment for this version.</value>
+    <comment>The description for the Environment property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionEnvironmentDisplayName" xml:space="preserve">
+    <value>Environment</value>
+    <comment>The display name for the Environment property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionRuntimeProperty" xml:space="preserve">
+    <value>Desired Runtime</value>
+    <comment>The display name for the Runtime property.</comment>
+  </data>
 </root>

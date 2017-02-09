@@ -772,6 +772,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to App Engine execution environment for this version..
+        /// </summary>
+        public static string CloudExplorerGaeVersionEnvironmentDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionEnvironmentDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Environment.
+        /// </summary>
+        public static string CloudExplorerGaeVersionEnvironmentDisplayName {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionEnvironmentDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Relative name of the version within the service..
         /// </summary>
         public static string CloudExplorerGaeVersionIdDescription {
@@ -795,6 +813,33 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGaeVersionOpen {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeVersionOpen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The desired runtime for this version..
+        /// </summary>
+        public static string CloudExplorerGaeVersionRuntimeDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionRuntimeDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Desired Runtime.
+        /// </summary>
+        public static string CloudExplorerGaeVersionRuntimeDisplayName {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionRuntimeDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Desired Runtime.
+        /// </summary>
+        public static string CloudExplorerGaeVersionRuntimeProperty {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionRuntimeProperty", resourceCulture);
             }
         }
         
@@ -831,6 +876,24 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGaeVersionStopServingMessage {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeVersionStopServingMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The address for this version..
+        /// </summary>
+        public static string CloudExplorerGaeVersionUrlDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionUrlDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Address.
+        /// </summary>
+        public static string CloudExplorerGaeVersionUrlDisplayName {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeVersionUrlDisplayName", resourceCulture);
             }
         }
         
