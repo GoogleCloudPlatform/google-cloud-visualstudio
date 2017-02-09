@@ -127,6 +127,7 @@
     <Compile Include="CloudExplorerSources\CloudSQL\InstanceViewModel.cs" />
     <Compile Include="CloudExplorer\CloudConsoleSource.cs" />
     <Compile Include="CloudExplorer\CloudExplorerSourceException.cs" />
+    <Compile Include="CloudExplorer\IAcceptInput.cs" />
     <Compile Include="CloudExplorer\ICloudSourceContext.cs" />
     <Compile Include="CloudExplorer\SourceRootViewModelBase.cs" />
     <Compile Include="CloudExplorer\ButtonDefinition.cs" />
@@ -158,6 +159,17 @@
       <DependentUpon>PortManagerWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="FirewallManagement\PortModel.cs" />
+    <Compile Include="GcsFileBrowser\GcsBrowserState.cs" />
+    <Compile Include="GcsFileBrowser\GcsBrowserViewModel.cs" />
+    <Compile Include="GcsFileBrowser\GcsColumnSorter.cs" />
+    <Compile Include="GcsFileBrowser\GcsDataSourceExtensions.cs" />
+    <Compile Include="GcsFileBrowser\GcsDirectoryItem.cs" />
+    <Compile Include="GcsFileBrowser\GcsFileBrowserWindow.cs" />
+    <Compile Include="GcsFileBrowser\GcsFileBrowserWindowControl.xaml.cs">
+      <DependentUpon>GcsFileBrowserWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GcsFileBrowser\GcsRow.cs" />
+    <Compile Include="GcsFileBrowser\GcsFileItem.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsViewModel.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindow.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml.cs">
@@ -178,6 +190,11 @@
     <Compile Include="Accounts\UserAccount.cs" />
     <Compile Include="MySQLInstaller\MySQLInstallerViewModel.cs" />
     <Compile Include="MySQLInstaller\MySQLInstallerWindow.cs" />
+    <Compile Include="NamePrompt\NamePromptContent.xaml.cs">
+      <DependentUpon>NamePromptContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="NamePrompt\NamePromptViewModel.cs" />
+    <Compile Include="NamePrompt\NamePromptWindow.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowViewModel.cs" />
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindow.cs" />
     <Compile Include="ManageAccounts\UserAccountViewModel.cs" />
@@ -233,6 +250,12 @@
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
     <Compile Include="SolutionUtils\ISolutionProject.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
+    <Compile Include="GcsFileProgressDialog\GcsFileOperation.cs" />
+    <Compile Include="GcsFileProgressDialog\GcsFileProgressDialogViewModel.cs" />
+    <Compile Include="GcsFileProgressDialog\GcsFileProgressDialogWindow.cs" />
+    <Compile Include="GcsFileProgressDialog\GcsFileProgressDialogWindowContent.xaml.cs">
+      <DependentUpon>GcsFileProgressDialogWindowContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utils\GaeUtils.cs" />
     <Compile Include="Utils\ProgressBarHelper.cs" />
     <Compile Include="Utils\ShellUtils.cs" />
@@ -328,6 +351,9 @@
     <Resource Include="Controls\Resources\step_8_dark.png" />
     <Resource Include="Controls\Resources\step_9_dark.png" />
     <Resource Include="CloudExplorerSources\Gcs\Resources\zone_icon.png" />
+    <Resource Include="GcsFileBrowser\Resources\refresh.png" />
+    <Resource Include="GcsFileBrowser\Resources\folder.png" />
+    <Resource Include="GcsFileBrowser\Resources\file.png" />
     <Content Include="Licenses.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -593,6 +619,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="GcsFileBrowser\GcsFileBrowserWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -602,6 +632,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="ManageAccounts\ManageAccountsWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="NamePrompt\NamePromptContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -634,6 +668,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GcsFileProgressDialog\GcsFileProgressDialogWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

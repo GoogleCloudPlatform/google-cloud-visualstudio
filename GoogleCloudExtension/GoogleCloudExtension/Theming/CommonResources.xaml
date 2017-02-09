@@ -15,6 +15,11 @@
         <Setter Property="Foreground" Value="Black" />
         <Setter Property="TextWrapping" Value="Wrap" />
     </Style>
+    
+    <!-- Large text style. -->
+    <Style x:Key="CommonTextStyleLarge" BasedOn="{StaticResource CommonTextStyle}" TargetType="{x:Type TextBlock}">
+        <Setter Property="TextElement.FontSize" Value="20px" />
+    </Style>
 
     <!-- Text style to be used inside of a tooltip. -->
     <Style x:Key="CommonToolTipTextStyle" BasedOn="{StaticResource CommonTextStyle}" TargetType="{x:Type TextBlock}">
@@ -115,7 +120,7 @@
     <!-- Common item container style. -->
     <Style x:Key="CommonListItemContainerStyle" TargetType="{x:Type ListBoxItem}">
         <Setter Property="SnapsToDevicePixels" Value="True"/>
-        <Setter Property="Padding" Value="8,0,0,0"/>
+        <Setter Property="Padding" Value="8,0,8,0"/>
         <Setter Property="Height" Value="18px" />
         <Setter Property="HorizontalContentAlignment" Value="{Binding HorizontalContentAlignment, RelativeSource={RelativeSource AncestorType={x:Type ItemsControl}}}"/>
         <Setter Property="VerticalContentAlignment" Value="Center"/>

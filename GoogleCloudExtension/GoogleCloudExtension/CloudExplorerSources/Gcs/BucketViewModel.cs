@@ -17,6 +17,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.GcsFileBrowser;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
     /// This class is the view model for a GCS bucket. Defines the possible operations on the
     /// bucket, accessible through the context menu.
     /// </summary>
-    internal class BucketViewModel : TreeHierarchy, ICloudExplorerItemSource
+    internal class BucketViewModel : TreeHierarchy, ICloudExplorerItemSource, IAcceptInput
     {
         private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/bucket_icon.png";
         private static readonly Lazy<ImageSource> s_bucketIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
@@ -38,7 +39,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         private readonly GcsSourceRootViewModel _owner;
         private readonly Bucket _bucket;
         private readonly Lazy<BucketItem> _item;
-        private readonly ProtectedCommand _openOnCloudConsoleCommand;
 
         public object Item
         {
@@ -55,17 +55,22 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             _owner = owner;
             _bucket = bucket;
             _item = new Lazy<BucketItem>(GetItem);
-            _openOnCloudConsoleCommand = new ProtectedCommand(OnOpenConCloudConsoleCommand);
 
             Caption = _bucket.Name;
             Icon = s_bucketIcon.Value;
 
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = _openOnCloudConsoleCommand },
+                new MenuItem { Header = Resources.UiBrowseMenuHeader, Command = new ProtectedCommand(OnBrowseCommand) },
+                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenConCloudConsoleCommand) },
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private void OnBrowseCommand()
+        {
+            GcsFileBrowserWindow.BrowseBucket(_bucket);
         }
 
         private void OnPropertiesCommand()
@@ -83,5 +88,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         }
 
         private BucketItem GetItem() => new BucketItem(_bucket);
+
+        public void OnDoubleClick()
+        {
+            GcsFileBrowserWindow.BrowseBucket(_bucket);
+        }
     }
 }

@@ -1299,9 +1299,85 @@
     <value>Error Updating Firewall</value>
     <comment>Caption for the message shown when failed to update firewall.</comment>
   </data>
+  <data name="GcsFileBrowserContentTypeHeader" xml:space="preserve">
+    <value>Content Type</value>
+    <comment>The header for the Content Type column in the data grid.</comment>
+  </data>
+  <data name="GcsFileBrowserDeleteListErrorMessage" xml:space="preserve">
+    <value>Failed to list objects to delete.</value>
+    <comment>Error message shown when failed to list all the files to be deleted.</comment>
+  </data>
+  <data name="GcsFileBrowserDeletePromptMessage" xml:space="preserve">
+    <value>Are you sure you want to delete these files?</value>
+    <comment>Message for the delete confirmation prompt for GCS files.</comment>
+  </data>
+  <data name="GcsFileBrowserDeletingProgressCaption" xml:space="preserve">
+    <value>Deleting Files</value>
+    <comment>Caption for the progress dialog for the delete file operations.</comment>
+  </data>
+  <data name="GcsFileBrowserDeletingProgressMessage" xml:space="preserve">
+    <value>Files being deleted</value>
+    <comment>Message for the progress dialog for the delete file operations.</comment>
+  </data>
+  <data name="GcsFileBrowserDonwloadHeader" xml:space="preserve">
+    <value>Download...</value>
+    <comment>Header for the Download option in the context menu.</comment>
+  </data>
+  <data name="GcsFileBrowserDownloadingProgressCaption" xml:space="preserve">
+    <value>Downloading Files</value>
+    <comment>Caption for the progress dialog for the download operations.</comment>
+  </data>
+  <data name="GcsFileBrowserDownloadingProgressMessage" xml:space="preserve">
+    <value>Files being downloaded:</value>
+    <comment>Message for the prgoress dialog for the download operations.</comment>
+  </data>
+  <data name="GcsFileBrowserFailedDirectoryLoadMessage" xml:space="preserve">
+    <value>Failed to load directory {0}.</value>
+    <comment>Error message shown when failed to load a directory.</comment>
+  </data>
+  <data name="GcsFileBrowserFailedToCreateDirMessage" xml:space="preserve">
+    <value>Failed to create directory {0}.</value>
+    <comment>Error message displayed when there's a failure creating a directory while downloading files.</comment>
+  </data>
+  <data name="GcsFileBrowserFolderSelectionMessage" xml:space="preserve">
+    <value>Download files</value>
+    <comment>Messagefor the dialog used to select a target folder.</comment>
+  </data>
+  <data name="GcsFileBrowserLastModifiedHeader" xml:space="preserve">
+    <value>Last Modified</value>
+    <comment>The header for the Last Modified column in the data grid.</comment>
+  </data>
+  <data name="GcsFileBrowserNameHeader" xml:space="preserve">
+    <value>Name</value>
+    <comment>The header for the Name column in the data grid.</comment>
+  </data>
+  <data name="GcsFileBrowserNewFolderHeader" xml:space="preserve">
+    <value>New Folder...</value>
+    <comment>Header for the New Folder option in the context menu.</comment>
+  </data>
+  <data name="GcsFileBrowserSizeHeader" xml:space="preserve">
+    <value>Size</value>
+    <comment>The header for the Size column in the data grid.</comment>
+  </data>
+  <data name="GcsFileBrowserUploadingProgressCaption" xml:space="preserve">
+    <value>Uploading Files</value>
+    <comment>Caption for the progress dialog for the upload operations.</comment>
+  </data>
+  <data name="GcsFileBrowserUploadingProgressMessage" xml:space="preserve">
+    <value>_Files being uploaded:</value>
+    <comment>Message for the progress dialog for the upload operations.</comment>
+  </data>
   <data name="CloudExplorerSqlInstanceIp6AddressDisplayName" xml:space="preserve">
     <value>IPv6 Address (First Gen)</value>
     <comment>The display name for the IP v6 address.</comment>
+  </data>
+  <data name="UiBrowseMenuHeader" xml:space="preserve">
+    <value>Browse</value>
+    <comment>Header for a browse menu item.</comment>
+  </data>
+  <data name="UiErrorCaption" xml:space="preserve">
+    <value>Error</value>
+    <comment>Generic error caption for error dialogs.</comment>
   </data>
   <data name="AnalyticsOptionsCategory" xml:space="preserve">
     <value>Usage Report</value>
@@ -1314,6 +1390,82 @@
   <data name="AnalyticsOptionsOptInDisplayName" xml:space="preserve">
     <value>Report Usage Statistics Enabled</value>
     <comment>The display name of the opt-in for the analytics options page.</comment>
+  </data>
+  <data name="GcsFileBrowserDirectoryCategory" xml:space="preserve">
+    <value>Directory</value>
+    <comment>The category for the directory properties.</comment>
+  </data>
+  <data name="GcsFileBrowserDirectoryNameDescription" xml:space="preserve">
+    <value>The name of the directory.</value>
+    <comment>The description for the directory name property.</comment>
+  </data>
+  <data name="GcsFileBrowserFileCategory" xml:space="preserve">
+    <value>File</value>
+    <comment>The category for the file properties.</comment>
+  </data>
+  <data name="GcsFileBrowserFileContentTypeDescription" xml:space="preserve">
+    <value>The type of the file.</value>
+    <comment>The description of the content type of the file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileContentTypeDisplayName" xml:space="preserve">
+    <value>Content Type</value>
+    <comment>The display name for the content type property of the file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileFullPathDescription" xml:space="preserve">
+    <value>The full path to the blob.</value>
+    <comment>Description for the file full path for the file.</comment>
+  </data>
+  <data name="GcsFileBrowserFullPathDisplayName" xml:space="preserve">
+    <value>GCS Path</value>
+    <comment>The display name for the full path for the file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileLastModifiedDescription" xml:space="preserve">
+    <value>The last modified time stamp of the blob.</value>
+    <comment>The description for the last modified property of the file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileLastModifiedDisplayName" xml:space="preserve">
+    <value>Last Modified</value>
+    <comment>The display name for the LastModified property of the file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileNameDescription" xml:space="preserve">
+    <value>Name of the blob.</value>
+    <comment>The description for the file name.</comment>
+  </data>
+  <data name="GcsFileBrowserFileSizeDescription" xml:space="preserve">
+    <value>Size of the blob in bytes.</value>
+    <comment>The description for the size property of a file.</comment>
+  </data>
+  <data name="GcsFileBrowserFileSizeDisplayName" xml:space="preserve">
+    <value>Size</value>
+    <comment>The display name for the size property of a file.</comment>
+  </data>
+  <data name="GcsFileBrowserNameDisplayName" xml:space="preserve">
+    <value>Name</value>
+    <comment>The display name for the name of the item.</comment>
+  </data>
+  <data name="GcsFileBrowserDirectoryFullPathDescription" xml:space="preserve">
+    <value>The full path to the directory.</value>
+    <comment>Description of the GcsPath property of the directory.</comment>
+  </data>
+  <data name="GcsFileBrowserDirectoryItemDisplayName" xml:space="preserve">
+    <value>Cloud Storage Directory</value>
+    <comment>Display name for a directory item.</comment>
+  </data>
+  <data name="GcsFileBrowserFileItemDisplayName" xml:space="preserve">
+    <value>Cloud Storage File</value>
+    <comment>Display name for a file item.</comment>
+  </data>
+  <data name="NamePromptCaption" xml:space="preserve">
+    <value>Enter name</value>
+    <comment>Caption for the name prompt dialog.</comment>
+  </data>
+  <data name="NamePromptEmptyNameMessage" xml:space="preserve">
+    <value>Name cannot be empty.</value>
+    <comment>Message shown when a name is empty in the name prompt.</comment>
+  </data>
+  <data name="NamePromptInvalidCharsMessage" xml:space="preserve">
+    <value>Name cannot contain invalid chars '/'</value>
+    <comment>Message shown when a name contains invalid chars.</comment>
   </data>
   <data name="GkePublishClusterMessage" xml:space="preserve">
     <value>_Clusters:</value>
@@ -1414,5 +1566,9 @@
   <data name="GkePublishRefreshClustersCaption" xml:space="preserve">
     <value>Refresh clusters</value>
     <comment>Caption for the refresh clusters hyperlink</comment>
+  </data>
+  <data name="EnterNameDialogNameMessage" xml:space="preserve">
+    <value>_Enter name:</value>
+    <comment>Message to show on the dialog for the name text box.</comment>
   </data>
 </root>

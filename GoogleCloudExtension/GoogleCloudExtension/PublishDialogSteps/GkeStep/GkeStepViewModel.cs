@@ -125,7 +125,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// Command to execute to refresh the list of clusters.
         /// </summary>
         public ICommand RefreshClustersListCommand { get; }
-                
+
         private GkeStepViewModel(GkeStepContent content)
         {
             _content = content;
