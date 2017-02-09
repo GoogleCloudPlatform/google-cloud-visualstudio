@@ -49,7 +49,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             _owner = owner;
             _instance = instance;
-            
+
             Caption = _instance.Id;
             UpdateIcon();
 

@@ -1888,6 +1888,78 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The file app.yaml was generated succesfully..
+        /// </summary>
+        public static string GenerateConfigurationAppYamlGeneratedMessage {
+            get {
+                return ResourceManager.GetString("GenerateConfigurationAppYamlGeneratedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file app.yaml already exists in your project. Are you sure you want to overwrite it?.
+        /// </summary>
+        public static string GenerateConfigurationAppYamlOverwriteMessage {
+            get {
+                return ResourceManager.GetString("GenerateConfigurationAppYamlOverwriteMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file Dockerfile was generated succesfully..
+        /// </summary>
+        public static string GenerateConfigurationDockerfileGeneratedMessage {
+            get {
+                return ResourceManager.GetString("GenerateConfigurationDockerfileGeneratedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The file Dockerfile already exists in your project. Are you sure you want to overwrite it?.
+        /// </summary>
+        public static string GenerateConfigurationDockerfileOverwriteMessage {
+            get {
+                return ResourceManager.GetString("GenerateConfigurationDockerfileOverwriteMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to generate file.
+        /// </summary>
+        public static string GenerateConfigurationFileGeneratinErrorTitle {
+            get {
+                return ResourceManager.GetString("GenerateConfigurationFileGeneratinErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to generate file {0}..
+        /// </summary>
+        public static string GenerateConfigurationFileGenerationErrorMessage {
+            get {
+                return ResourceManager.GetString("GenerateConfigurationFileGenerationErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generate app.yaml and Dockerfile for {0}.
+        /// </summary>
+        public static string GenerateConfigurationMenuHeader {
+            get {
+                return ResourceManager.GetString("GenerateConfigurationMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Configuration files already exist.
+        /// </summary>
+        public static string GenerateConfigurationOverwritePromptTitle {
+            get {
+                return ResourceManager.GetString("GenerateConfigurationOverwritePromptTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Clusters:.
         /// </summary>
         public static string GkePublishClusterMessage {
@@ -2905,6 +2977,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Overwrite.
+        /// </summary>
+        public static string UiOverwriteButtonCaption {
+            get {
+                return ResourceManager.GetString("UiOverwriteButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Properties.
         /// </summary>
         public static string UiPropertiesMenuHeader {
@@ -2928,6 +3009,15 @@ namespace GoogleCloudExtension {
         public static string UiSaveButtonCaption {
             get {
                 return ResourceManager.GetString("UiSaveButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Skip file.
+        /// </summary>
+        public static string UiSkipFileButtonCaption {
+            get {
+                return ResourceManager.GetString("UiSkipFileButtonCaption", resourceCulture);
             }
         }
         

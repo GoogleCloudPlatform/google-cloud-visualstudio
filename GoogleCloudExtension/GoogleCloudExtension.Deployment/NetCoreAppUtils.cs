@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.Deployment
     /// </summary>
     internal static class NetCoreAppUtils
     {
-        private const string DockerfileName = "Dockerfile";
+        internal const string DockerfileName = "Dockerfile";
 
         private static readonly Lazy<string> s_dotnetPath = new Lazy<string>(GetDotnetPath);
 
@@ -87,6 +87,30 @@ namespace GoogleCloudExtension.Deployment
                 var content = String.Format(DockerfileDefaultContent, CommonUtils.GetProjectName(projectPath));
                 File.WriteAllText(targetDockerfile, content);
             }
+        }
+
+        /// <summary>
+        /// Generates the Dockerfile for this .NET Core project.
+        /// </summary>
+        /// <param name="projectPath">The full path to the project.json file for the project.</param>
+        internal static void GenerateDockerfile(string projectPath)
+        {
+            var projectDirectory = Path.GetDirectoryName(projectPath);
+            var targetDockerfile = Path.Combine(projectDirectory, DockerfileName);
+            var content = String.Format(DockerfileDefaultContent, CommonUtils.GetProjectName(projectPath));
+            File.WriteAllText(targetDockerfile, content);
+        }
+
+        /// <summary>
+        /// Checks if the Dockerfile for the project was created.
+        /// </summary>
+        /// <param name="projectPath">The full path to the project.json for the project.</param>
+        /// <returns>True if the Dockerfile exists, false otherwise.</returns>
+        internal static bool CheckDockerfile(string projectPath)
+        {
+            var projectDirectory = Path.GetDirectoryName(projectPath);
+            var targetDockerfile = Path.Combine(projectDirectory, DockerfileName);
+            return File.Exists(targetDockerfile);
         }
 
         private static string GetExternalToolsPath()
