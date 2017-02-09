@@ -901,17 +901,9 @@
     <value>Failed to load services.</value>
     <comment>Caption shown when failed to load GAE services,</comment>
   </data>
-  <data name="CloudExplorerGaeInstanceCategory" xml:space="preserve">
-    <value>Instance Properties</value>
-    <comment>Category for the GAE instance properties.</comment>
-  </data>
   <data name="CloudExplorerGaeLoadingServicesCaption" xml:space="preserve">
     <value>Loading services...</value>
     <comment>Caption shown when loading GAE services.</comment>
-  </data>
-  <data name="CloudExplorerGaeNoInstancesFoundCaption" xml:space="preserve">
-    <value>No instances found.</value>
-    <comment>Caption shown when no GAE instances are found.</comment>
   </data>
   <data name="CloudExplorerGaeNoServicesFoundCaption" xml:space="preserve">
     <value>No services found.</value>
@@ -932,42 +924,6 @@
   <data name="CloudExplorerGaeVersionCategory" xml:space="preserve">
     <value>Version Properties</value>
     <comment>Category for the GAE version properties.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceAppEngineReleaseDisplayName" xml:space="preserve">
-    <value>App Engine Release</value>
-    <comment>The display name for the GAE instance app engine release</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceAverageLatencyDisplayName" xml:space="preserve">
-    <value>Average Latency</value>
-    <comment>The display name for the GAE instance average latency</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceMemoryUsageDisplayName" xml:space="preserve">
-    <value>Memory Usage</value>
-    <comment>The display name for the GAE instance memory usage.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceStartTimeDisplayName" xml:space="preserve">
-    <value>Start Time</value>
-    <comment>The display name for the GAE instance start time.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceVirtualMachineCategory" xml:space="preserve">
-    <value>Instance Virtual Machine Properties</value>
-    <comment>Category for the GAE instance virtual machine properties.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceVirtualMachineIdDisplayName" xml:space="preserve">
-    <value>Id</value>
-    <comment>The display name for the GAE instance virtual machine id.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceVirtualMachineNameDisplayName" xml:space="preserve">
-    <value>Name</value>
-    <comment>The display name for the GAE instance virtual machine name.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceVirtualMachineStatusDisplayName" xml:space="preserve">
-    <value>Status</value>
-    <comment>The display name for the GAE instance virtual machine status.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceVirtualMachineZoneDisplayName" xml:space="preserve">
-    <value>Zone</value>
-    <comment>The display name for the GAE instance virtual machine zone.</comment>
   </data>
   <data name="CloudExplorerGaeServiceOpen" xml:space="preserve">
     <value>Open Running Service</value>
@@ -1502,9 +1458,5 @@
   <data name="CloudExplorerGaeVersionEnvironmentDisplayName" xml:space="preserve">
     <value>Environment</value>
     <comment>The display name for the Environment property.</comment>
-  </data>
-  <data name="CloudExplorerGaeVersionRuntimeProperty" xml:space="preserve">
-    <value>Desired Runtime</value>
-    <comment>The display name for the Runtime property.</comment>
   </data>
 </root>
