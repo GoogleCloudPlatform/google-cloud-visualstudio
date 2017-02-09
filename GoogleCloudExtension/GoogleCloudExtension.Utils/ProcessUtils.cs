@@ -186,7 +186,8 @@ namespace GoogleCloudExtension.Utils
             IDictionary<string, string> environment)
         {
             // If the caller provides a working directory use it otherwise default to the user's profile directory
-            // random intereference from Visual Studio changing the working directory often.
+            // so we have a stable working directory instead of a random working directory as Visual Studio changes the
+            // current working directory often.
             ProcessStartInfo startInfo = new ProcessStartInfo
             {
                 FileName = file,
