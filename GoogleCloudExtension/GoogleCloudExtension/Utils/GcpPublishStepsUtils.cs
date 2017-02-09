@@ -42,7 +42,7 @@ namespace GoogleCloudExtension.Utils
                 now.Year, now.Month, now.Day,
                 now.Hour, now.Minute, now.Second);
         }
-        
+
         /// <summary>
         /// Determines if the given name is a valid name.
         /// </summary>
