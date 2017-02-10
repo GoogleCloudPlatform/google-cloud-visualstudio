@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public long? SourceLine { get; set; }
     }
 
-    internal class LoggingTagger3 : ITagger<LoggingTag>
+    internal class LogTagger : ITagger<LoggingTag>
     {
         //private static readonly HashSet<string> LogMethodName = new HashSet<string>(
         //    new string[] { "WriteLog", "WriteLogV2" });
@@ -49,17 +49,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private ITextSearchService _textSearchService;
         private ITextStructureNavigator _textStructureNavigator;
         public readonly ITextBuffer _sourceBuffer;
-        private ITextViewLine _currentViewLine;
+        // private ITextViewLine _currentViewLine;
 
         private readonly IToolTipProvider _toolTipProvider;
 
-        public static Dictionary<ITextView, LoggingTagger3> LoggingTaggerCollection;
+        public static Dictionary<ITextView, LogTagger> LoggingTaggerCollection;
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
         public static LogItemWrapper CurrentLogItem { get; set; }
 
-        public LoggingTagger3(ITextView view, ITextBuffer sourceBuffer, ITextSearchService textSearchService,
+        public LogTagger(ITextView view, ITextBuffer sourceBuffer, ITextSearchService textSearchService,
             ITextStructureNavigator textStructureNavigator, IToolTipProviderFactory toolTipProviderFactory)
         {
             _sourceBuffer = sourceBuffer;
@@ -73,13 +73,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             _toolTipProvider = toolTipProviderFactory.GetToolTipProvider(_view);
             if (_view == CurrentLogItem?.SourceLineTextView)
             {
-                UpdateAtCaretPosition(_view.Caret.ContainingTextViewLine);
+                ShowToolTip();
             }
 
             // TODO: syncronized access.
             if (LoggingTaggerCollection == null)
             {
-                LoggingTaggerCollection = new Dictionary<ITextView, LoggingTagger3>();
+                LoggingTaggerCollection = new Dictionary<ITextView, LogTagger>();
             }
             if (!LoggingTaggerCollection.ContainsKey(view))
             {
@@ -100,16 +100,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             // If a new snapshot wasn't generated, then skip this layout
             if (e.NewViewState.EditSnapshot != e.OldViewState.EditSnapshot)
             {
-                if (CurrentLogItem != null)
-                {
-                    CurrentLogItem = null;
-                    UpdateAtCaretPosition(null);
-                }
+                ClearTooltip();
             }
             else
             if (CurrentLogItem != null)
             {
-                UpdateAtCaretPosition(_view.Caret.ContainingTextViewLine);
+                ShowToolTip();
             }
         }
 
@@ -118,20 +114,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void CaretPositionChanged(object sender, CaretPositionChangedEventArgs e)
         {
-            UpdateAtCaretPosition(_view.Caret.ContainingTextViewLine);
+            // UpdateAtCaretPosition(_view.Caret.ContainingTextViewLine);
         }
 
-        /// <summary>
-        /// Check the caret position. If the caret is on a new word, update the CurrentWord value
-        /// </summary>
-        public void UpdateAtCaretPosition(ITextViewLine currentViewLine)
+        private void SendTagsChangedEvent()
         {
-            if (CurrentLogItem == null && !showToolTip)
-            {
-                return;
-            }
-
-            _currentViewLine = currentViewLine;
+            // _currentViewLine = currentViewLine;
             var tempEvent = TagsChanged;
             if (tempEvent != null)
                 tempEvent(this, new SnapshotSpanEventArgs(
@@ -140,31 +128,56 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         bool showToolTip = false;
 
+        public void ClearTooltip()
+        {
+            CurrentLogItem = null;
+            SendTagsChangedEvent();
+        }
+
+        /// <summary>
+        /// Check the caret position. If the caret is on a new word, update the CurrentWord value
+        /// </summary>
+        public void ShowToolTip()
+        {
+            if (CurrentLogItem == null)
+            {
+                return;
+            }
+
+            SendTagsChangedEvent();
+        }
+
         public IEnumerable<ITagSpan<LoggingTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
             if (CurrentLogItem?.SourceLineTextView != _view)
             {
                 _toolTipProvider.ClearToolTip();
+                showToolTip = false;
                 Debug.WriteLine("LogItem.CurrentSourceLineLogItem?.SourceLineTextView != _view");
                 yield break;
             }
 
             if (spans.Count == 0)
-                yield break;
-
-            if (_currentViewLine == null)
             {
+                _toolTipProvider.ClearToolTip();
+                showToolTip = false;
+                Debug.WriteLine("spans.Count == 0");
                 yield break;
             }
 
-            if (!_currentViewLine.IsValid)
-            {
-                yield break;
-            }
+            //if (_currentViewLine == null)
+            //{
+            //    yield break;
+            //}
+
+            //if (!_currentViewLine.IsValid)
+            //{
+            //    yield break;
+            //}
 
             showToolTip = false;
 
-            if (spans.Count > 0 &&  this.IsCaretAtLine())
+            if (spans.Count > 0) //  &&  this.IsCaretAtLine())
             {
 
                 ITextSnapshotLine textLine = _sourceBuffer.CurrentSnapshot.GetLineFromLineNumber(
@@ -186,16 +199,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     span = new SnapshotSpan(textLine.Start + pos, methodName.Length);
                 }
 
-                if (_currentViewLine.ContainsBufferPosition(span.Start))
-                {
+                //if (_currentViewLine.ContainsBufferPosition(span.Start))
+                //{
 
                     yield return new TagSpan<LoggingTag>(span, new LoggingTag());
                     showToolTip = true;
                     string text;
 
-                    // TODO: handle null return of GetTextViewLineSpan
-                    ShowToolTip(EditorSpanHelpers.GetTextViewLineSpan(_view, _currentViewLine, out text).Value);
-                }
+                // TODO: handle null return of GetTextViewLineSpan
+                // ShowToolTip(EditorSpanHelpers.GetTextViewLineSpan(_view, _currentViewLine, out text).Value);
+                ShowToolTip(new SnapshotSpan(textLine.Start, textLine.Length));
+                //}
 
                 //_textSearchService.FindAll(new FindData(LogMethodName,,
                 //                    FindOptions.WholeWord | FindOptions.MatchCase | FindOptions.SingleLine,
@@ -268,7 +282,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (textView.TextBuffer != buffer)
                 return null;
 
-            return new LoggingTagger3(textView, buffer, TextSearchService, 
+            return new LogTagger(textView, buffer, TextSearchService, 
                 TextStructureNavigatorSelector.GetTextStructureNavigator(buffer),
                 ToolTipProviderFactory) as ITagger<T>;
         }

@@ -67,6 +67,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             var linkButton = DataGridUtils.FindAncestorControl<Button>(e.OriginalSource as DependencyObject);
             if (null != linkButton)
             {
+                e.Handled = true;
+                if (linkButton.Command.CanExecute(null))
+                {
+                    linkButton.Command.Execute(null);
+                }
                 return;
             }
 

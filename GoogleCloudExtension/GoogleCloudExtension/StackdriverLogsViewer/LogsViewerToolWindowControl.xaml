@@ -24,48 +24,54 @@
 
             <utils:VisibilityConverter x:Key="visibilityConverter" />
 
+            <Style x:Key="LinkButtonTextBoxStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource CommonTextStyle}">
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsMouseOver,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}}" Value="True">
+                        <Setter Property="TextDecorations" Value="Underline" />
+                        <Setter Property="Foreground" Value="Blue" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+
             <Style x:Key="LinkButton" TargetType="Button">
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="Button">
-                            <TextBlock >
-                                <TextBlock.Style>
-                                    <Style TargetType="{x:Type TextBlock}">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsMouseOver,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}}" Value="True">
-                                                <Setter Property="TextDecorations" Value="Underline" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>                                    
-                                <ContentPresenter />
+                            <TextBlock                                 
+                                Style="{StaticResource LinkButtonTextBoxStyle}"
+                                Text="{Binding SourceLocation}"
+                                TextWrapping="NoWrap">
+                                <TextBlock.ToolTip>
+                                    <ToolTip 
+                                        Content="{Binding SourcePath}" 
+                                        Style="{StaticResource CommonTooltipStyle}" />
+                                </TextBlock.ToolTip>
                             </TextBlock>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-                <Setter Property="Foreground" Value="Black" />
-                <Style.Triggers>
-                    <Trigger Property="IsMouseOver" Value="true">
-                        <Setter Property="Foreground" Value="Blue" />
-                    </Trigger>
-                </Style.Triggers>
             </Style>
-            
+  
             <DataGridTemplateColumn
-                x:Key="SourceLinkColumn"
-                Visibility="{Binding ShowSourceLink, Source={x:Reference _logsViewerToolWindow}, 
-                            Converter={StaticResource visibilityConverter}}">
+                x:Key="MessageColumn" >
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate >
+                        <StackPanel 
+                            Orientation="Horizontal">
                         <Button
-                            Margin="6,0,6,0"
+                            Margin="6,0,12,0"
                             Style="{StaticResource LinkButton}"
-                            Content="{Binding SourceLocation}" 
-                            Command="{Binding SourceLinkCommand}"/>
+                            Command="{Binding SourceLinkCommand}"
+                            Visibility="{Binding SourceLinkVisible, Converter={StaticResource visibilityConverter}}"/>
+                            <TextBlock 
+                                Text="{Binding Message}"
+                                TextWrapping="NoWrap"
+                                TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
-
+            
             <HierarchicalDataTemplate DataType="{x:Type vct:ObjectNodeTree}" 
                                       ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal">
@@ -435,9 +441,10 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     
-                    <StaticResource ResourceKey="SourceLinkColumn" />
-                    
-                    <DataGridTextColumn Binding="{Binding Message}" />
+                    <!--<StaticResource ResourceKey="SourceLinkColumn" />-->
+                    <StaticResource ResourceKey="MessageColumn" />
+
+                    <!--<DataGridTextColumn Binding="{Binding Message}" />-->
                 </DataGrid.Columns>
 
                 <DataGrid.RowDetailsTemplate>

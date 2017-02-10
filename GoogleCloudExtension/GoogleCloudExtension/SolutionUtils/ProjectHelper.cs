@@ -20,13 +20,14 @@ using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
-using System.IO;
+using IOPath = System.IO.Path;
 using System.Linq;
 using System.Runtime.InteropServices;
 namespace GoogleCloudExtension.SolutionUtils
 {
     internal class ProjectHelper
     {
+        private const string CSharpProjectKind = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}";
         private const string AssemblyVersionProperty = "AssemblyVersion";
         private const string AssemblyNameProperty = "AssemblyName";
 
@@ -36,6 +37,15 @@ namespace GoogleCloudExtension.SolutionUtils
         public string Name => _project.Name;
         public string Version { get; private set; }
         public string AssemblyName { get; private set; }
+        public readonly string FullName;
+        public readonly string[] SubPaths;
+        public readonly string UniqueName;
+
+        /// <summary>
+        /// The project root directory. 
+        /// It can be null if <seealso cref="UniqueName"/> is not end of <seealso cref="FullName"/> directory name
+        /// </summary>
+        public readonly string ProjectRoot;
 
         private ProjectHelper(Project project)
         {
@@ -45,7 +55,23 @@ namespace GoogleCloudExtension.SolutionUtils
             }
 
             _project = project;
-            ParseProperties();
+
+            try
+            {
+                FullName = project.FullName.ToLowerInvariant();
+                SubPaths = FullName.Split(IOPath.DirectorySeparatorChar);
+                UniqueName = _project.UniqueName.ToLowerInvariant();
+                int idx = FullName.LastIndexOf(UniqueName);
+                if (FullName.Length - idx == UniqueName.Length){
+                    ProjectRoot = FullName.Substring(0, idx);
+                }
+
+                ParseProperties();
+            }
+            catch (COMException ex)
+            {
+                Debug.WriteLine($"{ex}");
+            }
         }
 
         private List<ProjectSourceFile> GetSourceFiles()
@@ -53,15 +79,15 @@ namespace GoogleCloudExtension.SolutionUtils
             var items = new List<ProjectSourceFile>();
             foreach (ProjectItem projectItem in _project.ProjectItems)
             {
-                SearchForSourceFiles(projectItem, items);
+                AddSourceFiles(projectItem, items);
             }
 
             return items;
         }
 
-        private void SearchForSourceFiles(ProjectItem projectItem, List<ProjectSourceFile> items)
+        private void AddSourceFiles(ProjectItem projectItem, List<ProjectSourceFile> items)
         {
-            var sourceFile = ProjectSourceFile.Create(projectItem);
+            var sourceFile = ProjectSourceFile.Create(projectItem, this);
             if (sourceFile != null)
             {
                 items.Add(sourceFile);
@@ -69,7 +95,7 @@ namespace GoogleCloudExtension.SolutionUtils
 
             foreach (ProjectItem nestedItem in projectItem.ProjectItems)
             {
-                SearchForSourceFiles(nestedItem, items);
+                AddSourceFiles(nestedItem, items);
             }
         }
 
@@ -94,7 +120,14 @@ namespace GoogleCloudExtension.SolutionUtils
 
         private static bool IsValidSupported(Project project)
         {
-            return project != null; //  TODO: verify project is c# projects. && project.Kind
+            try
+            {
+                return project != null && project.Kind == CSharpProjectKind && project.FullName != null && project.Properties != null;
+            }
+            catch (COMException ex)
+            {
+                return false;
+            }
         }
 
         private void ParseProperties()

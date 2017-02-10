@@ -15,9 +15,9 @@
 using EnvDTE;
 using EnvDTE80;
 using Microsoft.VisualStudio;
-using VSOLEInterop = Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using VSOLEInterop = Microsoft.VisualStudio.OLE.Interop;
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
@@ -56,7 +56,8 @@ namespace GoogleCloudExtension.SolutionUtils
             return new ServiceProvider(sp);
         }
 
-        public List<ProjectHelper> Projects { get; } 
+        public List<ProjectHelper> Projects => _lazyProjects.Value;
+        public readonly Lazy<List<ProjectHelper>> _lazyProjects;
         private List<ProjectHelper> GetProjectList()
         {
             List<ProjectHelper> list = new List<ProjectHelper>();
@@ -91,29 +92,8 @@ namespace GoogleCloudExtension.SolutionUtils
 
         public List<ProjectSourceFile> FindMatchingSourceFile(string sourceLocationFilePath)
         {
-            List<ProjectSourceFile> items = new List<ProjectSourceFile>();
-            foreach (Project project in _solution.Projects)
-            {
-                foreach (ProjectItem projectItem in project.ProjectItems)
-                {
-                    NavigateProjectItem(projectItem, sourceLocationFilePath, items);
-                }
-            }
-
-            return items;
-        }
-
-        public void NavigateProjectItem(ProjectItem projectItem, string sourceLocationFilePath, List<ProjectSourceFile> items)
-        {
-            if (ProjectSourceFile.DoesPathMatch(projectItem, sourceLocationFilePath))
-            {
-                items.Add(ProjectSourceFile.Create(projectItem));
-            }
-
-            foreach (ProjectItem nestedItem in projectItem.ProjectItems)
-            {
-                NavigateProjectItem(nestedItem, sourceLocationFilePath, items);
-            }            
+            var query = Projects.SelectMany(x => x.SourceFiles).Where(y => y.IsMatchingPath(sourceLocationFilePath));
+            return new List<ProjectSourceFile>(query);
         }
 
         /// <summary>
@@ -124,7 +104,7 @@ namespace GoogleCloudExtension.SolutionUtils
         private SolutionHelper(Solution solution)
         {
             _solution = solution;
-            Projects = GetProjectList();
+            _lazyProjects = new Lazy<List<ProjectHelper>>(GetProjectList);
         }
 
         private ISolutionProject GetSelectedProject()

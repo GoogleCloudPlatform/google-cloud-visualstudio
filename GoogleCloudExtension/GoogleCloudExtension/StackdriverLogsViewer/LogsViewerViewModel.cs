@@ -79,14 +79,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private CancellationTokenSource _cancellationTokenSource;
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
 
-        /// <summary>
-        /// Controls if a source file link column is displayed in data grid.
-        /// </summary>
-        public bool ShowSourceLink
-        {
-            get { return _showSourceLocationLink; }
-            set { SetValueAndRaise(ref _showSourceLocationLink, value); }
-        }
+        ///// <summary>
+        ///// Controls if a source file link column is displayed in data grid.
+        ///// </summary>
+        //public bool ShowSourceLink
+        //{
+        //    get { return _showSourceLocationLink; }
+        //    set { SetValueAndRaise(ref _showSourceLocationLink, value); }
+        //}
 
         /// <summary>
         /// Gets the LogIdList for log id selector binding source.
@@ -373,7 +373,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             foreach (var log in logEntries)
             {
-                _logs.Add(new LogItem(log));
+                var item = new LogItem(log);
+                _logs.Add(item);
+                //if (SolutionUtils.SolutionHelper.CurrentSolution != null && item.SourceLinkVisible)
+                //{
+                //    ShowSourceLink = true;
+                //}
             }
         }
 
@@ -525,6 +530,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 _nextPageToken = null;
                 _logs.Clear();
+                //ShowSourceLink = false;
                 await LoadLogsAsync(cancelToken);
             });
         }

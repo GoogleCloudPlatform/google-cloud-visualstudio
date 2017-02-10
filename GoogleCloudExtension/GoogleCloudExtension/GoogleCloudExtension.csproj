@@ -247,7 +247,6 @@
     <Compile Include="StackdriverLogsViewer\LoggerTooltip.xaml.cs">
       <DependentUpon>LoggerTooltip.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StackdriverLogsViewer\LoggingTagger.cs" />
     <Compile Include="StackdriverLogsViewer\LogIdsList.cs" />
     <Compile Include="StackdriverLogsViewer\LogItem.cs" />
     <Compile Include="StackdriverLogsViewer\LogSeverity.cs" />
@@ -258,6 +257,7 @@
       <DependentUpon>LogsViewerToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\LogTagger.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\MenuItemViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeMenuViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeNameConsts.cs" />

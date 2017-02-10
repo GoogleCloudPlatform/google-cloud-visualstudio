@@ -57,12 +57,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private readonly Lazy<List<ObjectNodeTree>> _treeViewObjects;
 
-        private string _sourceFilePath => Entry?.SourceLocation?.File;
+        private readonly string _sourceFilePath; 
         private string _function => Entry?.SourceLocation?.Function;        
         private readonly string _assemblyName;
         private readonly string _assemblyVersion;
-        public long? SourceLine => Entry?.SourceLocation?.Line;
-
+        public readonly long? SourceLine;
+        public string SourcePath => _sourceFilePath;
         public IWpfTextView SourceLineTextView { get; private set; }    
 
         private bool _filterLogsOfSourceLine = true;
@@ -71,6 +71,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             get { return _filterLogsOfSourceLine; }
             set { SetValueAndRaise(ref _filterLogsOfSourceLine, value); }
         }
+
+        public bool SourceLinkVisible { get; }
 
         /// <summary>
         /// Gets the time stamp.
@@ -165,11 +167,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="logEntry">A log entry.</param>
         public LogItem(LogEntry logEntry)
         {
+            if (logEntry == null)
+            {
+                return;
+            }
+
             Entry = logEntry;
             TimeStamp = ConvertTimestamp(logEntry.Timestamp);
 
-            if (String.IsNullOrWhiteSpace(Entry?.Severity) ||
-                !Enum.TryParse<LogSeverity>(Entry?.Severity, ignoreCase: true, result: out LogLevel))
+            if (String.IsNullOrWhiteSpace(Entry.Severity) ||
+                !Enum.TryParse<LogSeverity>(Entry.Severity, ignoreCase: true, result: out LogLevel))
             {
                 LogLevel = LogSeverity.Default;
             }
@@ -192,9 +199,20 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 }
             }
 
+            _sourceFilePath = Entry?.SourceLocation?.File; 
+            SourceLine = Entry.SourceLocation?.Line;
             if (_sourceFilePath != null && SourceLine.HasValue)
             {
-                SourceLocation = $"{Path.GetFileName(_sourceFilePath)} ({SourceLine})";
+                SourceLinkVisible = true;
+                var tmp = $"{_sourceFilePath}:{SourceLine}";
+                if (tmp.Length > 20)
+                {
+                    SourceLocation = $"...{tmp.Substring(tmp.Length - 17)}";
+                }
+                else
+                {
+                    SourceLocation = tmp;
+                }
             }
 
             CloseButtonCommand = new ProtectedCommand(OnCloseTooltip);
@@ -427,15 +445,15 @@ in order to properly locating the logging source location.",
             {
                 return;
             }
-            string sourceLocation = "sourceLocation";
+            string label = "sourceLocation";
             if (FilterLogsOfSourceLine)
             {
                 StringBuilder filter = new StringBuilder();
                 filter.AppendLine($"resource.type=\"{Entry.Resource.Type}\"");
                 filter.AppendLine($"logName=\"{Entry.LogName}\"");
-                filter.AppendLine($"{sourceLocation}.{nameof(LogEntrySourceLocation.File)}=\"{_sourceFilePath.Replace(@"\", @"\\")}\"");
-                filter.AppendLine($"{sourceLocation}.{nameof(LogEntrySourceLocation.Function)}=\"{_function}\"");
-                filter.AppendLine($"{sourceLocation}.{nameof(LogEntrySourceLocation.Line)}=\"{SourceLine}\"");
+                filter.AppendLine($"{label}.{nameof(LogEntrySourceLocation.File)}=\"{_sourceFilePath.Replace(@"\", @"\\")}\"");
+                filter.AppendLine($"{label}.{nameof(LogEntrySourceLocation.Function)}=\"{_function}\"");
+                filter.AppendLine($"{label}.{nameof(LogEntrySourceLocation.Line)}=\"{SourceLine}\"");
                 window.AdvancedFilter(filter.ToString());
             }
         }

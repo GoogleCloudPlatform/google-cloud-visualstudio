@@ -32,55 +32,47 @@ namespace GoogleCloudExtension.SolutionUtils
     {
         private static readonly string[] s_supportedFileExtension = { ".cs" };
 
+        private readonly ProjectHelper _owningProject;
         private readonly ProjectItem _projectItem;
         private Window _window;
 
         /// <summary>
         /// The file path.
         /// </summary>
-        public string Path => _projectItem.FileNames[0];
+        public readonly string FullName;
+
+        /// <summary>
+        /// The path relative to the project root if <seealso cref="ProjectHelper.ProjectRoot"/> is valid.
+        /// </summary>
+        public readonly Lazy<string> RelativePath;
+
+        /// <summary>
+        /// The divided parts of the path. 
+        /// example: c:\a\b\c.cs  --> c:, a, b, c.cs
+        /// </summary>
+        public readonly Lazy<string[]> SubPaths;
 
         /// <summary>
         /// Initializes an instance of <seealso cref="ProjectSourceFile"/> class.
         /// </summary>
         /// <param name="projectItem">A project item that is physical file.</param>
-        private ProjectSourceFile(ProjectItem projectItem)
+        /// <param name="project">The container project of type <seealso cref="ProjectHelper"/></param>
+        private ProjectSourceFile(ProjectItem projectItem, ProjectHelper project)
         {
             _projectItem = projectItem;
-        }
-
-        public bool IsMatchingPath(string sourceLocationFilePath)
-        {
-            // TODO: Advanced matching algorithm.
-            // so as to rule out the root directory differ cases.
-            return NormalizePath(Path) == NormalizePath(sourceLocationFilePath);
-        }
-
-        public static string NormalizePath(string path)
-        {
-            return IOPath.GetFileName(path).ToLower(System.Globalization.CultureInfo.InvariantCulture);
-            //return Path.GetFullPath(new Uri(path).LocalPath)
-            //           .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
-            //           .ToUpperInvariant();
+            FullName = _projectItem.FileNames[0].ToLowerInvariant();
+            _owningProject = project;
+            SubPaths = new Lazy<string[]>(() => FullName.Split(IOPath.DirectorySeparatorChar));
+            RelativePath = new Lazy<string>(GetRelativePath);
         }
 
         /// <summary>
-        /// Source location information includes file name and line number etc when it is compiled.
-        /// Later on, the solution/project can be opened in different directory.
-        /// This method test if the target source location file name is a possible match to the project item.
+        /// Verifies if a giving path match the source file item path.
         /// </summary>
-        /// <param name="projectItem">A project item.</param>
-        /// <param name="sourceLocationFilePath">The source location file path.</param>
-        /// <returns></returns>
-        public static bool DoesPathMatch(ProjectItem projectItem, string sourceLocationFilePath)
+        public bool IsMatchingPath(string filePath)
         {
-            if (!IsValidSupportedItem(projectItem))
-            {
-                return false;
-            }
-
-            // TODO: Advanced matching algorithm.
-            return NormalizePath(sourceLocationFilePath) == NormalizePath(projectItem.FileNames[0]);
+            var path = filePath.ToLowerInvariant();
+            return path.EndsWith(RelativePath.Value);
         }
 
         /// <summary>
@@ -88,18 +80,19 @@ namespace GoogleCloudExtension.SolutionUtils
         /// Together with private constructor, this ensures object creation won't run into exception. 
         /// </summary>
         /// <param name="projectItem">A project item.</param>
+        /// <param name="project">The container project of type <seealso cref="ProjectHelper"/></param>
         /// <returns>
         /// The created object.
         /// Or null if the projectItem is null,  the item is not physical file.
         /// </returns>
-        public static ProjectSourceFile Create(ProjectItem projectItem)
+        public static ProjectSourceFile Create(ProjectItem projectItem, ProjectHelper project)
         {
-            if (!IsValidSupportedItem(projectItem))
+            if (!IsValidSupportedItem(projectItem) || project == null)
             {
                 return null;
             }
 
-            return new ProjectSourceFile(projectItem);
+            return new ProjectSourceFile(projectItem, project);
         }
 
         public Window GotoLine(int line)
@@ -109,6 +102,29 @@ namespace GoogleCloudExtension.SolutionUtils
             TextPoint tp = selection.TopPoint;
             selection.GotoLine(line, Select: false);
             return _window;
+        }
+
+        private string GetRelativePath()
+        {
+            if (_owningProject.ProjectRoot != null && FullName.StartsWith(_owningProject.ProjectRoot))
+            {
+                return FullName.Substring(_owningProject.ProjectRoot.Length);
+            }
+            else
+            {
+                // Fallback to compare the root
+                int baseLength = 0;
+                for (int i = 0; i < SubPaths.Value.Length; ++i)
+                {
+                    if (_owningProject.SubPaths[i] != SubPaths.Value[i])
+                    {
+                        break;
+                    }
+                    baseLength += SubPaths.Value[i].Length + 1;
+                }
+
+                return FullName.Substring(baseLength + 1);
+            }
         }
 
         private void Open()

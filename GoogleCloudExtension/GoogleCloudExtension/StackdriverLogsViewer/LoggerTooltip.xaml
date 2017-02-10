@@ -10,7 +10,7 @@
         mc:Ignorable="d" 
         d:DesignHeight="300" d:DesignWidth="600" 
         BorderThickness="2" BorderBrush="#82B1FF"
-        Background="#F0F0F4" >
+        Background="#FBFBFB" >
     <Border.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -34,7 +34,7 @@
             Margin="0,6,6,0" 
             Command="{Binding CloseButtonCommand}"/>
         <StackPanel Margin="6" >
-            <Border Background="#FAFAFA" BorderBrush="#BDBDBD" BorderThickness="1">
+            <Border Background="White" BorderBrush="#BDBDBD" BorderThickness="1">
                 <Grid >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />

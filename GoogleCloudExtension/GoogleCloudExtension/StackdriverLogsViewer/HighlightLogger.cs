@@ -18,13 +18,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     {
         public static void HideTooltip(IWpfTextView wpfView)
         {
-            LoggingTagger3.CurrentLogItem = null;
-            if (LoggingTagger3.LoggingTaggerCollection != null)
+            LogTagger.CurrentLogItem = null;
+            if (LogTagger.LoggingTaggerCollection != null)
             {
-                LoggingTagger3 loggingTagger;
-                if (LoggingTagger3.LoggingTaggerCollection.TryGetValue(wpfView, out loggingTagger))
+                LogTagger loggingTagger;
+                if (LogTagger.LoggingTaggerCollection.TryGetValue(wpfView, out loggingTagger))
                 {
-                    loggingTagger.UpdateAtCaretPosition(null);
+                    loggingTagger.ClearTooltip();
                 }
             }
         }
@@ -33,18 +33,18 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             IVsTextView textView = GetIVsTextView(window.Document.FullName);
             var wpfView = GetWpfTextView(textView);
-            LoggingTagger3.CurrentLogItem = new LogItemWrapper()
+            LogTagger.CurrentLogItem = new LogItemWrapper()
             {
                 LogItem = logItem,
                 SourceLine = logItem.SourceLine,
                 SourceLineTextView = wpfView
             };
-            if (LoggingTagger3.LoggingTaggerCollection != null)
+            if (LogTagger.LoggingTaggerCollection != null)
             {
-                LoggingTagger3 loggingTagger;
-                if (LoggingTagger3.LoggingTaggerCollection.TryGetValue(wpfView, out loggingTagger))
+                LogTagger loggingTagger;
+                if (LogTagger.LoggingTaggerCollection.TryGetValue(wpfView, out loggingTagger))
                 {
-                    loggingTagger.UpdateAtCaretPosition(wpfView.Caret.ContainingTextViewLine);
+                    loggingTagger.ShowToolTip();
                 }
             }
 

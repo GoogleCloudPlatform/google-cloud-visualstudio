@@ -19,21 +19,21 @@ namespace GoogleCloudExtension.SolutionUtils
     internal static class EditorSpanHelpers
     {
         // Oddly, adding this as member function causes loading the LoggingTagger fails.
-        public static bool IsCaretAtLine(this LoggingTagger3 tagger)
+        public static bool IsCaretAtLine(this LogTagger tagger)
         {
-            if (LoggingTagger3.CurrentLogItem == null || LoggingTagger3.CurrentLogItem.SourceLine <= 0 || 
+            if (LogTagger.CurrentLogItem == null || LogTagger.CurrentLogItem.SourceLine <= 0 ||
                 tagger._sourceBuffer == null)
             {
                 return false;
             }
 
             ITextSnapshotLine textLine = tagger._sourceBuffer.CurrentSnapshot.GetLineFromLineNumber(
-                (int)LoggingTagger3.CurrentLogItem.SourceLine.Value-1);
+                (int)LogTagger.CurrentLogItem.SourceLine.Value - 1);
             //ITextViewLine viewLine = _view.Caret.ContainingTextViewLine;
             //SnapshotSpan? span = EditorSpanHelpers.GetSpanAtMousePosition(_view as IWpfTextView, null);
-            var caretSnapshotPoint = tagger._view.Caret.Position.Point.GetPoint(tagger._sourceBuffer, 
+            var caretSnapshotPoint = tagger._view.Caret.Position.Point.GetPoint(tagger._sourceBuffer,
                 tagger._view.Caret.Position.Affinity);
-            var textLineSpan = new SnapshotSpan(textLine.Start, textLine.Length);
+            var textLineSpan = new SnapshotSpan(textLine.Start, textLine.Length + 1);
             return caretSnapshotPoint.HasValue && textLineSpan.Contains(caretSnapshotPoint.Value);
         }
 
