@@ -27,7 +27,8 @@ namespace GoogleCloudExtension.Deployment
     /// </summary>
     public static class AppEngineFlexDeployment
     {
-        private const string AppYamlName = "app.yaml";
+        public const string AppYamlName = "app.yaml";
+        public const string DockerfileName = NetCoreAppUtils.DockerfileName;
 
         private const string AppYamlDefaultContent =
             "runtime: custom\n" +
@@ -119,6 +120,59 @@ namespace GoogleCloudExtension.Deployment
                     version: effectiveVersion,
                     promoted: options.Promote);
             }
+        }
+
+        /// <summary>
+        /// Generates the app.yaml for the given project.json file.
+        /// </summary>
+        /// <param name="projectPath">The full path to the project.json for the project.</param>
+        public static bool GenerateAppYaml(string projectPath)
+        {
+            try
+            {
+                var projectDirectory = Path.GetDirectoryName(projectPath);
+                var targetAppYaml = Path.Combine(projectDirectory, AppYamlName);
+                File.WriteAllText(targetAppYaml, AppYamlDefaultContent);
+                return true;
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine($"Failed to generate app.yaml: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Generates the Dockerfile for the given project.json file.
+        /// </summary>
+        /// <param name="projectPath">The full path to the project.json for the project.</param>
+        public static bool GenerateDockerfile(string projectPath)
+        {
+            try
+            {
+                NetCoreAppUtils.GenerateDockerfile(projectPath);
+                return true;
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine($"Failed to generate Dockerfile: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks the project configuration files to see if they exist.
+        /// </summary>
+        /// <param name="projectPath">The full path to the project.json for the project.</param>
+        /// <returns>An instance of <seealso cref="ProjectConfigurationStatus"/> with the status of the config.</returns>
+        public static ProjectConfigurationStatus CheckProjectConfiguration(string projectPath)
+        {
+            var projectDirectory = Path.GetDirectoryName(projectPath);
+            var targetAppYaml = Path.Combine(projectDirectory, AppYamlName);
+            var hasAppYaml = File.Exists(targetAppYaml);
+            var hasDockefile = NetCoreAppUtils.CheckDockerfile(projectPath);
+
+            return new ProjectConfigurationStatus(hasAppYaml: hasAppYaml, hasDockerfile: hasDockefile);
         }
 
         private static string GetAppEngineService(string projectPath)

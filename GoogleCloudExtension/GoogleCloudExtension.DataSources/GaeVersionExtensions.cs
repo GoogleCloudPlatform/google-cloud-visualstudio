@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.DataSources
         /// <summary>
         /// The value of a .Net runtime for a GAE version.
         /// </summary>
-        public const string DotNetRuntime = "dotnet";
+        public const string AspNetCoreRuntime = "aspnetcore";
 
         /// <summary>
         /// The serving status for a GAE version serving.
@@ -33,6 +33,11 @@ namespace GoogleCloudExtension.DataSources
         /// The serving status for a GAE version not serving.
         /// </summary>
         public const string StoppedStatus = "STOPPED";
+
+        /// <summary>
+        /// The identifier for the Flex environment.
+        /// </summary>
+        public const string FlexibleEnvironment = "flexible";
 
         /// <summary>
         /// Gets an operation id.

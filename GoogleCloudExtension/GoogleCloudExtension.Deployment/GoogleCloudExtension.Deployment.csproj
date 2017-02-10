@@ -91,6 +91,7 @@
     <Compile Include="GkeDeployment.cs" />
     <Compile Include="GkeDeploymentResult.cs" />
     <Compile Include="NetCoreAppUtils.cs" />
+    <Compile Include="ProjectConfigurationStatus.cs" />
     <Compile Include="WindowsVmDeployment.cs" />
     <Compile Include="AppEngineFlexDeployment.cs" />
     <Compile Include="AppEngineFlexDeploymentResult.cs" />
