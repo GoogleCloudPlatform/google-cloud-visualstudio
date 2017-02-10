@@ -17,6 +17,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
+using GoogleCloudExtension.GenerateConfigurationCommand;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
@@ -203,6 +204,7 @@ namespace GoogleCloudExtension
             ManageAccountsCommand.Initialize(this);
             PublishProjectMainMenuCommand.Initialize(this);
             PublishProjectContextMenuCommand.Initialize(this);
+            GenerateConfigurationContextMenuCommand.Initialize(this);
 
             // Activity log utils, to aid in debugging.
             ActivityLogUtils.Initialize(this);

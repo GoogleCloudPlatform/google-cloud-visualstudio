@@ -22,7 +22,7 @@
                Target="{Binding ElementName=_version}"
                Style="{StaticResource CommonLabelStyle}"/>
         <TextBox x:Name="_version"
-                 Text="{Binding Version, Mode=TwoWay}"
+                 Text="{Binding Version, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  Style="{StaticResource CommonTextBoxStyle}"/>
 
         <CheckBox IsChecked="{Binding Promote, Mode=TwoWay}"

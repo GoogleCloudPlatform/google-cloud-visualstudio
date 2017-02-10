@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
     {
         private readonly FlexStepContent _content;
         private IPublishDialog _publishDialog;
-        private string _version;
+        private string _version = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _promote = true;
         private bool _openWebsite = true;
 
@@ -79,9 +79,17 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         public override async void Publish()
         {
+            if (!ValidateInput())
+            {
+                Debug.WriteLine("Invalid input cancelled the operation.");
+                return;
+            }
+
             var project = _publishDialog.Project;
             try
             {
+                ShellUtils.SaveAllFiles();
+
                 var context = new GCloudContext
                 {
                     CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
@@ -138,6 +146,24 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
             }
+        }
+
+        private bool ValidateInput()
+        {
+            if (String.IsNullOrEmpty(Version))
+            {
+                UserPromptUtils.ErrorPrompt(Resources.FlexPublishEmptyVersionMessage, Resources.UiInvalidValueTitle);
+                return false;
+            }
+            if (!GcpPublishStepsUtils.IsValidName(Version))
+            {
+                UserPromptUtils.ErrorPrompt(
+                    String.Format(Resources.FlexPublishInvalidVersionMessage, Version),
+                    Resources.UiInvalidValueTitle);
+                return false;
+            }
+
+            return true;
         }
 
         #endregion
