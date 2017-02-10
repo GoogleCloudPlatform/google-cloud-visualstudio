@@ -384,10 +384,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private void OpenValidProjectPrompt()
         {
-            UserPromptUtils.ErrorPrompt(
+            if (UserPromptUtils.ActionPrompt(
+                prompt:
                 $@"The log entry was generated from assembly {_assemblyName}, version {_assemblyVersion}
 Please open the project in order to navigate to the logging method source location.", 
-                PromptTitle);
+                title:PromptTitle,
+                message:"Do you want to open a project?"))
+            {
+                ShellUtils.OpenProject();
+            }
         }
 
         private ProjectHelper FindProject()
@@ -395,21 +400,29 @@ Please open the project in order to navigate to the logging method source locati
             if (String.IsNullOrWhiteSpace(_assemblyName) || String.IsNullOrWhiteSpace(_assemblyVersion))
             {
                 UserPromptUtils.ErrorPrompt(
-                    @"The log entry does not contain valid assembly name or assembly version", 
-                    PromptTitle);
+                     @"The log entry does not contain valid assembly name or assembly version.",
+                    title: PromptTitle);
+                return null;
             }
 
             if (SolutionHelper.CurrentSolution == null)
             {
                 OpenValidProjectPrompt();
-                return null;
+                if (SolutionHelper.CurrentSolution == null)
+                {
+                    return null;    // Still does not open, return;
+                }               
             }
 
-            var project = SolutionHelper.CurrentSolution.Projects?.FirstOrDefault(x => x.AssemblyName == _assemblyName);
-            if (project == null)
+            ProjectHelper project = null;
+            Func<ProjectHelper> getProject = () => SolutionHelper.CurrentSolution.Projects?.FirstOrDefault(x => x.AssemblyName?.ToLowerInvariant() == _assemblyName.ToLowerInvariant());
+            if ((project = getProject()) == null)
             {
                 OpenValidProjectPrompt();
-                return null;
+                if ((project = getProject()) == null)
+                {
+                    return null;    // Still does not find the project, quit.
+                }
             }
 
             if (project.Version != _assemblyVersion)

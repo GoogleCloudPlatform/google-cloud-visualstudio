@@ -33,6 +33,10 @@ namespace GoogleCloudExtension.SolutionUtils
 
         private readonly Project _project;
 
+        /// <summary>
+        /// Get a list of c# source files. 
+        /// It refresh and enumerates the list of files each time it is called. 
+        /// </summary>
         public List<ProjectSourceFile> SourceFiles => GetSourceFiles();
         public string Name => _project.Name;
         public string Version { get; private set; }

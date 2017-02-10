@@ -17,6 +17,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
 using System.Diagnostics;
+using EnvDTE;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -64,6 +65,15 @@ namespace GoogleCloudExtension.Utils
             SetUIContext(monitorSelection, VSConstants.UICONTEXT.SolutionExistsAndNotBuildingAndNotDebugging_guid, false);
 
             return new Disposable(SetShellNormal);
+        }
+
+        /// <summary>
+        /// Executes the "File.OpenProject" command in the shell.
+        /// </summary>
+        public static void OpenProject()
+        {
+            var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
+            dte.ExecuteCommand("File.OpenProject");
         }
 
         /// <summary>

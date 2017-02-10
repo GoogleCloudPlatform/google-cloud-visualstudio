@@ -56,8 +56,7 @@ namespace GoogleCloudExtension.SolutionUtils
             return new ServiceProvider(sp);
         }
 
-        public List<ProjectHelper> Projects => _lazyProjects.Value;
-        public readonly Lazy<List<ProjectHelper>> _lazyProjects;
+        public List<ProjectHelper> Projects => GetProjectList();
         private List<ProjectHelper> GetProjectList()
         {
             List<ProjectHelper> list = new List<ProjectHelper>();
@@ -104,7 +103,6 @@ namespace GoogleCloudExtension.SolutionUtils
         private SolutionHelper(Solution solution)
         {
             _solution = solution;
-            _lazyProjects = new Lazy<List<ProjectHelper>>(GetProjectList);
         }
 
         private ISolutionProject GetSelectedProject()
