@@ -42,16 +42,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private static readonly Lazy<ImageSource> s_versionStopedIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconStopedResourcePath));
         private static readonly Lazy<ImageSource> s_versionTransitionIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconTransitionResourcePath));
 
-        private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
-        {
-            Caption = Resources.CloudExplorerGaeNoInstancesFoundCaption,
-            IsWarning = true
-        };
-
         private readonly GaeSourceRootViewModel _owner;
         private readonly Service _service;
         private readonly Google.Apis.Appengine.v1.Data.Version _version;
-        private readonly IList<InstanceViewModel> _instances;
         private readonly double _trafficAllocation;
         private readonly bool _hasTrafficAllocation;
 
@@ -66,27 +59,15 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         public VersionViewModel(
             GaeSourceRootViewModel owner,
             Service service,
-            Google.Apis.Appengine.v1.Data.Version version,
-            IList<InstanceViewModel> instances)
+            Google.Apis.Appengine.v1.Data.Version version)
         {
             _owner = owner;
             _service = service;
             _version = version;
-            _instances = instances;
 
             var allocation = GaeServiceExtensions.GetTrafficAllocation(_service, _version.Id);
             _trafficAllocation = allocation ?? 0.0;
             _hasTrafficAllocation = allocation != null;
-
-            // Add the instances.
-            foreach (var instance in _instances)
-            {
-                Children.Add(instance);
-            }
-            if (Children.Count == 0)
-            {
-                Children.Add(s_noItemsPlacehoder);
-            }
 
             // Update the view.
             Caption = GetCaption();

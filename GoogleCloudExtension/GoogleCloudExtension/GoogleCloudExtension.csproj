@@ -101,8 +101,6 @@
     </Compile>
     <Compile Include="CloudExplorerSources\Gae\GaeSource.cs" />
     <Compile Include="CloudExplorerSources\Gae\GaeSourceRootViewModel.cs" />
-    <Compile Include="CloudExplorerSources\Gae\InstanceItem.cs" />
-    <Compile Include="CloudExplorerSources\Gae\InstanceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gae\ServiceItem.cs" />
     <Compile Include="CloudExplorerSources\Gae\ServiceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gae\VersionItem.cs" />
