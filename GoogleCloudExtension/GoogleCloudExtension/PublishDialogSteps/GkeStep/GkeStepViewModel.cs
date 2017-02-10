@@ -156,7 +156,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             _publishDialog = dialog;
 
             DeploymentName = _publishDialog.Project.Name.ToLower();
-            DeploymentVersion = GetDefaultVersion();
+            DeploymentVersion = GcpPublishStepsUtils.GetDefaultVersion();
 
             // Mark that the dialog is going to be busy until we have loaded the data.
             _publishDialog.TrackTask(Clusters.ValueTask);
@@ -176,6 +176,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             var project = _publishDialog.Project;
             try
             {
+                ShellUtils.SaveAllFiles();
+
                 var verifyGCloudTask = VerifyGCloudDependencies();
                 _publishDialog.TrackTask(verifyGCloudTask);
                 if (!await verifyGCloudTask)
@@ -302,6 +304,32 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 return false;
             }
 
+            if (String.IsNullOrEmpty(DeploymentName))
+            {
+                UserPromptUtils.ErrorPrompt(Resources.GkePublishEmptyDeploymentNameMessage, Resources.UiInvalidValueTitle);
+                return false;
+            }
+            if (String.IsNullOrEmpty(DeploymentVersion))
+            {
+                UserPromptUtils.ErrorPrompt(Resources.GkePublishEmptyDeploymentVersionMessage, Resources.UiInvalidValueTitle);
+                return false;
+            }
+
+            if (!GcpPublishStepsUtils.IsValidName(DeploymentName))
+            {
+                UserPromptUtils.ErrorPrompt(
+                    String.Format(Resources.GkePublishInvalidDeploymentNameMessage, DeploymentName),
+                    Resources.UiInvalidValueTitle);
+                return false;
+            }
+            if (!GcpPublishStepsUtils.IsValidName(DeploymentVersion))
+            {
+                UserPromptUtils.ErrorPrompt(
+                    String.Format(Resources.GkePublishInvalidDeploymentVersionMessage, DeploymentVersion),
+                    Resources.UiInvalidValueTitle);
+                return false;
+            }
+
             return true;
         }
 
@@ -331,15 +359,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             content.DataContext = viewModel;
 
             return viewModel;
-        }
-
-        private static string GetDefaultVersion()
-        {
-            var now = DateTime.Now;
-            return String.Format(
-                "{0:0000}{1:00}{2:00}t{3:00}{4:00}{5:00}",
-                now.Year, now.Month, now.Day,
-                now.Hour, now.Minute, now.Second);
         }
 
         private async Task<bool> VerifyGCloudDependencies()
