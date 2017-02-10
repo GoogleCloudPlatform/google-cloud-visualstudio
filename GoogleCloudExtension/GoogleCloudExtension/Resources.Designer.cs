@@ -493,7 +493,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Full path to the Service resource in the API..
+        ///   Looks up a localized string similar to Full path to the service resource in the API..
         /// </summary>
         public static string CloudExplorerGaeServiceNameDescription {
             get {
@@ -2167,7 +2167,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Waiting for Service IP address....
+        ///   Looks up a localized string similar to Waiting for service IP address....
         /// </summary>
         public static string GkePublishWaitingForServiceIpMessage {
             get {

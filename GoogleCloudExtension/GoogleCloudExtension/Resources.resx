@@ -1272,7 +1272,7 @@
     <comment>Message printed in the output window when there's a timeout waiting for the service IP address.</comment>
   </data>
   <data name="GkePublishWaitingForServiceIpMessage" xml:space="preserve">
-    <value>Waiting for Service IP address...</value>
+    <value>Waiting for service IP address...</value>
     <comment>Message shown while waiting for a public IP to be assigned to the exposed Kubernetes service.</comment>
   </data>
   <data name="PublishDialogChoiceStepGkeName" xml:space="preserve">
@@ -1360,7 +1360,7 @@
     <comment>The description of the Id property.</comment>
   </data>
   <data name="CloudExplorerGaeServiceNameDescription" xml:space="preserve">
-    <value>Full path to the Service resource in the API.</value>
+    <value>Full path to the service resource in the API.</value>
     <comment>The description of the name property for a service item.</comment>
   </data>
   <data name="CloudExplorerGaeVersionCreatedByDescription" xml:space="preserve">
