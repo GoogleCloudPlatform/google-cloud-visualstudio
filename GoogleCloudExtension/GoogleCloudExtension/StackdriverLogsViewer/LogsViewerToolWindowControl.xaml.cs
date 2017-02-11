@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             PackageUtils.ReferenceType(typeof(VisibilityConverter));
             this.InitializeComponent();
         }
- 
+
         /// <summary>
         /// Response to data grid scroll change event.
         /// Auto load more logs when it scrolls down to bottom.
@@ -65,7 +65,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             var dependencyObj = e.OriginalSource as DependencyObject;
             var linkButton = DataGridUtils.FindAncestorControl<Button>(e.OriginalSource as DependencyObject);
-            if (null != linkButton)
+            if (linkButton != null)
             {
                 e.Handled = true;
                 if (linkButton.Command.CanExecute(null))
@@ -84,8 +84,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                         row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
                 }
             }
-
-            // e.Handled = false;
         }
     }
 }

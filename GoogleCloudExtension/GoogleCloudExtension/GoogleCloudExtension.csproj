@@ -222,7 +222,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SolutionUtils\EditorSnapHelpers.cs" />
     <Compile Include="SolutionUtils\ISolutionProject.cs" />
     <Compile Include="SolutionUtils\KnownProjectTypes.cs" />
     <Compile Include="SolutionUtils\NetCoreProject.cs" />

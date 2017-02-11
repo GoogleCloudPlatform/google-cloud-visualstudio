@@ -106,7 +106,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the log message to be displayed at top level.
         /// </summary>
-        public string Message => ComposeMessage();
+        public readonly string Message;
 
         /// <summary>
         /// Gets the log severity tooltip. Data binding to the severity icon tool tip.
@@ -181,6 +181,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             Entry = logEntry;
             TimeStamp = ConvertTimestamp(logEntry.Timestamp);
+            Message = ComposeMessage();
 
             if (String.IsNullOrWhiteSpace(Entry.Severity) ||
                 !Enum.TryParse<LogSeverity>(Entry.Severity, ignoreCase: true, result: out LogLevel))
@@ -339,7 +340,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             this.ShowToolTip(window);
         }
-
 
     }
 }

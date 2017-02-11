@@ -17,7 +17,6 @@ using EnvDTE80;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using VSOLEInterop = Microsoft.VisualStudio.OLE.Interop;
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
@@ -37,6 +36,11 @@ namespace GoogleCloudExtension.SolutionUtils
         private readonly Solution _solution;
 
         /// <summary>
+        /// Returns the <seealso cref="SolutionBuild2"/> associated with the current solution.
+        /// </summary>
+        private SolutionBuild2 SolutionBuild => _solution.SolutionBuild as SolutionBuild2;
+
+        /// <summary>
         /// Returns the current solution open, null if no solution is present.
         /// </summary>
         public static SolutionHelper CurrentSolution
@@ -47,22 +51,6 @@ namespace GoogleCloudExtension.SolutionUtils
                 var solution = dte.Solution;
                 return solution != null ? new SolutionHelper(solution) : null;
             }
-        }
-
-        public List<ProjectHelper> Projects => GetProjectList();
-        private List<ProjectHelper> GetProjectList()
-        {
-            List<ProjectHelper> list = new List<ProjectHelper>();
-            foreach (Project project in _solution.Projects)
-            {
-                var helper = ProjectHelper.Create(project);
-                if (helper != null)
-                {
-                    list.Add(helper);
-                }
-            }
-
-            return list;
         }
 
         public Solution solution => _solution;
@@ -82,20 +70,25 @@ namespace GoogleCloudExtension.SolutionUtils
         /// </summary>
         public ISolutionProject SelectedProject => GetSelectedProject();
 
-        public List<ProjectSourceFile> FindMatchingSourceFile(string sourceLocationFilePath)
-        {
-            var query = Projects.SelectMany(x => x.SourceFiles).Where(y => y.IsMatchingPath(sourceLocationFilePath));
-            return new List<ProjectSourceFile>(query);
-        }
-
         /// <summary>
-        /// Returns the <seealso cref="SolutionBuild2"/> associated with the current solution.
+        /// Get a list of <seealso cref="ProjectHelper"/> objects under current solution.
         /// </summary>
-        private SolutionBuild2 SolutionBuild => _solution.SolutionBuild as SolutionBuild2;
+        public List<ProjectHelper> Projects => GetProjectList();
 
         private SolutionHelper(Solution solution)
         {
             _solution = solution;
+        }
+
+        /// <summary>
+        /// Find project items that matches the path of <paramref name="sourceLocationFilePath"/>.
+        /// </summary>
+        /// <param name="sourceLocationFilePath">The source file path to be searched for.</param>
+        /// <returns>A list of <seealso cref="ProjectSourceFile"/> objects that matches the searched file path.</returns>
+        public List<ProjectSourceFile> FindMatchingSourceFile(string sourceLocationFilePath)
+        {
+            var query = Projects.SelectMany(x => x.SourceFiles).Where(y => y.IsMatchingPath(sourceLocationFilePath));
+            return new List<ProjectSourceFile>(query);
         }
 
         private ISolutionProject GetSelectedProject()
@@ -230,6 +223,21 @@ namespace GoogleCloudExtension.SolutionUtils
 
             // The project could not be found.
             return null;
+        }
+
+        private List<ProjectHelper> GetProjectList()
+        {
+            List<ProjectHelper> list = new List<ProjectHelper>();
+            foreach (Project project in _solution.Projects)
+            {
+                var helper = ProjectHelper.Create(project);
+                if (helper != null)
+                {
+                    list.Add(helper);
+                }
+            }
+
+            return list;
         }
     }
 }

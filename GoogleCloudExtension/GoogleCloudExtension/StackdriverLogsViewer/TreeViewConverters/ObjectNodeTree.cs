@@ -44,7 +44,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             typeof(LogEntryOperation),
             typeof(LogEntrySourceLocation),
             typeof(LogLine),
-            typeof(LogEntry),
+            typeof(LogEntry)
         };
 
         /// <summary>
