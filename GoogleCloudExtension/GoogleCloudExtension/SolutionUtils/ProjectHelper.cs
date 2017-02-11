@@ -78,6 +78,19 @@ namespace GoogleCloudExtension.SolutionUtils
             }
         }
 
+        public ProjectSourceFile FindSourceFile(string sourceFilePath)
+        {
+            foreach (var item in GetSourceFiles())
+            {
+                if (item.IsMatchingPath(sourceFilePath))
+                {
+                    return item;
+                }
+            }
+
+            return null;
+        }
+
         private List<ProjectSourceFile> GetSourceFiles()
         {
             var items = new List<ProjectSourceFile>();

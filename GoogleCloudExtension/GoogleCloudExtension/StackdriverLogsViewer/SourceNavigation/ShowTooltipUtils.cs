@@ -90,7 +90,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             GotoLine(window, (int)logItem.SourceLine);
             IVsTextView textView = GetIVsTextView(window.Document.FullName);
             var wpfView = GetWpfTextView(textView);
-            TooltipSource.Set(logItem, wpfView, logItem.SourceLine.Value, logItem.LogLevel.GetLoggerMethodName());
+            TooltipSource.Set(
+                new LoggerTooltipViewModel(logItem),
+                wpfView, 
+                logItem.SourceLine.Value, 
+                logItem.LogLevel.GetLoggerMethodName());
             TryFindTagger(wpfView)?.ShowOrUpdateToolTip();
         }
 

@@ -14,24 +14,21 @@
 
 using Google.Apis.Logging.v2.Data;
 using GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters;
-using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
-using Microsoft.VisualStudio.Text.Editor;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
     /// <summary>
     /// An adaptor to LogEntry so as to provide properties for data binding.
     /// </summary>
-    internal class LogItem : ViewModelBase
+    internal class LogItem : Model
     {
         private const string JasonPayloadMessageFieldName = "message";
         private const string AnyIconPath = "StackdriverLogsViewer/Resources/ic_log_level_any_12.png";
@@ -56,21 +53,34 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private readonly Lazy<List<ObjectNodeTree>> _treeViewObjects;
 
-        private readonly string _sourceFilePath; 
-        private string _function => Entry?.SourceLocation?.Function;        
-        private readonly string _assemblyName;
-        private readonly string _assemblyVersion;
+        /// <summary>
+        /// Source location file path.
+        /// </summary>
+        public readonly string SourceFilePath;
+
+        /// <summary>
+        /// The function field of source location.
+        /// </summary>
+        public readonly string Function;
+
+        /// <summary>
+        /// Log entry source assembly name.
+        /// </summary>
+        public readonly string AssemblyName;
+
+        /// <summary>
+        /// Log entry source assembly version.
+        /// </summary>
+        public readonly string AssemblyVersion;
+
+        /// <summary>
+        /// Log entry source line number.
+        /// </summary>
         public readonly long? SourceLine;
-        public string SourcePath => _sourceFilePath;
-        public IWpfTextView SourceLineTextView { get; private set; }    
-
-        private bool _filterLogsOfSourceLine = true;
-        public bool FilterLogsOfSourceLine
-        {
-            get { return _filterLogsOfSourceLine; }
-            set { SetValueAndRaise(ref _filterLogsOfSourceLine, value); }
-        }
-
+   
+        /// <summary>
+        /// Indicates if the source link is shown or hidden.
+        /// </summary>
         public bool SourceLinkVisible { get; }
 
         /// <summary>
@@ -112,7 +122,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the formated source location as content of data grid column.
         /// </summary>
-        public string SourceLocation { get; }
+        public string SourceLinkCaption { get; }
 
         /// <summary>
         /// Command responses to source link button click event.
@@ -120,10 +130,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public ProtectedCommand SourceLinkCommand { get; }
 
         /// <summary>
-        /// Command responses to the back to logs viewer button.
+        /// Log severity level.
         /// </summary>
-        public ProtectedCommand BackToLogsViewerCommand { get; }
-
         public readonly LogSeverity LogLevel;
 
         /// <summary>
@@ -180,41 +188,29 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 LogLevel = LogSeverity.Default;
             }
 
-                _treeViewObjects = new Lazy<List<ObjectNodeTree>>(CreateTreeObject);
-            BackToLogsViewerCommand = new ProtectedCommand(BackToLogsViewer);
-            SourceLinkCommand = new ProtectedCommand(OnSourceLinkClick);
-            if (_function != null)
+            _treeViewObjects = new Lazy<List<ObjectNodeTree>>(CreateTreeObject);
+
+            Function = Entry.SourceLocation?.Function;
+            SourceFilePath = Entry?.SourceLocation?.File;
+            SourceLine = Entry.SourceLocation?.Line;
+            if (Function != null && SourceFilePath != null && SourceLine.HasValue)
             {
                 // Example:  [Log4NetSample.Program, Log4NetExample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null].WriteRandomSeverityLog
                 const string validFunction = @"[\w\-. ]+";
-                //string function = "[Log4NetSample.Program, Log4NetExample, Version = 1.0.0.0, Culture = neutral, PublicKeyToken = null].WriteRandomSeverityLog";
                 Regex regex = new Regex($@"^\[(.*),\s*(.*),\s*Version\s*=\s*(.*)\s*,(.*),(.*)\]\.({validFunction})$");
-                Match match = regex.Match(_function);
+                Match match = regex.Match(Function);
                 Debug.WriteLine($"{match.Groups[1].Value},{match.Groups[2].Value}, {match.Groups[3].Value}");
                 if (match.Success)
                 {
-                    _assemblyName = match.Groups[2].Value;
-                    _assemblyVersion = match.Groups[3].Value;
+                    AssemblyName = match.Groups[2].Value;
+                    AssemblyVersion = match.Groups[3].Value;
                 }
-            }
 
-            _sourceFilePath = Entry?.SourceLocation?.File; 
-            SourceLine = Entry.SourceLocation?.Line;
-            if (_sourceFilePath != null && SourceLine.HasValue)
-            {
                 SourceLinkVisible = true;
-                var tmp = $"{_sourceFilePath}:{SourceLine}";
-                if (tmp.Length > 20)
-                {
-                    SourceLocation = $"...{tmp.Substring(tmp.Length - 17)}";
-                }
-                else
-                {
-                    SourceLocation = tmp;
-                }
+                SourceLinkCommand = new ProtectedCommand(OnSourceLinkClick);
+                var tmp = $"{SourceFilePath}:{SourceLine}";
+                SourceLinkCaption = tmp.Length <= 20 ? tmp : $"...{tmp.Substring(tmp.Length - 17)}";
             }
-
-            CloseButtonCommand = new ProtectedCommand(OnCloseTooltip);
         }
 
         /// <summary>
@@ -315,146 +311,35 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             return datetime.ToLocalTime();
         }
 
-        #region source line matching
-
-        public ProtectedCommand CloseButtonCommand { get; }
-
-        private void OnCloseTooltip()
-        {
-            ShowTooltipUtils.HideTooltip();
-        }
-
+        /// <summary>
+        /// Open the source file, move to the source line and show tooltip.
+        /// </summary>
         private void OnSourceLinkClick()
         {
-            Debug.Assert(SourceLine.HasValue && _sourceFilePath != null, 
-                "There is a code bug if source file or source line is invalid");
-            // var sourceFiles = SolutionHelper.CurrentSolution?.FindMatchingSourceFile(_sourceFilePath);
-
-            var project = FindProject();
+            var project = this.FindorOpenProject();
             if (project == null)
             {
-                Debug.WriteLine($"Failed to find project of {_assemblyName}");
+                Debug.WriteLine($"Failed to find project of {AssemblyName}");
                 return;
             }
 
-            var sourceFiles = project.SourceFiles.Where(x => x.IsMatchingPath(_sourceFilePath));
-            if (!sourceFiles.Any())
+            var projectSourceFile = project.FindSourceFile(SourceFilePath);
+            if (projectSourceFile == null)
             {
-                PromptNotfound();
+                SourceVersionUtils.FileItemNotFoundPrompt();
                 return;
             }
 
-            var window = ShellUtils.Open(sourceFiles.First().ProjectItem);
+            var window = ShellUtils.Open(projectSourceFile.ProjectItem);
             if (null == window)
             {
-                PromptCantOpen();
+                SourceVersionUtils.FailedToOpenFilePrompt(SourceFilePath);
                 return;
             }
 
             this.ShowToolTip(window);
         }
 
-        private const string PromptTitle = "Locating logging source";
 
-        private void PromptCantOpen()
-        {
-            string errorPrompt = $"Failed to open the source file {_sourceFilePath}";
-            UserPromptUtils.ErrorPrompt(errorPrompt, PromptTitle);
-        }
-
-        private void PromptNotfound()
-        {
-            string errorPrompt = @"The log entry does not contain valid source information or the source line can not be located";
-            UserPromptUtils.ErrorPrompt(errorPrompt, PromptTitle);
-        }
-
-        private void OpenValidProjectPrompt()
-        {
-            if (UserPromptUtils.ActionPrompt(
-                prompt:
-                $@"The log entry was generated from assembly {_assemblyName}, version {_assemblyVersion}
-Please open the project in order to navigate to the logging method source location.", 
-                title:PromptTitle,
-                message:"Do you want to open a project?"))
-            {
-                ShellUtils.OpenProject();
-            }
-        }
-
-        private ProjectHelper FindProject()
-        {
-            if (String.IsNullOrWhiteSpace(_assemblyName) || String.IsNullOrWhiteSpace(_assemblyVersion))
-            {
-                UserPromptUtils.ErrorPrompt(
-                     @"The log entry does not contain valid assembly name or assembly version.",
-                    title: PromptTitle);
-                return null;
-            }
-
-            if (SolutionHelper.CurrentSolution == null)
-            {
-                OpenValidProjectPrompt();
-                if (SolutionHelper.CurrentSolution == null)
-                {
-                    return null;    // Still does not open, return;
-                }               
-            }
-
-            ProjectHelper project = null;
-            Func<ProjectHelper> getProject = () => SolutionHelper.CurrentSolution.Projects?.FirstOrDefault(x => x.AssemblyName?.ToLowerInvariant() == _assemblyName.ToLowerInvariant());
-            if ((project = getProject()) == null)
-            {
-                OpenValidProjectPrompt();
-                if ((project = getProject()) == null)
-                {
-                    return null;    // Still does not find the project, quit.
-                }
-            }
-
-            if (project.Version != _assemblyVersion)
-            {
-                if (!UserPromptUtils.ActionPrompt(
-                        prompt: 
-$@"Version missmatch.
-The current project {project.Name} version is {project.Version},
-Pleae open the project of version {_assemblyVersion},
-in order to properly locating the logging source location.",
-                    title: PromptTitle,
-                    message: "Do you want to continue anyway?" ))
-                {
-                    return null;
-                }
-            }
-
-            return project;
-        }
-
-        #endregion
-
-        private void BackToLogsViewer()
-        {
-            var window = ToolWindowUtils.ShowToolWindow<LogsViewerToolWindow>();
-            if (Entry == null)
-            {
-                Debug.WriteLine("Entry is null, this is likely a code bug");
-                return;
-            }
-
-            if (window == null)
-            {
-                return;
-            }
-            string label = "sourceLocation";
-            if (FilterLogsOfSourceLine)
-            {
-                StringBuilder filter = new StringBuilder();
-                filter.AppendLine($"resource.type=\"{Entry.Resource.Type}\"");
-                filter.AppendLine($"logName=\"{Entry.LogName}\"");
-                filter.AppendLine($"{label}.{nameof(LogEntrySourceLocation.File)}=\"{_sourceFilePath.Replace(@"\", @"\\")}\"");
-                filter.AppendLine($"{label}.{nameof(LogEntrySourceLocation.Function)}=\"{_function}\"");
-                filter.AppendLine($"{label}.{nameof(LogEntrySourceLocation.Line)}=\"{SourceLine}\"");
-                window.AdvancedFilter(filter.ToString());
-            }
-        }
     }
 }

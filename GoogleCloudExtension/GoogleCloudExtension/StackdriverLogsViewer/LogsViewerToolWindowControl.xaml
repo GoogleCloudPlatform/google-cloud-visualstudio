@@ -24,34 +24,6 @@
 
             <utils:VisibilityConverter x:Key="visibilityConverter" />
 
-            <Style x:Key="LinkButtonTextBoxStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource CommonTextStyle}">
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding IsMouseOver,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}}" Value="True">
-                        <Setter Property="TextDecorations" Value="Underline" />
-                        <Setter Property="Foreground" Value="Blue" />
-                    </DataTrigger>
-                </Style.Triggers>
-            </Style>
-
-            <Style x:Key="LinkButton" TargetType="Button">
-                <Setter Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate TargetType="Button">
-                            <TextBlock                                 
-                                Style="{StaticResource LinkButtonTextBoxStyle}"
-                                Text="{Binding SourceLocation}"
-                                TextWrapping="NoWrap">
-                                <TextBlock.ToolTip>
-                                    <ToolTip 
-                                        Content="{Binding SourcePath}" 
-                                        Style="{StaticResource CommonTooltipStyle}" />
-                                </TextBlock.ToolTip>
-                            </TextBlock>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-  
             <DataGridTemplateColumn
                 x:Key="MessageColumn" >
                 <DataGridTemplateColumn.CellTemplate>
@@ -60,7 +32,7 @@
                             Orientation="Horizontal">
                         <Button
                             Margin="6,0,12,0"
-                            Style="{StaticResource LinkButton}"
+                            Style="{StaticResource SourceLinkButtonStyle}"
                             Command="{Binding SourceLinkCommand}"
                             Visibility="{Binding SourceLinkVisible, Converter={StaticResource visibilityConverter}}"/>
                             <TextBlock 
@@ -441,10 +413,7 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     
-                    <!--<StaticResource ResourceKey="SourceLinkColumn" />-->
                     <StaticResource ResourceKey="MessageColumn" />
-
-                    <!--<DataGridTextColumn Binding="{Binding Message}" />-->
                 </DataGrid.Columns>
 
                 <DataGrid.RowDetailsTemplate>

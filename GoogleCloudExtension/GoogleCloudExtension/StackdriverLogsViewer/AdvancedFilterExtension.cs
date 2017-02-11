@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Logging.v2.Data;
 using System;
 using System.Diagnostics;
 using System.Text;
@@ -23,8 +24,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     internal static class AdvancedFilterExtension
     {
-        private const string GCEInstanceResourceType = "gce_instance";
-        private const string GAEAppResourceType = "gae_app";
+        private const string SourceLocationQueryName = "sourceLocation";
 
         /// <summary>
         /// Show logs that only contain the GCE VM Instance id label,
@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             StringBuilder filter = new StringBuilder();
-            filter.AppendLine($"resource.type=\"{GCEInstanceResourceType}\"");
+            filter.AppendLine($"resource.type=\"{ResourceTypeNameConsts.GceInstanceType}\"");
             filter.AppendLine($"resource.labels.instance_id=\"{instanceId}\"");
             window.ViewModel.FilterLog(filter.ToString());
         }
@@ -64,13 +64,29 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             StringBuilder filter = new StringBuilder();
-            filter.AppendLine($"resource.type=\"{GAEAppResourceType}\"");
+            filter.AppendLine($"resource.type=\"{ResourceTypeNameConsts.GaeAppType}\"");
             filter.AppendLine($"resource.labels.module_id=\"{serviceId}\"");
             if (!String.IsNullOrWhiteSpace(version))
             {
                 filter.AppendLine($"resource.labels.version_id=\"{version}\"");
             }
             window.ViewModel.FilterLog(filter.ToString());
+        }
+
+        /// <summary>
+        /// Show logs that matches the source information.
+        /// </summary>
+        /// <param name="window">A <seealso cref="LogsViewerToolWindow"/> object. </param>
+        /// <param name="log">A <seealso cref="LogItem"/> object.</param>
+        public static void FilterOnSourceLocation(this LogsViewerToolWindow window, LogItem log)
+        {
+            StringBuilder filter = new StringBuilder();
+            filter.AppendLine($"resource.type=\"{log.Entry.Resource.Type}\"");
+            filter.AppendLine($"logName=\"{log.Entry.LogName}\"");
+            filter.AppendLine($"{SourceLocationQueryName}.{nameof(LogEntrySourceLocation.File)}=\"{log.SourceFilePath.Replace(@"\", @"\\")}\"");
+            filter.AppendLine($"{SourceLocationQueryName}.{nameof(LogEntrySourceLocation.Function)}=\"{log.Function}\"");
+            filter.AppendLine($"{SourceLocationQueryName}.{nameof(LogEntrySourceLocation.Line)}=\"{log.SourceLine}\"");
+            window.AdvancedFilter(filter.ToString());            
         }
     }
 }

@@ -242,6 +242,7 @@
       <DependentUpon>DateTimePicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverLogsViewer\DateTimePickerViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\ShowTooltipUtils.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipSource.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipControl.xaml.cs">
@@ -267,6 +268,7 @@
     <Compile Include="Controls\SearchMenuItem.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTaggerProvider.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LogWritterNameConsts.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\SourceVersionUtils.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTree.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TypeUtil.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
