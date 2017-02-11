@@ -165,7 +165,4 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 PopupStyles.PositionClosest);
         }
     }
-
-
-
 }
