@@ -54,11 +54,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private readonly Lazy<List<ObjectNodeTree>> _treeViewObjects;
 
         /// <summary>
-        /// Source location file path.
-        /// </summary>
-        public readonly string SourceFilePath;
-
-        /// <summary>
         /// The function field of source location.
         /// </summary>
         public readonly string Function;
@@ -77,7 +72,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Log entry source line number.
         /// </summary>
         public readonly long? SourceLine;
-   
+
+        /// <summary>
+        /// Source location file path.
+        /// </summary>
+        public string SourceFilePath { get; }
+
         /// <summary>
         /// Indicates if the source link is shown or hidden.
         /// </summary>

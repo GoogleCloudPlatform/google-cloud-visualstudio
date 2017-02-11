@@ -148,7 +148,7 @@
                         Text="{Binding SourceLinkCaption}"
                         TextWrapping="NoWrap">
                         <TextBlock.ToolTip>
-                            <ToolTip Content="{Binding SourcePath}" 
+                            <ToolTip Content="{Binding SourceFilePath}" 
                                      Style="{StaticResource CommonTooltipStyle}" />
                         </TextBlock.ToolTip>
                     </TextBlock>
