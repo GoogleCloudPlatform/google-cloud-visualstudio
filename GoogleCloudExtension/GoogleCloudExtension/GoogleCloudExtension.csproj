@@ -145,7 +145,6 @@
     <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
     <Compile Include="Controls\IconButton.cs" />
-    <Compile Include="Controls\ImageToggleButtonl.cs" />
     <Compile Include="Controls\LabelWithHelp.cs" />
     <Compile Include="Controls\PasswordBoxWithReveal.cs" />
     <Compile Include="Controls\PressButton.cs" />
@@ -243,9 +242,10 @@
       <DependentUpon>DateTimePicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverLogsViewer\DateTimePickerViewModel.cs" />
-    <Compile Include="StackdriverLogsViewer\HighlightLogger.cs" />
-    <Compile Include="StackdriverLogsViewer\LoggerTooltip.xaml.cs">
-      <DependentUpon>LoggerTooltip.xaml</DependentUpon>
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\ShowTooltipUtils.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipSource.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipControl.xaml.cs">
+      <DependentUpon>LoggerTooltipControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverLogsViewer\LogIdsList.cs" />
     <Compile Include="StackdriverLogsViewer\LogItem.cs" />
@@ -257,13 +257,16 @@
       <DependentUpon>LogsViewerToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModel.cs" />
-    <Compile Include="StackdriverLogsViewer\LogTagger.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerHighlightFormat.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTagger.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\MenuItemViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeMenuViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeNameConsts.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceValueItemViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeItemViewModel.cs" />
     <Compile Include="Controls\SearchMenuItem.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTaggerProvider.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LogWritterNameConsts.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTree.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TypeUtil.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
@@ -711,7 +714,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="StackdriverLogsViewer\LoggerTooltip.xaml">
+    <Page Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

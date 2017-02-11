@@ -49,13 +49,6 @@ namespace GoogleCloudExtension.SolutionUtils
             }
         }
 
-        internal static ServiceProvider GetGloblalServiceProvider()
-        {
-            var dte2 = (DTE2)Package.GetGlobalService(typeof(SDTE));
-            VSOLEInterop.IServiceProvider sp = (VSOLEInterop.IServiceProvider)dte2;
-            return new ServiceProvider(sp);
-        }
-
         public List<ProjectHelper> Projects => GetProjectList();
         private List<ProjectHelper> GetProjectList()
         {

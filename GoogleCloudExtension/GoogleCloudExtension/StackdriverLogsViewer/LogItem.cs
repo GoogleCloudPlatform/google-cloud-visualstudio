@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -218,25 +217,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             CloseButtonCommand = new ProtectedCommand(OnCloseTooltip);
         }
 
-        public static string MethodName(LogItem item)
-        {
-            switch (item.LogLevel)
-            {
-                case LogSeverity.Debug:
-                    return ".Debug";
-                case LogSeverity.Emergency:
-                    return ".Fatal";
-                case LogSeverity.Warning:
-                    return ".Warn";
-                case LogSeverity.Info:
-                    return ".Info";
-                case LogSeverity.Error:
-                    return ".Error";
-                default:
-                    return "";
-            }
-        }
-
         /// <summary>
         /// Change time zone of log item.
         /// </summary>
@@ -341,7 +321,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private void OnCloseTooltip()
         {
-            HighlightLogger.HideTooltip(SourceLineTextView);
+            ShowTooltipUtils.HideTooltip();
         }
 
         private void OnSourceLinkClick()
@@ -364,17 +344,23 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            var window = sourceFiles.First().GotoLine((int)SourceLine);
+            var window = ShellUtils.Open(sourceFiles.First().ProjectItem);
             if (null == window)
             {
-                PromptNotfound();
+                PromptCantOpen();
                 return;
             }
 
-            SourceLineTextView = HighlightLogger.ShowTip(window, this);
+            this.ShowToolTip(window);
         }
 
         private const string PromptTitle = "Locating logging source";
+
+        private void PromptCantOpen()
+        {
+            string errorPrompt = $"Failed to open the source file {_sourceFilePath}";
+            UserPromptUtils.ErrorPrompt(errorPrompt, PromptTitle);
+        }
 
         private void PromptNotfound()
         {

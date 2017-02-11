@@ -14,13 +14,9 @@
 
 using EnvDTE;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using IOPath = System.IO.Path;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Linq;
 
 namespace GoogleCloudExtension.SolutionUtils
 {
@@ -33,8 +29,11 @@ namespace GoogleCloudExtension.SolutionUtils
         private static readonly string[] s_supportedFileExtension = { ".cs" };
 
         private readonly ProjectHelper _owningProject;
-        private readonly ProjectItem _projectItem;
-        private Window _window;
+
+        /// <summary>
+        /// The <seealso cref="ProjectItem"/> object.
+        /// </summary>
+        public  readonly ProjectItem ProjectItem;
 
         /// <summary>
         /// The file path.
@@ -59,20 +58,11 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <param name="project">The container project of type <seealso cref="ProjectHelper"/></param>
         private ProjectSourceFile(ProjectItem projectItem, ProjectHelper project)
         {
-            _projectItem = projectItem;
-            FullName = _projectItem.FileNames[0].ToLowerInvariant();
+            ProjectItem = projectItem;
+            FullName = ProjectItem.FileNames[0].ToLowerInvariant();
             _owningProject = project;
             SubPaths = new Lazy<string[]>(() => FullName.Split(IOPath.DirectorySeparatorChar));
             RelativePath = new Lazy<string>(GetRelativePath);
-        }
-
-        /// <summary>
-        /// Verifies if a giving path match the source file item path.
-        /// </summary>
-        public bool IsMatchingPath(string filePath)
-        {
-            var path = filePath.ToLowerInvariant();
-            return path.EndsWith(RelativePath.Value);
         }
 
         /// <summary>
@@ -95,13 +85,13 @@ namespace GoogleCloudExtension.SolutionUtils
             return new ProjectSourceFile(projectItem, project);
         }
 
-        public Window GotoLine(int line)
+        /// <summary>
+        /// Verifies if a giving path match the source file item path.
+        /// </summary>
+        public bool IsMatchingPath(string filePath)
         {
-            Open();
-            TextSelection selection = _window.Document.Selection as TextSelection;
-            TextPoint tp = selection.TopPoint;
-            selection.GotoLine(line, Select: false);
-            return _window;
+            var path = filePath.ToLowerInvariant();
+            return path.EndsWith(RelativePath.Value);
         }
 
         private string GetRelativePath()
@@ -125,13 +115,6 @@ namespace GoogleCloudExtension.SolutionUtils
 
                 return FullName.Substring(baseLength + 1);
             }
-        }
-
-        private void Open()
-        {
-            _window = _projectItem.Open(EnvDTE.Constants.vsViewKindPrimary);  // TODO: should it be Constants.vsViewKindCode ?
-            Debug.Assert(_window != null, "If the _window is null, there is a code bug");
-            _window.Visible = true;
         }
 
         private static bool IsValidSupportedItem(ProjectItem projectItem)
