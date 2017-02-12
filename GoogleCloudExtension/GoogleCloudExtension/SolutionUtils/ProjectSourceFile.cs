@@ -46,12 +46,6 @@ namespace GoogleCloudExtension.SolutionUtils
         public readonly Lazy<string> RelativePath;
 
         /// <summary>
-        /// The divided parts of the path. 
-        /// example: c:\a\b\c.cs  --> c:, a, b, c.cs
-        /// </summary>
-        public readonly Lazy<string[]> SubPaths;
-
-        /// <summary>
         /// Initializes an instance of <seealso cref="ProjectSourceFile"/> class.
         /// </summary>
         /// <param name="projectItem">A project item that is physical file.</param>
@@ -61,7 +55,6 @@ namespace GoogleCloudExtension.SolutionUtils
             ProjectItem = projectItem;
             FullName = ProjectItem.FileNames[0].ToLowerInvariant();
             _owningProject = project;
-            SubPaths = new Lazy<string[]>(() => FullName.Split(IOPath.DirectorySeparatorChar));
             RelativePath = new Lazy<string>(GetRelativePath);
         }
 
@@ -73,7 +66,7 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <param name="project">The container project of type <seealso cref="ProjectHelper"/></param>
         /// <returns>
         /// The created object.
-        /// Or null if the projectItem is null,  the item is not physical file.
+        /// null: if the projectItem is null or the item is not physical source sfile.
         /// </returns>
         public static ProjectSourceFile Create(ProjectItem projectItem, ProjectHelper project)
         {
@@ -94,6 +87,10 @@ namespace GoogleCloudExtension.SolutionUtils
             return path.EndsWith(RelativePath.Value);
         }
 
+        /// <summary>
+        /// Get the project item path relative to the project root. 
+        /// The relative path starts with '\' character.
+        /// </summary>
         private string GetRelativePath()
         {
             if (_owningProject.ProjectRoot != null && FullName.StartsWith(_owningProject.ProjectRoot))
@@ -102,18 +99,16 @@ namespace GoogleCloudExtension.SolutionUtils
             }
             else
             {
-                // Fallback to compare the root
-                int baseLength = 0;
-                for (int i = 0; i < SubPaths.Value.Length; ++i)
+                // Fallback to compare the root of both paths.
+                int baseIndex = 0;
+                for (int i = 0; i < FullName.Length && i < _owningProject.FullName.Length && FullName[i] == _owningProject.FullName[i]; ++i)
                 {
-                    if (_owningProject.SubPaths[i] != SubPaths.Value[i])
+                    if (FullName[i] == IOPath.DirectorySeparatorChar)
                     {
-                        break;
+                        baseIndex = i;
                     }
-                    baseLength += SubPaths.Value[i].Length + 1;
                 }
-
-                return FullName.Substring(baseLength + 1);
+                return FullName.Substring(baseIndex);
             }
         }
 

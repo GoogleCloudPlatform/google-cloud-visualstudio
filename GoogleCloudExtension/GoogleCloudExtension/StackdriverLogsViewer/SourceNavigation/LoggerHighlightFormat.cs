@@ -25,14 +25,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     internal class LoggerTag : TextMarkerTag
     {
-        public LoggerTag() : base("LogHighlightFormat") { }
+        public LoggerTag() : base("LoggerMarkerFormat") { }
     }
 
     /// <summary>
     /// Define a custom <seealso cref="EditorFormatDefinition"/> for highlighting logging methods.
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
-    [Name("LoggingFormat")]
+    [Name("LoggerMarkerFormat")]
     [UserVisible(true)]
     internal class LoggerHighlightFormat : MarkerFormatDefinition
     {

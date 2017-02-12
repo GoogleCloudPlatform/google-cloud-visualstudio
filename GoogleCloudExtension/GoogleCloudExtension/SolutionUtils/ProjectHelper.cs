@@ -51,12 +51,6 @@ namespace GoogleCloudExtension.SolutionUtils
         public readonly string FullName;
 
         /// <summary>
-        /// The divided folders array. 
-        /// Example:  c:\test\one.csproj goes to ["c:", "test", "one.csproj"]
-        /// </summary>
-        public readonly string[] SubPaths;
-
-        /// <summary>
         /// The unique name of the project. Commonly it is the project relative path from solution path.
         /// </summary>
         public readonly string UniqueName;
@@ -82,11 +76,17 @@ namespace GoogleCloudExtension.SolutionUtils
             try
             {
                 FullName = project.FullName.ToLowerInvariant();
-                SubPaths = FullName.Split(IOPath.DirectorySeparatorChar);
                 UniqueName = _project.UniqueName.ToLowerInvariant();
                 int idx = FullName.LastIndexOf(UniqueName);
-                if (FullName.Length - idx == UniqueName.Length){
+                if (FullName.Length - idx == UniqueName.Length)
+                {
+                    idx = FullName[idx] != IOPath.DirectorySeparatorChar ? idx - 1 : idx;
                     ProjectRoot = FullName.Substring(0, idx);
+                }
+                else
+                {
+                    // Fallback to project directory.
+                    ProjectRoot = IOPath.GetDirectoryName(FullName);
                 }
 
                 ParseProperties();
