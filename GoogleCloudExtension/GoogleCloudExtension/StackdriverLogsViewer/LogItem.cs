@@ -107,6 +107,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Gets the log message to be displayed at top level.
         /// </summary>
         public string Message { get; }
+
         /// <summary>
         /// Gets the log severity tooltip. Data binding to the severity icon tool tip.
         /// </summary>
@@ -339,6 +340,5 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             this.ShowToolTip(window);
         }
-
     }
 }

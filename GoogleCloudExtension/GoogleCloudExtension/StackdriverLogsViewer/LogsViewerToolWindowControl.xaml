@@ -28,8 +28,7 @@
                 x:Key="MessageColumn" >
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate >
-                        <StackPanel 
-                            Orientation="Horizontal">
+                        <StackPanel Orientation="Horizontal">
                         <Button
                             Margin="6,0,12,0"
                             Style="{StaticResource SourceLinkButtonStyle}"

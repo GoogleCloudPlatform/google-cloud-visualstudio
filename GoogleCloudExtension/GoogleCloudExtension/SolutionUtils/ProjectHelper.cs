@@ -57,7 +57,6 @@ namespace GoogleCloudExtension.SolutionUtils
 
         /// <summary>
         /// The project root directory. 
-        /// It can be null if <seealso cref="UniqueName"/> is not end of <seealso cref="FullName"/> directory name
         /// </summary>
         public readonly string ProjectRoot;
 

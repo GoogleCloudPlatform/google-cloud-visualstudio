@@ -58,21 +58,27 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
+        /// When mouse clicks on source link text, execute the button command.
         /// When mouse clicks on a row, toggle display the row detail.
         /// If the mouse is clikcing on detail panel, does not collapse it.        
         /// </summary>
         private void dataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             var dependencyObj = e.OriginalSource as DependencyObject;
-            var linkButton = DataGridUtils.FindAncestorControl<Button>(e.OriginalSource as DependencyObject);
-            if (linkButton != null)
+            Debug.WriteLine($"Original source is {e.OriginalSource.ToString()}, type is {e.OriginalSource.GetType().Name}");
+            if (e.OriginalSource is TextBlock)
             {
-                e.Handled = true;
-                if (linkButton.Command.CanExecute(null))
+                var textBlock = e.OriginalSource as TextBlock;
+                if (textBlock.Name == "_sourceLinkTextBlock")
                 {
-                    linkButton.Command.Execute(null);
+                    var button = DataGridUtils.FindAncestorControl<Button>(dependencyObj);
+                    e.Handled = true;
+                    if (button.Command != null && button.Command.CanExecute(null))
+                    {
+                        button.Command.Execute(null);
+                    }
+                    return;
                 }
-                return;
             }
 
             DataGridRow row = DataGridUtils.FindAncestorControl<DataGridRow>(dependencyObj);

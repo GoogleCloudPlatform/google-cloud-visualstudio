@@ -70,6 +70,5 @@ namespace GoogleCloudExtension.SolutionUtils
             }
             return KnownProjectTypes.None;
         }
-
     }
 }

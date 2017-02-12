@@ -143,7 +143,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
-                    <TextBlock                         
+                    <TextBlock Name="_sourceLinkTextBlock"                     
                         Style="{StaticResource SourceLinkTextStyle}"
                         Text="{Binding SourceLinkCaption}"
                         TextWrapping="NoWrap">

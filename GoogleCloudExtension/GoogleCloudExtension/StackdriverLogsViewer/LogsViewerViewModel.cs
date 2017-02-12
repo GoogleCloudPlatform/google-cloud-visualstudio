@@ -75,7 +75,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private bool _showRequestErrorMessage;
         private bool _showRequestStatus;
         private bool _showCancelRequestButton;
-        private bool _showSourceLocationLink = true;
         private CancellationTokenSource _cancellationTokenSource;
         private TimeZoneInfo _selectedTimeZone = TimeZoneInfo.Local;
 
@@ -364,8 +363,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             foreach (var log in logEntries)
             {
-                var item = new LogItem(log);
-                _logs.Add(item);
+                _logs.Add(new LogItem(log));
             }
         }
 
