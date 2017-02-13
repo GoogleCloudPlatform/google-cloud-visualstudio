@@ -26,7 +26,9 @@ namespace GoogleCloudExtension.Deployment
     internal static class CommonUtils
     {
         /// <summary>
-        /// Returns the project name given the path to the project.json.
+        /// Returns the project name given the path to the project.json. If the project.json file defines a
+        /// "name" property then it is used as the name for the final assembly, otherwise the name of the directory
+        /// is used as the name of the final assembly.
         /// </summary>
         /// <param name="projectPath">The full path to the project.json of the project.</param>
         internal static string GetProjectName(string projectPath)
