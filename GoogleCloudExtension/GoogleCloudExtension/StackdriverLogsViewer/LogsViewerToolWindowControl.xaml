@@ -29,11 +29,18 @@
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate >
                         <StackPanel Orientation="Horizontal">
-                        <Button
-                            Margin="6,0,12,0"
-                            Style="{StaticResource SourceLinkButtonStyle}"
-                            Command="{Binding SourceLinkCommand}"
-                            Visibility="{Binding SourceLinkVisible, Converter={StaticResource visibilityConverter}}"/>
+                            <controls:IconButton
+                                x:Name="_sourceLinkButton"
+                                Margin="6,0,12,0"
+                                Style="{StaticResource MouseOverLinkButtonStyle}"
+                                Command="{Binding SourceLinkCommand}"
+                                Visibility="{Binding SourceLinkVisible, Converter={StaticResource visibilityConverter}}"
+                                Content="{Binding SourceLinkCaption}">
+                                <controls:IconButton.ToolTip>
+                                    <ToolTip Content="{Binding SourceFilePath}" 
+                                             Style="{StaticResource CommonTooltipStyle}" />
+                                </controls:IconButton.ToolTip>
+                            </controls:IconButton>
                             <TextBlock 
                                 Text="{Binding Message}"
                                 TextWrapping="NoWrap"

@@ -420,6 +420,28 @@
         </Setter>
     </Style>
 
+    <Style x:Key="MouseOverLinkButtonStyle" TargetType="{x:Type controls:IconButton}" >
+        <Setter Property="MouseOverForeground" Value="Blue" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:IconButton}">
+                    <TextBlock x:Name="_textBlock" 
+                               Style="{StaticResource CommonTextStyle}"
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis">
+                        <ContentPresenter />
+                    </TextBlock>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Foreground" TargetName="_textBlock" Value="{Binding MouseOverForeground, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Setter Property="TextDecorations" TargetName="_textBlock" Value="Underline" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <!-- Common PasswordWithReveal style. -->
 
     <!-- Ultra simple template for the TextBox used to display the password. -->
