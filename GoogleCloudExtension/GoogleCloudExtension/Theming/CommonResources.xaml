@@ -425,7 +425,10 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:IconButton}">
-                    <TextBlock x:Name="_textBlock">
+                    <TextBlock x:Name="_textBlock" 
+                               Style="{StaticResource CommonTextStyle}"
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis">
                         <ContentPresenter />
                     </TextBlock>
                     <ControlTemplate.Triggers>

@@ -65,20 +65,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private void dataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             var dependencyObj = e.OriginalSource as DependencyObject;
-            Debug.WriteLine($"Original source is {e.OriginalSource.ToString()}, type is {e.OriginalSource.GetType().Name}");
-            if (e.OriginalSource is TextBlock)
+            if (OriginFromSourceLink(e.OriginalSource))
             {
-                var textBlock = e.OriginalSource as TextBlock;
-                if (textBlock.Name == "_sourceLinkTextBlock")
-                {
-                    var button = DataGridUtils.FindAncestorControl<Button>(dependencyObj);
-                    e.Handled = true;
-                    if (button.Command != null && button.Command.CanExecute(null))
-                    {
-                        button.Command.Execute(null);
-                    }
-                    return;
-                }
+                e.Handled = true;
+                return;
             }
 
             DataGridRow row = DataGridUtils.FindAncestorControl<DataGridRow>(dependencyObj);
@@ -90,6 +80,27 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                         row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
                 }
             }
+        }
+
+        private bool OriginFromSourceLink(object originalSource)
+        {
+            Debug.WriteLine($"Original source is {originalSource.ToString()}, type is {originalSource.GetType().Name}");
+            if (originalSource is TextBlock)
+            {
+                var textBlock = originalSource as TextBlock;
+                var button = DataGridUtils.FindAncestorControl<Controls.IconButton>(originalSource as DependencyObject);
+                if (button?.Name != "_sourceLinkButton")
+                {
+                    return false;
+                }
+                if (button.Command != null && button.Command.CanExecute(null))
+                {
+                    button.Command.Execute(null);
+                }
+                return true;
+            }
+
+            return false;
         }
     }
 }
