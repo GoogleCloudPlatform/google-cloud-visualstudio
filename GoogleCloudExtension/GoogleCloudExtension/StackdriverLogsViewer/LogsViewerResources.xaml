@@ -101,16 +101,16 @@
                         x:Name="_backButtonBorder"
                         Background="{TemplateBinding Background}">
                         <StackPanel Orientation="Horizontal" >
-                        <Image 
-                            x:Name="_backButtonImage"
-                            VerticalAlignment="Center"
-                            Stretch="None"
-                            Source="{TemplateBinding NormalIcon}" />
-                        <TextBlock
-                            x:Name="_backButtonContent"
-                            VerticalAlignment="Center"
-                            Padding="6"
-                            Text="{TemplateBinding Content}" />
+                            <Image 
+                                x:Name="_backButtonImage"
+                                VerticalAlignment="Center"
+                                Stretch="None"
+                                Source="{TemplateBinding NormalIcon}" />
+                            <TextBlock
+                                x:Name="_backButtonContent"
+                                VerticalAlignment="Center"
+                                Padding="6"
+                                Text="{TemplateBinding Content}" />
                         </StackPanel>
                     </Border>
                     <ControlTemplate.Triggers>
@@ -126,37 +126,6 @@
         </Setter>
     </Style>
 
-    <!-- Style for source link button text -->
-    <Style x:Key="SourceLinkTextStyle" 
-           TargetType="{x:Type TextBlock}" 
-           BasedOn="{StaticResource CommonTextStyle}">
-        <Style.Triggers>
-            <DataTrigger Binding="{Binding IsMouseOver,RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}}" Value="True">
-                <Setter Property="TextDecorations" Value="Underline" />
-                <Setter Property="Foreground" Value="Blue" />
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-    
-    <!-- Style for source linke button -->
-    <Style x:Key="SourceLinkButtonStyle" TargetType="Button">
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="Button">
-                    <TextBlock Name="_sourceLinkTextBlock"                     
-                        Style="{StaticResource SourceLinkTextStyle}"
-                        Text="{Binding SourceLinkCaption}"
-                        TextWrapping="NoWrap">
-                        <TextBlock.ToolTip>
-                            <ToolTip Content="{Binding SourceFilePath}" 
-                                     Style="{StaticResource CommonTooltipStyle}" />
-                        </TextBlock.ToolTip>
-                    </TextBlock>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-    
     <!-- Style for search Icon -->
     <Style x:Key="SearchIconStyle" TargetType="{x:Type controls:IconButton}">
         <Setter Property="Background" Value="Transparent" />
