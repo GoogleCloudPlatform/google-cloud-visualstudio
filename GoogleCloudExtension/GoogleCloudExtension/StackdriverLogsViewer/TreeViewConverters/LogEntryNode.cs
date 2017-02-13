@@ -12,35 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-
 using Google.Apis.Logging.v2.Data;
-using GoogleCloudExtension.Utils;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
     internal class LogEntryNode : ObjectNodeTree
     {
         /// <summary>
-        /// The list of supported classes.
-        /// </summary>
-        private readonly static Type[] s_supportedTypes = new Type[]
-        {
-            typeof(MonitoredResource),
-            typeof(HttpRequest),
-            typeof(LogEntryOperation),
-            typeof(LogEntrySourceLocation),
-            typeof(LogLine),
-            typeof(LogEntry)
-        };
-
-        /// <summary>
-        /// Create an instance of the <seealso cref="ObjectNodeTree"/> class.
+        /// Create an instance of the <seealso cref="LogEntryNode"/> class.
         /// </summary>
         /// <param name="logEntry">A <seealso cref="LogEntry"/> object.</param>
         public LogEntryNode(LogEntry logEntry) : base("", logEntry, null) { }
@@ -61,14 +40,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             AddChildren("textPayload", log.TextPayload);
             AddChildren("timestamp", log.Timestamp);
             AddChildren("trace", log.Trace);
-        }
-
-        private void AddChildren(string name, object obj)
-        {
-            if (obj != null)
-            {
-                Children.Add(new ObjectNodeTree(name, obj, this));
-            }
         }
     }
 }

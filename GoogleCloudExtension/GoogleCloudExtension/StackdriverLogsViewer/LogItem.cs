@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     internal class LogItem : Model
     {
-        private const string JasonPayloadMessageFieldName = "message";
+        private const string JsonPayloadMessageFieldName = "message";
         private const string AnyIconPath = "StackdriverLogsViewer/Resources/ic_log_level_any_12.png";
         private const string DebugIconPath = "StackdriverLogsViewer/Resources/ic_log_level_debug_12.png";
         private const string ErrorIconPath = "StackdriverLogsViewer/Resources/ic_log_level_error_12.png";
@@ -255,9 +255,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (Entry?.JsonPayload != null)
             {
                 // If the JsonPload has message filed, display this field.
-                if (Entry.JsonPayload.ContainsKey(JasonPayloadMessageFieldName))
+                if (Entry.JsonPayload.ContainsKey(JsonPayloadMessageFieldName))
                 {
-                    message = Entry.JsonPayload[JasonPayloadMessageFieldName].ToString();
+                    message = Entry.JsonPayload[JsonPayloadMessageFieldName].ToString();
                 }
                 else
                 {

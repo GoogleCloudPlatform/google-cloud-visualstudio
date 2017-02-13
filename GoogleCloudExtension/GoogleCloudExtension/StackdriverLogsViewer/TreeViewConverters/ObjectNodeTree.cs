@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
+using GoogleCloudExtension.Utils;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -33,6 +35,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     public class ObjectNodeTree
     {
         private const string JsonObjectNameSpace = "Newtonsoft.Json";
+
+        private string _filterLabelOverride;
+        private string _fitlerValueOverride;
 
         /// <summary>
         /// The list of supported classes.
@@ -71,12 +76,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the label name for showing maching logs filter.
         /// </summary>
-        public string FilterLabel { get; private set; }
+        public string FilterLabel => _filterLabelOverride ?? _name;
 
         /// <summary>
         /// Gets the value for showing maching logs filter.
         /// </summary>
-        public string FilterValue { get; private set; }
+        public string FilterValue => GetFilterValue();
 
         /// <summary>
         /// Gets tree node children.
@@ -99,14 +104,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             Parent = parent;
             _name = name;
-            FilterLabel = _name;
             if (obj == null)
             {
                 return;
             }
 
             ParseObjectTree(obj);
-            FilterValue = FilterValue ?? NodeValue;
         }
 
         /// <summary>
@@ -123,15 +126,24 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             else if (obj is DateTime)
             {
                 NodeValue = ((DateTime)obj).ToString(Resources.LogViewerLogItemDateTimeFormat);
-                FilterValue = ((DateTime)obj).ToUniversalTime().ToString("O");
+                _fitlerValueOverride = ((DateTime)obj).ToUniversalTime().ToString("O");
             }
             else if (type.IsArray)
             {
+                Debug.WriteLine($"Json object, {_name},  {type.Name}");
                 ParseArray(obj as IEnumerable);
             }
             else if (obj is IDictionary)
             {
                 ParseDictionary(obj as IDictionary);
+            }
+            else if (obj is JObject)
+            {
+                Debug.Assert(false, $"JObject should go to JObjectNode.ParseObjectTree found, ${type}");
+            }
+            else if (obj is JArray)
+            {
+                Debug.Assert(false, $"JArray should go to JObjectNode.ParseObjectTree found, ${type}");
             }
             else if (s_supportedTypes.Contains(type))
             {
@@ -139,11 +151,31 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
             else if (type.Namespace.StartsWith(JsonObjectNameSpace))
             {
+                Debug.WriteLine($"Json object, {_name},  {type.Name}");
                 NodeValue = obj.ToString();
             }
             else
             {
                 Debug.Assert(false, $"Unexpected type found, ${type}");
+            }
+        }
+
+        protected void AddChildren(string name, object obj)
+        {
+            if (obj != null)
+            {
+                if (obj is JObject)
+                {
+                    Children.Add(new JObjectNode(name, obj as JObject, this));
+                }
+                else if (obj is JArray)
+                {
+                    Children.Add(new JArrayNode(name, obj as JArray, this));
+                }
+                else
+                {
+                    Children.Add(new ObjectNodeTree(name, obj, this));
+                }
             }
         }
 
@@ -153,8 +185,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             int i = 0;
             foreach (var element in enumerable)
             {
-                Children.Add(
-                    new ObjectNodeTree(String.Format(Resources.LogViewerDetailTreeViewArrayIndexFormat, i), element, this));
+                AddChildren(String.Format(Resources.LogViewerDetailTreeViewArrayIndexFormat, i), element);
                 ++i;
             }
 
@@ -166,9 +197,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             foreach (var key in dictionaryObject.Keys)
             {
                 string name = key.ToString();
-                var dictObj = new ObjectNodeTree(name, dictionaryObject[key], this);
-                dictObj.FilterLabel = $"\"{name}\"";
-                Children.Add(dictObj);
+                AddChildren(name, dictionaryObject[key]);
+                if (name.Contains('.'))
+                {
+                    Children.Last()._filterLabelOverride = $"\"{name}\"";
+                }
             }
         }
 
@@ -193,18 +226,23 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     object v = p.GetValue(obj);
                     if (v != null)
                     {
-                        Children.Add(new ObjectNodeTree(p.Name, v, this));
+                        AddChildren(p.Name, v);
                     }
                 }
                 catch (Exception ex) when (IsPropertyInfoGetValueException(ex))
                 {
                     // Value convertion error, display a general error so as not to hide the problem.
-                    Children.Add(
-                        new ObjectNodeTree(p.Name, Resources.LogViewerDataConversionGenericError, this));
+                    AddChildren(p.Name, Resources.LogViewerDataConversionGenericError);
                     Debug.WriteLine(ex.ToString());
                 }
             }
         }
         #endregion
+
+        private string GetFilterValue()
+        {
+            var value = _fitlerValueOverride ?? NodeValue;
+            return StringUtils.Escape(value);
+        }
     }
 }
