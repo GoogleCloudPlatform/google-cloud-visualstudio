@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using EnvDTE;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -102,6 +103,15 @@ namespace GoogleCloudExtension.Utils
             {
                 Debug.WriteLine($"Failed to call SetForegroundWindow.");
             }
+	}
+
+        /// <summary>
+        /// Executes the "File.SaveAll" command in the shell, which will save all currently dirty files.
+        /// </summary>
+        public static void SaveAllFiles()
+        {
+            var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
+            dte.ExecuteCommand("File.SaveAll");
         }
 
         private static void SetShellNormal()

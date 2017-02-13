@@ -893,49 +893,17 @@
     <value>Manage Windows credentials</value>
     <comment>Caption used in the hyperlink shown in the Windows credentials chooser dialog.</comment>
   </data>
-  <data name="CloudExplorerGaeFailedInstancesMessage" xml:space="preserve">
-    <value>Failed to load the list of Google Cloud App Engine instances</value>
-    <comment>Message shown in the output window when failed to load list of GAE instances</comment>
-  </data>
   <data name="CloudExplorerGaeFailedServicesMessage" xml:space="preserve">
     <value>Failed to load the list of Google Cloud App Engine services</value>
     <comment>Message shown in the output window when failed to load list of GAE services.</comment>
-  </data>
-  <data name="CloudExplorerGaeFailedToLoadInstancesCaption" xml:space="preserve">
-    <value>Failed to load instances.</value>
-    <comment>Caption shown when failed to load GAE instances.</comment>
   </data>
   <data name="CloudExplorerGaeFailedToLoadServicesCaption" xml:space="preserve">
     <value>Failed to load services.</value>
     <comment>Caption shown when failed to load GAE services,</comment>
   </data>
-  <data name="CloudExplorerGaeFailedToLoadVersionsCaption" xml:space="preserve">
-    <value>Failed to load versions.</value>
-    <comment>Caption shown when failed to load GAE versions.</comment>
-  </data>
-  <data name="CloudExplorerGaeFailedVersionsMessage" xml:space="preserve">
-    <value>Failed to load the list of Google Cloud App Engine versions</value>
-    <comment>Message shown in the output window when failed to load list of GAE versions</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceCategory" xml:space="preserve">
-    <value>Instance Properties</value>
-    <comment>Category for the GAE instance properties.</comment>
-  </data>
-  <data name="CloudExplorerGaeLoadingInstancesCaption" xml:space="preserve">
-    <value>Loading instances...</value>
-    <comment>Caption shown when loading GAE instances.</comment>
-  </data>
   <data name="CloudExplorerGaeLoadingServicesCaption" xml:space="preserve">
     <value>Loading services...</value>
     <comment>Caption shown when loading GAE services.</comment>
-  </data>
-  <data name="CloudExplorerGaeLoadingVersionCaption" xml:space="preserve">
-    <value>Loading versions...</value>
-    <comment>Caption shown when loading GAE versions.</comment>
-  </data>
-  <data name="CloudExplorerGaeNoInstancesFoundCaption" xml:space="preserve">
-    <value>No instances found.</value>
-    <comment>Caption shown when no GAE instances are found.</comment>
   </data>
   <data name="CloudExplorerGaeNoServicesFoundCaption" xml:space="preserve">
     <value>No services found.</value>
@@ -957,42 +925,6 @@
     <value>Version Properties</value>
     <comment>Category for the GAE version properties.</comment>
   </data>
-  <data name="CloudExplorerGaeInstanceAppEngineReleaseDisplayName" xml:space="preserve">
-    <value>App Engine Release</value>
-    <comment>The display name for the GAE instance app engine release</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceAverageLatencyDisplayName" xml:space="preserve">
-    <value>Average Latency</value>
-    <comment>The display name for the GAE instance average latency</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceMemoryUsageDisplayName" xml:space="preserve">
-    <value>Memory Usage</value>
-    <comment>The display name for the GAE instance memory usage.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceStartTimeDisplayName" xml:space="preserve">
-    <value>Start Time</value>
-    <comment>The display name for the GAE instance start time.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceVirtualMachineCategory" xml:space="preserve">
-    <value>Instance Virtual Machine Properties</value>
-    <comment>Category for the GAE instance virtual machine properties.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceVirtualMachineIdDisplayName" xml:space="preserve">
-    <value>Id</value>
-    <comment>The display name for the GAE instance virtual machine id.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceVirtualMachineNameDisplayName" xml:space="preserve">
-    <value>Name</value>
-    <comment>The display name for the GAE instance virtual machine name.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceVirtualMachineStatusDisplayName" xml:space="preserve">
-    <value>Status</value>
-    <comment>The display name for the GAE instance virtual machine status.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceVirtualMachineZoneDisplayName" xml:space="preserve">
-    <value>Zone</value>
-    <comment>The display name for the GAE instance virtual machine zone.</comment>
-  </data>
   <data name="CloudExplorerGaeServiceOpen" xml:space="preserve">
     <value>Open Running Service</value>
     <comment>Header for the menu that opens the service in a browser.</comment>
@@ -1000,26 +932,6 @@
   <data name="CloudExplorerGaeVersionCreationTimeDisplayName" xml:space="preserve">
     <value>Creation Time</value>
     <comment>The display name for the GAE version creation time</comment>
-  </data>
-  <data name="CloudExplorerGaeVersionInstanceClassDisplayName" xml:space="preserve">
-    <value>Instance Class</value>
-    <comment>The display name for the GAE version instance class</comment>
-  </data>
-  <data name="CloudExplorerGaeVersionResoucesDiskDisplayName" xml:space="preserve">
-    <value>Disk (GB)</value>
-    <comment>The display name for the GAE version resource disk.</comment>
-  </data>
-  <data name="CloudExplorerGaeVersionResoucesMemoryDisplayName" xml:space="preserve">
-    <value>Memory (GB)</value>
-    <comment>The display name for the GAE version resource memory.</comment>
-  </data>
-  <data name="CloudExplorerGaeVersionResourcesCategory" xml:space="preserve">
-    <value>Version Resouces Properties</value>
-    <comment>Category for the GAE version resources properties.</comment>
-  </data>
-  <data name="CloudExplorerGaeVersionVirtualMachineDisplayName" xml:space="preserve">
-    <value>Virtual Machine</value>
-    <comment>The display name for the GAE version virtual machine</comment>
   </data>
   <data name="CloudExplorerGaeVersionOpen" xml:space="preserve">
     <value>Open Running Version</value>
@@ -1512,7 +1424,7 @@
     <comment>Message printed in the output window when there's a timeout waiting for the service IP address.</comment>
   </data>
   <data name="GkePublishWaitingForServiceIpMessage" xml:space="preserve">
-    <value>Waiting for Service IP address...</value>
+    <value>Waiting for service IP address...</value>
     <comment>Message shown while waiting for a public IP to be assigned to the exposed Kubernetes service.</comment>
   </data>
   <data name="PublishDialogChoiceStepGkeName" xml:space="preserve">
@@ -1570,5 +1482,137 @@
   <data name="EnterNameDialogNameMessage" xml:space="preserve">
     <value>_Enter name:</value>
     <comment>Message to show on the dialog for the name text box.</comment>
+  </data>
+  <data name="GenerateConfigurationMenuHeader" xml:space="preserve">
+    <value>Generate app.yaml and Dockerfile for {0}</value>
+    <comment>Header for the generate configuration command. {0} is the name of the project.</comment>
+  </data>
+  <data name="FlexPublishEmptyVersionMessage" xml:space="preserve">
+    <value>The version name cannot be empty.</value>
+    <comment>Message shown when the version name is empty.</comment>
+  </data>
+  <data name="FlexPublishInvalidVersionMessage" xml:space="preserve">
+    <value>Invalid version {0}. The version must only use lowercase letters, digits and the - character.</value>
+    <comment>Message shown for an invalid version name. {0} is the version name provided by the user.</comment>
+  </data>
+  <data name="GkePublishEmptyDeploymentNameMessage" xml:space="preserve">
+    <value>The deployment name cannot be empty.</value>
+    <comment>Message shown when the deployment name is empty.</comment>
+  </data>
+  <data name="GkePublishEmptyDeploymentVersionMessage" xml:space="preserve">
+    <value>The deployment version cannot be empty.</value>
+    <comment>Message shown when the deployment version is empty.</comment>
+  </data>
+  <data name="GkePublishInvalidDeploymentNameMessage" xml:space="preserve">
+    <value>Invalid deployment name {0}. The name must only user lowercase letters, digits and the - character.</value>
+    <comment>Message shown for an invalid deployment name. {0} is the deployment name given by the user.</comment>
+  </data>
+  <data name="GkePublishInvalidDeploymentVersionMessage" xml:space="preserve">
+    <value>Invalid deployment version {0}. The version must only use lowercase letters, digits and the - character.</value>
+    <comment>Message shown for an invalid deployment version. {0} is the deployment version given by the user.</comment>
+  </data>
+  <data name="CloudExplorerGaeServiceIdDescription" xml:space="preserve">
+    <value>Relative name of the service within the application.</value>
+    <comment>The description of the Id property.</comment>
+  </data>
+  <data name="CloudExplorerGaeServiceNameDescription" xml:space="preserve">
+    <value>Full path to the service resource in the API.</value>
+    <comment>The description of the name property for a service item.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionCreatedByDescription" xml:space="preserve">
+    <value>Email address of the user who created this version.</value>
+    <comment>The description for the CreatedBy property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionCreatedByDisplayName" xml:space="preserve">
+    <value>Created By</value>
+    <comment>The display name for the CreatedBy property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionCreateTimeDescription" xml:space="preserve">
+    <value>Time that this version was created.</value>
+    <comment>The descripton for the CreationTime property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionIdDescription" xml:space="preserve">
+    <value>Relative name of the version within the service.</value>
+    <comment>Description of the id property in a version.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionNameDescription" xml:space="preserve">
+    <value>Full path to the Version resource in the API.</value>
+    <comment>Description of the name property in a version.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionServingStatusDescription" xml:space="preserve">
+    <value>Current serving status of this version.</value>
+    <comment>The description for the serving status property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionServingStatusDisplayName" xml:space="preserve">
+    <value>Serving Status</value>
+    <comment>The display name for the serving status property.</comment>
+  </data>
+  <data name="PropertyWindowItemIdDisplayName" xml:space="preserve">
+    <value>Id</value>
+    <comment>General display name for the Id property.</comment>
+  </data>
+  <data name="PropertyWindowItemNameDisplayName" xml:space="preserve">
+    <value>Name</value>
+    <comment>General display name used for the property.</comment>
+  </data>
+  <data name="GenerateConfigurationAppYamlGeneratedMessage" xml:space="preserve">
+    <value>The file app.yaml was generated succesfully.</value>
+    <comment>Message shown to the user when the app.yaml is generated.</comment>
+  </data>
+  <data name="GenerateConfigurationAppYamlOverwriteMessage" xml:space="preserve">
+    <value>The file app.yaml already exists in your project. Are you sure you want to overwrite it?</value>
+    <comment>Message shown to the user to confirm the overwrite of the existing app.yaml.</comment>
+  </data>
+  <data name="GenerateConfigurationDockerfileGeneratedMessage" xml:space="preserve">
+    <value>The file Dockerfile was generated succesfully.</value>
+    <comment>Message shown to the user when the Dockerfile is generated.</comment>
+  </data>
+  <data name="GenerateConfigurationDockerfileOverwriteMessage" xml:space="preserve">
+    <value>The file Dockerfile already exists in your project. Are you sure you want to overwrite it?</value>
+    <comment>Message shown to the user to confirm the overwrite of the existing Dockerfile.</comment>
+  </data>
+  <data name="GenerateConfigurationOverwritePromptTitle" xml:space="preserve">
+    <value>Configuration files already exist</value>
+    <comment>Title of the prompt used to advice the user that a file will be overwritten.</comment>
+  </data>
+  <data name="UiOverwriteButtonCaption" xml:space="preserve">
+    <value>_Overwrite</value>
+    <comment>Caption for overwrite buttons in prompts.</comment>
+  </data>
+  <data name="UiSkipFileButtonCaption" xml:space="preserve">
+    <value>_Skip file</value>
+    <comment>Caption for the skip file button in prompts.</comment>
+  </data>
+  <data name="GenerateConfigurationFileGeneratinErrorTitle" xml:space="preserve">
+    <value>Failed to generate file</value>
+    <comment>Title for the error prompt shown when a configuration file cannot be generated.</comment>
+  </data>
+  <data name="GenerateConfigurationFileGenerationErrorMessage" xml:space="preserve">
+    <value>Failed to generate file {0}.</value>
+    <comment>Error message shown when a configuration file cannot be generated.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionRuntimeDescription" xml:space="preserve">
+    <value>The desired runtime for this version.</value>
+    <comment>The description for the Runtime property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionRuntimeDisplayName" xml:space="preserve">
+    <value>Desired Runtime</value>
+    <comment>The display name for the Runtime property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionUrlDescription" xml:space="preserve">
+    <value>The address for this version.</value>
+    <comment>The description for the Url property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionUrlDisplayName" xml:space="preserve">
+    <value>Address</value>
+    <comment>The display name for the Url property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionEnvironmentDescription" xml:space="preserve">
+    <value>App Engine execution environment for this version.</value>
+    <comment>The description for the Environment property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionEnvironmentDisplayName" xml:space="preserve">
+    <value>Environment</value>
+    <comment>The display name for the Environment property.</comment>
   </data>
 </root>

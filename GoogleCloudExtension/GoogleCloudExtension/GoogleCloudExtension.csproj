@@ -101,8 +101,6 @@
     </Compile>
     <Compile Include="CloudExplorerSources\Gae\GaeSource.cs" />
     <Compile Include="CloudExplorerSources\Gae\GaeSourceRootViewModel.cs" />
-    <Compile Include="CloudExplorerSources\Gae\InstanceItem.cs" />
-    <Compile Include="CloudExplorerSources\Gae\InstanceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gae\ServiceItem.cs" />
     <Compile Include="CloudExplorerSources\Gae\ServiceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gae\VersionItem.cs" />
@@ -226,6 +224,7 @@
       <DependentUpon>PublishDialogWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="PublishDialog\PublishDialogWindowViewModel.cs" />
+    <Compile Include="GenerateConfigurationCommand\GenerateConfigurationContextMenuCommand.cs" />
     <Compile Include="PublishDialog\PublishProjectContextMenuCommand.cs" />
     <Compile Include="PublishDialog\PublishProjectMainMenuCommand.cs" />
     <Compile Include="ProgressDialog\ProgressDialogWindow.cs" />
@@ -257,6 +256,7 @@
       <DependentUpon>GcsFileProgressDialogWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utils\GaeUtils.cs" />
+    <Compile Include="Utils\GcpPublishStepsUtils.cs" />
     <Compile Include="Utils\ProgressBarHelper.cs" />
     <Compile Include="Utils\ShellUtils.cs" />
     <Compile Include="Utils\StatusbarHelper.cs" />
