@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
-using Google.Apis.Logging.v2.Data.Extensions;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
@@ -111,6 +110,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Gets the toggle advanced and simple filters button Command.
         /// </summary>
         public ProtectedCommand FilterSwitchCommand { get; }
+
+        /// <summary>
+        /// Gets the command that filters log entris on a detail tree view field value.
+        /// </summary>
+        public ProtectedCommand<ObjectNodeTree> DetailTreeNodeFilterCommand { get; }
 
         /// <summary>
         /// Gets or sets the advanced filter text box content.
@@ -291,6 +295,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             PropertyChanged += OnPropertyChanged;
             ResourceTypeSelector = new ResourceTypeMenuViewModel(_dataSource);
             ResourceTypeSelector.PropertyChanged += OnPropertyChanged;
+            DetailTreeNodeFilterCommand = new ProtectedCommand<ObjectNodeTree>(FilterOnTreeNodeValue);
         }
 
         /// <summary>
@@ -341,6 +346,28 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             AdvancedFilterText = filter.ToString();
+            Reload();
+        }
+
+        private void FilterOnTreeNodeValue(ObjectNodeTree node)
+        {
+            StringBuilder newFilter = new StringBuilder();
+            newFilter.Append($"{node.FilterLabel}=\"{node.FilterValue}\"");            
+            while ((node = node.Parent).Parent != null)     
+            {
+                newFilter.Insert(0, $"{node.FilterLabel}.");
+            }
+            if (ShowAdvancedFilter)
+            {
+                newFilter.Insert(0, Environment.NewLine);
+                newFilter.Insert(0, AdvancedFilterText);
+            }
+            else
+            {
+                newFilter.Insert(0, ComposeSimpleFilters());
+            }
+            AdvancedFilterText = newFilter.ToString();
+            ShowAdvancedFilter = true;
             Reload();
         }
 

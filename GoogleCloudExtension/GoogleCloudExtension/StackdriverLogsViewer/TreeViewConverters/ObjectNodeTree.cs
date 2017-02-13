@@ -20,7 +20,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
+namespace GoogleCloudExtension.StackdriverLogsViewer
 {
     /// <summary>
     /// Log Viewer detail tree view object node.
@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
     /// The object properties are of ObjectNodeTree type too,
     /// thus the ObjectNodeTree forms a tree structure.
     /// </summary>
-    internal class ObjectNodeTree
+    public class ObjectNodeTree
     {
         private const string JsonObjectNameSpace = "Newtonsoft.Json";
 
@@ -43,8 +43,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             typeof(HttpRequest),
             typeof(LogEntryOperation),
             typeof(LogEntrySourceLocation),
-            typeof(LogLine),
-            typeof(LogEntry)
+            typeof(LogLine)
         };
 
         /// <summary>
@@ -70,44 +69,61 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             String.Format(Resources.LogViewerDetailTreeViewNameLabelFormat, _name);
 
         /// <summary>
+        /// Gets the label name for showing maching logs filter.
+        /// </summary>
+        public string FilterLabel { get; private set; }
+
+        /// <summary>
+        /// Gets the value for showing maching logs filter.
+        /// </summary>
+        public string FilterValue { get; private set; }
+
+        /// <summary>
         /// Gets tree node children.
         /// It contains all properties of the node object.
         /// </summary>
         public List<ObjectNodeTree> Children => _children.Value;
 
         /// <summary>
-        /// Create an instance of the <seealso cref="ObjectNodeTree"/> class.
+        /// The parent <seealso cref="ObjectNodeTree"/> object.
         /// </summary>
-        /// <param name="obj">An object</param>
-        public ObjectNodeTree(object obj) : this("", obj)
-        { }
+        public ObjectNodeTree Parent { get; }
 
         /// <summary>
         /// Create an instance of the <seealso cref="ObjectNodeTree"/> class.
         /// </summary>
         /// <param name="name">object name</param>
         /// <param name="obj">An object</param>
-        private ObjectNodeTree(string name, object obj)
+        /// <param name="parent">The parent <seealso cref="ObjectNodeTree"/> object.</param>
+        public ObjectNodeTree(string name, object obj, ObjectNodeTree parent)
         {
+            Parent = parent;
             _name = name;
+            FilterLabel = _name;
             if (obj == null)
             {
                 return;
             }
 
             ParseObjectTree(obj);
+            FilterValue = FilterValue ?? NodeValue;
         }
 
         /// <summary>
         /// Parsing the object properties recursively as a tree.
         /// </summary>
-        private void ParseObjectTree(object obj)
+        protected virtual void ParseObjectTree(object obj)
         {
             Type type = obj.GetType();
 
-            if (obj.IsNumericType() || obj is string || obj is DateTime || obj is Boolean)
+            if (obj.IsNumericType() || obj is string || obj is Boolean)
             {
                 NodeValue = obj.ToString();
+            }
+            else if (obj is DateTime)
+            {
+                NodeValue = ((DateTime)obj).ToString(Resources.LogViewerLogItemDateTimeFormat);
+                FilterValue = ((DateTime)obj).ToUniversalTime().ToString("O");
             }
             else if (type.IsArray)
             {
@@ -138,7 +154,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             foreach (var element in enumerable)
             {
                 Children.Add(
-                    new ObjectNodeTree(String.Format(Resources.LogViewerDetailTreeViewArrayIndexFormat, i), element));
+                    new ObjectNodeTree(String.Format(Resources.LogViewerDetailTreeViewArrayIndexFormat, i), element, this));
                 ++i;
             }
 
@@ -150,7 +166,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
             foreach (var key in dictionaryObject.Keys)
             {
                 string name = key.ToString();
-                Children.Add(new ObjectNodeTree(name, dictionaryObject[key]));
+                var dictObj = new ObjectNodeTree(name, dictionaryObject[key], this);
+                dictObj.FilterLabel = $"\"{name}\"";
+                Children.Add(dictObj);
             }
         }
 
@@ -175,14 +193,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
                     object v = p.GetValue(obj);
                     if (v != null)
                     {
-                        Children.Add(new ObjectNodeTree(p.Name, v));
+                        Children.Add(new ObjectNodeTree(p.Name, v, this));
                     }
                 }
                 catch (Exception ex) when (IsPropertyInfoGetValueException(ex))
                 {
                     // Value convertion error, display a general error so as not to hide the problem.
                     Children.Add(
-                        new ObjectNodeTree(p.Name, Resources.LogViewerDataConversionGenericError));
+                        new ObjectNodeTree(p.Name, Resources.LogViewerDataConversionGenericError, this));
                     Debug.WriteLine(ex.ToString());
                 }
             }

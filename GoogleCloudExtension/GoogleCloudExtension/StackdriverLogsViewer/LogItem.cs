@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
-using GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -226,7 +225,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private List<ObjectNodeTree> CreateTreeObject()
         {
-            return new ObjectNodeTree(Entry).Children;
+            return new LogEntryNode(Entry).Children;
         }
 
         private string GetSourceLocationField(string fieldName)
