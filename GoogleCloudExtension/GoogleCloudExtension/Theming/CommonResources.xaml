@@ -438,6 +438,7 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
     <!-- Common PasswordWithReveal style. -->
 
     <!-- Ultra simple template for the TextBox used to display the password. -->
