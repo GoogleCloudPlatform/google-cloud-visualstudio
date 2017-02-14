@@ -15,7 +15,7 @@
 using EnvDTE;
 using System;
 using System.Diagnostics;
-using IOPath = System.IO.Path;
+using System.IO;
 using System.Linq;
 
 namespace GoogleCloudExtension.SolutionUtils
@@ -29,21 +29,17 @@ namespace GoogleCloudExtension.SolutionUtils
         private static readonly string[] s_supportedFileExtension = { ".cs" };
 
         private readonly ProjectHelper _owningProject;
+        private readonly Lazy<string> _relativePath;
 
         /// <summary>
         /// The <seealso cref="ProjectItem"/> object.
         /// </summary>
-        public  readonly ProjectItem ProjectItem;
+        public ProjectItem ProjectItem { get; }
 
         /// <summary>
         /// The file path.
         /// </summary>
-        public readonly string FullName;
-
-        /// <summary>
-        /// The path relative to the project root if <seealso cref="ProjectHelper.ProjectRoot"/> is valid.
-        /// </summary>
-        public readonly Lazy<string> RelativePath;
+        public string FullName { get; }
 
         /// <summary>
         /// Initializes an instance of <seealso cref="ProjectSourceFile"/> class.
@@ -55,7 +51,7 @@ namespace GoogleCloudExtension.SolutionUtils
             ProjectItem = projectItem;
             FullName = ProjectItem.FileNames[0].ToLowerInvariant();
             _owningProject = project;
-            RelativePath = new Lazy<string>(GetRelativePath);
+            _relativePath = new Lazy<string>(GetRelativePath);
         }
 
         /// <summary>
@@ -84,12 +80,20 @@ namespace GoogleCloudExtension.SolutionUtils
         public bool IsMatchingPath(string filePath)
         {
             var path = filePath.ToLowerInvariant();
-            return path.EndsWith(RelativePath.Value);
+            return path.EndsWith(_relativePath.Value);
         }
 
         /// <summary>
         /// Get the project item path relative to the project root. 
         /// The relative path starts with '\' character.
+        /// (1) If the file path of the project item starts with the project root path. 
+        ///     The part after the root path is the relative file path.
+        ///     Example:  project root is c:\aa\bb,  file item path is c:\aa\bb\cce.cs.  
+        ///               relative path is \cce.cs
+        /// (2) Fallback is to compare every subpath of the project full path and full path of this project item,
+        ///     from the start of the path.  Starting from the part that differs are the relative path.
+        ///     Example:  c:\aa\bb\cc.csproj   c:\aa\bb\mm\ff.cs  --> the common parts are "c:" "aa", 
+        ///               relative path is \mm\ff.cs
         /// </summary>
         private string GetRelativePath()
         {
@@ -103,7 +107,7 @@ namespace GoogleCloudExtension.SolutionUtils
                 int baseIndex = 0;
                 for (int i = 0; i < FullName.Length && i < _owningProject.FullName.Length && FullName[i] == _owningProject.FullName[i]; ++i)
                 {
-                    if (FullName[i] == IOPath.DirectorySeparatorChar)
+                    if (FullName[i] == Path.DirectorySeparatorChar)
                     {
                         baseIndex = i;
                     }
@@ -115,7 +119,7 @@ namespace GoogleCloudExtension.SolutionUtils
         private static bool IsValidSupportedItem(ProjectItem projectItem)
         {
             if (EnvDTE.Constants.vsProjectItemKindPhysicalFile != projectItem?.Kind ||
-                !s_supportedFileExtension.Contains(IOPath.GetExtension(projectItem.Name).ToLower()))
+                !s_supportedFileExtension.Contains(Path.GetExtension(projectItem.Name).ToLower()))
             {
                 return false;
             }

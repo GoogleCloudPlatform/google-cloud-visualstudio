@@ -55,22 +55,22 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// The function field of source location.
         /// </summary>
-        public readonly string Function;
+        public string Function { get; }
 
         /// <summary>
         /// Log entry source assembly name.
         /// </summary>
-        public readonly string AssemblyName;
+        public string AssemblyName { get; }
 
         /// <summary>
         /// Log entry source assembly version.
         /// </summary>
-        public readonly string AssemblyVersion;
+        public string AssemblyVersion { get; }
 
         /// <summary>
         /// Log entry source line number.
         /// </summary>
-        public readonly long? SourceLine;
+        public long? SourceLine { get; }
 
         /// <summary>
         /// Source location file path.

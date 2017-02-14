@@ -1585,7 +1585,7 @@
   </data>
   <data name="LogsViewerAskToOpenProjectMessage" xml:space="preserve">
     <value>Continue to open the project?</value>
-    <comment>The message to ask if user wants to continu to open the project.</comment>
+    <comment>The message to ask if user wants to continue to open the project.</comment>
   </data>
   <data name="LogsViewerFailedOpenFileMessage" xml:space="preserve">
     <value>Failed to open the source file {0}</value>
