@@ -82,7 +82,7 @@ namespace GoogleCloudExtension.SolutionUtils
                 if (FullName.EndsWith(UniqueName))
                 {
                     int len = FullName.Length - UniqueName.Length; 
-                    if (len > 0 && FullName[len] == Path.DirectorySeparatorChar)
+                    if (len > 0 && FullName[len-1] == Path.DirectorySeparatorChar)
                     {
                         ProjectRoot = FullName.Substring(0, len-1);
                     }

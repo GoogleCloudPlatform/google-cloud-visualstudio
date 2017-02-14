@@ -76,7 +76,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            TooltipSource.Reset();
             TryFindTagger(TooltipSource.TextView)?.ClearTooltip();
         }
 
