@@ -82,6 +82,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
         }
 
+        /// <summary>
+        /// (1) When the button is clicked, skip toggling detail view action.
+        /// (2) Sometimes button does not respond to click event. This method fixes the problem.        
+        /// </summary>
         private bool OriginFromSourceLink(object originalSource)
         {
             Debug.WriteLine($"Original source is {originalSource.ToString()}, type is {originalSource.GetType().Name}");

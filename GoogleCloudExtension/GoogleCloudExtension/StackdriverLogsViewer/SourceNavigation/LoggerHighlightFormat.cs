@@ -33,7 +33,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
     [Name("LoggerMarkerFormat")]
-    [UserVisible(true)]
     internal class LoggerHighlightFormat : MarkerFormatDefinition
     {
         /// <summary>
@@ -43,7 +42,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             BackgroundColor = Colors.Yellow;
             ForegroundColor = Colors.Black;
-            DisplayName = "Stackdriver Logging Method";
             ZOrder = 5;
         }
     }

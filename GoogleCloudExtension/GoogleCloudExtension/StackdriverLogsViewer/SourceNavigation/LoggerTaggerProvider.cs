@@ -17,6 +17,7 @@ using Microsoft.VisualStudio.Text.Adornments;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
+using System;
 using System.Collections.Concurrent;
 using System.ComponentModel.Composition;
 
@@ -27,21 +28,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     [Export(typeof(IViewTaggerProvider))]
     [TagType(typeof(TextMarkerTag))]
-    [ContentType("text")]  // TODO: try CSharp ? 
+    [ContentType("CSharp")]
     internal class LoggerTaggerProvider : IViewTaggerProvider
     {
-        /// <summary>
-        /// Static constructor that initializes static memebers.
-        /// </summary>
-        static LoggerTaggerProvider()
-        {
-            AllLoggerTaggers = new ConcurrentDictionary<ITextView, LoggerTagger>();
-        }
+        private static Lazy<ConcurrentDictionary<ITextView, LoggerTagger>> _taggers = new Lazy<ConcurrentDictionary<ITextView, LoggerTagger>>();
 
         /// <summary>
-        /// Keeps the text view to logger taggers map.
+        /// Gets text view to logger taggers map.
+        /// Using concurrent directionary so as to syncronize access to the map from different threads.
         /// </summary>
-        public static ConcurrentDictionary<ITextView, LoggerTagger> AllLoggerTaggers;
+        public static ConcurrentDictionary<ITextView, LoggerTagger> AllLoggerTaggers => _taggers.Value;
 
         /// <summary>
         /// Import <seealso cref="IToolTipProviderFactory"/>.

@@ -53,6 +53,9 @@ namespace GoogleCloudExtension.SolutionUtils
             }
         }
 
+        /// <summary>
+        /// Gets <seealso cref="EnvDTE.Solution"/> reference.
+        /// </summary>
         public Solution solution => _solution;
 
         /// <summary>
@@ -88,7 +91,7 @@ namespace GoogleCloudExtension.SolutionUtils
         public List<ProjectSourceFile> FindMatchingSourceFile(string sourceLocationFilePath)
         {
             var query = Projects.SelectMany(x => x.SourceFiles).Where(y => y.IsMatchingPath(sourceLocationFilePath));
-            return new List<ProjectSourceFile>(query);
+            return query.ToList<ProjectSourceFile>();
         }
 
         private ISolutionProject GetSelectedProject()
@@ -230,10 +233,9 @@ namespace GoogleCloudExtension.SolutionUtils
             List<ProjectHelper> list = new List<ProjectHelper>();
             foreach (Project project in _solution.Projects)
             {
-                var helper = ProjectHelper.Create(project);
-                if (helper != null)
+                if (ProjectHelper.IsValidSupported(project))
                 {
-                    list.Add(helper);
+                    list.Add(new ProjectHelper(project));
                 }
             }
 

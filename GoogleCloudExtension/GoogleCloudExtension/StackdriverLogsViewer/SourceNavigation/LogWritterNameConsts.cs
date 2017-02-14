@@ -15,7 +15,7 @@
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
     /// <summary>
-    /// Define contants for some known logging method names.
+    /// Define constants for some known logging method names.
     /// </summary>
     internal static class LogWritterNameConstants
     {

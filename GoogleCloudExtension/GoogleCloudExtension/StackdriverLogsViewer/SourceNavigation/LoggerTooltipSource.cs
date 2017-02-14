@@ -13,14 +13,19 @@
 // limitations under the License.
 
 using Microsoft.VisualStudio.Text.Editor;
+using System;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
     /// <summary>
     /// Define the logger tooltip data sources.
+    /// This is singleton so that there is at most one tooltip shown globally at any time. 
+    /// This approach simplifies the overall design for <seealso cref="LoggerTagger"/>. 
     /// </summary>
     internal class LoggerTooltipSource
     {
+        private static Lazy<LoggerTooltipSource> s_instance = new Lazy<LoggerTooltipSource>();
+
         /// <summary>
         /// The log item object as the data context for <seealso cref="LoggerTooltipControl"/>.
         /// </summary>
@@ -35,7 +40,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// The source line number associated with the <seealso cref="LogData"/>.
         /// </summary>
-        public long SourceLine { get; private set; }
+        public long SourceLine { get; private set; } = -1;
 
         /// <summary>
         /// The method name that produces the <seealso cref="LogData"/>.
@@ -55,7 +60,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// The singleton instance of <seealso cref="LoggerTooltipSource"/>.
         /// </summary>
-        public static LoggerTooltipSource TooltipSource = new LoggerTooltipSource() { SourceLine = -1 };
+        public static LoggerTooltipSource TooltipSource => s_instance.Value;
 
         /// <summary>
         /// Set all data members to null.

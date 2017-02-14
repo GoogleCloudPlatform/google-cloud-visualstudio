@@ -241,6 +241,7 @@
       <DependentUpon>DateTimePicker.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverLogsViewer\DateTimePickerViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\LogsViewerStates.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\ShowTooltipUtils.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipSource.cs" />
