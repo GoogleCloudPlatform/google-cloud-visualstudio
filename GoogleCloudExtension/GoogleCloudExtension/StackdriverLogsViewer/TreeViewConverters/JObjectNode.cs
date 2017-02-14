@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,12 +13,20 @@
 // limitations under the License.
 
 using Newtonsoft.Json.Linq;
-using System.Diagnostics;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
+    /// <summary>
+    /// Parse <seealso cref="JObject"/> properties.
+    /// </summary>
     internal class JObjectNode : ObjectNodeTree
     {
+        /// <summary>
+        /// Create a new instance of <seealso cref="JObjectNode"/> class.
+        /// </summary>
+        /// <param name="name">The name to display for this object.</param>
+        /// <param name="jObj">A <seealso cref="JObjectNode"/> object to parse.</param>
+        /// <param name="parent">The parent object that owns <paramref name="jObj"/>.</param>
         public JObjectNode(string name, JObject jObj, ObjectNodeTree parent) 
             : base(name, jObj, parent) { }
 

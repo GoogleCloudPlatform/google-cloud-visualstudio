@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,26 +13,27 @@
 // limitations under the License.
 
 using Newtonsoft.Json.Linq;
-using System;
-using System.Diagnostics;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
+    /// <summary>
+    /// Parse <seealso cref="JArray"/>.
+    /// </summary>
     internal class JArrayNode : ObjectNodeTree
     {
-        public JArrayNode(string name, JArray jObj, ObjectNodeTree parent) 
-            : base(name, jObj, parent) { }
+        /// <summary>
+        /// Initializes a new instance of <seealso cref="JArrayNode"/> class.
+        /// </summary>
+        /// <param name="name">The name to display for this <paramref name="jArrayObj"/>.</param>
+        /// <param name="jArrayObj">A <seealso cref="JArray"/> object to parse.</param>
+        /// <param name="parent">The parent object that owns <paramref name="jArrayObj"/>. </param>
+        public JArrayNode(string name, JArray jArrayObj, ObjectNodeTree parent) 
+            : base(name, jArrayObj, parent) { }
 
         protected override void ParseObjectTree(object obj)
         {
             JArray jsonArray = obj as JArray;
-            int i = 0;
-            foreach (var element in jsonArray.Children())
-            {
-                Debug.WriteLine($"JArray {Name}, element {element}, {element.GetType().Name}");
-                AddChildren(String.Format(Resources.LogViewerDetailTreeViewArrayIndexFormat, i), element);
-                ++i;
-            }
+            ParseArray(jsonArray.Children());
         }
     }
 }

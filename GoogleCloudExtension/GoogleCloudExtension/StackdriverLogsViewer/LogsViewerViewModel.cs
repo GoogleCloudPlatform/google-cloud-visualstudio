@@ -355,7 +355,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             newFilter.Append($"{node.FilterLabel}=\"{node.FilterValue}\"");            
             while ((node = node.Parent).Parent != null)     
             {
-                newFilter.Insert(0, $"{node.FilterLabel}.");
+                if (!string.IsNullOrWhiteSpace(node.FilterLabel))
+                {
+                    newFilter.Insert(0, $"{node.FilterLabel}.");
+                }
             }
             if (ShowAdvancedFilter)
             {

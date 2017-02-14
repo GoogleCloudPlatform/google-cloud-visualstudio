@@ -34,10 +34,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public class ObjectNodeTree
     {
-        private const string JsonObjectNameSpace = "Newtonsoft.Json";
-
-        private string _filterLabelOverride;
-        private string _fitlerValueOverride;
+        protected string _filterLabelOverride;
+        protected string _fitlerValueOverride;
 
         /// <summary>
         /// The list of supported classes.
@@ -137,22 +135,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 ParseDictionary(obj as IDictionary);
             }
-            else if (obj is JObject)
-            {
-                Debug.Assert(false, $"JObject should go to JObjectNode.ParseObjectTree found, ${type}");
-            }
-            else if (obj is JArray)
-            {
-                Debug.Assert(false, $"JArray should go to JObjectNode.ParseObjectTree found, ${type}");
-            }
             else if (s_supportedTypes.Contains(type))
             {
                 ParseClassProperties(obj, type);
-            }
-            else if (type.Namespace.StartsWith(JsonObjectNameSpace))
-            {
-                Debug.WriteLine($"Json object, {_name},  {type.Name}");
-                NodeValue = obj.ToString();
             }
             else
             {
@@ -160,36 +145,42 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
         }
 
-        protected void AddChildren(string name, object obj)
+        protected ObjectNodeTree AddChildren(string name, object obj)
         {
+            ObjectNodeTree newNode = null;
             if (obj != null)
             {
                 if (obj is JObject)
                 {
-                    Children.Add(new JObjectNode(name, obj as JObject, this));
+                    newNode = new JObjectNode(name, obj as JObject, this);
                 }
                 else if (obj is JArray)
                 {
-                    Children.Add(new JArrayNode(name, obj as JArray, this));
+                    newNode = new JArrayNode(name, obj as JArray, this);
                 }
                 else
                 {
-                    Children.Add(new ObjectNodeTree(name, obj, this));
+                    newNode = new ObjectNodeTree(name, obj, this);
                 }
             }
+
+            if (newNode != null)
+            {
+                Children.Add(newNode);
+            }
+            return newNode;
         }
 
         #region parser
-        private void ParseArray(IEnumerable enumerable)
+        protected void ParseArray(IEnumerable enumerable)
         {
             int i = 0;
             foreach (var element in enumerable)
             {
-                AddChildren(String.Format(Resources.LogViewerDetailTreeViewArrayIndexFormat, i), element);
+                var node = AddChildren(String.Format(Resources.LogViewerDetailTreeViewArrayIndexFormat, i), element);
+                node._filterLabelOverride = "";
                 ++i;
             }
-
-            NodeValue = String.Format(Resources.LogViewerDetailTreeViewArrayIndexFormat, i);
         }
 
         private void ParseDictionary(IDictionary dictionaryObject)

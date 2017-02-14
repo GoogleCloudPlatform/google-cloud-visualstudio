@@ -58,10 +58,10 @@
                         Style="{StaticResource TreeNodeValueStyle}" 
                         Command="{Binding DataContext.DetailTreeNodeFilterCommand, ElementName=_logsViewerToolWindow}"
                         CommandParameter="{Binding}">
-                        <!--<controls:IconButton.ToolTip>
+                        <controls:IconButton.ToolTip>
                             <ToolTip Content="{x:Static ext:Resources.LogsViewerTreeNodeFilterTooltip}" 
                                      Style="{StaticResource CommonTooltipStyle}" />
-                        </controls:IconButton.ToolTip>-->
+                        </controls:IconButton.ToolTip>
                     </controls:IconButton>
                 </StackPanel>
             </HierarchicalDataTemplate>
