@@ -16,11 +16,14 @@ using EnvDTE;
 using System;
 using System.Diagnostics;
 using System.Collections.Generic;
-using IOPath = System.IO.Path;
+using System.IO;
 using System.Runtime.InteropServices;
 
 namespace GoogleCloudExtension.SolutionUtils
 {
+    /// <summary>
+    /// An wrapper on top of Visual Studio extenstion API Project interface. 
+    /// </summary>
     internal class ProjectHelper
     {
         private const string CSharpProjectKind = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}";
@@ -48,17 +51,17 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <summary>
         /// Project full name. Commonly, it is full path.
         /// </summary>
-        public readonly string FullName;
+        public string FullName { get; }
 
         /// <summary>
         /// The unique name of the project. Commonly it is the project relative path from solution path.
         /// </summary>
-        public readonly string UniqueName;
+        public string UniqueName { get; }
 
         /// <summary>
         /// The project root directory. 
         /// </summary>
-        public readonly string ProjectRoot;
+        public string ProjectRoot { get; }
 
         /// <summary>
         /// A private constructor to disable direct creation of instances of <seealso cref="ProjectHelper"/> class.
@@ -75,20 +78,24 @@ namespace GoogleCloudExtension.SolutionUtils
             try
             {
                 FullName = project.FullName.ToLowerInvariant();
-                UniqueName = _project.UniqueName.ToLowerInvariant();
-                int idx = FullName.LastIndexOf(UniqueName);
-                if (FullName.Length - idx == UniqueName.Length)
+                UniqueName = _project.UniqueName?.ToLowerInvariant();                
+                if (FullName.EndsWith(UniqueName))
                 {
-                    idx = FullName[idx] != IOPath.DirectorySeparatorChar ? idx - 1 : idx;
-                    ProjectRoot = FullName.Substring(0, idx);
+                    int len = FullName.Length - UniqueName.Length; 
+                    if (len > 0 && FullName[len] == Path.DirectorySeparatorChar)
+                    {
+                        ProjectRoot = FullName.Substring(0, len-1);
+                    }
+                    else if (UniqueName[0] == Path.DirectorySeparatorChar)
+                    {
+                        ProjectRoot = FullName.Substring(0, len);
+                    }
                 }
-                else
-                {
-                    // Fallback to project directory.
-                    ProjectRoot = IOPath.GetDirectoryName(FullName);
-                }
+                
+                // Fallback to project directory.
+                ProjectRoot = ProjectRoot ?? Path.GetDirectoryName(FullName);
 
-                ParseProperties();
+                GetAssembyInfoFromProperties();
             }
             catch (COMException ex)
             {
@@ -173,7 +180,7 @@ namespace GoogleCloudExtension.SolutionUtils
             }
         }
 
-        private void ParseProperties()
+        private void GetAssembyInfoFromProperties()
         {
             foreach (Property property in _project.Properties)
             {
