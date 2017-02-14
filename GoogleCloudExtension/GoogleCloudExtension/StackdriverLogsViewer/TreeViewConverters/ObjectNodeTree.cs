@@ -233,7 +233,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private string GetFilterValue()
         {
             var value = _fitlerValueOverride ?? NodeValue;
-            return value.Replace(@"\", @"\\").Replace("\"", "\\\"");
+            return value?.Replace(@"\", @"\\").Replace("\"", "\\\"");
         }
     }
 }
