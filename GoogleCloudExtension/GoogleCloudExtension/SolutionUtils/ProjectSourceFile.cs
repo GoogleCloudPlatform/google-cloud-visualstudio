@@ -46,8 +46,17 @@ namespace GoogleCloudExtension.SolutionUtils
         /// </summary>
         /// <param name="projectItem">A project item that is physical file.</param>
         /// <param name="project">The container project of type <seealso cref="ProjectHelper"/></param>
-        private ProjectSourceFile(ProjectItem projectItem, ProjectHelper project)
+        public ProjectSourceFile(ProjectItem projectItem, ProjectHelper project)
         {
+            if (!IsValidSupportedItem(projectItem))
+            {
+                throw new ArgumentException(nameof(projectItem));
+            }
+            if (project == null)
+            {
+                throw new ArgumentNullException(nameof(project));
+            }
+
             ProjectItem = projectItem;
             FullName = ProjectItem.FileNames[0].ToLowerInvariant();
             _owningProject = project;
@@ -55,23 +64,25 @@ namespace GoogleCloudExtension.SolutionUtils
         }
 
         /// <summary>
-        /// Create a <seealso cref="ProjectSourceFile"/> object wrapping up a ProjectItem interface.
-        /// Together with private constructor, this ensures object creation won't run into exception. 
+        /// Check if the <paramref name="projectItem"/> is valid and supported by <seealso cref="ProjectSourceFile"/>.
+        /// One should call this method before creating <seealso cref="ProjectSourceFile"/> object.
         /// </summary>
-        /// <param name="projectItem">A project item.</param>
-        /// <param name="project">The container project of type <seealso cref="ProjectHelper"/></param>
-        /// <returns>
-        /// The created object.
-        /// null: if the projectItem is null or the item is not physical source sfile.
-        /// </returns>
-        public static ProjectSourceFile Create(ProjectItem projectItem, ProjectHelper project)
+        /// <param name="projectItem">A <seealso cref="ProjectItem"/> object.</param>
+        public static bool IsValidSupportedItem(ProjectItem projectItem)
         {
-            if (!IsValidSupportedItem(projectItem) || project == null)
+            if (EnvDTE.Constants.vsProjectItemKindPhysicalFile != projectItem?.Kind ||
+                !s_supportedFileExtension.Contains(Path.GetExtension(projectItem.Name).ToLower()))
             {
-                return null;
+                return false;
             }
 
-            return new ProjectSourceFile(projectItem, project);
+            if (projectItem.FileCount != 1)
+            {
+                Debug.WriteLine($"project item file count is {projectItem.FileCount}. Expects 1");
+                return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -114,23 +125,6 @@ namespace GoogleCloudExtension.SolutionUtils
                 }
                 return FullName.Substring(baseIndex);
             }
-        }
-
-        private static bool IsValidSupportedItem(ProjectItem projectItem)
-        {
-            if (EnvDTE.Constants.vsProjectItemKindPhysicalFile != projectItem?.Kind ||
-                !s_supportedFileExtension.Contains(Path.GetExtension(projectItem.Name).ToLower()))
-            {
-                return false;
-            }
-
-            if (projectItem.FileCount != 1)
-            {
-                Debug.WriteLine($"project item file count is {projectItem.FileCount}. Expects 1");
-                return false;
-            }
-
-            return true;
         }
     }
 }

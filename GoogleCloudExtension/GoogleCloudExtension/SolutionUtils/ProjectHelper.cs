@@ -66,18 +66,18 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <summary>
         /// A private constructor to disable direct creation of instances of <seealso cref="ProjectHelper"/> class.
         /// </summary>
-        private ProjectHelper(Project project)
+        public ProjectHelper(Project project)
         {
-            if (project == null)
+            if (!IsValidSupported(project))
             {
-                throw new ArgumentNullException($"Input parameter {nameof(project)} is null.");
+                throw new ArgumentException($"Input parameter {nameof(project)} is invalid.");
             }
 
             _project = project;
 
             try
             {
-                FullName = project.FullName.ToLowerInvariant();
+                FullName = _project.FullName.ToLowerInvariant();
                 UniqueName = _project.UniqueName?.ToLowerInvariant();                
                 if (FullName.EndsWith(UniqueName))
                 {
@@ -104,25 +104,6 @@ namespace GoogleCloudExtension.SolutionUtils
         }
 
         /// <summary>
-        /// Create a <seealso cref="ProjectHelper"/> object wrapping up a Project interface.
-        /// Together with private constructor, this ensures object creation won't run into exception. 
-        /// </summary>
-        /// <param name="project">Project interface.</param>
-        /// <returns>
-        /// The created object.
-        /// Or null if the project is null, or not supported project type.
-        /// </returns>
-        public static ProjectHelper Create(Project project)
-        {
-            if (!IsValidSupported(project))
-            {
-                return null;
-            }
-
-            return new ProjectHelper(project);
-        }
-
-        /// <summary>
         /// Find the project item that matches the <paramref name="sourceFilePath"/> in this Project.
         /// </summary>
         /// <param name="sourceFilePath">The source file path to be searched for.</param>
@@ -143,6 +124,23 @@ namespace GoogleCloudExtension.SolutionUtils
             return null;
         }
 
+        /// <summary>
+        /// Check if the project is valid and supported.
+        /// This method should be called before creating <seealso cref="ProjectHelper"/>.
+        /// </summary>
+        /// <param name="project">A <seealso cref="Project"/> interface.</param>
+        public static bool IsValidSupported(Project project)
+        {
+            try
+            {
+                return project != null && project.Kind == CSharpProjectKind && project.FullName != null && project.Properties != null;
+            }
+            catch (COMException ex)
+            {
+                return false;
+            }
+        }
+
         private List<ProjectSourceFile> GetSourceFiles()
         {
             var items = new List<ProjectSourceFile>();
@@ -156,27 +154,14 @@ namespace GoogleCloudExtension.SolutionUtils
 
         private void AddSourceFiles(ProjectItem projectItem, List<ProjectSourceFile> items)
         {
-            var sourceFile = ProjectSourceFile.Create(projectItem, this);
-            if (sourceFile != null)
+            if (ProjectSourceFile.IsValidSupportedItem(projectItem))
             {
-                items.Add(sourceFile);
+                items.Add(new ProjectSourceFile(projectItem, this));
             }
 
             foreach (ProjectItem nestedItem in projectItem.ProjectItems)
             {
                 AddSourceFiles(nestedItem, items);
-            }
-        }
-
-        private static bool IsValidSupported(Project project)
-        {
-            try
-            {
-                return project != null && project.Kind == CSharpProjectKind && project.FullName != null && project.Properties != null;
-            }
-            catch (COMException ex)
-            {
-                return false;
             }
         }
 

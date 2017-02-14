@@ -95,7 +95,7 @@
             VerticalAlignment="Top"
             Width="15" 
             Margin="0,6,6,0" 
-            Command="{Binding CloseButtonCommand}"/>
+            Command="{Binding OnCloseButtonCommand}"/>
 
     </Grid>
 </Border>

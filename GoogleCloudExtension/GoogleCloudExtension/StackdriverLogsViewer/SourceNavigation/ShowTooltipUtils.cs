@@ -16,6 +16,7 @@ using EnvDTE;
 using GoogleCloudExtension.Utils;
 using static GoogleCloudExtension.StackdriverLogsViewer.LoggerTooltipSource;
 using static GoogleCloudExtension.StackdriverLogsViewer.LogWritterNameConstants;
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.TextManager.Interop;
@@ -89,6 +90,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             GotoLine(window, (int)logItem.SourceLine);
             IVsTextView textView = GetIVsTextView(window.Document.FullName);
             var wpfView = GetWpfTextView(textView);
+            if (wpfView == null)
+            {
+                return;
+            }
             TooltipSource.Set(
                 new LoggerTooltipViewModel(logItem),
                 wpfView, 
@@ -122,18 +127,20 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Get <seealso cref="IWpfTextView"/> interface from <seealso cref="IVsTextView"/> interface.
         /// </summary>
-        private static IWpfTextView GetWpfTextView(IVsTextView vTextView)
+        private static IWpfTextView GetWpfTextView(IVsTextView textView)
         {
             IWpfTextView view = null;
-            IVsUserData userData = vTextView as IVsUserData;
-            if (null != userData)
+            IVsUserData userData = textView as IVsUserData;
+            if (userData != null)
             {
                 IWpfTextViewHost viewHost;
                 object holder;
                 Guid guidViewHost = DefGuidList.guidIWpfTextViewHost;
-                userData.GetData(ref guidViewHost, out holder);
-                viewHost = (IWpfTextViewHost)holder;
-                view = viewHost.TextView;
+                if (VSConstants.S_OK == userData.GetData(ref guidViewHost, out holder))
+                {
+                    viewHost = (IWpfTextViewHost)holder;
+                    view = viewHost.TextView;
+                }
             }
             return view;
         }

@@ -50,7 +50,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private static readonly Lazy<ImageSource> s_warningIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
 
+        private static readonly Regex s_FunctionRegex = new Regex($@"^\[(.*),\s*(.*),\s*Version\s*=\s*(.*)\s*,(.*),(.*)\]\.([\w\-. ]+)$");
         private readonly Lazy<List<ObjectNodeTree>> _treeViewObjects;
+        private readonly LogSeverity _logLevel;
 
         /// <summary>
         /// The function field of source location.
@@ -126,12 +128,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Command responses to source link button click event.
         /// </summary>
-        public ProtectedCommand SourceLinkCommand { get; }
+        public ProtectedCommand OnNavigateToSourceCommand { get; }
 
         /// <summary>
         /// Log severity level.
         /// </summary>
-        public readonly LogSeverity LogLevel;
+        public LogSeverity LogLevel => _logLevel;
 
         /// <summary>
         /// Gets the log item severity level. The data binding source to severity column in the data grid.
@@ -183,12 +185,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             Message = ComposeMessage();
 
             if (String.IsNullOrWhiteSpace(Entry.Severity) ||
-                !Enum.TryParse<LogSeverity>(Entry.Severity, ignoreCase: true, result: out LogLevel))
+                !Enum.TryParse<LogSeverity>(Entry.Severity, ignoreCase: true, result: out _logLevel))
             {
-                LogLevel = LogSeverity.Default;
+                _logLevel = LogSeverity.Default;
             }
 
-            _treeViewObjects = new Lazy<List<ObjectNodeTree>>(CreateTreeObject);
+            _treeViewObjects = new Lazy<List<ObjectNodeTree>>(() => new LogEntryNode(Entry).Children);
 
             Function = Entry.SourceLocation?.Function;
             SourceFilePath = Entry?.SourceLocation?.File;
@@ -196,9 +198,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (Function != null && SourceFilePath != null && SourceLine.HasValue)
             {
                 // Example:  [Log4NetSample.Program, Log4NetExample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null].WriteRandomSeverityLog
-                const string validFunction = @"[\w\-. ]+";
-                Regex regex = new Regex($@"^\[(.*),\s*(.*),\s*Version\s*=\s*(.*)\s*,(.*),(.*)\]\.({validFunction})$");
-                Match match = regex.Match(Function);
+                Match match = s_FunctionRegex.Match(Function);
                 Debug.WriteLine($"{match.Groups[1].Value},{match.Groups[2].Value}, {match.Groups[3].Value}");
                 if (match.Success)
                 {
@@ -207,7 +207,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 }
 
                 SourceLinkVisible = true;
-                SourceLinkCommand = new ProtectedCommand(OnSourceLinkClick);
+                OnNavigateToSourceCommand = new ProtectedCommand(NavigateToSourceLineCommand);
                 var tmp = $"{SourceFilePath}:{SourceLine}";
                 SourceLinkCaption = tmp.Length <= 20 ? tmp : $"...{tmp.Substring(tmp.Length - 17)}";
             }
@@ -221,11 +221,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             TimeStamp = TimeZoneInfo.ConvertTime(TimeStamp, newTimeZone);
             RaisePropertyChanged(nameof(Time));
-        }
-
-        private List<ObjectNodeTree> CreateTreeObject()
-        {
-            return new LogEntryNode(Entry).Children;
         }
 
         private string GetSourceLocationField(string fieldName)
@@ -314,9 +309,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Open the source file, move to the source line and show tooltip.
         /// </summary>
-        private void OnSourceLinkClick()
+        private void NavigateToSourceLineCommand()
         {
-            var project = this.FindorOpenProject();
+            var project = this.FindOrOpenProject();
             if (project == null)
             {
                 Debug.WriteLine($"Failed to find project of {AssemblyName}");

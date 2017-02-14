@@ -12,18 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Logging.v2.Data;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
+using static GoogleCloudExtension.StackdriverLogsViewer.StackdriverLogsViewerStates;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows.Media;
-using Microsoft.VisualStudio.Text.Editor;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -32,8 +25,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     internal static class SourceVersionUtils
     {
-        private static bool s_VersionMismatchContinue = false;
-
         /// <summary>
         /// Find or open a the project that matches the log item source information.
         /// </summary>
@@ -42,7 +33,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// null: No solution is opened, or does not find the project of referred by the log item.
         /// a <seealso cref="ProjectHelper"/> object otherwise.
         /// </returns>
-        public static ProjectHelper FindorOpenProject(this LogItem logItem)
+        public static ProjectHelper FindOrOpenProject(this LogItem logItem)
         {
             if (String.IsNullOrWhiteSpace(logItem.AssemblyName) || String.IsNullOrWhiteSpace(logItem.AssemblyVersion))
             {
@@ -52,7 +43,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             if (SolutionHelper.CurrentSolution == null)
             {
-                OpenCorrentVersionProjectPrompt(logItem.AssemblyName, logItem.AssemblyVersion);
+                OpenCurrentVersionProjectPrompt(logItem.AssemblyName, logItem.AssemblyVersion);
                 // Check if a solution is open. User can choose not to open solution or project. 
                 if (SolutionHelper.CurrentSolution == null)
                 {
@@ -61,13 +52,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             ProjectHelper project = null;
-            Func<ProjectHelper> getProject = 
+            Func<ProjectHelper> getProject =
                 () => SolutionHelper.CurrentSolution.Projects?
                 .Where(x => x.AssemblyName?.ToLowerInvariant() == logItem.AssemblyName.ToLowerInvariant())
                 .FirstOrDefault();
             if ((project = getProject()) == null)
             {
-                OpenCorrentVersionProjectPrompt(logItem.AssemblyName, logItem.AssemblyVersion);
+                OpenCurrentVersionProjectPrompt(logItem.AssemblyName, logItem.AssemblyVersion);
                 // Check again if the project is opened.
                 if ((project = getProject()) == null)
                 {
@@ -99,7 +90,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public static void FailedToOpenFilePrompt(string filePath)
         {
             UserPromptUtils.ErrorPrompt(
-                message :String.Format(Resources.LogsViewerFailedOpenFileMessage, filePath), 
+                message: String.Format(Resources.LogsViewerFailedOpenFileMessage, filePath),
                 title: Resources.LogsViewerPromptTitle);
         }
 
@@ -110,7 +101,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 title: Resources.LogsViewerPromptTitle);
         }
 
-        private static void OpenCorrentVersionProjectPrompt(string assemblyName, string assemblyVersion)
+        private static void OpenCurrentVersionProjectPrompt(string assemblyName, string assemblyVersion)
         {
             if (UserPromptUtils.ActionPrompt(
                     prompt: String.Format(Resources.LogsViewerPleaseOpenProjectPrompt, assemblyName, assemblyVersion),
@@ -123,7 +114,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private static bool ContinueWhenVersionMismatch(ProjectHelper project, string assemblyVersion)
         {
-            if (!s_VersionMismatchContinue)
+            if (!LogsViewerStates.ContinueWithVersionMismatchAssemblyFlag)
             {
                 var prompt = String.Format(
                     Resources.LogsViewerVersionMismatchPrompt,
@@ -136,10 +127,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     title: Resources.LogsViewerPromptTitle,
                     message: Resources.LogsViewerVersionMissmatchAskIgnoreMessage))
                 {
-                    s_VersionMismatchContinue = true;
+                    LogsViewerStates.SetContinueWithVersionMismatchAssemblyFlag();
                 }
             }
-            return s_VersionMismatchContinue;
+            return LogsViewerStates.ContinueWithVersionMismatchAssemblyFlag;
         }
     }
 }

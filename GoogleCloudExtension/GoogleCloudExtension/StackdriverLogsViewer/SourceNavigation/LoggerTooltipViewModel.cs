@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// The close button command
         /// </summary>
-        public ProtectedCommand CloseButtonCommand { get; }
+        public ProtectedCommand OnCloseButtonCommand { get; }
 
         /// <summary>
         /// Command responses to the back to logs viewer button.
@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="log">The log item the tooltip shows.</param>
         public LoggerTooltipViewModel(LogItem logItem)
         {
-            CloseButtonCommand = new ProtectedCommand(ShowTooltipUtils.HideTooltip);
+            OnCloseButtonCommand = new ProtectedCommand(ShowTooltipUtils.HideTooltip);
             BackToLogsViewerCommand = new ProtectedCommand(BackToLogsViewer);
             Log = logItem;
         }

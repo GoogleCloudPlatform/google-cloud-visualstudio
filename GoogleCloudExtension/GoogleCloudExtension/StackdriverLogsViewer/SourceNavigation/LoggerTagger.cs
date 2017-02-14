@@ -29,15 +29,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     internal class LoggerTagger : ITagger<LoggerTag>
     {
+        private static LoggerTag s_emptyLoggerTag = new LoggerTag();
         private static readonly Lazy<LoggerTooltipControl> _tooltipControl = 
             new Lazy<LoggerTooltipControl>(() => new LoggerTooltipControl());
         private readonly IToolTipProvider _toolTipProvider;
         private readonly ITextView _view;
         private readonly ITextBuffer _sourceBuffer;
-        bool _IsTooltipShown = false;
+        private bool _isTooltipShown = false;
 
         /// <summary>
-        /// Tags changed event.
+        /// Tags changed event. Implementation of <seealso cref="ITagger{T}"/> interface.
         /// </summary>
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
@@ -78,7 +79,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public void ClearTooltip()
         {
             TooltipSource.Reset();
-            if (_IsTooltipShown)
+            if (_isTooltipShown)
             {
                 SendTagsChangedEvent();
             }
@@ -112,7 +113,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 }
                 span = new SnapshotSpan(textLine.Start + pos, TooltipSource.MethodName.Length);
             }
-            yield return new TagSpan<LoggerTag>(span, new LoggerTag());
+            yield return new TagSpan<LoggerTag>(span, s_emptyLoggerTag);
             DisplayTooltip(new SnapshotSpan(textLine.Start, textLine.Length));
         }
 
@@ -123,13 +124,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             // If a new snapshot is generated, clear the tooltip.
             if (e.NewViewState.EditSnapshot != e.OldViewState.EditSnapshot
-                || (_IsTooltipShown && !TooltipSource.IsValidSource))
+                || (_isTooltipShown && !TooltipSource.IsValidSource))
             {
                 ClearTooltip();
             }
             else if (TooltipSource.IsValidSource 
                 // if tooltip is not shown, or if the view port width changes.
-                && (!_IsTooltipShown || e.NewViewState.ViewportWidth != e.OldViewState.ViewportWidth))
+                && (!_isTooltipShown || e.NewViewState.ViewportWidth != e.OldViewState.ViewportWidth))
             {
                 ShowOrUpdateToolTip();
             }
@@ -144,9 +145,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private void HideTooltip()
         {
             _toolTipProvider.ClearToolTip();
-            _IsTooltipShown = false;
+            _isTooltipShown = false;
         }
 
+        /// <summary>
+        /// Note, the input type is defined as object. It takes <seealso cref="LogItem"/> type in runtime.
+        /// The reason of using object is to cheat the MEF loader not to reference LogItem.  
+        /// </summary>
+        /// <param name="logItem">A <seealso cref="LogItem"/> object.</param>
         private UIElement CreateTooltipControl(object logItem)
         {
             var control = _tooltipControl.Value;
@@ -158,7 +164,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private void DisplayTooltip(SnapshotSpan span)
         {
             _toolTipProvider.ClearToolTip();
-            _IsTooltipShown = true;
+            _isTooltipShown = true;
             this._toolTipProvider.ShowToolTip(
                 span.Snapshot.CreateTrackingSpan(span, SpanTrackingMode.EdgeExclusive),
                 CreateTooltipControl(TooltipSource.LogData), 
