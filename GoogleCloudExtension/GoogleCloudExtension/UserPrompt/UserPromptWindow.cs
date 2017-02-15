@@ -44,6 +44,11 @@ namespace GoogleCloudExtension.UserPrompt
             public string Message { get; set; }
 
             /// <summary>
+            /// The error details to show in the dialog.
+            /// </summary>
+            public string ErrorDetails { get; set; }
+
+            /// <summary>
             /// The icon to use in the dialog. Should be 24x24 px.
             /// </summary>
             public ImageSource Icon { get; set; }

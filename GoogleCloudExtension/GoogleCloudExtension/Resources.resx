@@ -622,8 +622,8 @@
     <comment>The title for the confirmation prompt for resetting or creating a password. {0) is the user name, {1} is the instance name.</comment>
   </data>
   <data name="ResetPasswordFailedPromptMessage" xml:space="preserve">
-    <value>Failed to reset password for {0}. {1}</value>
-    <comment>Message shown when the reset operation fails. {0} is the instance name, {1} is the error message.</comment>
+    <value>Failed to reset password for {0}. </value>
+    <comment>Message shown when the reset operation fails. {0} is the instance name.</comment>
   </data>
   <data name="ResetPasswordGcloudLinkCaption" xml:space="preserve">
     <value>Install Google Cloud SDK</value>

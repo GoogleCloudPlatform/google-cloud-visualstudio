@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2671,7 +2671,7 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to reset password for {0}. {1}.
+        ///   Looks up a localized string similar to Failed to reset password for {0}. .
         /// </summary>
         public static string ResetPasswordFailedPromptMessage {
             get {
