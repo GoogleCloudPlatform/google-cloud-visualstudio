@@ -179,7 +179,7 @@ namespace GoogleCloudExtension.Deployment
         /// <summary>
         /// This methods looks for lines of the form "service: name" in the app.yaml file provided.
         /// </summary>
-        /// <param name="appYamlPath">The path to the app.yaml to parse.</param>
+        /// <param name="projectPath">The path to the project.json for the project, the app.yaml should be next to it.</param>
         /// <returns>The service name if found, <seealso cref="DefaultServiceName"/> if not found.</returns>
         private static string GetAppEngineService(string projectPath)
         {
