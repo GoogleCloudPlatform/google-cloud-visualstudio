@@ -277,7 +277,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 message = String.Join(";", Entry?.Resource.Labels);
             }
 
-            return message?.Replace("\r\n", "\\r\\n ").Replace("\t", "\\t ").Replace("\n", "\\n ");
+            return message?.Replace("\r\n", " ").Replace("\r", " ").Replace("\t", "\\t ").Replace("\n", " ");
         }
 
         private DateTime ConvertTimestamp(object timestamp)
