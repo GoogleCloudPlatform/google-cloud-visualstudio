@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
@@ -276,7 +277,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 message = String.Join(";", Entry?.Resource.Labels);
             }
 
-            return message?.Replace("\r\n", " ").Replace("\r", " ").Replace("\t", "\\t ").Replace("\n", " ");
+            // http://stackoverflow.com/questions/11654190/ienumerablechar-to-string
+            // The discussion here suggests to use new string() or StringBuilder
+            return new string(message?.Select(x => (x == '\r' || x == '\n') ? ' ' : x).ToArray<char>());
         }
 
         private DateTime ConvertTimestamp(object timestamp)
