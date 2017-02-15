@@ -78,7 +78,7 @@ namespace GoogleCloudExtension.GCloud
         {
             var versionParameter = version != null ? $"--version={version}" : "";
             var promoteParameter = promote ? "--promote" : "--no-promote";
-            return RunCommandAsync($"app deploy \"{appYaml}\" {versionParameter} {promoteParameter} --quiet", outputAction, context);
+            return RunCommandAsync($"app deploy \"{appYaml}\" {versionParameter} {promoteParameter} --skip-staging --quiet", outputAction, context);
         }
 
         /// <summary>
