@@ -1623,4 +1623,12 @@
     <value>"Do you want to continue anyway?"</value>
     <comment>Message that asks to continue with mismatched version.</comment>
   </data>
+  <data name="LogsViewerTreeNodeFilterTooltip" xml:space="preserve">
+    <value>Click the value to show matching entris</value>
+    <comment>The tooltip to detail tree view node value.</comment>
+  </data>
+  <data name="LogViewerLogItemDateTimeFormat" xml:space="preserve">
+    <value>MM-dd-yyyy HH:mm:ss.fff</value>
+    <comment>Log item date time format.</comment>
+  </data>
 </root>

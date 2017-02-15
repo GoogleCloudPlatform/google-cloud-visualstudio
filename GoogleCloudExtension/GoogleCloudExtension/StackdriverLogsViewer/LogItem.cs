@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
-using GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -30,7 +29,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     internal class LogItem : Model
     {
-        private const string JasonPayloadMessageFieldName = "message";
+        private const string JsonPayloadMessageFieldName = "message";
         private const string AnyIconPath = "StackdriverLogsViewer/Resources/ic_log_level_any_12.png";
         private const string DebugIconPath = "StackdriverLogsViewer/Resources/ic_log_level_debug_12.png";
         private const string ErrorIconPath = "StackdriverLogsViewer/Resources/ic_log_level_error_12.png";
@@ -191,7 +190,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 _logLevel = LogSeverity.Default;
             }
 
-            _treeViewObjects = new Lazy<List<ObjectNodeTree>>(() => new ObjectNodeTree(Entry).Children);
+            _treeViewObjects = new Lazy<List<ObjectNodeTree>>(() => new LogEntryNode(Entry).Children);
 
             Function = Entry.SourceLocation?.Function;
             SourceFilePath = Entry?.SourceLocation?.File;
@@ -251,9 +250,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (Entry?.JsonPayload != null)
             {
                 // If the JsonPload has message filed, display this field.
-                if (Entry.JsonPayload.ContainsKey(JasonPayloadMessageFieldName))
+                if (Entry.JsonPayload.ContainsKey(JsonPayloadMessageFieldName))
                 {
-                    message = Entry.JsonPayload[JasonPayloadMessageFieldName].ToString();
+                    message = Entry.JsonPayload[JsonPayloadMessageFieldName].ToString();
                 }
                 else
                 {

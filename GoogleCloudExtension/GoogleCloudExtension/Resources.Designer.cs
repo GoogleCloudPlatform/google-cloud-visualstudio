@@ -2194,6 +2194,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Click the value to show matching entris.
+        /// </summary>
+        public static string LogsViewerTreeNodeFilterTooltip {
+            get {
+                return ResourceManager.GetString("LogsViewerTreeNodeFilterTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The log entry does not contain valid assembly name and/or assembly version..
         /// </summary>
         public static string LogsViewerVersionInfoMissingMessage {
@@ -2316,6 +2325,15 @@ namespace GoogleCloudExtension {
         public static string LogViewerLogItemDateFormat {
             get {
                 return ResourceManager.GetString("LogViewerLogItemDateFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MM-dd-yyyy HH:mm:ss.fff.
+        /// </summary>
+        public static string LogViewerLogItemDateTimeFormat {
+            get {
+                return ResourceManager.GetString("LogViewerLogItemDateTimeFormat", resourceCulture);
             }
         }
         
