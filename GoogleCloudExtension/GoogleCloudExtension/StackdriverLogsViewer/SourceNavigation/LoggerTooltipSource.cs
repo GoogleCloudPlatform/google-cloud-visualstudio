@@ -24,8 +24,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     internal class LoggerTooltipSource
     {
-        private static Lazy<LoggerTooltipSource> s_instance = new Lazy<LoggerTooltipSource>();
-
+        // Note, adding lambda () => new LoggerTooltipSource() is necessary for the constructor is private.
+        private static Lazy<LoggerTooltipSource> s_instance = new Lazy<LoggerTooltipSource>(() => new LoggerTooltipSource());
         /// <summary>
         /// The log item object as the data context for <seealso cref="LoggerTooltipControl"/>.
         /// </summary>
