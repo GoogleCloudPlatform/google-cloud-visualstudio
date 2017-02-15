@@ -33,6 +33,9 @@ namespace GoogleCloudExtension.GCloud
         private const string GCloudMetricsVariable = "CLOUDSDK_METRICS_ENVIRONMENT";
         private const string GCloudMetricsVersionVariable = "CLOUDSDK_METRICS_ENVIRONMENT_VERSION";
 
+        private const string GCloudContainerUseApplicationDefaultCredentialsVariable = "CLOUDSDK_CONTAINER_USE_APPLICATION_DEFAULT_CREDENTIALS";
+        private const string FalseValue = "false";
+
         // This variable contains the path to the configuration to be used for kubernetes operations.
         private const string GCloudKubeConfigVariable = "KUBECONFIG";
 
@@ -202,15 +205,7 @@ namespace GoogleCloudExtension.GCloud
             var actualCommand = FormatCommand(command, context, jsonFormat: true);
             try
             {
-                Dictionary<string, string> environment = null;
-                if (context?.AppName != null)
-                {
-                    environment = new Dictionary<string, string> { { GCloudMetricsVariable, context?.AppName } };
-                    if (context?.AppVersion != null)
-                    {
-                        environment[GCloudMetricsVersionVariable] = context?.AppVersion;
-                    }
-                }
+                var environment = GetContextEnvironment(context);
 
                 // This code depends on the fact that gcloud.cmd is a batch file.
                 Debug.Write($"Executing gcloud command: {actualCommand}");
@@ -229,23 +224,7 @@ namespace GoogleCloudExtension.GCloud
             Dictionary<string, string> extraEnvironment = null)
         {
             var actualCommand = FormatCommand(command, context, jsonFormat: false);
-            Dictionary<string, string> environment = null;
-            if (context?.AppName != null)
-            {
-                environment = new Dictionary<string, string> { { GCloudMetricsVariable, context?.AppName } };
-                if (context?.AppVersion != null)
-                {
-                    environment[GCloudMetricsVersionVariable] = context?.AppVersion;
-                }
-
-                if (extraEnvironment != null)
-                {
-                    foreach (var entry in extraEnvironment)
-                    {
-                        environment.Add(entry.Key, entry.Value);
-                    }
-                }
-            }
+            var environment = GetContextEnvironment(context, extraEnvironment);
 
             // This code depends on the fact that gcloud.cmd is a batch file.
             Debug.Write($"Executing gcloud command: {actualCommand}");
@@ -255,5 +234,35 @@ namespace GoogleCloudExtension.GCloud
                 handler: (o, e) => outputAction?.Invoke(e.Line),
                 environment: environment);
         }
+
+        private static Dictionary<string, string> GetContextEnvironment(
+            GCloudContext context,
+            Dictionary<string, string> extraEnvironment = null)
+        {
+            Dictionary<string, string> environment = new Dictionary<string, string>
+            {
+                { GCloudContainerUseApplicationDefaultCredentialsVariable, FalseValue }
+            };
+
+            if (context?.AppName != null)
+            {
+                environment[GCloudMetricsVariable] = context.AppName;
+                if (context.AppVersion != null)
+                {
+                    environment[GCloudMetricsVersionVariable] = context.AppVersion;
+                }
+            }
+
+            if (extraEnvironment != null)
+            {
+                foreach (var entry in extraEnvironment)
+                {
+                    environment.Add(entry.Key, entry.Value);
+                }
+            }
+
+            return environment;
+        }
+
     }
 }
