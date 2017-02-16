@@ -259,6 +259,5 @@ namespace GoogleCloudExtension.GCloud
 
             return environment;
         }
-
     }
 }
