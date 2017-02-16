@@ -29,15 +29,10 @@ namespace GoogleCloudExtension.GCloud
     /// </summary>
     public static class GCloudWrapper
     {
-        // These variables specify the environment to be reported by gcloud when reporting metrics.
+        // These variables specify the environment to be reported by gcloud when reporting metrics. These variables
+        // are only used with gcloud which is why they're private here.
         private const string GCloudMetricsVariable = "CLOUDSDK_METRICS_ENVIRONMENT";
         private const string GCloudMetricsVersionVariable = "CLOUDSDK_METRICS_ENVIRONMENT_VERSION";
-
-        private const string GCloudContainerUseApplicationDefaultCredentialsVariable = "CLOUDSDK_CONTAINER_USE_APPLICATION_DEFAULT_CREDENTIALS";
-        private const string FalseValue = "false";
-
-        // This variable contains the path to the configuration to be used for kubernetes operations.
-        private const string GCloudKubeConfigVariable = "KUBECONFIG";
 
         /// <summary>
         /// Finds the location of gcloud.cmd by following all of the directories in the PATH environment
@@ -98,7 +93,9 @@ namespace GoogleCloudExtension.GCloud
                 context: context,
                 extraEnvironment: new Dictionary<string, string>
                 {
-                    [GCloudKubeConfigVariable] = path
+                    [CommonEnvironmentVariables.GCloudKubeConfigVariable] = path,
+                    [CommonEnvironmentVariables.GCloudContainerUseApplicationDefaultCredentialsVariable] = CommonEnvironmentVariables.TrueValue,
+                    [CommonEnvironmentVariables.GoogleApplicationCredentialsVariable] = context.CredentialsPath,
                 });
         }
 
@@ -124,7 +121,9 @@ namespace GoogleCloudExtension.GCloud
             {
                 throw new GCloudException($"Failed to get credentials for cluster {cluster}");
             }
-            return new KubectlContext(tempPath);
+            return new KubectlContext(
+                configPath: tempPath,
+                credentialsPath: context.CredentialsPath);
         }
 
         /// <summary>
@@ -239,10 +238,7 @@ namespace GoogleCloudExtension.GCloud
             GCloudContext context,
             Dictionary<string, string> extraEnvironment = null)
         {
-            Dictionary<string, string> environment = new Dictionary<string, string>
-            {
-                { GCloudContainerUseApplicationDefaultCredentialsVariable, FalseValue }
-            };
+            Dictionary<string, string> environment = new Dictionary<string, string>();
 
             if (context?.AppName != null)
             {
