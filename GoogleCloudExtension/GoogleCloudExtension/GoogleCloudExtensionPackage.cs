@@ -210,7 +210,6 @@ namespace GoogleCloudExtension
             PublishProjectContextMenuCommand.Initialize(this);
             LogsViewerToolWindowCommand.Initialize(this);
             ErrorReportingToolWindowCommand.Initialize(this);
-            ErrorReportingDetailToolWindowCommand.Initialize(this);
 
             // Activity log utils, to aid in debugging.
             ActivityLogUtils.Initialize(this);

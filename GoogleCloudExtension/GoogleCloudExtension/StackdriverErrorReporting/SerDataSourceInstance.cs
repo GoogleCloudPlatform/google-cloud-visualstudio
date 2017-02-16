@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,42 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Clouderrorreporting.v1beta1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources.ErrorReporting;
-using GoogleCloudExtension.Utils;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Data;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
     /// <summary>
-    /// Create and keep reference to a global single instance of <seealso cref="SerDataSource"/>.
+    /// Create a single instance of <seealso cref="SerDataSource"/>.
+    /// <seealso cref="ErrorReportingViewModel"/> and <seealso cref="ErrorReportingDetailViewModel"/> use the same instance.
     /// </summary>
     public static class SerDataSourceInstance
     {
-        public static Lazy<SerDataSource> Instance { get; private set; }
+        private static Lazy<SerDataSource> s_instance = new Lazy<SerDataSource>(CreateDataSource);
 
         /// <summary>
-        /// Static constructor of <seealso cref="SerDataSourceInstance"/>.
+        /// Gets an instance of 
         /// </summary>
-        static SerDataSourceInstance()
-        {
-            Instance = new Lazy<SerDataSource>(CreateDataSource);
-        }
-
+        public static SerDataSource Instance => s_instance.Value;
 
         /// <summary>
         /// When the current project id is changed, the Instance needs to be recreated.
         /// </summary>
-        public static void RecreateSourceInstance()
+        public static void OnProjectIdChanged()
         {
-            Instance = new Lazy<SerDataSource>(CreateDataSource);
+            s_instance = new Lazy<SerDataSource>(CreateDataSource);
         }
 
         /// <summary>
@@ -55,17 +44,14 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         private static SerDataSource CreateDataSource()
         {
-            if (CredentialsStore.Default.CurrentProjectId != null)
-            {
-                return new SerDataSource(
-                    CredentialsStore.Default.CurrentProjectId,
-                    CredentialsStore.Default.CurrentGoogleCredential,
-                    GoogleCloudExtensionPackage.VersionedApplicationName);
-            }
-            else
+            if (CredentialsStore.Default.CurrentProjectId == null)
             {
                 return null;
             }
+            return new SerDataSource(
+                CredentialsStore.Default.CurrentProjectId,
+                CredentialsStore.Default.CurrentGoogleCredential,
+                GoogleCloudExtensionPackage.VersionedApplicationName);
         }
     }
 }

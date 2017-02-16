@@ -1,21 +1,21 @@
-﻿//------------------------------------------------------------------------------
-// <copyright file="ErrorReportingDetailToolWindowControl.xaml.cs" company="Company">
-//     Copyright (c) Company.  All rights reserved.
-// </copyright>
-//------------------------------------------------------------------------------
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
-    using GoogleCloudExtension.Accounts;
-    using GoogleCloudExtension.Utils;
-    using System;
-    using System.Diagnostics;
-    using System.Windows;
-    using System.Windows.Controls;
-    using System.Windows.Controls.Primitives;
-    using System.Windows.Input;
-    using System.Windows.Media;
-
     /// <summary>
     /// Interaction logic for ErrorReportingDetailToolWindowControl.
     /// </summary>
@@ -27,79 +27,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public ErrorReportingDetailToolWindowControl()
         {
             this.InitializeComponent();
-            ViewModel = new ErrorReportingDetailViewModel();
-        }
-
-        public override void OnApplyTemplate()
-        {
-            base.OnApplyTemplate();
-            DataContext = ViewModel;
-            autoReloadToggleButton.AutoReload += (sender, e) => ViewModel.UpdateGroupAndEventAsync();
-        }
-
-        public ErrorReportingDetailViewModel ViewModel { get; }
-
-        /// <summary>
-        /// Get the first ancestor control element of type TControl.
-        /// </summary>
-        /// <typeparam name="TUIElement">A <seealso cref="UIElement"/> type.</typeparam>
-        /// <param name="obj">A <seealso cref="DependencyObject"/> element. </param>
-        /// <returns>null or TControl object.</returns>
-        private TUIElement FindAncestorControl<TUIElement>(DependencyObject obj) where TUIElement : UIElement
-        {
-            while ((obj != null) && !(obj is TUIElement))
-            {
-                obj = VisualTreeHelper.GetParent(obj);
-            }
-
-            return obj as TUIElement;  // Note, "null as TUIElement" is valid and returns null. 
-        }
-
-        /// <summary>
-        /// When mouse click on a row, toggle display the row detail.
-        /// if the mouse is clikcing on detail panel, does not collapse it.
-        /// </summary>
-        private void dataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            DataGridRow row = FindAncestorControl<DataGridRow>(e.OriginalSource as DependencyObject);
-            if (row != null)
-            {
-                if (null != FindAncestorControl<DataGridDetailsPresenter>(e.OriginalSource as DependencyObject))
-                {
-                    return;
-                }
-
-                row.DetailsVisibility =
-                    row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
-            }
-        }
-
-        private void LinkButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (ErrorReportingDetailToolWindowCommand.Instance == null)
-            {
-                MessageBox.Show("ErrorReportingDetailToolWindowCommand.Instance == null");
-            }
-            else
-            {
-                ErrorReportingToolWindowCommand.Instance.ShowToolWindow(this, EventArgs.Empty);
-            }
-        }
-
-        /// <summary>
-        /// This is to enable outer scroll bar.
-        /// </summary>
-        private void dataGrid_PreviewMouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            if (!e.Handled)
-            {
-                e.Handled = true;
-                var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta);
-                eventArg.RoutedEvent = UIElement.MouseWheelEvent;
-                eventArg.Source = sender;
-                var parent = ((Control)sender).Parent as UIElement;
-                parent.RaiseEvent(eventArg);
-            }
         }
     }
 }

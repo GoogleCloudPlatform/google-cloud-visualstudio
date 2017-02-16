@@ -236,9 +236,7 @@
       <DependentUpon>SplitTrafficWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\FixBackgroundComboBox.cs" />
-    <Compile Include="StackdriverErrorReporting\ErrorGroupItem.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindow.cs" />
-    <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindowCommand.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindowControl.xaml.cs">
       <DependentUpon>ErrorReportingDetailToolWindowControl.xaml</DependentUpon>
     </Compile>
