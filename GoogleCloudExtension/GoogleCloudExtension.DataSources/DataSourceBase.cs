@@ -31,6 +31,11 @@ namespace GoogleCloudExtension.DataSources
     public abstract class DataSourceBase<TService> where TService : BaseClientService
     {
         /// <summary>
+        /// The projects/{ProjectId} string commonly used by Google Cloud APIs as project name.
+        /// </summary>
+        protected string ProjectIdQuery => $"projects/{ProjectId}";
+
+        /// <summary>
         /// The project ID to use for this data source.
         /// </summary>
         protected string ProjectId { get; }
