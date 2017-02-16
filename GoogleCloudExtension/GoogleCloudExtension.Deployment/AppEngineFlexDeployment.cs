@@ -32,7 +32,12 @@ namespace GoogleCloudExtension.Deployment
 
         private const string AppYamlDefaultContent =
             "runtime: custom\n" +
-            "env: flex\n";
+            "env: flex\n" +
+            "\n" +
+            "# Setting the environment vairable to flex so the app can use that\n" +
+            "# for extra configuration.\n" +
+            "env_variables:\n" +
+            "  ASPNETCORE_ENVIRONMENT: flex\n";
 
         private const string DefaultServiceName = "default";
         private const string ServiceStatement = "service:";

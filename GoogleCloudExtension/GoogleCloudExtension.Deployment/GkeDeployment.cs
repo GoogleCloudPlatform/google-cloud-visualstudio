@@ -15,6 +15,7 @@
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -32,6 +33,11 @@ namespace GoogleCloudExtension.Deployment
 
         // Wait for up to 2 seconds in between calls when polling.
         private static readonly TimeSpan s_pollingDelay = new TimeSpan(0, 0, 2);
+
+        private static readonly Dictionary<string, string> s_gkeEnvironmentVariables = new Dictionary<string, string>
+        {
+            { "ASPNETCORE_ENVIRONMENT", "gke" }
+        };
 
         /// <summary>
         /// The options that define an app's deployment. All options are required.
@@ -157,6 +163,7 @@ namespace GoogleCloudExtension.Deployment
                             imageTag: image,
                             replicas: options.Replicas,
                             outputAction: outputAction,
+                            environment: s_gkeEnvironmentVariables,
                             context: options.KubectlContext))
                     {
                         Debug.WriteLine($"Failed to create deployment {options.DeploymentName}");
