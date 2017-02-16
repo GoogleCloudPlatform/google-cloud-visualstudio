@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.Deployment
 
         private static readonly Dictionary<string, string> s_gkeEnvironmentVariables = new Dictionary<string, string>
         {
-            { "ASPNETCORE_ENVIRONMENT", "gke" }
+            { CommonUtils.GoogleCloudEnvironmentVar, "gke" }
         };
 
         /// <summary>

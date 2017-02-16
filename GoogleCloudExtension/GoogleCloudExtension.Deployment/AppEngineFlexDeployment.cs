@@ -37,7 +37,7 @@ namespace GoogleCloudExtension.Deployment
             "# Setting the environment vairable to flex so the app can use that\n" +
             "# for extra configuration.\n" +
             "env_variables:\n" +
-            "  ASPNETCORE_ENVIRONMENT: flex\n";
+            "  GOOGLE_CLOUD_ENVIRONMENT: flex\n";
 
         private const string DefaultServiceName = "default";
         private const string ServiceStatement = "service:";

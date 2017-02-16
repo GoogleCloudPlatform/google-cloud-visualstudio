@@ -26,6 +26,11 @@ namespace GoogleCloudExtension.Deployment
     internal static class CommonUtils
     {
         /// <summary>
+        /// Environment variable to be set with the current environment in which the app is running.
+        /// </summary>
+        public const string GoogleCloudEnvironmentVar = "GOOGLE_CLOUD_ENVIRONMENT";
+
+        /// <summary>
         /// Returns the project name given the path to the project.json. If the project.json file defines a
         /// "name" property then it is used as the name for the final assembly, otherwise the name of the directory
         /// is used as the name of the final assembly.
