@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace GoogleCloudExtension.GCloud
+﻿namespace GoogleCloudExtension.GCloud
 {
     /// <summary>
     /// This class contains defintions for the environment variables used the various wrappers.
