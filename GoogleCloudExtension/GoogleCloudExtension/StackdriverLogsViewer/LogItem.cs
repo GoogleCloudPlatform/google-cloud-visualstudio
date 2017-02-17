@@ -51,9 +51,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private static readonly Lazy<ImageSource> s_warningIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
 
+        /// <summary>
+        /// The regex parses the log entry function field.
+        /// Example:  [Log4NetSample.Program, Log4NetExample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null].WriteRandomSeverityLog
+        /// This regex extracts the assembly name "Log4NetExample" and version "1.0.0.0".
+        /// </summary>
         private static readonly Regex s_FunctionRegex = new Regex($@"^\[(.*),\s*(.*),\s*Version\s*=\s*(.*)\s*,(.*),(.*)\]\.([\w\-. ]+)$");
         private readonly Lazy<List<ObjectNodeTree>> _treeViewObjects;
-        private readonly LogSeverity _logLevel;
 
         /// <summary>
         /// The function field of source location.
@@ -134,7 +138,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Log severity level.
         /// </summary>
-        public LogSeverity LogLevel => _logLevel;
+        public LogSeverity LogLevel { get; }
 
         /// <summary>
         /// Gets the log item severity level. The data binding source to severity column in the data grid.
@@ -185,11 +189,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             TimeStamp = ConvertTimestamp(logEntry.Timestamp);
             Message = ComposeMessage();
 
+            LogSeverity severity;
             if (String.IsNullOrWhiteSpace(Entry.Severity) ||
-                !Enum.TryParse<LogSeverity>(Entry.Severity, ignoreCase: true, result: out _logLevel))
+                !Enum.TryParse<LogSeverity>(Entry.Severity, ignoreCase: true, result: out severity))
             {
-                _logLevel = LogSeverity.Default;
+                severity = LogSeverity.Default;
             }
+            LogLevel = severity;
 
             _treeViewObjects = new Lazy<List<ObjectNodeTree>>(() => new LogEntryNode(Entry).Children);
 

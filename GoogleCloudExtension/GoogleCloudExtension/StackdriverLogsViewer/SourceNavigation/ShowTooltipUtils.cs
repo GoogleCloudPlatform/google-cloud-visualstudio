@@ -72,12 +72,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public static void HideTooltip()
         {
-            if (TooltipSource.TextView == null)
+            if (Current.TextView == null)
             {
                 return;
             }
 
-            TryFindTagger(TooltipSource.TextView)?.ClearTooltip();
+            TryFindTagger(Current.TextView)?.ClearTooltip();
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 return;
             }
-            TooltipSource.Set(
+            Current.Set(
                 new LoggerTooltipViewModel(logItem),
                 wpfView, 
                 logItem.SourceLine.Value, 

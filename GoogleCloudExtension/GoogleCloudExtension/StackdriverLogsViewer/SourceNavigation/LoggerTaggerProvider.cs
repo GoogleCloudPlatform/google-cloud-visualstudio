@@ -35,7 +35,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         /// <summary>
         /// Gets text view to logger taggers map.
-        /// Using concurrent directionary so as to syncronize access to the map from different threads.
+        /// The data structure is used by CreateTagger that is exposed to Visual Studio. 
+        /// VS may call it at any thread.
+        /// Using concurrent dictionary so as to syncronize access to the map from different threads.
         /// </summary>
         public static ConcurrentDictionary<ITextView, LoggerTagger> AllLoggerTaggers => _taggers.Value;
 
