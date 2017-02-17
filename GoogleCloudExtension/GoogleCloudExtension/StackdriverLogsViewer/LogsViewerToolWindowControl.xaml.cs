@@ -58,12 +58,19 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
+        /// When mouse clicks on source link text, execute the button command.
         /// When mouse clicks on a row, toggle display the row detail.
         /// If the mouse is clikcing on detail panel, does not collapse it.        
         /// </summary>
         private void dataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
             var dependencyObj = e.OriginalSource as DependencyObject;
+            if (OriginFromSourceLink(e.OriginalSource))
+            {
+                e.Handled = true;
+                return;
+            }
+
             DataGridRow row = DataGridUtils.FindAncestorControl<DataGridRow>(dependencyObj);
             if (row != null)
             {
@@ -73,6 +80,31 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                         row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
                 }
             }
+        }
+
+        /// <summary>
+        /// (1) When the button is clicked, skip toggling detail view action.
+        /// (2) Sometimes button does not respond to click event. This method fixes the problem.        
+        /// </summary>
+        private bool OriginFromSourceLink(object originalSource)
+        {
+            Debug.WriteLine($"Original source is {originalSource.ToString()}, type is {originalSource.GetType().Name}");
+            if (originalSource is TextBlock)
+            {
+                var textBlock = originalSource as TextBlock;
+                var button = DataGridUtils.FindAncestorControl<Controls.IconButton>(originalSource as DependencyObject);
+                if (button?.Name != "_sourceLinkButton")
+                {
+                    return false;
+                }
+                if (button.Command != null && button.Command.CanExecute(null))
+                {
+                    button.Command.Execute(null);
+                }
+                return true;
+            }
+
+            return false;
         }
     }
 }

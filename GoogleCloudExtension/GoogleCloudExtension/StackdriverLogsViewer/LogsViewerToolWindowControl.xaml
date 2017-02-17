@@ -24,6 +24,32 @@
 
             <utils:VisibilityConverter x:Key="visibilityConverter" />
 
+            <DataGridTemplateColumn
+                x:Key="MessageColumn" >
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate >
+                        <StackPanel Orientation="Horizontal">
+                            <controls:IconButton
+                                x:Name="_sourceLinkButton"
+                                Margin="6,0,12,0"
+                                Style="{StaticResource MouseOverLinkButtonStyle}"
+                                Command="{Binding OnNavigateToSourceCommand}"
+                                Visibility="{Binding SourceLinkVisible, Converter={StaticResource visibilityConverter}}"
+                                Content="{Binding SourceLinkCaption}">
+                                <controls:IconButton.ToolTip>
+                                    <ToolTip Content="{Binding SourceFilePath}" 
+                                             Style="{StaticResource CommonTooltipStyle}" />
+                                </controls:IconButton.ToolTip>
+                            </controls:IconButton>
+                            <TextBlock 
+                                Text="{Binding Message}"
+                                TextWrapping="NoWrap"
+                                TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            
             <HierarchicalDataTemplate DataType="{x:Type vct:ObjectNodeTree}" 
                                       ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal">
@@ -202,7 +228,7 @@
                         ItemsSource="{Binding LogIdList.LogIDs}"
                         SelectedItem="{Binding LogIdList.SelectedLogId}" 
                         IsSynchronizedWithCurrentItem="true" />
-                    
+
                     <controls:FixBackgroundComboBox 
                         Margin="0,0,6,0"
                         Width="120"
@@ -211,11 +237,11 @@
                         SelectedItem="{Binding SelectedLogSeverity}"
                         DisplayMemberPath="DisplayName" 
                         IsSynchronizedWithCurrentItem="true" />
-                    
+
                     <local:DateTimePicker
                         Margin="0,0,6,0"
                         DataContext="{Binding DateTimePickerModel}" />
-                                        
+
                     <controls:IconButton
                         Grid.Column="1" 
                         Margin="6,0,16,0"
@@ -393,7 +419,7 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                     
-                    <DataGridTextColumn Binding="{Binding Message}" />
+                    <StaticResource ResourceKey="MessageColumn" />
                 </DataGrid.Columns>
 
                 <DataGrid.RowDetailsTemplate>

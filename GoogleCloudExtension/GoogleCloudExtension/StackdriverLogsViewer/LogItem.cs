@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
@@ -50,7 +51,43 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private static readonly Lazy<ImageSource> s_warningIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
 
+        /// <summary>
+        /// The regex parses the log entry function field.
+        /// Example:  [Log4NetSample.Program, Log4NetExample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null].WriteRandomSeverityLog
+        /// This regex extracts the assembly name "Log4NetExample" and version "1.0.0.0".
+        /// </summary>
+        private static readonly Regex s_FunctionRegex = new Regex($@"^\[(.*),\s*(.*),\s*Version\s*=\s*(.*)\s*,(.*),(.*)\]\.([\w\-. ]+)$");
         private readonly Lazy<List<ObjectNodeTree>> _treeViewObjects;
+
+        /// <summary>
+        /// The function field of source location.
+        /// </summary>
+        public string Function { get; }
+
+        /// <summary>
+        /// Log entry source assembly name.
+        /// </summary>
+        public string AssemblyName { get; }
+
+        /// <summary>
+        /// Log entry source assembly version.
+        /// </summary>
+        public string AssemblyVersion { get; }
+
+        /// <summary>
+        /// Log entry source line number.
+        /// </summary>
+        public long? SourceLine { get; }
+
+        /// <summary>
+        /// Source location file path.
+        /// </summary>
+        public string SourceFilePath { get; }
+
+        /// <summary>
+        /// Indicates if the source link is shown or hidden.
+        /// </summary>
+        public bool SourceLinkVisible { get; }
 
         /// <summary>
         /// Gets the time stamp.
@@ -89,20 +126,28 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public List<ObjectNodeTree> TreeViewObjects => _treeViewObjects.Value;
 
         /// <summary>
+        /// Gets the formated source location as content of data grid column.
+        /// </summary>
+        public string SourceLinkCaption { get; }
+
+        /// <summary>
+        /// Command responses to source link button click event.
+        /// </summary>
+        public ProtectedCommand OnNavigateToSourceCommand { get; }
+
+        /// <summary>
+        /// Log severity level.
+        /// </summary>
+        public LogSeverity LogLevel { get; }
+
+        /// <summary>
         /// Gets the log item severity level. The data binding source to severity column in the data grid.
         /// </summary>
         public ImageSource SeverityLevel
         {
             get
             {
-                LogSeverity logLevel;
-                if (String.IsNullOrWhiteSpace(Entry?.Severity) ||
-                    !Enum.TryParse<LogSeverity>(Entry?.Severity, ignoreCase: true, result: out logLevel))
-                {
-                    return s_anyIcon.Value;
-                }
-
-                switch (logLevel)
+                switch (LogLevel)
                 {
                     // EMERGENCY, CRITICAL, Alert all map to fatal icon.
                     case LogSeverity.Alert:
@@ -135,15 +180,44 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="logEntry">A log entry.</param>
         public LogItem(LogEntry logEntry)
         {
-            Entry = logEntry;
-            Message = ComposeMessage();
-            TimeStamp = ConvertTimestamp(logEntry.Timestamp);
-            _treeViewObjects = new Lazy<List<ObjectNodeTree>>(CreateTreeObject);
-        }
+            if (logEntry == null)
+            {
+                return;
+            }
 
-        private List<ObjectNodeTree> CreateTreeObject()
-        {
-            return new ObjectNodeTree(Entry).Children;
+            Entry = logEntry;
+            TimeStamp = ConvertTimestamp(logEntry.Timestamp);
+            Message = ComposeMessage();
+
+            LogSeverity severity;
+            if (String.IsNullOrWhiteSpace(Entry.Severity) ||
+                !Enum.TryParse<LogSeverity>(Entry.Severity, ignoreCase: true, result: out severity))
+            {
+                severity = LogSeverity.Default;
+            }
+            LogLevel = severity;
+
+            _treeViewObjects = new Lazy<List<ObjectNodeTree>>(() => new ObjectNodeTree(Entry).Children);
+
+            Function = Entry.SourceLocation?.Function;
+            SourceFilePath = Entry?.SourceLocation?.File;
+            SourceLine = Entry.SourceLocation?.Line;
+            if (Function != null && SourceFilePath != null && SourceLine.HasValue)
+            {
+                // Example:  [Log4NetSample.Program, Log4NetExample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null].WriteRandomSeverityLog
+                Match match = s_FunctionRegex.Match(Function);
+                Debug.WriteLine($"{match.Groups[1].Value},{match.Groups[2].Value}, {match.Groups[3].Value}");
+                if (match.Success)
+                {
+                    AssemblyName = match.Groups[2].Value;
+                    AssemblyVersion = match.Groups[3].Value;
+                }
+
+                SourceLinkVisible = true;
+                OnNavigateToSourceCommand = new ProtectedCommand(NavigateToSourceLineCommand);
+                var tmp = $"{SourceFilePath}:{SourceLine}";
+                SourceLinkCaption = tmp.Length <= 20 ? tmp : $"...{tmp.Substring(tmp.Length - 17)}";
+            }
         }
 
         /// <summary>
@@ -154,6 +228,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             TimeStamp = TimeZoneInfo.ConvertTime(TimeStamp, newTimeZone);
             RaisePropertyChanged(nameof(Time));
+        }
+
+        private string GetSourceLocationField(string fieldName)
+        {
+            return Entry.Labels.ContainsKey(fieldName) ? Entry.Labels[fieldName] : null;
         }
 
         private string ComposeDictionaryPayloadMessage(IDictionary<string, object> dictPayload)
@@ -232,6 +311,35 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             return datetime.ToLocalTime();
+        }
+
+        /// <summary>
+        /// Open the source file, move to the source line and show tooltip.
+        /// </summary>
+        private void NavigateToSourceLineCommand()
+        {
+            var project = this.FindOrOpenProject();
+            if (project == null)
+            {
+                Debug.WriteLine($"Failed to find project of {AssemblyName}");
+                return;
+            }
+
+            var projectSourceFile = project.FindSourceFile(SourceFilePath);
+            if (projectSourceFile == null)
+            {
+                SourceVersionUtils.FileItemNotFoundPrompt();
+                return;
+            }
+
+            var window = ShellUtils.Open(projectSourceFile.ProjectItem);
+            if (null == window)
+            {
+                SourceVersionUtils.FailedToOpenFilePrompt(SourceFilePath);
+                return;
+            }
+
+            this.ShowToolTip(window);
         }
     }
 }
