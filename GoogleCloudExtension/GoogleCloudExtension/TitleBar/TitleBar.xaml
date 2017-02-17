@@ -1,0 +1,72 @@
+﻿<UserControl x:Class="GoogleCloudExtension.TitleBar.TitleBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.TitleBar"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"             
+             xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+             xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"                         
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True,Type=local:TitleBarViewModel}" >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Border Padding="12,6,12,6"
+            Background="{DynamicResource {x:Static vsshell:VsBrushes.PanelTitleBarKey}}"
+            HorizontalAlignment="Stretch" >
+        <StackPanel Orientation="Horizontal">
+            
+        <Image 
+            Margin="0,0,6,0"
+            HorizontalAlignment="Left" 
+            VerticalAlignment="Center" 
+            Source="{mp:ImageResource Theming/Resources/logo_cloud.png}" />
+
+            <controls:IconButton                
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Center"                 
+                Content="{x:Static ext:Resources.CloudExplorerNoAccountButtonCaption}"
+                Style="{StaticResource MouseOverLinkButtonStyle}"
+                Command="{Binding OnGotoAccountManagementCommand}"
+                Foreground="Blue"
+                Visibility="{Binding ShowAccountManagementLink, Converter={utils:VisibilityConverter}}"/>
+
+            <StackPanel 
+                Orientation="Horizontal"
+                Visibility="{Binding ShowAccountManagementLink, Converter={utils:VisibilityConverter IsNegated=True}}">  
+                    <TextBlock 
+                        VerticalAlignment="Center" 
+                        Style="{StaticResource CommonTextStyle}"     
+                        Text="{x:Static ext:Resources.TitleBarAccountLabel}" />
+        
+                    <TextBlock 
+                        Margin="6,0,0,0"
+                        VerticalAlignment="Center" 
+                        Style="{StaticResource CommonTextStyle}"                    
+                        Text="{Binding AccountName}" />
+        
+                    <TextBlock 
+                        Margin="12,0,0,0"
+                        VerticalAlignment="Center" 
+                        Style="{StaticResource CommonTextStyle}"
+                        Text="{x:Static ext:Resources.TitleBarProjectIdLabel}" />
+        
+                    <TextBlock 
+                        Margin="6,0,0,0" 
+                        VerticalAlignment="Center" 
+                        Style="{StaticResource CommonTextStyle}" 
+                        Text="{Binding ProjectId}" />
+                </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

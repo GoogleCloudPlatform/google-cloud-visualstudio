@@ -70,7 +70,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
                 setEnabled();
                 menuItem.BeforeQueryStatus += (sender, e) => setEnabled();
-                CredentialsStore.Default.Reset += (sender, e) => CloseWindow();
             };
         }
 

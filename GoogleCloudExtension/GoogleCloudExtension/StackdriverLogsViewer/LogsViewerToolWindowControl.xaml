@@ -8,6 +8,7 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"             
              xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"
+             xmlns:tb="clr-namespace:GoogleCloudExtension.TitleBar"
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
              mc:Ignorable="d"
@@ -104,59 +105,36 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto"  />
-        </Grid.RowDefinitions>
+    <StackPanel>
+        <tb:TitleBar />
+        <Grid Visibility="{Binding Project, Converter={utils:NullEmptyInvisibleConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto"  />
+            </Grid.RowDefinitions>
 
-        <!-- Title bar. -->
-        <StackPanel Margin="0,0,0,6" Style="{StaticResource PageTitleBarStyle}">
-            <Image Margin="12,0,6,0"
-                   HorizontalAlignment="Left" 
-                   VerticalAlignment="Center" 
-                   Source="{mp:ImageResource Theming/Resources/logo_cloud.png}" />
-            <TextBlock VerticalAlignment="Center" 
-                       Style="{StaticResource CommonTextStyle}"     
-                       Padding="0,5,0,5"
-                       Text="{x:Static ext:Resources.LogViewerTitleBarAccountLabel}" />
-            <TextBlock Margin="6,0,0,0"
-                       VerticalAlignment="Center" 
-                       Style="{StaticResource CommonTextStyle}" 
-                       Text="{Binding Account}" />
-            <TextBlock Margin="12,0,0,0"
-                       VerticalAlignment="Center" 
-                       Style="{StaticResource CommonTextStyle}"
-                       Text="{x:Static ext:Resources.LogViewerTitleBarProjectIdLabel}" />
-            <TextBlock Margin="6,0,0,0" 
-                       VerticalAlignment="Center" 
-                       Style="{StaticResource CommonTextStyle}" 
-                       Text="{Binding Project}" />
-        </StackPanel>
-
-        <!-- Filters -->
-        <StackPanel Grid.Row="1"                    
+            <!-- Filters -->
+            <StackPanel Grid.Row="1"                    
                     Margin="12,6,12,6"  
                     IsEnabled="{Binding IsControlEnabled}"
                     VerticalAlignment="Center" 
                     HorizontalAlignment="Stretch" 
                     Orientation="Vertical">
 
-            <!-- Advanced Filter -->
-            <Grid Visibility="{Binding ShowAdvancedFilter, Converter={StaticResource visibilityConverter}}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition />
-                    <RowDefinition />
-                </Grid.RowDefinitions>
+                <!-- Advanced Filter -->
+                <Grid Visibility="{Binding ShowAdvancedFilter, Converter={StaticResource visibilityConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
 
-                <TextBox  
+                    <TextBox  
                     Grid.ColumnSpan="2"
                     Grid.Column="0"
                     VerticalAlignment="Center" 
@@ -168,7 +146,7 @@
                     MaxLines="30"
                     VerticalScrollBarVisibility="Auto" />
 
-                <Button 
+                    <Button 
                     Grid.Column="2" 
                     Margin="6,0,0,0" 
                     HorizontalAlignment="Right"
@@ -176,12 +154,12 @@
                     Style="{StaticResource CommonButtonWideStyle}"
                     Command="{Binding FilterSwitchCommand}"
                     Content="{x:Static ext:Resources.LogViewerSwitchToSimpleFilterCaption}">
-                    <Button.ToolTip>
-                        <ToolTip Content="{x:Static ext:Resources.LogViewerToSimpleSearchButtonTooltip}"/>
-                    </Button.ToolTip>
-                </Button> 
-                    
-                <Button 
+                        <Button.ToolTip>
+                            <ToolTip Content="{x:Static ext:Resources.LogViewerToSimpleSearchButtonTooltip}"/>
+                        </Button.ToolTip>
+                    </Button>
+
+                    <Button 
                     Grid.Row="1"
                     Grid.Column="0"
                     Margin="0,6,0,0"
@@ -191,7 +169,7 @@
                     Style="{StaticResource CommonButtonDynamicStyle}"
                     Content="{x:Static ext:Resources.LogViewerSubmitAdvancedFilterCaption}" />
 
-                <TextBlock 
+                    <TextBlock 
                     Grid.Row="1"
                     Grid.Column="1"  
                     Margin="0,0,3,0"
@@ -204,32 +182,32 @@
                     </Hyperlink>
                 </TextBlock>
 
-            </Grid>
-            
-            <!-- Basic Filters. -->
-            <StackPanel Visibility="{Binding ShowAdvancedFilter, Converter={utils:VisibilityConverter IsNegated=True}}">
-                <StackPanel Orientation="Horizontal" 
+                </Grid>
+
+                <!-- Basic Filters. -->
+                <StackPanel Visibility="{Binding ShowAdvancedFilter, Converter={utils:VisibilityConverter IsNegated=True}}">
+                    <StackPanel Orientation="Horizontal" 
                             HorizontalAlignment="Left" 
                             VerticalAlignment="Center">
 
-                    <Menu
+                        <Menu
                         Margin="0,0,6,0"
                         Style="{StaticResource SelectorMenuStyle}"
                         Width="200">
-                        <controls:SearchMenuItem 
+                            <controls:SearchMenuItem 
                             Header="{Binding ResourceTypeSelector.Header}"
                             ItemsSource="{Binding ResourceTypeSelector.MenuItems}" >
 
-                            <controls:SearchMenuItem.ItemTemplate>
-                                <HierarchicalDataTemplate 
+                                <controls:SearchMenuItem.ItemTemplate>
+                                    <HierarchicalDataTemplate 
                                     DataType="{x:Type local:MenuItemViewModel}" 
                                     ItemsSource="{Binding MenuItems}">
-                                </HierarchicalDataTemplate>
-                            </controls:SearchMenuItem.ItemTemplate>
-                        </controls:SearchMenuItem>
-                    </Menu>
+                                    </HierarchicalDataTemplate>
+                                </controls:SearchMenuItem.ItemTemplate>
+                            </controls:SearchMenuItem>
+                        </Menu>
 
-                    <controls:FixBackgroundComboBox 
+                        <controls:FixBackgroundComboBox 
                         Margin="0,0,6,0"
                         Width="160" 
                         Style="{StaticResource CommonDocumentComboBoxStyle}"
@@ -237,7 +215,7 @@
                         SelectedItem="{Binding LogIdList.SelectedLogId}" 
                         IsSynchronizedWithCurrentItem="true" />
 
-                    <controls:FixBackgroundComboBox 
+                        <controls:FixBackgroundComboBox 
                         Margin="0,0,6,0"
                         Width="120"
                         Style="{StaticResource CommonDocumentComboBoxStyle}"
@@ -246,11 +224,11 @@
                         DisplayMemberPath="DisplayName" 
                         IsSynchronizedWithCurrentItem="true" />
 
-                    <local:DateTimePicker
+                        <local:DateTimePicker
                         Margin="0,0,6,0"
                         DataContext="{Binding DateTimePickerModel}" />
 
-                    <controls:IconButton
+                        <controls:IconButton
                         Grid.Column="1" 
                         Margin="6,0,16,0"
                         Width="32" 
@@ -262,28 +240,28 @@
                         MouseOverIcon="{mp:ImageResource StackdriverLogsViewer/Resources/refresh_mouse_over.png}"
                         MouseDownIcon="{mp:ImageResource StackdriverLogsViewer/Resources/refresh_mouse_down.png}"
                         Command="{Binding RefreshCommand}">
-                        <controls:IconButton.ToolTip>
-                            <ToolTip Content="{x:Static ext:Resources.LogViewerRefreshButtonToolTip}" 
+                            <controls:IconButton.ToolTip>
+                                <ToolTip Content="{x:Static ext:Resources.LogViewerRefreshButtonToolTip}" 
                                      Style="{StaticResource CommonTooltipStyle}" />
-                        </controls:IconButton.ToolTip>
-                    </controls:IconButton>
-                </StackPanel>
+                            </controls:IconButton.ToolTip>
+                        </controls:IconButton>
+                    </StackPanel>
 
-            <Grid Margin="0,6,0,0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="Auto" />
-                    </Grid.ColumnDefinitions>
-                    <Border Grid.Column="0"
+                    <Grid Margin="0,6,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0"
                         BorderThickness="1" 
                         BorderBrush="LightGray">
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
 
-                            <TextBox 
+                                <TextBox 
                                 Grid.Column="0"
                                 BorderThickness="0"
                                 TextWrapping="Wrap"    
@@ -291,12 +269,12 @@
                                 HorizontalAlignment="Stretch"
                                 Padding="8,5,8,5"    
                                 Text="{Binding SimpleSearchText, UpdateSourceTrigger=PropertyChanged}" >
-                                <TextBox.InputBindings>
-                                    <KeyBinding Key="Enter" Command="{Binding SimpleTextSearchCommand}"/>
-                                </TextBox.InputBindings>
-                            </TextBox>
+                                    <TextBox.InputBindings>
+                                        <KeyBinding Key="Enter" Command="{Binding SimpleTextSearchCommand}"/>
+                                    </TextBox.InputBindings>
+                                </TextBox>
 
-                            <controls:IconButton 
+                                <controls:IconButton 
                                 Grid.Column="1" 
                                 Padding="2,0,2,0"
                                 BorderThickness="0"
@@ -306,26 +284,26 @@
                                 Style="{StaticResource SearchIconStyle}"
                                 Command="{Binding SimpleTextSearchCommand}"
                                 NormalIcon="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}">
-                                <controls:IconButton.ToolTip>
+                                    <controls:IconButton.ToolTip>
                                         <ToolTip Content="{x:Static ext:Resources.LogViewerSimpleTextSearchIconButtonToolTip}"/>
-                                </controls:IconButton.ToolTip>
-                            </controls:IconButton>  
-                        
-                        </Grid>
-                    </Border>
-                    <Button Grid.Column="1" 
+                                    </controls:IconButton.ToolTip>
+                                </controls:IconButton>
+
+                            </Grid>
+                        </Border>
+                        <Button Grid.Column="1" 
                         Margin="6,0,0,0"
                         HorizontalAlignment="Right"
                         VerticalAlignment="Bottom"
                         Style="{StaticResource CommonButtonWideStyle}"
                         Command="{Binding Path=FilterSwitchCommand}"                            
                         Content="{x:Static ext:Resources.LogViewerSwitchToAdvancedFilterCaption}"/>
-                </Grid>
+                    </Grid>
+                </StackPanel>
+
             </StackPanel>
 
-        </StackPanel>
-
-        <Expander 
+            <Expander 
             Grid.Row="2" 
             Panel.ZIndex="20"             
             x:Name="_allExpander"
@@ -333,18 +311,18 @@
             HorizontalAlignment="Right" 
             VerticalAlignment="Top" 
             IsExpanded="{Binding ToggleExpandAllExpanded}">
-            <Expander.ToolTip>
-                <ToolTip Content="{Binding ToggleExapandAllToolTip}" 
+                <Expander.ToolTip>
+                    <ToolTip Content="{Binding ToggleExapandAllToolTip}" 
                          Style="{StaticResource CommonTooltipStyle}"/>
-            </Expander.ToolTip>
-        </Expander>
-        
-        <Grid Grid.Row="2" 
+                </Expander.ToolTip>
+            </Expander>
+
+            <Grid Grid.Row="2" 
               Margin="12,6,12,12" 
               IsEnabled="{Binding IsControlEnabled}">
-            
-            <!-- DataGrid, displays all log entries. -->
-            <DataGrid Panel.ZIndex="10" 
+
+                <!-- DataGrid, displays all log entries. -->
+                <DataGrid Panel.ZIndex="10" 
                       x:Name="_dataGridLogEntries"
                       HorizontalAlignment="Stretch" 
                       VerticalAlignment="Stretch" 
@@ -364,101 +342,101 @@
                       AlternationCount="2"
                       ScrollViewer.ScrollChanged="dataGrid_ScrollChanged"
                       PreviewMouseDown="dataGrid_PreviewMouseDown">
-                
-                <!-- Override the text highlight color. -->
-                <DataGrid.Resources>
-                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
-                                     Color="Black"/>
-                </DataGrid.Resources>
 
-                <DataGrid.Style>
-                    <Style TargetType="DataGrid">
-                        <Setter Property="RowDetailsVisibilityMode" Value="Collapsed"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsExpanded, ElementName=_allExpander}" Value="True">
-                                <Setter Property="RowDetailsVisibilityMode" Value="Visible" />
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </DataGrid.Style>
-                
-                <DataGrid.GroupStyle>
-                    <GroupStyle >
-                        <GroupStyle.ContainerStyle >
-                            <Style TargetType="{x:Type GroupItem}" >
-                                <Setter Property="Template" Value="{StaticResource groupItemTemplate}" />
-                            </Style>
-                        </GroupStyle.ContainerStyle>
-                    </GroupStyle>
-                </DataGrid.GroupStyle>
-                
-                <DataGrid.Columns>
-                    <DataGridTemplateColumn IsReadOnly="True">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Image Source="{Binding SeverityLevel}" 
+                    <!-- Override the text highlight color. -->
+                    <DataGrid.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
+                                     Color="Black"/>
+                    </DataGrid.Resources>
+
+                    <DataGrid.Style>
+                        <Style TargetType="DataGrid">
+                            <Setter Property="RowDetailsVisibilityMode" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsExpanded, ElementName=_allExpander}" Value="True">
+                                    <Setter Property="RowDetailsVisibilityMode" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.Style>
+
+                    <DataGrid.GroupStyle>
+                        <GroupStyle >
+                            <GroupStyle.ContainerStyle >
+                                <Style TargetType="{x:Type GroupItem}" >
+                                    <Setter Property="Template" Value="{StaticResource groupItemTemplate}" />
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+                    </DataGrid.GroupStyle>
+
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding SeverityLevel}" 
                                        Width="12" 
                                        Height="12"
                                        Margin="9,1,8,1" >
-                                    <Image.ToolTip>
-                                        <ToolTip Content="{Binding SeverityTip}" 
+                                        <Image.ToolTip>
+                                            <ToolTip Content="{Binding SeverityTip}" 
                                                  Style="{StaticResource CommonTooltipStyle}"/>
-                                    </Image.ToolTip>
-                                </Image>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
+                                        </Image.ToolTip>
+                                    </Image>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
-                    <DataGridTemplateColumn 
+                        <DataGridTemplateColumn 
                         IsReadOnly="True" 
                         SortMemberPath="TimeStamp" >
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Time}" 
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Time}" 
                                            TextWrapping="NoWrap"
                                            TextTrimming="CharacterEllipsis" 
                                            Margin="6,0,6,0">
-                                    <TextBlock.ToolTip>
-                                        <ToolTip Content="{Binding Date}" 
+                                        <TextBlock.ToolTip>
+                                            <ToolTip Content="{Binding Date}" 
                                                  Style="{StaticResource CommonTooltipStyle}" />
-                                    </TextBlock.ToolTip>
-                                </TextBlock>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    
-                    <StaticResource ResourceKey="MessageColumn" />
-                </DataGrid.Columns>
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
 
-                <DataGrid.RowDetailsTemplate>
-                    <DataTemplate>
-                        <!-- Use a border to make the background right. -->
-                        <Border Background="White" Padding="30,0,0,2">
-                            
-                            <!-- Override the template to disable inner scrollbar -->
-                            <TreeView BorderThickness="0" 
+                        <StaticResource ResourceKey="MessageColumn" />
+                    </DataGrid.Columns>
+
+                    <DataGrid.RowDetailsTemplate>
+                        <DataTemplate>
+                            <!-- Use a border to make the background right. -->
+                            <Border Background="White" Padding="30,0,0,2">
+
+                                <!-- Override the template to disable inner scrollbar -->
+                                <TreeView BorderThickness="0" 
                                 ItemsSource="{Binding TreeViewObjects}">
-                                <TreeView.Template>
-                                    <ControlTemplate>
-                                        <ItemsPresenter />
-                                    </ControlTemplate>
-                                </TreeView.Template>
-                                <TreeView.ItemContainerStyle>
-                                    <Style TargetType="{x:Type TreeViewItem}" >
-                                        <Setter Property="IsExpanded" Value="True" />
-                                    </Style>
-                                </TreeView.ItemContainerStyle>
-                            </TreeView>
-                        </Border>
-                    </DataTemplate>
-                </DataGrid.RowDetailsTemplate>
-            </DataGrid>
-        </Grid>
-        
-        <!-- Displays request status. -->
-        <Grid Grid.Row="3" Margin="12, 0, 12, 0">
-            
-            <TextBox Margin="0, 0, 0, 12" 
+                                    <TreeView.Template>
+                                        <ControlTemplate>
+                                            <ItemsPresenter />
+                                        </ControlTemplate>
+                                    </TreeView.Template>
+                                    <TreeView.ItemContainerStyle>
+                                        <Style TargetType="{x:Type TreeViewItem}" >
+                                            <Setter Property="IsExpanded" Value="True" />
+                                        </Style>
+                                    </TreeView.ItemContainerStyle>
+                                </TreeView>
+                            </Border>
+                        </DataTemplate>
+                    </DataGrid.RowDetailsTemplate>
+                </DataGrid>
+            </Grid>
+
+            <!-- Displays request status. -->
+            <Grid Grid.Row="3" Margin="12, 0, 12, 0">
+
+                <TextBox Margin="0, 0, 0, 12" 
                      Padding="8, 5, 8, 5" 
                      VerticalAlignment="Bottom" 
                      TextAlignment="Left" 
@@ -470,24 +448,25 @@
                      IsReadOnly="True"
                      VerticalScrollBarVisibility="Auto" />
 
-            <StackPanel Margin="0, 0, 0, 12" 
+                <StackPanel Margin="0, 0, 0, 12" 
                         Orientation="Horizontal" 
                         HorizontalAlignment="Center"
                         Visibility="{Binding ShowRequestStatus, Converter={StaticResource visibilityConverter}}">
 
-                <TextBlock Padding="8, 5, 8, 5" 
+                    <TextBlock Padding="8, 5, 8, 5" 
                            Foreground="Red" 
                            Text="{Binding RequestStatusText}"
                            Style="{StaticResource CommonTextStyle}" />
-                
-                <Button Margin="12, 0, 12, 0" 
+
+                    <Button Margin="12, 0, 12, 0" 
                         VerticalAlignment="Center"
                         IsEnabled="True"
                         Content="{x:Static ext:Resources.UiCancelButtonCaption}" 
                         Command="{Binding CancelRequestCommand}" 
                         Visibility="{Binding ShowCancelRequestButton, Converter={StaticResource visibilityConverter}}" 
                         Style="{StaticResource CommonButtonStandardStyle}" />
-            </StackPanel>
+                </StackPanel>
+            </Grid>
         </Grid>
-    </Grid>
+    </StackPanel>
 </UserControl>

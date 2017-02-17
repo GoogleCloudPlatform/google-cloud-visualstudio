@@ -3,9 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:control="clr-namespace:GoogleCloudExtension.Controls"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting"    
-             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"      
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"    
+             xmlns:tb="clr-namespace:GoogleCloudExtension.TitleBar"
              xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"                     
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
@@ -21,6 +22,15 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Margin="12, 0, 12, 12">
+    <Grid Margin="12,0,12,12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <tb:TitleBar Margin="-12,0,-12,0" />
     </Grid>
 </UserControl>
