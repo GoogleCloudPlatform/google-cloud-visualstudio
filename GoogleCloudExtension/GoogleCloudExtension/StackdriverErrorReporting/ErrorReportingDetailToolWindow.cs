@@ -33,6 +33,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     public class ErrorReportingDetailToolWindow : ToolWindowPane
     {
         /// <summary>
+        /// Gets the view model object for the internal detail view control.
+        /// </summary>
+        public ErrorReportingDetailViewModel ViewModel => (Content as ErrorReportingDetailToolWindowControl)?.ViewModel;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ErrorReportingDetailToolWindow"/> class.
         /// </summary>
         public ErrorReportingDetailToolWindow() : base(null)

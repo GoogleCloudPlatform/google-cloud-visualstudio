@@ -22,11 +22,26 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     public partial class ErrorReportingDetailToolWindowControl : UserControl
     {
         /// <summary>
+        /// The view model associated with the control.
+        /// </summary>
+        public ErrorReportingDetailViewModel ViewModel { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ErrorReportingDetailToolWindowControl"/> class.
         /// </summary>
         public ErrorReportingDetailToolWindowControl()
         {
             this.InitializeComponent();
+            ViewModel = new ErrorReportingDetailViewModel();
+        }
+
+        /// <summary>
+        /// Override <seealso cref="OnApplyTemplate"/> to perform some initialization.
+        /// </summary>
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            DataContext = ViewModel;
         }
     }
 }

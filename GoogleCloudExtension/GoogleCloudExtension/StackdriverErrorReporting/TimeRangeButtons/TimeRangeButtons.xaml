@@ -1,0 +1,50 @@
+﻿<ItemsControl 
+    x:Class="GoogleCloudExtension.StackdriverErrorReporting.TimeRangeButtons"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting"
+    xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"              
+    mc:Ignorable="d" 
+    d:DesignHeight="300" d:DesignWidth="300" 
+    ItemsSource="{Binding TimeRanges}"
+    d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True,Type=local:TimeRangeButtonsViewModel}" >
+
+    <ItemsControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <utils:VisibilityConverter x:Key="visibilityConverter" />
+
+        </ResourceDictionary>
+    </ItemsControl.Resources>
+    
+    <ItemsControl.ItemTemplate>
+        <DataTemplate>
+            <Grid>
+                <Button 
+                    Panel.ZIndex="10"
+                    Content="{Binding Caption}" 
+                    Style="{StaticResource CommonButtonStandardStyle}"
+                    Width="56"
+                    Command="{Binding TimeRangeCommand}"/>
+                <Line 
+                    Panel.ZIndex="20"
+                    X1="2"
+                    X2="55" 
+                    Stroke="Blue"    
+                    StrokeThickness="2"
+                    Visibility="{Binding IsCurrentSelection, Converter={StaticResource visibilityConverter}}"
+                    VerticalAlignment="Bottom"/>
+            </Grid>
+        </DataTemplate>
+    </ItemsControl.ItemTemplate>
+    <ItemsControl.ItemsPanel>
+        <ItemsPanelTemplate>
+            <UniformGrid Rows="1" IsItemsHost="True"/>
+        </ItemsPanelTemplate>
+    </ItemsControl.ItemsPanel>
+</ItemsControl>

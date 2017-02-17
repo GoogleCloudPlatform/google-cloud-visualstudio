@@ -23,8 +23,24 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     public class ErrorReportingDetailViewModel : ViewModelBase
     {
         /// <summary>
+        /// The <seealso cref="ErrorGroupItem"/> that the detail view window shows.
+        /// </summary>
+        public ErrorGroupItem GroupItem { get; private set; }
+
+        /// <summary>
         /// Initializes a new instance of <seealso cref="ErrorReportingDetailViewModel"/> class.
         /// </summary>
         public ErrorReportingDetailViewModel() { }
+
+        /// <summary>
+        /// Update the detail view with the <paramref name="errorGroupItem"/>
+        /// </summary>
+        /// <param name="errorGroupItem">
+        /// A <seealso cref="ErrorGroupItem"/> that the detail view window shows.
+        /// </param>
+        public void UpdateView(ErrorGroupItem errorGroupItem)
+        {
+            GroupItem = errorGroupItem;
+        }
     }
 }
