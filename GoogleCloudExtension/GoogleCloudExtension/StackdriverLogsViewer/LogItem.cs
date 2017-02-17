@@ -284,7 +284,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             // http://stackoverflow.com/questions/11654190/ienumerablechar-to-string
-            // The discussion here suggests to use new string() or StringBuilder
+            // The discussion here suggests to use new string() performs well.
             return new string(message?.Select(x => (x == '\r' || x == '\n') ? ' ' : x).ToArray<char>());
         }
 
