@@ -48,7 +48,7 @@
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
-
+            
             <HierarchicalDataTemplate DataType="{x:Type local:ObjectNodeTree}" 
                                       ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal">
