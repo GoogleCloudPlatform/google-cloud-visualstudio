@@ -26,6 +26,16 @@ namespace GoogleCloudExtension.Deployment
     internal static class CommonUtils
     {
         /// <summary>
+        /// Environment variable to be set with the current environment in which the app is running. This variable
+        /// will have the following values:
+        /// * "flex", set by the default app.yaml when running on App Engine Flex.
+        /// * "gke", se by default in the deployment when running on Container Engine (GKE).
+        /// This variable is set by the default configuration, the user might choose to change this configuration. Because
+        /// of this, this variable is really just a convenience for the user to select the right settings based on it.
+        /// </summary>
+        public const string GoogleCloudEnvironmentVar = "GOOGLE_CLOUD_ENVIRONMENT";
+
+        /// <summary>
         /// Returns the project name given the path to the project.json. If the project.json file defines a
         /// "name" property then it is used as the name for the final assembly, otherwise the name of the directory
         /// is used as the name of the final assembly.

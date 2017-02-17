@@ -41,10 +41,20 @@ namespace GoogleCloudExtension.GCloud
             string name,
             string imageTag,
             int replicas,
+            Dictionary<string, string> environment,
             Action<string> outputAction,
             KubectlContext context)
         {
-            return RunCommandAsync($"run {name} --image={imageTag} --replicas={replicas} --port=8080 --record", outputAction, context);
+            string environmentVars = "";
+            if (environment != null)
+            {
+                environmentVars = String.Join(" ", environment.Select(x => $@"--env=""{x.Key}={x.Value}"""));
+            }
+
+            return RunCommandAsync(
+                $"run {name} --image={imageTag} --replicas={replicas} {environmentVars} --port=8080 --record",
+                outputAction,
+                context);
         }
 
         /// <summary>
