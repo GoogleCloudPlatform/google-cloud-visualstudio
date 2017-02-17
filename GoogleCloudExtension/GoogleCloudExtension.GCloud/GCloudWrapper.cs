@@ -34,6 +34,11 @@ namespace GoogleCloudExtension.GCloud
         private const string GCloudMetricsVariable = "CLOUDSDK_METRICS_ENVIRONMENT";
         private const string GCloudMetricsVersionVariable = "CLOUDSDK_METRICS_ENVIRONMENT_VERSION";
 
+        // Settings to enable the runtime builder in gcloud.
+        private const string GCloudAppUseRuntimeBuilders = "CLOUDSDK_APP_USE_RUNTIME_BUILDERS";
+        private const string GCloudAppRuntimeBuildersRoot = "CLOUDSDK_APP_RUNTIME_BUILDERS_ROOT";
+        private const string RuntimeBuildersRootValue = "gs://aspnet/";
+
         /// <summary>
         /// Finds the location of gcloud.cmd by following all of the directories in the PATH environment
         /// variable until it finds it. With this we assume that in order to run the extension gcloud.cmd is
@@ -76,7 +81,17 @@ namespace GoogleCloudExtension.GCloud
         {
             var versionParameter = version != null ? $"--version={version}" : "";
             var promoteParameter = promote ? "--promote" : "--no-promote";
-            return RunCommandAsync($"app deploy \"{appYaml}\" {versionParameter} {promoteParameter} --skip-staging --quiet", outputAction, context);
+            var environment = new Dictionary<string, string>
+            {
+                [GCloudAppUseRuntimeBuilders] = CommonEnvironmentVariables.TrueValue,
+                [GCloudAppRuntimeBuildersRoot] = RuntimeBuildersRootValue
+            };
+
+            return RunCommandAsync(
+                $"beta app deploy \"{appYaml}\" {versionParameter} {promoteParameter} --skip-staging --quiet",
+                outputAction,
+                context,
+                environment);
         }
 
         /// <summary>

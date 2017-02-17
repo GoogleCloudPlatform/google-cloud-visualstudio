@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.Deployment
         public const string DockerfileName = NetCoreAppUtils.DockerfileName;
 
         private const string AppYamlDefaultContent =
-            "runtime: custom\n" +
+            "runtime: aspnetcore\n" +
             "env: flex\n";
 
         private const string DefaultServiceName = "default";
