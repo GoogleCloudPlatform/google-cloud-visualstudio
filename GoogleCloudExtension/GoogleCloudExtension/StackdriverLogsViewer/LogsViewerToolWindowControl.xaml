@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:vct="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
@@ -50,11 +49,20 @@
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
             
-            <HierarchicalDataTemplate DataType="{x:Type vct:ObjectNodeTree}" 
+            <HierarchicalDataTemplate DataType="{x:Type local:ObjectNodeTree}" 
                                       ItemsSource="{Binding Children}">
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="{Binding Name}" Style="{StaticResource TreeNodeTextStyle}" />
-                    <TextBlock Text="{Binding NodeValue}" Style="{StaticResource TreeNodeTextStyle}" />
+                    <controls:IconButton 
+                        Content="{Binding NodeValue}" 
+                        Style="{StaticResource TreeNodeValueStyle}" 
+                        Command="{Binding DataContext.OnDetailTreeNodeFilterCommand, ElementName=_logsViewerToolWindow}"
+                        CommandParameter="{Binding}">
+                        <controls:IconButton.ToolTip>
+                            <ToolTip Content="{x:Static ext:Resources.LogsViewerTreeNodeFilterTooltip}" 
+                                     Style="{StaticResource CommonTooltipStyle}" />
+                        </controls:IconButton.ToolTip>
+                    </controls:IconButton>
                 </StackPanel>
             </HierarchicalDataTemplate>
 

@@ -13,10 +13,8 @@
 // limitations under the License.
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters
+namespace GoogleCloudExtension.StackdriverLogsViewer
 {
     /// <summary>
     /// Utility methods primarily used by ObjectNodeTree 

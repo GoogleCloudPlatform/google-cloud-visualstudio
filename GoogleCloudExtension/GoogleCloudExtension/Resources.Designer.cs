@@ -2149,7 +2149,8 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The log entry was generated from assembly {0}, version {1}.\nOpen the project to navigate to the logger method location..
+        ///   Looks up a localized string similar to The log entry was generated from assembly {0}, version {1}.
+        ///Open the project to navigate to the logger method location..
         /// </summary>
         public static string LogsViewerPleaseOpenProjectPrompt {
             get {
@@ -2194,6 +2195,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Click the value to show matching entries..
+        /// </summary>
+        public static string LogsViewerTreeNodeFilterTooltip {
+            get {
+                return ResourceManager.GetString("LogsViewerTreeNodeFilterTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The log entry does not contain valid assembly name and/or assembly version..
         /// </summary>
         public static string LogsViewerVersionInfoMissingMessage {
@@ -2203,7 +2213,9 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Version missmatch.\nThe current project {0} version is {1},\nOpen the project of version {2} to properly locate the logging writter location..
+        ///   Looks up a localized string similar to Version missmatch. 
+        ///The current project {0} version is {1},
+        ///Open the project of version {2} to properly locate the logging writter location..
         /// </summary>
         public static string LogsViewerVersionMismatchPrompt {
             get {
@@ -2316,6 +2328,15 @@ namespace GoogleCloudExtension {
         public static string LogViewerLogItemDateFormat {
             get {
                 return ResourceManager.GetString("LogViewerLogItemDateFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MM-dd-yyyy HH:mm:ss.fff.
+        /// </summary>
+        public static string LogViewerLogItemDateTimeFormat {
+            get {
+                return ResourceManager.GetString("LogViewerLogItemDateTimeFormat", resourceCulture);
             }
         }
         

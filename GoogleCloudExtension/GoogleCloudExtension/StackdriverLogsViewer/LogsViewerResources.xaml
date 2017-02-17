@@ -41,9 +41,18 @@
 
     <!-- Log entry detail tree view item text style. -->
     <Style x:Key="TreeNodeTextStyle" 
-           TargetType="TextBlock" 
+           TargetType="TextBlock"
            BasedOn="{StaticResource CommonTextStyle}" >
         <Setter Property="Margin" Value="3,2,3,2"/>
+        <Setter Property="Foreground" Value="DarkSlateGray"/>
+    </Style>
+    
+    <!-- Log entry detail tree view node value style. -->
+    <Style x:Key="TreeNodeValueStyle" 
+           TargetType="controls:IconButton" 
+           BasedOn="{StaticResource MouseOverLinkButtonStyle}" >
+        <Setter Property="Margin" Value="3,2,3,2"/>
+        <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Foreground" Value="DarkSlateGray"/>
     </Style>
     

@@ -13,12 +13,12 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
-using GoogleCloudExtension.StackdriverLogsViewer.TreeViewConverters;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     internal class LogItem : Model
     {
-        private const string JasonPayloadMessageFieldName = "message";
+        private const string JsonPayloadMessageFieldName = "message";
         private const string AnyIconPath = "StackdriverLogsViewer/Resources/ic_log_level_any_12.png";
         private const string DebugIconPath = "StackdriverLogsViewer/Resources/ic_log_level_debug_12.png";
         private const string ErrorIconPath = "StackdriverLogsViewer/Resources/ic_log_level_error_12.png";
@@ -197,7 +197,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
             LogLevel = severity;
 
-            _treeViewObjects = new Lazy<List<ObjectNodeTree>>(() => new ObjectNodeTree(Entry).Children);
+            _treeViewObjects = new Lazy<List<ObjectNodeTree>>(() => new LogEntryNode(Entry).Children);
 
             Function = Entry.SourceLocation?.Function;
             SourceFilePath = Entry?.SourceLocation?.File;
@@ -257,9 +257,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (Entry?.JsonPayload != null)
             {
                 // If the JsonPload has message filed, display this field.
-                if (Entry.JsonPayload.ContainsKey(JasonPayloadMessageFieldName))
+                if (Entry.JsonPayload.ContainsKey(JsonPayloadMessageFieldName))
                 {
-                    message = Entry.JsonPayload[JasonPayloadMessageFieldName].ToString();
+                    message = Entry.JsonPayload[JsonPayloadMessageFieldName].ToString();
                 }
                 else
                 {
@@ -283,7 +283,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 message = String.Join(";", Entry?.Resource.Labels);
             }
 
-            return message?.Replace("\r\n", "\\r\\n ").Replace("\t", "\\t ").Replace("\n", "\\n ");
+            // http://stackoverflow.com/questions/11654190/ienumerablechar-to-string
+            // The discussion here suggests to use new string() that performs well.
+            return new string(message?.Select(x => (x == '\r' || x == '\n') ? ' ' : x).ToArray<char>());
         }
 
         private DateTime ConvertTimestamp(object timestamp)
