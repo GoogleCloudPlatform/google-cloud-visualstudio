@@ -30,6 +30,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public JObjectNode(string name, JObject jObj, ObjectNodeTree parent) 
             : base(name, jObj, parent) { }
 
+        /// <summary>
+        /// Override the <seealso cref="ObjectNodeTree.ParseObjectTree(object)"/>.
+        /// It is to customize the parsing procedure.
+        /// </summary>
+        /// <param name="obj">A <seealso cref="JObject"/> object.</param>
         protected override void ParseObjectTree(object obj)
         {
             JObject jsonObj = obj as JObject;

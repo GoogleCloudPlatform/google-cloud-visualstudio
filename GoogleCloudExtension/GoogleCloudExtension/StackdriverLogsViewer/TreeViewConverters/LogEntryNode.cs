@@ -27,6 +27,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="logEntry">A <seealso cref="LogEntry"/> object.</param>
         public LogEntryNode(LogEntry logEntry) : base("", logEntry, null) { }
 
+        /// <summary>
+        /// Override <seealso cref="ObjectNodeTree.ParseObjectTree(object)"/>.
+        /// It is to customize the parsing procedure.
+        /// </summary>
+        /// <param name="obj">An <seealso cref="LogEntry"/> object.</param>
         protected override void ParseObjectTree(object obj)
         {
             var log = obj as LogEntry;
