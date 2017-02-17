@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
-using static GoogleCloudExtension.StackdriverLogsViewer.StackdriverLogsViewerStates;
 using System;
 using System.Linq;
 
@@ -114,7 +113,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private static bool ContinueWhenVersionMismatch(ProjectHelper project, string assemblyVersion)
         {
-            if (!LogsViewerStates.ContinueWithVersionMismatchAssemblyFlag)
+            if (!StackdriverLogsViewerStates.Current.ContinueWithVersionMismatchAssemblyFlag)
             {
                 var prompt = String.Format(
                     Resources.LogsViewerVersionMismatchPrompt,
@@ -127,10 +126,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     title: Resources.LogsViewerPromptTitle,
                     message: Resources.LogsViewerVersionMissmatchAskIgnoreMessage))
                 {
-                    LogsViewerStates.SetContinueWithVersionMismatchAssemblyFlag();
+                    StackdriverLogsViewerStates.Current.SetContinueWithVersionMismatchAssemblyFlag();
                 }
             }
-            return LogsViewerStates.ContinueWithVersionMismatchAssemblyFlag;
+            return StackdriverLogsViewerStates.Current.ContinueWithVersionMismatchAssemblyFlag;
         }
     }
 }
