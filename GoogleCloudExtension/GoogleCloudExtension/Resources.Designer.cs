@@ -2536,24 +2536,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Account.
-        /// </summary>
-        public static string LogViewerTitleBarAccountLabel {
-            get {
-                return ResourceManager.GetString("LogViewerTitleBarAccountLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Project.
-        /// </summary>
-        public static string LogViewerTitleBarProjectIdLabel {
-            get {
-                return ResourceManager.GetString("LogViewerTitleBarProjectIdLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Google Stackdriver Logging.
         /// </summary>
         public static string LogViewerToolWindowCaption {
@@ -3270,6 +3252,24 @@ namespace GoogleCloudExtension {
         public static string TerminalServerManagerWindowTitle {
             get {
                 return ResourceManager.GetString("TerminalServerManagerWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account.
+        /// </summary>
+        public static string TitleBarAccountLabel {
+            get {
+                return ResourceManager.GetString("TitleBarAccountLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project.
+        /// </summary>
+        public static string TitleBarProjectIdLabel {
+            get {
+                return ResourceManager.GetString("TitleBarProjectIdLabel", resourceCulture);
             }
         }
         
