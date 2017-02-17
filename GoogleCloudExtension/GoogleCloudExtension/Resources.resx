@@ -1592,7 +1592,8 @@
     <comment>Prompt message format when failed to open a source file. The parameter is the source file path.</comment>
   </data>
   <data name="LogsViewerPleaseOpenProjectPrompt" xml:space="preserve">
-    <value>The log entry was generated from assembly {0}, version {1}.\nOpen the project to navigate to the logger method location.</value>
+    <value>The log entry was generated from assembly {0}, version {1}.
+Open the project to navigate to the logger method location.</value>
     <comment>Prompt asking to open a project that is the log entry source project.  parameter {0} is assembly name, parameter {1} is assembly version.</comment>
   </data>
   <data name="LogsViewerPromptTitle" xml:space="preserve">
@@ -1616,7 +1617,9 @@
     <comment>The warning message when a log entry does not contain valid version information.</comment>
   </data>
   <data name="LogsViewerVersionMismatchPrompt" xml:space="preserve">
-    <value>Version missmatch.\nThe current project {0} version is {1},\nOpen the project of version {2} to properly locate the logging writter location.</value>
+    <value>Version missmatch. 
+The current project {0} version is {1},
+Open the project of version {2} to properly locate the logging writter location.</value>
     <comment>Prompt when the opened project version differs than the version information of the log entry.</comment>
   </data>
   <data name="LogsViewerVersionMissmatchAskIgnoreMessage" xml:space="preserve">
@@ -1624,8 +1627,8 @@
     <comment>Message that asks to continue with mismatched version.</comment>
   </data>
   <data name="LogsViewerTreeNodeFilterTooltip" xml:space="preserve">
-    <value>Click the value to show matching entris</value>
-    <comment>The tooltip to detail tree view node value.</comment>
+    <value>Click the value to show matching entries.</value>
+    <comment>The tooltip to detail tree view node value link.</comment>
   </data>
   <data name="LogViewerLogItemDateTimeFormat" xml:space="preserve">
     <value>MM-dd-yyyy HH:mm:ss.fff</value>

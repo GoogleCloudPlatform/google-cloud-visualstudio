@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
-using GoogleCloudExtension.Utils;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
