@@ -15,7 +15,7 @@
 namespace GoogleCloudExtension.GCloud
 {
     /// <summary>
-    /// This class contains defintions for the environment variables used the various wrappers.
+    /// This class contains defintions for the environment variables used by the various wrappers.
     /// </summary>
     internal static class CommonEnvironmentVariables
     {

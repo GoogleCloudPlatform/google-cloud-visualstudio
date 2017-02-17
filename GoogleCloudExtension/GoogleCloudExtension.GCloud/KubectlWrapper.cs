@@ -187,8 +187,6 @@ namespace GoogleCloudExtension.GCloud
         /// Returns the environment variables to use to invoke kubectl safely. This environemnt is necessary
         /// to ensure that the right credentials are used should the access token need to be refreshed.
         /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
         private static Dictionary<string, string> GetEnvironmentForContext(KubectlContext context)
         {
             return new Dictionary<string, string>
