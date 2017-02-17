@@ -56,7 +56,7 @@
                     <controls:IconButton 
                         Content="{Binding NodeValue}" 
                         Style="{StaticResource TreeNodeValueStyle}" 
-                        Command="{Binding DataContext.DetailTreeNodeFilterCommand, ElementName=_logsViewerToolWindow}"
+                        Command="{Binding DataContext.OnDetailTreeNodeFilterCommand, ElementName=_logsViewerToolWindow}"
                         CommandParameter="{Binding}">
                         <controls:IconButton.ToolTip>
                             <ToolTip Content="{x:Static ext:Resources.LogsViewerTreeNodeFilterTooltip}" 
