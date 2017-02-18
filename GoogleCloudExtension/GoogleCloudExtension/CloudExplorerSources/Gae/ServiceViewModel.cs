@@ -18,6 +18,7 @@ using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.SplitTrafficManagement;
+using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -137,6 +138,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 Command = new ProtectedCommand(OnSplitTraffic, canExecuteCommand: _versions.Count > 1)
             });
 
+            menuItems.Add(new MenuItem { Header = Resources.CloudExplorerLaunchLogsViewerMenuHeader, Command = new ProtectedCommand(OnBrowseStackdriverLogCommand) });
             menuItems.Add(new Separator());
 
             menuItems.Add(new MenuItem
@@ -175,7 +177,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
         }
-
 
         /// <summary>
         /// Present the view model based on the versions and filters.
@@ -258,6 +259,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
 
             DeleteService();
+        }
+
+        private void OnBrowseStackdriverLogCommand()
+        {
+            var window = ToolWindowUtils.ShowToolWindow<LogsViewerToolWindow>();
+            window?.FilterGAEServiceLog(Service.Id);
         }
 
         private void OnShowOnlyFlexVersions()
