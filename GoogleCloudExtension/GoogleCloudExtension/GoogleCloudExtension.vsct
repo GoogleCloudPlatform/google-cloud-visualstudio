@@ -108,6 +108,17 @@
         </Strings>
       </Button>
 
+        <!-- This command publishes the current project from the project's context menu. -->
+      <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidGenerateConfigProjectContextMenuCommand" priority="0x0510" type="Button">
+        <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpProjectContextMenu" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <CommandFlag>DynamicVisibility</CommandFlag>
+        <CommandFlag>TextChanges</CommandFlag>
+        <Strings>
+          <ButtonText>Generate app.yaml and Dockerfile for project</ButtonText>
+        </Strings>
+      </Button>
+  
     </Buttons>
 
     <!-- Add menu icon images. -->
@@ -130,6 +141,7 @@
       <IDSymbol value="4224" name="GcpToolsGroupMenu" />
       <IDSymbol value="4225" name="cmdidPublishProjectToolsMenuCommand" />
       <IDSymbol value="4226" name="cmdidPublishProjectContextMenuCommand" />
+      <IDSymbol value="4227" name="cmdidGenerateConfigProjectContextMenuCommand" />
       <IDSymbol value="4230" name="GcpProjectContextMenu" />
       <IDSymbol value="4231" name="cmdidLogsViewerToolWindowCommand" />
     </GuidSymbol>

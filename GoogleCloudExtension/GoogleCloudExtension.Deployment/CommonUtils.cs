@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 
@@ -23,13 +26,32 @@ namespace GoogleCloudExtension.Deployment
     internal static class CommonUtils
     {
         /// <summary>
-        /// Returns the project name given the path to the project.json.
+        /// Returns the project name given the path to the project.json. If the project.json file defines a
+        /// "name" property then it is used as the name for the final assembly, otherwise the name of the directory
+        /// is used as the name of the final assembly.
         /// </summary>
         /// <param name="projectPath">The full path to the project.json of the project.</param>
         internal static string GetProjectName(string projectPath)
         {
-            var directory = Path.GetDirectoryName(projectPath);
-            return Path.GetFileName(directory);
+            try
+            {
+                var contents = File.ReadAllText(projectPath);
+                var parsed = JsonConvert.DeserializeObject<Dictionary<string, object>>(contents);
+                object name = null;
+                if (parsed.TryGetValue("name", out name))
+                {
+                    return (string)name;
+                }
+                else
+                {
+                    var directory = Path.GetDirectoryName(projectPath);
+                    return Path.GetFileName(directory);
+                }
+            }
+            catch (Exception ex) when (ex is IOException || ex is JsonException)
+            {
+                throw new DeploymentException(ex.Message, ex);
+            }
         }
 
         /// <summary>

@@ -152,7 +152,13 @@ namespace GoogleCloudExtension.GCloud
         {
             var actualCommand = FormatCommand(command, context);
             Debug.WriteLine($"Executing kubectl command: kubectl {actualCommand}");
-            return ProcessUtils.RunCommandAsync("kubectl", actualCommand, (o, e) => outputAction(e.Line));
+            Dictionary<string, string> environment = GetEnvironmentForContext(context);
+
+            return ProcessUtils.RunCommandAsync(
+                "kubectl",
+                actualCommand,
+                (o, e) => outputAction(e.Line),
+                environment: environment);
         }
 
         private static async Task<T> GetJsonOutputAsync<T>(string command, KubectlContext context)
@@ -161,7 +167,8 @@ namespace GoogleCloudExtension.GCloud
             try
             {
                 Debug.WriteLine($"Executing kubectl command: kubectl {actualCommand}");
-                return await ProcessUtils.GetJsonOutputAsync<T>("kubectl", actualCommand);
+                var environment = GetEnvironmentForContext(context);
+                return await ProcessUtils.GetJsonOutputAsync<T>("kubectl", actualCommand, environment: environment);
             }
             catch (JsonOutputException ex)
             {
@@ -174,6 +181,19 @@ namespace GoogleCloudExtension.GCloud
             var format = jsonOutput ? "--output=json" : "";
 
             return $"{command} --kubeconfig=\"{context.ConfigPath}\" {format}";
+        }
+
+        /// <summary>
+        /// Returns the environment variables to use to invoke kubectl safely. This environemnt is necessary
+        /// to ensure that the right credentials are used should the access token need to be refreshed.
+        /// </summary>
+        private static Dictionary<string, string> GetEnvironmentForContext(KubectlContext context)
+        {
+            return new Dictionary<string, string>
+            {
+                [CommonEnvironmentVariables.GCloudContainerUseApplicationDefaultCredentialsVariable] = CommonEnvironmentVariables.TrueValue,
+                [CommonEnvironmentVariables.GoogleApplicationCredentialsVariable] = context.CredentialsPath
+            };
         }
     }
 }

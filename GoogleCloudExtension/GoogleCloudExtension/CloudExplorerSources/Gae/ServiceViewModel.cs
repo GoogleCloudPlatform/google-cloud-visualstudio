@@ -40,35 +40,21 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private static readonly Lazy<ImageSource> s_serviceIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconServiceResourcePath));
 
-        private static readonly TreeLeaf s_loadingPlaceholder = new TreeLeaf
-        {
-            Caption = Resources.CloudExplorerGaeLoadingVersionCaption,
-            IsLoading = true
-        };
         private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
         {
             Caption = Resources.CloudExplorerGaeNoVersionsFoundCaption,
             IsWarning = true
         };
-        private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
-        {
-            Caption = Resources.CloudExplorerGaeFailedToLoadVersionsCaption,
-            IsError = true
-        };
 
         private readonly GaeSourceRootViewModel _owner;
+        private readonly Service _service;
+        private readonly IList<VersionViewModel> _versions;
 
-        private bool _resourcesLoaded = false;
-
-        private bool _showOnlyFlexVersions = true;
+        private bool _showOnlyFlexVersions = false;
         private bool _showOnlyDotNetRuntimes = false;
         private bool _showOnlyVersionsWithTraffic = false;
 
-        private IList<Google.Apis.Appengine.v1.Data.Version> _versions;
-
-        public readonly GaeSourceRootViewModel root;
-
-        public Service Service { get; private set; }
+        public Service Service => _service;
 
         public event EventHandler ItemChanged;
 
@@ -121,18 +107,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
         }
 
-        public ServiceViewModel(GaeSourceRootViewModel owner, Service service)
+        public ServiceViewModel(GaeSourceRootViewModel owner, Service service, IList<VersionViewModel> versions)
         {
             _owner = owner;
-            Service = service;
-            root = _owner;
-
-            Children.Add(s_loadingPlaceholder);
+            _versions = versions;
+            _service = service;
 
             Caption = Service.Id;
             Icon = s_serviceIcon.Value;
 
             UpdateContextMenu();
+            PresentViewModels();
         }
 
         /// <summary>
@@ -140,13 +125,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         /// </summary>
         private void UpdateContextMenu()
         {
-            // Do not allow actions when the service is loading or in an error state.
-            if (IsLoading || IsError)
-            {
-                ContextMenu = null;
-                return;
-            }
-
             var menuItems = new List<FrameworkElement>
             {
                 new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand) },
@@ -157,7 +135,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             menuItems.Add(new MenuItem
             {
                 Header = Resources.CloudExplorerGaeSplitTraffic,
-                Command = new ProtectedCommand(OnSplitTraffic, canExecuteCommand: Children.Count > 1)
+                Command = new ProtectedCommand(OnSplitTraffic, canExecuteCommand: _versions.Count > 1)
             });
 
             menuItems.Add(new MenuItem { Header = Resources.CloudExplorerLaunchLogsViewerMenuHeader, Command = new ProtectedCommand(OnBrowseStackdriverLogCommand) });
@@ -166,9 +144,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             menuItems.Add(new MenuItem
             {
                 Header = Resources.CloudExplorerGaeDeleteService,
-                Command = new ProtectedCommand(
-                    OnDeleteService,
-                    canExecuteCommand: !GaeUtils.AppEngineDefaultServiceName.Equals(Service.Id))
+                Command = new ProtectedCommand(OnDeleteService, canExecuteCommand: Service.Id != GaeUtils.AppEngineDefaultServiceName)
             });
 
 
@@ -212,21 +188,18 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 return;
             }
 
-            IEnumerable<VersionViewModel> versions = _versions
-                .Select(x => new VersionViewModel(this, x))
-                .OrderByDescending(x => x.TrafficAllocation);
+            IEnumerable<VersionViewModel> versions = _versions;
             if (ShowOnlyFlexVersions)
             {
-                versions = versions.Where(x => x.version.Vm ?? false);
+                versions = versions.Where(x => x.Version.Env == GaeVersionExtensions.FlexibleEnvironment);
             }
             if (ShowOnlyDotNetRuntimes)
             {
-                versions = versions.Where(
-                    x => x.version?.Runtime.Equals(GaeVersionExtensions.DotNetRuntime) ?? false);
+                versions = versions.Where(x => x.Version.Runtime == GaeVersionExtensions.AspNetCoreRuntime);
             }
             if (ShowOnlyVersionsWithTraffic)
             {
-                versions = versions.Where(x => x.TrafficAllocation != null);
+                versions = versions.Where(x => x.HasTrafficAllocation);
             }
 
             UpdateViewModels(versions);
@@ -254,7 +227,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         /// </summary>
         private void OnSplitTraffic()
         {
-            SplitTrafficChange change = SplitTrafficWindow.PromptUser(Service, _versions);
+            SplitTrafficChange change = SplitTrafficWindow.PromptUser(Service, _versions.Select(x => x.Version));
             if (change == null)
             {
                 return;
@@ -324,55 +297,21 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             ShowOnlyVersionsWithTraffic = false;
         }
 
-        protected override async void OnIsExpandedChanged(bool newValue)
-        {
-            base.OnIsExpandedChanged(newValue);
-            try
-            {
-                // If this is the first time the node has been expanded load it's resources.
-                if (!_resourcesLoaded && newValue)
-                {
-                    _resourcesLoaded = true;
-                    _versions = await root.DataSource.Value.GetVersionListAsync(Service.Id);
-                    Children.Clear();
-                    if (_versions == null)
-                    {
-                        Children.Add(s_errorPlaceholder);
-                    }
-                    else
-                    {
-                        PresentViewModels();
-                        UpdateContextMenu();
-                    }
-                }
-
-                EventsReporterWrapper.ReportEvent(GaeVersionsLoadedEvent.Create(CommandStatus.Success));
-            }
-            catch (DataSourceException ex)
-            {
-                GcpOutputWindow.OutputLine(Resources.CloudExplorerGaeFailedVersionsMessage);
-                GcpOutputWindow.OutputLine(ex.Message);
-                GcpOutputWindow.Activate();
-
-                EventsReporterWrapper.ReportEvent(GaeVersionsLoadedEvent.Create(CommandStatus.Failure));
-                throw new CloudExplorerSourceException(ex.Message, ex);
-            }
-        }
-
         private void OnOpenOnCloudConsoleCommand()
         {
-            var url = $"https://console.cloud.google.com/appengine/versions?project={root.Context.CurrentProject.ProjectId}&moduleId={Service.Id}";
+            var url = $"https://console.cloud.google.com/appengine/versions?project={_owner.Context.CurrentProject.ProjectId}&moduleId={Service.Id}";
             Process.Start(url);
         }
 
         private void OnPropertiesWindowCommand()
         {
-            root.Context.ShowPropertiesWindow(Item);
+            _owner.Context.ShowPropertiesWindow(Item);
         }
 
-        private void OnOpenService()
+        private async void OnOpenService()
         {
-            var url = GaeUtils.GetAppUrl(root.GaeApplication.DefaultHostname, Service.Id);
+            var app = await _owner.GaeApplication;
+            var url = GaeUtils.GetAppUrl(app.DefaultHostname, Service.Id);
             Process.Start(url);
         }
 
@@ -385,11 +324,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Children.Clear();
             UpdateContextMenu();
             Caption = Resources.CloudExplorerGaeUpdateTrafficSplitMessage;
-            GaeDataSource datasource = root.DataSource.Value;
+            GaeDataSource datasource = _owner.DataSource;
 
             try
             {
-                Task<Operation> operationTask = root.DataSource.Value.UpdateServiceTrafficSplit(split, Service.Id);
+                Task<Operation> operationTask = _owner.DataSource.UpdateServiceTrafficSplit(split, Service.Id);
                 Func<Operation, Task<Operation>> fetch = (o) => datasource.GetOperationAsync(o.GetOperationId());
                 Predicate<Operation> stopPolling = (o) => o.Done ?? false;
                 Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);
@@ -397,8 +336,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 {
                     throw new DataSourceException(operation.Error.Message);
                 }
-                Service = await datasource.GetServiceAsync(Service.Id);
-                Caption = Service.Id;
+
+                _owner.InvalidateService(_service.Id);
 
                 EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Success));
             }
@@ -438,11 +377,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             Children.Clear();
             UpdateContextMenu();
             Caption = String.Format(Resources.CloudExplorerGaeServiceDeleteMessage, Service.Id);
-            GaeDataSource datasource = root.DataSource.Value;
+            GaeDataSource datasource = _owner.DataSource;
 
             try
             {
-                Task<Operation> operationTask = root.DataSource.Value.DeleteServiceAsync(Service.Id);
+                Task<Operation> operationTask = datasource.DeleteServiceAsync(Service.Id);
                 Func<Operation, Task<Operation>> fetch = (o) => datasource.GetOperationAsync(o.GetOperationId());
                 Predicate<Operation> stopPolling = (o) => o.Done ?? false;
                 Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);

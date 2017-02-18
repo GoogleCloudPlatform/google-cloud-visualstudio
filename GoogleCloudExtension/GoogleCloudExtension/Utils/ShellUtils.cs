@@ -123,6 +123,15 @@ namespace GoogleCloudExtension.Utils
             return new ServiceProvider(sp);
         }
 
+        /// <summary>
+        /// Executes the "File.SaveAll" command in the shell, which will save all currently dirty files.
+        /// </summary>
+        public static void SaveAllFiles()
+        {
+            var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
+            dte.ExecuteCommand("File.SaveAll");
+        }
+
         private static void SetShellNormal()
         {
             var monitorSelection = GetMonitorSelectionService();
