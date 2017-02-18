@@ -19,7 +19,8 @@ using System.IO;
 namespace GoogleCloudExtension.GCloud
 {
     /// <summary>
-    /// This class owns the context on which to run kubectl commands.
+    /// This class owns the context on which to run kubectl commands. This class owns
+    /// the config file, when the instance is disposed it will delete the file.
     /// </summary>
     public class KubectlContext : IDisposable
     {
@@ -28,9 +29,15 @@ namespace GoogleCloudExtension.GCloud
         /// </summary>
         public string ConfigPath { get; private set; }
 
-        public KubectlContext(string configPath)
+        /// <summary>
+        /// Path to the application credentials to use while calling into kubectl.
+        /// </summary>
+        public string CredentialsPath { get; private set; }
+
+        public KubectlContext(string configPath, string credentialsPath)
         {
             ConfigPath = configPath;
+            CredentialsPath = credentialsPath;
         }
 
         #region IDisposable implementation.

@@ -29,12 +29,15 @@ namespace GoogleCloudExtension.GCloud
     /// </summary>
     public static class GCloudWrapper
     {
-        // These variables specify the environment to be reported by gcloud when reporting metrics.
+        // These variables specify the environment to be reported by gcloud when reporting metrics. These variables
+        // are only used with gcloud which is why they're private here.
         private const string GCloudMetricsVariable = "CLOUDSDK_METRICS_ENVIRONMENT";
         private const string GCloudMetricsVersionVariable = "CLOUDSDK_METRICS_ENVIRONMENT_VERSION";
 
-        // This variable contains the path to the configuration to be used for kubernetes operations.
-        private const string GCloudKubeConfigVariable = "KUBECONFIG";
+        // Settings to enable the runtime builder in gcloud.
+        private const string GCloudAppUseRuntimeBuilders = "CLOUDSDK_APP_USE_RUNTIME_BUILDERS";
+        private const string GCloudAppRuntimeBuildersRoot = "CLOUDSDK_APP_RUNTIME_BUILDERS_ROOT";
+        private const string RuntimeBuildersRootValue = "gs://aspnet/";
 
         /// <summary>
         /// Finds the location of gcloud.cmd by following all of the directories in the PATH environment
@@ -78,7 +81,17 @@ namespace GoogleCloudExtension.GCloud
         {
             var versionParameter = version != null ? $"--version={version}" : "";
             var promoteParameter = promote ? "--promote" : "--no-promote";
-            return RunCommandAsync($"app deploy \"{appYaml}\" {versionParameter} {promoteParameter} --quiet", outputAction, context);
+            var environment = new Dictionary<string, string>
+            {
+                [GCloudAppUseRuntimeBuilders] = CommonEnvironmentVariables.TrueValue,
+                [GCloudAppRuntimeBuildersRoot] = RuntimeBuildersRootValue
+            };
+
+            return RunCommandAsync(
+                $"beta app deploy \"{appYaml}\" {versionParameter} {promoteParameter} --skip-staging --quiet",
+                outputAction,
+                context,
+                environment);
         }
 
         /// <summary>
@@ -95,7 +108,9 @@ namespace GoogleCloudExtension.GCloud
                 context: context,
                 extraEnvironment: new Dictionary<string, string>
                 {
-                    [GCloudKubeConfigVariable] = path
+                    [CommonEnvironmentVariables.GCloudKubeConfigVariable] = path,
+                    [CommonEnvironmentVariables.GCloudContainerUseApplicationDefaultCredentialsVariable] = CommonEnvironmentVariables.TrueValue,
+                    [CommonEnvironmentVariables.GoogleApplicationCredentialsVariable] = context.CredentialsPath,
                 });
         }
 
@@ -121,7 +136,9 @@ namespace GoogleCloudExtension.GCloud
             {
                 throw new GCloudException($"Failed to get credentials for cluster {cluster}");
             }
-            return new KubectlContext(tempPath);
+            return new KubectlContext(
+                configPath: tempPath,
+                credentialsPath: context.CredentialsPath);
         }
 
         /// <summary>
@@ -202,15 +219,7 @@ namespace GoogleCloudExtension.GCloud
             var actualCommand = FormatCommand(command, context, jsonFormat: true);
             try
             {
-                Dictionary<string, string> environment = null;
-                if (context?.AppName != null)
-                {
-                    environment = new Dictionary<string, string> { { GCloudMetricsVariable, context?.AppName } };
-                    if (context?.AppVersion != null)
-                    {
-                        environment[GCloudMetricsVersionVariable] = context?.AppVersion;
-                    }
-                }
+                var environment = GetContextEnvironment(context);
 
                 // This code depends on the fact that gcloud.cmd is a batch file.
                 Debug.Write($"Executing gcloud command: {actualCommand}");
@@ -229,23 +238,7 @@ namespace GoogleCloudExtension.GCloud
             Dictionary<string, string> extraEnvironment = null)
         {
             var actualCommand = FormatCommand(command, context, jsonFormat: false);
-            Dictionary<string, string> environment = null;
-            if (context?.AppName != null)
-            {
-                environment = new Dictionary<string, string> { { GCloudMetricsVariable, context?.AppName } };
-                if (context?.AppVersion != null)
-                {
-                    environment[GCloudMetricsVersionVariable] = context?.AppVersion;
-                }
-
-                if (extraEnvironment != null)
-                {
-                    foreach (var entry in extraEnvironment)
-                    {
-                        environment.Add(entry.Key, entry.Value);
-                    }
-                }
-            }
+            var environment = GetContextEnvironment(context, extraEnvironment);
 
             // This code depends on the fact that gcloud.cmd is a batch file.
             Debug.Write($"Executing gcloud command: {actualCommand}");
@@ -254,6 +247,32 @@ namespace GoogleCloudExtension.GCloud
                 args: $"/c {actualCommand}",
                 handler: (o, e) => outputAction?.Invoke(e.Line),
                 environment: environment);
+        }
+
+        private static Dictionary<string, string> GetContextEnvironment(
+            GCloudContext context,
+            Dictionary<string, string> extraEnvironment = null)
+        {
+            Dictionary<string, string> environment = new Dictionary<string, string>();
+
+            if (context?.AppName != null)
+            {
+                environment[GCloudMetricsVariable] = context.AppName;
+                if (context.AppVersion != null)
+                {
+                    environment[GCloudMetricsVersionVariable] = context.AppVersion;
+                }
+            }
+
+            if (extraEnvironment != null)
+            {
+                foreach (var entry in extraEnvironment)
+                {
+                    environment.Add(entry.Key, entry.Value);
+                }
+            }
+
+            return environment;
         }
     }
 }

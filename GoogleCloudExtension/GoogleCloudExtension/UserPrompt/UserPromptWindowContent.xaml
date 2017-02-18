@@ -48,6 +48,11 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
             <!-- Display the icon for the dialog. -->
             <StackPanel Margin="12,0,24,0" Visibility="{Binding HasIcon, Converter={utils:VisibilityConverter}}">
                 <Image Source="{Binding Icon}" Width="24px" Height="24px"/>
@@ -57,6 +62,17 @@
                 <TextBlock Text="{Binding Prompt}" Style="{StaticResource PromptStyle}" Margin="0,0,0,12" />
                 <TextBlock Text="{Binding Message}" Style="{StaticResource CommonTextStyle}" />
             </StackPanel>
+            
+            <!-- The text area with the error message. -->
+            <TextBox IsReadOnly="True"
+                     Text="{Binding ErrorDetails, Mode=OneTime}"
+                     Visibility="{Binding HasErrorDetails, Converter={utils:VisibilityConverter}, Mode=OneTime}"
+                     Height="100"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                     Grid.Row="1"
+                     Grid.ColumnSpan="2"
+                     Style="{StaticResource CommonTextBoxStyle}" />
         </Grid>
     </theming:CommonDialogWindowBaseContent>
     
