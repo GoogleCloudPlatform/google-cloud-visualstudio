@@ -38,6 +38,26 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
+        /// Response to data grid scroll change event.
+        /// Auto load more logs when it scrolls down to bottom.
+        /// </summary>
+        private void dataGrid_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            var grid = sender as DataGrid;
+            ScrollViewer sv = e.OriginalSource as ScrollViewer;
+            if (sv == null || !sv.IsMouseOver)
+            {
+                return;
+            }
+
+            if (e.VerticalOffset > 0 && e.VerticalOffset == sv.ScrollableHeight)
+            {
+                Debug.WriteLine($"Now scrollbar is at bottom. {sv.VerticalOffset}, {sv.ScrollableHeight}");
+                ViewModel?.LoadNextPage();
+            }
+        }
+
+        /// <summary>
         /// When mouse clicks on source link text, execute the button command.
         /// When mouse clicks on a row, toggle display the row detail.
         /// If the mouse is clikcing on detail panel, does not collapse it.        

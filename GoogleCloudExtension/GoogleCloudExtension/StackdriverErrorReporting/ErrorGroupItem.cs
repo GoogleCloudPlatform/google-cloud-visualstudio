@@ -18,7 +18,6 @@ using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
-using EventGroupTimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -43,18 +42,10 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public string Error => ErrorGroup.Representative.Message;
 
         /// <summary>
-        /// <seealso cref="ErrorGroupStats.Count"/>. 
-        /// </summary>
-        public long Count => ErrorGroup.Count.GetValueOrDefault();
-
-        /// <summary>
         /// Show service context. 
         /// <seealso cref="ErrorGroupStats.AffectedServices"/>.
         /// </summary>
-        public object SeenIn => 
-            String.Join(
-                Environment.NewLine, 
-                ErrorGroup.AffectedServices.Select(x => FormatServiceContext(x)));
+        public string SeenIn => GetSeeIn();
 
         /// <summary>
         /// Optional, displays the context status code.
@@ -72,6 +63,21 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public string Stack { get; }
 
         /// <summary>
+        /// Gets the affected user count. Could be null.
+        /// </summary>
+        public long? AffectedUsersCount => ErrorGroup.AffectedUsersCount;
+
+        /// <summary>
+        /// Gets the formated <seealso cref="ErrorGroupStats.FirstSeenTime"/>.
+        /// </summary>
+        public string FirstSeenTime => FormatDateTime(ErrorGroup.FirstSeenTime);
+
+        /// <summary>
+        /// Gets the formated <seealso cref="ErrorGroupStats.LastSeenTime"/>.
+        /// </summary>
+        public string LastSeenTime => FormatDateTime(ErrorGroup.LastSeenTime);
+
+        /// <summary>
         /// Initializes a new instance of <seealso cref="ErrorGroupItem"/> class.
         /// </summary>
         /// <param name="errorGroup">
@@ -80,13 +86,37 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </param>
         public ErrorGroupItem(ErrorGroupStats errorGroup)
         {
+            if (errorGroup == null)
+            {
+                throw new ErrorReportingException(new ArgumentNullException(nameof(errorGroup)));
+            }
+
             ErrorGroup = errorGroup;
-            string[] lines = ErrorGroup.Representative?.Message?.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries);
+            string[] lines = ErrorGroup.Representative?.Message?.Split(
+                    new string[] { "\r\n", "\n" }, 
+                    StringSplitOptions.RemoveEmptyEntries);
             Message = lines?[0];
             Stack = lines?[1];
             OnNavigateToDetailCommand = new ProtectedCommand(NavigateToDetailWindow);
         }
-        
+
+        private static string FormatDateTime(object datetime)
+        {
+            return datetime is DateTime ? 
+                ((DateTime)datetime).ToString(Resources.ErrorReportingDateTimeFormat) 
+                : datetime?.ToString();
+        }
+
+        private string GetSeeIn()
+        {
+            if (ErrorGroup.AffectedServices == null)
+            {
+                return null;
+            }
+            var query = ErrorGroup.AffectedServices.Where(x => x.Service != null).Distinct(new ServiceContextComparer());
+            return String.Join(Environment.NewLine, query.Select(x => FormatServiceContext(x)));
+        }
+
         /// <summary>
         /// Format the <seealso cref="ServiceContext"/> as string.
         /// </summary>
@@ -95,11 +125,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private string FormatServiceContext(ServiceContext serviceContext)
         {
             StringBuilder builder = new StringBuilder();
-            if (!String.IsNullOrWhiteSpace(serviceContext.ETag))
-            {
-                builder.AppendLine(serviceContext.ETag);
-            }
-
             builder.Append(serviceContext.Service);        
             if (!String.IsNullOrWhiteSpace(serviceContext.Version))
             {

@@ -355,7 +355,7 @@
                     <!-- Override the text highlight color. -->
                     <DataGrid.Resources>
                         <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
-                                     Color="Black"/>
+                                         Color="Black"/>
                     </DataGrid.Resources>
 
                     <DataGrid.Style>

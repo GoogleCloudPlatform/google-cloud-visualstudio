@@ -40,7 +40,8 @@
 
         <tb:TitleBar />
 
-        <Grid Margin="12,0,12,12" Visibility="{Binding IsGridVisible, Converter={StaticResource visibilityConverter}}">
+        <Grid Margin="12,0,12,12" 
+              Visibility="{Binding IsGridVisible, Converter={StaticResource visibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -90,64 +91,60 @@
                 </DataGrid.Resources>
 
                 <DataGrid.Columns>
-                    <DataGridTemplateColumn Header="Occurances" 
-                                        CellTemplate="{StaticResource OccurancesTemplate}" />
+                    <DataGridTextColumn 
+                        Header="Users" 
+                        Binding="{Binding ErrorGroup.AffectedUsersCount}" />
 
-                    <DataGridTextColumn Header="Users" Binding="{Binding AffectedUsersCount}" />
+                    <DataGridTextColumn Binding="{Binding ErrorGroup.Count}" />
 
-                    <DataGridTextColumn Binding="{Binding Count}" />
+                    <DataGridTemplateColumn 
+                        Header="Error" 
+                        Width="460"
+                        CellTemplate="{StaticResource MessageStackTemplate}" />
 
-                    <DataGridTemplateColumn Header="Error" 
-                                        Width="460"
-                                        CellTemplate="{StaticResource MessageStackTemplate}" />
+                    <DataGridTextColumn 
+                        Binding="{Binding SeenIn}" 
+                        Header="Seen in" />
 
-                    <DataGridTextColumn Binding="{Binding SeenIn}" 
-                                    Header="Seen in"
-                                    />
+                    <DataGridTextColumn 
+                        Header="First seen" 
+                        Binding="{Binding FirstSeenTime}" />
+                    
+                    <DataGridTextColumn 
+                        Header="Last seen" 
+                        Binding="{Binding LastSeenTime}" />
 
-                    <DataGridTextColumn Binding="{Binding FirstSeen, StringFormat=d}" 
-                                    Header="First seen"
-                                    />
-
-                    <DataGridTextColumn Binding="{Binding LastSeen, StringFormat=d}" 
-                                    Header="Last seen"
-                                    />
-
-                    <DataGridTextColumn Binding="{Binding Status}" 
-                                    Header="Status"
-                                    />
-
-                    <DataGridTextColumn Binding="{Binding Mute}" 
-                                    Header=""
-                                    />
+                    <DataGridTextColumn 
+                        Header="Status" 
+                        Binding="{Binding Status}" />
 
                 </DataGrid.Columns>
             </DataGrid>
 
+            <!-- Loading first page progress indicator -->
             <controls:ProgressIndicator 
                 Grid.Row="2"
                 Panel.ZIndex="10"
-                Margin="0, 60, 0, 0"
+                Margin="0,60,0,0"
                 HorizontalAlignment="Center"                       
                 VerticalAlignment="Top" 
                 FullDuration="1000"
                 Visibility="{Binding IsRefreshing, Converter={StaticResource visibilityConverter}}" />
 
-
+            <!-- Loading next page progress indicator -->
             <controls:ProgressIndicator 
                 Grid.Row="3"
                 Padding="12"
                 Panel.ZIndex="10"
-                Margin="0, -60, 0, 0"
+                Margin="0,-60,0,0"
                 HorizontalAlignment="Center"                       
                 FullDuration="1000"
                 Visibility="{Binding IsLoadingNextPage, Converter={StaticResource visibilityConverter}}" />
 
-
             <TextBox 
                 Grid.Row="2"
                 Panel.ZIndex="15"
-                Padding="8, 5, 8, 5" 
+                Padding="8,5,8,5" 
                 VerticalAlignment="Top"
                 HorizontalAlignment="Stretch"
                 TextAlignment="Left" 

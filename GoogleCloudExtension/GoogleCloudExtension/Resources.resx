@@ -1690,4 +1690,28 @@ Open the project of version {2} to properly locate the logging writter location.
     <value>Errors in the last {0}</value>
     <comment>In the error reporting overview window, the current selected time period label text format.</comment>
   </data>
+  <data name="ErrorReporting1DayButtonCaption" xml:space="preserve">
+    <value>1 day</value>
+    <comment>Caption to the 1 day button.</comment>
+  </data>
+  <data name="ErrorReporting1HourButtonCaption" xml:space="preserve">
+    <value>1 hour</value>
+    <comment>Caption to the 1 hour button.</comment>
+  </data>
+  <data name="ErrorReporting30DaysButtonCaption" xml:space="preserve">
+    <value>30 days</value>
+    <comment>Caption to the 30 days button.</comment>
+  </data>
+  <data name="ErrorReporting6HoursButtonCaption" xml:space="preserve">
+    <value>6 hours</value>
+    <comment>Caption to the 6 hours button.</comment>
+  </data>
+  <data name="ErrorReporting7DaysButtonCaption" xml:space="preserve">
+    <value>7 days</value>
+    <comment>Caption to the 7 days button.</comment>
+  </data>
+  <data name="ErrorReportingDateTimeFormat" xml:space="preserve">
+    <value>MM-dd-yyyy HH:mm:ss.fff</value>
+    <comment>Format date time displayed in data grid cell.</comment>
+  </data>
 </root>

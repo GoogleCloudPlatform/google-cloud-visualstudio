@@ -14,6 +14,7 @@
 
 using TimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 using EventTimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
+using static GoogleCloudExtension.Resources;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -50,12 +51,34 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public TimeRangeButtons()
         {
+            // Note: caption is visible to user, the second parameter timedCountDuration is not.
             _timeRangeItems = new ObservableCollection<TimeRangeItem>();
-            _timeRangeItems.Add(new TimeRangeItem("1 hour", $"{60 * 60 / 30}s", TimeRangeEnum.PERIOD1HOUR, EventTimeRangeEnum.PERIOD1HOUR));
-            _timeRangeItems.Add(new TimeRangeItem("6 hours", $"{6 * 60 * 60 / 30}s", TimeRangeEnum.PERIOD6HOURS, EventTimeRangeEnum.PERIOD6HOURS));
-            _timeRangeItems.Add(new TimeRangeItem("1 day", $"{24 * 60 * 60 / 30}s", TimeRangeEnum.PERIOD1DAY, EventTimeRangeEnum.PERIOD1DAY));
-            _timeRangeItems.Add(new TimeRangeItem("7 days", $"{7 * 24 * 60 * 60 / 30}s", TimeRangeEnum.PERIOD1WEEK, EventTimeRangeEnum.PERIOD1WEEK));
-            _timeRangeItems.Add(new TimeRangeItem("30 days", $"{24 * 60 * 60}s", TimeRangeEnum.PERIOD30DAYS, EventTimeRangeEnum.PERIOD30DAYS));
+            _timeRangeItems.Add(new TimeRangeItem(
+                ErrorReporting1HourButtonCaption, 
+                $"{60 * 60 / 30}s", 
+                TimeRangeEnum.PERIOD1HOUR, 
+                EventTimeRangeEnum.PERIOD1HOUR));
+            _timeRangeItems.Add(new TimeRangeItem(
+                ErrorReporting6HoursButtonCaption, 
+                $"{6 * 60 * 60 / 30}s", 
+                TimeRangeEnum.PERIOD6HOURS, 
+                EventTimeRangeEnum.PERIOD6HOURS));
+            _timeRangeItems.Add(new TimeRangeItem(
+                ErrorReporting1DayButtonCaption,
+                $"{24 * 60 * 60 / 30}s", 
+                TimeRangeEnum.PERIOD1DAY, 
+                EventTimeRangeEnum.PERIOD1DAY));
+            _timeRangeItems.Add(new TimeRangeItem(
+                ErrorReporting7DaysButtonCaption, 
+                $"{7 * 24 * 60 * 60 / 30}s", 
+                TimeRangeEnum.PERIOD1WEEK, 
+                EventTimeRangeEnum.PERIOD1WEEK));
+            _timeRangeItems.Add(new TimeRangeItem(
+                ErrorReporting30DaysButtonCaption,
+                $"{24 * 60 * 60}s",
+                TimeRangeEnum.PERIOD30DAYS,
+                EventTimeRangeEnum.PERIOD30DAYS));
+
             InitializeComponent();
         }
 

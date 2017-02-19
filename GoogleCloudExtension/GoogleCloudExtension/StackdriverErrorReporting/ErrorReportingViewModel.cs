@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using Google.Apis.Clouderrorreporting.v1beta1;
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
@@ -22,11 +23,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Data;
-using System.Linq;
-using System.Windows.Threading;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -91,17 +89,29 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             set { SetValueAndRaise(ref _isLoadingNextPage, value); }
         }
 
-        public bool IsGridVisible => CredentialsStore.Default.CurrentProjectId != null;
+        /// <summary>
+        /// If the current project id is reset to null or empty, hide the grid. 
+        /// </summary>
+        public bool IsGridVisible => !String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId);
 
+        /// <summary>
+        /// Sets the currently selected time range.
+        /// </summary>
         public TimeRangeItem SelectedTimeRangeItem
         {
             set { SetValueAndRaise(ref _selectedTimeRange, value); }
         }
 
+        /// <summary>
+        /// Gets the <seealso cref="ListCollectionView"/> that contains a list of <seealso cref="ErrorGroupItem"/>.
+        /// </summary>
         public ListCollectionView GroupStatsView { get; }
 
-        public string CurrentTimeRangeCaption => 
-            String.Format(Resources.ErrorReportingCurrentGroupTimePeriodLabelFormat, _selectedTimeRange?.Caption);
+        /// <summary>
+        /// Selected time range caption.
+        /// </summary>
+        public string CurrentTimeRangeCaption => String.Format(
+            Resources.ErrorReportingCurrentGroupTimePeriodLabelFormat, _selectedTimeRange?.Caption);
 
         /// <summary>
         /// Create a new instance of <seealso cref="ErrorReportingViewModel"/> class.
@@ -118,12 +128,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public void LoadNextPage()
         {
-            if (_isLoading)
-            {
-                Debug.WriteLine("isLoading is true, skip LoadNextPage");
-                return;
-            }
-
             if (_nextPageToken == null)
             {
                 Debug.WriteLine("_nextPageToken is null, there is no more events group to load");
@@ -138,35 +142,52 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             switch (e.PropertyName)
             {
                 case nameof(SelectedTimeRangeItem):
-                    _groupStatsCollection.Clear();
-                    _nextPageToken = null;
-                    LoadAsync();
+                    Reload();
                     RaisePropertyChanged(nameof(CurrentTimeRangeCaption));
                     break;
             }
         }
 
+        /// <summary>
+        /// Reload first page of <seealso cref="ErrorGroupStats"/>.
+        /// </summary>
+        private void Reload()
+        {
+            _groupStatsCollection.Clear();
+            _nextPageToken = null;
+            LoadAsync();
+        }
+
+        /// <summary>
+        /// Load data from Google Cloud Error Reporting API service end point.
+        /// It shows a progress bar when waiting for data.
+        /// In the end, if there is know type of exception, show the exception.
+        /// </summary>
         private async Task LoadAsync()
         {
+            if (_isLoading)
+            {
+                Debug.WriteLine("_isLoading is true, quit LoadAsync.");
+                return;
+            }
+
             IsLoadingComplete = false;
             GroupStatsRequestResult results = null;
             ShowException = false;
-            if (_nextPageToken == null)
-            {
-                IsRefreshing = true;
-            }
-            else
-            {
-                IsLoadingNextPage = true;
-            }
+            IsRefreshing = _nextPageToken == null;
+            IsLoadingNextPage = _nextPageToken != null;
             try
             {
+                if (_selectedTimeRange == null)
+                {
+                    throw new ErrorReportingException(new InvalidOperationException(nameof(_selectedTimeRange)));
+                }
                 results = await SerDataSourceInstance.Current?.ListGroupStatusAsync(
                     _selectedTimeRange.GroupTimeRange,
                     _selectedTimeRange.TimedCountDuration,
                     nextPageToken: _nextPageToken);
             }
-            catch (DataSourceException ex)
+            catch (Exception ex) when (ex is DataSourceException || ex is ErrorReportingException)
             {
                 ShowException = true;
                 ExceptionString = ex.ToString();
@@ -197,7 +218,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 {
                     return;
                 }
-
                 _groupStatsCollection.Add(new ErrorGroupItem(item));
             }
         }

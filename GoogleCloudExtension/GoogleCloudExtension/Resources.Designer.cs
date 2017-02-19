@@ -1771,11 +1771,65 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1 day.
+        /// </summary>
+        public static string ErrorReporting1DayButtonCaption {
+            get {
+                return ResourceManager.GetString("ErrorReporting1DayButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 hour.
+        /// </summary>
+        public static string ErrorReporting1HourButtonCaption {
+            get {
+                return ResourceManager.GetString("ErrorReporting1HourButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 30 days.
+        /// </summary>
+        public static string ErrorReporting30DaysButtonCaption {
+            get {
+                return ResourceManager.GetString("ErrorReporting30DaysButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 6 hours.
+        /// </summary>
+        public static string ErrorReporting6HoursButtonCaption {
+            get {
+                return ResourceManager.GetString("ErrorReporting6HoursButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 7 days.
+        /// </summary>
+        public static string ErrorReporting7DaysButtonCaption {
+            get {
+                return ResourceManager.GetString("ErrorReporting7DaysButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Errors in the last {0}.
         /// </summary>
         public static string ErrorReportingCurrentGroupTimePeriodLabelFormat {
             get {
                 return ResourceManager.GetString("ErrorReportingCurrentGroupTimePeriodLabelFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MM-dd-yyyy HH:mm:ss.fff.
+        /// </summary>
+        public static string ErrorReportingDateTimeFormat {
+            get {
+                return ResourceManager.GetString("ErrorReportingDateTimeFormat", resourceCulture);
             }
         }
         

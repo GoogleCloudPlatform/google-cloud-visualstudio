@@ -241,11 +241,13 @@
       <DependentUpon>ErrorReportingDetailToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverErrorReporting\ErrorReportingDetailViewModel.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingException.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindow.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowCommand.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowControl.xaml.cs">
       <DependentUpon>ErrorReportingToolWindowControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StackdriverErrorReporting\ServiceContextComparer.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingViewModel.cs" />
     <Compile Include="StackdriverErrorReporting\SerDataSourceInstance.cs" />
     <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtons.xaml.cs">

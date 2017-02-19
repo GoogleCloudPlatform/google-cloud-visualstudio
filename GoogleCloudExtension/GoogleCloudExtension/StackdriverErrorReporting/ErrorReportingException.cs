@@ -12,23 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Accounts;
-using System.Windows.Controls;
-using System.Diagnostics;
+using System;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
     /// <summary>
-    /// Interaction logic for ErrorReportingToolWindowControl.
+    /// Define exception for Error Reporting code errors etc.
     /// </summary>
-    public partial class ErrorReportingToolWindowControl : UserControl
+    public class ErrorReportingException : Exception
     {
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ErrorReportingToolWindowControl"/> class.
-        /// </summary>
-        public ErrorReportingToolWindowControl()
-        {
-            this.InitializeComponent();
-        }
+        public ErrorReportingException(string message) : base(message) { }
+        public ErrorReportingException(Exception innerException) : base("", innerException: innerException) { }
     }
-}    
+}

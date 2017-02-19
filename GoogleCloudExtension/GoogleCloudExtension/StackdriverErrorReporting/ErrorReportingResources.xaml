@@ -15,7 +15,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="DataGridCell">
                     <Border  BorderThickness="0">
-                        <Border x:Name="border" Padding="3,4,3,4" >
+                        <Border x:Name="border" Padding="6,4,6,4" >
                             <ContentPresenter />
                         </Border>
                     </Border>
