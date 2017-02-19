@@ -23,10 +23,21 @@
             <utils:VisibilityConverter x:Key="visibilityConverter" />
             <utils:VisibilityConverter x:Key="visibilityConverterNegated" IsNegated="True" />
 
+            <DataTemplate x:Key="MessageStackTemplate" >
+                <StackPanel>
+                    <controls:IconButton Style="{StaticResource MouseOverLinkButtonStyle}" 
+                                Content="{Binding Message}"
+                                Command="{Binding NavigateDetailCommand}"
+                                HorizontalAlignment="Left" />
+                    <TextBlock Text="{Binding Stack}" Style="{StaticResource CommonTextStyle}"/>
+                </StackPanel>
+            </DataTemplate>
+
         </ResourceDictionary>
     </UserControl.Resources>
 
     <StackPanel>
+
         <tb:TitleBar />
 
         <Grid Margin="12,0,12,12" Visibility="{Binding IsGridVisible, Converter={StaticResource visibilityConverter}}">
@@ -71,23 +82,8 @@
                 CellStyle="{StaticResource cellStyle}"
                 RowStyle="{StaticResource rowStyle}" 
                 IsEnabled="{Binding IsLoadingComplete}"
-                ScrollViewer.ScrollChanged="dataGrid_ScrollChanged"
                 Visibility="{Binding ShowException, Converter={StaticResource visibilityConverterNegated}}">
                 <DataGrid.Resources>
-                    <!--DataTemplate for Published Date column defined in Grid.Resources.  PublishDate is a property on the ItemsSource of type DateTime -->
-                    <DataTemplate x:Key="MessageStackTemplate" >
-                        <StackPanel>
-                            <controls:IconButton Style="{StaticResource MouseOverLinkButtonStyle}" 
-                                Content="{Binding Message}"
-                                Command="{Binding NavigateDetailCommand}"
-                                HorizontalAlignment="Left"
-                                />
-                            <TextBlock Text="{Binding Stack}" Style="{StaticResource CommonTextStyle}"/>
-                        </StackPanel>
-                    </DataTemplate>
-                    <DataTemplate x:Key="OccurancesTemplate" >
-                        <TextBlock Text="OccurancesTemplate" />
-                    </DataTemplate>
                     <!-- Override the text highlight color. -->
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
                                      Color="Black"/>

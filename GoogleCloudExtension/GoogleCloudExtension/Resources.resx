@@ -1686,4 +1686,8 @@ Open the project of version {2} to properly locate the logging writter location.
     <value>Environment</value>
     <comment>The display name for the Environment property.</comment>
   </data>
+  <data name="ErrorReportingCurrentGroupTimePeriodLabelFormat" xml:space="preserve">
+    <value>Errors in the last {0}</value>
+    <comment>In the error reporting overview window, the current selected time period label text format.</comment>
+  </data>
 </root>

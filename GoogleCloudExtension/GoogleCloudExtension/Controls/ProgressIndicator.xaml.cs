@@ -30,11 +30,6 @@ namespace GoogleCloudExtension.Controls
     /// </summary>
     public partial class ProgressIndicator : UserControl, ISupportInitialize
     {
-        /// <summary>
-        /// The definition of the animation for progress.
-        /// </summary>
-        private readonly Duration s_animationDuration;
-
         // The frames for the light, blue and dark themes.
         private static readonly Lazy<IList<ImageSource>> s_lightFrames = new Lazy<IList<ImageSource>>(LoadLightFrames);
         private static readonly Lazy<IList<ImageSource>> s_darkFrames = new Lazy<IList<ImageSource>>(LoadDarkFrames);
@@ -43,12 +38,16 @@ namespace GoogleCloudExtension.Controls
         private VsTheme _forceTheme;
         private readonly bool _initializing;
 
-        public static readonly DependencyProperty FullDurationProperty = DependencyProperty.Register(
-            nameof(FullDuration), typeof(int), typeof(ProgressIndicator), new PropertyMetadata(500));
+        public static readonly DependencyProperty FullDurationProperty 
+            = DependencyProperty.Register(
+                nameof(FullDuration), 
+                typeof(int), 
+                typeof(ProgressIndicator), 
+                new PropertyMetadata(500));
 
         /// <summary>
         /// Define the FullDuration custom dependency property. 
-        /// This controls the animation moving speed, 
+        /// This controls the progress moving speed, 
         /// the smaller this value is, the faster the progress indicator moves.
         /// </summary>
         public int FullDuration
