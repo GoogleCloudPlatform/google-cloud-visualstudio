@@ -60,7 +60,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// The singleton instance of <seealso cref="LoggerTooltipSource"/>.
         /// </summary>
-        public static LoggerTooltipSource TooltipSource => s_instance.Value;
+        public static LoggerTooltipSource Current => s_instance.Value;
 
         /// <summary>
         /// Set all data members to null.

@@ -47,7 +47,7 @@
         <Setter Property="Foreground" Value="DarkSlateGray"/>
     </Style>
     
-    <!-- Log entry detail tree view note value style. -->
+    <!-- Log entry detail tree view node value style. -->
     <Style x:Key="TreeNodeValueStyle" 
            TargetType="controls:IconButton" 
            BasedOn="{StaticResource MouseOverLinkButtonStyle}" >

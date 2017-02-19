@@ -114,7 +114,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the command that filters log entris on a detail tree view field value.
         /// </summary>
-        public ProtectedCommand<ObjectNodeTree> DetailTreeNodeFilterCommand { get; }
+        public ProtectedCommand<ObjectNodeTree> OnDetailTreeNodeFilterCommand { get; }
 
         /// <summary>
         /// Gets or sets the advanced filter text box content.
@@ -295,7 +295,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             PropertyChanged += OnPropertyChanged;
             ResourceTypeSelector = new ResourceTypeMenuViewModel(_dataSource);
             ResourceTypeSelector.PropertyChanged += OnPropertyChanged;
-            DetailTreeNodeFilterCommand = new ProtectedCommand<ObjectNodeTree>(FilterOnTreeNodeValue);
+            OnDetailTreeNodeFilterCommand = new ProtectedCommand<ObjectNodeTree>(FilterOnTreeNodeValue);
         }
 
         /// <summary>
@@ -349,8 +349,19 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             Reload();
         }
 
+        /// <summary>
+        /// Detail view is a tree view. 
+        /// Each item at tree path is an <seealso cref="ObjectNodeTree"/> object.
+        /// The tree view displays the <paramref name="node"/> as name : value pair.
+        /// User can click at the "value" to show matching log entries.
+        /// 
+        /// This method composes a filter on node value, adds it to existing AdvancedFilterText.
+        /// The filter has format of root_node_name.node_name...node_name = "node.value". 
+        /// Example: jsonPayload.serviceContext.service="frontend"
+        /// </summary>
         private void FilterOnTreeNodeValue(ObjectNodeTree node)
         {
+            // Firstly compose a new filter line.
             StringBuilder newFilter = new StringBuilder();
             newFilter.Append($"{node.FilterLabel}=\"{node.FilterValue}\"");            
             while ((node = node.Parent).Parent != null)     
@@ -360,15 +371,20 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     newFilter.Insert(0, $"{node.FilterLabel}.");
                 }
             }
+
+            // Append the new filter line to existing filter text.
+            // Or to the composed filter if it is currently showing simple filters.
             if (ShowAdvancedFilter)
-            {
-                newFilter.Insert(0, Environment.NewLine);
+            {   
+                newFilter.Insert(0, Environment.NewLine); 
                 newFilter.Insert(0, AdvancedFilterText);
             }
             else
             {
                 newFilter.Insert(0, ComposeSimpleFilters());
             }
+
+            // Show advanced filter.
             AdvancedFilterText = newFilter.ToString();
             ShowAdvancedFilter = true;
             Reload();
