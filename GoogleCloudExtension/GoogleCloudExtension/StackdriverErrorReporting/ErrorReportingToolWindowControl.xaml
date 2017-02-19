@@ -17,7 +17,11 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+                <ResourceDictionary Source="./ErrorReportingResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <utils:VisibilityConverter x:Key="visibilityConverter" />
+            <utils:VisibilityConverter x:Key="visibilityConverterNegated" IsNegated="True" />
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -73,7 +77,7 @@
                     <!--DataTemplate for Published Date column defined in Grid.Resources.  PublishDate is a property on the ItemsSource of type DateTime -->
                     <DataTemplate x:Key="MessageStackTemplate" >
                         <StackPanel>
-                            <Button Style="{StaticResource LinkButton}" 
+                            <controls:IconButton Style="{StaticResource MouseOverLinkButtonStyle}" 
                                 Content="{Binding Message}"
                                 Command="{Binding NavigateDetailCommand}"
                                 HorizontalAlignment="Left"

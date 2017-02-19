@@ -64,8 +64,14 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         {
             var newValue = e.NewValue as TimeRangeItem;
             var oldValue = e.OldValue as TimeRangeItem;
-            oldValue.IsCurrentSelection = false;
-            newValue.IsCurrentSelection = true;
+            if (oldValue != null)
+            {
+                oldValue.IsCurrentSelection = false;
+            }
+            if (newValue != null)
+            {
+                newValue.IsCurrentSelection = true;
+            }
         }
 
         /// <summary>
