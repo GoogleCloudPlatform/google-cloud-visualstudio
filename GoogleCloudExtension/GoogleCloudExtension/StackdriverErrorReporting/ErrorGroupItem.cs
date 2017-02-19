@@ -71,10 +71,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public string Stack { get; }
 
-        public object FirstSeen => ErrorGroup.FirstSeenTime;
-        public object LastSeen => ErrorGroup.LastSeenTime;
-        public long? AffectedUsersCount => ErrorGroup.AffectedUsersCount;
-
         /// <summary>
         /// Initializes a new instance of <seealso cref="ErrorGroupItem"/> class.
         /// </summary>

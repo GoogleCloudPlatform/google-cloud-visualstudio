@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,49 +12,61 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Clouderrorreporting.v1beta1.Data;
-using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.DataSources.ErrorReporting;
 using GoogleCloudExtension.Utils;
 using EventGroupTimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 using EventTimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
-using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Data;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
     /// <summary>
-    /// Represent the data to the error reporting time range selection.
+    /// Represent the data of the error reporting time range selection.
     /// </summary>
     public class TimeRangeItem : Model
     {
         private bool _isSelected;
+
+        /// <summary>
+        /// Indicates if the item is the currently selected
+        /// </summary>
         public bool IsCurrentSelection
         {
             get { return _isSelected; }
             set { SetValueAndRaise(ref _isSelected, value); }
         }
 
-        public ProtectedCommand TimeRangeCommand { get; }
-
+        /// <summary>
+        /// The time range as caption. Examples: 1 hour, 1 day etc.
+        /// </summary>
         public string Caption { get; }
 
-        public EventGroupTimeRangeEnum TimeRange { get; }
+        /// <summary>
+        /// Gets the time range of type <seealso cref="EventGroupTimeRangeEnum"/>.
+        /// </summary>
+        public EventGroupTimeRangeEnum GroupTimeRange { get; }
+
+        /// <summary>
+        /// Gets the time range of type <seealso cref="EventTimeRangeEnum"/>.
+        /// </summary>
         public EventTimeRangeEnum EventTimeRange { get; }
 
+        /// <summary>
+        /// String representation of time range duration.
+        /// </summary>
         public string TimedCountDuration { get; }
 
-        public TimeRangeItem(string caption, string timedCountDuration, EventGroupTimeRangeEnum timeRange, EventTimeRangeEnum eventTimeRange)
+        /// <summary>
+        /// Initializes a instance of <seealso cref="TimeRangeItem"/> class.
+        /// </summary>
+        public TimeRangeItem(
+            string caption, 
+            string timedCountDuration, 
+            EventGroupTimeRangeEnum timeRange, 
+            EventTimeRangeEnum eventTimeRange)
         {
             Caption = caption;
             TimedCountDuration = timedCountDuration;
             EventTimeRange = eventTimeRange;
-            TimeRange = timeRange;
+            GroupTimeRange = timeRange;
         }
     }
 }

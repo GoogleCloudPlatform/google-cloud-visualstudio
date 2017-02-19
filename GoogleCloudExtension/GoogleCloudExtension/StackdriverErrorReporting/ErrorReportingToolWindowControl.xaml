@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:tb="clr-namespace:GoogleCloudExtension.TitleBar"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
              xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting"    
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"    
-             xmlns:tb="clr-namespace:GoogleCloudExtension.TitleBar"
              xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"                     
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
@@ -28,7 +28,8 @@
 
     <StackPanel>
         <tb:TitleBar />
-        <Grid Margin="12,0,12,12">
+
+        <Grid Margin="12,0,12,12" Visibility="{Binding IsGridVisible, Converter={StaticResource visibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
@@ -36,43 +37,42 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="1"
-              Margin="0, 12, 0, 12" 
-              IsEnabled="{Binding IsLoadingComplete}"
-              >
+            <!-- Time period selection buttons. -->
+            <Grid 
+                Grid.Row="1"
+                Margin="0,12,0,12" 
+                IsEnabled="{Binding IsLoadingComplete}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <WrapPanel Grid.Column="0" Margin="0, 0, 24, 0">
-                    <TextBlock                 
-                    Text="Errors in the last" 
-                    FontSize="16"
-                    Style="{StaticResource CommonTextStyle}"/>
+                <WrapPanel 
+                    Grid.Column="0" 
+                    Margin="0,0,24,0">
                     <TextBlock
-                    Margin="3, 0, 0, 0"
-                    FontSize="16"
-                    Text="{Binding CurrentTimeRangeCaption}" 
-                    Style="{StaticResource CommonTextStyle}"/>
+                        FontSize="16"
+                        Text="{Binding CurrentTimeRangeCaption}" 
+                        Style="{StaticResource CommonTextStyle}"/>
                 </WrapPanel>
-                <local:TimeRangeButtons Grid.Column="1" SelectedItem="{Binding SelectedRangeItem}" />
+                
+                <local:TimeRangeButtons Grid.Column="1" SelectedItem="{Binding SelectedTimeRangeItem, Mode=OneWayToSource}" />
             </Grid>
 
-            <DataGrid Grid.Row="2"
-                  Panel.ZIndex="5"
-                  x:Name="dataGridEventGroup"
-                  IsReadOnly="True" 
-                  BorderThickness="0"
-                  GridLinesVisibility="None" 
-                  HeadersVisibility="Column"
-                  AutoGenerateColumns="False" 
-                  ItemsSource="{Binding GroupStatsView}"   
-                  CellStyle="{StaticResource cellStyle}"
-                  RowStyle="{StaticResource rowStyle}" 
-                  IsEnabled="{Binding IsLoadingComplete}"
-                  ScrollViewer.ScrollChanged="dataGrid_ScrollChanged"
-                  Visibility="{Binding ShowException, Converter={StaticResource visibilityConverterNegated}}"  
-                  >
+            <DataGrid 
+                Grid.Row="2"
+                Panel.ZIndex="5"
+                x:Name="dataGridEventGroup"
+                IsReadOnly="True" 
+                BorderThickness="0"
+                GridLinesVisibility="None" 
+                HeadersVisibility="Column"
+                AutoGenerateColumns="False" 
+                ItemsSource="{Binding GroupStatsView}"   
+                CellStyle="{StaticResource cellStyle}"
+                RowStyle="{StaticResource rowStyle}" 
+                IsEnabled="{Binding IsLoadingComplete}"
+                ScrollViewer.ScrollChanged="dataGrid_ScrollChanged"
+                Visibility="{Binding ShowException, Converter={StaticResource visibilityConverterNegated}}">
                 <DataGrid.Resources>
                     <!--DataTemplate for Published Date column defined in Grid.Resources.  PublishDate is a property on the ItemsSource of type DateTime -->
                     <DataTemplate x:Key="MessageStackTemplate" >

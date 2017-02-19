@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Gets an instance of 
         /// </summary>
-        public static SerDataSource Instance => s_instance.Value;
+        public static SerDataSource Current => s_instance.Value;
 
         /// <summary>
         /// When the current project id is changed, the Instance needs to be recreated.
@@ -48,6 +48,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             {
                 return null;
             }
+
             return new SerDataSource(
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,

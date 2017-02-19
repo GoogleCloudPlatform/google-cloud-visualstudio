@@ -34,12 +34,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            DataContext = new ErrorReportingViewModel();
-            var viewModel = DataContext as ErrorReportingViewModel;
-            CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) =>
-            {
-                viewModel.Refresh();
-            };
         }
 
         /// <summary>

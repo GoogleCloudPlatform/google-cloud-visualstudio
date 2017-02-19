@@ -20,6 +20,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -40,6 +41,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private bool _isLoadingNextPage;
         private bool _showException;
         private string _exceptionString;
+        private TimeRangeItem _selectedTimeRange;
         private ObservableCollection<ErrorGroupItem> _groupStatsCollection;
 
         /// <summary>
@@ -89,9 +91,17 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             set { SetValueAndRaise(ref _isLoadingNextPage, value); }
         }
 
-        public TimeRangeItem SelectedRangeItem { get; set; }
+        public bool IsGridVisible => CredentialsStore.Default.CurrentProjectId != null;
+
+        public TimeRangeItem SelectedTimeRangeItem
+        {
+            set { SetValueAndRaise(ref _selectedTimeRange, value); }
+        }
 
         public ListCollectionView GroupStatsView { get; }
+
+        public string CurrentTimeRangeCaption => 
+            String.Format(Resources.ErrorReportingCurrentGroupTimePeriodLabelFormat, _selectedTimeRange?.Caption);
 
         /// <summary>
         /// Create a new instance of <seealso cref="ErrorReportingViewModel"/> class.
@@ -100,16 +110,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         {
             _groupStatsCollection = new ObservableCollection<ErrorGroupItem>();
             GroupStatsView = new ListCollectionView(_groupStatsCollection);
-            Refresh();
-        }
-
-        /// <summary>
-        /// Reload first page of error groups.
-        /// </summary>
-        public void Refresh()
-        {
-            _groupStatsCollection.Clear();
-            LoadAsync();
+            PropertyChanged += OnPropertyChanged;
         }
 
         /// <summary>
@@ -129,17 +130,28 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 return;
             }
 
-            LoadAsync(refresh: false);
+            LoadAsync();
         }
 
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(SelectedTimeRangeItem):
+                    _groupStatsCollection.Clear();
+                    _nextPageToken = null;
+                    LoadAsync();
+                    RaisePropertyChanged(nameof(CurrentTimeRangeCaption));
+                    break;
+            }
+        }
 
-        private async Task LoadAsync(bool refresh = true)
+        private async Task LoadAsync()
         {
             IsLoadingComplete = false;
             GroupStatsRequestResult results = null;
             ShowException = false;
-            _nextPageToken = null;
-            if (refresh)
+            if (_nextPageToken == null)
             {
                 IsRefreshing = true;
             }
@@ -149,9 +161,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             }
             try
             {
-                results = await SerDataSourceInstance.Instance?.ListGroupStatusAsync(
-                    SelectedRangeItem.TimeRange,
-                    SelectedRangeItem.TimedCountDuration,
+                results = await SerDataSourceInstance.Current?.ListGroupStatusAsync(
+                    _selectedTimeRange.GroupTimeRange,
+                    _selectedTimeRange.TimedCountDuration,
                     nextPageToken: _nextPageToken);
             }
             catch (DataSourceException ex)

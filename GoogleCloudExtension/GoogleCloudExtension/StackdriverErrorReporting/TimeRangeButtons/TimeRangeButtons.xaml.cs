@@ -12,23 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using Google.Apis.Clouderrorreporting.v1beta1.Data;
-using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.DataSources.ErrorReporting;
 using TimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 using EventTimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
-using GoogleCloudExtension.Utils;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Data;
 using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -39,6 +29,25 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     {
         private readonly ObservableCollection<TimeRangeItem> _timeRangeItems;
 
+        public static readonly DependencyProperty SelectedItemProperty =
+            DependencyProperty.Register(
+                nameof(SelectedItem),
+                typeof(TimeRangeItem),
+                typeof(TimeRangeButtons),
+                new FrameworkPropertyMetadata(null, OnTimePartPropertyChanged, null));
+
+        /// <summary>
+        /// The selected <seealso cref="TimeRangeItem"/> .
+        /// </summary>
+        public TimeRangeItem SelectedItem
+        {
+            get { return (TimeRangeItem)GetValue(SelectedItemProperty); }
+            set { SetValue(SelectedItemProperty, value); }
+        }
+
+        /// <summary>
+        /// Initializes a new instance of <seealso cref="TimeRangeButtons"/> class;
+        /// </summary>
         public TimeRangeButtons()
         {
             _timeRangeItems = new ObservableCollection<TimeRangeItem>();
@@ -47,18 +56,18 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             _timeRangeItems.Add(new TimeRangeItem("1 day", $"{24 * 60 * 60 / 30}s", TimeRangeEnum.PERIOD1DAY, EventTimeRangeEnum.PERIOD1DAY));
             _timeRangeItems.Add(new TimeRangeItem("7 days", $"{7 * 24 * 60 * 60 / 30}s", TimeRangeEnum.PERIOD1WEEK, EventTimeRangeEnum.PERIOD1WEEK));
             _timeRangeItems.Add(new TimeRangeItem("30 days", $"{24 * 60 * 60}s", TimeRangeEnum.PERIOD30DAYS, EventTimeRangeEnum.PERIOD30DAYS));
-            ItemsSource = _timeRangeItems;
-            SelectedItem = _timeRangeItems.Last();
-            SelectedItem.IsCurrentSelection = true;
             InitializeComponent();
         }
 
-        public static readonly DependencyProperty SelectedItemProperty =
-            DependencyProperty.Register(
-                nameof(SelectedItem),
-                typeof(TimeRangeItem),
-                typeof(TimeRangeButtons),
-                new FrameworkPropertyMetadata(null, OnTimePartPropertyChanged, null));
+        /// <summary>
+        /// Override the <seealso cref="OnApplyTemplate"/> method to initialize controls.
+        /// </summary>
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            ItemsSource = _timeRangeItems;
+            SelectedItem = _timeRangeItems.Last();
+        }
 
         private static void OnTimePartPropertyChanged(DependencyObject source, DependencyPropertyChangedEventArgs e)
         {
@@ -72,15 +81,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             {
                 newValue.IsCurrentSelection = true;
             }
-        }
-
-        /// <summary>
-        /// The selected <seealso cref="TimeRangeItem"/> .
-        /// </summary>
-        public TimeRangeItem SelectedItem
-        {
-            get { return (TimeRangeItem)GetValue(SelectedItemProperty); }
-            set { SetValue(SelectedItemProperty, value); }
         }
 
         private void timeRangeButton_Click(object sender, RoutedEventArgs e)

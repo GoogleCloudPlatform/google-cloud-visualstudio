@@ -65,10 +65,10 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         private void CreateNewViewModel()
         {
+            SerDataSourceInstance.OnProjectIdChanged();
             var control = Content as ErrorReportingToolWindowControl;
             var newModel = new ErrorReportingViewModel();
             control.DataContext = newModel;
-            newModel.Refresh();
         }
     }
 }
