@@ -154,6 +154,7 @@
       <IDSymbol value="4224" name="GcpToolsGroupMenu" />
       <IDSymbol value="4225" name="cmdidPublishProjectToolsMenuCommand" />
       <IDSymbol value="4226" name="cmdidPublishProjectContextMenuCommand" />
+      <IDSymbol value="4227" name="cmdidGenerateConfigProjectContextMenuCommand" />
       <IDSymbol value="4230" name="GcpProjectContextMenu" />
       <IDSymbol value="4235" name="cmdidLogsViewerToolWindowCommand" />
       <IDSymbol value="4236" name="cmdidErrorReportingToolWindowCommand" />

@@ -122,12 +122,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             window?.FilterGAEServiceLog(_service.Id, _version.Id);
         }
 
-        private void OnBrowseStackdriverLogCommand()
-        {
-            var window = ToolWindowUtils.ShowToolWindow<LogsViewerToolWindow>();
-            window?.FilterGAEServiceLog(_owner.Service.Id, version.Id);
-        }
-
         private void OnStartVersion()
         {
             UpdateServingStatus(GaeVersionExtensions.ServingStatus, Resources.CloudExplorerGaeVersionStartServingMessage);

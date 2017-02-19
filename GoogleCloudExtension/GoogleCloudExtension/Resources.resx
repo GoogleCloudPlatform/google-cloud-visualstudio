@@ -1685,6 +1685,5 @@ Open the project of version {2} to properly locate the logging writter location.
   <data name="CloudExplorerGaeVersionEnvironmentDisplayName" xml:space="preserve">
     <value>Environment</value>
     <comment>The display name for the Environment property.</comment>
->>>>>>> m2_master
   </data>
 </root>

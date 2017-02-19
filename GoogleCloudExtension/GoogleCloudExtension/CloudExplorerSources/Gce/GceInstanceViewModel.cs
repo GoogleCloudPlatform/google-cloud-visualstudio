@@ -233,12 +233,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             window?.FilterVMInstanceLog(Instance.Id.Value.ToString());
         }
 
-        private void OnBrowseStackdriverLogCommand()
-        {
-            var window = ToolWindowUtils.ShowToolWindow<LogsViewerToolWindow>();
-            window?.FilterVMInstanceLog(Instance.Id.Value.ToString());
-        }
-
         private void OnSavePublishSettingsCommand()
         {
             Debug.WriteLine($"Generating Publishing settings for {Instance.Name}");
