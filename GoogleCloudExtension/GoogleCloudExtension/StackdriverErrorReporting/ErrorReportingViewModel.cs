@@ -41,7 +41,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private bool _showException;
         private string _exceptionString;
         private ObservableCollection<ErrorGroupItem> _groupStatsCollection;
-        private TimeRangeButtonsViewModel _timeRangeButtonsModel;
 
         /// <summary>
         /// Gets an exception as string.
@@ -89,6 +88,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             get { return _isLoadingNextPage; }
             set { SetValueAndRaise(ref _isLoadingNextPage, value); }
         }
+
+        public TimeRangeItem SelectedRangeItem { get; set; }
 
         public ListCollectionView GroupStatsView { get; }
 
@@ -148,9 +149,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             }
             try
             {
-                results = await SerDataSourceInstance.Instance.Value?.ListGroupStatusAsync(
-                    TimeRangeButtonsModel.SelectedTimeRangeItem.TimeRange,
-                    TimeRangeButtonsModel.SelectedTimeRangeItem.TimedCountDuration,
+                results = await SerDataSourceInstance.Instance?.ListGroupStatusAsync(
+                    SelectedRangeItem.TimeRange,
+                    SelectedRangeItem.TimedCountDuration,
                     nextPageToken: _nextPageToken);
             }
             catch (DataSourceException ex)
@@ -185,7 +186,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                     return;
                 }
 
-                _groupStatsCollection.Add(new ErrorGroupItem(item, TimeRangeButtonsModel.SelectedTimeRangeItem.TimeRange));
+                _groupStatsCollection.Add(new ErrorGroupItem(item));
             }
         }
     }

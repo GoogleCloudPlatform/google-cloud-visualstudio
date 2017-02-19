@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Accounts;
 using System;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
@@ -33,6 +34,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     public class ErrorReportingToolWindow : ToolWindowPane
     {
         /// <summary>
+        /// Gets a <seealso cref="ErrorReportingViewModel"/> object that is associated with the Window.
+        /// </summary>
+        public ErrorReportingViewModel ViewModel => (Content as ErrorReportingToolWindowControl)?.DataContext as ErrorReportingViewModel;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ErrorReportingToolWindow"/> class.
         /// </summary>
         public ErrorReportingToolWindow() : base(null)
@@ -43,6 +49,26 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
             this.Content = new ErrorReportingToolWindowControl();
+
+            CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => CreateNewViewModel();
+            CredentialsStore.Default.Reset += (sender, e) => CreateNewViewModel();
+        }
+
+        /// <summary>
+        /// Create view mode when window object is created. 
+        /// </summary>
+        public override void OnToolWindowCreated()
+        {
+            base.OnToolWindowCreated();
+            CreateNewViewModel();
+        }
+
+        private void CreateNewViewModel()
+        {
+            var control = Content as ErrorReportingToolWindowControl;
+            var newModel = new ErrorReportingViewModel();
+            control.DataContext = newModel;
+            newModel.Refresh();
         }
     }
 }

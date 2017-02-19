@@ -49,9 +49,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         public string TimedCountDuration { get; }
 
-        public TimeRangeItem(Action<TimeRangeItem> commandActionCallback, string caption, string timedCountDuration, EventGroupTimeRangeEnum timeRange, EventTimeRangeEnum eventTimeRange)
+        public TimeRangeItem(string caption, string timedCountDuration, EventGroupTimeRangeEnum timeRange, EventTimeRangeEnum eventTimeRange)
         {
-            TimeRangeCommand = new ProtectedCommand(() => commandActionCallback(this));
             Caption = caption;
             TimedCountDuration = timedCountDuration;
             EventTimeRange = eventTimeRange;

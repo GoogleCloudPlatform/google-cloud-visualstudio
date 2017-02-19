@@ -8,13 +8,12 @@
     xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"              
     mc:Ignorable="d" 
     d:DesignHeight="300" d:DesignWidth="300" 
-    ItemsSource="{Binding TimeRanges}"
-    d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True,Type=local:TimeRangeButtonsViewModel}" >
+    x:Name="_timeRangeButtons" >
 
     <ItemsControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+                <ResourceDictionary Source="../../Theming/CommonResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <utils:VisibilityConverter x:Key="visibilityConverter" />
@@ -27,10 +26,10 @@
             <Grid>
                 <Button 
                     Panel.ZIndex="10"
-                    Content="{Binding Caption}" 
-                    Style="{StaticResource CommonButtonStandardStyle}"
                     Width="56"
-                    Command="{Binding TimeRangeCommand}"/>
+                    Style="{StaticResource CommonButtonStandardStyle}"
+                    Content="{Binding Caption}" 
+                    Click="timeRangeButton_Click"/>
                 <Line 
                     Panel.ZIndex="20"
                     X1="2"

@@ -22,15 +22,142 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <Grid Margin="12,0,12,12">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
+    <StackPanel>
+        <tb:TitleBar />
+        <Grid Margin="12,0,12,12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
 
-        <tb:TitleBar Margin="-12,0,-12,0" />
-    </Grid>
+            <Grid Grid.Row="1"
+              Margin="0, 12, 0, 12" 
+              IsEnabled="{Binding IsLoadingComplete}"
+              >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <WrapPanel Grid.Column="0" Margin="0, 0, 24, 0">
+                    <TextBlock                 
+                    Text="Errors in the last" 
+                    FontSize="16"
+                    Style="{StaticResource CommonTextStyle}"/>
+                    <TextBlock
+                    Margin="3, 0, 0, 0"
+                    FontSize="16"
+                    Text="{Binding CurrentTimeRangeCaption}" 
+                    Style="{StaticResource CommonTextStyle}"/>
+                </WrapPanel>
+                <local:TimeRangeButtons Grid.Column="1" SelectedItem="{Binding SelectedRangeItem}" />
+            </Grid>
+
+            <DataGrid Grid.Row="2"
+                  Panel.ZIndex="5"
+                  x:Name="dataGridEventGroup"
+                  IsReadOnly="True" 
+                  BorderThickness="0"
+                  GridLinesVisibility="None" 
+                  HeadersVisibility="Column"
+                  AutoGenerateColumns="False" 
+                  ItemsSource="{Binding GroupStatsView}"   
+                  CellStyle="{StaticResource cellStyle}"
+                  RowStyle="{StaticResource rowStyle}" 
+                  IsEnabled="{Binding IsLoadingComplete}"
+                  ScrollViewer.ScrollChanged="dataGrid_ScrollChanged"
+                  Visibility="{Binding ShowException, Converter={StaticResource visibilityConverterNegated}}"  
+                  >
+                <DataGrid.Resources>
+                    <!--DataTemplate for Published Date column defined in Grid.Resources.  PublishDate is a property on the ItemsSource of type DateTime -->
+                    <DataTemplate x:Key="MessageStackTemplate" >
+                        <StackPanel>
+                            <Button Style="{StaticResource LinkButton}" 
+                                Content="{Binding Message}"
+                                Command="{Binding NavigateDetailCommand}"
+                                HorizontalAlignment="Left"
+                                />
+                            <TextBlock Text="{Binding Stack}" Style="{StaticResource CommonTextStyle}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                    <DataTemplate x:Key="OccurancesTemplate" >
+                        <TextBlock Text="OccurancesTemplate" />
+                    </DataTemplate>
+                    <!-- Override the text highlight color. -->
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
+                                     Color="Black"/>
+                </DataGrid.Resources>
+
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn Header="Occurances" 
+                                        CellTemplate="{StaticResource OccurancesTemplate}" />
+
+                    <DataGridTextColumn Header="Users" Binding="{Binding AffectedUsersCount}" />
+
+                    <DataGridTextColumn Binding="{Binding Count}" />
+
+                    <DataGridTemplateColumn Header="Error" 
+                                        Width="460"
+                                        CellTemplate="{StaticResource MessageStackTemplate}" />
+
+                    <DataGridTextColumn Binding="{Binding SeenIn}" 
+                                    Header="Seen in"
+                                    />
+
+                    <DataGridTextColumn Binding="{Binding FirstSeen, StringFormat=d}" 
+                                    Header="First seen"
+                                    />
+
+                    <DataGridTextColumn Binding="{Binding LastSeen, StringFormat=d}" 
+                                    Header="Last seen"
+                                    />
+
+                    <DataGridTextColumn Binding="{Binding Status}" 
+                                    Header="Status"
+                                    />
+
+                    <DataGridTextColumn Binding="{Binding Mute}" 
+                                    Header=""
+                                    />
+
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <controls:ProgressIndicator 
+                Grid.Row="2"
+                Panel.ZIndex="10"
+                Margin="0, 60, 0, 0"
+                HorizontalAlignment="Center"                       
+                VerticalAlignment="Top" 
+                FullDuration="1000"
+                Visibility="{Binding IsRefreshing, Converter={StaticResource visibilityConverter}}" />
+
+
+            <controls:ProgressIndicator 
+                Grid.Row="3"
+                Padding="12"
+                Panel.ZIndex="10"
+                Margin="0, -60, 0, 0"
+                HorizontalAlignment="Center"                       
+                FullDuration="1000"
+                Visibility="{Binding IsLoadingNextPage, Converter={StaticResource visibilityConverter}}" />
+
+
+            <TextBox 
+                Grid.Row="2"
+                Panel.ZIndex="15"
+                Padding="8, 5, 8, 5" 
+                VerticalAlignment="Top"
+                HorizontalAlignment="Stretch"
+                TextAlignment="Left" 
+                TextWrapping="Wrap"
+                Foreground="Red" 
+                Text="{Binding ExceptionString, Mode=OneWay}" 
+                Visibility="{Binding ShowException, Converter={StaticResource visibilityConverter}}" 
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                IsReadOnly="True" />
+            
+        </Grid>
+    </StackPanel>
 </UserControl>

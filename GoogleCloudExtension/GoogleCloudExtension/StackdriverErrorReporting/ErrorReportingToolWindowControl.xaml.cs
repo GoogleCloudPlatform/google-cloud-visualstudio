@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Accounts;
 using System.Windows.Controls;
+using System.Diagnostics;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -27,6 +29,38 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public ErrorReportingToolWindowControl()
         {
             this.InitializeComponent();
+        }
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            DataContext = new ErrorReportingViewModel();
+            var viewModel = DataContext as ErrorReportingViewModel;
+            CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) =>
+            {
+                viewModel.Refresh();
+            };
+        }
+
+        /// <summary>
+        /// Response to data grid scroll change event.
+        /// Auto load more logs when it scrolls down to bottom.
+        /// </summary>
+        private void dataGrid_ScrollChanged(object sender, ScrollChangedEventArgs e)
+        {
+            var grid = sender as DataGrid;
+            ScrollViewer sv = e.OriginalSource as ScrollViewer;
+            if (sv == null)
+            {
+                return;
+            }
+
+            if (e.VerticalOffset == sv.ScrollableHeight)
+            {
+                Debug.WriteLine("Now it is at bottom");
+                var viewModel = DataContext as ErrorReportingViewModel;
+                viewModel?.LoadNextPage();
+            }
         }
     }
 }    

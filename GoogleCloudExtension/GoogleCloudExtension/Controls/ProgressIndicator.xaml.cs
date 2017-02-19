@@ -31,14 +31,9 @@ namespace GoogleCloudExtension.Controls
     public partial class ProgressIndicator : UserControl, ISupportInitialize
     {
         /// <summary>
-        /// Duration of the animation in milliseconds.
-        /// </summary>
-        private const int FullDuration = 500;
-
-        /// <summary>
         /// The definition of the animation for progress.
         /// </summary>
-        private static readonly Duration s_animationDuration = new Duration(new TimeSpan(0, 0, 0, 0, FullDuration));
+        private readonly Duration s_animationDuration;
 
         // The frames for the light, blue and dark themes.
         private static readonly Lazy<IList<ImageSource>> s_lightFrames = new Lazy<IList<ImageSource>>(LoadLightFrames);
@@ -47,6 +42,20 @@ namespace GoogleCloudExtension.Controls
         private Storyboard _storyboard;
         private VsTheme _forceTheme;
         private readonly bool _initializing;
+
+        public static readonly DependencyProperty FullDurationProperty = DependencyProperty.Register(
+            nameof(FullDuration), typeof(int), typeof(ProgressIndicator), new PropertyMetadata(500));
+
+        /// <summary>
+        /// Define the FullDuration custom dependency property. 
+        /// This controls the animation moving speed, 
+        /// the smaller this value is, the faster the progress indicator moves.
+        /// </summary>
+        public int FullDuration
+        {
+            get { return (int)GetValue(FullDurationProperty); }
+            set { SetValue(FullDurationProperty, value); }
+        }
 
         /// <summary>
         /// Sets the theme to use instead of trying to detect the theme. The default value is <see cref="VsTheme.Unknown"/>
@@ -71,12 +80,14 @@ namespace GoogleCloudExtension.Controls
             }
         }
 
-        private static ObjectAnimationUsingKeyFrames CreateAnimation(IList<ImageSource> imageFrames)
+        private ObjectAnimationUsingKeyFrames CreateAnimation(IList<ImageSource> imageFrames)
         {
+            var animationDuration = new Duration(new TimeSpan(0, 0, 0, 0, FullDuration));
+
             // Initialize the animation for this object.
             var result = new ObjectAnimationUsingKeyFrames
             {
-                Duration = s_animationDuration,
+                Duration = animationDuration,
             };
 
             // Creates the frames for the animation.
@@ -101,8 +112,8 @@ namespace GoogleCloudExtension.Controls
 
         private ObjectAnimationUsingKeyFrames CreateAnimationForTheme()
         {
-            var theme = ForceTheme != VsTheme.Unknown ? ForceTheme : ThemeManager.GetCurrentTheme();
-            switch (theme)
+            // var theme = ForceTheme != VsTheme.Unknown ? ForceTheme : ThemeManager.GetCurrentTheme();
+            switch (ForceTheme)
             {
                 case VsTheme.Dark:
                     return CreateAnimation(s_darkFrames.Value);
