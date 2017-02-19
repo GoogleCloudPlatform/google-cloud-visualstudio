@@ -117,5 +117,28 @@ namespace GoogleCloudExtension.CloudExplorer
             get { return _contextMenu; }
             set { SetValueAndRaise(ref _contextMenu, value); }
         }
+
+        /// <summary>
+        /// Disables all items in the context menu if the node is in the IsError or IsLoading state. It is expected
+        /// that after the state changes the node will be reloaded and the context menu replaced.
+        /// </summary>
+        protected void SyncContextMenuState()
+        {
+            if (IsError || IsLoading)
+            {
+                foreach (var item in ContextMenu.ItemsSource)
+                {
+                    var menu = item as MenuItem;
+                    if (menu != null)
+                    {
+                        if (menu.Command is ProtectedCommand)
+                        {
+                            var cmd = (ProtectedCommand)menu.Command;
+                            cmd.CanExecuteCommand = false;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -27,13 +27,15 @@ namespace GoogleCloudExtension.Deployment
     /// </summary>
     public static class AppEngineFlexDeployment
     {
-        private const string AppYamlName = "app.yaml";
+        public const string AppYamlName = "app.yaml";
+        public const string DockerfileName = NetCoreAppUtils.DockerfileName;
 
         private const string AppYamlDefaultContent =
-            "runtime: custom\n" +
+            "runtime: aspnetcore\n" +
             "env: flex\n";
 
         private const string DefaultServiceName = "default";
+        private const string ServiceStatement = "service:";
 
         /// <summary>
         /// The options for the deployment operation.
@@ -121,19 +123,91 @@ namespace GoogleCloudExtension.Deployment
             }
         }
 
+        /// <summary>
+        /// Generates the app.yaml for the given project.json file.
+        /// </summary>
+        /// <param name="projectPath">The full path to the project.json for the project.</param>
+        public static bool GenerateAppYaml(string projectPath)
+        {
+            try
+            {
+                var projectDirectory = Path.GetDirectoryName(projectPath);
+                var targetAppYaml = Path.Combine(projectDirectory, AppYamlName);
+                File.WriteAllText(targetAppYaml, AppYamlDefaultContent);
+                return true;
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine($"Failed to generate app.yaml: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Generates the Dockerfile for the given project.json file.
+        /// </summary>
+        /// <param name="projectPath">The full path to the project.json for the project.</param>
+        public static bool GenerateDockerfile(string projectPath)
+        {
+            try
+            {
+                NetCoreAppUtils.GenerateDockerfile(projectPath);
+                return true;
+            }
+            catch (IOException ex)
+            {
+                Debug.WriteLine($"Failed to generate Dockerfile: {ex.Message}");
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Checks the project configuration files to see if they exist.
+        /// </summary>
+        /// <param name="projectPath">The full path to the project.json for the project.</param>
+        /// <returns>An instance of <seealso cref="ProjectConfigurationStatus"/> with the status of the config.</returns>
+        public static ProjectConfigurationStatus CheckProjectConfiguration(string projectPath)
+        {
+            var projectDirectory = Path.GetDirectoryName(projectPath);
+            var targetAppYaml = Path.Combine(projectDirectory, AppYamlName);
+            var hasAppYaml = File.Exists(targetAppYaml);
+            var hasDockefile = NetCoreAppUtils.CheckDockerfile(projectPath);
+
+            return new ProjectConfigurationStatus(hasAppYaml: hasAppYaml, hasDockerfile: hasDockefile);
+        }
+
+        /// <summary>
+        /// This methods looks for lines of the form "service: name" in the app.yaml file provided.
+        /// </summary>
+        /// <param name="projectPath">The path to the project.json for the project, the app.yaml should be next to it.</param>
+        /// <returns>The service name if found, <seealso cref="DefaultServiceName"/> if not found.</returns>
         private static string GetAppEngineService(string projectPath)
         {
             var projectDirectory = Path.GetDirectoryName(projectPath);
             var appYaml = Path.Combine(projectDirectory, AppYamlName);
-            if (!File.Exists(appYaml))
+
+            // If the app.yaml exists attempt to find the "service: name" line and parse it out. If the file doesn't
+            // exist or if the line is not present then the service is going to be the "default" service.
+            if (File.Exists(appYaml))
             {
-                return DefaultServiceName;
+                try
+                {
+                    var lines = File.ReadLines(appYaml);
+                    foreach (var line in lines)
+                    {
+                        if (line.StartsWith(ServiceStatement))
+                        {
+                            var name = line.Substring(ServiceStatement.Length);
+                            return name.Trim();
+                        }
+                    }
+                }
+                catch (IOException ex)
+                {
+                    throw new DeploymentException(ex.Message, ex);
+                }
             }
-            else
-            {
-                // TODO: Load the app yaml and look for the service key.
-                return DefaultServiceName;
-            }
+            return DefaultServiceName;
         }
 
         private static string GetDefaultVersion()

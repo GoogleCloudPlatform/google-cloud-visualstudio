@@ -224,22 +224,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
 
-            // If the instance is busy or in error then we need to disable all commands.
-            if (IsError || IsLoading)
-            {
-                foreach (var item in ContextMenu.ItemsSource)
-                {
-                    var menu = item as MenuItem;
-                    if (menu != null)
-                    {
-                        if (menu.Command is ProtectedCommand)
-                        {
-                            var cmd = (ProtectedCommand)menu.Command;
-                            cmd.CanExecuteCommand = false;
-                        }
-                    }
-                }
-            }
+            SyncContextMenuState();
         }
 
         private void OnBrowseStackdriverLogCommand()

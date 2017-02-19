@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using static GoogleCloudExtension.StackdriverLogsViewer.LoggerTooltipSource;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Adornments;
 using Microsoft.VisualStudio.Text.Editor;
@@ -54,7 +53,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             _view = view;
             _view.LayoutChanged += ViewLayoutChanged;
             _toolTipProvider = toolTipProviderFactory.GetToolTipProvider(_view);
-            if (_view == TooltipSource.TextView)
+            if (_view == LoggerTooltipSource.Current.TextView)
             {
                 ShowOrUpdateToolTip();
             }
@@ -65,7 +64,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public void ShowOrUpdateToolTip()
         {
-            if (!TooltipSource.IsValidSource)
+            if (!LoggerTooltipSource.Current.IsValidSource)
             {
                 return;
             }
@@ -78,7 +77,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public void ClearTooltip()
         {
-            TooltipSource.Reset();
+            LoggerTooltipSource.Current.Reset();
             if (_isTooltipShown)
             {
                 SendTagsChangedEvent();
@@ -90,28 +89,28 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public IEnumerable<ITagSpan<LoggerTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
-            if (TooltipSource.TextView != _view || spans.Count == 0)
+            if (LoggerTooltipSource.Current.TextView != _view || spans.Count == 0)
             {
-                Debug.WriteLine($"TooltipSource.TextView != _view is {TooltipSource.TextView != _view}, spans.Count is {spans.Count}");
+                Debug.WriteLine($"TooltipSource.TextView != _view is {LoggerTooltipSource.Current.TextView != _view}, spans.Count is {spans.Count}");
                 HideTooltip();
                 yield break;
             }
 
-            ITextSnapshotLine textLine = _sourceBuffer.CurrentSnapshot.GetLineFromLineNumber((int)TooltipSource.SourceLine - 1);
+            ITextSnapshotLine textLine = _sourceBuffer.CurrentSnapshot.GetLineFromLineNumber((int)LoggerTooltipSource.Current.SourceLine - 1);
             SnapshotSpan span;
-            if (String.IsNullOrWhiteSpace(TooltipSource.MethodName))
+            if (String.IsNullOrWhiteSpace(LoggerTooltipSource.Current.MethodName))
             {
                 span = new SnapshotSpan(textLine.Start, textLine.Length);
             }
             else
             {
-                int pos = textLine.GetText().IndexOf(TooltipSource.MethodName);
+                int pos = textLine.GetText().IndexOf(LoggerTooltipSource.Current.MethodName);
                 if (pos < 0)
                 {
                     HideTooltip();
                     yield break;
                 }
-                span = new SnapshotSpan(textLine.Start + pos, TooltipSource.MethodName.Length);
+                span = new SnapshotSpan(textLine.Start + pos, LoggerTooltipSource.Current.MethodName.Length);
             }
             yield return new TagSpan<LoggerTag>(span, s_emptyLoggerTag);
             DisplayTooltip(new SnapshotSpan(textLine.Start, textLine.Length));
@@ -124,11 +123,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         {
             // If a new snapshot is generated, clear the tooltip.
             if (e.NewViewState.EditSnapshot != e.OldViewState.EditSnapshot
-                || (_isTooltipShown && !TooltipSource.IsValidSource))
+                || (_isTooltipShown && !LoggerTooltipSource.Current.IsValidSource))
             {
                 ClearTooltip();
             }
-            else if (TooltipSource.IsValidSource 
+            else if (LoggerTooltipSource.Current.IsValidSource 
                 // if tooltip is not shown, or if the view port width changes.
                 && (!_isTooltipShown || e.NewViewState.ViewportWidth != e.OldViewState.ViewportWidth))
             {
@@ -167,7 +166,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             _isTooltipShown = true;
             this._toolTipProvider.ShowToolTip(
                 span.Snapshot.CreateTrackingSpan(span, SpanTrackingMode.EdgeExclusive),
-                CreateTooltipControl(TooltipSource.LogData), 
+                CreateTooltipControl(LoggerTooltipSource.Current.LogData), 
                 PopupStyles.PositionClosest);
         }
     }

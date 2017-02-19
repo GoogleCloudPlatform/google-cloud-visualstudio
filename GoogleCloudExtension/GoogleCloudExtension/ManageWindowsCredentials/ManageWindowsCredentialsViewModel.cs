@@ -216,8 +216,9 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             catch (GCloudException ex)
             {
                 UserPromptUtils.ErrorPrompt(
-                    String.Format(Resources.ResetPasswordFailedPromptMessage, _instance.Name, ex.Message),
-                    Resources.ResetPasswordConfirmationPromptTitle);
+                    message: String.Format(Resources.ResetPasswordFailedPromptMessage, _instance.Name),
+                    title: Resources.ResetPasswordConfirmationPromptTitle,
+                    errorDetails: ex.Message);
                 return null;
             }
         }

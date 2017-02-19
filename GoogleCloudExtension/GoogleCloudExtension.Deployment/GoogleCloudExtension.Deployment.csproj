@@ -88,9 +88,11 @@
   <ItemGroup>
     <Compile Include="CloudBuilderUtils.cs" />
     <Compile Include="CommonUtils.cs" />
+    <Compile Include="DeploymentException.cs" />
     <Compile Include="GkeDeployment.cs" />
     <Compile Include="GkeDeploymentResult.cs" />
     <Compile Include="NetCoreAppUtils.cs" />
+    <Compile Include="ProjectConfigurationStatus.cs" />
     <Compile Include="WindowsVmDeployment.cs" />
     <Compile Include="AppEngineFlexDeployment.cs" />
     <Compile Include="AppEngineFlexDeploymentResult.cs" />
