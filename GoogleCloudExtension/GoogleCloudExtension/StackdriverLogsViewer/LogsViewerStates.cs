@@ -18,7 +18,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 {
     /// <summary>
     /// Stores global states for Logs Viewer.
-    /// TODO: persist the state to mcahine cache.
+    /// TODO: persist the state to machine cache.
     /// </summary>
     public class StackdriverLogsViewerStates
     {
@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Gets the global states for Stackdriver logs viewer feature. 
         /// </summary>
-        public static StackdriverLogsViewerStates LogsViewerStates => s_logsViewerStates.Value;
+        public static StackdriverLogsViewerStates Current => s_logsViewerStates.Value;
 
         /// <summary>
         /// When navigating from log entry to source line,

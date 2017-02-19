@@ -30,6 +30,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public JArrayNode(string name, JArray jArrayObj, ObjectNodeTree parent) 
             : base(name, jArrayObj, parent) { }
 
+        /// <summary>
+        /// Override the <seealso cref="ObjectNodeTree.ParseObjectTree(object)"/>.
+        /// It is to customize the parsing procedure.
+        /// </summary>
+        /// <param name="obj">An <seealso cref="JArray"/> object.</param>
         protected override void ParseObjectTree(object obj)
         {
             JArray jsonArray = obj as JArray;

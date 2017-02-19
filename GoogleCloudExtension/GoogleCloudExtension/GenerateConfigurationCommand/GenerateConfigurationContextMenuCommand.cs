@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
@@ -19,22 +20,23 @@ using System;
 using System.ComponentModel.Design;
 using System.Diagnostics;
 
-namespace GoogleCloudExtension.PublishDialog
+namespace GoogleCloudExtension.GenerateConfigurationCommand
 {
     /// <summary>
-    /// This class implements the command handler for the menu item shown in the project's context
+    /// This class implements the command handler for the generate app.yaml and Dockerfile menu item shown in the project's context
     /// menu in the "Solution Exlorer".
     /// </summary>
-    internal sealed class PublishProjectContextMenuCommand
+    internal sealed class GenerateConfigurationContextMenuCommand
     {
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 4226;
+        public const int CommandId = 4227;
 
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
+        /// <Guid("")>
         public static readonly Guid CommandSet = new Guid("a7435138-27e2-410c-9d28-dffc5aa3fe80");
 
         /// <summary>
@@ -47,7 +49,7 @@ namespace GoogleCloudExtension.PublishDialog
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private PublishProjectContextMenuCommand(Package package)
+        private GenerateConfigurationContextMenuCommand(Package package)
         {
             if (package == null)
             {
@@ -60,7 +62,7 @@ namespace GoogleCloudExtension.PublishDialog
             if (commandService != null)
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
-                var menuItem = new OleMenuCommand(OnDeployCommand, menuCommandID);
+                var menuItem = new OleMenuCommand(OnGenerateConfiguration, menuCommandID);
                 menuItem.BeforeQueryStatus += OnBeforeQueryStatus;
                 commandService.AddCommand(menuItem);
             }
@@ -69,7 +71,7 @@ namespace GoogleCloudExtension.PublishDialog
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static PublishProjectContextMenuCommand Instance
+        public static GenerateConfigurationContextMenuCommand Instance
         {
             get;
             private set;
@@ -92,7 +94,7 @@ namespace GoogleCloudExtension.PublishDialog
         /// <param name="package">Owner package, not null.</param>
         public static void Initialize(Package package)
         {
-            Instance = new PublishProjectContextMenuCommand(package);
+            Instance = new GenerateConfigurationContextMenuCommand(package);
         }
 
         /// <summary>
@@ -102,13 +104,51 @@ namespace GoogleCloudExtension.PublishDialog
         /// </summary>
         /// <param name="sender">Event sender.</param>
         /// <param name="e">Event args.</param>
-        private void OnDeployCommand(object sender, EventArgs e)
+        private void OnGenerateConfiguration(object sender, EventArgs e)
         {
             ErrorHandlerUtils.HandleExceptions(() =>
             {
                 var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
-                Debug.WriteLine($"Deploying project: {selectedProject.FullPath}");
-                PublishDialogWindow.PromptUser(selectedProject);
+                Debug.WriteLine($"Generating configuration for project: {selectedProject.FullPath}");
+                var configurationStatus = AppEngineFlexDeployment.CheckProjectConfiguration(selectedProject.FullPath);
+
+                // If the app.yaml already exists allow the user to skip its generation to preserve the existing file.
+                if (!configurationStatus.HasAppYaml ||
+                    UserPromptUtils.ActionPrompt(
+                        prompt: Resources.GenerateConfigurationAppYamlOverwriteMessage,
+                        title: Resources.GenerateConfigurationOverwritePromptTitle,
+                        actionCaption: Resources.UiOverwriteButtonCaption,
+                        cancelCaption: Resources.UiSkipFileButtonCaption))
+                {
+                    Debug.WriteLine($"Generating app.yaml for {selectedProject.FullPath}");
+                    if (!AppEngineFlexDeployment.GenerateAppYaml(selectedProject.FullPath))
+                    {
+                        UserPromptUtils.ErrorPrompt(
+                            String.Format(Resources.GenerateConfigurationFileGenerationErrorMessage, AppEngineFlexDeployment.AppYamlName),
+                            Resources.GenerateConfigurationFileGeneratinErrorTitle);
+                        return;
+                    }
+                    GcpOutputWindow.OutputLine(Resources.GenerateConfigurationAppYamlGeneratedMessage);
+                }
+
+                // If the Dockerfile already exists allow the user to skip its generation to preserve the existing file.
+                if (!configurationStatus.HasDockerfile ||
+                    UserPromptUtils.ActionPrompt(
+                        prompt: Resources.GenerateConfigurationDockerfileOverwriteMessage,
+                        title: Resources.GenerateConfigurationOverwritePromptTitle,
+                        actionCaption: Resources.UiOverwriteButtonCaption,
+                        cancelCaption: Resources.UiSkipFileButtonCaption))
+                {
+                    Debug.WriteLine($"Generating Dockerfile for {selectedProject.FullPath}");
+                    if (!AppEngineFlexDeployment.GenerateDockerfile(selectedProject.FullPath))
+                    {
+                        UserPromptUtils.ErrorPrompt(
+                            String.Format(Resources.GenerateConfigurationFileGenerationErrorMessage, AppEngineFlexDeployment.DockerfileName),
+                            Resources.GenerateConfigurationFileGeneratinErrorTitle);
+                        return;
+                    }
+                    GcpOutputWindow.OutputLine(Resources.GenerateConfigurationDockerfileGeneratedMessage);
+                }
             });
         }
 
@@ -120,8 +160,9 @@ namespace GoogleCloudExtension.PublishDialog
                 return;
             }
 
+            // Ensure that the menu entry is only available for ASP.NET Core projects.
             var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
-            if (selectedProject == null || !PublishDialogWindow.CanPublish(selectedProject))
+            if (selectedProject == null || selectedProject.ProjectType != KnownProjectTypes.NetCoreWebApplication)
             {
                 menuCommand.Visible = false;
             }
@@ -129,7 +170,7 @@ namespace GoogleCloudExtension.PublishDialog
             {
                 menuCommand.Visible = true;
                 menuCommand.Enabled = !ShellUtils.IsBusy();
-                menuCommand.Text = String.Format(Resources.PublishDialogProjectMenuHeader, selectedProject.Name);
+                menuCommand.Text = String.Format(Resources.GenerateConfigurationMenuHeader, selectedProject.Name);
             }
         }
     }

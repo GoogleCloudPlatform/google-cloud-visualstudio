@@ -114,7 +114,6 @@ namespace GoogleCloudExtension.Deployment
             {
                 var appRootPath = Path.Combine(stageDirectory, "app");
                 var buildFilePath = Path.Combine(stageDirectory, "cloudbuild.yaml");
-                var projectName = CommonUtils.GetProjectName(projectPath);
 
                 if (!await ProgressHelper.UpdateProgress(
                         NetCoreAppUtils.CreateAppBundleAsync(projectPath, appRootPath, outputAction),

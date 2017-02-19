@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
-using GoogleCloudExtension.Utils;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections;
@@ -145,6 +144,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
         }
 
+        /// <summary>
+        /// Adds an object as leaf node.
+        /// </summary>
         protected ObjectNodeTree AddChildren(string name, object obj)
         {
             ObjectNodeTree newNode = null;
@@ -162,10 +164,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 {
                     newNode = new ObjectNodeTree(name, obj, this);
                 }
-            }
-
-            if (newNode != null)
-            {
                 Children.Add(newNode);
             }
             return newNode;
