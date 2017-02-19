@@ -682,7 +682,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &gt;&gt;&gt;&gt;&gt;&gt;&gt; m2_master.
+        ///   Looks up a localized string similar to Environment.
         /// </summary>
         public static string CloudExplorerGaeVersionEnvironmentDisplayName {
             get {
@@ -1767,15 +1767,6 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerToolWindowCaptionNoAccount {
             get {
                 return ResourceManager.GetString("CloudExplorerToolWindowCaptionNoAccount", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Stackdriver Error Reporting.
-        /// </summary>
-        public static string ErrorReportingDetailToolWindowCaption {
-            get {
-                return ResourceManager.GetString("ErrorReportingDetailToolWindowCaption", resourceCulture);
             }
         }
         
