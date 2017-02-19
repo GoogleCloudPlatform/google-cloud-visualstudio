@@ -1538,10 +1538,6 @@ Open the project of version {2} to properly locate the logging writter location.
     <value>MM-dd-yyyy HH:mm:ss.fff</value>
     <comment>Log item date time format.</comment>
   </data>
-  <data name="ErrorReportingDetailToolWindowCaption" xml:space="preserve">
-    <value>Stackdriver Error Reporting</value>
-    <comment>Stackdriver Error Reporting detail view window caption. Let Detail View in the front because the tail might be hidden.</comment>
-  </data>
   <data name="ErrorReportingToolWindowCaption" xml:space="preserve">
     <value>Stackdriver Error Reporting</value>
     <comment>Stackdriver Error Reporting window caption.</comment>
