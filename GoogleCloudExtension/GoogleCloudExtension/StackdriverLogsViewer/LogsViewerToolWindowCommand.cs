@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 4231;
+        public const int CommandId = 4235;
 
         /// <summary>
         /// Command menu group (command set GUID).
