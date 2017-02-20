@@ -203,12 +203,21 @@ namespace GoogleCloudExtension.Deployment
                 }
 
                 // Expose the service if requested and it is not already exposed.
-                if (options.ExposeService)
+                var services = await KubectlWrapper.GetServicesAsync(options.KubectlContext);
+                var service = services?.FirstOrDefault(x => x.Metadata.Name == options.DeploymentName);
+                if (options.ExposePublicService)
                 {
-                    var services = await KubectlWrapper.GetServicesAsync(options.KubectlContext);
-                    var service = services?.FirstOrDefault(x => x.Metadata.Name == options.DeploymentName);
+                    var requestedType = options.ExposePublicService ? "LoadBalancer" : "ClusterIP";
+                    if (service != null && service?.Spec?.Type != requestedType)
+                    {
+                        Debug.WriteLine($"The existing service is {service?.Spec?.Type} the requested is {requestedType}");
+                        // TODO: Delete the service.
+                        service = null;
+                    }
+
                     if (service == null)
                     {
+                        // The service needs to be exposed but it wasn't. Expose a new service here.
                         if (!await KubectlWrapper.ExposeServiceAsync(
                             options.DeploymentName,
                             options.ExposePublicService,
@@ -218,19 +227,26 @@ namespace GoogleCloudExtension.Deployment
                             Debug.WriteLine($"Failed to expose service {options.DeploymentName}");
                             return null;
                         }
+                        clusterIpAddress = await WaitForServiceClusterIpAddressAsync(options.DeploymentName, options.KubectlContext);
+
+                        if (options.ExposePublicService)
+                        {
+                            publicIpAddress = await WaitForServicePublicIpAddressAsync(
+                                options.DeploymentName,
+                                options.WaitingForServiceIpCallback,
+                                options.KubectlContext);
+                        }
+
+                        serviceExposed = true;
                     }
-
-                    clusterIpAddress = await WaitForServiceClusterIpAddressAsync(options.DeploymentName, options.KubectlContext);
-
-                    if (options.ExposePublicService)
+                }
+                else
+                {
+                    // The user doesn't want a service exposed.
+                    if (service != null)
                     {
-                        publicIpAddress = await WaitForServicePublicIpAddressAsync(
-                            options.DeploymentName,
-                            options.WaitingForServiceIpCallback,
-                            options.KubectlContext);
+                        // TODO: Delete the service.
                     }
-
-                    serviceExposed = true;
                 }
 
                 return new GkeDeploymentResult(
