@@ -143,6 +143,7 @@
     <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
     <Compile Include="Controls\IconButton.cs" />
+    <Compile Include="Controls\ImageToggleButton.xaml.cs" />
     <Compile Include="Controls\LabelWithHelp.cs" />
     <Compile Include="Controls\PasswordBoxWithReveal.cs" />
     <Compile Include="Controls\PressButton.cs" />
@@ -236,6 +237,11 @@
     </Compile>
     <Compile Include="Controls\FixBackgroundComboBox.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorGroupItem.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindow.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindowControl.xaml.cs">
+      <DependentUpon>ErrorReportingDetailToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverErrorReporting\ErrorReportingDetailViewModel.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingException.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindow.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowCommand.cs" />
@@ -355,13 +361,13 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="StackdriverErrorReporting\Resources\back_icon.png" />
-    <Content Include="StackdriverErrorReporting\Resources\back_icon_12.png" />
-    <Content Include="StackdriverErrorReporting\Resources\eReport_menu_icon.png" />
-    <Content Include="StackdriverErrorReporting\Resources\pause_icon.png" />
-    <Content Include="StackdriverErrorReporting\Resources\play_icon.png" />
-    <Content Include="StackdriverErrorReporting\Resources\show_less_icon.png" />
-    <Content Include="StackdriverErrorReporting\Resources\show_more_icon.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\back_icon.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\back_icon_12.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\eReport_menu_icon.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\pause_icon.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\play_icon.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\show_less_icon.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\show_more_icon.png" />
     <Resource Include="StackdriverLogsViewer\Resources\back_icon_12.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_any_12.png" />
     <Resource Include="PublishDialogSteps\ChoiceStep\Resources\ContainerEngine_128px_Retina.png" />
@@ -685,6 +691,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\ImageToggleButton.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\TimeBoxResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -744,6 +754,10 @@
     <Resource Include="StackdriverLogsViewer\LogsViewerResources.xaml">
       <SubType>Designer</SubType>
     </Resource>
+    <Page Include="StackdriverErrorReporting\ErrorReportingDetailToolWindowControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="StackdriverErrorReporting\ErrorReportingToolWindowControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

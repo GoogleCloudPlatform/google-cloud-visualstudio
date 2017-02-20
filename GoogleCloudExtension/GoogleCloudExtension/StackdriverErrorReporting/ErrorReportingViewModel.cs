@@ -114,6 +114,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             Resources.ErrorReportingCurrentGroupTimePeriodLabelFormat, _selectedTimeRange?.Caption);
 
         /// <summary>
+        /// Navigate to detail view window command.
+        /// </summary>
+        public ProtectedCommand<ErrorGroupItem> OnGotoDetailCommand { get; }
+
+        /// <summary>
         /// Create a new instance of <seealso cref="ErrorReportingViewModel"/> class.
         /// </summary>
         public ErrorReportingViewModel()
@@ -121,6 +126,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             _groupStatsCollection = new ObservableCollection<ErrorGroupItem>();
             GroupStatsView = new ListCollectionView(_groupStatsCollection);
             PropertyChanged += OnPropertyChanged;
+            OnGotoDetailCommand = new ProtectedCommand<ErrorGroupItem>(NavigateToDetailWindow);
         }
 
         /// <summary>
@@ -220,6 +226,12 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 }
                 _groupStatsCollection.Add(new ErrorGroupItem(item));
             }
+        }
+
+        private void NavigateToDetailWindow(ErrorGroupItem groupItem)
+        {
+            var window = ToolWindowUtils.ShowToolWindow<ErrorReportingDetailToolWindow>();
+            window.ViewModel.UpdateView(groupItem, _selectedTimeRange);
         }
     }
 }
