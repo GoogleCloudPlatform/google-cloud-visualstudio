@@ -236,7 +236,6 @@
     </Compile>
     <Compile Include="Controls\FixBackgroundComboBox.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorGroupItem.cs" />
-    <Compile Include="StackdriverErrorReporting\ErrorReportingDetailViewModel.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingException.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindow.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowCommand.cs" />
