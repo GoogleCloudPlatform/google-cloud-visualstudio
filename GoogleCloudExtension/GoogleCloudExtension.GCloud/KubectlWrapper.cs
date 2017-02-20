@@ -163,7 +163,7 @@ namespace GoogleCloudExtension.GCloud
         /// <returns>True if the operation succeeded false otherwise.</returns>
         public static Task<bool> DeleteServiceAsync(string name, Action<string> outputAction, KubectlContext context)
             => RunCommandAsync($"delete service {name}", outputAction, context);
-        
+
         private static Task<bool> RunCommandAsync(string command, Action<string> outputAction, KubectlContext context)
         {
             var actualCommand = FormatCommand(command, context);
