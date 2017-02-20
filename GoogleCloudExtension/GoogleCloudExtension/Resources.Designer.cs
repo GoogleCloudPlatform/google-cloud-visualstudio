@@ -1836,15 +1836,6 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to Stackdriver Error Reporting.
         /// </summary>
-        public static string ErrorReportingDetailToolWindowCaption {
-            get {
-                return ResourceManager.GetString("ErrorReportingDetailToolWindowCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Stackdriver Error Reporting.
-        /// </summary>
         public static string ErrorReportingToolWindowCaption {
             get {
                 return ResourceManager.GetString("ErrorReportingToolWindowCaption", resourceCulture);

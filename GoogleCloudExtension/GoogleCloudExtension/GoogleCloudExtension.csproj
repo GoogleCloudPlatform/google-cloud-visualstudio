@@ -236,10 +236,6 @@
     </Compile>
     <Compile Include="Controls\FixBackgroundComboBox.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorGroupItem.cs" />
-    <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindow.cs" />
-    <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindowControl.xaml.cs">
-      <DependentUpon>ErrorReportingDetailToolWindowControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="StackdriverErrorReporting\ErrorReportingDetailViewModel.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingException.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindow.cs" />
@@ -749,10 +745,6 @@
     <Resource Include="StackdriverLogsViewer\LogsViewerResources.xaml">
       <SubType>Designer</SubType>
     </Resource>
-    <Page Include="StackdriverErrorReporting\ErrorReportingDetailToolWindowControl.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="StackdriverErrorReporting\ErrorReportingToolWindowControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

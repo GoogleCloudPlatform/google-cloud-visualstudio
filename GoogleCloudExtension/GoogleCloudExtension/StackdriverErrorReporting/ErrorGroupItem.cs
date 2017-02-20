@@ -97,7 +97,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                     StringSplitOptions.RemoveEmptyEntries);
             Message = lines?[0];
             Stack = lines?[1];
-            OnNavigateToDetailCommand = new ProtectedCommand(NavigateToDetailWindow);
+            OnNavigateToDetailCommand = new ProtectedCommand(null);
         }
 
         private static string FormatDateTime(object datetime)
@@ -132,13 +132,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             }
 
             return builder.ToString();
-        }
-
-        private void NavigateToDetailWindow()
-        {
-            Debug.WriteLine($"{Message} is clicked");
-            var detailWindow = ToolWindowUtils.ShowToolWindow<ErrorReportingDetailToolWindow>();
-            detailWindow.ViewModel.UpdateView(this);
         }
     }
 }
