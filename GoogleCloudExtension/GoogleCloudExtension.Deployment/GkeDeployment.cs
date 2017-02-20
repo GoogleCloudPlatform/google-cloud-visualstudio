@@ -65,6 +65,11 @@ namespace GoogleCloudExtension.Deployment
             public bool ExposeService { get; set; }
 
             /// <summary>
+            /// Whether the service to be exposed should be public or not.
+            /// </summary>
+            public bool ExposePublicService { get; set; }
+
+            /// <summary>
             /// The context for any gcloud calls to use.
             /// </summary>
             public GCloudContext GCloudContext { get; set; }
@@ -141,7 +146,8 @@ namespace GoogleCloudExtension.Deployment
                 }
                 progress.Report(0.7);
 
-                string ipAddress = null;
+                string publicIpAddress = null;
+                string clusterIpAddress = null;
                 bool deploymentUpdated = false;
                 bool deploymentScaled = false;
                 bool serviceExposed = false;
@@ -203,30 +209,46 @@ namespace GoogleCloudExtension.Deployment
                     var service = services?.FirstOrDefault(x => x.Metadata.Name == options.DeploymentName);
                     if (service == null)
                     {
-                        if (!await KubectlWrapper.ExposeServiceAsync(options.DeploymentName, outputAction, options.KubectlContext))
+                        if (!await KubectlWrapper.ExposeServiceAsync(
+                            options.DeploymentName,
+                            options.ExposePublicService,
+                            outputAction,
+                            options.KubectlContext))
                         {
                             Debug.WriteLine($"Failed to expose service {options.DeploymentName}");
                             return null;
                         }
                     }
 
-                    ipAddress = await WaitForServiceAddressAsync(
-                        options.DeploymentName,
-                        options.WaitingForServiceIpCallback,
-                        options.KubectlContext);
+                    clusterIpAddress = await WaitForServiceClusterIpAddressAsync(options.DeploymentName, options.KubectlContext);
+
+                    if (options.ExposePublicService)
+                    {
+                        publicIpAddress = await WaitForServicePublicIpAddressAsync(
+                            options.DeploymentName,
+                            options.WaitingForServiceIpCallback,
+                            options.KubectlContext);
+                    }
 
                     serviceExposed = true;
                 }
 
                 return new GkeDeploymentResult(
-                    serviceIpAddress: ipAddress,
+                    publicIpAddress: publicIpAddress,
+                    privateIpAddress: clusterIpAddress,
                     wasExposed: serviceExposed,
                     deploymentUpdated: deploymentUpdated,
                     deploymentScaled: deploymentScaled);
             }
         }
 
-        private static async Task<string> WaitForServiceAddressAsync(string name, Action waitingCallback, KubectlContext kubectlContext)
+        private static async Task<string> WaitForServiceClusterIpAddressAsync(string name, KubectlContext context)
+        {
+            var service = await KubectlWrapper.GetServiceAsync(name, context);
+            return service?.Spec?.ClusterIp;
+        }
+
+        private static async Task<string> WaitForServicePublicIpAddressAsync(string name, Action waitingCallback, KubectlContext kubectlContext)
         {
             DateTime start = DateTime.Now;
             TimeSpan actualTime = DateTime.Now - start;

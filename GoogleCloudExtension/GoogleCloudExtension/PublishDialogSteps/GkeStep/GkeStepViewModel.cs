@@ -246,6 +246,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                         DeploymentName = DeploymentName,
                         DeploymentVersion = DeploymentVersion,
                         ExposeService = ExposeService,
+                        ExposePublicService = ExposePublicService,
                         GCloudContext = gcloudContext,
                         KubectlContext = kubectlContext,
                         Replicas = int.Parse(Replicas),
@@ -285,21 +286,28 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
                         if (result.WasExposed)
                         {
-                            if (result.ServiceIpAddress != null)
+                            if (result.PublicServiceIpAddress != null)
                             {
                                 GcpOutputWindow.OutputLine(
-                                    String.Format(Resources.GkePublishServiceIpMessage, DeploymentName, result.ServiceIpAddress));
+                                    String.Format(Resources.GkePublishServiceIpMessage, DeploymentName, result.PublicServiceIpAddress));
                             }
                             else
                             {
-                                GcpOutputWindow.OutputLine(Resources.GkePublishServiceIpTimeoutMessage);
+                                if (ExposePublicService)
+                                {
+                                    GcpOutputWindow.OutputLine(Resources.GkePublishServiceIpTimeoutMessage);
+                                }
+                                else
+                                {
+                                    GcpOutputWindow.OutputLine($"Service {DeploymentName} cluster IP address {result.ClusterServiceIpAddress}");
+                                }
                             }
                         }
                         StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
 
-                        if (OpenWebsite && result.WasExposed && result.ServiceIpAddress != null)
+                        if (OpenWebsite && result.WasExposed && result.PublicServiceIpAddress != null)
                         {
-                            Process.Start($"http://{result.ServiceIpAddress}");
+                            Process.Start($"http://{result.PublicServiceIpAddress}");
                         }
                     }
                     else

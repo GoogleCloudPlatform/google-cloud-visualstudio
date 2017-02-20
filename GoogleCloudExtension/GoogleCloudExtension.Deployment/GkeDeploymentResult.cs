@@ -20,11 +20,17 @@ namespace GoogleCloudExtension.Deployment
     public class GkeDeploymentResult
     {
         /// <summary>
-        /// The IP address of the public service if one was exposed. This property will be null if:
-        ///   * There was a timeout while waiting for the service to go up.
-        ///   * No service was exposed.
+        /// The IP address of the public service if one was exposed. This property can be null
+        /// if no public service was exposed or if there was a timeout trying to obtain the public
+        /// IP address.
         /// </summary>
-        public string ServiceIpAddress { get; }
+        public string PublicServiceIpAddress { get; }
+
+        /// <summary>
+        /// The IP address within the cluster for the service. This property can only be null if there
+        /// was an error deploying the app.
+        /// </summary>
+        public string ClusterServiceIpAddress { get; }
 
         /// <summary>
         /// Is true if the a service was exposed publicly.
@@ -41,9 +47,15 @@ namespace GoogleCloudExtension.Deployment
         /// </summary>
         public bool DeploymentScaled { get; }
 
-        public GkeDeploymentResult(string serviceIpAddress, bool wasExposed, bool deploymentUpdated, bool deploymentScaled)
+        public GkeDeploymentResult(
+            string publicIpAddress,
+            string privateIpAddress,
+            bool wasExposed,
+            bool deploymentUpdated,
+            bool deploymentScaled)
         {
-            ServiceIpAddress = serviceIpAddress;
+            PublicServiceIpAddress = publicIpAddress;
+            ClusterServiceIpAddress = privateIpAddress;
             WasExposed = wasExposed;
             DeploymentUpdated = deploymentUpdated;
             DeploymentScaled = deploymentScaled;

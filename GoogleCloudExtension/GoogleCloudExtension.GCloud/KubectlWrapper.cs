@@ -52,13 +52,19 @@ namespace GoogleCloudExtension.GCloud
         /// to 80 for the service and 8080 for the target pods.
         /// </summary>
         /// <param name="deployment">The deployment for which to create and expose the service.</param>
+        /// <param name="makePublic">True if the service should be made public, false otherwise.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <param name="context">The context for invoking kubectl.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
-        public static Task<bool> ExposeServiceAsync(string deployment, Action<string> outputAction, KubectlContext context)
+        public static Task<bool> ExposeServiceAsync(
+            string deployment,
+            bool makePublic,
+            Action<string> outputAction,
+            KubectlContext context)
         {
+            var type = makePublic ? "--type=LoadBalancer" : "--type=ClusterIP";
             return RunCommandAsync(
-                $"expose deployment {deployment} --port=80 --target-port=8080 --type=LoadBalancer",
+                $"expose deployment {deployment} --port=80 --target-port=8080 {type}",
                 outputAction,
                 context);
         }
