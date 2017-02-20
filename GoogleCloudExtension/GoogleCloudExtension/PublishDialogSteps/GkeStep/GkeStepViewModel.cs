@@ -286,7 +286,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
                         if (result.ServiceUpdated)
                         {
-                            GcpOutputWindow.OutputLine($"Service {DeploymentName} was updated.");
+                            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishServiceUpdatedMessage, options.DeploymentName));
                         }
                         if (result.ServiceExposed)
                         {
@@ -303,13 +303,13 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                                 }
                                 else
                                 {
-                                    GcpOutputWindow.OutputLine($"Service {DeploymentName} cluster IP address {result.ClusterServiceIpAddress}");
+                                    GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishServiceClusterIpMessage, DeploymentName, result.ClusterServiceIpAddress));
                                 }
                             }
                         }
                         if (result.ServiceDeleted)
                         {
-                            GcpOutputWindow.OutputLine($"Service {DeploymentName} was deleted.");
+                            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishServiceDeletedMessage, DeploymentName));
                         }
 
                         StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);

@@ -89,20 +89,20 @@
                      Style="{StaticResource CommonTextBoxStyle}" />
         </Grid>
 
-        <GroupBox Header="Service">
+        <GroupBox Header="{x:Static ext:Resources.GkePublishServiceGroupHeader}">
             <StackPanel>
                 <RadioButton GroupName="password"
-                             Content="Don't expose service."
+                             Content="{x:Static ext:Resources.GkePublishDontExposeServiceCaption}"
                              IsChecked="{Binding DontExposeService}"
                              Style="{StaticResource CommonRadioButton}"
                              Margin="{StaticResource CommonRadioButtonMargin}" />
                 <RadioButton GroupName="password"
-                             Content="Expose service."
+                             Content="{x:Static ext:Resources.GkePublishExposeServiceCaption}"
                              IsChecked="{Binding ExposeService}"
                              Style="{StaticResource CommonRadioButton}"
                              Margin="{StaticResource CommonRadioButtonMargin}" />
 
-                <CheckBox Content="Make service public."
+                <CheckBox Content="{x:Static ext:Resources.GkePublishMakeServicePublicCaption}"
                           IsEnabled="{Binding ExposeService}"
                           IsChecked="{Binding ExposePublicService}"
                           Style="{StaticResource CommonTextStyleBase}" />

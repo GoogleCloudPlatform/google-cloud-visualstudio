@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2050,6 +2050,15 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t expose a service..
+        /// </summary>
+        public static string GkePublishDontExposeServiceCaption {
+            get {
+                return ResourceManager.GetString("GkePublishDontExposeServiceCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The deployment name cannot be empty..
         /// </summary>
         public static string GkePublishEmptyDeploymentNameMessage {
@@ -2068,7 +2077,7 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to E_xpose the service to the public internet.
+        ///   Looks up a localized string similar to Expose a service..
         /// </summary>
         public static string GkePublishExposeServiceCaption {
             get {
@@ -2100,6 +2109,15 @@ namespace GoogleCloudExtension
         public static string GkePublishInvalidReplicasMessage {
             get {
                 return ResourceManager.GetString("GkePublishInvalidReplicasMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Make service public..
+        /// </summary>
+        public static string GkePublishMakeServicePublicCaption {
+            get {
+                return ResourceManager.GetString("GkePublishMakeServicePublicCaption", resourceCulture);
             }
         }
         
@@ -2149,6 +2167,33 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Service {0} cluster IP address {1}..
+        /// </summary>
+        public static string GkePublishServiceClusterIpMessage {
+            get {
+                return ResourceManager.GetString("GkePublishServiceClusterIpMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Service {0} was deleted..
+        /// </summary>
+        public static string GkePublishServiceDeletedMessage {
+            get {
+                return ResourceManager.GetString("GkePublishServiceDeletedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Service.
+        /// </summary>
+        public static string GkePublishServiceGroupHeader {
+            get {
+                return ResourceManager.GetString("GkePublishServiceGroupHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Service {0} ip address {1}.
         /// </summary>
         public static string GkePublishServiceIpMessage {
@@ -2163,6 +2208,15 @@ namespace GoogleCloudExtension
         public static string GkePublishServiceIpTimeoutMessage {
             get {
                 return ResourceManager.GetString("GkePublishServiceIpTimeoutMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Service {0} was updated..
+        /// </summary>
+        public static string GkePublishServiceUpdatedMessage {
+            get {
+                return ResourceManager.GetString("GkePublishServiceUpdatedMessage", resourceCulture);
             }
         }
         
