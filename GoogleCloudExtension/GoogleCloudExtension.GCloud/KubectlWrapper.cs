@@ -154,6 +154,16 @@ namespace GoogleCloudExtension.GCloud
                 context);
         }
 
+        /// <summary>
+        /// Deletes the service given by <paramref name="name"/>.
+        /// </summary>
+        /// <param name="name">The name of the service to delete.</param>
+        /// <param name="outputAction">The output callback to be called with output from the command.</param>
+        /// <param name="context">The context for invoking kubectl.</param>
+        /// <returns>True if the operation succeeded false otherwise.</returns>
+        public static Task<bool> DeleteServiceAsync(string name, Action<string> outputAction, KubectlContext context)
+            => RunCommandAsync($"delete service {name}", outputAction, context);
+        
         private static Task<bool> RunCommandAsync(string command, Action<string> outputAction, KubectlContext context)
         {
             var actualCommand = FormatCommand(command, context);

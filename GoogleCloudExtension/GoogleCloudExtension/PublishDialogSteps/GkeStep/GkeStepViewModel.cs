@@ -284,7 +284,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                             GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentScaledMessage, options.DeploymentName, options.Replicas));
                         }
 
-                        if (result.WasExposed)
+                        if (result.ServiceUpdated)
+                        {
+                            GcpOutputWindow.OutputLine($"Service {DeploymentName} was updated.");
+                        }
+                        if (result.ServiceExposed)
                         {
                             if (result.PublicServiceIpAddress != null)
                             {
@@ -303,9 +307,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                                 }
                             }
                         }
+                        if (result.ServiceDeleted)
+                        {
+                            GcpOutputWindow.OutputLine($"Service {DeploymentName} was deleted.");
+                        }
+
                         StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
 
-                        if (OpenWebsite && result.WasExposed && result.PublicServiceIpAddress != null)
+                        if (OpenWebsite && result.ServiceExposed && result.PublicServiceIpAddress != null)
                         {
                             Process.Start($"http://{result.PublicServiceIpAddress}");
                         }

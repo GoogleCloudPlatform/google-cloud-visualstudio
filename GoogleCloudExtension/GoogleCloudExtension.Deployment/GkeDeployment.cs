@@ -151,6 +151,8 @@ namespace GoogleCloudExtension.Deployment
                 bool deploymentUpdated = false;
                 bool deploymentScaled = false;
                 bool serviceExposed = false;
+                bool serviceUpdated = false;
+                bool serviceDeleted = false;
 
                 // Create or update the deployment.
                 var deployments = await KubectlWrapper.GetDeploymentsAsync(options.KubectlContext);
@@ -205,14 +207,19 @@ namespace GoogleCloudExtension.Deployment
                 // Expose the service if requested and it is not already exposed.
                 var services = await KubectlWrapper.GetServicesAsync(options.KubectlContext);
                 var service = services?.FirstOrDefault(x => x.Metadata.Name == options.DeploymentName);
-                if (options.ExposePublicService)
+                if (options.ExposeService)
                 {
                     var requestedType = options.ExposePublicService ? "LoadBalancer" : "ClusterIP";
                     if (service != null && service?.Spec?.Type != requestedType)
                     {
                         Debug.WriteLine($"The existing service is {service?.Spec?.Type} the requested is {requestedType}");
-                        // TODO: Delete the service.
-                        service = null;
+                        if (!await KubectlWrapper.DeleteServiceAsync(options.DeploymentName, outputAction, options.KubectlContext))
+                        {
+                            Debug.WriteLine($"Failed to delete serive {options.DeploymentName}");
+                        }
+                        service = null; // Now the service is gone, needs to be re-created with the new options.
+
+                        serviceUpdated = true;
                     }
 
                     if (service == null)
@@ -245,14 +252,22 @@ namespace GoogleCloudExtension.Deployment
                     // The user doesn't want a service exposed.
                     if (service != null)
                     {
-                        // TODO: Delete the service.
+                        if (!await KubectlWrapper.DeleteServiceAsync(options.DeploymentName, outputAction, options.KubectlContext))
+                        {
+                            Debug.WriteLine($"Failed to delete service {options.DeploymentName}");
+                            return null;
+                        }
                     }
+
+                    serviceDeleted = true;
                 }
 
                 return new GkeDeploymentResult(
                     publicIpAddress: publicIpAddress,
                     privateIpAddress: clusterIpAddress,
-                    wasExposed: serviceExposed,
+                    serviceExposed: serviceExposed,
+                    serviceUpdated: serviceUpdated,
+                    serviceDeleted: serviceDeleted,
                     deploymentUpdated: deploymentUpdated,
                     deploymentScaled: deploymentScaled);
             }

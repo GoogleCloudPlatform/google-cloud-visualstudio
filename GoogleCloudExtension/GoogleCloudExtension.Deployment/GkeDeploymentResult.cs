@@ -35,7 +35,17 @@ namespace GoogleCloudExtension.Deployment
         /// <summary>
         /// Is true if the a service was exposed publicly.
         /// </summary>
-        public bool WasExposed { get; }
+        public bool ServiceExposed { get; }
+
+        /// <summary>
+        /// Is true if the service was updated.
+        /// </summary>
+        public bool ServiceUpdated { get; }
+
+        /// <summary>
+        /// is true if the service was deleted.
+        /// </summary>
+        public bool ServiceDeleted { get; }
 
         /// <summary>
         /// Is true if the deployment was updated, false if a new deployment was created.
@@ -50,13 +60,17 @@ namespace GoogleCloudExtension.Deployment
         public GkeDeploymentResult(
             string publicIpAddress,
             string privateIpAddress,
-            bool wasExposed,
+            bool serviceExposed,
+            bool serviceUpdated,
+            bool serviceDeleted,
             bool deploymentUpdated,
             bool deploymentScaled)
         {
             PublicServiceIpAddress = publicIpAddress;
             ClusterServiceIpAddress = privateIpAddress;
-            WasExposed = wasExposed;
+            ServiceExposed = serviceExposed;
+            ServiceUpdated = serviceUpdated;
+            ServiceDeleted = serviceDeleted;
             DeploymentUpdated = deploymentUpdated;
             DeploymentScaled = deploymentScaled;
         }
