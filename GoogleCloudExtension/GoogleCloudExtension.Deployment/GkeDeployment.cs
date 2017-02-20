@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
@@ -209,7 +210,8 @@ namespace GoogleCloudExtension.Deployment
                 var service = services?.FirstOrDefault(x => x.Metadata.Name == options.DeploymentName);
                 if (options.ExposeService)
                 {
-                    var requestedType = options.ExposePublicService ? "LoadBalancer" : "ClusterIP";
+                    var requestedType = options.ExposePublicService ? 
+                        GkeServiceSpec.LoadBalancerType : GkeServiceSpec.ClusterIpType;
                     if (service != null && service?.Spec?.Type != requestedType)
                     {
                         Debug.WriteLine($"The existing service is {service?.Spec?.Type} the requested is {requestedType}");

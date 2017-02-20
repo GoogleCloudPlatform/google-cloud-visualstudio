@@ -16,8 +16,17 @@ using Newtonsoft.Json;
 
 namespace GoogleCloudExtension.GCloud.Models
 {
+    /// <summary>
+    /// This class contains the specification of a Kubernetest service in GKE.
+    /// </summary>
     public class GkeServiceSpec
     {
+        // The value of the Type property for a public service.
+        public const string LoadBalancerType = "LoadBalancer";
+
+        // The value of the Type property of a cluster only service.
+        public const string ClusterIpType = "ClusterIP";
+
         [JsonProperty("clusterIP")]
         public string ClusterIp { get; set; }
 
