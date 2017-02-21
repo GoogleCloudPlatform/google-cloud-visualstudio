@@ -18,6 +18,7 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -112,12 +113,21 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             set { SetValueAndRaise(ref _allTimeRangeItems, value); }
         }
 
+        public ProtectedCommand OnBackToOverViewCommand { get; }
+
         public ErrorReportingDetailViewModel()
         {
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) =>
             {
                 IsAccountReset = true;
             };
+            CredentialsStore.Default.Reset += (sender, e) =>
+            {
+                IsAccountReset = true;
+            };
+
+            OnBackToOverViewCommand = new ProtectedCommand(() => ToolWindowUtils.ShowToolWindow<ErrorReportingToolWindow>());
+            PropertyChanged += OnPropertyChanged;
         }
 
         private IList<TimedCount> GenerateFakeRanges()
@@ -188,6 +198,16 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             }
 
             RaiseAllPropertyChanged();
+        }
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(SelectedTimeRangeItem):
+                    UpdateGroupAndEventAsync();
+                    break;
+            }
         }
 
         private async Task UpdateEventAsync()

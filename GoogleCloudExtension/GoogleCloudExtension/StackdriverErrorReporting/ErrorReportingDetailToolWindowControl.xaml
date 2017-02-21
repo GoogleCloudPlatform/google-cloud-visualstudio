@@ -17,7 +17,8 @@
 <UserControl.Resources>
     <ResourceDictionary>
         <ResourceDictionary.MergedDictionaries>
-            <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+                <ResourceDictionary Source="./ErrorReportingResources.xaml" />
         </ResourceDictionary.MergedDictionaries>
 
         <utils:VisibilityConverter x:Key="visibilityConverterNegated" IsNegated="True"/>
@@ -53,23 +54,12 @@
             </Style.Triggers>
         </Style>
 
-        <Style x:Key="BorderCommonStyle" TargetType="Border" >
-            <Setter Property="BorderBrush" Value="LightGray" />
-            <Setter Property="BorderThickness" Value="1" />
-            <Setter Property="Margin" Value="0, 6, 0, 6" />
-        </Style>
-
-            <Style x:Key="backToOverviewButtonStyle" TargetType="controls:IconButton" 
-                   BasedOn="{StaticResource MouseOverLinkButtonStyle}">
-                <Setter Property="HorizontalAlignment" Value="Left" />
-                <Setter Property="VerticalAlignment" Value="Center" />
-                <Setter Property="Padding" Value="6" />
-                <Setter Property="Foreground" Value="#FF3B78E7" />
-                <Setter Property="MouseOverForeground" Value="BlueViolet" />
-                <Setter Property="Content" Value="To overview window" />
-                <EventSetter Event="Click" Handler="LinkButton_Click"/>
+            <Style x:Key="BorderCommonStyle" TargetType="Border" >
+                <Setter Property="BorderBrush" Value="LightGray" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="Margin" Value="0, 6, 0, 6" />
             </Style>
-                   
+
         </ResourceDictionary>
 </UserControl.Resources>
     <Grid>
@@ -90,17 +80,7 @@
             >
             
             <TextBlock Margin="6">Go to overview window and select an error group</TextBlock>
-            <controls:IconButton 
-                VerticalAlignment="Center"
-                HorizontalAlignment="Left"
-                Padding="6"
-                FontSize="16"
-                Foreground="#FF3B78E7"
-                MouseOverForeground="BlueViolet"
-                Style="{StaticResource BackButtonStyle}"
-                NormalIcon="{mp:ImageResource StackdriverErrorReporting/Resources/back_icon.png}"
-                Click="LinkButton_Click" />
-            <!--Command="{Binding BackToLogsViewerCommand}" />-->
+            <controls:ImageToggleButton Style="{StaticResource BackToOverviewButtonStyle}" />
                         
         </StackPanel>
 
@@ -122,16 +102,7 @@
 
                 
                 <StackPanel  Orientation="Horizontal">
-                    <controls:IconButton 
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Left"
-                        Padding="6"
-                        FontSize="16"
-                        Foreground="#FF3B78E7"
-                        MouseOverForeground="BlueViolet"
-                        Style="{StaticResource BackButtonStyle}"
-                        NormalIcon="{mp:ImageResource StackdriverErrorReporting/Resources/back_icon_12.png}"
-                        Click="LinkButton_Click" />
+                    <controls:ImageToggleButton Style="{StaticResource BackToOverviewButtonStyle}" />
                 </StackPanel>
             </Border>
 
@@ -159,9 +130,9 @@
                         Style="{StaticResource CommonTextStyle}" />
 
                         <local:TimeRangeButtons 
-                        Grid.Column="1" 
-                        SelectedItem="{Binding SelectedTimeRangeItem, Mode=TwoWay}" 
-                        ItemsSource="{Binding AllTimeRangeItems, Mode=OneWayToSource}"/>
+                            Grid.Column="1" 
+                            SelectedItem="{Binding SelectedTimeRangeItem, Mode=TwoWay}" 
+                            ItemsSource="{Binding AllTimeRangeItems, Mode=OneWayToSource}"/>
                 </Grid>
 
 
@@ -184,7 +155,6 @@
                     <!-- summary  -->
                     <Border 
                         Style="{StaticResource BorderCommonStyle}"
-                        DataContext="{Binding GroupItem}"
                         Padding="12, 12, 12, 6">
 
                             <Grid>
@@ -207,7 +177,7 @@
                                 <Border Grid.Column="0">
                                     <StackPanel >
                                         <TextBlock Text="Occurances" />
-                                        <TextBlock Text="{Binding Count}" />
+                                        <TextBlock Text="{Binding GroupItem.ErrorGroup.Count}" />
                                     </StackPanel>
                                 </Border>
                                 
@@ -218,10 +188,10 @@
                                     BorderThickness="1, 0, 0, 0"
                                     BorderBrush="LightGray"
                                     Padding="6, 0, 12, 0"                                     
-                                    Visibility="{Binding AffectedUsersCount, Converter={utils:NullEmptyInvisibleConverter}}">
+                                    Visibility="{Binding GroupItem.ErrorGroup.AffectedUsersCount, Converter={utils:NullEmptyInvisibleConverter}}">
                                     <StackPanel>
                                         <TextBlock Text="Users affected" />
-                                        <TextBlock Text="{Binding AffectedUsersCount}" />
+                                        <TextBlock Text="{Binding GroupItem.ErrorGroup.AffectedUsersCount}" />
                                     </StackPanel>
                                 </Border>
 
@@ -234,7 +204,7 @@
                                     Padding="6, 0, 0, 0">
                                     <StackPanel>
                                         <TextBlock Text="Seen in" />
-                                        <TextBlock Text="{Binding SeenIn}" 
+                                        <TextBlock Text="{Binding GroupItem.SeenIn}" 
                                                    TextWrapping="Wrap"
                                                    MaxWidth="360" />
                                     </StackPanel>
@@ -247,14 +217,14 @@
                                     BorderThickness="1, 0, 0, 0"
                                     BorderBrush="LightGray"
                                     Padding="6, 0, 12, 0" 
-                                    Visibility="{Binding Status, Converter={utils:NullEmptyInvisibleConverter}}">
+                                    Visibility="{Binding GroupItem.Status, Converter={utils:NullEmptyInvisibleConverter}}">
                                     <StackPanel>
                                         <TextBlock Text="Status" />
-                                        <TextBlock Text="{Binding Status}" />
+                                        <TextBlock Text="{Binding GroupItem.Status}" />
                                     </StackPanel>
                                 </Border>
 
-                                <Border Grid.Column="7" Visibility="{Binding Status, Converter={utils:NullEmptyInvisibleConverter}}"/>
+                                <Border Grid.Column="7" Visibility="{Binding GroupItem.Status, Converter={utils:NullEmptyInvisibleConverter}}"/>
 
                                 <Border 
                                     Grid.Column="8"
@@ -263,7 +233,7 @@
                                     Padding="6, 0, 0, 0">
                                     <StackPanel>
                                         <TextBlock Text="First seen" />
-                                        <TextBlock Text="{Binding FirstSeen}" />
+                                        <TextBlock Text="{Binding GroupItem.FirstSeenTime}" />
                                     </StackPanel>
                                 </Border>
 
@@ -276,7 +246,7 @@
                                     Padding="6, 0, 0, 0" >
                                     <StackPanel>
                                         <TextBlock Text="Last seen" />
-                                        <TextBlock Text="{Binding LastSeen}" />
+                                        <TextBlock Text="{Binding GroupItem.LastSeenTime}" />
                                     </StackPanel>
                                 </Border>
 
@@ -310,12 +280,13 @@
                         <StackPanel Margin="6">
 
                             <controls:ImageToggleButton  
+                                x:Name="traceSampleToggle"
                                 Padding="6"
                                 UncheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/show_more_icon.png}"
                                 CheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/show_less_icon.png}" 
-                                x:Name="traceSampleToggle"
                                 HorizontalAlignment="Left"
-                                IsChecked="True" >
+                                IsChecked="True"
+                                Style="{StaticResource ImageToggleButtonStyle}">
                                 Stack trace sample
                             </controls:ImageToggleButton>
 
@@ -374,8 +345,8 @@
                                 </DataGrid.Columns>
                                 <DataGrid.RowDetailsTemplate>
                                     <DataTemplate>
-                                        <!-- Use a border to set the background. -->
-                                        <Border Background="White" Padding="12, 0, 0 , 2">
+                                        <!-- Use a border to override the background. -->
+                                        <Border Background="White" Padding="12,6,12,8">
                                             <TextBlock Text="{Binding Message}" />
                                         </Border>
                                     </DataTemplate>
