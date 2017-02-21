@@ -16,7 +16,6 @@ using Google;
 using Google.Apis.Appengine.v1;
 using Google.Apis.Appengine.v1.Data;
 using Google.Apis.Auth.OAuth2;
-using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
