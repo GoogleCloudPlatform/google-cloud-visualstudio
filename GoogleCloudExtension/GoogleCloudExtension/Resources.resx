@@ -1714,4 +1714,16 @@ Open the project of version {2} to properly locate the logging writter location.
     <value>Detail View - Stackdriver Error Reporting</value>
     <comment>Stackdriver Error Reporting detail view window caption.</comment>
   </data>
+  <data name="ErrorReportingNoErrorGroupSelectedButtonCaption" xml:space="preserve">
+    <value>Go to overview window and select an error group</value>
+    <comment>When account is reset, the overview window shows the button with this caption.</comment>
+  </data>
+  <data name="ErrorReportingRecentSampleLabel" xml:space="preserve">
+    <value>Recent Samples</value>
+    <comment>The recent samples block label.</comment>
+  </data>
+  <data name="ErrorReportingToggleStackSampleButtonCaption" xml:space="preserve">
+    <value>Stack trace sample</value>
+    <comment>Toggle showing stack trace button caption.</comment>
+  </data>
 </root>

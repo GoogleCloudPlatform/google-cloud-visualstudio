@@ -32,6 +32,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     [Guid("f62a2c47-c030-456d-8a45-8e882fcb0ee3")]
     public class ErrorReportingDetailToolWindow : ToolWindowPane
     {
+        /// <summary>
+        /// Gets the view model of the content control <seealso cref="ErrorReportingDetailToolWindowControl"/>.
+        /// </summary>
         public ErrorReportingDetailViewModel ViewModel =>
             (Content as ErrorReportingDetailToolWindowControl)?.DataContext as ErrorReportingDetailViewModel;
 

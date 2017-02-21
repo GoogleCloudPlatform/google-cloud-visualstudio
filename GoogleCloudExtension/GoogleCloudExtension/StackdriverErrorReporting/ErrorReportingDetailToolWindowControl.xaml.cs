@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils;
-using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -53,11 +52,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                         row.DetailsVisibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
                 }
             }
-        }
-
-        private void LinkButton_Click(object sender, RoutedEventArgs e)
-        {
-            ToolWindowUtils.ShowToolWindow<ErrorReportingToolWindow>();
         }
 
         /// <summary>

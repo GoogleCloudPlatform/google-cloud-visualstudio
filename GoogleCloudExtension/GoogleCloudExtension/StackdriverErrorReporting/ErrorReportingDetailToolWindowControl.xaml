@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:tb="clr-namespace:GoogleCloudExtension.TitleBar"
-             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"     
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"   
+             xmlns:ext="clr-namespace:GoogleCloudExtension"             
              xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"       
              xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"                                  
@@ -14,61 +15,25 @@
              d:DesignHeight="600" d:DesignWidth="800"
              d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True,Type=local:ErrorReportingDetailViewModel}" >
 
-<UserControl.Resources>
-    <ResourceDictionary>
-        <ResourceDictionary.MergedDictionaries>
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
                 <ResourceDictionary Source="./ErrorReportingResources.xaml" />
-        </ResourceDictionary.MergedDictionaries>
+            </ResourceDictionary.MergedDictionaries>
 
-        <utils:VisibilityConverter x:Key="visibilityConverterNegated" IsNegated="True"/>
-        <utils:VisibilityConverter x:Key="visibilityConverter" />
-
-            <Style x:Key="cellStyle" TargetType="DataGridCell">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="DataGridCell">
-                        <Border  BorderThickness="0">
-                            <Border x:Name="border" Padding="0, 4, 0, 4" >
-                                <ContentPresenter />
-                            </Border>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-
-        <Style x:Key="rowStyle" TargetType="DataGridRow">
-            <Setter Property="TextBlock.TextWrapping" Value="NoWrap" />
-            <Setter Property="TextBlock.FontSize" Value="12" />
-            <Setter Property="BorderThickness" Value="0, 0, 0, 1"/>
-            <Setter Property="BorderBrush" Value="LightGray" />
-            <Setter Property="Background" Value="#FFFDFDFD" />
-            <Style.Triggers>
-                <Trigger Property="AlternationIndex" Value="1">
-                    <Setter Property="Background" Value="#F5F5F5"/>
-                </Trigger>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#FFFFD6" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
-            <Style x:Key="BorderCommonStyle" TargetType="Border" >
-                <Setter Property="BorderBrush" Value="LightGray" />
-                <Setter Property="BorderThickness" Value="1" />
-                <Setter Property="Margin" Value="0, 6, 0, 6" />
-            </Style>
+            <utils:VisibilityConverter x:Key="visibilityConverterNegated" IsNegated="True"/>
+            <utils:VisibilityConverter x:Key="visibilityConverter" />
 
         </ResourceDictionary>
-</UserControl.Resources>
+    </UserControl.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         
-        <tb:TitleBar Grid.Row="0"/>
+        <tb:TitleBar />
 
         <StackPanel
             Grid.Row="1"
@@ -76,18 +41,22 @@
             Margin="12"
             VerticalAlignment="Top"                
             HorizontalAlignment="Center"
-            Visibility="{Binding IsAccountReset, Converter={StaticResource visibilityConverter}}"
-            >
+            Visibility="{Binding IsAccountReset, Converter={StaticResource visibilityConverter}}" >
+
+            <TextBlock 
+                Margin="6" 
+                Text="{x:Static ext:Resources.ErrorReportingNoErrorGroupSelectedButtonCaption}" />
             
-            <TextBlock Margin="6">Go to overview window and select an error group</TextBlock>
-            <controls:ImageToggleButton Style="{StaticResource BackToOverviewButtonStyle}" />
+            <controls:ImageToggleButton 
+                Style="{StaticResource BackToOverviewButtonStyle}" 
+                UncheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/back_icon.png}"/>
                         
         </StackPanel>
 
         <Grid 
             Grid.Row="1"
-            Margin="12, 0, 12, 12" x:Name="_contentGrid"
-              Visibility="{Binding IsAccountReset, Converter={StaticResource visibilityConverterNegated}}">
+            Margin="12,0,12,12" x:Name="_contentGrid"
+            Visibility="{Binding IsAccountReset, Converter={StaticResource visibilityConverterNegated}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -95,70 +64,69 @@
 
             <Border 
                 Grid.Row="0"
-                Padding="0, 6, 0, 6"
+                Padding="0,6,0,6"
                 BorderThickness="0, 0, 0, 1"    
                 BorderBrush="LightGray"
                 IsEnabled="{Binding IsLoadingComplete}">
 
-                
                 <StackPanel  Orientation="Horizontal">
-                    <controls:ImageToggleButton Style="{StaticResource BackToOverviewButtonStyle}" />
+                    <controls:ImageToggleButton 
+                        Style="{StaticResource BackToOverviewButtonStyle}" 
+                        UncheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/back_icon_12.png}"/>
                 </StackPanel>
             </Border>
 
-        <ScrollViewer 
-            Grid.Row="1" 
-            HorizontalScrollBarVisibility="Disabled"    
-            VerticalScrollBarVisibility="Auto" >
+            <ScrollViewer 
+                Grid.Row="1" 
+                HorizontalScrollBarVisibility="Disabled"    
+                VerticalScrollBarVisibility="Auto" >
 
-          <StackPanel>
-            
-                <!-- buttons -->
-                <Grid 
-                    Margin="0, 12, 0, 12" 
-                    IsEnabled="{Binding IsControlEnabled}" >
+                <StackPanel>
+                    <!-- Time range buttons -->
+                    <Grid 
+                        Margin="0, 12, 0, 12" 
+                        IsEnabled="{Binding IsControlEnabled}" >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
                         <TextBlock 
-                        Grid.Column="0"                
-                        Margin="0, 0, 36, 0"
-                        FontWeight="DemiBold"
-                        Text="{Binding Message}"
-                        Style="{StaticResource CommonTextStyle}" />
+                                Grid.Column="0"                
+                                Margin="0,0,36,0"
+                                FontWeight="DemiBold"
+                                Text="{Binding Message}"
+                                Style="{StaticResource CommonTextStyle}" />
 
                         <local:TimeRangeButtons 
-                            Grid.Column="1" 
-                            SelectedItem="{Binding SelectedTimeRangeItem, Mode=TwoWay}" 
-                            ItemsSource="{Binding AllTimeRangeItems, Mode=OneWayToSource}"/>
-                </Grid>
+                                Grid.Column="1" 
+                                SelectedItem="{Binding SelectedTimeRangeItem, Mode=TwoWay}" 
+                                ItemsSource="{Binding AllTimeRangeItems, Mode=OneWayToSource}"/>
+                    </Grid>
 
 
-                <!-- Exception Box. -->
-                <TextBox 
-                    Panel.ZIndex="15"
-                    Padding="8, 5, 8, 5" 
-                    VerticalAlignment="Top"
-                    HorizontalAlignment="Stretch"
-                    TextAlignment="Left" 
-                    TextWrapping="Wrap"
-                    Foreground="Red" 
-                    Text="{Binding ExceptionString, Mode=OneWay}" 
-                    Visibility="{Binding ShowException, Converter={utils:VisibilityConverter}}" 
-                    ScrollViewer.VerticalScrollBarVisibility="Auto"
-                    IsReadOnly="True" />
+                    <!-- Data source error Box. -->
+                    <TextBox 
+                        Panel.ZIndex="15"
+                        Padding="8,5,8,5" 
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Stretch"
+                        TextAlignment="Left" 
+                        TextWrapping="Wrap"
+                        Foreground="Red" 
+                        Text="{Binding ExceptionString, Mode=OneWay}" 
+                        Visibility="{Binding ShowException, Converter={utils:VisibilityConverter}}" 
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        IsReadOnly="True" />
 
-                <StackPanel Visibility="{Binding ShowException, Converter={utils:VisibilityConverter IsNegated=True}}" >
+                    <StackPanel Visibility="{Binding ShowException, Converter={utils:VisibilityConverter IsNegated=True}}" >
 
-                    <!-- summary  -->
-                    <Border 
-                        Style="{StaticResource BorderCommonStyle}"
-                        Padding="12, 12, 12, 6">
+                        <!-- summary  -->
+                        <Border 
+                            Padding="12,12,12,6"
+                            Style="{StaticResource BorderCommonStyle}" >
 
                             <Grid>
-
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="*" SharedSizeGroup="A" />
@@ -180,14 +148,14 @@
                                         <TextBlock Text="{Binding GroupItem.ErrorGroup.Count}" />
                                     </StackPanel>
                                 </Border>
-                                
+
                                 <Border Grid.Column="1"/>
 
                                 <Border 
                                     Grid.Column="2" 
-                                    BorderThickness="1, 0, 0, 0"
+                                    BorderThickness="1,0,0,0"
                                     BorderBrush="LightGray"
-                                    Padding="6, 0, 12, 0"                                     
+                                    Padding="6,0,12,0"                                     
                                     Visibility="{Binding GroupItem.ErrorGroup.AffectedUsersCount, Converter={utils:NullEmptyInvisibleConverter}}">
                                     <StackPanel>
                                         <TextBlock Text="Users affected" />
@@ -195,13 +163,14 @@
                                     </StackPanel>
                                 </Border>
 
-                                <Border Grid.Column="3" Visibility="{Binding AffectedUsersCount, Converter={utils:NullEmptyInvisibleConverter}}" />
+                                <Border Grid.Column="3" 
+                                        Visibility="{Binding AffectedUsersCount, Converter={utils:NullEmptyInvisibleConverter}}" />
 
                                 <Border 
                                     Grid.Column="4"
                                     BorderThickness="1, 0, 0, 0"
                                     BorderBrush="LightGray"
-                                    Padding="6, 0, 0, 0">
+                                    Padding="6,0,0,0">
                                     <StackPanel>
                                         <TextBlock Text="Seen in" />
                                         <TextBlock Text="{Binding GroupItem.SeenIn}" 
@@ -209,14 +178,14 @@
                                                    MaxWidth="360" />
                                     </StackPanel>
                                 </Border>
-                                
+
                                 <Border Grid.Column="5"/>
 
                                 <Border 
                                     Grid.Column="6"
-                                    BorderThickness="1, 0, 0, 0"
+                                    BorderThickness="1,0,0,0"
                                     BorderBrush="LightGray"
-                                    Padding="6, 0, 12, 0" 
+                                    Padding="6,0,12,0" 
                                     Visibility="{Binding GroupItem.Status, Converter={utils:NullEmptyInvisibleConverter}}">
                                     <StackPanel>
                                         <TextBlock Text="Status" />
@@ -224,13 +193,14 @@
                                     </StackPanel>
                                 </Border>
 
-                                <Border Grid.Column="7" Visibility="{Binding GroupItem.Status, Converter={utils:NullEmptyInvisibleConverter}}"/>
+                                <Border Grid.Column="7" 
+                                        Visibility="{Binding GroupItem.Status, Converter={utils:NullEmptyInvisibleConverter}}"/>
 
                                 <Border 
                                     Grid.Column="8"
-                                    BorderThickness="1, 0, 0, 0"
+                                    BorderThickness="1,0,0,0"
                                     BorderBrush="LightGray"
-                                    Padding="6, 0, 0, 0">
+                                    Padding="6,0,0,0">
                                     <StackPanel>
                                         <TextBlock Text="First seen" />
                                         <TextBlock Text="{Binding GroupItem.FirstSeenTime}" />
@@ -241,9 +211,9 @@
 
                                 <Border 
                                     Grid.Column="10"
-                                    BorderThickness="1, 0, 0, 0"
+                                    BorderThickness="1,0,0,0"
                                     BorderBrush="LightGray"
-                                    Padding="6, 0, 0, 0" >
+                                    Padding="6,0,0,0" >
                                     <StackPanel>
                                         <TextBlock Text="Last seen" />
                                         <TextBlock Text="{Binding GroupItem.LastSeenTime}" />
@@ -254,13 +224,13 @@
                             </Grid>
                         </Border>
 
-                    <!-- chart and progress indicator. -->
-                    <Border Style="{StaticResource BorderCommonStyle}" 
+                        <!-- chart and progress indicator. -->
+                        <Border Style="{StaticResource BorderCommonStyle}" 
                             MinHeight="180">
 
-                        <Grid>
+                            <Grid>
 
-                            <controls:ProgressIndicator 
+                                <controls:ProgressIndicator 
                                 Panel.ZIndex="20"
                                 HorizontalAlignment="Center"                       
                                 VerticalAlignment="Top" 
@@ -268,49 +238,49 @@
                                 Margin="6"
                                 Visibility="{Binding IsGroupLoading, Converter={utils:VisibilityConverter}}" />
 
-                            <!--<local:TimedCountBarChart 
-                                Panel.ZIndex="10"
-                                DataContext="{Binding BarChartModel}" />-->
-                        </Grid>
+                                <!-- TODO: add time count bar chart />-->
+                            </Grid>
 
-                    </Border>
+                        </Border>
 
-                    <!-- stack trace sample -->
-                    <Border Style="{StaticResource BorderCommonStyle}" >
-                        <StackPanel Margin="6">
+                        <!-- stack trace sample -->
+                        <Border Style="{StaticResource BorderCommonStyle}" >
+                            <StackPanel Margin="6">
 
-                            <controls:ImageToggleButton  
-                                x:Name="traceSampleToggle"
-                                Padding="6"
-                                UncheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/show_more_icon.png}"
-                                CheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/show_less_icon.png}" 
-                                HorizontalAlignment="Left"
-                                IsChecked="True"
-                                Style="{StaticResource ImageToggleButtonStyle}">
-                                Stack trace sample
-                            </controls:ImageToggleButton>
+                                <controls:ImageToggleButton  
+                                    x:Name="traceSampleToggle"
+                                    Padding="6"
+                                    UncheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/show_more_icon.png}"
+                                    CheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/show_less_icon.png}" 
+                                    HorizontalAlignment="Left"
+                                    IsChecked="True"
+                                    Style="{StaticResource ImageToggleButtonStyle}"
+                                    Content="{x:Static ext:Resources.ErrorReportingToggleStackSampleButtonCaption}"/>
 
-                            <TextBox 
-                                BorderThickness="0"
-                                Padding="8, 5, 8, 5"
-                                Text="{Binding Stack, Mode=OneWay}" 
-                                IsReadOnly="True"
-                                AcceptsReturn="True"
-                                TextWrapping="NoWrap"
-                                HorizontalScrollBarVisibility="Auto"
-                                Visibility="{Binding IsChecked, ElementName=traceSampleToggle, 
-                                Converter={StaticResource visibilityConverter}}" />
+                                <TextBox 
+                                    BorderThickness="0"
+                                    Padding="8,5,8,5"
+                                    Text="{Binding Stack, Mode=OneWay}" 
+                                    IsReadOnly="True"
+                                    AcceptsReturn="True"
+                                    TextWrapping="NoWrap"
+                                    HorizontalScrollBarVisibility="Auto"
+                                    Visibility="{Binding IsChecked, ElementName=traceSampleToggle, 
+                                    Converter={StaticResource visibilityConverter}}" />
 
-                        </StackPanel>
-                    </Border>
+                            </StackPanel>
+                        </Border>
 
-                    <!-- Recent samples. -->
-                    <StackPanel Margin="12, 12, 0, 6">
+                        <!-- Recent samples. -->
+                        <StackPanel Margin="12,12,0,6">
 
-                        <TextBlock Text="Recent Samples" Style="{StaticResource CommonTextStyle}" Padding="0, 6, 0, 6"/>
+                            <TextBlock 
+                            Text="{x:Static ext:Resources.ErrorReportingRecentSampleLabel}"
+                            Style="{StaticResource CommonTextStyle}" 
+                            Padding="0,6,0,6"/>
 
-                        <Grid>
-                            <controls:ProgressIndicator 
+                            <Grid>
+                                <controls:ProgressIndicator 
                                 Panel.ZIndex="20"
                                 Margin="0, 20"
                                 HorizontalAlignment="Center"                       
@@ -318,46 +288,46 @@
                                 FullDuration="1000" 
                                 Visibility="{Binding IsEventLoading, Converter={StaticResource visibilityConverter}}" />
 
-                            <DataGrid 
-                                Panel.ZIndex="10"
-                                x:Name="DataGridEvents" 
-                                VerticalScrollBarVisibility="Disabled"
-                                ItemsSource="{Binding EventItemCollection}"
-                                AutoGenerateColumns="False" 
-                                IsReadOnly="True" 
-                                HeadersVisibility="Column"    
-                                ColumnHeaderHeight="10"                   
-                                AlternationCount="2" 
-                                GridLinesVisibility="None" 
-                                CellStyle="{StaticResource cellStyle}"
-                                RowStyle="{StaticResource rowStyle}"
-                                BorderThickness="0"
-                                PreviewMouseDown="dataGrid_PreviewMouseDown"
-                                PreviewMouseWheel="dataGrid_PreviewMouseWheel"
-                                >
-                                <DataGrid.Resources>
-                                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
-                                                    Color="Black"/>
-                                </DataGrid.Resources>
-                                <DataGrid.Columns>
-                                    <DataGridTextColumn Binding="{Binding EventTime}" />
-                                    <DataGridTextColumn Binding="{Binding SummaryMessage}" />
-                                </DataGrid.Columns>
-                                <DataGrid.RowDetailsTemplate>
-                                    <DataTemplate>
-                                        <!-- Use a border to override the background. -->
-                                        <Border Background="White" Padding="12,6,12,8">
-                                            <TextBlock Text="{Binding Message}" />
-                                        </Border>
-                                    </DataTemplate>
-                                </DataGrid.RowDetailsTemplate>
-                            </DataGrid>
-                        </Grid>
-                    </StackPanel>
+                                <DataGrid 
+                                    Panel.ZIndex="10"
+                                    x:Name="DataGridEvents" 
+                                    VerticalScrollBarVisibility="Disabled"
+                                    ItemsSource="{Binding EventItemCollection}"
+                                    AutoGenerateColumns="False" 
+                                    IsReadOnly="True" 
+                                    HeadersVisibility="Column"    
+                                    ColumnHeaderHeight="10"                   
+                                    AlternationCount="2" 
+                                    GridLinesVisibility="None" 
+                                    CellStyle="{StaticResource cellStyle}"
+                                    RowStyle="{StaticResource detailViewRowStyle}"
+                                    BorderThickness="0"
+                                    PreviewMouseDown="dataGrid_PreviewMouseDown"
+                                    PreviewMouseWheel="dataGrid_PreviewMouseWheel">
 
+                                    <DataGrid.Resources>
+                                        <SolidColorBrush 
+                                        x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
+                                        Color="Black"/>
+                                    </DataGrid.Resources>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Binding="{Binding EventTime}" />
+                                        <DataGridTextColumn Binding="{Binding SummaryMessage}" />
+                                    </DataGrid.Columns>
+                                    <DataGrid.RowDetailsTemplate>
+                                        <DataTemplate>
+                                            <!-- Use a border to override the background. -->
+                                            <Border Background="White" Padding="12,6,12,8">
+                                                <TextBlock Text="{Binding Message}" />
+                                            </Border>
+                                        </DataTemplate>
+                                    </DataGrid.RowDetailsTemplate>
+                                </DataGrid>
+                            </Grid>
+                        </StackPanel>
+                    </StackPanel>
                 </StackPanel>
-            </StackPanel>
-        </ScrollViewer>
-    </Grid>
+            </ScrollViewer>
+        </Grid>
     </Grid>
 </UserControl>

@@ -1843,6 +1843,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Go to overview window and select an error group.
+        /// </summary>
+        public static string ErrorReportingNoErrorGroupSelectedButtonCaption {
+            get {
+                return ResourceManager.GetString("ErrorReportingNoErrorGroupSelectedButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recent Samples.
+        /// </summary>
+        public static string ErrorReportingRecentSampleLabel {
+            get {
+                return ResourceManager.GetString("ErrorReportingRecentSampleLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stack trace sample.
+        /// </summary>
+        public static string ErrorReportingToggleStackSampleButtonCaption {
+            get {
+                return ResourceManager.GetString("ErrorReportingToggleStackSampleButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stackdriver Error Reporting.
         /// </summary>
         public static string ErrorReportingToolWindowCaption {
