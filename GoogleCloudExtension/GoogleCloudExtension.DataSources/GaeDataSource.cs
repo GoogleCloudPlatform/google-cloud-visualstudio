@@ -16,6 +16,7 @@ using Google;
 using Google.Apis.Appengine.v1;
 using Google.Apis.Appengine.v1.Data;
 using Google.Apis.Auth.OAuth2;
+using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -127,7 +128,7 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="split">The traffic split to set.</param>
         /// <param name="serviceId">The id of the service</param>
         /// <returns>The GAE operation for the update.</returns>
-        public async Task<Operation> UpdateServiceTrafficSplit(TrafficSplit split, string serviceId)
+        public async Task<Operation> UpdateServiceTrafficSplitAsync(TrafficSplit split, string serviceId)
         {
             try
             {
@@ -145,6 +146,22 @@ namespace GoogleCloudExtension.DataSources
             {
                 Debug.WriteLine($"Failed to update traffic split: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Awaits for the operation to complete succesfully.
+        /// </summary>
+        /// <param name="operation">The operation to await.</param>
+        /// <returns>The task that will be done once the operation is succesful.</returns>
+        public async Task AwaitOperationAsync(Operation operation)
+        {
+            Func<Operation, Task<Operation>> fetch = (o) => GetOperationAsync(o.GetOperationId());
+            Predicate<Operation> stopPolling = (o) => o.Done ?? false;
+            operation = await Polling<Operation>.Poll(operation, fetch, stopPolling);
+            if (operation.Error != null)
+            {
+                throw new DataSourceException(operation.Error.Message);
             }
         }
 

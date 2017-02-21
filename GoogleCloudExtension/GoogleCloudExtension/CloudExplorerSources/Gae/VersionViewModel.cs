@@ -87,6 +87,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             if (_version.IsServing())
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeVersionOpen, Command = new ProtectedCommand(OnOpenVersion) });
+                if (_trafficAllocation < 1.0)
+                {
+                    menuItems.Add(new MenuItem { Header = "Migrate all traffic", Command = new ProtectedCommand(OnMigrateTrafficCommand) });
+                }
             }
 
             menuItems.Add(new Separator());
@@ -109,6 +113,34 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
 
             SyncContextMenuState();
+        }
+
+        private async void OnMigrateTrafficCommand()
+        {
+            try
+            {
+                var split = new TrafficSplit
+                {
+                    Allocations = new Dictionary<string, double?>
+                    {
+                        [_version.Id] = 1.0
+                    }
+                };
+
+                var datasource = _owner.DataSource;
+                IsLoading = true;
+                Caption = $"Updating split for {_version.Id}";
+
+                var operation = await _owner.DataSource.UpdateServiceTrafficSplitAsync(split, _service.Id);
+                await _owner.DataSource.AwaitOperationAsync(operation);
+                _owner.InvalidateService(_service.Id);
+            }
+            catch (DataSourceException ex)
+            {
+                Debug.WriteLine($"Faile to set traffic to 100%: {ex.Message}");
+                IsError = true;
+                Caption = "Failed to set traffic to 100%, please try again.";
+            }
         }
 
         private void OnStartVersion()

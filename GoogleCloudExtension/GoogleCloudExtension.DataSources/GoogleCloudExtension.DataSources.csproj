@@ -134,6 +134,12 @@
     <None Include="Key.snk" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GoogleCloudExtension.Utils\GoogleCloudExtension.Utils.csproj">
+      <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>
+      <Name>GoogleCloudExtension.Utils</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

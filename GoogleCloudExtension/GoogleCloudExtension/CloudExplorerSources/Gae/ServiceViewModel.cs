@@ -321,7 +321,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             try
             {
-                Task<Operation> operationTask = _owner.DataSource.UpdateServiceTrafficSplit(split, Service.Id);
+                Task<Operation> operationTask = _owner.DataSource.UpdateServiceTrafficSplitAsync(split, Service.Id);
                 Func<Operation, Task<Operation>> fetch = (o) => datasource.GetOperationAsync(o.GetOperationId());
                 Predicate<Operation> stopPolling = (o) => o.Done ?? false;
                 Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);
