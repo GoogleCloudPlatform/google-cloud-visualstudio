@@ -46,11 +46,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private readonly Service _service;
         private readonly Google.Apis.Appengine.v1.Data.Version _version;
         private readonly double _trafficAllocation;
-        private readonly bool _hasTrafficAllocation;
 
         public Google.Apis.Appengine.v1.Data.Version Version => _version;
 
-        public bool HasTrafficAllocation => _hasTrafficAllocation;
+        public bool HasTrafficAllocation => _trafficAllocation > 0;
 
         public event EventHandler ItemChanged;
 
@@ -65,9 +64,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             _service = service;
             _version = version;
 
-            var allocation = GaeServiceExtensions.GetTrafficAllocation(_service, _version.Id);
-            _trafficAllocation = allocation ?? 0.0;
-            _hasTrafficAllocation = allocation != null;
+            _trafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_service, _version.Id);
 
             // Update the view.
             Caption = GetCaption();
@@ -104,7 +101,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
 
             // If the version is stopped and has no traffic allocated to it allow it to be deleted.
-            if (!_hasTrafficAllocation && _version.IsStopped())
+            if (HasTrafficAllocation && _version.IsStopped())
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteVersion, Command = new ProtectedCommand(OnDeleteVersion) });
             }
@@ -255,7 +252,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         /// </summary>
         private string GetCaption()
         {
-            if (!_hasTrafficAllocation)
+            if (!HasTrafficAllocation)
             {
                 return _version.Id;
             }

@@ -183,7 +183,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             var versions = await _dataSource.Value.GetVersionListAsync(service.Id);
             var versionModels = versions
                 .Select(x => new VersionViewModel(this, service, x))
-                .OrderByDescending(x => GaeServiceExtensions.GetTrafficAllocation(service, x.Version.Id) ?? 0.0)
+                .OrderByDescending(x => GaeServiceExtensions.GetTrafficAllocation(service, x.Version.Id))
                 .ToList();
             return new ServiceViewModel(this, service, versionModels);
         }
