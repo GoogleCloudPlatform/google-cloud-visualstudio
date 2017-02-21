@@ -119,18 +119,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             try
             {
-                var split = new TrafficSplit
-                {
-                    Allocations = new Dictionary<string, double?>
-                    {
-                        [_version.Id] = 1.0
-                    }
-                };
-
-                var datasource = _owner.DataSource;
                 IsLoading = true;
                 Caption = String.Format(Resources.CloudExplorerGaeMigratingAllTrafficCaption, _version.Id);
 
+                var split = new TrafficSplit { Allocations = new Dictionary<string, double?> { [_version.Id] = 1.0 } };
                 var operation = await _owner.DataSource.UpdateServiceTrafficSplitAsync(split, _service.Id);
                 await _owner.DataSource.AwaitOperationAsync(operation);
                 _owner.InvalidateService(_service.Id);
