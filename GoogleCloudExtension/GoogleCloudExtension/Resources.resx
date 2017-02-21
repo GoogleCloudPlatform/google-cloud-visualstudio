@@ -1459,4 +1459,16 @@
     <value>Environment</value>
     <comment>The display name for the Environment property.</comment>
   </data>
+  <data name="CloudExplorerGaeFailedToMigrateAllTrafficCaption" xml:space="preserve">
+    <value>Failed to migrate all traffic to {0}, please try again.</value>
+    <comment>Caption for the error state when migrating all traffic. {0} is the id of the version.</comment>
+  </data>
+  <data name="CloudExplorerGaeMigrateAllTrafficHeader" xml:space="preserve">
+    <value>Migrate all traffic</value>
+    <comment>Header for the migrate all traffic command.</comment>
+  </data>
+  <data name="CloudExplorerGaeMigratingAllTrafficCaption" xml:space="preserve">
+    <value>Migrating all traffic to {0}</value>
+    <comment>Caption shown while migrating all traffic. {0} is the version id</comment>
+  </data>
 </root>
