@@ -196,16 +196,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             try
             {
-                Task<Operation> operationTask = dataSource.DeleteVersionAsync(_service.Id, _version.Id);
-                Func<Operation, Task<Operation>> fetch = (o) => dataSource.GetOperationAsync(o.GetOperationId());
-                Predicate<Operation> stopPolling = (o) => o.Done ?? false;
-                Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);
-                if (operation.Error != null)
-                {
-                    throw new DataSourceException(operation.Error.Message);
-                }
-                EventsReporterWrapper.ReportEvent(GaeVersionDeletedEvent.Create(CommandStatus.Success));
+                var operation = await dataSource.DeleteVersionAsync(_service.Id, _version.Id);
+                await dataSource.AwaitOperationAsync(operation);
                 _owner.InvalidateService(_service.Id);
+
+                EventsReporterWrapper.ReportEvent(GaeVersionDeletedEvent.Create(CommandStatus.Success));
             }
             catch (Exception ex) when (ex is DataSourceException || ex is TimeoutException || ex is OperationCanceledException)
             {
@@ -243,14 +238,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             try
             {
-                Task<Operation> operationTask = dataSource.UpdateVersionServingStatus(status, _service.Id, _version.Id);
-                Func<Operation, Task<Operation>> fetch = (o) => dataSource.GetOperationAsync(o.GetOperationId());
-                Predicate<Operation> stopPolling = (o) => o.Done ?? false;
-                Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);
-                if (operation.Error != null)
-                {
-                    throw new DataSourceException(operation.Error.Message);
-                }
+                var operation = await dataSource.UpdateVersionServingStatus(status, _service.Id, _version.Id);
+                await dataSource.AwaitOperationAsync(operation);
 
                 EventsReporterWrapper.ReportEvent(
                     GaeVersionServingStatusUpdatedEvent.Create(CommandStatus.Success, statusMessage));

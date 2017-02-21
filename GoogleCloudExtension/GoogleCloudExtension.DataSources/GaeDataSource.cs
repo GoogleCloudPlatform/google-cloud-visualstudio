@@ -156,12 +156,13 @@ namespace GoogleCloudExtension.DataSources
         /// <returns>The task that will be done once the operation is succesful.</returns>
         public async Task AwaitOperationAsync(Operation operation)
         {
-            Func<Operation, Task<Operation>> fetch = (o) => GetOperationAsync(o.GetOperationId());
-            Predicate<Operation> stopPolling = (o) => o.Done ?? false;
-            operation = await Polling<Operation>.Poll(operation, fetch, stopPolling);
-            if (operation.Error != null)
+            var completedOperation = await Polling<Operation>.Poll(
+                operation,
+                o => GetOperationAsync(o.GetOperationId()),
+                o => o.Done ?? false);
+            if (completedOperation.Error != null)
             {
-                throw new DataSourceException(operation.Error.Message);
+                throw new DataSourceException(completedOperation.Error.Message);
             }
         }
 
