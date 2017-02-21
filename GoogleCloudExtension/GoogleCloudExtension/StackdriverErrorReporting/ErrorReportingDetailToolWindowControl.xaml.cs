@@ -20,7 +20,6 @@ using System.Windows.Input;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
-
     /// <summary>
     /// Interaction logic for ErrorReportingDetailToolWindowControl.
     /// </summary>
