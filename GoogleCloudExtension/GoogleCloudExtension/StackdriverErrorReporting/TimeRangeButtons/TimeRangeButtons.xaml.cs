@@ -37,13 +37,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 typeof(TimeRangeButtons),
                 new FrameworkPropertyMetadata(null, OnTimePartPropertyChanged, null));
 
-        //public static readonly DependencyProperty AllItemsProperty =
-        //    DependencyProperty.Register(
-        //        nameof(AllItems),
-        //        typeof(ObservableCollection<TimeRangeItem>),
-        //        typeof(TimeRangeButtons),
-        //        new FrameworkPropertyMetadata());
-
         /// <summary>
         /// Gets or sets <seealso cref="SelectedItemProperty"/>.
         /// The selected <seealso cref="TimeRangeItem"/> . 
@@ -53,16 +46,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             get { return (TimeRangeItem)GetValue(SelectedItemProperty); }
             set { SetValue(SelectedItemProperty, value); }
         }
-
-        ///// <summary>
-        ///// Gets or sets <seealso cref="AllItemsProperty"/>.
-        ///// All time range items. 
-        ///// </summary>
-        //public ObservableCollection<TimeRangeItem> AllItems
-        //{
-        //    get { return (ObservableCollection<TimeRangeItem>)GetValue(AllItemsProperty); }
-        //    set { SetValue(SelectedItemProperty, value); }
-        //}
 
         /// <summary>
         /// Initializes a new instance of <seealso cref="TimeRangeButtons"/> class;
