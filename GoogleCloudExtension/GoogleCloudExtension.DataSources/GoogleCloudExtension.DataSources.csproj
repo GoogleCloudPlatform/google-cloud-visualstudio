@@ -122,9 +122,7 @@
     <Compile Include="DatabaseInstanceExtensions.cs" />
     <Compile Include="DataSourceBase.cs" />
     <Compile Include="DataSourceException.cs" />
-    <Compile Include="ErrorReporting\ErrorEventsRequestResult.cs" />
-    <Compile Include="ErrorReporting\GroupStatsRequestResult.cs" />
-    <Compile Include="ErrorReporting\SerDataSource.cs" />
+    <Compile Include="StackdriverErrorReportingDataSource.cs" />
     <Compile Include="FirewallPort.cs" />
     <Compile Include="GaeDataSource.cs" />
     <Compile Include="GaeServiceExtensions.cs" />

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Utils;
 using System;
 using System.ComponentModel.Design;
 using Microsoft.VisualStudio.Shell;
@@ -26,6 +27,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     internal sealed class ErrorReportingToolWindowCommand
     {
         /// <summary>
+        /// VS Package that provides this command, not null.
+        /// </summary>
+        private readonly Package _package;
+
+        /// <summary>
         /// Command ID.
         /// </summary>
         public const int CommandId = 4236;
@@ -34,11 +40,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// Command menu group (command set GUID).
         /// </summary>
         public static readonly Guid CommandSet = new Guid("a7435138-27e2-410c-9d28-dffc5aa3fe80");
-
-        /// <summary>
-        /// VS Package that provides this command, not null.
-        /// </summary>
-        private readonly Package package;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ErrorReportingToolWindowCommand"/> class.
@@ -52,44 +53,27 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 throw new ArgumentNullException("package");
             }
 
-            this.package = package;
+            _package = package;
 
             OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
-                var menuItem = new OleMenuCommand(this.ShowToolWindow, menuCommandID);
+                var menuItem = new OleMenuCommand(ShowToolWindow, menuCommandID);
+                menuItem.BeforeQueryStatus += OnBeforeQueryStatus;
                 commandService.AddCommand(menuItem);
-                Action setEnabled = () =>
-                {
-                    menuItem.Enabled = (CredentialsStore.Default?.CurrentAccount != null &&
-                        !string.IsNullOrWhiteSpace(CredentialsStore.Default?.CurrentProjectId));
-                };
-
-                setEnabled();
-                menuItem.BeforeQueryStatus += (sender, e) => setEnabled();
-            };
+            }
         }
 
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static ErrorReportingToolWindowCommand Instance
-        {
-            get;
-            private set;
-        }
+        public static ErrorReportingToolWindowCommand Instance { get; private set; }
 
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
-        private IServiceProvider ServiceProvider
-        {
-            get
-            {
-                return this.package;
-            }
-        }
+        private IServiceProvider ServiceProvider => _package;
 
         /// <summary>
         /// Initializes the singleton instance of the command.
@@ -105,19 +89,32 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         /// <param name="sender">The event sender.</param>
         /// <param name="e">The event args.</param>
-        public void ShowToolWindow(object sender, EventArgs e)
+        private void ShowToolWindow(object sender, EventArgs e)
         {
-            // Get the instance number 0 of this tool window. This window is single instance so this instance
-            // is actually the only one.
-            // The last flag is set to true so that if the tool window does not exists it will be created.
-            ToolWindowPane window = this.package.FindToolWindow(typeof(ErrorReportingToolWindow), 0, true);
-            if ((null == window) || (null == window.Frame))
+            ErrorHandlerUtils.HandleExceptions(() =>
             {
-                throw new NotSupportedException("Cannot create tool window");
-            }
+                // Get the instance number 0 of this tool window. This window is single instance so this instance
+                // is actually the only one.
+                // The last flag is set to true so that if the tool window does not exists it will be created.
+                ToolWindowPane window = this._package.FindToolWindow(typeof(ErrorReportingToolWindow), 0, true);
+                if ((null == window) || (null == window.Frame))
+                {
+                    throw new NotSupportedException("Cannot create tool window");
+                }
 
-            IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+                IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
+                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+            });
+        }
+
+        private void OnBeforeQueryStatus(object sender, EventArgs e)
+        {
+            var menuCommand = sender as OleMenuCommand;
+            if (menuCommand == null)
+            {
+                return;
+            }
+            menuCommand.Enabled = !String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId);
         }
     }
 }

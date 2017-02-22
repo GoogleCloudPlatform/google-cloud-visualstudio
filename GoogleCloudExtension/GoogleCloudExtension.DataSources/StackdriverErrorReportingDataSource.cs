@@ -24,46 +24,49 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtension.DataSources.ErrorReporting
 {
     /// <summary>
-    /// Data source that returns Google Cloud Stackdriver Error Reporting.
+    /// Data source that returns Google Cloud Stackdriver Error Reporting group status and events.
     /// </summary>
-    public class SerDataSource : DataSourceBase<ClouderrorreportingService>
+    public class StackdriverErrorReportingDataSource : DataSourceBase<ClouderrorreportingService>
     {
         /// <summary>
-        /// Initializes an instance of <seealso cref="SerDataSource"/> class.
+        /// Initializes an instance of <seealso cref="StackdriverErrorReportingDataSource"/> class.
         /// </summary>
-        /// <param name="projectId">The project id that contains the GCE instances to manipulate.</param>
+        /// <param name="projectId">A Google Cloud Platform project id of the current user account.</param>
         /// <param name="credential">The credentials to use for the call.</param>
-        public SerDataSource(string projectId, GoogleCredential credential, string appName)
+        /// <param name="appName">The name of the application.</param>
+        public StackdriverErrorReportingDataSource(string projectId, GoogleCredential credential, string appName)
                 : base(projectId, credential, init => new ClouderrorreportingService(init), appName)
         {}
 
         /// <summary>
-        /// Get a list of <seealso cref="ErrorGroupStats"/> of the given <paramref name="groupId"/>.
+        /// Get a page of <seealso cref="ErrorGroupStats"/> for the given <paramref name="groupId"/>.
+        /// The result is divided into pages when the result set is too large. 
+        /// This call get one page of results.
         /// </summary>
         /// <param name="timeRange">Specifiy the time range of the query.</param>
         /// <param name="timedCountDuration">
-        /// The preferred duration for a single returned `TimedCount`. If not set, no timed counts are returned.
+        /// The preferred duration for a single returned `TimedCount`. 
+        /// Optional, If not set, no timed counts are returned.
         /// </param>
-        /// <param name="groupId">optional, The error group id.</param>
-        /// <param name="nextPageToken">optional, A next page token provided by a previous response.</param>
+        /// <param name="groupId">Optional, The error group id.</param>
+        /// <param name="nextPageToken">Optional, A next page token provided by a previous response.</param>
         /// <returns>
-        /// Async task with <seealso cref="GroupStatsRequestResult"/> as result.
+        /// A task with <seealso cref="ListGroupStatsResponse"/> as result.
         /// </returns>
-        public async Task<GroupStatsRequestResult> ListGroupStatusAsync(
+        public Task<ListGroupStatsResponse> GetPageOfGroupStatusAsync(
             TimeRangeEnum timeRange, 
-            string timedCountDuration, 
+            string timedCountDuration = null, 
             string groupId = null, 
             string nextPageToken = null)
         {
-            var request = Service.Projects.GroupStats.List(ProjectIdQuery);
+            var request = Service.Projects.GroupStats.List(ProjectResourceName);
             request.TimeRangePeriod = timeRange;
             request.TimedCountDuration = timedCountDuration;
             request.GroupId = groupId;
             request.PageToken = nextPageToken;
             try
             {
-                var response = await request.ExecuteAsync();
-                return new GroupStatsRequestResult(response.ErrorGroupStats, response.NextPageToken);
+                return request.ExecuteAsync();
             }
             catch (GoogleApiException ex)
             {
@@ -73,24 +76,31 @@ namespace GoogleCloudExtension.DataSources.ErrorReporting
         }
 
         /// <summary>
-        /// Request for a list <seealso cref="ErrorEvent"/> for an error group.
+        /// Gets a page of <seealso cref="ErrorEvent"/> for an error group.
+        /// The result is divided into pages when the result set is too large. 
+        /// This call get one page of results.
         /// </summary>
         /// <param name="errorGroup">An error group. <seealso cref="ErrorGroupStats"/>.</param>
-        /// <param name="period">The time period for the query </param>
+        /// <param name="period">
+        /// The time period for the query.
+        /// Optional, defaults to 30 days.
+        /// </param>
+        /// <param name="nextPageToken">optional, A next page token provided by a previous response.</param>
         /// <returns>
-        /// An async task with <seealso cref="ErrorEventsRequestResult"/> as result.
+        /// A task with <seealso cref="ListEventsResponse"/> as result.
         /// </returns>
-        public async Task<ErrorEventsRequestResult> ListEventsAsync(
+        public Task<ListEventsResponse> GetPageOfEventsAsync(
             ErrorGroupStats errorGroup,
-            EventTimeRange period = EventTimeRange.PERIOD30DAYS)
+            EventTimeRange period = EventTimeRange.PERIOD30DAYS,
+            string nextPageToken = null)
         {
-            var request = Service.Projects.Events.List(ProjectIdQuery);
+            var request = Service.Projects.Events.List(ProjectResourceName);
             request.TimeRangePeriod = period;
+            request.PageToken = nextPageToken;
             request.GroupId = errorGroup.Group.GroupId;
             try
             {
-                var response = await request.ExecuteAsync();
-                return new ErrorEventsRequestResult(response.ErrorEvents, response.NextPageToken);
+                return request.ExecuteAsync();
             }
             catch (GoogleApiException ex)
             {
