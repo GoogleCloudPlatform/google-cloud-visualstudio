@@ -204,7 +204,7 @@
                                     BorderBrush="LightGray"
                                     Padding="6,0,0,0">
                                     <StackPanel>
-                                        <TextBlock Text="{x:Static ext:Resources.ErrorReportingFirstErrorTimeHead}" />
+                                        <TextBlock Text="{x:Static ext:Resources.ErrorReportingFirstErrorTimeHeader}" />
                                         <TextBlock Text="{Binding GroupItem.FirstSeenTime}" />
                                     </StackPanel>
                                 </Border>
@@ -217,7 +217,7 @@
                                     BorderBrush="LightGray"
                                     Padding="6,0,0,0" >
                                     <StackPanel>
-                                        <TextBlock Text="{x:Static ext:Resources.ErrorReportingLastErrorTimeHead}" />
+                                        <TextBlock Text="{x:Static ext:Resources.ErrorReportingLastErrorTimeHeader}" />
                                         <TextBlock Text="{Binding GroupItem.LastSeenTime}" />
                                     </StackPanel>
                                 </Border>
