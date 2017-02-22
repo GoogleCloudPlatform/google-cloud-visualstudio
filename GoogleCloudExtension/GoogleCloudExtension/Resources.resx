@@ -1256,7 +1256,7 @@
     <comment>The message shown in the UI for the depoyment version textbox.</comment>
   </data>
   <data name="GkePublishExposeServiceCaption" xml:space="preserve">
-    <value>E_xpose the service to the public internet</value>
+    <value>Expose a service.</value>
     <comment>Caption for the checkbox to set if the GKE service is to be exposed or not.</comment>
   </data>
   <data name="GkePublishMissingKubectlMessage" xml:space="preserve">
@@ -1470,5 +1470,29 @@
   <data name="CloudExplorerGaeMigratingAllTrafficCaption" xml:space="preserve">
     <value>Migrating all traffic to {0}</value>
     <comment>Caption shown while migrating all traffic. {0} is the version id</comment>
+  </data>
+  <data name="GkePublishDontExposeServiceCaption" xml:space="preserve">
+    <value>Don't expose a service.</value>
+    <comment>Caption for the option of not exposing the service.</comment>
+  </data>
+  <data name="GkePublishMakeServicePublicCaption" xml:space="preserve">
+    <value>Make service public.</value>
+    <comment>Caption for the checkbox to make a service public.</comment>
+  </data>
+  <data name="GkePublishServiceClusterIpMessage" xml:space="preserve">
+    <value>Service {0} cluster IP address {1}.</value>
+    <comment>Message shown when a cluster-only service is deployed to show the ip address. {0} is the service name, {1} is the IP address.</comment>
+  </data>
+  <data name="GkePublishServiceDeletedMessage" xml:space="preserve">
+    <value>Service {0} was deleted.</value>
+    <comment>Message shown when a service is deleted due to changes in configuration. {0} is the name of the service.</comment>
+  </data>
+  <data name="GkePublishServiceGroupHeader" xml:space="preserve">
+    <value>Service</value>
+    <comment>The header for the service group in the UI.</comment>
+  </data>
+  <data name="GkePublishServiceUpdatedMessage" xml:space="preserve">
+    <value>Service {0} was updated.</value>
+    <comment>Messages shown when a GKE service is updated. {0} is the service name.</comment>
   </data>
 </root>
