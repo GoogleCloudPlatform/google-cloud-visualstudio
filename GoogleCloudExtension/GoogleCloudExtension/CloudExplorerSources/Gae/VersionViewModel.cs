@@ -46,10 +46,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private readonly Service _service;
         private readonly Google.Apis.Appengine.v1.Data.Version _version;
         private readonly double _trafficAllocation;
+        private readonly bool _isLastVersion;
 
         public Google.Apis.Appengine.v1.Data.Version Version => _version;
 
         public bool HasTrafficAllocation => _trafficAllocation > 0;
+
+        /// <summary>
+        /// Determines if the current version can be deleted. A version can be deleted if:
+        /// * Is not the last version in the service, the last version cannot be deleted, the whole
+        ///   service has to be deleted instead.
+        /// * If it is not the last version then it must not have traffic allocated to it. The user must move
+        ///   the traffic away from the version before deleting it.
+        /// </summary>
+        private bool CanDeleteVersion => !_isLastVersion && !HasTrafficAllocation;
 
         public event EventHandler ItemChanged;
 
@@ -58,13 +68,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         public VersionViewModel(
             GaeSourceRootViewModel owner,
             Service service,
-            Google.Apis.Appengine.v1.Data.Version version)
+            Google.Apis.Appengine.v1.Data.Version version,
+            bool isLastVersion)
         {
             _owner = owner;
             _service = service;
             _version = version;
-
             _trafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_service, _version.Id);
+            _isLastVersion = isLastVersion;
 
             // Update the view.
             Caption = GetCaption();
@@ -104,8 +115,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeStartVersion, Command = new ProtectedCommand(OnStartVersion) });
             }
 
-            // If the version is stopped and has no traffic allocated to it allow it to be deleted.
-            if (!HasTrafficAllocation && _version.IsStopped())
+            if (CanDeleteVersion)
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteVersion, Command = new ProtectedCommand(OnDeleteVersion) });
             }
