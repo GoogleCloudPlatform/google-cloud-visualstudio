@@ -106,8 +106,8 @@
                         CellTemplate="{StaticResource MessageStackTemplate}" />
 
                     <DataGridTextColumn 
-                        Binding="{Binding SeenIn}" 
-                        Header="Seen in" />
+                        Header="{x:Static ext:Resources.ErrorReportingErrorAppHeader}"
+                        Binding="{Binding SeenIn}" />
 
                     <DataGridTextColumn 
                         Header="{x:Static ext:Resources.ErrorReportingFirstErrorTimeHeader}" 
