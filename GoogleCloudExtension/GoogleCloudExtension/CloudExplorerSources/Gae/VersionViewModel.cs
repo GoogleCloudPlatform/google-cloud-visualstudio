@@ -46,11 +46,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         private readonly Service _service;
         private readonly Google.Apis.Appengine.v1.Data.Version _version;
         private readonly double _trafficAllocation;
-        private readonly bool _hasTrafficAllocation;
 
         public Google.Apis.Appengine.v1.Data.Version Version => _version;
 
-        public bool HasTrafficAllocation => _hasTrafficAllocation;
+        public bool HasTrafficAllocation => _trafficAllocation > 0;
 
         public event EventHandler ItemChanged;
 
@@ -65,9 +64,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             _service = service;
             _version = version;
 
-            var allocation = GaeServiceExtensions.GetTrafficAllocation(_service, _version.Id);
-            _trafficAllocation = allocation ?? 0.0;
-            _hasTrafficAllocation = allocation != null;
+            _trafficAllocation = GaeServiceExtensions.GetTrafficAllocation(_service, _version.Id);
 
             // Update the view.
             Caption = GetCaption();
@@ -90,6 +87,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             if (_version.IsServing())
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeVersionOpen, Command = new ProtectedCommand(OnOpenVersion) });
+                if (_trafficAllocation < 1.0)
+                {
+                    menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeMigrateAllTrafficHeader, Command = new ProtectedCommand(OnMigrateTrafficCommand) });
+                }
             }
 
             menuItems.Add(new Separator());
@@ -104,7 +105,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
 
             // If the version is stopped and has no traffic allocated to it allow it to be deleted.
-            if (!_hasTrafficAllocation && _version.IsStopped())
+            if (!HasTrafficAllocation && _version.IsStopped())
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteVersion, Command = new ProtectedCommand(OnDeleteVersion) });
             }
@@ -112,6 +113,26 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
 
             SyncContextMenuState();
+        }
+
+        private async void OnMigrateTrafficCommand()
+        {
+            try
+            {
+                IsLoading = true;
+                Caption = String.Format(Resources.CloudExplorerGaeMigratingAllTrafficCaption, _version.Id);
+
+                var split = new TrafficSplit { Allocations = new Dictionary<string, double?> { [_version.Id] = 1.0 } };
+                var operation = await _owner.DataSource.UpdateServiceTrafficSplitAsync(split, _service.Id);
+                await _owner.DataSource.AwaitOperationAsync(operation);
+                _owner.InvalidateService(_service.Id);
+            }
+            catch (DataSourceException ex)
+            {
+                Debug.WriteLine($"Failed to set traffic to 100%: {ex.Message}");
+                IsError = true;
+                Caption = String.Format(Resources.CloudExplorerGaeFailedToMigrateAllTrafficCaption, _version.Id);
+            }
         }
 
         private void OnStartVersion()
@@ -167,16 +188,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             try
             {
-                Task<Operation> operationTask = dataSource.DeleteVersionAsync(_service.Id, _version.Id);
-                Func<Operation, Task<Operation>> fetch = (o) => dataSource.GetOperationAsync(o.GetOperationId());
-                Predicate<Operation> stopPolling = (o) => o.Done ?? false;
-                Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);
-                if (operation.Error != null)
-                {
-                    throw new DataSourceException(operation.Error.Message);
-                }
-                EventsReporterWrapper.ReportEvent(GaeVersionDeletedEvent.Create(CommandStatus.Success));
+                var operation = await dataSource.DeleteVersionAsync(_service.Id, _version.Id);
+                await dataSource.AwaitOperationAsync(operation);
                 _owner.InvalidateService(_service.Id);
+
+                EventsReporterWrapper.ReportEvent(GaeVersionDeletedEvent.Create(CommandStatus.Success));
             }
             catch (Exception ex) when (ex is DataSourceException || ex is TimeoutException || ex is OperationCanceledException)
             {
@@ -214,14 +230,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             try
             {
-                Task<Operation> operationTask = dataSource.UpdateVersionServingStatus(status, _service.Id, _version.Id);
-                Func<Operation, Task<Operation>> fetch = (o) => dataSource.GetOperationAsync(o.GetOperationId());
-                Predicate<Operation> stopPolling = (o) => o.Done ?? false;
-                Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);
-                if (operation.Error != null)
-                {
-                    throw new DataSourceException(operation.Error.Message);
-                }
+                var operation = await dataSource.UpdateVersionServingStatus(status, _service.Id, _version.Id);
+                await dataSource.AwaitOperationAsync(operation);
 
                 EventsReporterWrapper.ReportEvent(
                     GaeVersionServingStatusUpdatedEvent.Create(CommandStatus.Success, statusMessage));
@@ -255,7 +265,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         /// </summary>
         private string GetCaption()
         {
-            if (!_hasTrafficAllocation)
+            if (!HasTrafficAllocation)
             {
                 return _version.Id;
             }

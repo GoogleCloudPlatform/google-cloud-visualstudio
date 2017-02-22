@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -430,11 +430,38 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to migrate all traffic to {0}, please try again..
+        /// </summary>
+        public static string CloudExplorerGaeFailedToMigrateAllTrafficCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeFailedToMigrateAllTrafficCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading services....
         /// </summary>
         public static string CloudExplorerGaeLoadingServicesCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeLoadingServicesCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Migrate all traffic.
+        /// </summary>
+        public static string CloudExplorerGaeMigrateAllTrafficHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeMigrateAllTrafficHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Migrating all traffic to {0}.
+        /// </summary>
+        public static string CloudExplorerGaeMigratingAllTrafficCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeMigratingAllTrafficCaption", resourceCulture);
             }
         }
         

@@ -16,12 +16,12 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.Utils
+namespace GoogleCloudExtension.DataSources
 {
     /// <summary>
     /// This class represents a configuration to use for polling.
     /// </summary>
-    public class PollingConfiguration
+    internal class PollingConfiguration
     {
         /// <summary>
         /// The default polling interval.  This value is the delay between poll requests.
@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.Utils
     /// <summary>
     /// This class handles polling for a resource.
     /// </summary>
-    public class Polling<T>
+    internal class Polling<T>
     {
         /// <summary>
         /// Poll for a resource.
