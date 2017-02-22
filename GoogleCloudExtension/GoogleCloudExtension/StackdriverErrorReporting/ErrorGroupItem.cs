@@ -13,9 +13,10 @@
 // limitations under the License.
 
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
+using EventGroupTimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 using GoogleCloudExtension.Utils;
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -25,7 +26,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// Represents a <seealso cref="ErrorGroupStats"/> object that is displayed in data grid row.
     /// </summary>
     public class ErrorGroupItem : Model
-    { 
+    {
         /// <summary>
         /// The error group that represents a group of errors.
         /// </summary>
@@ -76,6 +77,16 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// Gets the formated <seealso cref="ErrorGroupStats.LastSeenTime"/>.
         /// </summary>
         public string LastSeenTime => FormatDateTime(ErrorGroup.LastSeenTime);
+
+        /// <summary>
+        /// Gets the time range of the <seealso cref="ErrorGroup"/>.
+        /// </summary>
+        public EventGroupTimeRangeEnum EventGroupTimeRange { get; }
+
+        /// <summary>
+        /// Gets the list of <seealso cref="TimedCount"/> of the error group.
+        /// </summary>
+        public IList<TimedCount> TimedCountList => ErrorGroup.TimedCounts;
 
         /// <summary>
         /// Initializes a new instance of <seealso cref="ErrorGroupItem"/> class.

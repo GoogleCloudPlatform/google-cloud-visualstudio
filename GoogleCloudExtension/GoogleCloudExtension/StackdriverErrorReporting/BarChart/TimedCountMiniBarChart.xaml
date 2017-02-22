@@ -1,47 +1,46 @@
-﻿<UserControl x:Class="GoogleCloudExtension.StackdriverErrorReporting.TimedCountMiniBarChart"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting"
-             xmlns:sys="clr-namespace:System;assembly=mscorlib"             
-             mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="50" 
-             Height="26"
-             d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True,Type=local:TimedCountBarChartViewModel}" 
-             x:Name="MiniBarChart">
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting"
+    xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils">
 
-    <UserControl.Resources>
-        <local:MultiplyConverter x:Key="multiplyConverter" />
-    </UserControl.Resources>
-    <StackPanel>
-        <ItemsControl 
-            x:Name="chartItemsControl"
-            ItemsSource="{Binding TimedCountCollection}" 
-            VerticalAlignment="Center" >
-            <ItemsControl.ItemTemplate>
-                <DataTemplate>
-                    <Rectangle Grid.Row="0"                                
-                               VerticalAlignment="Bottom" 
-                               Width="3"
-                               Margin="1, 0, 0, 0"
-                               Fill="Blue">
-                        <Rectangle.Height>
-                            <Binding Path="BarHeightRatio" Converter="{StaticResource multiplyConverter}"  
-                                     ConverterParameter="15" />
-                        </Rectangle.Height>
-                    </Rectangle>
-                    
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <UniformGrid Rows="1" IsItemsHost="True" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-        </ItemsControl>
-        <Line Stroke="Black" HorizontalAlignment="Stretch"
+    <Style x:Key="TimedCountMiniBarChartStyle" TargetType="local:TimedCountBarChartControl" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:TimedCountBarChartControl">
+                    <StackPanel>
+                        <ItemsControl 
+                            x:Name="PART_ChartItemsControl"
+                            ItemsSource="{Binding TimedCountItemCollection}" 
+                            VerticalAlignment="Center" >
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Rectangle Grid.Row="0"                                
+                                        VerticalAlignment="Bottom" 
+                                        Width="3"
+                                        Margin="1, 0, 0, 0"
+                                        Fill="Blue">
+                                        <Rectangle.Height>
+                                            <Binding Path="BarHeightRatio" 
+                                                     Converter="{utils:MultiplyConverter}"  
+                                                     ConverterParameter="15" />
+                                        </Rectangle.Height>
+                                    </Rectangle>
+
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Rows="1" IsItemsHost="True" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                        <Line Stroke="Black" HorizontalAlignment="Stretch"
                   X2="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"
                   StrokeDashArray="2 2" StrokeThickness="1" />
-    </StackPanel>
-</UserControl>
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

@@ -13,35 +13,24 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
-using System.Globalization;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
 
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
-    /// If the string is null or empty or whitespace, set the visibility to <seealso cref="Visibility.Collapsed"/>.
-    /// Otherwise, set the visibility as <seealso cref="Visibility.Visible"/>.
+    /// Multiplies the binding value and the parameter.
     /// Note: Only Convert is implemented, so this is not a bidirectional converter, do not use on TwoWay bindings.
     /// </summary>
-    public class NullEmptyInvisibleConverter : MarkupExtension, IValueConverter
-    {        
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public class MultiplyConverter : MarkupExtension, IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            if (value == null)
-            {
-                return Visibility.Collapsed;
-            }
-
-            if (value is string)
-            {
-                return String.IsNullOrWhiteSpace(value as string) ? Visibility.Collapsed : Visibility.Visible;
-            }
-
-            Debug.WriteLine($"Unexpected value type, Value should be a string: {value}");
-            return DependencyProperty.UnsetValue;
+            double v0 = (double)value;
+            double v1;
+            double.TryParse(parameter as string, out v1);
+            var ret = (int)(v0 * v1);
+            return ret;
         }
 
         public override object ProvideValue(IServiceProvider serviceProvider)
@@ -49,10 +38,9 @@ namespace GoogleCloudExtension.Utils
             return this;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 }
-

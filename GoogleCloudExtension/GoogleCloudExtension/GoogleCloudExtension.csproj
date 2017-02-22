@@ -236,6 +236,10 @@
       <DependentUpon>SplitTrafficWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\FixBackgroundComboBox.cs" />
+    <Compile Include="StackdriverErrorReporting\BarChart\TimedCountBarChartControl.cs" />
+    <Compile Include="StackdriverErrorReporting\BarChart\TimeCountItem.cs" />
+    <Compile Include="StackdriverErrorReporting\BarChart\TimedCountBarChartViewModel.cs" />
+    <Compile Include="StackdriverErrorReporting\BarChart\XLineItem.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorGroupItem.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindow.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindowControl.xaml.cs">
@@ -248,6 +252,7 @@
     <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowControl.xaml.cs">
       <DependentUpon>ErrorReportingToolWindowControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StackdriverErrorReporting\EventItem.cs" />
     <Compile Include="StackdriverErrorReporting\ServiceContextComparer.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingViewModel.cs" />
     <Compile Include="StackdriverErrorReporting\SerDataSourceInstance.cs" />
@@ -750,6 +755,10 @@
     <Resource Include="StackdriverLogsViewer\LogsViewerResources.xaml">
       <SubType>Designer</SubType>
     </Resource>
+    <Page Include="StackdriverErrorReporting\BarChart\TimedCountMiniBarChart.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="StackdriverErrorReporting\ErrorReportingDetailToolWindowControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

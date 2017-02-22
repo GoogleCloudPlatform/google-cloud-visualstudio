@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,64 +29,7 @@ using System.Linq;
 using System.Globalization;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
-{
-
-    public class MultiplyConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            double v0 = (double)value;
-            int v1;
-            int.TryParse(parameter as string, out v1);
-            var ret = (int)(v0 * v1);
-            return ret;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
-    }
-
-    public class TimedCountItem : Model
-    {
-        private readonly TimedCount _timedCount;
-
-        private long Count => _timedCount.Count.GetValueOrDefault();
-
-        public bool ShowTimeline => TimeLine != null;
-
-        public string TimeLine { get; }
-
-        public string ToolTipMessage => $"{Count} times in {"1 day"} {Environment.NewLine} Starting from {_timedCount.StartTime}.";
-
-        public int BarHeight { get; }
-
-        public double BarHeightRatio { get; }
-
-        public TimedCountItem(TimedCount timedCount, string timeLine, double heightMultiplier, double countScaleMultiplier)
-        {
-            _timedCount = timedCount;
-            TimeLine = timeLine;
-            BarHeight = (int)(Count * heightMultiplier);
-            BarHeightRatio = Count * countScaleMultiplier;
-        }
-    }
-
-    public class XLine : Model
-    {
-        public string CountScale { get; }
-
-        public int RowHeight => TimedCountBarChartViewModel.RowHeight;
-
-        public XLine(double scale)
-        {
-            CountScale = scale == 0 ? null :
-                String.Format(((Math.Round(scale) == scale) ? "{0:0}" : "{0:0.00}"), scale);
-        }
-    }
-
-
+{ 
     public class TimedCountBarChartViewModel : ViewModelBase
     {
         public const int RowNumber = 4;
@@ -101,19 +45,56 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             set { SetValueAndRaise(ref _isEmpty, value); }
         }
 
-        public IList<TimedCountItem> TimedCountCollection { get; }
+        public IList<TimedCountItem> TimedCountItemCollection { get; private set; }
 
-        public IList<XLine> XLines { get; }
-
-        public TimedCountBarChartViewModel(IList<TimedCount> timedCounts, EventGroupTimeRangeEnum timeRangeEnum)
+        private IList<TimedCount> _timedCountCollection;
+        public IList<TimedCount> TimedCountCollection
         {
-            long maxCount = timedCounts == null ? 0 : MaxCountScale(timedCounts.Max(x => x.Count.GetValueOrDefault()));
+            get { return _timedCountCollection; }
+            set { SetValueAndRaise(ref _timedCountCollection, value); }
+        }
 
-            XLines = new List<XLine>();
+        private TimedCountItem _selectedItem;
+        public TimedCountItem SelectedItem
+        {
+            get { return _selectedItem; }
+            set { SetValueAndRaise(ref _selectedItem, value); }
+        }
+
+        private EventGroupTimeRangeEnum _groupTimeRange;
+        public EventGroupTimeRangeEnum GroupTimeRange
+        {
+            get { return _groupTimeRange; }
+            set { SetValueAndRaise(ref _groupTimeRange, value); }
+        }
+
+        public IList<XLineItem> XLines { get; private set; }
+
+        public TimedCountBarChartViewModel()
+        {
+            PropertyChanged += OnPropertyChanged;
+        }
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(TimedCountCollection):
+                    OnUpdateTimedCountItems();
+                    break;
+            }
+        }
+
+        private void OnUpdateTimedCountItems()
+        {
+            var timedCounts = TimedCountCollection;
+            long maxCount = _timedCountCollection == null ? 0 : MaxCountScale(timedCounts.Max(x => x.Count.GetValueOrDefault()));
+
+            XLines = new List<XLineItem>();
             double countScaleUnit = (double)maxCount / RowNumber;
             for (int i = RowNumber; i > 0; --i)
             {
-                XLines.Add(new XLine(countScaleUnit * i));
+                XLines.Add(new XLineItem(countScaleUnit * i));
             }
 
             if (timedCounts == null)
@@ -126,7 +107,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             heightMultiplier = BarMaxHeight / maxCount;
             countScaleMultiplier = 1.00 / maxCount;
 
-
+            var timeRangeEnum = GroupTimeRange;
             string timeLineFormat;
             switch (timeRangeEnum)
             {
@@ -144,7 +125,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                     break;
             }
 
-            TimedCountCollection = new List<TimedCountItem>();
+            var timedCountItemList = new List<TimedCountItem>();
             int k = 0;
             Debug.Assert(timedCounts.Count > 25);
             foreach (var counter in timedCounts)
@@ -154,16 +135,16 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 DateTime startTime = (DateTime)counter.StartTime;
                 string timeLine = isVisible ? startTime.ToString(timeLineFormat) : null;
 
-                TimedCountCollection.Add(new TimedCountItem(counter, timeLine, heightMultiplier, countScaleMultiplier));
+                timedCountItemList.Add(new TimedCountItem(counter, timeLine, heightMultiplier, countScaleMultiplier));
                 ++k;
             }
 
-
+            TimedCountItemCollection = timedCountItemList;
         }
 
-        public TimedCountBarChartViewModel(): this(GenerateFakeRanges(), EventGroupTimeRangeEnum.PERIOD6HOURS)
-        {
-        }
+        //public TimedCountBarChartViewModel(): this(GenerateFakeRanges(), EventGroupTimeRangeEnum.PERIOD6HOURS)
+        //{
+        //}
 
         private long MaxCountScale(long maxCount)
         {

@@ -19,6 +19,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
                 <ResourceDictionary Source="./ErrorReportingResources.xaml" />
+                <ResourceDictionary Source="./BarChart/TimedCountMiniBarChart.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <utils:VisibilityConverter x:Key="visibilityConverter" />
@@ -36,6 +37,14 @@
                 </StackPanel>
             </DataTemplate>
 
+            <DataTemplate x:Key="OccurancesTemplate" >
+                <local:TimedCountBarChartControl 
+                    VerticalAlignment="Center"
+                    Style="{StaticResource TimedCountMiniBarChartStyle}"
+                    TimedCountList="{Binding TimedCountList}" 
+                    Margin="0,6,0,6" />
+            </DataTemplate>
+            
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -94,6 +103,10 @@
                 </DataGrid.Resources>
 
                 <DataGrid.Columns>
+                    <DataGridTemplateColumn 
+                        Header="Occurances" 
+                        CellTemplate="{StaticResource OccurancesTemplate}" />
+
                     <DataGridTextColumn 
                         Header="Users" 
                         Binding="{Binding ErrorGroup.AffectedUsersCount}" />
