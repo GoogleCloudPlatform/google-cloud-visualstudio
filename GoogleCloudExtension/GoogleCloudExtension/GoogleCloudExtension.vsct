@@ -97,7 +97,7 @@
           <ButtonText>Publish project to Google Cloud...</ButtonText>
         </Strings>
       </Button>    
-	  
+
       <!-- This command publishes the current project from the project's context menu. -->
       <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidGenerateConfigProjectContextMenuCommand" priority="0x0510" type="Button">
         <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpProjectContextMenu" />

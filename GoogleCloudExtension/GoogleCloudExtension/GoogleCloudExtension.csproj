@@ -241,7 +241,6 @@
       <DependentUpon>ErrorReportingToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverErrorReporting\ErrorReportingViewModel.cs" />
-    <Compile Include="StackdriverErrorReporting\SerDataSourceInstance.cs" />
     <Compile Include="StackdriverLogsViewer\AdvancedFilterExtension.cs" />
     <Compile Include="StackdriverLogsViewer\DateTimePicker.xaml.cs">
       <DependentUpon>DateTimePicker.xaml</DependentUpon>
