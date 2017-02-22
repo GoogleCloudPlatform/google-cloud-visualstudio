@@ -244,7 +244,8 @@
                                 <local:TimedCountBarChartControl
                                     Panel.ZIndex="10"
                                     Style="{StaticResource TimedCountBarChartStyle}"
-                                    TimedCountList="{Binding GroupItem.TimedCountList}" />
+                                    TimedCountList="{Binding GroupItem.TimedCountList}" 
+                                    GroupTimeRange="{Binding SelectedTimeRangeItem.GroupTimeRange}" />
                             </Grid>
 
                         </Border>

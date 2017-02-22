@@ -18,14 +18,22 @@ using System;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
+    /// <summary>
+    /// Wrapper on top of <seealso cref="TimedCount"/> as the bar chart item.
+    /// </summary>
     public class TimedCountItem : Model
     {
         private readonly TimedCount _timedCount;
-
         private long Count => _timedCount.Count.GetValueOrDefault();
 
+        /// <summary>
+        /// Gets if time line should be shown.
+        /// </summary>
         public bool ShowTimeline => TimeLine != null;
 
+        /// <summary>
+        /// Gets time line string.
+        /// </summary>
         public string TimeLine { get; }
 
         public string ToolTipMessage => $"{Count} times in {"1 day"} {Environment.NewLine} Starting from {_timedCount.StartTime}.";

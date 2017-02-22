@@ -21,7 +21,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     {
         public string CountScale { get; }
 
-        public int RowHeight => TimedCountBarChartViewModel.RowHeight;
+        public int RowHeight => TimedCountBarChartControl.RowHeight;
 
         public XLineItem(double scale)
         {

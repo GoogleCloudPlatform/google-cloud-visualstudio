@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Utils;
 using System.Windows.Controls;
-using System.Diagnostics;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -28,6 +27,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public ErrorReportingToolWindowControl()
         {
+            PackageUtils.ReferenceType(typeof(MultiplyConverter));
             this.InitializeComponent();
         }
     }
