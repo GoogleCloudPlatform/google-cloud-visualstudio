@@ -20,6 +20,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
                 <ResourceDictionary Source="./ErrorReportingResources.xaml" />
+                <ResourceDictionary Source="./BarChart/TimedCountBarChart.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <utils:VisibilityConverter x:Key="visibilityConverterNegated" IsNegated="True"/>
@@ -238,7 +239,9 @@
                                 Margin="6"
                                 Visibility="{Binding IsGroupLoading, Converter={utils:VisibilityConverter}}" />
 
-                                <!-- TODO: add time count bar chart />-->
+                                <local:TimedCountBarChartControl
+                                    Panel.ZIndex="10"
+                                    Style="{StaticResource TimedCountBarChartStyle}"
                             </Grid>
 
                         </Border>

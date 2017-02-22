@@ -26,10 +26,12 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// <summary>
     /// Base class for bar chart control on a collection of <seealso cref="TimedCount"/>
     /// </summary>
-    [TemplatePart(Name = "PART_chartItemsControl", Type = typeof(ItemsControl))]
+    [TemplatePart(Name = "PART_TimedCountItemsControl", Type = typeof(ItemsControl))]
+    [TemplatePart(Name = "PART_LineItemsControl", Type = typeof(ItemsControl))]    
     public class TimedCountBarChartControl : Control
     {
-        private ItemsControl _chartItemsControl;
+        private ItemsControl _timedCountItemsControl;
+        private ItemsControl _lineItemsControl;
 
         public static readonly DependencyProperty TimedCountListProperty =
             DependencyProperty.Register(
@@ -44,6 +46,13 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 typeof(EventGroupTimeRangeEnum),
                 typeof(TimedCountBarChartControl),
                 new FrameworkPropertyMetadata(EventGroupTimeRangeEnum.PERIODUNSPECIFIED));
+
+        public static readonly DependencyProperty IsEmptyProperty =
+            DependencyProperty.Register(
+                "IsEmpty",
+                typeof(bool),
+                typeof(TimedCountBarChartControl),
+                new FrameworkPropertyMetadata(true));
 
         /// <summary>
         /// Gets or sets the list of <seealso cref="TimedCount"/>.
@@ -65,15 +74,21 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             set { SetValue(GroupTimeRangeProperty, value); }
         }
 
-        //static TimedCountBarChartControl()
-        //{
-        //    DefaultStyleKeyProperty.OverrideMetadata(typeof(TimedCountBarChartControl), new FrameworkPropertyMetadata(typeof(TimedCountBarChartControl)));
-        //}
+        /// <summary>
+        /// Gets or sets the flag that indicate if the <seealso cref="TimedCountList"/> is empty.
+        /// <seealso cref="IsEmptyProperty"/>.
+        /// </summary>
+        public bool IsEmpty
+        {
+            get { return (bool)GetValue(IsEmptyProperty); }
+            set { SetValue(IsEmptyProperty, value); }
+        }
 
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            _chartItemsControl = Template.FindName("PART_ChartItemsControl", this) as ItemsControl;
+            _timedCountItemsControl = Template.FindName("PART_TimedCountItemsControl", this) as ItemsControl;
+            _lineItemsControl = Template.FindName("PART_LineItemsControl", this) as ItemsControl;
         }
 
         public const int RowNumber = 4;
@@ -81,13 +96,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public static int RowHeight => (int)(BarMaxHeight / RowNumber);
         private double heightMultiplier;
         private double countScaleMultiplier;
-
-        //private bool _isEmpty = true;
-        //public bool IsEmpty
-        //{
-        //    get { return _isEmpty; }
-        //    set { SetValueAndRaise(ref _isEmpty, value); }
-        //}
 
         public IList<TimedCountItem> TimedCountItemCollection { get; private set; }
 
@@ -105,9 +113,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             if (newValue != oldValue)
             {
                 control.OnUpdateTimedCountItems();
-                if (control._chartItemsControl != null)
+                if (control._timedCountItemsControl != null)
                 {
-                    control._chartItemsControl.ItemsSource = control.TimedCountItemCollection;
+                    control._timedCountItemsControl.ItemsSource = control.TimedCountItemCollection;
                 }
             }
         }
@@ -117,11 +125,16 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             var timedCounts = TimedCountList;
             long maxCount = TimedCountList == null ? 0 : MaxCountScale(timedCounts.Max(x => x.Count.GetValueOrDefault()));
 
-            XLines = new List<XLineItem>();
-            double countScaleUnit = (double)maxCount / RowNumber;
-            for (int i = RowNumber; i > 0; --i)
+            if (_lineItemsControl != null)
             {
-                XLines.Add(new XLineItem(countScaleUnit * i));
+                XLines = new List<XLineItem>();
+                double countScaleUnit = (double)maxCount / RowNumber;
+                for (int i = RowNumber; i > 0; --i)
+                {
+                    XLines.Add(new XLineItem(countScaleUnit * i));
+                }
+
+                _lineItemsControl.ItemsSource = XLines;
             }
 
             if (timedCounts == null)
@@ -129,7 +142,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 return;
             }
 
-            // IsEmpty = false;
+            IsEmpty = false;
 
             heightMultiplier = BarMaxHeight / maxCount;
             countScaleMultiplier = 1.00 / maxCount;

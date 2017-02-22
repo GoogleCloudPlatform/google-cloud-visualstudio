@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting"
+    xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting;assembly=GoogleCloudExtension"
     xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils">
 
     <Style x:Key="TimedCountMiniBarChartStyle" TargetType="local:TimedCountBarChartControl" >
@@ -10,7 +10,7 @@
                 <ControlTemplate TargetType="local:TimedCountBarChartControl">
                     <StackPanel>
                         <ItemsControl 
-                            x:Name="PART_ChartItemsControl"
+                            x:Name="PART_TimedCountItemsControl"
                             ItemsSource="{Binding TimedCountItemCollection}" 
                             VerticalAlignment="Center" >
                             <ItemsControl.ItemTemplate>
