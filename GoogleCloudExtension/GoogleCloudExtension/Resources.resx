@@ -1758,4 +1758,8 @@ Open the project of version {2} to properly locate the logging writter location.
     <value>Occurances</value>
     <comment>The header for showing error count.</comment>
   </data>
+  <data name="ErrorReportingToOverviewButtonCaption" xml:space="preserve">
+    <value>To overview window</value>
+    <comment>Go to overview back button caption.</comment>
+  </data>
 </root>
