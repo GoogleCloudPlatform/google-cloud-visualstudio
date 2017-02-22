@@ -1726,4 +1726,28 @@ Open the project of version {2} to properly locate the logging writter location.
     <value>Stack trace sample</value>
     <comment>Toggle showing stack trace button caption.</comment>
   </data>
+  <data name="ErrorReportingAffectedUsersHeader" xml:space="preserve">
+    <value>Users</value>
+    <comment>The header for affected users column.</comment>
+  </data>
+  <data name="ErrorReportingErrorAppHeader" xml:space="preserve">
+    <value>Seen in</value>
+    <comment>The header for the error context application name.</comment>
+  </data>
+  <data name="ErrorReportingErrorMessageHeader" xml:space="preserve">
+    <value>Error</value>
+    <comment>The header for showing error message.</comment>
+  </data>
+  <data name="ErrorReportingFirstErrorTimeHeader" xml:space="preserve">
+    <value>First seen</value>
+    <comment>The header for the first error time stamp.</comment>
+  </data>
+  <data name="ErrorReportingLastErrorTimeHeader" xml:space="preserve">
+    <value>Last seen</value>
+    <comment>The Header for the last error time stamp.</comment>
+  </data>
+  <data name="ErrorReportingServiceContextStatusCodeHeader" xml:space="preserve">
+    <value>Status</value>
+    <comment>The header for HTTP responds status code.</comment>
+  </data>
 </root>
