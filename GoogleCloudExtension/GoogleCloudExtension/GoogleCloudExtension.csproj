@@ -755,10 +755,12 @@
     <Resource Include="StackdriverLogsViewer\LogsViewerResources.xaml">
       <SubType>Designer</SubType>
     </Resource>
-    <Page Include="StackdriverErrorReporting\BarChart\TimedCountMiniBarChart.xaml">
+    <Resource Include="StackdriverErrorReporting\BarChart\TimedCountBarChart.xaml">
       <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
+    </Resource>
+    <Resource Include="StackdriverErrorReporting\BarChart\TimedCountMiniBarChart.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
     <Page Include="StackdriverErrorReporting\ErrorReportingDetailToolWindowControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

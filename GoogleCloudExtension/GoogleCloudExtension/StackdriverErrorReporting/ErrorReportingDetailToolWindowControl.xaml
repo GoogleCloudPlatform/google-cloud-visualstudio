@@ -242,6 +242,7 @@
                                 <local:TimedCountBarChartControl
                                     Panel.ZIndex="10"
                                     Style="{StaticResource TimedCountBarChartStyle}"
+                                    TimedCountList="{Binding GroupItem.TimedCountList}" />
                             </Grid>
 
                         </Border>

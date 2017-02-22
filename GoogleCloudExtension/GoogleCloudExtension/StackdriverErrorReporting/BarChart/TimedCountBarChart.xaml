@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting;assembly=GoogleCloudExtension"
     xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils">
 
 
@@ -20,6 +21,8 @@
                             Text="There is no data to show." 
                             VerticalAlignment="Center"
                             HorizontalAlignment="Center"
+                            Visibility="{TemplateBinding IsEmpty, Converter={StaticResource visibilityConverter}}" />
+                        <StackPanel Visibility="{TemplateBinding IsEmpty, Converter={utils:VisibilityConverter IsNegated=True}}" >
 
                             <TextBlock Text="Errors" Margin="12, 6, 0, 0" Height="30" VerticalAlignment="Center" />
 
