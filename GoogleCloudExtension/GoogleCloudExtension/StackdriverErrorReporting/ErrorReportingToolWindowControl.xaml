@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:tb="clr-namespace:GoogleCloudExtension.TitleBar"
              xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"             
              xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting"    
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"    
              xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"                     
@@ -67,7 +68,9 @@
                         Style="{StaticResource CommonTextStyle}"/>
                 </WrapPanel>
                 
-                <local:TimeRangeButtons Grid.Column="1" SelectedItem="{Binding SelectedTimeRangeItem, Mode=OneWayToSource}" />
+                <local:TimeRangeButtons 
+                    Grid.Column="1" 
+                    SelectedItem="{Binding SelectedTimeRangeItem, Mode=OneWayToSource}" />
             </Grid>
 
             <DataGrid 
@@ -92,13 +95,13 @@
 
                 <DataGrid.Columns>
                     <DataGridTextColumn 
-                        Header="Users" 
+                        Header="{x:Static ext:Resources.ErrorReportingAffectedUsersHeader}" 
                         Binding="{Binding ErrorGroup.AffectedUsersCount}" />
 
                     <DataGridTextColumn Binding="{Binding ErrorGroup.Count}" />
 
                     <DataGridTemplateColumn 
-                        Header="Error" 
+                        Header="{x:Static ext:Resources.ErrorReportingErrorMessageHeader}" 
                         Width="460"
                         CellTemplate="{StaticResource MessageStackTemplate}" />
 
@@ -107,15 +110,15 @@
                         Header="Seen in" />
 
                     <DataGridTextColumn 
-                        Header="First seen" 
+                        Header="{x:Static ext:Resources.ErrorReportingFirstErrorTimeHeader}" 
                         Binding="{Binding FirstSeenTime}" />
                     
                     <DataGridTextColumn 
-                        Header="Last seen" 
+                        Header="{x:Static ext:Resources.ErrorReportingLastErrorTimeHeader}" 
                         Binding="{Binding LastSeenTime}" />
 
                     <DataGridTextColumn 
-                        Header="Status" 
+                        Header="{x:Static ext:Resources.ErrorReportingServiceContextStatusCodeHeader}" 
                         Binding="{Binding Status}" />
 
                 </DataGrid.Columns>
