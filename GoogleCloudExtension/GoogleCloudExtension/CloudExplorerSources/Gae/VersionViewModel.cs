@@ -105,7 +105,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
 
             // If the version is stopped and has no traffic allocated to it allow it to be deleted.
-            if (HasTrafficAllocation && _version.IsStopped())
+            if (!HasTrafficAllocation && _version.IsStopped())
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGaeDeleteVersion, Command = new ProtectedCommand(OnDeleteVersion) });
             }
@@ -129,7 +129,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             }
             catch (DataSourceException ex)
             {
-                Debug.WriteLine($"Faile to set traffic to 100%: {ex.Message}");
+                Debug.WriteLine($"Failed to set traffic to 100%: {ex.Message}");
                 IsError = true;
                 Caption = String.Format(Resources.CloudExplorerGaeFailedToMigrateAllTrafficCaption, _version.Id);
             }
