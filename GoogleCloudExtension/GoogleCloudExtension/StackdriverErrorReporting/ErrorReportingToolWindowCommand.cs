@@ -59,6 +59,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             if (commandService != null)
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
+                var menuItem = new OleMenuCommand(ShowToolWindow, menuCommandID);
                 menuItem.BeforeQueryStatus += OnBeforeQueryStatus;
                 commandService.AddCommand(menuItem);
             }
