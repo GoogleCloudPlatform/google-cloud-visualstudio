@@ -1730,4 +1730,8 @@ Open the project of version {2} to properly locate the logging writter location.
     <value>Last seen</value>
     <comment>The Header for the last error time stamp.</comment>
   </data>
+  <data name="ErrorReportingServiceContextStatusCodeHeader" xml:space="preserve">
+    <value>Status</value>
+    <comment>The header for HTTP responds status code.</comment>
+  </data>
 </root>
