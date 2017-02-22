@@ -17,23 +17,20 @@ using Newtonsoft.Json;
 namespace GoogleCloudExtension.GCloud.Models
 {
     /// <summary>
-    /// This class contains the definition of a service.
+    /// This class contains the specification of a Kubernetest service in GKE.
     /// </summary>
-    public class GkeService
+    public class GkeServiceSpec
     {
-        /// <summary>
-        /// The metadata for the service.
-        /// </summary>
-        [JsonProperty("metadata")]
-        public GkeMetadata Metadata { get; set; }
+        // The value of the Type property for a public service.
+        public const string LoadBalancerType = "LoadBalancer";
 
-        /// <summary>
-        /// The status of the service.
-        /// </summary>
-        [JsonProperty("status")]
-        public GkeStatus Status { get; set; }
+        // The value of the Type property of a cluster only service.
+        public const string ClusterIpType = "ClusterIP";
 
-        [JsonProperty("spec")]
-        public GkeServiceSpec Spec { get; set; }
+        [JsonProperty("clusterIP")]
+        public string ClusterIp { get; set; }
+
+        [JsonProperty("type")]
+        public string Type { get; set; }
     }
 }

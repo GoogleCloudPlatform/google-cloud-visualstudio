@@ -44,8 +44,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private Cluster _selectedCluster;
         private string _deploymentName;
         private string _deploymentVersion;
-        private bool _exposeService = true;
-        private bool _openWebsite = true;
+        private bool _dontExposeService = true;
+        private bool _exposeService = false;
+        private bool _exposePublicService = false;
+        private bool _openWebsite = false;
         private string _replicas = "3";
 
         /// <summary>
@@ -99,12 +101,34 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         }
 
         /// <summary>
-        /// Whether a public service should be exposed for this deployment.
+        /// Whether the service should NOT be exposed, the opposite of <seealso cref="ExposeService"/>.
+        /// </summary>
+        public bool DontExposeService
+        {
+            get { return _dontExposeService; }
+            set { SetValueAndRaise(ref _dontExposeService, value); }
+        }
+
+        /// <summary>
+        /// Whether a service should be exposed for this deployment.
         /// </summary>
         public bool ExposeService
         {
             get { return _exposeService; }
-            set { SetValueAndRaise(ref _exposeService, value); }
+            set
+            {
+                SetValueAndRaise(ref _exposeService, value);
+                InvalidateExposeService();
+            }
+        }
+
+        /// <summary>
+        /// Whether the service to be exposed should be public on the internet or not.
+        /// </summary>
+        public bool ExposePublicService
+        {
+            get { return _exposePublicService; }
+            set { SetValueAndRaise(ref _exposePublicService, value); }
         }
 
         /// <summary>
@@ -222,6 +246,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                         DeploymentName = DeploymentName,
                         DeploymentVersion = DeploymentVersion,
                         ExposeService = ExposeService,
+                        ExposePublicService = ExposePublicService,
                         GCloudContext = gcloudContext,
                         KubectlContext = kubectlContext,
                         Replicas = int.Parse(Replicas),
@@ -259,23 +284,39 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                             GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentScaledMessage, options.DeploymentName, options.Replicas));
                         }
 
-                        if (result.WasExposed)
+                        if (result.ServiceUpdated)
                         {
-                            if (result.ServiceIpAddress != null)
+                            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishServiceUpdatedMessage, options.DeploymentName));
+                        }
+                        if (result.ServiceExposed)
+                        {
+                            if (result.PublicServiceIpAddress != null)
                             {
                                 GcpOutputWindow.OutputLine(
-                                    String.Format(Resources.GkePublishServiceIpMessage, DeploymentName, result.ServiceIpAddress));
+                                    String.Format(Resources.GkePublishServiceIpMessage, DeploymentName, result.PublicServiceIpAddress));
                             }
                             else
                             {
-                                GcpOutputWindow.OutputLine(Resources.GkePublishServiceIpTimeoutMessage);
+                                if (ExposePublicService)
+                                {
+                                    GcpOutputWindow.OutputLine(Resources.GkePublishServiceIpTimeoutMessage);
+                                }
+                                else
+                                {
+                                    GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishServiceClusterIpMessage, DeploymentName, result.ClusterServiceIpAddress));
+                                }
                             }
                         }
+                        if (result.ServiceDeleted)
+                        {
+                            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishServiceDeletedMessage, DeploymentName));
+                        }
+
                         StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
 
-                        if (OpenWebsite && result.WasExposed && result.ServiceIpAddress != null)
+                        if (OpenWebsite && result.ServiceExposed && result.PublicServiceIpAddress != null)
                         {
-                            Process.Start($"http://{result.ServiceIpAddress}");
+                            Process.Start($"http://{result.PublicServiceIpAddress}");
                         }
                     }
                     else
@@ -294,6 +335,15 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         }
 
         #endregion
+
+        private void InvalidateExposeService()
+        {
+            if (!ExposeService)
+            {
+                ExposePublicService = false;
+                OpenWebsite = false;
+            }
+        }
 
         private bool ValidateInput()
         {
