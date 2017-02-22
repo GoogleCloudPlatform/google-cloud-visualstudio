@@ -49,7 +49,8 @@
             
             <controls:ImageToggleButton 
                 Style="{StaticResource BackToOverviewButtonStyle}" 
-                UncheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/back_icon.png}"/>
+                UncheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/back_icon.png}"
+                CheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/back_icon.png}"/>
                         
         </StackPanel>
 
@@ -72,6 +73,7 @@
                 <StackPanel  Orientation="Horizontal">
                     <controls:ImageToggleButton 
                         Style="{StaticResource BackToOverviewButtonStyle}" 
+                        CheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/back_icon_12.png}"
                         UncheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/back_icon_12.png}"/>
                 </StackPanel>
             </Border>
