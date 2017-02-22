@@ -38,14 +38,14 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 "TimedCountList",
                 typeof(IList<TimedCount>),
                 typeof(TimedCountBarChartControl),
-                new FrameworkPropertyMetadata(null, OnTimedCountListChanged, null));
+                new FrameworkPropertyMetadata(null, OnDataChange, null));
 
         public static readonly DependencyProperty GroupTimeRangeProperty =
             DependencyProperty.Register(
                 "GroupTimeRange",
                 typeof(EventGroupTimeRangeEnum),
                 typeof(TimedCountBarChartControl),
-                new FrameworkPropertyMetadata(EventGroupTimeRangeEnum.PERIODUNSPECIFIED));
+                new FrameworkPropertyMetadata(EventGroupTimeRangeEnum.PERIODUNSPECIFIED, OnDataChange, null));
 
         public static readonly DependencyProperty IsEmptyProperty =
             DependencyProperty.Register(
@@ -102,15 +102,10 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public IList<XLineItem> XLines { get; private set; }
 
 
-        private static void OnTimedCountListChanged(DependencyObject source, DependencyPropertyChangedEventArgs e)
+        private static void OnDataChange(DependencyObject source, DependencyPropertyChangedEventArgs e)
         {
             TimedCountBarChartControl control = source as TimedCountBarChartControl;
-            IList<TimedCount> newValue = (IList<TimedCount>)e.NewValue;
-            IList<TimedCount> oldValue = (IList<TimedCount>)e.OldValue;
-            // SetTimeParts triggers OnTimePartPropertyChanged
-            // And it sets control.Time that calls back to current method OnTimePropertyChanged.
-            // This must be checked to avoid such a deadloop. 
-            if (newValue != oldValue)
+            if (e.NewValue != e.OldValue)
             {
                 control.OnUpdateTimedCountItems();
                 if (control._timedCountItemsControl != null)
