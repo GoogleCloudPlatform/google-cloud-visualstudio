@@ -1816,6 +1816,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Users.
+        /// </summary>
+        public static string ErrorReportingAffectedUsersHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingAffectedUsersHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users affected.
+        /// </summary>
+        public static string ErrorReportingAffectedUsersLongerHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingAffectedUsersLongerHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Errors in the last {0}.
         /// </summary>
         public static string ErrorReportingCurrentGroupTimePeriodLabelFormat {
@@ -1843,6 +1861,51 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Seen in.
+        /// </summary>
+        public static string ErrorReportingErrorAppHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingErrorAppHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Occurances.
+        /// </summary>
+        public static string ErrorReportingErrorCountHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingErrorCountHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string ErrorReportingErrorMessageHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingErrorMessageHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First seen.
+        /// </summary>
+        public static string ErrorReportingFirstErrorTimeHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingFirstErrorTimeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last seen.
+        /// </summary>
+        public static string ErrorReportingLastErrorTimeHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingLastErrorTimeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Go to overview window and select an error group.
         /// </summary>
         public static string ErrorReportingNoErrorGroupSelectedButtonCaption {
@@ -1861,6 +1924,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        public static string ErrorReportingServiceContextStatusCodeHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingServiceContextStatusCodeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stack trace sample.
         /// </summary>
         public static string ErrorReportingToggleStackSampleButtonCaption {
@@ -1875,6 +1947,15 @@ namespace GoogleCloudExtension {
         public static string ErrorReportingToolWindowCaption {
             get {
                 return ResourceManager.GetString("ErrorReportingToolWindowCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To overview window.
+        /// </summary>
+        public static string ErrorReportingToOverviewButtonCaption {
+            get {
+                return ResourceManager.GetString("ErrorReportingToOverviewButtonCaption", resourceCulture);
             }
         }
         

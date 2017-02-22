@@ -70,6 +70,7 @@
                 <controls:ImageToggleButton 
                     Style="{StaticResource BackButtonStyle}"
                     UncheckedImage="{mp:ImageResource StackdriverLogsViewer/Resources/back_icon_12.png}"
+                    CheckedImage="{mp:ImageResource StackdriverLogsViewer/Resources/back_icon_12.png}"
                     Content="{x:Static ext:Resources.LogsViewerTooltipBackButtonCaption}"
                     Command="{Binding BackToLogsViewerCommand}" />
                 <CheckBox 

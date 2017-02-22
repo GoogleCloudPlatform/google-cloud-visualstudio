@@ -496,7 +496,6 @@
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Foreground" Value="#FF3B78E7" />
         <Setter Property="MouseOverForeground" Value="#8A2BE2" />
-        <Setter Property="CheckedImage" Value="{Binding UncheckedImage}" />
     </Style>
 
     <!-- Common PasswordWithReveal style. -->
