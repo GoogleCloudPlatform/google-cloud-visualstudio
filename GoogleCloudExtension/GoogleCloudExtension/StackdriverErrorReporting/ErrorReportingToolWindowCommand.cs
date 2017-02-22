@@ -59,8 +59,10 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             if (commandService != null)
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
-                var menuItem = new OleMenuCommand(ShowToolWindow, menuCommandID);
-                menuItem.BeforeQueryStatus += OnBeforeQueryStatus;
+                var menuItem = new OleMenuCommand(
+                    (sender, e) => ToolWindowCommandUtils.ShowToolWindow<ErrorReportingToolWindow>(),
+                    menuCommandID);
+                menuItem.BeforeQueryStatus += ToolWindowCommandUtils.EnableMenuItemOnValidProjectId;
                 commandService.AddCommand(menuItem);
             }
         }
@@ -82,39 +84,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public static void Initialize(Package package)
         {
             Instance = new ErrorReportingToolWindowCommand(package);
-        }
-
-        /// <summary>
-        /// Shows the tool window when the menu item is clicked.
-        /// </summary>
-        /// <param name="sender">The event sender.</param>
-        /// <param name="e">The event args.</param>
-        private void ShowToolWindow(object sender, EventArgs e)
-        {
-            ErrorHandlerUtils.HandleExceptions(() =>
-            {
-                // Get the instance number 0 of this tool window. This window is single instance so this instance
-                // is actually the only one.
-                // The last flag is set to true so that if the tool window does not exists it will be created.
-                ToolWindowPane window = this._package.FindToolWindow(typeof(ErrorReportingToolWindow), 0, true);
-                if ((null == window) || (null == window.Frame))
-                {
-                    throw new NotSupportedException("Cannot create tool window");
-                }
-
-                IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
-                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
-            });
-        }
-
-        private void OnBeforeQueryStatus(object sender, EventArgs e)
-        {
-            var menuCommand = sender as OleMenuCommand;
-            if (menuCommand == null)
-            {
-                return;
-            }
-            menuCommand.Enabled = !String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId);
         }
     }
 }
