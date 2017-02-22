@@ -146,7 +146,7 @@
 
                                 <Border Grid.Column="0">
                                     <StackPanel >
-                                        <TextBlock Text="Occurances" />
+                                        <TextBlock Text="{x:Static ext:Resources.ErrorReportingErrorCountHeader}" />
                                         <TextBlock Text="{Binding GroupItem.ErrorGroup.Count}" />
                                     </StackPanel>
                                 </Border>
@@ -160,7 +160,7 @@
                                     Padding="6,0,12,0"                                     
                                     Visibility="{Binding GroupItem.ErrorGroup.AffectedUsersCount, Converter={utils:NullEmptyInvisibleConverter}}">
                                     <StackPanel>
-                                        <TextBlock Text="Users affected" />
+                                        <TextBlock Text="{x:Static ext:Resources.ErrorReportingAffectedUsersLongerHeader}" />
                                         <TextBlock Text="{Binding GroupItem.ErrorGroup.AffectedUsersCount}" />
                                     </StackPanel>
                                 </Border>
@@ -174,7 +174,7 @@
                                     BorderBrush="LightGray"
                                     Padding="6,0,0,0">
                                     <StackPanel>
-                                        <TextBlock Text="Seen in" />
+                                        <TextBlock Text="{x:Static ext:Resources.ErrorReportingErrorAppHeader}" />
                                         <TextBlock Text="{Binding GroupItem.SeenIn}" 
                                                    TextWrapping="Wrap"
                                                    MaxWidth="360" />
@@ -190,7 +190,7 @@
                                     Padding="6,0,12,0" 
                                     Visibility="{Binding GroupItem.Status, Converter={utils:NullEmptyInvisibleConverter}}">
                                     <StackPanel>
-                                        <TextBlock Text="Status" />
+                                        <TextBlock Text="{x:Static ext:Resources.ErrorReportingServiceContextStatusCodeHeader}" />
                                         <TextBlock Text="{Binding GroupItem.Status}" />
                                     </StackPanel>
                                 </Border>
@@ -204,7 +204,7 @@
                                     BorderBrush="LightGray"
                                     Padding="6,0,0,0">
                                     <StackPanel>
-                                        <TextBlock Text="First seen" />
+                                        <TextBlock Text="{x:Static ext:Resources.ErrorReportingFirstErrorTimeHead}" />
                                         <TextBlock Text="{Binding GroupItem.FirstSeenTime}" />
                                     </StackPanel>
                                 </Border>
@@ -217,7 +217,7 @@
                                     BorderBrush="LightGray"
                                     Padding="6,0,0,0" >
                                     <StackPanel>
-                                        <TextBlock Text="Last seen" />
+                                        <TextBlock Text="{x:Static ext:Resources.ErrorReportingLastErrorTimeHead}" />
                                         <TextBlock Text="{Binding GroupItem.LastSeenTime}" />
                                     </StackPanel>
                                 </Border>
