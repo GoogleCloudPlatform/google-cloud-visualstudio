@@ -139,6 +139,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
             if (timedCounts == null)
             {
+                IsEmpty = true;
                 return;
             }
 
