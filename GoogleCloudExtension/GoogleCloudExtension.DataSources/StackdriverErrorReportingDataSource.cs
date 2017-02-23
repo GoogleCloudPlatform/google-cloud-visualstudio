@@ -21,7 +21,7 @@ using EventTimeRange = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.
 using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.DataSources.ErrorReporting
+namespace GoogleCloudExtension.DataSources
 {
     /// <summary>
     /// Data source that returns Google Cloud Stackdriver Error Reporting group status and events.
