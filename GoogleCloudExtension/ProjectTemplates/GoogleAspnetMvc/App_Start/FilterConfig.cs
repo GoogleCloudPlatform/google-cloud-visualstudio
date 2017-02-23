@@ -11,10 +11,9 @@ namespace $safeprojectname$
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-	    // To enable Google Cloud Stackdriver Error Reporting:
-            // 1. Enable the Stackdriver Error Reporting API: 
-            //    https://console.cloud.google.com/apis/api/clouderrorreporting.googleapis.com
-            // 2. Edit Web.config. Replace "YOUR-PROJECT-ID" with your Google Cloud Project ID
+	    // To enable Google Cloud Stackdriver Error Reporting edit
+	    // Web.config and replace "YOUR-PROJECT-ID" with your Google Cloud
+	    // Project ID
 
             // [START error_reporting]
             // Check to ensure that projectId has been changed from placeholder value.
