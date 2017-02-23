@@ -76,6 +76,18 @@
       <HintPath>..\packages\Google.Apis.1.20.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Google.Cloud.Diagnostics.AspNet, Version=1.0.0.0, Culture=neutral, PublicKeyToken=185c282632e132a0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Cloud.Diagnostics.AspNet.1.0.0-beta05\lib\net45\Google.Cloud.Diagnostics.AspNet.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Google.Cloud.Diagnostics.Common, Version=1.0.0.0, Culture=neutral, PublicKeyToken=185c282632e132a0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Cloud.Diagnostics.Common.1.0.0-alpha04\lib\net45\Google.Cloud.Diagnostics.Common.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Google.Cloud.ErrorReporting.V1Beta1, Version=1.0.0.0, Culture=neutral, PublicKeyToken=185c282632e132a0, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Cloud.ErrorReporting.V1Beta1.1.0.0-beta03\lib\net45\Google.Cloud.ErrorReporting.V1Beta1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Google.Cloud.Logging.Log4Net, Version=1.0.0.0, Culture=neutral, PublicKeyToken=185c282632e132a0, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Cloud.Logging.Log4Net.1.0.0-beta08\lib\net45\Google.Cloud.Logging.Log4Net.dll</HintPath>
       <Private>True</Private>
