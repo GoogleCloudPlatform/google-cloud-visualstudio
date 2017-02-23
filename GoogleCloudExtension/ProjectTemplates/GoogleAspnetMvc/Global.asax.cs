@@ -34,7 +34,7 @@ namespace $safeprojectname$
 
             // [START enable_logging]
             // Retrieve a logger for this context.
-            ILog log = LogManager.GetLogger(typeof(WebApiConfig));
+            ILog log = LogManager.GetLogger(typeof(MvcApplication));
             // Log confirmation of set-up to Google Stackdriver Logging.
             log.Info("Stackdriver Logging with Log4net successfully configured for use.");
             log.Info("Stackdriver Error Reporting enabled: " +
