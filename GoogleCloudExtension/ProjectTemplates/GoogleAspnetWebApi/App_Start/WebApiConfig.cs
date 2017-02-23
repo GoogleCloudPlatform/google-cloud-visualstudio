@@ -35,12 +35,8 @@ namespace $safeprojectname$
                    + " with your Google Cloud Project ID, and recompile.");
             }
             // [START enable_error_reporting]
-            element =
-                (XmlElement)section.GetElementsByTagName("serviceName").Item(0);
-            string serviceName = element.Attributes["value"].Value;
-            element =
-                (XmlElement)section.GetElementsByTagName("version").Item(0);
-            string version = element.Attributes["value"].Value;
+	    var serviceName = ConfigurationManager.AppSettings["google_error_reporting:serviceName"];
+	    var version = ConfigurationManager.AppSettings["google_error_reporting:version"];
             // Add a catch all to log all uncaught exceptions to Stackdriver Error Reporting.
             config.Services.Add(typeof(IExceptionLogger),
                 ErrorReportingExceptionLogger.Create(projectId, serviceName, version));
