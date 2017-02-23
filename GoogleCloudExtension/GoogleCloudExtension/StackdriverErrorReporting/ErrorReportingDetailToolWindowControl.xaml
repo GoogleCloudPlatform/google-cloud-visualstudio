@@ -25,6 +25,7 @@
 
             <utils:VisibilityConverter x:Key="visibilityConverterNegated" IsNegated="True"/>
             <utils:VisibilityConverter x:Key="visibilityConverter" />
+            <utils:StringNullEmptyInvisibleConverter x:Key="stringNullEmptyInvisibleConverter" />
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -159,7 +160,7 @@
                                     BorderThickness="1,0,0,0"
                                     BorderBrush="LightGray"
                                     Padding="6,0,12,0"                                     
-                                    Visibility="{Binding GroupItem.ErrorGroup.AffectedUsersCount, Converter={utils:NullEmptyInvisibleConverter}}">
+                                    Visibility="{Binding GroupItem.ErrorGroup.AffectedUsersCount, Converter={StaticResource stringNullEmptyInvisibleConverter}}">
                                     <StackPanel>
                                         <TextBlock Text="{x:Static ext:Resources.ErrorReportingAffectedUsersLongerHeader}" />
                                         <TextBlock Text="{Binding GroupItem.ErrorGroup.AffectedUsersCount}" />
@@ -167,7 +168,7 @@
                                 </Border>
 
                                 <Border Grid.Column="3" 
-                                        Visibility="{Binding AffectedUsersCount, Converter={utils:NullEmptyInvisibleConverter}}" />
+                                        Visibility="{Binding AffectedUsersCount, Converter={StaticResource stringNullEmptyInvisibleConverter}}" />
 
                                 <Border 
                                     Grid.Column="4"
@@ -189,7 +190,7 @@
                                     BorderThickness="1,0,0,0"
                                     BorderBrush="LightGray"
                                     Padding="6,0,12,0" 
-                                    Visibility="{Binding GroupItem.Status, Converter={utils:NullEmptyInvisibleConverter}}">
+                                    Visibility="{Binding GroupItem.Status, Converter={StaticResource stringNullEmptyInvisibleConverter}}">
                                     <StackPanel>
                                         <TextBlock Text="{x:Static ext:Resources.ErrorReportingServiceContextStatusCodeHeader}" />
                                         <TextBlock Text="{Binding GroupItem.Status}" />
@@ -197,7 +198,7 @@
                                 </Border>
 
                                 <Border Grid.Column="7" 
-                                        Visibility="{Binding GroupItem.Status, Converter={utils:NullEmptyInvisibleConverter}}"/>
+                                        Visibility="{Binding GroupItem.Status, Converter={StaticResource stringNullEmptyInvisibleConverter}}"/>
 
                                 <Border 
                                     Grid.Column="8"
