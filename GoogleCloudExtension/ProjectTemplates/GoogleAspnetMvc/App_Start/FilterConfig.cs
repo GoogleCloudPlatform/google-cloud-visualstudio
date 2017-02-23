@@ -1,5 +1,8 @@
-﻿using System.Web;
+﻿using System.Configuration;
+using System.Web;
 using System.Web.Mvc;
+using System.Xml;
+using Google.Cloud.Diagnostics.AspNet;
 
 namespace $safeprojectname$
 {
