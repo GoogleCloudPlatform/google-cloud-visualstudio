@@ -43,7 +43,7 @@ namespace GoogleCloudExtension.Utils
             ToolWindowPane window = GoogleCloudExtensionPackage.Instance.FindToolWindow(typeof(TToolWindow), 0, true);
             ErrorHandlerUtils.HandleExceptions(() =>
             {
-                if ((null == window) || (null == window.Frame))
+                if (window?.Frame == null)
                 {
                     throw new NotSupportedException("Failed to create the tool window");
                 }
