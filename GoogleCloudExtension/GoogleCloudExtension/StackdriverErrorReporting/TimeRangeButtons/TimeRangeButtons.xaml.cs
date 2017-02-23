@@ -28,7 +28,38 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// </summary>
     public partial class TimeRangeButtons : ItemsControl
     {
-        private readonly ObservableCollection<TimeRangeItem> _timeRangeItems;
+        /// <summary>
+        /// The list of <seealso cref="TimeRangeItem"/> as the data source of time range buttons.
+        /// </summary>
+        public static readonly ObservableCollection<TimeRangeItem> TimeRangeItems =
+            new ObservableCollection<TimeRangeItem>(
+                new TimeRangeItem[]
+                {
+                    new TimeRangeItem(ErrorReporting1HourButtonCaption, 
+                        $"{60 * 60 / 30}s",
+                        TimeRangeEnum.PERIOD1HOUR,
+                        EventTimeRangeEnum.PERIOD1HOUR),
+                    new TimeRangeItem(
+                        ErrorReporting6HoursButtonCaption,
+                        $"{6 * 60 * 60 / 30}s",
+                        TimeRangeEnum.PERIOD6HOURS,
+                        EventTimeRangeEnum.PERIOD6HOURS),
+                    new TimeRangeItem(
+                        ErrorReporting1DayButtonCaption,
+                        $"{24 * 60 * 60 / 30}s",
+                        TimeRangeEnum.PERIOD1DAY,
+                        EventTimeRangeEnum.PERIOD1DAY),
+                    new TimeRangeItem(
+                        ErrorReporting7DaysButtonCaption,
+                        $"{7 * 24 * 60 * 60 / 30}s",
+                        TimeRangeEnum.PERIOD1WEEK,
+                        EventTimeRangeEnum.PERIOD1WEEK),
+                    new TimeRangeItem(
+                        ErrorReporting30DaysButtonCaption,
+                        $"{24 * 60 * 60}s",
+                        TimeRangeEnum.PERIOD30DAYS,
+                        EventTimeRangeEnum.PERIOD30DAYS)
+                });
 
         public static readonly DependencyProperty SelectedItemProperty =
             DependencyProperty.Register(
@@ -52,34 +83,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public TimeRangeButtons()
         {
-            // Note: caption is visible to user, the second parameter timedCountDuration is not.
-            _timeRangeItems = new ObservableCollection<TimeRangeItem>();
-            _timeRangeItems.Add(new TimeRangeItem(
-                ErrorReporting1HourButtonCaption, 
-                $"{60 * 60 / 30}s", 
-                TimeRangeEnum.PERIOD1HOUR, 
-                EventTimeRangeEnum.PERIOD1HOUR));
-            _timeRangeItems.Add(new TimeRangeItem(
-                ErrorReporting6HoursButtonCaption, 
-                $"{6 * 60 * 60 / 30}s", 
-                TimeRangeEnum.PERIOD6HOURS, 
-                EventTimeRangeEnum.PERIOD6HOURS));
-            _timeRangeItems.Add(new TimeRangeItem(
-                ErrorReporting1DayButtonCaption,
-                $"{24 * 60 * 60 / 30}s", 
-                TimeRangeEnum.PERIOD1DAY, 
-                EventTimeRangeEnum.PERIOD1DAY));
-            _timeRangeItems.Add(new TimeRangeItem(
-                ErrorReporting7DaysButtonCaption, 
-                $"{7 * 24 * 60 * 60 / 30}s", 
-                TimeRangeEnum.PERIOD1WEEK, 
-                EventTimeRangeEnum.PERIOD1WEEK));
-            _timeRangeItems.Add(new TimeRangeItem(
-                ErrorReporting30DaysButtonCaption,
-                $"{24 * 60 * 60}s",
-                TimeRangeEnum.PERIOD30DAYS,
-                EventTimeRangeEnum.PERIOD30DAYS));
-
             InitializeComponent();
         }
 
@@ -89,8 +92,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            ItemsSource = _timeRangeItems;
-            SelectedItem = _timeRangeItems.Last();
+            SelectedItem = TimeRangeItems.Last();
+            ItemsSource = TimeRangeItems;
         }
 
         private static void OnTimePartPropertyChanged(DependencyObject source, DependencyPropertyChangedEventArgs e)

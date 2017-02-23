@@ -229,7 +229,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnBrowseStackdriverLogCommand()
         {
-            var window = ToolWindowUtils.ShowToolWindow<LogsViewerToolWindow>();
+            var window = ToolWindowCommandUtils.ShowToolWindow<LogsViewerToolWindow>();
             window?.FilterVMInstanceLog(Instance.Id.Value.ToString());
         }
 
