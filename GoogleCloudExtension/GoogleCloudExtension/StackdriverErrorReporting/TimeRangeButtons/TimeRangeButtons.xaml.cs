@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// The list of <seealso cref="TimeRangeItem"/> as the data source of time range buttons.
         /// </summary>
-        public static readonly ObservableCollection<TimeRangeItem> TimeRangeItems =
+        private readonly ObservableCollection<TimeRangeItem> TimeRangeItems =
             new ObservableCollection<TimeRangeItem>(
                 new TimeRangeItem[]
                 {

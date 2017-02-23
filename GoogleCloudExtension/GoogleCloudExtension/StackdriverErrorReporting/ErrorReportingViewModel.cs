@@ -133,7 +133,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         {
             RaisePropertyChanged(nameof(IsGridVisible));
             _dataSource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
-            SelectedTimeRangeItem = TimeRangeButtons.TimeRangeItems.LastOrDefault();
             Reload();
         }
 
