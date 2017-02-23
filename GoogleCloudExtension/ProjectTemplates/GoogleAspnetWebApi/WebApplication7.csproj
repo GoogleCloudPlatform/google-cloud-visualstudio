@@ -404,7 +404,9 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\Grpc.Core.1.0.1\build\net45\Grpc.Core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Grpc.Core.1.0.1\build\net45\Grpc.Core.targets'))" />
   </Target>
+  <Import Project="..\packages\Grpc.Core.1.0.1\build\net45\Grpc.Core.targets" Condition="Exists('..\packages\Grpc.Core.1.0.1\build\net45\Grpc.Core.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
