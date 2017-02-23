@@ -2,9 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Web.Http;
+using System.Web.Http.ExceptionHandling;
 using Microsoft.Owin.Security.OAuth;
 using Newtonsoft.Json.Serialization;
+using System.Xml;
+using System.Configuration;
+using log4net;
+using Google.Cloud.Diagnostics.AspNet;
 
 namespace $safeprojectname$
 {
