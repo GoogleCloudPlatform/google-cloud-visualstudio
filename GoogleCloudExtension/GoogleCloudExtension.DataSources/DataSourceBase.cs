@@ -33,7 +33,7 @@ namespace GoogleCloudExtension.DataSources
         /// <summary>
         /// The projects/{ProjectId} string commonly used by Google Cloud APIs as project name.
         /// </summary>
-        protected string ProjectIdQuery => $"projects/{ProjectId}";
+        protected string ProjectResourceName => $"projects/{ProjectId}";
 
         /// <summary>
         /// The project ID to use for this data source.
