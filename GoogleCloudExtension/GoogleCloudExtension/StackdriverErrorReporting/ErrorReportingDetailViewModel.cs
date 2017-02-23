@@ -30,6 +30,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// </summary>
     public class ErrorReportingDetailViewModel : ViewModelBase
     {
+        private Lazy<StackdriverErrorReportingDataSource> _datasource;
         private bool _isGroupLoading;
         private bool _isEventLoading;
         private bool _isControlEnabled = true;
@@ -145,13 +146,18 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public ErrorReportingDetailViewModel()
         {
-            CredentialsStore.Default.Reset += (sender, e) =>
-            {
-                IsAccountReset = String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId);
-            };
-
-            OnBackToOverViewCommand = new ProtectedCommand(() => ToolWindowUtils.ShowToolWindow<ErrorReportingToolWindow>());
+            OnBackToOverViewCommand = new ProtectedCommand(() => ToolWindowCommandUtils.ShowToolWindow<ErrorReportingToolWindow>());
             PropertyChanged += OnPropertyChanged;
+            _datasource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
+        }
+
+        /// <summary>
+        /// Hide detail view content when project id is changed.s
+        /// </summary>
+        public void OnCurrentProjectChanged()
+        {
+            IsAccountReset = true;
+            _datasource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
         }
 
         /// <summary>
@@ -161,6 +167,15 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <param name="groupSelectedTimeRangeItem">The selected time range.</param>
         public void UpdateView(ErrorGroupItem errorGroupItem, TimeRangeItem groupSelectedTimeRangeItem)
         {
+            if (errorGroupItem == null)
+            {
+                throw new ErrorReportingException(new ArgumentNullException(nameof(errorGroupItem)));
+            }
+            if (groupSelectedTimeRangeItem == null)
+            {
+                throw new ErrorReportingException(new ArgumentNullException(nameof(groupSelectedTimeRangeItem)));
+            }
+
             IsAccountReset = false;
             GroupItem = errorGroupItem;
             if (SelectedTimeRangeItem != null && groupSelectedTimeRangeItem.EventTimeRange == SelectedTimeRangeItem.EventTimeRange)
@@ -191,13 +206,13 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             ShowException = false;
             try
             {
-                var groups = await SerDataSourceInstance.Current?.ListGroupStatusAsync(
+                var groups = await _datasource.Value?.GetPageOfGroupStatusAsync(
                     SelectedTimeRangeItem.GroupTimeRange,
                     SelectedTimeRangeItem.TimedCountDuration,
                     GroupItem.ErrorGroup.Group.GroupId);
-                if (groups != null && groups.GroupStats != null && groups.GroupStats.Count > 0)
+                if (groups != null && groups.ErrorGroupStats != null && groups.ErrorGroupStats.Count > 0)
                 {
-                    GroupItem = new ErrorGroupItem(groups.GroupStats?[0]);
+                    GroupItem = new ErrorGroupItem(groups.ErrorGroupStats.FirstOrDefault());
                 }
                 else
                 {
@@ -256,7 +271,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 ShowException = false;
                 try
                 {
-                    var events = await SerDataSourceInstance.Current?.ListEventsAsync(
+                    var events = await _datasource.Value?.GetPageOfEventsAsync(
                         GroupItem.ErrorGroup, 
                         SelectedTimeRangeItem.EventTimeRange);
                     if (events != null && events.ErrorEvents != null)
@@ -278,6 +293,18 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             }
 
             RaisePropertyChanged(nameof(EventItemCollection));
+        }
+
+        private StackdriverErrorReportingDataSource CreateDataSource()
+        {
+            if (String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId))
+            {
+                return null;
+            }
+            return new StackdriverErrorReportingDataSource(
+                CredentialsStore.Default.CurrentProjectId,
+                CredentialsStore.Default.CurrentGoogleCredential,
+                GoogleCloudExtensionPackage.VersionedApplicationName);
         }
     }
 }

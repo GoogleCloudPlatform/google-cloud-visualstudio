@@ -237,7 +237,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         private void NavigateToDetailWindow(ErrorGroupItem groupItem)
         {
-            var window = ToolWindowUtils.ShowToolWindow<ErrorReportingDetailToolWindow>();
+            var window = ToolWindowCommandUtils.ShowToolWindow<ErrorReportingDetailToolWindow>();
             window.ViewModel.UpdateView(groupItem, _selectedTimeRange);
 		}
 
