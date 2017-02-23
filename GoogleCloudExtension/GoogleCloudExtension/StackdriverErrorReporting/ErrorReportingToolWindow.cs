@@ -49,9 +49,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
             this.Content = new ErrorReportingToolWindowControl();
-
-            CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => CreateNewViewModel();
-            CredentialsStore.Default.Reset += (sender, e) => CreateNewViewModel();
         }
 
         /// <summary>
@@ -60,15 +57,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public override void OnToolWindowCreated()
         {
             base.OnToolWindowCreated();
-            CreateNewViewModel();
-        }
-
-        private void CreateNewViewModel()
-        {
-            SerDataSourceInstance.OnProjectIdChanged();
-            var control = Content as ErrorReportingToolWindowControl;
-            var newModel = new ErrorReportingViewModel();
-            control.DataContext = newModel;
+            (Content as ErrorReportingToolWindowControl).DataContext = new ErrorReportingViewModel();
+            CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => ViewModel.OnProjectIdChanged();
+            CredentialsStore.Default.Reset += (sender, e) => ViewModel.OnProjectIdChanged();
         }
     }
 }

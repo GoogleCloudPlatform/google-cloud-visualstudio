@@ -254,7 +254,6 @@
     <Compile Include="StackdriverErrorReporting\EventItem.cs" />
     <Compile Include="StackdriverErrorReporting\ServiceContextComparer.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingViewModel.cs" />
-    <Compile Include="StackdriverErrorReporting\SerDataSourceInstance.cs" />
     <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtons.xaml.cs">
       <DependentUpon>TimeRangeButtons.xaml</DependentUpon>
     </Compile>
@@ -322,7 +321,7 @@
     <Compile Include="Utils\ProtectedAction.cs" />
     <Compile Include="Utils\ProtectedCommand.cs" />
     <Compile Include="Utils\StringUtils.cs" />
-    <Compile Include="Utils\ToolWindowUtils.cs" />
+    <Compile Include="Utils\ToolWindowCommandUtils.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserViewModel.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindow.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml.cs">

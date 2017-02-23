@@ -28,6 +28,7 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public class NullEmptyInvisibleConverter : MarkupExtension, IValueConverter
     {        
+        #region Implements interface IValueConverter.
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value == null)
@@ -44,15 +45,18 @@ namespace GoogleCloudExtension.Utils
             return DependencyProperty.UnsetValue;
         }
 
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+        // Implement interface MarkupExtension
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
             return this;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
 

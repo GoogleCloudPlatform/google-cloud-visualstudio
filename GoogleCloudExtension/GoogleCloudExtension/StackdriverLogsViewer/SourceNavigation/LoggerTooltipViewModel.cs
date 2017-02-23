@@ -61,7 +61,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private void BackToLogsViewer()
         {
-            var window = ToolWindowUtils.ShowToolWindow<LogsViewerToolWindow>();
+            var window = ToolWindowCommandUtils.ShowToolWindow<LogsViewerToolWindow>();
             if (Log.Entry == null || window == null)
             {
                 Debug.WriteLine("Entry or window is null, this is likely a code bug");

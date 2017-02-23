@@ -15,13 +15,13 @@
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
-using GoogleCloudExtension.DataSources.ErrorReporting;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
@@ -32,14 +32,16 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// </summary>
     public class ErrorReportingViewModel : ViewModelBase
     {
+        private Lazy<StackdriverErrorReportingDataSource> _dataSource;
+
         private string _nextPageToken;
         private bool _isLoading;
         private bool _isRefreshing;
         private bool _isLoadingNextPage;
         private bool _showException;
         private string _exceptionString;
-        private TimeRangeItem _selectedTimeRange;
         private ObservableCollection<ErrorGroupItem> _groupStatsCollection;
+        private TimeRangeItem _selectedTimeRange;
 
         /// <summary>
         /// Gets an exception as string.
@@ -122,10 +124,21 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public ErrorReportingViewModel()
         {
+            _dataSource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
             _groupStatsCollection = new ObservableCollection<ErrorGroupItem>();
             GroupStatsView = new ListCollectionView(_groupStatsCollection);
             PropertyChanged += OnPropertyChanged;
             OnGotoDetailCommand = new ProtectedCommand<ErrorGroupItem>(NavigateToDetailWindow);
+        }
+
+        /// <summary>
+        /// Responds to current project id change event.
+        /// </summary>
+        public void OnProjectIdChanged()
+        {
+            RaisePropertyChanged(nameof(IsGridVisible));
+            _dataSource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
+            Reload();
         }
 
         /// <summary>
@@ -147,8 +160,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             switch (e.PropertyName)
             {
                 case nameof(SelectedTimeRangeItem):
-                    Reload();
-                    RaisePropertyChanged(nameof(CurrentTimeRangeCaption));
+                    if (_selectedTimeRange != null)
+                    {
+                        Reload();
+                        RaisePropertyChanged(nameof(CurrentTimeRangeCaption));
+                    }
                     break;
             }
         }
@@ -177,7 +193,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             }
 
             IsLoadingComplete = false;
-            GroupStatsRequestResult results = null;
+            ListGroupStatsResponse results = null;
             ShowException = false;
             IsRefreshing = _nextPageToken == null;
             IsLoadingNextPage = _nextPageToken != null;
@@ -187,7 +203,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 {
                     throw new ErrorReportingException(new InvalidOperationException(nameof(_selectedTimeRange)));
                 }
-                results = await SerDataSourceInstance.Current?.ListGroupStatusAsync(
+                results = await _dataSource.Value?.GetPageOfGroupStatusAsync(
                     _selectedTimeRange.GroupTimeRange,
                     _selectedTimeRange.TimedCountDuration,
                     nextPageToken: _nextPageToken);
@@ -206,7 +222,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
             // results can be null when (1) there is exception. (2) current account is empty.
             _nextPageToken = results?.NextPageToken;
-            AddItems(results?.GroupStats);
+            AddItems(results?.ErrorGroupStats);
         }
 
         private void AddItems(IList<ErrorGroupStats> groupStats)
@@ -229,8 +245,20 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         private void NavigateToDetailWindow(ErrorGroupItem groupItem)
         {
-            var window = ToolWindowUtils.ShowToolWindow<ErrorReportingDetailToolWindow>();
+            var window = ToolWindowCommandUtils.ShowToolWindow<ErrorReportingDetailToolWindow>();
             window.ViewModel.UpdateView(groupItem, _selectedTimeRange);
+		}
+
+        private StackdriverErrorReportingDataSource CreateDataSource()
+        {
+            if (String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId))
+            {
+                return null;
+            }
+            return new StackdriverErrorReportingDataSource(
+                CredentialsStore.Default.CurrentProjectId,
+                CredentialsStore.Default.CurrentGoogleCredential,
+                GoogleCloudExtensionPackage.VersionedApplicationName);
         }
     }
 }
