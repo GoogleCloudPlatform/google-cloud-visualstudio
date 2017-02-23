@@ -120,6 +120,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             }
 
             SelectedItem = button.DataContext as TimeRangeItem;
+            SelectedItem.IsCurrentSelection = true;
         }
     }
 }

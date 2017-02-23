@@ -33,7 +33,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// </summary>
     public class ErrorReportingViewModel : ViewModelBase
     {
-        private readonly Lazy<StackdriverErrorReportingDataSource> _dataSource;
+        private Lazy<StackdriverErrorReportingDataSource> _dataSource;
 
         private string _nextPageToken;
         private bool _isLoading;
@@ -130,7 +130,17 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             GroupStatsView = new ListCollectionView(_groupStatsCollection);
             PropertyChanged += OnPropertyChanged;
             OnGotoDetailCommand = new ProtectedCommand<ErrorGroupItem>(NavigateToDetailWindow);
+        }
+
+        /// <summary>
+        /// Responds to current project id change event.
+        /// </summary>
+        public void OnProjectIdChanged()
+        {
+            RaisePropertyChanged(nameof(IsGridVisible));
+            _dataSource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
             SelectedTimeRangeItem = TimeRangeButtons.TimeRangeItems.LastOrDefault();
+            Reload();
         }
 
         /// <summary>
