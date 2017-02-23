@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,21 +16,25 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Utils;
 using System;
 using System.ComponentModel.Design;
-using System.Diagnostics;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+namespace GoogleCloudExtension.StackdriverErrorReporting
 {
     /// <summary>
     /// Command handler
     /// </summary>
-    internal sealed class LogsViewerToolWindowCommand
+    internal sealed class ErrorReportingToolWindowCommand
     {
+        /// <summary>
+        /// VS Package that provides this command, not null.
+        /// </summary>
+        private readonly Package _package;
+
         /// <summary>
         /// Command ID.
         /// </summary>
-        public const int CommandId = 4235;
+        public const int CommandId = 4236;
 
         /// <summary>
         /// Command menu group (command set GUID).
@@ -38,61 +42,38 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public static readonly Guid CommandSet = new Guid("a7435138-27e2-410c-9d28-dffc5aa3fe80");
 
         /// <summary>
-        /// VS Package that provides this command, not null.
-        /// </summary>
-        private readonly Package package;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="LogsViewerToolWindowCommand"/> class.
+        /// Initializes a new instance of the <see cref="ErrorReportingToolWindowCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
-        private LogsViewerToolWindowCommand(Package package)
+        private ErrorReportingToolWindowCommand(Package package)
         {
             if (package == null)
             {
                 throw new ArgumentNullException("package");
             }
 
-            this.package = package;
+            _package = package;
 
             OleMenuCommandService commandService = this.ServiceProvider.GetService(typeof(IMenuCommandService)) as OleMenuCommandService;
             if (commandService != null)
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
-                var menuItem = new OleMenuCommand(this.ShowToolWindow, menuCommandID);
+                var menuItem = new OleMenuCommand(ShowToolWindow, menuCommandID);
+                menuItem.BeforeQueryStatus += OnBeforeQueryStatus;
                 commandService.AddCommand(menuItem);
-                Action setEnabled = () =>
-                {
-                    menuItem.Enabled = (CredentialsStore.Default?.CurrentAccount != null &&
-                        !string.IsNullOrWhiteSpace(CredentialsStore.Default?.CurrentProjectId));
-                };
-
-                setEnabled();
-                menuItem.BeforeQueryStatus += (sender, e) => setEnabled();
-                CredentialsStore.Default.Reset += (sender, e) => CloseWindow();
-            };
+            }
         }
 
         /// <summary>
         /// Gets the instance of the command.
         /// </summary>
-        public static LogsViewerToolWindowCommand Instance
-        {
-            get;
-            private set;
-        }
+        public static ErrorReportingToolWindowCommand Instance { get; private set; }
 
         /// <summary>
         /// Gets the service provider from the owner package.
         /// </summary>
-        private IServiceProvider ServiceProvider
-        {
-            get
-            {
-                return this.package;
-            }
-        }
+        private IServiceProvider ServiceProvider => _package;
 
         /// <summary>
         /// Initializes the singleton instance of the command.
@@ -100,32 +81,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="package">Owner package, not null.</param>
         public static void Initialize(Package package)
         {
-            Instance = new LogsViewerToolWindowCommand(package);
-        }
-
-        /// <summary>
-        /// Close the LogsViewerToolWindow when there is no account available.
-        /// </summary>
-        private static void CloseWindow()
-        {
-            ErrorHandlerUtils.HandleExceptions(() =>
-            {
-                // Get the instance number 0 of this tool window. This window is single instance so this instance
-                // is actually the only one.
-                // The last flag is set to true so that if the tool window does not exists it will be created.
-                ToolWindowPane window = GoogleCloudExtensionPackage.Instance.FindToolWindow(
-                    typeof(LogsViewerToolWindow), 0, false);
-                if (null == window?.Frame)
-                {
-                    Debug.WriteLine("Does not find LogsViewerToolWindow instance.");
-                }
-                else
-                {
-                    IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
-                    Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.CloseFrame(
-                        (uint)__FRAMECLOSE.FRAMECLOSE_NoSave));
-                }
-            });
+            Instance = new ErrorReportingToolWindowCommand(package);
         }
 
         /// <summary>
@@ -140,8 +96,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 // Get the instance number 0 of this tool window. This window is single instance so this instance
                 // is actually the only one.
                 // The last flag is set to true so that if the tool window does not exists it will be created.
-                ToolWindowPane window = this.package.FindToolWindow(typeof(LogsViewerToolWindow), 0, true);
-                if (null == window?.Frame)
+                ToolWindowPane window = this._package.FindToolWindow(typeof(ErrorReportingToolWindow), 0, true);
+                if ((null == window) || (null == window.Frame))
                 {
                     throw new NotSupportedException("Cannot create tool window");
                 }
@@ -149,6 +105,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
                 Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
             });
+        }
+
+        private void OnBeforeQueryStatus(object sender, EventArgs e)
+        {
+            var menuCommand = sender as OleMenuCommand;
+            if (menuCommand == null)
+            {
+                return;
+            }
+            menuCommand.Enabled = !String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId);
         }
     }
 }

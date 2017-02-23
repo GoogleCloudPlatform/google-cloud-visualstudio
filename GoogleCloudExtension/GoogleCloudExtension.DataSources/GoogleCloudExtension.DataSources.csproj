@@ -56,6 +56,10 @@
       <HintPath>..\packages\Google.Apis.Auth.1.20.0\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Google.Apis.Clouderrorreporting.v1beta1, Version=1.20.0.691, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Clouderrorreporting.v1beta1.1.20.0.691\lib\net45\Google.Apis.Clouderrorreporting.v1beta1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.20.0.713, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.20.0.713\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
       <Private>True</Private>
@@ -118,6 +122,7 @@
     <Compile Include="DatabaseInstanceExtensions.cs" />
     <Compile Include="DataSourceBase.cs" />
     <Compile Include="DataSourceException.cs" />
+    <Compile Include="StackdriverErrorReportingDataSource.cs" />
     <Compile Include="FirewallPort.cs" />
     <Compile Include="GaeDataSource.cs" />
     <Compile Include="GaeServiceExtensions.cs" />

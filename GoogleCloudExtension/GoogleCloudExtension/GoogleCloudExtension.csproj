@@ -235,6 +235,12 @@
       <DependentUpon>SplitTrafficWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\FixBackgroundComboBox.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindow.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowCommand.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowControl.xaml.cs">
+      <DependentUpon>ErrorReportingToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverErrorReporting\ErrorReportingViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\AdvancedFilterExtension.cs" />
     <Compile Include="StackdriverLogsViewer\DateTimePicker.xaml.cs">
       <DependentUpon>DateTimePicker.xaml</DependentUpon>
@@ -337,6 +343,13 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="StackdriverErrorReporting\Resources\back_icon.png" />
+    <Content Include="StackdriverErrorReporting\Resources\back_icon_12.png" />
+    <Content Include="StackdriverErrorReporting\Resources\eReport_menu_icon.png" />
+    <Content Include="StackdriverErrorReporting\Resources\pause_icon.png" />
+    <Content Include="StackdriverErrorReporting\Resources\play_icon.png" />
+    <Content Include="StackdriverErrorReporting\Resources\show_less_icon.png" />
+    <Content Include="StackdriverErrorReporting\Resources\show_more_icon.png" />
     <Resource Include="StackdriverLogsViewer\Resources\back_icon_12.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_any_12.png" />
     <Resource Include="PublishDialogSteps\ChoiceStep\Resources\ContainerEngine_128px_Retina.png" />
@@ -472,6 +485,10 @@
     </Reference>
     <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.20.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Auth.1.20.0\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Google.Apis.Clouderrorreporting.v1beta1, Version=1.20.0.691, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Clouderrorreporting.v1beta1.1.20.0.691\lib\net45\Google.Apis.Clouderrorreporting.v1beta1.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.20.0.713, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
@@ -715,6 +732,10 @@
     <Resource Include="StackdriverLogsViewer\LogsViewerResources.xaml">
       <SubType>Designer</SubType>
     </Resource>
+    <Page Include="StackdriverErrorReporting\ErrorReportingToolWindowControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="StackdriverLogsViewer\DateTimePicker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
