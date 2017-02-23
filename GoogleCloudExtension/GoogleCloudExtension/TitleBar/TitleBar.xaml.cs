@@ -21,15 +21,13 @@ namespace GoogleCloudExtension.TitleBar
     /// </summary>
     public partial class TitleBar : UserControl
     {
-        private static readonly TitleBarViewModel s_viewModel = new TitleBarViewModel();
-
         /// <summary>
         /// Initializes a new instance of <seealso cref="TitleBar"/> class.
         /// </summary>
         public TitleBar()
         {
             InitializeComponent();
-            DataContext = s_viewModel;
+            DataContext = TitleBarViewModel.Current;
         }
     }
 }
