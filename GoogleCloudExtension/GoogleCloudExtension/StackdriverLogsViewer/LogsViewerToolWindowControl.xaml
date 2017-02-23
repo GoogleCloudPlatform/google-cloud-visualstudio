@@ -113,7 +113,7 @@
         <tb:TitleBar />
         <Grid 
             Grid.Row="1"
-            Visibility="{Binding Project, Converter={utils:NullEmptyInvisibleConverter}}">
+            Visibility="{Binding Project, Converter={utils:StringNullEmptyInvisibleConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />

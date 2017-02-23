@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.Utils
     /// Otherwise, set the visibility as <seealso cref="Visibility.Visible"/>.
     /// Note: Only Convert is implemented, so this is not a bidirectional converter, do not use on TwoWay bindings.
     /// </summary>
-    public class NullEmptyInvisibleConverter : MarkupExtension, IValueConverter
+    public class StringNullEmptyInvisibleConverter : MarkupExtension, IValueConverter
     {
         #region Implements interface IValueConverter.
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -51,7 +51,9 @@ namespace GoogleCloudExtension.Utils
         }
         #endregion
 
-        // Implement interface MarkupExtension
+        /// <summary>
+        /// Implement interface MarkupExtension.
+        /// </summary>
         public override object ProvideValue(IServiceProvider serviceProvider)
         {
             return this;
