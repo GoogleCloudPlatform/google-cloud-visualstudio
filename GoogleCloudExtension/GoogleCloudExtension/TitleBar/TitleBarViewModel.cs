@@ -20,7 +20,7 @@ using System;
 namespace GoogleCloudExtension.TitleBar
 {
     /// <summary>
-    /// View modle to <seealso cref="TitleBar"/>.
+    /// View model to <seealso cref="TitleBar"/>.
     /// </summary>
     public class TitleBarViewModel : ViewModelBase
     {
