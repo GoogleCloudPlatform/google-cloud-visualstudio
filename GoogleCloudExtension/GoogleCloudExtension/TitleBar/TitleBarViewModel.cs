@@ -24,17 +24,7 @@ namespace GoogleCloudExtension.TitleBar
     /// </summary>
     public class TitleBarViewModel : ViewModelBase
     {
-        // Normally, new Lazy<TitleBarViewModel>() works.
-        // Adding () => new TitleBarViewModel() as walkaround of the exception:
-        //   "No parameterless constructor defined for this object."
-        private static Lazy<TitleBarViewModel> s_instance = 
-            new Lazy<TitleBarViewModel>(() => new TitleBarViewModel());
         private bool _showAccountManagementLink;
-
-        /// <summary>
-        /// Expose singleton <seealso cref="TitleBarViewModel"/>.
-        /// </summary>
-        public static TitleBarViewModel Current => s_instance.Value;
 
         /// <summary>
         /// Gets current account name.
@@ -64,7 +54,7 @@ namespace GoogleCloudExtension.TitleBar
         /// Initializes a new instance of <seealso cref="TitleBarViewModel"/> class.
         /// Make it private to enforce the singleton pattern.
         /// </summary>
-        private TitleBarViewModel()
+        public TitleBarViewModel()
         {
             OnGotoAccountManagementCommand = new ProtectedCommand(ManageAccountsWindow.PromptUser);
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnAccountProjectIdChanged();
