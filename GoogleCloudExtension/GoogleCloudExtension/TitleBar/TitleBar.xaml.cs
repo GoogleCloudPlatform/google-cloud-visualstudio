@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.TitleBar
@@ -27,7 +28,7 @@ namespace GoogleCloudExtension.TitleBar
         public TitleBar()
         {
             InitializeComponent();
-            DataContext = TitleBarViewModel.Current;
+            DataContext = new TitleBarViewModel();
         }
     }
 }
