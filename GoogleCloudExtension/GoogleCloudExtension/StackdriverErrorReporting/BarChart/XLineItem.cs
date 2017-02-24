@@ -17,12 +17,26 @@ using System;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
+    /// <summary>
+    /// Bar chart shows y-scale lines
+    /// </summary>
     public class XLineItem : Model
     {
+        /// <summary>
+        /// The scale value.
+        /// </summary>
         public string CountScale { get; }
 
+        /// <summary>
+        /// Height of each row.
+        /// A y-cale line is shown of each row.
+        /// </summary>
         public int RowHeight => TimedCountBarChartControl.RowHeight;
 
+        /// <summary>
+        /// Initializes a new instance of <seealso cref="XLineItem"/> class.
+        /// </summary>
+        /// <param name="scale"></param>
         public XLineItem(double scale)
         {
             CountScale = scale == 0 ? null :

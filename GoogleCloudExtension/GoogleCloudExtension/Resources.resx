@@ -1762,4 +1762,44 @@ Open the project of version {2} to properly locate the logging writter location.
     <value>To overview window</value>
     <comment>Go to overview back button caption.</comment>
   </data>
+  <data name="ErrorReportingBarchartTooltipFormat" xml:space="preserve">
+    <value>Error happened {0} time in {1} {2} Starting from {3}.</value>
+    <comment>The tooltip when mouse is on a bar of  the bar chart.</comment>
+  </data>
+  <data name="ErrorReporting1DayRangeTimeCountDurationLabel" xml:space="preserve">
+    <value>48 minutes</value>
+    <comment>The time count duration, for bar chart tooltip, when 1 day timed range is selected.</comment>
+  </data>
+  <data name="ErrorReporting1HourRangeTimeCountDurationLabel" xml:space="preserve">
+    <value>2 minutes</value>
+    <comment>The time count duration, for bar chart tooltip, when 1 hour timed range is selected.</comment>
+  </data>
+  <data name="ErrorReporting30DaysRangeTimeCountDurationLabel" xml:space="preserve">
+    <value>1 day</value>
+    <comment>The time count duration, for bar chart tooltip, when 30 day timed range is selected.</comment>
+  </data>
+  <data name="ErrorReporting6HoursRangeTimeCountDurationLabel" xml:space="preserve">
+    <value>12 minutes</value>
+    <comment>The time count duration, for bar chart tooltip, when 6 hour timed range is selected.</comment>
+  </data>
+  <data name="ErrorReporting7DayRangeTimeCountDurationLabel" xml:space="preserve">
+    <value>5.6 hours</value>
+    <comment>The time count duration, for bar chart tooltip, when 1 week timed range is selected.</comment>
+  </data>
+  <data name="ErrorReportingBarChartNoDataMesssage" xml:space="preserve">
+    <value>There is no data to show.</value>
+    <comment>When there is no any data, bar chart area shows this message.</comment>
+  </data>
+  <data name="ErrorReportingDayTimeLineFormat" xml:space="preserve">
+    <value>MMM d</value>
+    <comment>Format datetime in days format  for the bar chart x axis time line.</comment>
+  </data>
+  <data name="ErrorReportingDefaultTimeLineFormat" xml:space="preserve">
+    <value>MMM d HH:mm</value>
+    <comment>Default datetime format string for the bar chart x axis time line.</comment>
+  </data>
+  <data name="ErrorReportingTimeTimeLineFormat" xml:space="preserve">
+    <value>hh:mm tt</value>
+    <comment>Format datetime in hours, minutes for the bar chart x axis time line.</comment>
+  </data>
 </root>

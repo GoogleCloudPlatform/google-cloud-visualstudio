@@ -32,6 +32,12 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     {
         private ItemsControl _timedCountItemsControl;
         private ItemsControl _lineItemsControl;
+        private double heightMultiplier;
+        private double countScaleMultiplier;
+
+        public const int RowNumber = 4;
+        public const double BarMaxHeight = 120.00;
+        public static int RowHeight => (int)(BarMaxHeight / RowNumber);
 
         public static readonly DependencyProperty TimedCountListProperty =
             DependencyProperty.Register(
@@ -84,6 +90,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             set { SetValue(IsEmptyProperty, value); }
         }
 
+        /// <summary>
+        /// Initializes control and parts.
+        /// </summary>
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
@@ -91,48 +100,18 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             _lineItemsControl = Template.FindName("PART_LineItemsControl", this) as ItemsControl;
         }
 
-        public const int RowNumber = 4;
-        public const double BarMaxHeight = 120.00;
-        public static int RowHeight => (int)(BarMaxHeight / RowNumber);
-        private double heightMultiplier;
-        private double countScaleMultiplier;
-
-        public IList<TimedCountItem> TimedCountItemCollection { get; private set; }
-
-        public IList<XLineItem> XLines { get; private set; }
-
-
         private static void OnDataChange(DependencyObject source, DependencyPropertyChangedEventArgs e)
         {
             TimedCountBarChartControl control = source as TimedCountBarChartControl;
             if (e.NewValue != e.OldValue)
             {
                 control.OnUpdateTimedCountItems();
-                if (control._timedCountItemsControl != null)
-                {
-                    control._timedCountItemsControl.ItemsSource = control.TimedCountItemCollection;
-                }
             }
         }
 
         private void OnUpdateTimedCountItems()
         {
-            var timedCounts = TimedCountList;
-            long maxCount = TimedCountList == null ? 0 : MaxCountScale(timedCounts.Max(x => x.Count.GetValueOrDefault()));
-
-            if (_lineItemsControl != null)
-            {
-                XLines = new List<XLineItem>();
-                double countScaleUnit = (double)maxCount / RowNumber;
-                for (int i = RowNumber; i > 0; --i)
-                {
-                    XLines.Add(new XLineItem(countScaleUnit * i));
-                }
-
-                _lineItemsControl.ItemsSource = XLines;
-            }
-
-            if (timedCounts == null)
+            if (TimedCountList == null)
             {
                 IsEmpty = true;
                 return;
@@ -140,41 +119,51 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
             IsEmpty = false;
 
+            long maxCount = TimedCountList == null ? 0 : MaxCountScale(TimedCountList.Max(x => x.Count.GetValueOrDefault()));
+
+            if (_lineItemsControl != null)
+            {
+                CreateLineItems(maxCount);
+            }
+
+            if (_timedCountItemsControl != null)
+            {
+                CreateTimedCountItems(maxCount);
+            }
+        }
+
+        private void CreateTimedCountItems(long maxCount)
+        {
             heightMultiplier = BarMaxHeight / maxCount;
             countScaleMultiplier = 1.00 / maxCount;
 
-            var timeRangeEnum = GroupTimeRange;
-            string timeLineFormat;
-            switch (timeRangeEnum)
-            {
-                case EventGroupTimeRangeEnum.PERIOD1WEEK:
-                case EventGroupTimeRangeEnum.PERIOD30DAYS:
-                    timeLineFormat = "MMM d";
-                    break;
-                case EventGroupTimeRangeEnum.PERIOD1DAY:
-                case EventGroupTimeRangeEnum.PERIOD1HOUR:
-                case EventGroupTimeRangeEnum.PERIOD6HOURS:
-                    timeLineFormat = "hh:mm tt";
-                    break;
-                default:
-                    timeLineFormat = "MMM d HH:mm";
-                    break;
-            }
-
+            string timeLineFormat = GroupTimeRange.TimeLineFormat();
             var timedCountItemList = new List<TimedCountItem>();
             int k = 0;
-            Debug.Assert(timedCounts.Count > 25);
-            foreach (var counter in timedCounts)
+            foreach (var counter in TimedCountList)
             {
-                bool isVisible = (k == 0 || k == timedCounts.Count - 3 || k == timedCounts.Count / 3 || k == timedCounts.Count * 2 / 3);
-
+                // time line is shown first, last-3, and optional 2 in the middle.
+                bool isTimeLineVisible = (k == 0 || k == TimedCountList.Count - 3 || k == TimedCountList.Count / 3 || k == TimedCountList.Count * 2 / 3);
                 DateTime startTime = (DateTime)counter.StartTime;
-                string timeLine = isVisible ? startTime.ToString(timeLineFormat) : null;
+                string timeLine = isTimeLineVisible ? startTime.ToString(timeLineFormat) : null;
 
-                timedCountItemList.Add(new TimedCountItem(counter, timeLine, heightMultiplier, countScaleMultiplier));
+                timedCountItemList.Add(new TimedCountItem(counter, timeLine, heightMultiplier, countScaleMultiplier, GroupTimeRange.TimeCountDuration()));
                 ++k;
             }
-            TimedCountItemCollection = timedCountItemList;
+
+            _timedCountItemsControl.ItemsSource = timedCountItemList;
+        }
+
+        private void CreateLineItems(long maxCount)
+        {
+            var lineItems = new List<XLineItem>();
+            double countScaleUnit = (double)maxCount / RowNumber;
+            for (int i = RowNumber; i > 0; --i)
+            {
+                lineItems.Add(new XLineItem(countScaleUnit * i));
+            }
+
+            _lineItemsControl.ItemsSource = lineItems;
         }
 
         private long MaxCountScale(long maxCount)

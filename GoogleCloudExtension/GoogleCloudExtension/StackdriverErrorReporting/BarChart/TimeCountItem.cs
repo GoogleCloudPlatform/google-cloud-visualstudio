@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private long Count => _timedCount.Count.GetValueOrDefault();
 
         /// <summary>
-        /// Gets if time line should be shown.
+        /// Gets the flag that indicates if time line should be shown.
         /// </summary>
         public bool ShowTimeline => TimeLine != null;
 
@@ -36,15 +36,35 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public string TimeLine { get; }
 
-        public string ToolTipMessage => $"{Count} times in {"1 day"} {Environment.NewLine} Starting from {_timedCount.StartTime}.";
+        /// <summary>
+        /// Gets tooltip text.
+        /// </summary>
+        public string ToolTipMessage { get; }
 
+        /// <summary>
+        /// Gets the bar height.
+        /// </summary>
         public int BarHeight { get; }
 
+        /// <summary>
+        /// Gets the ratio of bar height per error count.
+        /// </summary>
         public double BarHeightRatio { get; }
 
-        public TimedCountItem(TimedCount timedCount, string timeLine, double heightMultiplier, double countScaleMultiplier)
+        /// <summary>
+        /// Initializes a new instance of <seealso cref="TimedCountItem"/> class.
+        /// </summary>
+        public TimedCountItem(
+            TimedCount timedCount, 
+            string timeLine, 
+            double heightMultiplier, 
+            double countScaleMultiplier, 
+            string timeRangeLabel)
         {
             _timedCount = timedCount;
+            // Example, $"{Count} times in {"1 day"} {Environment.NewLine} Starting from {_timedCount.StartTime}.";
+            ToolTipMessage = String.Format(Resources.ErrorReportingBarchartTooltipFormat, 
+                 Count, timeRangeLabel, Environment.NewLine, _timedCount.StartTime);
             TimeLine = timeLine;
             BarHeight = (int)(Count * heightMultiplier);
             BarHeightRatio = Count * countScaleMultiplier;

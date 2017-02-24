@@ -35,7 +35,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             new ObservableCollection<TimeRangeItem>(
                 new TimeRangeItem[]
                 {
-                    new TimeRangeItem(ErrorReporting1HourButtonCaption, 
+                    new TimeRangeItem(
+                        ErrorReporting1HourButtonCaption, 
                         $"{60 * 60 / 30}s",
                         TimeRangeEnum.PERIOD1HOUR,
                         EventTimeRangeEnum.PERIOD1HOUR),

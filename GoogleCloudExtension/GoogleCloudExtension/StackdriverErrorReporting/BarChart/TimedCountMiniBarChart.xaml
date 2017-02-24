@@ -18,7 +18,7 @@
                                     <Rectangle Grid.Row="0"                                
                                         VerticalAlignment="Bottom" 
                                         Width="3"
-                                        Margin="1, 0, 0, 0"
+                                        Margin="1,0,0,0"
                                         Fill="Blue">
                                         <Rectangle.Height>
                                             <Binding Path="BarHeightRatio" 
@@ -35,9 +35,11 @@
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                         </ItemsControl>
-                        <Line Stroke="Black" HorizontalAlignment="Stretch"
-                  X2="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"
-                  StrokeDashArray="2 2" StrokeThickness="1" />
+                        <Line Stroke="Black" 
+                              HorizontalAlignment="Stretch"
+                              X2="{Binding ActualWidth, RelativeSource={RelativeSource Self}}" 
+                              StrokeDashArray="2 2" 
+                              StrokeThickness="1" />
                     </StackPanel>
                 </ControlTemplate>
             </Setter.Value>

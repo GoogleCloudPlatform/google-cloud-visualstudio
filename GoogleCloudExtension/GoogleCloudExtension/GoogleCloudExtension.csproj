@@ -238,6 +238,7 @@
     <Compile Include="Controls\FixBackgroundComboBox.cs" />
     <Compile Include="StackdriverErrorReporting\BarChart\TimedCountBarChartControl.cs" />
     <Compile Include="StackdriverErrorReporting\BarChart\TimeCountItem.cs" />
+    <Compile Include="StackdriverErrorReporting\Extensions.cs" />
     <Compile Include="StackdriverErrorReporting\BarChart\XLineItem.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorGroupItem.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindow.cs" />
