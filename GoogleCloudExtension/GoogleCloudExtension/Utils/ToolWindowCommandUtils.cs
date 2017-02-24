@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Accounts;
 using System;
 using System.Diagnostics;
 using Microsoft.VisualStudio.Shell;
@@ -22,7 +23,7 @@ namespace GoogleCloudExtension.Utils
     /// <summary>
     /// This class contains helpers for ToolWindow
     /// </summary>
-    internal class ToolWindowUtils
+    internal static class ToolWindowCommandUtils
     {
         /// <summary>
         /// Shows the tool window
@@ -40,14 +41,33 @@ namespace GoogleCloudExtension.Utils
             // is actually the only one.
             // The last flag is set to true so that if the tool window does not exists it will be created.
             ToolWindowPane window = GoogleCloudExtensionPackage.Instance.FindToolWindow(typeof(TToolWindow), 0, true);
-            if ((null == window) || (null == window.Frame))
+            ErrorHandlerUtils.HandleExceptions(() =>
             {
-                throw new NotSupportedException("Failed to create the tool window");
-            }
+                if (window?.Frame == null)
+                {
+                    throw new NotSupportedException("Failed to create the tool window");
+                }
 
-            IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
-            Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+                IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
+                Microsoft.VisualStudio.ErrorHandler.ThrowOnFailure(windowFrame.Show());
+            });
             return window as TToolWindow;
+        }
+
+        /// <summary>
+        /// Response to <seealso cref="OleMenuCommand.BeforeQueryStatus"/> 
+        /// to enable menu item if current project id is valid.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event args.</param>
+        public static void EnableMenuItemOnValidProjectId(object sender, EventArgs e)
+        {
+            var menuCommand = sender as OleMenuCommand;
+            if (menuCommand == null)
+            {
+                return;
+            }
+            menuCommand.Enabled = !String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId);
         }
     }
 }

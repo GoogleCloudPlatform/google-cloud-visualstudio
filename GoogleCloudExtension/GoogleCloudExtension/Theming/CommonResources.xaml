@@ -426,6 +426,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:IconButton}">
                     <TextBlock x:Name="_textBlock" 
+                               Foreground="{TemplateBinding Foreground}"
                                Style="{StaticResource CommonTextStyle}"
                                TextWrapping="NoWrap"
                                TextTrimming="CharacterEllipsis">
