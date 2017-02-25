@@ -112,7 +112,7 @@ namespace GoogleCloudExtension.Controls
         private ObjectAnimationUsingKeyFrames CreateAnimationForTheme()
         {
             var theme = ForceTheme != VsTheme.Unknown ? ForceTheme : ThemeManager.GetCurrentTheme();
-            switch (ForceTheme)
+            switch (theme)
             {
                 case VsTheme.Dark:
                     return CreateAnimation(s_darkFrames.Value);
