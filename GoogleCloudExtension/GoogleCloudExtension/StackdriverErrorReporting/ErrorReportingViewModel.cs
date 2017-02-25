@@ -181,8 +181,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         /// <summary>
         /// Load data from Google Cloud Error Reporting API service end point.
-        /// It shows a progress bar when waiting for data.
-        /// In the end, if there is know type of exception, show the exception.
+        /// It shows a progress control when waiting for data.
+        /// In the end, if there is known type of exception, show the exception.
         /// </summary>
         private async Task LoadAsync()
         {

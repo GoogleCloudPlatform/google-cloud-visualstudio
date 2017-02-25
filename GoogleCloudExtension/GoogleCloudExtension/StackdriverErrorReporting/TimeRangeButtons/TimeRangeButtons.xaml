@@ -29,6 +29,8 @@
                     Style="{StaticResource CommonButtonStandardStyle}"
                     Content="{Binding Caption}" 
                     Click="timeRangeButton_Click"/>
+                
+                <!-- Draw a highlight line on the currently selected time range.-->
                 <Line 
                     Panel.ZIndex="20"
                     X1="2"

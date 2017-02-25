@@ -23,25 +23,39 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// </summary>
     internal class ServiceContextComparer : IEqualityComparer<ServiceContext>
     {
-        public bool Equals(ServiceContext x, ServiceContext y)
+        #region Implement IEqualityComparer interface
+
+        /// <summary>
+        /// Compare the Service and Version fields of two <seealso cref="ServiceContext"/> objects.
+        /// Service must not be null.
+        /// Version is optional, can be null.
+        /// </summary>
+        public bool Equals(ServiceContext self, ServiceContext other)
         {
-            // Service won't be null.
-            if (string.CompareOrdinal(x.Service, y.Service) != 0)
+            if (self == null || other == null || self.Service == null || other.Service == null)
+            {
+                throw new ErrorReportingException(new ArgumentNullException());
+            }
+            if (string.CompareOrdinal(self.Service, other.Service) != 0)
             {
                 return false;
             }
-            if (x.Version == null || y.Version == null && x.Version != y.Version)
+            if (self.Version == null || other.Version == null && self.Version != other.Version)
             {
                 return false;
             }
-            return string.CompareOrdinal(x.Version, y.Version) == 0;
+            return string.CompareOrdinal(self.Version, other.Version) == 0;
         }
 
         public int GetHashCode(ServiceContext obj)
         {
-            // Service won't be null.
+            if (obj == null)
+            {
+                throw new ErrorReportingException(new ArgumentNullException(nameof(obj)));
+            }
             int serviceCode = obj.Service.GetHashCode();
             return obj.Version == null ? serviceCode : serviceCode ^ obj.Version.GetHashCode();
         }
+        #endregion
     }
 }

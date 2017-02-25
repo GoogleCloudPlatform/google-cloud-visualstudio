@@ -134,10 +134,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         }
 
         /// <summary>
-        /// Format the <seealso cref="ServiceContext"/> as string.
+        /// Format the <seealso cref="ServiceContext"/> to a string.
         /// </summary>
-        /// <param name="serviceContext"></param>
-        /// <returns></returns>
         private string FormatServiceContext(ServiceContext serviceContext)
         {
             StringBuilder builder = new StringBuilder();
@@ -151,4 +149,4 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         }
     }
 }
-    
+   
