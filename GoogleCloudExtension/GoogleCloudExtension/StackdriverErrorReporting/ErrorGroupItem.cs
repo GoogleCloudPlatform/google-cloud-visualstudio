@@ -38,11 +38,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public ProtectedCommand OnNavigateToDetailCommand { get; }
 
         /// <summary>
-        /// The error message displayed in data grid row.
-        /// </summary>
-        public string Error => ErrorGroup.Representative.Message;
-
-        /// <summary>
         /// Show service context. 
         /// <seealso cref="ErrorGroupStats.AffectedServices"/>.
         /// </summary>

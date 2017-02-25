@@ -253,6 +253,8 @@
       <DependentUpon>ErrorReportingToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverErrorReporting\EventItem.cs" />
+    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\ParsedException.cs" />
+    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\StackFrame.cs" />
     <Compile Include="StackdriverErrorReporting\ServiceContextComparer.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingViewModel.cs" />
     <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtons.xaml.cs">
