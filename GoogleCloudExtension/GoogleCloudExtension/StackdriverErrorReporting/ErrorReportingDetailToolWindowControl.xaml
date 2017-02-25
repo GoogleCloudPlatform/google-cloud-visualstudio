@@ -264,17 +264,23 @@
                                     IsChecked="True"
                                     Style="{StaticResource ImageToggleButtonStyle}"
                                     Content="{x:Static ext:Resources.ErrorReportingToggleStackSampleButtonCaption}"/>
-
-                                <TextBox 
-                                    BorderThickness="0"
-                                    Padding="8,5,8,5"
-                                    Text="{Binding Stack, Mode=OneWay}" 
-                                    IsReadOnly="True"
-                                    AcceptsReturn="True"
-                                    TextWrapping="NoWrap"
-                                    HorizontalScrollBarVisibility="Auto"
-                                    Visibility="{Binding IsChecked, ElementName=traceSampleToggle, 
-                                    Converter={StaticResource visibilityConverter}}" />
+                                <TabControl>
+                                    <TabItem Header="Raw Stack">
+                                        <TextBox 
+                                            BorderThickness="0"
+                                            Padding="8,5,8,5"
+                                            Text="{Binding Stack, Mode=OneWay}" 
+                                            IsReadOnly="True"
+                                            AcceptsReturn="True"
+                                            TextWrapping="NoWrap"
+                                            HorizontalScrollBarVisibility="Auto"
+                                            Visibility="{Binding IsChecked, ElementName=traceSampleToggle, 
+                                                Converter={StaticResource visibilityConverter}}" />
+                                    </TabItem>
+                                    <TabItem Header="Parsed Stack">
+                                        <local:ParseExceptionView DataContext="{Binding ParsedException}"/>
+                                    </TabItem>
+                                </TabControl>
 
                             </StackPanel>
                         </Border>

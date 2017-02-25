@@ -254,6 +254,9 @@
     </Compile>
     <Compile Include="StackdriverErrorReporting\EventItem.cs" />
     <Compile Include="StackdriverErrorReporting\GotoSourceLocation\ParsedException.cs" />
+    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\ParseExceptionView.xaml.cs">
+      <DependentUpon>ParseExceptionView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StackdriverErrorReporting\GotoSourceLocation\StackFrame.cs" />
     <Compile Include="StackdriverErrorReporting\ServiceContextComparer.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingViewModel.cs" />
@@ -773,6 +776,10 @@
     <Resource Include="StackdriverErrorReporting\ErrorReportingResources.xaml">
       <SubType>Designer</SubType>
     </Resource>
+    <Page Include="StackdriverErrorReporting\GotoSourceLocation\ParseExceptionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtons.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

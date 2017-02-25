@@ -28,6 +28,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     public class ErrorGroupItem : Model
     {
         /// <summary>
+        /// Gets the parsed exception.
+        /// </summary>
+        public ParsedException ParsedException { get; }
+
+        /// <summary>
         /// The error group that represents a group of errors.
         /// </summary>
         public ErrorGroupStats ErrorGroup { get; }
@@ -98,11 +103,16 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             }
 
             ErrorGroup = errorGroup;
-            string[] lines = ErrorGroup.Representative?.Message?.Split(
-                    new string[] { "\r\n", "\n" }, 
-                    StringSplitOptions.RemoveEmptyEntries);
-            Message = lines?[0];
-            Stack = lines?[1];
+            if (ErrorGroup.Representative?.Message != null)
+            {
+                ParsedException = new ParsedException(ErrorGroup.Representative?.Message);
+            }
+            Message = ParsedException?.Header;
+            var frame1 = ParsedException?.StackFrames?.FirstOrDefault();
+            if (frame1 != null)
+            {
+                Stack = frame1.IsWellParsed ? frame1.Function : frame1.RawData;
+            }
             OnNavigateToDetailCommand = new ProtectedCommand(null);
         }
 
