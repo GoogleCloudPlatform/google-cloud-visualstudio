@@ -14,7 +14,6 @@
 
 using TimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 using EventTimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
-using static GoogleCloudExtension.Resources;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -36,27 +35,27 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 new TimeRangeItem[]
                 {
                     new TimeRangeItem(
-                        ErrorReporting1HourButtonCaption, 
+                        GoogleCloudExtension.Resources.ErrorReporting1HourButtonCaption, 
                         $"{60 * 60 / 30}s",
                         TimeRangeEnum.PERIOD1HOUR,
                         EventTimeRangeEnum.PERIOD1HOUR),
                     new TimeRangeItem(
-                        ErrorReporting6HoursButtonCaption,
+                        GoogleCloudExtension.Resources.ErrorReporting6HoursButtonCaption,
                         $"{6 * 60 * 60 / 30}s",
                         TimeRangeEnum.PERIOD6HOURS,
                         EventTimeRangeEnum.PERIOD6HOURS),
                     new TimeRangeItem(
-                        ErrorReporting1DayButtonCaption,
+                        GoogleCloudExtension.Resources.ErrorReporting1DayButtonCaption,
                         $"{24 * 60 * 60 / 30}s",
                         TimeRangeEnum.PERIOD1DAY,
                         EventTimeRangeEnum.PERIOD1DAY),
                     new TimeRangeItem(
-                        ErrorReporting7DaysButtonCaption,
+                        GoogleCloudExtension.Resources.ErrorReporting7DaysButtonCaption,
                         $"{7 * 24 * 60 * 60 / 30}s",
                         TimeRangeEnum.PERIOD1WEEK,
                         EventTimeRangeEnum.PERIOD1WEEK),
                     new TimeRangeItem(
-                        ErrorReporting30DaysButtonCaption,
+                        GoogleCloudExtension.Resources.ErrorReporting30DaysButtonCaption,
                         $"{24 * 60 * 60}s",
                         TimeRangeEnum.PERIOD30DAYS,
                         EventTimeRangeEnum.PERIOD30DAYS)
