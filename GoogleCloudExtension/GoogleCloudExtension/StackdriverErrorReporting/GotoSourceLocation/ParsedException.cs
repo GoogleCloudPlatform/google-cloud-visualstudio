@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 
@@ -20,7 +21,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// <summary>
     /// Exact header and stack frames from the Stackdriver Error Reporting error event message.
     /// </summary>
-    public class ParsedException
+    public class ParsedException : Model
     {
         /// <summary>
         /// "\r\n" (\u000D\u000A) for Windows

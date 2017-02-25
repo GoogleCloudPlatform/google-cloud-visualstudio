@@ -256,7 +256,7 @@
                             <StackPanel Margin="6">
 
                                 <controls:ImageToggleButton  
-                                    x:Name="traceSampleToggle"
+                                    x:Name="_traceSampleToggle"
                                     Padding="6"
                                     UncheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/show_more_icon.png}"
                                     CheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/show_less_icon.png}" 
@@ -264,7 +264,9 @@
                                     IsChecked="True"
                                     Style="{StaticResource ImageToggleButtonStyle}"
                                     Content="{x:Static ext:Resources.ErrorReportingToggleStackSampleButtonCaption}"/>
-                                <TabControl>
+                                <TabControl
+                                    Visibility="{Binding IsChecked, ElementName=_traceSampleToggle, 
+                                                Converter={StaticResource visibilityConverter}}" >
                                     <TabItem Header="Raw Stack">
                                         <TextBox 
                                             BorderThickness="0"
@@ -273,12 +275,10 @@
                                             IsReadOnly="True"
                                             AcceptsReturn="True"
                                             TextWrapping="NoWrap"
-                                            HorizontalScrollBarVisibility="Auto"
-                                            Visibility="{Binding IsChecked, ElementName=traceSampleToggle, 
-                                                Converter={StaticResource visibilityConverter}}" />
+                                            HorizontalScrollBarVisibility="Auto" />
                                     </TabItem>
                                     <TabItem Header="Parsed Stack">
-                                        <local:ParseExceptionView DataContext="{Binding ParsedException}"/>
+                                        <local:ParseExceptionView DataContext="{Binding GroupItem.ParsedException}"/>
                                     </TabItem>
                                 </TabControl>
 
