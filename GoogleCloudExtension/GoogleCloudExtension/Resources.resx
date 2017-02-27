@@ -1256,7 +1256,7 @@
     <comment>The message shown in the UI for the depoyment version textbox.</comment>
   </data>
   <data name="GkePublishExposeServiceCaption" xml:space="preserve">
-    <value>Expose a service.</value>
+    <value>Expose a service</value>
     <comment>Caption for the checkbox to set if the GKE service is to be exposed or not.</comment>
   </data>
   <data name="GkePublishMissingKubectlMessage" xml:space="preserve">
@@ -1472,11 +1472,11 @@
     <comment>Caption shown while migrating all traffic. {0} is the version id</comment>
   </data>
   <data name="GkePublishDontExposeServiceCaption" xml:space="preserve">
-    <value>Don't expose a service.</value>
+    <value>Don't expose a service</value>
     <comment>Caption for the option of not exposing the service.</comment>
   </data>
   <data name="GkePublishMakeServicePublicCaption" xml:space="preserve">
-    <value>Make service public.</value>
+    <value>Make service public</value>
     <comment>Caption for the checkbox to make a service public.</comment>
   </data>
   <data name="GkePublishServiceClusterIpMessage" xml:space="preserve">
