@@ -321,7 +321,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             try
             {
                 var operation = await _owner.DataSource.UpdateServiceTrafficSplitAsync(split, Service.Id);
-                await _owner.DataSource.AwaitOperationAsync(operation); 
+                await _owner.DataSource.AwaitOperationAsync(operation);
                 _owner.InvalidateService(_service.Id);
 
                 EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Success));
