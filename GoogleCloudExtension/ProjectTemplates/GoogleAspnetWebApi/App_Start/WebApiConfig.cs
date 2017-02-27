@@ -18,20 +18,30 @@ namespace $safeprojectname$
     {
         public static void Register(HttpConfiguration config)
         {
-	    // To enable Google Cloud Stackdriver Logging and Error Reporting
-	    // edit Web.config and Replace "YOUR-PROJECT-ID" with your Google
-	    // Cloud Project ID
+	    // To enable Google Cloud Stackdrive Logging and Error Reporting
+	    // while running on your local machine edit Web.config and uncomment
+	    // the <projectId> value under the <log4net> section. Ensure that
+	    // the <projectId> is set to a valid Google Cloud Project Id.
 
             // [START logging_and_error_reporting]
             // Check to ensure that projectId has been changed from placeholder value.
             var section = (XmlElement)ConfigurationManager.GetSection("log4net");
             XmlElement element =
                 (XmlElement)section.GetElementsByTagName("projectId").Item(0);
-            string projectId = element.Attributes["value"].Value;
+            string projectId = element?.Attributes["value"].Value;
             if (projectId == ("YOUR-PROJECT-ID"))
             {
                 throw new Exception("Update Web.config and replace YOUR-PROJECT-ID"
                    + " with your Google Cloud Project ID, and recompile.");
+            }
+            if (projectId == null)
+            {
+                projectId = Google.Api.Gax.Platform.Instance().GaeDetails?.ProjectId;
+                if (projectId == null)
+                {
+                    throw new Exception("The logging and error reporting libraries need a project ID. "
+                        + "Update Web.config and add a <projectId> entry in the <log4net> section.");
+                }
             }
             // [START enable_error_reporting]
 	    var serviceName = ConfigurationManager.AppSettings["google_error_reporting:serviceName"];
