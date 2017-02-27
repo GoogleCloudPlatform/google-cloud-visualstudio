@@ -19,7 +19,7 @@ namespace $safeprojectname$
             var section = (XmlElement)ConfigurationManager.GetSection("log4net");
             XmlElement element =
                 (XmlElement)section.GetElementsByTagName("projectId").Item(0);
-            string projectId = element.Attributes["value"].Value;
+            string projectId = element?.Attributes["value"].Value;
             // Configure logging only if projectId has been changed from placeholder value. 
             if (projectId != ("YOUR-PROJECT-ID"))
             {
