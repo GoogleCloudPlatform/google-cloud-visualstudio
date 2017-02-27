@@ -2,7 +2,7 @@
   <TemplateData>
     <Name>Google ASP.NET Core MVC</Name>
     <Description>ASP.NET Core MVC template for Google Cloud</Description>
-    <ProjectType>DNX</ProjectType>
+    <ProjectType>CSharp</ProjectType>
     <ProjectSubType>
     </ProjectSubType>
     <SortOrder>1000</SortOrder>
@@ -14,7 +14,7 @@
     <Icon>__TemplateIcon.png</Icon>
   </TemplateData>
   <TemplateContent>
-    <Project TargetFileName="WebApplication2.xproj" File="WebApplication2.xproj" ReplaceParameters="true">
+    <Project File="WebApplication2.xproj" ReplaceParameters="true">
       <Folder Name="Properties" TargetFolderName="Properties">
         <ProjectItem ReplaceParameters="true" TargetFileName="launchSettings.json">launchSettings.json</ProjectItem>
       </Folder>
