@@ -36,7 +36,7 @@ namespace $safeprojectname$
             }
             if (projectId == null)
             {
-                projectId = Google.Api.Gax.Platform.Instance().GaeDetails?.ProjectId;
+                projectId = Google.Api.Gax.Platform.Instance().GceDetails?.ProjectId;
                 if (projectId == null)
                 {
                     throw new Exception("The logging and error reporting libraries need a project ID. "
