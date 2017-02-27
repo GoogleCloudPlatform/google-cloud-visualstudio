@@ -3,8 +3,7 @@
     <Name>Google ASP.NET Core MVC</Name>
     <Description>ASP.NET Core MVC template for Google Cloud</Description>
     <ProjectType>CSharp</ProjectType>
-    <ProjectSubType>
-    </ProjectSubType>
+    <ProjectSubType>Web</ProjectSubType>
     <SortOrder>1000</SortOrder>
     <CreateNewFolder>true</CreateNewFolder>
     <DefaultName>GoogleAspNetCoreMvc</DefaultName>
@@ -12,6 +11,8 @@
     <LocationField>Enabled</LocationField>
     <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
     <Icon>__TemplateIcon.png</Icon>
+    <CreateInPlace>true</CreateInPlace>
+    <PromptForSaveOnCreation>true</PromptForSaveOnCreation>
   </TemplateData>
   <TemplateContent>
     <Project File="WebApplication2.xproj" ReplaceParameters="true">
