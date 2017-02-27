@@ -2077,7 +2077,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Don&apos;t expose a service..
+        ///   Looks up a localized string similar to Don&apos;t expose a service.
         /// </summary>
         public static string GkePublishDontExposeServiceCaption {
             get {
@@ -2104,7 +2104,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Expose a service..
+        ///   Looks up a localized string similar to Expose a service.
         /// </summary>
         public static string GkePublishExposeServiceCaption {
             get {
@@ -2140,7 +2140,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make service public..
+        ///   Looks up a localized string similar to Make service public.
         /// </summary>
         public static string GkePublishMakeServicePublicCaption {
             get {
