@@ -30,7 +30,7 @@
                                 Content="{Binding Message}"
                                 Command="{Binding NavigateDetailCommand}"
                                 HorizontalAlignment="Left" />
-                    <TextBlock Text="{Binding Stack}" Style="{StaticResource CommonTextStyle}"/>
+                    <TextBlock Text="{Binding FirstStackFrame}" Style="{StaticResource CommonTextStyle}"/>
                 </StackPanel>
             </DataTemplate>
 

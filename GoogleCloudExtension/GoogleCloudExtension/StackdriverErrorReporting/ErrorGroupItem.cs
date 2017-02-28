@@ -60,7 +60,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// The stack as string for the error group.
         /// </summary>
-        public string StackFirstFrame { get; }
+        public string FirstStackFrame { get; }
 
         /// <summary>
         /// Gets the affected user count. Could be null.
@@ -91,7 +91,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             if (lines != null)
             {
                 Message = lines.Count() > 0 ? lines[0] : null;
-                StackFirstFrame = lines.Count() > 1 ? lines[1] : null;
+                FirstStackFrame = lines.Count() > 1 ? lines[1] : null;
             }
             OnNavigateToDetailCommand = new ProtectedCommand(null);     // TODO: add handler in subsequent PR.
         }
