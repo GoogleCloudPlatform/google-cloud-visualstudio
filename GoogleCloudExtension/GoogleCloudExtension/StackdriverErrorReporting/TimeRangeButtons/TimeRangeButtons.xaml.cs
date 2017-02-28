@@ -14,7 +14,7 @@
 
 using TimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 using EventTimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -30,8 +30,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// The list of <seealso cref="TimeRangeItem"/> as the data source of time range buttons.
         /// </summary>
-        private readonly ObservableCollection<TimeRangeItem> TimeRangeItems =
-            new ObservableCollection<TimeRangeItem>(
+        private readonly List<TimeRangeItem> TimeRangeItems =
+            new List<TimeRangeItem>(
                 new TimeRangeItem[]
                 {
                     new TimeRangeItem(

@@ -32,21 +32,18 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public bool Equals(ServiceContext self, ServiceContext other)
         {
-            if (self == null || other == null || self.Service == null || other.Service == null)
-            {
-                throw new ErrorReportingException(new ArgumentNullException());
-            }
-            if (string.CompareOrdinal(self.Service, other.Service) != 0)
+            if (self == null || other == null)
             {
                 return false;
             }
-            if (self.Version == null || other.Version == null && self.Version != other.Version)
-            {
-                return false;
-            }
-            return string.CompareOrdinal(self.Version, other.Version) == 0;
+            return string.CompareOrdinal(self.Service, other.Service) == 0
+                && string.CompareOrdinal(self.Version, other.Version) == 0;
         }
 
+        /// <summary>
+        /// Consider the hash code same if Service and Version are same.
+        /// Even if there are differences in other fields, ignore them.
+        /// </summary>
         public int GetHashCode(ServiceContext obj)
         {
             if (obj == null)
