@@ -112,7 +112,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Group item stack.
         /// </summary>
-        public string StakcSummary => GroupItem?.Stack;
+        public string StakcSummary => GroupItem?.FirstStackFrame;
 
         /// <summary>
         /// The data collection of event item list.
