@@ -23,7 +23,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -322,7 +321,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             try
             {
                 var operation = await _owner.DataSource.UpdateServiceTrafficSplitAsync(split, Service.Id);
-                await _owner.DataSource.AwaitOperationAsync(operation); 
+                await _owner.DataSource.AwaitOperationAsync(operation);
                 _owner.InvalidateService(_service.Id);
 
                 EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Success));
