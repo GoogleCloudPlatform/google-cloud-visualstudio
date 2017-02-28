@@ -94,7 +94,6 @@ namespace GoogleCloudExtension.Deployment
                     return null;
                 }
 
-                NetCoreAppUtils.CopyOrCreateDockerfile(projectPath, stageDirectory);
                 CopyOrCreateAppYaml(projectPath, stageDirectory);
                 progress.Report(0.4);
 
