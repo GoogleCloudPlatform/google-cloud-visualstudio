@@ -15,6 +15,7 @@
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -48,6 +49,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public List<StackFrame> StackFrames { get; } = new List<StackFrame>();
 
         /// <summary>
+        /// Flag to indicate if parsed frames 
+        /// </summary>
+        public bool ShowParsedFrames { get; private set; }
+
+        /// <summary>
         /// Initializes a new instance of <seealso cref="ParsedException"/> class.
         /// </summary>
         /// <param name="exceptionMessage">
@@ -66,10 +72,20 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private void ParseMessage()
         {
             string[] lines = RawMessage.Split(s_lineBreaks, StringSplitOptions.RemoveEmptyEntries);
-            Header = lines?[0];
-            for (int i = 1; i < lines?.Length; ++i)
+            if (lines == null || lines.Length == 0)
             {
-                StackFrames.Add(new StackFrame(lines[i]));
+                return;
+            }
+
+            Header = lines[0];
+            for (int i = 1; i < lines.Length; ++i)
+            {
+                var frame = new StackFrame(lines[i]);
+                if (frame.IsWellParsed)
+                {
+                    ShowParsedFrames = true;
+                }
+                StackFrames.Add(frame);
             }
         }
     }
