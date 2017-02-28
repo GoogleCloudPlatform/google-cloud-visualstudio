@@ -61,6 +61,7 @@
     <Compile Include="JsonOutputException.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="MultplyConverter.cs" />
+    <Compile Include="NullObjectInvisibleConverter.cs" />
     <Compile Include="StringNullEmptyInvisibleConverter.cs" />
     <Compile Include="PlaceholderMessage.cs" />
     <Compile Include="Polling.cs" />

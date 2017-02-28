@@ -29,7 +29,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// "\n" (\u000A) for Unix
         /// "\r" (\u000D) for Mac(if such implementation existed)
         /// </summary>
-        private readonly string[] s_lineBreaks = new string[] { "\r\n", "\n", "\r" };
+        private static readonly string[] s_lineBreaks = new string[] { "\r\n", "\n", "\r" };
+        private readonly string[] _lines;
 
         /// <summary>
         /// The unparsed exception message.
@@ -40,18 +41,24 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// The header part of the stack message.
         /// The value can be null.
         /// </summary>
-        public string Header { get; private set; }
+        public string Header => _lines.Length > 0 ? _lines[0] : null;
 
         /// <summary>
         /// Gets the stack frames.
+        /// Please note, this uses lazy evaluation.
         /// It can be empty.
         /// </summary>
-        public List<StackFrame> StackFrames { get; } = new List<StackFrame>();
+        public List<StackFrame> StackFrames => ParseFrames();
 
         /// <summary>
         /// Flag to indicate if parsed frames 
         /// </summary>
-        public bool ShowParsedFrames { get; private set; }
+        public bool ShowParsedFrames => StackFrames.Any(x => x.IsWellParsed);
+
+        /// <summary>
+        /// Return first frame summary.
+        /// </summary>
+        public string FirstFrameSummary => StackFrames.FirstOrDefault()?.SummaryText;
 
         /// <summary>
         /// Initializes a new instance of <seealso cref="ParsedException"/> class.
@@ -66,27 +73,24 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 throw new ErrorReportingException(new ArgumentNullException(nameof(exceptionMessage)));
             }
             RawMessage = exceptionMessage;
-            ParseMessage();
+            _lines = RawMessage.Split(s_lineBreaks, StringSplitOptions.RemoveEmptyEntries);
         }
 
-        private void ParseMessage()
+        private List<StackFrame> ParseFrames()
         {
-            string[] lines = RawMessage.Split(s_lineBreaks, StringSplitOptions.RemoveEmptyEntries);
-            if (lines == null || lines.Length == 0)
+            if (_lines.Length <= 1)
             {
-                return;
+                return null;
             }
 
-            Header = lines[0];
-            for (int i = 1; i < lines.Length; ++i)
+            List<StackFrame> frameList = new List<StackFrame>();
+            for (int i = 1; i < _lines.Length; ++i)
             {
-                var frame = new StackFrame(lines[i]);
-                if (frame.IsWellParsed)
-                {
-                    ShowParsedFrames = true;
-                }
-                StackFrames.Add(frame);
+                var frame = new StackFrame(_lines[i]);
+                frameList.Add(frame);
             }
+
+            return frameList;
         }
     }
 }

@@ -68,6 +68,18 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public bool IsWellParsed { get; private set; }
 
         /// <summary>
+        /// The text to display for the frame.
+        /// If it is well parsed, display the function name.
+        /// Otherwise the raw data.
+        /// </summary>
+        public string SummaryText => IsWellParsed ? Function : RawData;
+
+        /// <summary>
+        /// The source file path and line number that is displayed to user.
+        /// </summary>
+        public string SourceLinkCaption => IsWellParsed ? $"{SourceFile}:{LineNumber}" : null;
+
+        /// <summary>
         /// Initializes a new instance of <seealso cref="StackFrame"/> class.
         /// </summary>
         /// <param name="raw">The stack frame message before parsed.</param>

@@ -23,6 +23,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// </summary>
     public class EventItem : Model
     {
+        private static readonly string[] s_lineBreaks = new string[] { "\r\n", "\n", "\r" };
         private readonly ErrorEvent _error;
 
         /// <summary>
@@ -47,8 +48,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public EventItem(ErrorEvent error)
         {
             _error = error;
-            var splits = _error.Message?.Split(new string[] { Environment.NewLine, "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            SummaryMessage = splits?[0];
+            var splits = _error.Message?.Split(s_lineBreaks, StringSplitOptions.RemoveEmptyEntries);
+            if (splits != null || splits.Length > 0)
+            {
+                SummaryMessage = splits[0];
+            }
         }
     }
 }

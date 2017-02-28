@@ -26,6 +26,7 @@
             <utils:VisibilityConverter x:Key="visibilityConverterNegated" IsNegated="True"/>
             <utils:VisibilityConverter x:Key="visibilityConverter" />
             <utils:StringNullEmptyInvisibleConverter x:Key="stringNullEmptyInvisibleConverter" />
+            <utils:NullObjectInvisibleConverter x:Key="nullObjectInvisibleConverter" />
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -95,13 +96,18 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock 
-                                Grid.Column="0"                
+                        <StackPanel>
+                            <TextBlock                                                 
                                 Margin="0,0,36,0"
+                                Style="{StaticResource CommonTextStyle}"
                                 FontWeight="DemiBold"
-                                Text="{Binding Message}"
-                                Style="{StaticResource CommonTextStyle}" />
-
+                                Text="{Binding Message}" />
+                            <local:MessageWithSourceLink 
+                                Margin="0,0,36,0"
+                                DataContext="{Binding FirstStackFrame}"
+                                Visibility="{Binding FirstStackFrame, Converter={StaticResource nullObjectInvisibleConverter}}" />
+                        </StackPanel>
+                        
                         <local:TimeRangeButtons 
                                 Grid.Column="1" 
                                 SelectedItem="{Binding SelectedTimeRangeItem, Mode=TwoWay}" 
@@ -253,36 +259,7 @@
 
                         <!-- stack trace sample -->
                         <Border Style="{StaticResource BorderCommonStyle}" >
-                            <StackPanel Margin="6">
-
-                                <controls:ImageToggleButton  
-                                    x:Name="_traceSampleToggle"
-                                    Padding="6"
-                                    UncheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/show_more_icon.png}"
-                                    CheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/show_less_icon.png}" 
-                                    HorizontalAlignment="Left"
-                                    IsChecked="True"
-                                    Style="{StaticResource ImageToggleButtonStyle}"
-                                    Content="{x:Static ext:Resources.ErrorReportingToggleStackSampleButtonCaption}"/>
-                                <TabControl
-                                    Visibility="{Binding IsChecked, ElementName=_traceSampleToggle, 
-                                                Converter={StaticResource visibilityConverter}}" >
-                                    <TabItem Header="Raw Stack">
-                                        <TextBox 
-                                            BorderThickness="0"
-                                            Padding="8,5,8,5"
-                                            Text="{Binding Stack, Mode=OneWay}" 
-                                            IsReadOnly="True"
-                                            AcceptsReturn="True"
-                                            TextWrapping="NoWrap"
-                                            HorizontalScrollBarVisibility="Auto" />
-                                    </TabItem>
-                                    <TabItem Header="Parsed Stack">
-                                        <local:ParseExceptionView DataContext="{Binding GroupItem.ParsedException}"/>
-                                    </TabItem>
-                                </TabControl>
-
-                            </StackPanel>
+                            <local:ParseExceptionView Margin="6" DataContext="{Binding }" />
                         </Border>
 
                         <!-- Recent samples. -->

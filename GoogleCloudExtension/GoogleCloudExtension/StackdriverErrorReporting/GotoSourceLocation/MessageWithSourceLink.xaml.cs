@@ -17,11 +17,11 @@ using System.Windows.Controls;
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
     /// <summary>
-    /// Interaction logic for ParseExceptionView.xaml
+    /// Interaction logic for MessageWithSourceLink.xaml
     /// </summary>
-    public partial class ParseExceptionView : UserControl
+    public partial class MessageWithSourceLink : UserControl
     {
-        public ParseExceptionView()
+        public MessageWithSourceLink()
         {
             InitializeComponent();
         }

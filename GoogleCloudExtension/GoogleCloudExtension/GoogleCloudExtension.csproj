@@ -253,6 +253,9 @@
       <DependentUpon>ErrorReportingToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverErrorReporting\EventItem.cs" />
+    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\MessageWithSourceLink.xaml.cs">
+      <DependentUpon>MessageWithSourceLink.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StackdriverErrorReporting\GotoSourceLocation\ParsedException.cs" />
     <Compile Include="StackdriverErrorReporting\GotoSourceLocation\ParseExceptionView.xaml.cs">
       <DependentUpon>ParseExceptionView.xaml</DependentUpon>
@@ -776,6 +779,10 @@
     <Resource Include="StackdriverErrorReporting\ErrorReportingResources.xaml">
       <SubType>Designer</SubType>
     </Resource>
+    <Page Include="StackdriverErrorReporting\GotoSourceLocation\MessageWithSourceLink.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="StackdriverErrorReporting\GotoSourceLocation\ParseExceptionView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

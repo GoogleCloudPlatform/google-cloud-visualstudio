@@ -60,9 +60,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public string Message { get; }
 
         /// <summary>
-        /// The stack as string for the error group.
+        /// The first stack frame summary for the error group.
         /// </summary>
-        public string FirstStackFrame { get; }
+        public string FirstStackFrame => ParsedException?.FirstFrameSummary;
 
         /// <summary>
         /// Gets the affected user count. Could be null.
@@ -102,11 +102,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 ParsedException = new ParsedException(ErrorGroup.Representative?.Message);
             }
             Message = ParsedException?.Header;
-            var frame1 = ParsedException?.StackFrames?.FirstOrDefault();
-            if (frame1 != null)
-            {
-                FirstStackFrame = frame1.IsWellParsed ? frame1.Function : frame1.RawData;
-            }
             OnNavigateToDetailCommand = new ProtectedCommand(null);
         }
 
