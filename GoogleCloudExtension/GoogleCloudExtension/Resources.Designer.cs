@@ -1843,6 +1843,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to retrieve data from cloud server. Please try later..
+        /// </summary>
+        public static string ErrorReportingDataSourceGenericErrorMessage {
+            get {
+                return ResourceManager.GetString("ErrorReportingDataSourceGenericErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to MM-dd-yyyy HH:mm:ss.fff.
         /// </summary>
         public static string ErrorReportingDateTimeFormat {

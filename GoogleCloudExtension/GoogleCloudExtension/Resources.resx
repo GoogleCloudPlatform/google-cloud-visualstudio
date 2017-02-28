@@ -1762,4 +1762,8 @@ Open the project of version {2} to properly locate the logging writter location.
     <value>To overview window</value>
     <comment>Go to overview back button caption.</comment>
   </data>
+  <data name="ErrorReportingDataSourceGenericErrorMessage" xml:space="preserve">
+    <value>Failed to retrieve data from cloud server. Please try later.</value>
+    <comment>Generic error message for Error Reporting when there is DataSource excepiton.</comment>
+  </data>
 </root>
