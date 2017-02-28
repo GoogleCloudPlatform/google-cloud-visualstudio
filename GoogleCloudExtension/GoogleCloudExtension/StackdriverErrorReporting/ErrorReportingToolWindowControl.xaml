@@ -34,7 +34,7 @@
                         Content="{Binding Message}"
                         Command="{Binding DataContext.OnGotoDetailCommand, ElementName=_errorReportingWindow}"
                         CommandParameter="{Binding}"/>
-                    <TextBlock Text="{Binding Stack}" Style="{StaticResource CommonTextStyle}"/>
+                    <TextBlock Text="{Binding FirstStackFrame}" Style="{StaticResource CommonTextStyle}"/>
                 </StackPanel>
             </DataTemplate>
 
@@ -98,7 +98,7 @@
                 CellStyle="{StaticResource cellStyle}"
                 RowStyle="{StaticResource rowStyle}" 
                 IsEnabled="{Binding IsLoadingComplete}"
-                Visibility="{Binding ShowException, Converter={StaticResource visibilityConverterNegated}}">
+                Visibility="{Binding ShowError, Converter={StaticResource visibilityConverterNegated}}">
                 <DataGrid.Resources>
                     <!-- Override the text highlight color. -->
                     <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
@@ -169,8 +169,8 @@
                 TextAlignment="Left" 
                 TextWrapping="Wrap"
                 Foreground="Red" 
-                Text="{Binding ExceptionString, Mode=OneWay}" 
-                Visibility="{Binding ShowException, Converter={StaticResource visibilityConverter}}" 
+                Text="{Binding ErrorString, Mode=OneWay}" 
+                Visibility="{Binding ShowError, Converter={StaticResource visibilityConverter}}" 
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 IsReadOnly="True" />
             

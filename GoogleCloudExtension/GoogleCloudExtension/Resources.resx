@@ -1802,4 +1802,8 @@ Open the project of version {2} to properly locate the logging writter location.
     <value>hh:mm tt</value>
     <comment>Format datetime in hours, minutes for the bar chart x axis time line.</comment>
   </data>
+  <data name="ErrorReportingDataSourceGenericErrorMessage" xml:space="preserve">
+    <value>Failed to retrieve data from cloud server. Please try later.</value>
+    <comment>Generic error message for Error Reporting when there is DataSource excepiton.</comment>
+  </data>
 </root>

@@ -17,6 +17,7 @@ using EventGroupTimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.Projects
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 
@@ -61,7 +62,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// The stack as string for the error group.
         /// </summary>
-        public string Stack { get; }
+        public string FirstStackFrame { get; }
 
         /// <summary>
         /// Gets the affected user count. Could be null.
@@ -71,12 +72,12 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Gets the formated <seealso cref="ErrorGroupStats.FirstSeenTime"/>.
         /// </summary>
-        public string FirstSeenTime => FormatDateTime(ErrorGroup.FirstSeenTime);
+        public string FirstSeenTime => FormatErrorGroupDateTime(ErrorGroup.FirstSeenTime);
 
         /// <summary>
         /// Gets the formated <seealso cref="ErrorGroupStats.LastSeenTime"/>.
         /// </summary>
-        public string LastSeenTime => FormatDateTime(ErrorGroup.LastSeenTime);
+        public string LastSeenTime => FormatErrorGroupDateTime(ErrorGroup.LastSeenTime);
 
         /// <summary>
         /// Gets the time range of the <seealso cref="ErrorGroup"/>.
@@ -90,11 +91,16 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         /// <summary>
         /// Initializes a new instance of <seealso cref="ErrorGroupItem"/> class.
+        /// <summary>
+        /// Gets the time range of the <seealso cref="ErrorGroup"/>.
         /// </summary>
-        /// <param name="errorGroup">
-        /// The error group that represents a group of errors.
-        /// <seealso cref="ErrorGroupStats"/>
-        /// </param>
+        public EventGroupTimeRangeEnum EventGroupTimeRange { get; }
+
+        /// <summary>
+        /// Gets the list of <seealso cref="TimedCount"/> of the error group.
+        /// </summary>
+        public IList<TimedCount> TimedCountList => ErrorGroup.TimedCounts;
+
         public ErrorGroupItem(ErrorGroupStats errorGroup)
         {
             if (errorGroup == null)
@@ -106,16 +112,42 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             string[] lines = ErrorGroup.Representative?.Message?.Split(
                     new string[] { "\r\n", "\n" }, 
                     StringSplitOptions.RemoveEmptyEntries);
-            Message = lines?[0];
-            Stack = lines?[1];
-            OnNavigateToDetailCommand = new ProtectedCommand(null);
+            if (lines != null)
+            {
+                Message = lines.Count() > 0 ? lines[0] : null;
+                FirstStackFrame = lines.Count() > 1 ? lines[1] : null;
+            }
+            OnNavigateToDetailCommand = new ProtectedCommand(null);     // TODO: add handler in subsequent PR.
         }
 
-        private static string FormatDateTime(object datetime)
+        /// <summary>
+        /// The input in compiling time is object. 
+        /// In runtime, it can be either a DateTime object or a UTC time formated string.
+        /// 
+        /// If it is not DateTime type or the string is failed to convert to UTC time. 
+        /// </summary>
+        /// <returns>
+        /// Formated time string to Local Time, Local Culture, if input is DateTime type or
+        ///   the input is string and can be converted to UTC time.
+        /// return null otherwise.
+        /// </returns>
+        private static string FormatErrorGroupDateTime(object datetime)
         {
-            return datetime is DateTime ? 
-                ((DateTime)datetime).ToString(Resources.ErrorReportingDateTimeFormat) 
-                : datetime?.ToString();
+            DateTime dt = DateTime.MinValue;
+            if (datetime is DateTime)
+            {
+                dt = (DateTime)datetime;
+            }
+            else if (datetime is string)
+            {
+                if (!DateTime.TryParse(datetime as string,
+                    CultureInfo.InvariantCulture, DateTimeStyles.AdjustToUniversal, out dt))
+                {
+                    return null;
+                }
+            }
+
+            return dt.ToLocalTime().ToString("F");
         }
 
         private string GetSeeIn()

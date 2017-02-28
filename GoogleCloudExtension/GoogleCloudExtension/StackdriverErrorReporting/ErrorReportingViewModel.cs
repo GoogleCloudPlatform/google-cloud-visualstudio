@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// This is for some known possible errors. 
         /// Mostly is for DataSourceException.
         /// </summary>
-        public string ExceptionString
+        public string ErrorString
         {
             get { return _exceptionString; }
             set { SetValueAndRaise(ref _exceptionString, value); }
@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Indicates if an exception is displayed in the window.
         /// </summary>
-        public bool ShowException
+        public bool ShowError
         {
             get { return _showException; }
             set { SetValueAndRaise(ref _showException, value); }
@@ -100,7 +100,16 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public TimeRangeItem SelectedTimeRangeItem
         {
-            set { SetValueAndRaise(ref _selectedTimeRange, value); }
+            get { return _selectedTimeRange; }
+            set
+            {
+                SetValueAndRaise(ref _selectedTimeRange, value);
+                if (_selectedTimeRange != null)
+                {
+                    Reload();
+                    RaisePropertyChanged(nameof(CurrentTimeRangeCaption));
+                }
+            }
         }
 
         /// <summary>
@@ -112,7 +121,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// Selected time range caption.
         /// </summary>
         public string CurrentTimeRangeCaption => String.Format(
-            Resources.ErrorReportingCurrentGroupTimePeriodLabelFormat, _selectedTimeRange?.Caption);
+            Resources.ErrorReportingCurrentGroupTimePeriodLabelFormat, SelectedTimeRangeItem?.Caption);
 
         /// <summary>
         /// Navigate to detail view window command.
@@ -127,18 +136,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             _dataSource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
             _groupStatsCollection = new ObservableCollection<ErrorGroupItem>();
             GroupStatsView = new ListCollectionView(_groupStatsCollection);
-            PropertyChanged += OnPropertyChanged;
             OnGotoDetailCommand = new ProtectedCommand<ErrorGroupItem>(NavigateToDetailWindow);
-        }
-
-        /// <summary>
-        /// Responds to current project id change event.
-        /// </summary>
-        public void OnProjectIdChanged()
-        {
-            RaisePropertyChanged(nameof(IsGridVisible));
-            _dataSource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
-            Reload();
+            CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnProjectIdChanged();
+            CredentialsStore.Default.Reset += (sender, e) => OnProjectIdChanged();
         }
 
         /// <summary>
@@ -155,18 +155,14 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             LoadAsync();
         }
 
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        /// <summary>
+        /// Responds to current project id change event.
+        /// </summary>
+        private void OnProjectIdChanged()
         {
-            switch (e.PropertyName)
-            {
-                case nameof(SelectedTimeRangeItem):
-                    if (_selectedTimeRange != null)
-                    {
-                        Reload();
-                        RaisePropertyChanged(nameof(CurrentTimeRangeCaption));
-                    }
-                    break;
-            }
+            RaisePropertyChanged(nameof(IsGridVisible));
+            _dataSource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
+            Reload();
         }
 
         /// <summary>
@@ -182,7 +178,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Load data from Google Cloud Error Reporting API service end point.
         /// It shows a progress control when waiting for data.
-        /// In the end, if there is known type of exception, show the exception.
+        /// In the end, if there is known type of exception, show a generic error..
         /// </summary>
         private async Task LoadAsync()
         {
@@ -194,24 +190,24 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
             IsLoadingComplete = false;
             ListGroupStatsResponse results = null;
-            ShowException = false;
+            ShowError = false;
             IsRefreshing = _nextPageToken == null;
             IsLoadingNextPage = _nextPageToken != null;
             try
             {
-                if (_selectedTimeRange == null)
+                if (SelectedTimeRangeItem == null)
                 {
-                    throw new ErrorReportingException(new InvalidOperationException(nameof(_selectedTimeRange)));
+                    throw new ErrorReportingException(new InvalidOperationException(nameof(SelectedTimeRangeItem)));
                 }
                 results = await _dataSource.Value?.GetPageOfGroupStatusAsync(
-                    _selectedTimeRange.GroupTimeRange,
-                    _selectedTimeRange.TimedCountDuration,
+                    SelectedTimeRangeItem.GroupTimeRange,
+                    SelectedTimeRangeItem.TimedCountDuration,
                     nextPageToken: _nextPageToken);
             }
-            catch (Exception ex) when (ex is DataSourceException || ex is ErrorReportingException)
+            catch (DataSourceException)
             {
-                ShowException = true;
-                ExceptionString = ex.ToString();
+                ShowError = true;
+                ErrorString = Resources.ErrorReportingDataSourceGenericErrorMessage;
             }
             finally
             {
