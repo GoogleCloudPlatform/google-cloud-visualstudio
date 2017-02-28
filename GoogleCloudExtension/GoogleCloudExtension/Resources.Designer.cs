@@ -2797,42 +2797,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install Google Cloud SDK.
-        /// </summary>
-        public static string ResetPasswordGcloudLinkCaption {
-            get {
-                return ResourceManager.GetString("ResetPasswordGcloudLinkCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the &quot;beta&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta..
-        /// </summary>
-        public static string ResetPasswordGcloudMissingBetaMessage {
-            get {
-                return ResourceManager.GetString("ResetPasswordGcloudMissingBetaMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the Google Cloud SDK is installed and available in the path, and that the &quot;beta&quot; component is installed. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link..
-        /// </summary>
-        public static string ResetPasswordGcloudMissingMessage {
-            get {
-                return ResourceManager.GetString("ResetPasswordGcloudMissingMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Missing Google Cloud SDK.
-        /// </summary>
-        public static string ResetPasswordMissingGcloudTitle {
-            get {
-                return ResourceManager.GetString("ResetPasswordMissingGcloudTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Resetting password for {0}.
         /// </summary>
         public static string ResetPasswordProgressMessage {
