@@ -39,13 +39,13 @@ namespace GoogleCloudExtension.DataSources
         /// <summary>
         /// The delay between poll requests.
         /// </summary>
-        public TimeSpan Interval;
+        public readonly TimeSpan Interval;
 
         /// <summary>
         /// The total time spent in delays between requests before a timeout is considered to
         /// have occured.
         /// </summary>
-        public TimeSpan Timeout;
+        public readonly TimeSpan Timeout;
 
         /// <summary>
         /// Create a new polling configuration.

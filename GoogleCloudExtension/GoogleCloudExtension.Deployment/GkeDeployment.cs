@@ -210,7 +210,7 @@ namespace GoogleCloudExtension.Deployment
                 var service = services?.FirstOrDefault(x => x.Metadata.Name == options.DeploymentName);
                 if (options.ExposeService)
                 {
-                    var requestedType = options.ExposePublicService ? 
+                    var requestedType = options.ExposePublicService ?
                         GkeServiceSpec.LoadBalancerType : GkeServiceSpec.ClusterIpType;
                     if (service != null && service?.Spec?.Type != requestedType)
                     {
