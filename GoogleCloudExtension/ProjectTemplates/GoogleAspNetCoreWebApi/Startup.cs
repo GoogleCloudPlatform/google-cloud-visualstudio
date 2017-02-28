@@ -51,18 +51,18 @@ namespace $safeprojectname$
 
 	    app.UseGoogleTrace();
 
-	    app.UseMvc();
-	}
+            app.UseMvc();
+        }
 
-	private string GetProjectId()
-	{
-	    string projectId = Configuration["ProjectId"];
-	    if (projectId == ("YOUR-PROJECT-ID"))
-	    {
-		throw new Exception("Update appsettings.json and replace YOUR-PROJECT-ID"
-		    + " with your Google Cloud Project ID, and recompile.");
-	    }
-	    if (projectId == null)
+        private string GetProjectId()
+        {
+            string projectId = Configuration["ProjectId"];
+            if (projectId == ("YOUR-PROJECT-ID"))
+            {
+                throw new Exception("Update appsettings.json and replace YOUR-PROJECT-ID"
+                    + " with your Google Cloud Project ID, and recompile.");
+            }
+            if (projectId == null)
 	    {
 		projectId = Google.Api.Gax.Platform.Instance().GceDetails?.ProjectId;
 		if (projectId == null)
