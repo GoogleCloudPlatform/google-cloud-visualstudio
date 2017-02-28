@@ -28,7 +28,8 @@
                     Width="56"
                     Style="{StaticResource CommonButtonStandardStyle}"
                     Content="{Binding Caption}" 
-                    Click="timeRangeButton_Click"/>
+                    Command="{Binding OnItemSelectedCommand, RelativeSource={RelativeSource  AncestorType={x:Type ItemsControl}}}"
+                    CommandParameter="{Binding}"/>
                 
                 <!-- Draw a highlight line on the currently selected time range.-->
                 <Line 

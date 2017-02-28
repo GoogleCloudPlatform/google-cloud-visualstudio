@@ -14,11 +14,13 @@
 
 using TimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 using EventTimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
+using GoogleCloudExtension.Utils;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -68,6 +70,13 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 typeof(TimeRangeButtons),
                 new FrameworkPropertyMetadata(null, OnTimePartPropertyChanged, null));
 
+        public static readonly DependencyProperty OnItemSelectedCommandProperty =
+            DependencyProperty.Register(
+                nameof(OnItemSelectedCommand),
+                typeof(ICommand),
+                typeof(TimeRangeButtons),
+                new FrameworkPropertyMetadata(null));
+
         /// <summary>
         /// The selected <seealso cref="TimeRangeItem"/> .
         /// </summary>
@@ -75,6 +84,15 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         {
             get { return (TimeRangeItem)GetValue(SelectedItemProperty); }
             set { SetValue(SelectedItemProperty, value); }
+        }
+
+        /// <summary>
+        /// The command that respond to the range item button click event.
+        /// </summary>
+        public ICommand OnItemSelectedCommand
+        {
+            get { return (ICommand)GetValue(OnItemSelectedCommandProperty); }
+            set { SetValue(OnItemSelectedCommandProperty, value); }
         }
 
         /// <summary>
@@ -93,6 +111,10 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             base.OnApplyTemplate();
             SelectedItem = TimeRangeItems.Last();
             ItemsSource = TimeRangeItems;
+            OnItemSelectedCommand = new ProtectedCommand<TimeRangeItem>((item) =>
+            {
+                SelectedItem = item;    
+            });
         }
 
         private static void OnTimePartPropertyChanged(DependencyObject source, DependencyPropertyChangedEventArgs e)
@@ -107,18 +129,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             {
                 newValue.IsCurrentSelection = true;
             }
-        }
-
-        private void timeRangeButton_Click(object sender, RoutedEventArgs e)
-        {
-            var button = sender as Button;
-            if (button == null)
-            {
-                Debug.WriteLine("timeRangeButton_Click, sender is not button. This is not expected. Code bug.");
-                return;
-            }
-
-            SelectedItem = button.DataContext as TimeRangeItem;
         }
     }
 }
