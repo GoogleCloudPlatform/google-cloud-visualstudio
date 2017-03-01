@@ -15,10 +15,12 @@
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.LinkPrompt;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
@@ -88,6 +90,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             var project = _publishDialog.Project;
             try
             {
+                var verifyGcloudTask = VerifyGCloudDependencies();
+                _publishDialog.TrackTask(verifyGcloudTask);
+                if (!await verifyGcloudTask)
+                {
+                    Debug.WriteLine("Gcloud dependencies not met, aborting publish operation.");
+                    return;
+                }
+
                 ShellUtils.SaveAllFiles();
 
                 var context = new GCloudContext
@@ -179,6 +189,29 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             content.DataContext = viewModel;
 
             return viewModel;
+        }
+
+        private static async Task<bool> VerifyGCloudDependencies()
+        {
+            if (!await GCloudWrapper.IsComponentInstalledAsync("beta"))
+            {
+                if (!GCloudWrapper.IsGCloudCliInstalled())
+                {
+                    LinkPromptDialogWindow.PromptUser(
+                        Resources.GcloudMissingGcloudErrorTitle,
+                        Resources.GcloudMissingCloudSdkErrorMessage,
+                        new LinkInfo(link: "https://cloud.google.com/sdk/", caption: Resources.GcloudInstallLinkCaption));
+                }
+                else
+                {
+                    UserPromptUtils.ErrorPrompt(
+                        message: Resources.GcloudMissingBetaComponentErrorMessage,
+                        title: Resources.GcloudMissingComponentTitle);
+                }
+                return false;
+            }
+
+            return true;
         }
     }
 }

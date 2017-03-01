@@ -418,9 +418,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 if (!GCloudWrapper.IsGCloudCliInstalled())
                 {
                     LinkPromptDialogWindow.PromptUser(
-                        Resources.ResetPasswordMissingGcloudTitle,
-                        Resources.ResetPasswordGcloudMissingMessage,
-                        new LinkInfo(link: "https://cloud.google.com/sdk/", caption: Resources.ResetPasswordGcloudLinkCaption));
+                        title: Resources.GcloudMissingGcloudErrorTitle,
+                        text: Resources.GcloudMissingCloudSdkErrorMessage,
+                        link: new LinkInfo(link: "https://cloud.google.com/sdk/", caption: Resources.GcloudInstallLinkCaption));
                 }
                 else
                 {

@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -1897,11 +1897,47 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Install Google Cloud SDK.
+        /// </summary>
+        public static string GcloudInstallLinkCaption {
+            get {
+                return ResourceManager.GetString("GcloudInstallLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To use this feature you need to have the &quot;beta&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta..
+        /// </summary>
+        public static string GcloudMissingBetaComponentErrorMessage {
+            get {
+                return ResourceManager.GetString("GcloudMissingBetaComponentErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To use this feature you need to have the Google Cloud SDK installed and available in the path. You also need the &quot;beta&quot; component installed for some features to be available. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link..
+        /// </summary>
+        public static string GcloudMissingCloudSdkErrorMessage {
+            get {
+                return ResourceManager.GetString("GcloudMissingCloudSdkErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Missing Google Cloud SDK Component.
         /// </summary>
         public static string GcloudMissingComponentTitle {
             get {
                 return ResourceManager.GetString("GcloudMissingComponentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing Google Cloud SDK.
+        /// </summary>
+        public static string GcloudMissingGcloudErrorTitle {
+            get {
+                return ResourceManager.GetString("GcloudMissingGcloudErrorTitle", resourceCulture);
             }
         }
         
@@ -2757,42 +2793,6 @@ namespace GoogleCloudExtension
         public static string ResetPasswordFailedPromptMessage {
             get {
                 return ResourceManager.GetString("ResetPasswordFailedPromptMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Install Google Cloud SDK.
-        /// </summary>
-        public static string ResetPasswordGcloudLinkCaption {
-            get {
-                return ResourceManager.GetString("ResetPasswordGcloudLinkCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the &quot;beta&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta..
-        /// </summary>
-        public static string ResetPasswordGcloudMissingBetaMessage {
-            get {
-                return ResourceManager.GetString("ResetPasswordGcloudMissingBetaMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the Google Cloud SDK is installed and available in the path, and that the &quot;beta&quot; component is installed. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link..
-        /// </summary>
-        public static string ResetPasswordGcloudMissingMessage {
-            get {
-                return ResourceManager.GetString("ResetPasswordGcloudMissingMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Missing Google Cloud SDK.
-        /// </summary>
-        public static string ResetPasswordMissingGcloudTitle {
-            get {
-                return ResourceManager.GetString("ResetPasswordMissingGcloudTitle", resourceCulture);
             }
         }
         

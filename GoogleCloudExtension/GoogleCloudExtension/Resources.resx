@@ -625,25 +625,9 @@
     <value>Failed to reset password for {0}. </value>
     <comment>Message shown when the reset operation fails. {0} is the instance name.</comment>
   </data>
-  <data name="ResetPasswordGcloudLinkCaption" xml:space="preserve">
-    <value>Install Google Cloud SDK</value>
-    <comment>Caption for the link for Gcloud.</comment>
-  </data>
-  <data name="ResetPasswordGcloudMissingBetaMessage" xml:space="preserve">
-    <value>To use this feature you need to have the "beta" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta.</value>
-    <comment>Message shown when the beta component is missing.</comment>
-  </data>
   <data name="GcloudMissingComponentTitle" xml:space="preserve">
     <value>Missing Google Cloud SDK Component</value>
     <comment>Title for the dialog that informs the user that a Cloud SDK component is needed but not installed.</comment>
-  </data>
-  <data name="ResetPasswordGcloudMissingMessage" xml:space="preserve">
-    <value>To use this feature you need to have the Google Cloud SDK is installed and available in the path, and that the "beta" component is installed. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link.</value>
-    <comment>Message shown when gcloud is not installed.</comment>
-  </data>
-  <data name="ResetPasswordMissingGcloudTitle" xml:space="preserve">
-    <value>Missing Google Cloud SDK</value>
-    <comment>Title for the prompts shown when gcloud is not installed.</comment>
   </data>
   <data name="AddWindowsCredentialUserNameCaption" xml:space="preserve">
     <value>_User name:</value>
@@ -1494,5 +1478,21 @@
   <data name="GkePublishServiceUpdatedMessage" xml:space="preserve">
     <value>Service {0} was updated.</value>
     <comment>Messages shown when a GKE service is updated. {0} is the service name.</comment>
+  </data>
+  <data name="GcloudInstallLinkCaption" xml:space="preserve">
+    <value>Install Google Cloud SDK</value>
+    <comment>Caption for the install link.</comment>
+  </data>
+  <data name="GcloudMissingBetaComponentErrorMessage" xml:space="preserve">
+    <value>To use this feature you need to have the "beta" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta.</value>
+    <comment>Message shown when the beta component is not installed.</comment>
+  </data>
+  <data name="GcloudMissingCloudSdkErrorMessage" xml:space="preserve">
+    <value>To use this feature you need to have the Google Cloud SDK installed and available in the path. You also need the "beta" component installed for some features to be available. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link.</value>
+    <comment>Message shown when the Cloud SDK is missing</comment>
+  </data>
+  <data name="GcloudMissingGcloudErrorTitle" xml:space="preserve">
+    <value>Missing Google Cloud SDK</value>
+    <comment>Title for the error dialog for missing components.</comment>
   </data>
 </root>

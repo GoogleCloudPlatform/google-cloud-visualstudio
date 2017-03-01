@@ -230,14 +230,14 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                 if (!GCloudWrapper.IsGCloudCliInstalled())
                 {
                     LinkPromptDialogWindow.PromptUser(
-                        Resources.ResetPasswordMissingGcloudTitle,
-                        Resources.ResetPasswordGcloudMissingMessage,
-                        new LinkInfo(link: "https://cloud.google.com/sdk/", caption: Resources.ResetPasswordGcloudLinkCaption));
+                        Resources.GcloudMissingGcloudErrorTitle,
+                        Resources.GcloudMissingCloudSdkErrorMessage,
+                        new LinkInfo(link: "https://cloud.google.com/sdk/", caption: Resources.GcloudInstallLinkCaption));
                 }
                 else
                 {
                     UserPromptUtils.ErrorPrompt(
-                        message: Resources.ResetPasswordGcloudMissingBetaMessage,
+                        message: Resources.GcloudMissingBetaComponentErrorMessage,
                         title: Resources.GcloudMissingComponentTitle);
                 }
                 return false;
