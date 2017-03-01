@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -1933,7 +1933,7 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The version of Cloud SDK installed {0} is too old. Please update your Cloud SDK installation to version {1} or later by using the command: gcloud components update.
+        ///   Looks up a localized string similar to The version {0} of Cloud SDK installed is too old. Please update your Cloud SDK installation to version {1} or later by using the command: gcloud components update.
         /// </summary>
         public static string GCloudWrapperUtilsOldCloudSdkMessage {
             get {

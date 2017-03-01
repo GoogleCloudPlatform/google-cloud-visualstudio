@@ -183,7 +183,7 @@ namespace GoogleCloudExtension.GCloud
             }
 
             var cloudSdkVersion = await GetInstalledCloudSdkVersionAsync();
-            if (cloudSdkVersion <= s_minimumVersion)
+            if (cloudSdkVersion < s_minimumVersion)
             {
                 return new GCloudValidationResult(isCloudSdkInstalled: true, isCloudSdkUpdated: false, cloudSdkVersion: cloudSdkVersion);
             }
