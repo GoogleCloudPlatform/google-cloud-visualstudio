@@ -29,6 +29,10 @@ namespace GoogleCloudExtension.GCloud
     /// </summary>
     public static class GCloudWrapper
     {
+        // The minimum version of the Google Cloud SDK that the extension can work with. Update this only when
+        // a feature appears in the Cloud SDK that is absolutely required for the extension to work.
+        public const string GCloudSdkMinimumVersion = "145.0.0";
+
         // These variables specify the environment to be reported by gcloud when reporting metrics. These variables
         // are only used with gcloud which is why they're private here.
         private const string GCloudMetricsVariable = "CLOUDSDK_METRICS_ENVIRONMENT";
@@ -40,7 +44,7 @@ namespace GoogleCloudExtension.GCloud
         private const string RuntimeBuildersRootValue = "gs://aspnet/";
 
         // Minimum version of Cloud SDK that is acceptable.
-        private static readonly Version s_minimumVersion = new Version("144.0.0");
+        private static readonly Version s_minimumVersion = new Version(GCloudSdkMinimumVersion);
 
         /// <summary>
         /// Finds the location of gcloud.cmd by following all of the directories in the PATH environment

@@ -39,7 +39,10 @@ namespace GoogleCloudExtension.Utils
             else if (!result.IsCloudSdkUpdated)
             {
                 UserPromptUtils.ErrorPrompt(
-                    message: String.Format(Resources.GCloudWrapperUtilsOldCloudSdkMessage, result.CloudSdkVersion),
+                    message: String.Format(
+                        Resources.GCloudWrapperUtilsOldCloudSdkMessage,
+                        result.CloudSdkVersion,
+                        GCloudWrapper.GCloudSdkMinimumVersion),
                     title: Resources.GCloudWrapperUtilsOldCloudSdkTitle);
             }
             else

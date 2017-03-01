@@ -1492,8 +1492,8 @@
     <comment>Title for the error dialog for missing components.</comment>
   </data>
   <data name="GCloudWrapperUtilsOldCloudSdkMessage" xml:space="preserve">
-    <value>The version of Cloud SDK {0} needs to be updated. Please update your Cloud SDK installation by running: gcloud components update</value>
-    <comment>Message shown when the version of the Cloud SDK is too old. {0} is the installed version.</comment>
+    <value>The version of Cloud SDK installed {0} is too old. Please update your Cloud SDK installation to version {1} or later by using the command: gcloud components update</value>
+    <comment>Message shown when the version of the Cloud SDK is too old. {0} is the installed version, {1} is the expected version.</comment>
   </data>
   <data name="GCloudWrapperUtilsOldCloudSdkTitle" xml:space="preserve">
     <value>Google Cloud SDK too old</value>
