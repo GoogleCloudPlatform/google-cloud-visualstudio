@@ -1942,6 +1942,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The version of Cloud SDK {0} needs to be updated. Please update your Cloud SDK installation by running: gcloud components update.
+        /// </summary>
+        public static string GCloudWrapperUtilsOldCloudSdkMessage {
+            get {
+                return ResourceManager.GetString("GCloudWrapperUtilsOldCloudSdkMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud SDK too old.
+        /// </summary>
+        public static string GCloudWrapperUtilsOldCloudSdkTitle {
+            get {
+                return ResourceManager.GetString("GCloudWrapperUtilsOldCloudSdkTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The file app.yaml was generated succesfully..
         /// </summary>
         public static string GenerateConfigurationAppYamlGeneratedMessage {
@@ -2181,15 +2199,6 @@ namespace GoogleCloudExtension {
         public static string GkePublishMakeServicePublicCaption {
             get {
                 return ResourceManager.GetString("GkePublishMakeServicePublicCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the &quot;kubectl&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl.
-        /// </summary>
-        public static string GkePublishMissingKubectlMessage {
-            get {
-                return ResourceManager.GetString("GkePublishMissingKubectlMessage", resourceCulture);
             }
         }
         

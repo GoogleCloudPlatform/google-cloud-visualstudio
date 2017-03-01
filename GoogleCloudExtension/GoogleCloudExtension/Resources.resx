@@ -1243,10 +1243,6 @@
     <value>Expose a service</value>
     <comment>Caption for the checkbox to set if the GKE service is to be exposed or not.</comment>
   </data>
-  <data name="GkePublishMissingKubectlMessage" xml:space="preserve">
-    <value>To use this feature you need to have the "kubectl" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl</value>
-    <comment>Message shown to the user when the kubectl component is not installed.</comment>
-  </data>
   <data name="GkePublishServiceIpMessage" xml:space="preserve">
     <value>Service {0} ip address {1}</value>
     <comment>Message printed in the output window to show the IP address of the service exposed. {0} is the deployment name, {1} is the IP address.</comment>
@@ -1494,5 +1490,13 @@
   <data name="GcloudMissingGcloudErrorTitle" xml:space="preserve">
     <value>Missing Google Cloud SDK</value>
     <comment>Title for the error dialog for missing components.</comment>
+  </data>
+  <data name="GCloudWrapperUtilsOldCloudSdkMessage" xml:space="preserve">
+    <value>The version of Cloud SDK {0} needs to be updated. Please update your Cloud SDK installation by running: gcloud components update</value>
+    <comment>Message shown when the version of the Cloud SDK is too old. {0} is the installed version.</comment>
+  </data>
+  <data name="GCloudWrapperUtilsOldCloudSdkTitle" xml:space="preserve">
+    <value>Google Cloud SDK too old</value>
+    <comment>Title for the prompt to update the Cloud SDK.</comment>
   </data>
 </root>

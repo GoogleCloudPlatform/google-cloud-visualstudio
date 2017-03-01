@@ -28,8 +28,8 @@ namespace GoogleCloudExtension.Utils
             else if (!result.IsCloudSdkUpdated)
             {
                 UserPromptUtils.ErrorPrompt(
-                    message: $"The version of Cloud SDK {result.CloudSdkVersion} needs to be updated. Please update your Cloud SDK installation by running: gcloud components update",
-                    title: "Google Cloud SDK too old");
+                    message: String.Format(Resources.GCloudWrapperUtilsOldCloudSdkMessage, result.CloudSdkVersion),
+                    title: Resources.GCloudWrapperUtilsOldCloudSdkTitle);
             }
             else
             {
