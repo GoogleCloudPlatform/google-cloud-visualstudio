@@ -17,7 +17,6 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.LinkPrompt;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using System;

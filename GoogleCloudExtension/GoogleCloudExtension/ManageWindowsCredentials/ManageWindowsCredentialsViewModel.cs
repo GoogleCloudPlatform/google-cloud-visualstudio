@@ -19,7 +19,6 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.LinkPrompt;
 using GoogleCloudExtension.ProgressDialog;
 using GoogleCloudExtension.ShowPassword;
 using GoogleCloudExtension.Utils;

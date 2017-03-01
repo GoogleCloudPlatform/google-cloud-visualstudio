@@ -15,12 +15,10 @@
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.LinkPrompt;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
