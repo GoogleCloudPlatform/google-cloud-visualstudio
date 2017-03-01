@@ -159,34 +159,6 @@ namespace GoogleCloudExtension.GCloud
         }
 
         /// <summary>
-        /// Returns true if the methods concerning kubectl and GKE can be used safely.
-        /// </summary>
-        /// <returns>A task that will be fullfilled to true if the GKE methods can be used.</returns>
-        public static Task<bool> CanUseGKEAsync() => IsComponentInstalledAsync("kubectl");
-
-        /// <summary>
-        /// Returns the list of components that gcloud knows about.
-        /// </summary>
-        public static async Task<IList<string>> GetInstalledComponentsAsync()
-        {
-            Debug.WriteLine("Reading list of components.");
-            var components = await GetJsonOutputAsync<IList<CloudSdkComponent>>("components list");
-            return components.Where(x => x.State.IsInstalled).Select(x => x.Id).ToList();
-        }
-
-        /// <summary>
-        /// Detects if gcloud is present in the system.
-        /// </summary>
-        public static bool IsGCloudCliInstalled()
-        {
-            Debug.WriteLine("Validating GCloud installation.");
-            var gcloudPath = GetGCloudPath();
-            Debug.WriteLineIf(gcloudPath == null, "Cannot find gcloud.cmd in the system.");
-            Debug.WriteLineIf(gcloudPath != null, $"Found gcloud.cmd at {gcloudPath}");
-            return gcloudPath != null;
-        }
-
-        /// <summary>
         /// Validates that gcloud is installed with the minimum version and that the given component
         /// for gcloud is installed.
         /// </summary>
@@ -221,12 +193,23 @@ namespace GoogleCloudExtension.GCloud
                 cloudSdkVersion: cloudSdkVersion);
         }
 
-                /// <summary>
-        /// Determines if the given gcloud component is installed.
-        /// </summary>
-        /// <param name="component">The component to check.</param>
-        /// <returns>A task that will be fullfilled to true if the component is installed, false otherwise.</returns>
-        public static async Task<bool> IsComponentInstalledAsync(string component)
+        private static async Task<IList<string>> GetInstalledComponentsAsync()
+        {
+            Debug.WriteLine("Reading list of components.");
+            var components = await GetJsonOutputAsync<IList<CloudSdkComponent>>("components list");
+            return components.Where(x => x.State.IsInstalled).Select(x => x.Id).ToList();
+        }
+
+        private static bool IsGCloudCliInstalled()
+        {
+            Debug.WriteLine("Validating GCloud installation.");
+            var gcloudPath = GetGCloudPath();
+            Debug.WriteLineIf(gcloudPath == null, "Cannot find gcloud.cmd in the system.");
+            Debug.WriteLineIf(gcloudPath != null, $"Found gcloud.cmd at {gcloudPath}");
+            return gcloudPath != null;
+        }
+
+        private static async Task<bool> IsComponentInstalledAsync(string component)
         {
             if (!IsGCloudCliInstalled())
             {
