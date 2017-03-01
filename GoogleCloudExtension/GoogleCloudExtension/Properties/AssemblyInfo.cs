@@ -34,5 +34,5 @@ using System.Runtime.InteropServices;
 
 // This version number matches the version in the .vsixmanifest. Please update both versions at the
 // same time.
-[assembly: AssemblyVersion("1.1.4.0")]
+[assembly: AssemblyVersion("1.1.5.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
