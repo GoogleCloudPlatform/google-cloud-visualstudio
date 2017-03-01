@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -1897,20 +1897,20 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the &quot;beta&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta..
-        /// </summary>
-        public static string GcloudMissingBetaComponentErrorMessage {
-            get {
-                return ResourceManager.GetString("GcloudMissingBetaComponentErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to To use this feature you need to have the Google Cloud SDK installed and available in the path. You also need the &quot;beta&quot; component installed for some features to be available. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link..
         /// </summary>
         public static string GcloudMissingCloudSdkErrorMessage {
             get {
                 return ResourceManager.GetString("GcloudMissingCloudSdkErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To use this feature you need to have the &quot;{0}&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install {0}..
+        /// </summary>
+        public static string GcloudMissingComponentErrorMessage {
+            get {
+                return ResourceManager.GetString("GcloudMissingComponentErrorMessage", resourceCulture);
             }
         }
         
@@ -1929,6 +1929,24 @@ namespace GoogleCloudExtension
         public static string GcloudMissingGcloudErrorTitle {
             get {
                 return ResourceManager.GetString("GcloudMissingGcloudErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The version {0} of Cloud SDK installed is too old. Please update your Cloud SDK installation to version {1} or later by using the command: gcloud components update.
+        /// </summary>
+        public static string GCloudWrapperUtilsOldCloudSdkMessage {
+            get {
+                return ResourceManager.GetString("GCloudWrapperUtilsOldCloudSdkMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud SDK too old.
+        /// </summary>
+        public static string GCloudWrapperUtilsOldCloudSdkTitle {
+            get {
+                return ResourceManager.GetString("GCloudWrapperUtilsOldCloudSdkTitle", resourceCulture);
             }
         }
         
@@ -2163,15 +2181,6 @@ namespace GoogleCloudExtension
         public static string GkePublishMakeServicePublicCaption {
             get {
                 return ResourceManager.GetString("GkePublishMakeServicePublicCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the &quot;kubectl&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl.
-        /// </summary>
-        public static string GkePublishMissingKubectlMessage {
-            get {
-                return ResourceManager.GetString("GkePublishMissingKubectlMessage", resourceCulture);
             }
         }
         

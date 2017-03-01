@@ -19,7 +19,6 @@ using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.LinkPrompt;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using System;
@@ -204,7 +203,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             {
                 ShellUtils.SaveAllFiles();
 
-                var verifyGCloudTask = VerifyGCloudDependencies();
+                var verifyGCloudTask = GCloudWrapperUtils.VerifyGCloudDependencies("kubectl");
                 _publishDialog.TrackTask(verifyGCloudTask);
                 if (!await verifyGCloudTask)
                 {
@@ -420,29 +419,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             content.DataContext = viewModel;
 
             return viewModel;
-        }
-
-        private async Task<bool> VerifyGCloudDependencies()
-        {
-            if (!await GCloudWrapper.CanUseGKEAsync())
-            {
-                if (!GCloudWrapper.IsGCloudCliInstalled())
-                {
-                    LinkPromptDialogWindow.PromptUser(
-                        title: Resources.GcloudMissingGcloudErrorTitle,
-                        text: Resources.GcloudMissingCloudSdkErrorMessage,
-                        link: new LinkInfo(link: "https://cloud.google.com/sdk/", caption: Resources.GcloudInstallLinkCaption));
-                }
-                else
-                {
-                    UserPromptUtils.ErrorPrompt(
-                        message: Resources.GkePublishMissingKubectlMessage,
-                        title: Resources.GcloudMissingComponentTitle);
-                }
-                return false;
-            }
-
-            return true;
         }
     }
 }

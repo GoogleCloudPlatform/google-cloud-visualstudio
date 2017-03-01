@@ -1239,10 +1239,6 @@
     <value>Expose a service</value>
     <comment>Caption for the checkbox to set if the GKE service is to be exposed or not.</comment>
   </data>
-  <data name="GkePublishMissingKubectlMessage" xml:space="preserve">
-    <value>To use this feature you need to have the "kubectl" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl</value>
-    <comment>Message shown to the user when the kubectl component is not installed.</comment>
-  </data>
   <data name="GkePublishServiceIpMessage" xml:space="preserve">
     <value>Service {0} ip address {1}</value>
     <comment>Message printed in the output window to show the IP address of the service exposed. {0} is the deployment name, {1} is the IP address.</comment>
@@ -1475,9 +1471,9 @@
     <value>Install Google Cloud SDK</value>
     <comment>Caption for the install link.</comment>
   </data>
-  <data name="GcloudMissingBetaComponentErrorMessage" xml:space="preserve">
-    <value>To use this feature you need to have the "beta" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta.</value>
-    <comment>Message shown when the beta component is not installed.</comment>
+  <data name="GcloudMissingComponentErrorMessage" xml:space="preserve">
+    <value>To use this feature you need to have the "{0}" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install {0}.</value>
+    <comment>Message shown when the a component is not installed. {0} is the name of the component.</comment>
   </data>
   <data name="GcloudMissingCloudSdkErrorMessage" xml:space="preserve">
     <value>To use this feature you need to have the Google Cloud SDK installed and available in the path. You also need the "beta" component installed for some features to be available. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link.</value>
@@ -1486,5 +1482,13 @@
   <data name="GcloudMissingGcloudErrorTitle" xml:space="preserve">
     <value>Missing Google Cloud SDK</value>
     <comment>Title for the error dialog for missing components.</comment>
+  </data>
+  <data name="GCloudWrapperUtilsOldCloudSdkMessage" xml:space="preserve">
+    <value>The version {0} of Cloud SDK installed is too old. Please update your Cloud SDK installation to version {1} or later by using the command: gcloud components update</value>
+    <comment>Message shown when the version of the Cloud SDK is too old. {0} is the installed version, {1} is the expected version.</comment>
+  </data>
+  <data name="GCloudWrapperUtilsOldCloudSdkTitle" xml:space="preserve">
+    <value>Google Cloud SDK too old</value>
+    <comment>Title for the prompt to update the Cloud SDK.</comment>
   </data>
 </root>

@@ -19,7 +19,6 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.LinkPrompt;
 using GoogleCloudExtension.ProgressDialog;
 using GoogleCloudExtension.ShowPassword;
 using GoogleCloudExtension.Utils;
@@ -194,7 +193,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                 Debug.WriteLine($"Resetting the password for the user {user}");
 
                 // Check that gcloud is in the right state to invoke the reset credentials method.
-                if (!await VerifyGCloudDependencies())
+                if (!await GCloudWrapperUtils.VerifyGCloudDependencies("beta"))
                 {
                     Debug.WriteLine("Missing gcloud dependencies for resetting password.");
                     return null;
@@ -221,29 +220,6 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
                     errorDetails: ex.Message);
                 return null;
             }
-        }
-
-        private static async Task<bool> VerifyGCloudDependencies()
-        {
-            if (!await GCloudWrapper.CanUseResetWindowsCredentialsAsync())
-            {
-                if (!GCloudWrapper.IsGCloudCliInstalled())
-                {
-                    LinkPromptDialogWindow.PromptUser(
-                        Resources.GcloudMissingGcloudErrorTitle,
-                        Resources.GcloudMissingCloudSdkErrorMessage,
-                        new LinkInfo(link: "https://cloud.google.com/sdk/", caption: Resources.GcloudInstallLinkCaption));
-                }
-                else
-                {
-                    UserPromptUtils.ErrorPrompt(
-                        message: Resources.GcloudMissingBetaComponentErrorMessage,
-                        title: Resources.GcloudMissingComponentTitle);
-                }
-                return false;
-            }
-
-            return true;
         }
 
         private void UpdateCommands()
