@@ -188,7 +188,5 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
             return viewModel;
         }
-
-        
     }
 }
