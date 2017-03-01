@@ -16,8 +16,14 @@ using Newtonsoft.Json;
 
 namespace GoogleCloudExtension.GCloud.Models
 {
+    /// <summary>
+    /// This class represents the various versions of components installed for the Cloud SDK.
+    /// </summary>
     internal class CloudSdkVersions
     {
+        /// <summary>
+        /// The version of the Cloud SDK itself.
+        /// </summary>
         [JsonProperty("Google Cloud SDK")]
         public string SdkVersion { get; set; }
     }
