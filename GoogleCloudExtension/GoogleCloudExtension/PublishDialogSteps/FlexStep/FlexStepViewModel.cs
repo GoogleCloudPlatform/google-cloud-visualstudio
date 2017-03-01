@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.LinkPrompt;
@@ -144,17 +146,23 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                     {
                         Process.Start(url);
                     }
+
+                    EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Success));
                 }
                 else
                 {
                     GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishFailedMessage, project.Name));
                     StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+
+                    EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Failure));
                 }
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
                 GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+
+                EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Failure));
             }
         }
 

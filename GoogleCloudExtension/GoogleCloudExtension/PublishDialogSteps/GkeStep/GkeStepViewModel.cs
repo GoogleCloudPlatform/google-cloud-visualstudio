@@ -14,6 +14,8 @@
 
 using Google.Apis.Container.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
@@ -318,11 +320,15 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                         {
                             Process.Start($"http://{result.PublicServiceIpAddress}");
                         }
+
+                        EventsReporterWrapper.ReportEvent(GkeDeployedEvent.Create(CommandStatus.Success));
                     }
                     else
                     {
                         GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
                         StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+
+                        EventsReporterWrapper.ReportEvent(GkeDeployedEvent.Create(CommandStatus.Failure));
                     }
                 }
             }
@@ -331,6 +337,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
                 _publishDialog.FinishFlow();
+
+                EventsReporterWrapper.ReportEvent(GkeDeployedEvent.Create(CommandStatus.Failure));
             }
         }
 

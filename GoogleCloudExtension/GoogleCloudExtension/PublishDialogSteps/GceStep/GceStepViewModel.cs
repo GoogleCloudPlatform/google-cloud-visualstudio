@@ -14,6 +14,8 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
@@ -171,17 +173,23 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                     {
                         Process.Start(url);
                     }
+
+                    EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Success));
                 }
                 else
                 {
                     GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishFailedMessage, project.Name));
                     StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+
+                    EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Failure));
                 }
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
                 GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+
+                EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Failure));
             }
         }
 
