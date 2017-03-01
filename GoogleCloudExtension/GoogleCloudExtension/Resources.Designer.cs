@@ -1915,7 +1915,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the Google Cloud SDK is installed and available in the path, and that the &quot;beta&quot; component is installed. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link..
+        ///   Looks up a localized string similar to To use this feature you need to have the Google Cloud SDK installed and available in the path. You also need the &quot;beta&quot; component installed for some features to be available. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link..
         /// </summary>
         public static string GcloudMissingCloudSdkErrorMessage {
             get {

@@ -1488,7 +1488,7 @@
     <comment>Message shown when the beta component is not installed.</comment>
   </data>
   <data name="GcloudMissingCloudSdkErrorMessage" xml:space="preserve">
-    <value>To use this feature you need to have the Google Cloud SDK is installed and available in the path, and that the "beta" component is installed. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link.</value>
+    <value>To use this feature you need to have the Google Cloud SDK installed and available in the path. You also need the "beta" component installed for some features to be available. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link.</value>
     <comment>Message shown when the Cloud SDK is missing</comment>
   </data>
   <data name="GcloudMissingGcloudErrorTitle" xml:space="preserve">
