@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.StackdriverErrorReporting;
 using System;
 using System.Linq;
 
@@ -100,7 +101,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 title: Resources.LogsViewerPromptTitle);
         }
 
-        private static void OpenCurrentVersionProjectPrompt(string assemblyName, string assemblyVersion)
+        public static void OpenCurrentVersionProjectPrompt(string assemblyName, string assemblyVersion)
         {
             if (UserPromptUtils.ActionPrompt(
                     prompt: String.Format(Resources.LogsViewerPleaseOpenProjectPrompt, assemblyName, assemblyVersion),

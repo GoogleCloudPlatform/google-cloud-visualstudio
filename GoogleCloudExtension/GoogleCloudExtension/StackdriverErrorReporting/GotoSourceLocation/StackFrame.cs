@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Utils;
 using System;
 using System.Text.RegularExpressions;
 
@@ -28,7 +29,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// Below is an example:
     ///  at GoogleCloudExtensionUnitTests.StackframeParserTests.SelfLoop(Int32 count) in C:\\git\\wind\\GoogleCloudExtension\\GoogleCloudExtensionUnitTests\\StackframeParserTests.cs:line 46
     /// </summary>
-    public class StackFrame
+    public class StackFrame : Model
     {
         private const string MethodGroup = "method";
         private const string FileNameGroup = "file";
@@ -41,6 +42,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private static readonly string FrameParserPattern = $@"^{AtToken}{QualifiedNamePattern}{ArgumentPattern}{InToken}{PathLineNumberPattern}$";
         private static readonly Regex s_stackFrameRegex = new Regex(FrameParserPattern);
 
+        private readonly ParsedException _owningExceptionObj;
 
         /// <summary>
         /// Gets the function name of the stack frame.
@@ -80,10 +82,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public string SourceLinkCaption => IsWellParsed ? $"{SourceFile}:{LineNumber}" : null;
 
         /// <summary>
-        /// Initializes a new instance of <seealso cref="StackFrame"/> class.
+        /// The command that responds to source link button click event.
         /// </summary>
-        /// <param name="raw">The stack frame message before parsed.</param>
-        public StackFrame(string raw)
+        public ProtectedCommand OnGotoSourceCommand { get; }
+
+        public StackFrame(string raw, ParsedException parent)
         {
             if (raw == null)
             {
@@ -91,6 +94,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             }
             RawData = raw;
             ParseStackFrame();
+            _owningExceptionObj = parent;
+            OnGotoSourceCommand = new ProtectedCommand(() =>
+            {
+                ShowTooltipUtils.NavigateToSourceLineCommand(_owningExceptionObj.OwningParentObj, this);
+            });
         }
 
         /// <summary>

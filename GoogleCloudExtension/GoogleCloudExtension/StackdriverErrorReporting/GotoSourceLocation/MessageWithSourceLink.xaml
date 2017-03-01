@@ -27,6 +27,7 @@
             Style="{StaticResource MouseOverLinkButtonStyle}"
             Foreground="Blue" 
             Content="{Binding SourceLinkCaption}" 
-            Visibility="{Binding IsWellParsed, Converter={StaticResource visibilityConverter}}" />
+            Visibility="{Binding IsWellParsed, Converter={StaticResource visibilityConverter}}" 
+            Command="{Binding OnGotoSourceCommand}"/>
     </WrapPanel>
 </UserControl>

@@ -99,7 +99,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             ErrorGroup = errorGroup;
             if (ErrorGroup.Representative?.Message != null)
             {
-                ParsedException = new ParsedException(ErrorGroup.Representative?.Message);
+                ParsedException = new ParsedException(ErrorGroup.Representative?.Message, this);
             }
             Message = ParsedException?.Header;
             OnNavigateToDetailCommand = new ProtectedCommand(null);

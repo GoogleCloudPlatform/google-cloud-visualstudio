@@ -259,7 +259,6 @@
 
                         <!-- stack trace sample -->
                         <Border Style="{StaticResource BorderCommonStyle}" >
-                            <local:ParseExceptionView Margin="6" DataContext="{Binding }" />
                         </Border>
 
                         <!-- Recent samples. -->
