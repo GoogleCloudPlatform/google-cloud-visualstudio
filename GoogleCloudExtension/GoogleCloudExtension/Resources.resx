@@ -794,19 +794,19 @@
     <comment>The tooltip for the GCE button.</comment>
   </data>
   <data name="PublishDialogChoiceStepMessage" xml:space="preserve">
-    <value>Choose a target:</value>
+    <value>Choose a product to publish to:</value>
     <comment>The message shown in the choice step.</comment>
   </data>
   <data name="PublishDialogOpenWebsiteCaption" xml:space="preserve">
-    <value>_Open website after publish process finishes</value>
+    <value>_Open site after publishing</value>
     <comment>The caption for the open website checkbox.</comment>
   </data>
   <data name="PublishDialogGceStepSelectCredentialsMessage" xml:space="preserve">
-    <value>Select _account:</value>
+    <value>_Account:</value>
     <comment>The message shown to select credentials.</comment>
   </data>
   <data name="PublishDialogGceStepSelectInstanceMessage" xml:space="preserve">
-    <value>_Select instance:</value>
+    <value>_VM instance:</value>
     <comment>The message shown to select an instance.</comment>
   </data>
   <data name="PublishDialogNextButtonCaption" xml:space="preserve">
@@ -872,10 +872,6 @@
   <data name="AddWindowsCredentialHavePasswordMessage" xml:space="preserve">
     <value>I have a password for this user</value>
     <comment>Message shown in the radio button of the Reset Password dialog to signify that the user will provide the password.</comment>
-  </data>
-  <data name="WindowsCredentialsChooserManageCredentialsCaption" xml:space="preserve">
-    <value>Manage Windows credentials</value>
-    <comment>Caption used in the hyperlink shown in the Windows credentials chooser dialog.</comment>
   </data>
   <data name="CloudExplorerGaeFailedServicesMessage" xml:space="preserve">
     <value>Failed to load the list of Google Cloud App Engine services</value>
@@ -1037,9 +1033,9 @@
     <value>Version</value>
     <comment>Label to denoate a version.</comment>
   </data>
-  <data name="GcePublishStepManageCredentialsCaption" xml:space="preserve">
-    <value>Manage Credentials</value>
-    <comment>Caption for the link shown in the GCE step of the publishing dialog for managing the credentials of the selected VM.</comment>
+  <data name="UiManageWindowsCredentialsCaption" xml:space="preserve">
+    <value>Manage Windows credentials</value>
+    <comment>Caption for the links to open the Manage Windows credentials dialog.</comment>
   </data>
   <data name="SplitTrafficWindowCookieLabel" xml:space="preserve">
     <value>Cookie</value>
@@ -1310,10 +1306,6 @@
   <data name="GkePublishRefreshClustersCaption" xml:space="preserve">
     <value>Refresh clusters</value>
     <comment>Caption for the refresh clusters hyperlink</comment>
-  </data>
-  <data name="GenerateConfigurationMenuHeader" xml:space="preserve">
-    <value>Generate app.yaml and Dockerfile for {0}</value>
-    <comment>Header for the generate configuration command. {0} is the name of the project.</comment>
   </data>
   <data name="FlexPublishEmptyVersionMessage" xml:space="preserve">
     <value>The version name cannot be empty.</value>
