@@ -35,7 +35,11 @@ namespace GoogleCloudExtension.Deployment
             "env: flex\n";
 
         private const string DefaultServiceName = "default";
-        private const string ServiceStatement = "service:";
+        private const string ServiceYamlProperty = "service";
+        private const string RuntimeYamlProperty = "runtime";
+
+        private const string AspNetCoreRuntime = "aspnetcore";
+        private const string CustomRuntime = "custom";
 
         /// <summary>
         /// The options for the deployment operation.
@@ -94,7 +98,17 @@ namespace GoogleCloudExtension.Deployment
                     return null;
                 }
 
+                var runtime = GetAppEngineRuntime(projectPath);
                 CopyOrCreateAppYaml(projectPath, stageDirectory);
+                if (runtime == CustomRuntime)
+                {
+                    Debug.WriteLine($"Copying Docker file to {stageDirectory} with custom runtime.");
+                    NetCoreAppUtils.CopyOrCreateDockerfile(projectPath, stageDirectory);
+                }
+                else
+                {
+                    Debug.WriteLine($"Detected runtime {runtime}");
+                }
                 progress.Report(0.4);
 
                 // Deploy to app engine, this is where most of the time is going to be spent. Wait for
@@ -105,6 +119,7 @@ namespace GoogleCloudExtension.Deployment
                     version: effectiveVersion,
                     promote: options.Promote,
                     context: options.Context,
+                    useRuntimeBuilder: runtime == AspNetCoreRuntime,
                     outputAction: outputAction);
                 if (!await ProgressHelper.UpdateProgress(deployTask, progress, 0.6, 0.9))
                 {
@@ -182,22 +197,44 @@ namespace GoogleCloudExtension.Deployment
         /// <returns>The service name if found, <seealso cref="DefaultServiceName"/> if not found.</returns>
         private static string GetAppEngineService(string projectPath)
         {
+            string appYaml = GetAppYamlPath(projectPath);
+            return GetYamlProperty(yamlPath: appYaml, property: ServiceYamlProperty, defaultValue: DefaultServiceName);
+        }
+
+        private static string GetAppEngineRuntime(string projectPath)
+        {
+            string appYaml = GetAppYamlPath(projectPath);
+            if (!File.Exists(appYaml))
+            {
+                return AspNetCoreRuntime;
+            }
+            return GetYamlProperty(appYaml, RuntimeYamlProperty);
+        }
+
+        private static string GetAppYamlPath(string projectPath)
+        {
             var projectDirectory = Path.GetDirectoryName(projectPath);
             var appYaml = Path.Combine(projectDirectory, AppYamlName);
+            return appYaml;
+        }
 
-            // If the app.yaml exists attempt to find the "service: name" line and parse it out. If the file doesn't
-            // exist or if the line is not present then the service is going to be the "default" service.
-            if (File.Exists(appYaml))
+        private static string GetYamlProperty(string yamlPath, string property, string defaultValue = null)
+        {
+            string result = defaultValue;
+            var propertyName = $"{property}:";
+
+            if (File.Exists(yamlPath))
             {
                 try
                 {
-                    var lines = File.ReadLines(appYaml);
+                    var lines = File.ReadLines(yamlPath);
                     foreach (var line in lines)
                     {
-                        if (line.StartsWith(ServiceStatement))
+                        if (line.StartsWith(propertyName))
                         {
-                            var name = line.Substring(ServiceStatement.Length);
-                            return name.Trim();
+                            var name = line.Substring(propertyName.Length);
+                            result = name.Trim();
+                            break;
                         }
                     }
                 }
@@ -206,7 +243,8 @@ namespace GoogleCloudExtension.Deployment
                     throw new DeploymentException(ex.Message, ex);
                 }
             }
-            return DefaultServiceName;
+
+            return result;
         }
 
         private static string GetDefaultVersion()
@@ -239,6 +277,7 @@ namespace GoogleCloudExtension.Deployment
             string version,
             bool promote,
             GCloudContext context,
+            bool useRuntimeBuilder,
             Action<string> outputAction)
         {
             var appYamlPath = Path.Combine(stageDirectory, AppYamlName);
@@ -247,6 +286,7 @@ namespace GoogleCloudExtension.Deployment
                 version: version,
                 promote: promote,
                 outputAction: outputAction,
+                useRuntimeBuilder: useRuntimeBuilder,
                 context: context);
         }
     }

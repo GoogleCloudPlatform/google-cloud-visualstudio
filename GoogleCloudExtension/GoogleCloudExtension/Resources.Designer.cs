@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension {
-    using System;
-    
-    
+namespace GoogleCloudExtension
+{
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -1870,15 +1870,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Credentials.
-        /// </summary>
-        public static string GcePublishStepManageCredentialsCaption {
-            get {
-                return ResourceManager.GetString("GcePublishStepManageCredentialsCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Publishing {0} to Compute Engine..
         /// </summary>
         public static string GcePublishStepStartMessage {
@@ -2010,15 +2001,6 @@ namespace GoogleCloudExtension {
         public static string GenerateConfigurationFileGenerationErrorMessage {
             get {
                 return ResourceManager.GetString("GenerateConfigurationFileGenerationErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Generate app.yaml and Dockerfile for {0}.
-        /// </summary>
-        public static string GenerateConfigurationMenuHeader {
-            get {
-                return ResourceManager.GetString("GenerateConfigurationMenuHeader", resourceCulture);
             }
         }
         
@@ -2653,7 +2635,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose a target:.
+        ///   Looks up a localized string similar to Choose a product to publish to:.
         /// </summary>
         public static string PublishDialogChoiceStepMessage {
             get {
@@ -2680,7 +2662,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select _account:.
+        ///   Looks up a localized string similar to _Account:.
         /// </summary>
         public static string PublishDialogGceStepSelectCredentialsMessage {
             get {
@@ -2689,7 +2671,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Select instance:.
+        ///   Looks up a localized string similar to _VM instance:.
         /// </summary>
         public static string PublishDialogGceStepSelectInstanceMessage {
             get {
@@ -2716,7 +2698,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Open website after publish process finishes.
+        ///   Looks up a localized string similar to _Open site after publishing.
         /// </summary>
         public static string PublishDialogOpenWebsiteCaption {
             get {
@@ -3031,6 +3013,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage Windows credentials.
+        /// </summary>
+        public static string UiManageWindowsCredentialsCaption {
+            get {
+                return ResourceManager.GetString("UiManageWindowsCredentialsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _No.
         /// </summary>
         public static string UiNoButtonCaption {
@@ -3162,15 +3153,6 @@ namespace GoogleCloudExtension {
         public static string UiYesButtonCaption {
             get {
                 return ResourceManager.GetString("UiYesButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Manage Windows credentials.
-        /// </summary>
-        public static string WindowsCredentialsChooserManageCredentialsCaption {
-            get {
-                return ResourceManager.GetString("WindowsCredentialsChooserManageCredentialsCaption", resourceCulture);
             }
         }
         

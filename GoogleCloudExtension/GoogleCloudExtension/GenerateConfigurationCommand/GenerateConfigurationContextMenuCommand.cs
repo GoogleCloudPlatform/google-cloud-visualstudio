@@ -170,7 +170,6 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
             {
                 menuCommand.Visible = true;
                 menuCommand.Enabled = !ShellUtils.IsBusy();
-                menuCommand.Text = String.Format(Resources.GenerateConfigurationMenuHeader, selectedProject.Name);
             }
         }
     }

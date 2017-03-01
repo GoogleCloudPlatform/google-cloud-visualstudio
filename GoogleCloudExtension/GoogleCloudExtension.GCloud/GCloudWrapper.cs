@@ -78,21 +78,28 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="version">The version to use, if no version is used gcloud will decide the version name.</param>
         /// <param name="promote">Whether to promote the app or not.</param>
         /// <param name="outputAction">The action to call with output from the command.</param>
+        /// <param name="useRuntimeBuilder">Whether to enable runtime builders or not.</param>
         /// <param name="context">The context under which the command is executed.</param>
         public static Task<bool> DeployAppAsync(
             string appYaml,
             string version,
             bool promote,
             Action<string> outputAction,
+            bool useRuntimeBuilder,
             GCloudContext context)
         {
             var versionParameter = version != null ? $"--version={version}" : "";
             var promoteParameter = promote ? "--promote" : "--no-promote";
-            var environment = new Dictionary<string, string>
+            Dictionary<string, string> environment = null;
+
+            if (useRuntimeBuilder)
             {
-                [GCloudAppUseRuntimeBuilders] = CommonEnvironmentVariables.TrueValue,
-                [GCloudAppRuntimeBuildersRoot] = RuntimeBuildersRootValue
-            };
+                environment = new Dictionary<string, string>
+                {
+                    [GCloudAppUseRuntimeBuilders] = CommonEnvironmentVariables.TrueValue,
+                    [GCloudAppRuntimeBuildersRoot] = RuntimeBuildersRootValue
+                };
+            }
 
             return RunCommandAsync(
                 $"beta app deploy \"{appYaml}\" {versionParameter} {promoteParameter} --skip-staging --quiet",
