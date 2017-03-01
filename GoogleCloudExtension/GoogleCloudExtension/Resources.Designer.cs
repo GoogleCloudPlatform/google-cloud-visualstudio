@@ -1906,20 +1906,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the &quot;beta&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta..
-        /// </summary>
-        public static string GcloudMissingBetaComponentErrorMessage {
-            get {
-                return ResourceManager.GetString("GcloudMissingBetaComponentErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to To use this feature you need to have the Google Cloud SDK installed and available in the path. You also need the &quot;beta&quot; component installed for some features to be available. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link..
         /// </summary>
         public static string GcloudMissingCloudSdkErrorMessage {
             get {
                 return ResourceManager.GetString("GcloudMissingCloudSdkErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To use this feature you need to have the &quot;{0}&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install {0}..
+        /// </summary>
+        public static string GcloudMissingComponentErrorMessage {
+            get {
+                return ResourceManager.GetString("GcloudMissingComponentErrorMessage", resourceCulture);
             }
         }
         

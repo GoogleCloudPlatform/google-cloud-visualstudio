@@ -39,6 +39,9 @@ namespace GoogleCloudExtension.GCloud
         private const string GCloudAppRuntimeBuildersRoot = "CLOUDSDK_APP_RUNTIME_BUILDERS_ROOT";
         private const string RuntimeBuildersRootValue = "gs://aspnet/";
 
+        // Minimum version of Cloud SDK that is acceptable.
+        private static readonly Version s_minimumVersion = new Version("144.0.0");
+
         /// <summary>
         /// Finds the location of gcloud.cmd by following all of the directories in the PATH environment
         /// variable until it finds it. With this we assume that in order to run the extension gcloud.cmd is
@@ -156,13 +159,6 @@ namespace GoogleCloudExtension.GCloud
         }
 
         /// <summary>
-        /// Returns true if the <seealso cref="ResetWindowsCredentialsAsync(string, string, string, GCloudContext)"/> method can
-        /// be used safely.
-        /// </summary>
-        /// <returns>A task that will be fulfilled to true if the method can be called, false otherwise.</returns>
-        public static Task<bool> CanUseResetWindowsCredentialsAsync() => IsComponentInstalledAsync("beta");
-
-        /// <summary>
         /// Returns true if the methods concerning kubectl and GKE can be used safely.
         /// </summary>
         /// <returns>A task that will be fullfilled to true if the GKE methods can be used.</returns>
@@ -191,6 +187,41 @@ namespace GoogleCloudExtension.GCloud
         }
 
         /// <summary>
+        /// Validates that gcloud is installed with the minimum version and that the given component
+        /// for gcloud is installed.
+        /// </summary>
+        /// <param name="component">the component to check, optional. If no component is provided only gcloud is checked.</param>
+        /// <returns></returns>
+        public static async Task<GCloudValidationResult> ValidateGCloudAsync(string component = null)
+        {
+            if (!IsGCloudCliInstalled())
+            {
+                return new GCloudValidationResult(isCloudSdkInstalled: false);
+            }
+
+            var cloudSdkVersion = await GetInstalledCloudSdkVersionAsync();
+            if (cloudSdkVersion <= s_minimumVersion)
+            {
+                return new GCloudValidationResult(isCloudSdkInstalled: true, isCloudSdkUpdated: false, cloudSdkVersion: cloudSdkVersion);
+            }
+
+            if (component != null && !await IsComponentInstalledAsync(component))
+            {
+                return new GCloudValidationResult(
+                    isCloudSdkInstalled: true,
+                    isCloudSdkUpdated: true,
+                    isRequiredComponentInstalled: false,
+                    cloudSdkVersion: cloudSdkVersion);
+            }
+
+            return new GCloudValidationResult(
+                isCloudSdkInstalled: true,
+                isCloudSdkUpdated: true,
+                isRequiredComponentInstalled: true,
+                cloudSdkVersion: cloudSdkVersion);
+        }
+
+                /// <summary>
         /// Determines if the given gcloud component is installed.
         /// </summary>
         /// <param name="component">The component to check.</param>
@@ -203,6 +234,17 @@ namespace GoogleCloudExtension.GCloud
             }
             var installedComponents = await GetInstalledComponentsAsync();
             return installedComponents.Contains(component);
+        }
+
+        private static async Task<Version> GetInstalledCloudSdkVersionAsync()
+        {
+            if (!IsGCloudCliInstalled())
+            {
+                return null;
+            }
+
+            var version = await GetJsonOutputAsync<CloudSdkVersions>("version");
+            return new Version(version.SdkVersion);
         }
 
         private static string FormatCommand(string command, GCloudContext context, bool jsonFormat)

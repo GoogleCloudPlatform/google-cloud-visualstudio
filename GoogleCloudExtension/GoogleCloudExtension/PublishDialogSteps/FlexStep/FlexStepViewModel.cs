@@ -90,7 +90,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             var project = _publishDialog.Project;
             try
             {
-                var verifyGcloudTask = VerifyGCloudDependencies();
+                var verifyGcloudTask = GCloudWrapperUtils.VerifyGCloudDependencies("beta");
                 _publishDialog.TrackTask(verifyGcloudTask);
                 if (!await verifyGcloudTask)
                 {
@@ -191,27 +191,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             return viewModel;
         }
 
-        private static async Task<bool> VerifyGCloudDependencies()
-        {
-            if (!await GCloudWrapper.IsComponentInstalledAsync("beta"))
-            {
-                if (!GCloudWrapper.IsGCloudCliInstalled())
-                {
-                    LinkPromptDialogWindow.PromptUser(
-                        Resources.GcloudMissingGcloudErrorTitle,
-                        Resources.GcloudMissingCloudSdkErrorMessage,
-                        new LinkInfo(link: "https://cloud.google.com/sdk/", caption: Resources.GcloudInstallLinkCaption));
-                }
-                else
-                {
-                    UserPromptUtils.ErrorPrompt(
-                        message: Resources.GcloudMissingBetaComponentErrorMessage,
-                        title: Resources.GcloudMissingComponentTitle);
-                }
-                return false;
-            }
-
-            return true;
-        }
+        
     }
 }
