@@ -16,16 +16,34 @@ using System;
 
 namespace GoogleCloudExtension.GCloud
 {
+    /// <summary>
+    /// This class contains the result of validating the Cloud SDK installation in the machine.
+    /// </summary>
     public class GCloudValidationResult
     {
+        /// <summary>
+        /// The version of the Cloud SDK installed on the machine.
+        /// </summary>
         public Version CloudSdkVersion { get; }
 
+        /// <summary>
+        /// Whether the Cloud SDK is installed at all.
+        /// </summary>
         public bool IsCloudSdkInstalled { get; }
 
+        /// <summary>
+        /// Whether the Cloud SDK is newer or equal than the required version.
+        /// </summary>
         public bool IsCloudSdkUpdated { get; }
 
+        /// <summary>
+        /// If a required component was detected as installed or not.
+        /// </summary>
         public bool IsRequiredComponentInstalled { get; }
 
+        /// <summary>
+        /// Whether the installation of the Cloud SDK was valid.
+        /// </summary>
         public bool IsValid => IsCloudSdkInstalled && IsCloudSdkUpdated && IsRequiredComponentInstalled;
 
         public GCloudValidationResult(
