@@ -148,18 +148,21 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
 
                 _publishDialog.FinishFlow();
 
+                TimeSpan deploymentDuration;
                 bool result;
                 using (var frozen = StatusbarHelper.Freeze())
                 using (var animationShown = StatusbarHelper.ShowDeployAnimation())
                 using (var progress = StatusbarHelper.ShowProgressBar(String.Format(Resources.GcePublishProgressMessage, SelectedInstance.Name)))
                 using (var deployingOperation = ShellUtils.SetShellUIBusy())
                 {
+                    var startDeploymentTime = DateTime.Now;
                     result = await WindowsVmDeployment.PublishProjectAsync(
                         project.FullPath,
                         SelectedInstance,
                         SelectedCredentials,
                         progress,
                         (l) => GcpOutputWindow.OutputLine(l));
+                    deploymentDuration = DateTime.Now - startDeploymentTime;
                 }
 
                 if (result)
@@ -174,7 +177,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                         Process.Start(url);
                     }
 
-                    EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Success));
+                    EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Success, deploymentDuration));
                 }
                 else
                 {

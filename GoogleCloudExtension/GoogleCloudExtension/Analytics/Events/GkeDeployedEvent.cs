@@ -12,12 +12,14 @@ namespace GoogleCloudExtension.Analytics.Events
     internal static class GkeDeployedEvent
     {
         private const string GkeDeployedEventName = "gkeDeployment";
+        private const string DeploymentDurationProperty = "duration";
 
-        public static AnalyticsEvent Create(CommandStatus status)
+        public static AnalyticsEvent Create(CommandStatus status, TimeSpan duration = default(TimeSpan))
         {
             return new AnalyticsEvent(
                 GkeDeployedEventName,
-                CommandStatusUtils.StatusProperty, CommandStatusUtils.GetStatusString(status));
+                CommandStatusUtils.StatusProperty, CommandStatusUtils.GetStatusString(status),
+                DeploymentDurationProperty, duration.TotalSeconds.ToString());
         }
     }
 }

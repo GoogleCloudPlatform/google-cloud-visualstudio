@@ -261,17 +261,20 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
                     _publishDialog.FinishFlow();
 
+                    TimeSpan deploymentDuration;
                     GkeDeploymentResult result;
                     using (var frozen = StatusbarHelper.Freeze())
                     using (var animationShown = StatusbarHelper.ShowDeployAnimation())
                     using (var progress = StatusbarHelper.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
                     using (var deployingOperation = ShellUtils.SetShellUIBusy())
                     {
+                        var deploymentStartTime = DateTime.Now;
                         result = await GkeDeployment.PublishProjectAsync(
                             project.FullPath,
                             options,
                             progress,
                             GcpOutputWindow.OutputLine);
+                        deploymentDuration = DateTime.Now - deploymentStartTime;
                     }
 
                     if (result != null)
@@ -321,7 +324,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                             Process.Start($"http://{result.PublicServiceIpAddress}");
                         }
 
-                        EventsReporterWrapper.ReportEvent(GkeDeployedEvent.Create(CommandStatus.Success));
+                        EventsReporterWrapper.ReportEvent(GkeDeployedEvent.Create(CommandStatus.Success, deploymentDuration));
                     }
                     else
                     {

@@ -122,17 +122,20 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
                 _publishDialog.FinishFlow();
 
+                TimeSpan deploymentDuration;
                 AppEngineFlexDeploymentResult result;
                 using (var frozen = StatusbarHelper.Freeze())
                 using (var animationShown = StatusbarHelper.ShowDeployAnimation())
                 using (var progress = StatusbarHelper.ShowProgressBar(Resources.FlexPublishProgressMessage))
                 using (var deployingOperation = ShellUtils.SetShellUIBusy())
                 {
+                    var startDeploymentTime = DateTime.Now;
                     result = await AppEngineFlexDeployment.PublishProjectAsync(
                         project.FullPath,
                         options,
                         progress,
                         GcpOutputWindow.OutputLine);
+                    deploymentDuration = DateTime.Now - startDeploymentTime;
                 }
 
                 if (result != null)
@@ -147,7 +150,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                         Process.Start(url);
                     }
 
-                    EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Success));
+                    EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Success, deploymentDuration));
                 }
                 else
                 {
