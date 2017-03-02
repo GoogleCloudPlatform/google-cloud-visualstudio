@@ -1812,4 +1812,8 @@ Open the project of version {2} to properly locate the logging writter location.
     <value>Count {0}    First seen at {1}     Last seen at {2}     in the last {3}</value>
     <comment>Show a brief message about an error group. {0} is the total error count, {1} is the first error time, {2} is the last error time, {3] is the currently selected time range.</comment>
   </data>
+  <data name="UiAutoReloadButtonCaption" xml:space="preserve">
+    <value>AUTO RELOAD</value>
+    <comment>Caption for auto reload button.</comment>
+  </data>
 </root>

@@ -815,6 +815,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Resource Include="Theming\AutoReloadButtonResources.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="TitleBar\TitleBar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

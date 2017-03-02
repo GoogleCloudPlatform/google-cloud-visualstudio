@@ -3639,6 +3639,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to AUTO RELOAD.
+        /// </summary>
+        public static string UiAutoReloadButtonCaption {
+            get {
+                return ResourceManager.GetString("UiAutoReloadButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
         public static string UiCancelButtonCaption {
