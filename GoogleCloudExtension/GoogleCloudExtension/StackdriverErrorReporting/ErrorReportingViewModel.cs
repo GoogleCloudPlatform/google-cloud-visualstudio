@@ -204,6 +204,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 ShowError = true;
                 ErrorString = Resources.ErrorReportingDataSourceGenericErrorMessage;
             }
+            catch (ErrorReportingException)
+            {
+                ShowError = true;
+                ErrorString = Resources.ErrorReportingInternalCodeErrorGenericMessage;
+            }
             finally
             {
                 IsLoadingComplete = true;

@@ -51,30 +51,26 @@
             </Grid.RowDefinitions>
 
             <!-- Time period selection buttons. -->
-            <Grid 
-                Grid.Row="1"
+            <Grid Grid.Row="1"                
                 Margin="0,12,0,12" 
                 IsEnabled="{Binding IsLoadingComplete}">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <WrapPanel 
-                    Grid.Column="0" 
-                    Margin="0,0,24,0">
-                    <TextBlock
-                        FontSize="16"
-                        Text="{Binding CurrentTimeRangeCaption}" 
-                        Style="{StaticResource CommonTextStyle}"/>
-                </WrapPanel>
+                <TextBlock
+                    Margin="0,0,24,0"
+                    FontSize="16"
+                    Text="{Binding CurrentTimeRangeCaption}" 
+                    Style="{StaticResource CommonTextStyle}"
+                    TextWrapping="WrapWithOverflow"/>
                 
                 <local:TimeRangeButtons 
                     Grid.Column="1" 
                     SelectedItem="{Binding SelectedTimeRangeItem, Mode=OneWayToSource}" />
             </Grid>
 
-            <DataGrid 
-                Grid.Row="2"
+            <DataGrid Grid.Row="2"                
                 Panel.ZIndex="5"
                 x:Name="dataGridEventGroup"
                 IsReadOnly="True" 
@@ -125,27 +121,14 @@
             </DataGrid>
 
             <!-- Loading first page progress indicator -->
-            <controls:ProgressIndicator 
-                Grid.Row="2"
+            <controls:ProgressIndicator Grid.Row="2"                
                 Panel.ZIndex="10"
                 Margin="0,60,0,0"
                 HorizontalAlignment="Center"                       
                 VerticalAlignment="Top" 
-                FullDuration="1000"
                 Visibility="{Binding IsRefreshing, Converter={StaticResource visibilityConverter}}" />
 
-            <!-- Loading next page progress indicator -->
-            <controls:ProgressIndicator 
-                Grid.Row="3"
-                Padding="12"
-                Panel.ZIndex="10"
-                Margin="0,-60,0,0"
-                HorizontalAlignment="Center"                       
-                FullDuration="1000"
-                Visibility="{Binding IsLoadingNextPage, Converter={StaticResource visibilityConverter}}" />
-
-            <TextBox 
-                Grid.Row="2"
+            <TextBox Grid.Row="2"                
                 Panel.ZIndex="15"
                 Padding="8,5,8,5" 
                 VerticalAlignment="Top"
@@ -157,7 +140,15 @@
                 Visibility="{Binding ShowError, Converter={StaticResource visibilityConverter}}" 
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
                 IsReadOnly="True" />
-            
+
+            <!-- Loading next page progress indicator -->
+            <controls:ProgressIndicator Grid.Row="3"                
+                Padding="12"
+                Panel.ZIndex="10"
+                Margin="0,-60,0,0"
+                HorizontalAlignment="Center"                       
+                Visibility="{Binding IsLoadingNextPage, Converter={StaticResource visibilityConverter}}" />
+
         </Grid>
     </StackPanel>
 </UserControl>

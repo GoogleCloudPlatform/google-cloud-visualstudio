@@ -33,12 +33,10 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     [Guid("4b3c62b4-2121-40a1-8cd5-8f794760b35e")]
     public class ErrorReportingToolWindow : ToolWindowPane
     {
-        private readonly ErrorReportingViewModel _viewModel;
-
         /// <summary>
         /// Gets a <seealso cref="ErrorReportingViewModel"/> object that is associated with the Window.
         /// </summary>
-        public ErrorReportingViewModel ViewModel => _viewModel;
+        public ErrorReportingViewModel ViewModel { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ErrorReportingToolWindow"/> class.
@@ -52,7 +50,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             // the object returned by the Content property.
             this.Content = new ErrorReportingToolWindowControl();
 
-            _viewModel = new ErrorReportingViewModel();
+            ViewModel = new ErrorReportingViewModel();
         }
 
         /// <summary>
@@ -61,7 +59,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public override void OnToolWindowCreated()
         {
             base.OnToolWindowCreated();
-            (Content as ErrorReportingToolWindowControl).DataContext = _viewModel;
+            (Content as ErrorReportingToolWindowControl).DataContext = ViewModel;
         }
     }
 }

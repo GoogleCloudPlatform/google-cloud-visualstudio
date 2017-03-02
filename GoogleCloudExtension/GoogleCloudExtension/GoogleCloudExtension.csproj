@@ -242,7 +242,6 @@
     <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowControl.xaml.cs">
       <DependentUpon>ErrorReportingToolWindowControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StackdriverErrorReporting\ServiceContextComparer.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingViewModel.cs" />
     <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtons.xaml.cs">
       <DependentUpon>TimeRangeButtons.xaml</DependentUpon>
