@@ -31,20 +31,14 @@
                 BorderThickness="1">
 
                 <StackPanel>
-                    <StackPanel Orientation="Horizontal" >
-                        <TextBlock Text="{Binding Error.ErrorGroup.Count}" 
-                                   Margin="6"
-                                   Style="{StaticResource CommonTextStyle}"/>
-                        <TextBlock Text="{Binding Error.FirstSeenTime}" 
-                                   Margin="6"
-                                   Style="{StaticResource CommonTextStyle}"/>
-                        <TextBlock Text="{Binding Error.LastSeenTime}" 
-                                   Margin="6"
-                                   Style="{StaticResource CommonTextStyle}"/>
-                    </StackPanel>
+                    <TextBlock 
+                        Text="{Binding Summary}" 
+                        Margin="6"
+                        Style="{StaticResource CommonTextStyle}"/>
                     <TextBox 
                         Text="{Binding Error.ParsedException.RawMessage, Mode=OneWay}" 
                         MaxLines="10"
+                        Padding="6"
                         ScrollViewer.VerticalScrollBarVisibility="Auto"
                         ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
                 </StackPanel>

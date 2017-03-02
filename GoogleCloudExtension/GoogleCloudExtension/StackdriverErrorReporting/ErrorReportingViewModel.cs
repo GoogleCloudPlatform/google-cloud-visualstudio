@@ -235,7 +235,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 {
                     return;
                 }
-                _groupStatsCollection.Add(new ErrorGroupItem(item));
+                _groupStatsCollection.Add(new ErrorGroupItem(item, SelectedTimeRangeItem));
             }
         }
 

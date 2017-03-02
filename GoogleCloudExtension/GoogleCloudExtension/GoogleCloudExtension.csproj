@@ -265,7 +265,7 @@
     <Compile Include="StackdriverErrorReporting\GotoSourceLocation\ParseExceptionView.xaml.cs">
       <DependentUpon>ParseExceptionView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GotoSourceLine\ShowTooltipHelper.cs" />
+    <Compile Include="GotoSourceLine\ShowTooltipUtils.cs" />
     <Compile Include="StackdriverErrorReporting\GotoSourceLocation\StackFrame.cs" />
     <Compile Include="StackdriverErrorReporting\ServiceContextComparer.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingViewModel.cs" />

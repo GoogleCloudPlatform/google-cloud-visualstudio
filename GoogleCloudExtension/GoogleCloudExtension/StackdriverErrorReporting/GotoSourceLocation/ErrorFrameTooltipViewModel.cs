@@ -14,7 +14,7 @@
 
 using GoogleCloudExtension.GotoSourceLine;
 using GoogleCloudExtension.Utils;
-using System.Diagnostics;
+using System;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -23,8 +23,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// </summary>
     internal class ErrorFrameTooltipViewModel : Model
     {
-        private bool _filterLogsOfSourceLine = true;
-
         /// <summary>
         /// The close button command
         /// </summary>
@@ -39,6 +37,16 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// The log item do display in tooltip.
         /// </summary>
         public ErrorGroupItem Error { get; }
+
+        /// <summary>
+        /// Gets the summary message.
+        /// </summary>
+        public string Summary => String.Format(
+            Resources.ErrorReportingSourceTooltipFormat,
+            Error.ErrorGroup.Count,
+            Error.FirstSeenTime,
+            Error.LastSeenTime,
+            Error.GroupTimeRange.Caption);
 
         /// <summary>
         /// Initializes a new instance of <seealso cref="ErrorFrameTooltipViewModel"/> class.

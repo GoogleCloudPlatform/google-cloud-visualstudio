@@ -63,25 +63,28 @@ namespace GoogleCloudExtension.GotoSourceLine
             }
         }
 
-        public static void NavigateToSourceLineCommand(
-            this ErrorGroupItem errorGroupItem, 
+        /// <summary>
+        /// Navigate from a parsed stack frame to source code line.
+        /// </summary>
+        public static void ErrorFrameToSourceLine(
+            ErrorGroupItem errorGroupItem, 
             ErrorReporting.StackFrame stackFrame)
         {
-            SolutionHelper solution = null;
-            if ((solution = SolutionHelper.CurrentSolution) == null)
+            if (errorGroupItem == null || stackFrame == null || !stackFrame.IsWellParsed)
             {
-                OpenCurrentVersionProjectPrompt(errorGroupItem.SeenIn, "");
-                // Check if a solution is open. User can choose not to open solution or project. 
-                if ((solution = SolutionHelper.CurrentSolution) == null)
-                {
-                    return;    // Quit if there is no solution open. 
-                }
+                throw new ArgumentException("Invalid argument");
             }
 
-            var projectItem = solution.FindMatchingSourceFile(stackFrame.SourceFile).FirstOrDefault()?.ProjectItem;
+            SolutionHelper solution = null;
+            ProjectItem projectItem = null;
+            if ((solution = SolutionHelper.CurrentSolution) != null)
+            {
+                projectItem = solution.FindMatchingSourceFile(stackFrame.SourceFile).FirstOrDefault()?.ProjectItem;
+            }
+
             if (null == projectItem)
             {
-                FileItemNotFoundPrompt();
+                SourceVersionUtils.FileItemNotFoundPrompt(stackFrame.SourceFile);
                 return;
             }
 
@@ -100,7 +103,7 @@ namespace GoogleCloudExtension.GotoSourceLine
         /// </summary>
         /// <param name="window"><seealso cref="Window"/></param>
         /// <param name="line">The line number of the source file.</param>
-        public static void GotoLine(Window window, int line)
+        private static void GotoLine(Window window, int line)
         {
             TextSelection selection = window.Document.Selection as TextSelection;
             TextPoint tp = selection.TopPoint;
@@ -123,19 +126,14 @@ namespace GoogleCloudExtension.GotoSourceLine
         /// <summary>
         /// Show the Logger method tooltip.
         /// </summary>
-        public static bool ShowToolTip(ErrorGroupItem errorGroupItem, Window window, ErrorReporting.StackFrame stackFrame)
+        public static void ShowToolTip(ErrorGroupItem errorGroupItem, Window window, ErrorReporting.StackFrame stackFrame)
         {
             GotoLine(window, (int)stackFrame.LineNumber);
             IVsTextView textView = GetIVsTextView(window.Document.FullName);
             var wpfView = GetWpfTextView(textView);
             if (wpfView == null)
             {
-                return false;
-            }
-            StackdriverTagger tagger = TryFindTagger(wpfView);
-            if (tagger == null)
-            {
-                return false;
+                return;
             }
             s_errorReportingControl.Value.DataContext = new ErrorFrameTooltipViewModel(errorGroupItem);
             SourceLineToolTipDataSource.Current.Set(
@@ -143,9 +141,7 @@ namespace GoogleCloudExtension.GotoSourceLine
                 stackFrame.LineNumber,
                 s_errorReportingControl.Value,
                 "");
-            tagger.ShowOrUpdateToolTip();
-
-            return true;
+            TryFindTagger(wpfView)?.ShowOrUpdateToolTip();
         }
 
         /// <summary>
@@ -153,28 +149,22 @@ namespace GoogleCloudExtension.GotoSourceLine
         /// </summary>
         /// <param name="logItem">The <seealso cref="LogItem"/> that has the source line information.</param>
         /// <param name="window">The Visual Studio doucment window of the source file.</param>
-        public static bool ShowToolTip(this LogItem logItem, Window window)
+        public static void ShowToolTip(this LogItem logItem, Window window)
         {
             GotoLine(window, (int)logItem.SourceLine);            
             IVsTextView textView = GetIVsTextView(window.Document.FullName);
             var wpfView = GetWpfTextView(textView);
             if (wpfView == null)
             {
-                return false;
-            }
-            StackdriverTagger tagger = TryFindTagger(wpfView);
-            if (tagger == null)
-            {
-                return false;
+                return;
             }
             s_logsViewerControl.Value.DataContext = new LoggerTooltipViewModel(logItem);
             SourceLineToolTipDataSource.Current.Set(
                 wpfView,
                 logItem.SourceLine.Value,
                 s_logsViewerControl.Value,
-                logItem.LogLevel.GetLoggerMethodName()); // stackFrame.Function);  TODO: set right function name
-            tagger.ShowOrUpdateToolTip();
-            return true;
+                logItem.LogLevel.GetLoggerMethodName());
+            TryFindTagger(wpfView)?.ShowOrUpdateToolTip();
         }
 
         /// <summary>

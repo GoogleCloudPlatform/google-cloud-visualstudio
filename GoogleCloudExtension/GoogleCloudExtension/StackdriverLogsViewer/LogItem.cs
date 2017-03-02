@@ -331,7 +331,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             var projectSourceFile = project.FindSourceFile(SourceFilePath);
             if (projectSourceFile == null)
             {
-                SourceVersionUtils.FileItemNotFoundPrompt();
+                SourceVersionUtils.FileItemNotFoundPrompt(SourceFilePath);
                 return;
             }
 

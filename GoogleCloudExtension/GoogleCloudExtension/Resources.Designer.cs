@@ -2023,6 +2023,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Count {0}    First seen at {1}     Last seen at {2}     in the last {3}.
+        /// </summary>
+        public static string ErrorReportingSourceTooltipFormat {
+            get {
+                return ResourceManager.GetString("ErrorReportingSourceTooltipFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to hh:mm tt.
         /// </summary>
         public static string ErrorReportingTimeTimeLineFormat {
@@ -2491,39 +2500,12 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to open the source file {0}.
-        /// </summary>
-        public static string LogsViewerFailedOpenFileMessage {
-            get {
-                return ResourceManager.GetString("LogsViewerFailedOpenFileMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The log entry was generated from assembly {0}, version {1}.
         ///Open the project to navigate to the logger method location..
         /// </summary>
         public static string LogsViewerPleaseOpenProjectPrompt {
             get {
                 return ResourceManager.GetString("LogsViewerPleaseOpenProjectPrompt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Google Stackdriver Logs Viewer.
-        /// </summary>
-        public static string LogsViewerPromptTitle {
-            get {
-                return ResourceManager.GetString("LogsViewerPromptTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The log entry does not contain valid source information or the source line can not be located..
-        /// </summary>
-        public static string LogsViewerSourceFileNotFoundMessage {
-            get {
-                return ResourceManager.GetString("LogsViewerSourceFileNotFoundMessage", resourceCulture);
             }
         }
         
@@ -3498,6 +3480,35 @@ namespace GoogleCloudExtension {
         public static string ShowPasswordWindowTitle {
             get {
                 return ResourceManager.GetString("ShowPasswordWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to open the source file.
+        ///{0}.
+        /// </summary>
+        public static string SourceVersionUtilsFailedOpenFileMessage {
+            get {
+                return ResourceManager.GetString("SourceVersionUtilsFailedOpenFileMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Does not find the source file in the solution.
+        ///{0}.
+        /// </summary>
+        public static string SourceVersionUtilsFileNotFoundMessage {
+            get {
+                return ResourceManager.GetString("SourceVersionUtilsFileNotFoundMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud Tools.
+        /// </summary>
+        public static string SourceVersionUtilsPromptTitle {
+            get {
+                return ResourceManager.GetString("SourceVersionUtilsPromptTitle", resourceCulture);
             }
         }
         

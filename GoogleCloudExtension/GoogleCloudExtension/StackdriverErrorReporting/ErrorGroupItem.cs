@@ -82,20 +82,19 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Gets the time range of the <seealso cref="ErrorGroup"/>.
         /// </summary>
-        public EventGroupTimeRangeEnum EventGroupTimeRange { get; }
+        public TimeRangeItem GroupTimeRange { get; }
 
         /// <summary>
         /// Gets the list of <seealso cref="TimedCount"/> of the error group.
         /// </summary>
         public IList<TimedCount> TimedCountList => ErrorGroup.TimedCounts;
 
-        public ErrorGroupItem(ErrorGroupStats errorGroup)
+        public ErrorGroupItem(ErrorGroupStats errorGroup, TimeRangeItem timeRange)
         {
             if (errorGroup == null)
             {
                 throw new ErrorReportingException(new ArgumentNullException(nameof(errorGroup)));
             }
-
             ErrorGroup = errorGroup;
             if (ErrorGroup.Representative?.Message != null)
             {
@@ -103,6 +102,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             }
             Message = ParsedException?.Header;
             OnNavigateToDetailCommand = new ProtectedCommand(null);
+            GroupTimeRange = timeRange;
         }
 
         /// <summary>

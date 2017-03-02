@@ -78,11 +78,11 @@ namespace GoogleCloudExtension.GotoSourceLine
         /// <summary>
         /// Prompt when the file item not found.
         /// </summary>
-        public static void FileItemNotFoundPrompt()
+        public static void FileItemNotFoundPrompt(string filePath)
         {
             UserPromptUtils.ErrorPrompt(
-                message: Resources.LogsViewerSourceFileNotFoundMessage,
-                title: Resources.LogsViewerPromptTitle);
+                message: String.Format(Resources.SourceVersionUtilsFileNotFoundMessage, filePath),
+                title: Resources.SourceVersionUtilsPromptTitle);
         }
 
         /// <summary>
@@ -91,22 +91,22 @@ namespace GoogleCloudExtension.GotoSourceLine
         public static void FailedToOpenFilePrompt(string filePath)
         {
             UserPromptUtils.ErrorPrompt(
-                message: String.Format(Resources.LogsViewerFailedOpenFileMessage, filePath),
-                title: Resources.LogsViewerPromptTitle);
+                message: String.Format(Resources.SourceVersionUtilsFailedOpenFileMessage, filePath),
+                title: Resources.SourceVersionUtilsPromptTitle);
         }
 
         private static void LogEntryVersionInfoMissingPrompt()
         {
             UserPromptUtils.ErrorPrompt(
                 message: Resources.LogsViewerVersionInfoMissingMessage,
-                title: Resources.LogsViewerPromptTitle);
+                title: Resources.SourceVersionUtilsPromptTitle);
         }
 
         public static void OpenCurrentVersionProjectPrompt(string assemblyName, string assemblyVersion)
         {
             if (UserPromptUtils.ActionPrompt(
                     prompt: String.Format(Resources.LogsViewerPleaseOpenProjectPrompt, assemblyName, assemblyVersion),
-                    title: Resources.LogsViewerPromptTitle,
+                    title: Resources.SourceVersionUtilsPromptTitle,
                     message: Resources.LogsViewerAskToOpenProjectMessage))
             {
                 ShellUtils.OpenProject();
@@ -125,7 +125,7 @@ namespace GoogleCloudExtension.GotoSourceLine
 
                 if (UserPromptUtils.ActionPrompt(
                     prompt: prompt,
-                    title: Resources.LogsViewerPromptTitle,
+                    title: Resources.SourceVersionUtilsPromptTitle,
                     message: Resources.LogsViewerVersionMissmatchAskIgnoreMessage))
                 {
                     StackdriverLogsViewerStates.Current.SetContinueWithVersionMismatchAssemblyFlag();

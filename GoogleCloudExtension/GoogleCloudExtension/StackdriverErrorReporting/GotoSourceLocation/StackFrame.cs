@@ -44,6 +44,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private static readonly Regex s_stackFrameRegex = new Regex(FrameParserPattern);
 
         private readonly ParsedException _owningExceptionObj;
+        private ErrorGroupItem OwningErrorGroup => _owningExceptionObj.OwningParentObj;
 
         /// <summary>
         /// Gets the function name of the stack frame.
@@ -98,7 +99,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             _owningExceptionObj = parent;
             OnGotoSourceCommand = new ProtectedCommand(() =>
             {
-                ShowTooltipUtils.NavigateToSourceLineCommand(_owningExceptionObj.OwningParentObj, this);
+                ShowTooltipUtils.ErrorFrameToSourceLine(OwningErrorGroup, this);
             });
         }
 

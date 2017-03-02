@@ -49,13 +49,16 @@ namespace GoogleCloudExtension.GotoSourceLine
         {
             _sourceBuffer = sourceBuffer;
             _view = view;
-            _view.LayoutChanged += ViewLayoutChanged;
+            _view.LayoutChanged += OnViewLayoutChanged;
+            _view.LostAggregateFocus += OnLostAggregateFocus;
             _toolTipProvider = toolTipProviderFactory.GetToolTipProvider(_view);
             if (_view == SourceLineToolTipDataSource.Current.TextView)
             {
                 ShowOrUpdateToolTip();
             }
         }
+
+
 
         /// <summary>
         /// Display tooltip by refreshing the taggers.
@@ -122,10 +125,23 @@ namespace GoogleCloudExtension.GotoSourceLine
             DisplayTooltip(new SnapshotSpan(textLine.Start, textLine.Length));
         }
 
+        private void OnLostAggregateFocus(object sender, EventArgs e)
+        {
+            if (_isTooltipShown)
+            {
+                if (SourceLineToolTipDataSource.Current.TextView == _view)
+                {
+                    SourceLineToolTipDataSource.Current.Reset();
+                }
+
+                SendTagsChangedEvent();
+            }
+        }
+
         /// <summary>
         /// Force an update if the view layout changes
         /// </summary>
-        private void ViewLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
+        private void OnViewLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
         {
             // If a new snapshot is generated, clear the tooltip.
             if (e.NewViewState.EditSnapshot != e.OldViewState.EditSnapshot

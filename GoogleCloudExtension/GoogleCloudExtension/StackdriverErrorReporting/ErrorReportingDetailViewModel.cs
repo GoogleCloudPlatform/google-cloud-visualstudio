@@ -212,7 +212,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                     GroupItem.ErrorGroup.Group.GroupId);
                 if (groups != null && groups.ErrorGroupStats != null && groups.ErrorGroupStats.Count > 0)
                 {
-                    GroupItem = new ErrorGroupItem(groups.ErrorGroupStats.FirstOrDefault());
+                    GroupItem = new ErrorGroupItem(groups.ErrorGroupStats.FirstOrDefault(), SelectedTimeRangeItem);
                 }
                 else
                 {
