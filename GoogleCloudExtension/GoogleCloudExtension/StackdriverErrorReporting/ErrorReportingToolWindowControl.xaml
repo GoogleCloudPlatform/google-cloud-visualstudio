@@ -19,6 +19,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
                 <ResourceDictionary Source="./ErrorReportingResources.xaml" />
+                <ResourceDictionary Source="./TimeRangeButtons/TimeRangeButtonsResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <utils:VisibilityConverter x:Key="visibilityConverter" />
@@ -67,7 +68,8 @@
                 
                 <local:TimeRangeButtons 
                     Grid.Column="1" 
-                    SelectedItem="{Binding SelectedTimeRangeItem, Mode=OneWayToSource}" />
+                    ItemsSource="{Binding TimeRangeItemList}"
+                    SelectedItem="{Binding SelectedTimeRangeItem, Mode=TwoWay}" />
             </Grid>
 
             <DataGrid Grid.Row="2"                
