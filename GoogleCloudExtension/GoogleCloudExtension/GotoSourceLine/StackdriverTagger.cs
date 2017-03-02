@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Adornments;
 using Microsoft.VisualStudio.Text.Editor;
@@ -19,18 +20,15 @@ using Microsoft.VisualStudio.Text.Tagging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Windows;
 
-namespace GoogleCloudExtension.StackdriverErrorReporting
+namespace GoogleCloudExtension.GotoSourceLine
 {
     /// <summary>
-    /// Define the custom <seealso cref="ITagger{T}"/> for logger methods.
+    /// Define the custom <seealso cref="ITagger{T}"/> for showing a tooltip around a source code line.
     /// </summary>
-    internal class LoggerTagger : ITagger<LoggerTag>
+    internal class StackdriverTagger : ITagger<StackdriverTag>
     {
-        private static LoggerTag s_emptyLoggerTag = new LoggerTag();
-        private static readonly Lazy<TooltipControl> _tooltipControl = 
-            new Lazy<TooltipControl>(() => new TooltipControl());
+        private static StackdriverTag s_emptyLoggerTag = new StackdriverTag();
         private readonly IToolTipProvider _toolTipProvider;
         private readonly ITextView _view;
         private readonly ITextBuffer _sourceBuffer;
@@ -42,18 +40,18 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
         /// <summary>
-        /// Create a new instance of <seealso cref="LoggerTagger"/> class.
+        /// Create a new instance of <seealso cref="StackdriverTagger"/> class.
         /// </summary>
         /// <param name="view">The text view on which the tag shows.</param>
         /// <param name="sourceBuffer">The source buffer with the text view.</param>
         /// <param name="toolTipProviderFactory">The tool tip provider. <seealso cref="IToolTipProviderFactory"/>. </param>
-        public LoggerTagger(ITextView view, ITextBuffer sourceBuffer, IToolTipProviderFactory toolTipProviderFactory)
+        public StackdriverTagger(ITextView view, ITextBuffer sourceBuffer, IToolTipProviderFactory toolTipProviderFactory)
         {
             _sourceBuffer = sourceBuffer;
             _view = view;
             _view.LayoutChanged += ViewLayoutChanged;
             _toolTipProvider = toolTipProviderFactory.GetToolTipProvider(_view);
-            if (_view == TooltipSource.Current.TextView)
+            if (_view == SourceLineToolTipDataSource.Current.TextView)
             {
                 ShowOrUpdateToolTip();
             }
@@ -64,7 +62,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public void ShowOrUpdateToolTip()
         {
-            if (!TooltipSource.Current.IsValidSource)
+            if (!SourceLineToolTipDataSource.Current.IsValidSource)
             {
                 return;
             }
@@ -73,11 +71,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         }
 
         /// <summary>
-        /// Clear tooptip by clearing <seealso cref="TooltipSource"/> and  refreshing the taggers.
+        /// Clear tooptip by clearing <seealso cref="SourceLineToolTipDataSource"/> and  refreshing the taggers.
         /// </summary>
         public void ClearTooltip()
         {
-            TooltipSource.Current.Reset();
+            SourceLineToolTipDataSource.Current.Reset();
             if (_isTooltipShown)
             {
                 SendTagsChangedEvent();
@@ -87,32 +85,40 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Implement interface <seealso cref="ITagger{T}"/>.
         /// </summary>
-        public IEnumerable<ITagSpan<LoggerTag>> GetTags(NormalizedSnapshotSpanCollection spans)
+        public IEnumerable<ITagSpan<StackdriverTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
-            if (TooltipSource.Current.TextView != _view || spans.Count == 0)
+            if (SourceLineToolTipDataSource.Current.TextView != _view || spans.Count == 0)
             {
-                Debug.WriteLine($"TooltipSource.TextView != _view is {TooltipSource.Current.TextView != _view}, spans.Count is {spans.Count}");
+                Debug.WriteLine($"TooltipSource.TextView != _view is {SourceLineToolTipDataSource.Current.TextView != _view}, spans.Count is {spans.Count}");
                 HideTooltip();
                 yield break;
             }
 
-            ITextSnapshotLine textLine = _sourceBuffer.CurrentSnapshot.GetLineFromLineNumber((int)TooltipSource.Current.SourceLine - 1);
+            ITextSnapshotLine textLine = _sourceBuffer.CurrentSnapshot.GetLineFromLineNumber(
+                (int)SourceLineToolTipDataSource.Current.SourceLine - 1);
             SnapshotSpan span;
-            if (String.IsNullOrWhiteSpace(TooltipSource.Current.MethodName))
+            if (String.IsNullOrWhiteSpace(SourceLineToolTipDataSource.Current.MethodName))
             {
-                span = new SnapshotSpan(textLine.Start, textLine.Length);
+                var text = textLine.GetText();
+                int begin = StringUtils.FirstNonSpaceIndex(text);
+                int end = StringUtils.LastNonSpaceIndex(text);
+                if (begin == -1 || end == -1)
+                {
+                    yield break;
+                }
+                span = new SnapshotSpan(textLine.Start + begin, end - begin + 1);
             }
             else
             {
-                int pos = textLine.GetText().IndexOf(TooltipSource.Current.MethodName);
+                int pos = textLine.GetText().IndexOf(SourceLineToolTipDataSource.Current.MethodName);
                 if (pos < 0)
                 {
                     HideTooltip();
                     yield break;
                 }
-                span = new SnapshotSpan(textLine.Start + pos, TooltipSource.Current.MethodName.Length);
+                span = new SnapshotSpan(textLine.Start + pos, SourceLineToolTipDataSource.Current.MethodName.Length);
             }
-            yield return new TagSpan<LoggerTag>(span, s_emptyLoggerTag);
+            yield return new TagSpan<StackdriverTag>(span, s_emptyLoggerTag);
             DisplayTooltip(new SnapshotSpan(textLine.Start, textLine.Length));
         }
 
@@ -123,11 +129,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         {
             // If a new snapshot is generated, clear the tooltip.
             if (e.NewViewState.EditSnapshot != e.OldViewState.EditSnapshot
-                || (_isTooltipShown && !TooltipSource.Current.IsValidSource))
+                || (_isTooltipShown && !SourceLineToolTipDataSource.Current.IsValidSource))
             {
                 ClearTooltip();
             }
-            else if (TooltipSource.Current.IsValidSource 
+            else if (SourceLineToolTipDataSource.Current.IsValidSource 
                 // if tooltip is not shown, or if the view port width changes.
                 && (!_isTooltipShown || e.NewViewState.ViewportWidth != e.OldViewState.ViewportWidth))
             {
@@ -147,26 +153,14 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             _isTooltipShown = false;
         }
 
-        /// <summary>
-        /// Note, the input type is defined as object. It takes <seealso cref="LogItem"/> type in runtime.
-        /// The reason of using object is to cheat the MEF loader not to reference LogItem.  
-        /// </summary>
-        /// <param name="logItem">A <seealso cref="LogItem"/> object.</param>
-        private UIElement CreateTooltipControl(object logItem)
-        {
-            var control = _tooltipControl.Value;
-            control.Width = _view.ViewportWidth;
-            control.DataContext = logItem;
-            return control;
-        }
-
         private void DisplayTooltip(SnapshotSpan span)
         {
             _toolTipProvider.ClearToolTip();
             _isTooltipShown = true;
+            SourceLineToolTipDataSource.Current.TooltipControl.Width = _view.ViewportWidth;
             this._toolTipProvider.ShowToolTip(
                 span.Snapshot.CreateTrackingSpan(span, SpanTrackingMode.EdgeExclusive),
-                CreateTooltipControl(TooltipSource.Current.Error), 
+                SourceLineToolTipDataSource.Current.TooltipControl, 
                 PopupStyles.PositionClosest);
         }
     }
