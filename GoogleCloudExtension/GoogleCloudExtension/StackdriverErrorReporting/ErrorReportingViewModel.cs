@@ -42,6 +42,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private bool _showException;
         private string _exceptionString;
         private ObservableCollection<ErrorGroupItem> _groupStatsCollection;
+        private Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
         private TimeRangeItem _selectedTimeRange;
 
         /// <summary>
@@ -97,6 +98,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public bool IsGridVisible => !String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId);
 
         /// <summary>
+        /// Gets the list of <seealso cref="TimeRangeItem"/> as data source for time range selector.
+        /// </summary>
+        public List<TimeRangeItem> TimeRangeItemList => _timeRangeItemList.Value;
+
+        /// <summary>
         /// Sets the currently selected time range.
         /// </summary>
         public TimeRangeItem SelectedTimeRangeItem
@@ -132,6 +138,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             _dataSource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
             _groupStatsCollection = new ObservableCollection<ErrorGroupItem>();
             GroupStatsView = new ListCollectionView(_groupStatsCollection);
+            SelectedTimeRangeItem = TimeRangeItemList.Last();
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnProjectIdChanged();
             CredentialsStore.Default.Reset += (sender, e) => OnProjectIdChanged();
         }
