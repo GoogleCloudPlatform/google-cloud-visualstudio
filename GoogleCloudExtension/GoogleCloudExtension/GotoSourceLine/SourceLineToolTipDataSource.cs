@@ -14,22 +14,20 @@
 
 using Microsoft.VisualStudio.Text.Editor;
 using System;
+using System.Windows.Controls;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+namespace GoogleCloudExtension.GotoSourceLine
 {
     /// <summary>
-    /// Define the logger tooltip data sources.
+    /// Define the source line tooltip data sources.
     /// This is singleton so that there is at most one tooltip shown globally at any time. 
-    /// This approach simplifies the overall design for <seealso cref="LoggerTagger"/>. 
+    /// This approach simplifies the overall design for <seealso cref="StackdriverTagger"/>. 
     /// </summary>
-    internal class LoggerTooltipSource
+    internal class SourceLineToolTipDataSource
     {
-        // Note, adding lambda () => new LoggerTooltipSource() is necessary for the constructor is private.
-        private static Lazy<LoggerTooltipSource> s_instance = new Lazy<LoggerTooltipSource>(() => new LoggerTooltipSource());
-        /// <summary>
-        /// The log item object as the data context for <seealso cref="LoggerTooltipControl"/>.
-        /// </summary>
-        public object LogData { get; private set; }
+        // Note, adding lambda () => new LoggerTooltipSource() is necessary becauses the constructor is private.
+        private static Lazy<SourceLineToolTipDataSource> s_instance = 
+            new Lazy<SourceLineToolTipDataSource>(() => new SourceLineToolTipDataSource());
 
         /// <summary>
         /// The associated <seealso cref="IWpfTextView"/> interface 
@@ -38,36 +36,43 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public IWpfTextView TextView { get; private set; }
 
         /// <summary>
-        /// The source line number associated with the <seealso cref="LogData"/>.
+        /// The source line number to browse to
         /// </summary>
         public long SourceLine { get; private set; } = -1;
 
         /// <summary>
-        /// The method name that produces the <seealso cref="LogData"/>.
+        /// The method name to be highlighted. 
+        /// The name can be the method that produces the log or the method name in stack frame.
+        /// Optional, if the value is null or empty, the entire source line is highlighted.
         /// </summary>
         public string MethodName { get; private set; }
 
         /// <summary>
+        /// The tooltip control that is displayed around the highlighted source line.
+        /// </summary>
+        public UserControl TooltipControl { get; private set; }
+
+        /// <summary>
         /// Check if the source is in valid state.
         /// </summary>
-        public bool IsValidSource => LogData != null && TextView != null && SourceLine > 0 && MethodName != null;
+        public bool IsValidSource => TooltipControl != null && TextView != null && SourceLine > 0;
 
         /// <summary>
         /// Add an empty private constructor to disable creation of new instances outside.
         /// </summary>
-        private LoggerTooltipSource() { }
+        private SourceLineToolTipDataSource() { }
 
         /// <summary>
-        /// The singleton instance of <seealso cref="LoggerTooltipSource"/>.
+        /// The singleton instance of <seealso cref="SourceLineToolTipDataSource"/>.
         /// </summary>
-        public static LoggerTooltipSource Current => s_instance.Value;
+        public static SourceLineToolTipDataSource Current => s_instance.Value;
 
         /// <summary>
         /// Set all data members to null.
         /// </summary>
         public void Reset()
         {
-            LogData = null;
+            TooltipControl = null;
             TextView = null;
             SourceLine = -1;
             MethodName = null;
@@ -75,13 +80,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         /// <summary>
         /// Set the data members in a batch.
-        /// for parameter definition, <seealso cref="LoggerTooltipSource"/> data members.
+        /// for parameter definition, <seealso cref="SourceLineToolTipDataSource"/> data members.
         /// </summary>
-        public void Set(object data, IWpfTextView view, long line, string method)
+        public void Set(IWpfTextView view, long line, UserControl control, string method = null)
         {
-            LogData = data;
             TextView = view;
             SourceLine = line;
+            TooltipControl = control;
             MethodName = method;
         }
     }

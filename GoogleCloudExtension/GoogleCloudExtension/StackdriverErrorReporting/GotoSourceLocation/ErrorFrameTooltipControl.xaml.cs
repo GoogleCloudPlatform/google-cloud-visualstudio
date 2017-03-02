@@ -19,9 +19,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// <summary>
     /// Interaction logic for TooltipControl.xaml
     /// </summary>
-    public partial class TooltipControl : Border
+    public partial class ErrorFrameTooltipControl : UserControl
     {
-        public TooltipControl()
+        public ErrorFrameTooltipControl()
         {
             InitializeComponent();
         }

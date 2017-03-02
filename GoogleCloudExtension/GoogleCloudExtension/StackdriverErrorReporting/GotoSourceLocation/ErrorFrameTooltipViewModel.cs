@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.GotoSourceLine;
 using GoogleCloudExtension.Utils;
 using System.Diagnostics;
 
@@ -20,7 +21,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// <summary>
     /// View model to <seealso cref="TooltipControl"/>.
     /// </summary>
-    internal class TooltipViewModel : Model
+    internal class ErrorFrameTooltipViewModel : Model
     {
         private bool _filterLogsOfSourceLine = true;
 
@@ -40,10 +41,10 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public ErrorGroupItem Error { get; }
 
         /// <summary>
-        /// Initializes a new instance of <seealso cref="LoggerTooltipViewModel"/> class.
+        /// Initializes a new instance of <seealso cref="ErrorFrameTooltipViewModel"/> class.
         /// </summary>
         /// <param name="log">The log item the tooltip shows.</param>
-        public TooltipViewModel(ErrorGroupItem errorItem)
+        public ErrorFrameTooltipViewModel(ErrorGroupItem errorItem)
         {
             OnCloseButtonCommand = new ProtectedCommand(ShowTooltipUtils.HideTooltip);
             OnBackToErrorReportingCommand = new ProtectedCommand(

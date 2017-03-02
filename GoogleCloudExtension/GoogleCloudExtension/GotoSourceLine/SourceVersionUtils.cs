@@ -15,10 +15,11 @@
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.StackdriverErrorReporting;
+using GoogleCloudExtension.StackdriverLogsViewer;
 using System;
 using System.Linq;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+namespace GoogleCloudExtension.GotoSourceLine
 {
     /// <summary>
     /// Helper methods to find, open the project of a source version.

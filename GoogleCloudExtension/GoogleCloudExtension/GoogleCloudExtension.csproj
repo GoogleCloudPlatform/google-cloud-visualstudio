@@ -253,14 +253,11 @@
       <DependentUpon>ErrorReportingToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverErrorReporting\EventItem.cs" />
-    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\LoggerHighlightFormat.cs" />
-    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\LoggerTagger.cs" />
-    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\LoggerTaggerProvider.cs" />
-    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\TooltipControl.xaml.cs">
-      <DependentUpon>TooltipControl.xaml</DependentUpon>
+    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\ErrorFrameTooltipControl.xaml.cs">
+      <DependentUpon>ErrorFrameTooltipControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\TooltipSource.cs" />
-    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\TooltipViewModel.cs" />
+    <Compile Include="GotoSourceLine\SourceLineToolTipDataSource.cs" />
+    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\ErrorFrameTooltipViewModel.cs" />
     <Compile Include="StackdriverErrorReporting\GotoSourceLocation\MessageWithSourceLink.xaml.cs">
       <DependentUpon>MessageWithSourceLink.xaml</DependentUpon>
     </Compile>
@@ -268,7 +265,7 @@
     <Compile Include="StackdriverErrorReporting\GotoSourceLocation\ParseExceptionView.xaml.cs">
       <DependentUpon>ParseExceptionView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\ShowTooltipUtils.cs" />
+    <Compile Include="GotoSourceLine\ShowTooltipHelper.cs" />
     <Compile Include="StackdriverErrorReporting\GotoSourceLocation\StackFrame.cs" />
     <Compile Include="StackdriverErrorReporting\ServiceContextComparer.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingViewModel.cs" />
@@ -283,8 +280,6 @@
     <Compile Include="StackdriverLogsViewer\DateTimePickerViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\LogsViewerStates.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipViewModel.cs" />
-    <Compile Include="StackdriverLogsViewer\SourceNavigation\ShowTooltipUtils.cs" />
-    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipSource.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipControl.xaml.cs">
       <DependentUpon>LoggerTooltipControl.xaml</DependentUpon>
     </Compile>
@@ -298,17 +293,17 @@
       <DependentUpon>LogsViewerToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModel.cs" />
-    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerHighlightFormat.cs" />
-    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTagger.cs" />
+    <Compile Include="GotoSourceLine\StackdriverHighlightFormat.cs" />
+    <Compile Include="GotoSourceLine\StackdriverTagger.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\MenuItemViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeMenuViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeNameConsts.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceValueItemViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeItemViewModel.cs" />
     <Compile Include="Controls\SearchMenuItem.cs" />
-    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTaggerProvider.cs" />
+    <Compile Include="GotoSourceLine\StackdriverTaggerProvider.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LogWritterNameConsts.cs" />
-    <Compile Include="StackdriverLogsViewer\SourceNavigation\SourceVersionUtils.cs" />
+    <Compile Include="GotoSourceLine\SourceVersionUtils.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\JArrayNode.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\JObjectNode.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\LogEntryNode.cs" />
@@ -788,7 +783,7 @@
     <Resource Include="StackdriverErrorReporting\ErrorReportingResources.xaml">
       <SubType>Designer</SubType>
     </Resource>
-    <Page Include="StackdriverErrorReporting\GotoSourceLocation\TooltipControl.xaml">
+    <Page Include="StackdriverErrorReporting\GotoSourceLocation\ErrorFrameTooltipControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
