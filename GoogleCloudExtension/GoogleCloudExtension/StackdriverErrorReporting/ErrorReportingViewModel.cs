@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Clouderrorreporting.v1beta1;
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
@@ -20,7 +19,6 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
