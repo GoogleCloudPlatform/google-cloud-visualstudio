@@ -56,10 +56,10 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             }
         }
 
-    /// <summary>
-    /// Optional, displays the context status code.
-    /// </summary>
-    public int? Status => ErrorGroup.Representative?.Context?.HttpRequest?.ResponseStatusCode;
+        /// <summary>
+        /// Optional, displays the context status code.
+        /// </summary>
+        public int? Status => ErrorGroup.Representative?.Context?.HttpRequest?.ResponseStatusCode;
 
         /// <summary>
         /// Gets the message to display for the error group.
