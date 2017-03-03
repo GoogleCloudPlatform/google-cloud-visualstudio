@@ -19,9 +19,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
 
@@ -129,6 +127,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public ProtectedCommand<ErrorGroupItem> OnGotoDetailCommand { get; }
 
         /// <summary>
+        /// Responds to auto reload command.
+        /// </summary>
+        public ProtectedCommand OnAutoReloadCommand { get; }
+
+        /// <summary>
         /// Create a new instance of <seealso cref="ErrorReportingViewModel"/> class.
         /// </summary>
         public ErrorReportingViewModel()
@@ -139,6 +142,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             OnGotoDetailCommand = new ProtectedCommand<ErrorGroupItem>(NavigateToDetailWindow);
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnProjectIdChanged();
             CredentialsStore.Default.Reset += (sender, e) => OnProjectIdChanged();
+            OnAutoReloadCommand = new ProtectedCommand(Reload);
         }
 
         /// <summary>

@@ -20,6 +20,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
                 <ResourceDictionary Source="./ErrorReportingResources.xaml" />
+                <ResourceDictionary Source="../Theming/AutoReloadButtonResources.xaml" />
                 <ResourceDictionary Source="./BarChart/TimedCountBarChart.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
@@ -78,6 +79,11 @@
                         Style="{StaticResource BackToOverviewButtonStyle}" 
                         CheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/back_icon_12.png}"
                         UncheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/back_icon_12.png}"/>
+
+                    <controls:AutoReloadButton                 
+                        Margin="12,0,0,0"
+                        Style="{StaticResource AutoReloadButtonStyle}"
+                        AutoReloadCommand="{Binding OnAutoReloadCommand}" />
                 </StackPanel>
             </Border>
 

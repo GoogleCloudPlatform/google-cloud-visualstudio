@@ -142,6 +142,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public ProtectedCommand OnBackToOverViewCommand { get; }
 
         /// <summary>
+        /// Gets the command that responds to auto reload event.
+        /// </summary>
+        public ProtectedCommand OnAutoReloadCommand { get; }
+
+        /// <summary>
         /// Initializes a new instance of <seealso cref="ErrorReportingDetailViewModel"/> class.
         /// </summary>
         public ErrorReportingDetailViewModel()
@@ -149,6 +154,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             OnBackToOverViewCommand = new ProtectedCommand(() => ToolWindowCommandUtils.ShowToolWindow<ErrorReportingToolWindow>());
             PropertyChanged += OnPropertyChanged;
             _datasource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
+            OnAutoReloadCommand = new ProtectedCommand(() => UpdateGroupAndEventAsync());
         }
 
         /// <summary>

@@ -64,14 +64,13 @@
             </Grid.RowDefinitions>
 
             <Border 
-            Grid.Row="1"
-            Padding="12, 6, 0, 6"    
-            BorderThickness="0, 0, 0, 1"    
-            BorderBrush="LightGray"
-            IsEnabled="{Binding IsLoadingComplete}">
-                <controls:ImageToggleButton
-                    x:Name="_autoReloadToggleButton"
-                    Style="{StaticResource AutoReloadButtonStyle}"/>
+                Padding="12,6,0,6"    
+                BorderThickness="0,0,0,1"    
+                BorderBrush="LightGray"
+                IsEnabled="{Binding IsLoadingComplete}">
+                <controls:AutoReloadButton 
+                    Style="{StaticResource AutoReloadButtonStyle}" 
+                    AutoReloadCommand="{Binding OnAutoReloadCommand}"/>
             </Border>
             
             <!-- Time period selection buttons. -->

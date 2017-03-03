@@ -14,19 +14,19 @@
            TargetType="controls:AutoReloadButton" 
            BasedOn="{StaticResource ImageToggleButtonStyle}">
         <Setter Property="Background" Value="Transparent"/>
-        <!--<Setter Property="UncheckedImage" Value="{mp:ImageResource StackdriverErrorReporting/Resources/play_icon.png}" />
-        <Setter Property="CheckedImage" Value="{mp:ImageResource StackdriverErrorReporting/Resources/pause_icon.png}" />-->
+        <Setter Property="UncheckedImage" Value="{mp:ImageResource StackdriverErrorReporting/Resources/play_icon.png}" />
+        <Setter Property="CheckedImage" Value="{mp:ImageResource StackdriverErrorReporting/Resources/pause_icon.png}" />
         <Setter Property="HorizontalAlignment" Value="Left" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Padding" Value="6" />
         <Setter Property="Foreground" Value="#FF3B78E7" />
         <Setter Property="FontWeight" Value="DemiBold" />
-        <Setter Property="MouseOverBackground" Value="BlueViolet" />
+        <Setter Property="MouseOverBackground" Value="#E0E0E0" />
         <Setter Property="Content" Value="{x:Static ext:Resources.UiAutoReloadButtonCaption}" />
-        <!--<Style.Triggers>
+        <Style.Triggers>
             <Trigger Property="IsChecked" Value="True">
-                <Setter Property="Background" Value="#EEEEEE" />
+                <Setter Property="Background" Value="#BDBDBD" />
             </Trigger>
-        </Style.Triggers>-->
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>
