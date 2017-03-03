@@ -16,9 +16,9 @@ The typical set of steps then is:
 The procedure to add a new package reference to an existing template differs between an ASP.NET Core 1.0 app and an ASP.NET 4.x app.
 
 ### Adding a package reference to an ASP.NET 4.x app
-Adding a package reference to an ASP.NET 4.x aproject is a very involved process because you need to reproduce what Visual Studio normally does when adding the package. 
+Adding a package reference to an ASP.NET 4.x project is a very involved process because you need to reproduce what Visual Studio normally does when adding the package. 
 
-The best way to know what chages are needed is to create a new project from the template and, using Visual Studio, add the package. Doing a diff with the unchanged project will show you of the changes you need to port to the template. These changes usually involve:
+The best way to know what changes are needed is to create a new project from the template and, using Visual Studio, add the package. Doing a diff with the unchanged project will show you of the changes you need to port to the template. These changes usually involve:
 * Adding a reference to the new package, and the packages it depends on, to the `packages.config` file for the project.
 * Adding all the necessary `<Reference>` elements to the `.csproj` file. These should include the full identity of the package and the `<HintPath>`.
 * Ensure that you add all of the new `<Error>` entries in the `<Target Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">` entry. These entries add new `msbuild` targets required by the new packages.

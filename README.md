@@ -14,7 +14,7 @@ You can install the Google Cloud SDK from <https://cloud.google.com/sdk/>. You w
 * The "beta" component is used for Windows VMs password management and for the deployment ASP.NET Core apps to App Engine Flex.
 * The "kubectl" component is used for interactions with Google Container Engine.
 
-You can make sure that you have all the necessary components installed by running the cokmmand:
+You can make sure that you have all the necessary components installed by running the command:
 ```bash
 gcloud components install beta kubectl
 ```
