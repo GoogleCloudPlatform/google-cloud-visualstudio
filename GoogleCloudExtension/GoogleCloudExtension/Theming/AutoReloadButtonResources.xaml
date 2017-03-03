@@ -11,7 +11,7 @@
     </ResourceDictionary.MergedDictionaries>
 
     <Style x:Key="AutoReloadButtonStyle" 
-           TargetType="controls:ImageToggleButton" 
+           TargetType="controls:AutoReloadButton" 
            BasedOn="{StaticResource ImageToggleButtonStyle}">
         <Setter Property="Background" Value="Transparent"/>
         <!--<Setter Property="UncheckedImage" Value="{mp:ImageResource StackdriverErrorReporting/Resources/play_icon.png}" />
