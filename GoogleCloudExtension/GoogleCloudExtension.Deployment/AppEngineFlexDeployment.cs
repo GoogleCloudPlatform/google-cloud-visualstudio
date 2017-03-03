@@ -119,7 +119,6 @@ namespace GoogleCloudExtension.Deployment
                     version: effectiveVersion,
                     promote: options.Promote,
                     context: options.Context,
-                    useRuntimeBuilder: runtime == AspNetCoreRuntime,
                     outputAction: outputAction);
                 if (!await ProgressHelper.UpdateProgress(deployTask, progress, 0.6, 0.9))
                 {
@@ -277,7 +276,6 @@ namespace GoogleCloudExtension.Deployment
             string version,
             bool promote,
             GCloudContext context,
-            bool useRuntimeBuilder,
             Action<string> outputAction)
         {
             var appYamlPath = Path.Combine(stageDirectory, AppYamlName);
@@ -286,7 +284,6 @@ namespace GoogleCloudExtension.Deployment
                 version: version,
                 promote: promote,
                 outputAction: outputAction,
-                useRuntimeBuilder: useRuntimeBuilder,
                 context: context);
         }
     }
