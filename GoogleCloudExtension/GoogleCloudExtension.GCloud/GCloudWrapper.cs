@@ -31,17 +31,12 @@ namespace GoogleCloudExtension.GCloud
     {
         // The minimum version of the Google Cloud SDK that the extension can work with. Update this only when
         // a feature appears in the Cloud SDK that is absolutely required for the extension to work.
-        public const string GCloudSdkMinimumVersion = "145.0.0";
+        public const string GCloudSdkMinimumVersion = "146.0.0";
 
         // These variables specify the environment to be reported by gcloud when reporting metrics. These variables
         // are only used with gcloud which is why they're private here.
         private const string GCloudMetricsVariable = "CLOUDSDK_METRICS_ENVIRONMENT";
         private const string GCloudMetricsVersionVariable = "CLOUDSDK_METRICS_ENVIRONMENT_VERSION";
-
-        // Settings to enable the runtime builder in gcloud.
-        private const string GCloudAppUseRuntimeBuilders = "CLOUDSDK_APP_USE_RUNTIME_BUILDERS";
-        private const string GCloudAppRuntimeBuildersRoot = "CLOUDSDK_APP_RUNTIME_BUILDERS_ROOT";
-        private const string RuntimeBuildersRootValue = "gs://aspnet/";
 
         // Minimum version of Cloud SDK that is acceptable.
         private static readonly Version s_minimumVersion = new Version(GCloudSdkMinimumVersion);
@@ -85,21 +80,11 @@ namespace GoogleCloudExtension.GCloud
             string version,
             bool promote,
             Action<string> outputAction,
-            bool useRuntimeBuilder,
             GCloudContext context)
         {
             var versionParameter = version != null ? $"--version={version}" : "";
             var promoteParameter = promote ? "--promote" : "--no-promote";
             Dictionary<string, string> environment = null;
-
-            if (useRuntimeBuilder)
-            {
-                environment = new Dictionary<string, string>
-                {
-                    [GCloudAppUseRuntimeBuilders] = CommonEnvironmentVariables.TrueValue,
-                    [GCloudAppRuntimeBuildersRoot] = RuntimeBuildersRootValue
-                };
-            }
 
             return RunCommandAsync(
                 $"beta app deploy \"{appYaml}\" {versionParameter} {promoteParameter} --skip-staging --quiet",
