@@ -32,11 +32,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public ErrorGroupStats ErrorGroup { get; }
 
         /// <summary>
-        /// Gets the command that navigates to detail window.
-        /// </summary>
-        public ProtectedCommand OnNavigateToDetailCommand { get; }
-
-        /// <summary>
         /// The error message displayed in data grid row.
         /// </summary>
         public string Error => ErrorGroup.Representative.Message;
@@ -45,7 +40,21 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// Show service context. 
         /// <seealso cref="ErrorGroupStats.AffectedServices"/>.
         /// </summary>
-        public string SeenIn => GetSeeIn();
+        public string SeenIn
+        {
+            get
+            {
+                if (ErrorGroup.AffectedServices == null)
+                {
+                    return null;
+                }
+                var query = ErrorGroup.AffectedServices
+                    .Where(x => x.Service != null)
+                    .Select(x => FormatServiceContext(x))
+                    .Distinct(StringComparer.InvariantCulture);
+                return String.Join(Environment.NewLine, query);
+            }
+        }
 
         /// <summary>
         /// Optional, displays the context status code.
@@ -93,14 +102,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 Message = lines.Count() > 0 ? lines[0] : null;
                 FirstStackFrame = lines.Count() > 1 ? lines[1] : null;
             }
-            OnNavigateToDetailCommand = new ProtectedCommand(null);     // TODO: add handler in subsequent PR.
         }
 
         /// <summary>
-        /// The input in compiling time is object. 
-        /// In runtime, it can be either a DateTime object or a UTC time formated string.
-        /// 
-        /// If it is not DateTime type or the string is failed to convert to UTC time. 
+        /// The expected input is either DateTime object or string.
+        /// The string input will be parsed into DateTime by using UTC time format.
         /// </summary>
         /// <returns>
         /// Formated time string to Local Time, Local Culture, if input is DateTime type or
@@ -109,7 +115,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </returns>
         private static string FormatErrorGroupDateTime(object datetime)
         {
-            DateTime dt = DateTime.MinValue;
+            // Assign a value that is never used.
+            // Otherwise compiler complains "used not initialized local variable". 
+            DateTime dt = DateTime.MinValue;    
             if (datetime is DateTime)
             {
                 dt = (DateTime)datetime;
@@ -124,16 +132,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             }
 
             return dt.ToLocalTime().ToString("F");
-        }
-
-        private string GetSeeIn()
-        {
-            if (ErrorGroup.AffectedServices == null)
-            {
-                return null;
-            }
-            var query = ErrorGroup.AffectedServices.Where(x => x.Service != null).Distinct(new ServiceContextComparer());
-            return String.Join(Environment.NewLine, query.Select(x => FormatServiceContext(x)));
         }
 
         /// <summary>

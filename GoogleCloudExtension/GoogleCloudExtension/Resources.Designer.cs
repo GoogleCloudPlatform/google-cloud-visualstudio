@@ -1906,6 +1906,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unkown internal error. Please report the issue and/or retry later..
+        /// </summary>
+        public static string ErrorReportingInternalCodeErrorGenericMessage {
+            get {
+                return ResourceManager.GetString("ErrorReportingInternalCodeErrorGenericMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Last seen.
         /// </summary>
         public static string ErrorReportingLastErrorTimeHeader {

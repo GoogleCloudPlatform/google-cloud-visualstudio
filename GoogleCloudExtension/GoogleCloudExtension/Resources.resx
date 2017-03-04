@@ -1684,7 +1684,7 @@ Open the project of version {2} to properly locate the logging writter location.
   </data>
   <data name="ErrorReportingCurrentGroupTimePeriodLabelFormat" xml:space="preserve">
     <value>Errors in the last {0}</value>
-    <comment>In the error reporting overview window, the current selected time period label text format.</comment>
+    <comment>In the error reporting overview window, the current selected time period label text format.  {0} is the time period.  Example:  1 day,  30 days etc.</comment>
   </data>
   <data name="ErrorReporting1DayButtonCaption" xml:space="preserve">
     <value>1 day</value>
@@ -1765,5 +1765,9 @@ Open the project of version {2} to properly locate the logging writter location.
   <data name="ErrorReportingDataSourceGenericErrorMessage" xml:space="preserve">
     <value>Failed to retrieve data from cloud server. Please try later.</value>
     <comment>Generic error message for Error Reporting when there is DataSource excepiton.</comment>
+  </data>
+  <data name="ErrorReportingInternalCodeErrorGenericMessage" xml:space="preserve">
+    <value>Unkown internal error. Please report the issue and/or retry later.</value>
+    <comment>Generic error message for Error Reporting when there is internal code bugs.</comment>
   </data>
 </root>
