@@ -52,13 +52,19 @@ namespace GoogleCloudExtension.GCloud
         /// to 80 for the service and 8080 for the target pods.
         /// </summary>
         /// <param name="deployment">The deployment for which to create and expose the service.</param>
+        /// <param name="makePublic">True if the service should be made public, false otherwise.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <param name="context">The context for invoking kubectl.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>
-        public static Task<bool> ExposeServiceAsync(string deployment, Action<string> outputAction, KubectlContext context)
+        public static Task<bool> ExposeServiceAsync(
+            string deployment,
+            bool makePublic,
+            Action<string> outputAction,
+            KubectlContext context)
         {
+            var type = makePublic ? "--type=LoadBalancer" : "--type=ClusterIP";
             return RunCommandAsync(
-                $"expose deployment {deployment} --port=80 --target-port=8080 --type=LoadBalancer",
+                $"expose deployment {deployment} --port=80 --target-port=8080 {type}",
                 outputAction,
                 context);
         }
@@ -148,11 +154,27 @@ namespace GoogleCloudExtension.GCloud
                 context);
         }
 
+        /// <summary>
+        /// Deletes the service given by <paramref name="name"/>.
+        /// </summary>
+        /// <param name="name">The name of the service to delete.</param>
+        /// <param name="outputAction">The output callback to be called with output from the command.</param>
+        /// <param name="context">The context for invoking kubectl.</param>
+        /// <returns>True if the operation succeeded false otherwise.</returns>
+        public static Task<bool> DeleteServiceAsync(string name, Action<string> outputAction, KubectlContext context)
+            => RunCommandAsync($"delete service {name}", outputAction, context);
+
         private static Task<bool> RunCommandAsync(string command, Action<string> outputAction, KubectlContext context)
         {
             var actualCommand = FormatCommand(command, context);
             Debug.WriteLine($"Executing kubectl command: kubectl {actualCommand}");
-            return ProcessUtils.RunCommandAsync("kubectl", actualCommand, (o, e) => outputAction(e.Line));
+            Dictionary<string, string> environment = GetEnvironmentForContext(context);
+
+            return ProcessUtils.RunCommandAsync(
+                "kubectl",
+                actualCommand,
+                (o, e) => outputAction(e.Line),
+                environment: environment);
         }
 
         private static async Task<T> GetJsonOutputAsync<T>(string command, KubectlContext context)
@@ -161,7 +183,8 @@ namespace GoogleCloudExtension.GCloud
             try
             {
                 Debug.WriteLine($"Executing kubectl command: kubectl {actualCommand}");
-                return await ProcessUtils.GetJsonOutputAsync<T>("kubectl", actualCommand);
+                var environment = GetEnvironmentForContext(context);
+                return await ProcessUtils.GetJsonOutputAsync<T>("kubectl", actualCommand, environment: environment);
             }
             catch (JsonOutputException ex)
             {
@@ -174,6 +197,19 @@ namespace GoogleCloudExtension.GCloud
             var format = jsonOutput ? "--output=json" : "";
 
             return $"{command} --kubeconfig=\"{context.ConfigPath}\" {format}";
+        }
+
+        /// <summary>
+        /// Returns the environment variables to use to invoke kubectl safely. This environemnt is necessary
+        /// to ensure that the right credentials are used should the access token need to be refreshed.
+        /// </summary>
+        private static Dictionary<string, string> GetEnvironmentForContext(KubectlContext context)
+        {
+            return new Dictionary<string, string>
+            {
+                [CommonEnvironmentVariables.GCloudContainerUseApplicationDefaultCredentialsVariable] = CommonEnvironmentVariables.TrueValue,
+                [CommonEnvironmentVariables.GoogleApplicationCredentialsVariable] = context.CredentialsPath
+            };
         }
     }
 }

@@ -430,11 +430,38 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to migrate all traffic to {0}, please try again..
+        /// </summary>
+        public static string CloudExplorerGaeFailedToMigrateAllTrafficCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeFailedToMigrateAllTrafficCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading services....
         /// </summary>
         public static string CloudExplorerGaeLoadingServicesCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeLoadingServicesCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Migrate all traffic.
+        /// </summary>
+        public static string CloudExplorerGaeMigrateAllTrafficHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeMigrateAllTrafficHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Migrating all traffic to {0}.
+        /// </summary>
+        public static string CloudExplorerGaeMigratingAllTrafficCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeMigratingAllTrafficCaption", resourceCulture);
             }
         }
         
@@ -1519,6 +1546,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Browse Stackdriver Logs.
+        /// </summary>
+        public static string CloudExplorerLaunchLogsViewerMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerLaunchLogsViewerMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading....
         /// </summary>
         public static string CloudExplorerLoadingMessage {
@@ -1852,15 +1888,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Credentials.
-        /// </summary>
-        public static string GcePublishStepManageCredentialsCaption {
-            get {
-                return ResourceManager.GetString("GcePublishStepManageCredentialsCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Publishing {0} to Compute Engine..
         /// </summary>
         public static string GcePublishStepStartMessage {
@@ -1879,11 +1906,65 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Install Google Cloud SDK.
+        /// </summary>
+        public static string GcloudInstallLinkCaption {
+            get {
+                return ResourceManager.GetString("GcloudInstallLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To use this feature you need to have the Google Cloud SDK installed and available in the path. You also need the &quot;beta&quot; component installed for some features to be available. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link..
+        /// </summary>
+        public static string GcloudMissingCloudSdkErrorMessage {
+            get {
+                return ResourceManager.GetString("GcloudMissingCloudSdkErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To use this feature you need to have the &quot;{0}&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install {0}..
+        /// </summary>
+        public static string GcloudMissingComponentErrorMessage {
+            get {
+                return ResourceManager.GetString("GcloudMissingComponentErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Missing Google Cloud SDK Component.
         /// </summary>
         public static string GcloudMissingComponentTitle {
             get {
                 return ResourceManager.GetString("GcloudMissingComponentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing Google Cloud SDK.
+        /// </summary>
+        public static string GcloudMissingGcloudErrorTitle {
+            get {
+                return ResourceManager.GetString("GcloudMissingGcloudErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The version {0} of Cloud SDK installed is too old. Please update your Cloud SDK installation to version {1} or later by using the command: gcloud components update.
+        /// </summary>
+        public static string GCloudWrapperUtilsOldCloudSdkMessage {
+            get {
+                return ResourceManager.GetString("GCloudWrapperUtilsOldCloudSdkMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud SDK too old.
+        /// </summary>
+        public static string GCloudWrapperUtilsOldCloudSdkTitle {
+            get {
+                return ResourceManager.GetString("GCloudWrapperUtilsOldCloudSdkTitle", resourceCulture);
             }
         }
         
@@ -2356,6 +2437,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t expose a service.
+        /// </summary>
+        public static string GkePublishDontExposeServiceCaption {
+            get {
+                return ResourceManager.GetString("GkePublishDontExposeServiceCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The deployment name cannot be empty..
         /// </summary>
         public static string GkePublishEmptyDeploymentNameMessage {
@@ -2374,7 +2464,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to E_xpose the service to the public internet.
+        ///   Looks up a localized string similar to Expose a service.
         /// </summary>
         public static string GkePublishExposeServiceCaption {
             get {
@@ -2410,11 +2500,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the &quot;kubectl&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl.
+        ///   Looks up a localized string similar to Make service public.
         /// </summary>
-        public static string GkePublishMissingKubectlMessage {
+        public static string GkePublishMakeServicePublicCaption {
             get {
-                return ResourceManager.GetString("GkePublishMissingKubectlMessage", resourceCulture);
+                return ResourceManager.GetString("GkePublishMakeServicePublicCaption", resourceCulture);
             }
         }
         
@@ -2455,6 +2545,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Service {0} cluster IP address {1}..
+        /// </summary>
+        public static string GkePublishServiceClusterIpMessage {
+            get {
+                return ResourceManager.GetString("GkePublishServiceClusterIpMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Service {0} was deleted..
+        /// </summary>
+        public static string GkePublishServiceDeletedMessage {
+            get {
+                return ResourceManager.GetString("GkePublishServiceDeletedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Service.
+        /// </summary>
+        public static string GkePublishServiceGroupHeader {
+            get {
+                return ResourceManager.GetString("GkePublishServiceGroupHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Service {0} ip address {1}.
         /// </summary>
         public static string GkePublishServiceIpMessage {
@@ -2473,11 +2590,455 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Service {0} was updated..
+        /// </summary>
+        public static string GkePublishServiceUpdatedMessage {
+            get {
+                return ResourceManager.GetString("GkePublishServiceUpdatedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Waiting for service IP address....
         /// </summary>
         public static string GkePublishWaitingForServiceIpMessage {
             get {
                 return ResourceManager.GetString("GkePublishWaitingForServiceIpMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Continue to open the project?.
+        /// </summary>
+        public static string LogsViewerAskToOpenProjectMessage {
+            get {
+                return ResourceManager.GetString("LogsViewerAskToOpenProjectMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All {0}.
+        /// </summary>
+        public static string LogsViewerChooseAllMenuHeaderFormat {
+            get {
+                return ResourceManager.GetString("LogsViewerChooseAllMenuHeaderFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to open the source file {0}.
+        /// </summary>
+        public static string LogsViewerFailedOpenFileMessage {
+            get {
+                return ResourceManager.GetString("LogsViewerFailedOpenFileMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The log entry was generated from assembly {0}, version {1}.
+        ///Open the project to navigate to the logger method location..
+        /// </summary>
+        public static string LogsViewerPleaseOpenProjectPrompt {
+            get {
+                return ResourceManager.GetString("LogsViewerPleaseOpenProjectPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Stackdriver Logs Viewer.
+        /// </summary>
+        public static string LogsViewerPromptTitle {
+            get {
+                return ResourceManager.GetString("LogsViewerPromptTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The log entry does not contain valid source information or the source line can not be located..
+        /// </summary>
+        public static string LogsViewerSourceFileNotFoundMessage {
+            get {
+                return ResourceManager.GetString("LogsViewerSourceFileNotFoundMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Only show logs generated by this source line..
+        /// </summary>
+        public static string LogsViewerSourceFilterCheckboxTitle {
+            get {
+                return ResourceManager.GetString("LogsViewerSourceFilterCheckboxTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back to Stackdriver Logs Viewer.
+        /// </summary>
+        public static string LogsViewerTooltipBackButtonCaption {
+            get {
+                return ResourceManager.GetString("LogsViewerTooltipBackButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click the value to show matching entries..
+        /// </summary>
+        public static string LogsViewerTreeNodeFilterTooltip {
+            get {
+                return ResourceManager.GetString("LogsViewerTreeNodeFilterTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The log entry does not contain valid assembly name and/or assembly version..
+        /// </summary>
+        public static string LogsViewerVersionInfoMissingMessage {
+            get {
+                return ResourceManager.GetString("LogsViewerVersionInfoMissingMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version missmatch. 
+        ///The current project {0} version is {1},
+        ///Open the project of version {2} to properly locate the logging writter location..
+        /// </summary>
+        public static string LogsViewerVersionMismatchPrompt {
+            get {
+                return ResourceManager.GetString("LogsViewerVersionMismatchPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &quot;Do you want to continue anyway?&quot;.
+        /// </summary>
+        public static string LogsViewerVersionMissmatchAskIgnoreMessage {
+            get {
+                return ResourceManager.GetString("LogsViewerVersionMissmatchAskIgnoreMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Advanced filter help.
+        /// </summary>
+        public static string LogViewerAdvancedFilterHelpLinkCaption {
+            get {
+                return ResourceManager.GetString("LogViewerAdvancedFilterHelpLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Any.
+        /// </summary>
+        public static string LogViewerAnyOtherSeverityLevelTip {
+            get {
+                return ResourceManager.GetString("LogViewerAnyOtherSeverityLevelTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to hide all log items detail..
+        /// </summary>
+        public static string LogViewerCollapseAllTip {
+            get {
+                return ResourceManager.GetString("LogViewerCollapseAllTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error displaying the entry. .
+        /// </summary>
+        public static string LogViewerDataConversionGenericError {
+            get {
+                return ResourceManager.GetString("LogViewerDataConversionGenericError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Jump To Time.
+        /// </summary>
+        public static string LogViewerDateTimePickerLabel {
+            get {
+                return ResourceManager.GetString("LogViewerDateTimePickerLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to [{0}].
+        /// </summary>
+        public static string LogViewerDetailTreeViewArrayIndexFormat {
+            get {
+                return ResourceManager.GetString("LogViewerDetailTreeViewArrayIndexFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} :.
+        /// </summary>
+        public static string LogViewerDetailTreeViewNameLabelFormat {
+            get {
+                return ResourceManager.GetString("LogViewerDetailTreeViewNameLabelFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0}: {1}  .
+        /// </summary>
+        public static string LogViewerDictionaryPayloadFormatString {
+            get {
+                return ResourceManager.GetString("LogViewerDictionaryPayloadFormatString", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to see all log items detail..
+        /// </summary>
+        public static string LogViewerExpandAllTip {
+            get {
+                return ResourceManager.GetString("LogViewerExpandAllTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All logs.
+        /// </summary>
+        public static string LogViewerLogIdSelectAllLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogIdSelectAllLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MM-dd-yyyy.
+        /// </summary>
+        public static string LogViewerLogItemDateFormat {
+            get {
+                return ResourceManager.GetString("LogViewerLogItemDateFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &gt;&gt;&gt;&gt;&gt;&gt;&gt; m2_master.
+        /// </summary>
+        public static string LogViewerLogItemDateTimeFormat {
+            get {
+                return ResourceManager.GetString("LogViewerLogItemDateTimeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to HH:mm:ss.fff.
+        /// </summary>
+        public static string LogViewerLogItemTimeFormat {
+            get {
+                return ResourceManager.GetString("LogViewerLogItemTimeFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to All Log Levels.
+        /// </summary>
+        public static string LogViewerLogLevelAllLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelAllLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to CRITICAL.
+        /// </summary>
+        public static string LogViewerLogLevelCriticalLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelCriticalLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to DEBUG.
+        /// </summary>
+        public static string LogViewerLogLevelDebugLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelDebugLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to EMERGENCY.
+        /// </summary>
+        public static string LogViewerLogLevelEmergencyLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelEmergencyLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to ERROR.
+        /// </summary>
+        public static string LogViewerLogLevelErrorLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelErrorLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to INFO.
+        /// </summary>
+        public static string LogViewerLogLevelInfoLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelInfoLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to WARNING.
+        /// </summary>
+        public static string LogViewerLogLevelWarningLabel {
+            get {
+                return ResourceManager.GetString("LogViewerLogLevelWarningLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get newest log (in descending order)..
+        /// </summary>
+        public static string LogViewerRefreshButtonToolTip {
+            get {
+                return ResourceManager.GetString("LogViewerRefreshButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancelling . . ..
+        /// </summary>
+        public static string LogViewerRequestCancellingMessage {
+            get {
+                return ResourceManager.GetString("LogViewerRequestCancellingMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading . . ..
+        /// </summary>
+        public static string LogViewerRequestProgressMessage {
+            get {
+                return ResourceManager.GetString("LogViewerRequestProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Filter by label or text search..
+        /// </summary>
+        public static string LogViewerSimpleTextSearchIconButtonToolTip {
+            get {
+                return ResourceManager.GetString("LogViewerSimpleTextSearchIconButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Submit Filters.
+        /// </summary>
+        public static string LogViewerSubmitAdvancedFilterCaption {
+            get {
+                return ResourceManager.GetString("LogViewerSubmitAdvancedFilterCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To Advanced Filter.
+        /// </summary>
+        public static string LogViewerSwitchToAdvancedFilterCaption {
+            get {
+                return ResourceManager.GetString("LogViewerSwitchToAdvancedFilterCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To Simple Filters.
+        /// </summary>
+        public static string LogViewerSwitchToSimpleFilterCaption {
+            get {
+                return ResourceManager.GetString("LogViewerSwitchToSimpleFilterCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to after.
+        /// </summary>
+        public static string LogViewerTimeOrderPickAsceSelection {
+            get {
+                return ResourceManager.GetString("LogViewerTimeOrderPickAsceSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to before.
+        /// </summary>
+        public static string LogViewerTimeOrderPickDescSelection {
+            get {
+                return ResourceManager.GetString("LogViewerTimeOrderPickDescSelection", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Get log.
+        /// </summary>
+        public static string LogViewerTimeOrderPickLabelHead {
+            get {
+                return ResourceManager.GetString("LogViewerTimeOrderPickLabelHead", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to this time stamp..
+        /// </summary>
+        public static string LogViewerTimeOrderPickLabelTail {
+            get {
+                return ResourceManager.GetString("LogViewerTimeOrderPickLabelTail", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to select different timezone..
+        /// </summary>
+        public static string LogViewerTimeZoneSelectionToolTip {
+            get {
+                return ResourceManager.GetString("LogViewerTimeZoneSelectionToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Account.
+        /// </summary>
+        public static string LogViewerTitleBarAccountLabel {
+            get {
+                return ResourceManager.GetString("LogViewerTitleBarAccountLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Project.
+        /// </summary>
+        public static string LogViewerTitleBarProjectIdLabel {
+            get {
+                return ResourceManager.GetString("LogViewerTitleBarProjectIdLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Stackdriver Logging.
+        /// </summary>
+        public static string LogViewerToolWindowCaption {
+            get {
+                return ResourceManager.GetString("LogViewerToolWindowCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Clear filters and return to basic mode..
+        /// </summary>
+        public static string LogViewerToSimpleSearchButtonTooltip {
+            get {
+                return ResourceManager.GetString("LogViewerToSimpleSearchButtonTooltip", resourceCulture);
             }
         }
         
@@ -2860,7 +3421,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose a target:.
+        ///   Looks up a localized string similar to Choose a product to publish to:.
         /// </summary>
         public static string PublishDialogChoiceStepMessage {
             get {
@@ -2887,7 +3448,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select _account:.
+        ///   Looks up a localized string similar to _Account:.
         /// </summary>
         public static string PublishDialogGceStepSelectCredentialsMessage {
             get {
@@ -2896,7 +3457,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Select instance:.
+        ///   Looks up a localized string similar to _VM instance:.
         /// </summary>
         public static string PublishDialogGceStepSelectInstanceMessage {
             get {
@@ -2923,7 +3484,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Open website after publish process finishes.
+        ///   Looks up a localized string similar to _Open site after publishing.
         /// </summary>
         public static string PublishDialogOpenWebsiteCaption {
             get {
@@ -3004,47 +3565,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to reset password for {0}. {1}.
+        ///   Looks up a localized string similar to Failed to reset password for {0}. .
         /// </summary>
         public static string ResetPasswordFailedPromptMessage {
             get {
                 return ResourceManager.GetString("ResetPasswordFailedPromptMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Install Google Cloud SDK.
-        /// </summary>
-        public static string ResetPasswordGcloudLinkCaption {
-            get {
-                return ResourceManager.GetString("ResetPasswordGcloudLinkCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the &quot;beta&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta..
-        /// </summary>
-        public static string ResetPasswordGcloudMissingBetaMessage {
-            get {
-                return ResourceManager.GetString("ResetPasswordGcloudMissingBetaMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the Google Cloud SDK is installed and available in the path, and that the &quot;beta&quot; component is installed. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link..
-        /// </summary>
-        public static string ResetPasswordGcloudMissingMessage {
-            get {
-                return ResourceManager.GetString("ResetPasswordGcloudMissingMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Missing Google Cloud SDK.
-        /// </summary>
-        public static string ResetPasswordMissingGcloudTitle {
-            get {
-                return ResourceManager.GetString("ResetPasswordMissingGcloudTitle", resourceCulture);
             }
         }
         
@@ -3247,11 +3772,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to All.
+        /// </summary>
+        public static string UiChooseAllMenuHeader {
+            get {
+                return ResourceManager.GetString("UiChooseAllMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
         public static string UiCloseButtonCaption {
             get {
                 return ResourceManager.GetString("UiCloseButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Date.
+        /// </summary>
+        public static string UiDateLabel {
+            get {
+                return ResourceManager.GetString("UiDateLabel", resourceCulture);
             }
         }
         
@@ -3283,11 +3826,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Go.
+        /// </summary>
+        public static string UiGoButtonCaption {
+            get {
+                return ResourceManager.GetString("UiGoButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Invalid value.
         /// </summary>
         public static string UiInvalidValueTitle {
             get {
                 return ResourceManager.GetString("UiInvalidValueTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Manage Windows credentials.
+        /// </summary>
+        public static string UiManageWindowsCredentialsCaption {
+            get {
+                return ResourceManager.GetString("UiManageWindowsCredentialsCaption", resourceCulture);
             }
         }
         
@@ -3373,6 +3934,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Search by prefix.
+        /// </summary>
+        public static string UiSearchMenuSearchBoxLabel {
+            get {
+                return ResourceManager.GetString("UiSearchMenuSearchBoxLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Skip file.
         /// </summary>
         public static string UiSkipFileButtonCaption {
@@ -3396,6 +3966,15 @@ namespace GoogleCloudExtension {
         public static string UiStopButtonCaption {
             get {
                 return ResourceManager.GetString("UiStopButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &gt;&gt;&gt;&gt;&gt;&gt;&gt; m2_master.
+        /// </summary>
+        public static string UiTimeLabel {
+            get {
+                return ResourceManager.GetString("UiTimeLabel", resourceCulture);
             }
         }
         

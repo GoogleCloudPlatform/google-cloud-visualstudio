@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -50,6 +50,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CommonEnvironmentVariables.cs" />
+    <Compile Include="GCloudValidationResult.cs" />
+    <Compile Include="Models\CloudSdkVersions.cs" />
     <Compile Include="Models\GkeDeployment.cs" />
     <Compile Include="KubectlContext.cs" />
     <Compile Include="KubectlWrapper.cs" />
@@ -61,6 +64,7 @@
     <Compile Include="Models\GkeMetadata.cs" />
     <Compile Include="Models\GkeService.cs" />
     <Compile Include="Models\GkeList.cs" />
+    <Compile Include="Models\GkeServiceSpec.cs" />
     <Compile Include="Models\GkeSpec.cs" />
     <Compile Include="Models\GkeStatus.cs" />
     <Compile Include="WindowsInstanceCredentials.cs" />
