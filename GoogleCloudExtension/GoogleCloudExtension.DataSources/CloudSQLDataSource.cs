@@ -19,6 +19,7 @@ using Google.Apis.SQLAdmin.v1beta4.Data;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 
@@ -97,6 +98,23 @@ namespace GoogleCloudExtension.DataSources
             {
                 Debug.WriteLine($"Failed to update database instance: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Awaits for the operation to complete succesfully.
+        /// </summary>
+        /// <param name="operation">The operation to await.</param>
+        /// <returns>The task that will be done once the operation is succesful.</returns>
+        public async Task AwaitOperationAsync(Operation operation)
+        {
+            var completedOperation = await Polling<Operation>.Poll(
+                operation,
+                o => GetOperationAsync(o.Name),
+                o => o.Status == OperationStateDone);
+            if (completedOperation.Error != null)
+            {
+                throw new DataSourceException(completedOperation.Error.Errors.FirstOrDefault()?.Message);
             }
         }
 

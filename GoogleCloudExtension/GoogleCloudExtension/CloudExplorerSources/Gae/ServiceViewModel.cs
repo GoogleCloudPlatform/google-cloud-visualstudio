@@ -24,7 +24,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -328,15 +327,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             try
             {
-                Task<Operation> operationTask = _owner.DataSource.UpdateServiceTrafficSplit(split, Service.Id);
-                Func<Operation, Task<Operation>> fetch = (o) => datasource.GetOperationAsync(o.GetOperationId());
-                Predicate<Operation> stopPolling = (o) => o.Done ?? false;
-                Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);
-                if (operation.Error != null)
-                {
-                    throw new DataSourceException(operation.Error.Message);
-                }
-
+                var operation = await _owner.DataSource.UpdateServiceTrafficSplitAsync(split, Service.Id);
+                await _owner.DataSource.AwaitOperationAsync(operation);
                 _owner.InvalidateService(_service.Id);
 
                 EventsReporterWrapper.ReportEvent(GaeTrafficSplitUpdatedEvent.Create(CommandStatus.Success));
@@ -381,14 +373,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
             try
             {
-                Task<Operation> operationTask = datasource.DeleteServiceAsync(Service.Id);
-                Func<Operation, Task<Operation>> fetch = (o) => datasource.GetOperationAsync(o.GetOperationId());
-                Predicate<Operation> stopPolling = (o) => o.Done ?? false;
-                Operation operation = await Polling<Operation>.Poll(await operationTask, fetch, stopPolling);
-                if (operation.Error != null)
-                {
-                    throw new DataSourceException(operation.Error.Message);
-                }
+                var operation = await datasource.DeleteServiceAsync(Service.Id);
+                await datasource.AwaitOperationAsync(operation);
+
                 EventsReporterWrapper.ReportEvent(GaeServiceDeletedEvent.Create(CommandStatus.Success));
             }
             catch (Exception ex) when (ex is DataSourceException || ex is TimeoutException || ex is OperationCanceledException)

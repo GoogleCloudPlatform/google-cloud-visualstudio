@@ -625,25 +625,9 @@
     <value>Failed to reset password for {0}. </value>
     <comment>Message shown when the reset operation fails. {0} is the instance name.</comment>
   </data>
-  <data name="ResetPasswordGcloudLinkCaption" xml:space="preserve">
-    <value>Install Google Cloud SDK</value>
-    <comment>Caption for the link for Gcloud.</comment>
-  </data>
-  <data name="ResetPasswordGcloudMissingBetaMessage" xml:space="preserve">
-    <value>To use this feature you need to have the "beta" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta.</value>
-    <comment>Message shown when the beta component is missing.</comment>
-  </data>
   <data name="GcloudMissingComponentTitle" xml:space="preserve">
     <value>Missing Google Cloud SDK Component</value>
     <comment>Title for the dialog that informs the user that a Cloud SDK component is needed but not installed.</comment>
-  </data>
-  <data name="ResetPasswordGcloudMissingMessage" xml:space="preserve">
-    <value>To use this feature you need to have the Google Cloud SDK is installed and available in the path, and that the "beta" component is installed. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link.</value>
-    <comment>Message shown when gcloud is not installed.</comment>
-  </data>
-  <data name="ResetPasswordMissingGcloudTitle" xml:space="preserve">
-    <value>Missing Google Cloud SDK</value>
-    <comment>Title for the prompts shown when gcloud is not installed.</comment>
   </data>
   <data name="AddWindowsCredentialUserNameCaption" xml:space="preserve">
     <value>_User name:</value>
@@ -810,19 +794,19 @@
     <comment>The tooltip for the GCE button.</comment>
   </data>
   <data name="PublishDialogChoiceStepMessage" xml:space="preserve">
-    <value>Choose a target:</value>
+    <value>Choose a product to publish to:</value>
     <comment>The message shown in the choice step.</comment>
   </data>
   <data name="PublishDialogOpenWebsiteCaption" xml:space="preserve">
-    <value>_Open website after publish process finishes</value>
+    <value>_Open site after publishing</value>
     <comment>The caption for the open website checkbox.</comment>
   </data>
   <data name="PublishDialogGceStepSelectCredentialsMessage" xml:space="preserve">
-    <value>Select _account:</value>
+    <value>_Account:</value>
     <comment>The message shown to select credentials.</comment>
   </data>
   <data name="PublishDialogGceStepSelectInstanceMessage" xml:space="preserve">
-    <value>_Select instance:</value>
+    <value>_VM instance:</value>
     <comment>The message shown to select an instance.</comment>
   </data>
   <data name="PublishDialogNextButtonCaption" xml:space="preserve">
@@ -888,10 +872,6 @@
   <data name="AddWindowsCredentialHavePasswordMessage" xml:space="preserve">
     <value>I have a password for this user</value>
     <comment>Message shown in the radio button of the Reset Password dialog to signify that the user will provide the password.</comment>
-  </data>
-  <data name="WindowsCredentialsChooserManageCredentialsCaption" xml:space="preserve">
-    <value>Manage Windows credentials</value>
-    <comment>Caption used in the hyperlink shown in the Windows credentials chooser dialog.</comment>
   </data>
   <data name="CloudExplorerGaeFailedServicesMessage" xml:space="preserve">
     <value>Failed to load the list of Google Cloud App Engine services</value>
@@ -1053,9 +1033,9 @@
     <value>Version</value>
     <comment>Label to denoate a version.</comment>
   </data>
-  <data name="GcePublishStepManageCredentialsCaption" xml:space="preserve">
-    <value>Manage Credentials</value>
-    <comment>Caption for the link shown in the GCE step of the publishing dialog for managing the credentials of the selected VM.</comment>
+  <data name="UiManageWindowsCredentialsCaption" xml:space="preserve">
+    <value>Manage Windows credentials</value>
+    <comment>Caption for the links to open the Manage Windows credentials dialog.</comment>
   </data>
   <data name="SplitTrafficWindowCookieLabel" xml:space="preserve">
     <value>Cookie</value>
@@ -1404,12 +1384,8 @@
     <comment>The message shown in the UI for the depoyment version textbox.</comment>
   </data>
   <data name="GkePublishExposeServiceCaption" xml:space="preserve">
-    <value>E_xpose the service to the public internet</value>
+    <value>Expose a service</value>
     <comment>Caption for the checkbox to set if the GKE service is to be exposed or not.</comment>
-  </data>
-  <data name="GkePublishMissingKubectlMessage" xml:space="preserve">
-    <value>To use this feature you need to have the "kubectl" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl</value>
-    <comment>Message shown to the user when the kubectl component is not installed.</comment>
   </data>
   <data name="GkePublishServiceIpMessage" xml:space="preserve">
     <value>Service {0} ip address {1}</value>
@@ -1546,10 +1522,6 @@ Open the project of version {2} to properly locate the logging writter location.
     <value>MM-dd-yyyy HH:mm:ss.fff</value>
     <comment>Log item date time format.</comment>
   </data>
-  <data name="GenerateConfigurationMenuHeader" xml:space="preserve">
-    <value>Generate app.yaml and Dockerfile for {0}</value>
-    <comment>Header for the generate configuration command. {0} is the name of the project.</comment>
-  </data>
   <data name="FlexPublishEmptyVersionMessage" xml:space="preserve">
     <value>The version name cannot be empty.</value>
     <comment>Message shown when the version name is empty.</comment>
@@ -1677,5 +1649,65 @@ Open the project of version {2} to properly locate the logging writter location.
   <data name="CloudExplorerGaeVersionEnvironmentDisplayName" xml:space="preserve">
     <value>Environment</value>
     <comment>The display name for the Environment property.</comment>
+  </data>
+  <data name="CloudExplorerGaeFailedToMigrateAllTrafficCaption" xml:space="preserve">
+    <value>Failed to migrate all traffic to {0}, please try again.</value>
+    <comment>Caption for the error state when migrating all traffic. {0} is the id of the version.</comment>
+  </data>
+  <data name="CloudExplorerGaeMigrateAllTrafficHeader" xml:space="preserve">
+    <value>Migrate all traffic</value>
+    <comment>Header for the migrate all traffic command.</comment>
+  </data>
+  <data name="CloudExplorerGaeMigratingAllTrafficCaption" xml:space="preserve">
+    <value>Migrating all traffic to {0}</value>
+    <comment>Caption shown while migrating all traffic. {0} is the version id</comment>
+  </data>
+  <data name="GkePublishDontExposeServiceCaption" xml:space="preserve">
+    <value>Don't expose a service</value>
+    <comment>Caption for the option of not exposing the service.</comment>
+  </data>
+  <data name="GkePublishMakeServicePublicCaption" xml:space="preserve">
+    <value>Make service public</value>
+    <comment>Caption for the checkbox to make a service public.</comment>
+  </data>
+  <data name="GkePublishServiceClusterIpMessage" xml:space="preserve">
+    <value>Service {0} cluster IP address {1}.</value>
+    <comment>Message shown when a cluster-only service is deployed to show the ip address. {0} is the service name, {1} is the IP address.</comment>
+  </data>
+  <data name="GkePublishServiceDeletedMessage" xml:space="preserve">
+    <value>Service {0} was deleted.</value>
+    <comment>Message shown when a service is deleted due to changes in configuration. {0} is the name of the service.</comment>
+  </data>
+  <data name="GkePublishServiceGroupHeader" xml:space="preserve">
+    <value>Service</value>
+    <comment>The header for the service group in the UI.</comment>
+  </data>
+  <data name="GkePublishServiceUpdatedMessage" xml:space="preserve">
+    <value>Service {0} was updated.</value>
+    <comment>Messages shown when a GKE service is updated. {0} is the service name.</comment>
+  </data>
+  <data name="GcloudInstallLinkCaption" xml:space="preserve">
+    <value>Install Google Cloud SDK</value>
+    <comment>Caption for the install link.</comment>
+  </data>
+  <data name="GcloudMissingComponentErrorMessage" xml:space="preserve">
+    <value>To use this feature you need to have the "{0}" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install {0}.</value>
+    <comment>Message shown when the a component is not installed. {0} is the name of the component.</comment>
+  </data>
+  <data name="GcloudMissingCloudSdkErrorMessage" xml:space="preserve">
+    <value>To use this feature you need to have the Google Cloud SDK installed and available in the path. You also need the "beta" component installed for some features to be available. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link.</value>
+    <comment>Message shown when the Cloud SDK is missing</comment>
+  </data>
+  <data name="GcloudMissingGcloudErrorTitle" xml:space="preserve">
+    <value>Missing Google Cloud SDK</value>
+    <comment>Title for the error dialog for missing components.</comment>
+  </data>
+  <data name="GCloudWrapperUtilsOldCloudSdkMessage" xml:space="preserve">
+    <value>The version {0} of Cloud SDK installed is too old. Please update your Cloud SDK installation to version {1} or later by using the command: gcloud components update</value>
+    <comment>Message shown when the version of the Cloud SDK is too old. {0} is the installed version, {1} is the expected version.</comment>
+  </data>
+  <data name="GCloudWrapperUtilsOldCloudSdkTitle" xml:space="preserve">
+    <value>Google Cloud SDK too old</value>
+    <comment>Title for the prompt to update the Cloud SDK.</comment>
   </data>
 </root>

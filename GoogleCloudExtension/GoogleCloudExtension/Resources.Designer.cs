@@ -430,11 +430,38 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to migrate all traffic to {0}, please try again..
+        /// </summary>
+        public static string CloudExplorerGaeFailedToMigrateAllTrafficCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeFailedToMigrateAllTrafficCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loading services....
         /// </summary>
         public static string CloudExplorerGaeLoadingServicesCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeLoadingServicesCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Migrate all traffic.
+        /// </summary>
+        public static string CloudExplorerGaeMigrateAllTrafficHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeMigrateAllTrafficHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Migrating all traffic to {0}.
+        /// </summary>
+        public static string CloudExplorerGaeMigratingAllTrafficCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerGaeMigratingAllTrafficCaption", resourceCulture);
             }
         }
         
@@ -1852,15 +1879,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Manage Credentials.
-        /// </summary>
-        public static string GcePublishStepManageCredentialsCaption {
-            get {
-                return ResourceManager.GetString("GcePublishStepManageCredentialsCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Publishing {0} to Compute Engine..
         /// </summary>
         public static string GcePublishStepStartMessage {
@@ -1879,11 +1897,65 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Install Google Cloud SDK.
+        /// </summary>
+        public static string GcloudInstallLinkCaption {
+            get {
+                return ResourceManager.GetString("GcloudInstallLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To use this feature you need to have the Google Cloud SDK installed and available in the path. You also need the &quot;beta&quot; component installed for some features to be available. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link..
+        /// </summary>
+        public static string GcloudMissingCloudSdkErrorMessage {
+            get {
+                return ResourceManager.GetString("GcloudMissingCloudSdkErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To use this feature you need to have the &quot;{0}&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install {0}..
+        /// </summary>
+        public static string GcloudMissingComponentErrorMessage {
+            get {
+                return ResourceManager.GetString("GcloudMissingComponentErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Missing Google Cloud SDK Component.
         /// </summary>
         public static string GcloudMissingComponentTitle {
             get {
                 return ResourceManager.GetString("GcloudMissingComponentTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Missing Google Cloud SDK.
+        /// </summary>
+        public static string GcloudMissingGcloudErrorTitle {
+            get {
+                return ResourceManager.GetString("GcloudMissingGcloudErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The version {0} of Cloud SDK installed is too old. Please update your Cloud SDK installation to version {1} or later by using the command: gcloud components update.
+        /// </summary>
+        public static string GCloudWrapperUtilsOldCloudSdkMessage {
+            get {
+                return ResourceManager.GetString("GCloudWrapperUtilsOldCloudSdkMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud SDK too old.
+        /// </summary>
+        public static string GCloudWrapperUtilsOldCloudSdkTitle {
+            get {
+                return ResourceManager.GetString("GCloudWrapperUtilsOldCloudSdkTitle", resourceCulture);
             }
         }
         
@@ -1938,15 +2010,6 @@ namespace GoogleCloudExtension {
         public static string GenerateConfigurationFileGenerationErrorMessage {
             get {
                 return ResourceManager.GetString("GenerateConfigurationFileGenerationErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Generate app.yaml and Dockerfile for {0}.
-        /// </summary>
-        public static string GenerateConfigurationMenuHeader {
-            get {
-                return ResourceManager.GetString("GenerateConfigurationMenuHeader", resourceCulture);
             }
         }
         
@@ -2059,6 +2122,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Don&apos;t expose a service.
+        /// </summary>
+        public static string GkePublishDontExposeServiceCaption {
+            get {
+                return ResourceManager.GetString("GkePublishDontExposeServiceCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The deployment name cannot be empty..
         /// </summary>
         public static string GkePublishEmptyDeploymentNameMessage {
@@ -2077,7 +2149,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to E_xpose the service to the public internet.
+        ///   Looks up a localized string similar to Expose a service.
         /// </summary>
         public static string GkePublishExposeServiceCaption {
             get {
@@ -2113,11 +2185,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the &quot;kubectl&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl.
+        ///   Looks up a localized string similar to Make service public.
         /// </summary>
-        public static string GkePublishMissingKubectlMessage {
+        public static string GkePublishMakeServicePublicCaption {
             get {
-                return ResourceManager.GetString("GkePublishMissingKubectlMessage", resourceCulture);
+                return ResourceManager.GetString("GkePublishMakeServicePublicCaption", resourceCulture);
             }
         }
         
@@ -2158,6 +2230,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Service {0} cluster IP address {1}..
+        /// </summary>
+        public static string GkePublishServiceClusterIpMessage {
+            get {
+                return ResourceManager.GetString("GkePublishServiceClusterIpMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Service {0} was deleted..
+        /// </summary>
+        public static string GkePublishServiceDeletedMessage {
+            get {
+                return ResourceManager.GetString("GkePublishServiceDeletedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Service.
+        /// </summary>
+        public static string GkePublishServiceGroupHeader {
+            get {
+                return ResourceManager.GetString("GkePublishServiceGroupHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Service {0} ip address {1}.
         /// </summary>
         public static string GkePublishServiceIpMessage {
@@ -2172,6 +2271,15 @@ namespace GoogleCloudExtension {
         public static string GkePublishServiceIpTimeoutMessage {
             get {
                 return ResourceManager.GetString("GkePublishServiceIpTimeoutMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Service {0} was updated..
+        /// </summary>
+        public static string GkePublishServiceUpdatedMessage {
+            get {
+                return ResourceManager.GetString("GkePublishServiceUpdatedMessage", resourceCulture);
             }
         }
         
@@ -2971,7 +3079,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose a target:.
+        ///   Looks up a localized string similar to Choose a product to publish to:.
         /// </summary>
         public static string PublishDialogChoiceStepMessage {
             get {
@@ -2998,7 +3106,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select _account:.
+        ///   Looks up a localized string similar to _Account:.
         /// </summary>
         public static string PublishDialogGceStepSelectCredentialsMessage {
             get {
@@ -3007,7 +3115,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Select instance:.
+        ///   Looks up a localized string similar to _VM instance:.
         /// </summary>
         public static string PublishDialogGceStepSelectInstanceMessage {
             get {
@@ -3034,7 +3142,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Open website after publish process finishes.
+        ///   Looks up a localized string similar to _Open site after publishing.
         /// </summary>
         public static string PublishDialogOpenWebsiteCaption {
             get {
@@ -3120,42 +3228,6 @@ namespace GoogleCloudExtension {
         public static string ResetPasswordFailedPromptMessage {
             get {
                 return ResourceManager.GetString("ResetPasswordFailedPromptMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Install Google Cloud SDK.
-        /// </summary>
-        public static string ResetPasswordGcloudLinkCaption {
-            get {
-                return ResourceManager.GetString("ResetPasswordGcloudLinkCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the &quot;beta&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta..
-        /// </summary>
-        public static string ResetPasswordGcloudMissingBetaMessage {
-            get {
-                return ResourceManager.GetString("ResetPasswordGcloudMissingBetaMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the Google Cloud SDK is installed and available in the path, and that the &quot;beta&quot; component is installed. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link..
-        /// </summary>
-        public static string ResetPasswordGcloudMissingMessage {
-            get {
-                return ResourceManager.GetString("ResetPasswordGcloudMissingMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Missing Google Cloud SDK.
-        /// </summary>
-        public static string ResetPasswordMissingGcloudTitle {
-            get {
-                return ResourceManager.GetString("ResetPasswordMissingGcloudTitle", resourceCulture);
             }
         }
         
@@ -3412,6 +3484,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Manage Windows credentials.
+        /// </summary>
+        public static string UiManageWindowsCredentialsCaption {
+            get {
+                return ResourceManager.GetString("UiManageWindowsCredentialsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _No.
         /// </summary>
         public static string UiNoButtonCaption {
@@ -3561,15 +3642,6 @@ namespace GoogleCloudExtension {
         public static string UiYesButtonCaption {
             get {
                 return ResourceManager.GetString("UiYesButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Manage Windows credentials.
-        /// </summary>
-        public static string WindowsCredentialsChooserManageCredentialsCaption {
-            get {
-                return ResourceManager.GetString("WindowsCredentialsChooserManageCredentialsCaption", resourceCulture);
             }
         }
         
