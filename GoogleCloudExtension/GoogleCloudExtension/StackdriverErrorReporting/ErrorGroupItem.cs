@@ -34,20 +34,35 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public ErrorGroupStats ErrorGroup { get; }
 
         /// <summary>
-        /// Gets the command that navigates to detail window.
+        /// The error message with complete stack.
+        /// Normally, this is the string get from Exception.ToString();
         /// </summary>
-        public ProtectedCommand OnNavigateToDetailCommand { get; }
+        public string RawErrorMessage => ErrorGroup.Representative.Message;
 
         /// <summary>
-        /// The error message displayed in data grid row.
+        /// Gets the error count of the error group.
         /// </summary>
-        public string Error => ErrorGroup.Representative.Message;
+        public long ErrorCount => ErrorGroup.Count.HasValue ? ErrorGroup.Count.Value : 0;
 
         /// <summary>
         /// Show service context. 
         /// <seealso cref="ErrorGroupStats.AffectedServices"/>.
         /// </summary>
-        public string SeenIn => GetSeeIn();
+        public string SeenIn
+        {
+            get
+            {
+                if (ErrorGroup.AffectedServices == null || ErrorGroup.NumAffectedServices.GetValueOrDefault() == 0)
+                {
+                    return null;
+                }
+                var query = ErrorGroup.AffectedServices
+                    .Where(x => x.Service != null)
+                    .Select(x => FormatServiceContext(x))
+                    .Distinct(StringComparer.InvariantCulture);
+                return String.Join(Environment.NewLine, query);
+            }
+        }
 
         /// <summary>
         /// Optional, displays the context status code.
@@ -57,7 +72,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Gets the message to display for the error group.
         /// </summary>
-        public string Message { get; }
+        public string ErrorMessage { get; }
 
         /// <summary>
         /// The stack as string for the error group.
@@ -89,18 +104,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public IList<TimedCount> TimedCountList => ErrorGroup.TimedCounts;
 
-        /// <summary>
-        /// Initializes a new instance of <seealso cref="ErrorGroupItem"/> class.
-        /// <summary>
-        /// Gets the time range of the <seealso cref="ErrorGroup"/>.
-        /// </summary>
-        public EventGroupTimeRangeEnum EventGroupTimeRange { get; }
-
-        /// <summary>
-        /// Gets the list of <seealso cref="TimedCount"/> of the error group.
-        /// </summary>
-        public IList<TimedCount> TimedCountList => ErrorGroup.TimedCounts;
-
         public ErrorGroupItem(ErrorGroupStats errorGroup)
         {
             if (errorGroup == null)
@@ -114,17 +117,27 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                     StringSplitOptions.RemoveEmptyEntries);
             if (lines != null)
             {
-                Message = lines.Count() > 0 ? lines[0] : null;
+                ErrorMessage = lines.Count() > 0 ? lines[0] : null;
                 FirstStackFrame = lines.Count() > 1 ? lines[1] : null;
             }
-            OnNavigateToDetailCommand = new ProtectedCommand(null);     // TODO: add handler in subsequent PR.
         }
 
         /// <summary>
-        /// The input in compiling time is object. 
-        /// In runtime, it can be either a DateTime object or a UTC time formated string.
-        /// 
-        /// If it is not DateTime type or the string is failed to convert to UTC time. 
+        /// When user clicks on shorter time range in detail view,
+        /// the error group may not contain any errors in the short time range.
+        /// Set the model to show the 0 count state while keep some data available.
+        /// </summary>
+        public void SetEmptyModel()
+        {
+            ErrorGroup.Count = 0;
+            ErrorGroup.NumAffectedServices = null;
+            ErrorGroup.AffectedUsersCount = null;
+            ErrorGroup.TimedCounts = null;
+        }
+
+        /// <summary>
+        /// The expected input is either DateTime object or string.
+        /// The string input will be parsed into DateTime by using UTC time format.
         /// </summary>
         /// <returns>
         /// Formated time string to Local Time, Local Culture, if input is DateTime type or
@@ -133,7 +146,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </returns>
         private static string FormatErrorGroupDateTime(object datetime)
         {
-            DateTime dt = DateTime.MinValue;
+            // Assign a value that is never used.
+            // Otherwise compiler complains "used not initialized local variable". 
+            DateTime dt = DateTime.MinValue;    
             if (datetime is DateTime)
             {
                 dt = (DateTime)datetime;
@@ -148,16 +163,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             }
 
             return dt.ToLocalTime().ToString("F");
-        }
-
-        private string GetSeeIn()
-        {
-            if (ErrorGroup.AffectedServices == null)
-            {
-                return null;
-            }
-            var query = ErrorGroup.AffectedServices.Where(x => x.Service != null).Distinct(new ServiceContextComparer());
-            return String.Join(Environment.NewLine, query.Select(x => FormatServiceContext(x)));
         }
 
         /// <summary>

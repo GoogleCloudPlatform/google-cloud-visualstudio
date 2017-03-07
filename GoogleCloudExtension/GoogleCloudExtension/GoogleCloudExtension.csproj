@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props')" />
   <PropertyGroup>
@@ -71,6 +71,7 @@
     <Compile Include="Analytics\Events\ChangedFirewallPortsEvent.cs" />
     <Compile Include="Analytics\Events\CloudExplorerInteractionEvent.cs" />
     <Compile Include="Analytics\Events\CloudSQLInstancesLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeDeployedEvent.cs" />
     <Compile Include="Analytics\Events\GaeInstancesLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GaeServiceDeletedEvent.cs" />
     <Compile Include="Analytics\Events\GaeServicesLoadedEvent.cs" />
@@ -78,8 +79,10 @@
     <Compile Include="Analytics\Events\GaeVersionDeletedEvent.cs" />
     <Compile Include="Analytics\Events\GaeVersionServingStatusUpdatedEvent.cs" />
     <Compile Include="Analytics\Events\GaeVersionsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GceDeployedEvent.cs" />
     <Compile Include="Analytics\Events\GceVMsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GcsBucketsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GkeDeployedEvent.cs" />
     <Compile Include="Analytics\Events\ManageCloudSqlAuthorizedNetworkEvent.cs" />
     <Compile Include="Analytics\Events\NewInstallEvent.cs" />
     <Compile Include="Analytics\Events\NewLoginEvent.cs" />
@@ -240,24 +243,21 @@
     <Compile Include="StackdriverErrorReporting\BarChart\TimeCountItem.cs" />
     <Compile Include="StackdriverErrorReporting\Extensions.cs" />
     <Compile Include="StackdriverErrorReporting\BarChart\XLineItem.cs" />
-    <Compile Include="StackdriverErrorReporting\ErrorGroupItem.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindow.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindowControl.xaml.cs">
       <DependentUpon>ErrorReportingDetailToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverErrorReporting\ErrorReportingDetailViewModel.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingException.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorGroupItem.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindow.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowCommand.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowControl.xaml.cs">
       <DependentUpon>ErrorReportingToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverErrorReporting\EventItem.cs" />
-    <Compile Include="StackdriverErrorReporting\ServiceContextComparer.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingViewModel.cs" />
-    <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtons.xaml.cs">
-      <DependentUpon>TimeRangeButtons.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtons.cs" />
     <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeItem.cs" />
     <Compile Include="StackdriverLogsViewer\AdvancedFilterExtension.cs" />
     <Compile Include="StackdriverLogsViewer\DateTimePicker.xaml.cs">
@@ -306,6 +306,7 @@
     <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
     <Compile Include="Utils\PackageUtils.cs" />
+    <Compile Include="Utils\GCloudWrapperUtils.cs" />
     <Compile Include="Utils\GcpPublishStepsUtils.cs" />
     <Compile Include="Utils\ProgressBarHelper.cs" />
     <Compile Include="Utils\ShellUtils.cs" />
@@ -430,6 +431,14 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="ProjectTemplates\Google Cloud Platform\GoogleAspnetWebApi.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="ProjectTemplates\Google Cloud Platform\GoogleAspNetCoreMvc.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="ProjectTemplates\Google Cloud Platform\GoogleAspNetCoreWebApi.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -771,7 +780,7 @@
     <Resource Include="StackdriverErrorReporting\ErrorReportingResources.xaml">
       <SubType>Designer</SubType>
     </Resource>
-    <Page Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtons.xaml">
+    <Page Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtonsResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

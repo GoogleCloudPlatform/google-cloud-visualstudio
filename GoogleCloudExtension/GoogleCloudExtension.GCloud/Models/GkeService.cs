@@ -32,5 +32,8 @@ namespace GoogleCloudExtension.GCloud.Models
         /// </summary>
         [JsonProperty("status")]
         public GkeStatus Status { get; set; }
+
+        [JsonProperty("spec")]
+        public GkeServiceSpec Spec { get; set; }
     }
 }

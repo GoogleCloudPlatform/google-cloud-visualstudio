@@ -15,6 +15,7 @@
 using GoogleCloudExtension.Utils;
 using EventGroupTimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 using EventTimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
+using System.Collections.Generic;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -67,6 +68,44 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             TimedCountDuration = timedCountDuration;
             EventTimeRange = eventTimeRange;
             GroupTimeRange = timeRange;
+        }
+
+        /// <summary>
+        /// Create a list of <seealso cref="TimeRangeItem"/> for Error Reporting windows.
+        /// Create new list instead of using a static instance, 
+        /// because overview window, and detail window each need an independent instance of the list.
+        /// </summary>
+        public static List<TimeRangeItem> CreateTimeRanges()
+        {
+            return new List<TimeRangeItem>(
+                new TimeRangeItem[]
+                {
+                    new TimeRangeItem(
+                        GoogleCloudExtension.Resources.ErrorReporting1HourButtonCaption,
+                        $"{60 * 60 / 30}s",
+                        EventGroupTimeRangeEnum.PERIOD1HOUR,
+                        EventTimeRangeEnum.PERIOD1HOUR),
+                    new TimeRangeItem(
+                        GoogleCloudExtension.Resources.ErrorReporting6HoursButtonCaption,
+                        $"{6 * 60 * 60 / 30}s",
+                        EventGroupTimeRangeEnum.PERIOD6HOURS,
+                        EventTimeRangeEnum.PERIOD6HOURS),
+                    new TimeRangeItem(
+                        GoogleCloudExtension.Resources.ErrorReporting1DayButtonCaption,
+                        $"{24 * 60 * 60 / 30}s",
+                        EventGroupTimeRangeEnum.PERIOD1DAY,
+                        EventTimeRangeEnum.PERIOD1DAY),
+                    new TimeRangeItem(
+                        GoogleCloudExtension.Resources.ErrorReporting7DaysButtonCaption,
+                        $"{7 * 24 * 60 * 60 / 30}s",
+                        EventGroupTimeRangeEnum.PERIOD1WEEK,
+                        EventTimeRangeEnum.PERIOD1WEEK),
+                    new TimeRangeItem(
+                        GoogleCloudExtension.Resources.ErrorReporting30DaysButtonCaption,
+                        $"{24 * 60 * 60}s",
+                        EventGroupTimeRangeEnum.PERIOD30DAYS,
+                        EventTimeRangeEnum.PERIOD30DAYS)
+                });
         }
     }
 }

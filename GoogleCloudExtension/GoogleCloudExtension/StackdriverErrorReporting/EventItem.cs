@@ -40,15 +40,14 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public object EventTime => _error.EventTime;
 
-        /// <summary>
-        /// Initializes a new instance of <seealso cref="EventItem"/> class.
-        /// </summary>
-        /// <param name="error">A <seealso cref="ErrorEvent"/> object.</param>
         public EventItem(ErrorEvent error)
         {
             _error = error;
             var splits = _error.Message?.Split(new string[] { Environment.NewLine, "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            SummaryMessage = splits?[0];
+            if (splits != null && splits.Length > 0)
+            {
+                SummaryMessage = splits[0];
+            }
         }
     }
 }

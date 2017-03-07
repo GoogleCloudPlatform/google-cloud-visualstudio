@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Accounts;
 using System;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
@@ -34,10 +33,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     public class ErrorReportingDetailToolWindow : ToolWindowPane
     {
         /// <summary>
-        /// Gets the view model of the content control <seealso cref="ErrorReportingDetailToolWindowControl"/>.
+        /// Gets the view model of the user control <seealso cref="ErrorReportingDetailToolWindowControl"/>.
         /// </summary>
-        public ErrorReportingDetailViewModel ViewModel =>
-            (Content as ErrorReportingDetailToolWindowControl)?.DataContext as ErrorReportingDetailViewModel;
+        public ErrorReportingDetailViewModel ViewModel { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ErrorReportingDetailToolWindow"/> class.
@@ -49,7 +47,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
-            this.Content = new ErrorReportingDetailToolWindowControl();            
+            this.Content = new ErrorReportingDetailToolWindowControl();
+            ViewModel = new ErrorReportingDetailViewModel();
         }
 
         /// <summary>
@@ -58,9 +57,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public override void OnToolWindowCreated()
         {
             base.OnToolWindowCreated();
-            (this.Content as ErrorReportingDetailToolWindowControl).DataContext = new ErrorReportingDetailViewModel();
-            CredentialsStore.Default.Reset += (sender, e) => ViewModel.OnCurrentProjectChanged();
-            CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => ViewModel.OnCurrentProjectChanged();
+            (this.Content as ErrorReportingDetailToolWindowControl).DataContext = ViewModel;
         }
     }
 }
