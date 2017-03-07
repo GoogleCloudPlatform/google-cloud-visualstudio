@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Clouderrorreporting.v1beta1;
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
@@ -20,7 +19,6 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -42,6 +40,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private bool _showException;
         private string _exceptionString;
         private ObservableCollection<ErrorGroupItem> _groupStatsCollection;
+        private Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
         private TimeRangeItem _selectedTimeRange;
 
         /// <summary>
@@ -97,6 +96,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public bool IsGridVisible => !String.IsNullOrWhiteSpace(CredentialsStore.Default.CurrentProjectId);
 
         /// <summary>
+        /// Gets the list of <seealso cref="TimeRangeItem"/> as data source for time range selector.
+        /// </summary>
+        public List<TimeRangeItem> TimeRangeItemList => _timeRangeItemList.Value;
+
+        /// <summary>
         /// Sets the currently selected time range.
         /// </summary>
         public TimeRangeItem SelectedTimeRangeItem
@@ -119,15 +123,15 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public ListCollectionView GroupStatsView { get; }
 
         /// <summary>
-        /// Selected time range caption.
-        /// </summary>
-        public string CurrentTimeRangeCaption => String.Format(
-            Resources.ErrorReportingCurrentGroupTimePeriodLabelFormat, SelectedTimeRangeItem?.Caption);
-
         /// <summary>
         /// Navigate to detail view window command.
         /// </summary>
         public ProtectedCommand<ErrorGroupItem> OnGotoDetailCommand { get; }
+
+        /// Selected time range caption.
+        /// </summary>
+        public string CurrentTimeRangeCaption => String.Format(
+            Resources.ErrorReportingCurrentGroupTimePeriodLabelFormat, SelectedTimeRangeItem?.Caption);
 
         /// <summary>
         /// Create a new instance of <seealso cref="ErrorReportingViewModel"/> class.
@@ -137,6 +141,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             _dataSource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
             _groupStatsCollection = new ObservableCollection<ErrorGroupItem>();
             GroupStatsView = new ListCollectionView(_groupStatsCollection);
+            SelectedTimeRangeItem = TimeRangeItemList.Last();
             OnGotoDetailCommand = new ProtectedCommand<ErrorGroupItem>(NavigateToDetailWindow);
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnProjectIdChanged();
             CredentialsStore.Default.Reset += (sender, e) => OnProjectIdChanged();
@@ -210,6 +215,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 ShowError = true;
                 ErrorString = Resources.ErrorReportingDataSourceGenericErrorMessage;
             }
+            catch (ErrorReportingException)
+            {
+                ShowError = true;
+                ErrorString = Resources.ErrorReportingInternalCodeErrorGenericMessage;
+            }
             finally
             {
                 IsLoadingComplete = true;
@@ -244,7 +254,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         {
             var window = ToolWindowCommandUtils.ShowToolWindow<ErrorReportingDetailToolWindow>();
             window.ViewModel.UpdateView(groupItem, _selectedTimeRange);
-		}
+        }
 
         private StackdriverErrorReportingDataSource CreateDataSource()
         {

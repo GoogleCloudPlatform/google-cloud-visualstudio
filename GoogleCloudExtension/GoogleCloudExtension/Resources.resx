@@ -1706,10 +1706,6 @@ Open the project of version {2} to properly locate the logging writter location.
     <value>7 days</value>
     <comment>Caption to the 7 days button.</comment>
   </data>
-  <data name="ErrorReportingDateTimeFormat" xml:space="preserve">
-    <value>MM-dd-yyyy HH:mm:ss.fff</value>
-    <comment>Format date time displayed in data grid cell.</comment>
-  </data>
   <data name="ErrorReportingDetailToolWindowCaption" xml:space="preserve">
     <value>Detail View - Stackdriver Error Reporting</value>
     <comment>Stackdriver Error Reporting detail view window caption.</comment>

@@ -236,24 +236,21 @@
       <DependentUpon>SplitTrafficWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\FixBackgroundComboBox.cs" />
-    <Compile Include="StackdriverErrorReporting\ErrorGroupItem.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindow.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindowControl.xaml.cs">
       <DependentUpon>ErrorReportingDetailToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverErrorReporting\ErrorReportingDetailViewModel.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingException.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorGroupItem.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindow.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowCommand.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowControl.xaml.cs">
       <DependentUpon>ErrorReportingToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverErrorReporting\EventItem.cs" />
-    <Compile Include="StackdriverErrorReporting\ServiceContextComparer.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingViewModel.cs" />
-    <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtons.xaml.cs">
-      <DependentUpon>TimeRangeButtons.xaml</DependentUpon>
-    </Compile>
+    <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtons.cs" />
     <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeItem.cs" />
     <Compile Include="StackdriverLogsViewer\AdvancedFilterExtension.cs" />
     <Compile Include="StackdriverLogsViewer\DateTimePicker.xaml.cs">
@@ -761,7 +758,7 @@
     <Resource Include="StackdriverErrorReporting\ErrorReportingResources.xaml">
       <SubType>Designer</SubType>
     </Resource>
-    <Page Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtons.xaml">
+    <Page Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtonsResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

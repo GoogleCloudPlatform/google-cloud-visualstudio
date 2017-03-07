@@ -1852,15 +1852,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to MM-dd-yyyy HH:mm:ss.fff.
-        /// </summary>
-        public static string ErrorReportingDateTimeFormat {
-            get {
-                return ResourceManager.GetString("ErrorReportingDateTimeFormat", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Detail View - Stackdriver Error Reporting.
         /// </summary>
         public static string ErrorReportingDetailToolWindowCaption {

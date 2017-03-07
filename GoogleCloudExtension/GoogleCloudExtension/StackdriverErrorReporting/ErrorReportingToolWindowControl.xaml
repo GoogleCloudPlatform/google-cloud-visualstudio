@@ -99,7 +99,7 @@
                         Header="{x:Static ext:Resources.ErrorReportingAffectedUsersHeader}" 
                         Binding="{Binding ErrorGroup.AffectedUsersCount}" />
 
-                    <DataGridTextColumn Binding="{Binding ErrorGroup.Count}" />
+                    <DataGridTextColumn Binding="{Binding ErrorCount}" />
 
                     <DataGridTemplateColumn 
                         Header="{x:Static ext:Resources.ErrorReportingErrorMessageHeader}" 

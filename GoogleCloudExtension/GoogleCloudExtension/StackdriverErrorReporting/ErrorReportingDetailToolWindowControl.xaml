@@ -20,6 +20,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
                 <ResourceDictionary Source="./ErrorReportingResources.xaml" />
+                <ResourceDictionary Source="./TimeRangeButtons/TimeRangeButtonsResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <utils:VisibilityConverter x:Key="visibilityConverterNegated" IsNegated="True"/>
@@ -102,9 +103,9 @@
                                 Style="{StaticResource CommonTextStyle}" />
 
                         <local:TimeRangeButtons 
-                                Grid.Column="1" 
-                                SelectedItem="{Binding SelectedTimeRangeItem, Mode=TwoWay}" 
-                                ItemsSource="{Binding AllTimeRangeItems, Mode=OneWayToSource}"/>
+                            Grid.Column="1" 
+                            SelectedItem="{Binding SelectedTimeRangeItem, Mode=TwoWay}" 
+                            ItemsSource="{Binding AllTimeRangeItems}"/>
                     </Grid>
 
 
@@ -148,7 +149,7 @@
                                 <Border Grid.Column="0">
                                     <StackPanel >
                                         <TextBlock Text="{x:Static ext:Resources.ErrorReportingErrorCountHeader}" />
-                                        <TextBlock Text="{Binding GroupItem.ErrorGroup.Count}" />
+                                        <TextBlock Text="{Binding GroupItem.ErrorCount}" />
                                     </StackPanel>
                                 </Border>
 
@@ -237,7 +238,6 @@
                                 Panel.ZIndex="20"
                                 HorizontalAlignment="Center"                       
                                 VerticalAlignment="Top" 
-                                FullDuration="1000" 
                                 Margin="6"
                                 Visibility="{Binding IsGroupLoading, Converter={utils:VisibilityConverter}}" />
 
@@ -288,7 +288,6 @@
                                 Margin="0, 20"
                                 HorizontalAlignment="Center"                       
                                 VerticalAlignment="Top" 
-                                FullDuration="1000" 
                                 Visibility="{Binding IsEventLoading, Converter={StaticResource visibilityConverter}}" />
 
                                 <DataGrid 

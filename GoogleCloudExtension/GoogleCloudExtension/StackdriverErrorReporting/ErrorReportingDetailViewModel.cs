@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private string _exceptionString;
         private bool _isAccountReset;
         private TimeRangeItem _selectedTimeRange;
-        private IEnumerable<TimeRangeItem> _allTimeRangeItems;
+        private Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
 
         /// <summary>
         /// Indicate the Google account is set.
@@ -125,16 +125,20 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public TimeRangeItem SelectedTimeRangeItem
         {
             get { return _selectedTimeRange; }
-            set { SetValueAndRaise(ref _selectedTimeRange, value); }
+            set
+            {
+                SetValueAndRaise(ref _selectedTimeRange, value);
+                if (value != null)
+                {
+                    UpdateGroupAndEventAsync();
+                }
+            }
         }
 
         /// <summary>
-        /// Sets the list of time range items.
+        /// Gets the list of time range items.
         /// </summary>
-        public IEnumerable<TimeRangeItem> AllTimeRangeItems
-        {
-            set { SetValueAndRaise(ref _allTimeRangeItems, value); }
-        }
+        public IEnumerable<TimeRangeItem> AllTimeRangeItems => _timeRangeItemList.Value;
 
         /// <summary>
         /// Go back to overview window command.
@@ -147,7 +151,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public ErrorReportingDetailViewModel()
         {
             OnBackToOverViewCommand = new ProtectedCommand(() => ToolWindowCommandUtils.ShowToolWindow<ErrorReportingToolWindow>());
-            PropertyChanged += OnPropertyChanged;
             _datasource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
         }
 
@@ -186,7 +189,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             else
             {
                 // This will end up calling UpdateView() too. 
-                SelectedTimeRangeItem = _allTimeRangeItems.First(x => x.GroupTimeRange == groupSelectedTimeRangeItem.GroupTimeRange);
+                SelectedTimeRangeItem = AllTimeRangeItems.First(x => x.GroupTimeRange == groupSelectedTimeRangeItem.GroupTimeRange);
                 UpdateGroupAndEventAsync();
             }
         }
@@ -216,7 +219,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 }
                 else
                 {
-                    GroupItem.ErrorGroup.TimedCounts = null;
+                    GroupItem.SetEmptyModel();
                 }
             }
             catch (DataSourceException ex)
@@ -243,16 +246,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             finally
             {
                 IsControlEnabled = true;
-            }
-        }
-
-        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            switch (e.PropertyName)
-            {
-                case nameof(SelectedTimeRangeItem):
-                    UpdateGroupAndEventAsync();
-                    break;
             }
         }
 
