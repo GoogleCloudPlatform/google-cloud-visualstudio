@@ -1682,4 +1682,60 @@ Open the project of version {2} to properly locate the logging writter location.
     <value>Environment</value>
     <comment>The display name for the Environment property.</comment>
   </data>
+  <data name="ErrorReportingCurrentGroupTimePeriodLabelFormat" xml:space="preserve">
+    <value>Errors in the last {0}</value>
+    <comment>In the error reporting overview window, the current selected time period label text format.  {0} is the time period.  Example:  1 day,  30 days etc.</comment>
+  </data>
+  <data name="ErrorReporting1DayButtonCaption" xml:space="preserve">
+    <value>1 day</value>
+    <comment>Caption to the 1 day button.</comment>
+  </data>
+  <data name="ErrorReporting1HourButtonCaption" xml:space="preserve">
+    <value>1 hour</value>
+    <comment>Caption to the 1 hour button.</comment>
+  </data>
+  <data name="ErrorReporting30DaysButtonCaption" xml:space="preserve">
+    <value>30 days</value>
+    <comment>Caption to the 30 days button.</comment>
+  </data>
+  <data name="ErrorReporting6HoursButtonCaption" xml:space="preserve">
+    <value>6 hours</value>
+    <comment>Caption to the 6 hours button.</comment>
+  </data>
+  <data name="ErrorReporting7DaysButtonCaption" xml:space="preserve">
+    <value>7 days</value>
+    <comment>Caption to the 7 days button.</comment>
+  </data>
+  <data name="ErrorReportingAffectedUsersHeader" xml:space="preserve">
+    <value>Users</value>
+    <comment>The header for affected users column.</comment>
+  </data>
+  <data name="ErrorReportingErrorAppHeader" xml:space="preserve">
+    <value>Seen in</value>
+    <comment>The header for the error context application name.</comment>
+  </data>
+  <data name="ErrorReportingErrorMessageHeader" xml:space="preserve">
+    <value>Error</value>
+    <comment>The header for showing error message.</comment>
+  </data>
+  <data name="ErrorReportingFirstErrorTimeHeader" xml:space="preserve">
+    <value>First seen</value>
+    <comment>The header for the first error time stamp.</comment>
+  </data>
+  <data name="ErrorReportingLastErrorTimeHeader" xml:space="preserve">
+    <value>Last seen</value>
+    <comment>The Header for the last error time stamp.</comment>
+  </data>
+  <data name="ErrorReportingServiceContextStatusCodeHeader" xml:space="preserve">
+    <value>Status</value>
+    <comment>The header for HTTP responds status code.</comment>
+  </data>
+  <data name="ErrorReportingDataSourceGenericErrorMessage" xml:space="preserve">
+    <value>Failed to retrieve data from cloud server. Please try later.</value>
+    <comment>Generic error message for Error Reporting when there is DataSource excepiton.</comment>
+  </data>
+  <data name="ErrorReportingInternalCodeErrorGenericMessage" xml:space="preserve">
+    <value>Unkown internal error. Please report the issue and/or retry later.</value>
+    <comment>Generic error message for Error Reporting when there is internal code bugs.</comment>
+  </data>
 </root>

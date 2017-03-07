@@ -1771,6 +1771,132 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1 day.
+        /// </summary>
+        public static string ErrorReporting1DayButtonCaption {
+            get {
+                return ResourceManager.GetString("ErrorReporting1DayButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 1 hour.
+        /// </summary>
+        public static string ErrorReporting1HourButtonCaption {
+            get {
+                return ResourceManager.GetString("ErrorReporting1HourButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 30 days.
+        /// </summary>
+        public static string ErrorReporting30DaysButtonCaption {
+            get {
+                return ResourceManager.GetString("ErrorReporting30DaysButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 6 hours.
+        /// </summary>
+        public static string ErrorReporting6HoursButtonCaption {
+            get {
+                return ResourceManager.GetString("ErrorReporting6HoursButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 7 days.
+        /// </summary>
+        public static string ErrorReporting7DaysButtonCaption {
+            get {
+                return ResourceManager.GetString("ErrorReporting7DaysButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Users.
+        /// </summary>
+        public static string ErrorReportingAffectedUsersHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingAffectedUsersHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Errors in the last {0}.
+        /// </summary>
+        public static string ErrorReportingCurrentGroupTimePeriodLabelFormat {
+            get {
+                return ResourceManager.GetString("ErrorReportingCurrentGroupTimePeriodLabelFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to retrieve data from cloud server. Please try later..
+        /// </summary>
+        public static string ErrorReportingDataSourceGenericErrorMessage {
+            get {
+                return ResourceManager.GetString("ErrorReportingDataSourceGenericErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Seen in.
+        /// </summary>
+        public static string ErrorReportingErrorAppHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingErrorAppHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string ErrorReportingErrorMessageHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingErrorMessageHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to First seen.
+        /// </summary>
+        public static string ErrorReportingFirstErrorTimeHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingFirstErrorTimeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unkown internal error. Please report the issue and/or retry later..
+        /// </summary>
+        public static string ErrorReportingInternalCodeErrorGenericMessage {
+            get {
+                return ResourceManager.GetString("ErrorReportingInternalCodeErrorGenericMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Last seen.
+        /// </summary>
+        public static string ErrorReportingLastErrorTimeHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingLastErrorTimeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Status.
+        /// </summary>
+        public static string ErrorReportingServiceContextStatusCodeHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingServiceContextStatusCodeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stackdriver Error Reporting.
         /// </summary>
         public static string ErrorReportingToolWindowCaption {
