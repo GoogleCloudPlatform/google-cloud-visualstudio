@@ -873,10 +873,6 @@
     <value>I have a password for this user</value>
     <comment>Message shown in the radio button of the Reset Password dialog to signify that the user will provide the password.</comment>
   </data>
-  <data name="WindowsCredentialsChooserManageCredentialsCaption" xml:space="preserve">
-    <value>Manage Windows credentials</value>
-    <comment>Caption used in the hyperlink shown in the Windows credentials chooser dialog.</comment>
-  </data>
   <data name="CloudExplorerGaeFailedServicesMessage" xml:space="preserve">
     <value>Failed to load the list of Google Cloud App Engine services</value>
     <comment>Message shown in the output window when failed to load list of GAE services.</comment>
@@ -1510,7 +1506,6 @@
   <data name="UiTimeLabel" xml:space="preserve">
     <value>Time</value>
     <comment>Label to the time input control</comment>
->>>>>>> m2_master
   </data>
   <data name="GkePublishClusterMessage" xml:space="preserve">
     <value>_Clusters:</value>
@@ -1612,10 +1607,6 @@
     <value>_Enter name:</value>
     <comment>Message to show on the dialog for the name text box.</comment>
   </data>
-  <data name="GenerateConfigurationMenuHeader" xml:space="preserve">
-    <value>Generate app.yaml and Dockerfile for {0}</value>
-    <comment>Header for the generate configuration command. {0} is the name of the project.</comment>
-  </data>
   <data name="LogViewerLogIdSelectAllLabel" xml:space="preserve">
     <value>All logs</value>
     <comment>The log name (log id) selection label for select all logs.</comment>
@@ -1686,7 +1677,6 @@ Open the project of version {2} to properly locate the logging writter location.
   <data name="LogViewerLogItemDateTimeFormat" xml:space="preserve">
     <value>MM-dd-yyyy HH:mm:ss.fff</value>
     <comment>Log item date time format.</comment>
->>>>>>> m2_master
   </data>
   <data name="FlexPublishEmptyVersionMessage" xml:space="preserve">
     <value>The version name cannot be empty.</value>
@@ -1877,4 +1867,3 @@ Open the project of version {2} to properly locate the logging writter location.
     <comment>Title for the prompt to update the Cloud SDK.</comment>
   </data>
 </root>
-

@@ -2320,15 +2320,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generate app.yaml and Dockerfile for {0}.
-        /// </summary>
-        public static string GenerateConfigurationMenuHeader {
-            get {
-                return ResourceManager.GetString("GenerateConfigurationMenuHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Configuration files already exist.
         /// </summary>
         public static string GenerateConfigurationOverwritePromptTitle {
@@ -2818,7 +2809,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &gt;&gt;&gt;&gt;&gt;&gt;&gt; m2_master.
+        ///   Looks up a localized string similar to MM-dd-yyyy HH:mm:ss.fff.
         /// </summary>
         public static string LogViewerLogItemDateTimeFormat {
             get {
@@ -3970,7 +3961,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &gt;&gt;&gt;&gt;&gt;&gt;&gt; m2_master.
+        ///   Looks up a localized string similar to Time.
         /// </summary>
         public static string UiTimeLabel {
             get {
@@ -4002,15 +3993,6 @@ namespace GoogleCloudExtension {
         public static string UiYesButtonCaption {
             get {
                 return ResourceManager.GetString("UiYesButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Manage Windows credentials.
-        /// </summary>
-        public static string WindowsCredentialsChooserManageCredentialsCaption {
-            get {
-                return ResourceManager.GetString("WindowsCredentialsChooserManageCredentialsCaption", resourceCulture);
             }
         }
         
