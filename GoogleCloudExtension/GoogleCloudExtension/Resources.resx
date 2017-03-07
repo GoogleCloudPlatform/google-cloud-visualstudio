@@ -1710,9 +1710,9 @@ Open the project of version {2} to properly locate the logging writter location.
     <value>Detail View - Stackdriver Error Reporting</value>
     <comment>Stackdriver Error Reporting detail view window caption.</comment>
   </data>
-  <data name="ErrorReportingNoErrorGroupSelectedButtonCaption" xml:space="preserve">
+  <data name="ErrorReportingNoErrorGroupSelectedMessage" xml:space="preserve">
     <value>Go to overview window and select an error group</value>
-    <comment>When account is reset, the overview window shows the button with this caption.</comment>
+    <comment>When account is reset, the overview window shows the message on top of the back to overview button.</comment>
   </data>
   <data name="ErrorReportingRecentSampleLabel" xml:space="preserve">
     <value>Recent Samples</value>
@@ -1756,7 +1756,7 @@ Open the project of version {2} to properly locate the logging writter location.
   </data>
   <data name="ErrorReportingToOverviewButtonCaption" xml:space="preserve">
     <value>To overview window</value>
-    <comment>Go to overview back button caption.</comment>
+    <comment>Go back to overview button caption.</comment>
   </data>
   <data name="ErrorReportingDataSourceGenericErrorMessage" xml:space="preserve">
     <value>Failed to retrieve data from cloud server. Please try later.</value>

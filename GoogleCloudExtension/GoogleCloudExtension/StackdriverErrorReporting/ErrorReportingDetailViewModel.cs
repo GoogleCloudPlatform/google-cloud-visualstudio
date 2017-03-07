@@ -17,7 +17,6 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
@@ -34,41 +33,41 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private bool _isGroupLoading;
         private bool _isEventLoading;
         private bool _isControlEnabled = true;
-        private bool _showException;
-        private string _exceptionString;
-        private bool _isAccountReset;
+        private bool _showError;
+        private string _errorString;
+        private bool _isAccountChanged;
         private TimeRangeItem _selectedTimeRange;
         private Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
 
         /// <summary>
         /// Indicate the Google account is set.
         /// </summary>
-        public bool IsAccountReset
+        public bool IsAccountChanged
         {
-            get { return _isAccountReset; }
-            set { SetValueAndRaise(ref _isAccountReset, value); }
+            get { return _isAccountChanged; }
+            set { SetValueAndRaise(ref _isAccountChanged, value); }
         }
 
         /// <summary>
         /// The exception message to show as error message.
         /// </summary>
-        public string ExceptionString
+        public string ErrorString
         {
-            get { return _exceptionString; }
-            set { SetValueAndRaise(ref _exceptionString, value); }
+            get { return _errorString; }
+            set { SetValueAndRaise(ref _errorString, value); }
         }
 
         /// <summary>
-        /// Indicate to show or hide the exception message.
+        /// Show or hide the error message.
         /// </summary>
-        public bool ShowException
+        public bool ShowError
         {
-            get { return _showException; }
-            set { SetValueAndRaise(ref _showException, value); }
+            get { return _showError; }
+            set { SetValueAndRaise(ref _showError, value); }
         }
 
         /// <summary>
-        /// Indicate if the entire window is enabled.
+        /// A flag indicating if the entire window is enabled.
         /// </summary>
         public bool IsControlEnabled
         {
@@ -77,7 +76,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         }
 
         /// <summary>
-        /// It is loading error group data.
+        /// A flag indicating if it is loading error group data.
         /// </summary>
         public bool IsGroupLoading
         {
@@ -86,7 +85,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         }
 
         /// <summary>
-        /// It is loading error event list.
+        /// A flag indicating if it is loading error event list.
         /// </summary>
         public bool IsEventLoading
         {
@@ -98,21 +97,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// Gets or sets the error group.
         /// </summary>
         public ErrorGroupItem GroupItem { get; private set; }
-
-        /// <summary>
-        /// Group item message.
-        /// </summary>
-        public string Message => GroupItem?.Message;
-
-        /// <summary>
-        /// Group item stack message.
-        /// </summary>
-        public string Stack => GroupItem?.ErrorGroup?.Representative?.Message;
-
-        /// <summary>
-        /// Group item stack.
-        /// </summary>
-        public string StakcSummary => GroupItem?.FirstStackFrame;
 
         /// <summary>
         /// The data collection of event item list.
@@ -152,6 +136,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         {
             OnBackToOverViewCommand = new ProtectedCommand(() => ToolWindowCommandUtils.ShowToolWindow<ErrorReportingToolWindow>());
             _datasource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
+            CredentialsStore.Default.Reset += (sender, e) => OnCurrentProjectChanged();
+            CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnCurrentProjectChanged();
         }
 
         /// <summary>
@@ -159,7 +145,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public void OnCurrentProjectChanged()
         {
-            IsAccountReset = true;
+            IsAccountChanged = true;
             _datasource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
         }
 
@@ -179,18 +165,16 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 throw new ErrorReportingException(new ArgumentNullException(nameof(groupSelectedTimeRangeItem)));
             }
 
-            IsAccountReset = false;
             GroupItem = errorGroupItem;
-            if (SelectedTimeRangeItem != null && groupSelectedTimeRangeItem.EventTimeRange == SelectedTimeRangeItem.EventTimeRange)
+            if (groupSelectedTimeRangeItem.EventTimeRange == SelectedTimeRangeItem?.EventTimeRange)
             {
                 UpdateEventAsync();
                 RaiseAllPropertyChanged();
             }
             else
             {
-                // This will end up calling UpdateView() too. 
+                // This will triger a call to UpdateGroupAndEventAsync(). 
                 SelectedTimeRangeItem = AllTimeRangeItems.First(x => x.GroupTimeRange == groupSelectedTimeRangeItem.GroupTimeRange);
-                UpdateGroupAndEventAsync();
             }
         }
 
@@ -201,19 +185,18 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         {
             if (GroupItem == null)
             {
-                Debug.Assert(false, "UpdateEventGroupAsync, GroupItem is null.");
-                return;
+                throw new ErrorReportingException("GroupItem is null.");
             }
 
             IsGroupLoading = true;
-            ShowException = false;
+            ShowError = false;
             try
             {
                 var groups = await _datasource.Value?.GetPageOfGroupStatusAsync(
                     SelectedTimeRangeItem.GroupTimeRange,
                     SelectedTimeRangeItem.TimedCountDuration,
                     GroupItem.ErrorGroup.Group.GroupId);
-                if (groups != null && groups.ErrorGroupStats != null && groups.ErrorGroupStats.Count > 0)
+                if (groups?.ErrorGroupStats != null && groups.ErrorGroupStats.Count > 0)
                 {
                     GroupItem = new ErrorGroupItem(groups.ErrorGroupStats.FirstOrDefault());
                 }
@@ -222,10 +205,15 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                     GroupItem.SetEmptyModel();
                 }
             }
-            catch (DataSourceException ex)
+            catch (DataSourceException)
             {
-                ExceptionString = ex.ToString();
-                ShowException = true;
+                ShowError = true;
+                ErrorString = Resources.ErrorReportingDataSourceGenericErrorMessage;
+            }
+            catch (ErrorReportingException)
+            {
+                ShowError = true;
+                ErrorString = Resources.ErrorReportingInternalCodeErrorGenericMessage;
             }
             finally
             {
@@ -261,22 +249,27 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             {
                 IsEventLoading = true;
                 IsControlEnabled = false;
-                ShowException = false;
+                ShowError = false;
                 try
                 {
                     var events = await _datasource.Value?.GetPageOfEventsAsync(
                         GroupItem.ErrorGroup, 
                         SelectedTimeRangeItem.EventTimeRange);
-                    if (events != null && events.ErrorEvents != null)
+                    if (events?.ErrorEvents != null)
                     {
                         EventItemCollection = CollectionViewSource.GetDefaultView(
                             events.ErrorEvents.Select(x => new EventItem(x))) as CollectionView;
                     }
                 }
-                catch (DataSourceException ex)
+                catch (DataSourceException)
                 {
-                    ExceptionString = ex.ToString();
-                    ShowException = true;
+                    ShowError = true;
+                    ErrorString = Resources.ErrorReportingDataSourceGenericErrorMessage;
+                }
+                catch (ErrorReportingException)
+                {
+                    ShowError = true;
+                    ErrorString = Resources.ErrorReportingInternalCodeErrorGenericMessage;
                 }
                 finally
                 {

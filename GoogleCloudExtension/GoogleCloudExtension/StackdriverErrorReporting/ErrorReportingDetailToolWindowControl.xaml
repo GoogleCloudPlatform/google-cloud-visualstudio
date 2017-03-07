@@ -34,44 +34,42 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
         <tb:TitleBar />
 
+        <!-- No error group selected message -->
         <StackPanel
             Grid.Row="1"
-            x:Name="_emptyAccountBlock"
             Margin="12"
             VerticalAlignment="Top"                
             HorizontalAlignment="Center"
-            Visibility="{Binding IsAccountReset, Converter={StaticResource visibilityConverter}}" >
+            Visibility="{Binding IsAccountChanged, Converter={StaticResource visibilityConverter}}" >
 
             <TextBlock 
                 Margin="6" 
-                Text="{x:Static ext:Resources.ErrorReportingNoErrorGroupSelectedButtonCaption}" />
-            
+                Text="{x:Static ext:Resources.ErrorReportingNoErrorGroupSelectedMessage}" />
+
             <controls:ImageToggleButton 
                 Style="{StaticResource BackToOverviewButtonStyle}" 
                 UncheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/back_icon.png}"
                 CheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/back_icon.png}"/>
-                        
+
         </StackPanel>
 
         <Grid 
             Grid.Row="1"
-            Margin="12,0,12,12" x:Name="_contentGrid"
-            Visibility="{Binding IsAccountReset, Converter={StaticResource visibilityConverterNegated}}">
+            Margin="12,0,12,12"            
+            Visibility="{Binding IsAccountChanged, Converter={StaticResource visibilityConverterNegated}}"
+            IsEnabled="{Binding IsControlEnabled}" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
             <Border 
-                Grid.Row="0"
                 Padding="0,6,0,6"
-                BorderThickness="0, 0, 0, 1"    
-                BorderBrush="LightGray"
-                IsEnabled="{Binding IsLoadingComplete}">
-
+                BorderThickness="0,0,0,1"    
+                BorderBrush="LightGray" >
                 <StackPanel  Orientation="Horizontal">
                     <controls:ImageToggleButton 
                         Style="{StaticResource BackToOverviewButtonStyle}" 
@@ -80,6 +78,7 @@
                 </StackPanel>
             </Border>
 
+            <!-- Error summary and stacks are scrollable. -->
             <ScrollViewer 
                 Grid.Row="1" 
                 HorizontalScrollBarVisibility="Disabled"    
@@ -87,9 +86,7 @@
 
                 <StackPanel>
                     <!-- Time range buttons -->
-                    <Grid 
-                        Margin="0, 12, 0, 12" 
-                        IsEnabled="{Binding IsControlEnabled}" >
+                    <Grid Margin="0,12,0,12">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
@@ -99,9 +96,9 @@
                                 Grid.Column="0"                
                                 Margin="0,0,36,0"
                                 FontWeight="DemiBold"
-                                Text="{Binding Message}"
+                                Text="{Binding GroupItem.ErrorMessage}"
                                 Style="{StaticResource CommonTextStyle}" />
-
+                        
                         <local:TimeRangeButtons 
                             Grid.Column="1" 
                             SelectedItem="{Binding SelectedTimeRangeItem, Mode=TwoWay}" 
@@ -109,26 +106,25 @@
                     </Grid>
 
 
-                    <!-- Data source error Box. -->
+                    <!-- Show error. -->
                     <TextBox 
-                        Panel.ZIndex="15"
+                        Visibility="{Binding ShowError, Converter={utils:VisibilityConverter}}"                         
                         Padding="8,5,8,5" 
                         VerticalAlignment="Top"
                         HorizontalAlignment="Stretch"
                         TextAlignment="Left" 
                         TextWrapping="Wrap"
                         Foreground="Red" 
-                        Text="{Binding ExceptionString, Mode=OneWay}" 
-                        Visibility="{Binding ShowException, Converter={utils:VisibilityConverter}}" 
+                        Text="{Binding ErrorString, Mode=OneWay}"                         
                         ScrollViewer.VerticalScrollBarVisibility="Auto"
                         IsReadOnly="True" />
 
-                    <StackPanel Visibility="{Binding ShowException, Converter={utils:VisibilityConverter IsNegated=True}}" >
+                    <StackPanel Visibility="{Binding ShowError, Converter={utils:VisibilityConverter IsNegated=True}}" >
 
                         <!-- summary  -->
                         <Border 
                             Padding="12,12,12,6"
-                            Style="{StaticResource BorderCommonStyle}" >
+                            Style="{StaticResource DetailViewBorderStyle}" >
 
                             <Grid>
                                 <Grid.ColumnDefinitions>
@@ -229,17 +225,16 @@
                         </Border>
 
                         <!-- chart and progress indicator. -->
-                        <Border Style="{StaticResource BorderCommonStyle}" 
+                        <Border Style="{StaticResource DetailViewBorderStyle}" 
                             MinHeight="180">
 
                             <Grid>
-
                                 <controls:ProgressIndicator 
-                                Panel.ZIndex="20"
-                                HorizontalAlignment="Center"                       
-                                VerticalAlignment="Top" 
-                                Margin="6"
-                                Visibility="{Binding IsGroupLoading, Converter={utils:VisibilityConverter}}" />
+                                    Panel.ZIndex="20"
+                                    HorizontalAlignment="Center"                       
+                                    VerticalAlignment="Top" 
+                                    Margin="6"
+                                    Visibility="{Binding IsGroupLoading, Converter={utils:VisibilityConverter}}" />
 
                                 <!-- TODO: add time count bar chart />-->
                             </Grid>
@@ -247,7 +242,7 @@
                         </Border>
 
                         <!-- stack trace sample -->
-                        <Border Style="{StaticResource BorderCommonStyle}" >
+                        <Border Style="{StaticResource DetailViewBorderStyle}" >
                             <StackPanel Margin="6">
 
                                 <controls:ImageToggleButton  
@@ -263,7 +258,7 @@
                                 <TextBox 
                                     BorderThickness="0"
                                     Padding="8,5,8,5"
-                                    Text="{Binding Stack, Mode=OneWay}" 
+                                    Text="{Binding GroupItem.RawErrorMessage, Mode=OneWay}" 
                                     IsReadOnly="True"
                                     AcceptsReturn="True"
                                     TextWrapping="NoWrap"
@@ -278,20 +273,12 @@
                         <StackPanel Margin="12,12,0,6">
 
                             <TextBlock 
-                            Text="{x:Static ext:Resources.ErrorReportingRecentSampleLabel}"
-                            Style="{StaticResource CommonTextStyle}" 
-                            Padding="0,6,0,6"/>
+                                Text="{x:Static ext:Resources.ErrorReportingRecentSampleLabel}"
+                                Style="{StaticResource CommonTextStyle}" 
+                                Padding="0,6,0,6"/>
 
                             <Grid>
-                                <controls:ProgressIndicator 
-                                Panel.ZIndex="20"
-                                Margin="0, 20"
-                                HorizontalAlignment="Center"                       
-                                VerticalAlignment="Top" 
-                                Visibility="{Binding IsEventLoading, Converter={StaticResource visibilityConverter}}" />
-
                                 <DataGrid 
-                                    Panel.ZIndex="10"
                                     x:Name="DataGridEvents" 
                                     VerticalScrollBarVisibility="Disabled"
                                     ItemsSource="{Binding EventItemCollection}"
@@ -325,6 +312,13 @@
                                         </DataTemplate>
                                     </DataGrid.RowDetailsTemplate>
                                 </DataGrid>
+                                
+                                <!-- The progress indicator will show on top of the DataGrid -->
+                                <controls:ProgressIndicator 
+                                    Margin="0,20,0,0"
+                                    HorizontalAlignment="Center"                       
+                                    VerticalAlignment="Top" 
+                                    Visibility="{Binding IsEventLoading, Converter={StaticResource visibilityConverter}}" />
                             </Grid>
                         </StackPanel>
                     </StackPanel>

@@ -1917,9 +1917,9 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to Go to overview window and select an error group.
         /// </summary>
-        public static string ErrorReportingNoErrorGroupSelectedButtonCaption {
+        public static string ErrorReportingNoErrorGroupSelectedMessage {
             get {
-                return ResourceManager.GetString("ErrorReportingNoErrorGroupSelectedButtonCaption", resourceCulture);
+                return ResourceManager.GetString("ErrorReportingNoErrorGroupSelectedMessage", resourceCulture);
             }
         }
         

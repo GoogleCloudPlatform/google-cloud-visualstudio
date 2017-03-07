@@ -31,7 +31,7 @@
                     <controls:IconButton 
                         Style="{StaticResource MouseOverLinkButtonStyle}" 
                         HorizontalAlignment="Left"
-                        Content="{Binding Message}"
+                        Content="{Binding ErrorMessage}"
                         Command="{Binding DataContext.OnGotoDetailCommand, ElementName=_errorReportingWindow}"
                         CommandParameter="{Binding}"/>
                     <TextBlock Text="{Binding FirstStackFrame}" Style="{StaticResource CommonTextStyle}"/>

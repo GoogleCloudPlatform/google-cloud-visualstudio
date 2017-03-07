@@ -32,9 +32,10 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public ErrorGroupStats ErrorGroup { get; }
 
         /// <summary>
-        /// The error message displayed in data grid row.
+        /// The error message with complete stack.
+        /// Normally, this is the string get from Exception.ToString();
         /// </summary>
-        public string Error => ErrorGroup.Representative.Message;
+        public string RawErrorMessage => ErrorGroup.Representative.Message;
 
         /// <summary>
         /// Gets the error count of the error group.
@@ -69,7 +70,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Gets the message to display for the error group.
         /// </summary>
-        public string Message { get; }
+        public string ErrorMessage { get; }
 
         /// <summary>
         /// The stack as string for the error group.
@@ -104,7 +105,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                     StringSplitOptions.RemoveEmptyEntries);
             if (lines != null)
             {
-                Message = lines.Count() > 0 ? lines[0] : null;
+                ErrorMessage = lines.Count() > 0 ? lines[0] : null;
                 FirstStackFrame = lines.Count() > 1 ? lines[1] : null;
             }
         }
