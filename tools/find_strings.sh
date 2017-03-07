@@ -14,8 +14,8 @@ ${workspace}/tools/find_files.py -d $1 -e .cs | xargs grep -HnE \
     "\\[Category\\(|\\[DisplayName\\(|\\[Description\\("
 ${workspace}/tools/find_files.py -d $1 -e .cs | xargs grep -HnE \
     "Prompt\\(\""
-${workspace}/tools/find_files.py -d $1 -e .cs | xargs grep -HnE \
-    "base\\(\""
+# ${workspace}/tools/find_files.py -d $1 -e .cs | xargs grep -HnE \
+#     "base\\(\""
 ${workspace}/tools/find_files.py -d $1 -e .cs | xargs grep -HnE \
     "\\.OutputLine\\(\\$\"|\\.OutputLine\\(\""
 
