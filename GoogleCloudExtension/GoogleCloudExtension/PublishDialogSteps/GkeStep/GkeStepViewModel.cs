@@ -14,10 +14,11 @@
 
 using Google.Apis.Container.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.LinkPrompt;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using System;
@@ -44,8 +45,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private Cluster _selectedCluster;
         private string _deploymentName;
         private string _deploymentVersion;
-        private bool _exposeService = true;
-        private bool _openWebsite = true;
+        private bool _dontExposeService = true;
+        private bool _exposeService = false;
+        private bool _exposePublicService = false;
+        private bool _openWebsite = false;
         private string _replicas = "3";
 
         /// <summary>
@@ -99,12 +102,34 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         }
 
         /// <summary>
-        /// Whether a public service should be exposed for this deployment.
+        /// Whether the service should NOT be exposed, the opposite of <seealso cref="ExposeService"/>.
+        /// </summary>
+        public bool DontExposeService
+        {
+            get { return _dontExposeService; }
+            set { SetValueAndRaise(ref _dontExposeService, value); }
+        }
+
+        /// <summary>
+        /// Whether a service should be exposed for this deployment.
         /// </summary>
         public bool ExposeService
         {
             get { return _exposeService; }
-            set { SetValueAndRaise(ref _exposeService, value); }
+            set
+            {
+                SetValueAndRaise(ref _exposeService, value);
+                InvalidateExposeService();
+            }
+        }
+
+        /// <summary>
+        /// Whether the service to be exposed should be public on the internet or not.
+        /// </summary>
+        public bool ExposePublicService
+        {
+            get { return _exposePublicService; }
+            set { SetValueAndRaise(ref _exposePublicService, value); }
         }
 
         /// <summary>
@@ -178,7 +203,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             {
                 ShellUtils.SaveAllFiles();
 
-                var verifyGCloudTask = VerifyGCloudDependencies();
+                var verifyGCloudTask = GCloudWrapperUtils.VerifyGCloudDependencies("kubectl");
                 _publishDialog.TrackTask(verifyGCloudTask);
                 if (!await verifyGCloudTask)
                 {
@@ -222,6 +247,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                         DeploymentName = DeploymentName,
                         DeploymentVersion = DeploymentVersion,
                         ExposeService = ExposeService,
+                        ExposePublicService = ExposePublicService,
                         GCloudContext = gcloudContext,
                         KubectlContext = kubectlContext,
                         Replicas = int.Parse(Replicas),
@@ -234,17 +260,20 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
                     _publishDialog.FinishFlow();
 
+                    TimeSpan deploymentDuration;
                     GkeDeploymentResult result;
                     using (var frozen = StatusbarHelper.Freeze())
                     using (var animationShown = StatusbarHelper.ShowDeployAnimation())
                     using (var progress = StatusbarHelper.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
                     using (var deployingOperation = ShellUtils.SetShellUIBusy())
                     {
+                        var deploymentStartTime = DateTime.Now;
                         result = await GkeDeployment.PublishProjectAsync(
                             project.FullPath,
                             options,
                             progress,
                             GcpOutputWindow.OutputLine);
+                        deploymentDuration = DateTime.Now - deploymentStartTime;
                     }
 
                     if (result != null)
@@ -259,29 +288,49 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                             GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentScaledMessage, options.DeploymentName, options.Replicas));
                         }
 
-                        if (result.WasExposed)
+                        if (result.ServiceUpdated)
                         {
-                            if (result.ServiceIpAddress != null)
+                            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishServiceUpdatedMessage, options.DeploymentName));
+                        }
+                        if (result.ServiceExposed)
+                        {
+                            if (result.PublicServiceIpAddress != null)
                             {
                                 GcpOutputWindow.OutputLine(
-                                    String.Format(Resources.GkePublishServiceIpMessage, DeploymentName, result.ServiceIpAddress));
+                                    String.Format(Resources.GkePublishServiceIpMessage, DeploymentName, result.PublicServiceIpAddress));
                             }
                             else
                             {
-                                GcpOutputWindow.OutputLine(Resources.GkePublishServiceIpTimeoutMessage);
+                                if (ExposePublicService)
+                                {
+                                    GcpOutputWindow.OutputLine(Resources.GkePublishServiceIpTimeoutMessage);
+                                }
+                                else
+                                {
+                                    GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishServiceClusterIpMessage, DeploymentName, result.ClusterServiceIpAddress));
+                                }
                             }
                         }
+                        if (result.ServiceDeleted)
+                        {
+                            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishServiceDeletedMessage, DeploymentName));
+                        }
+
                         StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
 
-                        if (OpenWebsite && result.WasExposed && result.ServiceIpAddress != null)
+                        if (OpenWebsite && result.ServiceExposed && result.PublicServiceIpAddress != null)
                         {
-                            Process.Start($"http://{result.ServiceIpAddress}");
+                            Process.Start($"http://{result.PublicServiceIpAddress}");
                         }
+
+                        EventsReporterWrapper.ReportEvent(GkeDeployedEvent.Create(CommandStatus.Success, deploymentDuration));
                     }
                     else
                     {
                         GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
                         StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+
+                        EventsReporterWrapper.ReportEvent(GkeDeployedEvent.Create(CommandStatus.Failure));
                     }
                 }
             }
@@ -290,10 +339,21 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentFailureMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
                 _publishDialog.FinishFlow();
+
+                EventsReporterWrapper.ReportEvent(GkeDeployedEvent.Create(CommandStatus.Failure));
             }
         }
 
         #endregion
+
+        private void InvalidateExposeService()
+        {
+            if (!ExposeService)
+            {
+                ExposePublicService = false;
+                OpenWebsite = false;
+            }
+        }
 
         private bool ValidateInput()
         {
@@ -359,29 +419,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             content.DataContext = viewModel;
 
             return viewModel;
-        }
-
-        private async Task<bool> VerifyGCloudDependencies()
-        {
-            if (!await GCloudWrapper.CanUseGKEAsync())
-            {
-                if (!GCloudWrapper.IsGCloudCliInstalled())
-                {
-                    LinkPromptDialogWindow.PromptUser(
-                        Resources.ResetPasswordMissingGcloudTitle,
-                        Resources.ResetPasswordGcloudMissingMessage,
-                        new LinkInfo(link: "https://cloud.google.com/sdk/", caption: Resources.ResetPasswordGcloudLinkCaption));
-                }
-                else
-                {
-                    UserPromptUtils.ErrorPrompt(
-                        message: Resources.GkePublishMissingKubectlMessage,
-                        title: Resources.GcloudMissingComponentTitle);
-                }
-                return false;
-            }
-
-            return true;
         }
     }
 }

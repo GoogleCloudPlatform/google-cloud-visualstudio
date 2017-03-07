@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.PublishDialog;
@@ -88,6 +90,14 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             var project = _publishDialog.Project;
             try
             {
+                var verifyGcloudTask = GCloudWrapperUtils.VerifyGCloudDependencies("beta");
+                _publishDialog.TrackTask(verifyGcloudTask);
+                if (!await verifyGcloudTask)
+                {
+                    Debug.WriteLine("Gcloud dependencies not met, aborting publish operation.");
+                    return;
+                }
+
                 ShellUtils.SaveAllFiles();
 
                 var context = new GCloudContext
@@ -110,17 +120,20 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
                 _publishDialog.FinishFlow();
 
+                TimeSpan deploymentDuration;
                 AppEngineFlexDeploymentResult result;
                 using (var frozen = StatusbarHelper.Freeze())
                 using (var animationShown = StatusbarHelper.ShowDeployAnimation())
                 using (var progress = StatusbarHelper.ShowProgressBar(Resources.FlexPublishProgressMessage))
                 using (var deployingOperation = ShellUtils.SetShellUIBusy())
                 {
+                    var startDeploymentTime = DateTime.Now;
                     result = await AppEngineFlexDeployment.PublishProjectAsync(
                         project.FullPath,
                         options,
                         progress,
                         GcpOutputWindow.OutputLine);
+                    deploymentDuration = DateTime.Now - startDeploymentTime;
                 }
 
                 if (result != null)
@@ -134,17 +147,23 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                     {
                         Process.Start(url);
                     }
+
+                    EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Success, deploymentDuration));
                 }
                 else
                 {
                     GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishFailedMessage, project.Name));
                     StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+
+                    EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Failure));
                 }
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
                 GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+
+                EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Failure));
             }
         }
 

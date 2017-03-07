@@ -29,15 +29,17 @@ namespace GoogleCloudExtension.GCloud
     /// </summary>
     public static class GCloudWrapper
     {
+        // The minimum version of the Google Cloud SDK that the extension can work with. Update this only when
+        // a feature appears in the Cloud SDK that is absolutely required for the extension to work.
+        public const string GCloudSdkMinimumVersion = "146.0.0";
+
         // These variables specify the environment to be reported by gcloud when reporting metrics. These variables
         // are only used with gcloud which is why they're private here.
         private const string GCloudMetricsVariable = "CLOUDSDK_METRICS_ENVIRONMENT";
         private const string GCloudMetricsVersionVariable = "CLOUDSDK_METRICS_ENVIRONMENT_VERSION";
 
-        // Settings to enable the runtime builder in gcloud.
-        private const string GCloudAppUseRuntimeBuilders = "CLOUDSDK_APP_USE_RUNTIME_BUILDERS";
-        private const string GCloudAppRuntimeBuildersRoot = "CLOUDSDK_APP_RUNTIME_BUILDERS_ROOT";
-        private const string RuntimeBuildersRootValue = "gs://aspnet/";
+        // Minimum version of Cloud SDK that is acceptable.
+        private static readonly Version s_minimumVersion = new Version(GCloudSdkMinimumVersion);
 
         /// <summary>
         /// Finds the location of gcloud.cmd by following all of the directories in the PATH environment
@@ -71,6 +73,7 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="version">The version to use, if no version is used gcloud will decide the version name.</param>
         /// <param name="promote">Whether to promote the app or not.</param>
         /// <param name="outputAction">The action to call with output from the command.</param>
+        /// <param name="useRuntimeBuilder">Whether to enable runtime builders or not.</param>
         /// <param name="context">The context under which the command is executed.</param>
         public static Task<bool> DeployAppAsync(
             string appYaml,
@@ -81,17 +84,11 @@ namespace GoogleCloudExtension.GCloud
         {
             var versionParameter = version != null ? $"--version={version}" : "";
             var promoteParameter = promote ? "--promote" : "--no-promote";
-            var environment = new Dictionary<string, string>
-            {
-                [GCloudAppUseRuntimeBuilders] = CommonEnvironmentVariables.TrueValue,
-                [GCloudAppRuntimeBuildersRoot] = RuntimeBuildersRootValue
-            };
 
             return RunCommandAsync(
                 $"beta app deploy \"{appYaml}\" {versionParameter} {promoteParameter} --skip-staging --quiet",
                 outputAction,
-                context,
-                environment);
+                context);
         }
 
         /// <summary>
@@ -156,32 +153,48 @@ namespace GoogleCloudExtension.GCloud
         }
 
         /// <summary>
-        /// Returns true if the <seealso cref="ResetWindowsCredentialsAsync(string, string, string, GCloudContext)"/> method can
-        /// be used safely.
+        /// Validates that gcloud is installed with the minimum version and that the given component
+        /// for gcloud is installed.
         /// </summary>
-        /// <returns>A task that will be fulfilled to true if the method can be called, false otherwise.</returns>
-        public static Task<bool> CanUseResetWindowsCredentialsAsync() => IsComponentInstalledAsync("beta");
+        /// <param name="component">the component to check, optional. If no component is provided only gcloud is checked.</param>
+        /// <returns></returns>
+        public static async Task<GCloudValidationResult> ValidateGCloudAsync(string component = null)
+        {
+            if (!IsGCloudCliInstalled())
+            {
+                return new GCloudValidationResult(isCloudSdkInstalled: false);
+            }
 
-        /// <summary>
-        /// Returns true if the methods concerning kubectl and GKE can be used safely.
-        /// </summary>
-        /// <returns>A task that will be fullfilled to true if the GKE methods can be used.</returns>
-        public static Task<bool> CanUseGKEAsync() => IsComponentInstalledAsync("kubectl");
+            var cloudSdkVersion = await GetInstalledCloudSdkVersionAsync();
+            if (cloudSdkVersion < s_minimumVersion)
+            {
+                return new GCloudValidationResult(isCloudSdkInstalled: true, isCloudSdkUpdated: false, cloudSdkVersion: cloudSdkVersion);
+            }
 
-        /// <summary>
-        /// Returns the list of components that gcloud knows about.
-        /// </summary>
-        public static async Task<IList<string>> GetInstalledComponentsAsync()
+            if (component != null && !await IsComponentInstalledAsync(component))
+            {
+                return new GCloudValidationResult(
+                    isCloudSdkInstalled: true,
+                    isCloudSdkUpdated: true,
+                    isRequiredComponentInstalled: false,
+                    cloudSdkVersion: cloudSdkVersion);
+            }
+
+            return new GCloudValidationResult(
+                isCloudSdkInstalled: true,
+                isCloudSdkUpdated: true,
+                isRequiredComponentInstalled: true,
+                cloudSdkVersion: cloudSdkVersion);
+        }
+
+        private static async Task<IList<string>> GetInstalledComponentsAsync()
         {
             Debug.WriteLine("Reading list of components.");
             var components = await GetJsonOutputAsync<IList<CloudSdkComponent>>("components list");
             return components.Where(x => x.State.IsInstalled).Select(x => x.Id).ToList();
         }
 
-        /// <summary>
-        /// Detects if gcloud is present in the system.
-        /// </summary>
-        public static bool IsGCloudCliInstalled()
+        private static bool IsGCloudCliInstalled()
         {
             Debug.WriteLine("Validating GCloud installation.");
             var gcloudPath = GetGCloudPath();
@@ -190,12 +203,7 @@ namespace GoogleCloudExtension.GCloud
             return gcloudPath != null;
         }
 
-        /// <summary>
-        /// Determines if the given gcloud component is installed.
-        /// </summary>
-        /// <param name="component">The component to check.</param>
-        /// <returns>A task that will be fullfilled to true if the component is installed, false otherwise.</returns>
-        public static async Task<bool> IsComponentInstalledAsync(string component)
+        private static async Task<bool> IsComponentInstalledAsync(string component)
         {
             if (!IsGCloudCliInstalled())
             {
@@ -203,6 +211,17 @@ namespace GoogleCloudExtension.GCloud
             }
             var installedComponents = await GetInstalledComponentsAsync();
             return installedComponents.Contains(component);
+        }
+
+        private static async Task<Version> GetInstalledCloudSdkVersionAsync()
+        {
+            if (!IsGCloudCliInstalled())
+            {
+                return null;
+            }
+
+            var version = await GetJsonOutputAsync<CloudSdkVersions>("version");
+            return new Version(version.SdkVersion);
         }
 
         private static string FormatCommand(string command, GCloudContext context, bool jsonFormat)

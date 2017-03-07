@@ -25,7 +25,6 @@ using Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -111,10 +110,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             try
             {
                 // Poll until the update to completes.
-                Task<Operation> operation = _owner.DataSource.Value.UpdateInstanceAsync(Instance);
-                Func<Operation, Task<Operation>> fetch = (o) => dataSource.GetOperationAsync(o.Name);
-                Predicate<Operation> stopPolling = (o) => CloudSqlDataSource.OperationStateDone.Equals(o.Status);
-                await Polling<Operation>.Poll(await operation, fetch, stopPolling);
+                var operation = await _owner.DataSource.Value.UpdateInstanceAsync(Instance);
+                await _owner.DataSource.Value.AwaitOperationAsync(operation);
 
                 EventsReporterWrapper.ReportEvent(ManageCloudSqlAuthorizedNetworkEvent.Create(CommandStatus.Success));
             }
