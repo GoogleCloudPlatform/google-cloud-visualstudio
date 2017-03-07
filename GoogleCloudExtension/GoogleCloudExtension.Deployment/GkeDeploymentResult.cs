@@ -20,16 +20,32 @@ namespace GoogleCloudExtension.Deployment
     public class GkeDeploymentResult
     {
         /// <summary>
-        /// The IP address of the public service if one was exposed. This property will be null if:
-        ///   * There was a timeout while waiting for the service to go up.
-        ///   * No service was exposed.
+        /// The IP address of the public service if one was exposed. This property can be null
+        /// if no public service was exposed or if there was a timeout trying to obtain the public
+        /// IP address.
         /// </summary>
-        public string ServiceIpAddress { get; }
+        public string PublicServiceIpAddress { get; }
+
+        /// <summary>
+        /// The IP address within the cluster for the service. This property can only be null if there
+        /// was an error deploying the app.
+        /// </summary>
+        public string ClusterServiceIpAddress { get; }
 
         /// <summary>
         /// Is true if the a service was exposed publicly.
         /// </summary>
-        public bool WasExposed { get; }
+        public bool ServiceExposed { get; }
+
+        /// <summary>
+        /// Is true if the service was updated.
+        /// </summary>
+        public bool ServiceUpdated { get; }
+
+        /// <summary>
+        /// is true if the service was deleted.
+        /// </summary>
+        public bool ServiceDeleted { get; }
 
         /// <summary>
         /// Is true if the deployment was updated, false if a new deployment was created.
@@ -41,10 +57,20 @@ namespace GoogleCloudExtension.Deployment
         /// </summary>
         public bool DeploymentScaled { get; }
 
-        public GkeDeploymentResult(string serviceIpAddress, bool wasExposed, bool deploymentUpdated, bool deploymentScaled)
+        public GkeDeploymentResult(
+            string publicIpAddress,
+            string privateIpAddress,
+            bool serviceExposed,
+            bool serviceUpdated,
+            bool serviceDeleted,
+            bool deploymentUpdated,
+            bool deploymentScaled)
         {
-            ServiceIpAddress = serviceIpAddress;
-            WasExposed = wasExposed;
+            PublicServiceIpAddress = publicIpAddress;
+            ClusterServiceIpAddress = privateIpAddress;
+            ServiceExposed = serviceExposed;
+            ServiceUpdated = serviceUpdated;
+            ServiceDeleted = serviceDeleted;
             DeploymentUpdated = deploymentUpdated;
             DeploymentScaled = deploymentScaled;
         }
