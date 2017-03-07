@@ -11,8 +11,9 @@
              xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"                     
              Background="{DynamicResource VsBrush.Window}"
              Foreground="{DynamicResource VsBrush.WindowText}"
+             x:Name="_errorReportingWindow"
              mc:Ignorable="d"
-             d:DesignHeight="640" d:DesignWidth="640"
+             d:DesignHeight="640" d:DesignWidth="640"             
              d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True,Type=local:ErrorReportingViewModel}" >
     <UserControl.Resources>
         <ResourceDictionary>
@@ -27,10 +28,12 @@
 
             <DataTemplate x:Key="MessageStackTemplate" >
                 <StackPanel>
-                    <controls:IconButton Style="{StaticResource MouseOverLinkButtonStyle}" 
-                                Content="{Binding Message}"
-                                Command="{Binding NavigateDetailCommand}"
-                                HorizontalAlignment="Left" />
+                    <controls:IconButton 
+                        Style="{StaticResource MouseOverLinkButtonStyle}" 
+                        HorizontalAlignment="Left"
+                        Content="{Binding ErrorMessage}"
+                        Command="{Binding DataContext.OnGotoDetailCommand, ElementName=_errorReportingWindow}"
+                        CommandParameter="{Binding}"/>
                     <TextBlock Text="{Binding FirstStackFrame}" Style="{StaticResource CommonTextStyle}"/>
                 </StackPanel>
             </DataTemplate>
@@ -96,7 +99,7 @@
                         Header="{x:Static ext:Resources.ErrorReportingAffectedUsersHeader}" 
                         Binding="{Binding ErrorGroup.AffectedUsersCount}" />
 
-                    <DataGridTextColumn Binding="{Binding ErrorGroup.Count}" />
+                    <DataGridTextColumn Binding="{Binding ErrorCount}" />
 
                     <DataGridTemplateColumn 
                         Header="{x:Static ext:Resources.ErrorReportingErrorMessageHeader}" 

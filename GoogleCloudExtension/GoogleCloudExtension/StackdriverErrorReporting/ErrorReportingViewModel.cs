@@ -123,6 +123,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public ListCollectionView GroupStatsView { get; }
 
         /// <summary>
+        /// <summary>
+        /// Navigate to detail view window command.
+        /// </summary>
+        public ProtectedCommand<ErrorGroupItem> OnGotoDetailCommand { get; }
+
         /// Selected time range caption.
         /// </summary>
         public string CurrentTimeRangeCaption => String.Format(
@@ -137,6 +142,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             _groupStatsCollection = new ObservableCollection<ErrorGroupItem>();
             GroupStatsView = new ListCollectionView(_groupStatsCollection);
             SelectedTimeRangeItem = TimeRangeItemList.Last();
+            OnGotoDetailCommand = new ProtectedCommand<ErrorGroupItem>(NavigateToDetailWindow);
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnProjectIdChanged();
             CredentialsStore.Default.Reset += (sender, e) => OnProjectIdChanged();
         }
@@ -242,6 +248,12 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 }
                 _groupStatsCollection.Add(new ErrorGroupItem(item));
             }
+        }
+
+        private void NavigateToDetailWindow(ErrorGroupItem groupItem)
+        {
+            var window = ToolWindowCommandUtils.ShowToolWindow<ErrorReportingDetailToolWindow>();
+            window.ViewModel.UpdateView(groupItem, _selectedTimeRange);
         }
 
         private StackdriverErrorReportingDataSource CreateDataSource()

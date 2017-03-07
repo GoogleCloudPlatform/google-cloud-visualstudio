@@ -97,44 +97,6 @@
         </Setter>
     </Style>
 
-    <!-- Style for Back button -->
-    <Style x:Key="BackButtonStyle" TargetType="{x:Type controls:IconButton}">
-        <Setter Property="OverridesDefaultStyle" Value="True"/>
-        <Setter Property="Padding" Value="6" />
-        <Setter Property="Foreground" Value="#FF3B78E7" />
-        <Setter Property="MouseOverForeground" Value="#8A2BE2" />
-        <Setter Property="Template">
-            <Setter.Value>
-                <ControlTemplate TargetType="{x:Type controls:IconButton}">
-                    <Border 
-                        x:Name="_backButtonBorder"
-                        Background="{TemplateBinding Background}">
-                        <StackPanel Orientation="Horizontal" >
-                            <Image 
-                                x:Name="_backButtonImage"
-                                VerticalAlignment="Center"
-                                Stretch="None"
-                                Source="{TemplateBinding NormalIcon}" />
-                            <TextBlock
-                                x:Name="_backButtonContent"
-                                VerticalAlignment="Center"
-                                Padding="6"
-                                Text="{TemplateBinding Content}" />
-                        </StackPanel>
-                    </Border>
-                    <ControlTemplate.Triggers>
-                        <Trigger Property="IsMouseOver" Value="true">
-                            <Setter TargetName="_backButtonBorder" Property="Background"
-                                    Value="{Binding MouseOverBackground, RelativeSource={RelativeSource TemplatedParent}}" />
-                            <Setter TargetName="_backButtonContent" Property="Foreground"
-                                    Value="{Binding MouseOverForeground, RelativeSource={RelativeSource TemplatedParent}}" />
-                        </Trigger>
-                    </ControlTemplate.Triggers>
-                </ControlTemplate>
-            </Setter.Value>
-        </Setter>
-    </Style>
-
     <!-- Style for search Icon -->
     <Style x:Key="SearchIconStyle" TargetType="{x:Type controls:IconButton}">
         <Setter Property="Background" Value="Transparent" />

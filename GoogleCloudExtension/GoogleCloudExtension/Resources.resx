@@ -1678,6 +1678,22 @@ Open the project of version {2} to properly locate the logging writter location.
     <value>7 days</value>
     <comment>Caption to the 7 days button.</comment>
   </data>
+  <data name="ErrorReportingDetailToolWindowCaption" xml:space="preserve">
+    <value>Detail View - Stackdriver Error Reporting</value>
+    <comment>Stackdriver Error Reporting detail view window caption.</comment>
+  </data>
+  <data name="ErrorReportingNoErrorGroupSelectedMessage" xml:space="preserve">
+    <value>Go to overview window and select an error group</value>
+    <comment>When account is reset, the overview window shows the message on top of the back to overview button.</comment>
+  </data>
+  <data name="ErrorReportingRecentSampleLabel" xml:space="preserve">
+    <value>Recent Samples</value>
+    <comment>The recent samples block label.</comment>
+  </data>
+  <data name="ErrorReportingToggleStackSampleButtonCaption" xml:space="preserve">
+    <value>Stack trace sample</value>
+    <comment>Toggle showing stack trace button caption.</comment>
+  </data>
   <data name="ErrorReportingAffectedUsersHeader" xml:space="preserve">
     <value>Users</value>
     <comment>The header for affected users column.</comment>
@@ -1701,6 +1717,18 @@ Open the project of version {2} to properly locate the logging writter location.
   <data name="ErrorReportingServiceContextStatusCodeHeader" xml:space="preserve">
     <value>Status</value>
     <comment>The header for HTTP responds status code.</comment>
+  </data>
+  <data name="ErrorReportingAffectedUsersLongerHeader" xml:space="preserve">
+    <value>Users affected</value>
+    <comment>The longer header for affected users count.</comment>
+  </data>
+  <data name="ErrorReportingErrorCountHeader" xml:space="preserve">
+    <value>Occurances</value>
+    <comment>The header for showing error count.</comment>
+  </data>
+  <data name="ErrorReportingToOverviewButtonCaption" xml:space="preserve">
+    <value>To overview window</value>
+    <comment>Go back to overview button caption.</comment>
   </data>
   <data name="ErrorReportingDataSourceGenericErrorMessage" xml:space="preserve">
     <value>Failed to retrieve data from cloud server. Please try later.</value>

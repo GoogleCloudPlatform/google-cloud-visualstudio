@@ -1852,6 +1852,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Users affected.
+        /// </summary>
+        public static string ErrorReportingAffectedUsersLongerHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingAffectedUsersLongerHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Errors in the last {0}.
         /// </summary>
         public static string ErrorReportingCurrentGroupTimePeriodLabelFormat {
@@ -1870,11 +1879,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Detail View - Stackdriver Error Reporting.
+        /// </summary>
+        public static string ErrorReportingDetailToolWindowCaption {
+            get {
+                return ResourceManager.GetString("ErrorReportingDetailToolWindowCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Seen in.
         /// </summary>
         public static string ErrorReportingErrorAppHeader {
             get {
                 return ResourceManager.GetString("ErrorReportingErrorAppHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Occurances.
+        /// </summary>
+        public static string ErrorReportingErrorCountHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingErrorCountHeader", resourceCulture);
             }
         }
         
@@ -1915,6 +1942,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Go to overview window and select an error group.
+        /// </summary>
+        public static string ErrorReportingNoErrorGroupSelectedMessage {
+            get {
+                return ResourceManager.GetString("ErrorReportingNoErrorGroupSelectedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recent Samples.
+        /// </summary>
+        public static string ErrorReportingRecentSampleLabel {
+            get {
+                return ResourceManager.GetString("ErrorReportingRecentSampleLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Status.
         /// </summary>
         public static string ErrorReportingServiceContextStatusCodeHeader {
@@ -1924,11 +1969,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Stack trace sample.
+        /// </summary>
+        public static string ErrorReportingToggleStackSampleButtonCaption {
+            get {
+                return ResourceManager.GetString("ErrorReportingToggleStackSampleButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stackdriver Error Reporting.
         /// </summary>
         public static string ErrorReportingToolWindowCaption {
             get {
                 return ResourceManager.GetString("ErrorReportingToolWindowCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To overview window.
+        /// </summary>
+        public static string ErrorReportingToOverviewButtonCaption {
+            get {
+                return ResourceManager.GetString("ErrorReportingToOverviewButtonCaption", resourceCulture);
             }
         }
         

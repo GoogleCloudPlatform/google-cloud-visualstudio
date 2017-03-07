@@ -67,11 +67,10 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <controls:IconButton 
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Left"
+                <controls:ImageToggleButton 
                     Style="{StaticResource BackButtonStyle}"
-                    NormalIcon="{mp:ImageResource StackdriverLogsViewer/Resources/back_icon_12.png}"
+                    UncheckedImage="{mp:ImageResource StackdriverLogsViewer/Resources/back_icon_12.png}"
+                    CheckedImage="{mp:ImageResource StackdriverLogsViewer/Resources/back_icon_12.png}"
                     Content="{x:Static ext:Resources.LogsViewerTooltipBackButtonCaption}"
                     Command="{Binding BackToLogsViewerCommand}" />
                 <CheckBox 
