@@ -625,14 +625,6 @@
     <value>Failed to reset password for {0}. </value>
     <comment>Message shown when the reset operation fails. {0} is the instance name.</comment>
   </data>
-  <data name="ResetPasswordGcloudLinkCaption" xml:space="preserve">
-    <value>Install Google Cloud SDK</value>
-    <comment>Caption for the link for Gcloud.</comment>
-  </data>
-  <data name="ResetPasswordGcloudMissingBetaMessage" xml:space="preserve">
-    <value>To use this feature you need to have the "beta" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta.</value>
-    <comment>Message shown when the beta component is missing.</comment>
-  </data>
   <data name="GcloudMissingComponentTitle" xml:space="preserve">
     <value>Missing Google Cloud SDK Component</value>
     <comment>Title for the dialog that informs the user that a Cloud SDK component is needed but not installed.</comment>
@@ -880,10 +872,6 @@
   <data name="AddWindowsCredentialHavePasswordMessage" xml:space="preserve">
     <value>I have a password for this user</value>
     <comment>Message shown in the radio button of the Reset Password dialog to signify that the user will provide the password.</comment>
-  </data>
-  <data name="WindowsCredentialsChooserManageCredentialsCaption" xml:space="preserve">
-    <value>Manage Windows credentials</value>
-    <comment>Caption used in the hyperlink shown in the Windows credentials chooser dialog.</comment>
   </data>
   <data name="CloudExplorerGaeFailedServicesMessage" xml:space="preserve">
     <value>Failed to load the list of Google Cloud App Engine services</value>
@@ -1533,10 +1521,6 @@ Open the project of version {2} to properly locate the logging writter location.
   <data name="LogViewerLogItemDateTimeFormat" xml:space="preserve">
     <value>MM-dd-yyyy HH:mm:ss.fff</value>
     <comment>Log item date time format.</comment>
-  </data>
-  <data name="GenerateConfigurationMenuHeader" xml:space="preserve">
-    <value>Generate app.yaml and Dockerfile for {0}</value>
-    <comment>Header for the generate configuration command. {0} is the name of the project.</comment>
   </data>
   <data name="FlexPublishEmptyVersionMessage" xml:space="preserve">
     <value>The version name cannot be empty.</value>

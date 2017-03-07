@@ -2014,15 +2014,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generate app.yaml and Dockerfile for {0}.
-        /// </summary>
-        public static string GenerateConfigurationMenuHeader {
-            get {
-                return ResourceManager.GetString("GenerateConfigurationMenuHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Configuration files already exist.
         /// </summary>
         public static string GenerateConfigurationOverwritePromptTitle {
@@ -3241,24 +3232,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install Google Cloud SDK.
-        /// </summary>
-        public static string ResetPasswordGcloudLinkCaption {
-            get {
-                return ResourceManager.GetString("ResetPasswordGcloudLinkCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to To use this feature you need to have the &quot;beta&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta..
-        /// </summary>
-        public static string ResetPasswordGcloudMissingBetaMessage {
-            get {
-                return ResourceManager.GetString("ResetPasswordGcloudMissingBetaMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Resetting password for {0}.
         /// </summary>
         public static string ResetPasswordProgressMessage {
@@ -3669,15 +3642,6 @@ namespace GoogleCloudExtension {
         public static string UiYesButtonCaption {
             get {
                 return ResourceManager.GetString("UiYesButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Manage Windows credentials.
-        /// </summary>
-        public static string WindowsCredentialsChooserManageCredentialsCaption {
-            get {
-                return ResourceManager.GetString("WindowsCredentialsChooserManageCredentialsCaption", resourceCulture);
             }
         }
         
