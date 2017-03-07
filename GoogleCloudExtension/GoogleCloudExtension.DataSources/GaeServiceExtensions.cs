@@ -34,12 +34,12 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="service"></param>
         /// <param name="versionId"></param>
-        /// <returns>The traffic allocation if it exists, null otherwise.</returns>
-        public static double? GetTrafficAllocation(this Service service, string versionId)
+        /// <returns>The traffic allocation if it exists, 0.0 otherwise.</returns>
+        public static double GetTrafficAllocation(this Service service, string versionId)
         {
             IDictionary<string, double?> allocations = service.Split.Allocations;
             double? allocation;
-            return allocations.TryGetValue(versionId, out allocation) ? allocation : null;
+            return allocations.TryGetValue(versionId, out allocation) ? allocation.Value : 0.0;
         }
     }
 }
