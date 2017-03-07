@@ -47,13 +47,6 @@
                 </DataTemplate>
             </Setter.Value>
         </Setter>
-        <Setter Property="ItemsPanel">
-            <Setter.Value>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </Setter.Value>
-        </Setter>
     </Style>
     
 </ResourceDictionary>
