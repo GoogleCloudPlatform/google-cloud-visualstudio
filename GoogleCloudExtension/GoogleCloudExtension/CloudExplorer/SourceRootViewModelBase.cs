@@ -13,7 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Accounts;
-using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Theming;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -28,8 +28,6 @@ namespace GoogleCloudExtension.CloudExplorer
     /// </summary>
     public abstract class SourceRootViewModelBase : TreeHierarchy
     {
-        private const string NodeIconPath = "CloudExplorer/Resources/logo_cloud.png";
-
         private static readonly TreeLeaf s_noCredentialsPlacehodler =
             new TreeLeaf
             {
@@ -42,7 +40,6 @@ namespace GoogleCloudExtension.CloudExplorer
                 IsError = true,
                 Caption = Resources.CloudExplorerNoProjectSelectedMessage,
             };
-        private static readonly Lazy<ImageSource> s_nodeIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(NodeIconPath));
 
         /// <summary>
         /// Returns whether this view model is busy loading data.
@@ -56,9 +53,10 @@ namespace GoogleCloudExtension.CloudExplorer
 
         /// <summary>
         /// Returns the icon to use for the root for this data source. By default all sources use the
-        /// default <seealso cref="s_nodeIcon"/>. Each node can override the icon with a custom one if desired.
+        /// default <seealso cref="CommonImageResources.s_logoIcon"/>. 
+        /// Each node can override the icon with a custom one if desired.
         /// </summary>
-        public virtual ImageSource RootIcon => s_nodeIcon.Value;
+        public virtual ImageSource RootIcon => CommonImageResources.CloudLogo16By16;
 
         /// <summary>
         /// Returns the caption to use for the root node for this data source.

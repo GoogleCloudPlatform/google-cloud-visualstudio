@@ -173,9 +173,9 @@ namespace GoogleCloudExtension.Utils
             {
                 return JsonConvert.DeserializeObject<T>(output.StandardOutput);
             }
-            catch (JsonException)
+            catch (JsonException ex)
             {
-                throw new JsonOutputException($"Failed to parse output of command: {file} {args}\n{output.StandardOutput}");
+                throw new JsonOutputException($"Failed to parse output of command: {file} {args}\n{output.StandardOutput}", ex);
             }
         }
 

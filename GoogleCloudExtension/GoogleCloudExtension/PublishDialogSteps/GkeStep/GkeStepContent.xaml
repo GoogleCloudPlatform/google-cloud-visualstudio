@@ -89,13 +89,29 @@
                      Style="{StaticResource CommonTextBoxStyle}" />
         </Grid>
 
-        <CheckBox Content="{x:Static ext:Resources.GkePublishExposeServiceCaption}"
-                  IsChecked="{Binding ExposeService, Mode=TwoWay}"
-                  Style="{StaticResource CommonTextStyleBase}" />
-        <CheckBox IsChecked="{Binding OpenWebsite, Mode=TwoWay}"
-                  Margin="0,5,0,0"
-                  IsEnabled="{Binding ExposeService}"
-                  Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
-                  Style="{StaticResource CommonTextStyleBase}"/>
+        <GroupBox Header="{x:Static ext:Resources.GkePublishServiceGroupHeader}">
+            <StackPanel>
+                <RadioButton GroupName="password"
+                             Content="{x:Static ext:Resources.GkePublishDontExposeServiceCaption}"
+                             IsChecked="{Binding DontExposeService}"
+                             Style="{StaticResource CommonRadioButton}"
+                             Margin="{StaticResource CommonRadioButtonMargin}" />
+                <RadioButton GroupName="password"
+                             Content="{x:Static ext:Resources.GkePublishExposeServiceCaption}"
+                             IsChecked="{Binding ExposeService}"
+                             Style="{StaticResource CommonRadioButton}"
+                             Margin="{StaticResource CommonRadioButtonMargin}" />
+
+                <CheckBox Content="{x:Static ext:Resources.GkePublishMakeServicePublicCaption}"
+                          IsEnabled="{Binding ExposeService}"
+                          IsChecked="{Binding ExposePublicService}"
+                          Style="{StaticResource CommonTextStyleBase}" />
+                <CheckBox IsChecked="{Binding OpenWebsite}"
+                          Margin="0,5,0,0"
+                          IsEnabled="{Binding ExposePublicService}"
+                          Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
+                          Style="{StaticResource CommonTextStyleBase}"/>
+            </StackPanel>
+        </GroupBox>
     </StackPanel>
 </UserControl>

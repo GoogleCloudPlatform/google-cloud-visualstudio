@@ -82,13 +82,15 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="message">The message for the dialog.</param>
         /// <param name="title">The title for the dialog.</param>
-        public static void ErrorPrompt(string message, string title)
+        /// <param name="errorDetails">The error details for the dialog, optional.</param>
+        public static void ErrorPrompt(string message, string title, string errorDetails = null)
         {
             UserPromptWindow.PromptUser(
                 new UserPromptWindow.Options
                 {
                     Title = title,
                     Prompt = message,
+                    ErrorDetails = errorDetails,
                     CancelButtonCaption = Resources.UiOkButtonCaption,
                     Icon = s_errorIcon.Value
                 });

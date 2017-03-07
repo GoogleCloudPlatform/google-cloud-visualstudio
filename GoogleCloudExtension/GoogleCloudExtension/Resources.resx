@@ -622,28 +622,12 @@
     <comment>The title for the confirmation prompt for resetting or creating a password. {0) is the user name, {1} is the instance name.</comment>
   </data>
   <data name="ResetPasswordFailedPromptMessage" xml:space="preserve">
-    <value>Failed to reset password for {0}. {1}</value>
-    <comment>Message shown when the reset operation fails. {0} is the instance name, {1} is the error message.</comment>
-  </data>
-  <data name="ResetPasswordGcloudLinkCaption" xml:space="preserve">
-    <value>Install Google Cloud SDK</value>
-    <comment>Caption for the link for Gcloud.</comment>
-  </data>
-  <data name="ResetPasswordGcloudMissingBetaMessage" xml:space="preserve">
-    <value>To use this feature you need to have the "beta" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta.</value>
-    <comment>Message shown when the beta component is missing.</comment>
+    <value>Failed to reset password for {0}. </value>
+    <comment>Message shown when the reset operation fails. {0} is the instance name.</comment>
   </data>
   <data name="GcloudMissingComponentTitle" xml:space="preserve">
     <value>Missing Google Cloud SDK Component</value>
     <comment>Title for the dialog that informs the user that a Cloud SDK component is needed but not installed.</comment>
-  </data>
-  <data name="ResetPasswordGcloudMissingMessage" xml:space="preserve">
-    <value>To use this feature you need to have the Google Cloud SDK is installed and available in the path, and that the "beta" component is installed. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link.</value>
-    <comment>Message shown when gcloud is not installed.</comment>
-  </data>
-  <data name="ResetPasswordMissingGcloudTitle" xml:space="preserve">
-    <value>Missing Google Cloud SDK</value>
-    <comment>Title for the prompts shown when gcloud is not installed.</comment>
   </data>
   <data name="AddWindowsCredentialUserNameCaption" xml:space="preserve">
     <value>_User name:</value>
@@ -810,19 +794,19 @@
     <comment>The tooltip for the GCE button.</comment>
   </data>
   <data name="PublishDialogChoiceStepMessage" xml:space="preserve">
-    <value>Choose a target:</value>
+    <value>Choose a product to publish to:</value>
     <comment>The message shown in the choice step.</comment>
   </data>
   <data name="PublishDialogOpenWebsiteCaption" xml:space="preserve">
-    <value>_Open website after publish process finishes</value>
+    <value>_Open site after publishing</value>
     <comment>The caption for the open website checkbox.</comment>
   </data>
   <data name="PublishDialogGceStepSelectCredentialsMessage" xml:space="preserve">
-    <value>Select _account:</value>
+    <value>_Account:</value>
     <comment>The message shown to select credentials.</comment>
   </data>
   <data name="PublishDialogGceStepSelectInstanceMessage" xml:space="preserve">
-    <value>_Select instance:</value>
+    <value>_VM instance:</value>
     <comment>The message shown to select an instance.</comment>
   </data>
   <data name="PublishDialogNextButtonCaption" xml:space="preserve">
@@ -888,10 +872,6 @@
   <data name="AddWindowsCredentialHavePasswordMessage" xml:space="preserve">
     <value>I have a password for this user</value>
     <comment>Message shown in the radio button of the Reset Password dialog to signify that the user will provide the password.</comment>
-  </data>
-  <data name="WindowsCredentialsChooserManageCredentialsCaption" xml:space="preserve">
-    <value>Manage Windows credentials</value>
-    <comment>Caption used in the hyperlink shown in the Windows credentials chooser dialog.</comment>
   </data>
   <data name="CloudExplorerGaeFailedServicesMessage" xml:space="preserve">
     <value>Failed to load the list of Google Cloud App Engine services</value>
@@ -1053,9 +1033,9 @@
     <value>Version</value>
     <comment>Label to denoate a version.</comment>
   </data>
-  <data name="GcePublishStepManageCredentialsCaption" xml:space="preserve">
-    <value>Manage Credentials</value>
-    <comment>Caption for the link shown in the GCE step of the publishing dialog for managing the credentials of the selected VM.</comment>
+  <data name="UiManageWindowsCredentialsCaption" xml:space="preserve">
+    <value>Manage Windows credentials</value>
+    <comment>Caption for the links to open the Manage Windows credentials dialog.</comment>
   </data>
   <data name="SplitTrafficWindowCookieLabel" xml:space="preserve">
     <value>Cookie</value>
@@ -1167,6 +1147,10 @@
     <value>_Open</value>
     <comment>Caption for the open button in dialogs.</comment>
   </data>
+  <data name="LogViewerToolWindowCaption" xml:space="preserve">
+    <value>Google Stackdriver Logging</value>
+    <comment>The Logs Viewer Tool Window caption. Keep it short because the tab is narrow.</comment>
+  </data>
   <data name="AddGaeTrafficSplitInvalidValueMessage" xml:space="preserve">
     <value>Invalid value for allocation, must be a number: {0}</value>
     <comment>Message shown when an invalid value is detected. {0} is the invalid value.</comment>
@@ -1187,25 +1171,49 @@
     <value>_Allocations:</value>
     <comment>Label shown in the split traffic window to indicate the list of allocations.</comment>
   </data>
+  <data name="LogViewerCollapseAllTip" xml:space="preserve">
+    <value>Click to hide all log items detail.</value>
+    <comment>Tool tip to toggle expand all button when it is expanded.</comment>
+  </data>
   <data name="AuthorizedNetworksNetworkHeader" xml:space="preserve">
     <value>Network</value>
     <comment>Header for the control groupin.</comment>
+  </data>
+  <data name="LogViewerExpandAllTip" xml:space="preserve">
+    <value>Click to see all log items detail.</value>
+    <comment>Tool tip to toggle expand all button when it is collapsed.</comment>
   </data>
   <data name="CloudExplorerGceZoneCaption" xml:space="preserve">
     <value>{0} ({1})</value>
     <comment>Caption for the zone node. {0} is the zone name, {1} is the number of instances in the zone.</comment>
   </data>
+  <data name="LogViewerRefreshButtonToolTip" xml:space="preserve">
+    <value>Get newest log (in descending order).</value>
+    <comment>Log viewer window referesh image button tool tip.</comment>
+  </data>
   <data name="CloudExplorerGcsBucketLocationCaption" xml:space="preserve">
     <value>{0} ({1})</value>
     <comment>Caption for the bucket location node, {0} is the name of the location, {1} is the number of buckets in the location.</comment>
+  </data>
+  <data name="LogViewerTimeZoneSelectionToolTip" xml:space="preserve">
+    <value>Click to select different timezone.</value>
+    <comment>Tool tip to the select time zone combo box.</comment>
   </data>
   <data name="CloudExplorerNoLoggedInMessage" xml:space="preserve">
     <value>No credentials, please login.</value>
     <comment>Shown in the cloud explorer when there are no credentials available.</comment>
   </data>
+  <data name="LogViewerAnyOtherSeverityLevelTip" xml:space="preserve">
+    <value>Any</value>
+    <comment>The tool tip for 'any other log level/severity level' .</comment>
+  </data>
   <data name="CloudExplorerNoProjectSelectedMessage" xml:space="preserve">
     <value>No project selected.</value>
     <comment>Shown in the cloud explorer when no project is selected.</comment>
+  </data>
+  <data name="LogViewerDictionaryPayloadFormatString" xml:space="preserve">
+    <value>{0}: {1}  </value>
+    <comment>The format of log payload of IDictionary name value pair.</comment>
   </data>
   <data name="CloudExplorerGceFailedToUpdateFirewallCaption" xml:space="preserve">
     <value>Error Updating Firewall</value>
@@ -1279,6 +1287,10 @@
     <value>_Files being uploaded:</value>
     <comment>Message for the progress dialog for the upload operations.</comment>
   </data>
+  <data name="LogViewerLogItemDateFormat" xml:space="preserve">
+    <value>MM-dd-yyyy</value>
+    <comment>Log item date format.</comment>
+  </data>
   <data name="CloudExplorerSqlInstanceIp6AddressDisplayName" xml:space="preserve">
     <value>IPv6 Address (First Gen)</value>
     <comment>The display name for the IP v6 address.</comment>
@@ -1291,6 +1303,10 @@
     <value>Error</value>
     <comment>Generic error caption for error dialogs.</comment>
   </data>
+  <data name="LogViewerLogItemTimeFormat" xml:space="preserve">
+    <value>HH:mm:ss.fff</value>
+    <comment>Log item time format.</comment>
+  </data>
   <data name="AnalyticsOptionsCategory" xml:space="preserve">
     <value>Usage Report</value>
     <comment>The category for the analytics options in the options page.</comment>
@@ -1298,6 +1314,10 @@
   <data name="AnalyticsOptionsOptInDescription" xml:space="preserve">
     <value>Whether to report usage statistics to Google</value>
     <comment>Description for the opt-in option in the analytics options.</comment>
+  </data>
+  <data name="LogViewerTitleBarAccountLabel" xml:space="preserve">
+    <value>Account</value>
+    <comment>Label for account name label.</comment>
   </data>
   <data name="AnalyticsOptionsOptInDisplayName" xml:space="preserve">
     <value>Report Usage Statistics Enabled</value>
@@ -1379,6 +1399,114 @@
     <value>Name cannot contain invalid chars '/'</value>
     <comment>Message shown when a name contains invalid chars.</comment>
   </data>
+  <data name="LogViewerTitleBarProjectIdLabel" xml:space="preserve">
+    <value>Project</value>
+    <comment>Label for project id label.</comment>
+  </data>
+  <data name="LogViewerRequestCancellingMessage" xml:space="preserve">
+    <value>Cancelling . . .</value>
+    <comment>Show a cancelling message after cancel request button is clicked.</comment>
+  </data>
+  <data name="LogViewerRequestProgressMessage" xml:space="preserve">
+    <value>Loading . . .</value>
+    <comment>List log entries can take seconds to complete, show a status message.</comment>
+  </data>
+  <data name="LogViewerLogLevelAllLabel" xml:space="preserve">
+    <value>All Log Levels</value>
+    <comment>Log viwer log severity combo box item that indicates to show logs of any level</comment>
+  </data>
+  <data name="LogViewerDataConversionGenericError" xml:space="preserve">
+    <value>Error displaying the entry. </value>
+    <comment>Showing generic error for parsing LogEntry property tree.</comment>
+  </data>
+  <data name="LogViewerDetailTreeViewArrayIndexFormat" xml:space="preserve">
+    <value>[{0}]</value>
+    <comment>The detail tree view array index format. The {0} is index of the array element.</comment>
+  </data>
+  <data name="LogViewerDetailTreeViewNameLabelFormat" xml:space="preserve">
+    <value>{0} :</value>
+    <comment>When displaying a tree view item, it contains Name , colon, and value.  This is to format the name colon part. Note, there is a space between  name and colon.</comment>
+  </data>
+  <data name="LogViewerLogLevelCriticalLabel" xml:space="preserve">
+    <value>CRITICAL</value>
+    <comment>The Log Severity selection , critical log level item text.</comment>
+  </data>
+  <data name="LogViewerLogLevelDebugLabel" xml:space="preserve">
+    <value>DEBUG</value>
+    <comment>The Log Severity selection , debug log level item text.</comment>
+  </data>
+  <data name="LogViewerLogLevelEmergencyLabel" xml:space="preserve">
+    <value>EMERGENCY</value>
+    <comment>The Log Severity selection , emergency log level item text.</comment>
+  </data>
+  <data name="LogViewerLogLevelErrorLabel" xml:space="preserve">
+    <value>ERROR</value>
+    <comment>The Log Severity selection , error log level item text.</comment>
+  </data>
+  <data name="LogViewerLogLevelInfoLabel" xml:space="preserve">
+    <value>INFO</value>
+    <comment>The Log Severity selection , info log level item text.</comment>
+  </data>
+  <data name="LogViewerLogLevelWarningLabel" xml:space="preserve">
+    <value>WARNING</value>
+    <comment>The Log Severity selection , warning log level item text.</comment>
+  </data>
+  <data name="LogViewerSimpleTextSearchIconButtonToolTip" xml:space="preserve">
+    <value>Filter by label or text search.</value>
+    <comment>Log viewer simple text search icon button tooltip.</comment>
+  </data>
+  <data name="LogViewerSwitchToAdvancedFilterCaption" xml:space="preserve">
+    <value>To Advanced Filter</value>
+    <comment>Caption for switch to advanced filter button.</comment>
+  </data>
+  <data name="LogViewerSubmitAdvancedFilterCaption" xml:space="preserve">
+    <value>Submit Filters</value>
+    <comment>Caption for the submit advanced filters button.</comment>
+  </data>
+  <data name="LogViewerSwitchToSimpleFilterCaption" xml:space="preserve">
+    <value>To Simple Filters</value>
+    <comment>Caption for switch to simple filters button.</comment>
+  </data>
+  <data name="LogViewerAdvancedFilterHelpLinkCaption" xml:space="preserve">
+    <value>Advanced filter help</value>
+    <comment>The caption of advanced help link.</comment>
+  </data>
+  <data name="LogViewerToSimpleSearchButtonTooltip" xml:space="preserve">
+    <value>Clear filters and return to basic mode.</value>
+    <comment>The "To simple search"  button tooltip.</comment>
+  </data>
+  <data name="LogViewerTimeOrderPickAsceSelection" xml:space="preserve">
+    <value>after</value>
+    <comment>The selection item that indicates to list logs after the time stamp.</comment>
+  </data>
+  <data name="LogViewerTimeOrderPickDescSelection" xml:space="preserve">
+    <value>before</value>
+    <comment>The selection item that indicates to list logs before the time stamp.</comment>
+  </data>
+  <data name="LogViewerTimeOrderPickLabelHead" xml:space="preserve">
+    <value>Get log</value>
+    <comment>Head part of the label for picking the list log time order.</comment>
+  </data>
+  <data name="LogViewerTimeOrderPickLabelTail" xml:space="preserve">
+    <value>this time stamp.</value>
+    <comment>Tail part of the label for picking the list log time order.</comment>
+  </data>
+  <data name="UiGoButtonCaption" xml:space="preserve">
+    <value>Go</value>
+    <comment>Caption for Go buttons.</comment>
+  </data>
+  <data name="LogViewerDateTimePickerLabel" xml:space="preserve">
+    <value>Jump To Time</value>
+    <comment>The label for the date time picker control.</comment>
+  </data>
+  <data name="UiDateLabel" xml:space="preserve">
+    <value>Date</value>
+    <comment>Label to a text box that shows date.</comment>
+  </data>
+  <data name="UiTimeLabel" xml:space="preserve">
+    <value>Time</value>
+    <comment>Label to the time input control</comment>
+  </data>
   <data name="GkePublishClusterMessage" xml:space="preserve">
     <value>_Clusters:</value>
     <comment>The message shown in the UI to choose cluster.</comment>
@@ -1408,12 +1536,8 @@
     <comment>The message shown in the UI for the depoyment version textbox.</comment>
   </data>
   <data name="GkePublishExposeServiceCaption" xml:space="preserve">
-    <value>E_xpose the service to the public internet</value>
+    <value>Expose a service</value>
     <comment>Caption for the checkbox to set if the GKE service is to be exposed or not.</comment>
-  </data>
-  <data name="GkePublishMissingKubectlMessage" xml:space="preserve">
-    <value>To use this feature you need to have the "kubectl" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install kubectl</value>
-    <comment>Message shown to the user when the kubectl component is not installed.</comment>
   </data>
   <data name="GkePublishServiceIpMessage" xml:space="preserve">
     <value>Service {0} ip address {1}</value>
@@ -1483,9 +1607,76 @@
     <value>_Enter name:</value>
     <comment>Message to show on the dialog for the name text box.</comment>
   </data>
-  <data name="GenerateConfigurationMenuHeader" xml:space="preserve">
-    <value>Generate app.yaml and Dockerfile for {0}</value>
-    <comment>Header for the generate configuration command. {0} is the name of the project.</comment>
+  <data name="LogViewerLogIdSelectAllLabel" xml:space="preserve">
+    <value>All logs</value>
+    <comment>The log name (log id) selection label for select all logs.</comment>
+  </data>
+  <data name="CloudExplorerLaunchLogsViewerMenuHeader" xml:space="preserve">
+    <value>Browse Stackdriver Logs</value>
+    <comment>Header for browsing Stackdriver Log context menu</comment>
+  </data>
+  <data name="LogsViewerChooseAllMenuHeaderFormat" xml:space="preserve">
+    <value>All {0}</value>
+    <comment>The choose all menu item header format. The log resource label name is used to fill the format.  Example "All module_id", "All instance_id".</comment>
+  </data>
+  <data name="UiChooseAllMenuHeader" xml:space="preserve">
+    <value>All</value>
+    <comment>The choose all menu item default header. </comment>
+  </data>
+  <data name="UiSearchMenuSearchBoxLabel" xml:space="preserve">
+    <value>Search by prefix</value>
+    <comment>The label for search box of search menu item.</comment>
+  </data>
+  <data name="LogsViewerAskToOpenProjectMessage" xml:space="preserve">
+    <value>Continue to open the project?</value>
+    <comment>The message to ask if user wants to continue to open the project.</comment>
+  </data>
+  <data name="LogsViewerFailedOpenFileMessage" xml:space="preserve">
+    <value>Failed to open the source file {0}</value>
+    <comment>Prompt message format when failed to open a source file. The parameter is the source file path.</comment>
+  </data>
+  <data name="LogsViewerPleaseOpenProjectPrompt" xml:space="preserve">
+    <value>The log entry was generated from assembly {0}, version {1}.
+Open the project to navigate to the logger method location.</value>
+    <comment>Prompt asking to open a project that is the log entry source project.  parameter {0} is assembly name, parameter {1} is assembly version.</comment>
+  </data>
+  <data name="LogsViewerPromptTitle" xml:space="preserve">
+    <value>Google Stackdriver Logs Viewer</value>
+    <comment>The prompt title for Logs Viewer message boxes.</comment>
+  </data>
+  <data name="LogsViewerSourceFileNotFoundMessage" xml:space="preserve">
+    <value>The log entry does not contain valid source information or the source line can not be located.</value>
+    <comment>Prompt message when failed to find a source file  of the log entry.</comment>
+  </data>
+  <data name="LogsViewerSourceFilterCheckboxTitle" xml:space="preserve">
+    <value>Only show logs generated by this source line.</value>
+    <comment>The check box that indicates to filter logs on log item source information.</comment>
+  </data>
+  <data name="LogsViewerTooltipBackButtonCaption" xml:space="preserve">
+    <value>Back to Stackdriver Logs Viewer</value>
+    <comment>Caption for source line tooltip back button.</comment>
+  </data>
+  <data name="LogsViewerVersionInfoMissingMessage" xml:space="preserve">
+    <value>The log entry does not contain valid assembly name and/or assembly version.</value>
+    <comment>The warning message when a log entry does not contain valid version information.</comment>
+  </data>
+  <data name="LogsViewerVersionMismatchPrompt" xml:space="preserve">
+    <value>Version missmatch. 
+The current project {0} version is {1},
+Open the project of version {2} to properly locate the logging writter location.</value>
+    <comment>Prompt when the opened project version differs than the version information of the log entry.</comment>
+  </data>
+  <data name="LogsViewerVersionMissmatchAskIgnoreMessage" xml:space="preserve">
+    <value>"Do you want to continue anyway?"</value>
+    <comment>Message that asks to continue with mismatched version.</comment>
+  </data>
+  <data name="LogsViewerTreeNodeFilterTooltip" xml:space="preserve">
+    <value>Click the value to show matching entries.</value>
+    <comment>The tooltip to detail tree view node value link.</comment>
+  </data>
+  <data name="LogViewerLogItemDateTimeFormat" xml:space="preserve">
+    <value>MM-dd-yyyy HH:mm:ss.fff</value>
+    <comment>Log item date time format.</comment>
   </data>
   <data name="FlexPublishEmptyVersionMessage" xml:space="preserve">
     <value>The version name cannot be empty.</value>
@@ -1614,5 +1805,65 @@
   <data name="CloudExplorerGaeVersionEnvironmentDisplayName" xml:space="preserve">
     <value>Environment</value>
     <comment>The display name for the Environment property.</comment>
+  </data>
+  <data name="CloudExplorerGaeFailedToMigrateAllTrafficCaption" xml:space="preserve">
+    <value>Failed to migrate all traffic to {0}, please try again.</value>
+    <comment>Caption for the error state when migrating all traffic. {0} is the id of the version.</comment>
+  </data>
+  <data name="CloudExplorerGaeMigrateAllTrafficHeader" xml:space="preserve">
+    <value>Migrate all traffic</value>
+    <comment>Header for the migrate all traffic command.</comment>
+  </data>
+  <data name="CloudExplorerGaeMigratingAllTrafficCaption" xml:space="preserve">
+    <value>Migrating all traffic to {0}</value>
+    <comment>Caption shown while migrating all traffic. {0} is the version id</comment>
+  </data>
+  <data name="GkePublishDontExposeServiceCaption" xml:space="preserve">
+    <value>Don't expose a service</value>
+    <comment>Caption for the option of not exposing the service.</comment>
+  </data>
+  <data name="GkePublishMakeServicePublicCaption" xml:space="preserve">
+    <value>Make service public</value>
+    <comment>Caption for the checkbox to make a service public.</comment>
+  </data>
+  <data name="GkePublishServiceClusterIpMessage" xml:space="preserve">
+    <value>Service {0} cluster IP address {1}.</value>
+    <comment>Message shown when a cluster-only service is deployed to show the ip address. {0} is the service name, {1} is the IP address.</comment>
+  </data>
+  <data name="GkePublishServiceDeletedMessage" xml:space="preserve">
+    <value>Service {0} was deleted.</value>
+    <comment>Message shown when a service is deleted due to changes in configuration. {0} is the name of the service.</comment>
+  </data>
+  <data name="GkePublishServiceGroupHeader" xml:space="preserve">
+    <value>Service</value>
+    <comment>The header for the service group in the UI.</comment>
+  </data>
+  <data name="GkePublishServiceUpdatedMessage" xml:space="preserve">
+    <value>Service {0} was updated.</value>
+    <comment>Messages shown when a GKE service is updated. {0} is the service name.</comment>
+  </data>
+  <data name="GcloudInstallLinkCaption" xml:space="preserve">
+    <value>Install Google Cloud SDK</value>
+    <comment>Caption for the install link.</comment>
+  </data>
+  <data name="GcloudMissingComponentErrorMessage" xml:space="preserve">
+    <value>To use this feature you need to have the "{0}" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install {0}.</value>
+    <comment>Message shown when the a component is not installed. {0} is the name of the component.</comment>
+  </data>
+  <data name="GcloudMissingCloudSdkErrorMessage" xml:space="preserve">
+    <value>To use this feature you need to have the Google Cloud SDK installed and available in the path. You also need the "beta" component installed for some features to be available. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link.</value>
+    <comment>Message shown when the Cloud SDK is missing</comment>
+  </data>
+  <data name="GcloudMissingGcloudErrorTitle" xml:space="preserve">
+    <value>Missing Google Cloud SDK</value>
+    <comment>Title for the error dialog for missing components.</comment>
+  </data>
+  <data name="GCloudWrapperUtilsOldCloudSdkMessage" xml:space="preserve">
+    <value>The version {0} of Cloud SDK installed is too old. Please update your Cloud SDK installation to version {1} or later by using the command: gcloud components update</value>
+    <comment>Message shown when the version of the Cloud SDK is too old. {0} is the installed version, {1} is the expected version.</comment>
+  </data>
+  <data name="GCloudWrapperUtilsOldCloudSdkTitle" xml:space="preserve">
+    <value>Google Cloud SDK too old</value>
+    <comment>Title for the prompt to update the Cloud SDK.</comment>
   </data>
 </root>

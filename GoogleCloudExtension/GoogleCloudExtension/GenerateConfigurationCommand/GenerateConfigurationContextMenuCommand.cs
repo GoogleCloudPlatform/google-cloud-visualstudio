@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Deployment;
-using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
@@ -171,7 +170,6 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
             {
                 menuCommand.Visible = true;
                 menuCommand.Enabled = !ShellUtils.IsBusy();
-                menuCommand.Text = String.Format(Resources.GenerateConfigurationMenuHeader, selectedProject.Name);
             }
         }
     }

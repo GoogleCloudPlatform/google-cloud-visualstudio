@@ -36,6 +36,26 @@ namespace GoogleCloudExtension.Controls
                 typeof(ImageSource),
                 typeof(IconButton));
 
+        public static readonly DependencyProperty MouseDownIconProperty =
+            DependencyProperty.Register(
+                nameof(MouseDownIcon),
+                typeof(ImageSource),
+                typeof(IconButton));
+
+        public static readonly DependencyProperty MouseOverBackgroundProperty =
+            DependencyProperty.Register(
+                nameof(MouseOverBackground),
+                typeof(Brush),
+                typeof(IconButton),
+                new PropertyMetadata(new SolidColorBrush(Color.FromRgb(224, 224, 224))));
+
+        public static readonly DependencyProperty MouseOverForegroudProperty =
+            DependencyProperty.Register(
+                nameof(MouseOverForeground),
+                typeof(Brush),
+                typeof(IconButton),
+                new PropertyMetadata(Brushes.Blue));
+
         /// <summary>
         /// The icon to show in the normal state.
         /// </summary>
@@ -52,6 +72,33 @@ namespace GoogleCloudExtension.Controls
         {
             get { return (ImageSource)GetValue(MouseOverIconProperty); }
             set { SetValue(MouseOverIconProperty, value); }
+        }
+
+        /// <summary>
+        /// The image to show when mouse is pressed but not released.
+        /// </summary>
+        public ImageSource MouseDownIcon
+        {
+            get { return (ImageSource)GetValue(MouseDownIconProperty); }
+            set { SetValue(MouseDownIconProperty, value); }
+        }
+
+        /// <summary>
+        /// The brush of background in the mouse over state.
+        /// </summary>
+        public Brush MouseOverBackground
+        {
+            get { return (Brush)GetValue(MouseOverBackgroundProperty); }
+            set { SetValue(MouseOverBackgroundProperty, value); }
+        }
+
+        /// <summary>
+        /// The brush of foreground in the mouse over state.
+        /// </summary>
+        public Brush MouseOverForeground
+        {
+            get { return (Brush)GetValue(MouseOverForegroudProperty); }
+            set { SetValue(MouseOverForegroudProperty, value); }
         }
     }
 }

@@ -425,6 +425,28 @@
         </Setter>
     </Style>
 
+    <Style x:Key="MouseOverLinkButtonStyle" TargetType="{x:Type controls:IconButton}" >
+        <Setter Property="MouseOverForeground" Value="Blue" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:IconButton}">
+                    <TextBlock x:Name="_textBlock" 
+                               Style="{StaticResource CommonTextStyle}"
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis">
+                        <ContentPresenter />
+                    </TextBlock>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Foreground" TargetName="_textBlock" Value="{Binding MouseOverForeground, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Setter Property="TextDecorations" TargetName="_textBlock" Value="Underline" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
     <!-- Common PasswordWithReveal style. -->
 
     <!-- Ultra simple template for the TextBox used to display the password. -->
@@ -656,6 +678,76 @@
         <Setter Property="Width" Value="75px" />
     </Style>
 
+    <!-- Style for a cross button as the top upper corner Close button icon -->
+    <SolidColorBrush x:Key="TabItemCloseButtonNormalForegroundBrush" Color="#FF8f949b" />
+    <SolidColorBrush x:Key="TabItemCloseButtonHoverBackgroundBrush" Color="#FFc13535" />
+    <SolidColorBrush x:Key="TabItemCloseButtonHoverForegroundBrush" Color="#FFf9ebeb" />
+    <SolidColorBrush x:Key="TabItemCloseButtonPressedBackgroundBrush" Color="#FF431e20" />
+    <SolidColorBrush x:Key="TabItemCloseButtonPressedBorderBrush" Color="#FF110033" />
+    <SolidColorBrush x:Key="TabItemCloseButtonPressedForegroundBrush" Color="#FFf9ebeb" />
+
+    <Style x:Key="CrossButtonStyle" TargetType="{x:Type Button}">
+        <Setter Property="SnapsToDevicePixels" Value="false" />
+        <Setter Property="Cursor" Value="Hand" />
+        <Setter Property="Focusable" Value="False" />
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Button}">
+                    <Grid Background="Transparent">
+
+                        <!-- The background of the button, as an ellipse. -->
+                        <Ellipse x:Name="backgroundEllipse" />
+
+                        <!-- A path that renders a cross. -->
+                        <Path x:Name="ButtonPath"
+                              Margin="3"
+                              Stroke="{StaticResource TabItemCloseButtonNormalForegroundBrush}"
+                              StrokeThickness="1.5"
+                              StrokeStartLineCap="Square"
+                              StrokeEndLineCap="Square"
+                              Stretch="Uniform"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Center">
+                            <Path.Data>
+                                <PathGeometry>
+                                    <PathGeometry.Figures>
+                                        <PathFigure StartPoint="0,0">
+                                            <LineSegment Point="25,25"/>
+                                        </PathFigure>
+                                        <PathFigure StartPoint="0,25">
+                                            <LineSegment Point="25,0"/>
+                                        </PathFigure>
+                                    </PathGeometry.Figures>
+                                </PathGeometry>
+                            </Path.Data>
+                        </Path>
+                    </Grid>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="backgroundEllipse" Property="Fill"
+                                    Value="{StaticResource TabItemCloseButtonHoverBackgroundBrush}" />
+                            <Setter TargetName="ButtonPath" Property="Stroke" 
+                                    Value="{StaticResource TabItemCloseButtonHoverForegroundBrush}"/>
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter TargetName="backgroundEllipse" Property="Fill"
+                                    Value="{StaticResource TabItemCloseButtonPressedBackgroundBrush}" />
+                            <Setter TargetName="backgroundEllipse" Property="Stroke"
+                                    Value="{StaticResource TabItemCloseButtonPressedBorderBrush}" />
+                            <Setter TargetName="ButtonPath" Property="Stroke" 
+                                    Value="{StaticResource TabItemCloseButtonPressedForegroundBrush}"/>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
     <!-- Common hyperlink style. -->
 
     <!-- Common hyperlink colors. -->
@@ -685,7 +777,15 @@
            TargetType="{x:Type ComboBox}">
         <Setter Property="Height" Value="30px" />
     </Style>
-    
+
+    <!-- Common ComboBox style V2 for document window -->
+    <Style x:Key="CommonDocumentComboBoxStyle" 
+           TargetType="controls:FixBackgroundComboBox">
+        <Setter Property="Padding" Value="8,5,8,5" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Background" Value="White" />
+    </Style>
+
     <!-- Default tyle for a tooltip. -->
     <SolidColorBrush x:Key="CommonTooltipColors.Border" Color="#FFBDBDBD" />
     <SolidColorBrush x:Key="CommonTooltipColors.Background" Color="#FFEEEEEE" />

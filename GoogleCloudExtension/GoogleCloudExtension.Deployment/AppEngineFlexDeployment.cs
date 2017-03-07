@@ -31,10 +31,15 @@ namespace GoogleCloudExtension.Deployment
         public const string DockerfileName = NetCoreAppUtils.DockerfileName;
 
         private const string AppYamlDefaultContent =
-            "runtime: custom\n" +
+            "runtime: aspnetcore\n" +
             "env: flex\n";
 
         private const string DefaultServiceName = "default";
+        private const string ServiceYamlProperty = "service";
+        private const string RuntimeYamlProperty = "runtime";
+
+        private const string AspNetCoreRuntime = "aspnetcore";
+        private const string CustomRuntime = "custom";
 
         /// <summary>
         /// The options for the deployment operation.
@@ -93,8 +98,17 @@ namespace GoogleCloudExtension.Deployment
                     return null;
                 }
 
-                NetCoreAppUtils.CopyOrCreateDockerfile(projectPath, stageDirectory);
+                var runtime = GetAppEngineRuntime(projectPath);
                 CopyOrCreateAppYaml(projectPath, stageDirectory);
+                if (runtime == CustomRuntime)
+                {
+                    Debug.WriteLine($"Copying Docker file to {stageDirectory} with custom runtime.");
+                    NetCoreAppUtils.CopyOrCreateDockerfile(projectPath, stageDirectory);
+                }
+                else
+                {
+                    Debug.WriteLine($"Detected runtime {runtime}");
+                }
                 progress.Report(0.4);
 
                 // Deploy to app engine, this is where most of the time is going to be spent. Wait for
@@ -175,19 +189,61 @@ namespace GoogleCloudExtension.Deployment
             return new ProjectConfigurationStatus(hasAppYaml: hasAppYaml, hasDockerfile: hasDockefile);
         }
 
+        /// <summary>
+        /// This methods looks for lines of the form "service: name" in the app.yaml file provided.
+        /// </summary>
+        /// <param name="projectPath">The path to the project.json for the project, the app.yaml should be next to it.</param>
+        /// <returns>The service name if found, <seealso cref="DefaultServiceName"/> if not found.</returns>
         private static string GetAppEngineService(string projectPath)
+        {
+            string appYaml = GetAppYamlPath(projectPath);
+            return GetYamlProperty(yamlPath: appYaml, property: ServiceYamlProperty, defaultValue: DefaultServiceName);
+        }
+
+        private static string GetAppEngineRuntime(string projectPath)
+        {
+            string appYaml = GetAppYamlPath(projectPath);
+            if (!File.Exists(appYaml))
+            {
+                return AspNetCoreRuntime;
+            }
+            return GetYamlProperty(appYaml, RuntimeYamlProperty);
+        }
+
+        private static string GetAppYamlPath(string projectPath)
         {
             var projectDirectory = Path.GetDirectoryName(projectPath);
             var appYaml = Path.Combine(projectDirectory, AppYamlName);
-            if (!File.Exists(appYaml))
+            return appYaml;
+        }
+
+        private static string GetYamlProperty(string yamlPath, string property, string defaultValue = null)
+        {
+            string result = defaultValue;
+            var propertyName = $"{property}:";
+
+            if (File.Exists(yamlPath))
             {
-                return DefaultServiceName;
+                try
+                {
+                    var lines = File.ReadLines(yamlPath);
+                    foreach (var line in lines)
+                    {
+                        if (line.StartsWith(propertyName))
+                        {
+                            var name = line.Substring(propertyName.Length);
+                            result = name.Trim();
+                            break;
+                        }
+                    }
+                }
+                catch (IOException ex)
+                {
+                    throw new DeploymentException(ex.Message, ex);
+                }
             }
-            else
-            {
-                // TODO: Load the app yaml and look for the service key.
-                return DefaultServiceName;
-            }
+
+            return result;
         }
 
         private static string GetDefaultVersion()

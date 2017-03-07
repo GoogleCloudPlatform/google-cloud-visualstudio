@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.GCloud.Models;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
@@ -65,6 +66,11 @@ namespace GoogleCloudExtension.Deployment
             public bool ExposeService { get; set; }
 
             /// <summary>
+            /// Whether the service to be exposed should be public or not.
+            /// </summary>
+            public bool ExposePublicService { get; set; }
+
+            /// <summary>
             /// The context for any gcloud calls to use.
             /// </summary>
             public GCloudContext GCloudContext { get; set; }
@@ -114,7 +120,6 @@ namespace GoogleCloudExtension.Deployment
             {
                 var appRootPath = Path.Combine(stageDirectory, "app");
                 var buildFilePath = Path.Combine(stageDirectory, "cloudbuild.yaml");
-                var projectName = CommonUtils.GetProjectName(projectPath);
 
                 if (!await ProgressHelper.UpdateProgress(
                         NetCoreAppUtils.CreateAppBundleAsync(projectPath, appRootPath, outputAction),
@@ -142,10 +147,13 @@ namespace GoogleCloudExtension.Deployment
                 }
                 progress.Report(0.7);
 
-                string ipAddress = null;
+                string publicIpAddress = null;
+                string clusterIpAddress = null;
                 bool deploymentUpdated = false;
                 bool deploymentScaled = false;
                 bool serviceExposed = false;
+                bool serviceUpdated = false;
+                bool serviceDeleted = false;
 
                 // Create or update the deployment.
                 var deployments = await KubectlWrapper.GetDeploymentsAsync(options.KubectlContext);
@@ -198,36 +206,82 @@ namespace GoogleCloudExtension.Deployment
                 }
 
                 // Expose the service if requested and it is not already exposed.
+                var services = await KubectlWrapper.GetServicesAsync(options.KubectlContext);
+                var service = services?.FirstOrDefault(x => x.Metadata.Name == options.DeploymentName);
                 if (options.ExposeService)
                 {
-                    var services = await KubectlWrapper.GetServicesAsync(options.KubectlContext);
-                    var service = services?.FirstOrDefault(x => x.Metadata.Name == options.DeploymentName);
+                    var requestedType = options.ExposePublicService ?
+                        GkeServiceSpec.LoadBalancerType : GkeServiceSpec.ClusterIpType;
+                    if (service != null && service?.Spec?.Type != requestedType)
+                    {
+                        Debug.WriteLine($"The existing service is {service?.Spec?.Type} the requested is {requestedType}");
+                        if (!await KubectlWrapper.DeleteServiceAsync(options.DeploymentName, outputAction, options.KubectlContext))
+                        {
+                            Debug.WriteLine($"Failed to delete serive {options.DeploymentName}");
+                        }
+                        service = null; // Now the service is gone, needs to be re-created with the new options.
+
+                        serviceUpdated = true;
+                    }
+
                     if (service == null)
                     {
-                        if (!await KubectlWrapper.ExposeServiceAsync(options.DeploymentName, outputAction, options.KubectlContext))
+                        // The service needs to be exposed but it wasn't. Expose a new service here.
+                        if (!await KubectlWrapper.ExposeServiceAsync(
+                            options.DeploymentName,
+                            options.ExposePublicService,
+                            outputAction,
+                            options.KubectlContext))
                         {
                             Debug.WriteLine($"Failed to expose service {options.DeploymentName}");
                             return null;
                         }
+                        clusterIpAddress = await WaitForServiceClusterIpAddressAsync(options.DeploymentName, options.KubectlContext);
+
+                        if (options.ExposePublicService)
+                        {
+                            publicIpAddress = await WaitForServicePublicIpAddressAsync(
+                                options.DeploymentName,
+                                options.WaitingForServiceIpCallback,
+                                options.KubectlContext);
+                        }
+
+                        serviceExposed = true;
+                    }
+                }
+                else
+                {
+                    // The user doesn't want a service exposed.
+                    if (service != null)
+                    {
+                        if (!await KubectlWrapper.DeleteServiceAsync(options.DeploymentName, outputAction, options.KubectlContext))
+                        {
+                            Debug.WriteLine($"Failed to delete service {options.DeploymentName}");
+                            return null;
+                        }
                     }
 
-                    ipAddress = await WaitForServiceAddressAsync(
-                        options.DeploymentName,
-                        options.WaitingForServiceIpCallback,
-                        options.KubectlContext);
-
-                    serviceExposed = true;
+                    serviceDeleted = true;
                 }
 
                 return new GkeDeploymentResult(
-                    serviceIpAddress: ipAddress,
-                    wasExposed: serviceExposed,
+                    publicIpAddress: publicIpAddress,
+                    privateIpAddress: clusterIpAddress,
+                    serviceExposed: serviceExposed,
+                    serviceUpdated: serviceUpdated,
+                    serviceDeleted: serviceDeleted,
                     deploymentUpdated: deploymentUpdated,
                     deploymentScaled: deploymentScaled);
             }
         }
 
-        private static async Task<string> WaitForServiceAddressAsync(string name, Action waitingCallback, KubectlContext kubectlContext)
+        private static async Task<string> WaitForServiceClusterIpAddressAsync(string name, KubectlContext context)
+        {
+            var service = await KubectlWrapper.GetServiceAsync(name, context);
+            return service?.Spec?.ClusterIp;
+        }
+
+        private static async Task<string> WaitForServicePublicIpAddressAsync(string name, Action waitingCallback, KubectlContext kubectlContext)
         {
             DateTime start = DateTime.Now;
             TimeSpan actualTime = DateTime.Now - start;
