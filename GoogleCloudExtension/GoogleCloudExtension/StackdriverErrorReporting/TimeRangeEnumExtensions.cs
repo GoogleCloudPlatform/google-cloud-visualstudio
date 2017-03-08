@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using EventGroupTimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
-using static GoogleCloudExtension.Resources;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -31,13 +30,13 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             {
                 case EventGroupTimeRangeEnum.PERIOD1WEEK:
                 case EventGroupTimeRangeEnum.PERIOD30DAYS:
-                    return ErrorReportingDayTimeLineFormat;
+                    return Resources.ErrorReportingDayTimeLineFormat;
                 case EventGroupTimeRangeEnum.PERIOD1DAY:
                 case EventGroupTimeRangeEnum.PERIOD1HOUR:
                 case EventGroupTimeRangeEnum.PERIOD6HOURS:
-                    return ErrorReportingTimeTimeLineFormat;
+                    return Resources.ErrorReportingTimeTimeLineFormat;
                 default:
-                    return ErrorReportingDefaultTimeLineFormat;
+                    return Resources.ErrorReportingDefaultTimeLineFormat;
             }
         }
 
@@ -49,15 +48,15 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             switch (timeRange)
             {
                 case EventGroupTimeRangeEnum.PERIOD1WEEK:
-                    return ErrorReporting7DayRangeTimeCountDurationLabel;
+                    return Resources.ErrorReporting7DayRangeTimeCountDurationLabel;
                 case EventGroupTimeRangeEnum.PERIOD30DAYS:
-                    return ErrorReporting30DaysRangeTimeCountDurationLabel;
+                    return Resources.ErrorReporting30DaysRangeTimeCountDurationLabel;
                 case EventGroupTimeRangeEnum.PERIOD1DAY:
-                    return ErrorReporting1DayRangeTimeCountDurationLabel;
+                    return Resources.ErrorReporting1DayRangeTimeCountDurationLabel;
                 case EventGroupTimeRangeEnum.PERIOD1HOUR:
-                    return ErrorReporting1HourRangeTimeCountDurationLabel;
+                    return Resources.ErrorReporting1HourRangeTimeCountDurationLabel;
                 case EventGroupTimeRangeEnum.PERIOD6HOURS:
-                    return ErrorReporting6HoursRangeTimeCountDurationLabel;
+                    return Resources.ErrorReporting6HoursRangeTimeCountDurationLabel;
                 default:
                     return "";      // Not expected, to be safe, return empty string.
             }
