@@ -35,9 +35,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private double heightMultiplier;
         private double countScaleMultiplier;
 
-        public const int RowNumber = 4;
-        public const double BarMaxHeight = 120.00;
-        public static int RowHeight => (int)(BarMaxHeight / RowNumber);
+        private const int RowNumber = 4;
+        private const double BarMaxHeight = 120.00;
+        private static int RowHeight => (int)(BarMaxHeight / RowNumber);
 
         public static readonly DependencyProperty TimedCountListProperty =
             DependencyProperty.Register(
@@ -81,7 +81,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         }
 
         /// <summary>
-        /// Gets or sets the flag that indicate if the <seealso cref="TimedCountList"/> is empty.
+        /// Gets or sets the flag that indicates if the <seealso cref="TimedCountList"/> is empty.
         /// <seealso cref="IsEmptyProperty"/>.
         /// </summary>
         public bool IsEmpty
@@ -142,12 +142,22 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             int k = 0;
             foreach (var counter in TimedCountList)
             {
-                // time line is shown first, last-3, and optional 2 in the middle.
-                bool isTimeLineVisible = (k == 0 || k == TimedCountList.Count - 3 || k == TimedCountList.Count / 3 || k == TimedCountList.Count * 2 / 3);
+                // Time line is only shown on items of first, last-3, and optional other 2 items.
+                bool isTimeLineVisible = 
+                    (k == 0 
+                    || k == TimedCountList.Count - 3 
+                    || k == TimedCountList.Count / 3 
+                    || k == TimedCountList.Count * 2 / 3);
                 DateTime startTime = (DateTime)counter.StartTime;
                 string timeLine = isTimeLineVisible ? startTime.ToString(timeLineFormat) : null;
 
-                timedCountItemList.Add(new TimedCountItem(counter, timeLine, heightMultiplier, countScaleMultiplier, GroupTimeRange.TimeCountDuration()));
+                timedCountItemList.Add(
+                    new TimedCountItem(
+                        counter, 
+                        timeLine, 
+                        heightMultiplier, 
+                        countScaleMultiplier, 
+                        GroupTimeRange.TimeCountDuration()));
                 ++k;
             }
 
@@ -160,7 +170,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             double countScaleUnit = (double)maxCount / RowNumber;
             for (int i = RowNumber; i > 0; --i)
             {
-                lineItems.Add(new XLineItem(countScaleUnit * i));
+                lineItems.Add(new XLineItem(countScaleUnit * i, RowHeight));
             }
 
             _lineItemsControl.ItemsSource = lineItems;

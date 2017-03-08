@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Markup;
 
@@ -24,23 +25,32 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public class MultiplyConverter : MarkupExtension, IValueConverter
     {
+        #region Implements interface IValueConverter.
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             double v0 = (double)value;
             double v1;
-            double.TryParse(parameter as string, out v1);
+            string v1String = parameter as string;
+            if (v1String == null || !double.TryParse(v1String, out v1))
+            {
+                return DependencyProperty.UnsetValue;
+            }
             var ret = (int)(v0 * v1);
             return ret;
-        }
-
-        public override object ProvideValue(IServiceProvider serviceProvider)
-        {
-            return this;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             throw new NotSupportedException();
+        }
+        #endregion
+
+        /// <summary>
+        /// Implement interface MarkupExtension.
+        /// </summary>
+        public override object ProvideValue(IServiceProvider serviceProvider)
+        {
+            return this;
         }
     }
 }

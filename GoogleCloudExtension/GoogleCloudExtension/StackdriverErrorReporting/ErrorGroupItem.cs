@@ -95,11 +95,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public string LastSeenTime => FormatErrorGroupDateTime(ErrorGroup.LastSeenTime);
 
         /// <summary>
-        /// Gets the time range of the <seealso cref="ErrorGroup"/>.
-        /// </summary>
-        public EventGroupTimeRangeEnum EventGroupTimeRange { get; }
-
-        /// <summary>
         /// Gets the list of <seealso cref="TimedCount"/> of the error group.
         /// </summary>
         public IList<TimedCount> TimedCountList => ErrorGroup.TimedCounts;

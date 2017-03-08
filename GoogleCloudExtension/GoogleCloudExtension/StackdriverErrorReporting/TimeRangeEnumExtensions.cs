@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// <summary>
     /// The class contains some extension methods used by Error Reporting.
     /// </summary>
-    internal static class Extensions
+    internal static class TimeRangeEnumExtensions
     {
         /// <summary>
         /// Returns bar chart time line format string based on the <seealso cref="EventGroupTimeRangeEnum"/> value.

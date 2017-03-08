@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props')" />
   <PropertyGroup>
@@ -241,7 +241,7 @@
     <Compile Include="Controls\FixBackgroundComboBox.cs" />
     <Compile Include="StackdriverErrorReporting\BarChart\TimedCountBarChartControl.cs" />
     <Compile Include="StackdriverErrorReporting\BarChart\TimeCountItem.cs" />
-    <Compile Include="StackdriverErrorReporting\Extensions.cs" />
+    <Compile Include="StackdriverErrorReporting\TimeRangeEnumExtensions.cs" />
     <Compile Include="StackdriverErrorReporting\BarChart\XLineItem.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindow.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindowControl.xaml.cs">
