@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:controls="clr-namespace:GoogleCloudExtension.Controls;assembly=GoogleCloudExtension"    
     xmlns:ext="clr-namespace:GoogleCloudExtension;assembly=GoogleCloudExtension"
+    xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions;assembly=GoogleCloudExtension"                                     
     xmlns:sys="clr-namespace:System;assembly=mscorlib"                 
     xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0" >
 
@@ -34,6 +35,32 @@
                 <Setter Property="Background" Value="#F5F5F5" />
             </Trigger>
         </Style.Triggers>
+    </Style>
+
+    <Style x:Key="detailViewRowStyle" TargetType="DataGridRow"
+           BasedOn="{StaticResource rowStyle}">
+        <Style.Triggers>
+            <Trigger Property="AlternationIndex" Value="1">
+                <Setter Property="Background" Value="#F5F5F5"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#FFFFD6" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style x:Key="BackToOverviewButtonStyle" 
+           TargetType="controls:ImageToggleButton" 
+           BasedOn="{StaticResource BackButtonStyle}">
+        <Setter Property="Content" Value="{x:Static ext:Resources.ErrorReportingToOverviewButtonCaption}" />
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="Command" Value="{Binding OnBackToOverViewCommand}" />
+    </Style>
+
+    <Style x:Key="DetailViewBorderStyle" TargetType="Border" >
+        <Setter Property="BorderBrush" Value="LightGray" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Margin" Value="0,6,0,6" />
     </Style>
 
 </ResourceDictionary>

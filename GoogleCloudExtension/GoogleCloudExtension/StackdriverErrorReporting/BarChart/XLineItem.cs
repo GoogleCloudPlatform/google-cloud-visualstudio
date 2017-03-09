@@ -13,21 +13,31 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils;
-using System.Windows.Controls;
+using System;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
     /// <summary>
-    /// Interaction logic for ErrorReportingToolWindowControl.
+    /// Bar chart shows horizontal lines with error count as scale.
     /// </summary>
-    public partial class ErrorReportingToolWindowControl : UserControl
+    public class XLineItem : Model
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ErrorReportingToolWindowControl"/> class.
+        /// The fromated scale value the line represents.
+        /// Example: 5, 10, 20;  or  0.5, 1, 1.5, 2;
         /// </summary>
-        public ErrorReportingToolWindowControl()
+        public string CountScale { get; }
+
+        /// <summary>
+        /// Height of each row.
+        /// </summary>
+        public double RowHeight { get; }
+
+        public XLineItem(double scale, double rowHeight)
         {
-            this.InitializeComponent();
+            CountScale = scale == 0 ? null :
+                String.Format(((Math.Round(scale) == scale) ? "{0:0}" : "{0:0.00}"), scale);
+            RowHeight = rowHeight;
         }
     }
-}    
+}

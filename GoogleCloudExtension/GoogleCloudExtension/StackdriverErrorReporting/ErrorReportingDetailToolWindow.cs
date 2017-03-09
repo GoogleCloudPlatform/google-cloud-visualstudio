@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Accounts;
 using System;
 using System.Runtime.InteropServices;
 using Microsoft.VisualStudio.Shell;
@@ -30,28 +29,27 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// implementation of the IVsUIElementPane interface.
     /// </para>
     /// </remarks>
-    [Guid("4b3c62b4-2121-40a1-8cd5-8f794760b35e")]
-    public class ErrorReportingToolWindow : ToolWindowPane
+    [Guid("f62a2c47-c030-456d-8a45-8e882fcb0ee3")]
+    public class ErrorReportingDetailToolWindow : ToolWindowPane
     {
         /// <summary>
-        /// Gets a <seealso cref="ErrorReportingViewModel"/> object that is associated with the Window.
+        /// Gets the view model of the user control <seealso cref="ErrorReportingDetailToolWindowControl"/>.
         /// </summary>
-        public ErrorReportingViewModel ViewModel { get; }
+        public ErrorReportingDetailViewModel ViewModel { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ErrorReportingToolWindow"/> class.
+        /// Initializes a new instance of the <see cref="ErrorReportingDetailToolWindow"/> class.
         /// </summary>
-        public ErrorReportingToolWindow() : base(null)
+        public ErrorReportingDetailToolWindow() : base(null)
         {
-            this.Caption = Resources.ErrorReportingToolWindowCaption;
+            this.Caption = Resources.ErrorReportingDetailToolWindowCaption;
 
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
-            this.Content = new ErrorReportingToolWindowControl();
-
-            ViewModel = new ErrorReportingViewModel();
-            (Content as ErrorReportingToolWindowControl).DataContext = ViewModel;
+            this.Content = new ErrorReportingDetailToolWindowControl();
+            ViewModel = new ErrorReportingDetailViewModel();
+            (this.Content as ErrorReportingDetailToolWindowControl).DataContext = ViewModel;
         }
     }
 }

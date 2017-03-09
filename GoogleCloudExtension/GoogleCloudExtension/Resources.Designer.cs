@@ -1807,11 +1807,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 48 minutes.
+        /// </summary>
+        public static string ErrorReporting1DayRangeTimeCountDurationLabel {
+            get {
+                return ResourceManager.GetString("ErrorReporting1DayRangeTimeCountDurationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 1 hour.
         /// </summary>
         public static string ErrorReporting1HourButtonCaption {
             get {
                 return ResourceManager.GetString("ErrorReporting1HourButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 2 minutes.
+        /// </summary>
+        public static string ErrorReporting1HourRangeTimeCountDurationLabel {
+            get {
+                return ResourceManager.GetString("ErrorReporting1HourRangeTimeCountDurationLabel", resourceCulture);
             }
         }
         
@@ -1825,11 +1843,38 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to 1 day.
+        /// </summary>
+        public static string ErrorReporting30DaysRangeTimeCountDurationLabel {
+            get {
+                return ResourceManager.GetString("ErrorReporting30DaysRangeTimeCountDurationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 6 hours.
         /// </summary>
         public static string ErrorReporting6HoursButtonCaption {
             get {
                 return ResourceManager.GetString("ErrorReporting6HoursButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 12 minutes.
+        /// </summary>
+        public static string ErrorReporting6HoursRangeTimeCountDurationLabel {
+            get {
+                return ResourceManager.GetString("ErrorReporting6HoursRangeTimeCountDurationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to 5.6 hours.
+        /// </summary>
+        public static string ErrorReporting7DayRangeTimeCountDurationLabel {
+            get {
+                return ResourceManager.GetString("ErrorReporting7DayRangeTimeCountDurationLabel", resourceCulture);
             }
         }
         
@@ -1852,6 +1897,42 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Users affected.
+        /// </summary>
+        public static string ErrorReportingAffectedUsersLongerHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingAffectedUsersLongerHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There is no data to show..
+        /// </summary>
+        public static string ErrorReportingBarChartNoDataMesssage {
+            get {
+                return ResourceManager.GetString("ErrorReportingBarChartNoDataMesssage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error happened {0} time in {1} {2} Starting from {3}..
+        /// </summary>
+        public static string ErrorReportingBarchartTooltipFormat {
+            get {
+                return ResourceManager.GetString("ErrorReportingBarchartTooltipFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error happened {0} times in {1} {2} Starting from {3}..
+        /// </summary>
+        public static string ErrorReportingBarchartTooltipPluralFormat {
+            get {
+                return ResourceManager.GetString("ErrorReportingBarchartTooltipPluralFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Errors in the last {0}.
         /// </summary>
         public static string ErrorReportingCurrentGroupTimePeriodLabelFormat {
@@ -1870,11 +1951,47 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to MMM d.
+        /// </summary>
+        public static string ErrorReportingDayTimeLineFormat {
+            get {
+                return ResourceManager.GetString("ErrorReportingDayTimeLineFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to MMM d HH:mm.
+        /// </summary>
+        public static string ErrorReportingDefaultTimeLineFormat {
+            get {
+                return ResourceManager.GetString("ErrorReportingDefaultTimeLineFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Detail View - Stackdriver Error Reporting.
+        /// </summary>
+        public static string ErrorReportingDetailToolWindowCaption {
+            get {
+                return ResourceManager.GetString("ErrorReportingDetailToolWindowCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Seen in.
         /// </summary>
         public static string ErrorReportingErrorAppHeader {
             get {
                 return ResourceManager.GetString("ErrorReportingErrorAppHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Occurances.
+        /// </summary>
+        public static string ErrorReportingErrorCountHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingErrorCountHeader", resourceCulture);
             }
         }
         
@@ -1915,6 +2032,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Go to overview window and select an error group.
+        /// </summary>
+        public static string ErrorReportingNoErrorGroupSelectedMessage {
+            get {
+                return ResourceManager.GetString("ErrorReportingNoErrorGroupSelectedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Recent Samples.
+        /// </summary>
+        public static string ErrorReportingRecentSampleLabel {
+            get {
+                return ResourceManager.GetString("ErrorReportingRecentSampleLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Status.
         /// </summary>
         public static string ErrorReportingServiceContextStatusCodeHeader {
@@ -1924,11 +2059,47 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to hh:mm tt.
+        /// </summary>
+        public static string ErrorReportingTimeTimeLineFormat {
+            get {
+                return ResourceManager.GetString("ErrorReportingTimeTimeLineFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stack trace sample.
+        /// </summary>
+        public static string ErrorReportingToggleStackSampleButtonCaption {
+            get {
+                return ResourceManager.GetString("ErrorReportingToggleStackSampleButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Stackdriver Error Reporting.
         /// </summary>
         public static string ErrorReportingToolWindowCaption {
             get {
                 return ResourceManager.GetString("ErrorReportingToolWindowCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to To overview window.
+        /// </summary>
+        public static string ErrorReportingToOverviewButtonCaption {
+            get {
+                return ResourceManager.GetString("ErrorReportingToOverviewButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected time range.
+        /// </summary>
+        public static string ErrorReportingUnexpectedEventGroupTimeRangeErrorMessage {
+            get {
+                return ResourceManager.GetString("ErrorReportingUnexpectedEventGroupTimeRangeErrorMessage", resourceCulture);
             }
         }
         
