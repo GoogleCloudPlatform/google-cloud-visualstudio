@@ -16,12 +16,12 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.Utils
+namespace GoogleCloudExtension.DataSources
 {
     /// <summary>
     /// This class represents a configuration to use for polling.
     /// </summary>
-    public class PollingConfiguration
+    internal class PollingConfiguration
     {
         /// <summary>
         /// The default polling interval.  This value is the delay between poll requests.
@@ -39,13 +39,13 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// The delay between poll requests.
         /// </summary>
-        public TimeSpan Interval;
+        public readonly TimeSpan Interval;
 
         /// <summary>
         /// The total time spent in delays between requests before a timeout is considered to
         /// have occured.
         /// </summary>
-        public TimeSpan Timeout;
+        public readonly TimeSpan Timeout;
 
         /// <summary>
         /// Create a new polling configuration.
@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.Utils
     /// <summary>
     /// This class handles polling for a resource.
     /// </summary>
-    public class Polling<T>
+    internal class Polling<T>
     {
         /// <summary>
         /// Poll for a resource.

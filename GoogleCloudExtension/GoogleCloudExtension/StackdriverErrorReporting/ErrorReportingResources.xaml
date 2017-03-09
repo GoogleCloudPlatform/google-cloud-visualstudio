@@ -57,7 +57,7 @@
         <Setter Property="Command" Value="{Binding OnBackToOverViewCommand}" />
     </Style>
 
-    <Style x:Key="BorderCommonStyle" TargetType="Border" >
+    <Style x:Key="DetailViewBorderStyle" TargetType="Border" >
         <Setter Property="BorderBrush" Value="LightGray" />
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Margin" Value="0,6,0,6" />

@@ -127,7 +127,7 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="split">The traffic split to set.</param>
         /// <param name="serviceId">The id of the service</param>
         /// <returns>The GAE operation for the update.</returns>
-        public async Task<Operation> UpdateServiceTrafficSplit(TrafficSplit split, string serviceId)
+        public async Task<Operation> UpdateServiceTrafficSplitAsync(TrafficSplit split, string serviceId)
         {
             try
             {
@@ -145,6 +145,23 @@ namespace GoogleCloudExtension.DataSources
             {
                 Debug.WriteLine($"Failed to update traffic split: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Awaits for the operation to complete succesfully.
+        /// </summary>
+        /// <param name="operation">The operation to await.</param>
+        /// <returns>The task that will be done once the operation is succesful.</returns>
+        public async Task AwaitOperationAsync(Operation operation)
+        {
+            var completedOperation = await Polling<Operation>.Poll(
+                operation,
+                o => GetOperationAsync(o.GetOperationId()),
+                o => o.Done ?? false);
+            if (completedOperation.Error != null)
+            {
+                throw new DataSourceException(completedOperation.Error.Message);
             }
         }
 

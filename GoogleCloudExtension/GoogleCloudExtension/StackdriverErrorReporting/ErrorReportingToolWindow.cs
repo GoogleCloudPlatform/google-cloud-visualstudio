@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Gets a <seealso cref="ErrorReportingViewModel"/> object that is associated with the Window.
         /// </summary>
-        public ErrorReportingViewModel ViewModel => _viewModel;
+        public ErrorReportingViewModel ViewModel { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ErrorReportingToolWindow"/> class.
@@ -52,16 +52,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             // the object returned by the Content property.
             this.Content = new ErrorReportingToolWindowControl();
 
-            _viewModel = new ErrorReportingViewModel();
-        }
-
-        /// <summary>
-        /// Create view mode when window object is created. 
-        /// </summary>
-        public override void OnToolWindowCreated()
-        {
-            base.OnToolWindowCreated();
-            (Content as ErrorReportingToolWindowControl).DataContext = _viewModel;
+            ViewModel = new ErrorReportingViewModel();
+            (Content as ErrorReportingToolWindowControl).DataContext = ViewModel;
         }
     }
 }

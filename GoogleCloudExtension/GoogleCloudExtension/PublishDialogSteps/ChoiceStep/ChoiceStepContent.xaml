@@ -23,7 +23,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="{x:Static ext:Resources.PublishDialogChoiceStepMessage}"  Style="{StaticResource CommonTextStyle}" />
+        <Label Content="{x:Static ext:Resources.PublishDialogChoiceStepMessage}"  Style="{StaticResource CommonLabelStyle}" />
 
         <StackPanel Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center">
             <ItemsControl ItemsSource="{Binding Choices}" Focusable="False">

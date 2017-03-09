@@ -18,29 +18,26 @@ using System;
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
     /// <summary>
-    /// Bar chart shows y-scale lines
+    /// Bar chart shows horizontal lines with error count as scale.
     /// </summary>
     public class XLineItem : Model
     {
         /// <summary>
-        /// The scale value.
+        /// The fromated scale value the line represents.
+        /// Example: 5, 10, 20;  or  0.5, 1, 1.5, 2;
         /// </summary>
         public string CountScale { get; }
 
         /// <summary>
         /// Height of each row.
-        /// A y-cale line is shown of each row.
         /// </summary>
-        public int RowHeight => TimedCountBarChartControl.RowHeight;
+        public double RowHeight { get; }
 
-        /// <summary>
-        /// Initializes a new instance of <seealso cref="XLineItem"/> class.
-        /// </summary>
-        /// <param name="scale"></param>
-        public XLineItem(double scale)
+        public XLineItem(double scale, double rowHeight)
         {
             CountScale = scale == 0 ? null :
                 String.Format(((Math.Round(scale) == scale) ? "{0:0}" : "{0:0.00}"), scale);
+            RowHeight = rowHeight;
         }
     }
 }

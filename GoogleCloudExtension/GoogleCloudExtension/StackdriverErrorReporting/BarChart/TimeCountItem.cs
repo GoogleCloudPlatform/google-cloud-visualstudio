@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public bool ShowTimeline => TimeLine != null;
 
         /// <summary>
-        /// Gets time line string.
+        /// Gets time line in string shown under x-axis for the bar item.
         /// </summary>
         public string TimeLine { get; }
 
@@ -44,30 +44,33 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Gets the bar height.
         /// </summary>
-        public int BarHeight { get; }
-
-        /// <summary>
-        /// Gets the ratio of bar height per error count.
-        /// </summary>
-        public double BarHeightRatio { get; }
+        public double BarHeight { get; }
 
         /// <summary>
         /// Initializes a new instance of <seealso cref="TimedCountItem"/> class.
         /// </summary>
+        /// <param name="timedCount">The <seealso cref="TimedCount"/> object this item represents.</param>
+        /// <param name="heightMultiplier">The ratio of height per error count.</param>
+        /// <param name="timeLine">
+        /// Show the time line under x-axis.
+        /// The time line is not shown if the input value is null.
+        /// </param>
+        /// <param name="timeRangeLabel">
+        /// A string that repensents the time range. 
+        /// The <paramref name="timedCount"/> is the sum of all errors in this time range.   
+        /// </param>
         public TimedCountItem(
             TimedCount timedCount, 
             string timeLine, 
             double heightMultiplier, 
-            double countScaleMultiplier, 
             string timeRangeLabel)
         {
             _timedCount = timedCount;
-            // Example, $"{Count} times in {"1 day"} {Environment.NewLine} Starting from {_timedCount.StartTime}.";
-            ToolTipMessage = String.Format(Resources.ErrorReportingBarchartTooltipFormat, 
-                 Count, timeRangeLabel, Environment.NewLine, _timedCount.StartTime);
+            // Example, $"{Count} times in {"1 day"}.{Environment.NewLine}Starting from {_timedCount.StartTime}.";
+            string format = Count > 1 ? Resources.ErrorReportingBarchartTooltipPluralFormat : Resources.ErrorReportingBarchartTooltipFormat;
+            ToolTipMessage = String.Format(format, Count, timeRangeLabel, Environment.NewLine, _timedCount.StartTime);
             TimeLine = timeLine;
-            BarHeight = (int)(Count * heightMultiplier);
-            BarHeightRatio = Count * countScaleMultiplier;
+            BarHeight = Count * heightMultiplier;
         }
     }
 }

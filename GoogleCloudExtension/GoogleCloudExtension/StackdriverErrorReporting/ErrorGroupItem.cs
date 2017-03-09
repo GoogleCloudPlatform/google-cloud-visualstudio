@@ -39,15 +39,35 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public ErrorGroupStats ErrorGroup { get; }
 
         /// <summary>
-        /// Gets the command that navigates to detail window.
+        /// The error message with complete stack.
+        /// Normally, this is the string get from Exception.ToString();
         /// </summary>
-        public ProtectedCommand OnNavigateToDetailCommand { get; }
+        public string RawErrorMessage => ErrorGroup.Representative?.Message;
+
+        /// <summary>
+        /// Gets the error count of the error group.
+        /// </summary>
+        public long ErrorCount => ErrorGroup.Count.HasValue ? ErrorGroup.Count.Value : 0;
 
         /// <summary>
         /// Show service context. 
         /// <seealso cref="ErrorGroupStats.AffectedServices"/>.
         /// </summary>
-        public string SeenIn => GetSeeIn();
+        public string SeenIn
+        {
+            get
+            {
+                if (ErrorGroup.AffectedServices == null || ErrorGroup.NumAffectedServices.GetValueOrDefault() == 0)
+                {
+                    return null;
+                }
+                var query = ErrorGroup.AffectedServices
+                    .Where(x => x.Service != null)
+                    .Select(x => FormatServiceContext(x))
+                    .Distinct(StringComparer.InvariantCulture);
+                return String.Join(Environment.NewLine, query);
+            }
+        }
 
         /// <summary>
         /// Optional, displays the context status code.
@@ -57,12 +77,17 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Gets the message to display for the error group.
         /// </summary>
-        public string Message { get; }
+        public string ErrorMessage => ParsedException?.Header;
 
         /// <summary>
         /// The first stack frame summary for the error group.
         /// </summary>
-        public string FirstStackFrame => ParsedException?.FirstFrameSummary;
+        public string FirstStackFrameSummary => ParsedException?.FirstFrameSummary;
+
+        /// <summary>
+        /// Gets the first stack frame. 
+        /// </summary>
+        public StackFrame FirstStackFrame => ParsedException?.StackFrames.FirstOrDefault();
 
         /// <summary>
         /// Gets the affected user count. Could be null.
@@ -100,16 +125,25 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             {
                 ParsedException = new ParsedException(ErrorGroup.Representative?.Message, this);
             }
-            Message = ParsedException?.Header;
-            OnNavigateToDetailCommand = new ProtectedCommand(null);
             GroupTimeRange = timeRange;
         }
 
         /// <summary>
-        /// The input in compiling time is object. 
-        /// In runtime, it can be either a DateTime object or a UTC time formated string.
-        /// 
-        /// If it is not DateTime type or the string is failed to convert to UTC time. 
+        /// When user clicks on shorter time range in detail view,
+        /// the error group may not contain any errors in the short time range.
+        /// Set the model to show the 0 count state while keep some data available.
+        /// </summary>
+        public void SetCountEmpty()
+        {
+            ErrorGroup.Count = 0;
+            ErrorGroup.NumAffectedServices = null;
+            ErrorGroup.AffectedUsersCount = null;
+            ErrorGroup.TimedCounts = null;
+        }
+
+        /// <summary>
+        /// The expected input is either DateTime object or string.
+        /// The string input will be parsed into DateTime by using UTC time format.
         /// </summary>
         /// <returns>
         /// Formated time string to Local Time, Local Culture, if input is DateTime type or
@@ -118,7 +152,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </returns>
         private static string FormatErrorGroupDateTime(object datetime)
         {
-            DateTime dt = DateTime.MinValue;
+            // Assign a value that is never used.
+            // Otherwise compiler complains "used not initialized local variable". 
+            DateTime dt = DateTime.MinValue;    
             if (datetime is DateTime)
             {
                 dt = (DateTime)datetime;
@@ -133,16 +169,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             }
 
             return dt.ToLocalTime().ToString("F");
-        }
-
-        private string GetSeeIn()
-        {
-            if (ErrorGroup.AffectedServices == null)
-            {
-                return null;
-            }
-            var query = ErrorGroup.AffectedServices.Where(x => x.Service != null).Distinct(new ServiceContextComparer());
-            return String.Join(Environment.NewLine, query.Select(x => FormatServiceContext(x)));
         }
 
         /// <summary>

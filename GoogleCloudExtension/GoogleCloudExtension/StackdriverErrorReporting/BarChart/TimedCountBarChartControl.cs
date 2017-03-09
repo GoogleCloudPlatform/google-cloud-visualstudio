@@ -30,35 +30,50 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     [TemplatePart(Name = "PART_LineItemsControl", Type = typeof(ItemsControl))]    
     public class TimedCountBarChartControl : Control
     {
+        private const int RowNumber = 4;
+
         private ItemsControl _timedCountItemsControl;
         private ItemsControl _lineItemsControl;
-        private double heightMultiplier;
-        private double countScaleMultiplier;
+        private double _heightMultiplier;
+        private double _rowHeight => BarMaxHeight / RowNumber;
 
-        public const int RowNumber = 4;
-        public const double BarMaxHeight = 120.00;
-        public static int RowHeight => (int)(BarMaxHeight / RowNumber);
+        public static readonly DependencyProperty BarMaxHeightProperty =
+            DependencyProperty.Register(
+                nameof(BarMaxHeight),
+                typeof(double),
+                typeof(TimedCountBarChartControl),
+                new FrameworkPropertyMetadata(120.00));
 
         public static readonly DependencyProperty TimedCountListProperty =
             DependencyProperty.Register(
-                "TimedCountList",
+                nameof(TimedCountList),
                 typeof(IList<TimedCount>),
                 typeof(TimedCountBarChartControl),
                 new FrameworkPropertyMetadata(null, OnDataChange, null));
 
         public static readonly DependencyProperty GroupTimeRangeProperty =
             DependencyProperty.Register(
-                "GroupTimeRange",
+                nameof(GroupTimeRange),
                 typeof(EventGroupTimeRangeEnum),
                 typeof(TimedCountBarChartControl),
                 new FrameworkPropertyMetadata(EventGroupTimeRangeEnum.PERIODUNSPECIFIED, OnDataChange, null));
 
         public static readonly DependencyProperty IsEmptyProperty =
             DependencyProperty.Register(
-                "IsEmpty",
+                nameof(IsEmpty),
                 typeof(bool),
                 typeof(TimedCountBarChartControl),
                 new FrameworkPropertyMetadata(true));
+
+        /// <summary>
+        /// Gets or sets the bar max height.
+        /// <seealso cref="BarMaxHeightProperty"/>.
+        /// </summary>
+        public double BarMaxHeight
+        {
+            get { return (double)GetValue(BarMaxHeightProperty); }
+            set { SetValue(BarMaxHeightProperty, value); }
+        }
 
         /// <summary>
         /// Gets or sets the list of <seealso cref="TimedCount"/>.
@@ -81,7 +96,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         }
 
         /// <summary>
-        /// Gets or sets the flag that indicate if the <seealso cref="TimedCountList"/> is empty.
+        /// Gets or sets the flag that indicates if the <seealso cref="TimedCountList"/> is empty.
         /// <seealso cref="IsEmptyProperty"/>.
         /// </summary>
         public bool IsEmpty
@@ -134,20 +149,28 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         private void CreateTimedCountItems(long maxCount)
         {
-            heightMultiplier = BarMaxHeight / maxCount;
-            countScaleMultiplier = 1.00 / maxCount;
+            _heightMultiplier = BarMaxHeight / maxCount;
 
             string timeLineFormat = GroupTimeRange.TimeLineFormat();
             var timedCountItemList = new List<TimedCountItem>();
             int k = 0;
             foreach (var counter in TimedCountList)
             {
-                // time line is shown first, last-3, and optional 2 in the middle.
-                bool isTimeLineVisible = (k == 0 || k == TimedCountList.Count - 3 || k == TimedCountList.Count / 3 || k == TimedCountList.Count * 2 / 3);
+                // Time line is only shown on items of first, last-3, and optional other 2 items.
+                bool isTimeLineVisible = 
+                    (k == 0 
+                    || k == TimedCountList.Count - 3 
+                    || k == TimedCountList.Count / 3 
+                    || k == TimedCountList.Count * 2 / 3);
                 DateTime startTime = (DateTime)counter.StartTime;
                 string timeLine = isTimeLineVisible ? startTime.ToString(timeLineFormat) : null;
 
-                timedCountItemList.Add(new TimedCountItem(counter, timeLine, heightMultiplier, countScaleMultiplier, GroupTimeRange.TimeCountDuration()));
+                timedCountItemList.Add(
+                    new TimedCountItem(
+                        counter, 
+                        timeLine, 
+                        _heightMultiplier, 
+                        GroupTimeRange.TimeCountDuration()));
                 ++k;
             }
 
@@ -160,7 +183,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             double countScaleUnit = (double)maxCount / RowNumber;
             for (int i = RowNumber; i > 0; --i)
             {
-                lineItems.Add(new XLineItem(countScaleUnit * i));
+                lineItems.Add(new XLineItem(countScaleUnit * i, _rowHeight));
             }
 
             _lineItemsControl.ItemsSource = lineItems;
