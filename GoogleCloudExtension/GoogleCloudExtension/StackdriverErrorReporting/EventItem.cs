@@ -15,6 +15,7 @@
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
 using GoogleCloudExtension.Utils;
 using System;
+using System.Linq;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -44,10 +45,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         {
             _error = error;
             var splits = _error.Message?.Split(new string[] { Environment.NewLine, "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            if (splits != null && splits.Length > 0)
-            {
-                SummaryMessage = splits[0];
-            }
+            SummaryMessage = splits?.FirstOrDefault();
         }
     }
 }

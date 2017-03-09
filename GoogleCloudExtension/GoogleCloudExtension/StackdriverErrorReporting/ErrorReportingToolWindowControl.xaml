@@ -43,7 +43,7 @@
                 <local:TimedCountBarChartControl 
                     VerticalAlignment="Center"
                     Style="{StaticResource TimedCountMiniBarChartStyle}"
-                    TimedCountList="{Binding TimedCountList}" 
+                    TimedCountList="{Binding TimedCountList}"
                     Margin="0,6,0,6" />
             </DataTemplate>
             

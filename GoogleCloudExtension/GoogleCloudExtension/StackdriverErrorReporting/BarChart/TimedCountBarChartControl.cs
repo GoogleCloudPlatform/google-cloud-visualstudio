@@ -30,35 +30,50 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     [TemplatePart(Name = "PART_LineItemsControl", Type = typeof(ItemsControl))]    
     public class TimedCountBarChartControl : Control
     {
+        private const int RowNumber = 4;
+
         private ItemsControl _timedCountItemsControl;
         private ItemsControl _lineItemsControl;
-        private double heightMultiplier;
-        private double countScaleMultiplier;
+        private double _heightMultiplier;
+        private double _rowHeight => BarMaxHeight / RowNumber;
 
-        private const int RowNumber = 4;
-        private const double BarMaxHeight = 120.00;
-        private static int RowHeight => (int)(BarMaxHeight / RowNumber);
+        public static readonly DependencyProperty BarMaxHeightProperty =
+            DependencyProperty.Register(
+                nameof(BarMaxHeight),
+                typeof(double),
+                typeof(TimedCountBarChartControl),
+                new FrameworkPropertyMetadata(120.00));
 
         public static readonly DependencyProperty TimedCountListProperty =
             DependencyProperty.Register(
-                "TimedCountList",
+                nameof(TimedCountList),
                 typeof(IList<TimedCount>),
                 typeof(TimedCountBarChartControl),
                 new FrameworkPropertyMetadata(null, OnDataChange, null));
 
         public static readonly DependencyProperty GroupTimeRangeProperty =
             DependencyProperty.Register(
-                "GroupTimeRange",
+                nameof(GroupTimeRange),
                 typeof(EventGroupTimeRangeEnum),
                 typeof(TimedCountBarChartControl),
                 new FrameworkPropertyMetadata(EventGroupTimeRangeEnum.PERIODUNSPECIFIED, OnDataChange, null));
 
         public static readonly DependencyProperty IsEmptyProperty =
             DependencyProperty.Register(
-                "IsEmpty",
+                nameof(IsEmpty),
                 typeof(bool),
                 typeof(TimedCountBarChartControl),
                 new FrameworkPropertyMetadata(true));
+
+        /// <summary>
+        /// Gets or sets the bar max height.
+        /// <seealso cref="BarMaxHeightProperty"/>.
+        /// </summary>
+        public double BarMaxHeight
+        {
+            get { return (double)GetValue(BarMaxHeightProperty); }
+            set { SetValue(BarMaxHeightProperty, value); }
+        }
 
         /// <summary>
         /// Gets or sets the list of <seealso cref="TimedCount"/>.
@@ -134,8 +149,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
 
         private void CreateTimedCountItems(long maxCount)
         {
-            heightMultiplier = BarMaxHeight / maxCount;
-            countScaleMultiplier = 1.00 / maxCount;
+            _heightMultiplier = BarMaxHeight / maxCount;
 
             string timeLineFormat = GroupTimeRange.TimeLineFormat();
             var timedCountItemList = new List<TimedCountItem>();
@@ -155,8 +169,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                     new TimedCountItem(
                         counter, 
                         timeLine, 
-                        heightMultiplier, 
-                        countScaleMultiplier, 
+                        _heightMultiplier, 
                         GroupTimeRange.TimeCountDuration()));
                 ++k;
             }
@@ -170,7 +183,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             double countScaleUnit = (double)maxCount / RowNumber;
             for (int i = RowNumber; i > 0; --i)
             {
-                lineItems.Add(new XLineItem(countScaleUnit * i, RowHeight));
+                lineItems.Add(new XLineItem(countScaleUnit * i, _rowHeight));
             }
 
             _lineItemsControl.ItemsSource = lineItems;

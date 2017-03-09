@@ -49,14 +49,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             // the object returned by the Content property.
             this.Content = new ErrorReportingDetailToolWindowControl();
             ViewModel = new ErrorReportingDetailViewModel();
-        }
-
-        /// <summary>
-        /// Create view mode when window object is created. 
-        /// </summary>
-        public override void OnToolWindowCreated()
-        {
-            base.OnToolWindowCreated();
             (this.Content as ErrorReportingDetailToolWindowControl).DataContext = ViewModel;
         }
     }

@@ -60,7 +60,6 @@
     <Compile Include="Disposable.cs" />
     <Compile Include="JsonOutputException.cs" />
     <Compile Include="Model.cs" />
-    <Compile Include="MultiplyConverter.cs" />
     <Compile Include="StringNullEmptyInvisibleConverter.cs" />
     <Compile Include="PlaceholderMessage.cs" />
     <Compile Include="ProcessUtils.cs" />

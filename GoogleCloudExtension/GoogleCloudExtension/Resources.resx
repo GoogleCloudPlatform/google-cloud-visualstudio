@@ -1732,27 +1732,27 @@ Open the project of version {2} to properly locate the logging writter location.
   </data>
   <data name="ErrorReportingBarchartTooltipFormat" xml:space="preserve">
     <value>Error happened {0} time in {1} {2} Starting from {3}.</value>
-    <comment>The tooltip when mouse is on a bar of  the bar chart.</comment>
+    <comment>The tooltip when mouse is on a bar of  the bar chart. {0} is the error count.  {1}  is the time range 1 day, 5 hours etc.  {2} is line break. {3} is a time stamp.</comment>
   </data>
   <data name="ErrorReporting1DayRangeTimeCountDurationLabel" xml:space="preserve">
     <value>48 minutes</value>
-    <comment>The time count duration, for bar chart tooltip, when 1 day timed range is selected.</comment>
+    <comment>The time count duration, for bar chart tooltip, when 1 day timed range is selected.  The value is  1 day / 30. </comment>
   </data>
   <data name="ErrorReporting1HourRangeTimeCountDurationLabel" xml:space="preserve">
     <value>2 minutes</value>
-    <comment>The time count duration, for bar chart tooltip, when 1 hour timed range is selected.</comment>
+    <comment>The time count duration, for bar chart tooltip, when 1 hour timed range is selected.  The value is  60 minutes / 30.</comment>
   </data>
   <data name="ErrorReporting30DaysRangeTimeCountDurationLabel" xml:space="preserve">
     <value>1 day</value>
-    <comment>The time count duration, for bar chart tooltip, when 30 day timed range is selected.</comment>
+    <comment>The time count duration, for bar chart tooltip, when 30 day timed range is selected.  The value is 30 days / 30. </comment>
   </data>
   <data name="ErrorReporting6HoursRangeTimeCountDurationLabel" xml:space="preserve">
     <value>12 minutes</value>
-    <comment>The time count duration, for bar chart tooltip, when 6 hour timed range is selected.</comment>
+    <comment>The time count duration, for bar chart tooltip, when 6 hour timed range is selected.  The value is  6 hours / 30.</comment>
   </data>
   <data name="ErrorReporting7DayRangeTimeCountDurationLabel" xml:space="preserve">
     <value>5.6 hours</value>
-    <comment>The time count duration, for bar chart tooltip, when 1 week timed range is selected.</comment>
+    <comment>The time count duration, for bar chart tooltip, when 1 week timed range is selected. The value is  7 days / 30.</comment>
   </data>
   <data name="ErrorReportingBarChartNoDataMesssage" xml:space="preserve">
     <value>There is no data to show.</value>
@@ -1837,5 +1837,13 @@ Open the project of version {2} to properly locate the logging writter location.
   <data name="GCloudWrapperUtilsOldCloudSdkTitle" xml:space="preserve">
     <value>Google Cloud SDK too old</value>
     <comment>Title for the prompt to update the Cloud SDK.</comment>
+  </data>
+  <data name="ErrorReportingBarchartTooltipPluralFormat" xml:space="preserve">
+    <value>Error happened {0} times in {1} {2} Starting from {3}.</value>
+    <comment>The tooltip when mouse is on a bar of  the bar chart. {0} is the error count.  {1}  is the time range 1 day, 5 hours etc.  {2} is line break. {3} is a time stamp.</comment>
+  </data>
+  <data name="ErrorReportingUnexpectedEventGroupTimeRangeErrorMessage" xml:space="preserve">
+    <value>Unexpected time range</value>
+    <comment>Show an error message when the time range value is unknown.</comment>
   </data>
 </root>

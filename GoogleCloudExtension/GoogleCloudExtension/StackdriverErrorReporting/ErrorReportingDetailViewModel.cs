@@ -36,6 +36,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private bool _showError;
         private string _errorString;
         private bool _isAccountChanged;
+        private ErrorGroupItem _groupItem;
+        private CollectionView _eventItemCollection;
         private TimeRangeItem _selectedTimeRange;
         private Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
 
@@ -96,12 +98,20 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Gets or sets the error group.
         /// </summary>
-        public ErrorGroupItem GroupItem { get; private set; }
+        public ErrorGroupItem GroupItem
+        {
+            get { return _groupItem; }
+            private set { SetValueAndRaise(ref _groupItem, value); }
+        }
 
         /// <summary>
         /// The data collection of event item list.
         /// </summary>
-        public CollectionView EventItemCollection { get; private set; }
+        public CollectionView EventItemCollection
+        {
+            get { return _eventItemCollection; }
+            private set { SetValueAndRaise(ref _eventItemCollection, value); }
+        }
 
         /// <summary>
         /// Sets the currently selected time range.
@@ -166,10 +176,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             }
 
             GroupItem = errorGroupItem;
-            if (groupSelectedTimeRangeItem.EventTimeRange == SelectedTimeRangeItem?.EventTimeRange)
+            if (groupSelectedTimeRangeItem.GroupTimeRange == SelectedTimeRangeItem?.GroupTimeRange)
             {
                 UpdateEventAsync();
-                RaiseAllPropertyChanged();
             }
             else
             {
@@ -202,7 +211,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 }
                 else
                 {
-                    GroupItem.SetEmptyModel();
+                    GroupItem.SetCountEmpty();
+                    RaisePropertyChanged(nameof(GroupItem));
                 }
             }
             catch (DataSourceException)
@@ -219,8 +229,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             {
                 IsGroupLoading = false;
             }
-
-            RaiseAllPropertyChanged();
         }
 
         private async Task UpdateGroupAndEventAsync()
@@ -243,8 +251,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private async Task UpdateEventAsync()
         {
             EventItemCollection = null;
-            RaisePropertyChanged(nameof(EventItemCollection));
-
             if (GroupItem.ErrorGroup.TimedCounts != null)
             {
                 IsEventLoading = true;
@@ -277,8 +283,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                     IsControlEnabled = true;
                 }
             }
-
-            RaisePropertyChanged(nameof(EventItemCollection));
         }
 
         private StackdriverErrorReportingDataSource CreateDataSource()

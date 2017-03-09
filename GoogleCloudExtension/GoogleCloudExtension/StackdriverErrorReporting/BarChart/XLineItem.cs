@@ -31,9 +31,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Height of each row.
         /// </summary>
-        public int RowHeight { get; }
+        public double RowHeight { get; }
 
-        public XLineItem(double scale, int rowHeight)
+        public XLineItem(double scale, double rowHeight)
         {
             CountScale = scale == 0 ? null :
                 String.Format(((Math.Round(scale) == scale) ? "{0:0}" : "{0:0.00}"), scale);

@@ -123,7 +123,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public ListCollectionView GroupStatsView { get; }
 
         /// <summary>
-        /// <summary>
         /// Navigate to detail view window command.
         /// </summary>
         public ProtectedCommand<ErrorGroupItem> OnGotoDetailCommand { get; }

@@ -31,7 +31,6 @@
                 <Grid Margin="12,0,24,0">
                     
                     <ItemsControl 
-                        Panel.ZIndex="10" 
                         x:Name="PART_LineItemsControl"
                         VerticalAlignment="Stretch"
                         Background="Transparent"
@@ -61,7 +60,6 @@
                     
                     <ItemsControl 
                         x:Name="PART_TimedCountItemsControl"
-                        Panel.ZIndex="20"
                         Background="Transparent"
                         Margin="50,0,0,0"
                         VerticalAlignment="Bottom">

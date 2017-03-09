@@ -5,6 +5,7 @@
     xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils">
 
     <Style x:Key="TimedCountMiniBarChartStyle" TargetType="local:TimedCountBarChartControl" >
+        <Setter Property="BarMaxHeight" Value="15" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="local:TimedCountBarChartControl">
@@ -15,17 +16,12 @@
                             VerticalAlignment="Center" >
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Rectangle Grid.Row="0"                                
+                                    <Rectangle                             
                                         VerticalAlignment="Bottom" 
                                         Width="3"
                                         Margin="1,0,0,0"
-                                        Fill="Blue">
-                                        <Rectangle.Height>
-                                            <Binding Path="BarHeightRatio" 
-                                                     Converter="{utils:MultiplyConverter}"  
-                                                     ConverterParameter="15" />
-                                        </Rectangle.Height>
-                                    </Rectangle>
+                                        Fill="Blue"
+                                        Height="{Binding BarHeight}" />
 
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>

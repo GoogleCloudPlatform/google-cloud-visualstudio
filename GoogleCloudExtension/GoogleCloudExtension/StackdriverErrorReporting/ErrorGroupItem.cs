@@ -122,7 +122,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// the error group may not contain any errors in the short time range.
         /// Set the model to show the 0 count state while keep some data available.
         /// </summary>
-        public void SetEmptyModel()
+        public void SetCountEmpty()
         {
             ErrorGroup.Count = 0;
             ErrorGroup.NumAffectedServices = null;

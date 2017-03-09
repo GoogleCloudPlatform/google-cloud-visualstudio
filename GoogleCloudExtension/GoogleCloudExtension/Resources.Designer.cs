@@ -1924,6 +1924,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error happened {0} times in {1} {2} Starting from {3}..
+        /// </summary>
+        public static string ErrorReportingBarchartTooltipPluralFormat {
+            get {
+                return ResourceManager.GetString("ErrorReportingBarchartTooltipPluralFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Errors in the last {0}.
         /// </summary>
         public static string ErrorReportingCurrentGroupTimePeriodLabelFormat {
@@ -1938,15 +1947,6 @@ namespace GoogleCloudExtension {
         public static string ErrorReportingDataSourceGenericErrorMessage {
             get {
                 return ResourceManager.GetString("ErrorReportingDataSourceGenericErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to MM-dd-yyyy HH:mm:ss.fff.
-        /// </summary>
-        public static string ErrorReportingDateTimeFormat {
-            get {
-                return ResourceManager.GetString("ErrorReportingDateTimeFormat", resourceCulture);
             }
         }
         
@@ -2091,6 +2091,15 @@ namespace GoogleCloudExtension {
         public static string ErrorReportingToOverviewButtonCaption {
             get {
                 return ResourceManager.GetString("ErrorReportingToOverviewButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unexpected time range.
+        /// </summary>
+        public static string ErrorReportingUnexpectedEventGroupTimeRangeErrorMessage {
+            get {
+                return ResourceManager.GetString("ErrorReportingUnexpectedEventGroupTimeRangeErrorMessage", resourceCulture);
             }
         }
         

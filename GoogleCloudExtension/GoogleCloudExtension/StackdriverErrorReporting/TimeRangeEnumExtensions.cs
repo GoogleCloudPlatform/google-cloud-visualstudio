@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Returns bar chart time line format string based on the <seealso cref="EventGroupTimeRangeEnum"/> value.
         /// </summary>
-        public static string TimeLineFormat(this EventGroupTimeRangeEnum timeRange  )
+        public static string TimeLineFormat(this EventGroupTimeRangeEnum timeRange)
         {
             switch (timeRange)
             {
@@ -58,7 +58,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 case EventGroupTimeRangeEnum.PERIOD6HOURS:
                     return Resources.ErrorReporting6HoursRangeTimeCountDurationLabel;
                 default:
-                    return "";      // Not expected, to be safe, return empty string.
+                    // Not expected. Should not happen. Show an error.
+                    return Resources.ErrorReportingUnexpectedEventGroupTimeRangeErrorMessage;
             }
         }
     }
