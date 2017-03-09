@@ -127,6 +127,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public ProtectedCommand<ErrorGroupItem> OnGotoDetailCommand { get; }
 
+        /// <summary>
         /// Selected time range caption.
         /// </summary>
         public string CurrentTimeRangeCaption => String.Format(
