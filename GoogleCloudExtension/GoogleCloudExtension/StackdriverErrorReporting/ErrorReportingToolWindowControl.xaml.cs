@@ -27,7 +27,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public ErrorReportingToolWindowControl()
         {
-            PackageUtils.ReferenceType(typeof(MultiplyConverter));
             this.InitializeComponent();
         }
     }

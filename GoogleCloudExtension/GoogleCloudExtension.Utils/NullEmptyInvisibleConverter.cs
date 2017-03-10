@@ -22,16 +22,29 @@ using System.Windows.Markup;
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
-    /// If the object is null, set the visibility to <seealso cref="Visibility.Collapsed"/>.
+    /// If the object is null, 
+    /// or if it is string type and is null or empty or whitespace, 
+    /// set the visibility to <seealso cref="Visibility.Collapsed"/>.
     /// Otherwise, set the visibility as <seealso cref="Visibility.Visible"/>.
     /// Note: Only Convert is implemented, so this is not a bidirectional converter, do not use on TwoWay bindings.
     /// </summary>
-    public class NullObjectInvisibleConverter : MarkupExtension, IValueConverter
+    public class NullEmptyInvisibleConverter : MarkupExtension, IValueConverter
     {
         #region Implements interface IValueConverter.
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value == null ? Visibility.Collapsed : Visibility.Visible;
+            if (value == null)
+            {
+                return Visibility.Collapsed;
+            }
+
+            if (value is string)
+            {
+                return String.IsNullOrWhiteSpace(value as string) ? Visibility.Collapsed : Visibility.Visible;
+            }
+
+            Debug.WriteLine($"Unexpected value type, Value should be a string: {value}");
+            return DependencyProperty.UnsetValue;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
