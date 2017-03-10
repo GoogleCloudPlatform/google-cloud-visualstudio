@@ -84,13 +84,11 @@ namespace GoogleCloudExtension.GCloud
         {
             var versionParameter = version != null ? $"--version={version}" : "";
             var promoteParameter = promote ? "--promote" : "--no-promote";
-            Dictionary<string, string> environment = null;
 
             return RunCommandAsync(
                 $"beta app deploy \"{appYaml}\" {versionParameter} {promoteParameter} --skip-staging --quiet",
                 outputAction,
-                context,
-                environment);
+                context);
         }
 
         /// <summary>
