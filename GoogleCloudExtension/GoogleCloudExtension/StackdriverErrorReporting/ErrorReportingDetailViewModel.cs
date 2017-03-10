@@ -264,7 +264,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                     if (events?.ErrorEvents != null)
                     {
                         EventItemCollection = CollectionViewSource.GetDefaultView(
-                            events.ErrorEvents.Select(x => new EventItem(x))) as CollectionView;
+                            events.ErrorEvents.Where(x => x != null).Select(x => new EventItem(x))) as CollectionView;
                     }
                 }
                 catch (DataSourceException)

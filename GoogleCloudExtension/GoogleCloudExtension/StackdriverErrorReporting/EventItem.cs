@@ -24,7 +24,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// </summary>
     public class EventItem : Model
     {
-        private static readonly string[] s_lineBreaks = new string[] { "\r\n", "\n", "\r" };
         private readonly ErrorEvent _error;
 
         /// <summary>
@@ -42,15 +41,10 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public object EventTime => _error.EventTime;
 
-        /// <summary>
-        /// Initializes a new instance of <seealso cref="EventItem"/> class.
-        /// </summary>
-        /// <param name="error">A <seealso cref="ErrorEvent"/> object.</param>
         public EventItem(ErrorEvent error)
         {
             _error = error;
-            var splits = _error.Message?.Split(s_lineBreaks, StringSplitOptions.RemoveEmptyEntries);
-            SummaryMessage = splits?.FirstOrDefault();
+            SummaryMessage = ParserUtils.ExtractHeader(_error.Message);
         }
     }
 }

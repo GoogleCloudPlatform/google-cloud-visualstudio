@@ -24,12 +24,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// </summary>
     public class ParsedException : Model
     {
-        /// <summary>
-        /// "\r\n" (\u000D\u000A) for Windows
-        /// "\n" (\u000A) for Unix
-        /// "\r" (\u000D) for Mac(if such implementation existed)
-        /// </summary>
-        private static readonly string[] s_lineBreaks = new string[] { "\r\n", "\n", "\r" };
         private readonly string[] _lines;
 
         /// <summary>
@@ -46,7 +40,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// The header part of the stack message.
         /// The value can be null.
         /// </summary>
-        public string Header => _lines.Length > 0 ? _lines[0] : null;
+        public string Header { get; }
 
         /// <summary>
         /// Gets the stack frames.
@@ -71,9 +65,10 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             {
                 throw new ErrorReportingException(new ArgumentNullException(nameof(exceptionMessage)));
             }
-            RawMessage = exceptionMessage;
-            _lines = RawMessage.Split(s_lineBreaks, StringSplitOptions.RemoveEmptyEntries);
             OwningParentObj = parent;
+            RawMessage = exceptionMessage;
+            _lines = ParserUtils.SplitLines(exceptionMessage);
+            Header = ParserUtils.SeparateHeaderFromInnerError(_lines.FirstOrDefault());
         }
 
         private List<StackFrame> ParseFrames()
