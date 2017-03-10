@@ -3,6 +3,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting;assembly=GoogleCloudExtension"
     xmlns:controls="clr-namespace:GoogleCloudExtension.Controls;assembly=GoogleCloudExtension"
+    xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions;assembly=GoogleCloudExtension"                                     
+    xmlns:ext="clr-namespace:GoogleCloudExtension;assembly=GoogleCloudExtension"
     xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils">
 
     <ResourceDictionary.MergedDictionaries>
@@ -13,6 +15,18 @@
 
     <utils:VisibilityConverter x:Key="visibilityConverter" />
 
+
+    <Style x:Key="StackSampleToggleButtonStyle" 
+           TargetType="controls:ImageToggleButton"
+           BasedOn="{StaticResource ImageToggleButtonStyle}">
+        <Setter Property="Padding" Value="6" />
+        <Setter Property="UncheckedImage" Value="{mp:ImageResource StackdriverErrorReporting/Resources/show_more_icon.png}" />
+        <Setter Property="CheckedImage" Value="{mp:ImageResource StackdriverErrorReporting/Resources/show_less_icon.png}" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="Content" Value="{x:Static ext:Resources.ErrorReportingToggleStackSampleButtonCaption}" />
+        <Setter Property="IsChecked" Value="True" />
+    </Style>
+    
     <ControlTemplate x:Key="StackControlTemplate" TargetType="local:StackControl">
         <TabControl DataContext="{TemplateBinding ParsedStacks}">
             <TabItem 

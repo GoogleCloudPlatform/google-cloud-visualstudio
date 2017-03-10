@@ -267,7 +267,6 @@
     <Compile Include="StackdriverErrorReporting\GotoSourceLocation\ParsedException.cs" />
     <Compile Include="GotoSourceLine\ShowTooltipUtils.cs" />
     <Compile Include="StackdriverErrorReporting\GotoSourceLocation\StackFrame.cs" />
-    <Compile Include="StackdriverErrorReporting\ServiceContextComparer.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingViewModel.cs" />
     <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtons.cs" />
     <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeItem.cs" />

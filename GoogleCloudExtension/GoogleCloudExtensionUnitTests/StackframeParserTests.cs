@@ -49,7 +49,7 @@ namespace GoogleCloudExtensionUnitTests
         [TestMethod]
         public void OptimizedCode()
         {
-            var exception = GenerateException(() => File.Create(@"kkk:\..\..\..\this is invalid path"));
+            var exception = GenerateException(() => File.Create(@"file://kkk\..\..\..\this is invalid path"));
             var parsedException = new ParsedException(exception.ToString(), null);
             Assert.AreEqual(2, parsedException.StackFrames.Where(x => x.IsWellParsed).Count());
         }

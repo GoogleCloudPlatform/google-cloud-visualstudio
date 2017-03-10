@@ -151,7 +151,7 @@ namespace GoogleCloudExtension.GotoSourceLine
         /// <param name="window">The Visual Studio doucment window of the source file.</param>
         public static void ShowToolTip(this LogItem logItem, Window window)
         {
-            GotoLine(window, (int)logItem.SourceLine);            
+            GotoLine(window, (int)logItem.SourceLine);        
             IVsTextView textView = GetIVsTextView(window.Document.FullName);
             var wpfView = GetWpfTextView(textView);
             if (wpfView == null)

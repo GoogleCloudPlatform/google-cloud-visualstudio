@@ -63,15 +63,4 @@
         <Setter Property="Margin" Value="0,6,0,6" />
     </Style>
 
-    <Style x:Key="StackSampleToggleButtonStyle" 
-           TargetType="controls:ImageToggleButton"
-           BasedOn="{StaticResource ImageToggleButtonStyle}">
-        <Setter Property="Padding" Value="6" />
-        <Setter Property="UncheckedImage" Value="{mp:ImageResource StackdriverErrorReporting/Resources/show_more_icon.png}" />
-        <Setter Property="CheckedImage" Value="{mp:ImageResource StackdriverErrorReporting/Resources/show_less_icon.png}" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
-        <Setter Property="Content" Value="{x:Static ext:Resources.ErrorReportingToggleStackSampleButtonCaption}" />
-        <Setter Property="IsChecked" Value="True" />
-    </Style>
-
 </ResourceDictionary>

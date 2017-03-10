@@ -33,8 +33,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     [Guid("4b3c62b4-2121-40a1-8cd5-8f794760b35e")]
     public class ErrorReportingToolWindow : ToolWindowPane
     {
-        private readonly ErrorReportingViewModel _viewModel;
-
         /// <summary>
         /// Gets a <seealso cref="ErrorReportingViewModel"/> object that is associated with the Window.
         /// </summary>
