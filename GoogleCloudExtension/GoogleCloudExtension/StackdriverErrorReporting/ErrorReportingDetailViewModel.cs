@@ -175,6 +175,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 throw new ErrorReportingException(new ArgumentNullException(nameof(groupSelectedTimeRangeItem)));
             }
 
+            IsAccountChanged = false;
             GroupItem = errorGroupItem;
             if (groupSelectedTimeRangeItem.GroupTimeRange == SelectedTimeRangeItem?.GroupTimeRange)
             {

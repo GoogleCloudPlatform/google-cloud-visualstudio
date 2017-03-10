@@ -1482,7 +1482,7 @@ Open the project to navigate to the logger method location.</value>
     <comment>The prompt title for source version utils message boxes.</comment>
   </data>
   <data name="SourceVersionUtilsFileNotFoundMessage" xml:space="preserve">
-    <value>Does not find the source file in the solution.
+    <value>Does not find the source file in current solution.
 {0}</value>
     <comment>Prompt message when failed to find a source file. {0} is the file path.</comment>
   </data>
@@ -1851,5 +1851,5 @@ Open the project of version {2} to properly locate the logging writter location.
   <data name="ErrorReportingSourceTooltipFormat" xml:space="preserve">
     <value>Count {0}    First seen at {1}     Last seen at {2}     in the last {3}</value>
     <comment>Show a brief message about an error group. {0} is the total error count, {1} is the first error time, {2} is the last error time, {3] is the currently selected time range.</comment>
-  </data>  
+  </data>
 </root>

@@ -22,6 +22,8 @@
                 <ResourceDictionary Source="./ErrorReportingResources.xaml" />
                 <ResourceDictionary Source="./TimeRangeButtons/TimeRangeButtonsResources.xaml" />
                 <ResourceDictionary Source="./BarChart/TimedCountBarChart.xaml" />
+                <ResourceDictionary Source="./GotoSourceLocation/StackFrameControlResources.xaml" />
+                <ResourceDictionary Source="./GotoSourceLocation/StackControlResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <utils:VisibilityConverter x:Key="visibilityConverterNegated" IsNegated="True"/>
@@ -100,10 +102,11 @@
                                 Style="{StaticResource CommonTextStyle}"
                                 FontWeight="DemiBold"
                                 Text="{Binding GroupItem.ErrorMessage}" />
-                            <local:MessageWithSourceLink 
-                                    Margin="0,0,36,0"
-                                    DataContext="{Binding GroupItem.FirstStackFrame}"
-                                    Visibility="{Binding GroupItem.FirstStackFrame, Converter={StaticResource nullObjectInvisibleConverter}}" />
+                            <local:StackFrameControl 
+                                Margin="0,0,36,0"
+                                Frame="{Binding GroupItem.FirstStackFrame}"
+                                Style="{StaticResource StatckFrameControlStyle}"
+                                Visibility="{Binding GroupItem.FirstStackFrame, Converter={StaticResource nullObjectInvisibleConverter}}" />
                         </StackPanel>
                         
                         <local:TimeRangeButtons 
@@ -255,7 +258,10 @@
                         <!-- stack trace sample -->
                         <Border Style="{StaticResource DetailViewBorderStyle}" >
                             <Border Style="{StaticResource DetailViewBorderStyle}" >
-                                <local:ParseExceptionView Margin="6" DataContext="{Binding GroupItem.ParsedException}" />
+                                <local:StackControl
+                                    Margin="6" 
+                                    ParsedStacks="{Binding GroupItem.ParsedException}" 
+                                    Style="{StaticResource StackControlStyle}"/>
                             </Border>
                         </Border>
 

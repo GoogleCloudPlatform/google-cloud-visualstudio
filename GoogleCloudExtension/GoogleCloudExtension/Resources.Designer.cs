@@ -3584,7 +3584,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Does not find the source file in the solution.
+        ///   Looks up a localized string similar to Does not find the source file in current solution.
         ///{0}.
         /// </summary>
         public static string SourceVersionUtilsFileNotFoundMessage {
