@@ -1852,4 +1852,16 @@ Open the project of version {2} to properly locate the logging writter location.
     <value>Count {0}    First seen at {1}     Last seen at {2}     in the last {3}</value>
     <comment>Show a brief message about an error group. {0} is the total error count, {1} is the first error time, {2} is the last error time, {3] is the currently selected time range.</comment>
   </data>
+  <data name="ErrorReportingGobacktoErrorReportingLinkCaption" xml:space="preserve">
+    <value>Go back to Error Reporting window</value>
+    <comment>The link button caption for going back to Error Reporting window at source line tooltip window.</comment>
+  </data>
+  <data name="ErrorReportingParsedStackTabHeader" xml:space="preserve">
+    <value>Parsed Stack</value>
+    <comment>The tab header for showing parsed stack frames.</comment>
+  </data>
+  <data name="ErrorReportingRawStackTabHeader" xml:space="preserve">
+    <value>Raw Stack</value>
+    <comment>The tab header for showing raw stack message.</comment>
+  </data>
 </root>

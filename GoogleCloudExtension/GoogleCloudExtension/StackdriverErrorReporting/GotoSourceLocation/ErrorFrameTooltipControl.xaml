@@ -52,7 +52,7 @@
                     Style="{StaticResource BackButtonStyle}"
                     UncheckedImage="{mp:ImageResource StackdriverLogsViewer/Resources/back_icon_12.png}"
                     CheckedImage="{mp:ImageResource StackdriverLogsViewer/Resources/back_icon_12.png}"
-                    Content="Go back to Error Reporting window."
+                    Content="{x:Static ext:Resources.ErrorReportingGobacktoErrorReportingLinkCaption}"
                     Command="{Binding OnBackToErrorReportingCommand}" />
             </Grid>
         </StackPanel>

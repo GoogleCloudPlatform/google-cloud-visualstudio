@@ -2014,6 +2014,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Go back to Error Reporting window.
+        /// </summary>
+        public static string ErrorReportingGobacktoErrorReportingLinkCaption {
+            get {
+                return ResourceManager.GetString("ErrorReportingGobacktoErrorReportingLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unkown internal error. Please report the issue and/or retry later..
         /// </summary>
         public static string ErrorReportingInternalCodeErrorGenericMessage {
@@ -2037,6 +2046,24 @@ namespace GoogleCloudExtension {
         public static string ErrorReportingNoErrorGroupSelectedMessage {
             get {
                 return ResourceManager.GetString("ErrorReportingNoErrorGroupSelectedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Parsed Stack.
+        /// </summary>
+        public static string ErrorReportingParsedStackTabHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingParsedStackTabHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Raw Stack.
+        /// </summary>
+        public static string ErrorReportingRawStackTabHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingRawStackTabHeader", resourceCulture);
             }
         }
         

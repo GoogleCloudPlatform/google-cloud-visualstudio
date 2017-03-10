@@ -30,7 +30,7 @@
     <ControlTemplate x:Key="StackControlTemplate" TargetType="local:StackControl">
         <TabControl DataContext="{TemplateBinding ParsedStacks}">
             <TabItem 
-                Header="Parsed Stack"
+                Header="{x:Static ext:Resources.ErrorReportingParsedStackTabHeader}"
                 Visibility="{Binding ShowParsedFrames, Converter={StaticResource visibilityConverter}}">
                 <StackPanel>
                     <controls:ImageToggleButton  
@@ -60,8 +60,8 @@
                     
                 </StackPanel>
             </TabItem>
-            
-            <TabItem Header="Raw Stack">
+
+            <TabItem Header="{x:Static ext:Resources.ErrorReportingRawStackTabHeader}">
                 <StackPanel>
                     <controls:ImageToggleButton  
                     x:Name="_traceSampleToggle"
