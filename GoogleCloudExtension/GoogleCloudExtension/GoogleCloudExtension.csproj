@@ -241,9 +241,13 @@
     <Compile Include="Controls\FixBackgroundComboBox.cs" />
     <Compile Include="StackdriverErrorReporting\BarChart\TimedCountBarChartControl.cs" />
     <Compile Include="StackdriverErrorReporting\BarChart\TimeCountItem.cs" />
-    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\StackControl.cs" />
-    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\StackFrameControl.cs" />
-    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\ParserUtils.cs" />
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\StackControl.xaml.cs">
+      <DependentUpon>StackControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\StackFrameControl.xaml.cs">
+      <DependentUpon>StackFrameControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\ParserUtils.cs" />
     <Compile Include="StackdriverErrorReporting\TimeRangeEnumExtensions.cs" />
     <Compile Include="StackdriverErrorReporting\BarChart\XLineItem.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindow.cs" />
@@ -259,14 +263,14 @@
       <DependentUpon>ErrorReportingToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverErrorReporting\EventItem.cs" />
-    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\ErrorFrameTooltipControl.xaml.cs">
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\ErrorFrameTooltipControl.xaml.cs">
       <DependentUpon>ErrorFrameTooltipControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GotoSourceLine\SourceLineToolTipDataSource.cs" />
-    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\ErrorFrameTooltipViewModel.cs" />
-    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\ParsedException.cs" />
-    <Compile Include="GotoSourceLine\ShowTooltipUtils.cs" />
-    <Compile Include="StackdriverErrorReporting\GotoSourceLocation\StackFrame.cs" />
+    <Compile Include="SourceBrowsing\ActiveTagData.cs" />
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\ErrorFrameTooltipViewModel.cs" />
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\ParsedException.cs" />
+    <Compile Include="SourceBrowsing\ShowTooltipUtils.cs" />
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\StackFrame.cs" />
     <Compile Include="StackdriverErrorReporting\ErrorReportingViewModel.cs" />
     <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtons.cs" />
     <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeItem.cs" />
@@ -290,17 +294,17 @@
       <DependentUpon>LogsViewerToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModel.cs" />
-    <Compile Include="GotoSourceLine\StackdriverHighlightFormat.cs" />
-    <Compile Include="GotoSourceLine\StackdriverTagger.cs" />
+    <Compile Include="SourceBrowsing\StackdriverHighlightFormat.cs" />
+    <Compile Include="SourceBrowsing\StackdriverTagger.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\MenuItemViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeMenuViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeNameConsts.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceValueItemViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeItemViewModel.cs" />
     <Compile Include="Controls\SearchMenuItem.cs" />
-    <Compile Include="GotoSourceLine\StackdriverTaggerProvider.cs" />
+    <Compile Include="SourceBrowsing\StackdriverTaggerProvider.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LogWritterNameConsts.cs" />
-    <Compile Include="GotoSourceLine\SourceVersionUtils.cs" />
+    <Compile Include="SourceBrowsing\SourceVersionUtils.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\JArrayNode.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\JObjectNode.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\LogEntryNode.cs" />
@@ -786,21 +790,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="StackdriverErrorReporting\GotoSourceLocation\ErrorFrameTooltipControl.xaml">
+    <Page Include="StackdriverErrorReporting\SourceNavigation\ErrorFrameTooltipControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Resource Include="StackdriverErrorReporting\GotoSourceLocation\StackFrameControlResources.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Resource>
-    <Resource Include="StackdriverErrorReporting\GotoSourceLocation\StackControlResources.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Resource>
     <Resource Include="StackdriverErrorReporting\ErrorReportingResources.xaml">
       <SubType>Designer</SubType>
     </Resource>
+    <Page Include="StackdriverErrorReporting\SourceNavigation\StackControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StackdriverErrorReporting\SourceNavigation\StackFrameControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtonsResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

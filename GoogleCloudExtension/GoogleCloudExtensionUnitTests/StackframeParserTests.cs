@@ -33,7 +33,7 @@ namespace GoogleCloudExtensionUnitTests
         {
             var exception = GenerateException(() => Loop(3));
             var stackTrace = new StackTrace(exception, fNeedFileInfo:true);
-            var parsedException = new ParsedException(exception.ToString(), null);
+            var parsedException = new ParsedException(exception.ToString());
             Assert.AreEqual(stackTrace.FrameCount, parsedException.StackFrames.Where(x => x.IsWellParsed).Count());
             Assert.AreEqual(ExceptionHeader, parsedException.Header);
         }
@@ -42,7 +42,7 @@ namespace GoogleCloudExtensionUnitTests
         public void InterException()
         {
             var exception = GenerateException(()=> GenerateInnerException(3));
-            var parsedException = new ParsedException(exception.ToString(), null);
+            var parsedException = new ParsedException(exception.ToString());
             Assert.AreEqual(14, parsedException.StackFrames.Where(x => x.IsWellParsed).Count());
         }
 
@@ -50,7 +50,7 @@ namespace GoogleCloudExtensionUnitTests
         public void OptimizedCode()
         {
             var exception = GenerateException(() => File.Create(@"file://kkk\..\..\..\this is invalid path"));
-            var parsedException = new ParsedException(exception.ToString(), null);
+            var parsedException = new ParsedException(exception.ToString());
             Assert.AreEqual(2, parsedException.StackFrames.Where(x => x.IsWellParsed).Count());
         }
 

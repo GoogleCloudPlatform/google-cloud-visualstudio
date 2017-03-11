@@ -13,7 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
-using GoogleCloudExtension.GotoSourceLine;
+using GoogleCloudExtension.SourceBrowsing;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;

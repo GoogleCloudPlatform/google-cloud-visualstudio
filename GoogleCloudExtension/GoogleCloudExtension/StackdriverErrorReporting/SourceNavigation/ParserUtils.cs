@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// "\r\n" (\u000D\u000A) for Windows
         /// "\n" (\u000A) for Unix
-        /// "\r" (\u000D) for Mac
+        /// "\r" (\u000D) for some caess.
         /// </summary>
         private static readonly string[] s_lineBreaks = new string[] { "\r\n", "\n", "\r" };
         private static readonly string[] s_lineBreaksAndInnerErrorSeparator = new string[] { InnderExceptionSeparator, "\r\n", "\n", "\r" };

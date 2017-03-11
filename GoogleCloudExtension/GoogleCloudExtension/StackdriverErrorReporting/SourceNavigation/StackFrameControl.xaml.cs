@@ -12,31 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Windows;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
     /// <summary>
-    /// Custom control that displays stack frame message with an optional source file link.
+    /// Interaction logic for StackFrameControl.xaml
     /// </summary>
-    public class StackFrameControl : Control
+    public partial class StackFrameControl : UserControl
     {
-        public static readonly DependencyProperty FrameProperty =
-            DependencyProperty.Register(
-                nameof(Frame),
-                typeof(StackFrame),
-                typeof(StackFrameControl),
-                new FrameworkPropertyMetadata(null));
-
-        /// <summary>
-        /// Gets or sets the stack frame object as data source.
-        /// <seealso cref="FrameProperty"/>.
-        /// </summary>
-        public StackFrame Frame
+        public StackFrameControl()
         {
-            get { return (StackFrame)GetValue(FrameProperty); }
-            set { SetValue(FrameProperty, value); }
+            InitializeComponent();
         }
     }
 }

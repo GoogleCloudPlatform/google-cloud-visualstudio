@@ -21,7 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace GoogleCloudExtension.GotoSourceLine
+namespace GoogleCloudExtension.SourceBrowsing
 {
     /// <summary>
     /// Define the custom <seealso cref="ITagger{T}"/> for showing a tooltip around a source code line.
@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.GotoSourceLine
             _view.LayoutChanged += OnViewLayoutChanged;
             _view.LostAggregateFocus += OnLostAggregateFocus;
             _toolTipProvider = toolTipProviderFactory.GetToolTipProvider(_view);
-            if (_view == SourceLineToolTipDataSource.Current.TextView)
+            if (_view == ActiveTagData.Current?.TextView)
             {
                 ShowOrUpdateToolTip();
             }
@@ -65,7 +65,7 @@ namespace GoogleCloudExtension.GotoSourceLine
         /// </summary>
         public void ShowOrUpdateToolTip()
         {
-            if (!SourceLineToolTipDataSource.Current.IsValidSource)
+            if (ActiveTagData.Current == null)
             {
                 return;
             }
@@ -74,11 +74,11 @@ namespace GoogleCloudExtension.GotoSourceLine
         }
 
         /// <summary>
-        /// Clear tooptip by clearing <seealso cref="SourceLineToolTipDataSource"/> and  refreshing the taggers.
+        /// Clear tooptip by clearing <seealso cref="ActiveTagData"/> and  refreshing the taggers.
         /// </summary>
         public void ClearTooltip()
         {
-            SourceLineToolTipDataSource.Current.Reset();
+            ActiveTagData.ResetCurrent();
             if (_isTooltipShown)
             {
                 SendTagsChangedEvent();
@@ -90,17 +90,19 @@ namespace GoogleCloudExtension.GotoSourceLine
         /// </summary>
         public IEnumerable<ITagSpan<StackdriverTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
-            if (SourceLineToolTipDataSource.Current.TextView != _view || spans.Count == 0)
+            // Note, keep a local copy of ActiveTagData.Current. 
+            // In case ActiveTagData.Current changes by other thread or by async re-entrancy.
+            var activeData = ActiveTagData.Current;
+            if (activeData?.TextView != _view || spans.Count == 0)
             {
-                Debug.WriteLine($"TooltipSource.TextView != _view is {SourceLineToolTipDataSource.Current.TextView != _view}, spans.Count is {spans.Count}");
+                Debug.WriteLine($"TooltipSource.TextView != _view is {ActiveTagData.Current?.TextView != _view}, spans.Count is {spans.Count}");
                 HideTooltip();
                 yield break;
             }
 
-            ITextSnapshotLine textLine = _sourceBuffer.CurrentSnapshot.GetLineFromLineNumber(
-                (int)SourceLineToolTipDataSource.Current.SourceLine - 1);
+            ITextSnapshotLine textLine = _sourceBuffer.CurrentSnapshot.GetLineFromLineNumber((int)activeData.SourceLine - 1);
             SnapshotSpan span;
-            if (String.IsNullOrWhiteSpace(SourceLineToolTipDataSource.Current.MethodName))
+            if (String.IsNullOrWhiteSpace(activeData.MethodName))
             {
                 var text = textLine.GetText();
                 int begin = StringUtils.FirstNonSpaceIndex(text);
@@ -113,13 +115,13 @@ namespace GoogleCloudExtension.GotoSourceLine
             }
             else
             {
-                int pos = textLine.GetText().IndexOf(SourceLineToolTipDataSource.Current.MethodName);
+                int pos = textLine.GetText().IndexOf(activeData.MethodName);
                 if (pos < 0)
                 {
                     HideTooltip();
                     yield break;
                 }
-                span = new SnapshotSpan(textLine.Start + pos, SourceLineToolTipDataSource.Current.MethodName.Length);
+                span = new SnapshotSpan(textLine.Start + pos, activeData.MethodName.Length);
             }
             yield return new TagSpan<StackdriverTag>(span, s_emptyLoggerTag);
             DisplayTooltip(new SnapshotSpan(textLine.Start, textLine.Length));
@@ -129,9 +131,9 @@ namespace GoogleCloudExtension.GotoSourceLine
         {
             if (_isTooltipShown)
             {
-                if (SourceLineToolTipDataSource.Current.TextView == _view)
+                if (ActiveTagData.Current?.TextView == _view)
                 {
-                    SourceLineToolTipDataSource.Current.Reset();
+                    ActiveTagData.ResetCurrent();
                 }
 
                 SendTagsChangedEvent();
@@ -145,11 +147,11 @@ namespace GoogleCloudExtension.GotoSourceLine
         {
             // If a new snapshot is generated, clear the tooltip.
             if (e.NewViewState.EditSnapshot != e.OldViewState.EditSnapshot
-                || (_isTooltipShown && !SourceLineToolTipDataSource.Current.IsValidSource))
+                || (_isTooltipShown && ActiveTagData.Current == null))
             {
                 ClearTooltip();
             }
-            else if (SourceLineToolTipDataSource.Current.IsValidSource 
+            else if (ActiveTagData.Current != null
                 // if tooltip is not shown, or if the view port width changes.
                 && (!_isTooltipShown || e.NewViewState.ViewportWidth != e.OldViewState.ViewportWidth))
             {
@@ -173,10 +175,18 @@ namespace GoogleCloudExtension.GotoSourceLine
         {
             _toolTipProvider.ClearToolTip();
             _isTooltipShown = true;
-            SourceLineToolTipDataSource.Current.TooltipControl.Width = _view.ViewportWidth;
+            // Note, keep a local copy of ActiveTagData.Current. 
+            // In case ActiveTagData.Current changes by other thread or by async re-entrancy.
+            ActiveTagData activeData = ActiveTagData.Current;
+            if (activeData == null)
+            {
+                Debug.WriteLine($"{nameof(ActiveTagData.Current)} is empty, this is probably a code bug.");
+                return;
+            }
+            activeData.TooltipControl.Width = _view.ViewportWidth;
             this._toolTipProvider.ShowToolTip(
                 span.Snapshot.CreateTrackingSpan(span, SpanTrackingMode.EdgeExclusive),
-                SourceLineToolTipDataSource.Current.TooltipControl, 
+                activeData.TooltipControl, 
                 PopupStyles.PositionClosest);
         }
     }

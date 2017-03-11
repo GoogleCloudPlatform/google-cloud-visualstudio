@@ -30,12 +30,12 @@ namespace GoogleCloudExtension.UserPrompt
         /// <summary>
         /// The prompt to use in the dialog.
         /// </summary>
-        public string Prompt => _options.Prompt;
+        public string Prompt => _options.Prompt?.Replace(@"\r\n", Environment.NewLine);
 
         /// <summary>
         /// The message to display.
         /// </summary>
-        public string Message => _options.Message;
+        public string Message => _options.Message?.Replace(@"\r\n", Environment.NewLine);
 
         /// <summary>
         /// The error details to show in the dialog.

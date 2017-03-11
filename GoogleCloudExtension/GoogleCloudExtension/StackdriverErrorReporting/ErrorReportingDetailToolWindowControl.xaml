@@ -22,8 +22,6 @@
                 <ResourceDictionary Source="./ErrorReportingResources.xaml" />
                 <ResourceDictionary Source="./TimeRangeButtons/TimeRangeButtonsResources.xaml" />
                 <ResourceDictionary Source="./BarChart/TimedCountBarChart.xaml" />
-                <ResourceDictionary Source="./GotoSourceLocation/StackFrameControlResources.xaml" />
-                <ResourceDictionary Source="./GotoSourceLocation/StackControlResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <utils:VisibilityConverter x:Key="visibilityConverterNegated" IsNegated="True"/>
@@ -103,8 +101,7 @@
                                 Text="{Binding GroupItem.ErrorMessage}" />
                             <local:StackFrameControl 
                                 Margin="0,0,36,0"
-                                Frame="{Binding GroupItem.FirstStackFrame}"
-                                Style="{StaticResource StatckFrameControlStyle}"
+                                DataContext="{Binding GroupItem.FirstStackFrame}"
                                 Visibility="{Binding GroupItem.FirstStackFrame, Converter={StaticResource nullEmptyInvisibleConverter}}" />
                         </StackPanel>
                         
@@ -259,8 +256,7 @@
                             <Border Style="{StaticResource DetailViewBorderStyle}" >
                                 <local:StackControl
                                     Margin="6" 
-                                    ParsedStacks="{Binding GroupItem.ParsedException}" 
-                                    Style="{StaticResource StackControlStyle}"/>
+                                    DataContext="{Binding GroupItem.ParsedException}" />
                             </Border>
                         </Border>
 

@@ -2086,11 +2086,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Count {0}    First seen at {1}     Last seen at {2}     in the last {3}.
+        ///   Looks up a localized string similar to in the last.
         /// </summary>
-        public static string ErrorReportingSourceTooltipFormat {
+        public static string ErrorReportingSourceTooltipTimeRangeLabel {
             get {
-                return ResourceManager.GetString("ErrorReportingSourceTooltipFormat", resourceCulture);
+                return ResourceManager.GetString("ErrorReportingSourceTooltipTimeRangeLabel", resourceCulture);
             }
         }
         
@@ -2699,9 +2699,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Version missmatch. 
-        ///The current project {0} version is {1},
-        ///Open the project of version {2} to properly locate the logging writter location..
+        ///   Looks up a localized string similar to Version missmatch. \r\nThe current project {0} version is {1},\r\nOpen the project of version {2} to properly locate the logging writter location..
         /// </summary>
         public static string LogsViewerVersionMismatchPrompt {
             get {
@@ -3601,8 +3599,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to open the source file.
-        ///{0}.
+        ///   Looks up a localized string similar to Failed to open the source file.\r\n{0}.
         /// </summary>
         public static string SourceVersionUtilsFailedOpenFileMessage {
             get {
@@ -3611,21 +3608,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Does not find the source file in current solution.
-        ///{0}.
+        ///   Looks up a localized string similar to Does not find the source file in current solution.\r\n{0}.
         /// </summary>
         public static string SourceVersionUtilsFileNotFoundMessage {
             get {
                 return ResourceManager.GetString("SourceVersionUtilsFileNotFoundMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Google Cloud Tools.
-        /// </summary>
-        public static string SourceVersionUtilsPromptTitle {
-            get {
-                return ResourceManager.GetString("SourceVersionUtilsPromptTitle", resourceCulture);
             }
         }
         
@@ -3788,6 +3775,15 @@ namespace GoogleCloudExtension {
         public static string UiDateLabel {
             get {
                 return ResourceManager.GetString("UiDateLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud Tools.
+        /// </summary>
+        public static string uiDefaultPromptTitle {
+            get {
+                return ResourceManager.GetString("uiDefaultPromptTitle", resourceCulture);
             }
         }
         
