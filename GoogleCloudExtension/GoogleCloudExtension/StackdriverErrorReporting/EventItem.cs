@@ -44,8 +44,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public EventItem(ErrorEvent error)
         {
             _error = error;
-            var splits = _error.Message?.Split(new string[] { Environment.NewLine, "\r\n" }, StringSplitOptions.RemoveEmptyEntries);
-            SummaryMessage = splits?.FirstOrDefault();
+            SummaryMessage = ParserUtils.ExtractHeader(_error.Message);
         }
     }
 }

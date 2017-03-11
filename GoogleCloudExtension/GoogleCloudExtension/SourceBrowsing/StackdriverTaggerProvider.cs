@@ -21,7 +21,7 @@ using System;
 using System.Collections.Concurrent;
 using System.ComponentModel.Composition;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+namespace GoogleCloudExtension.SourceBrowsing
 {
     /// <summary>
     /// Define a custom <seealso cref="IViewTaggerProvider"/>.
@@ -31,15 +31,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     [ContentType("CSharp")]
     internal class LoggerTaggerProvider : IViewTaggerProvider
     {
-        private static Lazy<ConcurrentDictionary<ITextView, LoggerTagger>> _taggers = new Lazy<ConcurrentDictionary<ITextView, LoggerTagger>>();
+        private static Lazy<ConcurrentDictionary<ITextView, StackdriverTagger>> _taggers = new Lazy<ConcurrentDictionary<ITextView, StackdriverTagger>>();
 
         /// <summary>
-        /// Gets text view to logger taggers map.
+        /// Gets text view to taggers map.
         /// The data structure is used by CreateTagger that is exposed to Visual Studio. 
         /// VS may call it at any thread.
         /// Using concurrent dictionary so as to syncronize access to the map from different threads.
         /// </summary>
-        public static ConcurrentDictionary<ITextView, LoggerTagger> AllLoggerTaggers => _taggers.Value;
+        public static ConcurrentDictionary<ITextView, StackdriverTagger> AllLoggerTaggers => _taggers.Value;
 
         /// <summary>
         /// Import <seealso cref="IToolTipProviderFactory"/>.
@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return null;
             }
 
-            var tagger = AllLoggerTaggers.GetOrAdd(textView, (x) => new LoggerTagger(x, buffer, ToolTipProviderFactory));
+            var tagger = AllLoggerTaggers.GetOrAdd(textView, (x) => new StackdriverTagger(x, buffer, ToolTipProviderFactory));
             return tagger as ITagger<T>;
         }
     }

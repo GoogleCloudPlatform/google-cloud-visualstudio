@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Adornments;
 using Microsoft.VisualStudio.Text.Editor;
@@ -19,18 +20,15 @@ using Microsoft.VisualStudio.Text.Tagging;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Windows;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+namespace GoogleCloudExtension.SourceBrowsing
 {
     /// <summary>
-    /// Define the custom <seealso cref="ITagger{T}"/> for logger methods.
+    /// Define the custom <seealso cref="ITagger{T}"/> for showing a tooltip around a source code line.
     /// </summary>
-    internal class LoggerTagger : ITagger<LoggerTag>
+    internal class StackdriverTagger : ITagger<StackdriverTag>
     {
-        private static LoggerTag s_emptyLoggerTag = new LoggerTag();
-        private static readonly Lazy<LoggerTooltipControl> _tooltipControl = 
-            new Lazy<LoggerTooltipControl>(() => new LoggerTooltipControl());
+        private static StackdriverTag s_emptyLoggerTag = new StackdriverTag();
         private readonly IToolTipProvider _toolTipProvider;
         private readonly ITextView _view;
         private readonly ITextBuffer _sourceBuffer;
@@ -42,29 +40,32 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
 
         /// <summary>
-        /// Create a new instance of <seealso cref="LoggerTagger"/> class.
+        /// Create a new instance of <seealso cref="StackdriverTagger"/> class.
         /// </summary>
         /// <param name="view">The text view on which the tag shows.</param>
         /// <param name="sourceBuffer">The source buffer with the text view.</param>
         /// <param name="toolTipProviderFactory">The tool tip provider. <seealso cref="IToolTipProviderFactory"/>. </param>
-        public LoggerTagger(ITextView view, ITextBuffer sourceBuffer, IToolTipProviderFactory toolTipProviderFactory)
+        public StackdriverTagger(ITextView view, ITextBuffer sourceBuffer, IToolTipProviderFactory toolTipProviderFactory)
         {
             _sourceBuffer = sourceBuffer;
             _view = view;
-            _view.LayoutChanged += ViewLayoutChanged;
+            _view.LayoutChanged += OnViewLayoutChanged;
+            _view.LostAggregateFocus += OnLostAggregateFocus;
             _toolTipProvider = toolTipProviderFactory.GetToolTipProvider(_view);
-            if (_view == LoggerTooltipSource.Current.TextView)
+            if (_view == ActiveTagData.Current?.TextView)
             {
                 ShowOrUpdateToolTip();
             }
         }
+
+
 
         /// <summary>
         /// Display tooltip by refreshing the taggers.
         /// </summary>
         public void ShowOrUpdateToolTip()
         {
-            if (!LoggerTooltipSource.Current.IsValidSource)
+            if (ActiveTagData.Current == null)
             {
                 return;
             }
@@ -73,11 +74,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// Clear tooptip by clearing <seealso cref="LoggerTooltipSource"/> and  refreshing the taggers.
+        /// Clear tooptip by clearing <seealso cref="ActiveTagData"/> and  refreshing the taggers.
         /// </summary>
         public void ClearTooltip()
         {
-            LoggerTooltipSource.Current.Reset();
+            ActiveTagData.ResetCurrent();
             if (_isTooltipShown)
             {
                 SendTagsChangedEvent();
@@ -87,47 +88,70 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Implement interface <seealso cref="ITagger{T}"/>.
         /// </summary>
-        public IEnumerable<ITagSpan<LoggerTag>> GetTags(NormalizedSnapshotSpanCollection spans)
+        public IEnumerable<ITagSpan<StackdriverTag>> GetTags(NormalizedSnapshotSpanCollection spans)
         {
-            if (LoggerTooltipSource.Current.TextView != _view || spans.Count == 0)
+            // Note, keep a local copy of ActiveTagData.Current. 
+            // In case ActiveTagData.Current changes by other thread or by async re-entrancy.
+            var activeData = ActiveTagData.Current;
+            if (activeData?.TextView != _view || spans.Count == 0)
             {
-                Debug.WriteLine($"TooltipSource.TextView != _view is {LoggerTooltipSource.Current.TextView != _view}, spans.Count is {spans.Count}");
+                Debug.WriteLine($"TooltipSource.TextView != _view is {ActiveTagData.Current?.TextView != _view}, spans.Count is {spans.Count}");
                 HideTooltip();
                 yield break;
             }
 
-            ITextSnapshotLine textLine = _sourceBuffer.CurrentSnapshot.GetLineFromLineNumber((int)LoggerTooltipSource.Current.SourceLine - 1);
+            ITextSnapshotLine textLine = _sourceBuffer.CurrentSnapshot.GetLineFromLineNumber((int)activeData.SourceLine - 1);
             SnapshotSpan span;
-            if (String.IsNullOrWhiteSpace(LoggerTooltipSource.Current.MethodName))
+            if (String.IsNullOrWhiteSpace(activeData.MethodName))
             {
-                span = new SnapshotSpan(textLine.Start, textLine.Length);
+                var text = textLine.GetText();
+                int begin = StringUtils.FirstNonSpaceIndex(text);
+                int end = StringUtils.LastNonSpaceIndex(text);
+                if (begin == -1 || end == -1)
+                {
+                    yield break;
+                }
+                span = new SnapshotSpan(textLine.Start + begin, end - begin + 1);
             }
             else
             {
-                int pos = textLine.GetText().IndexOf(LoggerTooltipSource.Current.MethodName);
+                int pos = textLine.GetText().IndexOf(activeData.MethodName);
                 if (pos < 0)
                 {
                     HideTooltip();
                     yield break;
                 }
-                span = new SnapshotSpan(textLine.Start + pos, LoggerTooltipSource.Current.MethodName.Length);
+                span = new SnapshotSpan(textLine.Start + pos, activeData.MethodName.Length);
             }
-            yield return new TagSpan<LoggerTag>(span, s_emptyLoggerTag);
+            yield return new TagSpan<StackdriverTag>(span, s_emptyLoggerTag);
             DisplayTooltip(new SnapshotSpan(textLine.Start, textLine.Length));
+        }
+
+        private void OnLostAggregateFocus(object sender, EventArgs e)
+        {
+            if (_isTooltipShown)
+            {
+                if (ActiveTagData.Current?.TextView == _view)
+                {
+                    ActiveTagData.ResetCurrent();
+                }
+
+                SendTagsChangedEvent();
+            }
         }
 
         /// <summary>
         /// Force an update if the view layout changes
         /// </summary>
-        private void ViewLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
+        private void OnViewLayoutChanged(object sender, TextViewLayoutChangedEventArgs e)
         {
             // If a new snapshot is generated, clear the tooltip.
             if (e.NewViewState.EditSnapshot != e.OldViewState.EditSnapshot
-                || (_isTooltipShown && !LoggerTooltipSource.Current.IsValidSource))
+                || (_isTooltipShown && ActiveTagData.Current == null))
             {
                 ClearTooltip();
             }
-            else if (LoggerTooltipSource.Current.IsValidSource 
+            else if (ActiveTagData.Current != null
                 // if tooltip is not shown, or if the view port width changes.
                 && (!_isTooltipShown || e.NewViewState.ViewportWidth != e.OldViewState.ViewportWidth))
             {
@@ -147,26 +171,22 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             _isTooltipShown = false;
         }
 
-        /// <summary>
-        /// Note, the input type is defined as object. It takes <seealso cref="LogItem"/> type in runtime.
-        /// The reason of using object is to cheat the MEF loader not to reference LogItem.  
-        /// </summary>
-        /// <param name="logItem">A <seealso cref="LogItem"/> object.</param>
-        private UIElement CreateTooltipControl(object logItem)
-        {
-            var control = _tooltipControl.Value;
-            control.Width = _view.ViewportWidth;
-            control.DataContext = logItem;
-            return control;
-        }
-
         private void DisplayTooltip(SnapshotSpan span)
         {
             _toolTipProvider.ClearToolTip();
             _isTooltipShown = true;
+            // Note, keep a local copy of ActiveTagData.Current. 
+            // In case ActiveTagData.Current changes by other thread or by async re-entrancy.
+            ActiveTagData activeData = ActiveTagData.Current;
+            if (activeData == null)
+            {
+                Debug.WriteLine($"{nameof(ActiveTagData.Current)} is empty, this is probably a code bug.");
+                return;
+            }
+            activeData.TooltipControl.Width = _view.ViewportWidth;
             this._toolTipProvider.ShowToolTip(
                 span.Snapshot.CreateTrackingSpan(span, SpanTrackingMode.EdgeExclusive),
-                CreateTooltipControl(LoggerTooltipSource.Current.LogData), 
+                activeData.TooltipControl, 
                 PopupStyles.PositionClosest);
         }
     }

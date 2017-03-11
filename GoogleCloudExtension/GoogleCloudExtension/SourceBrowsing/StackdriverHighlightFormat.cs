@@ -18,27 +18,27 @@ using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
 using Microsoft.VisualStudio.Utilities;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+namespace GoogleCloudExtension.SourceBrowsing
 {
     /// <summary>
     /// Define a custom <seealso cref="TextMarkerTag"/>.
     /// </summary>
-    internal class LoggerTag : TextMarkerTag
+    internal class StackdriverTag : TextMarkerTag
     {
-        public LoggerTag() : base("LoggerMarkerFormat") { }
+        public StackdriverTag() : base("StackdriverMarkerFormat") { }
     }
 
     /// <summary>
-    /// Define a custom <seealso cref="EditorFormatDefinition"/> for highlighting logging methods.
+    /// Define a custom <seealso cref="EditorFormatDefinition"/> for highlighting source line.
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
-    [Name("LoggerMarkerFormat")]
-    internal class LoggerHighlightFormat : MarkerFormatDefinition
+    [Name("StackdriverMarkerFormat")]
+    internal class StackdriverHighlightFormat : MarkerFormatDefinition
     {
         /// <summary>
-        /// Initializes an instance of <seealso cref="LoggerHighlightFormat"/> class.
+        /// Initializes an instance of <seealso cref="StackdriverHighlightFormat"/> class.
         /// </summary>
-        public LoggerHighlightFormat()
+        public StackdriverHighlightFormat()
         {
             BackgroundColor = Colors.Yellow;
             ForegroundColor = Colors.Black;

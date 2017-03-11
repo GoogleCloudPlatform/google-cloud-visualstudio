@@ -35,7 +35,7 @@
                         Content="{Binding ErrorMessage}"
                         Command="{Binding DataContext.OnGotoDetailCommand, ElementName=_errorReportingWindow}"
                         CommandParameter="{Binding}"/>
-                    <TextBlock Text="{Binding FirstStackFrame}" Style="{StaticResource CommonTextStyle}"/>
+                    <TextBlock Text="{Binding FirstStackFrameSummary}" Style="{StaticResource CommonTextStyle}"/>
                 </StackPanel>
             </DataTemplate>
 

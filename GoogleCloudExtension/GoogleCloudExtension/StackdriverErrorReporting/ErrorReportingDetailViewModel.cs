@@ -14,10 +14,10 @@
 
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.SourceBrowsing;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Data;
@@ -140,10 +140,17 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public ProtectedCommand OnBackToOverViewCommand { get; }
 
         /// <summary>
+        /// The command that responds to source link button click event.
+        /// </summary>
+        public ProtectedCommand<StackFrame> OnGotoSourceCommand { get; }
+
+        /// <summary>
         /// Initializes a new instance of <seealso cref="ErrorReportingDetailViewModel"/> class.
         /// </summary>
         public ErrorReportingDetailViewModel()
         {
+            OnGotoSourceCommand = new ProtectedCommand<StackFrame>(
+                (frame) => ShowTooltipUtils.ErrorFrameToSourceLine(GroupItem, frame));
             OnBackToOverViewCommand = new ProtectedCommand(() => ToolWindowCommandUtils.ShowToolWindow<ErrorReportingToolWindow>());
             _datasource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
             CredentialsStore.Default.Reset += (sender, e) => OnCurrentProjectChanged();
@@ -175,6 +182,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 throw new ErrorReportingException(new ArgumentNullException(nameof(groupSelectedTimeRangeItem)));
             }
 
+            IsAccountChanged = false;
             GroupItem = errorGroupItem;
             if (groupSelectedTimeRangeItem.GroupTimeRange == SelectedTimeRangeItem?.GroupTimeRange)
             {
@@ -207,7 +215,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                     GroupItem.ErrorGroup.Group.GroupId);
                 if (groups?.ErrorGroupStats != null && groups.ErrorGroupStats.Count > 0)
                 {
-                    GroupItem = new ErrorGroupItem(groups.ErrorGroupStats.FirstOrDefault());
+                    GroupItem = new ErrorGroupItem(groups.ErrorGroupStats.FirstOrDefault(), SelectedTimeRangeItem);
                 }
                 else
                 {
@@ -264,7 +272,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                     if (events?.ErrorEvents != null)
                     {
                         EventItemCollection = CollectionViewSource.GetDefaultView(
-                            events.ErrorEvents.Select(x => new EventItem(x))) as CollectionView;
+                            events.ErrorEvents.Where(x => x != null).Select(x => new EventItem(x))) as CollectionView;
                     }
                 }
                 catch (DataSourceException)

@@ -2014,6 +2014,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Go back to Error Reporting window.
+        /// </summary>
+        public static string ErrorReportingGobacktoErrorReportingLinkCaption {
+            get {
+                return ResourceManager.GetString("ErrorReportingGobacktoErrorReportingLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unkown internal error. Please report the issue and/or retry later..
         /// </summary>
         public static string ErrorReportingInternalCodeErrorGenericMessage {
@@ -2041,6 +2050,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Parsed Stack.
+        /// </summary>
+        public static string ErrorReportingParsedStackTabHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingParsedStackTabHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Raw Stack.
+        /// </summary>
+        public static string ErrorReportingRawStackTabHeader {
+            get {
+                return ResourceManager.GetString("ErrorReportingRawStackTabHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Recent Samples.
         /// </summary>
         public static string ErrorReportingRecentSampleLabel {
@@ -2055,6 +2082,15 @@ namespace GoogleCloudExtension {
         public static string ErrorReportingServiceContextStatusCodeHeader {
             get {
                 return ResourceManager.GetString("ErrorReportingServiceContextStatusCodeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to in the last.
+        /// </summary>
+        public static string ErrorReportingSourceTooltipTimeRangeLabel {
+            get {
+                return ResourceManager.GetString("ErrorReportingSourceTooltipTimeRangeLabel", resourceCulture);
             }
         }
         
@@ -2617,39 +2653,12 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to open the source file {0}.
-        /// </summary>
-        public static string LogsViewerFailedOpenFileMessage {
-            get {
-                return ResourceManager.GetString("LogsViewerFailedOpenFileMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to The log entry was generated from assembly {0}, version {1}.
         ///Open the project to navigate to the logger method location..
         /// </summary>
         public static string LogsViewerPleaseOpenProjectPrompt {
             get {
                 return ResourceManager.GetString("LogsViewerPleaseOpenProjectPrompt", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Google Stackdriver Logs Viewer.
-        /// </summary>
-        public static string LogsViewerPromptTitle {
-            get {
-                return ResourceManager.GetString("LogsViewerPromptTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The log entry does not contain valid source information or the source line can not be located..
-        /// </summary>
-        public static string LogsViewerSourceFileNotFoundMessage {
-            get {
-                return ResourceManager.GetString("LogsViewerSourceFileNotFoundMessage", resourceCulture);
             }
         }
         
@@ -2690,9 +2699,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Version missmatch. 
-        ///The current project {0} version is {1},
-        ///Open the project of version {2} to properly locate the logging writter location..
+        ///   Looks up a localized string similar to Version missmatch. \r\nThe current project {0} version is {1},\r\nOpen the project of version {2} to properly locate the logging writter location..
         /// </summary>
         public static string LogsViewerVersionMismatchPrompt {
             get {
@@ -3592,6 +3599,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to open the source file.\r\n{0}.
+        /// </summary>
+        public static string SourceVersionUtilsFailedOpenFileMessage {
+            get {
+                return ResourceManager.GetString("SourceVersionUtilsFailedOpenFileMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Does not find the source file in current solution.\r\n{0}.
+        /// </summary>
+        public static string SourceVersionUtilsFileNotFoundMessage {
+            get {
+                return ResourceManager.GetString("SourceVersionUtilsFileNotFoundMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Allocations:.
         /// </summary>
         public static string SplitTrafficWindowAllocationsLabel {
@@ -3750,6 +3775,15 @@ namespace GoogleCloudExtension {
         public static string UiDateLabel {
             get {
                 return ResourceManager.GetString("UiDateLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud Tools.
+        /// </summary>
+        public static string uiDefaultPromptTitle {
+            get {
+                return ResourceManager.GetString("uiDefaultPromptTitle", resourceCulture);
             }
         }
         

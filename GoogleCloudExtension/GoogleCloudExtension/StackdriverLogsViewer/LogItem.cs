@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
+using GoogleCloudExtension.SourceBrowsing;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -330,7 +331,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             var projectSourceFile = project.FindSourceFile(SourceFilePath);
             if (projectSourceFile == null)
             {
-                SourceVersionUtils.FileItemNotFoundPrompt();
+                SourceVersionUtils.FileItemNotFoundPrompt(SourceFilePath);
                 return;
             }
 

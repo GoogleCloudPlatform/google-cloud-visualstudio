@@ -26,7 +26,7 @@
 
             <utils:VisibilityConverter x:Key="visibilityConverterNegated" IsNegated="True"/>
             <utils:VisibilityConverter x:Key="visibilityConverter" />
-            <utils:StringNullEmptyInvisibleConverter x:Key="stringNullEmptyInvisibleConverter" />
+            <utils:NullEmptyInvisibleConverter x:Key="nullEmptyInvisibleConverter" />
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -93,12 +93,17 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
 
-                        <TextBlock 
-                                Grid.Column="0"                
+                        <StackPanel>
+                            <TextBlock                                                 
                                 Margin="0,0,36,0"
+                                Style="{StaticResource CommonTextStyle}"
                                 FontWeight="DemiBold"
-                                Text="{Binding GroupItem.ErrorMessage}"
-                                Style="{StaticResource CommonTextStyle}" />
+                                Text="{Binding GroupItem.ErrorMessage}" />
+                            <local:StackFrameControl 
+                                Margin="0,0,36,0"
+                                DataContext="{Binding GroupItem.FirstStackFrame}"
+                                Visibility="{Binding GroupItem.FirstStackFrame, Converter={StaticResource nullEmptyInvisibleConverter}}" />
+                        </StackPanel>
                         
                         <local:TimeRangeButtons 
                             Grid.Column="1" 
@@ -157,7 +162,7 @@
                                     BorderThickness="1,0,0,0"
                                     BorderBrush="LightGray"
                                     Padding="6,0,12,0"                                     
-                                    Visibility="{Binding GroupItem.ErrorGroup.AffectedUsersCount, Converter={StaticResource stringNullEmptyInvisibleConverter}}">
+                                    Visibility="{Binding GroupItem.ErrorGroup.AffectedUsersCount, Converter={StaticResource nullEmptyInvisibleConverter}}">
                                     <StackPanel>
                                         <TextBlock Text="{x:Static ext:Resources.ErrorReportingAffectedUsersLongerHeader}" />
                                         <TextBlock Text="{Binding GroupItem.ErrorGroup.AffectedUsersCount}" />
@@ -165,7 +170,7 @@
                                 </Border>
 
                                 <Border Grid.Column="3" 
-                                        Visibility="{Binding AffectedUsersCount, Converter={StaticResource stringNullEmptyInvisibleConverter}}" />
+                                        Visibility="{Binding AffectedUsersCount, Converter={StaticResource nullEmptyInvisibleConverter}}" />
 
                                 <Border 
                                     Grid.Column="4"
@@ -187,7 +192,7 @@
                                     BorderThickness="1,0,0,0"
                                     BorderBrush="LightGray"
                                     Padding="6,0,12,0" 
-                                    Visibility="{Binding GroupItem.Status, Converter={StaticResource stringNullEmptyInvisibleConverter}}">
+                                    Visibility="{Binding GroupItem.Status, Converter={StaticResource nullEmptyInvisibleConverter}}">
                                     <StackPanel>
                                         <TextBlock Text="{x:Static ext:Resources.ErrorReportingServiceContextStatusCodeHeader}" />
                                         <TextBlock Text="{Binding GroupItem.Status}" />
@@ -195,7 +200,7 @@
                                 </Border>
 
                                 <Border Grid.Column="7" 
-                                        Visibility="{Binding GroupItem.Status, Converter={StaticResource stringNullEmptyInvisibleConverter}}"/>
+                                        Visibility="{Binding GroupItem.Status, Converter={StaticResource nullEmptyInvisibleConverter}}"/>
 
                                 <Border 
                                     Grid.Column="8"
@@ -248,30 +253,11 @@
 
                         <!-- stack trace sample -->
                         <Border Style="{StaticResource DetailViewBorderStyle}" >
-                            <StackPanel Margin="6">
-
-                                <controls:ImageToggleButton  
-                                    x:Name="traceSampleToggle"
-                                    Padding="6"
-                                    UncheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/show_more_icon.png}"
-                                    CheckedImage="{mp:ImageResource StackdriverErrorReporting/Resources/show_less_icon.png}" 
-                                    HorizontalAlignment="Left"
-                                    IsChecked="True"
-                                    Style="{StaticResource ImageToggleButtonStyle}"
-                                    Content="{x:Static ext:Resources.ErrorReportingToggleStackSampleButtonCaption}"/>
-
-                                <TextBox 
-                                    BorderThickness="0"
-                                    Padding="8,5,8,5"
-                                    Text="{Binding GroupItem.RawErrorMessage, Mode=OneWay}" 
-                                    IsReadOnly="True"
-                                    AcceptsReturn="True"
-                                    TextWrapping="NoWrap"
-                                    HorizontalScrollBarVisibility="Auto"
-                                    Visibility="{Binding IsChecked, ElementName=traceSampleToggle, 
-                                    Converter={StaticResource visibilityConverter}}" />
-
-                            </StackPanel>
+                            <Border Style="{StaticResource DetailViewBorderStyle}" >
+                                <local:StackControl
+                                    Margin="6" 
+                                    DataContext="{Binding GroupItem.ParsedException}" />
+                            </Border>
                         </Border>
 
                         <!-- Recent samples. -->

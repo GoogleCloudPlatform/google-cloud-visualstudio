@@ -14,14 +14,14 @@
 
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+namespace GoogleCloudExtension.StackdriverErrorReporting
 {
     /// <summary>
-    /// Interaction logic for LoggerTooltipControl.xaml
+    /// Interaction logic for TooltipControl.xaml
     /// </summary>
-    public partial class LoggerTooltipControl : UserControl
+    public partial class ErrorFrameTooltipControl : UserControl
     {
-        public LoggerTooltipControl()
+        public ErrorFrameTooltipControl()
         {
             InitializeComponent();
         }

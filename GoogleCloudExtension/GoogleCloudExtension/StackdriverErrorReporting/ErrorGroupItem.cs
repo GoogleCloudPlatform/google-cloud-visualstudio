@@ -29,6 +29,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     public class ErrorGroupItem : Model
     {
         /// <summary>
+        /// Gets the parsed exception.
+        /// </summary>
+        public ParsedException ParsedException { get; }
+
+        /// <summary>
         /// The error group that represents a group of errors.
         /// </summary>
         public ErrorGroupStats ErrorGroup { get; }
@@ -37,7 +42,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// The error message with complete stack.
         /// Normally, this is the string get from Exception.ToString();
         /// </summary>
-        public string RawErrorMessage => ErrorGroup.Representative.Message;
+        public string RawErrorMessage => ErrorGroup.Representative?.Message;
 
         /// <summary>
         /// Gets the error count of the error group.
@@ -72,12 +77,17 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Gets the message to display for the error group.
         /// </summary>
-        public string ErrorMessage { get; }
+        public string ErrorMessage => ParsedException?.Header;
 
         /// <summary>
-        /// The stack as string for the error group.
+        /// The first stack frame summary for the error group.
         /// </summary>
-        public string FirstStackFrame { get; }
+        public string FirstStackFrameSummary => ParsedException?.FirstFrameSummary;
+
+        /// <summary>
+        /// Gets the first stack frame. 
+        /// </summary>
+        public StackFrame FirstStackFrame => ParsedException?.StackFrames.FirstOrDefault();
 
         /// <summary>
         /// Gets the affected user count. Could be null.
@@ -95,26 +105,27 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public string LastSeenTime => FormatErrorGroupDateTime(ErrorGroup.LastSeenTime);
 
         /// <summary>
+        /// Gets the time range of the <seealso cref="ErrorGroup"/>.
+        /// </summary>
+        public TimeRangeItem GroupTimeRange { get; }
+
+        /// <summary>
         /// Gets the list of <seealso cref="TimedCount"/> of the error group.
         /// </summary>
         public IList<TimedCount> TimedCountList => ErrorGroup.TimedCounts;
 
-        public ErrorGroupItem(ErrorGroupStats errorGroup)
+        public ErrorGroupItem(ErrorGroupStats errorGroup, TimeRangeItem timeRange)
         {
             if (errorGroup == null)
             {
                 throw new ErrorReportingException(new ArgumentNullException(nameof(errorGroup)));
             }
-
             ErrorGroup = errorGroup;
-            string[] lines = ErrorGroup.Representative?.Message?.Split(
-                    new string[] { "\r\n", "\n" }, 
-                    StringSplitOptions.RemoveEmptyEntries);
-            if (lines != null)
+            if (ErrorGroup.Representative?.Message != null)
             {
-                ErrorMessage = lines.Count() > 0 ? lines[0] : null;
-                FirstStackFrame = lines.Count() > 1 ? lines[1] : null;
+                ParsedException = new ParsedException(ErrorGroup.Representative?.Message);
             }
+            GroupTimeRange = timeRange;
         }
 
         /// <summary>
