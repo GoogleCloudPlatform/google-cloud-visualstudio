@@ -20,6 +20,7 @@
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
                 <ResourceDictionary Source="./LogsViewerResources.xaml" />
                 <ResourceDictionary Source="../Controls/SearchMenuItemResources.xaml" />
+                <ResourceDictionary Source="../Theming/AutoReloadButtonResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <utils:VisibilityConverter x:Key="visibilityConverter" />
@@ -111,18 +112,33 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+
         <tb:TitleBar />
+
         <Grid 
             Grid.Row="1"
             Visibility="{Binding Project, Converter={StaticResource nullEmptyInvisibleConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
                 <RowDefinition Height="Auto"  />
             </Grid.RowDefinitions>
 
+            <Border 
+                Padding="12,6,0,6"    
+                BorderThickness="0,0,0,1"    
+                BorderBrush="LightGray"
+                IsEnabled="{Binding IsControlEnabled}" >
+                <controls:AutoReloadButton 
+                    Style="{StaticResource AutoReloadButtonStyle}" 
+                    AutoReloadCommand="{Binding OnAutoReloadCommand}"
+                    IntervalSeconds="{Binding AutoReloadIntervalSeconds}"/>
+            </Border>
+
             <!-- Filters -->
-            <StackPanel                    
+            <StackPanel      
+                Grid.Row="1"
                 Margin="12,6,12,6"  
                 IsEnabled="{Binding IsControlEnabled}"
                 VerticalAlignment="Center" 
@@ -313,7 +329,7 @@
             </StackPanel>
 
             <Expander 
-                Grid.Row="1" 
+                Grid.Row="2" 
                 Panel.ZIndex="20"             
                 x:Name="_allExpander"
                 Margin="0,6,30,0" 
@@ -326,7 +342,7 @@
                     </Expander.ToolTip>
             </Expander>
 
-            <Grid Grid.Row="1" 
+            <Grid Grid.Row="2" 
                   Margin="12,6,12,12" 
                   IsEnabled="{Binding IsControlEnabled}">
 
@@ -445,7 +461,7 @@
             </Grid>
 
             <!-- Displays request status. -->
-            <Grid Grid.Row="2" Margin="12,0,12,0">
+            <Grid Grid.Row="3" Margin="12,0,12,0">
 
                 <TextBox 
                     Margin="0,0,0,12" 

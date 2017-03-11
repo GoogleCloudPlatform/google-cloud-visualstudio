@@ -145,6 +145,7 @@
     <Compile Include="CloudExplorer\TreeLeaf.cs" />
     <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
+    <Compile Include="Controls\AutoReloadButton.cs" />
     <Compile Include="Controls\IconButton.cs" />
     <Compile Include="Controls\ImageToggleButton.cs" />
     <Compile Include="Controls\LabelWithHelp.cs" />
@@ -317,6 +318,7 @@
     </Compile>
     <Compile Include="TitleBar\TitleBarViewModel.cs" />
     <Compile Include="Utils\DataGridUtils.cs" />
+    <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
     <Compile Include="Utils\PackageUtils.cs" />
     <Compile Include="Utils\GCloudWrapperUtils.cs" />
@@ -825,6 +827,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Resource Include="Theming\AutoReloadButtonResources.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
     <Page Include="TitleBar\TitleBar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

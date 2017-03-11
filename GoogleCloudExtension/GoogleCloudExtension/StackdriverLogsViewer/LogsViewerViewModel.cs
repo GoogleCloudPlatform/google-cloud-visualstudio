@@ -36,6 +36,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     {
         private const string AdvancedHelpLink = "https://cloud.google.com/logging/docs/view/advanced_filters";
         private const int DefaultPageSize = 100;
+        private const int MaxLogItems = 500;
 
         private static readonly LogSeverityItem[] s_logSeveritySelections =
             new LogSeverityItem[] {
@@ -276,6 +277,16 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
+        /// Gets the command
+        /// </summary>
+        public ProtectedCommand OnAutoReloadCommand { get; }
+
+        /// <summary>
+        /// Gets the auto reload interval in seconds.
+        /// </summary>
+        public uint AutoReloadIntervalSeconds => 3;
+
+        /// <summary>
         /// Initializes an instance of <seealso cref="LogsViewerViewModel"/> class.
         /// </summary>
         public LogsViewerViewModel()
@@ -296,6 +307,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             ResourceTypeSelector = new ResourceTypeMenuViewModel(_dataSource);
             ResourceTypeSelector.PropertyChanged += OnPropertyChanged;
             OnDetailTreeNodeFilterCommand = new ProtectedCommand<ObjectNodeTree>(FilterOnTreeNodeValue);
+            OnAutoReloadCommand = new ProtectedCommand(AutoReload);
         }
 
         /// <summary>
@@ -400,16 +412,47 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Append a set of log entries.
         /// </summary>
-        private void AddLogs(IList<LogEntry> logEntries)
+        private void AddLogs(IList<LogEntry> logEntries, bool autoReload = false)
         {
             if (logEntries == null)
             {
                 return;
             }
 
-            foreach (var log in logEntries)
+            if (autoReload && DateTimePickerModel.IsDescendingOrder)
             {
-                _logs.Add(new LogItem(log));
+                foreach (var log in logEntries.Reverse())
+                {
+                    Debug.WriteLine($"add entry {log.Timestamp}");
+                    var item = new LogItem(log, SelectedTimeZone);
+                    _logs.Insert(0, item);
+                    _lastLogTime = DateTimeUtils.Max(_lastLogTime, item.TimeStamp.ToUniversalTime());
+                }
+            }
+
+            else
+            {
+                foreach (var log in logEntries)
+                {
+                    var item = new LogItem(log, SelectedTimeZone);
+                    _logs.Add(item);
+                    _lastLogTime = DateTimeUtils.Max(_lastLogTime, item.TimeStamp.ToUniversalTime());
+                }
+            }
+
+            if (DateTimePickerModel.IsDescendingOrder)
+            {
+                for (int i = _logs.Count-1; i >= MaxLogItems && i < _logs.Count; --i)
+                {
+                    _logs.RemoveAt(i);
+                }
+            }
+            else
+            {
+                while (_logs.Count > MaxLogItems)
+                {
+                    _logs.RemoveAt(0);
+                }
             }
         }
 
@@ -483,8 +526,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     ShowRequestErrorMessage = true;
                     RequestErrorMessage = ex.Message;
                 }
-
-                throw;
+                else
+                {
+                    throw;
+                }
             }
             finally
             {
@@ -501,7 +546,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// On complex filters, scanning through logs take time. The server returns empty results 
         ///   with a next page token. Continue to send request till some logs are found.
         /// </summary>
-        private async Task LoadLogsAsync(CancellationToken cancellationToken)
+        private async Task LoadLogsAsync(CancellationToken cancellationToken, bool autoReload = false)
         {
             var order = DateTimePickerModel.IsDescendingOrder ? "timestamp desc" : "timestamp asc";
             int count = 0;
@@ -513,11 +558,11 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 // Because this is requried to use same page size for getting next page. 
                 var results = await _dataSource.Value.ListLogEntriesAsync(_filter, order,
                     pageSize: DefaultPageSize, nextPageToken: _nextPageToken, cancelToken: cancellationToken);
-                AddLogs(results?.LogEntries);
                 _nextPageToken = results.NextPageToken;
                 if (results?.LogEntries != null)
                 {
                     count += results.LogEntries.Count;
+                    AddLogs(results.LogEntries, autoReload);
                 }
 
                 if (String.IsNullOrWhiteSpace(_nextPageToken))
@@ -561,6 +606,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 _nextPageToken = null;
                 _logs.Clear();
+                _lastLogTime = DateTime.MinValue;
                 await LoadLogsAsync(cancelToken);
             });
         }
@@ -714,7 +760,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Aggregate all selections into filter string.
         /// </summary>
-        private string ComposeSimpleFilters()
+        private string ComposeSimpleFilters(bool ignoreTimeStamp = false)
         {
             Debug.WriteLine("Entering ComposeSimpleFilters()");
 
@@ -736,16 +782,19 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 filter.AppendLine($"severity>={SelectedLogSeverity.Severity.ToString("G")}");
             }
 
-            if (DateTimePickerModel.IsDescendingOrder)
+            if (!ignoreTimeStamp)
             {
-                if (DateTimePickerModel.DateTimeUtc < DateTime.UtcNow)
+                if (DateTimePickerModel.IsDescendingOrder)
                 {
-                    filter.AppendLine($"timestamp<=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
+                    if (DateTimePickerModel.DateTimeUtc < DateTime.UtcNow)
+                    {
+                        filter.AppendLine($"timestamp<=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
+                    }
                 }
-            }
-            else
-            {
-                filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
+                else
+                {
+                    filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
+                }
             }
 
             if (LogIdList.SelectedLogIdFullName != null)
@@ -760,6 +809,82 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             return filter.Length > 0 ? filter.ToString() : null;
+        }
+
+        private DateTime _lastLogTime = DateTime.MinValue;
+        private void AutoReload()
+        {
+            if (!IsControlEnabled || _isLoading)
+            {
+                return;
+            }
+
+            // If it is in advanced filter, just auto reload.
+            if (ShowAdvancedFilter)
+            {
+                Reload();
+                return;
+            }
+
+            ContinuoslyLoad();
+        }
+
+        private async Task ContinuoslyLoad()
+        {
+            bool continueLastReload = !DateTimePickerModel.IsDescendingOrder && _nextPageToken != null;
+
+            _cancellationTokenSource = new CancellationTokenSource();
+            try
+            {
+                SetServerRequestStartStatus();
+                _isLoading = true;
+
+                if (!continueLastReload)
+                {
+                    await AppendLog();
+                }
+
+                while (_nextPageToken != null && !_cancellationTokenSource.IsCancellationRequested)
+                {
+                    await LoadLogsAsync(_cancellationTokenSource.Token, autoReload: true);
+                }
+            }
+            catch (Exception ex)
+            {
+                _nextPageToken = null;
+
+                if (ex is TaskCanceledException && _cancellationTokenSource.IsCancellationRequested)
+                {
+                    // Expected cancellation. Log and continue.
+                    Debug.WriteLine("Request was cancelled");
+                }
+                else if (ex is DataSourceException)
+                {
+                    ShowRequestErrorMessage = true;
+                    RequestErrorMessage = ex.Message;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            finally
+            {
+                SetServerRequestCompleteStatus();
+                _isLoading = false;
+            }
+        }
+
+        private async Task AppendLog()
+        {
+            _nextPageToken = null;
+            Debug.WriteLine($"_lastLogTime log {_lastLogTime}");
+
+            _filter = ComposeSimpleFilters(ignoreTimeStamp: true)
+                + String.Format($" timestamp>\"{_lastLogTime.ToString("O")}\" ");
+            Debug.WriteLine(_filter);
+
+            await LoadLogsAsync(_cancellationTokenSource.Token, autoReload: true);
         }
     }
 }
