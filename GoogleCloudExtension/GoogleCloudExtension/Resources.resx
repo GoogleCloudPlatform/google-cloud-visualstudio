@@ -1860,4 +1860,8 @@ Open the project to navigate to the logger method location.</value>
     <value>Raw Stack</value>
     <comment>The tab header for showing raw stack message.</comment>
   </data>
+  <data name="UiAutoReloadButtonCaption" xml:space="preserve">
+    <value>AUTO RELOAD</value>
+    <comment>Caption for auto reload button.</comment>
+  </data>  
 </root>
