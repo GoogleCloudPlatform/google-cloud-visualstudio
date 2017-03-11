@@ -16,19 +16,15 @@ using Microsoft.VisualStudio.Text.Editor;
 using System;
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.GotoSourceLine
+namespace GoogleCloudExtension.SourceBrowsing
 {
     /// <summary>
     /// Define the source line tooltip data sources.
     /// This is singleton so that there is at most one tooltip shown globally at any time. 
     /// This approach simplifies the overall design for <seealso cref="StackdriverTagger"/>. 
     /// </summary>
-    internal class SourceLineToolTipDataSource
+    internal class ActiveTagData
     {
-        // Note, adding lambda () => new LoggerTooltipSource() is necessary becauses the constructor is private.
-        private static Lazy<SourceLineToolTipDataSource> s_instance = 
-            new Lazy<SourceLineToolTipDataSource>(() => new SourceLineToolTipDataSource());
-
         /// <summary>
         /// The associated <seealso cref="IWpfTextView"/> interface 
         /// to the source file that generates the <seealso cref="LogData"/>.
@@ -60,34 +56,36 @@ namespace GoogleCloudExtension.GotoSourceLine
         /// <summary>
         /// Add an empty private constructor to disable creation of new instances outside.
         /// </summary>
-        private SourceLineToolTipDataSource() { }
+        private ActiveTagData() { }
 
         /// <summary>
-        /// The singleton instance of <seealso cref="SourceLineToolTipDataSource"/>.
+        /// The active tag data. 
+        /// If it is null, there is no active tag.  
+        /// StackdriverTagger should delete all tags or tool tips.
         /// </summary>
-        public static SourceLineToolTipDataSource Current => s_instance.Value;
+        public static ActiveTagData Current { get; private set; }
 
         /// <summary>
         /// Set all data members to null.
         /// </summary>
-        public void Reset()
+        public static void ResetCurrent()
         {
-            TooltipControl = null;
-            TextView = null;
-            SourceLine = -1;
-            MethodName = null;
+            Current = null;
         }
 
         /// <summary>
         /// Set the data members in a batch.
-        /// for parameter definition, <seealso cref="SourceLineToolTipDataSource"/> data members.
+        /// for parameter definition, <seealso cref="ActiveTagData"/> data members.
         /// </summary>
-        public void Set(IWpfTextView view, long line, UserControl control, string method = null)
+        public static void SetCurrent(IWpfTextView view, long line, UserControl control, string method = null)
         {
-            TextView = view;
-            SourceLine = line;
-            TooltipControl = control;
-            MethodName = method;
+            Current = new ActiveTagData()
+            {
+                TextView = view,
+                SourceLine = line,
+                TooltipControl = control,
+                MethodName = method
+            };
         }
     }
 }

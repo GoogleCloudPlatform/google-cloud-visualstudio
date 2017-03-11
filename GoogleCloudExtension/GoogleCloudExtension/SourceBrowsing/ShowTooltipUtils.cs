@@ -18,7 +18,7 @@ using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.StackdriverErrorReporting;
 using ErrorReporting = GoogleCloudExtension.StackdriverErrorReporting;
 using GoogleCloudExtension.StackdriverLogsViewer;
-using static GoogleCloudExtension.GotoSourceLine.SourceVersionUtils;
+using static GoogleCloudExtension.SourceBrowsing.SourceVersionUtils;
 using static GoogleCloudExtension.StackdriverLogsViewer.LogWritterNameConstants;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -29,16 +29,13 @@ using Microsoft.VisualStudio.Text.Editor;
 using System;
 using System.Linq;
 
-namespace GoogleCloudExtension.GotoSourceLine
+namespace GoogleCloudExtension.SourceBrowsing
 {
     /// <summary>
     /// Helper methods to show the tooltip to a logger method.
     /// </summary>
     internal static class ShowTooltipUtils
     {
-        private static Lazy<ErrorFrameTooltipControl> s_errorReportingControl = new Lazy<ErrorFrameTooltipControl>();
-        private static Lazy<LoggerTooltipControl> s_logsViewerControl = new Lazy<LoggerTooltipControl>();
-
         /// <summary>
         /// Get the logger method name based on the log entry severity.
         /// </summary>
@@ -66,6 +63,8 @@ namespace GoogleCloudExtension.GotoSourceLine
         /// <summary>
         /// Navigate from a parsed stack frame to source code line.
         /// </summary>
+        /// <param name="errorGroupItem">The error group item that will be shown in the source code tooltip.</param>
+        /// <param name="stackFrame">The stack frame that contains the source file and source line number.</param>
         public static void ErrorFrameToSourceLine(
             ErrorGroupItem errorGroupItem, 
             ErrorReporting.StackFrame stackFrame)
@@ -75,27 +74,27 @@ namespace GoogleCloudExtension.GotoSourceLine
                 throw new ArgumentException("Invalid argument");
             }
 
-            SolutionHelper solution = null;
             ProjectItem projectItem = null;
-            if ((solution = SolutionHelper.CurrentSolution) != null)
+            SolutionHelper solution = SolutionHelper.CurrentSolution;
+            if (solution != null)
             {
                 projectItem = solution.FindMatchingSourceFile(stackFrame.SourceFile).FirstOrDefault()?.ProjectItem;
             }
 
-            if (null == projectItem)
+            if (projectItem == null)
             {
                 SourceVersionUtils.FileItemNotFoundPrompt(stackFrame.SourceFile);
                 return;
             }
 
             var window = ShellUtils.Open(projectItem);
-            if (null == window)
+            if (window == null)
             {
                 FailedToOpenFilePrompt(stackFrame.SourceFile);
                 return;
             }
 
-            ShowToolTip(errorGroupItem, window, stackFrame);
+            ShowToolTip(errorGroupItem, stackFrame, window);
         }
 
         /// <summary>
@@ -115,18 +114,26 @@ namespace GoogleCloudExtension.GotoSourceLine
         /// </summary>
         public static void HideTooltip()
         {
-            if (SourceLineToolTipDataSource.Current.TextView == null)
+            // Note, keep a local copy.
+            var activeData = ActiveTagData.Current;
+            if (activeData?.TextView == null)
             {
                 return;
             }
 
-            TryFindTagger(SourceLineToolTipDataSource.Current.TextView)?.ClearTooltip();
+            TryFindTagger(activeData.TextView)?.ClearTooltip();
         }
 
         /// <summary>
-        /// Show the Logger method tooltip.
+        /// Show the tooltip for an error group stack frame.
         /// </summary>
-        public static void ShowToolTip(ErrorGroupItem errorGroupItem, Window window, ErrorReporting.StackFrame stackFrame)
+        /// <param name="errorGroupItem">The error group item that will be shown in the source code tooltip.</param>
+        /// <param name="stackFrame">The stack frame that contains the source file and source line number.</param>
+        /// <param name="window">The Visual Studio Document window that opens the source file.</param>
+        public static void ShowToolTip(
+            ErrorGroupItem errorGroupItem, 
+            ErrorReporting.StackFrame stackFrame, 
+            Window window)
         {
             GotoLine(window, (int)stackFrame.LineNumber);
             IVsTextView textView = GetIVsTextView(window.Document.FullName);
@@ -135,11 +142,12 @@ namespace GoogleCloudExtension.GotoSourceLine
             {
                 return;
             }
-            s_errorReportingControl.Value.DataContext = new ErrorFrameTooltipViewModel(errorGroupItem);
-            SourceLineToolTipDataSource.Current.Set(
+            var control = new ErrorFrameTooltipControl();
+            control.DataContext = new ErrorFrameTooltipViewModel(errorGroupItem);
+            ActiveTagData.SetCurrent(
                 wpfView,
                 stackFrame.LineNumber,
-                s_errorReportingControl.Value,
+                control,
                 "");
             TryFindTagger(wpfView)?.ShowOrUpdateToolTip();
         }
@@ -158,11 +166,12 @@ namespace GoogleCloudExtension.GotoSourceLine
             {
                 return;
             }
-            s_logsViewerControl.Value.DataContext = new LoggerTooltipViewModel(logItem);
-            SourceLineToolTipDataSource.Current.Set(
+            var control = new LoggerTooltipControl();
+            control.DataContext = new LoggerTooltipViewModel(logItem);
+            ActiveTagData.SetCurrent(
                 wpfView,
                 logItem.SourceLine.Value,
-                s_logsViewerControl.Value,
+                control,
                 logItem.LogLevel.GetLoggerMethodName());
             TryFindTagger(wpfView)?.ShowOrUpdateToolTip();
         }

@@ -21,7 +21,7 @@ using System;
 using System.Collections.Concurrent;
 using System.ComponentModel.Composition;
 
-namespace GoogleCloudExtension.GotoSourceLine
+namespace GoogleCloudExtension.SourceBrowsing
 {
     /// <summary>
     /// Define a custom <seealso cref="IViewTaggerProvider"/>.

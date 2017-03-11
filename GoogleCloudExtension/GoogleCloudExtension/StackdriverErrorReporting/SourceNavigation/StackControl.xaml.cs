@@ -12,31 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Windows;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
     /// <summary>
-    /// The control that displays all parsed stack frames.
+    /// Interaction logic for StackControl.xaml
     /// </summary>
-    public class StackControl : Control
+    public partial class StackControl : UserControl
     {
-        public static readonly DependencyProperty ParsedStacksProperty =
-            DependencyProperty.Register(
-                nameof(ParsedStacks),
-                typeof(ParsedException),
-                typeof(StackControl),
-                new FrameworkPropertyMetadata(null));
-
-        /// <summary>
-        /// Gets or sets the <seealso cref="ParsedException"/> as data source.
-        /// <seealso cref="ParsedStacksProperty"/>.
-        /// </summary>
-        public ParsedException ParsedStacks
+        public StackControl()
         {
-            get { return (ParsedException)GetValue(ParsedStacksProperty); }
-            set { SetValue(ParsedStacksProperty, value); }
+            InitializeComponent();
         }
     }
 }

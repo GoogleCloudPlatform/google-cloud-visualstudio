@@ -27,11 +27,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private readonly string[] _lines;
 
         /// <summary>
-        /// Gets the owning <seealso cref="ErrorGroupItem"/> object.
-        /// </summary>
-        public ErrorGroupItem OwningParentObj { get; }
-
-        /// <summary>
         /// The unparsed exception message.
         /// </summary>
         public string RawMessage { get; }
@@ -50,7 +45,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public List<StackFrame> StackFrames => ParseFrames();
 
         /// <summary>
-        /// Flag to indicate if parsed frames 
+        /// Flag to indicate if parsed frames tab should be hidden or shown.
         /// </summary>
         public bool ShowParsedFrames => StackFrames.Any(x => x.IsWellParsed);
 
@@ -59,13 +54,12 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public string FirstFrameSummary => StackFrames.FirstOrDefault()?.SummaryText;
 
-        public ParsedException(string exceptionMessage, ErrorGroupItem parent)
+        public ParsedException(string exceptionMessage)
         {
             if (exceptionMessage == null)
             {
                 throw new ErrorReportingException(new ArgumentNullException(nameof(exceptionMessage)));
             }
-            OwningParentObj = parent;
             RawMessage = exceptionMessage;
             _lines = ParserUtils.SplitLines(exceptionMessage);
             Header = ParserUtils.SeparateHeaderFromInnerError(_lines.FirstOrDefault());
@@ -78,14 +72,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 return null;
             }
 
-            List<StackFrame> frameList = new List<StackFrame>();
-            for (int i = 1; i < _lines.Length; ++i)
-            {
-                var frame = new StackFrame(_lines[i], this);
-                frameList.Add(frame);
-            }
-
-            return frameList;
+            return _lines.Skip(1).Select(x => new StackFrame(x)).ToList();
         }
     }
 }

@@ -123,7 +123,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             ErrorGroup = errorGroup;
             if (ErrorGroup.Representative?.Message != null)
             {
-                ParsedException = new ParsedException(ErrorGroup.Representative?.Message, this);
+                ParsedException = new ParsedException(ErrorGroup.Representative?.Message);
             }
             GroupTimeRange = timeRange;
         }

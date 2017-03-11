@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.GotoSourceLine;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Text.RegularExpressions;
@@ -22,6 +21,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// <summary>
     /// Stack frame may or may not contain source file name and line number.
     /// For those that does, they are parsed and set Parsed flag to true.
+    /// 
+    /// This class only attempt to parse C# stacks. 
+    /// For non-C# language stack, it remain not parsed.
     /// 
     /// The Regex is defined as:
     /// stack_frame = at <method>(<arguments>) [in <source_location>]]
@@ -42,9 +44,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private static readonly string PathLineNumberPattern = $@"(?<{FileNameGroup}>.*):line (?<{LineNumberGroup}>[0-9]*)";
         private static readonly string FrameParserPattern = $@"^{AtToken}{QualifiedNamePattern}{ArgumentPattern}{InToken}{PathLineNumberPattern}$";
         private static readonly Regex s_stackFrameRegex = new Regex(FrameParserPattern);
-
-        private readonly ParsedException _owningExceptionObj;
-        private ErrorGroupItem OwningErrorGroup => _owningExceptionObj.OwningParentObj;
 
         /// <summary>
         /// Gets the function name of the stack frame.
@@ -83,12 +82,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// </summary>
         public string SourceLinkCaption => IsWellParsed ? $"{SourceFile}:{LineNumber}" : null;
 
-        /// <summary>
-        /// The command that responds to source link button click event.
-        /// </summary>
-        public ProtectedCommand OnGotoSourceCommand { get; }
-
-        public StackFrame(string raw, ParsedException parent)
+        public StackFrame(string raw)
         {
             if (raw == null)
             {
@@ -96,21 +90,12 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             }
             RawData = raw;
             ParseStackFrame();
-            _owningExceptionObj = parent;
-            OnGotoSourceCommand = new ProtectedCommand(() =>
-            {
-                ShowTooltipUtils.ErrorFrameToSourceLine(OwningErrorGroup, this);
-            });
         }
 
         /// <summary>
         /// Parse a line;
         /// </summary>
-        /// <returns>
-        /// True: Valid frame, continue to parse next line.
-        /// False: Invalid frame, stop paring following lines.
-        /// </returns>
-        private bool ParseStackFrame()
+        private void ParseStackFrame()
         {
             var match = s_stackFrameRegex.Match(RawData);
             if (match.Success)
@@ -124,7 +109,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                     IsWellParsed = true;
                 }                    
             }
-            return match.Success;
         }
     }
 }

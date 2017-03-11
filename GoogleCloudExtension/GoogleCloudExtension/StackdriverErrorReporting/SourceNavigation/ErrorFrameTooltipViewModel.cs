@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.GotoSourceLine;
+using GoogleCloudExtension.SourceBrowsing;
 using GoogleCloudExtension.Utils;
 using System;
 
@@ -21,7 +21,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// <summary>
     /// View model to <seealso cref="TooltipControl"/>.
     /// </summary>
-    internal class ErrorFrameTooltipViewModel : Model
+    internal class ErrorFrameTooltipViewModel : ViewModelBase
     {
         /// <summary>
         /// The close button command
@@ -37,16 +37,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// The log item do display in tooltip.
         /// </summary>
         public ErrorGroupItem Error { get; }
-
-        /// <summary>
-        /// Gets the summary message.
-        /// </summary>
-        public string Summary => String.Format(
-            Resources.ErrorReportingSourceTooltipFormat,
-            Error.ErrorGroup.Count,
-            Error.FirstSeenTime,
-            Error.LastSeenTime,
-            Error.GroupTimeRange.Caption);
 
         /// <summary>
         /// Initializes a new instance of <seealso cref="ErrorFrameTooltipViewModel"/> class.
