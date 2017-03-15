@@ -21,6 +21,7 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.FirewallManagement;
 using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.OAuth;
+using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.TerminalServer;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.WindowsCredentialsChooser;
@@ -204,6 +205,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 new MenuItem { Header = Resources.CloudExplorerGceManageWindowsCredentialsMenuHeader, Command = manageWindowsCredentials }
             };
 
+            if (Instance.Id.HasValue)
+            {
+                menuItems.Add(new MenuItem { Header = Resources.CloudExplorerLaunchLogsViewerMenuHeader, Command = new ProtectedCommand(OnBrowseStackdriverLogCommand) });
+            }
+
             if (Instance.IsRunning())
             {
                 menuItems.Add(new MenuItem { Header = Resources.CloudExplorerGceStopInstanceMenuHeader, Command = stopInstanceCommand });
@@ -219,6 +225,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
 
             SyncContextMenuState();
+        }
+
+        private void OnBrowseStackdriverLogCommand()
+        {
+            var window = ToolWindowUtils.ShowToolWindow<LogsViewerToolWindow>();
+            window?.FilterVMInstanceLog(Instance.Id.Value.ToString());
         }
 
         private void OnSavePublishSettingsCommand()

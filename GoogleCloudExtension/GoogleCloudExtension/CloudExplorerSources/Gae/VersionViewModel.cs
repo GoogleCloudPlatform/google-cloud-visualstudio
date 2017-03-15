@@ -17,6 +17,7 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -103,6 +104,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 }
             }
 
+            menuItems.Add(new MenuItem { Header = Resources.CloudExplorerLaunchLogsViewerMenuHeader, Command = new ProtectedCommand(OnBrowseStackdriverLogCommand) });
             menuItems.Add(new Separator());
 
             if (_version.IsServing())
@@ -122,6 +124,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
 
             SyncContextMenuState();
+        }
+
+        private void OnBrowseStackdriverLogCommand()
+        {
+            var window = ToolWindowUtils.ShowToolWindow<LogsViewerToolWindow>();
+            window?.FilterGAEServiceLog(_service.Id, _version.Id);
         }
 
         private async void OnMigrateTrafficCommand()
