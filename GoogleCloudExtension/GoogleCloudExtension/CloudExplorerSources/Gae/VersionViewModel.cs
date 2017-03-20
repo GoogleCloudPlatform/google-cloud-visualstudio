@@ -130,7 +130,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         {
             var window = ToolWindowCommandUtils.ShowToolWindow<LogsViewerToolWindow>();
             window?.FilterGAEServiceLog(_service.Id, _version.Id);
-    }
+        }
 
         private async void OnMigrateTrafficCommand()
         {
@@ -210,7 +210,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 _owner.InvalidateService(_service.Id);
 
                 EventsReporterWrapper.ReportEvent(GaeVersionDeletedEvent.Create(CommandStatus.Success));
-                _owner.InvalidateService(_service.Id);
             }
             catch (Exception ex) when (ex is DataSourceException || ex is TimeoutException || ex is OperationCanceledException)
             {
