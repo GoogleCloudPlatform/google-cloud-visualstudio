@@ -21,8 +21,8 @@ using System.Windows.Threading;
 namespace GoogleCloudExtension.Controls
 {
     /// <summary>
-    /// Define a auto reload button.
-    /// When it is enabled, the button uses a time to trigger reload event.
+    /// Define an auto reload button.
+    /// When it is enabled, the button uses a timer to trigger reload event.
     /// </summary>
     public class AutoReloadButton : ImageToggleButton
     {

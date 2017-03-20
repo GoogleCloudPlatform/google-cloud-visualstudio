@@ -19,7 +19,6 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
-                <ResourceDictionary Source="../Theming/AutoReloadButtonResources.xaml" />
                 <ResourceDictionary Source="./ErrorReportingResources.xaml" />
                 <ResourceDictionary Source="./BarChart/TimedCountMiniBarChart.xaml" />
                 <ResourceDictionary Source="./TimeRangeButtons/TimeRangeButtonsResources.xaml" />
@@ -71,6 +70,7 @@
                 IsEnabled="{Binding IsLoadingComplete}">
                 <controls:AutoReloadButton 
                     Style="{StaticResource AutoReloadButtonStyle}" 
+                    Content="{x:Static ext:Resources.UiAutoReloadButtonCaption}"
                     AutoReloadCommand="{Binding OnAutoReloadCommand}"/>
             </Border>
             <!-- Time period selection buttons. -->

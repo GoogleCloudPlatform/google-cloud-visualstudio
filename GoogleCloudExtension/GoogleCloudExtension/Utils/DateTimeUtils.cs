@@ -20,12 +20,16 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Utils
 {
+    /// <summary>
+    /// Helper functions for <seealso cref="DateTime"/>.
+    /// </summary>
     public static class DateTimeUtils
     {
         public static DateTime Min(DateTime x, DateTime y)
         {
             return (x.ToUniversalTime() < y.ToUniversalTime()) ? x : y;
         }
+
         public static DateTime Max(DateTime x, DateTime y)
         {
             return (x.ToUniversalTime() > y.ToUniversalTime()) ? x : y;

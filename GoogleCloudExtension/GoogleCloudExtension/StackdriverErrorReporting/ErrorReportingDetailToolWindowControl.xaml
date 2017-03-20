@@ -19,7 +19,6 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
-                <ResourceDictionary Source="../Theming/AutoReloadButtonResources.xaml" />
                 <ResourceDictionary Source="./ErrorReportingResources.xaml" />
                 <ResourceDictionary Source="./TimeRangeButtons/TimeRangeButtonsResources.xaml" />
                 <ResourceDictionary Source="./BarChart/TimedCountBarChart.xaml" />
@@ -80,6 +79,7 @@
                     <controls:AutoReloadButton                 
                         Margin="12,0,0,0"
                         Style="{StaticResource AutoReloadButtonStyle}"
+                        Content="{x:Static ext:Resources.UiAutoReloadButtonCaption}"
                         AutoReloadCommand="{Binding OnAutoReloadCommand}" />
                 </StackPanel>
             </Border>
