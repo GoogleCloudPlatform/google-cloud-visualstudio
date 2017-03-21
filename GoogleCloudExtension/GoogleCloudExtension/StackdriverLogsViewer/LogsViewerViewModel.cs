@@ -36,7 +36,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     {
         private const string AdvancedHelpLink = "https://cloud.google.com/logging/docs/view/advanced_filters";
         private const int DefaultPageSize = 100;
-        private const int MaxLogItems = 500;
         private const uint LogStreamingIntervalInSeconds = 3;
 
         private static readonly LogSeverityItem[] s_logSeveritySelections =
@@ -278,7 +277,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
-        /// Gets the command
+        /// Gets the command that responds to auto reload event.
         /// </summary>
         public ProtectedCommand OnAutoReloadCommand { get; }
 
@@ -413,6 +412,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Append a set of log entries.
         /// </summary>
+        /// <param name="logEntries">The set of log entries to be added to the view.</param>
+        /// <param name="autoReload">Indicate if it is the result from auto reload event.</param>
         private void AddLogs(IList<LogEntry> logEntries, bool autoReload = false)
         {
             if (logEntries == null)
@@ -421,7 +422,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             // Pick the last n items only in case there are too much that makes the viewer too slow.
-            var query = logEntries.Skip(Math.Max(0, logEntries.Count() - MaxLogItems)).Select(x => {
+            var query = logEntries.Select(x => {
                     var item = new LogItem(x, SelectedTimeZone);
                     _lastLogTime = DateTimeUtils.Max(_lastLogTime, item.TimeStamp.ToUniversalTime());
                     return item;
@@ -442,29 +443,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     _logs.Add(item);
                 }
             }
-
-            RemoveExceedingLimitEntries();
-        }
-
-        /// If the total count of log entries exceeds <seealso cref="MaxLogItems"/>,
-        /// Remove the older log entries.
-        private void RemoveExceedingLimitEntries()
-        {
-            if (DateTimePickerModel.IsDescendingOrder)
-            {
-                for (int i = _logs.Count - 1; i >= MaxLogItems && i < _logs.Count; --i)
-                {
-                    _logs.RemoveAt(i);
-                }
-            }
-            else
-            {
-                while (_logs.Count > MaxLogItems)
-                {
-                    _logs.RemoveAt(0);
-                }
-            }
-
         }
 
         /// <summary>
@@ -557,6 +535,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// On complex filters, scanning through logs take time. The server returns empty results 
         ///   with a next page token. Continue to send request till some logs are found.
         /// </summary>
+        /// <param name="cancellationToken">A cancellation token. The caller can monitor the cancellation event.</param>
+        /// <param name="autoReload">Indicate if the request comes from autoReload event.</param>
         private async Task LoadLogsAsync(CancellationToken cancellationToken, bool autoReload = false)
         {
             var order = DateTimePickerModel.IsDescendingOrder ? "timestamp desc" : "timestamp asc";
@@ -771,6 +751,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Aggregate all selections into filter string.
         /// </summary>
+        /// <param name="ignoreTimeStamp">If the value is true,  does not add the timestamp clause.</param>
         private string ComposeSimpleFilters(bool ignoreTimeStamp = false)
         {
             Debug.WriteLine("Entering ComposeSimpleFilters()");

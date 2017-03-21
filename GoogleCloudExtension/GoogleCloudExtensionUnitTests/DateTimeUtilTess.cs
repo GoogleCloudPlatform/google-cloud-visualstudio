@@ -23,22 +23,10 @@ namespace GoogleCloudExtensionUnitTests
     public class DateTimeUtilTess
     {
         [TestMethod]
-        public void MinTest()
-        {
-            DateTime t1 = DateTime.Now;
-            DateTime t2 = DateTime.Now;
-            Assert.AreEqual(t1, Min(t1, DateTime.UtcNow));
-            Assert.AreEqual(t1, Min(DateTime.UtcNow, t1));
-            Assert.AreEqual(t1, Min(t1, t2));
-            Assert.AreEqual(t2, Min(t2, DateTime.MaxValue));
-            Assert.AreEqual(DateTime.MinValue, Min(t2, DateTime.MinValue));
-        }
-
-        [TestMethod]
         public void MaxTest()
         {
             DateTime t1 = DateTime.Now;
-            DateTime t2 = DateTime.UtcNow;
+            DateTime t2 = DateTime.UtcNow.AddMilliseconds(1);
             Assert.AreEqual(t1, Max(t1, DateTime.UtcNow.AddHours(-1)));
             Assert.AreEqual(t1, Max(DateTime.UtcNow.AddHours(-1), t1));
             Assert.AreEqual(t2, Max(t1, t2));

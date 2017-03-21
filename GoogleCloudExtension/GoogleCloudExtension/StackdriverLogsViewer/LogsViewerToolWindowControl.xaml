@@ -112,9 +112,7 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-
         <tb:TitleBar />
-
         <Grid 
             Grid.Row="1"
             Visibility="{Binding Project, Converter={StaticResource nullEmptyInvisibleConverter}}">

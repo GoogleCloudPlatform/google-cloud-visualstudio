@@ -25,14 +25,9 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public static class DateTimeUtils
     {
-        public static DateTime Min(DateTime x, DateTime y)
-        {
-            return (x.ToUniversalTime() < y.ToUniversalTime()) ? x : y;
-        }
-
-        public static DateTime Max(DateTime x, DateTime y)
-        {
-            return (x.ToUniversalTime() > y.ToUniversalTime()) ? x : y;
-        }
+        /// <summary>
+        /// Return the larger DateTime from two DateTime values.
+        /// </summary>
+        public static DateTime Max(DateTime x, DateTime y) => (x.ToUniversalTime() > y.ToUniversalTime()) ? x : y;
     }
 }
