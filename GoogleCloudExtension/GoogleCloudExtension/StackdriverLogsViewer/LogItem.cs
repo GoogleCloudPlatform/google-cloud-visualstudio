@@ -321,28 +321,43 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void NavigateToSourceLineCommand()
         {
-            var project = this.FindOrOpenProject();
-            if (project == null)
+            var revisionFile = this.FindGitAndGetFileContent();
+            if (revisionFile != null)
             {
-                Debug.WriteLine($"Failed to find project of {AssemblyName}");
-                return;
-            }
+                var frame = ShellUtils.Open(revisionFile);
+                if (frame == null)
+                {
+                    SourceVersionUtils.FailedToOpenFilePrompt(SourceFilePath);
+                    return;
+                }
 
-            var projectSourceFile = project.FindSourceFile(SourceFilePath);
-            if (projectSourceFile == null)
+                this.ShowToolTip(frame);
+            }
+            else
             {
-                SourceVersionUtils.FileItemNotFoundPrompt(SourceFilePath);
-                return;
-            }
 
-            var window = ShellUtils.Open(projectSourceFile.ProjectItem);
-            if (null == window)
-            {
-                SourceVersionUtils.FailedToOpenFilePrompt(SourceFilePath);
-                return;
-            }
+                var project = this.FindOrOpenProject();
+                if (project == null)
+                {
+                    Debug.WriteLine($"Failed to find project of {AssemblyName}");
+                    return;
+                }
 
-            this.ShowToolTip(window);
+                var projectSourceFile = project.FindSourceFile(SourceFilePath);
+                if (projectSourceFile == null)
+                {
+                    SourceVersionUtils.FileItemNotFoundPrompt(SourceFilePath);
+                    return;
+                }
+
+                var window = ShellUtils.Open(projectSourceFile.ProjectItem);
+                if (null == window)
+                {
+                    SourceVersionUtils.FailedToOpenFilePrompt(SourceFilePath);
+                    return;
+                }
+                this.ShowToolTip(window);
+            }
         }
     }
 }

@@ -28,6 +28,9 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public static class ShellUtils
     {
+        private static Guid s_GuidMicrosoftCsharpEditor = new Guid("{A6C744A8-0E4A-4FC6-886A-064283054674}");
+        private static Guid s_GuidMicrosoftCsharpEditorWithEncoding = new Guid("{08467b34-b90f-4d91-bdca-eb8c8cf3033a}");
+
         /// <summary>
         /// Returns whether the shell is in the debugger state. This will happen if the user is debugging an app.
         /// </summary>
@@ -96,6 +99,16 @@ namespace GoogleCloudExtension.Utils
         {
             var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
             dte.ExecuteCommand("File.OpenProject");
+        }
+
+        public static IVsWindowFrame Open(string sourceFile)
+        {
+            var provider = GetGloblalServiceProvider();
+            // Alternative ?
+            // DTE.ExecuteCommand("File.OpenFile", @"C:\path\to\source_file.cs");
+            // http://stackoverflow.com/questions/24163986/how-to-get-current-activedocument-in-visual-studio-extension-using-mef
+            return VsShellUtilities.OpenDocumentWithSpecificEditor(
+                provider, sourceFile, s_GuidMicrosoftCsharpEditor, VSConstants.LOGVIEWID.Code_guid);
         }
 
         /// <summary>

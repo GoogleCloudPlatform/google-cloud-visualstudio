@@ -26,6 +26,50 @@ namespace GoogleCloudExtension.SourceBrowsing
     /// </summary>
     internal static class SourceVersionUtils
     {
+        private const string SourceContextIDLabel = "source_context_id";
+        private const string SecondarySourceContextIDLabel = "gcloud_source_context_id";
+
+        public static string FindGitAndGetFileContent(this LogItem logItem)
+        {
+            string sha;
+            if (logItem.Entry.Labels.ContainsKey(SecondarySourceContextIDLabel))
+            {
+                sha = logItem.Entry.Labels[SourceContextIDLabel];
+            }
+            else if (logItem.Entry.Labels.ContainsKey(SecondarySourceContextIDLabel))
+            {
+                sha = logItem.Entry.Labels[SourceContextIDLabel];
+            }
+            else
+            {
+                return null;
+            }
+
+            var solution = SolutionHelper.CurrentSolution;
+            if (solution == null)
+            {
+                // TODO: prompt to open project.
+                OpenCurrentVersionProjectPrompt(logItem.AssemblyName, logItem.AssemblyVersion);
+                return null;
+            }
+
+            foreach (var project in solution.Projects)
+            {
+                var commit = GitUtils.FindCommit(project.ProjectRoot, sha);
+                if (commit != null)
+                {
+                    // TODO: Prompt to select a file if it finds multiple matching file.
+                    // TODO: Open current version file if file content not changed.
+                    // TODO: Create temp file cache so as to open same temp file each time.
+                    var content = GitUtils.OpenFile(commit, logItem.SourceFilePath);
+                    return content;
+                }
+            }
+
+            // TODO: prompt to open solution under local git repo.
+            return null;
+        }
+
         /// <summary>
         /// Find or open a the project that matches the log item source information.
         /// </summary>

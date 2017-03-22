@@ -177,6 +177,32 @@ namespace GoogleCloudExtension.SourceBrowsing
         }
 
         /// <summary>
+        /// Show the Logger method tooltip.
+        /// </summary>
+        /// <param name="logItem">The <seealso cref="LogItem"/> that has the source line information.</param>
+        /// <param name="window">The Visual Studio doucment window of the source file.</param>
+        public static void ShowToolTip(this LogItem logItem, IVsWindowFrame frame)
+        {
+            var window = VsShellUtilities.GetWindowObject(frame);
+            GotoLine(window, (int)logItem.SourceLine.Value);
+            IVsTextView textView = VsShellUtilities.GetTextView(frame);
+            var wpfView = GetWpfTextView(textView);
+            if (wpfView == null)
+            {
+                return;
+            }
+
+            var control = new LoggerTooltipControl();
+            control.DataContext = new LoggerTooltipViewModel(logItem);
+            ActiveTagData.SetCurrent(
+                wpfView,
+                logItem.SourceLine.Value,
+                control,
+                logItem.LogLevel.GetLoggerMethodName());
+            TryFindTagger(wpfView)?.ShowOrUpdateToolTip();
+        }
+
+        /// <summary>
         /// Returns an IVsTextView for the given file path if the file is opened in Visual Studio.
         /// </summary>
         /// <param name="filePath">Full Path of the file you are looking for.</param>
