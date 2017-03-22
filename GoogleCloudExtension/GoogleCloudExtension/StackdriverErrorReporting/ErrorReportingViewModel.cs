@@ -128,6 +128,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public ProtectedCommand<ErrorGroupItem> OnGotoDetailCommand { get; }
 
         /// <summary>
+        /// Responds to auto reload command.
+        /// </summary>
+        public ProtectedCommand OnAutoReloadCommand { get; }
+
+        /// <summary>
         /// Selected time range caption.
         /// </summary>
         public string CurrentTimeRangeCaption => String.Format(
@@ -143,6 +148,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             GroupStatsView = new ListCollectionView(_groupStatsCollection);
             SelectedTimeRangeItem = TimeRangeItemList.Last();
             OnGotoDetailCommand = new ProtectedCommand<ErrorGroupItem>(NavigateToDetailWindow);
+            OnAutoReloadCommand = new ProtectedCommand(Reload);
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnProjectIdChanged();
             CredentialsStore.Default.Reset += (sender, e) => OnProjectIdChanged();
         }
