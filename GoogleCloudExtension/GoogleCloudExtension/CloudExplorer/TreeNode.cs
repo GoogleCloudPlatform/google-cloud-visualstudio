@@ -27,8 +27,8 @@ namespace GoogleCloudExtension.CloudExplorer
         private const string ErrorIconPath = "CloudExplorer/Resources/error_icon.png";
         private const string WarningIconPath = "CloudExplorer/Resources/warning_icon.png";
 
-        private readonly static Lazy<ImageSource> s_errorIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(ErrorIconPath));
-        private readonly static Lazy<ImageSource> s_warningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
+        private static readonly Lazy<ImageSource> s_errorIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(ErrorIconPath));
+        private static readonly Lazy<ImageSource> s_warningIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(WarningIconPath));
 
         private string _caption;
         private ContextMenu _contextMenu;

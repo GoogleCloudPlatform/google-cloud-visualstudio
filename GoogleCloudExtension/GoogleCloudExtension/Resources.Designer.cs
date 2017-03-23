@@ -1618,6 +1618,168 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete Subscription.
+        /// </summary>
+        public static string CloudExplorerPubSubDeleteSubscriptionMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubDeleteSubscriptionMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete Topic.
+        /// </summary>
+        public static string CloudExplorerPubSubDeleteTopicMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubDeleteTopicMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load Subscriptions.
+        /// </summary>
+        public static string CloudExplorerPubSubListSubscriptionsErrorCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubListSubscriptionsErrorCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to load Topics.
+        /// </summary>
+        public static string CloudExplorerPubSubListTopicsErrorCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubListTopicsErrorCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading Subscriptions....
+        /// </summary>
+        public static string CloudExplorerPubSubLoadingSubscriptionsCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubLoadingSubscriptionsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading Topics....
+        /// </summary>
+        public static string CloudExplorerPubSubLoadingTopicsCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubLoadingTopicsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Subscription.
+        /// </summary>
+        public static string CloudExplorerPubSubNewSubscriptionMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubNewSubscriptionMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Topic.
+        /// </summary>
+        public static string CloudExplorerPubSubNewTopicMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubNewTopicMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Subscriptions Found.
+        /// </summary>
+        public static string CloudExplorerPubSubNoSubscriptionsFoundCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubNoSubscriptionsFoundCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No Topics Found.
+        /// </summary>
+        public static string CloudExplorerPubSubNoTopicsFoundCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubNoTopicsFoundCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud Pub/Sub.
+        /// </summary>
+        public static string CloudExplorerPubSubRootCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubRootCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Subscription Properties.
+        /// </summary>
+        public static string CloudExplorerPubSubSubscriptionCategory {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubSubscriptionCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Full Name of the Subscription.
+        /// </summary>
+        public static string CloudExplorerPubSubSubscriptionFullNameDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubSubscriptionFullNameDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Name of the Subscription.
+        /// </summary>
+        public static string CloudExplorerPubSubSubscriptionNameDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubSubscriptionNameDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Topic the Subscription reads from.
+        /// </summary>
+        public static string CloudExplorerPubSubSubscriptionTopicDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubSubscriptionTopicDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Topic Properties.
+        /// </summary>
+        public static string CloudExplorerPubSubTopicCategory {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubTopicCategory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Full Name of the Topic.
+        /// </summary>
+        public static string CloudExplorerPubSubTopicFullNameDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubTopicFullNameDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Name of the Topic.
+        /// </summary>
+        public static string CloudExplorerPubSubTopicNameDescription {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubTopicNameDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Refresh.
         /// </summary>
         public static string CloudExplorerRefreshButtonToolTip {
@@ -2917,6 +3079,96 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Acknowledgement Deadline (seconds):.
+        /// </summary>
+        public static string NewSubscriptionWindowAckDeadlineLabel {
+            get {
+                return ResourceManager.GetString("NewSubscriptionWindowAckDeadlineLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delivery Type:.
+        /// </summary>
+        public static string NewSubscriptionWindowDeliveryType {
+            get {
+                return ResourceManager.GetString("NewSubscriptionWindowDeliveryType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Subscription for Topic {0}.
+        /// </summary>
+        public static string NewSubscriptionWindowHeader {
+            get {
+                return ResourceManager.GetString("NewSubscriptionWindowHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Name:.
+        /// </summary>
+        public static string NewSubscriptionWindowNameLabel {
+            get {
+                return ResourceManager.GetString("NewSubscriptionWindowNameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pu_ll.
+        /// </summary>
+        public static string NewSubscriptionWindowPullLabel {
+            get {
+                return ResourceManager.GetString("NewSubscriptionWindowPullLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Push to _URL:.
+        /// </summary>
+        public static string NewSubscriptionWindowPushLabel {
+            get {
+                return ResourceManager.GetString("NewSubscriptionWindowPushLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Subscription.
+        /// </summary>
+        public static string NewSubscriptionWindowTitle {
+            get {
+                return ResourceManager.GetString("NewSubscriptionWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Topic in Project {0}.
+        /// </summary>
+        public static string NewTopicWindowHeader {
+            get {
+                return ResourceManager.GetString("NewTopicWindowHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Topic _Name:.
+        /// </summary>
+        public static string NewTopicWindowNameLabel {
+            get {
+                return ResourceManager.GetString("NewTopicWindowNameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create topic.
+        /// </summary>
+        public static string NewTopicWindowTitle {
+            get {
+                return ResourceManager.GetString("NewTopicWindowTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to A browser window has been open to login into your account. To cancel this operation close the browser window and press Cancel to close this window. When the login finishes this window will close automatically..
         /// </summary>
         public static string OAuthFlowWindowMessage {
@@ -3201,6 +3453,123 @@ namespace GoogleCloudExtension {
         public static string PublishUrlMessage {
             get {
                 return ResourceManager.GetString("PublishUrlMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in delete subscription.
+        /// </summary>
+        public static string PubSubDeleteSubscriptionErrorHeader {
+            get {
+                return ResourceManager.GetString("PubSubDeleteSubscriptionErrorHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error deleting subscription.
+        /// </summary>
+        public static string PubSubDeleteSubscriptionErrorMessage {
+            get {
+                return ResourceManager.GetString("PubSubDeleteSubscriptionErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete subscription.
+        /// </summary>
+        public static string PubSubDeleteSubscriptionWindowHeader {
+            get {
+                return ResourceManager.GetString("PubSubDeleteSubscriptionWindowHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you wish to delete subscription {0}?.
+        /// </summary>
+        public static string PubSubDeleteSubscriptionWindowMessage {
+            get {
+                return ResourceManager.GetString("PubSubDeleteSubscriptionWindowMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in delete topic.
+        /// </summary>
+        public static string PubSubDeleteTopicErrorHeader {
+            get {
+                return ResourceManager.GetString("PubSubDeleteTopicErrorHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error deleting topic..
+        /// </summary>
+        public static string PubSubDeleteTopicErrorMessage {
+            get {
+                return ResourceManager.GetString("PubSubDeleteTopicErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete topic.
+        /// </summary>
+        public static string PubSubDeleteTopicWindowHeader {
+            get {
+                return ResourceManager.GetString("PubSubDeleteTopicWindowHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Are you sure you wish to delete topic {0}?.
+        /// </summary>
+        public static string PubSubDeleteTopicWindowMessage {
+            get {
+                return ResourceManager.GetString("PubSubDeleteTopicWindowMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in new subscription.
+        /// </summary>
+        public static string PubSubNewSubscriptionErrorHeader {
+            get {
+                return ResourceManager.GetString("PubSubNewSubscriptionErrorHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error creating new subscription..
+        /// </summary>
+        public static string PubSubNewSubscriptionErrorMessage {
+            get {
+                return ResourceManager.GetString("PubSubNewSubscriptionErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error in new topic.
+        /// </summary>
+        public static string PubSubNewTopicErrorHeader {
+            get {
+                return ResourceManager.GetString("PubSubNewTopicErrorHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error creating new topic..
+        /// </summary>
+        public static string PubSubNewTopicErrorMessage {
+            get {
+                return ResourceManager.GetString("PubSubNewTopicErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New Topic.
+        /// </summary>
+        public static string PubSubNewTopicWindowHeader {
+            get {
+                return ResourceManager.GetString("PubSubNewTopicWindowHeader", resourceCulture);
             }
         }
         
@@ -3642,6 +4011,51 @@ namespace GoogleCloudExtension {
         public static string UiYesButtonCaption {
             get {
                 return ResourceManager.GetString("UiYesButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to May not have more than 255 characters..
+        /// </summary>
+        public static string Validation255CharactersMessage {
+            get {
+                return ResourceManager.GetString("Validation255CharactersMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to May not start with &quot;goog&quot;.
+        /// </summary>
+        public static string ValidationDisallowStartGoogMessage {
+            get {
+                return ResourceManager.GetString("ValidationDisallowStartGoogMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to May only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) or percent signs (%)..
+        /// </summary>
+        public static string ValidationPubSubNameCharacterClassMessage {
+            get {
+                return ResourceManager.GetString("ValidationPubSubNameCharacterClassMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Must start with a letter..
+        /// </summary>
+        public static string ValidationStartWithLetterMessage {
+            get {
+                return ResourceManager.GetString("ValidationStartWithLetterMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Must have at least 3 characters..
+        /// </summary>
+        public static string ValidationThreeCharactersMessage {
+            get {
+                return ResourceManager.GetString("ValidationThreeCharactersMessage", resourceCulture);
             }
         }
         

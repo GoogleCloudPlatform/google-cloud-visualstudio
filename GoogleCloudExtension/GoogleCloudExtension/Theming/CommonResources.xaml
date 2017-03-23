@@ -231,6 +231,17 @@
             </Setter.Value>
         </Setter>
     </Style>
+    
+    <Style x:Key="LabeledRadioButtonStyle" BasedOn="{StaticResource CommonRadioButton}"
+           TargetType="{x:Type RadioButton}">
+        <Setter Property="ContentTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <Label Content="{Binding}" Style="{StaticResource CommonLabelStyle}" />
+                </DataTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
 
     <!-- Common separator for radio buttons. -->
     <Thickness x:Key="CommonRadioButtonMargin">0,0,0,9</Thickness>

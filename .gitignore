@@ -9,5 +9,7 @@
 **/project.lock.json
 .DS_Store
 **/packages/*
+**.DotSettings.user
 **/*.pyc
 
+*.csproj.user
