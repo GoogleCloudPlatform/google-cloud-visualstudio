@@ -20,6 +20,7 @@ using System;
 namespace GoogleCloudExtensionUnitTests
 {
     [TestClass]
+    public class DateTimeUtilTests
     {
         [TestMethod]
         public void MaxTest()
