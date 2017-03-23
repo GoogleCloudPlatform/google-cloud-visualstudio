@@ -12,3 +12,4 @@
 **.DotSettings.user
 **/*.pyc
 
+*.csproj.user
