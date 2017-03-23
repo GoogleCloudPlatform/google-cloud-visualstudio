@@ -52,6 +52,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             this.Content = new LogsViewerToolWindowControl();
 
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => CreateNewViewModel();
+            CredentialsStore.Default.Reset += (sender, e) => CreateNewViewModel();
         }
 
         /// <summary>

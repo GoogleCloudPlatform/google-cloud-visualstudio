@@ -420,12 +420,14 @@
         </Setter>
     </Style>
 
+    <!-- Style for showing text link at mouse over event. -->
     <Style x:Key="MouseOverLinkButtonStyle" TargetType="{x:Type controls:IconButton}" >
         <Setter Property="MouseOverForeground" Value="Blue" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:IconButton}">
                     <TextBlock x:Name="_textBlock" 
+                               Foreground="{TemplateBinding Foreground}"
                                Style="{StaticResource CommonTextStyle}"
                                TextWrapping="NoWrap"
                                TextTrimming="CharacterEllipsis">
@@ -441,7 +443,81 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
+    <!-- Style for using an image as toggle button.  -->
+    <Style x:Key="ImageToggleButtonStyle" TargetType="{x:Type controls:ImageToggleButton}">
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:ImageToggleButton}" >
+                    <Border x:Name="_border"                
+                            Background="{TemplateBinding Background}"
+                            Padding="{TemplateBinding Padding}">
+
+                        <StackPanel Orientation="Horizontal">
+                            <Image 
+                                x:Name="_buttonImage" 
+                                Margin="0,0,6,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Stretch="None"
+                                Source="{TemplateBinding UncheckedImage}" />
+                            <TextBlock 
+                                x:Name="_textBlock"
+                                VerticalAlignment="Center" 
+                                HorizontalAlignment="Left"
+                                Text="{TemplateBinding Content}">
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter Property="Source" TargetName="_buttonImage" 
+                                    Value="{Binding CheckedImage, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True" >
+                            <Setter Property="Foreground" TargetName="_textBlock"
+                                    Value="{Binding MouseOverForeground, RelativeSource={RelativeSource TemplatedParent}}" />
+                            <Setter Property="Background" TargetName="_border"
+                                    Value="{Binding MouseOverBackground, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Style for Back button -->
+    <Style x:Key="BackButtonStyle" TargetType="{x:Type controls:ImageToggleButton}" 
+           BasedOn="{StaticResource ImageToggleButtonStyle}">
+        <Setter Property="Padding" Value="6" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="#FF3B78E7" />
+        <Setter Property="MouseOverForeground" Value="#8A2BE2" />
+    </Style>
+
+    <!-- Style for auto reload button -->
+    <Style x:Key="AutoReloadButtonStyle" 
+           TargetType="{x:Type controls:AutoReloadButton}" 
+           BasedOn="{StaticResource ImageToggleButtonStyle}">
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="UncheckedImage" Value="{mp:ImageResource StackdriverErrorReporting/Resources/play_icon.png}" />
+        <Setter Property="CheckedImage" Value="{mp:ImageResource StackdriverErrorReporting/Resources/pause_icon.png}" />
+        <Setter Property="HorizontalAlignment" Value="Left" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Padding" Value="6" />
+        <Setter Property="Foreground" Value="#FF3B78E7" />
+        <Setter Property="FontWeight" Value="DemiBold" />
+        <Setter Property="MouseOverBackground" Value="#E0E0E0" />
+        <Style.Triggers>
+            <Trigger Property="IsChecked" Value="True">
+                <Setter Property="Background" Value="#BDBDBD" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
     <!-- Common PasswordWithReveal style. -->
 
     <!-- Ultra simple template for the TextBox used to display the password. -->

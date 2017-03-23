@@ -1,4 +1,4 @@
-﻿<Border x:Class="GoogleCloudExtension.StackdriverLogsViewer.LoggerTooltipControl"
+﻿<UserControl x:Class="GoogleCloudExtension.StackdriverLogsViewer.LoggerTooltipControl"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -11,14 +11,14 @@
         d:DesignHeight="300" d:DesignWidth="600" 
         BorderThickness="2" BorderBrush="#82B1FF"
         Background="#FBFBFB" >
-    <Border.Resources>
+    <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../../Theming/CommonResources.xaml" />
                 <ResourceDictionary Source="../LogsViewerResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </Border.Resources>
+    </UserControl.Resources>
     
     <Grid>
         <Grid.ColumnDefinitions>
@@ -67,11 +67,10 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                <controls:IconButton 
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Left"
+                <controls:ImageToggleButton 
                     Style="{StaticResource BackButtonStyle}"
-                    NormalIcon="{mp:ImageResource StackdriverLogsViewer/Resources/back_icon_12.png}"
+                    UncheckedImage="{mp:ImageResource StackdriverLogsViewer/Resources/back_icon_12.png}"
+                    CheckedImage="{mp:ImageResource StackdriverLogsViewer/Resources/back_icon_12.png}"
                     Content="{x:Static ext:Resources.LogsViewerTooltipBackButtonCaption}"
                     Command="{Binding BackToLogsViewerCommand}" />
                 <CheckBox 
@@ -98,4 +97,4 @@
             Command="{Binding OnCloseButtonCommand}"/>
 
     </Grid>
-</Border>
+</UserControl>

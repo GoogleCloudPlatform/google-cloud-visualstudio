@@ -14,7 +14,11 @@
 
 using EnvDTE;
 using GoogleCloudExtension.Utils;
-using static GoogleCloudExtension.StackdriverLogsViewer.LoggerTooltipSource;
+using GoogleCloudExtension.SolutionUtils;
+using GoogleCloudExtension.StackdriverErrorReporting;
+using ErrorReporting = GoogleCloudExtension.StackdriverErrorReporting;
+using GoogleCloudExtension.StackdriverLogsViewer;
+using static GoogleCloudExtension.SourceBrowsing.SourceVersionUtils;
 using static GoogleCloudExtension.StackdriverLogsViewer.LogWritterNameConstants;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
@@ -23,8 +27,9 @@ using Microsoft.VisualStudio.TextManager.Interop;
 using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Text.Editor;
 using System;
+using System.Linq;
 
-namespace GoogleCloudExtension.StackdriverLogsViewer
+namespace GoogleCloudExtension.SourceBrowsing
 {
     /// <summary>
     /// Helper methods to show the tooltip to a logger method.
@@ -56,11 +61,48 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         }
 
         /// <summary>
+        /// Navigate from a parsed stack frame to source code line.
+        /// </summary>
+        /// <param name="errorGroupItem">The error group item that will be shown in the source code tooltip.</param>
+        /// <param name="stackFrame">The stack frame that contains the source file and source line number.</param>
+        public static void ErrorFrameToSourceLine(
+            ErrorGroupItem errorGroupItem, 
+            ErrorReporting.StackFrame stackFrame)
+        {
+            if (errorGroupItem == null || stackFrame == null || !stackFrame.IsWellParsed)
+            {
+                throw new ArgumentException("Invalid argument");
+            }
+
+            ProjectItem projectItem = null;
+            SolutionHelper solution = SolutionHelper.CurrentSolution;
+            if (solution != null)
+            {
+                projectItem = solution.FindMatchingSourceFile(stackFrame.SourceFile).FirstOrDefault()?.ProjectItem;
+            }
+
+            if (projectItem == null)
+            {
+                SourceVersionUtils.FileItemNotFoundPrompt(stackFrame.SourceFile);
+                return;
+            }
+
+            var window = ShellUtils.Open(projectItem);
+            if (window == null)
+            {
+                FailedToOpenFilePrompt(stackFrame.SourceFile);
+                return;
+            }
+
+            ShowToolTip(errorGroupItem, stackFrame, window);
+        }
+
+        /// <summary>
         /// Move cursor to the <paramref name="line"/> number of the document window.
         /// </summary>
         /// <param name="window"><seealso cref="Window"/></param>
         /// <param name="line">The line number of the source file.</param>
-        public static void GotoLine(Window window, int line)
+        private static void GotoLine(Window window, int line)
         {
             TextSelection selection = window.Document.Selection as TextSelection;
             TextPoint tp = selection.TopPoint;
@@ -72,12 +114,42 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public static void HideTooltip()
         {
-            if (Current.TextView == null)
+            // Note, keep a local copy.
+            var activeData = ActiveTagData.Current;
+            if (activeData?.TextView == null)
             {
                 return;
             }
 
-            TryFindTagger(Current.TextView)?.ClearTooltip();
+            TryFindTagger(activeData.TextView)?.ClearTooltip();
+        }
+
+        /// <summary>
+        /// Show the tooltip for an error group stack frame.
+        /// </summary>
+        /// <param name="errorGroupItem">The error group item that will be shown in the source code tooltip.</param>
+        /// <param name="stackFrame">The stack frame that contains the source file and source line number.</param>
+        /// <param name="window">The Visual Studio Document window that opens the source file.</param>
+        public static void ShowToolTip(
+            ErrorGroupItem errorGroupItem, 
+            ErrorReporting.StackFrame stackFrame, 
+            Window window)
+        {
+            GotoLine(window, (int)stackFrame.LineNumber);
+            IVsTextView textView = GetIVsTextView(window.Document.FullName);
+            var wpfView = GetWpfTextView(textView);
+            if (wpfView == null)
+            {
+                return;
+            }
+            var control = new ErrorFrameTooltipControl();
+            control.DataContext = new ErrorFrameTooltipViewModel(errorGroupItem);
+            ActiveTagData.SetCurrent(
+                wpfView,
+                stackFrame.LineNumber,
+                control,
+                "");
+            TryFindTagger(wpfView)?.ShowOrUpdateToolTip();
         }
 
         /// <summary>
@@ -87,17 +159,19 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="window">The Visual Studio doucment window of the source file.</param>
         public static void ShowToolTip(this LogItem logItem, Window window)
         {
-            GotoLine(window, (int)logItem.SourceLine);
+            GotoLine(window, (int)logItem.SourceLine);        
             IVsTextView textView = GetIVsTextView(window.Document.FullName);
             var wpfView = GetWpfTextView(textView);
             if (wpfView == null)
             {
                 return;
             }
-            Current.Set(
-                new LoggerTooltipViewModel(logItem),
-                wpfView, 
-                logItem.SourceLine.Value, 
+            var control = new LoggerTooltipControl();
+            control.DataContext = new LoggerTooltipViewModel(logItem);
+            ActiveTagData.SetCurrent(
+                wpfView,
+                logItem.SourceLine.Value,
+                control,
                 logItem.LogLevel.GetLoggerMethodName());
             TryFindTagger(wpfView)?.ShowOrUpdateToolTip();
         }
@@ -145,9 +219,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             return view;
         }
 
-        private static LoggerTagger TryFindTagger(IWpfTextView wpfView)
+        private static StackdriverTagger TryFindTagger(IWpfTextView wpfView)
         {
-            LoggerTagger tagger = null;
+            StackdriverTagger tagger = null;
             LoggerTaggerProvider.AllLoggerTaggers.TryGetValue(wpfView, out tagger);
             return tagger;
         }
