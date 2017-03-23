@@ -7,19 +7,30 @@
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance {x:Type local:OAuthLoginFlowViewModel}}" d:DesignHeight="300" d:DesignWidth="300">
+             d:DataContext="{d:DesignInstance {x:Type local:OAuthLoginFlowViewModel}}">
 
     <UserControl.Resources>
-        <TextBlock TextWrapping="Wrap" Margin="3,0" x:Key="content" Text="{x:Static ext:Resources.OAuthFlowWindowMessage}" />
-
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
 
-    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource content}">
+    <UserControl.Style>
+        <Binding Source="{StaticResource CommonDialogStyleDynamicSmall}" />
+    </UserControl.Style>
+    
+    <theming:CommonDialogWindowBaseContent>
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
-                                      Command="{Binding DataContext.CloseCommand, Source={StaticResource content}}"
+                                      Command="{Binding CloseCommand}"
                                       IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
+
+        <TextBlock Text="{x:Static ext:Resources.OAuthFlowWindowMessage}"
+                   Style="{StaticResource CommonTextStyle}" />
+
     </theming:CommonDialogWindowBaseContent>
    
 </UserControl>

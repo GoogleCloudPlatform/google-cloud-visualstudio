@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.PublishDialog;
@@ -30,7 +32,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
     {
         private readonly FlexStepContent _content;
         private IPublishDialog _publishDialog;
-        private string _version;
+        private string _version = GcpPublishStepsUtils.GetDefaultVersion();
         private bool _promote = true;
         private bool _openWebsite = true;
 
@@ -79,57 +81,108 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         public override async void Publish()
         {
-            var context = new Context
+            if (!ValidateInput())
             {
-                CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
-                ProjectId = CredentialsStore.Default.CurrentProjectId,
-                AppName = GoogleCloudExtensionPackage.ApplicationName,
-                AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
-            };
-            var options = new NetCoreDeployment.DeploymentOptions
-            {
-                Version = Version,
-                Promote = Promote,
-                Context = context
-            };
-            var project = _publishDialog.Project;
-
-            GcpOutputWindow.Activate();
-            GcpOutputWindow.Clear();
-            GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishStepStartMessage, project.Name));
-
-            _publishDialog.FinishFlow();
-
-            NetCorePublishResult result;
-            using (var frozen = StatusbarHelper.Freeze())
-            using (var animationShown = StatusbarHelper.ShowDeployAnimation())
-            using (var progress = StatusbarHelper.ShowProgressBar(Resources.FlexPublishProgressMessage))
-            using (var deployingOperation = ShellUtils.SetShellUIBusy())
-            {
-                result = await NetCoreDeployment.PublishProjectAsync(
-                    project.FullPath,
-                    options,
-                    progress,
-                    GcpOutputWindow.OutputLine);
+                Debug.WriteLine("Invalid input cancelled the operation.");
+                return;
             }
 
-            if (result != null)
+            var project = _publishDialog.Project;
+            try
             {
-                GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishSuccessMessage, project.Name));
-                StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
-
-                var url = result.GetDeploymentUrl();
-                GcpOutputWindow.OutputLine(String.Format(Resources.PublishUrlMessage, url));
-                if (OpenWebsite)
+                var verifyGcloudTask = GCloudWrapperUtils.VerifyGCloudDependencies("beta");
+                _publishDialog.TrackTask(verifyGcloudTask);
+                if (!await verifyGcloudTask)
                 {
-                    Process.Start(url);
+                    Debug.WriteLine("Gcloud dependencies not met, aborting publish operation.");
+                    return;
+                }
+
+                ShellUtils.SaveAllFiles();
+
+                var context = new GCloudContext
+                {
+                    CredentialsPath = CredentialsStore.Default.CurrentAccountPath,
+                    ProjectId = CredentialsStore.Default.CurrentProjectId,
+                    AppName = GoogleCloudExtensionPackage.ApplicationName,
+                    AppVersion = GoogleCloudExtensionPackage.ApplicationVersion,
+                };
+                var options = new AppEngineFlexDeployment.DeploymentOptions
+                {
+                    Version = Version,
+                    Promote = Promote,
+                    Context = context
+                };
+
+                GcpOutputWindow.Activate();
+                GcpOutputWindow.Clear();
+                GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishStepStartMessage, project.Name));
+
+                _publishDialog.FinishFlow();
+
+                TimeSpan deploymentDuration;
+                AppEngineFlexDeploymentResult result;
+                using (var frozen = StatusbarHelper.Freeze())
+                using (var animationShown = StatusbarHelper.ShowDeployAnimation())
+                using (var progress = StatusbarHelper.ShowProgressBar(Resources.FlexPublishProgressMessage))
+                using (var deployingOperation = ShellUtils.SetShellUIBusy())
+                {
+                    var startDeploymentTime = DateTime.Now;
+                    result = await AppEngineFlexDeployment.PublishProjectAsync(
+                        project.FullPath,
+                        options,
+                        progress,
+                        GcpOutputWindow.OutputLine);
+                    deploymentDuration = DateTime.Now - startDeploymentTime;
+                }
+
+                if (result != null)
+                {
+                    GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishSuccessMessage, project.Name));
+                    StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
+
+                    var url = result.GetDeploymentUrl();
+                    GcpOutputWindow.OutputLine(String.Format(Resources.PublishUrlMessage, url));
+                    if (OpenWebsite)
+                    {
+                        Process.Start(url);
+                    }
+
+                    EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Success, deploymentDuration));
+                }
+                else
+                {
+                    GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishFailedMessage, project.Name));
+                    StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+
+                    EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Failure));
                 }
             }
-            else
+            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
                 GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+
+                EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Failure));
             }
+        }
+
+        private bool ValidateInput()
+        {
+            if (String.IsNullOrEmpty(Version))
+            {
+                UserPromptUtils.ErrorPrompt(Resources.FlexPublishEmptyVersionMessage, Resources.UiInvalidValueTitle);
+                return false;
+            }
+            if (!GcpPublishStepsUtils.IsValidName(Version))
+            {
+                UserPromptUtils.ErrorPrompt(
+                    String.Format(Resources.FlexPublishInvalidVersionMessage, Version),
+                    Resources.UiInvalidValueTitle);
+                return false;
+            }
+
+            return true;
         }
 
         #endregion
@@ -138,7 +191,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         /// Creates a new step instance. This method will also create the necessary view and conect both
         /// objects together.
         /// </summary>
-        /// <returns></returns>
         internal static FlexStepViewModel CreateStep()
         {
             var content = new FlexStepContent();

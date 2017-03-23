@@ -138,11 +138,11 @@
     <comment>Menu header for the Enable API command.</comment>
   </data>
   <data name="CloudExploreNoProjectMessage" xml:space="preserve">
-    <value>No projects found, to create a project navigate to the Google Cloud Console.</value>
+    <value>To create a project, go to the Cloud Platform Console.</value>
     <comment>Message shwon int he Cloud Explorer when no project is found.</comment>
   </data>
   <data name="CloudExplorerConsoleLinkCaption" xml:space="preserve">
-    <value>Go to the Google Cloud Console for other services</value>
+    <value>Open Cloud Platform Console for other services</value>
     <comment>The caption for the console link in the cloud source.</comment>
   </data>
   <data name="CloudExplorerGceFailedToGetOauthCredentialsCaption" xml:space="preserve">
@@ -160,10 +160,6 @@
   <data name="CloudExplorerGceFailedToStopInstanceMessage" xml:space="preserve">
     <value>Failed to stop instance {0}. {1}</value>
     <comment>Message shown when failed to stop an instance. {0} is the instance name, {1} is the error message.</comment>
-  </data>
-  <data name="CloudExplorerGceFailedToUpdateFirewallCaption" xml:space="preserve">
-    <value>Error Updating Firewall</value>
-    <comment>Caption for the message shown when failed to update firewall.</comment>
   </data>
   <data name="CloudExplorerGceFailedToUpdateFirewallMessage" xml:space="preserve">
     <value>Failed to update Firewall rules for instance.</value>
@@ -250,7 +246,7 @@
     <comment>The description of the zone property for a GCE instance.</comment>
   </data>
   <data name="CloudExplorerGceManageFirewallPortsMenuHeader" xml:space="preserve">
-    <value>Manage Firewall Ports...</value>
+    <value>Firewall options...</value>
     <comment>Header for the manage firewall ports menu item.</comment>
   </data>
   <data name="CloudExplorerGceNewAspNetInstanceMenuHeader" xml:space="preserve">
@@ -261,24 +257,16 @@
     <value>New Instance</value>
     <comment>Header for the new instance menu item.</comment>
   </data>
-  <data name="CloudExplorerGceNoInstancesInZoneCaption" xml:space="preserve">
-    <value>No instances in this zone</value>
-    <comment>The caption to show when there are no instances in a GCE zone.</comment>
-  </data>
-  <data name="CloudExplorerGceNoWindowsInstancesInZoneCaption" xml:space="preserve">
-    <value>No Windows instances in this zone</value>
-    <comment>The caption to show when there are no Windows instances in a GCE zone.</comment>
-  </data>
   <data name="CloudExplorerGceOnlyWindowsButtonToolTip" xml:space="preserve">
     <value>Show only Windows instances</value>
     <comment>The tooltip for the filter button.</comment>
   </data>
   <data name="CloudExplorerGceOpenTerminalSessionMenuHeader" xml:space="preserve">
-    <value>Open Terminal Server Session...</value>
+    <value>Open Remote Desktop session...</value>
     <comment>Header for the open terminal session menu item.</comment>
   </data>
   <data name="CloudExplorerGceOpenWebSiteMenuHeader" xml:space="preserve">
-    <value>Open Web Site...</value>
+    <value>Open website</value>
     <comment>Header for the open website menu item.</comment>
   </data>
   <data name="CloudExplorerGcePublishingSettingsSavedMessage" xml:space="preserve">
@@ -329,8 +317,8 @@
     <value>Loading instances data...</value>
     <comment>Caption shown in the node when loading GCE zones.</comment>
   </data>
-  <data name="CloudExplorerGceSourceNoZonesCaption" xml:space="preserve">
-    <value>No zones found.</value>
+  <data name="CloudExplorerGceSourceNoInstancesCaption" xml:space="preserve">
+    <value>No instances found.</value>
     <comment>Caption shown in the node when no GCE zones are found.</comment>
   </data>
   <data name="CloudExplorerGceStartInstanceConfirmationPrompt" xml:space="preserve">
@@ -442,7 +430,7 @@
     <comment>General loading message.</comment>
   </data>
   <data name="CloudExplorerNoAccountButtonCaption" xml:space="preserve">
-    <value>Select or Create Account</value>
+    <value>Select or create account</value>
     <comment>Caption for the button, or link, in the Cloud Exlorer shown when there's no account selected.</comment>
   </data>
   <data name="CloudExplorerNoAccountMessage" xml:space="preserve">
@@ -450,7 +438,7 @@
     <comment>Message shown in the Cloud Exlorer when there's no account selected.</comment>
   </data>
   <data name="CloudExplorerNoProjectButtonCaption" xml:space="preserve">
-    <value>Navigate to Cloud Console</value>
+    <value>Go to the Cloud Platform Console</value>
     <comment>Caption for the button, or link, shown in the Cloud Explorer when no project is found.</comment>
   </data>
   <data name="CloudExplorerNoProjectsFoundPlaceholderMessage" xml:space="preserve">
@@ -541,10 +529,6 @@
     <value>Instance Properties</value>
     <comment>Category for the SQL instance properties.</comment>
   </data>
-  <data name="CloudExplorerSqlInstanceIp6AddressDisplayName" xml:space="preserve">
-    <value>IPv6 Address (First Gen)</value>
-    <comment>The display name for the IP v6 address.</comment>
-  </data>
   <data name="CloudExplorerSqlInstanceIpAddressDisplayName" xml:space="preserve">
     <value>IP Address</value>
     <comment>The display name for the instance IP address.</comment>
@@ -566,11 +550,11 @@
     <comment>Caption shown when the authorized networks are being updated.</comment>
   </data>
   <data name="CloudExplorerSqlOpenAddDataConnectionMenuHeader" xml:space="preserve">
-    <value>Add Data Connection</value>
+    <value>Add Data Connection...</value>
     <comment>Menu header for the open add data connection dialog menu item.</comment>
   </data>
   <data name="CloudExplorerSqlManageAuthorizedNetworksMenuHeader" xml:space="preserve">
-    <value>Manage Authorized Networks</value>
+    <value>Manage authorized networks...</value>
     <comment>Menu header for the option to manage authorized networks.</comment>
   </data>
   <data name="CloudExplorerSqlRootNodeCaption" xml:space="preserve">
@@ -598,20 +582,16 @@
     <comment>The title for the prompt indicating the account already exists.</comment>
   </data>
   <data name="ManageAccountsAddAccountButtonCaption" xml:space="preserve">
-    <value>Add...</value>
+    <value>_Add account</value>
     <comment>Caption for the add account button.</comment>
   </data>
   <data name="ManageAccountsChooseAccountMessage" xml:space="preserve">
-    <value>Choose account:</value>
+    <value>_Choose account:</value>
     <comment>The message at the top of the manage accounts window.</comment>
   </data>
   <data name="ManageAccountsCurrentAccountMessage" xml:space="preserve">
     <value>Current Account</value>
     <comment>Message shown in the current account.</comment>
-  </data>
-  <data name="ManageAccountsDeleteAccountButtonCaption" xml:space="preserve">
-    <value>Delete</value>
-    <comment>Caption for the delete account button.</comment>
   </data>
   <data name="ManageAccountsDeleteAccountPromptMessage" xml:space="preserve">
     <value>Are you sure you want to delete the account {0}?</value>
@@ -622,7 +602,7 @@
     <comment>Title for the confirmation prompt for deleting an account.</comment>
   </data>
   <data name="ManageAccountsSetAsCurrentAccountButtonCaption" xml:space="preserve">
-    <value>Set As Current</value>
+    <value>_Set current</value>
     <comment>Caption for the set as current account button.</comment>
   </data>
   <data name="ManageAccountsWindowTitle" xml:space="preserve">
@@ -650,11 +630,11 @@
     <comment>OAUTH flow window title.</comment>
   </data>
   <data name="PortManagerWindowCaption" xml:space="preserve">
-    <value>Manage Firewall Ports</value>
+    <value>Firewall Options</value>
     <comment>Caption for the port manager dialog.</comment>
   </data>
   <data name="PortManagerWindowMessage" xml:space="preserve">
-    <value>Set Firewall rules and tags to enable traffic for the instance</value>
+    <value>Firewall rules:</value>
     <comment>Main message in the port manager dialog.</comment>
   </data>
   <data name="AuthorizedNetworksWindowCaption" xml:space="preserve">
@@ -686,7 +666,7 @@
     <comment>Message for an error message in the authorized networks dialog for an ipv4 address.</comment>
   </data>
   <data name="ResetPasswordConfirmationPromptMessage" xml:space="preserve">
-    <value>Are you sure you want to reset the password for the user {0} in instance {1}? This operation cannot be cancelled.</value>
+    <value>Reset the password for {0} on instance {1}?</value>
     <comment>The message for the confirmation prompt for resetting or creating a password. {0) is the user name, {1} is the instance name.</comment>
   </data>
   <data name="ResetPasswordConfirmationPromptTitle" xml:space="preserve">
@@ -694,36 +674,20 @@
     <comment>The title for the confirmation prompt for resetting or creating a password. {0) is the user name, {1} is the instance name.</comment>
   </data>
   <data name="ResetPasswordFailedPromptMessage" xml:space="preserve">
-    <value>Failed to reset password for {0}. {1}</value>
-    <comment>Message shown when the reset operation fails. {0} is the instance name, {1} is the error message.</comment>
+    <value>Failed to reset password for {0}. </value>
+    <comment>Message shown when the reset operation fails. {0} is the instance name.</comment>
   </data>
-  <data name="ResetPasswordGcloudLinkCaption" xml:space="preserve">
-    <value>Install Google Cloud SDK</value>
-    <comment>Caption for the link for Gcloud.</comment>
-  </data>
-  <data name="ResetPasswordGcloudMissingBetaMessage" xml:space="preserve">
-    <value>To use this feature you need to have the "beta" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install beta.</value>
-    <comment>Message shown when the beta component is missing.</comment>
-  </data>
-  <data name="ResetPasswordGcloudMissingComponentTitle" xml:space="preserve">
+  <data name="GcloudMissingComponentTitle" xml:space="preserve">
     <value>Missing Google Cloud SDK Component</value>
     <comment>Title for the dialog that informs the user that a Cloud SDK component is needed but not installed.</comment>
   </data>
-  <data name="ResetPasswordGcloudMissingMessage" xml:space="preserve">
-    <value>To use this feature you need to have the Google Cloud SDK is installed and available in the path, and that the "beta" component is installed. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link.</value>
-    <comment>Message shown when gcloud is not installed.</comment>
-  </data>
-  <data name="ResetPasswordMissingGcloudTitle" xml:space="preserve">
-    <value>Missing Google Cloud SDK</value>
-    <comment>Title for the prompts shown when gcloud is not installed.</comment>
-  </data>
-  <data name="ResetPasswordUserNameCaption" xml:space="preserve">
-    <value>User name:</value>
+  <data name="AddWindowsCredentialUserNameCaption" xml:space="preserve">
+    <value>_User name:</value>
     <comment>Caption for the user name textbox.</comment>
   </data>
-  <data name="ResetPasswordWindowTitle" xml:space="preserve">
-    <value>Add Credential for VM {0}</value>
-    <comment>The title for the reset password dialog. {0} is the instance name.</comment>
+  <data name="AddWindowsCredentialTitle" xml:space="preserve">
+    <value>Add Windows Credential</value>
+    <comment>The title for the reset password dialog. </comment>
   </data>
   <data name="ShowPasswordCopyFailedMessage" xml:space="preserve">
     <value>The copy operation failed, this might happen if another program has the Windows Clipboard open, such as a virtual machine agent.</value>
@@ -733,21 +697,9 @@
     <value>Copy Failed</value>
     <comment>Title of the prompt shown when the copy operation fails.</comment>
   </data>
-  <data name="ShowPasswordCopyPasswordButtonCaption" xml:space="preserve">
-    <value>Copy Password</value>
-    <comment>Caption for the copy password button.</comment>
-  </data>
-  <data name="ShowPasswordHidePasswordTooltip" xml:space="preserve">
-    <value>Hide password</value>
-    <comment>The tooltip shown to hide the password.</comment>
-  </data>
   <data name="ShowPasswordMessage" xml:space="preserve">
-    <value>The password for user {0} in instance {1} is:</value>
-    <comment>The message shown for the password textblock. {0} is the user name, {1} is the instance name.</comment>
-  </data>
-  <data name="ShowPasswordShowPasswordTooltip" xml:space="preserve">
-    <value>Show password</value>
-    <comment>The tooltip shown to show the password.</comment>
+    <value>{0} password:</value>
+    <comment>The message shown for the password textblock. {0} is the user name.</comment>
   </data>
   <data name="ShowPasswordWindowTitle" xml:space="preserve">
     <value>Password for {0}</value>
@@ -762,7 +714,7 @@
     <comment>Caption for the close window button.</comment>
   </data>
   <data name="UiDownloadButtonCaption" xml:space="preserve">
-    <value>Download</value>
+    <value>_Download</value>
     <comment>The caption for the general download button.</comment>
   </data>
   <data name="UiOkButtonCaption" xml:space="preserve">
@@ -770,19 +722,19 @@
     <comment>Caption for Ok buttons.</comment>
   </data>
   <data name="UiSaveButtonCaption" xml:space="preserve">
-    <value>Save</value>
+    <value>_Save</value>
     <comment>Caption for Save buttons.</comment>
   </data>
   <data name="UiDeleteButtonCaption" xml:space="preserve">
-    <value>Delete</value>
+    <value>_Delete</value>
     <comment>Caption for Delete buttons.</comment>
   </data>
   <data name="UiUndoButtonCaption" xml:space="preserve">
-    <value>Undo</value>
+    <value>_Undo</value>
     <comment>Caption for Undo buttons.</comment>
   </data>
   <data name="UiOpenOnCloudConsoleMenuHeader" xml:space="preserve">
-    <value>Open on Cloud Console</value>
+    <value>Open on Cloud Platform Console</value>
     <comment>Header for the menu that opens the item in the cloud console.</comment>
   </data>
   <data name="UiPropertiesMenuHeader" xml:space="preserve">
@@ -806,31 +758,31 @@
     <comment>The command to use use to show the buckets per location.</comment>
   </data>
   <data name="ManageWindowsCredentialsAddCredentialsCaption" xml:space="preserve">
-    <value>Add Credentials</value>
+    <value>_Add credentials</value>
     <comment>The caption for the add credentials button in the dialog.</comment>
   </data>
   <data name="ManageWindowsCredentialsDeleteCredentialsCaption" xml:space="preserve">
-    <value>Delete Credentials</value>
+    <value>_Delete credentials</value>
     <comment>The caption for the delete credentials button in the dialog.</comment>
   </data>
   <data name="ManageWindowsCredentialsDeleteCredentialsPromptMessage" xml:space="preserve">
-    <value>Are you sure you want to the delete the credentials for user {0}?</value>
+    <value>Delete user name {0} from this computer? The credentials will still exist on the Windows instance.</value>
     <comment>The message for the confirmation prompt to delete credentials. The {0} placeholder is the username.</comment>
   </data>
   <data name="ManageWindowsCredentialsDeleteCredentialsPromptTitle" xml:space="preserve">
-    <value>Delete Credentials</value>
+    <value>Delete Credential</value>
     <comment>Title for the confirmation prompt to delete credentials.</comment>
   </data>
   <data name="ManageWindowsCredentialsShowCredentialsCaption" xml:space="preserve">
-    <value>Show Credentials</value>
+    <value>_Show password</value>
     <comment>The caption or the show credentials button in the dialog.</comment>
   </data>
   <data name="ManageWindowsCredentialsWindowMessage" xml:space="preserve">
-    <value>Windows credentials for {0}</value>
+    <value>_Credentials for {0}: </value>
     <comment>Message at the top of the Manage Windows Credentials dialog. The {0} placeholder is the name of the instance.</comment>
   </data>
   <data name="ManageWindowsCredentialsWindowTitle" xml:space="preserve">
-    <value>Manage Windows Credentials</value>
+    <value>Windows Credentials</value>
     <comment>Title for the Manage Windows Credentials dialog.</comment>
   </data>
   <data name="TerminalServerManagerWindowMessage" xml:space="preserve">
@@ -838,19 +790,15 @@
     <comment>Top message in the terminal server window.</comment>
   </data>
   <data name="TerminalServerManagerWindowTitle" xml:space="preserve">
-    <value>Start Terminal Server session</value>
+    <value>Start Remote Desktop Session</value>
     <comment>Title for the manage terminal server window.</comment>
-  </data>
-  <data name="WindowsCredentialsChooserButtonToolTip" xml:space="preserve">
-    <value>Manage Windows Credentials</value>
-    <comment>Tooltip for the manage credentials button in the terminal server window.</comment>
   </data>
   <data name="WindowsCredentialsChooserNoCredentialsFoundMessage" xml:space="preserve">
     <value>No credentials found...</value>
     <comment>Message shown in the dropdown when no credentials are found.</comment>
   </data>
   <data name="CloudExplorerGceManageWindowsCredentialsMenuHeader" xml:space="preserve">
-    <value>Manage Windows Credentials...</value>
+    <value>Manage Windows credentials...</value>
     <comment>Header for the menu entry to manage credentials.</comment>
   </data>
   <data name="CloudExplorerGceInstanceWindowsVersionDescription" xml:space="preserve">
@@ -882,7 +830,7 @@
     <comment>The caption for the publish dialog window.</comment>
   </data>
   <data name="PublishDialogChoiceStepAppEngineFlexName" xml:space="preserve">
-    <value>App Engine Flex</value>
+    <value>_App Engine Flex</value>
     <comment>The name of the App Engine Flex choice.</comment>
   </data>
   <data name="PublishDialogChoiceStepAppEngineToolTip" xml:space="preserve">
@@ -890,7 +838,7 @@
     <comment>The tooltip for the App Engine Flex button.</comment>
   </data>
   <data name="PublishDialogChoiceStepGceName" xml:space="preserve">
-    <value>Compute Engine</value>
+    <value>_Compute Engine</value>
     <comment>The name of the GCE choice.</comment>
   </data>
   <data name="PublishDialogChoiceStepGceToolTip" xml:space="preserve">
@@ -898,31 +846,31 @@
     <comment>The tooltip for the GCE button.</comment>
   </data>
   <data name="PublishDialogChoiceStepMessage" xml:space="preserve">
-    <value>Choose a target:</value>
+    <value>Choose a product to publish to:</value>
     <comment>The message shown in the choice step.</comment>
   </data>
   <data name="PublishDialogOpenWebsiteCaption" xml:space="preserve">
-    <value>Open website after publish process finishes</value>
+    <value>_Open site after publishing</value>
     <comment>The caption for the open website checkbox.</comment>
   </data>
   <data name="PublishDialogGceStepSelectCredentialsMessage" xml:space="preserve">
-    <value>Select account:</value>
+    <value>_Account:</value>
     <comment>The message shown to select credentials.</comment>
   </data>
   <data name="PublishDialogGceStepSelectInstanceMessage" xml:space="preserve">
-    <value>Select instance:</value>
+    <value>_VM instance:</value>
     <comment>The message shown to select an instance.</comment>
   </data>
   <data name="PublishDialogNextButtonCaption" xml:space="preserve">
-    <value>Next</value>
+    <value>_Next</value>
     <comment>The caption for the next button.</comment>
   </data>
   <data name="PublishDialogPrevButtonCaption" xml:space="preserve">
-    <value>Prev</value>
+    <value>_Prev</value>
     <comment>The caption for the prev button.</comment>
   </data>
   <data name="PublishDialogPublishButtonCaption" xml:space="preserve">
-    <value>Publish</value>
+    <value>P_ublish</value>
     <comment>The caption for the publish button.</comment>
   </data>
   <data name="FlexPublishFailedMessage" xml:space="preserve">
@@ -942,11 +890,11 @@
     <comment>Message shown in the progress area during the deployment to GCE. {0} is the name of the VM.</comment>
   </data>
   <data name="PublishDialogFlexPromoteVersionCaption" xml:space="preserve">
-    <value>Promote version</value>
+    <value>P_romote version</value>
     <comment>Caption used in the promote version checkbox.</comment>
   </data>
   <data name="PublishDialogFlexVersionNameCaption" xml:space="preserve">
-    <value>Version name:</value>
+    <value>_Version name:</value>
     <comment>Caption used for the version name.</comment>
   </data>
   <data name="PublishFailureStatusMessage" xml:space="preserve">
@@ -969,65 +917,25 @@
     <value>Publish {0} to Google Cloud...</value>
     <comment>Menu header to open the publish dialog with a project name. {0} is the project name.</comment>
   </data>
-  <data name="ResetPasswordGeneratePasswordMessage" xml:space="preserve">
-    <value>Generate the password for this user name</value>
+  <data name="AddWindowsCredentialGeneratePasswordMessage" xml:space="preserve">
+    <value>Create a password for me</value>
     <comment>Message shown in the radio button of the Reset password dialog to signify that the password will be generated instead of provided by the user.</comment>
   </data>
-  <data name="ResetPasswordHavePasswordMessage" xml:space="preserve">
-    <value>I have a password for this user name</value>
+  <data name="AddWindowsCredentialHavePasswordMessage" xml:space="preserve">
+    <value>I have a password for this user</value>
     <comment>Message shown in the radio button of the Reset Password dialog to signify that the user will provide the password.</comment>
-  </data>
-  <data name="ResetWindowSettingPasswordProgressMessage" xml:space="preserve">
-    <value>Setting password for user {0}</value>
-    <comment>Message shown to the user when the password for the Windows user is being set. {0} is the user name.</comment>
-  </data>
-  <data name="WindowsCredentialsChooserManageCredentialsCaption" xml:space="preserve">
-    <value>Manage credentials</value>
-    <comment>Caption used in the hyperlink shown in the Windows credentials chooser dialog.</comment>
-  </data>
-  <data name="CloudExplorerGaeFailedInstancesMessage" xml:space="preserve">
-    <value>Failed to load the list of Google Cloud App Engine instances</value>
-    <comment>Message shown in the output window when failed to load list of GAE instances</comment>
   </data>
   <data name="CloudExplorerGaeFailedServicesMessage" xml:space="preserve">
     <value>Failed to load the list of Google Cloud App Engine services</value>
     <comment>Message shown in the output window when failed to load list of GAE services.</comment>
   </data>
-  <data name="CloudExplorerGaeFailedToLoadInstancesCaption" xml:space="preserve">
-    <value>Failed to load instances.</value>
-    <comment>Caption shown when failed to load GAE instances.</comment>
-  </data>
   <data name="CloudExplorerGaeFailedToLoadServicesCaption" xml:space="preserve">
     <value>Failed to load services.</value>
     <comment>Caption shown when failed to load GAE services,</comment>
   </data>
-  <data name="CloudExplorerGaeFailedToLoadVersionsCaption" xml:space="preserve">
-    <value>Failed to load versions.</value>
-    <comment>Caption shown when failed to load GAE versions.</comment>
-  </data>
-  <data name="CloudExplorerGaeFailedVersionsMessage" xml:space="preserve">
-    <value>Failed to load the list of Google Cloud App Engine versions</value>
-    <comment>Message shown in the output window when failed to load list of GAE versions</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceCategory" xml:space="preserve">
-    <value>Instance Properties</value>
-    <comment>Category for the GAE instance properties.</comment>
-  </data>
-  <data name="CloudExplorerGaeLoadingInstancesCaption" xml:space="preserve">
-    <value>Loading instances...</value>
-    <comment>Caption shown when loading GAE instances.</comment>
-  </data>
   <data name="CloudExplorerGaeLoadingServicesCaption" xml:space="preserve">
     <value>Loading services...</value>
     <comment>Caption shown when loading GAE services.</comment>
-  </data>
-  <data name="CloudExplorerGaeLoadingVersionCaption" xml:space="preserve">
-    <value>Loading versions...</value>
-    <comment>Caption shown when loading GAE versions.</comment>
-  </data>
-  <data name="CloudExplorerGaeNoInstancesFoundCaption" xml:space="preserve">
-    <value>No instances found.</value>
-    <comment>Caption shown when no GAE instances are found.</comment>
   </data>
   <data name="CloudExplorerGaeNoServicesFoundCaption" xml:space="preserve">
     <value>No services found.</value>
@@ -1049,42 +957,6 @@
     <value>Version Properties</value>
     <comment>Category for the GAE version properties.</comment>
   </data>
-  <data name="CloudExplorerGaeInstanceAppEngineReleaseDisplayName" xml:space="preserve">
-    <value>App Engine Release</value>
-    <comment>The display name for the GAE instance app engine release</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceAverageLatencyDisplayName" xml:space="preserve">
-    <value>Average Latency</value>
-    <comment>The display name for the GAE instance average latency</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceMemoryUsageDisplayName" xml:space="preserve">
-    <value>Memory Usage</value>
-    <comment>The display name for the GAE instance memory usage.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceStartTimeDisplayName" xml:space="preserve">
-    <value>Start Time</value>
-    <comment>The display name for the GAE instance start time.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceVirtualMachineCategory" xml:space="preserve">
-    <value>Instance Virtual Machine Properties</value>
-    <comment>Category for the GAE instance virtual machine properties.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceVirtualMachineIdDisplayName" xml:space="preserve">
-    <value>Id</value>
-    <comment>The display name for the GAE instance virtual machine id.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceVirtualMachineNameDisplayName" xml:space="preserve">
-    <value>Name</value>
-    <comment>The display name for the GAE instance virtual machine name.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceVirtualMachineStatusDisplayName" xml:space="preserve">
-    <value>Status</value>
-    <comment>The display name for the GAE instance virtual machine status.</comment>
-  </data>
-  <data name="CloudExplorerGaeInstanceVirtualMachineZoneDisplayName" xml:space="preserve">
-    <value>Zone</value>
-    <comment>The display name for the GAE instance virtual machine zone.</comment>
-  </data>
   <data name="CloudExplorerGaeServiceOpen" xml:space="preserve">
     <value>Open Running Service</value>
     <comment>Header for the menu that opens the service in a browser.</comment>
@@ -1092,26 +964,6 @@
   <data name="CloudExplorerGaeVersionCreationTimeDisplayName" xml:space="preserve">
     <value>Creation Time</value>
     <comment>The display name for the GAE version creation time</comment>
-  </data>
-  <data name="CloudExplorerGaeVersionInstanceClassDisplayName" xml:space="preserve">
-    <value>Instance Class</value>
-    <comment>The display name for the GAE version instance class</comment>
-  </data>
-  <data name="CloudExplorerGaeVersionResoucesDiskDisplayName" xml:space="preserve">
-    <value>Disk (GB)</value>
-    <comment>The display name for the GAE version resource disk.</comment>
-  </data>
-  <data name="CloudExplorerGaeVersionResoucesMemoryDisplayName" xml:space="preserve">
-    <value>Memory (GB)</value>
-    <comment>The display name for the GAE version resource memory.</comment>
-  </data>
-  <data name="CloudExplorerGaeVersionResourcesCategory" xml:space="preserve">
-    <value>Version Resouces Properties</value>
-    <comment>Category for the GAE version resources properties.</comment>
-  </data>
-  <data name="CloudExplorerGaeVersionVirtualMachineDisplayName" xml:space="preserve">
-    <value>Virtual Machine</value>
-    <comment>The display name for the GAE version virtual machine</comment>
   </data>
   <data name="CloudExplorerGaeVersionOpen" xml:space="preserve">
     <value>Open Running Version</value>
@@ -1205,13 +1057,9 @@
     <value>Updating traffic split...</value>
     <comment>Message shown when a traffic split is being updated.</comment>
   </data>
-  <data name="SplitTrafficWindowAddVersionMessage" xml:space="preserve">
-    <value>Add Version to Traffic Split</value>
-    <comment>Button label to add a version to the traffic splits.</comment>
-  </data>
   <data name="SplitTrafficWindowInvalidPercentRangeErrorMessage" xml:space="preserve">
-    <value>Each traffic allocation must be greater than or equal to 1% and less than or equal to 100%</value>
-    <comment>Message for an error message in the split traffic dialog for an invalid percentage out of range.</comment>
+    <value>Invalid traffic allocation {0}. Each traffic allocation must be greater than or equal to 1% and less than or equal to 100%</value>
+    <comment>Message for an error message in the split traffic dialog for an invalid percentage out of range. {0} is the name of the traffic allocation outside of the valid range.</comment>
   </data>
   <data name="SplitTrafficWindowInvalidPercentSumErrorMessage" xml:space="preserve">
     <value>The sum of traffic allocations must be 100% of all traffic.</value>
@@ -1220,10 +1068,6 @@
   <data name="SplitTrafficWindowInvalidPercentTitle" xml:space="preserve">
     <value>Invalid Percent</value>
     <comment>Title for an error message in the split traffic dialog for an invalid percent.</comment>
-  </data>
-  <data name="SplitTrafficWindowPercentLabel" xml:space="preserve">
-    <value>%</value>
-    <comment>Label to denoate a percentage.</comment>
   </data>
   <data name="SplitTrafficWindowSplitByMessage" xml:space="preserve">
     <value>Manage traffic splitting of versions by:</value>
@@ -1241,9 +1085,9 @@
     <value>Version</value>
     <comment>Label to denoate a version.</comment>
   </data>
-  <data name="GcePublishStepManageCredentialsCaption" xml:space="preserve">
-    <value>Manage Credentials</value>
-    <comment>Caption for the link shown in the GCE step of the publishing dialog for managing the credentials of the selected VM.</comment>
+  <data name="UiManageWindowsCredentialsCaption" xml:space="preserve">
+    <value>Manage Windows credentials</value>
+    <comment>Caption for the links to open the Manage Windows credentials dialog.</comment>
   </data>
   <data name="SplitTrafficWindowCookieLabel" xml:space="preserve">
     <value>Cookie</value>
@@ -1260,6 +1104,663 @@
   <data name="ExceptionPromptTitle" xml:space="preserve">
     <value>Operation failed</value>
     <comment>Title shown on the message dialog down when an unhandled exception happened.</comment>
+  </data>
+  <data name="AddWindowsCredentialPasswordGroupHeader" xml:space="preserve">
+    <value>Password</value>
+    <comment>The header shown in the UI for the password radio buttons.</comment>
+  </data>
+  <data name="ResetPasswordProgressMessage" xml:space="preserve">
+    <value>Resetting password for {0}</value>
+    <comment>Message shown in the progress window while the password is being reset. {0} is the user name.</comment>
+  </data>
+  <data name="ResetPasswordProgressTitle" xml:space="preserve">
+    <value>Resetting Password</value>
+    <comment>Title for the progress window shown while the password is being reset.</comment>
+  </data>
+  <data name="AddWindowsCredentialPasswordLabel" xml:space="preserve">
+    <value>Type password:</value>
+    <comment>Content for the label used for the custom password.</comment>
+  </data>
+  <data name="UiOperationCannotBeUndone" xml:space="preserve">
+    <value>You can't undo this later.</value>
+    <comment>Message shown in dialogs to indicate that the operation cannot be undone.</comment>
+  </data>
+  <data name="UiNoButtonCaption" xml:space="preserve">
+    <value>_No</value>
+  </data>
+  <data name="UiResetButtonCaption" xml:space="preserve">
+    <value>_Reset</value>
+  </data>
+  <data name="UiStartButtonCaption" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="UiStopButtonCaption" xml:space="preserve">
+    <value>Stop</value>
+  </data>
+  <data name="UiYesButtonCaption" xml:space="preserve">
+    <value>_Yes</value>
+  </data>
+  <data name="ShowPasswordNewPasswordMessage" xml:space="preserve">
+    <value>The password for {0} has been set:</value>
+    <comment>Message shown when a new password is generated. {0} is the user name.</comment>
+  </data>
+  <data name="AddWindowsCredentialValidationEmptyPassword" xml:space="preserve">
+    <value>The password field cannot be empty.</value>
+    <comment>Validation error for when there's no password.</comment>
+  </data>
+  <data name="AddWindowsCredentialValidationEmptyUser" xml:space="preserve">
+    <value>The username cannot be empty.</value>
+    <comment>Validation error for when there's no user name.</comment>
+  </data>
+  <data name="AddWindowsCredentialValidationInvalidChars" xml:space="preserve">
+    <value>The user name contains invalid characters {0}</value>
+    <comment>Validation error fo when there are invalid chars. {0} are the invalid chars.</comment>
+  </data>
+  <data name="AddWindowsCredentialValidationErrorTtitle" xml:space="preserve">
+    <value>Add Windows Credential</value>
+    <comment>Title for the validation error dialogs in the add windows credential dialog.</comment>
+  </data>
+  <data name="AddWindowsCredentialToolTip" xml:space="preserve">
+    <value>Enter a user name. If the user name already exists as an account on the Windows instance, then you can reset the password or enter the current one.</value>
+  </data>
+  <data name="ManageAccountsDisplayStringFormat" xml:space="preserve">
+    <value>{0} ({1})</value>
+    <comment>Format for the display string for an account. {0} is the user name, {1} is the email address.</comment>
+  </data>
+  <data name="ManageWindowsCredentialsToolTip" xml:space="preserve">
+    <value>Windows credentials are used to log in to a Windows machine instance.</value>
+    <comment>Tooltip shown in the manage windows credentials window.</comment>
+  </data>
+  <data name="PortManagerDisplayStringFormat" xml:space="preserve">
+    <value>{0} ({1} {2})</value>
+    <comment>Format string to compose the display string for a port.{0} is the port description, {1} is the protocol name, {2} is the port number.</comment>
+  </data>
+  <data name="PortManagerHttpDescription" xml:space="preserve">
+    <value>Allow HTTP traffic to the instance</value>
+    <comment>Description for the HTTP port.</comment>
+  </data>
+  <data name="PortManagerHttpsDescription" xml:space="preserve">
+    <value>Allow HTTPS traffic to the instance</value>
+    <comment>Description for the HTTPS port.</comment>
+  </data>
+  <data name="PortManagerRdpDescription" xml:space="preserve">
+    <value>Allow Remote Desktop connections to the instance</value>
+    <comment>Description for the RDP port.</comment>
+  </data>
+  <data name="PortManagerWebDeployDescription" xml:space="preserve">
+    <value>Allow publishing with WebDeploy to the instance</value>
+    <comment>Description for the WebDeploy port.</comment>
+  </data>
+  <data name="ShowPasswordCopiedMessage" xml:space="preserve">
+    <value>Password copied to clipboard.</value>
+    <comment>Message shown in the popup for the copy operation.</comment>
+  </data>
+  <data name="UiOpenButtonCaption" xml:space="preserve">
+    <value>_Open</value>
+    <comment>Caption for the open button in dialogs.</comment>
+  </data>
+  <data name="LogViewerToolWindowCaption" xml:space="preserve">
+    <value>Google Stackdriver Logging</value>
+    <comment>The Logs Viewer Tool Window caption. Keep it short because the tab is narrow.</comment>
+  </data>
+  <data name="AddGaeTrafficSplitInvalidValueMessage" xml:space="preserve">
+    <value>Invalid value for allocation, must be a number: {0}</value>
+    <comment>Message shown when an invalid value is detected. {0} is the invalid value.</comment>
+  </data>
+  <data name="AddGaeTrafficSplitInvalidValueTitle" xml:space="preserve">
+    <value>Invalid Value</value>
+    <comment>Title for the invalid value dialog.</comment>
+  </data>
+  <data name="AddGaeTrafficSplitTitle" xml:space="preserve">
+    <value>Add Traffic Split</value>
+    <comment>Title for the Add Traffic Split dialog.</comment>
+  </data>
+  <data name="AddGaeTrafficSplitValueOutOfRangeMessage" xml:space="preserve">
+    <value>Invalid allocation value, must be between 0 to 100: {0}</value>
+    <comment>Message shown when the value is out of the valid range. {0} is the value.</comment>
+  </data>
+  <data name="SplitTrafficWindowAllocationsLabel" xml:space="preserve">
+    <value>_Allocations:</value>
+    <comment>Label shown in the split traffic window to indicate the list of allocations.</comment>
+  </data>
+  <data name="LogViewerCollapseAllTip" xml:space="preserve">
+    <value>Click to hide all log items detail.</value>
+    <comment>Tool tip to toggle expand all button when it is expanded.</comment>
+  </data>
+  <data name="AuthorizedNetworksNetworkHeader" xml:space="preserve">
+    <value>Network</value>
+    <comment>Header for the control groupin.</comment>
+  </data>
+  <data name="LogViewerExpandAllTip" xml:space="preserve">
+    <value>Click to see all log items detail.</value>
+    <comment>Tool tip to toggle expand all button when it is collapsed.</comment>
+  </data>
+  <data name="CloudExplorerGceZoneCaption" xml:space="preserve">
+    <value>{0} ({1})</value>
+    <comment>Caption for the zone node. {0} is the zone name, {1} is the number of instances in the zone.</comment>
+  </data>
+  <data name="LogViewerRefreshButtonToolTip" xml:space="preserve">
+    <value>Get newest log (in descending order).</value>
+    <comment>Log viewer window referesh image button tool tip.</comment>
+  </data>
+  <data name="CloudExplorerGcsBucketLocationCaption" xml:space="preserve">
+    <value>{0} ({1})</value>
+    <comment>Caption for the bucket location node, {0} is the name of the location, {1} is the number of buckets in the location.</comment>
+  </data>
+  <data name="LogViewerTimeZoneSelectionToolTip" xml:space="preserve">
+    <value>Click to select different timezone.</value>
+    <comment>Tool tip to the select time zone combo box.</comment>
+  </data>
+  <data name="CloudExplorerNoLoggedInMessage" xml:space="preserve">
+    <value>No credentials, please login.</value>
+    <comment>Shown in the cloud explorer when there are no credentials available.</comment>
+  </data>
+  <data name="LogViewerAnyOtherSeverityLevelTip" xml:space="preserve">
+    <value>Any</value>
+    <comment>The tool tip for 'any other log level/severity level' .</comment>
+  </data>
+  <data name="CloudExplorerNoProjectSelectedMessage" xml:space="preserve">
+    <value>No project selected.</value>
+    <comment>Shown in the cloud explorer when no project is selected.</comment>
+  </data>
+  <data name="LogViewerDictionaryPayloadFormatString" xml:space="preserve">
+    <value>{0}: {1}  </value>
+    <comment>The format of log payload of IDictionary name value pair.</comment>
+  </data>
+  <data name="CloudExplorerGceFailedToUpdateFirewallCaption" xml:space="preserve">
+    <value>Error Updating Firewall</value>
+    <comment>Caption for the message shown when failed to update firewall.</comment>
+  </data>
+  <data name="LogViewerLogItemDateFormat" xml:space="preserve">
+    <value>MM-dd-yyyy</value>
+    <comment>Log item date format.</comment>
+  </data>
+  <data name="CloudExplorerSqlInstanceIp6AddressDisplayName" xml:space="preserve">
+    <value>IPv6 Address (First Gen)</value>
+    <comment>The display name for the IP v6 address.</comment>
+  </data>
+  <data name="LogViewerLogItemTimeFormat" xml:space="preserve">
+    <value>HH:mm:ss.fff</value>
+    <comment>Log item time format.</comment>
+  </data>
+  <data name="AnalyticsOptionsCategory" xml:space="preserve">
+    <value>Usage Report</value>
+    <comment>The category for the analytics options in the options page.</comment>
+  </data>
+  <data name="AnalyticsOptionsOptInDescription" xml:space="preserve">
+    <value>Whether to report usage statistics to Google</value>
+    <comment>Description for the opt-in option in the analytics options.</comment>
+  </data>
+  <data name="LogViewerTitleBarAccountLabel" xml:space="preserve">
+    <value>Account</value>
+    <comment>Label for account name label.</comment>
+  </data>
+  <data name="AnalyticsOptionsOptInDisplayName" xml:space="preserve">
+    <value>Report Usage Statistics Enabled</value>
+    <comment>The display name of the opt-in for the analytics options page.</comment>
+  </data>
+  <data name="LogViewerTitleBarProjectIdLabel" xml:space="preserve">
+    <value>Project</value>
+    <comment>Label for project id label.</comment>
+  </data>
+  <data name="LogViewerRequestCancellingMessage" xml:space="preserve">
+    <value>Cancelling . . .</value>
+    <comment>Show a cancelling message after cancel request button is clicked.</comment>
+  </data>
+  <data name="LogViewerRequestProgressMessage" xml:space="preserve">
+    <value>Loading . . .</value>
+    <comment>List log entries can take seconds to complete, show a status message.</comment>
+  </data>
+  <data name="LogViewerLogLevelAllLabel" xml:space="preserve">
+    <value>All Log Levels</value>
+    <comment>Log viwer log severity combo box item that indicates to show logs of any level</comment>
+  </data>
+  <data name="LogViewerDataConversionGenericError" xml:space="preserve">
+    <value>Error displaying the entry. </value>
+    <comment>Showing generic error for parsing LogEntry property tree.</comment>
+  </data>
+  <data name="LogViewerDetailTreeViewArrayIndexFormat" xml:space="preserve">
+    <value>[{0}]</value>
+    <comment>The detail tree view array index format. The {0} is index of the array element.</comment>
+  </data>
+  <data name="LogViewerDetailTreeViewNameLabelFormat" xml:space="preserve">
+    <value>{0} :</value>
+    <comment>When displaying a tree view item, it contains Name , colon, and value.  This is to format the name colon part. Note, there is a space between  name and colon.</comment>
+  </data>
+  <data name="LogViewerLogLevelCriticalLabel" xml:space="preserve">
+    <value>CRITICAL</value>
+    <comment>The Log Severity selection , critical log level item text.</comment>
+  </data>
+  <data name="LogViewerLogLevelDebugLabel" xml:space="preserve">
+    <value>DEBUG</value>
+    <comment>The Log Severity selection , debug log level item text.</comment>
+  </data>
+  <data name="LogViewerLogLevelEmergencyLabel" xml:space="preserve">
+    <value>EMERGENCY</value>
+    <comment>The Log Severity selection , emergency log level item text.</comment>
+  </data>
+  <data name="LogViewerLogLevelErrorLabel" xml:space="preserve">
+    <value>ERROR</value>
+    <comment>The Log Severity selection , error log level item text.</comment>
+  </data>
+  <data name="LogViewerLogLevelInfoLabel" xml:space="preserve">
+    <value>INFO</value>
+    <comment>The Log Severity selection , info log level item text.</comment>
+  </data>
+  <data name="LogViewerLogLevelWarningLabel" xml:space="preserve">
+    <value>WARNING</value>
+    <comment>The Log Severity selection , warning log level item text.</comment>
+  </data>
+  <data name="LogViewerSimpleTextSearchIconButtonToolTip" xml:space="preserve">
+    <value>Filter by label or text search.</value>
+    <comment>Log viewer simple text search icon button tooltip.</comment>
+  </data>
+  <data name="LogViewerSwitchToAdvancedFilterCaption" xml:space="preserve">
+    <value>To Advanced Filter</value>
+    <comment>Caption for switch to advanced filter button.</comment>
+  </data>
+  <data name="LogViewerSubmitAdvancedFilterCaption" xml:space="preserve">
+    <value>Submit Filters</value>
+    <comment>Caption for the submit advanced filters button.</comment>
+  </data>
+  <data name="LogViewerSwitchToSimpleFilterCaption" xml:space="preserve">
+    <value>To Simple Filters</value>
+    <comment>Caption for switch to simple filters button.</comment>
+  </data>
+  <data name="LogViewerAdvancedFilterHelpLinkCaption" xml:space="preserve">
+    <value>Advanced filter help</value>
+    <comment>The caption of advanced help link.</comment>
+  </data>
+  <data name="LogViewerToSimpleSearchButtonTooltip" xml:space="preserve">
+    <value>Clear filters and return to basic mode.</value>
+    <comment>The "To simple search"  button tooltip.</comment>
+  </data>
+  <data name="LogViewerTimeOrderPickAsceSelection" xml:space="preserve">
+    <value>after</value>
+    <comment>The selection item that indicates to list logs after the time stamp.</comment>
+  </data>
+  <data name="LogViewerTimeOrderPickDescSelection" xml:space="preserve">
+    <value>before</value>
+    <comment>The selection item that indicates to list logs before the time stamp.</comment>
+  </data>
+  <data name="LogViewerTimeOrderPickLabelHead" xml:space="preserve">
+    <value>Get log</value>
+    <comment>Head part of the label for picking the list log time order.</comment>
+  </data>
+  <data name="LogViewerTimeOrderPickLabelTail" xml:space="preserve">
+    <value>this time stamp.</value>
+    <comment>Tail part of the label for picking the list log time order.</comment>
+  </data>
+  <data name="UiGoButtonCaption" xml:space="preserve">
+    <value>Go</value>
+    <comment>Caption for Go buttons.</comment>
+  </data>
+  <data name="LogViewerDateTimePickerLabel" xml:space="preserve">
+    <value>Jump To Time</value>
+    <comment>The label for the date time picker control.</comment>
+  </data>
+  <data name="UiDateLabel" xml:space="preserve">
+    <value>Date</value>
+    <comment>Label to a text box that shows date.</comment>
+  </data>
+  <data name="UiTimeLabel" xml:space="preserve">
+    <value>Time</value>
+    <comment>Label to the time input control</comment>
+  </data>
+  <data name="GkePublishClusterMessage" xml:space="preserve">
+    <value>_Clusters:</value>
+    <comment>The message shown in the UI to choose cluster.</comment>
+  </data>
+  <data name="GkePublishDeployingToGkeMessage" xml:space="preserve">
+    <value>Deploying {0} to Container Engine</value>
+    <comment>Message printed to the output window when deploying to GKE. {0} is the name of the project.</comment>
+  </data>
+  <data name="GkePublishDeploymentFailureMessage" xml:space="preserve">
+    <value>Failed to deploy {0} to Container Engine</value>
+    <comment>Message printed in the output window when the deployment fails. {0} is the project name.</comment>
+  </data>
+  <data name="GkePublishDeploymentNameMessage" xml:space="preserve">
+    <value>_Deployment name:</value>
+    <comment>The message shown in the UI for deployment name textbox.</comment>
+  </data>
+  <data name="GkePublishDeploymentStatusMessage" xml:space="preserve">
+    <value>Deploying to Container Engine</value>
+    <comment>Message shown in the status bar while deploying.</comment>
+  </data>
+  <data name="GkePublishDeploymentSuccessMessage" xml:space="preserve">
+    <value>Project {0} deployed to Container Engine</value>
+    <comment>Message printed in the output window once the deployment finished succesfully. {0} is the project name.</comment>
+  </data>
+  <data name="GkePublishDeploymentVersionMessage" xml:space="preserve">
+    <value>Deployment _version:</value>
+    <comment>The message shown in the UI for the depoyment version textbox.</comment>
+  </data>
+  <data name="GkePublishExposeServiceCaption" xml:space="preserve">
+    <value>Expose a service</value>
+    <comment>Caption for the checkbox to set if the GKE service is to be exposed or not.</comment>
+  </data>
+  <data name="GkePublishServiceIpMessage" xml:space="preserve">
+    <value>Service {0} ip address {1}</value>
+    <comment>Message printed in the output window to show the IP address of the service exposed. {0} is the deployment name, {1} is the IP address.</comment>
+  </data>
+  <data name="GkePublishServiceIpTimeoutMessage" xml:space="preserve">
+    <value>Time out waiting for service ip address.</value>
+    <comment>Message printed in the output window when there's a timeout waiting for the service IP address.</comment>
+  </data>
+  <data name="GkePublishWaitingForServiceIpMessage" xml:space="preserve">
+    <value>Waiting for service IP address...</value>
+    <comment>Message shown while waiting for a public IP to be assigned to the exposed Kubernetes service.</comment>
+  </data>
+  <data name="PublishDialogChoiceStepGkeName" xml:space="preserve">
+    <value>C_ontainer Engine</value>
+    <comment>The name of the GKE choice.</comment>
+  </data>
+  <data name="PublishDialogChoiceStepGkeToolTip" xml:space="preserve">
+    <value>Deploy as a service to Container Engine</value>
+    <comment>The tooltip for the GKE choice.</comment>
+  </data>
+  <data name="GkePublishDeploymentScaledMessage" xml:space="preserve">
+    <value>Deployment {0} was scaled to {1} replicas.</value>
+    <comment>Message printed in the output window when the deployment is scaled to the given number of replicas. {0} is the name of the deployment, {1} is the number of replicas.</comment>
+  </data>
+  <data name="GkePublishDeploymentUpdatedMessage" xml:space="preserve">
+    <value>Deployment {0} was updated.</value>
+    <comment>Message printer in the output window when the deployment was updated. {0} is the name of the deployment.</comment>
+  </data>
+  <data name="GkePublishInvalidReplicasMessage" xml:space="preserve">
+    <value>Invalid value for replicas, must be a number.</value>
+    <comment>Message shown when an invalid value for replicas is given.</comment>
+  </data>
+  <data name="GkePublishReplicasCaption" xml:space="preserve">
+    <value>Replic_as:</value>
+    <comment>The caption for the replicas label.</comment>
+  </data>
+  <data name="UiInvalidValueTitle" xml:space="preserve">
+    <value>Invalid value</value>
+    <comment>Generic title for validation error prompts.</comment>
+  </data>
+  <data name="GkePublishNewClusterCaption" xml:space="preserve">
+    <value>Create new cluster</value>
+    <comment>Caption for the new cluster link.</comment>
+  </data>
+  <data name="GkePublishDeploymentAlreadyExistsMessage" xml:space="preserve">
+    <value>Deployment {0} already exists, do you want to update it?</value>
+    <comment>Message shown to the user when the deployment already exists to confirm if it should be updated. {0} is the deployment name.</comment>
+  </data>
+  <data name="GkePublishDeploymentAlreadyExistsTitle" xml:space="preserve">
+    <value>Update exising deployment</value>
+    <comment>Title for the user confirmation prompt to udate deployments.</comment>
+  </data>
+  <data name="UiUpdateButtonCaption" xml:space="preserve">
+    <value>Update</value>
+    <comment>Caption for the Update buttons.</comment>
+  </data>
+  <data name="GkePublishNoClustersPlaceholder" xml:space="preserve">
+    <value>No clusters found...</value>
+    <comment>Placeholder for the case when no cluster is found.</comment>
+  </data>
+  <data name="GkePublishRefreshClustersCaption" xml:space="preserve">
+    <value>Refresh clusters</value>
+    <comment>Caption for the refresh clusters hyperlink</comment>
+  </data>
+  <data name="LogViewerLogIdSelectAllLabel" xml:space="preserve">
+    <value>All logs</value>
+    <comment>The log name (log id) selection label for select all logs.</comment>
+  </data>
+  <data name="CloudExplorerLaunchLogsViewerMenuHeader" xml:space="preserve">
+    <value>Browse Stackdriver Logs</value>
+    <comment>Header for browsing Stackdriver Log context menu</comment>
+  </data>
+  <data name="LogsViewerChooseAllMenuHeaderFormat" xml:space="preserve">
+    <value>All {0}</value>
+    <comment>The choose all menu item header format. The log resource label name is used to fill the format.  Example "All module_id", "All instance_id".</comment>
+  </data>
+  <data name="UiChooseAllMenuHeader" xml:space="preserve">
+    <value>All</value>
+    <comment>The choose all menu item default header. </comment>
+  </data>
+  <data name="UiSearchMenuSearchBoxLabel" xml:space="preserve">
+    <value>Search by prefix</value>
+    <comment>The label for search box of search menu item.</comment>
+  </data>
+  <data name="LogsViewerAskToOpenProjectMessage" xml:space="preserve">
+    <value>Continue to open the project?</value>
+    <comment>The message to ask if user wants to continue to open the project.</comment>
+  </data>
+  <data name="LogsViewerFailedOpenFileMessage" xml:space="preserve">
+    <value>Failed to open the source file {0}</value>
+    <comment>Prompt message format when failed to open a source file. The parameter is the source file path.</comment>
+  </data>
+  <data name="LogsViewerPleaseOpenProjectPrompt" xml:space="preserve">
+    <value>The log entry was generated from assembly {0}, version {1}.
+Open the project to navigate to the logger method location.</value>
+    <comment>Prompt asking to open a project that is the log entry source project.  parameter {0} is assembly name, parameter {1} is assembly version.</comment>
+  </data>
+  <data name="LogsViewerPromptTitle" xml:space="preserve">
+    <value>Google Stackdriver Logs Viewer</value>
+    <comment>The prompt title for Logs Viewer message boxes.</comment>
+  </data>
+  <data name="LogsViewerSourceFileNotFoundMessage" xml:space="preserve">
+    <value>The log entry does not contain valid source information or the source line can not be located.</value>
+    <comment>Prompt message when failed to find a source file  of the log entry.</comment>
+  </data>
+  <data name="LogsViewerSourceFilterCheckboxTitle" xml:space="preserve">
+    <value>Only show logs generated by this source line.</value>
+    <comment>The check box that indicates to filter logs on log item source information.</comment>
+  </data>
+  <data name="LogsViewerTooltipBackButtonCaption" xml:space="preserve">
+    <value>Back to Stackdriver Logs Viewer</value>
+    <comment>Caption for source line tooltip back button.</comment>
+  </data>
+  <data name="LogsViewerVersionInfoMissingMessage" xml:space="preserve">
+    <value>The log entry does not contain valid assembly name and/or assembly version.</value>
+    <comment>The warning message when a log entry does not contain valid version information.</comment>
+  </data>
+  <data name="LogsViewerVersionMismatchPrompt" xml:space="preserve">
+    <value>Version missmatch. 
+The current project {0} version is {1},
+Open the project of version {2} to properly locate the logging writter location.</value>
+    <comment>Prompt when the opened project version differs than the version information of the log entry.</comment>
+  </data>
+  <data name="LogsViewerVersionMissmatchAskIgnoreMessage" xml:space="preserve">
+    <value>"Do you want to continue anyway?"</value>
+    <comment>Message that asks to continue with mismatched version.</comment>
+  </data>
+  <data name="LogsViewerTreeNodeFilterTooltip" xml:space="preserve">
+    <value>Click the value to show matching entries.</value>
+    <comment>The tooltip to detail tree view node value link.</comment>
+  </data>
+  <data name="LogViewerLogItemDateTimeFormat" xml:space="preserve">
+    <value>MM-dd-yyyy HH:mm:ss.fff</value>
+    <comment>Log item date time format.</comment>
+  </data>
+  <data name="FlexPublishEmptyVersionMessage" xml:space="preserve">
+    <value>The version name cannot be empty.</value>
+    <comment>Message shown when the version name is empty.</comment>
+  </data>
+  <data name="FlexPublishInvalidVersionMessage" xml:space="preserve">
+    <value>Invalid version {0}. The version must only use lowercase letters, digits and the - character.</value>
+    <comment>Message shown for an invalid version name. {0} is the version name provided by the user.</comment>
+  </data>
+  <data name="GkePublishEmptyDeploymentNameMessage" xml:space="preserve">
+    <value>The deployment name cannot be empty.</value>
+    <comment>Message shown when the deployment name is empty.</comment>
+  </data>
+  <data name="GkePublishEmptyDeploymentVersionMessage" xml:space="preserve">
+    <value>The deployment version cannot be empty.</value>
+    <comment>Message shown when the deployment version is empty.</comment>
+  </data>
+  <data name="GkePublishInvalidDeploymentNameMessage" xml:space="preserve">
+    <value>Invalid deployment name {0}. The name must only user lowercase letters, digits and the - character.</value>
+    <comment>Message shown for an invalid deployment name. {0} is the deployment name given by the user.</comment>
+  </data>
+  <data name="GkePublishInvalidDeploymentVersionMessage" xml:space="preserve">
+    <value>Invalid deployment version {0}. The version must only use lowercase letters, digits and the - character.</value>
+    <comment>Message shown for an invalid deployment version. {0} is the deployment version given by the user.</comment>
+  </data>
+  <data name="CloudExplorerGaeServiceIdDescription" xml:space="preserve">
+    <value>Relative name of the service within the application.</value>
+    <comment>The description of the Id property.</comment>
+  </data>
+  <data name="CloudExplorerGaeServiceNameDescription" xml:space="preserve">
+    <value>Full path to the service resource in the API.</value>
+    <comment>The description of the name property for a service item.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionCreatedByDescription" xml:space="preserve">
+    <value>Email address of the user who created this version.</value>
+    <comment>The description for the CreatedBy property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionCreatedByDisplayName" xml:space="preserve">
+    <value>Created By</value>
+    <comment>The display name for the CreatedBy property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionCreateTimeDescription" xml:space="preserve">
+    <value>Time that this version was created.</value>
+    <comment>The descripton for the CreationTime property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionIdDescription" xml:space="preserve">
+    <value>Relative name of the version within the service.</value>
+    <comment>Description of the id property in a version.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionNameDescription" xml:space="preserve">
+    <value>Full path to the Version resource in the API.</value>
+    <comment>Description of the name property in a version.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionServingStatusDescription" xml:space="preserve">
+    <value>Current serving status of this version.</value>
+    <comment>The description for the serving status property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionServingStatusDisplayName" xml:space="preserve">
+    <value>Serving Status</value>
+    <comment>The display name for the serving status property.</comment>
+  </data>
+  <data name="PropertyWindowItemIdDisplayName" xml:space="preserve">
+    <value>Id</value>
+    <comment>General display name for the Id property.</comment>
+  </data>
+  <data name="PropertyWindowItemNameDisplayName" xml:space="preserve">
+    <value>Name</value>
+    <comment>General display name used for the property.</comment>
+  </data>
+  <data name="GenerateConfigurationAppYamlGeneratedMessage" xml:space="preserve">
+    <value>The file app.yaml was generated succesfully.</value>
+    <comment>Message shown to the user when the app.yaml is generated.</comment>
+  </data>
+  <data name="GenerateConfigurationAppYamlOverwriteMessage" xml:space="preserve">
+    <value>The file app.yaml already exists in your project. Are you sure you want to overwrite it?</value>
+    <comment>Message shown to the user to confirm the overwrite of the existing app.yaml.</comment>
+  </data>
+  <data name="GenerateConfigurationDockerfileGeneratedMessage" xml:space="preserve">
+    <value>The file Dockerfile was generated succesfully.</value>
+    <comment>Message shown to the user when the Dockerfile is generated.</comment>
+  </data>
+  <data name="GenerateConfigurationDockerfileOverwriteMessage" xml:space="preserve">
+    <value>The file Dockerfile already exists in your project. Are you sure you want to overwrite it?</value>
+    <comment>Message shown to the user to confirm the overwrite of the existing Dockerfile.</comment>
+  </data>
+  <data name="GenerateConfigurationOverwritePromptTitle" xml:space="preserve">
+    <value>Configuration files already exist</value>
+    <comment>Title of the prompt used to advice the user that a file will be overwritten.</comment>
+  </data>
+  <data name="UiOverwriteButtonCaption" xml:space="preserve">
+    <value>_Overwrite</value>
+    <comment>Caption for overwrite buttons in prompts.</comment>
+  </data>
+  <data name="UiSkipFileButtonCaption" xml:space="preserve">
+    <value>_Skip file</value>
+    <comment>Caption for the skip file button in prompts.</comment>
+  </data>
+  <data name="GenerateConfigurationFileGeneratinErrorTitle" xml:space="preserve">
+    <value>Failed to generate file</value>
+    <comment>Title for the error prompt shown when a configuration file cannot be generated.</comment>
+  </data>
+  <data name="GenerateConfigurationFileGenerationErrorMessage" xml:space="preserve">
+    <value>Failed to generate file {0}.</value>
+    <comment>Error message shown when a configuration file cannot be generated.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionRuntimeDescription" xml:space="preserve">
+    <value>The desired runtime for this version.</value>
+    <comment>The description for the Runtime property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionRuntimeDisplayName" xml:space="preserve">
+    <value>Desired Runtime</value>
+    <comment>The display name for the Runtime property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionUrlDescription" xml:space="preserve">
+    <value>The address for this version.</value>
+    <comment>The description for the Url property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionUrlDisplayName" xml:space="preserve">
+    <value>Address</value>
+    <comment>The display name for the Url property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionEnvironmentDescription" xml:space="preserve">
+    <value>App Engine execution environment for this version.</value>
+    <comment>The description for the Environment property.</comment>
+  </data>
+  <data name="CloudExplorerGaeVersionEnvironmentDisplayName" xml:space="preserve">
+    <value>Environment</value>
+    <comment>The display name for the Environment property.</comment>
+  </data>
+  <data name="CloudExplorerGaeFailedToMigrateAllTrafficCaption" xml:space="preserve">
+    <value>Failed to migrate all traffic to {0}, please try again.</value>
+    <comment>Caption for the error state when migrating all traffic. {0} is the id of the version.</comment>
+  </data>
+  <data name="CloudExplorerGaeMigrateAllTrafficHeader" xml:space="preserve">
+    <value>Migrate all traffic</value>
+    <comment>Header for the migrate all traffic command.</comment>
+  </data>
+  <data name="CloudExplorerGaeMigratingAllTrafficCaption" xml:space="preserve">
+    <value>Migrating all traffic to {0}</value>
+    <comment>Caption shown while migrating all traffic. {0} is the version id</comment>
+  </data>
+  <data name="GkePublishDontExposeServiceCaption" xml:space="preserve">
+    <value>Don't expose a service</value>
+    <comment>Caption for the option of not exposing the service.</comment>
+  </data>
+  <data name="GkePublishMakeServicePublicCaption" xml:space="preserve">
+    <value>Make service public</value>
+    <comment>Caption for the checkbox to make a service public.</comment>
+  </data>
+  <data name="GkePublishServiceClusterIpMessage" xml:space="preserve">
+    <value>Service {0} cluster IP address {1}.</value>
+    <comment>Message shown when a cluster-only service is deployed to show the ip address. {0} is the service name, {1} is the IP address.</comment>
+  </data>
+  <data name="GkePublishServiceDeletedMessage" xml:space="preserve">
+    <value>Service {0} was deleted.</value>
+    <comment>Message shown when a service is deleted due to changes in configuration. {0} is the name of the service.</comment>
+  </data>
+  <data name="GkePublishServiceGroupHeader" xml:space="preserve">
+    <value>Service</value>
+    <comment>The header for the service group in the UI.</comment>
+  </data>
+  <data name="GkePublishServiceUpdatedMessage" xml:space="preserve">
+    <value>Service {0} was updated.</value>
+    <comment>Messages shown when a GKE service is updated. {0} is the service name.</comment>
+  </data>
+  <data name="GcloudInstallLinkCaption" xml:space="preserve">
+    <value>Install Google Cloud SDK</value>
+    <comment>Caption for the install link.</comment>
+  </data>
+  <data name="GcloudMissingComponentErrorMessage" xml:space="preserve">
+    <value>To use this feature you need to have the "{0}" component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install {0}.</value>
+    <comment>Message shown when the a component is not installed. {0} is the name of the component.</comment>
+  </data>
+  <data name="GcloudMissingCloudSdkErrorMessage" xml:space="preserve">
+    <value>To use this feature you need to have the Google Cloud SDK installed and available in the path. You also need the "beta" component installed for some features to be available. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link.</value>
+    <comment>Message shown when the Cloud SDK is missing</comment>
+  </data>
+  <data name="GcloudMissingGcloudErrorTitle" xml:space="preserve">
+    <value>Missing Google Cloud SDK</value>
+    <comment>Title for the error dialog for missing components.</comment>
+  </data>
+  <data name="GCloudWrapperUtilsOldCloudSdkMessage" xml:space="preserve">
+    <value>The version {0} of Cloud SDK installed is too old. Please update your Cloud SDK installation to version {1} or later by using the command: gcloud components update</value>
+    <comment>Message shown when the version of the Cloud SDK is too old. {0} is the installed version, {1} is the expected version.</comment>
+  </data>
+  <data name="GCloudWrapperUtilsOldCloudSdkTitle" xml:space="preserve">
+    <value>Google Cloud SDK too old</value>
+    <comment>Title for the prompt to update the Cloud SDK.</comment>
   </data>
   <data name="CloudExplorerPubSubTopicFullNameDescription" xml:space="preserve">
     <value>The Full Name of the Topic</value>
@@ -1377,8 +1878,12 @@
     <comment>Label for the topic name text box in the new pub/sub topic window.</comment>
   </data>
   <data name="NewTopicWindowTitle" xml:space="preserve">
-    <value>Create topic.</value>
+    <value>Create topic</value>
     <comment>The title for the new pub/sub topic window</comment>
+  </data>
+  <data name="NewTopicWindowHeader" xml:space="preserve">
+    <value>New Topic in Project {0}</value>
+    <comment>Text at the top of the NewSubscriptionWindow</comment>
   </data>
   <data name="PubSubNewSubscriptionErrorHeader" xml:space="preserve">
     <value>Error in new subscription</value>

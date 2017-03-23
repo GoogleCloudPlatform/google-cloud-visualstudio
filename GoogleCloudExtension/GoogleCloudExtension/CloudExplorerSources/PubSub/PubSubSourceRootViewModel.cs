@@ -24,7 +24,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 {

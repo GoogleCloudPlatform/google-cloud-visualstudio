@@ -41,7 +41,11 @@ namespace GoogleCloudExtension.Analytics
             if (!settings.DialogShown)
             {
                 Debug.WriteLine("Showing the opt-in dialog.");
-                settings.OptIn = UserPromptUtils.YesNoPrompt(Resources.AnalyticsPromptMessage, Resources.AnalyticsPromptTitle);
+                settings.OptIn = UserPromptUtils.ActionPrompt(
+                    Resources.AnalyticsPromptMessage,
+                    Resources.AnalyticsPromptTitle,
+                    actionCaption: Resources.UiYesButtonCaption,
+                    cancelCaption: Resources.UiNoButtonCaption);
                 settings.DialogShown = true;
                 settings.SaveSettingsToStorage();
             }

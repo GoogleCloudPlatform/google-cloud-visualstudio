@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         /// </summary>
         public string VersionId
         {
-            get { return _versionId;  }
+            get { return _versionId; }
             set { SetValueAndRaise(ref _versionId, value); }
         }
 

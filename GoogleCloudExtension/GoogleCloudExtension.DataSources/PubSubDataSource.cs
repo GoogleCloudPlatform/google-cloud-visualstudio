@@ -137,7 +137,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             }
             catch (GoogleApiException e)
             {
-                throw new DataSourceException("Error creating new subscription", e);
+                throw new DataSourceException(e.Error?.Message ?? "", e);
             }
         }
 

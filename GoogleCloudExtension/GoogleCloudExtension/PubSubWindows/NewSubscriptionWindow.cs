@@ -11,7 +11,7 @@ namespace GoogleCloudExtension.PubSubWindows
         public NewSubscriptionViewModel ViewModel { get; }
 
         public NewSubscriptionWindow(string topicFullName) :
-            base(GoogleCloudExtension.Resources.NewSubscriptionWindowTitle, 322, 236)
+            base(GoogleCloudExtension.Resources.NewSubscriptionWindowTitle)
         {
             Subscription model = new Subscription { Topic = topicFullName };
 

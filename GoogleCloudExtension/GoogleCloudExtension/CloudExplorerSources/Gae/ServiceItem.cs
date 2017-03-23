@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
     /// <summary>
     /// This class represents a GAE service in the Properties Window.
     /// </summary>
-    class ServiceItem : PropertyWindowItemBase
+    internal class ServiceItem : PropertyWindowItemBase
     {
         private readonly Service _service;
 
@@ -30,9 +30,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         }
 
         [LocalizedCategory(nameof(Resources.CloudExplorerGaeServiceCategory))]
+        [LocalizedDisplayName(nameof(Resources.PropertyWindowItemNameDisplayName))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGaeServiceNameDescription))]
         public string Name => _service.Name;
 
         [LocalizedCategory(nameof(Resources.CloudExplorerGaeServiceCategory))]
+        [LocalizedDisplayName(nameof(Resources.PropertyWindowItemIdDisplayName))]
+        [LocalizedDescription(nameof(Resources.CloudExplorerGaeServiceIdDescription))]
         public string Id => _service.Id;
 
         public override string ToString() => _service.Id;

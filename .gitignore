@@ -10,3 +10,5 @@
 .DS_Store
 **/packages/*
 **.DotSettings.user
+**/*.pyc
+

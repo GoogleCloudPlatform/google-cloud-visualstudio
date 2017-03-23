@@ -21,7 +21,6 @@ fi
 
 # Gather information about the source and targe directories.
 readonly template_name="$(basename $1)"
-readonly templates_dir="${workspace}/GoogleCloudExtension/ProjectTemplates"
 readonly extension_dir="${workspace}/GoogleCloudExtension/GoogleCloudExtension"
 
 # Determine the extension templates directory to use.
@@ -44,6 +43,7 @@ rm "${released_template_zip}" || true
 
 # Compress and release the extention.
 echo "Compressing template: ${template_name}"
+true || find "$1" -name '*~' | xargs rm
 ${workspace}/tools/build_zip.py -o "${released_template_zip}" -d "$1"
 
 echo "Done."

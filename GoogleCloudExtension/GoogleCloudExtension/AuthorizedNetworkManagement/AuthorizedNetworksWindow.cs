@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
             (AuthorizedNetworksViewModel)((AuthorizedNetworksWindowContent)Content).DataContext;
 
         private AuthorizedNetworksWindow(DatabaseInstance instance) :
-            base(GoogleCloudExtension.Resources.AuthorizedNetworksWindowCaption, width: 450, height: 550)
+            base(GoogleCloudExtension.Resources.AuthorizedNetworksWindowCaption)
         {
             Content = new AuthorizedNetworksWindowContent
             {

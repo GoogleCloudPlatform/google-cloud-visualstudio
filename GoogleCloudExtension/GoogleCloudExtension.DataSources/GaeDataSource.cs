@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using static Google.Apis.Appengine.v1.AppsResource.ServicesResource;
 
 namespace GoogleCloudExtension.DataSources
 {
@@ -29,8 +28,8 @@ namespace GoogleCloudExtension.DataSources
     /// </summary>
     public class GaeDataSource : DataSourceBase<AppengineService>
     {
-        private static readonly string ServingStatusUpdateMask = "servingStatus";
-        private static readonly string TrafficSplitUpdateMask = "split";
+        private static readonly string s_servingStatusUpdateMask = "servingStatus";
+        private static readonly string s_trafficSplitUpdateMask = "split";
 
         /// <summary>
         /// Initializes an instance of the data source.
@@ -128,7 +127,7 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="split">The traffic split to set.</param>
         /// <param name="serviceId">The id of the service</param>
         /// <returns>The GAE operation for the update.</returns>
-        public async Task<Operation> UpdateServiceTrafficSplit(TrafficSplit split, string serviceId)
+        public async Task<Operation> UpdateServiceTrafficSplitAsync(TrafficSplit split, string serviceId)
         {
             try
             {
@@ -139,13 +138,30 @@ namespace GoogleCloudExtension.DataSources
                 };
                 var request = Service.Apps.Services.Patch(service, ProjectId, serviceId);
                 // Only update the traffic split.
-                request.UpdateMask = TrafficSplitUpdateMask;
+                request.UpdateMask = s_trafficSplitUpdateMask;
                 return await request.ExecuteAsync();
             }
             catch (GoogleApiException ex)
             {
                 Debug.WriteLine($"Failed to update traffic split: {ex.Message}");
                 throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Awaits for the operation to complete succesfully.
+        /// </summary>
+        /// <param name="operation">The operation to await.</param>
+        /// <returns>The task that will be done once the operation is succesful.</returns>
+        public async Task AwaitOperationAsync(Operation operation)
+        {
+            var completedOperation = await Polling<Operation>.Poll(
+                operation,
+                o => GetOperationAsync(o.GetOperationId()),
+                o => o.Done ?? false);
+            if (completedOperation.Error != null)
+            {
+                throw new DataSourceException(completedOperation.Error.Message);
             }
         }
 
@@ -233,7 +249,7 @@ namespace GoogleCloudExtension.DataSources
                 };
                 var request = Service.Apps.Services.Versions.Patch(version, ProjectId, serviceId, versionId);
                 // Only update the service status.
-                request.UpdateMask = ServingStatusUpdateMask;
+                request.UpdateMask = s_servingStatusUpdateMask;
                 return await request.ExecuteAsync();
             }
             catch (GoogleApiException ex)
