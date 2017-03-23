@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.FirewallManagement
     {
         private PortManagerViewModel ViewModel => (PortManagerViewModel)((PortManagerWindowContent)Content).DataContext;
 
-        private PortManagerWindow(Instance instance) : base(GoogleCloudExtension.Resources.PortManagerWindowCaption, width: 320, height: 300)
+        private PortManagerWindow(Instance instance) : base(GoogleCloudExtension.Resources.PortManagerWindowCaption)
         {
             var viewModel = new PortManagerViewModel(this, instance);
             Content = new PortManagerWindowContent
@@ -37,7 +37,6 @@ namespace GoogleCloudExtension.FirewallManagement
         /// Shows the dialog to the user and returns the changes requested.
         /// </summary>
         /// <param name="instance">The instance on which open/close ports.</param>
-        /// <returns></returns>
         public static PortChanges PromptUser(Instance instance)
         {
             var window = new PortManagerWindow(instance);

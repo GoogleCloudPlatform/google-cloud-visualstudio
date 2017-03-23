@@ -31,17 +31,22 @@ namespace GoogleCloudExtension.FirewallManagement
         /// </summary>
         public int Port { get; }
 
-        public PortInfo(string name, int port)
+        /// <summary>
+        /// The tooltip to display for this port.
+        /// </summary>
+        public string Description { get; }
+
+        public PortInfo(string name, int port, string description = null)
         {
             Name = name;
             Port = port;
+            Description = description;
         }
 
         /// <summary>
         /// Returns the tag to be used for the port for the given <paramref name="instance"/>.
         /// </summary>
         /// <param name="instance">The instance that is going to be affected by the port.</param>
-        /// <returns></returns>
         public string GetTag(Instance instance) => $"{instance.Name}-tcp-{Port}";
     }
 }

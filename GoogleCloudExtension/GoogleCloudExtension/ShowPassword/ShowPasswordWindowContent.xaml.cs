@@ -21,11 +21,9 @@ namespace GoogleCloudExtension.ShowPassword
     /// </summary>
     public partial class ShowPasswordWindowContent : UserControl
     {
-        public ShowPasswordWindowContent(ShowPasswordViewModel viewModel)
+        public ShowPasswordWindowContent()
         {
             InitializeComponent();
-            DataContext = viewModel;
-            _passwordBox.Password = viewModel.Password;
         }
     }
 }

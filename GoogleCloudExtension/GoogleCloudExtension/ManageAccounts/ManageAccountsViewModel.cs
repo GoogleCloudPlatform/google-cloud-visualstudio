@@ -99,9 +99,10 @@ namespace GoogleCloudExtension.ManageAccounts
         private void OnDeleteAccountCommand()
         {
             Debug.WriteLine($"Attempting to delete account: {CurrentAccountName}");
-            if (!UserPromptUtils.YesNoPrompt(
+            if (!UserPromptUtils.ActionPrompt(
                 String.Format(Resources.ManageAccountsDeleteAccountPromptMessage, CurrentAccountName),
-                Resources.ManageAccountsDeleteAccountPromptTitle))
+                Resources.ManageAccountsDeleteAccountPromptTitle,
+                actionCaption: Resources.UiDeleteButtonCaption))
             {
                 Debug.WriteLine($"The user cancelled the deletion of the account.");
                 return;

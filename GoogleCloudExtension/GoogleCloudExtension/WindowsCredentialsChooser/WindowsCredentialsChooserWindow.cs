@@ -37,12 +37,16 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
             /// The message to show in the dialog.
             /// </summary>
             public string Message { get; set; }
+
+            /// <summary>
+            /// The caption for the aciton button.
+            /// </summary>
+            public string ActionButtonCaption { get; set; }
         }
 
         private WindowsCredentialsChooserViewModel ViewModel { get; }
 
-        private WindowsCredentialsChooserWindow(Instance instance, Options options) :
-            base(options.Title, 300, 200)
+        private WindowsCredentialsChooserWindow(Instance instance, Options options) : base(options.Title)
         {
             ViewModel = new WindowsCredentialsChooserViewModel(instance, options, this);
             Content = new WindowsCredentialsChooserWindowContent { DataContext = ViewModel };

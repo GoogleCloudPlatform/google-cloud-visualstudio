@@ -8,11 +8,30 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{x:Type local:FlexStepViewModel}">
-    <StackPanel>
-        <TextBlock Text="{x:Static ext:Resources.PublishDialogFlexVersionNameCaption}" />
-        <TextBox Text="{Binding Version, Mode=TwoWay}" />
 
-        <CheckBox IsChecked="{Binding Promote, Mode=TwoWay}" Margin="0,5,0,0" Content="{x:Static ext:Resources.PublishDialogFlexPromoteVersionCaption}" />
-        <CheckBox IsChecked="{Binding OpenWebsite, Mode=TwoWay}" Margin="0,5,0,0" Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"  />
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <StackPanel>
+        <Label Content="{x:Static ext:Resources.PublishDialogFlexVersionNameCaption}"
+               Target="{Binding ElementName=_version}"
+               Style="{StaticResource CommonLabelStyle}"/>
+        <TextBox x:Name="_version"
+                 Text="{Binding Version, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Style="{StaticResource CommonTextBoxStyle}"/>
+
+        <CheckBox IsChecked="{Binding Promote, Mode=TwoWay}"
+                  Margin="0,5,0,0"
+                  Content="{x:Static ext:Resources.PublishDialogFlexPromoteVersionCaption}"
+                  Style="{StaticResource CommonTextStyleBase}"/>
+        <CheckBox IsChecked="{Binding OpenWebsite, Mode=TwoWay}"
+                  Margin="0,5,0,0"
+                  Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
+                  Style="{StaticResource CommonTextStyleBase}"/>
     </StackPanel>
 </UserControl>

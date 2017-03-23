@@ -56,13 +56,22 @@
     <Compile Include="Accounts\CredentialsStore.cs" />
     <Compile Include="Accounts\CredentialsStoreException.cs" />
     <Compile Include="Accounts\DefaultCredentials.cs" />
+    <Compile Include="AddTrafficSplit\AddTrafficSplitResult.cs" />
+    <Compile Include="AddTrafficSplit\AddTrafficSplitViewModel.cs" />
+    <Compile Include="AddTrafficSplit\AddTrafficSplitWindow.cs" />
+    <Compile Include="AddTrafficSplit\AddTrafficSplitWindowContent.xaml.cs">
+      <DependentUpon>AddTrafficSplitWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddWindowsCredential\AddWindowsCredentialResult.cs" />
     <Compile Include="Analytics\AnalyticsEvent.cs" />
     <Compile Include="Analytics\CommandStatus.cs" />
     <Compile Include="Analytics\CommandStatusUtils.cs" />
     <Compile Include="Analytics\DebugEventReporter.cs" />
+    <Compile Include="Analytics\Events\AddWindowsCredentialEvent.cs" />
     <Compile Include="Analytics\Events\ChangedFirewallPortsEvent.cs" />
     <Compile Include="Analytics\Events\CloudExplorerInteractionEvent.cs" />
     <Compile Include="Analytics\Events\CloudSQLInstancesLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GaeDeployedEvent.cs" />
     <Compile Include="Analytics\Events\GaeInstancesLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GaeServiceDeletedEvent.cs" />
     <Compile Include="Analytics\Events\GaeServicesLoadedEvent.cs" />
@@ -70,10 +79,21 @@
     <Compile Include="Analytics\Events\GaeVersionDeletedEvent.cs" />
     <Compile Include="Analytics\Events\GaeVersionServingStatusUpdatedEvent.cs" />
     <Compile Include="Analytics\Events\GaeVersionsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GceDeployedEvent.cs" />
     <Compile Include="Analytics\Events\GceVMsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GcsBucketsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GkeDeployedEvent.cs" />
+    <Compile Include="Analytics\Events\ManageCloudSqlAuthorizedNetworkEvent.cs" />
     <Compile Include="Analytics\Events\NewInstallEvent.cs" />
     <Compile Include="Analytics\Events\NewLoginEvent.cs" />
+    <Compile Include="Analytics\Events\OpenCloudSqlConnectionDialogEvent.cs" />
+    <Compile Include="Analytics\Events\OpenGceInstanceOnCloudConsoleEvent.cs" />
+    <Compile Include="Analytics\Events\OpenGceInstanceWebsiteEvent.cs" />
+    <Compile Include="Analytics\Events\OpenGcsBucketOnCloudConsoleEvent.cs" />
+    <Compile Include="Analytics\Events\SavePublishSettingsEvent.cs" />
+    <Compile Include="Analytics\Events\StartGceInstanceEvent.cs" />
+    <Compile Include="Analytics\Events\StartRemoteDesktopSessionEvent.cs" />
+    <Compile Include="Analytics\Events\StopGceInstanceEvent.cs" />
     <Compile Include="Analytics\Events\UnhandledExceptionEvent.cs" />
     <Compile Include="Analytics\Events\UpgradeEvent.cs" />
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworkModel.cs" />
@@ -84,19 +104,17 @@
     </Compile>
     <Compile Include="CloudExplorerSources\Gae\GaeSource.cs" />
     <Compile Include="CloudExplorerSources\Gae\GaeSourceRootViewModel.cs" />
-    <Compile Include="CloudExplorerSources\Gae\InstanceItem.cs" />
-    <Compile Include="CloudExplorerSources\Gae\InstanceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gae\ServiceItem.cs" />
     <Compile Include="CloudExplorerSources\Gae\ServiceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gae\VersionItem.cs" />
     <Compile Include="CloudExplorerSources\Gae\VersionViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gcs\BucketLocationViewModel.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\PubsubSource.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\PubsubSourceRootViewModel.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\PubSubSource.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\PubSubSourceRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\SubscriptionItem.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\SubscriptionViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicItem.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModel.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\SubscriptionViewModel.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
@@ -133,10 +151,14 @@
     <Compile Include="CloudExplorer\TreeLeaf.cs" />
     <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
+    <Compile Include="Controls\IconButton.cs" />
+    <Compile Include="Controls\LabelWithHelp.cs" />
+    <Compile Include="Controls\PasswordBoxWithReveal.cs" />
     <Compile Include="Controls\PressButton.cs" />
     <Compile Include="Controls\ProgressIndicator.xaml.cs">
       <DependentUpon>ProgressIndicator.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TimeBox.cs" />
     <Compile Include="FirewallManagement\PortInfo.cs" />
     <Compile Include="FirewallManagement\PortManagerViewModel.cs" />
     <Compile Include="FirewallManagement\PortManagerWindow.cs" />
@@ -150,6 +172,7 @@
       <DependentUpon>ManageWindowsCredentialsWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Accounts\WindowsCredentialsStore.cs" />
+    <Compile Include="Extensions\ImageResource.cs" />
     <Compile Include="MySQLInstaller\MySQLInstallerWindowContent.xaml.cs">
       <DependentUpon>MySQLInstallerWindowContent.xaml</DependentUpon>
     </Compile>
@@ -182,6 +205,10 @@
     <Compile Include="PublishDialogSteps\GceStep\GceStepContent.xaml.cs">
       <DependentUpon>GceStepContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PublishDialogSteps\GkeStep\GkeStepContent.xaml.cs">
+      <DependentUpon>GkeStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PublishDialogSteps\GkeStep\GkeStepViewModel.cs" />
     <Compile Include="PublishDialog\IPublishDialog.cs" />
     <Compile Include="PublishDialog\IPublishDialogStep.cs" />
     <Compile Include="PublishDialog\PublishDialogStepBase.cs" />
@@ -190,8 +217,14 @@
       <DependentUpon>PublishDialogWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="PublishDialog\PublishDialogWindowViewModel.cs" />
+    <Compile Include="GenerateConfigurationCommand\GenerateConfigurationContextMenuCommand.cs" />
     <Compile Include="PublishDialog\PublishProjectContextMenuCommand.cs" />
     <Compile Include="PublishDialog\PublishProjectMainMenuCommand.cs" />
+    <Compile Include="ProgressDialog\ProgressDialogWindow.cs" />
+    <Compile Include="ProgressDialog\ProgressDialogWindowContent.xaml.cs">
+      <DependentUpon>ProgressDialogWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ProgressDialog\ProgressDialogWindowViewModel.cs" />
     <Compile Include="PubSubWindows\NewSubscriptionViewModel.cs" />
     <Compile Include="PubSubWindows\NewSubscriptionWindow.cs" />
     <Compile Include="PubSubWindows\NewSubscriptionWindowContent.xaml.cs">
@@ -208,8 +241,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="SolutionUtils\ISolutionProject.cs" />
     <Compile Include="SolutionUtils\KnownProjectTypes.cs" />
     <Compile Include="SolutionUtils\NetCoreProject.cs" />
+    <Compile Include="SolutionUtils\ProjectHelper.cs" />
+    <Compile Include="SolutionUtils\ProjectSourceFile.cs" />
+    <Compile Include="SolutionUtils\SolutionHelper.cs" />
     <Compile Include="SolutionUtils\VsProject.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficWindow.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficModel.cs" />
@@ -217,16 +254,68 @@
     <Compile Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml.cs">
       <DependentUpon>SplitTrafficWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\FixBackgroundComboBox.cs" />
+    <Compile Include="StackdriverLogsViewer\AdvancedFilterExtension.cs" />
+    <Compile Include="StackdriverLogsViewer\DateTimePicker.xaml.cs">
+      <DependentUpon>DateTimePicker.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverLogsViewer\DateTimePickerViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\LogsViewerStates.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\ShowTooltipUtils.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipSource.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipControl.xaml.cs">
+      <DependentUpon>LoggerTooltipControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverLogsViewer\LogIdsList.cs" />
+    <Compile Include="StackdriverLogsViewer\LogItem.cs" />
+    <Compile Include="StackdriverLogsViewer\LogSeverity.cs" />
+    <Compile Include="StackdriverLogsViewer\LogSeverityItem.cs" />
+    <Compile Include="StackdriverLogsViewer\LogsViewerToolWindow.cs" />
+    <Compile Include="StackdriverLogsViewer\LogsViewerToolWindowCommand.cs" />
+    <Compile Include="StackdriverLogsViewer\LogsViewerToolWindowControl.xaml.cs">
+      <DependentUpon>LogsViewerToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverLogsViewer\LogsViewerViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerHighlightFormat.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTagger.cs" />
+    <Compile Include="StackdriverLogsViewer\SearchMenuItem\MenuItemViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeMenuViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeNameConsts.cs" />
+    <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceValueItemViewModel.cs" />
+    <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeItemViewModel.cs" />
+    <Compile Include="Controls\SearchMenuItem.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTaggerProvider.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\LogWritterNameConsts.cs" />
+    <Compile Include="StackdriverLogsViewer\SourceNavigation\SourceVersionUtils.cs" />
+    <Compile Include="StackdriverLogsViewer\TreeViewConverters\JArrayNode.cs" />
+    <Compile Include="StackdriverLogsViewer\TreeViewConverters\JObjectNode.cs" />
+    <Compile Include="StackdriverLogsViewer\TreeViewConverters\LogEntryNode.cs" />
+    <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTree.cs" />
+    <Compile Include="StackdriverLogsViewer\TreeViewConverters\TypeUtil.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
-    <Compile Include="SolutionUtils\ISolutionProject.cs" />
-    <Compile Include="SolutionUtils\SolutionHelper.cs" />
+    <Compile Include="Theming\CommonImageResources.cs" />
+    <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
+    <Compile Include="Utils\PackageUtils.cs" />
+    <Compile Include="Utils\GCloudWrapperUtils.cs" />
+    <Compile Include="Utils\GcpPublishStepsUtils.cs" />
     <Compile Include="Utils\ProgressBarHelper.cs" />
     <Compile Include="Utils\ShellUtils.cs" />
     <Compile Include="Utils\StatusbarHelper.cs" />
+    <Compile Include="Theming\ButtonsList.cs" />
+    <Compile Include="Theming\ButtonTemplateSelector.cs" />
+    <Compile Include="Theming\CommonDialogWindowBaseContent.cs" />
+    <Compile Include="UserPrompt\UserPromptWindow.cs" />
+    <Compile Include="UserPrompt\UserPromptWindowContent.xaml.cs">
+      <DependentUpon>UserPromptWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserPrompt\UserPromptWindowViewModel.cs" />
     <Compile Include="Utils\ErrorHandlerUtils.cs" />
     <Compile Include="Utils\ProtectedAction.cs" />
     <Compile Include="Utils\ProtectedCommand.cs" />
+    <Compile Include="Utils\StringUtils.cs" />
+    <Compile Include="Utils\ToolWindowUtils.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserViewModel.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindow.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml.cs">
@@ -241,13 +330,10 @@
     <Compile Include="LinkPrompt\LinkPromptDialogWindowViewModel.cs" />
     <Compile Include="Theming\CommonDialogWindowBase.cs" />
     <Compile Include="Theming\DialogButtonInfo.cs" />
-    <Compile Include="Theming\CommonDialogWindowBaseContent.xaml.cs">
-      <DependentUpon>CommonDialogWindowBaseContent.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ResetPassword\ResetPasswordViewModel.cs" />
-    <Compile Include="ResetPassword\ResetPasswordWindow.cs" />
-    <Compile Include="ResetPassword\ResetPasswordWindowContent.xaml.cs">
-      <DependentUpon>ResetPasswordWindowContent.xaml</DependentUpon>
+    <Compile Include="AddWindowsCredential\AddWindowsCredentialViewModel.cs" />
+    <Compile Include="AddWindowsCredential\AddWindowsCredentialWindow.cs" />
+    <Compile Include="AddWindowsCredential\AddwindowsCredentialWindowContent.xaml.cs">
+      <DependentUpon>AddwindowsCredentialWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="ShowPassword\ShowPasswordViewModel.cs" />
     <Compile Include="ShowPassword\ShowPasswordWindow.cs" />
@@ -264,7 +350,7 @@
     <Compile Include="Utils\LocalizedCategoryAttribute.cs" />
     <Compile Include="Utils\LocalizedDescriptionAttribute.cs" />
     <Compile Include="Utils\LocalizedDisplayNameAttribute.cs" />
-    <Compile Include="Utils\MySQLUtils.cs" />
+    <Compile Include="Utils\CloudSqlUtils.cs" />
     <Compile Include="Utils\PropertyWindowItemBase.cs" />
     <Compile Include="Utils\ResourceUtils.cs" />
     <Compile Include="Utils\SelectionUtils.cs" />
@@ -272,22 +358,42 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="StackdriverLogsViewer\Resources\back_icon_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_any_12.png" />
+    <Resource Include="PublishDialogSteps\ChoiceStep\Resources\ContainerEngine_128px_Retina.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\search.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_debug_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_error_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_fatal_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_info_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_warning_12.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\refresh_mouse_over.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\logging_menu_icon_16.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\refresh_mouse_down.png" />
+    <Resource Include="StackdriverLogsViewer\Resources\refresh.png" />
+    <Resource Include="Theming\Resources\ic_help_black_14px.png" />
     <Resource Include="PublishDialogSteps\ChoiceStep\Resources\AppEngine_128px_Retina.png" />
     <Resource Include="PublishDialogSteps\ChoiceStep\Resources\ComputeEngine_128px_Retina.png" />
+    <Resource Include="Theming\Resources\ic_copy_blue_14px.png" />
+    <Resource Include="Theming\Resources\ic_hide_blue_14px.png" />
+    <Resource Include="Theming\Resources\ic_inspect_blue_14px.png" />
+    <Resource Include="Utils\Resources\ic_error_red_24px.png" />
+    <Resource Include="Theming\Resources\ic_copy_black_14px.png" />
+    <Resource Include="Theming\Resources\ic_hide_black_14px.png" />
+    <Resource Include="Theming\Resources\ic_inspect_black_14px.png" />
+    <Resource Include="Utils\Resources\ic_warning_yellow_24px.png" />
+    <Resource Include="Theming\Resources\GCP_logo_horizontal.png" />
     <None Include="app.config">
       <SubType>Designer</SubType>
     </None>
     <None Include="Key.snk" />
-    <None Include="packages.config">
-      <SubType>Designer</SubType>
-    </None>
+    <None Include="packages.config" />
     <Resource Include="CloudExplorerSources\Gce\Resources\filter.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_running.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_stoped.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_transition.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\service_icon.png" />
     <Resource Include="CloudExplorer\Resources\warning_icon.png" />
-    <Resource Include="CloudExplorer\Resources\logo_cloud.png" />
     <Resource Include="Controls\Resources\step_10_dark.png" />
     <Resource Include="Controls\Resources\step_11_dark.png" />
     <Resource Include="Controls\Resources\step_12_dark.png" />
@@ -301,6 +407,10 @@
     <Resource Include="Controls\Resources\step_8_dark.png" />
     <Resource Include="Controls\Resources\step_9_dark.png" />
     <Resource Include="CloudExplorerSources\Gcs\Resources\zone_icon.png" />
+    <Resource Include="Theming\Resources\logo_cloud.png" />
+    <Content Include="Licenses.txt">
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <Content Include="ProjectTemplates\Google Cloud Platform\GoogleAspnetMvc.zip">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
@@ -309,13 +419,19 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
+    <Content Include="ProjectTemplates\Google Cloud Platform\GoogleAspNetCoreMvc.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
+    <Content Include="ProjectTemplates\Google Cloud Platform\GoogleAspNetCoreWebApi.zip">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
+    </Content>
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="ShowPassword\Resources\visibility_off.png" />
-    <Resource Include="ShowPassword\Resources\visibility.png" />
     <VSCTCompile Include="GoogleCloudExtension.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
     </VSCTCompile>
@@ -371,52 +487,60 @@
     <Reference Include="EnvDTE90, Version=9.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
-    <Reference Include="Google.Apis, Version=1.18.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.1.18.0\lib\net45\Google.Apis.dll</HintPath>
+    <Reference Include="Google.Apis, Version=1.20.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.20.0\lib\net45\Google.Apis.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Appengine.v1, Version=1.18.0.650, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Appengine.v1.1.18.0.650\lib\net45\Google.Apis.Appengine.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Appengine.v1, Version=1.20.0.707, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Appengine.v1.1.20.0.707\lib\net45\Google.Apis.Appengine.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Auth, Version=1.18.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Auth.1.18.0\lib\net45\Google.Apis.Auth.dll</HintPath>
+    <Reference Include="Google.Apis.Auth, Version=1.20.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.20.0\lib\net45\Google.Apis.Auth.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.18.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Auth.1.18.0\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
+    <Reference Include="Google.Apis.Auth.PlatformServices, Version=1.20.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Auth.1.20.0\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.18.0.635, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.18.0.635\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
+    <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.20.0.713, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.20.0.713\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Compute.v1, Version=1.18.0.650, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Compute.v1.1.18.0.650\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Compute.v1, Version=1.20.0.692, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Compute.v1.1.20.0.692\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Core, Version=1.18.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Core.1.18.0\lib\net45\Google.Apis.Core.dll</HintPath>
+    <Reference Include="Google.Apis.Container.v1, Version=1.20.0.662, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Container.v1.1.20.0.662\lib\net45\Google.Apis.Container.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.PlatformServices, Version=1.18.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.1.18.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
+    <Reference Include="Google.Apis.Core, Version=1.20.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Core.1.20.0\lib\net45\Google.Apis.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Plus.v1, Version=1.18.0.657, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Plus.v1.1.18.0.657\lib\net45\Google.Apis.Plus.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Logging.v2, Version=1.20.0.711, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Logging.v2.1.20.0.711\lib\net45\Google.Apis.Logging.v2.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Pubsub.v1, Version=1.18.0.641, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Pubsub.v1.1.18.0.641\lib\net45\Google.Apis.Pubsub.v1.dll</HintPath>
+    <Reference Include="Google.Apis.PlatformServices, Version=1.20.0.0, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.1.20.0\lib\net45\Google.Apis.PlatformServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.SQLAdmin.v1beta4, Version=1.18.0.643, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.SQLAdmin.v1beta4.1.18.0.643\lib\net45\Google.Apis.SQLAdmin.v1beta4.dll</HintPath>
+    <Reference Include="Google.Apis.Plus.v1, Version=1.20.0.713, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Plus.v1.1.20.0.713\lib\net45\Google.Apis.Plus.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Google.Apis.Storage.v1, Version=1.18.0.657, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
-      <HintPath>..\packages\Google.Apis.Storage.v1.1.18.0.657\lib\net45\Google.Apis.Storage.v1.dll</HintPath>
+    <Reference Include="Google.Apis.Pubsub.v1, Version=1.20.0.754, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Pubsub.v1.1.20.0.754\lib\net45\Google.Apis.Pubsub.v1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Google.Apis.SQLAdmin.v1beta4, Version=1.20.0.712, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.SQLAdmin.v1beta4.1.20.0.712\lib\net45\Google.Apis.SQLAdmin.v1beta4.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Google.Apis.Storage.v1, Version=1.20.0.711, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Storage.v1.1.20.0.711\lib\net45\Google.Apis.Storage.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
@@ -428,14 +552,17 @@
     <Reference Include="Microsoft.VisualStudio.CommandBars, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.CoreUtility, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Data, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Data.14.3.25407\lib\net45\Microsoft.VisualStudio.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.Editor, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Imaging, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.VisualStudio.Imaging.14.3.25407\lib\net45\Microsoft.VisualStudio.Imaging.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.Language.Intellisense, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.OLE.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>..\packages\Microsoft.VisualStudio.OLE.Interop.7.10.6070\lib\Microsoft.VisualStudio.OLE.Interop.dll</HintPath>
       <Private>True</Private>
@@ -487,6 +614,10 @@
       <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.9.0.9.0.30729\lib\Microsoft.VisualStudio.Shell.Interop.9.0.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.Text.Data, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Text.Logic, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Text.UI, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="Microsoft.VisualStudio.Text.UI.Wpf, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.TextManager.Interop, Version=7.1.40304.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <HintPath>..\packages\Microsoft.VisualStudio.TextManager.Interop.7.10.6070\lib\Microsoft.VisualStudio.TextManager.Interop.dll</HintPath>
       <Private>True</Private>
@@ -507,10 +638,6 @@
       <HintPath>..\packages\Microsoft.VisualStudio.Validation.14.1.111\lib\net45\Microsoft.VisualStudio.Validation.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
-      <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -522,6 +649,7 @@
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
     <Reference Include="System.Design" />
     <Reference Include="System.Drawing" />
@@ -539,8 +667,8 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="VSPackage.resx">
       <MergeWithCTO>true</MergeWithCTO>
@@ -549,6 +677,10 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="AddTrafficSplit\AddTrafficSplitWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AuthorizedNetworkManagement\AuthorizedNetworksWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -556,6 +688,10 @@
     <Page Include="CloudExplorer\CloudExplorerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TimeBoxResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\ProgressIndicator.xaml">
       <SubType>Designer</SubType>
@@ -597,31 +733,64 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PublishDialogSteps\GkeStep\GkeStepContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="PublishDialog\PublishDialogWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PubSubWindows\NewSubscriptionWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PubSubWindows\NewTopicWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PubSubWindows\NewSubscriptionWindowContent.xaml">
+    <Resource Include="StackdriverLogsViewer\LogsViewerResources.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Page Include="StackdriverLogsViewer\DateTimePicker.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PubSubWindows\NewTopicWindowContent.xaml">
+    <Page Include="StackdriverLogsViewer\LogsViewerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\SearchMenuItemResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Theming\CommonDialogWindowBaseContent.xaml">
+    <Resource Include="Theming\ThemingResources.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Resource Include="Theming\CommonResources.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Page Include="ProgressDialog\ProgressDialogWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="ResetPassword\ResetPasswordWindowContent.xaml">
+    <Page Include="UserPrompt\UserPromptWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddWindowsCredential\AddwindowsCredentialWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -82,7 +82,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             IsLoading = true;
             try
             {
-                bool doDelete = UserPromptUtils.YesNoPrompt(
+                bool doDelete = UserPromptUtils.ActionPrompt(
                     string.Format(Resources.PubSubDeleteSubscriptionWindowMessage, _subscriptionItem.Name),
                     Resources.PubSubDeleteSubscriptionWindowHeader);
                 if (doDelete)

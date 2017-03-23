@@ -29,16 +29,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private const string IconResourcePath = "CloudExplorerSources/Gce/Resources/zone_icon.png";
 
         private static readonly Lazy<ImageSource> s_zoneIcon = new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
-        private static readonly TreeLeaf s_noInstancesPlaceholder = new TreeLeaf
-        {
-            Caption = Resources.CloudExplorerGceNoInstancesInZoneCaption,
-            IsWarning = true
-        };
-        private static readonly TreeLeaf s_noWindowsInstancesPlaceholder = new TreeLeaf
-        {
-            Caption = Resources.CloudExplorerGceNoWindowsInstancesInZoneCaption,
-            IsWarning = true
-        };
 
         private readonly GceSourceRootViewModel _owner;
         private readonly Zone _zone;
@@ -52,7 +42,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             _owner = owner;
             _zone = zone;
 
-            Caption = $"{zone.Name} ({instances.Count()})";
+            Caption = String.Format(Resources.CloudExplorerGceZoneCaption, zone.Name, instances.Count());
             Icon = s_zoneIcon.Value;
 
             foreach (var instance in instances)

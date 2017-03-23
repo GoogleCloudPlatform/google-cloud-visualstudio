@@ -14,6 +14,8 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
@@ -136,48 +138,69 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         {
             var project = _publishDialog.Project;
 
-            GcpOutputWindow.Activate();
-            GcpOutputWindow.Clear();
-            GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishStepStartMessage, project.Name));
-
-            _publishDialog.FinishFlow();
-
-            bool result;
-            using (var frozen = StatusbarHelper.Freeze())
-            using (var animationShown = StatusbarHelper.ShowDeployAnimation())
-            using (var progress = StatusbarHelper.ShowProgressBar(String.Format(Resources.GcePublishProgressMessage, SelectedInstance.Name)))
-            using (var deployingOperation = ShellUtils.SetShellUIBusy())
+            try
             {
-                result = await AspnetDeployment.PublishProjectAsync(
-                    project.FullPath,
-                    SelectedInstance,
-                    SelectedCredentials,
-                    progress,
-                    (l) => GcpOutputWindow.OutputLine(l));
-            }
+                ShellUtils.SaveAllFiles();
 
-            if (result)
-            {
-                GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishSuccessMessage, project.Name, SelectedInstance.Name));
-                StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
+                GcpOutputWindow.Activate();
+                GcpOutputWindow.Clear();
+                GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishStepStartMessage, project.Name));
 
-                var url = SelectedInstance.GetDestinationAppUri();
-                GcpOutputWindow.OutputLine(String.Format(Resources.PublishUrlMessage, url));
-                if (OpenWebsite)
+                _publishDialog.FinishFlow();
+
+                TimeSpan deploymentDuration;
+                bool result;
+                using (var frozen = StatusbarHelper.Freeze())
+                using (var animationShown = StatusbarHelper.ShowDeployAnimation())
+                using (var progress = StatusbarHelper.ShowProgressBar(String.Format(Resources.GcePublishProgressMessage, SelectedInstance.Name)))
+                using (var deployingOperation = ShellUtils.SetShellUIBusy())
                 {
-                    Process.Start(url);
+                    var startDeploymentTime = DateTime.Now;
+                    result = await WindowsVmDeployment.PublishProjectAsync(
+                        project.FullPath,
+                        SelectedInstance,
+                        SelectedCredentials,
+                        progress,
+                        (l) => GcpOutputWindow.OutputLine(l));
+                    deploymentDuration = DateTime.Now - startDeploymentTime;
+                }
+
+                if (result)
+                {
+                    GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishSuccessMessage, project.Name, SelectedInstance.Name));
+                    StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
+
+                    var url = SelectedInstance.GetDestinationAppUri();
+                    GcpOutputWindow.OutputLine(String.Format(Resources.PublishUrlMessage, url));
+                    if (OpenWebsite)
+                    {
+                        Process.Start(url);
+                    }
+
+                    EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Success, deploymentDuration));
+                }
+                else
+                {
+                    GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishFailedMessage, project.Name));
+                    StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+
+                    EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Failure));
                 }
             }
-            else
+            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
                 GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
+
+                EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Failure));
             }
         }
 
         public override void OnPushedToDialog(IPublishDialog dialog)
         {
             _publishDialog = dialog;
+
+            _publishDialog.TrackTask(Instances.ValueTask);
         }
 
         #endregion
