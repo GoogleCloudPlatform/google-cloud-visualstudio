@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using Google.Apis.SQLAdmin.v1beta4.Data;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.AuthorizedNetworkManagement;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
@@ -20,11 +22,9 @@ using GoogleCloudExtension.MySQLInstaller;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Data;
 using Microsoft.VisualStudio.Shell;
-using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Media;
 
@@ -110,16 +110,18 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             try
             {
                 // Poll until the update to completes.
-                Task<Operation> operation = _owner.DataSource.Value.UpdateInstanceAsync(Instance);
-                Func<Operation, Task<Operation>> fetch = (o) => dataSource.GetOperationAsync(o.Name);
-                Predicate<Operation> stopPolling = (o) => CloudSqlDataSource.OperationStateDone.Equals(o.Status);
-                await Polling<Operation>.Poll(await operation, fetch, stopPolling);
+                var operation = await _owner.DataSource.Value.UpdateInstanceAsync(Instance);
+                await _owner.DataSource.Value.AwaitOperationAsync(operation);
+
+                EventsReporterWrapper.ReportEvent(ManageCloudSqlAuthorizedNetworkEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException ex)
             {
                 IsError = true;
                 UserPromptUtils.ErrorPrompt(ex.Message,
                     Resources.CloudExplorerSqlUpdateAthorizedNetworksErrorMessage);
+
+                EventsReporterWrapper.ReportEvent(ManageCloudSqlAuthorizedNetworkEvent.Create(CommandStatus.Failure));
             }
             catch (TimeoutException ex)
             {
@@ -127,6 +129,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 UserPromptUtils.ErrorPrompt(
                     Resources.CloudExploreOperationTimeoutMessage,
                     Resources.CloudExplorerSqlUpdateAthorizedNetworksErrorMessage);
+
+                EventsReporterWrapper.ReportEvent(ManageCloudSqlAuthorizedNetworkEvent.Create(CommandStatus.Failure));
             }
             catch (OperationCanceledException ex)
             {
@@ -134,6 +138,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
                 UserPromptUtils.ErrorPrompt(
                     Resources.CloudExploreOperationCanceledMessage,
                     Resources.CloudExplorerSqlUpdateAthorizedNetworksErrorMessage);
+
+                EventsReporterWrapper.ReportEvent(ManageCloudSqlAuthorizedNetworkEvent.Create(CommandStatus.Failure));
             }
             finally
             {
@@ -164,27 +170,36 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
             // Check if the MySQL data source exists.
             // TODO(talarico): This is added when the user has MySQL for Visual Studio installed.  We should also
             // probably check for the needed pieces in the MySQL Connector/Net.
-            if (dialog.AvailableSources.Contains(MySQLUtils.MySQLDataSource))
+            if (dialog.AvailableSources.Contains(CloudSqlUtils.DataSource))
             {
+                EventsReporterWrapper.ReportEvent(OpenCloudSqlConnectionDialogEvent.Create());
+
                 // Pre select the MySQL data source.
-                dialog.SelectedSource = MySQLUtils.MySQLDataSource;
+                dialog.SelectedSource = CloudSqlUtils.DataSource;
 
                 // Create the connection string to pre populate the server address in the dialog.
-                MySqlConnectionStringBuilder builderPrePopulate = new MySqlConnectionStringBuilder();
                 InstanceItem instance = GetItem();
-                builderPrePopulate.Server = String.IsNullOrEmpty(instance.IpAddress) ? instance.Ipv6Address : instance.IpAddress;
-                dialog.DisplayConnectionString = builderPrePopulate.GetConnectionString(false);
+                var serverAddress = String.IsNullOrEmpty(instance.IpAddress) ? instance.Ipv6Address : instance.IpAddress;
+                dialog.DisplayConnectionString = CloudSqlUtils.FormatServerConnectionString(serverAddress);
 
                 bool addDataConnection = dialog.ShowDialog();
                 if (addDataConnection)
                 {
                     // Create a name for the data connection
-                    MySqlConnectionStringBuilder builder = new MySqlConnectionStringBuilder(dialog.DisplayConnectionString);
-                    string database = $"{Instance.Project}[{builder.Server}][{builder.Database}]";
+                    var parsedConnection = CloudSqlUtils.ParseConnection(dialog.DisplayConnectionString);
+                    string connectionName;
+                    if (parsedConnection.Server == serverAddress)
+                    {
+                        connectionName = $"{Instance.Project}[{Instance.Name}][{parsedConnection.Database}]";
+                    }
+                    else
+                    {
+                        connectionName = $"{parsedConnection.Server}[{parsedConnection.Database}]";
+                    }
 
                     // Add the MySQL data connection to the data explorer
                     DataExplorerConnectionManager manager = (DataExplorerConnectionManager)Package.GetGlobalService(typeof(DataExplorerConnectionManager));
-                    manager.AddConnection(database, MySQLUtils.MySQLDataProvider, dialog.EncryptedConnectionString, true);
+                    manager.AddConnection(connectionName, CloudSqlUtils.DataProvider, dialog.EncryptedConnectionString, true);
                 }
             }
             else

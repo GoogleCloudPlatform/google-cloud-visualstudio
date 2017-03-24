@@ -65,7 +65,6 @@ namespace GoogleCloudExtension.DataSources
         /// Returns the project given its <paramref name="projectId"/>.
         /// </summary>
         /// <param name="projectId">The project ID of the project to return.</param>
-        /// <returns></returns>
         public Task<Project> GetProjectAsync(string projectId)
         {
             return Service.Projects.Get(projectId).ExecuteAsync();

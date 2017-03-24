@@ -1,0 +1,182 @@
+﻿<UserControl x:Class="GoogleCloudExtension.StackdriverErrorReporting.ErrorReportingToolWindowControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:tb="clr-namespace:GoogleCloudExtension.TitleBar"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"             
+             xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting"    
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"    
+             xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"                     
+             Background="{DynamicResource VsBrush.Window}"
+             Foreground="{DynamicResource VsBrush.WindowText}"
+             x:Name="_errorReportingWindow"
+             mc:Ignorable="d"
+             d:DesignHeight="640" d:DesignWidth="640"             
+             d:DataContext="{d:DesignInstance IsDesignTimeCreatable=True,Type=local:ErrorReportingViewModel}" >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+                <ResourceDictionary Source="./ErrorReportingResources.xaml" />
+                <ResourceDictionary Source="./BarChart/TimedCountMiniBarChart.xaml" />
+                <ResourceDictionary Source="./TimeRangeButtons/TimeRangeButtonsResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <utils:VisibilityConverter x:Key="visibilityConverter" />
+            <utils:VisibilityConverter x:Key="visibilityConverterNegated" IsNegated="True" />
+
+            <DataTemplate x:Key="MessageStackTemplate" >
+                <StackPanel>
+                    <controls:IconButton 
+                        Style="{StaticResource MouseOverLinkButtonStyle}" 
+                        HorizontalAlignment="Left"
+                        Content="{Binding ErrorMessage}"
+                        Command="{Binding DataContext.OnGotoDetailCommand, ElementName=_errorReportingWindow}"
+                        CommandParameter="{Binding}"/>
+                    <TextBlock Text="{Binding FirstStackFrameSummary}" Style="{StaticResource CommonTextStyle}"/>
+                </StackPanel>
+            </DataTemplate>
+
+            <DataTemplate x:Key="OccurancesTemplate" >
+                <local:TimedCountBarChartControl 
+                    VerticalAlignment="Center"
+                    Style="{StaticResource TimedCountMiniBarChartStyle}"
+                    TimedCountList="{Binding TimedCountList}"
+                    Margin="0,6,0,6" />
+            </DataTemplate>
+            
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <StackPanel>
+
+        <tb:TitleBar />
+
+        <Grid Margin="12,0,12,12" 
+              Visibility="{Binding IsGridVisible, Converter={StaticResource visibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Border 
+                Padding="12,6,0,6"    
+                BorderThickness="0,0,0,1"    
+                BorderBrush="LightGray"
+                IsEnabled="{Binding IsLoadingComplete}">
+                <controls:AutoReloadButton 
+                    Style="{StaticResource AutoReloadButtonStyle}" 
+                    Content="{x:Static ext:Resources.UiAutoReloadButtonCaption}"
+                    AutoReloadCommand="{Binding OnAutoReloadCommand}"/>
+            </Border>
+            <!-- Time period selection buttons. -->
+            <Grid Grid.Row="1"                
+                Margin="0,12,0,12" 
+                IsEnabled="{Binding IsLoadingComplete}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Margin="0,0,24,0"
+                    FontSize="16"
+                    Text="{Binding CurrentTimeRangeCaption}" 
+                    Style="{StaticResource CommonTextStyle}"
+                    TextWrapping="WrapWithOverflow"/>
+                
+                <local:TimeRangeButtons 
+                    Grid.Column="1" 
+                    ItemsSource="{Binding TimeRangeItemList}"
+                    SelectedItem="{Binding SelectedTimeRangeItem, Mode=TwoWay}" />
+            </Grid>
+
+            <DataGrid Grid.Row="2"                
+                Panel.ZIndex="5"
+                x:Name="dataGridEventGroup"
+                IsReadOnly="True" 
+                BorderThickness="0"
+                GridLinesVisibility="None" 
+                HeadersVisibility="Column"
+                AutoGenerateColumns="False" 
+                ItemsSource="{Binding GroupStatsView}"   
+                CellStyle="{StaticResource cellStyle}"
+                RowStyle="{StaticResource rowStyle}" 
+                IsEnabled="{Binding IsLoadingComplete}"
+                Visibility="{Binding ShowError, Converter={StaticResource visibilityConverterNegated}}">
+                <DataGrid.Resources>
+                    <!-- Override the text highlight color. -->
+                    <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
+                                     Color="Black"/>
+                </DataGrid.Resources>
+
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn 
+                        Header="{x:Static ext:Resources.ErrorReportingErrorCountHeader}" 
+                        CellTemplate="{StaticResource OccurancesTemplate}" />
+
+                    <DataGridTextColumn 
+                        Header="{x:Static ext:Resources.ErrorReportingAffectedUsersHeader}" 
+                        Binding="{Binding ErrorGroup.AffectedUsersCount}" />
+
+                    <DataGridTextColumn Binding="{Binding ErrorCount}" />
+
+                    <DataGridTemplateColumn 
+                        Header="{x:Static ext:Resources.ErrorReportingErrorMessageHeader}" 
+                        Width="460"
+                        CellTemplate="{StaticResource MessageStackTemplate}" />
+
+                    <DataGridTextColumn 
+                        Header="{x:Static ext:Resources.ErrorReportingErrorAppHeader}"
+                        Binding="{Binding SeenIn}" />
+
+                    <DataGridTextColumn 
+                        Header="{x:Static ext:Resources.ErrorReportingFirstErrorTimeHeader}" 
+                        Binding="{Binding FirstSeenTime}" />
+                    
+                    <DataGridTextColumn 
+                        Header="{x:Static ext:Resources.ErrorReportingLastErrorTimeHeader}" 
+                        Binding="{Binding LastSeenTime}" />
+
+                    <DataGridTextColumn 
+                        Header="{x:Static ext:Resources.ErrorReportingServiceContextStatusCodeHeader}" 
+                        Binding="{Binding Status}" />
+
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- Loading first page progress indicator -->
+            <controls:ProgressIndicator Grid.Row="2"                
+                Panel.ZIndex="10"
+                Margin="0,60,0,0"
+                HorizontalAlignment="Center"                       
+                VerticalAlignment="Top" 
+                Visibility="{Binding IsRefreshing, Converter={StaticResource visibilityConverter}}" />
+
+            <TextBox Grid.Row="2"                
+                Panel.ZIndex="15"
+                Padding="8,5,8,5" 
+                VerticalAlignment="Top"
+                HorizontalAlignment="Stretch"
+                TextAlignment="Left" 
+                TextWrapping="Wrap"
+                Foreground="Red" 
+                Text="{Binding ErrorString, Mode=OneWay}" 
+                Visibility="{Binding ShowError, Converter={StaticResource visibilityConverter}}" 
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                IsReadOnly="True" />
+
+            <!-- Loading next page progress indicator -->
+            <controls:ProgressIndicator Grid.Row="3"                
+                Padding="12"
+                Panel.ZIndex="10"
+                Margin="0,-60,0,0"
+                HorizontalAlignment="Center"                       
+                Visibility="{Binding IsLoadingNextPage, Converter={StaticResource visibilityConverter}}" />
+
+        </Grid>
+    </StackPanel>
+</UserControl>

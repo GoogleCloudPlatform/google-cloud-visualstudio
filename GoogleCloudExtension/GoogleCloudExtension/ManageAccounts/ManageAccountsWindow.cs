@@ -18,7 +18,7 @@ namespace GoogleCloudExtension.ManageAccounts
 {
     public class ManageAccountsWindow : CommonDialogWindowBase
     {
-        private ManageAccountsWindow() : base(GoogleCloudExtension.Resources.ManageAccountsWindowTitle, width: 500, height: 400)
+        private ManageAccountsWindow() : base(GoogleCloudExtension.Resources.ManageAccountsWindowTitle)
         {
             Content = new ManageAccountsWindowContent { DataContext = new ManageAccountsViewModel(this) };
         }

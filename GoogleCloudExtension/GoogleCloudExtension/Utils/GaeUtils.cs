@@ -17,7 +17,7 @@ namespace GoogleCloudExtension.Utils
     internal static class GaeUtils
     {
         // The '.' seperator used in app engine urls.
-        private static readonly string AppEngineUrlSeperator = "-dot-";
+        private static readonly string s_appEngineUrlSeperator = "-dot-";
 
         // The name of the default app engine service.
         public static readonly string AppEngineDefaultServiceName = "default";
@@ -30,17 +30,18 @@ namespace GoogleCloudExtension.Utils
         /// <param name="serviceId">The App Engine service id.</param>
         /// <param name="versionId">The App Engine service id.</param>
         /// <returns>The properly formatted url to the App Engine application</returns>
-        public static string GetAppUrl(string hostname, string serviceId = null, string versionId = null) {
+        public static string GetAppUrl(string hostname, string serviceId = null, string versionId = null)
+        {
             string url = "https://";
-       
+
             if (!string.IsNullOrWhiteSpace(versionId))
             {
-                url += versionId + AppEngineUrlSeperator;
+                url += versionId + s_appEngineUrlSeperator;
             }
 
             if (!string.IsNullOrWhiteSpace(serviceId) && serviceId != AppEngineDefaultServiceName)
             {
-                url += serviceId + AppEngineUrlSeperator;
+                url += serviceId + s_appEngineUrlSeperator;
             }
 
             url += hostname;

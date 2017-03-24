@@ -104,9 +104,12 @@ namespace GoogleCloudExtension.PublishDialog
         /// <param name="e">Event args.</param>
         private void OnDeployCommand(object sender, EventArgs e)
         {
-            var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
-            Debug.WriteLine($"Deploying project: {selectedProject.FullPath}");
-            PublishDialogWindow.PromptUser(selectedProject);
+            ErrorHandlerUtils.HandleExceptions(() =>
+            {
+                var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
+                Debug.WriteLine($"Deploying project: {selectedProject.FullPath}");
+                PublishDialogWindow.PromptUser(selectedProject);
+            });
         }
 
         private void OnBeforeQueryStatus(object sender, EventArgs e)
@@ -126,7 +129,6 @@ namespace GoogleCloudExtension.PublishDialog
             {
                 menuCommand.Visible = true;
                 menuCommand.Enabled = !ShellUtils.IsBusy();
-                menuCommand.Text = String.Format(Resources.PublishDialogProjectMenuHeader, selectedProject.Name);
             }
         }
     }

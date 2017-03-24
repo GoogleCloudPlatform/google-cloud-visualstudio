@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
         /// <summary>
         /// True if any changes to the authorized networks occured.
         /// </summary>
-        public bool HasChanges;
+        public bool HasChanges { get; }
 
         public AuthorizedNetworkChange(IList<AuthorizedNetworkModel> authorizedNetworks)
         {
@@ -119,7 +119,6 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
         /// to more easily display and manipulate the entries in the UI.
         /// </summary>
         /// <param name="instance"></param>
-        /// <returns></returns>
         private ObservableCollection<AuthorizedNetworkModel> GetAuthorizedNetworks(DatabaseInstance instance)
         {
             IEnumerable<AclEntry> acls = instance?.Settings?.IpConfiguration?.AuthorizedNetworks ??
@@ -150,7 +149,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
                 Name = NetworkName,
                 Value = NetworkValue
             };
-            Networks.Add(new AuthorizedNetworkModel(acl));
+            Networks.Add(new AuthorizedNetworkModel(acl, newNetwork: true));
 
             NetworkValue = "";
             NetworkName = "";

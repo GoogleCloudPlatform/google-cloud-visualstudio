@@ -16,6 +16,7 @@ using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace GoogleCloudExtension.PublishDialog
@@ -30,6 +31,7 @@ namespace GoogleCloudExtension.PublishDialog
         private readonly ISolutionProject _project;
         private readonly Stack<IPublishDialogStep> _stack = new Stack<IPublishDialogStep>();
         private FrameworkElement _content;
+        private bool _isReady = true;
 
         /// <summary>
         /// The content to display to the user, the content of the active <seealso cref="IPublishDialogStep"/> .
@@ -54,6 +56,15 @@ namespace GoogleCloudExtension.PublishDialog
         /// The command to execute when presing the "Publish" button.
         /// </summary>
         public ProtectedCommand PublishCommand { get; }
+
+        /// <summary>
+        /// Whether the dialog is ready to process user input (enabled) or not.
+        /// </summary>
+        public bool IsReady
+        {
+            get { return _isReady; }
+            set { SetValueAndRaise(ref _isReady, value); }
+        }
 
         /// <summary>
         /// The current <seealso cref="IPublishDialogStep"/> being shown.
@@ -143,6 +154,29 @@ namespace GoogleCloudExtension.PublishDialog
         }
 
         #region IPublishDialog
+
+        async void IPublishDialog.TrackTask(Task task)
+        {
+            try
+            {
+                IsReady = false;
+                await task;
+            }
+            catch (Exception ex)
+            {
+                // This method is not interested at all in the exceptions thrown from the task. Other parts of the
+                // extension will handle that error. But if we detect that there's a critical error we will let it
+                // propagate.
+                if (ErrorHandlerUtils.IsCriticalException(ex))
+                {
+                    throw;
+                }
+            }
+            finally
+            {
+                IsReady = true;
+            }
+        }
 
         ISolutionProject IPublishDialog.Project => _project;
 

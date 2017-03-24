@@ -1,0 +1,312 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:GoogleCloudExtension.Controls;assembly=GoogleCloudExtension"    
+    xmlns:ext="clr-namespace:GoogleCloudExtension;assembly=GoogleCloudExtension"
+    xmlns:sys="clr-namespace:System;assembly=mscorlib"                 
+    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0" >
+
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+
+    <!-- DataGrid cell style. 
+        Note: Add padding to text, padding at row style does not work. -->
+    <Style x:Key="cellStyle" TargetType="DataGridCell">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="DataGridCell">
+                    <Border x:Name="border" Padding="0,4,0,4" >
+                        <ContentPresenter />
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="rowStyle" TargetType="DataGridRow">
+        <Setter Property="Margin" Value="0,0,0,1"/>
+        <Setter Property="BorderBrush" Value="LightGray" />
+        <Setter Property="Background" Value="#FFFDFDFD" />
+        <Style.Triggers>
+            <!-- The Alternation Background must be set here when IsMouseOver trigger is defined. -->
+            <Trigger Property="AlternationIndex" Value="1">
+                <Setter Property="Background" Value="#F5F5F5"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#FFFFD6" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <!-- Log entry detail tree view item text style. -->
+    <Style x:Key="TreeNodeTextStyle" 
+           TargetType="TextBlock"
+           BasedOn="{StaticResource CommonTextStyle}" >
+        <Setter Property="Margin" Value="3,2,3,2"/>
+        <Setter Property="Foreground" Value="DarkSlateGray"/>
+    </Style>
+    
+    <!-- Log entry detail tree view node value style. -->
+    <Style x:Key="TreeNodeValueStyle" 
+           TargetType="controls:IconButton" 
+           BasedOn="{StaticResource MouseOverLinkButtonStyle}" >
+        <Setter Property="Margin" Value="3,2,3,2"/>
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="DarkSlateGray"/>
+    </Style>
+    
+    <!-- Page title bar style. -->
+    <Style x:Key="PageTitleBarStyle" TargetType="{x:Type StackPanel}">
+        <Setter Property="Orientation" Value="Horizontal" />
+        <Setter Property="Background" Value="{DynamicResource {x:Static vsshell:VsBrushes.PanelTitleBarKey}}" />
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+    </Style>
+
+    <!-- Style for ImageButton -->
+    <Style x:Key="ImageButtonStyle" TargetType="{x:Type controls:IconButton}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:IconButton}">
+                    <Border x:Name="border"
+                            Background="{TemplateBinding Background}">
+                        <Image x:Name="imagePresenter" 
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Height="{TemplateBinding Height}"
+                               Width="{TemplateBinding Width}"
+                               Source="{TemplateBinding NormalIcon}" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Source" TargetName="imagePresenter" 
+                                    Value="{Binding MouseOverIcon, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter Property="Source" TargetName="imagePresenter" 
+                                    Value="{Binding MouseDownIcon, RelativeSource={RelativeSource TemplatedParent}}" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.6" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!-- Style for search Icon -->
+    <Style x:Key="SearchIconStyle" TargetType="{x:Type controls:IconButton}">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="OverridesDefaultStyle" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type controls:IconButton}">
+                    <Border x:Name="_imageButtonBorder"
+                            Background="{TemplateBinding Background}"
+                            Height="{TemplateBinding Height}"
+                            Width="{TemplateBinding Width}" >
+                        <Image x:Name="imagePresenter" 
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               Source="{TemplateBinding NormalIcon}" 
+                               Stretch="None" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="true">
+                            <Setter Property="Background" TargetName="_imageButtonBorder" Value="#FFE4B5" />
+                        </Trigger>
+                        <Trigger Property="IsPressed" Value="true">
+                            <Setter Property="Background" TargetName="_imageButtonBorder" Value="#F2A600" />
+                        </Trigger>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter Property="Opacity" Value="0.6" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- Region DateTimePicker Styles-->
+    <Style x:Key="CalendarDayButtonStyle" TargetType="{x:Type CalendarDayButton}">
+        <Setter Property="Height" Value="32"></Setter>
+        <Setter Property="Width" Value="32"></Setter>
+        <Setter Property="FontSize" Value="12" />
+    </Style>
+
+    <Style x:Key="CalendarButtonStyle" TargetType="{x:Type CalendarButton}">
+        <Setter Property="Height" Value="52"></Setter>
+        <Setter Property="Width" Value="52"></Setter>
+        <Setter Property="FontWeight" Value="Normal"/>
+    </Style>
+
+    <Style x:Key="StyleCalendar" TargetType="{x:Type Calendar}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Calendar}">
+                    <Viewbox>
+                        <CalendarItem 
+                                    x:Name="PART_CalendarItem"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    FontStretch="Expanded" />
+                    </Viewbox>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="CalendarDayButtonStyle"  Value="{StaticResource CalendarDayButtonStyle}"/>
+        <Setter Property="CalendarButtonStyle"  Value="{StaticResource CalendarButtonStyle}"/>
+        <Setter Property="Foreground" Value="#FF333333"/>
+        <Setter Property="IsTodayHighlighted" Value="False" />
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="BorderBrush" Value="LightGray" />
+    </Style>
+
+    <DataTemplate x:Key="DayTitle"  >
+        <TextBlock 
+                    Foreground="#FF333333"
+                    FontWeight="Bold"
+                    FontSize="9.5"
+                    FontFamily="Verdana"
+                    Margin="0,6,0,6"
+                    Text="{Binding}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center" />
+    </DataTemplate>
+
+    <!-- Using a button so that clicking on it won't dismiss the dropdown. -->
+    <Style x:Key="ButtonPanelStyle" TargetType="Button">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Grid Background="{TemplateBinding Background}">
+                        <ContentPresenter />
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style x:Key="DateTimePickerDropDownStyle" TargetType="ComboBoxItem" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Button Style="{StaticResource ButtonPanelStyle}" >
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" 
+                                    Margin="12,12,12,6" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <TextBlock 
+                                    Text="{x:Static ext:Resources.UiDateLabel}"  
+                                    Margin="0,0,6,5"/>
+                                <TextBlock 
+                                    Grid.Column="1"
+                                    Text="{x:Static ext:Resources.UiTimeLabel}" 
+                                    Margin="6,0,0,5" />
+                                <TextBox 
+                                    Grid.Row="1"  
+                                    Grid.Column="0" 
+                                    Padding="8,5,8,5" 
+                                    Margin="0,0,6,0" 
+                                    IsEnabled="False"
+                                    Width="110"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"  
+                                    HorizontalContentAlignment="Center"
+                                    Text="{Binding UiElementDate, StringFormat={x:Static ext:Resources.LogViewerLogItemDateFormat}}" />
+                                <controls:TimeBox 
+                                    Grid.Row="1" 
+                                    Grid.Column="1" 
+                                    x:Name="timeBox"
+                                    Time="{Binding UiElementTime}"          
+                                    Margin="6,0,0,0"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"   
+                                    Width="120" />
+                            </Grid>
+
+                            <Calendar 
+                                Grid.Row="1" 
+                                x:Name="calendar"
+                                Margin="12, 4, 12, 4"
+                                HorizontalAlignment="Center"
+                                SelectedDate="{Binding UiElementDate}"
+                                SelectionMode="SingleDate"
+                                Style="{StaticResource StyleCalendar}" />
+
+                            <StackPanel 
+                                Grid.Row="2"
+                                Margin="12,6,12,6"
+                                Orientation="Horizontal" 
+                                HorizontalAlignment="Stretch">
+
+                                <TextBlock 
+                                    Margin="0,0,6,0"
+                                    VerticalAlignment="Center"
+                                    Style="{StaticResource CommonTextStyle}" 
+                                    Text="{x:Static ext:Resources.LogViewerTimeOrderPickLabelHead}" />
+
+                                <controls:FixBackgroundComboBox
+                                    VerticalAlignment="Center" 
+                                    HorizontalContentAlignment="Center"
+                                    SelectedIndex="{Binding SelectedOrderIndex}"
+                                    Style="{StaticResource CommonDocumentComboBoxStyle}">
+                                    <ComboBoxItem Content="{x:Static ext:Resources.LogViewerTimeOrderPickDescSelection}"/>
+                                    <ComboBoxItem Content="{x:Static ext:Resources.LogViewerTimeOrderPickAsceSelection}"/>
+                                </controls:FixBackgroundComboBox>
+
+                                <TextBlock 
+                                    Margin="6,0,0,0"
+                                    VerticalAlignment="Center"
+                                    Text="{x:Static ext:Resources.LogViewerTimeOrderPickLabelTail}" />
+
+                            </StackPanel>
+
+                            <StackPanel 
+                                Grid.Row="3" 
+                                Margin="12,6,0,12"
+                                Orientation="Horizontal">
+
+                                <Button 
+                                    Margin="0,0,6,0" 
+                                    Width="35"
+                                    Content="{x:Static ext:Resources.UiGoButtonCaption}" 
+                                    HorizontalAlignment="Left" 
+                                    Style="{StaticResource CommonButtonStandardStyle}"        
+                                    Command="{Binding GoCommand}" />
+
+                                <Button HorizontalAlignment="Left"
+                                        Content="{x:Static ext:Resources.UiCancelButtonCaption}" 
+                                        Command="{Binding CancelCommand}"
+                                        Style="{StaticResource CommonButtonStandardStyle}" />
+
+                            </StackPanel>
+                        </Grid>
+                    </Button>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    
+    <!-- EndRegion -->
+
+</ResourceDictionary>

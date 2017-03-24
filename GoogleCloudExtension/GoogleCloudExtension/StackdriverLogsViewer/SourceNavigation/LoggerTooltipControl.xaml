@@ -1,0 +1,100 @@
+﻿<UserControl x:Class="GoogleCloudExtension.StackdriverLogsViewer.LoggerTooltipControl"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+        xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"             
+        xmlns:ext="clr-namespace:GoogleCloudExtension"
+        xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+        xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
+        mc:Ignorable="d" 
+        d:DesignHeight="300" d:DesignWidth="600" 
+        BorderThickness="2" BorderBrush="#82B1FF"
+        Background="#FBFBFB" >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Theming/CommonResources.xaml" />
+                <ResourceDictionary Source="../LogsViewerResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Margin="6" >
+            <Border 
+                Background="White" 
+                BorderBrush="#BDBDBD" 
+                BorderThickness="1">
+                <Grid >
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Image 
+                        Grid.Column="0"
+                        Source="{Binding Log.SeverityLevel}" 
+                        Width="12" 
+                        Height="12"
+                        Margin="9,1,8,1" />
+                    <TextBlock 
+                        Grid.Column="1"
+                        Padding="6"
+                        Text="{Binding Log.Date}" 
+                        Style="{StaticResource CommonTextStyle}" />
+                    <TextBlock 
+                        Grid.Column="2"
+                        Padding="6"
+                        Text="{Binding Log.Time}" 
+                        Style="{StaticResource CommonTextStyle}" />
+                    <TextBlock 
+                        Grid.Column="3"
+                        Padding="6"
+                        Text="{Binding Log.Message}" 
+                        TextWrapping="NoWrap"
+                        TextTrimming="CharacterEllipsis"
+                        Style="{StaticResource CommonTextStyle}" />
+                </Grid>
+            </Border>
+            <Grid Margin="0,6,0,0">
+                <Grid.ColumnDefinitions >
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <controls:ImageToggleButton 
+                    Style="{StaticResource BackButtonStyle}"
+                    UncheckedImage="{mp:ImageResource StackdriverLogsViewer/Resources/back_icon_12.png}"
+                    CheckedImage="{mp:ImageResource StackdriverLogsViewer/Resources/back_icon_12.png}"
+                    Content="{x:Static ext:Resources.LogsViewerTooltipBackButtonCaption}"
+                    Command="{Binding BackToLogsViewerCommand}" />
+                <CheckBox 
+                    Grid.Column="1"
+                    VerticalAlignment="Center"
+                    Margin="6,2,0,0"
+                    IsChecked="{Binding FilterLogsOfSourceLine}" >
+                    <TextBlock Text="{x:Static ext:Resources.LogsViewerSourceFilterCheckboxTitle}"
+                               TextWrapping="NoWrap"
+                               TextTrimming="CharacterEllipsis"
+                               Style="{StaticResource CommonTextStyle}"/>
+                </CheckBox>    
+                    
+            </Grid>
+        </StackPanel>
+        
+        <Button 
+            Grid.Column="1"
+            Style="{StaticResource CrossButtonStyle}"
+            HorizontalAlignment="Right" 
+            VerticalAlignment="Top"
+            Width="15" 
+            Margin="0,6,6,0" 
+            Command="{Binding OnCloseButtonCommand}"/>
+
+    </Grid>
+</UserControl>

@@ -31,14 +31,10 @@ namespace GoogleCloudExtension.FirewallManagement
         public PortInfo PortInfo => _port;
 
         /// <summary>
-        /// The name of the port.
+        /// The display string to user.
         /// </summary>
-        public string Name => _port.Name;
-
-        /// <summary>
-        /// The number of the port.
-        /// </summary>
-        public int Port => _port.Port;
+        public string DisplayString =>
+            string.Format(Resources.PortManagerDisplayStringFormat, _port.Description, _port.Name, _port.Port);
 
         /// <summary>
         /// Whether the port is enabled or not.

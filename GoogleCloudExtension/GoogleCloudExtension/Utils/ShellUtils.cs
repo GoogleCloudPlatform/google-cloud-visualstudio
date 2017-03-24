@@ -12,7 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using EnvDTE;
+using EnvDTE80;
 using Microsoft.VisualStudio;
+using VSOLEInterop = Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
@@ -48,7 +51,6 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Returns true if the shell is in a busy state.
         /// </summary>
-        /// <returns></returns>
         public static bool IsBusy() => IsDebugging() || IsBuilding();
 
         /// <summary>
@@ -65,6 +67,69 @@ namespace GoogleCloudExtension.Utils
             SetUIContext(monitorSelection, VSConstants.UICONTEXT.SolutionExistsAndNotBuildingAndNotDebugging_guid, false);
 
             return new Disposable(SetShellNormal);
+        }
+
+        /// <summary>
+        /// Updates the UI state of all commands in the VS shell. This is useful when the state that determines
+        /// if a command is enabled/disabled (or visible/invisiable) changes and the commands in the menus need
+        /// to be updated.
+        /// In essence this method will cause the <seealso cref="OnBeforeQueryStatus"/> method in all commands to be
+        /// called again.
+        /// </summary>
+        public static void InvalidateCommandsState()
+        {
+            var shell = Package.GetGlobalService(typeof(SVsUIShell)) as IVsUIShell;
+            if (shell == null)
+            {
+                Debug.WriteLine($"Could not acquire {nameof(SVsUIShell)}");
+                return;
+            }
+
+            // Updates the UI asynchronously.
+            shell.UpdateCommandUI(fImmediateUpdate: 0);
+        }
+
+        /// <summary>
+        /// Executes the "File.OpenProject" command in the shell.
+        /// </summary>
+        public static void OpenProject()
+        {
+            var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
+            dte.ExecuteCommand("File.OpenProject");
+        }
+
+        /// <summary>
+        /// Opens a project item in Visual Studio.
+        /// </summary>
+        /// <param name="projectItem"><seealso cref="ProjectItem"/></param>
+        /// <returns>The Window that displays the project item.</returns>
+        public static Window Open(ProjectItem projectItem)
+        {
+            var window = projectItem.Open(EnvDTE.Constants.vsViewKindPrimary);
+            if (null != window)
+            {
+                window.Visible = true;
+            }
+            return window;
+        }
+
+        /// <summary>
+        /// Get Visual Studio <seealso cref="IServiceProvider"/>.
+        /// </summary>
+        public static ServiceProvider GetGloblalServiceProvider()
+        {
+            var dte2 = (DTE2)Package.GetGlobalService(typeof(SDTE));
+            VSOLEInterop.IServiceProvider sp = (VSOLEInterop.IServiceProvider)dte2;
+            return new ServiceProvider(sp);
+        }
+
+        /// <summary>
+        /// Executes the "File.SaveAll" command in the shell, which will save all currently dirty files.
+        /// </summary>
+        public static void SaveAllFiles()
+        {
+            var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
+            dte.ExecuteCommand("File.SaveAll");
         }
 
         private static void SetShellNormal()

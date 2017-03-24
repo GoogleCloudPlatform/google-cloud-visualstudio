@@ -1,0 +1,505 @@
+﻿<UserControl x:Class="GoogleCloudExtension.StackdriverLogsViewer.LogsViewerToolWindowControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverLogsViewer"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"             
+             xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"
+             xmlns:tb="clr-namespace:GoogleCloudExtension.TitleBar"
+             Background="{DynamicResource VsBrush.Window}"
+             Foreground="{DynamicResource VsBrush.WindowText}"
+             mc:Ignorable="d"
+             d:DesignHeight="1024" d:DesignWidth="860"             
+             Name="_logsViewerToolWindow" >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+                <ResourceDictionary Source="./LogsViewerResources.xaml" />
+                <ResourceDictionary Source="../Controls/SearchMenuItemResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <utils:VisibilityConverter x:Key="visibilityConverter" />
+            <utils:VisibilityConverter x:Key="visibilityConverterNegated" IsNegated="True" />
+            <utils:NullEmptyInvisibleConverter x:Key="nullEmptyInvisibleConverter" />
+
+            <DataGridTemplateColumn
+                x:Key="MessageColumn" >
+                <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate >
+                        <StackPanel Orientation="Horizontal">
+                            <controls:IconButton
+                                x:Name="_sourceLinkButton"
+                                Margin="6,0,12,0"
+                                Style="{StaticResource MouseOverLinkButtonStyle}"
+                                Command="{Binding OnNavigateToSourceCommand}"
+                                Visibility="{Binding SourceLinkVisible, Converter={StaticResource visibilityConverter}}"
+                                Content="{Binding SourceLinkCaption}">
+                                <controls:IconButton.ToolTip>
+                                    <ToolTip Content="{Binding SourceFilePath}" 
+                                             Style="{StaticResource CommonTooltipStyle}" />
+                                </controls:IconButton.ToolTip>
+                            </controls:IconButton>
+                            <TextBlock 
+                                Text="{Binding Message}"
+                                TextWrapping="NoWrap"
+                                TextTrimming="CharacterEllipsis" />
+                        </StackPanel>
+                    </DataTemplate>
+                </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            
+            <HierarchicalDataTemplate DataType="{x:Type local:ObjectNodeTree}" 
+                                      ItemsSource="{Binding Children}">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="{Binding Name}" Style="{StaticResource TreeNodeTextStyle}" />
+                    <controls:IconButton 
+                        Content="{Binding NodeValue}" 
+                        Style="{StaticResource TreeNodeValueStyle}" 
+                        Command="{Binding DataContext.OnDetailTreeNodeFilterCommand, ElementName=_logsViewerToolWindow}"
+                        CommandParameter="{Binding}">
+                        <controls:IconButton.ToolTip>
+                            <ToolTip Content="{x:Static ext:Resources.LogsViewerTreeNodeFilterTooltip}" 
+                                     Style="{StaticResource CommonTooltipStyle}" />
+                        </controls:IconButton.ToolTip>
+                    </controls:IconButton>
+                </StackPanel>
+            </HierarchicalDataTemplate>
+
+            <!-- data grid group item.-->
+            <ControlTemplate x:Key="groupItemTemplate" TargetType="{x:Type GroupItem}">
+                <StackPanel>
+                    <StackPanel 
+                        Orientation="Horizontal" 
+                        Background="#E0E0E0">
+
+                        <TextBlock 
+                            Text="{Binding Name}"  
+                            Padding="6" 
+                            FontWeight="DemiBold"
+                            Style="{StaticResource CommonTextStyle}"/>
+
+                        <controls:FixBackgroundComboBox                         
+                            DockPanel.Dock="Left"
+                            x:Name="comboTimeZone" 
+                            Margin="6,0,0,0" 
+                            VerticalAlignment="Center" 
+                            BorderThickness="0" 
+                            Background="Transparent" 
+                            FontWeight="DemiBold"
+                            DataContext="{Binding DataContext, ElementName=_logsViewerToolWindow}"
+                            ItemsSource="{Binding SystemTimeZones}"
+                            SelectedItem="{Binding SelectedTimeZone}" >
+                            <controls:FixBackgroundComboBox.ToolTip>
+                                <ToolTip Content="{x:Static ext:Resources.LogViewerTimeZoneSelectionToolTip}"
+                                     Style="{StaticResource CommonTooltipStyle}" />
+                            </controls:FixBackgroundComboBox.ToolTip>
+                        </controls:FixBackgroundComboBox>
+                    </StackPanel>
+
+                    <ItemsPresenter />
+                </StackPanel>
+            </ControlTemplate>
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <tb:TitleBar />
+        <Grid 
+            Grid.Row="1"
+            Visibility="{Binding Project, Converter={StaticResource nullEmptyInvisibleConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto"  />
+            </Grid.RowDefinitions>
+
+            <Border 
+                Padding="12,6,0,6"    
+                BorderThickness="0,0,0,1"    
+                BorderBrush="LightGray"
+                IsEnabled="{Binding IsControlEnabled}" >
+                <controls:AutoReloadButton 
+                    x:Name="_autoReloadButton"
+                    Style="{StaticResource AutoReloadButtonStyle}" 
+                    AutoReloadCommand="{Binding OnAutoReloadCommand}"
+                    Content="{x:Static ext:Resources.UiAutoReloadButtonCaption}"                    
+                    IntervalSeconds="{Binding AutoReloadIntervalSeconds}"/>
+            </Border>
+
+            <!-- Filters -->
+            <StackPanel      
+                Grid.Row="1"
+                Margin="12,6,12,6"  
+                IsEnabled="{Binding IsControlEnabled}"
+                VerticalAlignment="Center" 
+                HorizontalAlignment="Stretch" 
+                Orientation="Vertical"
+                Visibility="{Binding IsChecked, ElementName=_autoReloadButton, Converter={StaticResource visibilityConverterNegated}}">
+
+                <!-- Advanced Filter -->
+                <Grid Visibility="{Binding ShowAdvancedFilter, Converter={StaticResource visibilityConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
+
+                    <TextBox  
+                        Grid.ColumnSpan="2"
+                        Grid.Column="0"
+                        VerticalAlignment="Center" 
+                        Padding="8,5,8,5"
+                        TextWrapping="Wrap" 
+                        AcceptsReturn="True"
+                        Text="{Binding AdvancedFilterText, UpdateSourceTrigger=PropertyChanged}"
+                        MinLines="3" 
+                        MaxLines="30"
+                        VerticalScrollBarVisibility="Auto" />
+
+                    <Button 
+                        Grid.Column="2" 
+                        Margin="6,0,0,0" 
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Style="{StaticResource CommonButtonWideStyle}"
+                        Command="{Binding FilterSwitchCommand}"
+                        Content="{x:Static ext:Resources.LogViewerSwitchToSimpleFilterCaption}">
+                            <Button.ToolTip>
+                                <ToolTip Content="{x:Static ext:Resources.LogViewerToSimpleSearchButtonTooltip}"/>
+                            </Button.ToolTip>
+                    </Button>
+
+                    <Button 
+                        Grid.Row="1"
+                        Grid.Column="0"
+                        Margin="0,6,0,0"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Left"
+                        Command="{Binding SubmitAdvancedFilterCommand}" 
+                        Style="{StaticResource CommonButtonDynamicStyle}"
+                        Content="{x:Static ext:Resources.LogViewerSubmitAdvancedFilterCaption}" />
+
+                    <TextBlock 
+                        Grid.Row="1"
+                        Grid.Column="1"  
+                        Margin="0,0,3,0"
+                        HorizontalAlignment="Right" 
+                        VerticalAlignment="Top" >
+                        <Hyperlink 
+                            Command="{Binding AdvancedFilterHelpCommand}" 
+                            Style="{StaticResource CommonHyperlinkStyle}">
+                            <TextBlock Text="{x:Static ext:Resources.LogViewerAdvancedFilterHelpLinkCaption}" />
+                        </Hyperlink>
+                    </TextBlock>
+
+                </Grid>
+
+                <!-- Basic Filters. -->
+                <StackPanel 
+                    Visibility="{Binding ShowAdvancedFilter, Converter={StaticResource visibilityConverterNegated}}">
+                    <StackPanel 
+                        Orientation="Horizontal" 
+                        HorizontalAlignment="Left" 
+                        VerticalAlignment="Center">
+
+                        <Menu
+                            Margin="0,0,6,0"
+                            Style="{StaticResource SelectorMenuStyle}"
+                            Width="200">
+                                <controls:SearchMenuItem 
+                                    Header="{Binding ResourceTypeSelector.Header}"
+                                    ItemsSource="{Binding ResourceTypeSelector.MenuItems}" >
+
+                                    <controls:SearchMenuItem.ItemTemplate>
+                                        <HierarchicalDataTemplate 
+                                        DataType="{x:Type local:MenuItemViewModel}" 
+                                        ItemsSource="{Binding MenuItems}">
+                                        </HierarchicalDataTemplate>
+                                    </controls:SearchMenuItem.ItemTemplate>
+                                </controls:SearchMenuItem>
+                        </Menu>
+
+                        <controls:FixBackgroundComboBox 
+                            Margin="0,0,6,0"
+                            Width="160" 
+                            Style="{StaticResource CommonDocumentComboBoxStyle}"
+                            ItemsSource="{Binding LogIdList.LogIDs}"
+                            SelectedItem="{Binding LogIdList.SelectedLogId}" 
+                            IsSynchronizedWithCurrentItem="true" />
+
+                        <controls:FixBackgroundComboBox 
+                            Margin="0,0,6,0"
+                            Width="120"
+                            Style="{StaticResource CommonDocumentComboBoxStyle}"
+                            ItemsSource="{Binding LogSeverityList}"
+                            SelectedItem="{Binding SelectedLogSeverity}"
+                            DisplayMemberPath="DisplayName" 
+                            IsSynchronizedWithCurrentItem="true" />
+
+                        <local:DateTimePicker
+                            Margin="0,0,6,0"
+                            DataContext="{Binding DateTimePickerModel}" />
+
+                        <controls:IconButton
+                            Grid.Column="1" 
+                            Margin="6,0,16,0"
+                            Width="32" 
+                            Height="32"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Style="{StaticResource ImageButtonStyle}"
+                            NormalIcon="{mp:ImageResource StackdriverLogsViewer/Resources/refresh.png}"
+                            MouseOverIcon="{mp:ImageResource StackdriverLogsViewer/Resources/refresh_mouse_over.png}"
+                            MouseDownIcon="{mp:ImageResource StackdriverLogsViewer/Resources/refresh_mouse_down.png}"
+                            Command="{Binding RefreshCommand}">
+                                <controls:IconButton.ToolTip>
+                                    <ToolTip Content="{x:Static ext:Resources.LogViewerRefreshButtonToolTip}" 
+                                         Style="{StaticResource CommonTooltipStyle}" />
+                                </controls:IconButton.ToolTip>
+                        </controls:IconButton>
+                    </StackPanel>
+
+                    <Grid Margin="0,6,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0"
+                            BorderThickness="1" 
+                            BorderBrush="LightGray">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox 
+                                    Grid.Column="0"
+                                    BorderThickness="0"
+                                    TextWrapping="Wrap"    
+                                    VerticalAlignment="Center"
+                                    HorizontalAlignment="Stretch"
+                                    Padding="8,5,8,5"    
+                                    Text="{Binding SimpleSearchText, UpdateSourceTrigger=PropertyChanged}" >
+                                        <TextBox.InputBindings>
+                                            <KeyBinding Key="Enter" Command="{Binding SimpleTextSearchCommand}"/>
+                                        </TextBox.InputBindings>
+                                </TextBox>
+
+                                <controls:IconButton 
+                                    Grid.Column="1" 
+                                    Padding="2,0,2,0"
+                                    BorderThickness="0"
+                                    Width="24"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Stretch"
+                                    Style="{StaticResource SearchIconStyle}"
+                                    Command="{Binding SimpleTextSearchCommand}"
+                                    NormalIcon="{mp:ImageResource StackdriverLogsViewer/Resources/search.png}">
+                                        <controls:IconButton.ToolTip>
+                                            <ToolTip Content="{x:Static ext:Resources.LogViewerSimpleTextSearchIconButtonToolTip}"/>
+                                        </controls:IconButton.ToolTip>
+                                </controls:IconButton>
+
+                            </Grid>
+                        </Border>
+                        <Button 
+                            Grid.Column="1" 
+                            Margin="6,0,0,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Bottom"
+                            Style="{StaticResource CommonButtonWideStyle}"
+                            Command="{Binding Path=FilterSwitchCommand}"                            
+                            Content="{x:Static ext:Resources.LogViewerSwitchToAdvancedFilterCaption}"/>
+                    </Grid>
+                </StackPanel>
+
+            </StackPanel>
+
+            <Expander 
+                Grid.Row="2" 
+                Panel.ZIndex="20"             
+                x:Name="_allExpander"
+                Margin="0,6,30,0" 
+                HorizontalAlignment="Right" 
+                VerticalAlignment="Top" 
+                IsExpanded="{Binding ToggleExpandAllExpanded}">
+                    <Expander.ToolTip>
+                        <ToolTip Content="{Binding ToggleExapandAllToolTip}" 
+                                 Style="{StaticResource CommonTooltipStyle}"/>
+                    </Expander.ToolTip>
+            </Expander>
+
+            <Grid Grid.Row="2" 
+                  Margin="12,6,12,12" 
+                  IsEnabled="{Binding IsControlEnabled}">
+
+                <!-- DataGrid, displays all log entries. -->
+                <DataGrid 
+                    Panel.ZIndex="10" 
+                    x:Name="_dataGridLogEntries"
+                    HorizontalAlignment="Stretch" 
+                    VerticalAlignment="Stretch" 
+                    Background="White" 
+                    BorderThickness="1" 
+                    BorderBrush="LightGray"
+                    GridLinesVisibility="None" 
+                    CanUserResizeRows="False"                  
+                    RowStyle="{StaticResource rowStyle}" 
+                    CellStyle="{StaticResource cellStyle}"
+                    AutoGenerateColumns="False" 
+                    IsReadOnly="True" 
+                    HeadersVisibility="Column" 
+                    ColumnHeaderHeight="22" 
+                    ItemsSource="{Binding LogItemCollection}"   
+                    ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                    AlternationCount="2"
+                    ScrollViewer.ScrollChanged="dataGrid_ScrollChanged"
+                    PreviewMouseDown="dataGrid_PreviewMouseDown">
+
+                    <!-- Override the text highlight color. -->
+                    <DataGrid.Resources>
+                        <SolidColorBrush x:Key="{x:Static SystemColors.HighlightTextBrushKey}" 
+                                         Color="Black"/>
+                    </DataGrid.Resources>
+
+                    <DataGrid.Style>
+                        <Style TargetType="DataGrid">
+                            <Setter Property="RowDetailsVisibilityMode" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsExpanded, ElementName=_allExpander}" Value="True">
+                                    <Setter Property="RowDetailsVisibilityMode" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.Style>
+
+                    <DataGrid.GroupStyle>
+                        <GroupStyle >
+                            <GroupStyle.ContainerStyle >
+                                <Style TargetType="{x:Type GroupItem}" >
+                                    <Setter Property="Template" Value="{StaticResource groupItemTemplate}" />
+                                </Style>
+                            </GroupStyle.ContainerStyle>
+                        </GroupStyle>
+                    </DataGrid.GroupStyle>
+
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Source="{Binding SeverityLevel}" 
+                                           Width="12" 
+                                           Height="12"
+                                           Margin="9,1,8,1" >
+                                        <Image.ToolTip>
+                                            <ToolTip Content="{Binding SeverityTip}" 
+                                                     Style="{StaticResource CommonTooltipStyle}"/>
+                                        </Image.ToolTip>
+                                    </Image>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <DataGridTemplateColumn 
+                            IsReadOnly="True" 
+                            SortMemberPath="TimeStamp" >
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock 
+                                        Text="{Binding Time}" 
+                                        TextWrapping="NoWrap"
+                                        TextTrimming="CharacterEllipsis" 
+                                        Margin="6,0,6,0">
+                                        <TextBlock.ToolTip>
+                                            <ToolTip Content="{Binding Date}" 
+                                                     Style="{StaticResource CommonTooltipStyle}" />
+                                        </TextBlock.ToolTip>
+                                    </TextBlock>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+
+                        <StaticResource ResourceKey="MessageColumn" />
+                    </DataGrid.Columns>
+
+                    <DataGrid.RowDetailsTemplate>
+                        <DataTemplate>
+                            <!-- Use a border to make the background right. -->
+                            <Border Background="White" Padding="30,0,0,2">
+
+                                <!-- Override the template to disable inner scrollbar -->
+                                <TreeView BorderThickness="0" 
+                                          ItemsSource="{Binding TreeViewObjects}">
+                                    <TreeView.Template>
+                                        <ControlTemplate>
+                                            <ItemsPresenter />
+                                        </ControlTemplate>
+                                    </TreeView.Template>
+                                    <TreeView.ItemContainerStyle>
+                                        <Style TargetType="{x:Type TreeViewItem}" >
+                                            <Setter Property="IsExpanded" Value="True" />
+                                        </Style>
+                                    </TreeView.ItemContainerStyle>
+                                </TreeView>
+                            </Border>
+                        </DataTemplate>
+                    </DataGrid.RowDetailsTemplate>
+                </DataGrid>
+            </Grid>
+
+            <!-- Displays request status. -->
+            <Grid Grid.Row="3" Margin="12,0,12,0">
+
+                <TextBox 
+                    Margin="0,0,0,12" 
+                    Padding="8,5,8,5" 
+                    VerticalAlignment="Bottom" 
+                    TextAlignment="Left" 
+                    TextWrapping="Wrap"
+                    MaxHeight="360" 
+                    Foreground="Red" 
+                    Text="{Binding RequestErrorMessage, Mode=OneWay}" 
+                    Visibility="{Binding ShowRequestErrorMessage, Converter={StaticResource visibilityConverter}}" 
+                    IsReadOnly="True"
+                    VerticalScrollBarVisibility="Auto" />
+
+                <StackPanel 
+                    Margin="0,0,0,12" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Center"
+                    Visibility="{Binding ShowRequestStatus, Converter={StaticResource visibilityConverter}}">
+
+                    <TextBlock 
+                        Padding="8,5,8,5" 
+                        Foreground="Red" 
+                        Text="{Binding RequestStatusText}"
+                        Style="{StaticResource CommonTextStyle}" />
+
+                    <Button 
+                        Margin="12,0,12,0" 
+                        VerticalAlignment="Center"
+                        IsEnabled="True"
+                        Content="{x:Static ext:Resources.UiCancelButtonCaption}" 
+                        Command="{Binding CancelRequestCommand}" 
+                        Visibility="{Binding ShowCancelRequestButton, Converter={StaticResource visibilityConverter}}" 
+                        Style="{StaticResource CommonButtonStandardStyle}" />
+                </StackPanel>
+            </Grid>
+        </Grid>
+    </Grid>
+</UserControl>

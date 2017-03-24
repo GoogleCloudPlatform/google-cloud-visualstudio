@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.SolutionUtils;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.PublishDialog
 {
@@ -41,5 +42,11 @@ namespace GoogleCloudExtension.PublishDialog
         /// Called from a step that wants to finish the flow. In essence closes the dialog.
         /// </summary>
         void FinishFlow();
+
+        /// <summary>
+        /// Makes the dialog look "busy" as long as <paramref name="task"/> is not completed.
+        /// </summary>
+        /// <param name="task">The task.</param>
+        void TrackTask(Task task);
     }
 }

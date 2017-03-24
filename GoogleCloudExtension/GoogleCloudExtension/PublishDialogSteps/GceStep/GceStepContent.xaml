@@ -6,34 +6,46 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialogSteps.GceStep"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300"
              d:DataContext="{x:Type local:GceStepViewModel}">
 
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
     <StackPanel>
-        <TextBlock Text="{x:Static ext:Resources.PublishDialogGceStepSelectInstanceMessage}" />
-        <ComboBox ItemsSource="{Binding Instances.Value}"
+        <Label Content="{x:Static ext:Resources.PublishDialogGceStepSelectInstanceMessage}"
+               Target="{Binding ElementName=_instances}"
+               Style="{StaticResource CommonLabelStyle}"/>
+        <ComboBox x:Name="_instances"
+                  ItemsSource="{Binding Instances.Value}"
                   DisplayMemberPath="Name"
-                  IsEnabled="{Binding Instances.IsCompleted}"
                   IsSynchronizedWithCurrentItem="True"
+                  Margin="0,0,0,15"
                   SelectedItem="{Binding SelectedInstance, Mode=TwoWay}" />
 
-        <TextBlock Margin="0,5,0,0" Text="{x:Static ext:Resources.PublishDialogGceStepSelectCredentialsMessage}" />
-        <ComboBox ItemsSource="{Binding Credentials}"
-                  IsEnabled="{Binding Instances.IsCompleted}"
+        <Label Content="{x:Static ext:Resources.PublishDialogGceStepSelectCredentialsMessage}"
+               Target="{Binding ElementName=_credentials}"
+               Style="{StaticResource CommonLabelStyle}"/>
+        <ComboBox x:Name="_credentials"
+                  ItemsSource="{Binding Credentials}"
                   IsSynchronizedWithCurrentItem="True"
                   DisplayMemberPath="User"
                   SelectedItem="{Binding SelectedCredentials, Mode=TwoWay}" />
-        <TextBlock Margin="0,5,0,0">
-            <Hyperlink Command="{Binding ManageCredentialsCommand}">
-                <TextBlock Text="{x:Static ext:Resources.GcePublishStepManageCredentialsCaption}" />
+        
+        <TextBlock Margin="0,5,0,0" Style="{StaticResource CommonTextStyle}">
+            <Hyperlink Command="{Binding ManageCredentialsCommand}" Style="{StaticResource CommonHyperlinkStyle}">
+                <TextBlock Text="{x:Static ext:Resources.UiManageWindowsCredentialsCaption}" />
             </Hyperlink>
         </TextBlock>
-        
 
         <CheckBox Margin="0,8,0,0"
-                  IsEnabled="{Binding Instances.IsCompleted}"
                   Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
-                  IsChecked="{Binding OpenWebsite, Mode=TwoWay}" />
+                  IsChecked="{Binding OpenWebsite, Mode=TwoWay}"
+                  Style="{StaticResource CommonTextStyleBase}"/>
 
     </StackPanel>
 </UserControl>

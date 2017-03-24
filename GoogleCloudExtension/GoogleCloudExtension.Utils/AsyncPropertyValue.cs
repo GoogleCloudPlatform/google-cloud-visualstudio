@@ -25,30 +25,45 @@ namespace GoogleCloudExtension.Utils
     public class AsyncPropertyValue<T> : Model
     {
         private readonly Task<T> _valueSource;
-        private T _value;
+        private readonly Lazy<TaskCompletionSource<bool>> _completionSource = new Lazy<TaskCompletionSource<bool>>();
 
         /// <summary>
         /// The value of the property, which will be set once Task where the value comes from
         /// is completed.
         /// </summary>
-        public T Value => _value;
+        public T Value { get; private set; }
 
+        /// <summary>
+        /// Returns whether the wrapped task is still pending.
+        /// </summary>
         public bool IsPending => !_valueSource?.IsCompleted ?? false;
 
+        /// <summary>
+        /// Returns true if the wrapped task is completed.
+        /// </summary>
         public bool IsCompleted => _valueSource?.IsCompleted ?? true;
 
+        /// <summary>
+        /// Returns true if the wrapped task is in error.
+        /// </summary>
         public bool IsError => _valueSource?.IsFaulted ?? false;
+
+        /// <summary>
+        /// Returns a task that will be completed once the wrapped task is completed. This task is
+        /// not directly connected to the wrapped task and will never throw and error.
+        /// </summary>
+        public Task ValueTask => _completionSource.Value.Task;
 
         public AsyncPropertyValue(Task<T> valueSource, T defaultValue = default(T))
         {
             _valueSource = valueSource;
-            _value = defaultValue;
+            Value = defaultValue;
             AwaitForValue();
         }
 
         public AsyncPropertyValue(T value)
         {
-            _value = value;
+            Value = value;
         }
 
         private void AwaitForValue()
@@ -57,8 +72,9 @@ namespace GoogleCloudExtension.Utils
             {
                 if (t.IsCompleted)
                 {
-                    _value = t.Result;
+                    Value = t.Result;
                 }
+                _completionSource.Value.SetResult(true);
                 RaiseAllPropertyChanged();
             });
         }
@@ -75,7 +91,6 @@ namespace GoogleCloudExtension.Utils
         /// <param name="valueSource">The task where the value comes from.</param>
         /// <param name="func">The function to apply to the result of the task.</param>
         /// <param name="defaultValue">The value to use while the task is executing.</param>
-        /// <returns></returns>
         public static AsyncPropertyValue<T> CreateAsyncProperty<TIn, T>(Task<TIn> valueSource, Func<TIn, T> func, T defaultValue = default(T))
         {
             return new AsyncPropertyValue<T>(valueSource.ContinueWith(t => func(t.Result)), defaultValue);

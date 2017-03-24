@@ -1,0 +1,104 @@
+﻿<UserControl 
+    x:Class="GoogleCloudExtension.StackdriverErrorReporting.ErrorFrameTooltipControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"        
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"             
+    xmlns:ext="clr-namespace:GoogleCloudExtension"
+    xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    mc:Ignorable="d" 
+    d:DesignHeight="300" d:DesignWidth="600" 
+    BorderThickness="2" BorderBrush="#82B1FF"
+    Background="#FBFBFB" >
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Theming/CommonResources.xaml" />
+                <ResourceDictionary Source="../../StackdriverLogsViewer/LogsViewerResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <StackPanel Margin="6" >
+            <Border 
+                Background="White" 
+                BorderBrush="#BDBDBD" 
+                BorderThickness="1">
+
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" >
+                        <TextBlock 
+                            Text="{x:Static ext:Resources.ErrorReportingErrorCountHeader}" 
+                            Margin="6,6,3,6"
+                            Style="{StaticResource CommonTextStyle}"/>
+                        <TextBlock 
+                            Text="{Binding Error.ErrorGroup.Count}" 
+                            Margin="0,6,6,6"
+                            Style="{StaticResource CommonTextStyle}"/>
+
+                        <TextBlock 
+                            Text="{x:Static ext:Resources.ErrorReportingFirstErrorTimeHeader}" 
+                            Margin="6,6,3,6"
+                            Style="{StaticResource CommonTextStyle}"/>
+                        <TextBlock 
+                            Text="{Binding Error.FirstSeenTime}" 
+                            Margin="0,6,6,6"
+                            Style="{StaticResource CommonTextStyle}"/>
+
+                        <TextBlock 
+                            Text="{x:Static ext:Resources.ErrorReportingLastErrorTimeHeader}" 
+                            Margin="6,6,3,6"
+                            Style="{StaticResource CommonTextStyle}"/>
+                        <TextBlock 
+                            Text="{Binding Error.LastSeenTime}" 
+                            Margin="0,6,6,6"
+                            Style="{StaticResource CommonTextStyle}"/>
+                        
+                        <TextBlock 
+                            Text="{x:Static ext:Resources.ErrorReportingSourceTooltipTimeRangeLabel}" 
+                            Margin="6,6,3,6"
+                            Style="{StaticResource CommonTextStyle}"/>
+                        <TextBlock 
+                            Text="{Binding Error.GroupTimeRange.Caption}" 
+                            Margin="0,6,6,6"
+                            Style="{StaticResource CommonTextStyle}"/>
+                    </StackPanel>
+                    <TextBox 
+                        Text="{Binding Error.ParsedException.RawMessage, Mode=OneWay}" 
+                        MaxLines="10"
+                        Padding="6"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
+                </StackPanel>
+            </Border>
+            <Grid Margin="0,6,0,0">
+                <Grid.ColumnDefinitions >
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <controls:ImageToggleButton 
+                    Style="{StaticResource BackButtonStyle}"
+                    UncheckedImage="{mp:ImageResource StackdriverLogsViewer/Resources/back_icon_12.png}"
+                    CheckedImage="{mp:ImageResource StackdriverLogsViewer/Resources/back_icon_12.png}"
+                    Content="{x:Static ext:Resources.ErrorReportingGobacktoErrorReportingLinkCaption}"
+                    Command="{Binding OnBackToErrorReportingCommand}" />
+            </Grid>
+        </StackPanel>
+        
+        <Button 
+            Grid.Column="1"
+            Style="{StaticResource CrossButtonStyle}"
+            HorizontalAlignment="Right" 
+            VerticalAlignment="Top"
+            Width="15" 
+            Margin="0,6,6,0" 
+            Command="{Binding OnCloseButtonCommand}"/>
+
+    </Grid>
+</UserControl>
