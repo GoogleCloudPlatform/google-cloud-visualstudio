@@ -1,3 +1,4 @@
+using System.Windows.Controls;
 using GoogleCloudExtension.Theming;
 
 namespace GoogleCloudExtension.PubSubWindows
@@ -10,7 +11,7 @@ namespace GoogleCloudExtension.PubSubWindows
         public NewTopicViewModel ViewModel { get; }
 
         public NewTopicWindow(string projectId) :
-            base(GoogleCloudExtension.Resources.NewTopicWindowTitle, 303, 138)
+            base(GoogleCloudExtension.Resources.NewTopicWindowTitle)
         {
             ViewModel = new NewTopicViewModel(projectId, this);
             Content = new NewTopicWindowContent(ViewModel);
@@ -22,5 +23,6 @@ namespace GoogleCloudExtension.PubSubWindows
             dialog.ShowModal();
             return dialog.ViewModel.Result;
         }
+
     }
 }

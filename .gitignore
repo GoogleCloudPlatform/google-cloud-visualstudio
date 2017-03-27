@@ -10,4 +10,4 @@
 .DS_Store
 **/packages/*
 **/*.pyc
-
+/GoogleCloudExtension/GoogleCloudExtension.DataSources/GoogleCloudExtension.DataSources.csproj.user

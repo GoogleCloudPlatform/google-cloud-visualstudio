@@ -1636,29 +1636,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to load Subscriptions.
-        /// </summary>
-        public static string CloudExplorerPubSubListSubscriptionsErrorCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerPubSubListSubscriptionsErrorCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to load Topics.
         /// </summary>
         public static string CloudExplorerPubSubListTopicsErrorCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerPubSubListTopicsErrorCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Loading Subscriptions....
-        /// </summary>
-        public static string CloudExplorerPubSubLoadingSubscriptionsCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerPubSubLoadingSubscriptionsCaption", resourceCulture);
             }
         }
         
@@ -1686,15 +1668,6 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerPubSubNewTopicMenuHeader {
             get {
                 return ResourceManager.GetString("CloudExplorerPubSubNewTopicMenuHeader", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to No Subscriptions Found.
-        /// </summary>
-        public static string CloudExplorerPubSubNoSubscriptionsFoundCaption {
-            get {
-                return ResourceManager.GetString("CloudExplorerPubSubNoSubscriptionsFoundCaption", resourceCulture);
             }
         }
         
@@ -3437,6 +3410,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New Topic in Project {0}.
+        /// </summary>
+        public static string NewTopicWindowHeader {
+            get {
+                return ResourceManager.GetString("NewTopicWindowHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Topic _Name:.
         /// </summary>
         public static string NewTopicWindowNameLabel {
@@ -3847,15 +3829,6 @@ namespace GoogleCloudExtension {
         public static string PubSubNewTopicErrorMessage {
             get {
                 return ResourceManager.GetString("PubSubNewTopicErrorMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to New Topic.
-        /// </summary>
-        public static string PubSubNewTopicWindowHeader {
-            get {
-                return ResourceManager.GetString("PubSubNewTopicWindowHeader", resourceCulture);
             }
         }
         
@@ -4337,6 +4310,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Update.
+        /// </summary>
+        public static string UiUpdateButtonCaption {
+            get {
+                return ResourceManager.GetString("UiUpdateButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Yes.
+        /// </summary>
+        public static string UiYesButtonCaption {
+            get {
+                return ResourceManager.GetString("UiYesButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to May not have more than 255 characters..
         /// </summary>
         public static string Validation255CharactersMessage {
@@ -4378,24 +4369,6 @@ namespace GoogleCloudExtension {
         public static string ValidationThreeCharactersMessage {
             get {
                 return ResourceManager.GetString("ValidationThreeCharactersMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Update.
-        /// </summary>
-        public static string UiUpdateButtonCaption {
-            get {
-                return ResourceManager.GetString("UiUpdateButtonCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to _Yes.
-        /// </summary>
-        public static string UiYesButtonCaption {
-            get {
-                return ResourceManager.GetString("UiYesButtonCaption", resourceCulture);
             }
         }
         

@@ -95,9 +95,18 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             }
             catch (DataSourceException e)
             {
-                Debug.Write(e.Message, "New Subscription");
+                string message;
+                if (string.IsNullOrEmpty(e.Message))
+                {
+                    message = Resources.PubSubNewSubscriptionErrorMessage;
+                }
+                else
+                {
+                    message = e.Message;
+                }
+                Debug.Write(message, "New Subscription");
                 UserPromptUtils.ErrorPrompt(
-                    Resources.PubSubNewSubscriptionErrorMessage, Resources.PubSubNewSubscriptionErrorHeader);
+                    message, Resources.PubSubNewSubscriptionErrorHeader);
             }
             finally
             {
@@ -110,7 +119,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             IsLoading = true;
             try
             {
-                bool doDelete = UserPromptUtils.YesNoPrompt(
+                bool doDelete = UserPromptUtils.ActionPrompt(
                     string.Format(Resources.PubSubDeleteTopicWindowMessage, _topicItem.Name),
                     Resources.PubSubDeleteTopicWindowHeader);
                 if (doDelete)

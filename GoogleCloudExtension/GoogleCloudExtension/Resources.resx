@@ -445,17 +445,9 @@
     <value>No projects found</value>
     <comment>Message for the placeholder element displayed when no projects are found.</comment>
   </data>
-  <data name="CloudExplorerPubSubListSubscriptionsErrorCaption" xml:space="preserve">
-    <value>Failed to load Subscriptions</value>
-    <comment>Caption shown when there is an error loading Pub/Sub subscriptions.</comment>
-  </data>
   <data name="CloudExplorerPubSubListTopicsErrorCaption" xml:space="preserve">
     <value>Failed to load Topics</value>
     <comment>Caption shown when there is an error loading Pub/Sub topics.</comment>
-  </data>
-  <data name="CloudExplorerPubSubLoadingSubscriptionsCaption" xml:space="preserve">
-    <value>Loading Subscriptions...</value>
-    <comment>Caption shown when loading Pub/Sub subscriptions.</comment>
   </data>
   <data name="CloudExplorerPubSubLoadingTopicsCaption" xml:space="preserve">
     <value>Loading Topics...</value>
@@ -464,10 +456,6 @@
   <data name="CloudExplorerPubSubNewTopicMenuHeader" xml:space="preserve">
     <value>New Topic</value>
     <comment>Header for menu item to create a new Pub/Sub topic.</comment>
-  </data>
-  <data name="CloudExplorerPubSubNoSubscriptionsFoundCaption" xml:space="preserve">
-    <value>No Subscriptions Found</value>
-    <comment>Caption shown when no Pub/Sub subscriptions are found.</comment>
   </data>
   <data name="CloudExplorerPubSubNoTopicsFoundCaption" xml:space="preserve">
     <value>No Topics Found</value>
@@ -1952,10 +1940,6 @@ Open the project to navigate to the logger method location.</value>
     <value>Error creating new topic.</value>
     <comment>Message diplayed when there is an error creating a new topic.</comment>
   </data>
-  <data name="PubSubNewTopicWindowHeader" xml:space="preserve">
-    <value>New Topic</value>
-    <comment>Header of the New Topic window.</comment>
-  </data>
   <data name="CloudExplorerPubSubDeleteSubscriptionMenuHeader" xml:space="preserve">
     <value>Delete Subscription</value>
     <comment>Header for the delete pub/sub subscription menu item.</comment>
@@ -2042,5 +2026,9 @@ Open the project to navigate to the logger method location.</value>
   <data name="PubSubNewSubscriptionErrorMessage" xml:space="preserve">
     <value>Error creating new subscription.</value>
     <comment>Message diplayed when there is an error creating a new subscription.</comment>
+  </data>
+  <data name="NewTopicWindowHeader" xml:space="preserve">
+    <value>New Topic in Project {0}</value>
+    <comment>Text at the top of the NewTopicWindow</comment>
   </data>
 </root>

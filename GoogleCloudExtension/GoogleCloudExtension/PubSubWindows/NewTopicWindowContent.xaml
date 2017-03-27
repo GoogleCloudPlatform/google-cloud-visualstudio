@@ -10,14 +10,40 @@
         mc:Ignorable="d"
         FocusManager.FocusedElement="{Binding ElementName=TopicName}">
     <UserControl.Resources>
-        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center" x:Key="Content">
-            <TextBlock HorizontalAlignment="Center"
-                       Text="{Binding Project, StringFormat={x:Static ext:Resources.NewTopicWindowTitle}}"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style BasedOn="{StaticResource CommonTextStyle}" TargetType="{x:Type TextBlock}">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="3,3,3,3"/>
+            </Style>
+            <Style BasedOn="{StaticResource CommonLabelStyle}" TargetType="{x:Type Label}">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+            </Style>
+            <Style BasedOn="{StaticResource CommonTextBoxStyle}" TargetType="{x:Type TextBox}">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="3,3,3,3"/>
+            </Style>
+            <Style BasedOn="{StaticResource LabeledRadioButtonStyle}" TargetType="{x:Type RadioButton}"/>
+            <Style BasedOn="{StaticResource CommonDialogStyleBase}" TargetType="{x:Type UserControl}"/>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <theming:CommonDialogWindowBaseContent HasBanner="True">
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Command="{Binding CreateCommand}"
+                                      IsDefault="True"
+                                      Caption="{x:Static ext:Resources.UiOkButtonCaption}"/>
+            <theming:DialogButtonInfo IsCancel="True" Caption="{x:Static ext:Resources.UiCancelButtonCaption}"/>
+        </theming:CommonDialogWindowBaseContent.Buttons>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Stretch" VerticalAlignment="Center">
+            <TextBlock HorizontalAlignment="Center" Margin="5,5,5,5"
+                    Text="{Binding Project, StringFormat={x:Static ext:Resources.NewTopicWindowHeader}}"/>
             <DockPanel>
                 <Label Target="{Binding ElementName=TopicName}" DockPanel.Dock="Left"
-                       Content="{x:Static ext:Resources.NewTopicWindowNameLabel}"/>
+                    Content="{x:Static ext:Resources.NewTopicWindowNameLabel}"/>
                 <TextBox x:Name="TopicName" MinWidth="200" MaxWidth="500" MaxLines="1"
-                         ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}">
+                        ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}">
                     <TextBox.Text>
                         <Binding Path="TopicName" UpdateSourceTrigger="PropertyChanged">
                             <Binding.ValidationRules>
@@ -28,13 +54,5 @@
                 </TextBox>
             </DockPanel>
         </StackPanel>
-    </UserControl.Resources>
-    <theming:CommonDialogWindowBaseContent DialogContent="{StaticResource Content}">
-        <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Command="{Binding DataContext.CreateCommand, Source={StaticResource Content}}"
-                                      IsDefault="True"
-                                      Caption="{x:Static ext:Resources.UiOkButtonCaption}"/>
-            <theming:DialogButtonInfo IsCancel="True" Caption="{x:Static ext:Resources.UiCancelButtonCaption}"/>
-        </theming:CommonDialogWindowBaseContent.Buttons>
     </theming:CommonDialogWindowBaseContent>
 </UserControl>
