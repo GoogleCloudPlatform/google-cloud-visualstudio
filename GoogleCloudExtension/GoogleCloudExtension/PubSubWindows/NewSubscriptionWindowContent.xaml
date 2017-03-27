@@ -27,27 +27,43 @@
                 <Setter Property="VerticalAlignment" Value="Center"/>
             </Style>
             <Style BasedOn="{StaticResource CommonDialogStyleBase}" TargetType="{x:Type UserControl}"/>
+            <Style BasedOn="{StaticResource CommonTooltipStyle}" TargetType="{x:Type ToolTip}"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
     <theming:CommonDialogWindowBaseContent HasBanner="True">
         <theming:CommonDialogWindowBaseContent.Buttons>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}"
-                                      Command="{Binding CreateCommand}"
-                                      IsDefault="True"/>
-            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True"/>
+            <theming:DialogButtonInfo
+                Caption="{x:Static ext:Resources.UiOkButtonCaption}"
+                Command="{Binding CreateCommand}"
+                IsDefault="True"/>
+            <theming:DialogButtonInfo
+                Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
+                IsCancel="True"/>
         </theming:CommonDialogWindowBaseContent.Buttons>
 
-        <StackPanel HorizontalAlignment="Stretch" VerticalAlignment="Center">
-            <TextBlock HorizontalAlignment="Center" MaxWidth="300" Margin="5,5,5,5"
-                   Text="{Binding TopicName, StringFormat={x:Static ext:Resources.NewSubscriptionWindowHeader}}"/>
+        <StackPanel
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Center">
+            
             <DockPanel>
-                <Label DockPanel.Dock="Left" Target="{Binding ElementName=SubscriptionName}" VerticalAlignment="Center"
-                   Content="{x:Static ext:Resources.NewSubscriptionWindowNameLabel}"/>
-                <TextBox Name="SubscriptionName" MinWidth="200" MaxWidth="500" ClipToBounds="True"
+                <Label
+                    DockPanel.Dock="Left"
+                    Target="{Binding ElementName=SubscriptionName}"
+                    VerticalAlignment="Center"
+                    Content="{x:Static ext:Resources.NewSubscriptionWindowNameLabel}"/>
+                <TextBox
+                    Name="SubscriptionName"
+                    MinWidth="200"
+                    MaxWidth="500"
+                    ClipToBounds="True"
                     ToolTip="{Binding RelativeSource={RelativeSource Self}, Path=(Validation.Errors)[0].ErrorContent}">
+                    
                     <TextBox.Text>
-                        <Binding Path="Subscription.Name" UpdateSourceTrigger="PropertyChanged">
+                        <Binding
+                            Path="Subscription.Name"
+                            UpdateSourceTrigger="PropertyChanged">
+                            
                             <Binding.ValidationRules>
                                 <local:PubSubNameValidationRule/>
                             </Binding.ValidationRules>
@@ -55,24 +71,44 @@
                     </TextBox.Text>
                 </TextBox>
             </DockPanel>
-            <TextBlock Margin="5" Text="{x:Static ext:Resources.NewSubscriptionWindowDeliveryType}"/>
-            <RadioButton GroupName="PushPull" Margin="5" IsChecked="True"
-                         Content="{x:Static ext:Resources.NewSubscriptionWindowPullLabel}"/>
+            <TextBlock
+                Margin="5"
+                Text="{x:Static ext:Resources.NewSubscriptionWindowDeliveryType}"/>
+            <RadioButton
+                GroupName="PushPull"
+                Margin="5"
+                IsChecked="True"
+                Content="{x:Static ext:Resources.NewSubscriptionWindowPullLabel}"/>
             <DockPanel>
-                <RadioButton DockPanel.Dock="Left" Name="PushRadioButton" GroupName="PushPull"
-                             IsChecked="{Binding Push}" Margin="5"
-                             Content="{x:Static ext:Resources.NewSubscriptionWindowPushLabel}"
-                             VerticalAlignment="Center"/>
-                <TextBox Name="PushUrlBox" MinWidth="200" MaxWidth="500" Text="{Binding PushConfig.PushEndpoint}"
-                     IsEnabled="{Binding Push}"/>
+                <RadioButton
+                    DockPanel.Dock="Left"
+                    Name="PushRadioButton"
+                    GroupName="PushPull"
+                    IsChecked="{Binding Push}"
+                    Margin="5"
+                    Content="{x:Static ext:Resources.NewSubscriptionWindowPushLabel}"
+                    VerticalAlignment="Center"/>
+                <TextBox
+                    Name="PushUrlBox"
+                    MinWidth="200"
+                    MaxWidth="500"
+                    Text="{Binding PushConfig.PushEndpoint, UpdateSourceTrigger=PropertyChanged}"
+                    IsEnabled="{Binding Push}"/>
             </DockPanel>
             <DockPanel>
-                <Label DockPanel.Dock="Left" Target="{Binding ElementName=Deadline}" VerticalAlignment="Center"
-                   Content="{x:Static ext:Resources.NewSubscriptionWindowAckDeadlineLabel}"/>
-                <TextBox Name ="Deadline" Width="40"
-                     Text="{Binding Subscription.AckDeadlineSeconds,
-                            TargetNullValue=60, UpdateSourceTrigger=PropertyChanged}"/>
+                <Label
+                    DockPanel.Dock="Left"
+                    Target="{Binding ElementName=Deadline}"
+                    VerticalAlignment="Center"
+                    Content="{x:Static ext:Resources.NewSubscriptionWindowAckDeadlineLabel}"/>
+                <TextBox
+                    Name ="Deadline"
+                    Width="40"
+                    Text="{Binding Subscription.AckDeadlineSeconds,
+                           TargetNullValue=60,
+                           UpdateSourceTrigger=PropertyChanged}"/>
             </DockPanel>
         </StackPanel>
     </theming:CommonDialogWindowBaseContent>
 </UserControl>
+

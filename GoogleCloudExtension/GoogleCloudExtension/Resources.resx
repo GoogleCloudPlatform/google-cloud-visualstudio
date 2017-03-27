@@ -2008,16 +2008,9 @@ Open the project to navigate to the logger method location.</value>
     <value>Push to _URL:</value>
     <comment>The push label of the new pub/sub subscritpion window.</comment>
   </data>
-  <data name="NewSubscriptionWindowTitle" xml:space="preserve">
-    <value>New Subscription</value>
-  </data>
   <data name="NewTopicWindowNameLabel" xml:space="preserve">
     <value>Topic _Name:</value>
     <comment>Label for the topic name text box in the new pub/sub topic window.</comment>
-  </data>
-  <data name="NewTopicWindowTitle" xml:space="preserve">
-    <value>Create topic.</value>
-    <comment>The title for the new pub/sub topic window</comment>
   </data>
   <data name="PubSubNewSubscriptionErrorHeader" xml:space="preserve">
     <value>Error in new subscription</value>

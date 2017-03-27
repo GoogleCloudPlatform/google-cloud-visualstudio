@@ -3401,15 +3401,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to New Subscription.
-        /// </summary>
-        public static string NewSubscriptionWindowTitle {
-            get {
-                return ResourceManager.GetString("NewSubscriptionWindowTitle", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to New Topic in Project {0}.
         /// </summary>
         public static string NewTopicWindowHeader {
@@ -3424,15 +3415,6 @@ namespace GoogleCloudExtension {
         public static string NewTopicWindowNameLabel {
             get {
                 return ResourceManager.GetString("NewTopicWindowNameLabel", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Create topic..
-        /// </summary>
-        public static string NewTopicWindowTitle {
-            get {
-                return ResourceManager.GetString("NewTopicWindowTitle", resourceCulture);
             }
         }
         

@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -48,6 +48,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             IsError = true
         };
 
+        private Lazy<PubsubDataSource> _dataSource = new Lazy<PubsubDataSource>(CreateDataSource);
+        public PubsubDataSource DataSource => _dataSource.Value;
+
         public override string RootCaption => Resources.CloudExplorerPubSubRootCaption;
         public override TreeLeaf ErrorPlaceholder => s_errorPlaceholder;
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
@@ -57,32 +60,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// The list of all visible subscriptions of the current project.
         /// </summary>
         public IList<Subscription> Subscriptions { get; private set; }
-
-        internal PubsubDataSource DataSource => _dataSource.Value;
-        private Lazy<PubsubDataSource> _dataSource = new Lazy<PubsubDataSource>(CreateDataSource);
-
-        /// <summary>
-        /// Creates a new PubsubDataSource from the default credentials.
-        /// </summary>
-        private static PubsubDataSource CreateDataSource()
-        {
-            if (CredentialsStore.Default.CurrentProjectId != null)
-            {
-                var credential = CredentialsStore.Default.CurrentGoogleCredential;
-                if (credential.IsCreateScopedRequired)
-                {
-                    credential.CreateScoped(PubsubService.Scope.Pubsub);
-                }
-                return new PubsubDataSource(
-                    CredentialsStore.Default.CurrentProjectId,
-                    credential,
-                    GoogleCloudExtensionPackage.ApplicationName);
-            }
-            else
-            {
-                return null;
-            }
-        }
 
         public PubsubSourceRootViewModel()
         {
@@ -139,6 +116,29 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             catch (DataSourceException e)
             {
                 throw new CloudExplorerSourceException(e.Message, e);
+            }
+        }
+
+        /// <summary>
+        /// Creates a new PubsubDataSource from the default credentials.
+        /// </summary>
+        private static PubsubDataSource CreateDataSource()
+        {
+            if (CredentialsStore.Default.CurrentProjectId != null)
+            {
+                var credential = CredentialsStore.Default.CurrentGoogleCredential;
+                if (credential.IsCreateScopedRequired)
+                {
+                    credential.CreateScoped(PubsubService.Scope.Pubsub);
+                }
+                return new PubsubDataSource(
+                    CredentialsStore.Default.CurrentProjectId,
+                    credential,
+                    GoogleCloudExtensionPackage.ApplicationName);
+            }
+            else
+            {
+                return null;
             }
         }
 

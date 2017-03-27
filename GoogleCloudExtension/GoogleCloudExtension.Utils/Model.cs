@@ -44,7 +44,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="propertyName">The name of the property that is changing. If null then the event will signify
         /// that all properties in the object changed.</param>
-        protected void RaisePropertyChanged([CallerMemberName] string propertyName = "")
+        protected void RaisePropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
