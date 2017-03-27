@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.Utils;
 using System;
-using System.Collections;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -34,7 +33,7 @@ namespace GoogleCloudExtension.Theming
         public static readonly DependencyProperty ButtonsProperty =
             DependencyProperty.Register(
                 nameof(Buttons),
-                typeof(IList),
+                typeof(BindableList<DialogButtonInfo>),
                 typeof(CommonDialogWindowBaseContent));
 
         // Dependency property for the HasBanner property.
@@ -47,9 +46,9 @@ namespace GoogleCloudExtension.Theming
         /// <summary>
         /// The list of buttons to show in the dialog.
         /// </summary>
-        public IList Buttons
+        public BindableList<DialogButtonInfo> Buttons
         {
-            get { return (IList)GetValue(ButtonsProperty); }
+            get { return (BindableList<DialogButtonInfo>)GetValue(ButtonsProperty); }
             set { SetValue(ButtonsProperty, value); }
         }
 

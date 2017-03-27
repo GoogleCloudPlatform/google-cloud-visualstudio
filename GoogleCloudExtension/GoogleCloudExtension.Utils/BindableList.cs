@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Data;
@@ -29,7 +28,10 @@ namespace GoogleCloudExtension.Utils
     {
         private readonly DependencyObject _dataContextSource;
 
-        public IList<T> Collection => this;
+        public BindableList(DependencyObject dataContextSource)
+        {
+            _dataContextSource = dataContextSource;
+        }
 
         protected override void SetItem(int index, T item)
         {
@@ -41,11 +43,6 @@ namespace GoogleCloudExtension.Utils
         {
             base.InsertItem(index, item);
             SetupDataContextBinding(item);
-        }
-
-        public BindableList(DependencyObject dataContextSource)
-        {
-            _dataContextSource = dataContextSource;
         }
 
         /// <summary>
