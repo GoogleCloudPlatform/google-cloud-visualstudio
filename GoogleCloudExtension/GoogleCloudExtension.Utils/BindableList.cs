@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -27,68 +25,23 @@ namespace GoogleCloudExtension.Utils
     /// the DataContext can be set as they are added to the list.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class BindableList<T> : IList where T : FrameworkElement
+    public class BindableList<T> : ObservableCollection<T> where T : FrameworkElement
     {
-        private readonly IList<T> _storage = new ObservableCollection<T>();
         private readonly DependencyObject _dataContextSource;
 
-        public IList<T> Collection => _storage;
+        public IList<T> Collection => this;
 
-        #region IList
-
-        bool IList.IsReadOnly => _storage.IsReadOnly;
-
-        bool IList.IsFixedSize => false;
-
-        int ICollection.Count => _storage.Count;
-
-        object ICollection.SyncRoot => this;
-
-        bool ICollection.IsSynchronized => false;
-
-        object IList.this[int index]
+        protected override void SetItem(int index, T item)
         {
-            get
-            {
-                return _storage[index];
-            }
-
-            set
-            {
-                _storage[index] = (T)value;
-            }
-        }
-
-        int IList.Add(object value)
-        {
-            T item = (T)value;
+            base.SetItem(index, item);
             SetupDataContextBinding(item);
-            _storage.Add(item);
-            return _storage.Count;
         }
 
-        bool IList.Contains(object value) => _storage.Contains((T)value);
-
-        void IList.Clear() => _storage.Clear();
-
-        int IList.IndexOf(object value) => _storage.IndexOf((T)value);
-
-        void IList.Insert(int index, object value)
+        protected override void InsertItem(int index, T item)
         {
-            T item = (T)value;
+            base.InsertItem(index, item);
             SetupDataContextBinding(item);
-            _storage.Insert(index, item);
         }
-
-        void IList.Remove(object value) => _storage.Remove((T)value);
-
-        void IList.RemoveAt(int index) => _storage.RemoveAt(index);
-
-        void ICollection.CopyTo(Array array, int index) => _storage.CopyTo((T[])array, index);
-
-        IEnumerator IEnumerable.GetEnumerator() => _storage.GetEnumerator();
-
-        #endregion 
 
         public BindableList(DependencyObject dataContextSource)
         {
