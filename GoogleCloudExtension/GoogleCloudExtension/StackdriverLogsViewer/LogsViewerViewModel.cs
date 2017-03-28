@@ -837,7 +837,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     Debug.WriteLine($"_lastLogTime log {_lastLogTime}");
 
                     _filter = ComposeSimpleFilters(ignoreTimeStamp: true)
-                        + String.Format($" timestamp>\"{_lastLogTime.ToString("O")}\" ");
+                        + String.Format($" timestamp>\"{_lastLogTime.ToUniversalTime().ToString("O")}\" ");
                     Debug.WriteLine(_filter);
                 }
 

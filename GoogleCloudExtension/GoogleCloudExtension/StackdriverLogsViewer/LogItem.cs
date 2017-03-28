@@ -321,6 +321,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void NavigateToSourceLineCommand()
         {
+            #region debug remove before check in
+            List<string> files = new List<string>(
+                new string[]
+                {
+                    "first",
+                    "second file is relatively longer",
+                });
+            var picked = PickFile.PickFileWindow.PromptUser(files);
+            Debug.WriteLine($"Picked file == {picked ?? "null"}");
+            #endregion
+
             var revisionFile = this.FindGitAndGetFileContent();
             if (revisionFile != null)
             {

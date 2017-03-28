@@ -26,17 +26,17 @@ namespace GoogleCloudExtension.SourceBrowsing
     /// </summary>
     internal static class SourceVersionUtils
     {
-        private const string SourceContextIDLabel = "source_context_id";
-        private const string SecondarySourceContextIDLabel = "gcloud_source_context_id";
+        private const string SourceContextIDLabel = "git_source_revision";
 
         public static string FindGitAndGetFileContent(this LogItem logItem)
         {
-            string sha;
-            if (logItem.Entry.Labels.ContainsKey(SecondarySourceContextIDLabel))
+            if (logItem.Entry.Labels == null)
             {
-                sha = logItem.Entry.Labels[SourceContextIDLabel];
+                return null;
             }
-            else if (logItem.Entry.Labels.ContainsKey(SecondarySourceContextIDLabel))
+
+            string sha;
+            if (logItem.Entry.Labels.ContainsKey(SourceContextIDLabel))
             {
                 sha = logItem.Entry.Labels[SourceContextIDLabel];
             }

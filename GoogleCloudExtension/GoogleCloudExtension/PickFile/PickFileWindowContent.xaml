@@ -1,0 +1,50 @@
+﻿<UserControl x:Class="GoogleCloudExtension.PickFile.PickFileWindowContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.PickFile"
+             xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance {x:Type local:PickFileWindowViewModel}}"
+             d:DesignHeight="300" d:DesignWidth="300">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.Style>
+        <Binding Source="{StaticResource CommonDialogStyleBase}" />
+    </UserControl.Style>
+
+    <theming:CommonDialogWindowBaseContent>
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}"
+                                      Command="{Binding SelectFileCommand}"
+                                      IsDefault="True"/>
+            <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}" IsCancel="True" />
+        </theming:CommonDialogWindowBaseContent.Buttons>
+        
+        
+        <Grid Margin="0,12,0,0">
+            <ListView 
+                ItemsSource="{Binding FileList}"
+                SelectedItem="{Binding Selected}"
+                MaxHeight="120"
+                MaxWidth="640"
+                MinWidth="390"
+                ScrollViewer.CanContentScroll="True"
+                ScrollViewer.VerticalScrollBarVisibility="Auto"
+                ScrollViewer.HorizontalScrollBarVisibility="Auto" />
+        </Grid>
+    </theming:CommonDialogWindowBaseContent>
+    
+    
+</UserControl>
