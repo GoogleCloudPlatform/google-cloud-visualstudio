@@ -14,6 +14,7 @@
 
 using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
+using System.Linq;
 
 namespace GoogleCloudExtension.PubSubWindows
 {
@@ -25,16 +26,28 @@ namespace GoogleCloudExtension.PubSubWindows
         private readonly CommonDialogWindowBase _owner;
         private string _topicName;
 
+        /// <summary>
+        /// The id of the project that will own the new topic.
+        /// </summary>
         public string Project { get; }
 
+        /// <summary>
+        /// The name of the new topic.
+        /// </summary>
         public string TopicName
         {
             get { return _topicName; }
             set { SetValueAndRaise(ref _topicName, value); }
         }
 
+        /// <summary>
+        /// The name of the new topic. Null until CreateCommand is run.
+        /// </summary>
         public string Result { get; private set; }
 
+        /// <summary>
+        /// The command to run to create the new topic.
+        /// </summary>
         public ProtectedCommand CreateCommand { get; }
 
         public NewTopicViewModel(string project, CommonDialogWindowBase owner)
@@ -44,10 +57,36 @@ namespace GoogleCloudExtension.PubSubWindows
             CreateCommand = new ProtectedCommand(OnCreateCommand);
         }
 
+        /// <summary>
+        /// The execution of the create command.
+        /// </summary>
         private void OnCreateCommand()
         {
-            Result = TopicName;
-            _owner.Close();
+            if (ValidateInput())
+            {
+                Result = TopicName;
+                _owner.Close();
+            }
+        }
+
+        /// <summary>
+        /// Validates the input. Prompts the user on validation errors.
+        /// </summary>
+        /// <returns>Returns true if validation succeded, false if the user had to be prompted</returns>
+        private bool ValidateInput()
+        {
+            var results = PubSubNameValidationRule.Validate(TopicName);
+            var details = string.Join("\n", results.Select(result => result.Message));
+            if (!string.IsNullOrEmpty(details))
+            {
+                string message = string.Format(Resources.PubSubNewTopicNameInvalidMessage, TopicName);
+                UserPromptUtils.ErrorPrompt(message, Resources.PubSubNewTopicNameInvalidTitle, details);
+                return false;
+            }
+            else
+            {
+                return true;
+            }
         }
     }
 }

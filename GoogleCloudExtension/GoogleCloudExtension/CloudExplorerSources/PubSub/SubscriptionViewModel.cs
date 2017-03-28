@@ -29,10 +29,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     /// </summary>
     internal class SubscriptionViewModel : TreeLeaf, ICloudExplorerItemSource
     {
-        // TODO(Jimwp): Change to Pubsub specific icon.
-        private const string IconResourcePath = "CloudExplorerSources/Gcs/Resources/bucket_icon.png";
+        private const string IconResourcePath = "CloudExplorerSources/PubSub/Resources/subscription_icon.png";
+
         private static readonly Lazy<ImageSource> s_subscriptionIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
+
         private readonly TopicViewModel _owner;
         private readonly SubscriptionItem _subscriptionItem;
 
@@ -50,6 +51,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// The datasource for the item.
         /// </summary>
         public PubsubDataSource DataSource => _owner.DataSource;
+
         public event EventHandler ItemChanged;
 
         public SubscriptionViewModel(TopicViewModel owner, Subscription subscription)
@@ -77,25 +79,32 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             };
         }
 
+        /// <summary>
+        /// Prompts the user about deleting the subscription, then calls the datasource to delete it.
+        /// </summary>
         private async void OnDeleteSubscriptionCommand()
         {
             IsLoading = true;
             try
             {
-                bool doDelete = UserPromptUtils.ActionPrompt(
-                    string.Format(Resources.PubSubDeleteSubscriptionWindowMessage, _subscriptionItem.Name),
-                    Resources.PubSubDeleteSubscriptionWindowHeader);
-                if (doDelete)
+                try
                 {
-                    await DataSource.DeleteSubscriptionAsync(_subscriptionItem.Name);
-                    _owner.Refresh();
+                    bool doDelete = UserPromptUtils.ActionPrompt(
+                        string.Format(Resources.PubSubDeleteSubscriptionWindowMessage, _subscriptionItem.Name),
+                        Resources.PubSubDeleteSubscriptionWindowHeader);
+                    if (doDelete)
+                    {
+                        await DataSource.DeleteSubscriptionAsync(_subscriptionItem.Name);
+                    }
                 }
-            }
-            catch (DataSourceException e)
-            {
-                Debug.Write(e.Message, "Delete Subscription");
-                UserPromptUtils.ErrorPrompt(Resources.PubSubDeleteSubscriptionErrorMessage,
-                    Resources.PubSubDeleteSubscriptionErrorHeader);
+                catch (DataSourceException e)
+                {
+                    Debug.Write(e.Message, "Delete Subscription");
+                    UserPromptUtils.ErrorPrompt(
+                        Resources.PubSubDeleteSubscriptionErrorMessage,
+                        Resources.PubSubDeleteSubscriptionErrorHeader);
+                }
+                await _owner.Refresh();
             }
             finally
             {
@@ -103,6 +112,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             }
         }
 
+        /// <summary>
+        /// Opens the properties window for the subscription item.
+        /// </summary>
         private void OnPropertiesWindowCommand()
         {
             Context.ShowPropertiesWindow(Item);

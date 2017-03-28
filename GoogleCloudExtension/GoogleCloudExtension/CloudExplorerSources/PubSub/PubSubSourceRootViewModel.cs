@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using Google.Apis.Pubsub.v1;
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorer;
@@ -56,16 +55,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
         public override TreeLeaf LoadingPlaceholder => s_loadingPlaceholder;
 
-        /// <summary>
-        /// The list of all visible subscriptions of the current project.
-        /// </summary>
-        public IList<Subscription> Subscriptions { get; private set; }
-
-        public PubsubSourceRootViewModel()
-        {
-            Subscriptions = new Subscription[0];
-        }
-
         public override void Initialize(ICloudSourceContext context)
         {
             base.Initialize(context);
@@ -104,13 +93,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             try
             {
-                Task<IList<Subscription>> subscriptionsTask = GetSubscriptionsAsync();
+                Task<IList<Subscription>> subscriptionsTask = DataSource.GetSubscriptionListAsync();
                 IEnumerable<Topic> topics = await DataSource.GetTopicListAsync();
-                Subscriptions = await subscriptionsTask;
+                IList<Subscription> subscriptions = await subscriptionsTask;
                 Children.Clear();
-                foreach (var topic in topics)
+                foreach (Topic topic in topics)
                 {
-                    Children.Add(new TopicViewModel(this, topic));
+                    Children.Add(new TopicViewModel(this, topic, subscriptions));
                 }
             }
             catch (DataSourceException e)
@@ -126,14 +115,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             if (CredentialsStore.Default.CurrentProjectId != null)
             {
-                var credential = CredentialsStore.Default.CurrentGoogleCredential;
-                if (credential.IsCreateScopedRequired)
-                {
-                    credential.CreateScoped(PubsubService.Scope.Pubsub);
-                }
                 return new PubsubDataSource(
                     CredentialsStore.Default.CurrentProjectId,
-                    credential,
+                    CredentialsStore.Default.CurrentGoogleCredential,
                     GoogleCloudExtensionPackage.ApplicationName);
             }
             else
@@ -142,12 +126,18 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             }
         }
 
+        /// <summary>
+        /// Opens the google pub sub cloud console.
+        /// </summary>
         private void OnOpenCloudConsoleCommand()
         {
             var url = $"https://console.cloud.google.com/cloudpubsub?project={Context.CurrentProject.ProjectId}";
             Process.Start(url);
         }
 
+        /// <summary>
+        /// Opens the new pub sub topic dialog.
+        /// </summary>
         private async void OnNewTopicCommand()
         {
             try
@@ -165,11 +155,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 UserPromptUtils.ErrorPrompt(
                     Resources.PubSubNewTopicErrorMessage, Resources.PubSubNewTopicErrorHeader);
             }
-        }
-
-        private Task<IList<Subscription>> GetSubscriptionsAsync()
-        {
-            return DataSource.GetSubscriptionListAsync();
         }
     }
 }

@@ -2024,4 +2024,48 @@ Open the project to navigate to the logger method location.</value>
     <value>New Topic in Project {0}</value>
     <comment>Text at the top of the NewTopicWindow</comment>
   </data>
+  <data name="CloudExplorerPubSubListSubscriptionsErrorCaption" xml:space="preserve">
+    <value>Failed to load Subscriptions</value>
+    <comment>Caption shown when there is an error loading Pub/Sub subscriptions.</comment>
+  </data>
+  <data name="CloudExplorerPubSubLoadingSubscriptionsCaption" xml:space="preserve">
+    <value>Loading Subscriptions...</value>
+    <comment>Caption shown when loading Pub/Sub subscriptions.</comment>
+  </data>
+  <data name="CloudExplorerPubSubSubscriptionFullNameDisplayName" xml:space="preserve">
+    <value>Full Name</value>
+    <comment>The DisplayName of the FullName property of a SubscriptionItem</comment>
+  </data>
+  <data name="CloudExplorerPubSubSubscriptionNameDisplayName" xml:space="preserve">
+    <value>Name</value>
+    <comment>The DisplayName of the Name property of a SubscriptionItem</comment>
+  </data>
+  <data name="CloudExplorerPubSubSubscriptionTopicDisplayName" xml:space="preserve">
+    <value>Topic</value>
+    <comment>The DisplayName of the Topic property of a SubscriptionItem</comment>
+  </data>
+  <data name="CloudExplorerPubSubTopicFullNameDisplayName" xml:space="preserve">
+    <value>Full Name</value>
+    <comment>The DisplayName of the FullName property of a TopicItem</comment>
+  </data>
+  <data name="CloudExplorerPubSubTopicNameDisplayName" xml:space="preserve">
+    <value>Name</value>
+    <comment>The DisplayName of the Name property of a TopicItem</comment>
+  </data>
+  <data name="PubSubNewSubscriptionNameInvalidMessage" xml:space="preserve">
+    <value>{0} is not a valid Subscription Name</value>
+    <comment>The message displayed when there is a validation error with a new subscription name.</comment>
+  </data>
+  <data name="PubSubNewSubscriptionNameInvalidTitle" xml:space="preserve">
+    <value>Invalid Subscription Name</value>
+    <comment>Header of the message window displayed when there is a validation error with a new subscription name.</comment>
+  </data>
+  <data name="PubSubNewTopicNameInvalidMessage" xml:space="preserve">
+    <value>{0} is not a valid Topic Name</value>
+    <comment>The message displayed when there is a validation error with a new topic name.</comment>
+  </data>
+  <data name="PubSubNewTopicNameInvalidTitle" xml:space="preserve">
+    <value>Invalid Topic Name</value>
+    <comment>Header of the message window displayed when there is a validation error with a new topic name.</comment>
+  </data>
 </root>

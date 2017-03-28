@@ -25,17 +25,26 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         private readonly Topic _topic;
 
         public TopicItem(Topic topic) :
-            base(Resources.CloudExplorerPubSubTopicCategory, PubsubSource.GetPathLeaf(topic.Name))
+            base(Resources.CloudExplorerPubSubTopicCategory, PubsubDataSource.GetPathLeaf(topic.Name))
         {
             _topic = topic;
         }
 
+        /// <summary>
+        /// The simple name of the topic.
+        /// </summary>
         [LocalizedCategory(nameof(Resources.CloudExplorerPubSubTopicCategory))]
         [LocalizedDescription(nameof(Resources.CloudExplorerPubSubTopicNameDescription))]
-        public string Name => PubsubSource.GetPathLeaf(_topic.Name);
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerPubSubTopicNameDisplayName))]
 
+        public string Name => PubsubDataSource.GetPathLeaf(_topic.Name);
+
+        /// <summary>
+        /// The full name, including project id, of the topic.
+        /// </summary>
         [LocalizedCategory(nameof(Resources.CloudExplorerPubSubTopicCategory))]
         [LocalizedDescription(nameof(Resources.CloudExplorerPubSubTopicFullNameDescription))]
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerPubSubTopicFullNameDisplayName))]
         public string FullName => _topic.Name;
     }
 }

@@ -30,16 +30,28 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             _subscription = subscription;
         }
 
+        /// <summary>
+        /// The simple name of the subscription.
+        /// </summary>
         [LocalizedCategory(nameof(Resources.CloudExplorerPubSubSubscriptionCategory))]
         [LocalizedDescription(nameof(Resources.CloudExplorerPubSubSubscriptionNameDescription))]
-        public string Name => PubsubSource.GetPathLeaf(_subscription.Name);
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerPubSubSubscriptionNameDisplayName))]
+        public string Name => PubsubDataSource.GetPathLeaf(_subscription.Name);
 
+        /// <summary>
+        /// The full name, including topic, of the subscription.
+        /// </summary>
         [LocalizedCategory(nameof(Resources.CloudExplorerPubSubSubscriptionCategory))]
         [LocalizedDescription(nameof(Resources.CloudExplorerPubSubSubscriptionFullNameDescription))]
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerPubSubSubscriptionFullNameDisplayName))]
         public string FullName => _subscription.Name;
 
+        /// <summary>
+        /// The topic of the subscription.
+        /// </summary>
         [LocalizedCategory(nameof(Resources.CloudExplorerPubSubSubscriptionCategory))]
         [LocalizedDescription(nameof(Resources.CloudExplorerPubSubSubscriptionTopicDescription))]
+        [LocalizedDisplayName(nameof(Resources.CloudExplorerPubSubSubscriptionTopicDisplayName))]
         public string Topic => _subscription.Topic;
     }
 }

@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using GoogleCloudExtension.CloudExplorer;
-using System;
 
 namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 {
@@ -23,13 +22,5 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     internal class PubsubSource : CloudExplorerSourceBase<PubsubSourceRootViewModel>
     {
         public PubsubSource(ICloudSourceContext context) : base(context) { }
-
-        /// <summary>
-        /// Gets the last part of the full name i.e. the leaf of the path.
-        /// </summary>
-        internal static string GetPathLeaf(string path)
-        {
-            return path.Substring(1 + path.LastIndexOf("/", StringComparison.Ordinal));
-        }
     }
 }

@@ -1636,11 +1636,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to load Subscriptions.
+        /// </summary>
+        public static string CloudExplorerPubSubListSubscriptionsErrorCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubListSubscriptionsErrorCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to load Topics.
         /// </summary>
         public static string CloudExplorerPubSubListTopicsErrorCaption {
             get {
                 return ResourceManager.GetString("CloudExplorerPubSubListTopicsErrorCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading Subscriptions....
+        /// </summary>
+        public static string CloudExplorerPubSubLoadingSubscriptionsCaption {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubLoadingSubscriptionsCaption", resourceCulture);
             }
         }
         
@@ -1708,6 +1726,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Full Name.
+        /// </summary>
+        public static string CloudExplorerPubSubSubscriptionFullNameDisplayName {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubSubscriptionFullNameDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Name of the Subscription.
         /// </summary>
         public static string CloudExplorerPubSubSubscriptionNameDescription {
@@ -1717,11 +1744,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string CloudExplorerPubSubSubscriptionNameDisplayName {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubSubscriptionNameDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Topic the Subscription reads from.
         /// </summary>
         public static string CloudExplorerPubSubSubscriptionTopicDescription {
             get {
                 return ResourceManager.GetString("CloudExplorerPubSubSubscriptionTopicDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Topic.
+        /// </summary>
+        public static string CloudExplorerPubSubSubscriptionTopicDisplayName {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubSubscriptionTopicDisplayName", resourceCulture);
             }
         }
         
@@ -1744,11 +1789,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Full Name.
+        /// </summary>
+        public static string CloudExplorerPubSubTopicFullNameDisplayName {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubTopicFullNameDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The Name of the Topic.
         /// </summary>
         public static string CloudExplorerPubSubTopicNameDescription {
             get {
                 return ResourceManager.GetString("CloudExplorerPubSubTopicNameDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string CloudExplorerPubSubTopicNameDisplayName {
+            get {
+                return ResourceManager.GetString("CloudExplorerPubSubTopicNameDisplayName", resourceCulture);
             }
         }
         
@@ -3797,6 +3860,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} is not a valid Subscription Name.
+        /// </summary>
+        public static string PubSubNewSubscriptionNameInvalidMessage {
+            get {
+                return ResourceManager.GetString("PubSubNewSubscriptionNameInvalidMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Subscription Name.
+        /// </summary>
+        public static string PubSubNewSubscriptionNameInvalidTitle {
+            get {
+                return ResourceManager.GetString("PubSubNewSubscriptionNameInvalidTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Error in new topic.
         /// </summary>
         public static string PubSubNewTopicErrorHeader {
@@ -3811,6 +3892,24 @@ namespace GoogleCloudExtension {
         public static string PubSubNewTopicErrorMessage {
             get {
                 return ResourceManager.GetString("PubSubNewTopicErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is not a valid Topic Name.
+        /// </summary>
+        public static string PubSubNewTopicNameInvalidMessage {
+            get {
+                return ResourceManager.GetString("PubSubNewTopicNameInvalidMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid Topic Name.
+        /// </summary>
+        public static string PubSubNewTopicNameInvalidTitle {
+            get {
+                return ResourceManager.GetString("PubSubNewTopicNameInvalidTitle", resourceCulture);
             }
         }
         

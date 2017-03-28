@@ -457,6 +457,8 @@
     <Resource Include="Controls\Resources\step_9_dark.png" />
     <Resource Include="CloudExplorerSources\Gcs\Resources\zone_icon.png" />
     <Resource Include="Theming\Resources\logo_cloud.png" />
+    <Resource Include="CloudExplorerSources\PubSub\Resources\topic_icon.png" />
+    <Resource Include="CloudExplorerSources\PubSub\Resources\subscription_icon.png" />
     <Content Include="Licenses.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>

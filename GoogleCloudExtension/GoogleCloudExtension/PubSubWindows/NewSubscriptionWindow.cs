@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.PubSubWindows
             base(
                 string.Format(
                     GoogleCloudExtension.Resources.NewSubscriptionWindowHeader,
-                    PubsubSource.GetPathLeaf(topicFullName)))
+                    PubsubDataSource.GetPathLeaf(topicFullName)))
         {
             Subscription model = new Subscription { Topic = topicFullName };
 
@@ -37,6 +37,11 @@ namespace GoogleCloudExtension.PubSubWindows
             Content = new NewSubscriptionWindowContent(ViewModel);
         }
 
+        /// <summary>
+        /// Opens the new subscription dialog, and returns the result.
+        /// </summary>
+        /// <param name="topicFullName">The full name of the parent topic.</param>
+        /// <returns>The new subscription object, or null if the dialog was canceled.</returns>
         public static Subscription PromptUser(string topicFullName)
         {
             var dialog = new NewSubscriptionWindow(topicFullName);

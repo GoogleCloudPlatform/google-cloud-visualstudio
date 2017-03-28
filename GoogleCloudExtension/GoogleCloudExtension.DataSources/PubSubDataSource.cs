@@ -17,6 +17,7 @@ using Google.Apis.Auth.OAuth2;
 using Google.Apis.Pubsub.v1;
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.DataSources;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -57,7 +58,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             }
             catch (GoogleApiException e)
             {
-                throw new DataSourceException("Error listing topics", e);
+                throw new DataSourceException(e.Message, e);
             }
         }
 
@@ -81,7 +82,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             }
             catch (GoogleApiException e)
             {
-                throw new DataSourceException("Error listing subscriptions", e);
+                throw new DataSourceException(e.Message, e);
             }
         }
 
@@ -99,7 +100,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             }
             catch (GoogleApiException e)
             {
-                throw new DataSourceException("Error creating new topic", e);
+                throw new DataSourceException(e.Message, e);
             }
         }
 
@@ -117,7 +118,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             }
             catch (GoogleApiException e)
             {
-                throw new DataSourceException("Error deleting topic", e);
+                throw new DataSourceException(e.Message, e);
             }
         }
 
@@ -135,7 +136,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             }
             catch (GoogleApiException e)
             {
-                throw new DataSourceException(e.Error?.Message ?? "", e);
+                throw new DataSourceException(e.Message, e);
             }
         }
 
@@ -153,18 +154,31 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             }
             catch (GoogleApiException e)
             {
-                throw new DataSourceException("Error deleting subscription", e);
+                throw new DataSourceException(e.Message, e);
             }
         }
 
-        private string GetTopicFullName(string topicName)
+        /// <summary>
+        /// Gets the last part of the full name i.e. the leaf of the path.
+        /// </summary>
+        public static string GetPathLeaf(string path)
         {
-            return $"projects/{ProjectId}/topics/{topicName}";
+            return path.Substring(1 + path.LastIndexOf("/", StringComparison.Ordinal));
         }
 
-        private string GetSubscriptionFullName(string subscriptionName)
-        {
-            return $"projects/{ProjectId}/subscriptions/{subscriptionName}";
-        }
+        /// <summary>
+        /// Gets the full name including project id from a simple topic name.
+        /// </summary>
+        /// <param name="topicName">The simple topic name.</param>
+        /// <returns>The full topic name.</returns>
+        private string GetTopicFullName(string topicName) => $"projects/{ProjectId}/topics/{topicName}";
+
+        /// <summary>
+        /// Gets the full name including project id from a simple subscription name.
+        /// </summary>
+        /// <param name="subscriptionName">The simple subscription name.</param>
+        /// <returns>The full subscription name.</returns>
+        private string GetSubscriptionFullName(string subscriptionName) =>
+            $"projects/{ProjectId}/subscriptions/{subscriptionName}";
     }
 }
