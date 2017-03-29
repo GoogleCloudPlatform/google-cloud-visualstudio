@@ -3419,6 +3419,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to How long Pub/Sub waits for the subscriber to acknowledge receipt before resending the message.
+        /// </summary>
+        public static string NewSubscriptionWindowAckDeadlineTooltip {
+            get {
+                return ResourceManager.GetString("NewSubscriptionWindowAckDeadlineTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Delivery Type:.
         /// </summary>
         public static string NewSubscriptionWindowDeliveryType {

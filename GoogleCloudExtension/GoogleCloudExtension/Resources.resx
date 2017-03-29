@@ -2068,4 +2068,8 @@ Open the project to navigate to the logger method location.</value>
     <value>Invalid Topic Name</value>
     <comment>Header of the message window displayed when there is a validation error with a new topic name.</comment>
   </data>
+  <data name="NewSubscriptionWindowAckDeadlineTooltip" xml:space="preserve">
+    <value>How long Pub/Sub waits for the subscriber to acknowledge receipt before resending the message</value>
+    <comment>The tooltip text for the acknowledgment deadline.</comment>
+  </data>
 </root>

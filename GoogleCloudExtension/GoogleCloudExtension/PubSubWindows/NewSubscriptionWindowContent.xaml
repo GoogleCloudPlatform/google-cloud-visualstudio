@@ -59,7 +59,7 @@
 
         <StackPanel
             HorizontalAlignment="Stretch"
-            VerticalAlignment="Center">
+            VerticalAlignment="Top">
             
             <DockPanel>
                 <Label
@@ -99,6 +99,7 @@
                     DockPanel.Dock="Left"
                     Target="{Binding ElementName=Deadline}"
                     Content="{x:Static ext:Resources.NewSubscriptionWindowAckDeadlineLabel}"
+                    ToolTip="{x:Static ext:Resources.NewSubscriptionWindowAckDeadlineTooltip}"
                     Style="{StaticResource MyLabel}"/>
                 <TextBox
                     Name ="Deadline"
