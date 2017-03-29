@@ -1863,5 +1863,5 @@ Open the project to navigate to the logger method location.</value>
   <data name="UiAutoReloadButtonCaption" xml:space="preserve">
     <value>AUTO RELOAD</value>
     <comment>Caption for auto reload button.</comment>
-  </data>  
+  </data>
 </root>

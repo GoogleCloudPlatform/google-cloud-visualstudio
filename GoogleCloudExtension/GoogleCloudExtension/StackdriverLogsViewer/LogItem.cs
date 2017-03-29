@@ -321,54 +321,48 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void NavigateToSourceLineCommand()
         {
-            #region debug remove before check in
-            List<string> files = new List<string>(
-                new string[]
-                {
-                    "first",
-                    "second file is relatively longer",
-                });
-            var picked = PickFile.PickFileWindow.PromptUser(files);
-            Debug.WriteLine($"Picked file == {picked ?? "null"}");
-            #endregion
-
-            var revisionFile = this.FindGitAndGetFileContent();
-            if (revisionFile != null)
+            try
             {
-                var frame = ShellUtils.Open(revisionFile);
-                if (frame == null)
+                var revisionFile = this.FindGitAndGetFileContent();
+                if (revisionFile != null)
                 {
-                    SourceVersionUtils.FailedToOpenFilePrompt(SourceFilePath);
-                    return;
-                }
+                    var frame = ShellUtils.Open(revisionFile);
+                    if (frame == null)
+                    {
+                        SourceVersionUtils.FailedToOpenFilePrompt(SourceFilePath);
+                        return;
+                    }
 
-                this.ShowToolTip(frame);
+                    this.ShowToolTip(frame);
+                }
+                else
+                {
+
+                    var project = this.FindOrOpenProject();
+                    if (project == null)
+                    {
+                        Debug.WriteLine($"Failed to find project of {AssemblyName}");
+                        return;
+                    }
+
+                    var projectSourceFile = project.FindSourceFile(SourceFilePath);
+                    if (projectSourceFile == null)
+                    {
+                        SourceVersionUtils.FileItemNotFoundPrompt(SourceFilePath);
+                        return;
+                    }
+
+                    var window = ShellUtils.Open(projectSourceFile.ProjectItem);
+                    if (null == window)
+                    {
+                        SourceVersionUtils.FailedToOpenFilePrompt(SourceFilePath);
+                        return;
+                    }
+                    this.ShowToolTip(window);
+                }
             }
-            else
-            {
-
-                var project = this.FindOrOpenProject();
-                if (project == null)
-                {
-                    Debug.WriteLine($"Failed to find project of {AssemblyName}");
-                    return;
-                }
-
-                var projectSourceFile = project.FindSourceFile(SourceFilePath);
-                if (projectSourceFile == null)
-                {
-                    SourceVersionUtils.FileItemNotFoundPrompt(SourceFilePath);
-                    return;
-                }
-
-                var window = ShellUtils.Open(projectSourceFile.ProjectItem);
-                if (null == window)
-                {
-                    SourceVersionUtils.FailedToOpenFilePrompt(SourceFilePath);
-                    return;
-                }
-                this.ShowToolTip(window);
-            }
+            catch (ActionCancelledException)
+            { }
         }
     }
 }

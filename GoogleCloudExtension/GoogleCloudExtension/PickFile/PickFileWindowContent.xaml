@@ -36,7 +36,7 @@
         <Grid Margin="0,12,0,0">
             <ListView 
                 ItemsSource="{Binding FileList}"
-                SelectedItem="{Binding Selected}"
+                SelectedIndex="{Binding SelectedIndex}"
                 MaxHeight="120"
                 MaxWidth="640"
                 MinWidth="390"

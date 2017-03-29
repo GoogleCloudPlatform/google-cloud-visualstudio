@@ -239,7 +239,9 @@
     <Compile Include="SolutionUtils\ProjectSourceFile.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
     <Compile Include="SolutionUtils\VsProject.cs" />
-    <Compile Include="SourceBrowsing\GitUtils.cs" />
+    <Compile Include="SourceBrowsing\ActionCancelledException.cs" />
+    <Compile Include="SourceBrowsing\GitTempFiles.cs" />
+    <Compile Include="SourceBrowsing\GitCommit.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficWindow.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficModel.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficViewModel.cs" />
@@ -324,6 +326,7 @@
       <DependentUpon>TitleBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="TitleBar\TitleBarViewModel.cs" />
+    <Compile Include="Utils\ArgumentCheckUtils.cs" />
     <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
@@ -445,13 +448,15 @@
     <Resource Include="Controls\Resources\step_9_dark.png" />
     <Resource Include="CloudExplorerSources\Gcs\Resources\zone_icon.png" />
     <Resource Include="Theming\Resources\logo_cloud.png" />
-    <Content Include="..\packages\LibGit2Sharp.NativeBinaries.1.0.165\runtimes\win7-x64\native\git2-1196807.dll">
+    <Content Include="..\packages\LibGit2Sharp.NativeBinaries.1.0.165\runtimes\win7-x86\native\git2-1196807.dll">
       <Link>git2-1196807.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
-    <Content Include="..\packages\LibGit2Sharp.NativeBinaries.1.0.165\runtimes\win7-x64\native\git2-1196807.pdb">
+    <Content Include="..\packages\LibGit2Sharp.NativeBinaries.1.0.165\runtimes\win7-x86\native\git2-1196807.pdb">
       <Link>git2-1196807.pdb</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="Licenses.txt">
       <IncludeInVSIX>true</IncludeInVSIX>

@@ -78,7 +78,15 @@ namespace GoogleCloudExtension.SourceBrowsing
             SolutionHelper solution = SolutionHelper.CurrentSolution;
             if (solution != null)
             {
-                projectItem = solution.FindMatchingSourceFile(stackFrame.SourceFile).FirstOrDefault()?.ProjectItem;
+                var items = solution.FindMatchingSourceFile(stackFrame.SourceFile);
+                if (items.Count > 1)
+                {
+                    var index = PickFile.PickFileWindow.PromptUser(items.Select(x => x.FullName));
+                    projectItem = items.ElementAt(index).ProjectItem;
+                }
+                else {
+                    projectItem = items.FirstOrDefault()?.ProjectItem;
+                }
             }
 
             if (projectItem == null)

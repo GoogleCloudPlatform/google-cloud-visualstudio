@@ -145,6 +145,17 @@ namespace GoogleCloudExtension.Utils
             dte.ExecuteCommand("File.SaveAll");
         }
 
+        /// <summary>
+        /// Register a Visual Studio Shutdown event handler.
+        /// Normally for some quick cleanup tasks.
+        /// </summary>
+        /// <param name="onExitEventHandler">The event handler.</param>
+        public static void RegisterShutdownEventHandler(Action onExitEventHandler)
+        {
+            var dte2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
+            dte2.Events.DTEEvents.OnBeginShutdown += () => onExitEventHandler();
+        }
+
         private static void SetShellNormal()
         {
             var monitorSelection = GetMonitorSelectionService();

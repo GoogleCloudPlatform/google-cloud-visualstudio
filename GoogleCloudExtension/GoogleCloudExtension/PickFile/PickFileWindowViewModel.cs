@@ -23,43 +23,44 @@ namespace GoogleCloudExtension.PickFile
 {
     public class PickFileWindowViewModel : ViewModelBase
     {
-        private string _selected;
-        private readonly List<string> _fileList;
+        private int _selectedIndex;
+        private readonly IEnumerable<string> _fileList;
         private PickFileWindow _owner;
 
         /// <summary>
         /// Gets the list of files.
         /// </summary>
-        public List<string> FileList => _fileList;
+        public IEnumerable<string> FileList => _fileList;
 
         /// <summary>
         /// Gets or sets the selected file item.
         /// </summary>
-        public string Selected
+        public int SelectedIndex
         {
-            get { return _selected; }
-            set { SetValueAndRaise(ref _selected, value); }
+            get { return _selectedIndex; }
+            set { SetValueAndRaise(ref _selectedIndex, value); }
         }
 
         public ProtectedCommand SelectFileCommand { get; }
 
-        public string Result { get; private set; }
+        public int Result { get; private set; }
 
-        public PickFileWindowViewModel(PickFileWindow owner, List<string> fileList)
+        public PickFileWindowViewModel(PickFileWindow owner, IEnumerable<string> fileList)
         {
-            _owner = owner;
-            if (fileList?.Count <= 0)
+            _owner = owner.ThrowIfNull(nameof(owner));
+            if (fileList?.Count() < 2)
             {
-                throw new ArgumentException($"{nameof(fileList)} is null or empty.");
+                throw new ArgumentException($"{nameof(fileList)} is null or count is less than 2.");
             }
             _fileList = fileList;
-            Selected = fileList.FirstOrDefault();
+            SelectedIndex = 0;
+            Result = -1;
             SelectFileCommand = new ProtectedCommand(OnSelectFileCommand);
         }
 
         private void OnSelectFileCommand()
         {
-            Result = Selected;
+            Result = SelectedIndex;
             _owner.Close();
         }
     }

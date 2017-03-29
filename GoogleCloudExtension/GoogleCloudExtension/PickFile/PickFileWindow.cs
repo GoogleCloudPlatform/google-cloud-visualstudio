@@ -22,13 +22,13 @@ namespace GoogleCloudExtension.PickFile
     {
         private  PickFileWindowViewModel ViewModel { get; }
 
-        private PickFileWindow(List<string> fileList) : base("Pick the file.")
+        private PickFileWindow(IEnumerable<string> fileList) : base("Pick the file.")
         {
             ViewModel = new PickFileWindowViewModel(this, fileList);
             Content = new PickFileWindowContent { DataContext = ViewModel };
         }
 
-        public static string PromptUser(List<string> fileList)
+        public static int PromptUser(IEnumerable<string> fileList)
         {
             var dialog = new PickFileWindow(fileList);
             dialog.ShowModal();

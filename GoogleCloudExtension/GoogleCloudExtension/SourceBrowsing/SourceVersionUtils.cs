@@ -17,6 +17,7 @@ using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.StackdriverErrorReporting;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GoogleCloudExtension.SourceBrowsing
@@ -26,7 +27,10 @@ namespace GoogleCloudExtension.SourceBrowsing
     /// </summary>
     internal static class SourceVersionUtils
     {
-        private const string SourceContextIDLabel = "git_source_revision";
+        private static readonly Dictionary<string, GitCommit> s_localCache = new Dictionary<string, GitCommit>(StringComparer.OrdinalIgnoreCase);
+
+        // TODO: change to Gax constant.
+        private const string SourceContextIDLabel = "git_revision_id";
 
         public static string FindGitAndGetFileContent(this LogItem logItem)
         {
@@ -45,24 +49,26 @@ namespace GoogleCloudExtension.SourceBrowsing
                 return null;
             }
 
+            if (s_localCache.ContainsKey(sha))
+            {
+                return s_localCache[sha].GetFile(logItem.SourceFilePath);
+            }
+
             var solution = SolutionHelper.CurrentSolution;
             if (solution == null)
             {
                 // TODO: prompt to open project.
-                OpenCurrentVersionProjectPrompt(logItem.AssemblyName, logItem.AssemblyVersion);
+                OpenSolutionPrompt(logItem.AssemblyName);
                 return null;
             }
 
             foreach (var project in solution.Projects)
             {
-                var commit = GitUtils.FindCommit(project.ProjectRoot, sha);
+                var commit = GitCommit.FindCommit(project.ProjectRoot, sha);
                 if (commit != null)
                 {
-                    // TODO: Prompt to select a file if it finds multiple matching file.
-                    // TODO: Open current version file if file content not changed.
-                    // TODO: Create temp file cache so as to open same temp file each time.
-                    var content = GitUtils.OpenFile(commit, logItem.SourceFilePath);
-                    return content;
+                    s_localCache[sha] = commit;
+                    return commit.GetFile(logItem.SourceFilePath);
                 }
             }
 
@@ -151,6 +157,18 @@ namespace GoogleCloudExtension.SourceBrowsing
         {
             if (UserPromptUtils.ActionPrompt(
                     prompt: String.Format(Resources.LogsViewerPleaseOpenProjectPrompt, assemblyName, assemblyVersion),
+                    title: Resources.uiDefaultPromptTitle,
+                    message: Resources.LogsViewerAskToOpenProjectMessage))
+            {
+                ShellUtils.OpenProject();
+            }
+        }
+
+        public static void OpenSolutionPrompt(string assemblyName)
+        {
+            // TODO: string to replace LogsViewerPleaseOpenProjectPrompt
+            if (UserPromptUtils.ActionPrompt(
+                    prompt: String.Format(Resources.LogsViewerPleaseOpenProjectPrompt, assemblyName, ""),
                     title: Resources.uiDefaultPromptTitle,
                     message: Resources.LogsViewerAskToOpenProjectMessage))
             {
