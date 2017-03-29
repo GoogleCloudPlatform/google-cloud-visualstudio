@@ -81,8 +81,15 @@ namespace GoogleCloudExtension.SourceBrowsing
                 var items = solution.FindMatchingSourceFile(stackFrame.SourceFile);
                 if (items.Count > 1)
                 {
-                    var index = PickFile.PickFileWindow.PromptUser(items.Select(x => x.FullName));
-                    projectItem = items.ElementAt(index).ProjectItem;
+                    try
+                    {
+                        var index = PickFile.PickFileWindow.PromptUser(items.Select(x => x.FullName));
+                        projectItem = items.ElementAt(index).ProjectItem;
+                    }
+                    catch (ActionCancelledException)
+                    {
+                        return;
+                    }
                 }
                 else {
                     projectItem = items.FirstOrDefault()?.ProjectItem;
