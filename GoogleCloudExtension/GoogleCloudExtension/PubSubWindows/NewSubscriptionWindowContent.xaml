@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
     xmlns:ext="clr-namespace:GoogleCloudExtension"
+    xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
     FocusManager.FocusedElement="{Binding ElementName=SubscriptionName}">
 
     <UserControl.Resources>
@@ -19,6 +20,14 @@
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="Margin" Value="3"/>
             </Style>
+            <Style
+                x:Key="MyLabelWithHelp"
+                BasedOn="{StaticResource {x:Type controls:LabelWithHelp}}"
+                TargetType="{x:Type controls:LabelWithHelp}">
+                
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="3"/>
+            </Style>
             <Style x:Key="MyTextBox" BasedOn="{StaticResource CommonTextBoxStyle}" TargetType="{x:Type TextBox}">
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="Margin" Value="3"/>
@@ -28,13 +37,9 @@
                 BasedOn="{StaticResource LabeledRadioButtonStyle}"
                 TargetType="{x:Type RadioButton}">
                 
-                <Setter Property="ContentTemplate">
-                    <Setter.Value>
-                        <DataTemplate>
-                            <Label Content="{Binding}" Style="{StaticResource MyLabel}" />
-                        </DataTemplate>
-                    </Setter.Value>
-                </Setter>
+                <Style.Resources>
+                    <Style BasedOn="{StaticResource MyLabel}" TargetType="{x:Type Label}"/>
+                </Style.Resources>
                 <Setter Property="VerticalContentAlignment" Value="Center"/>
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="Margin" Value="3"/>
@@ -95,12 +100,12 @@
                     Style="{StaticResource MyTextBox}"/>
             </DockPanel>
             <DockPanel>
-                <Label
+                <controls:LabelWithHelp
                     DockPanel.Dock="Left"
                     Target="{Binding ElementName=Deadline}"
                     Content="{x:Static ext:Resources.NewSubscriptionWindowAckDeadlineLabel}"
-                    ToolTip="{x:Static ext:Resources.NewSubscriptionWindowAckDeadlineTooltip}"
-                    Style="{StaticResource MyLabel}"/>
+                    HelpContent="{x:Static ext:Resources.NewSubscriptionWindowAckDeadlineTooltip}"
+                    Style="{StaticResource MyLabelWithHelp}"/>
                 <TextBox
                     Name ="Deadline"
                     Text="{Binding Subscription.AckDeadlineSeconds,

@@ -233,10 +233,13 @@
     </Style>
 
     <Style x:Key="LabeledRadioButtonStyle" BasedOn="{StaticResource CommonRadioButton}" TargetType="{x:Type RadioButton}">
+        <Style.Resources>
+            <Style BasedOn="{StaticResource CommonLabelStyle}" TargetType="{x:Type Label}"/>
+        </Style.Resources>
         <Setter Property="ContentTemplate">
             <Setter.Value>
                 <DataTemplate>
-                    <Label Content="{Binding}" Style="{StaticResource CommonLabelStyle}" />
+                    <Label Content="{Binding}"/>
                 </DataTemplate>
             </Setter.Value>
         </Setter>
