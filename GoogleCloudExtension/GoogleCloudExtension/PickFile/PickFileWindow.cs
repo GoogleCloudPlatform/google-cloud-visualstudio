@@ -14,10 +14,12 @@
 
 using GoogleCloudExtension.Theming;
 using System.Collections.Generic;
-using System.Windows.Media;
 
 namespace GoogleCloudExtension.PickFile
 {
+    /// <summary>
+    /// Dialog to choose a file.
+    /// </summary>
     public class PickFileWindow : CommonDialogWindowBase
     {
         private  PickFileWindowViewModel ViewModel { get; }
@@ -28,6 +30,14 @@ namespace GoogleCloudExtension.PickFile
             Content = new PickFileWindowContent { DataContext = ViewModel };
         }
 
+        /// <summary>
+        /// Prompt user to choose a file from a list.
+        /// </summary>
+        /// <param name="fileList">A list of files to be picked.</param>
+        /// <returns>
+        /// The picked file index.
+        /// Or -1 if Cancel button is clicked.
+        /// </returns>
         public static int PromptUser(IEnumerable<string> fileList)
         {
             var dialog = new PickFileWindow(fileList);

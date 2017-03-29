@@ -16,12 +16,15 @@ using GoogleCloudExtension.Utils;
 using LibGit2Sharp;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.IO;
 using System.Diagnostics;
+using System.IO;
+using System.Linq;
 
 namespace GoogleCloudExtension.SourceBrowsing
 {
+    /// <summary>
+    /// Represent a local git commit on a given git SHA.
+    /// </summary>
     internal class GitCommit
     {
         private readonly Commit _commit;
@@ -35,9 +38,17 @@ namespace GoogleCloudExtension.SourceBrowsing
             _localRoot = localRoot.ThrowIfNullOrEmpty(nameof(localRoot));
         }
 
-        public static GitCommit FindCommit(string projectRoot, string sha)
+        /// <summary>
+        /// Search for a Git Commit on a directory. 
+        /// The method traversal the directory tree bottom up to check 
+        /// if the directory is a valid local repo and contains the git SHA.
+        /// </summary>
+        /// <param name="path">The path to search for local git repo.</param>
+        /// <param name="sha">The git commit SHA to be searched for.</param>
+        /// <returns></returns>
+        public static GitCommit FindCommit(string path, string sha)
         {
-            string dir = projectRoot.ThrowIfNullOrEmpty(nameof(projectRoot));
+            string dir = path.ThrowIfNullOrEmpty(nameof(path));
             sha.ThrowIfNullOrEmpty(nameof(sha));
             do
             {
@@ -47,18 +58,23 @@ namespace GoogleCloudExtension.SourceBrowsing
                     Commit commit = repo.Lookup<Commit>(sha);
                     if (commit != null)
                     {
-                        var remoteURL = repo.Config.Get<string>("remote", "origin", "url").Value;
-                        Debug.WriteLine($"{remoteURL}");
                         return new GitCommit(commit, repo, dir);
                     }
                 }
                 dir = Directory.GetParent(dir)?.FullName;
             } while (dir != null);
-
             return null;
         }
 
-
+        /// <summary>
+        /// Get the file of the revision.
+        /// This method firstly open the revision of the file in a temporary path.
+        /// Comparing the temporary file with the current active version of file.
+        /// If the current active file is same as the revision of the file, return the current active file.
+        /// Otherwise, return the temporary file.
+        /// </summary>
+        /// <param name="filePath">The file to be searched for.</param>
+        /// <returns></returns>
         public string GetFile(string filePath)
         {
             TreeEntry treeEntry = null;
@@ -116,10 +132,12 @@ namespace GoogleCloudExtension.SourceBrowsing
             }
         }
 
-        // This method accepts two strings the represent two files to 
-        // compare. A return value of 0 indicates that the contents of the files
-        // are the same. A return value of any other value indicates that the 
-        // files are not the same.
+        /// <summary>
+        /// This method accepts two files line by line.
+        /// </summary>
+        /// <returns>
+        /// True: the two files are same.
+        /// </returns>
         private bool FileCompare(string file1, string file2)
         {
             string line1, line2;
@@ -128,22 +146,6 @@ namespace GoogleCloudExtension.SourceBrowsing
             {
                 using (var fs2 = new StreamReader(file2))
                 {
-
-                    //// Check the file sizes. If they are not the same, the files 
-                    //// are not the same.
-                    //if (fs1.Length != fs2.Length)
-                    //{
-                    //    // Close the file
-                    //    fs1.Close();
-                    //    fs2.Close();
-
-                    //    // Return false to indicate files are different
-                    //    return false;
-                    //}
-
-                    // Read and compare a byte from each file until either a
-                    // non-matching set of bytes is found or until the end of
-                    // file1 is reached.
                     do
                     {
                         // Read one byte from each file.

@@ -16,11 +16,12 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Windows.Input;
-using System.Windows.Media;
 
 namespace GoogleCloudExtension.PickFile
 {
+    /// <summary>
+    /// View model for user control PickFileWindowContent.xaml.
+    /// </summary>
     public class PickFileWindowViewModel : ViewModelBase
     {
         private int _selectedIndex;
@@ -41,8 +42,15 @@ namespace GoogleCloudExtension.PickFile
             set { SetValueAndRaise(ref _selectedIndex, value); }
         }
 
+        /// <summary>
+        /// Get the command responds to Okay button click event.
+        /// </summary>
         public ProtectedCommand SelectFileCommand { get; }
 
+        /// <summary>
+        /// The final selected file index. 
+        /// -1 if cancelled.
+        /// </summary>
         public int Result { get; private set; }
 
         public PickFileWindowViewModel(PickFileWindow owner, IEnumerable<string> fileList)

@@ -18,61 +18,63 @@ using GoogleCloudExtension.StackdriverErrorReporting;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace GoogleCloudExtension.SourceBrowsing
 {
     /// <summary>
-    /// Helper methods to find, open the project of a source version.
+    /// Helper methods to find, open the source file of the matching revision.
     /// </summary>
     internal static class SourceVersionUtils
     {
+        /// <summary>
+        /// Global cache of git sha to <seealso cref="GitCommit"/> object.
+        /// </summary>
         private static readonly Dictionary<string, GitCommit> s_localCache = new Dictionary<string, GitCommit>(StringComparer.OrdinalIgnoreCase);
 
         // TODO: change to Gax constant.
         private const string SourceContextIDLabel = "git_revision_id";
 
+        /// <summary>
+        /// Try to locate the local git repo and open the revision of the source file
+        /// that writes the log entry.
+        /// </summary>
+        /// <param name="logItem">The log item to search for source file.</param>
+        /// <returns>
+        /// The file path of source file revision.
+        /// Null if not found.
+        /// </returns>
         public static string FindGitAndGetFileContent(this LogItem logItem)
         {
-            if (logItem.Entry.Labels == null)
+            if (logItem.Entry.Labels == null || !logItem.Entry.Labels.ContainsKey(SourceContextIDLabel))
             {
                 return null;
             }
 
-            string sha;
-            if (logItem.Entry.Labels.ContainsKey(SourceContextIDLabel))
-            {
-                sha = logItem.Entry.Labels[SourceContextIDLabel];
-            }
-            else
-            {
-                return null;
-            }
-
+            string sha = logItem.Entry.Labels[SourceContextIDLabel];
             if (s_localCache.ContainsKey(sha))
             {
                 return s_localCache[sha].GetFile(logItem.SourceFilePath);
             }
 
+            // There is a chance the file path is already contains local git repo root.
+            GitCommit commit = SearchCommitAtPath(Path.GetDirectoryName(logItem.SourceFilePath), sha);
+            if (commit != null)
+            {
+                return commit.GetFile(logItem.SourceFilePath);
+            }
+
+            if (!IsCurrentSolutionOpen())
+            {
+                OpenCurrentVersionProjectPrompt(logItem.AssemblyName, logItem.AssemblyVersion);
+            }
             var solution = SolutionHelper.CurrentSolution;
-            if (solution == null)
+            commit = solution.Projects.Select(x => SearchCommitAtPath(x.ProjectRoot, sha)).Where(y => y != null).FirstOrDefault();
+            if (commit != null)
             {
-                // TODO: prompt to open project.
-                OpenSolutionPrompt(logItem.AssemblyName);
-                return null;
+                return commit.GetFile(logItem.SourceFilePath);
             }
-
-            foreach (var project in solution.Projects)
-            {
-                var commit = GitCommit.FindCommit(project.ProjectRoot, sha);
-                if (commit != null)
-                {
-                    s_localCache[sha] = commit;
-                    return commit.GetFile(logItem.SourceFilePath);
-                }
-            }
-
-            // TODO: prompt to open solution under local git repo.
             return null;
         }
 
@@ -92,14 +94,9 @@ namespace GoogleCloudExtension.SourceBrowsing
                 return null;
             }
 
-            if (SolutionHelper.CurrentSolution == null)
+            if (!IsCurrentSolutionOpen())
             {
                 OpenCurrentVersionProjectPrompt(logItem.AssemblyName, logItem.AssemblyVersion);
-                // Check if a solution is open. User can choose not to open solution or project. 
-                if (SolutionHelper.CurrentSolution == null)
-                {
-                    return null;    // Quit if there is no solution open. 
-                }
             }
 
             ProjectHelper project = null;
@@ -107,19 +104,20 @@ namespace GoogleCloudExtension.SourceBrowsing
                 () => SolutionHelper.CurrentSolution.Projects?
                 .Where(x => x.AssemblyName?.ToLowerInvariant() == logItem.AssemblyName.ToLowerInvariant())
                 .FirstOrDefault();
+
             if ((project = getProject()) == null)
             {
                 OpenCurrentVersionProjectPrompt(logItem.AssemblyName, logItem.AssemblyVersion);
                 // Check again if the project is opened.
                 if ((project = getProject()) == null)
                 {
-                    return null;    // Still does not find the project, quit.
+                    throw new ActionCancelledException();
                 }
             }
 
             if (project.Version != logItem.AssemblyVersion && !ContinueWhenVersionMismatch(project, logItem.AssemblyVersion))
             {
-                return null;
+                throw new ActionCancelledException();
             }
 
             return project;
@@ -162,17 +160,9 @@ namespace GoogleCloudExtension.SourceBrowsing
             {
                 ShellUtils.OpenProject();
             }
-        }
-
-        public static void OpenSolutionPrompt(string assemblyName)
-        {
-            // TODO: string to replace LogsViewerPleaseOpenProjectPrompt
-            if (UserPromptUtils.ActionPrompt(
-                    prompt: String.Format(Resources.LogsViewerPleaseOpenProjectPrompt, assemblyName, ""),
-                    title: Resources.uiDefaultPromptTitle,
-                    message: Resources.LogsViewerAskToOpenProjectMessage))
+            if (SolutionHelper.CurrentSolution?.Projects?.Count == 0)
             {
-                ShellUtils.OpenProject();
+                throw new ActionCancelledException();
             }
         }
 
@@ -195,6 +185,19 @@ namespace GoogleCloudExtension.SourceBrowsing
                 }
             }
             return StackdriverLogsViewerStates.Current.ContinueWithVersionMismatchAssemblyFlag;
+        }
+
+        private static bool IsCurrentSolutionOpen() => SolutionHelper.CurrentSolution?.Projects?.Count > 0;
+
+        private static GitCommit SearchCommitAtPath(string path, string sha)
+        {
+            var commit = GitCommit.FindCommit(path, sha);
+            if (commit != null)
+            {
+                s_localCache[sha] = commit;
+                return commit;
+            }
+            return null;
         }
     }
 }

@@ -318,6 +318,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         /// <summary>
         /// Open the source file, move to the source line and show tooltip.
+        /// If git sha is present at the log entry, try to open the revision of the file.
+        /// If openning the file of the git sha revision does not succeed, 
+        /// fallback to using the assembly version information.
         /// </summary>
         private void NavigateToSourceLineCommand()
         {
@@ -336,8 +339,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     this.ShowToolTip(frame);
                 }
                 else
-                {
-
+                {   // fallback to using assembly version information.
                     var project = this.FindOrOpenProject();
                     if (project == null)
                     {
