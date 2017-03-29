@@ -4418,7 +4418,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to May not start with &quot;goog&quot;.
+        ///   Looks up a localized string similar to May not start with &quot;goog&quot;..
         /// </summary>
         public static string ValidationDisallowStartGoogMessage {
             get {

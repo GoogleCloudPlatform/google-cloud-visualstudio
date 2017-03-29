@@ -1973,7 +1973,7 @@ Open the project to navigate to the logger method location.</value>
     <comment>Message displayed by validator limiting input to 255 characters.</comment>
   </data>
   <data name="ValidationDisallowStartGoogMessage" xml:space="preserve">
-    <value>May not start with "goog"</value>
+    <value>May not start with "goog".</value>
     <comment>Message displayed by validator disallowing input that starts with "goog".</comment>
   </data>
   <data name="ValidationPubSubNameCharacterClassMessage" xml:space="preserve">
