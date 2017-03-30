@@ -29,7 +29,6 @@ namespace GoogleCloudExtension.Utils
     public static class ShellUtils
     {
         private static Guid s_GuidMicrosoftCsharpEditor = new Guid("{A6C744A8-0E4A-4FC6-886A-064283054674}");
-        private static Guid s_GuidMicrosoftCsharpEditorWithEncoding = new Guid("{08467b34-b90f-4d91-bdca-eb8c8cf3033a}");
 
         /// <summary>
         /// Returns whether the shell is in the debugger state. This will happen if the user is debugging an app.
@@ -101,29 +100,17 @@ namespace GoogleCloudExtension.Utils
             dte.ExecuteCommand("File.OpenProject");
         }
 
-        public static IVsWindowFrame Open(string sourceFile)
+        /// <summary>
+        /// Opens a source file in Visual Studio.
+        /// </summary>
+        /// <param name="sourceFile">Source file path</param>
+        /// <returns>The Window that displays the project item.</returns>
+        public static Window Open(string sourceFile)
         {
             var provider = GetGloblalServiceProvider();
-            // Alternative ?
-            // DTE.ExecuteCommand("File.OpenFile", @"C:\path\to\source_file.cs");
-            // http://stackoverflow.com/questions/24163986/how-to-get-current-activedocument-in-visual-studio-extension-using-mef
-            return VsShellUtilities.OpenDocumentWithSpecificEditor(
+            var frame = VsShellUtilities.OpenDocumentWithSpecificEditor(
                 provider, sourceFile, s_GuidMicrosoftCsharpEditor, VSConstants.LOGVIEWID.Code_guid);
-        }
-
-        /// <summary>
-        /// Opens a project item in Visual Studio.
-        /// </summary>
-        /// <param name="projectItem"><seealso cref="ProjectItem"/></param>
-        /// <returns>The Window that displays the project item.</returns>
-        public static Window Open(ProjectItem projectItem)
-        {
-            var window = projectItem.Open(EnvDTE.Constants.vsViewKindPrimary);
-            if (null != window)
-            {
-                window.Visible = true;
-            }
-            return window;
+            return frame == null ? null : VsShellUtilities.GetWindowObject(frame);
         }
 
         /// <summary>

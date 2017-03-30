@@ -45,25 +45,15 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="logItem">The log item to search for source file.</param>
         public static void NavigateToSourceLineCommand(LogItem logItem)
         {
+            string locatedFilePath = null;
             try
             {
                 // The expression evaluates to nullable bool. Need to explicitly specify == true.
                 if (logItem.Entry.Labels?.ContainsKey(SourceContextIDLabel) == true)
                 {
                     string sha = logItem.Entry.Labels[SourceContextIDLabel];
-                    var revisionFile = SearchGitRepoAndGetFileContent(sha, logItem.SourceFilePath);
-                    if (revisionFile == null)
-                    {
-                        return;
-                    }
-                    var frame = ShellUtils.Open(revisionFile);
-                    if (frame == null)
-                    {
-                        FailedToOpenFilePrompt(revisionFile);
-                        return;
-                    }
+                    locatedFilePath = SearchGitRepoAndGetFileContent(sha, logItem.SourceFilePath);
 
-                    logItem.ShowToolTip(frame);
                 }
                 else
                 {   // If the log item does not contain revision id, 
@@ -75,24 +65,25 @@ namespace GoogleCloudExtension.SourceBrowsing
                         return;
                     }
 
-                    var projectSourceFile = project.FindSourceFile(logItem.SourceFilePath);
-                    if (projectSourceFile == null)
-                    {
-                        FileItemNotFoundPrompt(logItem.SourceFilePath);
-                        return;
-                    }
-
-                    var window = ShellUtils.Open(projectSourceFile.ProjectItem);
-                    if (null == window)
-                    {
-                        FailedToOpenFilePrompt(logItem.SourceFilePath);
-                        return;
-                    }
-                    logItem.ShowToolTip(window);
+                    locatedFilePath = project.FindSourceFile(logItem.SourceFilePath)?.FullName;
                 }
             }
             catch (ActionCancelledException)
-            { }
+            {
+                return;
+            }
+
+            if (locatedFilePath == null)
+            {
+                FileItemNotFoundPrompt(logItem.SourceFilePath);
+            }
+            var window = ShellUtils.Open(locatedFilePath);
+            if (window == null)
+            {
+                FailedToOpenFilePrompt(logItem.SourceFilePath);
+                return;
+            }
+            logItem.ShowToolTip(window);
         }
 
         /// <summary>
@@ -218,7 +209,6 @@ namespace GoogleCloudExtension.SourceBrowsing
             {
                 return commit.GetFile(filePath);
             }
-            FileItemNotFoundPrompt(filePath);
             return null;
         }
 

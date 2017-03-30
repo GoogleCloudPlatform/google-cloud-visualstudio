@@ -74,7 +74,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                 throw new ArgumentException("Invalid argument");
             }
 
-            ProjectItem projectItem = null;
+            ProjectSourceFile projectFile = null;
             SolutionHelper solution = SolutionHelper.CurrentSolution;
             if (solution != null)
             {
@@ -84,7 +84,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                     try
                     {
                         var index = PickFileDialog.PickFileWindow.PromptUser(items.Select(x => x.FullName));
-                        projectItem = items.ElementAt(index).ProjectItem;
+                        projectFile = items.ElementAt(index);
                     }
                     catch (ActionCancelledException)
                     {
@@ -92,17 +92,17 @@ namespace GoogleCloudExtension.SourceBrowsing
                     }
                 }
                 else {
-                    projectItem = items.FirstOrDefault()?.ProjectItem;
+                    projectFile = items.FirstOrDefault();
                 }
             }
 
-            if (projectItem == null)
+            if (projectFile == null)
             {
                 SourceVersionUtils.FileItemNotFoundPrompt(stackFrame.SourceFile);
                 return;
             }
 
-            var window = ShellUtils.Open(projectItem);
+            var window = ShellUtils.Open(projectFile.FullName);
             if (window == null)
             {
                 FailedToOpenFilePrompt(stackFrame.SourceFile);
@@ -181,32 +181,6 @@ namespace GoogleCloudExtension.SourceBrowsing
             {
                 return;
             }
-            var control = new LoggerTooltipControl();
-            control.DataContext = new LoggerTooltipViewModel(logItem);
-            ActiveTagData.SetCurrent(
-                wpfView,
-                logItem.SourceLine.Value,
-                control,
-                logItem.LogLevel.GetLoggerMethodName());
-            TryFindTagger(wpfView)?.ShowOrUpdateToolTip();
-        }
-
-        /// <summary>
-        /// Show the Logger method tooltip.
-        /// </summary>
-        /// <param name="logItem">The <seealso cref="LogItem"/> that has the source line information.</param>
-        /// <param name="window">The Visual Studio doucment window of the source file.</param>
-        public static void ShowToolTip(this LogItem logItem, IVsWindowFrame frame)
-        {
-            var window = VsShellUtilities.GetWindowObject(frame);
-            GotoLine(window, (int)logItem.SourceLine.Value);
-            IVsTextView textView = VsShellUtilities.GetTextView(frame);
-            var wpfView = GetWpfTextView(textView);
-            if (wpfView == null)
-            {
-                return;
-            }
-
             var control = new LoggerTooltipControl();
             control.DataContext = new LoggerTooltipViewModel(logItem);
             ActiveTagData.SetCurrent(
