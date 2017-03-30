@@ -18,6 +18,7 @@ using GoogleCloudExtension.CloudExplorerSources.CloudSQL;
 using GoogleCloudExtension.CloudExplorerSources.Gae;
 using GoogleCloudExtension.CloudExplorerSources.Gce;
 using GoogleCloudExtension.CloudExplorerSources.Gcs;
+using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.Utils;
@@ -206,6 +207,9 @@ namespace GoogleCloudExtension.CloudExplorer
 
                 // The Google Cloud SQL source.
                 new CloudSQLSource(this),
+
+                // The Google Publish/Subscription source.
+                new PubsubSource(this),
 
                 // The source to navigate to the cloud console.
                 new CloudConsoleSource(),

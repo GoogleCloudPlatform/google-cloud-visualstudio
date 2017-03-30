@@ -115,6 +115,12 @@
     <Compile Include="CloudExplorerSources\Gae\VersionItem.cs" />
     <Compile Include="CloudExplorerSources\Gae\VersionViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gcs\BucketLocationViewModel.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\PubSubSource.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\PubSubSourceRootViewModel.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\SubscriptionItem.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\SubscriptionViewModel.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\TopicItem.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\TopicViewModel.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
@@ -227,6 +233,17 @@
       <DependentUpon>ProgressDialogWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProgressDialog\ProgressDialogWindowViewModel.cs" />
+    <Compile Include="PubSubWindows\NewSubscriptionViewModel.cs" />
+    <Compile Include="PubSubWindows\NewSubscriptionWindow.cs" />
+    <Compile Include="PubSubWindows\NewSubscriptionWindowContent.xaml.cs">
+      <DependentUpon>NewSubscriptionWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PubSubWindows\NewTopicViewModel.cs" />
+    <Compile Include="PubSubWindows\NewTopicWindow.cs" />
+    <Compile Include="PubSubWindows\NewTopicWindowContent.xaml.cs">
+      <DependentUpon>NewTopicWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PubSubWindows\PubSubNameValidationRule.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -427,7 +444,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Key.snk" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <Resource Include="CloudExplorerSources\Gce\Resources\filter.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_running.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_stoped.png" />
@@ -448,6 +467,8 @@
     <Resource Include="Controls\Resources\step_9_dark.png" />
     <Resource Include="CloudExplorerSources\Gcs\Resources\zone_icon.png" />
     <Resource Include="Theming\Resources\logo_cloud.png" />
+    <Resource Include="CloudExplorerSources\PubSub\Resources\topic_icon.png" />
+    <Resource Include="CloudExplorerSources\PubSub\Resources\subscription_icon.png" />
     <Content Include="..\packages\LibGit2Sharp.NativeBinaries.1.0.165\runtimes\win7-x86\native\git2-1196807.dll">
       <Link>git2-1196807.dll</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -583,6 +604,10 @@
     </Reference>
     <Reference Include="Google.Apis.Plus.v1, Version=1.20.0.713, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Plus.v1.1.20.0.713\lib\net45\Google.Apis.Plus.v1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Google.Apis.Pubsub.v1, Version=1.20.0.754, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Pubsub.v1.1.20.0.754\lib\net45\Google.Apis.Pubsub.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Apis.SQLAdmin.v1beta4, Version=1.20.0.712, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
@@ -798,6 +823,14 @@
     <Page Include="PublishDialog\PublishDialogWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PubSubWindows\NewSubscriptionWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PubSubWindows\NewTopicWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml">
       <SubType>Designer</SubType>

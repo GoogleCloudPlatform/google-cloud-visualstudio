@@ -445,6 +445,46 @@
     <value>No projects found</value>
     <comment>Message for the placeholder element displayed when no projects are found.</comment>
   </data>
+  <data name="CloudExplorerPubSubListTopicsErrorCaption" xml:space="preserve">
+    <value>Failed to load Topics</value>
+    <comment>Caption shown when there is an error loading Pub/Sub topics.</comment>
+  </data>
+  <data name="CloudExplorerPubSubLoadingTopicsCaption" xml:space="preserve">
+    <value>Loading Topics...</value>
+    <comment>Caption shown when loading Pub/Sub topics.</comment>
+  </data>
+  <data name="CloudExplorerPubSubNewTopicMenuHeader" xml:space="preserve">
+    <value>New Topic</value>
+    <comment>Header for menu item to create a new Pub/Sub topic.</comment>
+  </data>
+  <data name="CloudExplorerPubSubNoTopicsFoundCaption" xml:space="preserve">
+    <value>No Topics Found</value>
+    <comment>Caption shown when no Pub/Sub topics are found.</comment>
+  </data>
+  <data name="CloudExplorerPubSubRootCaption" xml:space="preserve">
+    <value>Google Cloud Pub/Sub</value>
+    <comment>Root caption for Google Cloud Pub/Sub.</comment>
+  </data>
+  <data name="CloudExplorerPubSubSubscriptionCategory" xml:space="preserve">
+    <value>Subscription Properties</value>
+    <comment>The category for PubSub subscription properties.</comment>
+  </data>
+  <data name="CloudExplorerPubSubSubscriptionNameDescription" xml:space="preserve">
+    <value>The Name of the Subscription</value>
+    <comment>The description of the name property of a PubSub subscription.</comment>
+  </data>
+  <data name="CloudExplorerPubSubSubscriptionTopicDescription" xml:space="preserve">
+    <value>The Topic the Subscription reads from</value>
+    <comment>The description of the topic property of a PubSub subscription.</comment>
+  </data>
+  <data name="CloudExplorerPubSubTopicCategory" xml:space="preserve">
+    <value>Topic Properties</value>
+    <comment>The category for PubSub topic properties.</comment>
+  </data>
+  <data name="CloudExplorerPubSubTopicNameDescription" xml:space="preserve">
+    <value>The Name of the Topic</value>
+    <comment>The description of the name property of a PubSub topic.</comment>
+  </data>
   <data name="CloudExplorerRefreshButtonToolTip" xml:space="preserve">
     <value>Refresh</value>
     <comment>The tooltip for the refresh button.</comment>
@@ -1863,5 +1903,173 @@ Open the project to navigate to the logger method location.</value>
   <data name="UiAutoReloadButtonCaption" xml:space="preserve">
     <value>AUTO RELOAD</value>
     <comment>Caption for auto reload button.</comment>
+  </data>
+  <data name="CloudExplorerPubSubTopicFullNameDescription" xml:space="preserve">
+    <value>The Full Name of the Topic</value>
+    <comment>The description of the full name property of a PubSub topic.</comment>
+  </data>
+  <data name="CloudExplorerPubSubDeleteTopicMenuHeader" xml:space="preserve">
+    <value>Delete Topic</value>
+    <comment>Header for the delete topic menu item.s</comment>
+  </data>
+  <data name="CloudExplorerPubSubNewSubscriptionMenuHeader" xml:space="preserve">
+    <value>New Subscription</value>
+    <comment>Header for menu item to create a new Pub/Sub subscription.</comment>
+  </data>
+  <data name="PubSubDeleteTopicErrorHeader" xml:space="preserve">
+    <value>Error in delete topic</value>
+    <comment>Header of the message window displayed when there is an error deleting a topic.</comment>
+  </data>
+  <data name="PubSubDeleteTopicErrorMessage" xml:space="preserve">
+    <value>Error deleting topic.</value>
+    <comment>Message diplayed when there is an error deleting a topic.</comment>
+  </data>
+  <data name="PubSubDeleteTopicWindowHeader" xml:space="preserve">
+    <value>Delete topic</value>
+    <comment>Header of the delete Pub/Sub topic window.</comment>
+  </data>
+  <data name="PubSubDeleteTopicWindowMessage" xml:space="preserve">
+    <value>Are you sure you wish to delete topic {0}?</value>
+    <comment>Message of the delete Pub/Sub topic window.</comment>
+  </data>
+  <data name="PubSubNewTopicErrorHeader" xml:space="preserve">
+    <value>Error in new topic</value>
+    <comment>Header of the message window displayed when there is an error creating a new topic.</comment>
+  </data>
+  <data name="PubSubNewTopicErrorMessage" xml:space="preserve">
+    <value>Error creating new topic.</value>
+    <comment>Message diplayed when there is an error creating a new topic.</comment>
+  </data>
+  <data name="CloudExplorerPubSubDeleteSubscriptionMenuHeader" xml:space="preserve">
+    <value>Delete Subscription</value>
+    <comment>Header for the delete pub/sub subscription menu item.</comment>
+  </data>
+  <data name="CloudExplorerPubSubSubscriptionFullNameDescription" xml:space="preserve">
+    <value>The Full Name of the Subscription</value>
+    <comment>The description of the full name property of a PubSub subscription.</comment>
+  </data>
+  <data name="PubSubDeleteSubscriptionErrorHeader" xml:space="preserve">
+    <value>Error in delete subscription</value>
+    <comment>Header of the message window displayed when there is an error deleting a PubSub subscription.</comment>
+  </data>
+  <data name="PubSubDeleteSubscriptionErrorMessage" xml:space="preserve">
+    <value>Error deleting subscription</value>
+    <comment>Message diplayed when there is an error deleting a PubSub subscription.</comment>
+  </data>
+  <data name="PubSubDeleteSubscriptionWindowHeader" xml:space="preserve">
+    <value>Delete subscription</value>
+    <comment>Header of the delete Pub/Sub subscription window.</comment>
+  </data>
+  <data name="PubSubDeleteSubscriptionWindowMessage" xml:space="preserve">
+    <value>Are you sure you wish to delete subscription {0}?</value>
+    <comment>Message of the delete Pub/Sub subscription window.</comment>
+  </data>
+  <data name="NewSubscriptionWindowHeader" xml:space="preserve">
+    <value>New Subscription for Topic {0}</value>
+    <comment>Text at the top of the NewSubscriptionWindow</comment>
+  </data>
+  <data name="Validation255CharactersMessage" xml:space="preserve">
+    <value>May not have more than 255 characters.</value>
+    <comment>Message displayed by validator limiting input to 255 characters.</comment>
+  </data>
+  <data name="ValidationDisallowStartGoogMessage" xml:space="preserve">
+    <value>May not start with "goog".</value>
+    <comment>Message displayed by validator disallowing input that starts with "goog".</comment>
+  </data>
+  <data name="ValidationPubSubNameCharacterClassMessage" xml:space="preserve">
+    <value>May only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) or percent signs (%).</value>
+    <comment>Message displayed by validator limiting characters allowed in pub sub names.</comment>
+  </data>
+  <data name="ValidationStartWithLetterMessage" xml:space="preserve">
+    <value>Must start with a letter.</value>
+    <comment>Message displayed by validator requiring input to start with a letter.</comment>
+  </data>
+  <data name="ValidationThreeCharactersMessage" xml:space="preserve">
+    <value>Must have at least 3 characters.</value>
+    <comment>Message displayed by validator requiring 3 characters.</comment>
+  </data>
+  <data name="NewSubscriptionWindowAckDeadlineLabel" xml:space="preserve">
+    <value>_Acknowledgement Deadline (seconds):</value>
+    <comment>The acknowledgement label of the new pub/sub subscription window.</comment>
+  </data>
+  <data name="NewSubscriptionWindowDeliveryType" xml:space="preserve">
+    <value>Delivery Type:</value>
+    <comment>The delivery type label in the new pub/sub subscription window.</comment>
+  </data>
+  <data name="NewSubscriptionWindowNameLabel" xml:space="preserve">
+    <value>_Name:</value>
+    <comment>The name label in the new pub/sub subscription window.</comment>
+  </data>
+  <data name="NewSubscriptionWindowPullLabel" xml:space="preserve">
+    <value>Pu_ll</value>
+    <comment>The pull label for the new pub/sub subscription window.</comment>
+  </data>
+  <data name="NewSubscriptionWindowPushLabel" xml:space="preserve">
+    <value>Push to _URL:</value>
+    <comment>The push label of the new pub/sub subscritpion window.</comment>
+  </data>
+  <data name="NewTopicWindowNameLabel" xml:space="preserve">
+    <value>Topic _Name:</value>
+    <comment>Label for the topic name text box in the new pub/sub topic window.</comment>
+  </data>
+  <data name="PubSubNewSubscriptionErrorHeader" xml:space="preserve">
+    <value>Error in new subscription</value>
+    <comment>Header of the message window displayed when there is an error creating a new subscription.</comment>
+  </data>
+  <data name="PubSubNewSubscriptionErrorMessage" xml:space="preserve">
+    <value>Error creating new subscription.</value>
+    <comment>Message diplayed when there is an error creating a new subscription.</comment>
+  </data>
+  <data name="NewTopicWindowHeader" xml:space="preserve">
+    <value>New Topic in Project {0}</value>
+    <comment>Text at the top of the NewTopicWindow</comment>
+  </data>
+  <data name="CloudExplorerPubSubListSubscriptionsErrorCaption" xml:space="preserve">
+    <value>Failed to load Subscriptions</value>
+    <comment>Caption shown when there is an error loading Pub/Sub subscriptions.</comment>
+  </data>
+  <data name="CloudExplorerPubSubLoadingSubscriptionsCaption" xml:space="preserve">
+    <value>Loading Subscriptions...</value>
+    <comment>Caption shown when loading Pub/Sub subscriptions.</comment>
+  </data>
+  <data name="CloudExplorerPubSubSubscriptionFullNameDisplayName" xml:space="preserve">
+    <value>Full Name</value>
+    <comment>The DisplayName of the FullName property of a SubscriptionItem</comment>
+  </data>
+  <data name="CloudExplorerPubSubSubscriptionNameDisplayName" xml:space="preserve">
+    <value>Name</value>
+    <comment>The DisplayName of the Name property of a SubscriptionItem</comment>
+  </data>
+  <data name="CloudExplorerPubSubSubscriptionTopicDisplayName" xml:space="preserve">
+    <value>Topic</value>
+    <comment>The DisplayName of the Topic property of a SubscriptionItem</comment>
+  </data>
+  <data name="CloudExplorerPubSubTopicFullNameDisplayName" xml:space="preserve">
+    <value>Full Name</value>
+    <comment>The DisplayName of the FullName property of a TopicItem</comment>
+  </data>
+  <data name="CloudExplorerPubSubTopicNameDisplayName" xml:space="preserve">
+    <value>Name</value>
+    <comment>The DisplayName of the Name property of a TopicItem</comment>
+  </data>
+  <data name="PubSubNewSubscriptionNameInvalidMessage" xml:space="preserve">
+    <value>{0} is not a valid Subscription Name</value>
+    <comment>The message displayed when there is a validation error with a new subscription name.</comment>
+  </data>
+  <data name="PubSubNewSubscriptionNameInvalidTitle" xml:space="preserve">
+    <value>Invalid Subscription Name</value>
+    <comment>Header of the message window displayed when there is a validation error with a new subscription name.</comment>
+  </data>
+  <data name="PubSubNewTopicNameInvalidMessage" xml:space="preserve">
+    <value>{0} is not a valid Topic Name</value>
+    <comment>The message displayed when there is a validation error with a new topic name.</comment>
+  </data>
+  <data name="PubSubNewTopicNameInvalidTitle" xml:space="preserve">
+    <value>Invalid Topic Name</value>
+    <comment>Header of the message window displayed when there is a validation error with a new topic name.</comment>
+  </data>
+  <data name="NewSubscriptionWindowAckDeadlineTooltip" xml:space="preserve">
+    <value>How long Pub/Sub waits for the subscriber to acknowledge receipt before resending the message</value>
+    <comment>The tooltip text for the acknowledgment deadline.</comment>
   </data>
 </root>
