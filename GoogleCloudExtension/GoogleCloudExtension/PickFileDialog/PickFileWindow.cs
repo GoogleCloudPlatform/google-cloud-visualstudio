@@ -15,7 +15,7 @@
 using GoogleCloudExtension.Theming;
 using System.Collections.Generic;
 
-namespace GoogleCloudExtension.PickFile
+namespace GoogleCloudExtension.PickFileDialog
 {
     /// <summary>
     /// Dialog to choose a file.
@@ -24,7 +24,8 @@ namespace GoogleCloudExtension.PickFile
     {
         private  PickFileWindowViewModel ViewModel { get; }
 
-        private PickFileWindow(IEnumerable<string> fileList) : base("Pick the file.")
+        private PickFileWindow(IEnumerable<string> fileList)
+            : base(GoogleCloudExtension.Resources.SourceVersionPickFileDialogCaption)
         {
             ViewModel = new PickFileWindowViewModel(this, fileList);
             Content = new PickFileWindowContent { DataContext = ViewModel };

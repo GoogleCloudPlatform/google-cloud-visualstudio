@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace GoogleCloudExtension.PickFile
+namespace GoogleCloudExtension.PickFileDialog
 {
     /// <summary>
     /// View model for user control PickFileWindowContent.xaml.

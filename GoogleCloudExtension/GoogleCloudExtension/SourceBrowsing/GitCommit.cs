@@ -81,11 +81,15 @@ namespace GoogleCloudExtension.SourceBrowsing
             var matchingFiles = FindMatchingEntry(filePath).ToList();
             if (matchingFiles.Count == 0)
             {
-                throw new Exception($"Unable to locate file {filePath} at git commit sha {_commit.Sha}");
+                throw new Exception(String.Format(
+                    Resources.SourceVersionUtilsFailedToLocateFileInRepoMessage, 
+                    filePath, 
+                    _localRoot, 
+                    _commit.Sha));
             }
             if (matchingFiles.Count() > 1)
             {
-                var index = PickFile.PickFileWindow.PromptUser(matchingFiles.Select(x => x.Path));
+                var index = PickFileDialog.PickFileWindow.PromptUser(matchingFiles.Select(x => x.Path));
                 if (index < 0)
                 {
                     throw new ActionCancelledException();

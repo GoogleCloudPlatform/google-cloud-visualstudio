@@ -83,7 +83,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                 {
                     try
                     {
-                        var index = PickFile.PickFileWindow.PromptUser(items.Select(x => x.FullName));
+                        var index = PickFileDialog.PickFileWindow.PromptUser(items.Select(x => x.FullName));
                         projectItem = items.ElementAt(index).ProjectItem;
                     }
                     catch (ActionCancelledException)

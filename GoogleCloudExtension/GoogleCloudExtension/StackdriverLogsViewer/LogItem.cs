@@ -215,7 +215,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 }
 
                 SourceLinkVisible = true;
-                OnNavigateToSourceCommand = new ProtectedCommand(NavigateToSourceLineCommand);
+                OnNavigateToSourceCommand = new ProtectedCommand(() => SourceVersionUtils.NavigateToSourceLineCommand(this));
                 var tmp = $"{SourceFilePath}:{SourceLine}";
                 SourceLinkCaption = tmp.Length <= 20 ? tmp : $"...{tmp.Substring(tmp.Length - 17)}";
             }
@@ -314,57 +314,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             return TimeZoneInfo.ConvertTime(datetime, timeZoneInfo);
-        }
-
-        /// <summary>
-        /// Open the source file, move to the source line and show tooltip.
-        /// If git sha is present at the log entry, try to open the revision of the file.
-        /// If openning the file of the git sha revision does not succeed, 
-        /// fallback to using the assembly version information.
-        /// </summary>
-        private void NavigateToSourceLineCommand()
-        {
-            try
-            {
-                var revisionFile = this.FindGitAndGetFileContent();
-                if (revisionFile != null)
-                {
-                    var frame = ShellUtils.Open(revisionFile);
-                    if (frame == null)
-                    {
-                        SourceVersionUtils.FailedToOpenFilePrompt(SourceFilePath);
-                        return;
-                    }
-
-                    this.ShowToolTip(frame);
-                }
-                else
-                {   // fallback to using assembly version information.
-                    var project = this.FindOrOpenProject();
-                    if (project == null)
-                    {
-                        Debug.WriteLine($"Failed to find project of {AssemblyName}");
-                        return;
-                    }
-
-                    var projectSourceFile = project.FindSourceFile(SourceFilePath);
-                    if (projectSourceFile == null)
-                    {
-                        SourceVersionUtils.FileItemNotFoundPrompt(SourceFilePath);
-                        return;
-                    }
-
-                    var window = ShellUtils.Open(projectSourceFile.ProjectItem);
-                    if (null == window)
-                    {
-                        SourceVersionUtils.FailedToOpenFilePrompt(SourceFilePath);
-                        return;
-                    }
-                    this.ShowToolTip(window);
-                }
-            }
-            catch (ActionCancelledException)
-            { }
         }
     }
 }

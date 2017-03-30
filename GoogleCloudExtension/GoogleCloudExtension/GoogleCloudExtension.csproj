@@ -103,11 +103,11 @@
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksWindowContent.xaml.cs">
       <DependentUpon>AuthorizedNetworksWindowContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PickFile\PickFileWindow.cs" />
-    <Compile Include="PickFile\PickFileWindowContent.xaml.cs">
+    <Compile Include="PickFileDialog\PickFileWindow.cs" />
+    <Compile Include="PickFileDialog\PickFileWindowContent.xaml.cs">
       <DependentUpon>PickFileWindowContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="PickFile\PickFileWindowViewModel.cs" />
+    <Compile Include="PickFileDialog\PickFileWindowViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gae\GaeSource.cs" />
     <Compile Include="CloudExplorerSources\Gae\GaeSourceRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gae\ServiceItem.cs" />
@@ -764,7 +764,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="PickFile\PickFileWindowContent.xaml">
+    <Page Include="PickFileDialog\PickFileWindowContent.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -26,7 +26,6 @@ namespace GoogleCloudExtension.SolutionUtils
     /// </summary>
     internal class ProjectHelper
     {
-        private const string CSharpProjectKind = "{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}";
         private const string AssemblyVersionProperty = "AssemblyVersion";
         private const string AssemblyNameProperty = "AssemblyName";
 
@@ -133,9 +132,9 @@ namespace GoogleCloudExtension.SolutionUtils
         {
             try
             {
-                return project != null && project.Kind == CSharpProjectKind && project.FullName != null && project.Properties != null;
+                return project != null && project.FullName != null && project.Properties != null;
             }
-            catch (COMException ex)
+            catch (Exception ex) when (ex is COMException || ex is NotImplementedException)
             {
                 return false;
             }

@@ -4022,6 +4022,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select the file from the list.
+        /// </summary>
+        public static string SourceVersionPickFileDialogCaption {
+            get {
+                return ResourceManager.GetString("SourceVersionPickFileDialogCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to open the source file.\r\n{0}.
         /// </summary>
         public static string SourceVersionUtilsFailedOpenFileMessage {
@@ -4031,11 +4040,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to locate file {0} at local repo {1} of commit sha {2}..
+        /// </summary>
+        public static string SourceVersionUtilsFailedToLocateFileInRepoMessage {
+            get {
+                return ResourceManager.GetString("SourceVersionUtilsFailedToLocateFileInRepoMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Does not find the source file in current solution.\r\n{0}.
         /// </summary>
         public static string SourceVersionUtilsFileNotFoundMessage {
             get {
                 return ResourceManager.GetString("SourceVersionUtilsFileNotFoundMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Open the solution from a local git repository..
+        /// </summary>
+        public static string SourceVersionUtilsOpenProjectFromLocalRepoPrompt {
+            get {
+                return ResourceManager.GetString("SourceVersionUtilsOpenProjectFromLocalRepoPrompt", resourceCulture);
             }
         }
         

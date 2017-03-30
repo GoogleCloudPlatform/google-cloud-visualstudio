@@ -14,10 +14,10 @@
 
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.StackdriverErrorReporting;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.SourceBrowsing
     internal static class SourceVersionUtils
     {
         /// <summary>
-        /// Global cache of git sha to <seealso cref="GitCommit"/> object.
+        /// A map of git sha to <seealso cref="GitCommit"/> object.
         /// </summary>
         private static readonly Dictionary<string, GitCommit> s_localCache = new Dictionary<string, GitCommit>(StringComparer.OrdinalIgnoreCase);
 
@@ -37,45 +37,83 @@ namespace GoogleCloudExtension.SourceBrowsing
         private const string SourceContextIDLabel = "git_revision_id";
 
         /// <summary>
-        /// Try to locate the local git repo and open the revision of the source file
-        /// that writes the log entry.
+        /// Open the source file, move to the source line and show tooltip.
+        /// If git sha is present at the log entry, try to open the revision of the file.
+        /// If the log item does not contain revision id,
+        /// fallback to using the assembly version information.
         /// </summary>
         /// <param name="logItem">The log item to search for source file.</param>
-        /// <returns>
-        /// The file path of source file revision.
-        /// Null if not found.
-        /// </returns>
-        public static string FindGitAndGetFileContent(this LogItem logItem)
+        public static void NavigateToSourceLineCommand(LogItem logItem)
         {
-            if (logItem.Entry.Labels == null || !logItem.Entry.Labels.ContainsKey(SourceContextIDLabel))
+            try
             {
-                return null;
-            }
+                // The expression evaluates to nullable bool. Need to explicitly specify == true.
+                if (logItem.Entry.Labels?.ContainsKey(SourceContextIDLabel) == true)
+                {
+                    string sha = logItem.Entry.Labels[SourceContextIDLabel];
+                    var revisionFile = SearchGitRepoAndGetFileContent(sha, logItem.SourceFilePath);
+                    if (revisionFile == null)
+                    {
+                        return;
+                    }
+                    var frame = ShellUtils.Open(revisionFile);
+                    if (frame == null)
+                    {
+                        FailedToOpenFilePrompt(revisionFile);
+                        return;
+                    }
 
-            string sha = logItem.Entry.Labels[SourceContextIDLabel];
-            if (s_localCache.ContainsKey(sha))
-            {
-                return s_localCache[sha].GetFile(logItem.SourceFilePath);
-            }
+                    logItem.ShowToolTip(frame);
+                }
+                else
+                {   // If the log item does not contain revision id, 
+                    // fallback to using assembly version information.
+                    var project = FindOrOpenProject(logItem);
+                    if (project == null)
+                    {
+                        Debug.WriteLine($"Failed to find project of {logItem.AssemblyName}");
+                        return;
+                    }
 
-            // There is a chance the file path is already contains local git repo root.
-            GitCommit commit = SearchCommitAtPath(Path.GetDirectoryName(logItem.SourceFilePath), sha);
-            if (commit != null)
-            {
-                return commit.GetFile(logItem.SourceFilePath);
-            }
+                    var projectSourceFile = project.FindSourceFile(logItem.SourceFilePath);
+                    if (projectSourceFile == null)
+                    {
+                        FileItemNotFoundPrompt(logItem.SourceFilePath);
+                        return;
+                    }
 
-            if (!IsCurrentSolutionOpen())
-            {
-                OpenCurrentVersionProjectPrompt(logItem.AssemblyName, logItem.AssemblyVersion);
+                    var window = ShellUtils.Open(projectSourceFile.ProjectItem);
+                    if (null == window)
+                    {
+                        FailedToOpenFilePrompt(logItem.SourceFilePath);
+                        return;
+                    }
+                    logItem.ShowToolTip(window);
+                }
             }
-            var solution = SolutionHelper.CurrentSolution;
-            commit = solution.Projects.Select(x => SearchCommitAtPath(x.ProjectRoot, sha)).Where(y => y != null).FirstOrDefault();
-            if (commit != null)
-            {
-                return commit.GetFile(logItem.SourceFilePath);
-            }
-            return null;
+            catch (ActionCancelledException)
+            { }
+        }
+
+        /// <summary>
+        /// Prompt when the file item not found.
+        /// </summary>
+        /// <param name="filePath">The file path to be shown in the error prompt.</param>
+        public static void FileItemNotFoundPrompt(string filePath)
+        {
+            UserPromptUtils.ErrorPrompt(
+                message: String.Format(Resources.SourceVersionUtilsFileNotFoundMessage, filePath),
+                title: Resources.uiDefaultPromptTitle);
+        }
+
+        /// <summary>
+        /// Prompt when Visual Studio fails to open the source file.
+        /// </summary>
+        public static void FailedToOpenFilePrompt(string filePath)
+        {
+            UserPromptUtils.ErrorPrompt(
+                message: String.Format(Resources.SourceVersionUtilsFailedOpenFileMessage, filePath),
+                title: Resources.uiDefaultPromptTitle);
         }
 
         /// <summary>
@@ -86,7 +124,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// null: No solution is opened, or does not find the project of referred by the log item.
         /// a <seealso cref="ProjectHelper"/> object otherwise.
         /// </returns>
-        public static ProjectHelper FindOrOpenProject(this LogItem logItem)
+        private static ProjectHelper FindOrOpenProject(LogItem logItem)
         {
             if (String.IsNullOrWhiteSpace(logItem.AssemblyName) || String.IsNullOrWhiteSpace(logItem.AssemblyVersion))
             {
@@ -123,25 +161,19 @@ namespace GoogleCloudExtension.SourceBrowsing
             return project;
         }
 
-        /// <summary>
-        /// Prompt when the file item not found.
-        /// </summary>
-        /// <param name="filePath">The file path to be shown in the error prompt.</param>
-        public static void FileItemNotFoundPrompt(string filePath)
+        private static void OpenCurrentVersionProjectPrompt(string assemblyName, string assemblyVersion)
         {
-            UserPromptUtils.ErrorPrompt(
-                message: String.Format(Resources.SourceVersionUtilsFileNotFoundMessage, filePath),
-                title: Resources.uiDefaultPromptTitle);
-        }
-
-        /// <summary>
-        /// Prompt when Visual Studio fails to open the source file.
-        /// </summary>
-        public static void FailedToOpenFilePrompt(string filePath)
-        {
-            UserPromptUtils.ErrorPrompt(
-                message: String.Format(Resources.SourceVersionUtilsFailedOpenFileMessage, filePath),
-                title: Resources.uiDefaultPromptTitle);
+            if (UserPromptUtils.ActionPrompt(
+                    prompt: String.Format(Resources.LogsViewerPleaseOpenProjectPrompt, assemblyName, assemblyVersion),
+                    title: Resources.uiDefaultPromptTitle,
+                    message: Resources.LogsViewerAskToOpenProjectMessage))
+            {
+                ShellUtils.OpenProject();
+            }
+            if (!IsCurrentSolutionOpen())
+            {
+                throw new ActionCancelledException();
+            }
         }
 
         private static void LogEntryVersionInfoMissingPrompt()
@@ -151,16 +183,55 @@ namespace GoogleCloudExtension.SourceBrowsing
                 title: Resources.uiDefaultPromptTitle);
         }
 
-        public static void OpenCurrentVersionProjectPrompt(string assemblyName, string assemblyVersion)
+        /// <summary>
+        /// Try to locate the local git repo and open the revision of the source file
+        /// that writes the log entry.
+        /// </summary>
+        /// <param name="sha">The git commit SHA.</param>
+        /// <param name="filePath">The full file path that generates the log item or error event.</param>
+        /// <returns>
+        /// The file path of the source file revision.
+        /// null: Operation is cancelled or failed to open the file revision.
+        /// </returns>
+        /// <exception cref="ActionCancelledException">Does not find the revision of file.</exception>
+        private static string SearchGitRepoAndGetFileContent(string sha, string filePath)
+        {
+            if (s_localCache.ContainsKey(sha))
+            {
+                return s_localCache[sha].GetFile(filePath);
+            }
+
+            // There is a chance the file is built from local git repo root.
+            GitCommit commit = SearchCommitAtPath(Path.GetDirectoryName(filePath), sha);
+            if (commit != null)
+            {
+                return commit.GetFile(filePath);
+            }
+
+            if (!IsCurrentSolutionOpen())
+            {
+                OpenProjectFromLocalRepositoryPrompt();
+            }
+            var solution = SolutionHelper.CurrentSolution;
+            commit = solution.Projects.Select(x => SearchCommitAtPath(x.ProjectRoot, sha)).Where(y => y != null).FirstOrDefault();
+            if (commit != null)
+            {
+                return commit.GetFile(filePath);
+            }
+            FileItemNotFoundPrompt(filePath);
+            return null;
+        }
+
+        private static void OpenProjectFromLocalRepositoryPrompt()
         {
             if (UserPromptUtils.ActionPrompt(
-                    prompt: String.Format(Resources.LogsViewerPleaseOpenProjectPrompt, assemblyName, assemblyVersion),
+                    prompt: String.Format(Resources.SourceVersionUtilsOpenProjectFromLocalRepoPrompt),
                     title: Resources.uiDefaultPromptTitle,
                     message: Resources.LogsViewerAskToOpenProjectMessage))
             {
                 ShellUtils.OpenProject();
             }
-            if (SolutionHelper.CurrentSolution?.Projects?.Count == 0)
+            if (!IsCurrentSolutionOpen())
             {
                 throw new ActionCancelledException();
             }

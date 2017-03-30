@@ -14,7 +14,7 @@
 
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.PickFile
+namespace GoogleCloudExtension.PickFileDialog
 {
     /// <summary>
     /// Interaction logic for PickFileWindowContent.xaml
