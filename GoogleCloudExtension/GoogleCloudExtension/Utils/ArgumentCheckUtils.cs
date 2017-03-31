@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.Utils
         {
             if (String.IsNullOrWhiteSpace(arg))
             {
-                throw new ArgumentException(message);
+                throw new ArgumentException(message ?? "");
             }
 
             return arg;
@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.Utils
         {
             if (arg == null)
             {
-                throw new ArgumentNullException(message);
+                throw new ArgumentNullException(message ?? "");
             }
 
             return arg;
