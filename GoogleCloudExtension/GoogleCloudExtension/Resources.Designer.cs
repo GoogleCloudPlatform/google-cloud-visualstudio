@@ -4040,6 +4040,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to locate file {0} of commit sha {1} at local repo {2} ..
+        /// </summary>
+        public static string SourceVersionUtilsFailedToLocateFileInRepoMessage {
+            get {
+                return ResourceManager.GetString("SourceVersionUtilsFailedToLocateFileInRepoMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Does not find the source file in current solution.\r\n{0}.
         /// </summary>
         public static string SourceVersionUtilsFileNotFoundMessage {
