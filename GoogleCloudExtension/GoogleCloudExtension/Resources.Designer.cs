@@ -4022,6 +4022,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select the file from the list.
+        /// </summary>
+        public static string SourceVersionPickFileDialogCaption {
+            get {
+                return ResourceManager.GetString("SourceVersionPickFileDialogCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to open the source file.\r\n{0}.
         /// </summary>
         public static string SourceVersionUtilsFailedOpenFileMessage {
