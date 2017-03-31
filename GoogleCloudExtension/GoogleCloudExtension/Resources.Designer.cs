@@ -4058,6 +4058,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open the solution from a local git repository..
+        /// </summary>
+        public static string SourceVersionUtilsOpenProjectFromLocalRepoPrompt {
+            get {
+                return ResourceManager.GetString("SourceVersionUtilsOpenProjectFromLocalRepoPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Allocations:.
         /// </summary>
         public static string SplitTrafficWindowAllocationsLabel {

@@ -2080,4 +2080,8 @@ Open the project to navigate to the logger method location.</value>
     <value>Unable to locate file {0} of commit sha {1} at local repo {2} .</value>
     <comment>Error message when it fails to find the file at the local repo with the git commit sha. {0} is the file path, {1} is the git SHA, {2} is the local repo path.</comment>
   </data>
+  <data name="SourceVersionUtilsOpenProjectFromLocalRepoPrompt" xml:space="preserve">
+    <value>Open the solution from a local git repository.</value>
+    <comment>The prompt for opening the solution from a local git repository.</comment>
+  </data>
 </root>
