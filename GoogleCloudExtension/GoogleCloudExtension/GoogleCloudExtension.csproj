@@ -194,6 +194,11 @@
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PickFileDialog\PickFileWindow.cs" />
+    <Compile Include="PickFileDialog\PickFileWindowContent.xaml.cs">
+      <DependentUpon>PickFileWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PickFileDialog\PickFileWindowViewModel.cs" />
     <Compile Include="PublishDialogSteps\ChoiceStep\Choice.cs" />
     <Compile Include="PublishDialogSteps\ChoiceStep\ChoiceStepContent.xaml.cs">
       <DependentUpon>ChoiceStepContent.xaml</DependentUpon>
@@ -334,6 +339,7 @@
       <DependentUpon>TitleBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="TitleBar\TitleBarViewModel.cs" />
+    <Compile Include="Utils\ArgumentCheckUtils.cs" />
     <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
@@ -775,6 +781,10 @@
     <Page Include="LinkPrompt\LinkPromptDialogWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PickFileDialog\PickFileWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="PublishDialogSteps\ChoiceStep\ChoiceStepContent.xaml">
       <SubType>Designer</SubType>
