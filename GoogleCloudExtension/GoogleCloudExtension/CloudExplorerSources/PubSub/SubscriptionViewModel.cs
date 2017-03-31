@@ -91,7 +91,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 {
                     bool doDelete = UserPromptUtils.ActionPrompt(
                         string.Format(Resources.PubSubDeleteSubscriptionWindowMessage, _subscriptionItem.Name),
-                        Resources.PubSubDeleteSubscriptionWindowHeader);
+                        Resources.PubSubDeleteSubscriptionWindowHeader,
+                        actionCaption: Resources.UiDeleteButtonCaption);
                     if (doDelete)
                     {
                         await DataSource.DeleteSubscriptionAsync(_subscriptionItem.Name);
