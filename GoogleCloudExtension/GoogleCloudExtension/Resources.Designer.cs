@@ -2933,6 +2933,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Auto Load Log Stream.
+        /// </summary>
+        public static string LogViewerAutoReloadButtonCaption {
+            get {
+                return ResourceManager.GetString("LogViewerAutoReloadButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Click to hide all log items detail..
         /// </summary>
         public static string LogViewerCollapseAllTip {
@@ -3118,6 +3127,15 @@ namespace GoogleCloudExtension {
         public static string LogViewerRequestProgressMessage {
             get {
                 return ResourceManager.GetString("LogViewerRequestProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Too many log items are loaded, please narrow down your search filter and try again..
+        /// </summary>
+        public static string LogViewerResultSetTooLargeMessage {
+            get {
+                return ResourceManager.GetString("LogViewerResultSetTooLargeMessage", resourceCulture);
             }
         }
         

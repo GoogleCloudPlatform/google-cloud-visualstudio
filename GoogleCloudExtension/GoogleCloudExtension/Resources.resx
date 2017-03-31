@@ -2084,4 +2084,12 @@ Open the project to navigate to the logger method location.</value>
     <value>Open the solution from a local git repository.</value>
     <comment>The prompt for opening the solution from a local git repository.</comment>
   </data>
+  <data name="LogViewerAutoReloadButtonCaption" xml:space="preserve">
+    <value>Auto Load Log Stream</value>
+    <comment>The auto reload button caption for LogsViewer window.</comment>
+  </data>
+  <data name="LogViewerResultSetTooLargeMessage" xml:space="preserve">
+    <value>Too many log items are loaded, please narrow down your search filter and try again.</value>
+    <comment>Where there are too many log itmes added, the viewer becomes super slow. Remind the user to narrow down search filter.</comment>
+  </data>
 </root>

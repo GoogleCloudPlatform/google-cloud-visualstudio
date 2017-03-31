@@ -132,8 +132,9 @@
                     x:Name="_autoReloadButton"
                     Style="{StaticResource AutoReloadButtonStyle}" 
                     AutoReloadCommand="{Binding OnAutoReloadCommand}"
-                    Content="{x:Static ext:Resources.UiAutoReloadButtonCaption}"                    
-                    IntervalSeconds="{Binding AutoReloadIntervalSeconds}"/>
+                    Content="{x:Static ext:Resources.LogViewerAutoReloadButtonCaption}"                    
+                    IntervalSeconds="{Binding AutoReloadIntervalSeconds}"
+                    IsChecked="{Binding IsAutoReloadChecked}"/>
             </Border>
 
             <!-- Filters -->
