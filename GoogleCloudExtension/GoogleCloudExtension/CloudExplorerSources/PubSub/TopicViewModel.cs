@@ -177,7 +177,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 {
                     bool doDelete = UserPromptUtils.ActionPrompt(
                         string.Format(Resources.PubSubDeleteTopicWindowMessage, _topicItem.Name),
-                        Resources.PubSubDeleteTopicWindowHeader);
+                        Resources.PubSubDeleteTopicWindowHeader,
+                        actionCaption: Resources.UiDeleteButtonCaption);
                     if (doDelete)
                     {
                         await DataSource.DeleteTopicAsync(_topicItem.Name);
