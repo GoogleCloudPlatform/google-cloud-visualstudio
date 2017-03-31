@@ -100,7 +100,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                 return;
             }
 
-            var window = ShellUtils.Open(projectFile.ProjectItem);
+            var window = ShellUtils.Open(projectFile.FullName);
             if (window == null)
             {
                 FailedToOpenFilePrompt(stackFrame.SourceFile);
