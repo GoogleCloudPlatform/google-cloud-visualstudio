@@ -30,30 +30,36 @@
                 x:Key="MessageColumn" 
                 Width="*">
                 <DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate >
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <controls:IconButton
-                                x:Name="_sourceLinkButton"
-                                Margin="6,0,12,0"
-                                Style="{StaticResource MouseOverLinkButtonStyle}"
-                                Command="{Binding OnNavigateToSourceCommand}"
-                                Visibility="{Binding SourceLinkVisible, Converter={StaticResource visibilityConverter}}"
-                                Content="{Binding SourceLinkCaption}">
-                                <controls:IconButton.ToolTip>
-                                    <ToolTip Content="{Binding SourceFilePath}" 
-                                             Style="{StaticResource CommonTooltipStyle}" />
-                                </controls:IconButton.ToolTip>
-                            </controls:IconButton>
-                            <TextBlock 
-                                Grid.Column="1"
-                                Text="{Binding Message}"
-                                TextWrapping="NoWrap"
-                                TextTrimming="CharacterEllipsis" />
-                        </Grid>
+                    <DataTemplate>
+                        <DockPanel LastChildFill="True" >
+                            <Grid DockPanel.Dock="Left">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock 
+                                    Text="{Binding Message}"
+                                    TextWrapping="NoWrap"
+                                    TextTrimming="CharacterEllipsis" />
+
+                                <controls:IconButton
+                                    Grid.Column="1"
+                                    x:Name="_sourceLinkButton"
+                                    Margin="6,0,12,0"
+                                    Style="{StaticResource MouseOverLinkButtonStyle}"
+                                    Command="{Binding OnNavigateToSourceCommand}"
+                                    Visibility="{Binding SourceLinkVisible, Converter={StaticResource visibilityConverter}}"
+                                    Content="{Binding SourceLinkCaption}">
+                                    <controls:IconButton.ToolTip>
+                                        <ToolTip Content="{Binding SourceFilePath}" 
+                                                    Style="{StaticResource CommonTooltipStyle}" />
+                                    </controls:IconButton.ToolTip>
+                                </controls:IconButton>
+                            </Grid>
+
+                            <TextBlock DockPanel.Dock="Right"/>
+                            
+                        </DockPanel>
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
