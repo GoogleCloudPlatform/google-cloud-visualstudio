@@ -335,7 +335,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            var window = ShellUtils.Open(projectSourceFile.ProjectItem);
+            var window = ShellUtils.Open(projectSourceFile.FullName);
             if (null == window)
             {
                 SourceVersionUtils.FailedToOpenFilePrompt(SourceFilePath);

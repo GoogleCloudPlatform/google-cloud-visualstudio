@@ -28,6 +28,8 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public static class ShellUtils
     {
+        private static Guid s_GuidMicrosoftCsharpEditor = new Guid("{A6C744A8-0E4A-4FC6-886A-064283054674}");
+
         /// <summary>
         /// Returns whether the shell is in the debugger state. This will happen if the user is debugging an app.
         /// </summary>
@@ -99,18 +101,16 @@ namespace GoogleCloudExtension.Utils
         }
 
         /// <summary>
-        /// Opens a project item in Visual Studio.
+        /// Opens a source file in Visual Studio.
         /// </summary>
-        /// <param name="projectItem"><seealso cref="ProjectItem"/></param>
+        /// <param name="sourceFile">Source file path</param>
         /// <returns>The Window that displays the project item.</returns>
-        public static Window Open(ProjectItem projectItem)
+        public static Window Open(string sourceFile)
         {
-            var window = projectItem.Open(EnvDTE.Constants.vsViewKindPrimary);
-            if (null != window)
-            {
-                window.Visible = true;
-            }
-            return window;
+            var provider = GetGloblalServiceProvider();
+            var frame = VsShellUtilities.OpenDocumentWithSpecificEditor(
+                provider, sourceFile, s_GuidMicrosoftCsharpEditor, VSConstants.LOGVIEWID.Code_guid);
+            return frame == null ? null : VsShellUtilities.GetWindowObject(frame);
         }
 
         /// <summary>
@@ -130,6 +130,17 @@ namespace GoogleCloudExtension.Utils
         {
             var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
             dte.ExecuteCommand("File.SaveAll");
+        }
+
+        /// <summary>
+        /// Register a Visual Studio Shutdown event handler.
+        /// Normally for some quick cleanup tasks.
+        /// </summary>
+        /// <param name="onExitEventHandler">The event handler.</param>
+        public static void RegisterShutdownEventHandler(Action onExitEventHandler)
+        {
+            var dte2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
+            dte2.Events.DTEEvents.OnBeginShutdown += () => onExitEventHandler();
         }
 
         private static void SetShellNormal()
