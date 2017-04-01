@@ -28,7 +28,6 @@
 
             <DataGridTemplateColumn
                 x:Key="MessageColumn" 
-                CanUserResize="False"
                 Width="*">
                 <DataGridTemplateColumn.CellTemplate>
                     <DataTemplate >
@@ -76,7 +75,7 @@
                 </StackPanel>
             </HierarchicalDataTemplate>
 
-            <!-- data grid group item.-->
+            <!-- data grid group item .-->
             <ControlTemplate x:Key="groupItemTemplate" TargetType="{x:Type GroupItem}">
                 <StackPanel>
                     <StackPanel 
@@ -405,11 +404,17 @@
                                     <Setter Property="Template" Value="{StaticResource groupItemTemplate}" />
                                 </Style>
                             </GroupStyle.ContainerStyle>
+                            <GroupStyle.Panel>
+                                <ItemsPanelTemplate>
+                                    <DataGridRowsPresenter/>
+                                </ItemsPanelTemplate>
+                            </GroupStyle.Panel>
                         </GroupStyle>
                     </DataGrid.GroupStyle>
 
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn IsReadOnly="True">
+                        <DataGridTemplateColumn 
+                            IsReadOnly="True" >
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Image Source="{Binding SeverityLevel}" 
@@ -425,7 +430,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn 
+                        <DataGridTemplateColumn
                             IsReadOnly="True" 
                             SortMemberPath="TimeStamp" >
                             <DataGridTemplateColumn.CellTemplate>
