@@ -28,8 +28,6 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public static class ShellUtils
     {
-        private static Guid s_GuidMicrosoftCsharpEditor = new Guid("{A6C744A8-0E4A-4FC6-886A-064283054674}");
-
         /// <summary>
         /// Returns whether the shell is in the debugger state. This will happen if the user is debugging an app.
         /// </summary>
@@ -105,12 +103,13 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="sourceFile">Source file path</param>
         /// <returns>The Window that displays the project item.</returns>
-        public static Window Open(string sourceFile)
+        public static Window ReadOnlyOpen(string sourceFile)
         {
-            var provider = GetGloblalServiceProvider();
-            var frame = VsShellUtilities.OpenDocumentWithSpecificEditor(
-                provider, sourceFile, s_GuidMicrosoftCsharpEditor, VSConstants.LOGVIEWID.Code_guid);
-            return frame == null ? null : VsShellUtilities.GetWindowObject(frame);
+            var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
+            var itemOp = dte.ItemOperations;
+            var window = itemOp.OpenFile(sourceFile);
+            window.Document.ReadOnly = true;
+            return window;
         }
 
         /// <summary>
