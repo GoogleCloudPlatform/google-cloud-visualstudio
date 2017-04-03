@@ -103,12 +103,11 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="sourceFile">Source file path</param>
         /// <returns>The Window that displays the project item.</returns>
-        public static Window ReadOnlyOpen(string sourceFile)
+        public static Window Open(string sourceFile)
         {
             var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
             var itemOp = dte.ItemOperations;
             var window = itemOp.OpenFile(sourceFile);
-            window.Document.ReadOnly = true;
             return window;
         }
 
@@ -140,6 +139,17 @@ namespace GoogleCloudExtension.Utils
         {
             var dte2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
             dte2.Events.DTEEvents.OnBeginShutdown += () => onExitEventHandler();
+        }
+
+        /// <summary>
+        /// Register a Visual Studio Window close event handler.
+        /// http://stackoverflow.com/questions/25389741/detect-when-visual-studio-document-window-is-closed
+        /// </summary>
+        /// <param name="onWindowCloseEventHandler">The event handler.</param>
+        public static void RegisterWindowCloseEventHandler(Action<Window> onWindowCloseEventHandler)
+        {
+            var dte2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
+            dte2.Events.WindowEvents.WindowClosing += (window) => onWindowCloseEventHandler(window);
         }
 
         private static void SetShellNormal()

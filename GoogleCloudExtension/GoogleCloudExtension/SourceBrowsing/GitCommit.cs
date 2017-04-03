@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using EnvDTE;
 using GoogleCloudExtension.Utils;
 using LibGit2Sharp;
 using System;
@@ -77,7 +78,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// Otherwise, return the temporary file.
         /// </summary>
         /// <param name="filePath">The file to be searched for.</param>
-        public string GetFile(string filePath)
+        public Window OpenFileRevision(string filePath)
         {
             TreeEntry treeEntry;
             var matchingFiles = FindMatchingEntry(filePath).ToList();
@@ -103,9 +104,10 @@ namespace GoogleCloudExtension.SourceBrowsing
             {
                 treeEntry = matchingFiles.First();
             }
-            var tmpPath = GitTempFiles.Current.GetOrSave(_commit.Sha, treeEntry.Path, (tmpFile) => SaveTempFile(treeEntry, tmpFile));
-            var currentPath = CurrentPath(treeEntry);
-            return _repo.RetrieveStatus(treeEntry.Path) == FileStatus.Unaltered && FileCompare(currentPath, tmpPath) ? currentPath : tmpPath;            
+            var window = GitTempFiles.Current.Open(_commit.Sha, treeEntry.Path, (tmpFile) => SaveTempFile(treeEntry, tmpFile));
+            return window;
+            //var currentPath = CurrentPath(treeEntry);
+            //return _repo.RetrieveStatus(treeEntry.Path) == FileStatus.Unaltered && FileCompare(currentPath, tmpPath) ? currentPath : tmpPath;            
         }
 
         private void SaveTempFile(TreeEntry treeEntry, string filePath)
