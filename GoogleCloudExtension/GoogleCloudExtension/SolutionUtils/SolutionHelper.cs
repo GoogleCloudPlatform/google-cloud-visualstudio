@@ -75,25 +75,9 @@ namespace GoogleCloudExtension.SolutionUtils
         /// </summary>
         public IParsedProject SelectedProject => GetSelectedProject();
 
-        /// <summary>
-        /// Get a list of <seealso cref="ProjectHelper"/> objects under current solution.
-        /// </summary>
-        public List<ProjectHelper> Projects => GetProjectList();
-
         private SolutionHelper(Solution solution)
         {
             _solution = solution;
-        }
-
-        /// <summary>
-        /// Find project items that matches the path of <paramref name="sourceLocationFilePath"/>.
-        /// </summary>
-        /// <param name="sourceLocationFilePath">The source file path to be searched for.</param>
-        /// <returns>A list of <seealso cref="ProjectSourceFile"/> objects that matches the searched file path.</returns>
-        public List<ProjectSourceFile> FindMatchingSourceFile(string sourceLocationFilePath)
-        {
-            var query = Projects.SelectMany(x => x.SourceFiles).Where(y => y.IsMatchingPath(sourceLocationFilePath));
-            return query.ToList<ProjectSourceFile>();
         }
 
         private IParsedProject GetSelectedProject()
@@ -204,20 +188,6 @@ namespace GoogleCloudExtension.SolutionUtils
             // The project could not be found.
             Debug.WriteLine($"Could not find project {startupProjectFilePath}");
             return null;
-        }
-
-        private List<ProjectHelper> GetProjectList()
-        {
-            List<ProjectHelper> list = new List<ProjectHelper>();
-            foreach (Project project in _solution.Projects)
-            {
-                if (ProjectHelper.IsValidSupported(project))
-                {
-                    list.Add(new ProjectHelper(project));
-                }
-            }
-
-            return list;
         }
     }
 }

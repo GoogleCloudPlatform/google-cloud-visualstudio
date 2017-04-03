@@ -19,6 +19,7 @@ using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.HostAbstraction;
 using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
@@ -157,11 +158,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                 {
                     var startDeploymentTime = DateTime.Now;
                     result = await WindowsVmDeployment.PublishProjectAsync(
-                        project.FullPath,
+                        project,
                         SelectedInstance,
                         SelectedCredentials,
                         progress,
-                        (l) => GcpOutputWindow.OutputLine(l));
+                        HostAbstractionLayer.ToolsPathProvider,
+                        GcpOutputWindow.OutputLine);
                     deploymentDuration = DateTime.Now - startDeploymentTime;
                 }
 

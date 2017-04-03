@@ -19,6 +19,7 @@ using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.HostAbstraction;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using System;
@@ -269,9 +270,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                     {
                         var deploymentStartTime = DateTime.Now;
                         result = await GkeDeployment.PublishProjectAsync(
-                            project.FullPath,
+                            project,
                             options,
                             progress,
+                            HostAbstractionLayer.ToolsPathProvider,
                             GcpOutputWindow.OutputLine);
                         deploymentDuration = DateTime.Now - deploymentStartTime;
                     }
