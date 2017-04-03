@@ -169,6 +169,9 @@
       <DependentUpon>PortManagerWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="FirewallManagement\PortModel.cs" />
+    <Compile Include="HostAbstraction\HostAbstractionLayer.cs" />
+    <Compile Include="HostAbstraction\VS14\ToolsPathProvider.cs" />
+    <Compile Include="HostAbstraction\VS15\ToolsPathProvider.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsViewModel.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindow.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml.cs">
