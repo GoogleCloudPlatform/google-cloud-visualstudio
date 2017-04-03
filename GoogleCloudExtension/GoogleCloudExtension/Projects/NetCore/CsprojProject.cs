@@ -17,12 +17,12 @@ using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Utils;
 using System.IO;
 
-namespace GoogleCloudExtension.Projects
+namespace GoogleCloudExtension.Projects.NetCore
 {
     /// <summary>
     /// This class represents a .NET Core project based on .csproj.
     /// </summary>
-    internal class NetCoreCsprojProject : IParsedProject
+    internal class CsprojProject : IParsedProject
     {
         private readonly Project _project;
 
@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.Projects
 
         #endregion
 
-        public NetCoreCsprojProject(Project project, string targetFramework)
+        public CsprojProject(Project project, string targetFramework)
         {
             GcpOutputWindow.OutputDebugLine($"Found project {project.FullName} targeting {targetFramework}");
 

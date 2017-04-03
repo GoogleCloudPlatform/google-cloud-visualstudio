@@ -16,12 +16,12 @@ using EnvDTE;
 using GoogleCloudExtension.Deployment;
 using System.IO;
 
-namespace GoogleCloudExtension.Projects
+namespace GoogleCloudExtension.Projects.Net4
 {
     /// <summary>
     /// This class represents .NET 4.x .csproj based project.
     /// </summary>
-    internal class NetCsprojProject : IParsedProject
+    internal class CsprojProject : IParsedProject
     {
         private readonly Project _project;
 
@@ -37,7 +37,7 @@ namespace GoogleCloudExtension.Projects
 
         #endregion
 
-        public NetCsprojProject(Project project)
+        public CsprojProject(Project project)
         {
             _project = project;
         }

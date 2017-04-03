@@ -198,9 +198,9 @@
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Projects\NetCoreCsprojProject.cs" />
-    <Compile Include="Projects\NetCoreJsonProject.cs" />
-    <Compile Include="Projects\NetCsprojProject.cs" />
+    <Compile Include="Projects\NetCore\CsprojProject.cs" />
+    <Compile Include="Projects\NetCore\JsonProject.cs" />
+    <Compile Include="Projects\Net4\CsprojProject.cs" />
     <Compile Include="Projects\ProjectParser.cs" />
     <Compile Include="PublishDialogSteps\ChoiceStep\Choice.cs" />
     <Compile Include="PublishDialogSteps\ChoiceStep\ChoiceStepContent.xaml.cs">

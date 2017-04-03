@@ -14,6 +14,8 @@
 
 using EnvDTE;
 using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.Projects.Net4;
+using GoogleCloudExtension.Projects.NetCore;
 using GoogleCloudExtension.Utils;
 using System.Diagnostics;
 using System.IO;
@@ -92,7 +94,7 @@ namespace GoogleCloudExtension.Projects
                         .Descendants(TargetFrameworkElementName)
                         .Select(x => x.Value)
                         .FirstOrDefault();
-                    return new NetCoreCsprojProject(project, targetFramework);
+                    return new NetCore.CsprojProject(project, targetFramework);
                 }
             }
 
@@ -110,7 +112,7 @@ namespace GoogleCloudExtension.Projects
             var guids = projectGuids.Split(';');
             if (guids.Contains(WebApplicationGuid))
             {
-                return new NetCsprojProject(project);
+                return new Net4.CsprojProject(project);
             }
             return null;
         }
@@ -126,7 +128,7 @@ namespace GoogleCloudExtension.Projects
                 return null;
             }
 
-            return new NetCoreJsonProject(projectJsonPath);
+            return new JsonProject(projectJsonPath);
         }
     }
 }
