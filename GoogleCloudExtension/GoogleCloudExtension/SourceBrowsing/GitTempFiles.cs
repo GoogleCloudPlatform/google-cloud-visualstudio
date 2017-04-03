@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using EnvDTE;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -40,7 +41,9 @@ namespace GoogleCloudExtension.SourceBrowsing
         // Cache the temporary file name.
         // Key is git_sha/relative_path. 
         // Value is the temporary file path.
-        private Dictionary<string, string> _tmpFilesMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        private Dictionary<string, Window> _tmpFilesMap = new Dictionary<string, Window>(StringComparer.OrdinalIgnoreCase);
+        //private Dictionary<string, Window> _tmpFilesMap = new Dictionary<string, Window>(StringComparer.OrdinalIgnoreCase);
+        private Dictionary<Window, string> _openWindow = new Dictionary<Window, string>();
 
         /// <summary>
         /// Singleton of the <seealso cref="GitTempFiles"/> class.
@@ -54,7 +57,8 @@ namespace GoogleCloudExtension.SourceBrowsing
                 Directory.CreateDirectory(_folder.Value);
             }
             Clean();
-            ShellUtils.RegisterShutdownEventHandler(Clean);
+            //ShellUtils.RegisterShutdownEventHandler(Clean);
+            ShellUtils.RegisterWindowCloseEventHandler(OnWindowClose);
         }
 
         /// <summary>
@@ -65,7 +69,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="relativePath">Relative path of the target file.</param>
         /// <param name="save">The callback to save the content of the file to the temporary file path.</param>
         /// <returns>Temporary file path.</returns>
-        public string GetOrSave(string gitSha, string relativePath, Action<string> save)
+        public Window Open(string gitSha, string relativePath, Action<string> save)
         {
             gitSha.ThrowIfNullOrEmpty(nameof(gitSha));
             relativePath.ThrowIfNullOrEmpty(nameof(relativePath));
@@ -80,8 +84,30 @@ namespace GoogleCloudExtension.SourceBrowsing
             {
                 var filePath = NewTempFileName(Path.GetFileName(relativePath));
                 save(filePath);
-                _tmpFilesMap[key] = filePath;
-                return filePath;
+                return OpenDocument(filePath, key);
+            }
+        }
+
+        private Window OpenDocument(string filePath, string key)
+        {
+            var window = ShellUtils.Open(filePath);
+            window.Document.ReadOnly = true;
+            File.Delete(filePath);
+            if (window != null)
+            {
+                _tmpFilesMap[key] = window;
+                _openWindow.Add(window, key);
+            }
+            return window;
+        }
+
+        private void OnWindowClose(Window window)
+        {
+            if (_openWindow.ContainsKey(window))
+            {
+                UserPromptUtils.OkPrompt($"The window of {_openWindow[window]} is closing", "OnWindowClose Event handler");
+                _openWindow.Remove(window);
+                _tmpFilesMap.Remove(_openWindow[window]);
             }
         }
 

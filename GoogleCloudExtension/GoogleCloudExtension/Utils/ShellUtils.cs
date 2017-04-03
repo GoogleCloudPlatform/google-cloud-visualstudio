@@ -28,8 +28,6 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public static class ShellUtils
     {
-        private static Guid s_GuidMicrosoftCsharpEditor = new Guid("{A6C744A8-0E4A-4FC6-886A-064283054674}");
-
         /// <summary>
         /// Returns whether the shell is in the debugger state. This will happen if the user is debugging an app.
         /// </summary>
@@ -107,10 +105,10 @@ namespace GoogleCloudExtension.Utils
         /// <returns>The Window that displays the project item.</returns>
         public static Window Open(string sourceFile)
         {
-            var provider = GetGloblalServiceProvider();
-            var frame = VsShellUtilities.OpenDocumentWithSpecificEditor(
-                provider, sourceFile, s_GuidMicrosoftCsharpEditor, VSConstants.LOGVIEWID.Code_guid);
-            return frame == null ? null : VsShellUtilities.GetWindowObject(frame);
+            var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
+            var itemOp = dte.ItemOperations;
+            var window = itemOp.OpenFile(sourceFile);
+            return window;
         }
 
         /// <summary>
@@ -141,6 +139,17 @@ namespace GoogleCloudExtension.Utils
         {
             var dte2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
             dte2.Events.DTEEvents.OnBeginShutdown += () => onExitEventHandler();
+        }
+
+        /// <summary>
+        /// Register a Visual Studio Window close event handler.
+        /// http://stackoverflow.com/questions/25389741/detect-when-visual-studio-document-window-is-closed
+        /// </summary>
+        /// <param name="onWindowCloseEventHandler">The event handler.</param>
+        public static void RegisterWindowCloseEventHandler(Action<Window> onWindowCloseEventHandler)
+        {
+            var dte2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
+            dte2.Events.WindowEvents.WindowClosing += (window) => onWindowCloseEventHandler(window);
         }
 
         private static void SetShellNormal()
