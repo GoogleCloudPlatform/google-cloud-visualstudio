@@ -110,7 +110,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
             {
                 var selectedProject = SolutionHelper.CurrentSolution.SelectedProject;
                 Debug.WriteLine($"Generating configuration for project: {selectedProject.FullPath}");
-                var configurationStatus = AppEngineFlexDeployment.CheckProjectConfiguration(selectedProject.FullPath);
+                var configurationStatus = AppEngineFlexDeployment.CheckProjectConfiguration(selectedProject);
 
                 // If the app.yaml already exists allow the user to skip its generation to preserve the existing file.
                 if (!configurationStatus.HasAppYaml ||
@@ -121,7 +121,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
                         cancelCaption: Resources.UiSkipFileButtonCaption))
                 {
                     Debug.WriteLine($"Generating app.yaml for {selectedProject.FullPath}");
-                    if (!AppEngineFlexDeployment.GenerateAppYaml(selectedProject.FullPath))
+                    if (!AppEngineFlexDeployment.GenerateAppYaml(selectedProject))
                     {
                         UserPromptUtils.ErrorPrompt(
                             String.Format(Resources.GenerateConfigurationFileGenerationErrorMessage, AppEngineFlexDeployment.AppYamlName),
@@ -140,7 +140,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
                         cancelCaption: Resources.UiSkipFileButtonCaption))
                 {
                     Debug.WriteLine($"Generating Dockerfile for {selectedProject.FullPath}");
-                    if (!AppEngineFlexDeployment.GenerateDockerfile(selectedProject.FullPath))
+                    if (!AppEngineFlexDeployment.GenerateDockerfile(selectedProject))
                     {
                         UserPromptUtils.ErrorPrompt(
                             String.Format(Resources.GenerateConfigurationFileGenerationErrorMessage, AppEngineFlexDeployment.DockerfileName),
