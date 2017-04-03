@@ -5,7 +5,7 @@ using System.IO;
 
 namespace GoogleCloudExtension.HostAbstraction.VS15
 {
-    class ToolsPathProvider : IToolsPathProvider
+    internal class ToolsPathProvider : IToolsPathProvider
     {
         private readonly string _edition;
 

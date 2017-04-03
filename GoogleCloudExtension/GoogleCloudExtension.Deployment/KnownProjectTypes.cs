@@ -1,4 +1,5 @@
-﻿namespace GoogleCloudExtension.Deployment
+﻿
+namespace GoogleCloudExtension.Deployment
 {
     /// <summary>
     /// The type of projects supported.

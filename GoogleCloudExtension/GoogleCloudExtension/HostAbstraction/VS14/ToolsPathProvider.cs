@@ -5,7 +5,7 @@ using System.IO;
 
 namespace GoogleCloudExtension.HostAbstraction.VS14
 {
-    class ToolsPathProvider : IToolsPathProvider
+    internal class ToolsPathProvider : IToolsPathProvider
     {
         public string GetExternalToolsPath()
         {

@@ -23,7 +23,6 @@ namespace GoogleCloudExtension.Projects
     /// </summary>
     internal class NetCsprojProject : IParsedProject
     {
-
         private readonly Project _project;
 
         #region IParsedProject

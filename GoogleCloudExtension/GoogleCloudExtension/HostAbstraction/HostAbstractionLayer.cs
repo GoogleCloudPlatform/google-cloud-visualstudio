@@ -3,7 +3,7 @@ using System;
 
 namespace GoogleCloudExtension.HostAbstraction
 {
-    static class HostAbstractionLayer
+    internal static class HostAbstractionLayer
     {
         private const string VisualStudio2015Version = "14.0";
         private const string VisualStudio2017Version = "15.0";
