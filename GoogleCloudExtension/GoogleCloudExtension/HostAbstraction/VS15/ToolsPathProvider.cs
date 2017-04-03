@@ -19,6 +19,9 @@ using System.IO;
 
 namespace GoogleCloudExtension.HostAbstraction.VS15
 {
+    /// <summary>
+    /// The implementation of <seealso cref="IToolsPathProvider"/> for Visual Studio 2017 (v 15.0).
+    /// </summary>
     internal class ToolsPathProvider : IToolsPathProvider
     {
         private readonly string _edition;

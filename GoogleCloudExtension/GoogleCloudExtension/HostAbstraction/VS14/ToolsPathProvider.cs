@@ -19,6 +19,9 @@ using System.IO;
 
 namespace GoogleCloudExtension.HostAbstraction.VS14
 {
+    /// <summary>
+    /// The implementation of <seealso cref="IToolsPathProvider"/> for Visual Studio 2015 (v14.0).
+    /// </summary>
     internal class ToolsPathProvider : IToolsPathProvider
     {
         public string GetExternalToolsPath()

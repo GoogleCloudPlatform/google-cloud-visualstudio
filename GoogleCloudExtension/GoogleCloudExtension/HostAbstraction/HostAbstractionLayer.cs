@@ -17,6 +17,9 @@ using System;
 
 namespace GoogleCloudExtension.HostAbstraction
 {
+    /// <summary>
+    /// This class provides services that are Visual Studio version specific.
+    /// </summary>
     internal static class HostAbstractionLayer
     {
         private const string VisualStudio2015Version = "14.0";
@@ -24,6 +27,9 @@ namespace GoogleCloudExtension.HostAbstraction
 
         private static readonly Lazy<IToolsPathProvider> s_toolsPathProvider = new Lazy<IToolsPathProvider>(GetTooslPathProvider);
 
+        /// <summary>
+        /// The instance of <seealso cref="IToolsPathProvider"/> to use for this version of Visual Studio.
+        /// </summary>
         public static IToolsPathProvider ToolsPathProvider => s_toolsPathProvider.Value;
 
         private static IToolsPathProvider GetTooslPathProvider()

@@ -31,8 +31,6 @@ namespace GoogleCloudExtension.SolutionUtils
     /// </summary>
     internal class SolutionHelper
     {
-        private const string ProjectJsonName = "project.json";
-
         private readonly Solution _solution;
 
         /// <summary>

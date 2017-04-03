@@ -14,6 +14,10 @@
 
 namespace GoogleCloudExtension.Deployment
 {
+    /// <summary>
+    /// Implementation of this interface provide the path to the tools needed by the publish
+    /// operations.
+    /// </summary>
     public interface IToolsPathProvider
     {
         /// <summary>

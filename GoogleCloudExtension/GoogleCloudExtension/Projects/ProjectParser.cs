@@ -22,6 +22,10 @@ using System.Xml.Linq;
 
 namespace GoogleCloudExtension.Projects
 {
+    /// <summary>
+    /// This class contains helpers to instantiate the right type of <seealso cref="IParsedProject"/> implementation
+    /// depending on the project being loaded.
+    /// </summary>
     internal static class ProjectParser
     {
         // Identifiers of an ASP.NET 4.x .csproj
@@ -38,9 +42,19 @@ namespace GoogleCloudExtension.Projects
         // Extension used in .NET Core 1.0, 1.1... and .NET 4.x, etc...
         private const string CSProjExtension = ".csproj";
 
+        // Elements and attributes to fetch from the .csproj.
+        private const string PropertyGroupElementName = "PropertyGroup";
+        private const string TargetFrameworkElementName = "TargetFramework";
+
+        // The PropertyTypeGuids element contains the GUID that identifies the type of project, console, web, etc...
+        private const string PropertyTypeGuidsElementName = "ProjectTypeGuids";
+
+        // The Sdk attribute points to the SDK used to build this app, console or web.
+        private const string SdkAttributeName = "Sdk";
+
         /// <summary>
         /// Parses the given <seealso cref="Project"/> instance and returned a friendlier and more usable type to use for
-        /// deplyment and other operations.
+        /// deployment and other operations.
         /// </summary>
         /// <param name="project">The <seealso cref="Project"/> instance to parse.</param>
         /// <returns>The resulting <seealso cref="IParsedProject"/> or null if the project is not supported.</returns>
@@ -67,15 +81,15 @@ namespace GoogleCloudExtension.Projects
             GcpOutputWindow.OutputDebugLine($"Parsing .csproj {project.FullName}");
 
             var dom = XDocument.Load(project.FullName);
-            var sdk = dom.Root.Attribute("Sdk");
+            var sdk = dom.Root.Attribute(SdkAttributeName);
             if (sdk != null)
             {
                 GcpOutputWindow.OutputDebugLine($"Found a new style .csproj {sdk.Value}");
                 if (sdk.Value == AspNetCoreSdk)
                 {
                     var targetFramework = dom.Root
-                        .Elements("PropertyGroup")
-                        .Descendants("TargetFramework")
+                        .Elements(PropertyGroupElementName)
+                        .Descendants(TargetFrameworkElementName)
                         .Select(x => x.Value)
                         .FirstOrDefault();
                     return new NetCoreCsprojProject(project, targetFramework);
@@ -83,8 +97,8 @@ namespace GoogleCloudExtension.Projects
             }
 
             var projectGuids = dom.Root
-                .Elements(XName.Get("PropertyGroup", MsbuildNamespace))
-                .Descendants(XName.Get("ProjectTypeGuids", MsbuildNamespace))
+                .Elements(XName.Get(PropertyGroupElementName, MsbuildNamespace))
+                .Descendants(XName.Get(PropertyTypeGuidsElementName, MsbuildNamespace))
                 .Select(x => x.Value)
                 .FirstOrDefault();
 
