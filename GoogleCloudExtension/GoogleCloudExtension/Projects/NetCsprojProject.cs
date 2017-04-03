@@ -14,10 +14,7 @@
 
 using EnvDTE;
 using GoogleCloudExtension.Deployment;
-using System;
 using System.IO;
-using System.Linq;
-using System.Xml.Linq;
 
 namespace GoogleCloudExtension.Projects
 {

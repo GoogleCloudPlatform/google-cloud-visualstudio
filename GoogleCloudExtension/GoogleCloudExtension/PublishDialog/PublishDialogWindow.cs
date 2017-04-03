@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.PublishDialogSteps.ChoiceStep;
-using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Theming;
 using System;
 
