@@ -45,14 +45,14 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="logItem">The log item to search for source file.</param>
         public static void NavigateToSourceLineCommand(LogItem logItem)
         {
-            string locatedFilePath = null;
+            EnvDTE.Window window;
             try
             {
                 // The expression evaluates to nullable bool. Need to explicitly specify == true.
                 if (logItem.Entry.Labels?.ContainsKey(SourceContextIDLabel) == true)
                 {
                     string sha = logItem.Entry.Labels[SourceContextIDLabel];
-                    locatedFilePath = SearchGitRepoAndGetFileContent(sha, logItem.SourceFilePath);
+                    window = SearchGitRepoAndGetFileContent(sha, logItem.SourceFilePath);
 
                 }
                 else
@@ -65,7 +65,13 @@ namespace GoogleCloudExtension.SourceBrowsing
                         return;
                     }
 
-                    locatedFilePath = project.FindSourceFile(logItem.SourceFilePath)?.FullName;
+                    var locatedFilePath = project.FindSourceFile(logItem.SourceFilePath)?.FullName;
+                    window = ShellUtils.Open(locatedFilePath);
+                    if (window == null)
+                    {
+                        FailedToOpenFilePrompt(logItem.SourceFilePath);
+                        return;
+                    }
                 }
             }
             catch (ActionCancelledException)
@@ -73,16 +79,11 @@ namespace GoogleCloudExtension.SourceBrowsing
                 return;
             }
 
-            if (locatedFilePath == null)
-            {
-                FileItemNotFoundPrompt(logItem.SourceFilePath);
-            }
-            var window = ShellUtils.Open(locatedFilePath);
-            if (window == null)
-            {
-                FailedToOpenFilePrompt(logItem.SourceFilePath);
-                return;
-            }
+            //if (locatedFilePath == null)
+            //{
+            //    FileItemNotFoundPrompt(logItem.SourceFilePath);
+            //}
+
             logItem.ShowToolTip(window);
         }
 
@@ -185,18 +186,18 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// null: Operation is cancelled or failed to open the file revision.
         /// </returns>
         /// <exception cref="ActionCancelledException">Does not find the revision of file.</exception>
-        private static string SearchGitRepoAndGetFileContent(string sha, string filePath)
+        private static EnvDTE.Window SearchGitRepoAndGetFileContent(string sha, string filePath)
         {
             if (s_localCache.ContainsKey(sha))
             {
-                return s_localCache[sha].GetFile(filePath);
+                return s_localCache[sha].OpenFileRevision(filePath);
             }
 
             // There is a chance the file is built from local git repo root.
             GitCommit commit = SearchCommitAtPath(Path.GetDirectoryName(filePath), sha);
             if (commit != null)
             {
-                return commit.GetFile(filePath);
+                return commit.OpenFileRevision(filePath);
             }
 
             if (!IsCurrentSolutionOpen())
@@ -207,7 +208,7 @@ namespace GoogleCloudExtension.SourceBrowsing
             commit = solution.Projects.Select(x => SearchCommitAtPath(x.ProjectRoot, sha)).Where(y => y != null).FirstOrDefault();
             if (commit != null)
             {
-                return commit.GetFile(filePath);
+                return commit.OpenFileRevision(filePath);
             }
             return null;
         }

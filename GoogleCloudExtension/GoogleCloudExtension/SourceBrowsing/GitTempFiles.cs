@@ -106,8 +106,8 @@ namespace GoogleCloudExtension.SourceBrowsing
             if (_openWindow.ContainsKey(window))
             {
                 UserPromptUtils.OkPrompt($"The window of {_openWindow[window]} is closing", "OnWindowClose Event handler");
-                _openWindow.Remove(window);
                 _tmpFilesMap.Remove(_openWindow[window]);
+                _openWindow.Remove(window);
             }
         }
 
