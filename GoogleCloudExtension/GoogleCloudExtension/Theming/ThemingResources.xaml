@@ -91,7 +91,7 @@
                                 <!-- The row of buttons. -->
                                 <Border Grid.Row="1" Style="{StaticResource DialogButtonBar}">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <local:ButtonsList ItemsSource="{Binding Buttons.Collection, RelativeSource={RelativeSource TemplatedParent}}"
+                                        <local:ButtonsList ItemsSource="{Binding Buttons, RelativeSource={RelativeSource TemplatedParent}}"
                                                            Focusable="False"
                                                            ItemTemplateSelector="{StaticResource DialogButtonTemplateSelector}">
                                             <ItemsControl.ItemsPanel>
