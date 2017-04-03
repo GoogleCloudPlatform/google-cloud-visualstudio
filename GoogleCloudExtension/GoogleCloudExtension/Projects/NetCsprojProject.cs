@@ -12,32 +12,38 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using EnvDTE;
+using GoogleCloudExtension.Deployment;
+using System;
 using System.IO;
+using System.Linq;
+using System.Xml.Linq;
 
-namespace GoogleCloudExtension.SolutionUtils
+namespace GoogleCloudExtension.Projects
 {
     /// <summary>
-    /// This class represetns a .NET Core project.
+    /// This class represents .NET 4.x .csproj based project.
     /// </summary>
-    internal class NetCoreProject : ISolutionProject
+    internal class NetCsprojProject : IParsedProject
     {
-        private readonly string _projectJsonPath;
 
-        #region ISolutionProject
+        private readonly Project _project;
 
-        public string DirectoryPath => Path.GetDirectoryName(_projectJsonPath);
+        #region IParsedProject
 
-        public string FullPath => _projectJsonPath;
+        public string DirectoryPath => Path.GetDirectoryName(_project.FullName);
 
-        public string Name => Path.GetFileName(Path.GetDirectoryName(_projectJsonPath));
+        public string FullPath => _project.FullName;
 
-        public KnownProjectTypes ProjectType => KnownProjectTypes.NetCoreWebApplication;
+        public string Name => _project.Name;
+
+        public KnownProjectTypes ProjectType => KnownProjectTypes.WebApplication;
 
         #endregion
 
-        public NetCoreProject(string projectJsonPath)
+        public NetCsprojProject(Project project)
         {
-            _projectJsonPath = projectJsonPath;
+            _project = project;
         }
     }
 }
