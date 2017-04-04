@@ -1,0 +1,44 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:GoogleCloudExtension.StackdriverErrorReporting;assembly=GoogleCloudExtension"
+    xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils">
+
+    <Style x:Key="TimedCountMiniBarChartStyle" TargetType="local:TimedCountBarChartControl" >
+        <Setter Property="BarMaxHeight" Value="15" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:TimedCountBarChartControl">
+                    <StackPanel>
+                        <ItemsControl 
+                            x:Name="PART_TimedCountItemsControl"
+                            ItemsSource="{Binding TimedCountItemCollection}" 
+                            VerticalAlignment="Center" >
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Rectangle                             
+                                        VerticalAlignment="Bottom" 
+                                        Width="3"
+                                        Margin="1,0,0,0"
+                                        Fill="Blue"
+                                        Height="{Binding BarHeight}" />
+
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <UniformGrid Rows="1" IsItemsHost="True" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                        <Line Stroke="Black" 
+                              HorizontalAlignment="Stretch"
+                              X2="{Binding ActualWidth, RelativeSource={RelativeSource Self}}" 
+                              StrokeDashArray="2 2" 
+                              StrokeThickness="1" />
+                    </StackPanel>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

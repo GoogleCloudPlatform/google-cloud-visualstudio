@@ -107,6 +107,7 @@ namespace GoogleCloudExtension.Utils
             }
 	}
 
+        /// <summary>
         /// Executes the "File.OpenProject" command in the shell.
         /// </summary>
         public static void OpenProject()

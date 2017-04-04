@@ -1,0 +1,119 @@
+﻿<UserControl
+    x:Class="GoogleCloudExtension.PubSubWindows.NewSubscriptionWindowContent"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
+    xmlns:ext="clr-namespace:GoogleCloudExtension"
+    xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
+    FocusManager.FocusedElement="{Binding ElementName=SubscriptionName}">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="MyTextBlock" BasedOn="{StaticResource CommonTextStyle}" TargetType="{x:Type TextBlock}">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="3"/>
+            </Style>
+            <Style x:Key="MyLabel" BasedOn="{StaticResource CommonLabelStyle}" TargetType="{x:Type Label}">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="3"/>
+            </Style>
+            <Style
+                x:Key="MyLabelWithHelp"
+                BasedOn="{StaticResource {x:Type controls:LabelWithHelp}}"
+                TargetType="{x:Type controls:LabelWithHelp}">
+                
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="3"/>
+            </Style>
+            <Style x:Key="MyTextBox" BasedOn="{StaticResource CommonTextBoxStyle}" TargetType="{x:Type TextBox}">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="3"/>
+            </Style>
+            <Style
+                x:Key="MyRadioButton"
+                BasedOn="{StaticResource LabeledRadioButtonStyle}"
+                TargetType="{x:Type RadioButton}">
+                
+                <Style.Resources>
+                    <Style BasedOn="{StaticResource MyLabel}" TargetType="{x:Type Label}"/>
+                </Style.Resources>
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="3"/>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.Style>
+        <Binding Source="{StaticResource CommonDialogStyleLarge}"/>
+    </UserControl.Style>
+
+    <theming:CommonDialogWindowBaseContent HasBanner="True">
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo
+                Caption="{x:Static ext:Resources.UiOkButtonCaption}"
+                Command="{Binding CreateCommand}"
+                IsDefault="True"/>
+            <theming:DialogButtonInfo
+                Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
+                IsCancel="True"/>
+        </theming:CommonDialogWindowBaseContent.Buttons>
+
+        <StackPanel
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Top">
+            
+            <DockPanel>
+                <Label
+                    DockPanel.Dock="Left"
+                    Target="{Binding ElementName=SubscriptionName}"
+                    Content="{x:Static ext:Resources.NewSubscriptionWindowNameLabel}"
+                    Style="{StaticResource MyLabel}"/>
+                <TextBox
+                    Name="SubscriptionName"
+                    Style="{StaticResource MyTextBox}"
+                    Text="{Binding Path=Subscription.Name, UpdateSourceTrigger=PropertyChanged}"/>
+            </DockPanel>
+            <TextBlock
+                Text="{x:Static ext:Resources.NewSubscriptionWindowDeliveryType}"
+                Style="{StaticResource MyTextBlock}"/>
+            <RadioButton
+                GroupName="PushPull"
+                IsChecked="True"
+                Content="{x:Static ext:Resources.NewSubscriptionWindowPullLabel}"
+                Style="{StaticResource MyRadioButton}"/>
+            <DockPanel>
+                <RadioButton
+                    DockPanel.Dock="Left"
+                    Name="PushRadioButton"
+                    GroupName="PushPull"
+                    IsChecked="{Binding Push}"
+                    Content="{x:Static ext:Resources.NewSubscriptionWindowPushLabel}"
+                    Style="{StaticResource MyRadioButton}"/>
+                <TextBox
+                    Name="PushUrlBox"
+                    Text="{Binding PushConfig.PushEndpoint, UpdateSourceTrigger=PropertyChanged}"
+                    IsEnabled="{Binding Push}"
+                    Style="{StaticResource MyTextBox}"/>
+            </DockPanel>
+            <DockPanel>
+                <controls:LabelWithHelp
+                    DockPanel.Dock="Left"
+                    Target="{Binding ElementName=Deadline}"
+                    Content="{x:Static ext:Resources.NewSubscriptionWindowAckDeadlineLabel}"
+                    HelpContent="{x:Static ext:Resources.NewSubscriptionWindowAckDeadlineTooltip}"
+                    Style="{StaticResource MyLabelWithHelp}"/>
+                <TextBox
+                    Name ="Deadline"
+                    Text="{Binding Subscription.AckDeadlineSeconds,
+                           TargetNullValue=60,
+                           UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource MyTextBox}"/>
+            </DockPanel>
+        </StackPanel>
+    </theming:CommonDialogWindowBaseContent>
+</UserControl>
+

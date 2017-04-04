@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// <summary>
     /// Interaction logic for LoggerTooltipControl.xaml
     /// </summary>
-    public partial class LoggerTooltipControl : Border
+    public partial class LoggerTooltipControl : UserControl
     {
         public LoggerTooltipControl()
         {

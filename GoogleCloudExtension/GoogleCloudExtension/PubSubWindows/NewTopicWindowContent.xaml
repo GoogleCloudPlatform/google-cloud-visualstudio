@@ -1,0 +1,64 @@
+﻿<UserControl
+    x:Class="GoogleCloudExtension.PubSubWindows.NewTopicWindowContent"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
+    xmlns:ext="clr-namespace:GoogleCloudExtension"
+    mc:Ignorable="d"
+    FocusManager.FocusedElement="{Binding ElementName=TopicName}">
+    
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="MyLabel" BasedOn="{StaticResource CommonLabelStyle}" TargetType="{x:Type Label}">
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="3"/>
+            </Style>
+            <Style x:Key="MyTextBox" BasedOn="{StaticResource CommonTextBoxStyle}" TargetType="{x:Type TextBox}">
+                <Style.Resources>
+                    <Style BasedOn="{StaticResource CommonTooltipStyle}" TargetType="{x:Type ToolTip}"/>
+                </Style.Resources>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="Margin" Value="3"/>
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <UserControl.Style>
+        <Binding Source="{StaticResource CommonDialogStyleSmall}"/>
+    </UserControl.Style>
+    
+    <theming:CommonDialogWindowBaseContent>
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo
+                Command="{Binding CreateCommand}"
+                IsDefault="True"
+                Caption="{x:Static ext:Resources.UiOkButtonCaption}"/>
+            <theming:DialogButtonInfo
+                IsCancel="True"
+                Caption="{x:Static ext:Resources.UiCancelButtonCaption}"/>
+        </theming:CommonDialogWindowBaseContent.Buttons>
+        <StackPanel
+            Orientation="Vertical"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Center">
+            
+            <DockPanel>
+                <Label
+                    DockPanel.Dock="Left"
+                    Target="{Binding ElementName=TopicName}"
+                    Content="{x:Static ext:Resources.NewTopicWindowNameLabel}"
+                    Style="{StaticResource MyLabel}"/>
+                <TextBox
+                    x:Name="TopicName"
+                    MaxLines="1"
+                    Text="{Binding Path=TopicName, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource MyTextBox}"/>
+            </DockPanel>
+        </StackPanel>
+    </theming:CommonDialogWindowBaseContent>
+</UserControl>

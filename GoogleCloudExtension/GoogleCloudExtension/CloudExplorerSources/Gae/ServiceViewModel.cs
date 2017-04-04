@@ -262,7 +262,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private void OnBrowseStackdriverLogCommand()
         {
-            var window = ToolWindowUtils.ShowToolWindow<LogsViewerToolWindow>();
+            var window = ToolWindowCommandUtils.ShowToolWindow<LogsViewerToolWindow>();
             window?.FilterGAEServiceLog(Service.Id);
         }
 

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.Logging.v2.Data;
+using GoogleCloudExtension.SourceBrowsing;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -90,7 +91,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public bool SourceLinkVisible { get; }
 
         /// <summary>
-        /// Gets the time stamp.
+        /// Gets the time stamp of the selected time zone.
         /// </summary>
         public DateTime TimeStamp { get; private set; }
 
@@ -178,7 +179,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Initializes a new instance of the <seealso cref="LogItem"/> class.
         /// </summary>
         /// <param name="logEntry">A log entry.</param>
-        public LogItem(LogEntry logEntry)
+        /// <param name="timeZoneInfo">The current selected timezone.</param>
+        public LogItem(LogEntry logEntry, TimeZoneInfo timeZoneInfo)
         {
             if (logEntry == null)
             {
@@ -186,7 +188,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             Entry = logEntry;
-            TimeStamp = ConvertTimestamp(logEntry.Timestamp);
+            TimeStamp = ConvertTimestamp(logEntry.Timestamp, timeZoneInfo);
             Message = ComposeMessage();
 
             LogSeverity severity;
@@ -206,7 +208,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 // Example:  [Log4NetSample.Program, Log4NetExample, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null].WriteRandomSeverityLog
                 Match match = s_FunctionRegex.Match(Function);
-                Debug.WriteLine($"{match.Groups[1].Value},{match.Groups[2].Value}, {match.Groups[3].Value}");
                 if (match.Success)
                 {
                     AssemblyName = match.Groups[2].Value;
@@ -288,7 +289,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             return new string(message?.Select(x => (x == '\r' || x == '\n') ? ' ' : x).ToArray<char>());
         }
 
-        private DateTime ConvertTimestamp(object timestamp)
+        private DateTime ConvertTimestamp(object timestamp, TimeZoneInfo timeZoneInfo)
         {
             DateTime datetime;
             if (timestamp == null)
@@ -312,7 +313,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 }
             }
 
-            return datetime.ToLocalTime();
+            return TimeZoneInfo.ConvertTime(datetime, timeZoneInfo);
         }
 
         /// <summary>
@@ -330,7 +331,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             var projectSourceFile = project.FindSourceFile(SourceFilePath);
             if (projectSourceFile == null)
             {
-                SourceVersionUtils.FileItemNotFoundPrompt();
+                SourceVersionUtils.FileItemNotFoundPrompt(SourceFilePath);
                 return;
             }
 
