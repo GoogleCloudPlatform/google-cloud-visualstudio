@@ -774,18 +774,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 filter.AppendLine($"severity>={SelectedLogSeverity.Severity.ToString("G")}");
             }
 
-<<<<<<< HEAD
-            if (DateTimePickerModel.IsDescendingOrder)
-            {
-                if (DateTimePickerModel.DateTimeUtc < DateTime.UtcNow)
-                {
-                    filter.AppendLine($"timestamp<=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
-                }
-            }
-            else
-            {
-                filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
-=======
             if (!ignoreTimeStamp)
             {
                 if (DateTimePickerModel.IsDescendingOrder)
@@ -799,7 +787,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 {
                     filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
                 }
->>>>>>> upstream/master
             }
 
             if (LogIdList.SelectedLogIdFullName != null)
@@ -815,8 +802,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             return filter.Length > 0 ? filter.ToString() : null;
         }
-<<<<<<< HEAD
-=======
 
         private void AutoReload()
         {
@@ -886,6 +871,5 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 _isLoading = false;
             }
         }
->>>>>>> upstream/master
     }
 }
