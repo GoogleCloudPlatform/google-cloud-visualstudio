@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,12 +14,13 @@
 
 using EnvDTE;
 using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.Utils;
 using System.IO;
 
-namespace GoogleCloudExtension.Projects.Net4
+namespace GoogleCloudExtension.Projects.DotNetCore
 {
     /// <summary>
-    /// This class represents .NET 4.x .csproj based project.
+    /// This class represents a .NET Core project based on .csproj.
     /// </summary>
     internal class CsprojProject : IParsedProject
     {
@@ -33,13 +34,30 @@ namespace GoogleCloudExtension.Projects.Net4
 
         public string Name => _project.Name;
 
-        public KnownProjectTypes ProjectType => KnownProjectTypes.WebApplication;
+        public KnownProjectTypes ProjectType { get; }
 
         #endregion
 
-        public CsprojProject(Project project)
+        public CsprojProject(Project project, string targetFramework)
         {
+            GcpOutputWindow.OutputDebugLine($"Found project {project.FullName} targeting {targetFramework}");
+
             _project = project;
+            switch (targetFramework)
+            {
+                case "netcoreapp1.0":
+                    ProjectType = KnownProjectTypes.NetCoreWebApplication1_0;
+                    break;
+
+                case "netcoreapp1.1":
+                    ProjectType = KnownProjectTypes.NetCoreWebApplication1_1;
+                    break;
+
+                default:
+                    GcpOutputWindow.OutputDebugLine($"Unsopported target framework {targetFramework}");
+                    ProjectType = KnownProjectTypes.None;
+                    break;
+            }
         }
     }
 }

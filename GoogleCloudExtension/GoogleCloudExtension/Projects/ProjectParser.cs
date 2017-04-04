@@ -14,8 +14,8 @@
 
 using EnvDTE;
 using GoogleCloudExtension.Deployment;
-using GoogleCloudExtension.Projects.Net4;
-using GoogleCloudExtension.Projects.NetCore;
+using GoogleCloudExtension.Projects.DotNet4;
+using GoogleCloudExtension.Projects.DotNetCore;
 using GoogleCloudExtension.Utils;
 using System.Diagnostics;
 using System.IO;
@@ -67,18 +67,18 @@ namespace GoogleCloudExtension.Projects
             {
                 case XProjExtension:
                     Debug.WriteLine($"Processing a project.json: {project.FullName}");
-                    return ParseProjectJson(project);
+                    return ParseJsonProject(project);
 
                 case CSProjExtension:
                     Debug.WriteLine($"Processing a .csproj: {project.FullName}");
-                    return ParseMsbuildProject(project);
+                    return ParseCsprojProject(project);
 
                 default:
                     return null;
             }
         }
 
-        private static IParsedProject ParseMsbuildProject(Project project)
+        private static IParsedProject ParseCsprojProject(Project project)
         {
             GcpOutputWindow.OutputDebugLine($"Parsing .csproj {project.FullName}");
 
@@ -94,7 +94,7 @@ namespace GoogleCloudExtension.Projects
                         .Descendants(TargetFrameworkElementName)
                         .Select(x => x.Value)
                         .FirstOrDefault();
-                    return new NetCore.CsprojProject(project, targetFramework);
+                    return new DotNetCore.CsprojProject(project, targetFramework);
                 }
             }
 
@@ -112,12 +112,12 @@ namespace GoogleCloudExtension.Projects
             var guids = projectGuids.Split(';');
             if (guids.Contains(WebApplicationGuid))
             {
-                return new Net4.CsprojProject(project);
+                return new DotNet4.CsprojProject(project);
             }
             return null;
         }
 
-        private static IParsedProject ParseProjectJson(Project project)
+        private static IParsedProject ParseJsonProject(Project project)
         {
             var projectDir = Path.GetDirectoryName(project.FullName);
             var projectJsonPath = Path.Combine(projectDir, ProjectJsonFileName);
