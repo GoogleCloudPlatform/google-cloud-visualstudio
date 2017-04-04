@@ -55,7 +55,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             _owner = owner;
             _bucket = bucket;
             _item = new Lazy<BucketItem>(GetItem);
-            _openOnCloudConsoleCommand = new ProtectedCommand(OnOpenOnCloudConsoleCommand);
 
             Caption = _bucket.Name;
             Icon = s_bucketIcon.Value;
@@ -63,7 +62,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = Resources.UiBrowseMenuHeader, Command = new ProtectedCommand(OnBrowseCommand) },
-                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenConCloudConsoleCommand) },
+                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand) },
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };

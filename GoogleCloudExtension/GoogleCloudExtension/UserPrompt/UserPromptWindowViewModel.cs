@@ -48,16 +48,6 @@ namespace GoogleCloudExtension.UserPrompt
         public bool HasErrorDetails => ErrorDetails != null;
 
         /// <summary>
-        /// The error details to show in the dialog.
-        /// </summary>
-        public string ErrorDetails => _options.ErrorDetails;
-
-        /// <summary>
-        /// Returns true if there are error details to show.
-        /// </summary>
-        public bool HasErrorDetails => ErrorDetails != null;
-
-        /// <summary>
         /// The icon to use for the dialog.
         /// </summary>
         public ImageSource Icon => _options.Icon;
