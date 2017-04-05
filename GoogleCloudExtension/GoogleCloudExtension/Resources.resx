@@ -1925,7 +1925,7 @@ Open the project to navigate to the logger method location.</value>
     <comment>Message diplayed when there is an error deleting a topic.</comment>
   </data>
   <data name="PubSubDeleteTopicWindowHeader" xml:space="preserve">
-    <value>Delete topic</value>
+    <value>Delete Topic</value>
     <comment>Header of the delete Pub/Sub topic window.</comment>
   </data>
   <data name="PubSubDeleteTopicWindowMessage" xml:space="preserve">
@@ -1957,7 +1957,7 @@ Open the project to navigate to the logger method location.</value>
     <comment>Message diplayed when there is an error deleting a PubSub subscription.</comment>
   </data>
   <data name="PubSubDeleteSubscriptionWindowHeader" xml:space="preserve">
-    <value>Delete subscription</value>
+    <value>Delete Subscription</value>
     <comment>Header of the delete Pub/Sub subscription window.</comment>
   </data>
   <data name="PubSubDeleteSubscriptionWindowMessage" xml:space="preserve">
