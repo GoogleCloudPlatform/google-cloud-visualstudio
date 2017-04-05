@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     /// <summary>
     /// An item that describes a topic.
     /// </summary>
-    internal class TopicItem : PropertyWindowItemBase
+    internal class TopicItem : PropertyWindowItemBase, ITopicItem
     {
         private readonly Topic _topic;
 
@@ -36,11 +36,10 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         [LocalizedCategory(nameof(Resources.CloudExplorerPubSubTopicCategory))]
         [LocalizedDescription(nameof(Resources.CloudExplorerPubSubTopicNameDescription))]
         [LocalizedDisplayName(nameof(Resources.CloudExplorerPubSubTopicNameDisplayName))]
-
         public string Name => PubsubDataSource.GetPathLeaf(_topic.Name);
 
         /// <summary>
-        /// The full name, including project id, of the topic.
+        /// The full name of the topic: projects/projectId/topics/topicName
         /// </summary>
         [LocalizedCategory(nameof(Resources.CloudExplorerPubSubTopicCategory))]
         [LocalizedDescription(nameof(Resources.CloudExplorerPubSubTopicFullNameDescription))]

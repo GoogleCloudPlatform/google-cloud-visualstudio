@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         public string Name => PubsubDataSource.GetPathLeaf(_subscription.Name);
 
         /// <summary>
-        /// The full name, including topic, of the subscription.
+        /// The full name of the subscription: projects/projectId/subscriptions/subscriptionName.
         /// </summary>
         [LocalizedCategory(nameof(Resources.CloudExplorerPubSubSubscriptionCategory))]
         [LocalizedDescription(nameof(Resources.CloudExplorerPubSubSubscriptionFullNameDescription))]

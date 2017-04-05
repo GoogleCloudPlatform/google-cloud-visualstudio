@@ -3923,6 +3923,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Orphaned Subscriptions.
+        /// </summary>
+        public static string PubSubOrphanedSubscriptionsItemName {
+            get {
+                return ResourceManager.GetString("PubSubOrphanedSubscriptionsItemName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Reset the password for {0} on instance {1}?.
         /// </summary>
         public static string ResetPasswordConfirmationPromptMessage {

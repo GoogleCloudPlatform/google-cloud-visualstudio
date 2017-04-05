@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         private static readonly Lazy<ImageSource> s_subscriptionIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
 
-        private readonly TopicViewModel _owner;
+        private readonly TopicViewModelBase _owner;
         private readonly SubscriptionItem _subscriptionItem;
 
         /// <summary>
@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 
         public event EventHandler ItemChanged;
 
-        public SubscriptionViewModel(TopicViewModel owner, Subscription subscription)
+        public SubscriptionViewModel(TopicViewModelBase owner, Subscription subscription)
         {
             _owner = owner;
             _subscriptionItem = new SubscriptionItem(subscription);
