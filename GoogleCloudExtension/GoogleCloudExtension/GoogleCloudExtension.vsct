@@ -67,17 +67,7 @@
           <ButtonText>Show Google Cloud Explorer</ButtonText>
         </Strings>
       </Button>
-
-      <!-- This command shows the Stackdriver Logs Viewer tool window. -->
-      <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidLogsViewerToolWindowCommand" priority="0x0550" type="Button">
-        <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" />
-        <Icon guid="guidGoogleCloudExtensionPackageIcon" id="stackdriverLoggingIcon" />
-        <CommandFlag>DefaultDisabled</CommandFlag>
-        <Strings>
-          <ButtonText>Show Stackdriver Logs Viewer</ButtonText>
-        </Strings>
-      </Button>
-
+	  
       <!-- This command shows the tool window that manages the current account and project, could be a toolbar. -->
       <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidManageCredentialsCommand" priority="0x0400" type="Button">
         <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" />
@@ -107,7 +97,7 @@
         </Strings>
       </Button>
 
-        <!-- This command publishes the current project from the project's context menu. -->
+      <!-- This command publishes the current project from the project's context menu. -->
       <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidGenerateConfigProjectContextMenuCommand" priority="0x0510" type="Button">
         <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpProjectContextMenu" />
         <CommandFlag>DefaultDisabled</CommandFlag>
@@ -116,14 +106,37 @@
           <ButtonText>Generate app.yaml and Dockerfile</ButtonText>
         </Strings>
       </Button>
-  
+
+      <!-- This command shows the Stackdriver Logs Viewer tool window. -->
+      <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidLogsViewerToolWindowCommand" priority="0x0550" type="Button">
+        <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" />
+        <Icon guid="guidGoogleStackdriverLoggingIcon" id="stackdriverLoggingIcon" />
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Show Stackdriver Logs Viewer</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- This command shows the Stackdriver Logs Error Reporting tool window. -->
+      <Button guid="guidGoogleCloudExtensionPackageCmdSet" id="cmdidErrorReportingToolWindowCommand" priority="0x0560" type="Button">
+        <Parent guid="guidGoogleCloudExtensionPackageCmdSet" id="GcpToolsGroup" />
+        <Icon guid="guidGoogleStackdriverErrorReportingIcon" id="stackdriverErrorReportingIcon" />
+        <Strings>
+          <ButtonText>Show Stackdriver Error Reporting</ButtonText>
+        </Strings>
+      </Button>    
     </Buttons>
 
     <!-- Add menu icon images. -->
     <Bitmaps>
-      <Bitmap guid="guidGoogleCloudExtensionPackageIcon"
-              href="StackdriverLogsViewer\Resources\logging_menu_icon_16.png" usedList="stackdriverLoggingIcon" />
+      <Bitmap guid="guidGoogleStackdriverLoggingIcon"
+              href="StackdriverLogsViewer\Resources\logging_menu_icon_16.png" 
+              usedList="stackdriverLoggingIcon" />
+      <Bitmap guid="guidGoogleStackdriverErrorReportingIcon" 
+              href="StackdriverErrorReporting\Resources\eReport_menu_icon.png"
+              usedList="stackdriverErrorReportingIcon" />
     </Bitmaps>
+
   </Commands>
 
   <Symbols>
@@ -141,11 +154,16 @@
       <IDSymbol value="4226" name="cmdidPublishProjectContextMenuCommand" />
       <IDSymbol value="4227" name="cmdidGenerateConfigProjectContextMenuCommand" />
       <IDSymbol value="4230" name="GcpProjectContextMenu" />
-      <IDSymbol value="4231" name="cmdidLogsViewerToolWindowCommand" />
+      <IDSymbol value="4235" name="cmdidLogsViewerToolWindowCommand" />
+      <IDSymbol value="4236" name="cmdidErrorReportingToolWindowCommand" />
     </GuidSymbol>
 
-    <GuidSymbol name="guidGoogleCloudExtensionPackageIcon" value="{1014A04F-F8DA-48E4-9C20-380AEC85F3F8}">
+    <GuidSymbol name="guidGoogleStackdriverLoggingIcon" value="{1014A04F-F8DA-48E4-9C20-380AEC85F3F8}">
       <IDSymbol name="stackdriverLoggingIcon" value="1" />
+    </GuidSymbol>
+
+    <GuidSymbol name="guidGoogleStackdriverErrorReportingIcon" value="{7B378F7B-BFD2-4406-A6BD-56C7434C15C4}">
+      <IDSymbol name="stackdriverErrorReportingIcon" value="1" />
     </GuidSymbol>
 
   </Symbols>

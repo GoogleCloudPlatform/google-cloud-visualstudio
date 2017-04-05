@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.SourceBrowsing;
 using GoogleCloudExtension.Utils;
 using System.Diagnostics;
 
@@ -61,7 +62,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private void BackToLogsViewer()
         {
-            var window = ToolWindowUtils.ShowToolWindow<LogsViewerToolWindow>();
+            var window = ToolWindowCommandUtils.ShowToolWindow<LogsViewerToolWindow>();
             if (Log.Entry == null || window == null)
             {
                 Debug.WriteLine("Entry or window is null, this is likely a code bug");

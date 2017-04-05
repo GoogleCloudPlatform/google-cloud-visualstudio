@@ -13,10 +13,6 @@ ${workspace}/tools/find_files.py -d $1 -e .cs | xargs grep -HnE \
 ${workspace}/tools/find_files.py -d $1 -e .cs | xargs grep -HnE \
     "\\[Category\\(|\\[DisplayName\\(|\\[Description\\("
 ${workspace}/tools/find_files.py -d $1 -e .cs | xargs grep -HnE \
-    "Prompt\\(\""
-# ${workspace}/tools/find_files.py -d $1 -e .cs | xargs grep -HnE \
-#     "base\\(\""
-${workspace}/tools/find_files.py -d $1 -e .cs | xargs grep -HnE \
     "\\.OutputLine\\(\\$\"|\\.OutputLine\\(\""
 
 # Look for literal strings on .xaml files.

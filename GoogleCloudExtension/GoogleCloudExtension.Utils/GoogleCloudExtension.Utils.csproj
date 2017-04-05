@@ -64,6 +64,7 @@
     <Compile Include="IColumnSorter.cs" />
     <Compile Include="JsonOutputException.cs" />
     <Compile Include="Model.cs" />
+    <Compile Include="NullEmptyInvisibleConverter.cs" />
     <Compile Include="PlaceholderMessage.cs" />
     <Compile Include="ProcessUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

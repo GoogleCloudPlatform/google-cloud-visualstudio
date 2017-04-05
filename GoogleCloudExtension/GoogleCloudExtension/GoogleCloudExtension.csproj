@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props" Condition="Exists('..\packages\Microsoft.VSSDK.BuildTools.14.3.25420\build\Microsoft.VSSDK.BuildTools.props')" />
   <PropertyGroup>
@@ -109,6 +109,12 @@
     <Compile Include="CloudExplorerSources\Gae\VersionItem.cs" />
     <Compile Include="CloudExplorerSources\Gae\VersionViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gcs\BucketLocationViewModel.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\PubSubSource.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\PubSubSourceRootViewModel.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\SubscriptionItem.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\SubscriptionViewModel.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\TopicItem.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\TopicViewModel.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
@@ -146,7 +152,9 @@
     <Compile Include="CloudExplorer\TreeLeaf.cs" />
     <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
+    <Compile Include="Controls\AutoReloadButton.cs" />
     <Compile Include="Controls\IconButton.cs" />
+    <Compile Include="Controls\ImageToggleButton.cs" />
     <Compile Include="Controls\LabelWithHelp.cs" />
     <Compile Include="Controls\PasswordBoxWithReveal.cs" />
     <Compile Include="Controls\PressButton.cs" />
@@ -236,6 +244,17 @@
       <DependentUpon>ProgressDialogWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="ProgressDialog\ProgressDialogWindowViewModel.cs" />
+    <Compile Include="PubSubWindows\NewSubscriptionViewModel.cs" />
+    <Compile Include="PubSubWindows\NewSubscriptionWindow.cs" />
+    <Compile Include="PubSubWindows\NewSubscriptionWindowContent.xaml.cs">
+      <DependentUpon>NewSubscriptionWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PubSubWindows\NewTopicViewModel.cs" />
+    <Compile Include="PubSubWindows\NewTopicWindow.cs" />
+    <Compile Include="PubSubWindows\NewTopicWindowContent.xaml.cs">
+      <DependentUpon>NewTopicWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PubSubWindows\PubSubNameValidationRule.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -255,6 +274,41 @@
       <DependentUpon>SplitTrafficWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\FixBackgroundComboBox.cs" />
+    <Compile Include="StackdriverErrorReporting\BarChart\TimedCountBarChartControl.cs" />
+    <Compile Include="StackdriverErrorReporting\BarChart\TimeCountItem.cs" />
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\StackControl.xaml.cs">
+      <DependentUpon>StackControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\StackFrameControl.xaml.cs">
+      <DependentUpon>StackFrameControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\ParserUtils.cs" />
+    <Compile Include="StackdriverErrorReporting\TimeRangeEnumExtensions.cs" />
+    <Compile Include="StackdriverErrorReporting\BarChart\XLineItem.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindow.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingDetailToolWindowControl.xaml.cs">
+      <DependentUpon>ErrorReportingDetailToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverErrorReporting\ErrorReportingDetailViewModel.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingException.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorGroupItem.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindow.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowCommand.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingToolWindowControl.xaml.cs">
+      <DependentUpon>ErrorReportingToolWindowControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="StackdriverErrorReporting\EventItem.cs" />
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\ErrorFrameTooltipControl.xaml.cs">
+      <DependentUpon>ErrorFrameTooltipControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SourceBrowsing\ActiveTagData.cs" />
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\ErrorFrameTooltipViewModel.cs" />
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\ParsedException.cs" />
+    <Compile Include="SourceBrowsing\ShowTooltipUtils.cs" />
+    <Compile Include="StackdriverErrorReporting\SourceNavigation\StackFrame.cs" />
+    <Compile Include="StackdriverErrorReporting\ErrorReportingViewModel.cs" />
+    <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtons.cs" />
+    <Compile Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeItem.cs" />
     <Compile Include="StackdriverLogsViewer\AdvancedFilterExtension.cs" />
     <Compile Include="StackdriverLogsViewer\DateTimePicker.xaml.cs">
       <DependentUpon>DateTimePicker.xaml</DependentUpon>
@@ -262,8 +316,6 @@
     <Compile Include="StackdriverLogsViewer\DateTimePickerViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\LogsViewerStates.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipViewModel.cs" />
-    <Compile Include="StackdriverLogsViewer\SourceNavigation\ShowTooltipUtils.cs" />
-    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipSource.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTooltipControl.xaml.cs">
       <DependentUpon>LoggerTooltipControl.xaml</DependentUpon>
     </Compile>
@@ -277,17 +329,17 @@
       <DependentUpon>LogsViewerToolWindowControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="StackdriverLogsViewer\LogsViewerViewModel.cs" />
-    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerHighlightFormat.cs" />
-    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTagger.cs" />
+    <Compile Include="SourceBrowsing\StackdriverHighlightFormat.cs" />
+    <Compile Include="SourceBrowsing\StackdriverTagger.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\MenuItemViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeMenuViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeNameConsts.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceValueItemViewModel.cs" />
     <Compile Include="StackdriverLogsViewer\SearchMenuItem\ResourceTypeItemViewModel.cs" />
     <Compile Include="Controls\SearchMenuItem.cs" />
-    <Compile Include="StackdriverLogsViewer\SourceNavigation\LoggerTaggerProvider.cs" />
+    <Compile Include="SourceBrowsing\StackdriverTaggerProvider.cs" />
     <Compile Include="StackdriverLogsViewer\SourceNavigation\LogWritterNameConsts.cs" />
-    <Compile Include="StackdriverLogsViewer\SourceNavigation\SourceVersionUtils.cs" />
+    <Compile Include="SourceBrowsing\SourceVersionUtils.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\JArrayNode.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\JObjectNode.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\LogEntryNode.cs" />
@@ -301,7 +353,12 @@
       <DependentUpon>GcsFileProgressDialogWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="Theming\CommonImageResources.cs" />
+    <Compile Include="TitleBar\TitleBar.xaml.cs">
+      <DependentUpon>TitleBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TitleBar\TitleBarViewModel.cs" />
     <Compile Include="Utils\DataGridUtils.cs" />
+    <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
     <Compile Include="Utils\PackageUtils.cs" />
     <Compile Include="Utils\GCloudWrapperUtils.cs" />
@@ -321,7 +378,7 @@
     <Compile Include="Utils\ProtectedAction.cs" />
     <Compile Include="Utils\ProtectedCommand.cs" />
     <Compile Include="Utils\StringUtils.cs" />
-    <Compile Include="Utils\ToolWindowUtils.cs" />
+    <Compile Include="Utils\ToolWindowCommandUtils.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserViewModel.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindow.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml.cs">
@@ -364,6 +421,13 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="StackdriverErrorReporting\Resources\back_icon.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\back_icon_12.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\eReport_menu_icon.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\pause_icon.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\play_icon.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\show_less_icon.png" />
+    <Resource Include="StackdriverErrorReporting\Resources\show_more_icon.png" />
     <Resource Include="StackdriverLogsViewer\Resources\back_icon_12.png" />
     <Resource Include="StackdriverLogsViewer\Resources\ic_log_level_any_12.png" />
     <Resource Include="PublishDialogSteps\ChoiceStep\Resources\ContainerEngine_128px_Retina.png" />
@@ -393,7 +457,9 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Key.snk" />
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <Resource Include="CloudExplorerSources\Gce\Resources\filter.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_running.png" />
     <Resource Include="CloudExplorerSources\Gae\Resources\instance_icon_stoped.png" />
@@ -417,6 +483,8 @@
     <Resource Include="GcsFileBrowser\Resources\folder.png" />
     <Resource Include="GcsFileBrowser\Resources\file.png" />
     <Resource Include="Theming\Resources\logo_cloud.png" />
+    <Resource Include="CloudExplorerSources\PubSub\Resources\topic_icon.png" />
+    <Resource Include="CloudExplorerSources\PubSub\Resources\subscription_icon.png" />
     <Content Include="Licenses.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -512,6 +580,10 @@
       <HintPath>..\packages\Google.Apis.Auth.1.20.0\lib\net45\Google.Apis.Auth.PlatformServices.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Google.Apis.Clouderrorreporting.v1beta1, Version=1.20.0.691, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Clouderrorreporting.v1beta1.1.20.0.691\lib\net45\Google.Apis.Clouderrorreporting.v1beta1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Google.Apis.CloudResourceManager.v1, Version=1.20.0.713, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.20.0.713\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
       <Private>True</Private>
@@ -538,6 +610,10 @@
     </Reference>
     <Reference Include="Google.Apis.Plus.v1, Version=1.20.0.713, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Plus.v1.1.20.0.713\lib\net45\Google.Apis.Plus.v1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Google.Apis.Pubsub.v1, Version=1.20.0.754, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.Pubsub.v1.1.20.0.754\lib\net45\Google.Apis.Pubsub.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Google.Apis.SQLAdmin.v1beta4, Version=1.20.0.712, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
@@ -754,6 +830,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="PubSubWindows\NewSubscriptionWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="PubSubWindows\NewTopicWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="SplitTrafficManagement\SplitTrafficWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -765,6 +849,39 @@
     <Resource Include="StackdriverLogsViewer\LogsViewerResources.xaml">
       <SubType>Designer</SubType>
     </Resource>
+    <Resource Include="StackdriverErrorReporting\BarChart\TimedCountBarChart.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Resource Include="StackdriverErrorReporting\BarChart\TimedCountMiniBarChart.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Resource>
+    <Page Include="StackdriverErrorReporting\ErrorReportingDetailToolWindowControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StackdriverErrorReporting\ErrorReportingToolWindowControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StackdriverErrorReporting\SourceNavigation\ErrorFrameTooltipControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Resource Include="StackdriverErrorReporting\ErrorReportingResources.xaml">
+      <SubType>Designer</SubType>
+    </Resource>
+    <Page Include="StackdriverErrorReporting\SourceNavigation\StackControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="StackdriverErrorReporting\SourceNavigation\StackFrameControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StackdriverErrorReporting\TimeRangeButtons\TimeRangeButtonsResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="StackdriverLogsViewer\DateTimePicker.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -778,6 +895,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\SearchMenuItemResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="TitleBar\TitleBar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

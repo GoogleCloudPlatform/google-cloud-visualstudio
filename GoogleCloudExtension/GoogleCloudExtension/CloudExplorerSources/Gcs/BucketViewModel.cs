@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = Resources.UiBrowseMenuHeader, Command = new ProtectedCommand(OnBrowseCommand) },
-                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenConCloudConsoleCommand) },
+                new MenuItem { Header = Resources.UiOpenOnCloudConsoleMenuHeader, Command = new ProtectedCommand(OnOpenOnCloudConsoleCommand) },
                 new MenuItem { Header = Resources.UiPropertiesMenuHeader, Command = new ProtectedCommand(OnPropertiesCommand) },
             };
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
@@ -78,7 +78,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             _owner.Context.ShowPropertiesWindow(Item);
         }
 
-        private void OnOpenConCloudConsoleCommand()
+        private void OnOpenOnCloudConsoleCommand()
         {
             EventsReporterWrapper.ReportEvent(OpenGcsBucketOnCloudConsoleEvent.Create());
 

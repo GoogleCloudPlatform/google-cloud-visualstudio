@@ -16,7 +16,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -133,5 +132,47 @@ namespace GoogleCloudExtension.Utils
         /// Empty string is valid so it returns true.
         /// </summary>
         public static bool IsDigitsOnly(string text) => text == null ? false : text.All(char.IsDigit);
+
+        /// <summary>
+        /// Gets the index of first non space character.
+        /// </summary>
+        public static int FirstNonSpaceIndex(string text)
+        {
+            if (text == null)
+            {
+                return -1;
+            }
+
+            for (int i = 0; i < text.Length; ++i)
+            {
+                if (text[i] != ' ')
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        /// <summary>
+        /// Gets the index of last non space character.
+        /// </summary>
+        public static int LastNonSpaceIndex(string text)
+        {
+            if (text == null)
+            {
+                return -1;
+            }
+
+            for (int i = text.Length - 1; i >= 0; --i)
+            {
+                if (text[i] != ' ')
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
     }
 }
