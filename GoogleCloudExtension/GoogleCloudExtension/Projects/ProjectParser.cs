@@ -17,6 +17,7 @@ using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Projects.DotNet4;
 using GoogleCloudExtension.Projects.DotNetCore;
 using GoogleCloudExtension.Utils;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -55,7 +56,7 @@ namespace GoogleCloudExtension.Projects
         private const string SdkAttributeName = "Sdk";
 
         /// <summary>
-        /// Parses the given <seealso cref="Project"/> instance and returned a friendlier and more usable type to use for
+        /// Parses the given <seealso cref="Project"/> instance and resturns a friendlier and more usable type to use for
         /// deployment and other operations.
         /// </summary>
         /// <param name="project">The <seealso cref="Project"/> instance to parse.</param>
@@ -82,37 +83,44 @@ namespace GoogleCloudExtension.Projects
         {
             GcpOutputWindow.OutputDebugLine($"Parsing .csproj {project.FullName}");
 
-            var dom = XDocument.Load(project.FullName);
-            var sdk = dom.Root.Attribute(SdkAttributeName);
-            if (sdk != null)
+            try
             {
-                GcpOutputWindow.OutputDebugLine($"Found a new style .csproj {sdk.Value}");
-                if (sdk.Value == AspNetCoreSdk)
+                var dom = XDocument.Load(project.FullName);
+                var sdk = dom.Root.Attribute(SdkAttributeName);
+                if (sdk != null)
                 {
-                    var targetFramework = dom.Root
-                        .Elements(PropertyGroupElementName)
-                        .Descendants(TargetFrameworkElementName)
-                        .Select(x => x.Value)
-                        .FirstOrDefault();
-                    return new DotNetCore.CsprojProject(project, targetFramework);
+                    GcpOutputWindow.OutputDebugLine($"Found a .NET Core style .csproj {sdk.Value}");
+                    if (sdk.Value == AspNetCoreSdk)
+                    {
+                        var targetFramework = dom.Root
+                            .Elements(PropertyGroupElementName)
+                            .Descendants(TargetFrameworkElementName)
+                            .Select(x => x.Value)
+                            .FirstOrDefault();
+                        return new DotNetCore.CsprojProject(project, targetFramework);
+                    }
+                }
+
+                var projectGuids = dom.Root
+                    .Elements(XName.Get(PropertyGroupElementName, MsbuildNamespace))
+                    .Descendants(XName.Get(PropertyTypeGuidsElementName, MsbuildNamespace))
+                    .Select(x => x.Value)
+                    .FirstOrDefault();
+
+                if (projectGuids == null)
+                {
+                    return null;
+                }
+
+                var guids = projectGuids.Split(';');
+                if (guids.Contains(WebApplicationGuid))
+                {
+                    return new DotNet4.CsprojProject(project);
                 }
             }
-
-            var projectGuids = dom.Root
-                .Elements(XName.Get(PropertyGroupElementName, MsbuildNamespace))
-                .Descendants(XName.Get(PropertyTypeGuidsElementName, MsbuildNamespace))
-                .Select(x => x.Value)
-                .FirstOrDefault();
-
-            if (projectGuids == null)
+            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
-                return null;
-            }
-
-            var guids = projectGuids.Split(';');
-            if (guids.Contains(WebApplicationGuid))
-            {
-                return new DotNet4.CsprojProject(project);
+                GcpOutputWindow.OutputDebugLine($"Invalid project file {project.FullName}");
             }
             return null;
         }
