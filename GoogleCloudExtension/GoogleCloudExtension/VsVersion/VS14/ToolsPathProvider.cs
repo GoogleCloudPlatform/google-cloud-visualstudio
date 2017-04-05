@@ -17,18 +17,19 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.IO;
 
-namespace GoogleCloudExtension.HostAbstraction.VS15
+namespace GoogleCloudExtension.VsVersion.VS14
 {
     /// <summary>
-    /// The implementation of <seealso cref="IToolsPathProvider"/> for Visual Studio 2017 (v 15.0).
+    /// The implementation of <seealso cref="IToolsPathProvider"/> for Visual Studio 2015 (v14.0).
     /// </summary>
     internal class ToolsPathProvider : IToolsPathProvider
     {
-        private readonly string _edition;
-
-        public ToolsPathProvider(string edition)
+        public string GetExternalToolsPath()
         {
-            _edition = edition;
+            var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+            var result = Path.Combine(programFilesPath, @"Microsoft Visual Studio 14.0\Web\External");
+            GcpOutputWindow.OutputDebugLine($"External tools path: {result}");
+            return result;
         }
 
         public string GetDotnetPath()
@@ -39,26 +40,19 @@ namespace GoogleCloudExtension.HostAbstraction.VS15
             return result;
         }
 
-        public string GetExternalToolsPath()
-        {
-            return "";
-        }
-
         public string GetMsbuildPath()
         {
-            var programFilesPath = Environment.GetEnvironmentVariable("ProgramFiles(x86)");
-            var result = Path.Combine(programFilesPath, $@"Microsoft Visual Studio\2017\{_edition}\MSBuild\15.0\Bin\MSBuild.exe");
-            GcpOutputWindow.OutputDebugLine($"Program Files: {programFilesPath}");
-            GcpOutputWindow.OutputDebugLine($"Msbuild V15 Path: {result}");
+            var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFilesX86);
+            var result = Path.Combine(programFilesPath, @"MSBuild\14.0\Bin\MSBuild.exe");
+            GcpOutputWindow.OutputDebugLine($"Msbuild path: {result}");
             return result;
         }
 
         public string GetMsdeployPath()
         {
-            var programFilesPath = Environment.GetEnvironmentVariable("ProgramFiles");
+            var programFilesPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
             var result = Path.Combine(programFilesPath, @"IIS\Microsoft Web Deploy V3\msdeploy.exe");
-            GcpOutputWindow.OutputDebugLine($"Program Files: {programFilesPath}");
-            GcpOutputWindow.OutputDebugLine($"Msdeploy V15 path: {result}");
+            GcpOutputWindow.OutputDebugLine($"Msdeploy path: {result}");
             return result;
         }
     }

@@ -21,7 +21,8 @@ namespace GoogleCloudExtension.Deployment
     public interface IToolsPathProvider
     {
         /// <summary>
-        /// Returns the path to use for external tools to be used during deployment.
+        /// Returns the path to the directory where the tools used for publishing ASP.NET Core apps
+        /// are stored. All tools are stored in the same directory.
         /// </summary>
         string GetExternalToolsPath();
 

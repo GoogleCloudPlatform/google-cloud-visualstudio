@@ -15,12 +15,12 @@
 using GoogleCloudExtension.Deployment;
 using System;
 
-namespace GoogleCloudExtension.HostAbstraction
+namespace GoogleCloudExtension.VsVersion
 {
     /// <summary>
     /// This class provides services that are Visual Studio version specific.
     /// </summary>
-    internal static class HostAbstractionLayer
+    internal static class VsVersionUtils
     {
         private const string VisualStudio2015Version = "14.0";
         private const string VisualStudio2017Version = "15.0";
