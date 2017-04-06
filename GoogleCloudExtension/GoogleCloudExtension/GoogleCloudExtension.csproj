@@ -169,7 +169,7 @@
       <DependentUpon>PortManagerWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="FirewallManagement\PortModel.cs" />
-    <Compile Include="VsVersion\HostAbstractionLayer.cs" />
+    <Compile Include="VsVersion\VsVersionUtils.cs" />
     <Compile Include="VsVersion\VS14\ToolsPathProvider.cs" />
     <Compile Include="VsVersion\VS15\ToolsPathProvider.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsViewModel.cs" />
