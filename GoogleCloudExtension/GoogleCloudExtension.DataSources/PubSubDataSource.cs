@@ -107,13 +107,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <summary>
         /// Deletes a topic.
         /// </summary>
-        /// <param name="topicName">The name of the topic. Does not include the project id.</param>
-        public async Task DeleteTopicAsync(string topicName)
+        /// <param name="topicFullName">The full name of the topic.</param>
+        public async Task DeleteTopicAsync(string topicFullName)
         {
             try
             {
                 ProjectsResource.TopicsResource.DeleteRequest request =
-                    Service.Projects.Topics.Delete(GetTopicFullName(topicName));
+                    Service.Projects.Topics.Delete(topicFullName);
                 await request.ExecuteAsync();
             }
             catch (GoogleApiException e)
@@ -143,13 +143,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// <summary>
         /// Deletes a subscription
         /// </summary>
-        /// <param name="subscriptionName">The name of the subscription to delete. Does not include the project id.</param>
-        public async Task DeleteSubscriptionAsync(string subscriptionName)
+        /// <param name="subscriptionFullName">The full name of the subscription to delete.</param>
+        public async Task DeleteSubscriptionAsync(string subscriptionFullName)
         {
             try
             {
                 ProjectsResource.SubscriptionsResource.DeleteRequest request =
-                    Service.Projects.Subscriptions.Delete(GetSubscriptionFullName(subscriptionName));
+                    Service.Projects.Subscriptions.Delete(subscriptionFullName);
                 await request.ExecuteAsync();
             }
             catch (GoogleApiException e)

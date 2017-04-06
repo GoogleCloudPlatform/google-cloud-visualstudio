@@ -11,15 +11,21 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-using GoogleCloudExtension.CloudExplorer;
-
 namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 {
     /// <summary>
-    /// Source class for the Pubsub tree.
+    /// Inteface for topic like items.
     /// </summary>
-    internal class PubsubSource : CloudExplorerSourceBase<PubsubSourceRootViewModel>
+    internal interface ITopicItem
     {
-        public PubsubSource(ICloudSourceContext context) : base(context) { }
+        /// <summary>
+        /// The display name of the topic.
+        /// </summary>
+        string DisplayName { get; }
+
+        /// <summary>
+        /// The name of the topic to match against subscription topic names.
+        /// </summary>
+        string FullName { get; }
     }
 }
