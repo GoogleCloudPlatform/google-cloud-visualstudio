@@ -95,23 +95,18 @@ namespace GoogleCloudExtension.Deployment
         /// Publishes the ASP.NET Core app using the <paramref name="options"/> to produce the right deployment
         /// and service (if needed).
         /// </summary>
-        /// <param name="projectPath">The full path to the project.json file of the startup project.</param>
+        /// <param name="project">The project.</param>
         /// <param name="options">The options to use for the deployment.</param>
         /// <param name="progress">The progress interface for progress notifications.</param>
         /// <param name="outputAction">The output callback to invoke for output from the process.</param>
         /// <returns>Returns a <seealso cref="GkeDeploymentResult"/> if the deployment succeeded null otherwise.</returns>
         public static async Task<GkeDeploymentResult> PublishProjectAsync(
-            string projectPath,
+            IParsedProject project,
             DeploymentOptions options,
             IProgress<double> progress,
+            IToolsPathProvider toolsPathProvider,
             Action<string> outputAction)
         {
-            if (!File.Exists(projectPath))
-            {
-                Debug.WriteLine($"Cannot find {projectPath}, not a valid project.");
-                return null;
-            }
-
             var stageDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(stageDirectory);
             progress.Report(0.1);
@@ -122,7 +117,7 @@ namespace GoogleCloudExtension.Deployment
                 var buildFilePath = Path.Combine(stageDirectory, "cloudbuild.yaml");
 
                 if (!await ProgressHelper.UpdateProgress(
-                        NetCoreAppUtils.CreateAppBundleAsync(projectPath, appRootPath, outputAction),
+                        NetCoreAppUtils.CreateAppBundleAsync(project, appRootPath, toolsPathProvider, outputAction),
                         progress,
                         from: 0.1, to: 0.3))
                 {
@@ -130,7 +125,7 @@ namespace GoogleCloudExtension.Deployment
                     return null;
                 }
 
-                NetCoreAppUtils.CopyOrCreateDockerfile(projectPath, appRootPath);
+                NetCoreAppUtils.CopyOrCreateDockerfile(project, appRootPath);
                 var image = CloudBuilderUtils.CreateBuildFile(
                     project: options.GCloudContext.ProjectId,
                     imageName: options.DeploymentName,

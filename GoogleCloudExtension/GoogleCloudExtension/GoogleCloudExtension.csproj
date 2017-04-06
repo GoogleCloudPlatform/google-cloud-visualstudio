@@ -169,6 +169,9 @@
       <DependentUpon>PortManagerWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="FirewallManagement\PortModel.cs" />
+    <Compile Include="VsVersion\VsVersionUtils.cs" />
+    <Compile Include="VsVersion\VS14\ToolsPathProvider.cs" />
+    <Compile Include="VsVersion\VS15\ToolsPathProvider.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsViewModel.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindow.cs" />
     <Compile Include="ManageWindowsCredentials\ManageWindowsCredentialsWindowContent.xaml.cs">
@@ -195,6 +198,10 @@
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Projects\DotNetCore\CsprojProject.cs" />
+    <Compile Include="Projects\DotNetCore\JsonProject.cs" />
+    <Compile Include="Projects\DotNet4\CsprojProject.cs" />
+    <Compile Include="Projects\ProjectParser.cs" />
     <Compile Include="PublishDialogSteps\ChoiceStep\Choice.cs" />
     <Compile Include="PublishDialogSteps\ChoiceStep\ChoiceStepContent.xaml.cs">
       <DependentUpon>ChoiceStepContent.xaml</DependentUpon>
@@ -233,9 +240,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SolutionUtils\KnownProjectTypes.cs" />
-    <Compile Include="SolutionUtils\NetCoreProject.cs" />
-    <Compile Include="SolutionUtils\VsProject.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficWindow.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficModel.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficViewModel.cs" />
@@ -243,7 +247,6 @@
       <DependentUpon>SplitTrafficWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
-    <Compile Include="SolutionUtils\ISolutionProject.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
     <Compile Include="Utils\GCloudWrapperUtils.cs" />

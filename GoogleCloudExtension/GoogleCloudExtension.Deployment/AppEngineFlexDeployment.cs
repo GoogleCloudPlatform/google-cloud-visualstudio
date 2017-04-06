@@ -66,22 +66,18 @@ namespace GoogleCloudExtension.Deployment
         /// <summary>
         /// Publishes the ASP.NET Core project to App Engine Flex.
         /// </summary>
-        /// <param name="projectPath">The full path to the project.json for the ASP.NET Core project.</param>
+        /// <param name="project">The project to deploy.</param>
         /// <param name="options">The <seealso cref="DeploymentOptions"/> to use.</param>
         /// <param name="progress">The progress indicator.</param>
+        /// <param name="toolsPathProvider">The tools path provider to use.</param>
         /// <param name="outputAction">The action to call with lines from the command output.</param>
         public static async Task<AppEngineFlexDeploymentResult> PublishProjectAsync(
-            string projectPath,
+            IParsedProject project,
             DeploymentOptions options,
             IProgress<double> progress,
+            IToolsPathProvider toolsPathProvider,
             Action<string> outputAction)
         {
-            if (!File.Exists(projectPath))
-            {
-                Debug.WriteLine($"Cannot find {projectPath}, not a valid project.");
-                return null;
-            }
-
             var stageDirectory = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
             Directory.CreateDirectory(stageDirectory);
             progress.Report(0.1);
@@ -90,7 +86,7 @@ namespace GoogleCloudExtension.Deployment
             {
                 // Wait for the bundle creation operation to finish, updating progress as it goes.
                 if (!await ProgressHelper.UpdateProgress(
-                        NetCoreAppUtils.CreateAppBundleAsync(projectPath, stageDirectory, outputAction),
+                        NetCoreAppUtils.CreateAppBundleAsync(project, stageDirectory, toolsPathProvider, outputAction),
                         progress,
                         from: 0.1, to: 0.3))
                 {
@@ -98,12 +94,12 @@ namespace GoogleCloudExtension.Deployment
                     return null;
                 }
 
-                var runtime = GetAppEngineRuntime(projectPath);
-                CopyOrCreateAppYaml(projectPath, stageDirectory);
+                var runtime = GetAppEngineRuntime(project);
+                CopyOrCreateAppYaml(project, stageDirectory);
                 if (runtime == CustomRuntime)
                 {
                     Debug.WriteLine($"Copying Docker file to {stageDirectory} with custom runtime.");
-                    NetCoreAppUtils.CopyOrCreateDockerfile(projectPath, stageDirectory);
+                    NetCoreAppUtils.CopyOrCreateDockerfile(project, stageDirectory);
                 }
                 else
                 {
@@ -127,7 +123,7 @@ namespace GoogleCloudExtension.Deployment
                 }
                 progress.Report(1.0);
 
-                var service = GetAppEngineService(projectPath);
+                var service = GetAppEngineService(project);
                 return new AppEngineFlexDeploymentResult(
                     projectId: options.Context.ProjectId,
                     service: service,
@@ -137,15 +133,14 @@ namespace GoogleCloudExtension.Deployment
         }
 
         /// <summary>
-        /// Generates the app.yaml for the given project.json file.
+        /// Generates the app.yaml for the given project.
         /// </summary>
-        /// <param name="projectPath">The full path to the project.json for the project.</param>
-        public static bool GenerateAppYaml(string projectPath)
+        /// <param name="project">The project.</param>
+        public static bool GenerateAppYaml(IParsedProject project)
         {
             try
             {
-                var projectDirectory = Path.GetDirectoryName(projectPath);
-                var targetAppYaml = Path.Combine(projectDirectory, AppYamlName);
+                var targetAppYaml = Path.Combine(project.DirectoryPath, AppYamlName);
                 File.WriteAllText(targetAppYaml, AppYamlDefaultContent);
                 return true;
             }
@@ -157,14 +152,14 @@ namespace GoogleCloudExtension.Deployment
         }
 
         /// <summary>
-        /// Generates the Dockerfile for the given project.json file.
+        /// Generates the Dockerfile for the given project.
         /// </summary>
-        /// <param name="projectPath">The full path to the project.json for the project.</param>
-        public static bool GenerateDockerfile(string projectPath)
+        /// <param name="project">The project.</param>
+        public static bool GenerateDockerfile(IParsedProject project)
         {
             try
             {
-                NetCoreAppUtils.GenerateDockerfile(projectPath);
+                NetCoreAppUtils.GenerateDockerfile(project);
                 return true;
             }
             catch (IOException ex)
@@ -177,14 +172,14 @@ namespace GoogleCloudExtension.Deployment
         /// <summary>
         /// Checks the project configuration files to see if they exist.
         /// </summary>
-        /// <param name="projectPath">The full path to the project.json for the project.</param>
+        /// <param name="projectPath">The project.</param>
         /// <returns>An instance of <seealso cref="ProjectConfigurationStatus"/> with the status of the config.</returns>
-        public static ProjectConfigurationStatus CheckProjectConfiguration(string projectPath)
+        public static ProjectConfigurationStatus CheckProjectConfiguration(IParsedProject project)
         {
-            var projectDirectory = Path.GetDirectoryName(projectPath);
+            var projectDirectory = project.DirectoryPath;
             var targetAppYaml = Path.Combine(projectDirectory, AppYamlName);
             var hasAppYaml = File.Exists(targetAppYaml);
-            var hasDockefile = NetCoreAppUtils.CheckDockerfile(projectPath);
+            var hasDockefile = NetCoreAppUtils.CheckDockerfile(project);
 
             return new ProjectConfigurationStatus(hasAppYaml: hasAppYaml, hasDockerfile: hasDockefile);
         }
@@ -192,17 +187,17 @@ namespace GoogleCloudExtension.Deployment
         /// <summary>
         /// This methods looks for lines of the form "service: name" in the app.yaml file provided.
         /// </summary>
-        /// <param name="projectPath">The path to the project.json for the project, the app.yaml should be next to it.</param>
+        /// <param name="project">The project.</param>
         /// <returns>The service name if found, <seealso cref="DefaultServiceName"/> if not found.</returns>
-        private static string GetAppEngineService(string projectPath)
+        private static string GetAppEngineService(IParsedProject project)
         {
-            string appYaml = GetAppYamlPath(projectPath);
+            string appYaml = GetAppYamlPath(project);
             return GetYamlProperty(yamlPath: appYaml, property: ServiceYamlProperty, defaultValue: DefaultServiceName);
         }
 
-        private static string GetAppEngineRuntime(string projectPath)
+        private static string GetAppEngineRuntime(IParsedProject project)
         {
-            string appYaml = GetAppYamlPath(projectPath);
+            string appYaml = GetAppYamlPath(project);
             if (!File.Exists(appYaml))
             {
                 return AspNetCoreRuntime;
@@ -210,10 +205,9 @@ namespace GoogleCloudExtension.Deployment
             return GetYamlProperty(appYaml, RuntimeYamlProperty);
         }
 
-        private static string GetAppYamlPath(string projectPath)
+        private static string GetAppYamlPath(IParsedProject project)
         {
-            var projectDirectory = Path.GetDirectoryName(projectPath);
-            var appYaml = Path.Combine(projectDirectory, AppYamlName);
+            var appYaml = Path.Combine(project.DirectoryPath, AppYamlName);
             return appYaml;
         }
 
@@ -255,10 +249,9 @@ namespace GoogleCloudExtension.Deployment
                 now.Hour, now.Minute, now.Second);
         }
 
-        private static void CopyOrCreateAppYaml(string projectPath, string stageDirectory)
+        private static void CopyOrCreateAppYaml(IParsedProject project, string stageDirectory)
         {
-            var sourceDir = Path.GetDirectoryName(projectPath);
-            var sourceAppYaml = Path.Combine(sourceDir, AppYamlName);
+            var sourceAppYaml = Path.Combine(project.DirectoryPath, AppYamlName);
             var targetAppYaml = Path.Combine(stageDirectory, AppYamlName);
 
             if (File.Exists(sourceAppYaml))
