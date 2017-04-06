@@ -1,4 +1,5 @@
 ﻿<VSTemplateManifest Version="1.0" xmlns="http://schemas.microsoft.com/developer/vstemplatemanifest/2015">
+  <!-- .NET 4.x templates -->
   <VSTemplateContainer TemplateType="Project">
     <RelativePathOnDisk>Google Cloud Platform\GoogleAspnetMvc</RelativePathOnDisk>
     <TemplateFileName>MyTemplate.vstemplate</TemplateFileName>
@@ -36,6 +37,28 @@
         <LocationField>Enabled</LocationField>
         <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
         <Icon>__TemplateIcon.png</Icon>
+      </TemplateData>
+    </VSTemplateHeader>
+  </VSTemplateContainer>
+
+  <!-- .NET Core templates -->
+  <VSTemplateContainer TemplateType="Project">
+    <RelativePathOnDisk>Google Cloud Platform\GoogleAspNetCoreMvcVs2017</RelativePathOnDisk>
+    <TemplateFileName>MyTemplate.vstemplate</TemplateFileName>
+    <VSTemplateHeader>
+      <TemplateData xmlns="http://schemas.microsoft.com/developer/vstemplate/2005">
+	<Name>Google ASP.NET Core MVC</Name>
+	<Description>ASP.NET Core MVC template for Google Cloud</Description>
+	<ProjectType>CSharp</ProjectType>
+	<ProjectSubType>
+	</ProjectSubType>
+	<SortOrder>1000</SortOrder>
+	<CreateNewFolder>true</CreateNewFolder>
+	<DefaultName>GoogleCloudAspNetCoreMvc</DefaultName>
+	<ProvideDefaultName>true</ProvideDefaultName>
+	<LocationField>Enabled</LocationField>
+	<EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+	<Icon>__TemplateIcon.ico</Icon>
       </TemplateData>
     </VSTemplateHeader>
   </VSTemplateContainer>
