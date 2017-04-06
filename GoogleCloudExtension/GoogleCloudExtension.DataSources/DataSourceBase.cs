@@ -77,7 +77,7 @@ namespace GoogleCloudExtension.DataSources
         /// Initializes an instance of the data source with only a service, for those APIs that do
         /// not require a project id.
         /// </summary>
-        /// <param name="credentials">The credentials to use for the service.</param>
+        /// <param name="credential">The credentials to use for the service.</param>
         /// <param name="serviceFactory">The service factory for this data source.</param>
         /// <param name="appName">The name of the application.</param>
         protected DataSourceBase(

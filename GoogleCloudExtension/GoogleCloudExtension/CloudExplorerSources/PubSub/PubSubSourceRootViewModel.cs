@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorer;
@@ -37,11 +36,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             Caption = Resources.CloudExplorerPubSubLoadingTopicsCaption,
             IsLoading = true
         };
+
         private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
         {
             Caption = Resources.CloudExplorerPubSubNoTopicsFoundCaption,
             IsWarning = true
         };
+
         private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
         {
             Caption = Resources.CloudExplorerPubSubListTopicsErrorCaption,
@@ -54,8 +55,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             "gcr.io%2F{0}", "us.gcr.io%2F{0}"
         };
 
-        private string CurrentProjectId => Context.CurrentProject.ProjectId;
-        private string BlackListPrefix => $"projects/{CurrentProjectId}/topics/";
         private Lazy<PubsubDataSource> _dataSource = new Lazy<PubsubDataSource>(CreateDataSource);
 
         public PubsubDataSource DataSource => _dataSource.Value;
@@ -64,6 +63,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         public override TreeLeaf ErrorPlaceholder => s_errorPlaceholder;
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
         public override TreeLeaf LoadingPlaceholder => s_loadingPlaceholder;
+
+        private string CurrentProjectId => Context.CurrentProject.ProjectId;
+        private string BlackListPrefix => $"projects/{CurrentProjectId}/topics/";
 
         public override void Initialize(ICloudSourceContext context)
         {

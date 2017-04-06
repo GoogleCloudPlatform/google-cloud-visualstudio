@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
@@ -38,11 +37,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         private readonly SubscriptionItem _subscriptionItem;
 
         /// <summary>
-        /// The item this tree node represents.
-        /// </summary>
-        public object Item => _subscriptionItem;
-
-        /// <summary>
         /// Returns the context in which this view model is working.
         /// </summary>
         public ICloudSourceContext Context => _owner.Context;
@@ -51,6 +45,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// The datasource for the item.
         /// </summary>
         public PubsubDataSource DataSource => _owner.DataSource;
+
+        /// <summary>
+        /// The item this tree node represents.
+        /// </summary>
+        public object Item => _subscriptionItem;
 
         public event EventHandler ItemChanged;
 
@@ -95,7 +94,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                         actionCaption: Resources.UiDeleteButtonCaption);
                     if (doDelete)
                     {
-                        await DataSource.DeleteSubscriptionAsync(_subscriptionItem.Name);
+                        await DataSource.DeleteSubscriptionAsync(_subscriptionItem.FullName);
                     }
                 }
                 catch (DataSourceException e)

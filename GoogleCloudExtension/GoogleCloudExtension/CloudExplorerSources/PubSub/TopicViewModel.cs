@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PubSubWindows;
@@ -29,7 +28,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     /// </summary>
     internal class TopicViewModel : TopicViewModelBase
     {
-
         private const string IconResourcePath = "CloudExplorerSources/PubSub/Resources/topic_icon.png";
 
         private static readonly Lazy<ImageSource> s_topicIcon =
@@ -104,12 +102,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 try
                 {
                     bool doDelete = UserPromptUtils.ActionPrompt(
-                        string.Format(Resources.PubSubDeleteTopicWindowMessage, TopicItem.Name),
+                        string.Format(Resources.PubSubDeleteTopicWindowMessage, TopicItem.DisplayName),
                         Resources.PubSubDeleteTopicWindowHeader,
                         actionCaption: Resources.UiDeleteButtonCaption);
                     if (doDelete)
                     {
-                        await DataSource.DeleteTopicAsync(TopicItem.Name);
+                        await DataSource.DeleteTopicAsync(TopicItem.FullName);
                     }
                 }
                 catch (DataSourceException e)
