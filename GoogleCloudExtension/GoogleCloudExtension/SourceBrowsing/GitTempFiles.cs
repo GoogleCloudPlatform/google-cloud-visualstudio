@@ -21,43 +21,36 @@ using System.IO;
 namespace GoogleCloudExtension.SourceBrowsing
 {
     /// <summary>
-    /// Helper methods for managing temporary files of git revision.
+    /// A singleton class that help manage temporary files for Git revision files.
     /// 
-    /// Giving a git SHA and relative file path, returns a temporary file name.
+    /// Giving a git SHA and relative file path, save the file to a temporary path.
+    /// Open the file in a Document window, return the window object.
     ///
-    /// Windows temp files won't be cleaned up automatically.
-    /// The class cleanup files on VS exit event.
+    /// Windows temporary files won't be cleaned up automatically.
+    /// The class deletes the temporary file immediately after the document is opened.
     /// </summary>
-    internal class GitTempFiles
+    internal class GitTemporaryFiles
     {
-        private const string TempSubFolder = "GoogleToolsForVS";
-
         // Use () => new GitTempFiles() here, because the constructor is private.
-        private static Lazy<GitTempFiles> s_instance = new Lazy<GitTempFiles>(() => new GitTempFiles());
-
-        private Lazy<string> _folder = new Lazy<string>(
-            () => Path.Combine(Path.GetTempPath(), TempSubFolder));
-
-        // Cache the temporary file name.
-        // Key is git_sha/relative_path. 
-        // Value is the temporary file path.
-        private Dictionary<string, Window> _tmpFilesMap = new Dictionary<string, Window>(StringComparer.OrdinalIgnoreCase);
-        //private Dictionary<string, Window> _tmpFilesMap = new Dictionary<string, Window>(StringComparer.OrdinalIgnoreCase);
-        private Dictionary<Window, string> _openWindow = new Dictionary<Window, string>();
+        private static Lazy<GitTemporaryFiles> s_instance = new Lazy<GitTemporaryFiles>(() => new GitTemporaryFiles());
 
         /// <summary>
-        /// Singleton of the <seealso cref="GitTempFiles"/> class.
+        /// Key is git_sha/relative_path, value is the opened document window.
         /// </summary>
-        public static GitTempFiles Current => s_instance.Value;
+        private Dictionary<string, Window> _fileRevisionWindowMap = new Dictionary<string, Window>(StringComparer.OrdinalIgnoreCase);
 
-        private GitTempFiles()
+        /// <summary>
+        /// Key is the opened document window, value is the git_sha/relative_path.
+        /// </summary>
+        private Dictionary<Window, string> _documentWindows = new Dictionary<Window, string>();
+
+        /// <summary>
+        /// Returns the singleton of the <seealso cref="GitTemporaryFiles"/> class.
+        /// </summary>
+        public static GitTemporaryFiles Current => s_instance.Value;
+
+        private GitTemporaryFiles()
         {
-            if (!File.Exists(_folder.Value))
-            {
-                Directory.CreateDirectory(_folder.Value);
-            }
-            Clean();
-            //ShellUtils.RegisterShutdownEventHandler(Clean);
             ShellUtils.RegisterWindowCloseEventHandler(OnWindowClose);
         }
 
@@ -67,25 +60,24 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// </summary>
         /// <param name="gitSha">The git commint SHA.</param>
         /// <param name="relativePath">Relative path of the target file.</param>
-        /// <param name="save">The callback to save the content of the file to the temporary file path.</param>
-        /// <returns>Temporary file path.</returns>
-        public Window Open(string gitSha, string relativePath, Action<string> save)
+        /// <param name="saveAction">The callback to save the content of the file to the temporary file path.</param>
+        /// <returns>The document window that opens the temporary file.</returns>
+        public Window Open(string gitSha, string relativePath, Action<string> saveAction)
         {
             gitSha.ThrowIfNullOrEmpty(nameof(gitSha));
             relativePath.ThrowIfNullOrEmpty(nameof(relativePath));
-            save.ThrowIfNull(nameof(save));
+            saveAction.ThrowIfNull(nameof(saveAction));
 
+            Window window;
             var key = $"{gitSha}/{relativePath}";
-            if (_tmpFilesMap.ContainsKey(key))
+            if (!_fileRevisionWindowMap.TryGetValue(key, out window))
             {
-                return _tmpFilesMap[key];
+                var filePath = Path.Combine(Path.GetTempPath(), Path.GetTempFileName());
+                saveAction(filePath);
+                window = OpenDocument(filePath, key);
+                window.Caption = $"tmp_{Path.GetFileName(relativePath)}";
             }
-            else
-            {
-                var filePath = NewTempFileName(Path.GetFileName(relativePath));
-                save(filePath);
-                return OpenDocument(filePath, key);
-            }
+            return window;
         }
 
         private Window OpenDocument(string filePath, string key)
@@ -95,34 +87,21 @@ namespace GoogleCloudExtension.SourceBrowsing
             File.Delete(filePath);
             if (window != null)
             {
-                _tmpFilesMap[key] = window;
-                _openWindow.Add(window, key);
+                _fileRevisionWindowMap[key] = window;
+                _documentWindows[window] = key;
             }
             return window;
         }
 
         private void OnWindowClose(Window window)
         {
-            if (_openWindow.ContainsKey(window))
+            string key;
+            if (_documentWindows.TryGetValue(window, out key))
             {
-                UserPromptUtils.OkPrompt($"The window of {_openWindow[window]} is closing", "OnWindowClose Event handler");
-                _tmpFilesMap.Remove(_openWindow[window]);
-                _openWindow.Remove(window);
+                UserPromptUtils.OkPrompt($"The window of {key} is closing", "OnWindowClose Event handler");
+                _documentWindows.Remove(window);
+                _fileRevisionWindowMap.Remove(key);
             }
         }
-
-        private void Clean()
-        {
-            try
-            {
-                Array.ForEach(Directory.GetFiles(_folder.Value), File.Delete);
-            }
-            catch (Exception ex) when (ex is IOException || ex is UnauthorizedAccessException
-                || ex is DirectoryNotFoundException || ex is PathTooLongException)
-            { }
-        }
-
-        private string NewTempFileName(string name) => 
-            Path.Combine(_folder.Value, $"{Guid.NewGuid()}_{name}");
     }
 }

@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using EnvDTE;
 using GoogleCloudExtension.Utils;
-using LibGit2Sharp;
+using EnvDTE;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,15 +27,17 @@ namespace GoogleCloudExtension.SourceBrowsing
     /// </summary>
     internal class GitCommit
     {
-        private readonly Commit _commit;
-        private readonly Repository _repo;
+        private readonly GitCommandWrapper _gitCommand;
         private readonly string _localRoot;
+        private readonly string _sha;
+        private readonly Lazy<HashSet<string>> _fileTree;
         
-        internal GitCommit(Commit commit, Repository repo, string localRoot)
+        internal GitCommit(GitCommandWrapper gitCommand, string sha, string localRoot)
         {
-            _commit = commit.ThrowIfNull(nameof(commit));
-            _repo = repo.ThrowIfNull(nameof(repo));
+            _gitCommand = gitCommand.ThrowIfNull(nameof(gitCommand));
+            _sha = sha.ThrowIfNullOrEmpty(nameof(sha));
             _localRoot = localRoot.ThrowIfNullOrEmpty(nameof(localRoot));
+            _fileTree = new Lazy<HashSet<string>>(() => new HashSet<string>(gitCommand.ListTree(sha)));
         }
 
         /// <summary>
@@ -56,14 +57,10 @@ namespace GoogleCloudExtension.SourceBrowsing
             sha.ThrowIfNullOrEmpty(nameof(sha));
             do
             {
-                if (Repository.IsValid(dir))
+                var gitCommand = GitCommandWrapper.GetGitCommandWrapperForPath(dir);
+                if (gitCommand != null)
                 {
-                    var repo = new Repository(dir);
-                    Commit commit = repo.Lookup<Commit>(sha);
-                    if (commit != null)
-                    {
-                        return new GitCommit(commit, repo, dir);
-                    }
+                    return gitCommand.ContainsCommit(sha) ? new GitCommit(gitCommand, sha, dir) : null;
                 }
                 dir = Directory.GetParent(dir)?.FullName;
             } while (dir != null);
@@ -80,54 +77,50 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="filePath">The file to be searched for.</param>
         public Window OpenFileRevision(string filePath)
         {
-            TreeEntry treeEntry;
+            string relativePath;
             var matchingFiles = FindMatchingEntry(filePath).ToList();
             if (matchingFiles.Count == 0)
             {
                 throw new Exception(String.Format(
                     Resources.SourceVersionUtilsFailedToLocateFileInRepoMessage,
                     filePath,
-                    _commit.Sha,
+                    _sha,
                     _localRoot));
             }
             if (matchingFiles.Count() > 1)
             {
-                var index = PickFileDialog.PickFileWindow.PromptUser(matchingFiles.Select(x => x.Path));
+                var index = PickFileDialog.PickFileWindow.PromptUser(matchingFiles);
                 if (index < 0)
                 {
                     throw new ActionCancelledException();
                 }
 
-                treeEntry = matchingFiles[index];
+                relativePath = matchingFiles[index];
             }
             else
             {
-                treeEntry = matchingFiles.First();
+                relativePath = matchingFiles.First();
             }
-            var window = GitTempFiles.Current.Open(_commit.Sha, treeEntry.Path, (tmpFile) => SaveTempFile(treeEntry, tmpFile));
+
+            var revisionFileContent = _gitCommand.GetRevisionFile(_sha, relativePath);
+
+            // TODO: use the current checked out HEAD version file if file is not changed.
+            var window = GitTemporaryFiles.Current.Open(_sha, relativePath, (tmpFile) => SaveTempFile(tmpFile, revisionFileContent));
             return window;
-            //var currentPath = CurrentPath(treeEntry);
-            //return _repo.RetrieveStatus(treeEntry.Path) == FileStatus.Unaltered && FileCompare(currentPath, tmpPath) ? currentPath : tmpPath;            
         }
 
-        private void SaveTempFile(TreeEntry treeEntry, string filePath)
+        private void SaveTempFile(string tmpFile, List<string> content)
         {
-            var blob = (Blob)treeEntry.Target;
-            using (var contentStream = blob.GetContentStream())
+            using (var sw = new StreamWriter(tmpFile))
             {
-                Debug.Assert(blob.Size == contentStream.Length);
-                contentStream.Seek(0, SeekOrigin.Begin);
-                using (var fileStream = File.Create(filePath))
-                {
-                    contentStream.CopyTo(fileStream);
-                }
+                content.ForEach(x => sw.WriteLine(x));
             }
         }
 
-        private string CurrentPath(TreeEntry treeEntry) => Path.Combine(_localRoot, treeEntry.Path);
+        private string CurrentPath(string relativePath) => Path.Combine(_localRoot, relativePath);
 
-        private IEnumerable<TreeEntry> FindMatchingEntry(string filePath) =>
-            SubPaths(filePath).Select(x => _commit[x]).Where(y => y != null);
+        private IEnumerable<string> FindMatchingEntry(string filePath) =>
+            SubPaths(filePath).Where(x => _fileTree.Value.Contains(x));
 
         private static IEnumerable<string> SubPaths(string filePath)
         {
@@ -137,33 +130,6 @@ namespace GoogleCloudExtension.SourceBrowsing
             for (; index >= 0; index = filePath.IndexOf(Path.DirectorySeparatorChar, index+1))
             {
                 yield return filePath.Substring(index + 1);
-            }
-        }
-
-        /// <summary>
-        /// This method compare two files line by line.
-        /// </summary>
-        /// <returns>
-        /// True: the two files content are same.
-        /// False: thw two files differs.
-        /// </returns>
-        private bool FileCompare(string file1, string file2)
-        {
-            string line1, line2;
-            using (var fs1 = new StreamReader(file1))
-            using (var fs2 = new StreamReader(file2))
-            {
-                do
-                {
-                    line1 = fs1.ReadLine();
-                    line2 = fs2.ReadLine();
-                    if (line1 != line2)
-                    {
-                        return false;
-                    }
-                }
-                while (!fs1.EndOfStream && !fs2.EndOfStream);
-                return fs1.EndOfStream && fs2.EndOfStream;
             }
         }
     }
