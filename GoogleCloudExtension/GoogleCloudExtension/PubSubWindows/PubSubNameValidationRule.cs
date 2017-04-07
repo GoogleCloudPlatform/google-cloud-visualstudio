@@ -61,7 +61,7 @@ namespace GoogleCloudExtension.PubSubWindows
             {
                 yield return new StringValidationResult(Resources.Validation255CharactersMessage);
             }
-            if (!char.IsLetter(name.First()))
+            if (!char.IsLetter(name.FirstOrDefault()))
             {
                 yield return new StringValidationResult(Resources.ValidationStartWithLetterMessage);
             }

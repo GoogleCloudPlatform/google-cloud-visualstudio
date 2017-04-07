@@ -49,6 +49,26 @@
                 ToolTip="{Binding ToolTip}"/>
     </DataTemplate>
 
+    <!-- Templates to display validation errors. -->
+    <Style x:Key="ValidationPanelStyle" TargetType="Border">
+        <Setter Property="Background" Value="{StaticResource CommonTextBox.Disabled.Background}" />
+        <Setter Property="BorderBrush" Value="{StaticResource CommonTextBox.Disabled.Border}" />
+        <Setter Property="BorderThickness" Value="1"/>
+    </Style>
+    <ItemsPanelTemplate x:Key="ValidationPanelTemplate">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+            </StackPanel>
+    </ItemsPanelTemplate>
+    <Style x:Key="ValidationError" TargetType="TextBlock">
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="Focusable" Value="False"/>
+        <Setter Property="Foreground" Value="DarkRed"/>
+        <Setter Property="Background" Value="{StaticResource CommonTextBox.Disabled.Background}" />
+    </Style>
+    <DataTemplate x:Key="ValidationErrorTemplateStandard">
+        <TextBlock Text="{Binding ErrorContent}" Style="{StaticResource ValidationError}"/>
+    </DataTemplate>
+
     <!-- Common visuals for the dialogs. -->
     
     <!-- The template selector to decide what button style to apply. -->
@@ -83,11 +103,12 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="auto" />
+                                    <RowDefinition Height="auto" />
                                 </Grid.RowDefinitions>
 
                                 <!-- The actual content displayed in the dialog. -->
-                                <ContentPresenter Content="{TemplateBinding Content}" />
-
+                                <ContentPresenter Grid.Row="0" Content="{TemplateBinding Content}" />
+                                    
                                 <!-- The row of buttons. -->
                                 <Border Grid.Row="1" Style="{StaticResource DialogButtonBar}">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
@@ -101,6 +122,20 @@
                                             </ItemsControl.ItemsPanel>
                                         </local:ButtonsList>
                                     </StackPanel>
+                                </Border>
+
+                                <!-- The validation content. -->
+                                <Border Grid.Row="2"
+                                        Visibility="{Binding ValidationResults,
+                                            RelativeSource={RelativeSource TemplatedParent},
+                                            Converter={utils:ValidationVisibilityConverter}}"
+                                        Style="{StaticResource ValidationPanelStyle}">
+                                    <ItemsControl
+                                        ItemsSource="{Binding ValidationResults,
+                                            RelativeSource={RelativeSource TemplatedParent}}"
+                                        Focusable="False"
+                                        ItemTemplate="{StaticResource ValidationErrorTemplateStandard}"
+                                        ItemsPanel="{StaticResource ValidationPanelTemplate}"/>
                                 </Border>
 
                             </Grid>

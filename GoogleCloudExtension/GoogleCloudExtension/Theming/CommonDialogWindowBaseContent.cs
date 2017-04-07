@@ -15,8 +15,10 @@
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.Theming
@@ -44,6 +46,17 @@ namespace GoogleCloudExtension.Theming
                 typeof(bool),
                 typeof(CommonDialogWindowBaseContent));
 
+        public static readonly DependencyProperty ValidationResultsProperty =
+            DependencyProperty.Register(
+                nameof(ValidationResults),
+                typeof(IList<ValidationResult>),
+                typeof(CommonDialogWindowBaseContent),
+                new FrameworkPropertyMetadata
+                {
+                    BindsTwoWayByDefault = true,
+                    DefaultUpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+                });
+
         /// <summary>
         /// The list of buttons to show in the dialog.
         /// </summary>
@@ -65,6 +78,12 @@ namespace GoogleCloudExtension.Theming
         {
             get { return (bool)GetValue(HasBannerProperty); }
             set { SetValue(HasBannerProperty, value); }
+        }
+
+        public IList<ValidationResult> ValidationResults
+        {
+            get { return (IList<ValidationResult>)GetValue(ValidationResultsProperty); }
+            set { SetValue(ValidationResultsProperty, value); }
         }
 
         public CommonDialogWindowBaseContent()

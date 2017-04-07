@@ -27,12 +27,12 @@
             </Style>
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
     <UserControl.Style>
-        <Binding Source="{StaticResource CommonDialogStyleSmall}"/>
+        <Binding Source="{StaticResource CommonDialogStyleDynamicSmall}"/>
     </UserControl.Style>
-    
-    <theming:CommonDialogWindowBaseContent>
+
+    <theming:CommonDialogWindowBaseContent ValidationResults="{Binding ValidationResults}">
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo
                 Command="{Binding CreateCommand}"

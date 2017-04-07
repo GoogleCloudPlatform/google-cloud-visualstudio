@@ -14,7 +14,11 @@
 
 using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.PubSubWindows
 {
@@ -25,6 +29,8 @@ namespace GoogleCloudExtension.PubSubWindows
     {
         private readonly CommonDialogWindowBase _owner;
         private string _topicName;
+        private IList<ValidationResult> _validationResults;
+        private List<ValidationResult> _newValidationResults;
 
         /// <summary>
         /// The id of the project that will own the new topic.
@@ -38,6 +44,15 @@ namespace GoogleCloudExtension.PubSubWindows
         {
             get { return _topicName; }
             set { SetValueAndRaise(ref _topicName, value); }
+        }
+
+        public IList<ValidationResult> ValidationResults
+        {
+            get { return _validationResults; }
+            set
+            {
+                SetValueAndRaise(ref _validationResults, value);
+            }
         }
 
         /// <summary>
@@ -55,6 +70,24 @@ namespace GoogleCloudExtension.PubSubWindows
             _owner = owner;
             Project = project;
             CreateCommand = new ProtectedCommand(OnCreateCommand);
+            PropertyChanged += Validate;
+        }
+
+        private async void Validate(object sender, PropertyChangedEventArgs e)
+        {
+            if (sender == this && e.PropertyName == nameof(TopicName))
+            {
+                List<ValidationResult> results = PubSubNameValidationRule.Validate(TopicName).ToList<ValidationResult>();
+                _newValidationResults = results;
+                if (_newValidationResults.Any())
+                {
+                    await Task.Delay(500);
+                }
+                if (ReferenceEquals(results, _newValidationResults))
+                {
+                    ValidationResults = _newValidationResults;
+                }
+            }
         }
 
         /// <summary>
