@@ -80,9 +80,10 @@ namespace GoogleCloudExtension.Theming
         /// </summary>
         private void Initialize()
         {
-            ResourceDictionary resources = new ResourceDictionary();
-            resources.Source = ResourceUtils.GetResourceUri("Theming/ThemingResources.xaml");
-            this.Resources = resources;
+            Resources = new ResourceDictionary
+            {
+                Source = ResourceUtils.GetResourceUri("Theming/ThemingResources.xaml")
+            };
         }
     }
 }

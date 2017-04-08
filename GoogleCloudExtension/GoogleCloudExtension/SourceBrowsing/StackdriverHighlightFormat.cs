@@ -25,14 +25,16 @@ namespace GoogleCloudExtension.SourceBrowsing
     /// </summary>
     internal class StackdriverTag : TextMarkerTag
     {
-        public StackdriverTag() : base("StackdriverMarkerFormat") { }
+        public const string StackdriverMarkerFormatName = "StackdriverMarkerFormat";
+
+        public StackdriverTag() : base(StackdriverMarkerFormatName) { }
     }
 
     /// <summary>
     /// Define a custom <seealso cref="EditorFormatDefinition"/> for highlighting source line.
     /// </summary>
     [Export(typeof(EditorFormatDefinition))]
-    [Name("StackdriverMarkerFormat")]
+    [Name(StackdriverTag.StackdriverMarkerFormatName)]
     internal class StackdriverHighlightFormat : MarkerFormatDefinition
     {
         /// <summary>
