@@ -1,4 +1,4 @@
-﻿// Copyright 2017 Google Inc. All Rights Reserved.
+// Copyright 2017 Google Inc. All Rights Reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -11,38 +11,31 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 {
     /// <summary>
-    /// An item that describes a topic.
+    /// Topic like item describing the container of orphaned subscriptions.
     /// </summary>
-    internal class TopicItem : PropertyWindowItemBase, ITopicItem
+    internal class OrphanedSubscriptionsItem : ITopicItem
     {
-        private readonly Topic _topic;
+        public const string DeletedTopicName = "_deleted-topic_";
 
         /// <summary>
-        /// The simple name of the topic.
+        /// Display name of the orphaned subscriptions item.
         /// </summary>
         [LocalizedCategory(nameof(Resources.CloudExplorerPubSubTopicCategory))]
         [LocalizedDescription(nameof(Resources.CloudExplorerPubSubTopicNameDescription))]
         [LocalizedDisplayName(nameof(Resources.CloudExplorerPubSubTopicNameDisplayName))]
-        public string DisplayName => PubsubDataSource.GetPathLeaf(_topic.Name);
+        public string DisplayName => Resources.PubSubOrphanedSubscriptionsItemName;
 
         /// <summary>
-        /// The full name of the topic: projects/projectId/topics/topicName
+        /// Name of the topic orphaned subscriptions claim to belong to.
         /// </summary>
         [LocalizedCategory(nameof(Resources.CloudExplorerPubSubTopicCategory))]
         [LocalizedDescription(nameof(Resources.CloudExplorerPubSubTopicFullNameDescription))]
         [LocalizedDisplayName(nameof(Resources.CloudExplorerPubSubTopicFullNameDisplayName))]
-        public string FullName => _topic.Name;
-
-        public TopicItem(Topic topic) :
-            base(Resources.CloudExplorerPubSubTopicCategory, PubsubDataSource.GetPathLeaf(topic.Name))
-        {
-            _topic = topic;
-        }
+        public string FullName => DeletedTopicName;
     }
 }
