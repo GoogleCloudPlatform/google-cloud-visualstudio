@@ -28,13 +28,12 @@ namespace GoogleCloudExtension.SourceBrowsing
     /// </summary>
     internal static class SourceVersionUtils
     {
+        private const string SourceContextIDLabel = "git_revision_id";
+
         /// <summary>
         /// A map of git sha to <seealso cref="GitCommit"/> object.
         /// </summary>
         private static readonly Dictionary<string, GitCommit> s_localCache = new Dictionary<string, GitCommit>(StringComparer.OrdinalIgnoreCase);
-
-        // TODO: change to Gax constant.
-        private const string SourceContextIDLabel = "git_revision_id";
 
         /// <summary>
         /// Open the source file, move to the source line and show tooltip.
