@@ -69,11 +69,12 @@ namespace GoogleCloudExtension.SourceBrowsing
             var matchingFiles = FindMatchingEntry(filePath).ToList();
             if (matchingFiles.Count == 0)
             {
-                throw new Exception(String.Format(
-                    Resources.SourceVersionUtilsFailedToLocateFileInRepoMessage,
-                    filePath,
-                    _sha,
-                    _gitCommand.Root));
+                UserPromptUtils.ErrorPrompt(
+                    message: String.Format(
+                        Resources.SourceVersionUtilsFailedToLocateFileInRepoMessage,
+                        filePath, _sha, _gitCommand.Root),
+                    title: Resources.uiDefaultPromptTitle);
+                return null;
             }
             if (matchingFiles.Count() > 1)
             {
