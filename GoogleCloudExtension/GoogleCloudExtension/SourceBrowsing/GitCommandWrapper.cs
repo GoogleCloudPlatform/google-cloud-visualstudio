@@ -18,7 +18,7 @@ namespace GoogleCloudExtension.SourceBrowsing
 
         private static Lazy<string> s_gitPathLazy = new Lazy<string>(GetGitPath);
 
-        private readonly string _localRoot;
+        public string Root { get; }
 
         /// <summary>
         /// Gets the git.exe full path if it is installed properly.
@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.SourceBrowsing
 
         private GitCommandWrapper(string gitLocalRoot)
         {
-            _localRoot = gitLocalRoot;
+            Root = RunGitCommand("rev-parse --show-toplevel", gitLocalRoot).FirstOrDefault()?.Replace('/', '\\');
         }
 
         /// <summary>
@@ -44,21 +44,25 @@ namespace GoogleCloudExtension.SourceBrowsing
             return IsGitRepository(gitLocalRoot) ? new GitCommandWrapper(gitLocalRoot) : null;
         }
 
-        public static bool IsGitRepository(string gitLocalRoot) => RunCommand("log - 1", gitLocalRoot)?.Count > 0;
+        public static bool IsGitRepository(string gitLocalRoot) => RunGitCommand("log -1", gitLocalRoot)?.Count > 0;
 
-        public bool ContainsCommit(string sha) => RunCommand($"cat-file -t {sha}").FirstOrDefault() == "commit";
+        public bool ContainsCommit(string sha) => ExecCommand($"cat-file -t {sha}").FirstOrDefault() == "commit";
 
-        public List<string> ListTree(string sha) => RunCommand($"ls-tree -r {sha} --name-only");
+        public List<string> ListTree(string sha) => ExecCommand($"ls-tree -r {sha} --name-only");
 
         public List<string> GetRevisionFile(string sha, string relativePath)
-            => RunCommand($"show {sha}:{relativePath.Replace('\\', '/')}");
+            => ExecCommand($"show {sha}:{relativePath.Replace('\\', '/')}");
 
-        private List<string> RunCommand(string command) => RunCommand(command, _localRoot);
+        private List<string> ExecCommand(string command) => RunGitCommand(command, Root);
 
         private static string GetGitPath()
         {
             // Firstly check default installation location.
-            var programPath = Environment.GetFolderPath(System.Environment.SpecialFolder.ProgramFiles);
+            string programPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            if (programPath.EndsWith("(x86)"))
+            {
+                programPath = programPath.Replace(" (x86)", "");
+            }
             if (File.Exists(Path.Combine(programPath, GitDefaultLocation)))
             {
                 return Path.Combine(programPath, GitDefaultLocation);
@@ -66,7 +70,8 @@ namespace GoogleCloudExtension.SourceBrowsing
 
             return Environment.GetEnvironmentVariable("PATH")
                 .Split(';')
-                .FirstOrDefault(x => File.Exists(Path.Combine(x, GitExecutable)));
+                .Select(x => Path.Combine(x, GitExecutable))
+                .FirstOrDefault(x => File.Exists(x));
         }
 
         /// <summary>
@@ -76,7 +81,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="gitLocalRoot"></param>
         /// <param name="timeoutMilliseconds"></param>
         /// <returns></returns>
-        private static List<string> RunCommand(
+        private static List<string> RunGitCommand(
             string command, 
             string gitLocalRoot, 
             int timeoutMilliseconds = DefaultGitCommandTimeoutMilliseconds)

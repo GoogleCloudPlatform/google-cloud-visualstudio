@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using EnvDTE;
+using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
@@ -28,53 +27,42 @@ namespace GoogleCloudExtension.SourceBrowsing
     internal class GitCommit
     {
         private readonly GitCommandWrapper _gitCommand;
-        private readonly string _localRoot;
         private readonly string _sha;
         private readonly Lazy<HashSet<string>> _fileTree;
         
-        internal GitCommit(GitCommandWrapper gitCommand, string sha, string localRoot)
+        internal GitCommit(GitCommandWrapper gitCommand, string sha)
         {
             _gitCommand = gitCommand.ThrowIfNull(nameof(gitCommand));
             _sha = sha.ThrowIfNullOrEmpty(nameof(sha));
-            _localRoot = localRoot.ThrowIfNullOrEmpty(nameof(localRoot));
-            _fileTree = new Lazy<HashSet<string>>(() => new HashSet<string>(gitCommand.ListTree(sha)));
+            _fileTree = new Lazy<HashSet<string>>(
+                () => new HashSet<string>(gitCommand.ListTree(sha).Select(x => x.Replace('/', '\\'))));
         }
 
         /// <summary>
-        /// Search for a Git Commit on a directory. 
-        /// The method traversal the directory tree bottom up to check 
-        /// if the directory is a valid local repo and contains the git SHA.
+        /// Search for a local git repository that contains a Git Commit.
         /// </summary>
         /// <param name="path">The path to search for local git repo.</param>
         /// <param name="sha">The git commit SHA to be searched for.</param>
         /// <returns>
         /// A <seealso cref="GitCommit"/> object that represents the git SHA commit at a local repository.
-        /// null if not found.
+        /// null if the search is not successful.
         /// </returns>
         public static GitCommit FindCommit(string path, string sha)
         {
             string dir = path.ThrowIfNullOrEmpty(nameof(path));
             sha.ThrowIfNullOrEmpty(nameof(sha));
-            do
-            {
-                var gitCommand = GitCommandWrapper.GetGitCommandWrapperForPath(dir);
-                if (gitCommand != null)
-                {
-                    return gitCommand.ContainsCommit(sha) ? new GitCommit(gitCommand, sha, dir) : null;
-                }
-                dir = Directory.GetParent(dir)?.FullName;
-            } while (dir != null);
-            return null;
+            var gitCommand = GitCommandWrapper.GetGitCommandWrapperForPath(dir);
+            return gitCommand?.ContainsCommit(sha) == true ? new GitCommit(gitCommand, sha) : null;
         }
 
         /// <summary>
-        /// Get the file of the revision.
-        /// This method firstly open the revision of the file in a temporary path.
-        /// Comparing the temporary file with the current active version of file.
-        /// If the current active file is same as the revision of the file, return the current active file.
-        /// Otherwise, return the temporary file.
+        /// Open the file of the revision.
         /// </summary>
-        /// <param name="filePath">The file to be searched for.</param>
+        /// <param name="filePath">
+        /// The file to be searched for.
+        /// The path is from the machine that build the assembly.
+        /// So the file path has different root path.
+        /// </param>
         public Window OpenFileRevision(string filePath)
         {
             string relativePath;
@@ -85,14 +73,14 @@ namespace GoogleCloudExtension.SourceBrowsing
                     Resources.SourceVersionUtilsFailedToLocateFileInRepoMessage,
                     filePath,
                     _sha,
-                    _localRoot));
+                    _gitCommand.Root));
             }
             if (matchingFiles.Count() > 1)
             {
                 var index = PickFileDialog.PickFileWindow.PromptUser(matchingFiles);
                 if (index < 0)
                 {
-                    throw new ActionCancelledException();
+                    return null;
                 }
 
                 relativePath = matchingFiles[index];
@@ -117,7 +105,7 @@ namespace GoogleCloudExtension.SourceBrowsing
             }
         }
 
-        private string CurrentPath(string relativePath) => Path.Combine(_localRoot, relativePath);
+        private string CurrentPath(string relativePath) => Path.Combine(_gitCommand.Root, relativePath);
 
         private IEnumerable<string> FindMatchingEntry(string filePath) =>
             SubPaths(filePath).Where(x => _fileTree.Value.Contains(x));

@@ -28,11 +28,16 @@ namespace GoogleCloudExtension.SourceBrowsing
     ///
     /// Windows temporary files won't be cleaned up automatically.
     /// The class deletes the temporary file immediately after the document is opened.
+    /// 
+    /// The the document window for the same file is still open,
+    /// return the document window so as not to open a new window.
     /// </summary>
     internal class GitTemporaryFiles
     {
-        // Use () => new GitTempFiles() here, because the constructor is private.
+        // Use () => new GitTemporaryFiles() here, because the constructor is private.
         private static Lazy<GitTemporaryFiles> s_instance = new Lazy<GitTemporaryFiles>(() => new GitTemporaryFiles());
+
+        private readonly string _tmpFolder;
 
         /// <summary>
         /// Key is git_sha/relative_path, value is the opened document window.
@@ -51,6 +56,8 @@ namespace GoogleCloudExtension.SourceBrowsing
 
         private GitTemporaryFiles()
         {
+            _tmpFolder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            Directory.CreateDirectory(_tmpFolder);
             ShellUtils.RegisterWindowCloseEventHandler(OnWindowClose);
         }
 
@@ -72,10 +79,11 @@ namespace GoogleCloudExtension.SourceBrowsing
             var key = $"{gitSha}/{relativePath}";
             if (!_fileRevisionWindowMap.TryGetValue(key, out window))
             {
-                var filePath = Path.Combine(Path.GetTempPath(), Path.GetTempFileName());
+                // window.Caption can not be modified.
+                // Set the file name suffix same as original file name that the document window shows it.
+                var filePath = Path.Combine(_tmpFolder, $"tmp_{Path.GetFileName(relativePath)}");
                 saveAction(filePath);
                 window = OpenDocument(filePath, key);
-                window.Caption = $"tmp_{Path.GetFileName(relativePath)}";
             }
             return window;
         }
@@ -98,7 +106,6 @@ namespace GoogleCloudExtension.SourceBrowsing
             string key;
             if (_documentWindows.TryGetValue(window, out key))
             {
-                UserPromptUtils.OkPrompt($"The window of {key} is closing", "OnWindowClose Event handler");
                 _documentWindows.Remove(window);
                 _fileRevisionWindowMap.Remove(key);
             }

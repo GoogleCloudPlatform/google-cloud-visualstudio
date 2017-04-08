@@ -255,10 +255,9 @@
     <Compile Include="SolutionUtils\ProjectSourceFile.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
     <Compile Include="SolutionUtils\VsProject.cs" />
-    <Compile Include="SourceBrowsing\ActionCancelledException.cs" />
     <Compile Include="SourceBrowsing\GitCommandWrapper.cs" />
     <Compile Include="SourceBrowsing\GitCommit.cs" />
-    <Compile Include="SourceBrowsing\GitTempFiles.cs" />
+    <Compile Include="SourceBrowsing\GitTemporaryFiles.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficWindow.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficModel.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficViewModel.cs" />

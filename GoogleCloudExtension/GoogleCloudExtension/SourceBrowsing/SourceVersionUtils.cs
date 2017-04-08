@@ -53,7 +53,6 @@ namespace GoogleCloudExtension.SourceBrowsing
                 {
                     string sha = logItem.Entry.Labels[SourceContextIDLabel];
                     window = SearchGitRepoAndGetFileContent(sha, logItem.SourceFilePath);
-
                 }
                 else
                 {   // If the log item does not contain revision id, 
@@ -74,15 +73,10 @@ namespace GoogleCloudExtension.SourceBrowsing
                     }
                 }
             }
-            catch (ActionCancelledException)
+            catch (OperationCanceledException)
             {
                 return;
             }
-
-            //if (locatedFilePath == null)
-            //{
-            //    FileItemNotFoundPrompt(logItem.SourceFilePath);
-            //}
 
             logItem.ShowToolTip(window);
         }
@@ -141,13 +135,13 @@ namespace GoogleCloudExtension.SourceBrowsing
                 // Check again if the project is opened.
                 if ((project = getProject()) == null)
                 {
-                    throw new ActionCancelledException();
+                    throw new OperationCanceledException();
                 }
             }
 
             if (project.Version != logItem.AssemblyVersion && !ContinueWhenVersionMismatch(project, logItem.AssemblyVersion))
             {
-                throw new ActionCancelledException();
+                throw new OperationCanceledException();
             }
 
             return project;
@@ -164,7 +158,7 @@ namespace GoogleCloudExtension.SourceBrowsing
             }
             if (!IsCurrentSolutionOpen())
             {
-                throw new ActionCancelledException();
+                throw new OperationCanceledException();
             }
         }
 
@@ -224,7 +218,7 @@ namespace GoogleCloudExtension.SourceBrowsing
             }
             if (!IsCurrentSolutionOpen())
             {
-                throw new ActionCancelledException();
+                throw new OperationCanceledException();
             }
         }
 
