@@ -131,19 +131,7 @@ namespace GoogleCloudExtension.Utils
         }
 
         /// <summary>
-        /// Register a Visual Studio Shutdown event handler.
-        /// Normally for some quick cleanup tasks.
-        /// </summary>
-        /// <param name="onExitEventHandler">The event handler.</param>
-        public static void RegisterShutdownEventHandler(Action onExitEventHandler)
-        {
-            var dte2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
-            dte2.Events.DTEEvents.OnBeginShutdown += () => onExitEventHandler();
-        }
-
-        /// <summary>
         /// Register a Visual Studio Window close event handler.
-        /// http://stackoverflow.com/questions/25389741/detect-when-visual-studio-document-window-is-closed
         /// </summary>
         /// <param name="onWindowCloseEventHandler">The event handler.</param>
         public static void RegisterWindowCloseEventHandler(Action<Window> onWindowCloseEventHandler)
