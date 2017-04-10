@@ -46,6 +46,7 @@ namespace GoogleCloudExtension.Theming
                 typeof(bool),
                 typeof(CommonDialogWindowBaseContent));
 
+        // Dependency property for the ValidationResults property.
         public static readonly DependencyProperty ValidationResultsProperty =
             DependencyProperty.Register(
                 nameof(ValidationResults),

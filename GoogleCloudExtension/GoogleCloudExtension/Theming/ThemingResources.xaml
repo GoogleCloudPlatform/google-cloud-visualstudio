@@ -51,20 +51,25 @@
 
     <!-- Templates to display validation errors. -->
     <Style x:Key="ValidationPanelStyle" TargetType="Border">
-        <Setter Property="Background" Value="{StaticResource CommonTextBox.Disabled.Background}" />
-        <Setter Property="BorderBrush" Value="{StaticResource CommonTextBox.Disabled.Border}" />
+        <Setter Property="Background" Value="{DynamicResource CommonTextBox.Disabled.Background}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CommonTextBox.Disabled.Border}" />
         <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Margin" Value="3"/>
+        <Setter Property="Padding" Value="2"/>
     </Style>
+
     <ItemsPanelTemplate x:Key="ValidationPanelTemplate">
-            <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
-            </StackPanel>
+        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+        </StackPanel>
     </ItemsPanelTemplate>
+
     <Style x:Key="ValidationError" TargetType="TextBlock">
         <Setter Property="HorizontalAlignment" Value="Left"/>
         <Setter Property="Focusable" Value="False"/>
         <Setter Property="Foreground" Value="DarkRed"/>
-        <Setter Property="Background" Value="{StaticResource CommonTextBox.Disabled.Background}" />
+        <Setter Property="Background" Value="{DynamicResource CommonTextBox.Disabled.Background}" />
     </Style>
+
     <DataTemplate x:Key="ValidationErrorTemplateStandard">
         <TextBlock Text="{Binding ErrorContent}" Style="{StaticResource ValidationError}"/>
     </DataTemplate>

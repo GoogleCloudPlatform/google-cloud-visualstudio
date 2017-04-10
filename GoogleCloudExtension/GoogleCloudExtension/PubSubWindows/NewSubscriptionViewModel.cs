@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.PubSubWindows
     /// Data objet that backs the new subscription window. It contains the information needed to create a new
     /// subscription.
     /// </summary>
-    public class NewSubscriptionViewModel : ViewModelBase
+    public class NewSubscriptionViewModel : ValidatingViewModelBase
     {
         private readonly CommonDialogWindowBase _owner;
 
@@ -60,6 +60,17 @@ namespace GoogleCloudExtension.PubSubWindows
         /// The Subscription object this view model models.
         /// </summary>
         public Subscription Subscription { get; }
+
+        public string SubscriptionName
+        {
+            get { return Subscription.Name; }
+            set
+            {
+                Subscription.Name = value;
+                RaisePropertyChanged(nameof(SubscriptionName));
+                SetValidationResults(PubSubNameValidationRule.Validate(value));
+            }
+        }
 
         /// <summary>
         /// The command called to actually create the subscription.

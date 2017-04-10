@@ -32,7 +32,7 @@
         <Binding Source="{StaticResource CommonDialogStyleDynamicSmall}"/>
     </UserControl.Style>
 
-    <theming:CommonDialogWindowBaseContent ValidationResults="{Binding ValidationResults}">
+    <theming:CommonDialogWindowBaseContent ValidationResults="{Binding AllValidationResultsDelayed}">
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo
                 Command="{Binding CreateCommand}"
@@ -56,7 +56,7 @@
                 <TextBox
                     x:Name="TopicName"
                     MaxLines="1"
-                    Text="{Binding Path=TopicName, UpdateSourceTrigger=PropertyChanged}"
+                    Text="{Binding TopicName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                     Style="{StaticResource MyTextBox}"/>
             </DockPanel>
         </StackPanel>

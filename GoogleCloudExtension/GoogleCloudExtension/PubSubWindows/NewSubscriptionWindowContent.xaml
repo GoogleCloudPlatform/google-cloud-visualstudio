@@ -51,7 +51,7 @@
         <Binding Source="{StaticResource CommonDialogStyleLarge}"/>
     </UserControl.Style>
 
-    <theming:CommonDialogWindowBaseContent HasBanner="True">
+    <theming:CommonDialogWindowBaseContent HasBanner="True" ValidationResults="{Binding AllValidationResultsDelayed}">
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo
                 Caption="{x:Static ext:Resources.UiOkButtonCaption}"
@@ -75,7 +75,7 @@
                 <TextBox
                     Name="SubscriptionName"
                     Style="{StaticResource MyTextBox}"
-                    Text="{Binding Path=Subscription.Name, UpdateSourceTrigger=PropertyChanged}"/>
+                    Text="{Binding Path=SubscriptionName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
             </DockPanel>
             <TextBlock
                 Text="{x:Static ext:Resources.NewSubscriptionWindowDeliveryType}"
