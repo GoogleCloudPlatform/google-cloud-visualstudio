@@ -257,13 +257,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="SolutionUtils\ISolutionProject.cs" />
-    <Compile Include="SolutionUtils\KnownProjectTypes.cs" />
-    <Compile Include="SolutionUtils\NetCoreProject.cs" />
     <Compile Include="SolutionUtils\ProjectHelper.cs" />
     <Compile Include="SolutionUtils\ProjectSourceFile.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
-    <Compile Include="SolutionUtils\VsProject.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficWindow.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficModel.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficViewModel.cs" />
