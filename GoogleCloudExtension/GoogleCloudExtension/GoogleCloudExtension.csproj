@@ -204,6 +204,10 @@
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Projects\DotNet4\CsprojProject.cs" />
+    <Compile Include="Projects\DotNetCore\CsprojProject.cs" />
+    <Compile Include="Projects\DotNetCore\JsonProject.cs" />
+    <Compile Include="Projects\ProjectParser.cs" />
     <Compile Include="PublishDialogSteps\ChoiceStep\Choice.cs" />
     <Compile Include="PublishDialogSteps\ChoiceStep\ChoiceStepContent.xaml.cs">
       <DependentUpon>ChoiceStepContent.xaml</DependentUpon>
@@ -366,6 +370,9 @@
     <Compile Include="Utils\ProtectedCommand.cs" />
     <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Utils\ToolWindowCommandUtils.cs" />
+    <Compile Include="VsVersion\VS14\ToolsPathProvider.cs" />
+    <Compile Include="VsVersion\VS15\ToolsPathProvider.cs" />
+    <Compile Include="VsVersion\VsVersionUtils.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserViewModel.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindow.cs" />
     <Compile Include="WindowsCredentialsChooser\WindowsCredentialsChooserWindowContent.xaml.cs">
