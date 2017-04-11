@@ -101,15 +101,12 @@ namespace GoogleCloudExtension.CloudExplorer
             ErrorHandlerUtils.HandleExceptions(() =>
             {
                 var item = sender as TreeViewItem;
-                if (item != null)
+                var node = item?.Header as TreeNode;
+                if (node != null)
                 {
-                    var node = item.Header as TreeNode;
-                    if (node != null)
-                    {
-                        // If the node doesn't have a context menu defined then declare the event as
-                        // handled so no context menu is shown.
-                        e.Handled = node.ContextMenu == null;
-                    }
+                    // If the node doesn't have a context menu defined then declare the event as
+                    // handled so no context menu is shown.
+                    e.Handled = node.ContextMenu == null;
                 }
             });
         }

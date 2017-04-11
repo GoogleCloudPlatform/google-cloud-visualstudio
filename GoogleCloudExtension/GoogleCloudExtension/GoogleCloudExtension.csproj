@@ -119,12 +119,16 @@
     <Compile Include="CloudExplorerSources\Gae\VersionItem.cs" />
     <Compile Include="CloudExplorerSources\Gae\VersionViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gcs\BucketLocationViewModel.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\ITopicItem.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\OrphanedSubscriptionsItem.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\OrphanedSubscriptionsViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSource.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSourceRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\SubscriptionItem.cs" />
     <Compile Include="CloudExplorerSources\PubSub\SubscriptionViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicItem.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModel.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBase.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
@@ -472,6 +476,7 @@
     <Resource Include="Theming\Resources\logo_cloud.png" />
     <Resource Include="CloudExplorerSources\PubSub\Resources\topic_icon.png" />
     <Resource Include="CloudExplorerSources\PubSub\Resources\subscription_icon.png" />
+    <Resource Include="CloudExplorerSources\PubSub\Resources\orphaned_subscriptions_icon.png" />
     <Content Include="Licenses.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
