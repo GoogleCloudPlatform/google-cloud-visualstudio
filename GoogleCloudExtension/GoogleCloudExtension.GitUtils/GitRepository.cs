@@ -24,7 +24,7 @@ namespace GoogleCloudExtension.GitUtils
     /// <summary>
     /// A wrapper for executing git commands on a local git repository root.
     /// </summary>
-    internal class GitRepository
+    public class GitRepository
     {
         private const string GitExecutable = "git.exe";
         private const string GitDefaultLocation = @"Git\cmd\git.exe";
@@ -41,11 +41,6 @@ namespace GoogleCloudExtension.GitUtils
         /// Return null if git.exe is not found.
         /// </summary>
         public static string GitPath => s_gitPathLazy.Value;
-
-        private GitRepository(string gitLocalRoot)
-        {
-            Root = gitLocalRoot;
-        }
 
         /// <summary>
         /// Returns a <seealso cref="GitRepository"/> object 
@@ -93,6 +88,11 @@ namespace GoogleCloudExtension.GitUtils
 
         private Task<List<string>> ExecCommandAsync(string command) => RunGitCommandAsync(command, Root);
 
+        private GitRepository(string gitLocalRoot)
+        {
+            Root = gitLocalRoot;
+        }
+
         private static string GetGitPath()
         {
             return Environment.GetEnvironmentVariable("PATH")
@@ -108,12 +108,16 @@ namespace GoogleCloudExtension.GitUtils
             string command, 
             string gitLocalRoot)
         {
+            if (!File.Exists(gitLocalRoot) && !Directory.Exists(gitLocalRoot))
+            {
+                return null;
+            }
             List<string> output = new List<string>();
             return await ProcessUtils.RunCommandAsync(
-                    file: GitPath,
-                    args: command,
-                    handler: (o, e) => output.Add(e.Line),
-                    workingDir: gitLocalRoot) ? output: null;
+                file: GitPath,
+                args: command,
+                handler: (o, e) => output.Add(e.Line),
+                workingDir: gitLocalRoot) ? output : null;
         }
     }
 }

@@ -2088,4 +2088,8 @@ Open the project to navigate to the logger method location.</value>
     <value>Open the solution from a local git repository.</value>
     <comment>The prompt for opening the solution from a local git repository.</comment>
   </data>
+  <data name="SourceVersionProgressDialogMessage" xml:space="preserve">
+    <value>Open file</value>
+    <comment>The message on the progress dialog when executing async git command.</comment>
+  </data>
 </root>

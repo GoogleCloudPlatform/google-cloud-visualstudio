@@ -21,7 +21,7 @@ using System.IO;
 namespace GoogleCloudExtension.SourceBrowsing
 {
     /// <summary>
-    /// A singleton class that help manage temporary files for Git revision files.
+    /// A singleton class that help locate files for Git revision files.
     /// 
     /// Giving a git SHA and relative file path, save the file to a temporary path.
     /// Open the file in a Document window, return the window object.
@@ -32,10 +32,10 @@ namespace GoogleCloudExtension.SourceBrowsing
     /// The the document window for the same file is still open,
     /// return the document window so as not to open a new window.
     /// </summary>
-    internal class GitTemporaryFiles
+    internal class OpenGitFile
     {
         // Use () => new GitTemporaryFiles() here, because the constructor is private.
-        private static Lazy<GitTemporaryFiles> s_instance = new Lazy<GitTemporaryFiles>(() => new GitTemporaryFiles());
+        private static Lazy<OpenGitFile> s_instance = new Lazy<OpenGitFile>(() => new OpenGitFile());
 
         private readonly string _tmpFolder;
 
@@ -50,16 +50,9 @@ namespace GoogleCloudExtension.SourceBrowsing
         private Dictionary<Window, string> _documentWindows = new Dictionary<Window, string>();
 
         /// <summary>
-        /// Returns the singleton of the <seealso cref="GitTemporaryFiles"/> class.
+        /// Returns the singleton of the <seealso cref="OpenGitFile"/> class.
         /// </summary>
-        public static GitTemporaryFiles Current => s_instance.Value;
-
-        private GitTemporaryFiles()
-        {
-            _tmpFolder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            Directory.CreateDirectory(_tmpFolder);
-            ShellUtils.RegisterWindowCloseEventHandler(OnWindowClose);
-        }
+        public static OpenGitFile Current => s_instance.Value;
 
         /// <summary>
         /// Returns a cached file path that is saved in prior calls.
@@ -86,6 +79,13 @@ namespace GoogleCloudExtension.SourceBrowsing
                 window = OpenDocument(filePath, key);
             }
             return window;
+        }
+
+        private OpenGitFile()
+        {
+            _tmpFolder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+            Directory.CreateDirectory(_tmpFolder);
+            ShellUtils.RegisterWindowCloseEventHandler(OnWindowClose);
         }
 
         private Window OpenDocument(string filePath, string key)

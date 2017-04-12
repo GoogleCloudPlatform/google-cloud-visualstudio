@@ -4040,6 +4040,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Open file.
+        /// </summary>
+        public static string SourceVersionProgressDialogMessage {
+            get {
+                return ResourceManager.GetString("SourceVersionProgressDialogMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to open the source file.\r\n{0}.
         /// </summary>
         public static string SourceVersionUtilsFailedOpenFileMessage {

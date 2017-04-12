@@ -24,16 +24,26 @@ namespace GoogleCloudExtension.GitUtils
     /// <summary>
     /// Represent a local git commit on a given git SHA.
     /// </summary>
-    internal class GitCommit
+    public class GitCommit
     {
         private readonly GitRepository _repo;
-        private readonly string _sha;
-        private HashSet<string> _fileTree;
+
+        private Dictionary<string, string> _fileTree;
+
+        /// <summary>
+        /// The git sha.
+        /// </summary>
+        public string Sha { get; }
+
+        /// <summary>
+        /// The local repository root.
+        /// </summary>
+        public string Root => _repo.Root;
         
         internal GitCommit(GitRepository gitCommand, string sha)
         {
             _repo = gitCommand.ThrowIfNull(nameof(gitCommand));
-            _sha = sha.ThrowIfNullOrEmpty(nameof(sha));
+            Sha = sha.ThrowIfNullOrEmpty(nameof(sha));
         }
 
         /// <summary>
@@ -45,12 +55,16 @@ namespace GoogleCloudExtension.GitUtils
         /// A <seealso cref="GitCommit"/> object that represents the git SHA commit at a local repository.
         /// null if the search is not successful.
         /// </returns>
-        public static async Task<GitCommit> FindCommit(string path, string sha)
+        public static async Task<GitCommit> FindCommitAsync(string path, string sha)
         {
             string dir = path.ThrowIfNullOrEmpty(nameof(path));
             sha.ThrowIfNullOrEmpty(nameof(sha));
             var gitCommand = await GitRepository.GetGitCommandWrapperForPathAsync(dir);
-            return await gitCommand?.ContainsCommitAsync(sha) == true ? new GitCommit(gitCommand, sha) : null;
+            if (gitCommand == null)
+            {
+                return null;
+            }
+            return (await gitCommand.ContainsCommitAsync(sha)) == true? new GitCommit(gitCommand, sha) : null;
         }
 
         /// <summary>
@@ -65,7 +79,12 @@ namespace GoogleCloudExtension.GitUtils
         public async Task<IEnumerable<string>> FindMatchingEntryAsync(string filePath)
         {
             var fileTree = await GetFileTreeAsync();
-            return SubPaths(filePath.ToLowerInvariant()).Where(x => fileTree.Contains(x));
+            return SubPaths(filePath)
+                .Select(x => {
+                    string y;
+                    return fileTree.TryGetValue(x, out y) ? y : null;
+                })
+                .Where(x => x != null);
         }
 
         /// <summary>
@@ -75,19 +94,22 @@ namespace GoogleCloudExtension.GitUtils
         /// <param name="relativePath">The file path relative to the git root.</param>
         public async Task SaveTempFileAsync(string tmpFile, string relativePath)
         {
-            var content = await _repo.GetRevisionFileAsync(_sha, relativePath);
+            var content = await _repo.GetRevisionFileAsync(Sha, relativePath);
             using (var sw = new StreamWriter(tmpFile))
             {
                 content.ForEach(x => sw.WriteLine(x));
             }
         }
 
-        private async Task<HashSet<string>> GetFileTreeAsync()
+        private async Task<Dictionary<string, string>> GetFileTreeAsync()
         {
             if (_fileTree == null)
             {
-                var query = (await _repo.ListTreeAsync(_sha))?.Select(x => x.Replace('/', '\\').ToLowerInvariant());
-                _fileTree = new HashSet<string>(query);
+                _fileTree = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                foreach (var file in await _repo.ListTreeAsync(Sha))
+                {
+                    _fileTree.Add(file.Replace('/', '\\'), file);
+                }
             }
             return _fileTree;
         }
