@@ -14,10 +14,14 @@
 
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Validation;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.PublishDialog
 {
@@ -25,7 +29,7 @@ namespace GoogleCloudExtension.PublishDialog
     /// The view model for the <seealso cref="PublishDialogWindowContent"/> control. Implements all of the interaction
     /// logic for the UI.
     /// </summary>
-    public class PublishDialogWindowViewModel : ViewModelBase, IPublishDialog
+    public class PublishDialogWindowViewModel : ViewModelBase, IPublishDialog, IDelayedNotifyDataErrorInfo
     {
         private readonly PublishDialogWindow _owner;
         private readonly ISolutionProject _project;
@@ -114,6 +118,8 @@ namespace GoogleCloudExtension.PublishDialog
             var top = _stack.Peek();
             top.CanGoNextChanged += OnCanGoNextChanged;
             top.CanPublishChanged += OnCanPublishChanged;
+            top.ErrorsChanged += OnErrorsChanged;
+            top.PropertyChanged += OnPropertyChanged;
         }
 
         private void RemoveStepEvents()
@@ -123,6 +129,16 @@ namespace GoogleCloudExtension.PublishDialog
                 var top = _stack.Peek();
                 top.CanGoNextChanged -= OnCanGoNextChanged;
                 top.CanPublishChanged -= OnCanPublishChanged;
+                top.ErrorsChanged -= OnErrorsChanged;
+                top.PropertyChanged -= OnPropertyChanged;
+            }
+        }
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e?.PropertyName == nameof(AllValidationResultsDelayed))
+            {
+                RaisePropertyChanged(e.PropertyName);
             }
         }
 
@@ -191,5 +207,18 @@ namespace GoogleCloudExtension.PublishDialog
         }
 
         #endregion
+
+        public IEnumerable GetErrors(string propertyName) => CurrentStep.GetErrors(propertyName);
+
+        public bool HasErrors => CurrentStep.HasErrors;
+
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
+
+        private void OnErrorsChanged(object sender, DataErrorsChangedEventArgs e)
+        {
+            ErrorsChanged?.Invoke(sender, e);
+        }
+
+        public IList<ValidationResult> AllValidationResultsDelayed => CurrentStep.AllValidationResultsDelayed;
     }
 }

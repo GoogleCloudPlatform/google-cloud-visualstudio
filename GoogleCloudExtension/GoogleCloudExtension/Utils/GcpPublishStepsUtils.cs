@@ -12,8 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Utils.Validation;
 using System;
+using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -37,10 +40,7 @@ namespace GoogleCloudExtension.Utils
         public static string GetDefaultVersion()
         {
             var now = DateTime.Now;
-            return String.Format(
-                "{0:0000}{1:00}{2:00}t{3:00}{4:00}{5:00}",
-                now.Year, now.Month, now.Day,
-                now.Hour, now.Minute, now.Second);
+            return $"{now.Year:0000}{now.Month:00}{now.Day:00}t{now.Hour:00}{now.Minute:00}{now.Second:00}";
         }
 
         /// <summary>
@@ -48,6 +48,38 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="name">The name to check.</param>
         /// <returns>True if the name is valid, false otherwise.</returns>
-        public static bool IsValidName(string name) => !String.IsNullOrEmpty(name) && s_validNamePattern.IsMatch(name);
+        public static bool IsValidName(string name) => !string.IsNullOrEmpty(name) && s_validNamePattern.IsMatch(name);
+
+        public static IEnumerable<ValidationResult> ValidateName(string name, string fieldName)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                yield return new StringValidationResult($"{fieldName} can not be empty.");
+                yield break;
+            }
+            if (!Regex.IsMatch(name, @"^[a-z\d]"))
+            {
+                yield return new StringValidationResult($"{fieldName} must start with a letter or number.");
+            }
+            if (Regex.IsMatch(name, @"[^a-z\d\-]"))
+            {
+                yield return new StringValidationResult($"{fieldName} can only contain letters, numbers, and dashes(-).");
+            }
+
+            if (name.Length > 100)
+            {
+                yield return new StringValidationResult(
+                    $"{fieldName} must be less than 100 characters long.");
+            }
+        }
+
+        public static IEnumerable<ValidationResult> ValidateInteger(string value, string fieldName)
+        {
+            int unused;
+            if (!int.TryParse(value, out unused))
+            {
+                yield return new StringValidationResult($"{fieldName} must be an integer.");
+            }
+        }
     }
 }

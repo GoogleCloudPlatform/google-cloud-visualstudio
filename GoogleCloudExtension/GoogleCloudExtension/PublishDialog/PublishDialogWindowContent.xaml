@@ -7,7 +7,7 @@
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
-             d:DataContext="{x:Type local:PublishDialogWindowViewModel}">
+             d:DataContext="{d:DesignInstance Type=local:PublishDialogWindowViewModel}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -21,7 +21,12 @@
         <Binding Source="{StaticResource CommonDialogStyleDynamicLarge}" />
     </UserControl.Style>
 
-    <theming:CommonDialogWindowBaseContent Content="{Binding Content}" HasBanner="True" IsEnabled="{Binding IsReady}" >
+    <theming:CommonDialogWindowBaseContent
+        Content="{Binding Content}"
+        HasBanner="True"
+        IsEnabled="{Binding IsReady}"
+        ValidationResults="{Binding Path=AllValidationResultsDelayed}">
+        
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.PublishDialogPrevButtonCaption}"
                                       Command="{Binding PrevCommand}"/>

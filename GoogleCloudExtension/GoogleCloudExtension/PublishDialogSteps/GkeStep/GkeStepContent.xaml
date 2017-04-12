@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialogSteps.GkeStep"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
-             mc:Ignorable="d" 
-             d:DataContext="{x:Type local:GkeStepViewModel}">
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=local:GkeStepViewModel}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -18,10 +18,10 @@
 
     <StackPanel>
         <Label Content="{x:Static ext:Resources.GkePublishClusterMessage}"
-               Target="{Binding ElementName=_clusters}"
+               Target="{Binding ElementName=Clusters}"
                Style="{StaticResource CommonLabelStyle}"/>
 
-        <ComboBox x:Name="_clusters"
+        <ComboBox x:Name="Clusters"
                   ItemsSource="{Binding Clusters.Value}"
                   SelectedItem="{Binding SelectedCluster, Mode=OneWayToSource}"
                   DisplayMemberPath="Name"
@@ -49,10 +49,10 @@
         </StackPanel>
 
         <Label Content="{x:Static ext:Resources.GkePublishDeploymentNameMessage}"
-               Target="{Binding ElementName=_deploymentName}"
+               Target="{Binding ElementName=DeploymentName}"
                Style="{StaticResource CommonLabelStyle}" />
-        <TextBox x:Name="_deploymentName"
-                 Text="{Binding DeploymentName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+        <TextBox x:Name="DeploymentName"
+                 Text="{Binding DeploymentName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                  Margin="0,0,0,15"
                  Style="{StaticResource CommonTextBoxStyle}" />
 
@@ -67,24 +67,30 @@
                 <RowDefinition />
             </Grid.RowDefinitions>
 
-            <Label Content="{x:Static ext:Resources.GkePublishDeploymentVersionMessage}"
-                   Target="{Binding ElementName=_deploymentVersion}"
+            <Label Grid.Row="0"
+                   Grid.Column="0"
+                   Content="{x:Static ext:Resources.GkePublishDeploymentVersionMessage}"
+                   Target="{Binding ElementName=DeploymentVersion}"
                    Style="{StaticResource CommonLabelStyle}" />
-            <TextBox x:Name="_deploymentVersion"
+            <TextBox x:Name="DeploymentVersion"
                      Grid.Row="1"
-                     Text="{Binding DeploymentVersion, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Grid.Column="0"
+                     Text="{Binding DeploymentVersion,
+                            UpdateSourceTrigger=PropertyChanged,
+                            ValidatesOnNotifyDataErrors=True}"
                      Style="{StaticResource CommonTextBoxStyle}" />
 
             <!-- TODO: Use an up/down textbox control. -->
-            <Label Grid.Column="1"
+            <Label Grid.Row="0"
+                   Grid.Column="1"
                    Content="{x:Static ext:Resources.GkePublishReplicasCaption}"
-                   Target="{Binding ElementName=_replicas}"
+                   Target="{Binding ElementName=Replicas}"
                    Margin="5,0,0,0"
                    Style="{StaticResource CommonLabelStyle}" />
-            <TextBox x:Name="_replicas"
+            <TextBox x:Name="Replicas"
                      Grid.Row="1"
                      Grid.Column="1"
-                     Text="{Binding Replicas, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     Text="{Binding Replicas, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                      Margin="5,0,0,0"
                      Style="{StaticResource CommonTextBoxStyle}" />
         </Grid>

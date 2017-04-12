@@ -6,7 +6,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
     xmlns:ext="clr-namespace:GoogleCloudExtension"
+    xmlns:local="clr-namespace:GoogleCloudExtension.PubSubWindows"
     mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance Type=local:NewTopicViewModel}"
     FocusManager.FocusedElement="{Binding ElementName=TopicName}">
     
     <UserControl.Resources>
@@ -19,9 +21,6 @@
                 <Setter Property="Margin" Value="3"/>
             </Style>
             <Style x:Key="MyTextBox" BasedOn="{StaticResource CommonTextBoxStyle}" TargetType="{x:Type TextBox}">
-                <Style.Resources>
-                    <Style BasedOn="{StaticResource CommonTooltipStyle}" TargetType="{x:Type ToolTip}"/>
-                </Style.Resources>
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="Margin" Value="3"/>
             </Style>

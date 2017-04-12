@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Windows;
 
@@ -20,7 +21,7 @@ namespace GoogleCloudExtension.PublishDialog
     /// <summary>
     /// Interface that defines the services offered by a publish dialog step.
     /// </summary>
-    public interface IPublishDialogStep
+    public interface IPublishDialogStep : IDelayedNotifyDataErrorInfo
     {
         /// <summary>
         /// Returns whether the step can go to a next step.

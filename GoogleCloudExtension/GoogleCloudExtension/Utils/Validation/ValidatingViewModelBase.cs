@@ -22,9 +22,9 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.Utils
+namespace GoogleCloudExtension.Utils.Validation
 {
-    public abstract class ValidatingViewModelBase : ViewModelBase, INotifyDataErrorInfo
+    public abstract class ValidatingViewModelBase : ViewModelBase, IDelayedNotifyDataErrorInfo
     {
         protected int MillisecondsDelay = 500;
 

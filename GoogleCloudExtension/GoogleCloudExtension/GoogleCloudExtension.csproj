@@ -242,7 +242,9 @@
       <DependentUpon>NewTopicWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="PubSubWindows\PubSubNameValidationRule.cs" />
-    <Compile Include="Utils\ValidatingViewModelBase.cs" />
+    <Compile Include="Utils\Validation\IDelayedNotifyDataErrorInfo.cs" />
+    <Compile Include="Utils\Validation\StringValidationResult.cs" />
+    <Compile Include="Utils\Validation\ValidatingViewModelBase.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -403,6 +405,7 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Theming\Resources\ic_error_red_14px.png" />
     <Resource Include="StackdriverErrorReporting\Resources\back_icon.png" />
     <Resource Include="StackdriverErrorReporting\Resources\back_icon_12.png" />
     <Resource Include="StackdriverErrorReporting\Resources\eReport_menu_icon.png" />

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Utils.Validation;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -72,16 +73,6 @@ namespace GoogleCloudExtension.PubSubWindows
             if (name.StartsWith("goog"))
             {
                 yield return new StringValidationResult(Resources.ValidationDisallowStartGoogMessage);
-            }
-        }
-
-        public class StringValidationResult : ValidationResult
-        {
-            public string Message { get; }
-
-            public StringValidationResult(string errorContent) : base(false, errorContent)
-            {
-                Message = errorContent;
             }
         }
     }

@@ -3,7 +3,8 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:GoogleCloudExtension.Controls;assembly=GoogleCloudExtension"
                     xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
-                    xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions;assembly=GoogleCloudExtension">
+                    xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions;assembly=GoogleCloudExtension"
+                    xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils">
 
     <!-- Common size for all font text. -->
     <Style x:Key="CommonTextStyleBase">
@@ -263,6 +264,11 @@
     <!-- Colors for the focused state. -->
     <SolidColorBrush x:Key="CommonTextBox.Focus.Border" Color="#FFB5CFE7"/>
 
+    <Style x:Key="ValidationPanelStyle" TargetType="StackPanel">
+        <Setter Property="Orientation" Value="Vertical" />
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+    </Style>
+
     <!-- Template for the TextBox -->
     <Style x:Key="CommonTextBoxStyle" TargetType="{x:Type TextBox}">
         <Setter Property="Height" Value="30px" />
@@ -275,6 +281,28 @@
         <Setter Property="AllowDrop" Value="true"/>
         <Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst"/>
         <Setter Property="Stylus.IsFlicksEnabled" Value="False"/>
+        <Setter Property="ToolTip">
+            <Setter.Value>
+                <ToolTip
+                    DataContext="{Binding PlacementTarget.(Validation.Errors), RelativeSource={RelativeSource Self}}"
+                    Visibility="{Binding Converter={utils:ValidationVisibilityConverter}}">
+                    
+                    <ItemsControl ItemsSource="{Binding}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding ErrorContent}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Style="{StaticResource ValidationPanelStyle}"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </ToolTip>
+            </Setter.Value>
+        </Setter>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type TextBox}">
@@ -937,3 +965,4 @@
 
 
 </ResourceDictionary>
+ 

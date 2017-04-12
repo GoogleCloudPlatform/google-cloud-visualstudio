@@ -16,6 +16,7 @@ using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Validation;
 using System.Linq;
 
 namespace GoogleCloudExtension.PubSubWindows

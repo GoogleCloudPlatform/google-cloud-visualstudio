@@ -18,7 +18,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.Theming
@@ -51,12 +50,7 @@ namespace GoogleCloudExtension.Theming
             DependencyProperty.Register(
                 nameof(ValidationResults),
                 typeof(IList<ValidationResult>),
-                typeof(CommonDialogWindowBaseContent),
-                new FrameworkPropertyMetadata
-                {
-                    BindsTwoWayByDefault = true,
-                    DefaultUpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-                });
+                typeof(CommonDialogWindowBaseContent));
 
         /// <summary>
         /// The list of buttons to show in the dialog.

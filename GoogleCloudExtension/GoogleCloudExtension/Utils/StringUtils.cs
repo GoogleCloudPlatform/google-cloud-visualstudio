@@ -27,26 +27,26 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Returns a list of sub strings for text searching.
         /// (1) Split by double quotes or space.
-        ///     "This is a search string"  And This  
+        ///     "This is a search string"  And This
         ///      The above is split into 3 substrings:  "This is a search string", "And", "This"
-        /// (2) Single \  are escaped into double \\. 
+        /// (2) Single \  are escaped into double \\.
         /// (3) Only accepting \" escaping.
         /// (3) If single " is found without escaping, it is skipped.
         /// 
         /// Brief explanation of the spliting algorithm.
         ///     scannedTokens contains the list of divided sub-strings.
         ///     currentToken contains the current working(appending) sub-string.
-        ///     currentToken can be either the sub-sting inside a double quotes pair,  
+        ///     currentToken can be either the sub-sting inside a double quotes pair,
         ///         or a single word separated by sapce.
         ///          
-        ///     If it is a double quote character,  it could be 
-        ///         (a) left side of a double quotes pair. 
+        ///     If it is a double quote character,  it could be
+        ///         (a) left side of a double quotes pair.
         ///         (b) right side of a double quotes pair.
-        ///         (c) the very last alone double quote.  
+        ///         (c) the very last alone double quote.
         ///         (e) the escaped double quote.
         ///     If it is a single space, it could be
         ///         (a) A space inside a double quotes pair.  Add it to currentToken.
-        ///         (b) else, it is a separator, add the currentToken to 
+        ///         (b) else, it is a separator, add the currentToken to
         /// </summary>
         public static IEnumerable<string> SplitStringBySpaceOrQuote(string source)
         {
@@ -117,7 +117,7 @@ namespace GoogleCloudExtension.Utils
             if (currentToken.Length > 0)
             {
                 var splits = currentToken.ToString().Split(
-                    new char[] { ' ' },
+                    new[] { ' ' },
                     StringSplitOptions.RemoveEmptyEntries);
                 scannedTokens.AddRange(splits);
                 currentToken.Clear();
@@ -131,7 +131,7 @@ namespace GoogleCloudExtension.Utils
         /// return false if it is null.
         /// Empty string is valid so it returns true.
         /// </summary>
-        public static bool IsDigitsOnly(string text) => text == null ? false : text.All(char.IsDigit);
+        public static bool IsDigitsOnly(string text) => text != null && text.All(char.IsDigit);
 
         /// <summary>
         /// Gets the index of first non space character.
@@ -173,6 +173,16 @@ namespace GoogleCloudExtension.Utils
             }
 
             return -1;
+        }
+
+        /// <summary>
+        /// Removes common label characters from a string.
+        /// </summary>
+        /// <param name="labeledString">A string that is displayed by a WPF Label control.</param>
+        /// <returns>A new string that is missing underscores(_) and colons(:).</returns>
+        public static string UnLabel(this string labeledString)
+        {
+            return labeledString.Replace("_", "").Replace(":", "");
         }
     }
 }
