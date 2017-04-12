@@ -1,0 +1,50 @@
+﻿<ResourceDictionary 
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ctl="clr-namespace:GoogleCloudExtension.Controls" >
+
+    <Style x:Key="BlueDotStyle" TargetType="{x:Type Ellipse}">
+        <Setter Property="Margin" Value="4" />
+        <Setter Property="Width" Value="8" />
+        <Setter Property="Height" Value="8" />
+        <Setter Property="Fill" Value="Blue" />
+    </Style>
+
+    <Style x:Key="SmallerDotStyle" TargetType="{x:Type Ellipse}">
+        <Setter Property="Margin" Value="4" />
+        <Setter Property="Width" Value="5" />
+        <Setter Property="Height" Value="5" />
+        <Setter Property="Fill" Value="Blue" />
+    </Style>
+
+    <Style TargetType="ctl:DotsProgressBar">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="ctl:DotsProgressBar">
+                    <Grid>
+
+                        <TextBlock>text</TextBlock>
+
+                        <TextBlock>Another text</TextBlock>
+
+                        <UniformGrid 
+                            x:Name="PART_MovingDotsGrid" 
+                            Rows="1" 
+                            Columns="3" 
+                            Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Width}"/>
+
+
+                        <UniformGrid 
+                            x:Name="PART_StaticDotsGrid" 
+                            Rows="1" 
+                            Columns="3" 
+                            Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Width}"/>
+
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+
+</ResourceDictionary>

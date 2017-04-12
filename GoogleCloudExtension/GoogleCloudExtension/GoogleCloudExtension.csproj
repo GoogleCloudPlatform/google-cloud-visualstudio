@@ -156,6 +156,7 @@
     <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
     <Compile Include="Controls\AutoReloadButton.cs" />
+    <Compile Include="Controls\DotsProgressBar.cs" />
     <Compile Include="Controls\IconButton.cs" />
     <Compile Include="Controls\ImageToggleButton.cs" />
     <Compile Include="Controls\LabelWithHelp.cs" />
@@ -346,7 +347,6 @@
       <DependentUpon>TitleBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="TitleBar\TitleBarViewModel.cs" />
-    <Compile Include="Utils\ArgumentCheckUtils.cs" />
     <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
@@ -757,6 +757,10 @@
     <Page Include="CloudExplorer\CloudExplorerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DotsProgressBarResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\TimeBoxResources.xaml">
       <Generator>MSBuild:Compile</Generator>
