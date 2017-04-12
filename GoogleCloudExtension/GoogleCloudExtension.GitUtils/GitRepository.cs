@@ -27,7 +27,6 @@ namespace GoogleCloudExtension.GitUtils
     public class GitRepository
     {
         private const string GitExecutable = "git.exe";
-        private const string GitDefaultLocation = @"Git\cmd\git.exe";
 
         private static Lazy<string> s_gitPathLazy = new Lazy<string>(GetGitPath);
 
