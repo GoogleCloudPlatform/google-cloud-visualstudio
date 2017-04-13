@@ -259,6 +259,8 @@
     <Compile Include="SolutionUtils\ProjectSourceFile.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
     <Compile Include="SolutionUtils\VsProject.cs" />
+    <Compile Include="SourceBrowsing\FileNotFoundException.cs" />
+    <Compile Include="SourceBrowsing\OpenGitFile.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficWindow.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficModel.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficViewModel.cs" />
@@ -343,7 +345,6 @@
       <DependentUpon>TitleBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="TitleBar\TitleBarViewModel.cs" />
-    <Compile Include="Utils\ArgumentCheckUtils.cs" />
     <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
@@ -922,6 +923,10 @@
     <ProjectReference Include="..\GoogleCloudExtension.GCloud\GoogleCloudExtension.GCloud.csproj">
       <Project>{95efac7e-4f6e-46f0-bcc8-90ee1487e1e1}</Project>
       <Name>GoogleCloudExtension.GCloud</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.GitUtils\GoogleCloudExtension.GitUtils.csproj">
+      <Project>{66b55aaf-8237-45cf-8462-6359318795ab}</Project>
+      <Name>GoogleCloudExtension.GitUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.OAuth\GoogleCloudExtension.OAuth.csproj">
       <Project>{ad8b672d-7f0a-4c7f-9774-a9458a99a061}</Project>

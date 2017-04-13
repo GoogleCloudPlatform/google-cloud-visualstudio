@@ -16,9 +16,9 @@ using System;
 
 namespace GoogleCloudExtension.Utils
 {
-    internal static class ArgumentCheckUtils
+    public static class ArgumentCheckUtils
     {
-        internal static string ThrowIfNullOrEmpty(this string arg,  string message)
+        public static string ThrowIfNullOrEmpty(this string arg,  string message)
         {
             if (String.IsNullOrWhiteSpace(arg))
             {
@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.Utils
             return arg;
         }
 
-        internal static T ThrowIfNull<T>(this T arg, string message)
+        public static T ThrowIfNull<T>(this T arg, string message)
         {
             if (arg == null)
             {

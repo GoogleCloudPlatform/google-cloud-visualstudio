@@ -215,7 +215,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 }
 
                 SourceLinkVisible = true;
-                OnNavigateToSourceCommand = new ProtectedCommand(NavigateToSourceLineCommand);
+                OnNavigateToSourceCommand = new ProtectedCommand(
+                    () => SourceVersionUtils.NavigateToSourceLineCommandAsync(this).Wait());
                 var tmp = $"{SourceFilePath}:{SourceLine}";
                 SourceLinkCaption = tmp.Length <= 20 ? tmp : $"...{tmp.Substring(tmp.Length - 17)}";
             }
@@ -314,35 +315,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             return TimeZoneInfo.ConvertTime(datetime, timeZoneInfo);
-        }
-
-        /// <summary>
-        /// Open the source file, move to the source line and show tooltip.
-        /// </summary>
-        private void NavigateToSourceLineCommand()
-        {
-            var project = this.FindOrOpenProject();
-            if (project == null)
-            {
-                Debug.WriteLine($"Failed to find project of {AssemblyName}");
-                return;
-            }
-
-            var projectSourceFile = project.FindSourceFile(SourceFilePath);
-            if (projectSourceFile == null)
-            {
-                SourceVersionUtils.FileItemNotFoundPrompt(SourceFilePath);
-                return;
-            }
-
-            var window = ShellUtils.Open(projectSourceFile.ProjectItem);
-            if (null == window)
-            {
-                SourceVersionUtils.FailedToOpenFilePrompt(SourceFilePath);
-                return;
-            }
-
-            this.ShowToolTip(window);
         }
     }
 }
