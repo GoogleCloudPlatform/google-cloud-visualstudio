@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.SourceBrowsing
 {
@@ -30,20 +31,21 @@ namespace GoogleCloudExtension.SourceBrowsing
     /// </summary>
     internal static class SourceVersionUtils
     {
-        private const string SourceContextIDLabel = "git_revision_id";
+        private const string SourceContextIdLabel = "git_revision_id";
 
         private static readonly ProgressDialogWindow.Options s_gitOperationOption =
             new ProgressDialogWindow.Options
             {
-                Message = GoogleCloudExtension.Resources.SourceVersionProgressDialogMessage,
-                Title = GoogleCloudExtension.Resources.uiDefaultPromptTitle,
+                Message = Resources.SourceVersionProgressDialogMessage,
+                Title = Resources.uiDefaultPromptTitle,
                 IsCancellable = false
             };
 
         /// <summary>
         /// A map of git sha to <seealso cref="GitCommit"/> object.
         /// </summary>
-        private static readonly Dictionary<string, GitCommit> s_localCache = new Dictionary<string, GitCommit>(StringComparer.OrdinalIgnoreCase);
+        private static readonly Dictionary<string, GitCommit> s_localCache = 
+            new Dictionary<string, GitCommit>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Open the source file, move to the source line and show tooltip.
@@ -52,15 +54,15 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// fallback to using the assembly version information.
         /// </summary>
         /// <param name="logItem">The log item to search for source file.</param>
-        public static void NavigateToSourceLineCommand(LogItem logItem)
+        public static async Task NavigateToSourceLineCommandAsync(LogItem logItem)
         {
-            EnvDTE.Window window;
+            EnvDTE.Window window = null;
             try
             {
-                if (logItem.Entry.Labels?.ContainsKey(SourceContextIDLabel) == true)
+                if (logItem.Entry.Labels?.ContainsKey(SourceContextIdLabel) == true)
                 {
-                    string sha = logItem.Entry.Labels[SourceContextIDLabel];
-                    window = SearchGitRepoAndOpenFileContent(sha, logItem.SourceFilePath);
+                    string sha = logItem.Entry.Labels[SourceContextIdLabel];
+                    window = await SearchGitRepoAndOpenFileAsync(sha, logItem.SourceFilePath);
                 }
                 else
                 {   // If the log item does not contain revision id, 
@@ -73,7 +75,10 @@ namespace GoogleCloudExtension.SourceBrowsing
                     }
 
                     var locatedFilePath = project.FindSourceFile(logItem.SourceFilePath)?.FullName;
-                    window = ShellUtils.Open(locatedFilePath);
+                    if (locatedFilePath != null)
+                    {
+                        window = ShellUtils.Open(locatedFilePath);
+                    }
                 }
             }
             catch (FileNotFoundException ex)
@@ -128,7 +133,7 @@ namespace GoogleCloudExtension.SourceBrowsing
 
             if (!IsCurrentSolutionOpen())
             {
-                OpenCurrentVersionProjectPrompt(logItem.AssemblyName, logItem.AssemblyVersion);
+                OpenCurrentVersionProjectPrompt(logItem.AssemblyName, logItem.AssemblyVersion);                
             }
 
             ProjectHelper project = null;
@@ -164,6 +169,10 @@ namespace GoogleCloudExtension.SourceBrowsing
             {
                 ShellUtils.OpenProject();
             }
+            else
+            {
+                throw new FileNotFoundException(null);
+            }
         }
 
         private static void LogEntryVersionInfoMissingPrompt()
@@ -184,20 +193,18 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// null: Operation is cancelled or failed to open the file revision.
         /// </returns>
         /// <exception cref="FileNotFoundException">Does not find the revision of file.</exception>
-        private static EnvDTE.Window SearchGitRepoAndOpenFileContent(string sha, string filePath)
+        private static async Task<EnvDTE.Window> SearchGitRepoAndOpenFileAsync(string sha, string filePath)
         {
-            GitCommit commit;
             if (s_localCache.ContainsKey(sha))
             {
-                return OpenGitFile(s_localCache[sha], filePath);
+                return await OpenGitFileAsync(s_localCache[sha], filePath);
             }
             else
             {
                 // There is a chance the file is built from local git repo root.
-                commit = SearchCommitAtPath(Path.GetDirectoryName(filePath), sha);
-                if (commit != null)
-                {
-                    return OpenGitFile(commit, filePath);
+                if (await SearchCommitAtPathAsync(Path.GetDirectoryName(filePath), sha))
+                { 
+                    return await OpenGitFileAsync(s_localCache[sha], filePath);
                 }
             }
 
@@ -207,14 +214,17 @@ namespace GoogleCloudExtension.SourceBrowsing
             }
             if (!IsCurrentSolutionOpen())
             {
-                return null;    // Still no solution is open, give up.
+                return null;    // Still no valid solution is open, give up.
             }
 
             var solution = SolutionHelper.CurrentSolution;
-            commit = solution.Projects.Select(x => SearchCommitAtPath(x.ProjectRoot, sha)).Where(y => y != null).FirstOrDefault();
-            if (commit != null)
+            // Linq does not accept async lambda, use foreach
+            foreach (var project in solution.Projects) 
             {
-                return OpenGitFile(commit, filePath);
+                if (await SearchCommitAtPathAsync(project.ProjectRoot, sha))
+                {
+                    return await OpenGitFileAsync(s_localCache[sha], filePath);
+                }
             }
             return null;
         }
@@ -253,23 +263,22 @@ namespace GoogleCloudExtension.SourceBrowsing
 
         private static bool IsCurrentSolutionOpen() => SolutionHelper.CurrentSolution?.Projects?.Count > 0;
 
-        private static GitCommit SearchCommitAtPath(string filePath, string sha)
+        private static async Task<bool> SearchCommitAtPathAsync(string filePath, string sha)
         {
-            var task = ProgressDialogWindow.PromptUser<GitCommit>(
+            GitCommit gitCommit = await ProgressDialogWindow.PromptUser<GitCommit>(
                 GitCommit.FindCommitAsync(filePath, sha),
                 s_gitOperationOption);
-            task.Wait();
-            var gitCommit = task.Result;
             if (gitCommit != null)
             {
                 s_localCache[sha] = gitCommit;
+                return true;
             }
-            return gitCommit;
+            return false;
         }
 
-        private static EnvDTE.Window OpenGitFile(GitCommit commit, string filePath)
+        private static Task<EnvDTE.Window> OpenGitFileAsync(GitCommit commit, string filePath)
         {
-            string relativeFile;
+            string relativePath;
             var task = ProgressDialogWindow.PromptUser<IEnumerable<string>>(
                 commit.FindMatchingEntryAsync(filePath),
                 s_gitOperationOption);
@@ -282,9 +291,9 @@ namespace GoogleCloudExtension.SourceBrowsing
                         Resources.SourceVersionUtilsFailedToLocateFileInRepoMessage,
                         filePath, commit.Sha, commit.Root),
                     title: Resources.uiDefaultPromptTitle);
-                relativeFile = null;
+                relativePath = null;
             }
-            if (matchingFiles.Count() > 1)
+            else if (matchingFiles.Count() > 1)
             {
                 var index = PickFileDialog.PickFileWindow.PromptUser(matchingFiles);
                 if (index < 0)
@@ -292,30 +301,27 @@ namespace GoogleCloudExtension.SourceBrowsing
                     return null;
                 }
 
-                relativeFile = matchingFiles.ElementAt(index);
+                relativePath = matchingFiles.ElementAt(index);
             }
             else
             {
-                relativeFile = matchingFiles.First();
+                relativePath = matchingFiles.First();
             }
 
-            if (relativeFile == null)
+            if (relativePath == null)
             {
                 return null;
             }
 
             return SourceBrowsing.OpenGitFile.Current.Open(
                 commit.Sha,
-                relativeFile,
-                (tmpFile) => SaveFile(commit, tmpFile, relativeFile));
+                relativePath,
+                async (tmpFile) => await SaveFileAsync(commit, tmpFile, relativePath));
         }
 
-        private static void SaveFile(GitCommit commit, string tempFile, string relativePath)
-        {
-            var task = ProgressDialogWindow.PromptUser(
+        private static Task SaveFileAsync(GitCommit commit, string tempFile, string relativePath) =>            
+            ProgressDialogWindow.PromptUser(
                 commit.SaveTempFileAsync(tempFile, relativePath),
                 s_gitOperationOption);
-            task.Wait();
-        }
     }
 }

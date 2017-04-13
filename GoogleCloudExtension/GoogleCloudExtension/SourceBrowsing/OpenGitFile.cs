@@ -17,6 +17,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.SourceBrowsing
 {
@@ -42,7 +43,8 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <summary>
         /// Key is git_sha/relative_path, value is the opened document window.
         /// </summary>
-        private Dictionary<string, Window> _fileRevisionWindowMap = new Dictionary<string, Window>(StringComparer.OrdinalIgnoreCase);
+        private Dictionary<string, Window> _fileRevisionWindowMap = 
+            new Dictionary<string, Window>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Key is the opened document window, value is the git_sha/relative_path.
@@ -56,17 +58,16 @@ namespace GoogleCloudExtension.SourceBrowsing
 
         /// <summary>
         /// Returns a cached file path that is saved in prior calls.
-        /// Or create the temporary file and save the conteint.
+        /// Or create the temporary file and save the content.
         /// </summary>
         /// <param name="gitSha">The git commint SHA.</param>
         /// <param name="relativePath">Relative path of the target file.</param>
         /// <param name="saveAction">The callback to save the content of the file to the temporary file path.</param>
         /// <returns>The document window that opens the temporary file.</returns>
-        public Window Open(string gitSha, string relativePath, Action<string> saveAction)
+        public async Task<Window> Open(string gitSha, string relativePath, Func<string, Task> saveAction)
         {
             gitSha.ThrowIfNullOrEmpty(nameof(gitSha));
             relativePath.ThrowIfNullOrEmpty(nameof(relativePath));
-            saveAction.ThrowIfNull(nameof(saveAction));
 
             Window window;
             var key = $"{gitSha}/{relativePath}";
@@ -75,7 +76,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                 // window.Caption can not be modified.
                 // Set the file name suffix same as original file name that the document window shows it.
                 var filePath = Path.Combine(_tmpFolder, $"tmp_{Path.GetFileName(relativePath)}");
-                saveAction(filePath);
+                await saveAction(filePath);
                 window = OpenDocument(filePath, key);
             }
             return window;
@@ -93,11 +94,8 @@ namespace GoogleCloudExtension.SourceBrowsing
             var window = ShellUtils.Open(filePath);
             window.Document.ReadOnly = true;
             File.Delete(filePath);
-            if (window != null)
-            {
-                _fileRevisionWindowMap[key] = window;
-                _documentWindows[window] = key;
-            }
+            _fileRevisionWindowMap[key] = window;
+            _documentWindows[window] = key;
             return window;
         }
 

@@ -47,13 +47,14 @@ namespace GoogleCloudExtension.GitUtils
         /// </summary>
         /// <param name="dir">The file path to be checked.</param>
         /// <returns>
-        /// <seealso cref="GitRepository"/> object or null if the path is not a valid git repository path.
+        /// <seealso cref="GitRepository"/> object 
+        /// Or null if the path is not a valid git repository path.
         /// </returns>
         public static async Task<GitRepository> GetGitCommandWrapperForPathAsync(string dir)
         {
             if (await IsGitRepositoryAsync(dir))
             {
-                var root =  (await RunGitCommandAsync("rev-parse --show-toplevel", dir)).FirstOrDefault()?.Replace('/', '\\');
+                var root = (await RunGitCommandAsync("rev-parse --show-toplevel", dir)).FirstOrDefault()?.Replace('/', '\\');
                 return new GitRepository(root);
             }
             return null;
@@ -104,7 +105,7 @@ namespace GoogleCloudExtension.GitUtils
         /// Run a git command and return the output or error output.
         /// </summary>
         private static async Task<List<string>> RunGitCommandAsync(
-            string command, 
+            string command,
             string gitLocalRoot)
         {
             if (!File.Exists(gitLocalRoot) && !Directory.Exists(gitLocalRoot))
@@ -112,11 +113,12 @@ namespace GoogleCloudExtension.GitUtils
                 return null;
             }
             List<string> output = new List<string>();
-            return await ProcessUtils.RunCommandAsync(
+            bool commandResult = await ProcessUtils.RunCommandAsync(
                 file: GitPath,
                 args: command,
                 handler: (o, e) => output.Add(e.Line),
-                workingDir: gitLocalRoot) ? output : null;
+                workingDir: gitLocalRoot);
+            return commandResult ? output : null;
         }
     }
 }

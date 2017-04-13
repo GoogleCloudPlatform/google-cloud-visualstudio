@@ -106,7 +106,12 @@ namespace GoogleCloudExtension.Utils
         public static Window Open(string sourceFile)
         {
             var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
-            return dte.ItemOperations.OpenFile(sourceFile);
+            Window window = dte.ItemOperations.OpenFile(sourceFile);
+            if (window != null)
+            {
+                window.Visible = true;
+            }
+            return window;
         }
 
         /// <summary>

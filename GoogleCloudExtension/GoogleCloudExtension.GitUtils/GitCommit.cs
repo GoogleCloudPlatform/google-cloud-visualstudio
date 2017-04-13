@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.GitUtils
     {
         private readonly GitRepository _repo;
 
-        private Dictionary<string, string> _fileTree;
+        private Lazy<Task<Dictionary<string, string>>> _fileTree;
 
         /// <summary>
         /// The git sha.
@@ -44,6 +44,7 @@ namespace GoogleCloudExtension.GitUtils
         {
             _repo = gitCommand.ThrowIfNull(nameof(gitCommand));
             Sha = sha.ThrowIfNullOrEmpty(nameof(sha));
+            _fileTree = new Lazy<Task<Dictionary<string, string>>>(GetFileTreeAsync);
         }
 
         /// <summary>
@@ -64,7 +65,7 @@ namespace GoogleCloudExtension.GitUtils
             {
                 return null;
             }
-            return (await gitCommand.ContainsCommitAsync(sha)) == true? new GitCommit(gitCommand, sha) : null;
+            return (await gitCommand.ContainsCommitAsync(sha))? new GitCommit(gitCommand, sha) : null;
         }
 
         /// <summary>
@@ -78,11 +79,12 @@ namespace GoogleCloudExtension.GitUtils
         /// <returns>File path relative to git root. </returns>
         public async Task<IEnumerable<string>> FindMatchingEntryAsync(string filePath)
         {
-            var fileTree = await GetFileTreeAsync();
+            Dictionary<string, string> fileTree = await _fileTree.Value;
             return SubPaths(filePath)
                 .Select(x => {
                     string y;
-                    return fileTree.TryGetValue(x, out y) ? y : null;
+                    fileTree.TryGetValue(x, out y);
+                    return y;
                 })
                 .Where(x => x != null);
         }
@@ -94,7 +96,7 @@ namespace GoogleCloudExtension.GitUtils
         /// <param name="relativePath">The file path relative to the git root.</param>
         public async Task SaveTempFileAsync(string tmpFile, string relativePath)
         {
-            var content = await _repo.GetRevisionFileAsync(Sha, relativePath);
+            List<string> content = await _repo.GetRevisionFileAsync(Sha, relativePath);
             using (var sw = new StreamWriter(tmpFile))
             {
                 content.ForEach(x => sw.WriteLine(x));
@@ -103,15 +105,12 @@ namespace GoogleCloudExtension.GitUtils
 
         private async Task<Dictionary<string, string>> GetFileTreeAsync()
         {
-            if (_fileTree == null)
+            var fileTree = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+            foreach (var file in await _repo.ListTreeAsync(Sha))
             {
-                _fileTree = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-                foreach (var file in await _repo.ListTreeAsync(Sha))
-                {
-                    _fileTree.Add(file.Replace('/', '\\'), file);
-                }
+                fileTree.Add(file.Replace('/', '\\'), file);
             }
-            return _fileTree;
+            return fileTree;
         }
 
         private static IEnumerable<string> SubPaths(string filePath)
