@@ -51,8 +51,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 
         private static readonly string[] s_blacklistedTopics =
         {
-            "asia.gcr.io%2F{0}", "eu.gcr.io%2F{0}",
-            "gcr.io%2F{0}", "us.gcr.io%2F{0}", "cloud-builds"
+            "asia.gcr.io%2F{0}",
+            "eu.gcr.io%2F{0}",
+            "gcr.io%2F{0}",
+            "us.gcr.io%2F{0}",
+            "cloud-builds",
+            "repository-changes.default"
         };
 
         private Lazy<PubsubDataSource> _dataSource = new Lazy<PubsubDataSource>(CreateDataSource);
