@@ -38,11 +38,13 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="targetInstance">The instance to deploy.</param>
         /// <param name="credentials">The Windows credentials to use to deploy to the <paramref name="targetInstance"/>.</param>
         /// <param name="progress">The progress indicator.</param>
+        /// <param name="useDebugBuild">Use debug build or release build.</param>
         /// <param name="outputAction">The action to call with lines of output.</param>
         public static async Task<bool> PublishProjectAsync(
             string projectPath,
             Instance targetInstance,
             WindowsInstanceCredentials credentials,
+            bool useDebugBuild,
             IProgress<double> progress,
             Action<string> outputAction)
         {
@@ -58,7 +60,7 @@ namespace GoogleCloudExtension.Deployment
             {
                 // Wait for the bundle operation to finish and update the progress in the mean time to show progress.
                 if (!await ProgressHelper.UpdateProgress(
-                        CreateAppBundleAsync(projectPath, stagingDirectory, outputAction),
+                        CreateAppBundleAsync(projectPath, stagingDirectory, useDebugBuild, outputAction),
                         progress,
                         from: 0.1, to: 0.5))
                 {
@@ -119,10 +121,15 @@ namespace GoogleCloudExtension.Deployment
         /// This method stages the application into the <paramref name="stageDirectory"/> by invoking the WebPublish target
         /// present in all Web projects. It publishes to the staging directory by using the FileSystem method.
         /// </summary>
-        private static Task<bool> CreateAppBundleAsync(string projectPath, string stageDirectory, Action<string> outputAction)
+        private static Task<bool> CreateAppBundleAsync(
+            string projectPath, 
+            string stageDirectory, 
+            bool useDebugBuild, 
+            Action<string> outputAction)
         {
+            var config = useDebugBuild ? "Debug" : "Release";
             var arguments = $@"""{projectPath}""" + " " +
-                "/p:Configuration=Release " +
+                $"/p:Configuration={config} " +
                 "/p:Platform=AnyCPU " +
                 "/t:WebPublish " +
                 "/p:WebPublishMethod=FileSystem " +

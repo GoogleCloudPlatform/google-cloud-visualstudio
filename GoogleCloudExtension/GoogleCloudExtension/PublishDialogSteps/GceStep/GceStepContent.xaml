@@ -43,6 +43,11 @@
         </TextBlock>
 
         <CheckBox Margin="0,8,0,0"
+                  Content="Debug Build"
+                  IsChecked="{Binding UseDebugBuild, Mode=TwoWay}"
+                  Style="{StaticResource CommonTextStyleBase}"/>
+        
+        <CheckBox Margin="0,8,0,0"
                   Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
                   IsChecked="{Binding OpenWebsite, Mode=TwoWay}"
                   Style="{StaticResource CommonTextStyleBase}"/>

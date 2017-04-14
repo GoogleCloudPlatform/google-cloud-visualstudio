@@ -42,6 +42,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         private IEnumerable<WindowsInstanceCredentials> _credentials;
         private WindowsInstanceCredentials _selectedCredentials;
         private bool _openWebsite = true;
+        private bool _useDebugBuild;
 
         /// <summary>
         /// The asynchrnous value that will resolve to the list of instances in the current GCP Project, and that are
@@ -105,6 +106,15 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             set { SetValueAndRaise(ref _openWebsite, value); }
         }
 
+        /// <summary>
+        /// Whether to publish debug build
+        /// </summary>
+        public bool UseDebugBuild
+        {
+            get { return _useDebugBuild; }
+            set { SetValueAndRaise(ref _useDebugBuild, value); }
+        }
+
         private GceStepViewModel(GceStepContent content)
         {
             _content = content;
@@ -160,6 +170,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                         project.FullPath,
                         SelectedInstance,
                         SelectedCredentials,
+                        UseDebugBuild,
                         progress,
                         (l) => GcpOutputWindow.OutputLine(l));
                     deploymentDuration = DateTime.Now - startDeploymentTime;
