@@ -14,14 +14,21 @@
 
 using System;
 
-namespace GoogleCloudExtension.StackdriverErrorReporting
+namespace GoogleCloudExtension.SourceBrowsing
 {
     /// <summary>
-    /// Define exception for Error Reporting code errors etc.
+    /// Throw when file or file revision is not found.
     /// </summary>
-    public class ErrorReportingException : Exception
+    class FileNotFoundException : Exception
     {
-        public ErrorReportingException(string message) : base(message) { }
-        public ErrorReportingException(Exception innerException) : base(String.Empty, innerException: innerException) { }
+        /// <summary>
+        /// Gets the file path.
+        /// </summary>
+        public string FilePath { get; }
+
+        public FileNotFoundException(string filePath) : base()
+        {
+            FilePath = filePath;
+        }
     }
 }

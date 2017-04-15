@@ -107,10 +107,13 @@ namespace GoogleCloudExtension.Utils
         /// <returns>The Window that displays the project item.</returns>
         public static Window Open(string sourceFile)
         {
-            var provider = GetGloblalServiceProvider();
-            var frame = VsShellUtilities.OpenDocumentWithSpecificEditor(
-                provider, sourceFile, s_GuidMicrosoftCsharpEditor, VSConstants.LOGVIEWID.Code_guid);
-            return frame == null ? null : VsShellUtilities.GetWindowObject(frame);
+            var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
+            Window window = dte.ItemOperations.OpenFile(sourceFile);
+            if (window != null)
+            {
+                window.Visible = true;
+            }
+            return window;
         }
 
         /// <summary>
@@ -133,14 +136,13 @@ namespace GoogleCloudExtension.Utils
         }
 
         /// <summary>
-        /// Register a Visual Studio Shutdown event handler.
-        /// Normally for some quick cleanup tasks.
+        /// Register a Visual Studio Window close event handler.
         /// </summary>
-        /// <param name="onExitEventHandler">The event handler.</param>
-        public static void RegisterShutdownEventHandler(Action onExitEventHandler)
+        /// <param name="onWindowCloseEventHandler">The event handler.</param>
+        public static void RegisterWindowCloseEventHandler(Action<Window> onWindowCloseEventHandler)
         {
             var dte2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
-            dte2.Events.DTEEvents.OnBeginShutdown += () => onExitEventHandler();
+            dte2.Events.WindowEvents.WindowClosing += (window) => onWindowCloseEventHandler(window);
         }
 
         private static void SetShellNormal()

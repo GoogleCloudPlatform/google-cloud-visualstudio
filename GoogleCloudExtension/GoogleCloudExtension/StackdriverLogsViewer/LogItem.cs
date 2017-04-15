@@ -215,7 +215,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 }
 
                 SourceLinkVisible = true;
-                OnNavigateToSourceCommand = new ProtectedCommand(() => SourceVersionUtils.NavigateToSourceLineCommand(this));
+                OnNavigateToSourceCommand = new ProtectedCommand(
+                    () => SourceVersionUtils.NavigateToSourceLineCommandAsync(this).Wait());
                 SourceLinkCaption = $"({System.IO.Path.GetFileName(SourceFilePath)}:{SourceLine})";
             }
         }

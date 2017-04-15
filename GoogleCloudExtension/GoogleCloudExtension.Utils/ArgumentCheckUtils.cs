@@ -14,14 +14,28 @@
 
 using System;
 
-namespace GoogleCloudExtension.StackdriverErrorReporting
+namespace GoogleCloudExtension.Utils
 {
-    /// <summary>
-    /// Define exception for Error Reporting code errors etc.
-    /// </summary>
-    public class ErrorReportingException : Exception
+    public static class ArgumentCheckUtils
     {
-        public ErrorReportingException(string message) : base(message) { }
-        public ErrorReportingException(Exception innerException) : base(String.Empty, innerException: innerException) { }
+        public static string ThrowIfNullOrEmpty(this string arg,  string message)
+        {
+            if (String.IsNullOrWhiteSpace(arg))
+            {
+                throw new ArgumentException(message ?? "");
+            }
+
+            return arg;
+        }
+
+        public static T ThrowIfNull<T>(this T arg, string message)
+        {
+            if (arg == null)
+            {
+                throw new ArgumentNullException(message ?? "");
+            }
+
+            return arg;
+        }
     }
 }

@@ -110,12 +110,16 @@
     <Compile Include="CloudExplorerSources\Gae\VersionItem.cs" />
     <Compile Include="CloudExplorerSources\Gae\VersionViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gcs\BucketLocationViewModel.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\ITopicItem.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\OrphanedSubscriptionsItem.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\OrphanedSubscriptionsViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSource.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSourceRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\SubscriptionItem.cs" />
     <Compile Include="CloudExplorerSources\PubSub\SubscriptionViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicItem.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModel.cs" />
+    <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBase.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
@@ -256,9 +260,8 @@
     <Compile Include="SolutionUtils\ProjectSourceFile.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
     <Compile Include="SolutionUtils\VsProject.cs" />
-    <Compile Include="SourceBrowsing\ActionCancelledException.cs" />
-    <Compile Include="SourceBrowsing\GitCommit.cs" />
-    <Compile Include="SourceBrowsing\GitTempFiles.cs" />
+    <Compile Include="SourceBrowsing\FileNotFoundException.cs" />
+    <Compile Include="SourceBrowsing\OpenGitFile.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficWindow.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficModel.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficViewModel.cs" />
@@ -343,7 +346,6 @@
       <DependentUpon>TitleBar.xaml</DependentUpon>
     </Compile>
     <Compile Include="TitleBar\TitleBarViewModel.cs" />
-    <Compile Include="Utils\ArgumentCheckUtils.cs" />
     <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
     <Compile Include="Utils\PackageUtils.cs" />
@@ -468,16 +470,7 @@
     <Resource Include="Theming\Resources\logo_cloud.png" />
     <Resource Include="CloudExplorerSources\PubSub\Resources\topic_icon.png" />
     <Resource Include="CloudExplorerSources\PubSub\Resources\subscription_icon.png" />
-    <Content Include="..\packages\LibGit2Sharp.NativeBinaries.1.0.165\runtimes\win7-x86\native\git2-1196807.dll">
-      <Link>git2-1196807.dll</Link>
-      <IncludeInVSIX>true</IncludeInVSIX>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="..\packages\LibGit2Sharp.NativeBinaries.1.0.165\runtimes\win7-x86\native\git2-1196807.pdb">
-      <Link>git2-1196807.pdb</Link>
-      <IncludeInVSIX>true</IncludeInVSIX>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Resource Include="CloudExplorerSources\PubSub\Resources\orphaned_subscriptions_icon.png" />
     <Content Include="Licenses.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -934,6 +927,10 @@
     <ProjectReference Include="..\GoogleCloudExtension.GCloud\GoogleCloudExtension.GCloud.csproj">
       <Project>{95efac7e-4f6e-46f0-bcc8-90ee1487e1e1}</Project>
       <Name>GoogleCloudExtension.GCloud</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.GitUtils\GoogleCloudExtension.GitUtils.csproj">
+      <Project>{66b55aaf-8237-45cf-8462-6359318795ab}</Project>
+      <Name>GoogleCloudExtension.GitUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.OAuth\GoogleCloudExtension.OAuth.csproj">
       <Project>{ad8b672d-7f0a-4c7f-9774-a9458a99a061}</Project>

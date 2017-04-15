@@ -706,7 +706,7 @@
     <comment>The caption for the general download button.</comment>
   </data>
   <data name="UiOkButtonCaption" xml:space="preserve">
-    <value>Ok</value>
+    <value>OK</value>
     <comment>Caption for Ok buttons.</comment>
   </data>
   <data name="UiSaveButtonCaption" xml:space="preserve">
@@ -1925,7 +1925,7 @@ Open the project to navigate to the logger method location.</value>
     <comment>Message diplayed when there is an error deleting a topic.</comment>
   </data>
   <data name="PubSubDeleteTopicWindowHeader" xml:space="preserve">
-    <value>Delete topic</value>
+    <value>Delete Topic</value>
     <comment>Header of the delete Pub/Sub topic window.</comment>
   </data>
   <data name="PubSubDeleteTopicWindowMessage" xml:space="preserve">
@@ -1957,7 +1957,7 @@ Open the project to navigate to the logger method location.</value>
     <comment>Message diplayed when there is an error deleting a PubSub subscription.</comment>
   </data>
   <data name="PubSubDeleteSubscriptionWindowHeader" xml:space="preserve">
-    <value>Delete subscription</value>
+    <value>Delete Subscription</value>
     <comment>Header of the delete Pub/Sub subscription window.</comment>
   </data>
   <data name="PubSubDeleteSubscriptionWindowMessage" xml:space="preserve">
@@ -1969,15 +1969,15 @@ Open the project to navigate to the logger method location.</value>
     <comment>Text at the top of the NewSubscriptionWindow</comment>
   </data>
   <data name="Validation255CharactersMessage" xml:space="preserve">
-    <value>May not have more than 255 characters.</value>
+    <value>Can not have more than 255 characters.</value>
     <comment>Message displayed by validator limiting input to 255 characters.</comment>
   </data>
   <data name="ValidationDisallowStartGoogMessage" xml:space="preserve">
-    <value>May not start with "goog".</value>
+    <value>Can not start with "goog".</value>
     <comment>Message displayed by validator disallowing input that starts with "goog".</comment>
   </data>
   <data name="ValidationPubSubNameCharacterClassMessage" xml:space="preserve">
-    <value>May only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) or percent signs (%).</value>
+    <value>Can only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) and percent signs (%).</value>
     <comment>Message displayed by validator limiting characters allowed in pub sub names.</comment>
   </data>
   <data name="ValidationStartWithLetterMessage" xml:space="preserve">
@@ -1989,11 +1989,11 @@ Open the project to navigate to the logger method location.</value>
     <comment>Message displayed by validator requiring 3 characters.</comment>
   </data>
   <data name="NewSubscriptionWindowAckDeadlineLabel" xml:space="preserve">
-    <value>_Acknowledgement Deadline (seconds):</value>
+    <value>_Acknowledgement deadline (seconds):</value>
     <comment>The acknowledgement label of the new pub/sub subscription window.</comment>
   </data>
   <data name="NewSubscriptionWindowDeliveryType" xml:space="preserve">
-    <value>Delivery Type:</value>
+    <value>Delivery type:</value>
     <comment>The delivery type label in the new pub/sub subscription window.</comment>
   </data>
   <data name="NewSubscriptionWindowNameLabel" xml:space="preserve">
@@ -2009,7 +2009,7 @@ Open the project to navigate to the logger method location.</value>
     <comment>The push label of the new pub/sub subscritpion window.</comment>
   </data>
   <data name="NewTopicWindowNameLabel" xml:space="preserve">
-    <value>Topic _Name:</value>
+    <value>Topic _name:</value>
     <comment>Label for the topic name text box in the new pub/sub topic window.</comment>
   </data>
   <data name="PubSubNewSubscriptionErrorHeader" xml:space="preserve">
@@ -2053,7 +2053,7 @@ Open the project to navigate to the logger method location.</value>
     <comment>The DisplayName of the Name property of a TopicItem</comment>
   </data>
   <data name="PubSubNewSubscriptionNameInvalidMessage" xml:space="preserve">
-    <value>{0} is not a valid Subscription Name</value>
+    <value>{0} is not a valid subscription name</value>
     <comment>The message displayed when there is a validation error with a new subscription name.</comment>
   </data>
   <data name="PubSubNewSubscriptionNameInvalidTitle" xml:space="preserve">
@@ -2061,7 +2061,7 @@ Open the project to navigate to the logger method location.</value>
     <comment>Header of the message window displayed when there is a validation error with a new subscription name.</comment>
   </data>
   <data name="PubSubNewTopicNameInvalidMessage" xml:space="preserve">
-    <value>{0} is not a valid Topic Name</value>
+    <value>{0} is not a valid topic name</value>
     <comment>The message displayed when there is a validation error with a new topic name.</comment>
   </data>
   <data name="PubSubNewTopicNameInvalidTitle" xml:space="preserve">
@@ -2076,6 +2076,10 @@ Open the project to navigate to the logger method location.</value>
     <value>Select the file from the list</value>
     <comment>The caption of dialog for picking the right file from a list of matching suffixes.</comment>
   </data>
+  <data name="PubSubOrphanedSubscriptionsItemName" xml:space="preserve">
+    <value>Orphaned Subscriptions</value>
+    <comment>Text displayed on the Pub/Sub Orphaned Subscriptions item of the cloud explorer</comment>
+  </data>
   <data name="SourceVersionUtilsFailedToLocateFileInRepoMessage" xml:space="preserve">
     <value>Unable to locate file {0} of commit sha {1} at local repo {2} .</value>
     <comment>Error message when it fails to find the file at the local repo with the git commit sha. {0} is the file path, {1} is the git SHA, {2} is the local repo path.</comment>
@@ -2083,6 +2087,10 @@ Open the project to navigate to the logger method location.</value>
   <data name="SourceVersionUtilsOpenProjectFromLocalRepoPrompt" xml:space="preserve">
     <value>Open the solution from a local git repository.</value>
     <comment>The prompt for opening the solution from a local git repository.</comment>
+  </data>
+  <data name="SourceVersionProgressDialogMessage" xml:space="preserve">
+    <value>Open file</value>
+    <comment>The message on the progress dialog when executing async git command.</comment>
   </data>
   <data name="LogViewerAutoReloadButtonCaption" xml:space="preserve">
     <value>Auto Load Log Stream</value>

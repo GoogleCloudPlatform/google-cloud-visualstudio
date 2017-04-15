@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
@@ -34,13 +33,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         private static readonly Lazy<ImageSource> s_subscriptionIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
 
-        private readonly TopicViewModel _owner;
+        private readonly TopicViewModelBase _owner;
         private readonly SubscriptionItem _subscriptionItem;
-
-        /// <summary>
-        /// The item this tree node represents.
-        /// </summary>
-        public object Item => _subscriptionItem;
 
         /// <summary>
         /// Returns the context in which this view model is working.
@@ -52,9 +46,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// </summary>
         public PubsubDataSource DataSource => _owner.DataSource;
 
+        /// <summary>
+        /// The item this tree node represents.
+        /// </summary>
+        public object Item => _subscriptionItem;
+
         public event EventHandler ItemChanged;
 
-        public SubscriptionViewModel(TopicViewModel owner, Subscription subscription)
+        public SubscriptionViewModel(TopicViewModelBase owner, Subscription subscription)
         {
             _owner = owner;
             _subscriptionItem = new SubscriptionItem(subscription);
@@ -91,10 +90,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 {
                     bool doDelete = UserPromptUtils.ActionPrompt(
                         string.Format(Resources.PubSubDeleteSubscriptionWindowMessage, _subscriptionItem.Name),
-                        Resources.PubSubDeleteSubscriptionWindowHeader);
+                        Resources.PubSubDeleteSubscriptionWindowHeader,
+                        actionCaption: Resources.UiDeleteButtonCaption);
                     if (doDelete)
                     {
-                        await DataSource.DeleteSubscriptionAsync(_subscriptionItem.Name);
+                        await DataSource.DeleteSubscriptionAsync(_subscriptionItem.FullName);
                     }
                 }
                 catch (DataSourceException e)
