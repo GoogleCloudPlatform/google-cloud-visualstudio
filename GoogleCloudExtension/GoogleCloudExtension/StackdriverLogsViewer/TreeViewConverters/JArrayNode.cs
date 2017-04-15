@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -38,7 +40,19 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         protected override void ParseObjectTree(object obj)
         {
             JArray jsonArray = obj as JArray;
-            ParseArray(jsonArray.Children());
+            List<object> objectArray = new List<object>();
+            foreach (var element in jsonArray)
+            {
+                if (element is JArray || element is JObject)
+                {
+                    objectArray.Add(element);
+                }
+                else
+                {
+                    objectArray.Add(element.ToString());
+                }
+            }
+            ParseArray(objectArray);
         }
     }
 }
