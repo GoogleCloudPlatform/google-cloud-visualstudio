@@ -2870,6 +2870,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ({0}:{1}).
+        /// </summary>
+        public static string LogsViewerSourceLinkCaptionFormat {
+            get {
+                return ResourceManager.GetString("LogsViewerSourceLinkCaptionFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Back to Stackdriver Logs Viewer.
         /// </summary>
         public static string LogsViewerTooltipBackButtonCaption {
