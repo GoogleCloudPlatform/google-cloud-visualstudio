@@ -28,8 +28,6 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public static class ShellUtils
     {
-        private static Guid s_GuidMicrosoftCsharpEditor = new Guid("{A6C744A8-0E4A-4FC6-886A-064283054674}");
-
         /// <summary>
         /// Returns whether the shell is in the debugger state. This will happen if the user is debugging an app.
         /// </summary>
