@@ -156,6 +156,7 @@
     <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
     <Compile Include="Controls\AutoReloadButton.cs" />
+    <Compile Include="Controls\DotsProgressIndicator.cs" />
     <Compile Include="Controls\IconButton.cs" />
     <Compile Include="Controls\ImageToggleButton.cs" />
     <Compile Include="Controls\LabelWithHelp.cs" />
@@ -755,6 +756,10 @@
     <Page Include="CloudExplorer\CloudExplorerToolWindowControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\DotsProgressIndicatorResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\TimeBoxResources.xaml">
       <Generator>MSBuild:Compile</Generator>
