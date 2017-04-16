@@ -296,9 +296,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             LogItemCollection = new ListCollectionView(_logs);
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
             CancelRequestCommand = new ProtectedCommand(CancelRequest);
-            SimpleTextSearchCommand = new ProtectedCommand(Reload);
+            SimpleTextSearchCommand = new ProtectedCommand(() => Reload());
             FilterSwitchCommand = new ProtectedCommand(SwapFilter);
-            SubmitAdvancedFilterCommand = new ProtectedCommand(Reload);
+            SubmitAdvancedFilterCommand = new ProtectedCommand(() => Reload());
             AdvancedFilterHelpCommand = new ProtectedCommand(ShowAdvancedFilterHelp);
             DateTimePickerModel = new DateTimePickerViewModel(
                 TimeZoneInfo.Local, DateTime.UtcNow, isDescendingOrder: true);
@@ -567,7 +567,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Send request to get logs using new filters, orders etc.
         /// </summary>
-        private void Reload()
+        private async Task Reload()
         {
             Debug.WriteLine($"Entering Reload(), thread id {Thread.CurrentThread.ManagedThreadId}");
 
@@ -579,21 +579,21 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             if (!ResourceTypeSelector.IsSubmenuPopulated)
             {
-                RequestLogFiltersWrapperAsync(PopulateResourceTypes);
+                await RequestLogFiltersWrapperAsync(PopulateResourceTypes);
                 Debug.WriteLine("PopulateResourceTypes exit");
                 return;
             }
 
             if (LogIdList == null)
             {
-                RequestLogFiltersWrapperAsync(PopulateLogIds);
+                await RequestLogFiltersWrapperAsync(PopulateLogIds);
                 Debug.WriteLine("PopulateLogIds exit");
                 return;
             }
 
             _filter = ShowAdvancedFilter ? AdvancedFilterText : ComposeSimpleFilters();
 
-            LogLoaddingWrapperAsync(async (cancelToken) =>
+            await LogLoaddingWrapperAsync(async (cancelToken) =>
             {
                 _nextPageToken = null;
                 _logs.Clear();
@@ -709,7 +709,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             IList<string> logIdRequestResult = await _dataSource.Value.ListProjectLogNamesAsync(ResourceTypeSelector.SelectedTypeNmae, keys);
             LogIdList = new LogIdsList(logIdRequestResult);
             LogIdList.PropertyChanged += OnPropertyChanged;
-            Reload();
+            await Reload();
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
