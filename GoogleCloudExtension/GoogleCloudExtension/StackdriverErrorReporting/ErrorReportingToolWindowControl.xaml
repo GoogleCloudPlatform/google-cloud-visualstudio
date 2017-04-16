@@ -40,11 +40,17 @@
             </DataTemplate>
 
             <DataTemplate x:Key="OccurancesTemplate" >
-                <local:TimedCountBarChartControl 
-                    VerticalAlignment="Center"
-                    Style="{StaticResource TimedCountMiniBarChartStyle}"
-                    TimedCountList="{Binding TimedCountList}"
-                    Margin="0,6,0,6" />
+                <StackPanel Orientation="Horizontal">
+                    <local:TimedCountBarChartControl 
+                        VerticalAlignment="Center"
+                        Style="{StaticResource TimedCountMiniBarChartStyle}"
+                        TimedCountList="{Binding TimedCountList}"
+                        Margin="0,6,6,6" />
+                    <TextBlock 
+                        Text="{Binding ErrorCount}"
+                        VerticalAlignment="Center"
+                        Style="{StaticResource CommonTextStyle}" />
+                </StackPanel>
             </DataTemplate>
             
         </ResourceDictionary>
@@ -64,7 +70,7 @@
             </Grid.RowDefinitions>
 
             <Border 
-                Padding="12,6,0,6"    
+                Padding="0,6,0,6"    
                 BorderThickness="0,0,0,1"    
                 BorderBrush="LightGray"
                 IsEnabled="{Binding IsLoadingComplete}">
@@ -120,9 +126,7 @@
 
                     <DataGridTextColumn 
                         Header="{x:Static ext:Resources.ErrorReportingAffectedUsersHeader}" 
-                        Binding="{Binding ErrorGroup.AffectedUsersCount}" />
-
-                    <DataGridTextColumn Binding="{Binding ErrorCount}" />
+                        Binding="{Binding AffectedUsersCount}" />
 
                     <DataGridTemplateColumn 
                         Header="{x:Static ext:Resources.ErrorReportingErrorMessageHeader}" 

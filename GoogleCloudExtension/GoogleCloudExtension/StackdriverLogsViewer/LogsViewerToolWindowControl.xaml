@@ -167,7 +167,7 @@
                         AcceptsReturn="True"
                         Text="{Binding AdvancedFilterText, UpdateSourceTrigger=PropertyChanged}"
                         MinLines="3" 
-                        MaxLines="30"
+                        MaxLines="6"
                         VerticalScrollBarVisibility="Auto" />
 
                     <Button 
