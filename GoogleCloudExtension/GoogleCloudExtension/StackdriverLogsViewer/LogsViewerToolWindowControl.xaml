@@ -485,8 +485,13 @@
                     HorizontalAlignment="Center"
                     Visibility="{Binding ShowRequestStatus, Converter={StaticResource visibilityConverter}}">
 
+                    <TextBlock 
+                        Padding="8,5,3,5" 
+                        Text="{Binding RequestStatusText}"
+                        Style="{StaticResource CommonTextStyle}" />
+                    
                     <controls:DotsProgressIndicator 
-                        Padding="8,5,8,5" />
+                        Padding="0,5,8,5" />
 
                     <Button 
                         Margin="12,0,12,0" 
