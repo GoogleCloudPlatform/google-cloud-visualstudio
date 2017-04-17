@@ -28,27 +28,39 @@
             <utils:NullEmptyInvisibleConverter x:Key="nullEmptyInvisibleConverter" />
 
             <DataGridTemplateColumn
-                x:Key="MessageColumn" >
+                x:Key="MessageColumn" 
+                Width="*">
                 <DataGridTemplateColumn.CellTemplate>
-                    <DataTemplate >
-                        <StackPanel Orientation="Horizontal">
-                            <controls:IconButton
-                                x:Name="_sourceLinkButton"
-                                Margin="6,0,12,0"
-                                Style="{StaticResource MouseOverLinkButtonStyle}"
-                                Command="{Binding OnNavigateToSourceCommand}"
-                                Visibility="{Binding SourceLinkVisible, Converter={StaticResource visibilityConverter}}"
-                                Content="{Binding SourceLinkCaption}">
-                                <controls:IconButton.ToolTip>
-                                    <ToolTip Content="{Binding SourceFilePath}" 
-                                             Style="{StaticResource CommonTooltipStyle}" />
-                                </controls:IconButton.ToolTip>
-                            </controls:IconButton>
-                            <TextBlock 
-                                Text="{Binding Message}"
-                                TextWrapping="NoWrap"
-                                TextTrimming="CharacterEllipsis" />
-                        </StackPanel>
+                    <DataTemplate>
+                        <DockPanel LastChildFill="True" >
+                            <Grid DockPanel.Dock="Left">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock 
+                                    Text="{Binding Message}"
+                                    TextWrapping="NoWrap"
+                                    TextTrimming="CharacterEllipsis" />
+
+                                <controls:IconButton
+                                    Grid.Column="1"
+                                    x:Name="_sourceLinkButton"
+                                    Margin="6,0,12,0"
+                                    Style="{StaticResource MouseOverLinkButtonStyle}"
+                                    Command="{Binding OnNavigateToSourceCommand}"
+                                    Visibility="{Binding SourceLinkVisible, Converter={StaticResource visibilityConverter}}"
+                                    Content="{Binding SourceLinkCaption}">
+                                    <controls:IconButton.ToolTip>
+                                        <ToolTip Content="{Binding SourceFilePath}" 
+                                                    Style="{StaticResource CommonTooltipStyle}" />
+                                    </controls:IconButton.ToolTip>
+                                </controls:IconButton>
+                            </Grid>
+
+                            <TextBlock DockPanel.Dock="Right"/>
+                            
+                        </DockPanel>
                     </DataTemplate>
                 </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
@@ -70,7 +82,7 @@
                 </StackPanel>
             </HierarchicalDataTemplate>
 
-            <!-- data grid group item.-->
+            <!-- data grid group item. -->
             <ControlTemplate x:Key="groupItemTemplate" TargetType="{x:Type GroupItem}">
                 <StackPanel>
                     <StackPanel 
@@ -113,7 +125,9 @@
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
+        
         <tb:TitleBar />
+        
         <Grid 
             Grid.Row="1"
             Visibility="{Binding Project, Converter={StaticResource nullEmptyInvisibleConverter}}">
@@ -133,8 +147,9 @@
                     x:Name="_autoReloadButton"
                     Style="{StaticResource AutoReloadButtonStyle}" 
                     AutoReloadCommand="{Binding OnAutoReloadCommand}"
-                    Content="{x:Static ext:Resources.UiAutoReloadButtonCaption}"                    
-                    IntervalSeconds="{Binding AutoReloadIntervalSeconds}"/>
+                    Content="{x:Static ext:Resources.LogViewerAutoReloadButtonCaption}"                    
+                    IntervalSeconds="{Binding AutoReloadIntervalSeconds}"
+                    IsChecked="{Binding IsAutoReloadChecked}"/>
             </Border>
 
             <!-- Filters -->
@@ -396,11 +411,17 @@
                                     <Setter Property="Template" Value="{StaticResource groupItemTemplate}" />
                                 </Style>
                             </GroupStyle.ContainerStyle>
+                            <GroupStyle.Panel>
+                                <ItemsPanelTemplate>
+                                    <DataGridRowsPresenter/>
+                                </ItemsPanelTemplate>
+                            </GroupStyle.Panel>
                         </GroupStyle>
                     </DataGrid.GroupStyle>
 
                     <DataGrid.Columns>
-                        <DataGridTemplateColumn IsReadOnly="True">
+                        <DataGridTemplateColumn 
+                            IsReadOnly="True" >
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <Image Source="{Binding SeverityLevel}" 
@@ -416,7 +437,7 @@
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
 
-                        <DataGridTemplateColumn 
+                        <DataGridTemplateColumn
                             IsReadOnly="True" 
                             SortMemberPath="TimeStamp" >
                             <DataGridTemplateColumn.CellTemplate>

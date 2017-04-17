@@ -217,8 +217,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 SourceLinkVisible = true;
                 OnNavigateToSourceCommand = new ProtectedCommand(
                     () => SourceVersionUtils.NavigateToSourceLineCommandAsync(this).Wait());
-                var tmp = $"{SourceFilePath}:{SourceLine}";
-                SourceLinkCaption = tmp.Length <= 20 ? tmp : $"...{tmp.Substring(tmp.Length - 17)}";
+                SourceLinkCaption = String.Format(
+                    Resources.LogsViewerSourceLinkCaptionFormat, 
+                    System.IO.Path.GetFileName(SourceFilePath),
+                    SourceLine);
             }
         }
 
