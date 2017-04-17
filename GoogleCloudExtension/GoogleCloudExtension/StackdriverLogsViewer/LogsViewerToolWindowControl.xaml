@@ -81,7 +81,7 @@
                 </StackPanel>
             </HierarchicalDataTemplate>
 
-            <!-- data grid group item .-->
+            <!-- data grid group item. -->
             <ControlTemplate x:Key="groupItemTemplate" TargetType="{x:Type GroupItem}">
                 <StackPanel>
                     <StackPanel 
