@@ -118,8 +118,8 @@ namespace GoogleCloudExtension.Controls
                 framePoint += frameDuration;
             }
 
-            var _storyboard = new Storyboard();
-            _storyboard.Children.Add(animation);
+            var storyboard = new Storyboard();
+            storyboard.Children.Add(animation);
             this.BeginAnimation(DotsProgressIndicator.StepProperty, animation);
         }
     }
