@@ -366,7 +366,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             filter.AppendLine(advancedSearchText);
             if (!advancedSearchText.ToLowerInvariant().Contains("timestamp"))
             {
-                filter.AppendLine($"timestamp<=\"{DateTime.UtcNow.AddDays(1).ToString("O")}\"");
+                filter.AppendLine($"timestamp<=\"{DateTime.UtcNow.AddDays(1):O}\"");
             }
 
             AdvancedFilterText = filter.ToString();
@@ -428,7 +428,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="autoReload">Indicate if it is the result from auto reload event.</param>
         private void AddLogs(IList<LogEntry> logEntries, bool autoReload = false)
         {
-            if (logEntries?.Count == 0)
+            if (logEntries == null || logEntries.Count == 0)
             {
                 return;
             }
@@ -795,12 +795,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 if (DateTimePickerModel.DateTimeUtc < DateTime.UtcNow)
                 {
-                    filter.AppendLine($"timestamp<=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
+                    filter.AppendLine($"timestamp<=\"{DateTimePickerModel.DateTimeUtc:O}\"");
                 }
             }
             else
             {
-                filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc.ToString("O")}\"");
+                filter.AppendLine($"timestamp>=\"{DateTimePickerModel.DateTimeUtc:O}\"");
             }
 
             if (LogIdList.SelectedLogIdFullName != null)
@@ -855,7 +855,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     }
 
                     StringBuilder filter = new StringBuilder(ComposeSimpleFilters());
-                    filter.AppendLine($"timestamp<\"{DateTime.UtcNow.AddSeconds(-LogStreamingDelayInSeconds).ToString("O")}\"");
+                    filter.AppendLine($"timestamp<\"{DateTime.UtcNow.AddSeconds(-LogStreamingDelayInSeconds):O}\"");
                     if (_latestLogItem != null)
                     {
                         string dateTimeString = _latestLogItem.Entry.Timestamp is string ? _latestLogItem.Entry.Timestamp as string :
