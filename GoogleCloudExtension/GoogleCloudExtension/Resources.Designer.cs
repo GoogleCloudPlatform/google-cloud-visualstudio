@@ -2870,6 +2870,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ({0}:{1}).
+        /// </summary>
+        public static string LogsViewerSourceLinkCaptionFormat {
+            get {
+                return ResourceManager.GetString("LogsViewerSourceLinkCaptionFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Back to Stackdriver Logs Viewer.
         /// </summary>
         public static string LogsViewerTooltipBackButtonCaption {
@@ -2929,6 +2938,15 @@ namespace GoogleCloudExtension {
         public static string LogViewerAnyOtherSeverityLevelTip {
             get {
                 return ResourceManager.GetString("LogViewerAnyOtherSeverityLevelTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Auto Load Log Stream.
+        /// </summary>
+        public static string LogViewerAutoReloadButtonCaption {
+            get {
+                return ResourceManager.GetString("LogViewerAutoReloadButtonCaption", resourceCulture);
             }
         }
         
@@ -3118,6 +3136,15 @@ namespace GoogleCloudExtension {
         public static string LogViewerRequestProgressMessage {
             get {
                 return ResourceManager.GetString("LogViewerRequestProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Too many log items are loaded, please narrow down your search filter and try again..
+        /// </summary>
+        public static string LogViewerResultSetTooLargeMessage {
+            get {
+                return ResourceManager.GetString("LogViewerResultSetTooLargeMessage", resourceCulture);
             }
         }
         
