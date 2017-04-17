@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Newtonsoft.Json.Linq;
+using System.Linq;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -40,16 +41,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             JObject jsonObj = obj as JObject;
             foreach (var jItem in jsonObj)
             {
-                switch (jItem.Value.GetType().Name)
+                if (jItem.Value is JArray || jItem.Value is JObject)
                 {
-                    case nameof(JArray):
-                    case nameof(JObject):
-                        AddChildren(jItem.Key, jItem.Value);
-                        break;
-                    case nameof(JProperty):
-                    case nameof(JValue):
-                        AddChildren(jItem.Key, jItem.Value.ToString());
-                        break;
+                    AddChildren(jItem.Key, jItem.Value);
+                }
+                else
+                {
+                    AddChildren(jItem.Key, jItem.Value.ToString());
                 }
             }
         }
