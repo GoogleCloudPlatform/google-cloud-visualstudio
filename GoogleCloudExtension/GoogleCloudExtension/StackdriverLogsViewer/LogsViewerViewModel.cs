@@ -42,13 +42,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private static readonly LogSeverityItem[] s_logSeveritySelections =
             new LogSeverityItem[] {
+                new LogSeverityItem(LogSeverity.All, Resources.LogViewerLogLevelAllLabel),
                 new LogSeverityItem(LogSeverity.Debug, Resources.LogViewerLogLevelDebugLabel),
                 new LogSeverityItem(LogSeverity.Info, Resources.LogViewerLogLevelInfoLabel),
                 new LogSeverityItem(LogSeverity.Warning, Resources.LogViewerLogLevelWarningLabel),
                 new LogSeverityItem(LogSeverity.Error, Resources.LogViewerLogLevelErrorLabel),
                 new LogSeverityItem(LogSeverity.Critical, Resources.LogViewerLogLevelCriticalLabel),
-                new LogSeverityItem(LogSeverity.Emergency, Resources.LogViewerLogLevelEmergencyLabel),
-                new LogSeverityItem(LogSeverity.All, Resources.LogViewerLogLevelAllLabel)
+                new LogSeverityItem(LogSeverity.Emergency, Resources.LogViewerLogLevelEmergencyLabel)
             };
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private string _filter;
 
-        private LogSeverityItem _selectedLogSeverity = s_logSeveritySelections.LastOrDefault();
+        private LogSeverityItem _selectedLogSeverity = s_logSeveritySelections.FirstOrDefault();
         private string _simpleSearchText;
         private string _advacedFilterText;
         private bool _showAdvancedFilter;

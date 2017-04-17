@@ -3122,7 +3122,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancelling . . ..
+        ///   Looks up a localized string similar to Cancelling.
         /// </summary>
         public static string LogViewerRequestCancellingMessage {
             get {
@@ -3131,7 +3131,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Loading . . ..
+        ///   Looks up a localized string similar to Loading.
         /// </summary>
         public static string LogViewerRequestProgressMessage {
             get {

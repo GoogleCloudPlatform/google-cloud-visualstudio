@@ -20,6 +20,7 @@
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
                 <ResourceDictionary Source="./LogsViewerResources.xaml" />
                 <ResourceDictionary Source="../Controls/SearchMenuItemResources.xaml" />
+                <ResourceDictionary Source="../Controls/DotsProgressIndicatorResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <utils:VisibilityConverter x:Key="visibilityConverter" />
@@ -182,7 +183,7 @@
                         AcceptsReturn="True"
                         Text="{Binding AdvancedFilterText, UpdateSourceTrigger=PropertyChanged}"
                         MinLines="3" 
-                        MaxLines="30"
+                        MaxLines="6"
                         VerticalScrollBarVisibility="Auto" />
 
                     <Button 
@@ -506,10 +507,12 @@
                     Visibility="{Binding ShowRequestStatus, Converter={StaticResource visibilityConverter}}">
 
                     <TextBlock 
-                        Padding="8,5,8,5" 
-                        Foreground="Red" 
+                        Padding="8,5,3,5" 
                         Text="{Binding RequestStatusText}"
                         Style="{StaticResource CommonTextStyle}" />
+                    
+                    <controls:DotsProgressIndicator 
+                        Padding="0,5,8,5" />
 
                     <Button 
                         Margin="12,0,12,0" 

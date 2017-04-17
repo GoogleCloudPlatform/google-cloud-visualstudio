@@ -33,7 +33,8 @@
                             Content="{Binding Caption}" 
                             Command="{Binding OnItemSelectedCommand, 
                                 RelativeSource={RelativeSource  AncestorType={x:Type ItemsControl}}}"
-                            CommandParameter="{Binding}"/>
+                            CommandParameter="{Binding}"
+                            VerticalAlignment="Bottom"/>
 
                         <!-- Draw a highlight line on the selected time range.-->
                         <Line 
