@@ -2185,7 +2185,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Occurances.
+        ///   Looks up a localized string similar to Occurrences.
         /// </summary>
         public static string ErrorReportingErrorCountHeader {
             get {
@@ -2851,8 +2851,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The log entry was generated from assembly {0}, version {1}.
-        ///Open the project to navigate to the logger method location..
+        ///   Looks up a localized string similar to The log entry was generated from assembly {0}, version {1}.\r\nOpen the project to navigate to the logger method location..
         /// </summary>
         public static string LogsViewerPleaseOpenProjectPrompt {
             get {
@@ -2888,7 +2887,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click the value to show matching entries..
+        ///   Looks up a localized string similar to Click to show matching entries.
         /// </summary>
         public static string LogsViewerTreeNodeFilterTooltip {
             get {
@@ -3212,7 +3211,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to this time stamp..
+        ///   Looks up a localized string similar to this timestamp..
         /// </summary>
         public static string LogViewerTimeOrderPickLabelTail {
             get {

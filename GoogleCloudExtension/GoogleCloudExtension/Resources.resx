@@ -1368,7 +1368,7 @@
     <comment>Head part of the label for picking the list log time order.</comment>
   </data>
   <data name="LogViewerTimeOrderPickLabelTail" xml:space="preserve">
-    <value>this time stamp.</value>
+    <value>this timestamp.</value>
     <comment>Tail part of the label for picking the list log time order.</comment>
   </data>
   <data name="UiGoButtonCaption" xml:space="preserve">
@@ -1512,8 +1512,7 @@
     <comment>Prompt message format when failed to open a source file. {0} is the source file path.</comment>
   </data>
   <data name="LogsViewerPleaseOpenProjectPrompt" xml:space="preserve">
-    <value>The log entry was generated from assembly {0}, version {1}.
-Open the project to navigate to the logger method location.</value>
+    <value>The log entry was generated from assembly {0}, version {1}.\r\nOpen the project to navigate to the logger method location.</value>
     <comment>Prompt asking to open a project that is the log entry source project.  parameter {0} is assembly name, parameter {1} is assembly version.</comment>
   </data>
   <data name="uiDefaultPromptTitle" xml:space="preserve">
@@ -1545,7 +1544,7 @@ Open the project to navigate to the logger method location.</value>
     <comment>Message that asks to continue with mismatched version.</comment>
   </data>
   <data name="LogsViewerTreeNodeFilterTooltip" xml:space="preserve">
-    <value>Click the value to show matching entries.</value>
+    <value>Click to show matching entries</value>
     <comment>The tooltip to detail tree view node value link.</comment>
   </data>
   <data name="LogViewerLogItemDateTimeFormat" xml:space="preserve">
@@ -1761,7 +1760,7 @@ Open the project to navigate to the logger method location.</value>
     <comment>The longer header for affected users count.</comment>
   </data>
   <data name="ErrorReportingErrorCountHeader" xml:space="preserve">
-    <value>Occurances</value>
+    <value>Occurrences</value>
     <comment>The header for showing error count.</comment>
   </data>
   <data name="ErrorReportingToOverviewButtonCaption" xml:space="preserve">
@@ -2098,7 +2097,7 @@ Open the project to navigate to the logger method location.</value>
   </data>
   <data name="LogViewerResultSetTooLargeMessage" xml:space="preserve">
     <value>Too many log items are loaded, please narrow down your search filter and try again.</value>
-    <comment>Where there are too many log itmes added, the viewer becomes super slow. Remind the user to narrow down search filter.</comment>
+    <comment>Where there are too many log items added, the viewer becomes super slow. Remind the user to narrow down search filter.</comment>
   </data>
   <data name="LogsViewerSourceLinkCaptionFormat" xml:space="preserve">
     <value>({0}:{1})</value>
