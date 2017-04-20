@@ -20,6 +20,8 @@ namespace GoogleCloudExtension.Analytics
     internal class AnalyticsEvent
     {
         private const string VersionName = "version";
+        private const string VsVersionName = "vsversion";
+        private const string VsEditionName = "vsedition";
 
         public string Name { get; }
 
@@ -49,6 +51,8 @@ namespace GoogleCloudExtension.Analytics
             }
 
             result[VersionName] = GoogleCloudExtensionPackage.ApplicationVersion;
+            result[VsVersionName] = GoogleCloudExtensionPackage.VsVersion;
+            result[VsEditionName] = GoogleCloudExtensionPackage.VsEdition;
             return result;
         }
     }
