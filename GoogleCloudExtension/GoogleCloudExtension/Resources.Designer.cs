@@ -2905,7 +2905,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Version missmatch. \r\nThe current project {0} version is {1},\r\nOpen the project of version {2} to properly locate the logging writter location..
+        ///   Looks up a localized string similar to Version missmatch. \r\nThe current project {0} version is {1},\r\nOpen the project of version {2} to properly locate the logging writer location..
         /// </summary>
         public static string LogsViewerVersionMismatchPrompt {
             get {

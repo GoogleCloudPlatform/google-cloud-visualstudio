@@ -1536,7 +1536,7 @@
     <comment>The warning message when a log entry does not contain valid version information.</comment>
   </data>
   <data name="LogsViewerVersionMismatchPrompt" xml:space="preserve">
-    <value>Version missmatch. \r\nThe current project {0} version is {1},\r\nOpen the project of version {2} to properly locate the logging writter location.</value>
+    <value>Version missmatch. \r\nThe current project {0} version is {1},\r\nOpen the project of version {2} to properly locate the logging writer location.</value>
     <comment>Prompt when the opened project version differs than the version information of the log entry.</comment>
   </data>
   <data name="LogsViewerVersionMissmatchAskIgnoreMessage" xml:space="preserve">
