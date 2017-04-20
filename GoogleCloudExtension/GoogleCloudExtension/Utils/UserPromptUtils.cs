@@ -105,14 +105,14 @@ namespace GoogleCloudExtension.Utils
             if (ex is AggregateException)
             {
                 ErrorPrompt(
-                    Resources.ExceptionPromptTitle,
-                    String.Format(Resources.ExceptionPromptMessage, ex.InnerException.Message));
+                    title: Resources.ExceptionPromptTitle,
+                    message: String.Format(Resources.ExceptionPromptMessage, ex.InnerException.Message));
             }
             else
             {
                 ErrorPrompt(
-                    Resources.ExceptionPromptTitle,
-                    String.Format(Resources.ExceptionPromptMessage, ex.Message));
+                    title: Resources.ExceptionPromptTitle,
+                    message: String.Format(Resources.ExceptionPromptMessage, ex.Message));
             }
         }
     }
