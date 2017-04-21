@@ -197,12 +197,11 @@ namespace GoogleCloudExtension.GCloud
         /// <returns>The task to be completed when the operation finishes.</returns>
         public static async Task GenerateSourceContext(
             string sourcePath,
-            string outputPath,
-            Action<string> outputAction)
+            string outputPath)
         {
             var result = await RunCommandAsync(
                 $"debug source gen-repo-info-file --output-directory=\"{outputPath}\" --source-directory=\"{sourcePath}\"",
-                outputAction: outputAction);
+                outputAction: x => Debug.WriteLine(x));
             if (!result)
             {
                 Debug.WriteLine($"Could not find git repo at {sourcePath}");
