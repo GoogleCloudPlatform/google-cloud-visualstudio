@@ -187,6 +187,24 @@ namespace GoogleCloudExtension.GCloud
                 cloudSdkVersion: cloudSdkVersion);
         }
 
+        /// <summary>
+        /// Generates the source context information for the repo stored in <paramref name="sourcePath"/> and stores it
+        /// in <paramref name="outputPath"/>. If the <paramref name="sourcePath"/> does not refer to a supported CVS (currently git) then
+        /// nothing will be done.
+        /// </summary>
+        /// <param name="sourcePath">The directory for which to generate the source contenxt.</param>
+        /// <param name="outputPath">Where to store the source context files.</param>
+        /// <returns>The task to be completed when the operation finishes.</returns>
+        public static async Task GenerateSourceContext(string sourcePath, string outputPath)
+        {
+            var result = await RunCommandAsync(
+                $"debug source gen-repo-info-files --output-directory=\"{outputPath}\" --source-directory=\"{sourcePath}\"");
+            if (!result)
+            {
+                Debug.WriteLine($"Could not find git repo at {sourcePath}");
+            }
+        }
+
         private static async Task<IList<string>> GetInstalledComponentsAsync()
         {
             Debug.WriteLine("Reading list of components.");
