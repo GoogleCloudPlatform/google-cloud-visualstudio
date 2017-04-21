@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -49,7 +50,7 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="stageDirectory">The directory to which to publish.</param>
         /// <param name="pathsProvider">The provider for paths.</param>
         /// <param name="outputAction">The callback to call with output from the command.</param>
-        internal static Task<bool> CreateAppBundleAsync(
+        internal static async Task<bool> CreateAppBundleAsync(
             IParsedProject project,
             string stageDirectory,
             IToolsPathProvider pathsProvider,
@@ -65,8 +66,10 @@ namespace GoogleCloudExtension.Deployment
 
             Debug.WriteLine($"Using tools from {externalTools}");
             Debug.WriteLine($"Setting working directory to {workingDir}");
+            Directory.CreateDirectory(stageDirectory);
+            await GCloudWrapper.GenerateSourceContext(project.DirectoryPath, stageDirectory, outputAction);
             outputAction($"dotnet {arguments}");
-            return ProcessUtils.RunCommandAsync(
+            return await ProcessUtils.RunCommandAsync(
                 file: pathsProvider.GetDotnetPath(),
                 args: arguments,
                 workingDir: workingDir,

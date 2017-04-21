@@ -195,10 +195,14 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="sourcePath">The directory for which to generate the source contenxt.</param>
         /// <param name="outputPath">Where to store the source context files.</param>
         /// <returns>The task to be completed when the operation finishes.</returns>
-        public static async Task GenerateSourceContext(string sourcePath, string outputPath)
+        public static async Task GenerateSourceContext(
+            string sourcePath,
+            string outputPath,
+            Action<string> outputAction)
         {
             var result = await RunCommandAsync(
-                $"debug source gen-repo-info-files --output-directory=\"{outputPath}\" --source-directory=\"{sourcePath}\"");
+                $"debug source gen-repo-info-file --output-directory=\"{outputPath}\" --source-directory=\"{sourcePath}\"",
+                outputAction: outputAction);
             if (!result)
             {
                 Debug.WriteLine($"Could not find git repo at {sourcePath}");
