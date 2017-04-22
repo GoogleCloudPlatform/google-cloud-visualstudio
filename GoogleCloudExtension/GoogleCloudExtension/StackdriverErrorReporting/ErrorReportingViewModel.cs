@@ -172,7 +172,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 return;
             }
 
-            LoadAsync();
+             LoadAsync();
         }
 
         /// <summary>
