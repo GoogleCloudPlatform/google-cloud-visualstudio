@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// <summary>
     /// View model to <seealso cref="ErrorReportingDetailToolWindowControl"/> control.
     /// </summary>
-    public class ErrorReportingDetailViewModel : ViewModelBase
+    public class ErrorReportingDetailViewModel : ViewModelBase, IDisposable
     {
         private Lazy<StackdriverErrorReportingDataSource> _datasource;
         private bool _isGroupLoading;
@@ -161,6 +161,14 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             _datasource = new Lazy<StackdriverErrorReportingDataSource>(CreateDataSource);
             CredentialsStore.Default.Reset += (sender, e) => OnCurrentProjectChanged();
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => OnCurrentProjectChanged();
+        }
+
+        /// <summary>
+        /// Dispose the object, implement IDisposable.
+        /// </summary>
+        public void Dispose()
+        {
+            OnAutoReloadCommand.CanExecuteCommand = false;
         }
 
         /// <summary>

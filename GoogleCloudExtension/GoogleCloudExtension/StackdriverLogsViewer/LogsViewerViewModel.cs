@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// <summary>
     /// The view model for LogsViewerToolWindow.
     /// </summary>
-    public class LogsViewerViewModel : ViewModelBase
+    public class LogsViewerViewModel : ViewModelBase, IDisposable
     {
         private const string AdvancedHelpLink = "https://cloud.google.com/logging/docs/view/advanced_filters";
         private const int DefaultPageSize = 100;
@@ -371,6 +371,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             AdvancedFilterText = filter.ToString();
             Reload();
+        }
+
+        /// <summary>
+        /// Dispose the object, implement IDisposable.
+        /// </summary>
+        public void Dispose()
+        {
+            OnAutoReloadCommand.CanExecuteCommand = false;
         }
 
         /// <summary>

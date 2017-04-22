@@ -64,6 +64,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             CreateNewViewModel();
         }
 
+        protected override void OnClose()
+        {
+            base.OnClose();
+            System.Diagnostics.Debug.WriteLine($"LogsViewerToolWindow OnClose, {this.GetHashCode()}");
+            ViewModel?.Dispose();
+        }
+
         private void CreateNewViewModel()
         {
             var control = Content as LogsViewerToolWindowControl;
