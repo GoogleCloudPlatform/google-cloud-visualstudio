@@ -308,13 +308,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             LogItemCollection = new ListCollectionView(_logs);
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
             CancelRequestCommand = new ProtectedCommand(CancelRequest);
-            SimpleTextSearchCommand = new ProtectedCommand(() => Reload());
+            SimpleTextSearchCommand = new ProtectedCommand(() => ReloadAsync());
             FilterSwitchCommand = new ProtectedCommand(SwapFilter);
-            SubmitAdvancedFilterCommand = new ProtectedCommand(() => Reload());
+            SubmitAdvancedFilterCommand = new ProtectedCommand(() => ReloadAsync());
             AdvancedFilterHelpCommand = new ProtectedCommand(ShowAdvancedFilterHelp);
             DateTimePickerModel = new DateTimePickerViewModel(
                 TimeZoneInfo.Local, DateTime.UtcNow, isDescendingOrder: true);
-            DateTimePickerModel.DateTimeFilterChange += (sender, e) => Reload();
+            DateTimePickerModel.DateTimeFilterChange += (sender, e) => ReloadAsync();
             PropertyChanged += OnPropertyChanged;
             ResourceTypeSelector = new ResourceTypeMenuViewModel(_dataSource);
             ResourceTypeSelector.PropertyChanged += OnPropertyChanged;
@@ -370,7 +370,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
 
             AdvancedFilterText = filter.ToString();
-            Reload();
+            ReloadAsync();
         }
 
         /// <summary>
@@ -411,14 +411,14 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             // Show advanced filter.
             AdvancedFilterText = newFilter.ToString();
             ShowAdvancedFilter = true;
-            Reload();
+            ReloadAsync();
         }
 
         private void OnRefreshCommand()
         {
             DateTimePickerModel.IsDescendingOrder = true;
             DateTimePickerModel.DateTimeUtc = DateTime.UtcNow;
-            Reload();
+            ReloadAsync();
         }
 
         /// <summary>
@@ -584,7 +584,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Send request to get logs using new filters, orders etc.
         /// </summary>
-        private async Task Reload()
+        private async Task ReloadAsync()
         {
             Debug.WriteLine($"Entering Reload(), thread id {Thread.CurrentThread.ManagedThreadId}");
 
@@ -647,7 +647,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             ShowAdvancedFilter = !ShowAdvancedFilter;
             AdvancedFilterText = ShowAdvancedFilter ? ComposeSimpleFilters() : null;
             SimpleSearchText = null;
-            Reload();
+            ReloadAsync();
         }
 
         /// <summary>
@@ -726,7 +726,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             IList<string> logIdRequestResult = await _dataSource.Value.ListProjectLogNamesAsync(ResourceTypeSelector.SelectedTypeNmae, keys);
             LogIdList = new LogIdsList(logIdRequestResult);
             LogIdList.PropertyChanged += OnPropertyChanged;
-            await Reload();
+            await ReloadAsync();
         }
 
         private void OnPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -739,7 +739,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 case nameof(LogIdsList.SelectedLogId):
                     if (LogIdList != null)
                     {
-                        Reload();
+                        ReloadAsync();
                     }
                     break;
                 case nameof(ResourceTypeMenuViewModel.SelectedMenuItem):
@@ -747,7 +747,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                     RequestLogFiltersWrapperAsync(PopulateLogIds);
                     break;
                 case nameof(SelectedLogSeverity):
-                    Reload();
+                    ReloadAsync();
                     break;
                 default:
                     break;
@@ -828,15 +828,15 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             // If it is in advanced filter, just do reload. 
             if (ShowAdvancedFilter)
             {
-                Reload();
+                ReloadAsync();
                 return;
             }
 
             // TODO: auto scroll to last item in ascending order.
-            AppendNewerLogs();
+            AppendNewerLogsAysnc();
         }
 
-        private async Task AppendNewerLogs()
+        private async Task AppendNewerLogsAysnc()
         {
             bool createNewQuery = DateTimePickerModel.IsDescendingOrder || _nextPageToken == null;
             _cancellationTokenSource = new CancellationTokenSource();
