@@ -15,6 +15,7 @@
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
+using System.Diagnostics;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -45,6 +46,17 @@ namespace GoogleCloudExtension.Utils
         {
             s_outputWindowPane.Value.OutputString(str);
             s_outputWindowPane.Value.OutputString("\n");
+        }
+
+        /// <summary>
+        /// Outputs debug information to the Visual Studio output window as well as to the
+        /// debug output.
+        /// </summary>
+        [Conditional("DEBUG")]
+        public static void OutputDebugLine(string str)
+        {
+            OutputLine(str);
+            Debug.WriteLine(str);
         }
 
         /// <summary>

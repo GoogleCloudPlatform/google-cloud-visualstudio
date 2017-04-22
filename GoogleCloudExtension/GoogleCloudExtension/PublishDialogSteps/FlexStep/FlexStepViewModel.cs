@@ -17,6 +17,7 @@ using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
+using GoogleCloudExtension.VsVersion;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using System;
@@ -129,9 +130,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 {
                     var startDeploymentTime = DateTime.Now;
                     result = await AppEngineFlexDeployment.PublishProjectAsync(
-                        project.FullPath,
+                        project,
                         options,
                         progress,
+                        VsVersionUtils.ToolsPathProvider,
                         GcpOutputWindow.OutputLine);
                     deploymentDuration = DateTime.Now - startDeploymentTime;
                 }

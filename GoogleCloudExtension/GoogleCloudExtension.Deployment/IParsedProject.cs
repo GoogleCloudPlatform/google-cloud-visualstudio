@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,26 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GoogleCloudExtension.SolutionUtils
+namespace GoogleCloudExtension.Deployment
 {
-    /// <summary>
-    /// The type of projects supported.
-    /// </summary>
-    public enum KnownProjectTypes
+    public interface IParsedProject
     {
         /// <summary>
-        /// The unknown project.
+        /// The name of the project.
         /// </summary>
-        None,
+        string Name { get; }
 
         /// <summary>
-        /// An ASP.NET 4.x app, a traditional web app.
+        /// The full path to the project, including the project file.
         /// </summary>
-        WebApplication,
+        string FullPath { get; }
 
         /// <summary>
-        /// An ASP.NET Core app, new kind of web app.
+        /// The full path to the directory that contains the project file.
         /// </summary>
-        NetCoreWebApplication,
+        string DirectoryPath { get; }
+
+        /// <summary>
+        /// The type of the project.
+        /// </summary>
+        KnownProjectTypes ProjectType { get; }
     }
 }
