@@ -2104,7 +2104,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There is no data to show..
+        ///   Looks up a localized string similar to There is no data to show.
         /// </summary>
         public static string ErrorReportingBarChartNoDataMesssage {
             get {
@@ -2113,7 +2113,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error happened {0} time in {1} {2} Starting from {3}..
+        ///   Looks up a localized string similar to Error occurred {0} time in {1} {2} starting on {3}.
         /// </summary>
         public static string ErrorReportingBarchartTooltipFormat {
             get {
@@ -2122,7 +2122,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error happened {0} times in {1} {2} Starting from {3}..
+        ///   Looks up a localized string similar to Error occurred {0} times in {1} {2} starting on {3}.
         /// </summary>
         public static string ErrorReportingBarchartTooltipPluralFormat {
             get {
@@ -2140,7 +2140,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to retrieve data from cloud server. Please try later..
+        ///   Looks up a localized string similar to Failed to retrieve data from cloud server. Please try later.
         /// </summary>
         public static string ErrorReportingDataSourceGenericErrorMessage {
             get {
@@ -2212,7 +2212,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go back to Error Reporting window.
+        ///   Looks up a localized string similar to Error Reporting.
         /// </summary>
         public static string ErrorReportingGobacktoErrorReportingLinkCaption {
             get {
@@ -2239,7 +2239,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Go to overview window and select an error group.
+        ///   Looks up a localized string similar to No error group selected. Go to the overview window and select an error group..
         /// </summary>
         public static string ErrorReportingNoErrorGroupSelectedMessage {
             get {
@@ -2248,7 +2248,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Parsed Stack.
+        ///   Looks up a localized string similar to Parsed stack.
         /// </summary>
         public static string ErrorReportingParsedStackTabHeader {
             get {
@@ -2257,7 +2257,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Raw Stack.
+        ///   Looks up a localized string similar to Raw stack.
         /// </summary>
         public static string ErrorReportingRawStackTabHeader {
             get {
@@ -2266,7 +2266,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Recent Samples.
+        ///   Looks up a localized string similar to Recent samples.
         /// </summary>
         public static string ErrorReportingRecentSampleLabel {
             get {
@@ -2878,7 +2878,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Back to Stackdriver Logs Viewer.
+        ///   Looks up a localized string similar to Stackdriver Logs Viewer.
         /// </summary>
         public static string LogsViewerTooltipBackButtonCaption {
             get {
@@ -2905,7 +2905,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Version missmatch. \r\nThe current project {0} version is {1},\r\nOpen the project of version {2} to properly locate the logging writter location..
+        ///   Looks up a localized string similar to The current project {0} version is {1},\r\nOpen the project of version {2} to properly locate the logging writer location..
         /// </summary>
         public static string LogsViewerVersionMismatchPrompt {
             get {
@@ -2914,7 +2914,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to &quot;Do you want to continue anyway?&quot;.
+        ///   Looks up a localized string similar to &quot;Do you want to continue with current version?&quot;.
         /// </summary>
         public static string LogsViewerVersionMissmatchAskIgnoreMessage {
             get {
@@ -2941,7 +2941,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Auto Load Log Stream.
+        ///   Looks up a localized string similar to Auto load log stream.
         /// </summary>
         public static string LogViewerAutoReloadButtonCaption {
             get {
@@ -2950,7 +2950,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click to hide all log items detail..
+        ///   Looks up a localized string similar to Click to hide all log item details..
         /// </summary>
         public static string LogViewerCollapseAllTip {
             get {
@@ -2968,7 +2968,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Jump To Time.
+        ///   Looks up a localized string similar to Jump to time.
         /// </summary>
         public static string LogViewerDateTimePickerLabel {
             get {
@@ -3004,7 +3004,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click to see all log items detail..
+        ///   Looks up a localized string similar to Click to see all log item details..
         /// </summary>
         public static string LogViewerExpandAllTip {
             get {
@@ -3049,7 +3049,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to All Log Levels.
+        ///   Looks up a localized string similar to All log levels.
         /// </summary>
         public static string LogViewerLogLevelAllLabel {
             get {
@@ -3175,7 +3175,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To Simple Filters.
+        ///   Looks up a localized string similar to View simple filters.
         /// </summary>
         public static string LogViewerSwitchToSimpleFilterCaption {
             get {
@@ -4057,7 +4057,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select the file from the list.
+        ///   Looks up a localized string similar to Select File.
         /// </summary>
         public static string SourceVersionPickFileDialogCaption {
             get {
@@ -4084,7 +4084,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to locate file {0} of commit sha {1} at local repo {2} ..
+        ///   Looks up a localized string similar to Unable to locate file {0} of commit sha {1} at local repo {2} .
         /// </summary>
         public static string SourceVersionUtilsFailedToLocateFileInRepoMessage {
             get {
@@ -4093,7 +4093,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Does not find the source file in current solution.\r\n{0}.
+        ///   Looks up a localized string similar to Source file {0} not found in this solution. Select another solution..
         /// </summary>
         public static string SourceVersionUtilsFileNotFoundMessage {
             get {
@@ -4107,6 +4107,24 @@ namespace GoogleCloudExtension {
         public static string SourceVersionUtilsOpenProjectFromLocalRepoPrompt {
             get {
                 return ResourceManager.GetString("SourceVersionUtilsOpenProjectFromLocalRepoPrompt", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to find source file.
+        /// </summary>
+        public static string SourceVersionUtilsUnalbeFindFileTitle {
+            get {
+                return ResourceManager.GetString("SourceVersionUtilsUnalbeFindFileTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Versions don&apos;t match.
+        /// </summary>
+        public static string SourceVersionUtilsVersionMismatchTitle {
+            get {
+                return ResourceManager.GetString("SourceVersionUtilsVersionMismatchTitle", resourceCulture);
             }
         }
         
