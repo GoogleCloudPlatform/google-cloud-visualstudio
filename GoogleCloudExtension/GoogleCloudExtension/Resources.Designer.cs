@@ -2104,7 +2104,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There is no data to show..
+        ///   Looks up a localized string similar to There is no data to show.
         /// </summary>
         public static string ErrorReportingBarChartNoDataMesssage {
             get {
@@ -2113,7 +2113,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error occurred {0} time in {1} {2} starting on {3}..
+        ///   Looks up a localized string similar to Error occurred {0} time in {1} {2} starting on {3}.
         /// </summary>
         public static string ErrorReportingBarchartTooltipFormat {
             get {
@@ -2122,7 +2122,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Error occurred {0} times in {1} {2} starting on {3}..
+        ///   Looks up a localized string similar to Error occurred {0} times in {1} {2} starting on {3}.
         /// </summary>
         public static string ErrorReportingBarchartTooltipPluralFormat {
             get {
@@ -2140,7 +2140,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to retrieve data from cloud server. Please try later..
+        ///   Looks up a localized string similar to Failed to retrieve data from cloud server. Please try later.
         /// </summary>
         public static string ErrorReportingDataSourceGenericErrorMessage {
             get {
@@ -4084,7 +4084,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to locate file {0} of commit sha {1} at local repo {2} ..
+        ///   Looks up a localized string similar to Unable to locate file {0} of commit sha {1} at local repo {2} .
         /// </summary>
         public static string SourceVersionUtilsFailedToLocateFileInRepoMessage {
             get {
