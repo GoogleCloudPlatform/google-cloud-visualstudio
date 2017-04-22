@@ -102,7 +102,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         {
             UserPromptUtils.ErrorPrompt(
                 message: String.Format(Resources.SourceVersionUtilsFileNotFoundMessage, filePath),
-                title: Resources.uiDefaultPromptTitle);
+                title: Resources.SourceVersionUtilsUnalbeFindFileTitle);
         }
 
         /// <summary>
@@ -252,7 +252,7 @@ namespace GoogleCloudExtension.SourceBrowsing
 
                 if (UserPromptUtils.ActionPrompt(
                     prompt: prompt,
-                    title: Resources.uiDefaultPromptTitle,
+                    title: Resources.SourceVersionUtilsVersionMismatchTitle,
                     message: Resources.LogsViewerVersionMissmatchAskIgnoreMessage))
                 {
                     StackdriverLogsViewerStates.Current.SetContinueWithVersionMismatchAssemblyFlag();
