@@ -1540,7 +1540,7 @@
     <comment>Prompt when the opened project version differs than the version information of the log entry.</comment>
   </data>
   <data name="LogsViewerVersionMissmatchAskIgnoreMessage" xml:space="preserve">
-    <value>"Do you want to continue with current version?"</value>
+    <value>Do you want to continue with current version?</value>
     <comment>Message that asks to continue with mismatched version.</comment>
   </data>
   <data name="LogsViewerTreeNodeFilterTooltip" xml:space="preserve">
