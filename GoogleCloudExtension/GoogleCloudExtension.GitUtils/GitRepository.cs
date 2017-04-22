@@ -93,13 +93,7 @@ namespace GoogleCloudExtension.GitUtils
             Root = gitLocalRoot;
         }
 
-        private static string GetGitPath()
-        {
-            return Environment.GetEnvironmentVariable("PATH")
-                .Split(';')
-                .Select(x => Path.Combine(x, GitExecutable))
-                .FirstOrDefault(x => File.Exists(x));
-        }
+        private static string GetGitPath() => PathUtils.GetCommandPathFromPATH(GitExecutable);
 
         /// <summary>
         /// Run a git command and return the output or error output.

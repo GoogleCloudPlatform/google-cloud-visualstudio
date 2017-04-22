@@ -46,10 +46,7 @@ namespace GoogleCloudExtension.GCloud
         /// variable until it finds it. With this we assume that in order to run the extension gcloud.cmd is
         /// in the PATH.
         /// </summary>
-        public static string GetGCloudPath() =>
-            Environment.GetEnvironmentVariable("PATH")
-                .Split(';')
-                .FirstOrDefault(x => File.Exists(Path.Combine(x, "gcloud.cmd")));
+        public static string GetGCloudPath() => PathUtils.GetCommandPathFromPATH("gcloud.cmd");
 
         /// <summary>
         /// Resets, or creates, the password for the given <paramref name="userName"/> in the given instance.
