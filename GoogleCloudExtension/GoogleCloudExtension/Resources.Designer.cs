@@ -2905,7 +2905,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to The current project {0} version is {1},\r\nOpen the project of version {2} to properly locate the logging writer location..
+        ///   Looks up a localized string similar to The current project {0} assembly version is {1},\r\nOpen the project of assembly version {2} to properly locate the logging writer location..
         /// </summary>
         public static string LogsViewerVersionMismatchPrompt {
             get {
@@ -2914,7 +2914,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Do you want to continue with current version?.
+        ///   Looks up a localized string similar to Do you want to continue with the current assembly version?.
         /// </summary>
         public static string LogsViewerVersionMissmatchAskIgnoreMessage {
             get {
