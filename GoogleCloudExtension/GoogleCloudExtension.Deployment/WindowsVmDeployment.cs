@@ -121,7 +121,7 @@ namespace GoogleCloudExtension.Deployment
         /// This method stages the application into the <paramref name="stageDirectory"/> by invoking the WebPublish target
         /// present in all Web projects. It publishes to the staging directory by using the FileSystem method.
         /// </summary>
-        private static Task<bool> CreateAppBundleAsync(
+        private static async Task<bool> CreateAppBundleAsync(
             IParsedProject project,
             string stageDirectory,
             IToolsPathProvider toolsPathProvider,
@@ -136,7 +136,8 @@ namespace GoogleCloudExtension.Deployment
                 $@"/p:publishUrl=""{stageDirectory}""";
 
             outputAction($"msbuild.exe {arguments}");
-            return ProcessUtils.RunCommandAsync(toolsPathProvider.GetMsbuildPath(), arguments, (o, e) => outputAction(e.Line));
+            await GCloudWrapper.GenerateSourceContext(project.DirectoryPath, stageDirectory);
+            return await ProcessUtils.RunCommandAsync(toolsPathProvider.GetMsbuildPath(), arguments, (o, e) => outputAction(e.Line));
         }
     }
 }
