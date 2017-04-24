@@ -1536,12 +1536,12 @@
     <comment>The warning message when a log entry does not contain valid version information.</comment>
   </data>
   <data name="LogsViewerVersionMismatchPrompt" xml:space="preserve">
-    <value>The current project {0} version is {1},\r\nOpen the project of version {2} to properly locate the logging writer location.</value>
-    <comment>Prompt when the opened project version differs than the version information of the log entry.</comment>
+    <value>The current project {0} assembly version is {1},\r\nOpen the project of assembly version {2} to properly locate the logging writer location.</value>
+    <comment>Prompt when the opened project version differs than the version information of the log entry. {0} is the project name, {1} is the assembly name, {2} is the assembly version of the log entry.</comment>
   </data>
   <data name="LogsViewerVersionMissmatchAskIgnoreMessage" xml:space="preserve">
-    <value>Do you want to continue with current version?</value>
-    <comment>Message that asks to continue with mismatched version.</comment>
+    <value>Do you want to continue with the current assembly version?</value>
+    <comment>Message that asks to continue with mismatched assembly version.</comment>
   </data>
   <data name="LogsViewerTreeNodeFilterTooltip" xml:space="preserve">
     <value>Click to show matching entries</value>
