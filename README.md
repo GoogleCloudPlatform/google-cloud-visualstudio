@@ -7,8 +7,6 @@ Cloud Platform.
 To build and install the extension you will need to have Visual Studio 2015, with Update 3 as the recommended update level. You will need the the Visual Studio SDK feature installed to be able to develop and build the extension. After that just open the .sln file and build it, that is really it. If you get an error during the restoration of the NuGet packages ensure that you have enabled nuget.org as a
 source in the NuGet Package Manager.
 
-<<<<<<< HEAD
-=======
 ## Support for Visual Studio 2017
 To support Visual Studio 2017 and Visual Studio 2015 we are going to buid the extension on Visual Studio 2015.
 
@@ -28,7 +26,6 @@ instance. Use this tool after a build and before you press F5 to debug the exten
 Because we work exclusively on VS 2015, to debug the extension to VS 2017 you need to just install the extension to it and
 debug the shell as it runs.
 
->>>>>>> master
 ## Dependencies on Google Cloud SDK
 The Visual Studio extension depends on the Cloud SDK for certain functionality, make sure that you have at least version 146.0.0 of the Cloud SDK installed when running the extension.
 
