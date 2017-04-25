@@ -166,6 +166,7 @@
     <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
     <Compile Include="Controls\AutoReloadButton.cs" />
+    <Compile Include="Controls\DotsProgressIndicator.cs" />
     <Compile Include="Controls\IconButton.cs" />
     <Compile Include="Controls\ImageToggleButton.cs" />
     <Compile Include="Controls\LabelWithHelp.cs" />
@@ -208,6 +209,11 @@
     <Compile Include="OauthLoginFlow\OauthLoginFlowWindowContent.xaml.cs">
       <DependentUpon>OauthLoginFlowWindowContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PickFileDialog\PickFileWindow.cs" />
+    <Compile Include="PickFileDialog\PickFileWindowContent.xaml.cs">
+      <DependentUpon>PickFileWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PickFileDialog\PickFileWindowViewModel.cs" />
     <Compile Include="Projects\DotNet4\CsprojProject.cs" />
     <Compile Include="Projects\DotNetCore\CsprojProject.cs" />
     <Compile Include="Projects\DotNetCore\JsonProject.cs" />
@@ -264,6 +270,8 @@
     <Compile Include="SolutionUtils\ProjectHelper.cs" />
     <Compile Include="SolutionUtils\ProjectSourceFile.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
+    <Compile Include="SourceBrowsing\FileNotFoundException.cs" />
+    <Compile Include="SourceBrowsing\OpenGitFile.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficWindow.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficModel.cs" />
     <Compile Include="SplitTrafficManagement\SplitTrafficViewModel.cs" />
@@ -349,7 +357,6 @@
     </Compile>
     <Compile Include="TitleBar\TitleBarViewModel.cs" />
     <Compile Include="Utils\DataGridUtils.cs" />
-    <Compile Include="Utils\DateTimeUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
     <Compile Include="Utils\PackageUtils.cs" />
     <Compile Include="Utils\GCloudWrapperUtils.cs" />
@@ -774,6 +781,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Controls\DotsProgressIndicatorResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Controls\TimeBoxResources.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -805,6 +816,10 @@
     <Page Include="LinkPrompt\LinkPromptDialogWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PickFileDialog\PickFileWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="PublishDialogSteps\ChoiceStep\ChoiceStepContent.xaml">
       <SubType>Designer</SubType>
@@ -937,6 +952,10 @@
     <ProjectReference Include="..\GoogleCloudExtension.GCloud\GoogleCloudExtension.GCloud.csproj">
       <Project>{95efac7e-4f6e-46f0-bcc8-90ee1487e1e1}</Project>
       <Name>GoogleCloudExtension.GCloud</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.GitUtils\GoogleCloudExtension.GitUtils.csproj">
+      <Project>{66b55aaf-8237-45cf-8462-6359318795ab}</Project>
+      <Name>GoogleCloudExtension.GitUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.OAuth\GoogleCloudExtension.OAuth.csproj">
       <Project>{ad8b672d-7f0a-4c7f-9774-a9458a99a061}</Project>
