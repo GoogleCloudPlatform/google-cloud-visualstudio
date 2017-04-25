@@ -105,7 +105,7 @@ namespace GoogleCloudExtension.Utils
             {
                 Debug.WriteLine($"Failed to call SetForegroundWindow.");
             }
-	}
+        }
 
         /// <summary>
         /// Executes the "File.OpenProject" command in the shell.

@@ -1,4 +1,4 @@
-// Copyright 2016 Google Inc. All Rights Reserved.
+// Copyright 2017 Google Inc. All Rights Reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -24,12 +24,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     {
         private readonly Subscription _subscription;
 
-        public SubscriptionItem(Subscription subscription) :
-            base(Resources.CloudExplorerPubSubSubscriptionCategory, subscription.Name)
-        {
-            _subscription = subscription;
-        }
-
         /// <summary>
         /// The simple name of the subscription.
         /// </summary>
@@ -39,7 +33,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         public string Name => PubsubDataSource.GetPathLeaf(_subscription.Name);
 
         /// <summary>
-        /// The full name, including topic, of the subscription.
+        /// The full name of the subscription: projects/projectId/subscriptions/subscriptionName.
         /// </summary>
         [LocalizedCategory(nameof(Resources.CloudExplorerPubSubSubscriptionCategory))]
         [LocalizedDescription(nameof(Resources.CloudExplorerPubSubSubscriptionFullNameDescription))]
@@ -53,5 +47,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         [LocalizedDescription(nameof(Resources.CloudExplorerPubSubSubscriptionTopicDescription))]
         [LocalizedDisplayName(nameof(Resources.CloudExplorerPubSubSubscriptionTopicDisplayName))]
         public string Topic => _subscription.Topic;
+
+        public SubscriptionItem(Subscription subscription) :
+            base(Resources.CloudExplorerPubSubSubscriptionCategory, subscription.Name)
+        {
+            _subscription = subscription;
+        }
     }
 }

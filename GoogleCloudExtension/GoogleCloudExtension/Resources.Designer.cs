@@ -3743,7 +3743,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Acknowledgement Deadline (seconds):.
+        ///   Looks up a localized string similar to _Acknowledgement deadline (seconds):.
         /// </summary>
         public static string NewSubscriptionWindowAckDeadlineLabel {
             get {
@@ -3761,7 +3761,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delivery Type:.
+        ///   Looks up a localized string similar to Delivery type:.
         /// </summary>
         public static string NewSubscriptionWindowDeliveryType {
             get {
@@ -3815,7 +3815,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Topic _Name:.
+        ///   Looks up a localized string similar to Topic _name:.
         /// </summary>
         public static string NewTopicWindowNameLabel {
             get {
@@ -4130,7 +4130,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete subscription.
+        ///   Looks up a localized string similar to Delete Subscription.
         /// </summary>
         public static string PubSubDeleteSubscriptionWindowHeader {
             get {
@@ -4166,7 +4166,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Delete topic.
+        ///   Looks up a localized string similar to Delete Topic.
         /// </summary>
         public static string PubSubDeleteTopicWindowHeader {
             get {
@@ -4202,7 +4202,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} is not a valid Subscription Name.
+        ///   Looks up a localized string similar to {0} is not a valid subscription name.
         /// </summary>
         public static string PubSubNewSubscriptionNameInvalidMessage {
             get {
@@ -4238,7 +4238,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {0} is not a valid Topic Name.
+        ///   Looks up a localized string similar to {0} is not a valid topic name.
         /// </summary>
         public static string PubSubNewTopicNameInvalidMessage {
             get {
@@ -4252,6 +4252,15 @@ namespace GoogleCloudExtension {
         public static string PubSubNewTopicNameInvalidTitle {
             get {
                 return ResourceManager.GetString("PubSubNewTopicNameInvalidTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Orphaned Subscriptions.
+        /// </summary>
+        public static string PubSubOrphanedSubscriptionsItemName {
+            get {
+                return ResourceManager.GetString("PubSubOrphanedSubscriptionsItemName", resourceCulture);
             }
         }
         
@@ -4625,7 +4634,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Ok.
+        ///   Looks up a localized string similar to OK.
         /// </summary>
         public static string UiOkButtonCaption {
             get {
@@ -4769,7 +4778,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to May not have more than 255 characters..
+        ///   Looks up a localized string similar to Can not have more than 255 characters..
         /// </summary>
         public static string Validation255CharactersMessage {
             get {
@@ -4778,7 +4787,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to May not start with &quot;goog&quot;..
+        ///   Looks up a localized string similar to Can not start with &quot;goog&quot;..
         /// </summary>
         public static string ValidationDisallowStartGoogMessage {
             get {
@@ -4787,7 +4796,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to May only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) or percent signs (%)..
+        ///   Looks up a localized string similar to Can only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) and percent signs (%)..
         /// </summary>
         public static string ValidationPubSubNameCharacterClassMessage {
             get {

@@ -102,6 +102,16 @@ namespace GoogleCloudExtension
         public static string ApplicationVersion => s_appVersion.Value;
 
         /// <summary>
+        /// The version of Visual Studio currently running.
+        /// </summary>
+        public static string VsVersion { get; private set; }
+
+        /// <summary>
+        /// The edition of Visual Studio currently running.
+        /// </summary>
+        public static string VsEdition { get; private set; }
+
+        /// <summary>
         /// Returns the versioned application name in the right format for analytics, etc...
         /// </summary>
         public static string VersionedApplicationName => $"{ApplicationName}/{ApplicationVersion}";
@@ -219,6 +229,8 @@ namespace GoogleCloudExtension
             ActivityLogUtils.LogInfo("Starting Google Cloud Tools.");
 
             _dteInstance = (DTE)Package.GetGlobalService(typeof(DTE));
+            VsVersion = _dteInstance.Version;
+            VsEdition = _dteInstance.Edition;
 
             // Update the installation status of the package.
             CheckInstallationStatus();

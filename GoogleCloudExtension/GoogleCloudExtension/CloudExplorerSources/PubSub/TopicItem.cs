@@ -1,4 +1,4 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
 // 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,15 +20,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     /// <summary>
     /// An item that describes a topic.
     /// </summary>
-    internal class TopicItem : PropertyWindowItemBase
+    internal class TopicItem : PropertyWindowItemBase, ITopicItem
     {
         private readonly Topic _topic;
-
-        public TopicItem(Topic topic) :
-            base(Resources.CloudExplorerPubSubTopicCategory, PubsubDataSource.GetPathLeaf(topic.Name))
-        {
-            _topic = topic;
-        }
 
         /// <summary>
         /// The simple name of the topic.
@@ -36,15 +30,20 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         [LocalizedCategory(nameof(Resources.CloudExplorerPubSubTopicCategory))]
         [LocalizedDescription(nameof(Resources.CloudExplorerPubSubTopicNameDescription))]
         [LocalizedDisplayName(nameof(Resources.CloudExplorerPubSubTopicNameDisplayName))]
-
-        public string Name => PubsubDataSource.GetPathLeaf(_topic.Name);
+        public string DisplayName => PubsubDataSource.GetPathLeaf(_topic.Name);
 
         /// <summary>
-        /// The full name, including project id, of the topic.
+        /// The full name of the topic: projects/projectId/topics/topicName
         /// </summary>
         [LocalizedCategory(nameof(Resources.CloudExplorerPubSubTopicCategory))]
         [LocalizedDescription(nameof(Resources.CloudExplorerPubSubTopicFullNameDescription))]
         [LocalizedDisplayName(nameof(Resources.CloudExplorerPubSubTopicFullNameDisplayName))]
         public string FullName => _topic.Name;
+
+        public TopicItem(Topic topic) :
+            base(Resources.CloudExplorerPubSubTopicCategory, PubsubDataSource.GetPathLeaf(topic.Name))
+        {
+            _topic = topic;
+        }
     }
 }

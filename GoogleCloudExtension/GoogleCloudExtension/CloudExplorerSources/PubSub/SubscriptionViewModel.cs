@@ -34,13 +34,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         private static readonly Lazy<ImageSource> s_subscriptionIcon =
             new Lazy<ImageSource>(() => ResourceUtils.LoadImage(IconResourcePath));
 
-        private readonly TopicViewModel _owner;
+        private readonly TopicViewModelBase _owner;
         private readonly SubscriptionItem _subscriptionItem;
-
-        /// <summary>
-        /// The item this tree node represents.
-        /// </summary>
-        public object Item => _subscriptionItem;
 
         /// <summary>
         /// Returns the context in which this view model is working.
@@ -52,9 +47,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// </summary>
         public PubsubDataSource DataSource => _owner.DataSource;
 
+        /// <summary>
+        /// The item this tree node represents.
+        /// </summary>
+        public object Item => _subscriptionItem;
+
         public event EventHandler ItemChanged;
 
-        public SubscriptionViewModel(TopicViewModel owner, Subscription subscription)
+        public SubscriptionViewModel(TopicViewModelBase owner, Subscription subscription)
         {
             _owner = owner;
             _subscriptionItem = new SubscriptionItem(subscription);
@@ -95,7 +95,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                         actionCaption: Resources.UiDeleteButtonCaption);
                     if (doDelete)
                     {
-                        await DataSource.DeleteSubscriptionAsync(_subscriptionItem.Name);
+                        await DataSource.DeleteSubscriptionAsync(_subscriptionItem.FullName);
                     }
                 }
                 catch (DataSourceException e)

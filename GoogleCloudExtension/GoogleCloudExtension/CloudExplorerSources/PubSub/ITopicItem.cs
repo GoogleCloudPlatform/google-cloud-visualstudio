@@ -1,37 +1,31 @@
-﻿// Copyright 2016 Google Inc. All Rights Reserved.
-//
+﻿// Copyright 2017 Google Inc. All Rights Reserved.
+// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+// 
 //     http://www.apache.org/licenses/LICENSE-2.0
-//
+// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-namespace GoogleCloudExtension.SolutionUtils
+namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 {
     /// <summary>
-    /// The type of projects supported.
+    /// Inteface for topic like items.
     /// </summary>
-    public enum KnownProjectTypes
+    internal interface ITopicItem
     {
         /// <summary>
-        /// The unknown project.
+        /// The display name of the topic.
         /// </summary>
-        None,
+        string DisplayName { get; }
 
         /// <summary>
-        /// An ASP.NET 4.x app, a traditional web app.
+        /// The name of the topic to match against subscription topic names.
         /// </summary>
-        WebApplication,
-
-        /// <summary>
-        /// An ASP.NET Core app, new kind of web app.
-        /// </summary>
-        NetCoreWebApplication,
+        string FullName { get; }
     }
 }
