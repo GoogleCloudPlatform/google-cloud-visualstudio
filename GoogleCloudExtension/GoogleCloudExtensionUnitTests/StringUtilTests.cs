@@ -58,5 +58,6 @@ namespace GoogleCloudExtensionUnitTests
             Assert.AreEqual(-1, LastNonSpaceIndex(null));
             Assert.AreEqual(8, LastNonSpaceIndex("   uu  pp  "));
         }
+
     }
 }

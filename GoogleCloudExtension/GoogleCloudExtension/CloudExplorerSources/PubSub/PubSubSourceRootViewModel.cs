@@ -21,6 +21,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
@@ -36,24 +37,40 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             Caption = Resources.CloudExplorerPubSubLoadingTopicsCaption,
             IsLoading = true
         };
+
         private static readonly TreeLeaf s_noItemsPlacehoder = new TreeLeaf
         {
             Caption = Resources.CloudExplorerPubSubNoTopicsFoundCaption,
             IsWarning = true
         };
+
         private static readonly TreeLeaf s_errorPlaceholder = new TreeLeaf
         {
             Caption = Resources.CloudExplorerPubSubListTopicsErrorCaption,
             IsError = true
         };
 
+        private static readonly string[] s_blacklistedTopics =
+        {
+            "asia.gcr.io%2F{0}",
+            "eu.gcr.io%2F{0}",
+            "gcr.io%2F{0}",
+            "us.gcr.io%2F{0}",
+            "cloud-builds",
+            "repository-changes.default"
+        };
+
         private Lazy<PubsubDataSource> _dataSource = new Lazy<PubsubDataSource>(CreateDataSource);
+
         public PubsubDataSource DataSource => _dataSource.Value;
 
         public override string RootCaption => Resources.CloudExplorerPubSubRootCaption;
         public override TreeLeaf ErrorPlaceholder => s_errorPlaceholder;
         public override TreeLeaf NoItemsPlaceholder => s_noItemsPlacehoder;
         public override TreeLeaf LoadingPlaceholder => s_loadingPlaceholder;
+
+        private string CurrentProjectId => Context.CurrentProject.ProjectId;
+        private string BlackListPrefix => $"projects/{CurrentProjectId}/topics/";
 
         public override void Initialize(ICloudSourceContext context)
         {
@@ -97,15 +114,44 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 IEnumerable<Topic> topics = await DataSource.GetTopicListAsync();
                 IList<Subscription> subscriptions = await subscriptionsTask;
                 Children.Clear();
-                foreach (Topic topic in topics)
+                foreach (Topic topic in topics.Where(IsIncludedTopic))
                 {
                     Children.Add(new TopicViewModel(this, topic, subscriptions));
                 }
+                if (subscriptions.Any(s => s.Topic.Equals(OrphanedSubscriptionsItem.DeletedTopicName)))
+                {
+                    Children.Add(new OrphanedSubscriptionsViewModel(this, subscriptions));
+                }
+
             }
             catch (DataSourceException e)
             {
                 throw new CloudExplorerSourceException(e.Message, e);
             }
+        }
+
+        /// <summary>
+        /// Checks the topic against a blacklist of topics not to display.
+        /// </summary>
+        /// <param name="topic">The topic to check.</param>
+        /// <returns>True if the topic is not blacklisted.</returns>
+        private bool IsIncludedTopic(Topic topic)
+        {
+            return !s_blacklistedTopics.Select(FormatBlacklistedTopics).Any(topic.Name.Equals);
+        }
+
+        /// <summary>
+        /// Gets the full formatted name of a blacklisted topic given a blacklisted topic format string.
+        /// </summary>
+        /// <param name="blacklistedTopicString">
+        /// A format string of a blacklisted topic. Needs a project id as input.
+        /// </param>
+        /// <returns>
+        /// The full name of a blacklisted topic, including prefix and formatted with the project id.
+        /// </returns>
+        private string FormatBlacklistedTopics(string blacklistedTopicString)
+        {
+            return BlackListPrefix + string.Format(blacklistedTopicString, CurrentProjectId);
         }
 
         /// <summary>
@@ -131,7 +177,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         /// </summary>
         private void OnOpenCloudConsoleCommand()
         {
-            var url = $"https://console.cloud.google.com/cloudpubsub?project={Context.CurrentProject.ProjectId}";
+            var url = $"https://console.cloud.google.com/cloudpubsub?project={CurrentProjectId}";
             Process.Start(url);
         }
 
@@ -142,7 +188,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         {
             try
             {
-                string topicName = NewTopicWindow.PromptUser(CredentialsStore.Default.CurrentProjectId);
+                string topicName = NewTopicWindow.PromptUser(CurrentProjectId);
                 if (topicName != null)
                 {
                     await DataSource.NewTopicAsync(topicName);
