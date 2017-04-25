@@ -35,7 +35,6 @@ namespace GoogleCloudExtension.Utils.UnitTests
             var path = Environment.GetEnvironmentVariable("PATH");
             try
             {
-
                 // Insert an invalid path that throws ArgumentException when calling Path.Combine
                 var modifiedPath = path + ";+||+++";
                 Environment.SetEnvironmentVariable("PATH", modifiedPath);
