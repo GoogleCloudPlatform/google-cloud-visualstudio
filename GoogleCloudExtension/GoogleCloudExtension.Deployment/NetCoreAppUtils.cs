@@ -67,14 +67,15 @@ namespace GoogleCloudExtension.Deployment
             Debug.WriteLine($"Using tools from {externalTools}");
             Debug.WriteLine($"Setting working directory to {workingDir}");
             Directory.CreateDirectory(stageDirectory);
-            await GCloudWrapper.GenerateSourceContext(project.DirectoryPath, stageDirectory);
             outputAction($"dotnet {arguments}");
-            return await ProcessUtils.RunCommandAsync(
+            bool result = await ProcessUtils.RunCommandAsync(
                 file: pathsProvider.GetDotnetPath(),
                 args: arguments,
                 workingDir: workingDir,
                 handler: (o, e) => outputAction(e.Line),
                 environment: env);
+            await GCloudWrapper.GenerateSourceContext(project.DirectoryPath, stageDirectory);
+            return result;
         }
 
         /// <summary>
