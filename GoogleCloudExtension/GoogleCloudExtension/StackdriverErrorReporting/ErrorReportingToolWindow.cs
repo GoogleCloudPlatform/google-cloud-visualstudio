@@ -57,7 +57,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         protected override void OnClose()
         {
             base.OnClose();
-            System.Diagnostics.Debug.WriteLine($"ErrorReportingToolWindow OnClose, {this.GetHashCode()}");
             ViewModel?.Dispose();
         }
     }

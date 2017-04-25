@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.Utils
         /// <returns>The full path to the command.</returns>
         public static string GetCommandPathFromPATH(string commandName)
         {
-            var paths = Environment.GetEnvironmentVariable("PATH").Split(';');
+            var paths = Environment.GetEnvironmentVariable("PATH")?.Split(';');
             foreach (var path in paths)
             {
                 try

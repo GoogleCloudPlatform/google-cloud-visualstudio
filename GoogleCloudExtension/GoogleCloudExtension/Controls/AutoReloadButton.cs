@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls.Primitives;
@@ -71,7 +70,6 @@ namespace GoogleCloudExtension.Controls
         public AutoReloadButton()
         {
             _timer = new DispatcherTimer();
-            Debug.WriteLine($"Create timer {_timer.GetHashCode()}");
         }
 
         /// <summary>
@@ -115,7 +113,6 @@ namespace GoogleCloudExtension.Controls
             if (AutoReloadCommand == null || !AutoReloadCommand.CanExecute(null))
             {
                 // DispatcherTimer is not disposable. Just stop it.
-                Debug.WriteLine($"Close timer {_timer.GetHashCode()}");
                 _timer.Stop();
                 return;
             }

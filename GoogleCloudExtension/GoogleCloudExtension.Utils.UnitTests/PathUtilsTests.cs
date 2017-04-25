@@ -22,19 +22,32 @@ namespace GoogleCloudExtension.Utils.UnitTests
     public class PathUtilsTests
     {
         [TestMethod]
-        public void GetCommandPathFromPATHTest()
+        public void GetCommandPathFromPATHValidPathTest()
         {
-            var path = Environment.GetEnvironmentVariable("PATH");
-            path += ";+||+++";
-            Environment.SetEnvironmentVariable("PATH", path);
-
             var notepad = GetCommandPathFromPATH("notepad.exe");
             Assert.IsNotNull(notepad);
             Assert.IsTrue(notepad.Contains("notepad.exe"));
+        }
 
-            // This verifies GetCommandPathFromPATH does not throw exception.
-            var testpath = GetCommandPathFromPATH("does-not-exist-such.exe");
-            Assert.IsNull(testpath);
+        [TestMethod]
+        public void GetCommandPathFromPATHInvalidPathTest()
+        {
+            var path = Environment.GetEnvironmentVariable("PATH");
+            try
+            {
+
+                // Insert an invalid path that throws ArgumentException when calling Path.Combine
+                var modifiedPath = path + ";+||+++";
+                Environment.SetEnvironmentVariable("PATH", modifiedPath);
+
+                // This verifies GetCommandPathFromPATH does not throw exception.
+                var testPath = GetCommandPathFromPATH("does-not-exist-such.exe");
+                Assert.IsNull(testPath);
+            }
+            finally
+            {
+                Environment.SetEnvironmentVariable("PATH", path);
+            }
         }
     }
 }

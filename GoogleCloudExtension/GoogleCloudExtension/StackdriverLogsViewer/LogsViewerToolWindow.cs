@@ -67,7 +67,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         protected override void OnClose()
         {
             base.OnClose();
-            System.Diagnostics.Debug.WriteLine($"LogsViewerToolWindow OnClose, {this.GetHashCode()}");
             ViewModel?.Dispose();
         }
 
