@@ -13,9 +13,10 @@
     <Icon>__TemplateIcon.png</Icon>
     <CreateInPlace>true</CreateInPlace>
     <PromptForSaveOnCreation>true</PromptForSaveOnCreation>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
   </TemplateData>
   <TemplateContent>
-    <Project File="WebApplication3.xproj" ReplaceParameters="true">
+    <Project File="Project.xproj" ReplaceParameters="true">
       <Folder Name="Properties" TargetFolderName="Properties">
         <ProjectItem ReplaceParameters="true" TargetFileName="launchSettings.json">launchSettings.json</ProjectItem>
       </Folder>

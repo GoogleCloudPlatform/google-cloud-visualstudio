@@ -37,6 +37,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.GitUti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.Utils.UnitTests", "GoogleCloudExtension.Utils.UnitTests\GoogleCloudExtension.Utils.UnitTests.csproj", "{8F5877B1-4E7C-4427-A37F-C037A5D08B64}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ProjectTemplates", "ProjectTemplates", "{E7013004-B8B7-4226-8271-D2A0AD141DB2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleAspNetCoreMvc", "ProjectTemplates\GoogleAspNetCoreMvc\GoogleAspNetCoreMvc.csproj", "{0363CEB2-EAAA-4531-898D-DCD36F00A6FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleAspNetCoreMvcVs2017", "ProjectTemplates\GoogleAspNetCoreMvcVs2017\GoogleAspNetCoreMvcVs2017.csproj", "{0DA74332-2C0C-4E1D-8C56-B8DEEA9CC4CF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleAspNetCoreWebApi", "ProjectTemplates\GoogleAspNetCoreWebApi\GoogleAspNetCoreWebApi.csproj", "{28F22ABA-2F54-4A75-832D-FF15DA0A9C4B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleAspNetCoreWebApiVs2017", "ProjectTemplates\GoogleAspNetCoreWebApiVs2017\GoogleAspNetCoreWebApiVs2017.csproj", "{7EA11D3D-3163-40FD-86A6-8805092398A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleAspnetMvc", "ProjectTemplates\GoogleAspnetMvc\GoogleAspnetMvc.csproj", "{AF37626B-D22B-408A-BC79-C25C097FECF7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleAspnetWebApi", "ProjectTemplates\GoogleAspnetWebApi\GoogleAspnetWebApi.csproj", "{30CB8C77-59A5-4E6C-B122-F614135CE7DA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,8 +101,40 @@ Global
 		{8F5877B1-4E7C-4427-A37F-C037A5D08B64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F5877B1-4E7C-4427-A37F-C037A5D08B64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F5877B1-4E7C-4427-A37F-C037A5D08B64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0363CEB2-EAAA-4531-898D-DCD36F00A6FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0363CEB2-EAAA-4531-898D-DCD36F00A6FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0363CEB2-EAAA-4531-898D-DCD36F00A6FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0363CEB2-EAAA-4531-898D-DCD36F00A6FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DA74332-2C0C-4E1D-8C56-B8DEEA9CC4CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DA74332-2C0C-4E1D-8C56-B8DEEA9CC4CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DA74332-2C0C-4E1D-8C56-B8DEEA9CC4CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DA74332-2C0C-4E1D-8C56-B8DEEA9CC4CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28F22ABA-2F54-4A75-832D-FF15DA0A9C4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28F22ABA-2F54-4A75-832D-FF15DA0A9C4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28F22ABA-2F54-4A75-832D-FF15DA0A9C4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28F22ABA-2F54-4A75-832D-FF15DA0A9C4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7EA11D3D-3163-40FD-86A6-8805092398A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7EA11D3D-3163-40FD-86A6-8805092398A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7EA11D3D-3163-40FD-86A6-8805092398A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7EA11D3D-3163-40FD-86A6-8805092398A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AF37626B-D22B-408A-BC79-C25C097FECF7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF37626B-D22B-408A-BC79-C25C097FECF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF37626B-D22B-408A-BC79-C25C097FECF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF37626B-D22B-408A-BC79-C25C097FECF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{30CB8C77-59A5-4E6C-B122-F614135CE7DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{30CB8C77-59A5-4E6C-B122-F614135CE7DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{30CB8C77-59A5-4E6C-B122-F614135CE7DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{30CB8C77-59A5-4E6C-B122-F614135CE7DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0363CEB2-EAAA-4531-898D-DCD36F00A6FC} = {E7013004-B8B7-4226-8271-D2A0AD141DB2}
+		{0DA74332-2C0C-4E1D-8C56-B8DEEA9CC4CF} = {E7013004-B8B7-4226-8271-D2A0AD141DB2}
+		{28F22ABA-2F54-4A75-832D-FF15DA0A9C4B} = {E7013004-B8B7-4226-8271-D2A0AD141DB2}
+		{7EA11D3D-3163-40FD-86A6-8805092398A9} = {E7013004-B8B7-4226-8271-D2A0AD141DB2}
+		{AF37626B-D22B-408A-BC79-C25C097FECF7} = {E7013004-B8B7-4226-8271-D2A0AD141DB2}
+		{30CB8C77-59A5-4E6C-B122-F614135CE7DA} = {E7013004-B8B7-4226-8271-D2A0AD141DB2}
 	EndGlobalSection
 EndGlobal

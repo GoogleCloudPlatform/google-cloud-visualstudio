@@ -12,9 +12,10 @@
     <LocationField>Enabled</LocationField>
     <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
     <Icon>__TemplateIcon.png</Icon>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
   </TemplateData>
   <TemplateContent>
-    <Project TargetFileName="WebApplication7.csproj" File="WebApplication7.csproj" ReplaceParameters="true">
+    <Project TargetFileName="Project.csproj" File="Project.csproj" ReplaceParameters="true">
       <Folder Name="App_Data" TargetFolderName="App_Data" />
       <Folder Name="App_Start" TargetFolderName="App_Start">
         <ProjectItem ReplaceParameters="true" TargetFileName="BundleConfig.cs">BundleConfig.cs</ProjectItem>

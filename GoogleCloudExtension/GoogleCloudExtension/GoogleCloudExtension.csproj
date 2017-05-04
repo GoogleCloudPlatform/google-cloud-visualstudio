@@ -52,6 +52,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DeployExtension>True</DeployExtension>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -485,34 +486,6 @@
     <Resource Include="CloudExplorerSources\PubSub\Resources\subscription_icon.png" />
     <Resource Include="CloudExplorerSources\PubSub\Resources\orphaned_subscriptions_icon.png" />
     <Content Include="Licenses.txt">
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="ProjectTemplates\Google Cloud Platform\GoogleAspnetMvc.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="ProjectTemplates\Google Cloud Platform\GoogleAspnetWebApi.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="ProjectTemplates\Google Cloud Platform\GoogleAspNetCoreMvc.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="ProjectTemplates\Google Cloud Platform\GoogleAspNetCoreWebApi.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="ProjectTemplates\templateManifest0.noloc.vstman">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="ProjectTemplates\Google Cloud Platform\GoogleAspNetCoreMvcVs2017.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <IncludeInVSIX>true</IncludeInVSIX>
-    </Content>
-    <Content Include="ProjectTemplates\Google Cloud Platform\GoogleAspNetCoreWebApiVs2017.zip">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <None Include="source.extension.vsixmanifest">
@@ -964,6 +937,48 @@
     <ProjectReference Include="..\GoogleCloudExtension.Utils\GoogleCloudExtension.Utils.csproj">
       <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>
       <Name>GoogleCloudExtension.Utils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ProjectTemplates\GoogleAspNetCoreMvcVs2017\GoogleAspNetCoreMvcVs2017.csproj">
+      <Project>{0da74332-2c0c-4e1d-8c56-b8deea9cc4cf}</Project>
+      <Name>GoogleAspNetCoreMvcVs2017</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    <ProjectReference Include="..\ProjectTemplates\GoogleAspNetCoreMvc\GoogleAspNetCoreMvc.csproj">
+      <Project>{0363CEB2-EAAA-4531-898D-DCD36F00A6FC}</Project>
+      <Name>GoogleAspNetCoreMvc</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    <ProjectReference Include="..\ProjectTemplates\GoogleAspNetCoreWebApiVs2017\GoogleAspNetCoreWebApiVs2017.csproj">
+      <Project>{7ea11d3d-3163-40fd-86a6-8805092398a9}</Project>
+      <Name>GoogleAspNetCoreWebApiVs2017</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    <ProjectReference Include="..\ProjectTemplates\GoogleAspNetCoreWebApi\GoogleAspNetCoreWebApi.csproj">
+      <Project>{28f22aba-2f54-4a75-832d-ff15da0a9c4b}</Project>
+      <Name>GoogleAspNetCoreWebApi</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    <ProjectReference Include="..\ProjectTemplates\GoogleAspnetMvc\GoogleAspnetMvc.csproj">
+      <Project>{af37626b-d22b-408a-bc79-c25c097fecf7}</Project>
+      <Name>GoogleAspnetMvc</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+    </ProjectReference>
+    <ProjectReference Include="..\ProjectTemplates\GoogleAspnetWebApi\GoogleAspnetWebApi.csproj">
+      <Project>{30cb8c77-59a5-4e6c-b122-f614135ce7da}</Project>
+      <Name>GoogleAspnetWebApi</Name>
+      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />
