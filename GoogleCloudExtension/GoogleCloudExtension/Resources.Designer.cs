@@ -837,9 +837,9 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to Attach Debugger.
         /// </summary>
-        public static string CloudExplorerGceAttachDebugger {
+        public static string CloudExplorerGceAttachDebuggerMenuHeader {
             get {
-                return ResourceManager.GetString("CloudExplorerGceAttachDebugger", resourceCulture);
+                return ResourceManager.GetString("CloudExplorerGceAttachDebuggerMenuHeader", resourceCulture);
             }
         }
         

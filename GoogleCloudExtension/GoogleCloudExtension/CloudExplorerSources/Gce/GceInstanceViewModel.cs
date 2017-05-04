@@ -228,7 +228,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 new MenuItem { Header = Resources.CloudExplorerGceOpenWebSiteMenuHeader, Command = openWebSite },
                 new MenuItem { Header = Resources.CloudExplorerGceManageFirewallPortsMenuHeader, Command = manageFirewallPorts },
                 new MenuItem { Header = Resources.CloudExplorerGceManageWindowsCredentialsMenuHeader, Command = manageWindowsCredentials },
-                new MenuItem { Header = Resources.CloudExplorerGceAttachDebugger, Command = attachDebugger }
+                new MenuItem { Header = Resources.CloudExplorerGceAttachDebuggerMenuHeader, Command = attachDebugger }
             };
 
             if (Instance.Id.HasValue)

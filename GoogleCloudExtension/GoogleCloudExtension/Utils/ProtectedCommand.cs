@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.Utils
 
         /// <summary>
         /// Initializes a new instance of ProtectedCommand.
-        /// Swap the parameter order so that this constructor does not have conflict with the one above. 
+        /// Swap the parameter order so that this constructor does not have conflict to the one above. 
         /// </summary>
         /// <param name="canExecuteCommand">Whether the command is enabled or not.</param>
         /// <param name="taskHandler">The async task to execute when the command is executed.</param>

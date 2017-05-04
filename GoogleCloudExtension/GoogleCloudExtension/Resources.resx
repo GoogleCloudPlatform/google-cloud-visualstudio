@@ -2111,7 +2111,7 @@
     <value>Versions don't match</value>
     <comment>Prompt title when the opened project version differs than the version information of the log entry.</comment>
   </data>
-  <data name="CloudExplorerGceAttachDebugger" xml:space="preserve">
+  <data name="CloudExplorerGceAttachDebuggerMenuHeader" xml:space="preserve">
     <value>Attach Debugger</value>
     <comment>Header for the attach remote debugger menu item.</comment>
   </data>
