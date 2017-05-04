@@ -26,7 +26,6 @@ namespace GoogleCloudExtension.Controls
     /// </summary>
     public class AutoReloadButton : ImageToggleButton
     {
-        // TODO: proper dispose of the timer.
         private readonly DispatcherTimer _timer;
 
         static AutoReloadButton()
@@ -113,6 +112,8 @@ namespace GoogleCloudExtension.Controls
         {
             if (AutoReloadCommand == null || !AutoReloadCommand.CanExecute(null))
             {
+                // DispatcherTimer is not disposable. Just stop it.
+                _timer.Stop();
                 return;
             }
             AutoReloadCommand.Execute(null);

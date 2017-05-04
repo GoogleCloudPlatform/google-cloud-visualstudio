@@ -22,7 +22,10 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
     /// </summary>
     public class StackdriverLogsViewerStates
     {
-        private static Lazy<StackdriverLogsViewerStates> s_logsViewerStates;
+        // " = new Lazy<T>(); " fails when constructor is private.
+        // Add " = new Lazy<T>(() => new T() ); " as workaround.
+        private static Lazy<StackdriverLogsViewerStates> s_logsViewerStates =
+            new Lazy<StackdriverLogsViewerStates>(() => new StackdriverLogsViewerStates());
 
         /// <summary>
         /// Singleton pattern. Disable creation outside this class.

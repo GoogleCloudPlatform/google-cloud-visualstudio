@@ -17,6 +17,7 @@ using GoogleCloudExtension.Analytics.Events;
 using Microsoft.VisualStudio;
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Utils
 {
@@ -67,6 +68,29 @@ namespace GoogleCloudExtension.Utils
             else
             {
                 return ErrorHandler.IsCriticalException(ex);
+            }
+        }
+
+        /// <summary>
+        /// Runs the given <seealso cref="Task"/> and handles all non-critical exceptions by showing an
+        /// error dialog to the user. If the exception is critical, as determiend by <seealso cref="ErrorHandler.IsCriticalException(Exception)"/>
+        /// then it is re-thrown as this could be that the process is not in a good state to continue executing.
+        /// </summary>
+        public static async Task HandleExceptionsAsync(Func<Task> task)
+        {
+            try
+            {
+                await task();
+            }
+            catch (Exception ex) when (!IsCriticalException(ex))
+            {
+                Debug.WriteLine($"Uncaught exception: {ex.Message}");
+                if (ErrorHandler.IsCriticalException(ex))
+                {
+                    throw;
+                }
+                EventsReporterWrapper.ReportEvent(UnhandledExceptionEvent.Create(ex));
+                UserPromptUtils.ExceptionPrompt(ex);
             }
         }
     }

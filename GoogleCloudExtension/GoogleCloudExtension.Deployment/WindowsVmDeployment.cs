@@ -136,8 +136,9 @@ namespace GoogleCloudExtension.Deployment
                 $@"/p:publishUrl=""{stageDirectory}""";
 
             outputAction($"msbuild.exe {arguments}");
+            bool result = await ProcessUtils.RunCommandAsync(toolsPathProvider.GetMsbuildPath(), arguments, (o, e) => outputAction(e.Line));
             await GCloudWrapper.GenerateSourceContext(project.DirectoryPath, stageDirectory);
-            return await ProcessUtils.RunCommandAsync(toolsPathProvider.GetMsbuildPath(), arguments, (o, e) => outputAction(e.Line));
+            return result;
         }
     }
 }
