@@ -74,20 +74,33 @@ namespace GoogleCloudExtension.SourceBrowsing
                 throw new ArgumentException("Invalid argument");
             }
 
-            ProjectItem projectItem = null;
+            ProjectSourceFile projectFile = null;
             SolutionHelper solution = SolutionHelper.CurrentSolution;
             if (solution != null)
             {
-                projectItem = solution.FindMatchingSourceFile(stackFrame.SourceFile).FirstOrDefault()?.ProjectItem;
+                var items = solution.FindMatchingSourceFile(stackFrame.SourceFile);
+                if (items.Count > 1)
+                {
+                    var index = PickFileDialog.PickFileWindow.PromptUser(items.Select(x => x.FullName));
+                    if (index < 0)
+                    {
+                        return;
+                    }
+                    projectFile = items.ElementAt(index);
+                }
+                else
+                {
+                    projectFile = items.FirstOrDefault();
+                }
             }
 
-            if (projectItem == null)
+            if (projectFile == null)
             {
                 SourceVersionUtils.FileItemNotFoundPrompt(stackFrame.SourceFile);
                 return;
             }
 
-            var window = ShellUtils.Open(projectItem);
+            var window = ShellUtils.Open(projectFile.FullName);
             if (window == null)
             {
                 FailedToOpenFilePrompt(stackFrame.SourceFile);

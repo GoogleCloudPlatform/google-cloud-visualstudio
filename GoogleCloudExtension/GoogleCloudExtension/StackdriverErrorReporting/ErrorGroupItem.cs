@@ -92,7 +92,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Gets the affected user count. Could be null.
         /// </summary>
-        public long? AffectedUsersCount => ErrorGroup.AffectedUsersCount;
+        public string AffectedUsersCount => ErrorGroup.AffectedUsersCount?.ToString() ?? "-";
 
         /// <summary>
         /// Gets the formated <seealso cref="ErrorGroupStats.FirstSeenTime"/>.

@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// <summary>
     /// The view model for <seealso cref="ErrorReportingToolWindowControl"/>.
     /// </summary>
-    public class ErrorReportingViewModel : ViewModelBase
+    public class ErrorReportingViewModel : ViewModelBase, IDisposable
     {
         private Lazy<StackdriverErrorReportingDataSource> _dataSource;
 
@@ -154,6 +154,14 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         }
 
         /// <summary>
+        /// Dispose the object, implement IDisposable.
+        /// </summary>
+        public void Dispose()
+        {
+            OnAutoReloadCommand.CanExecuteCommand = false;
+        }
+
+        /// <summary>
         /// Load next page of error groups.
         /// </summary>
         public void LoadNextPage()
@@ -164,7 +172,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 return;
             }
 
-            LoadAsync();
+            ErrorHandlerUtils.HandleExceptionsAsync(LoadAsync);
         }
 
         /// <summary>
@@ -184,7 +192,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         {
             _groupStatsCollection.Clear();
             _nextPageToken = null;
-            LoadAsync();
+            ErrorHandlerUtils.HandleExceptionsAsync(LoadAsync);
         }
 
         /// <summary>
