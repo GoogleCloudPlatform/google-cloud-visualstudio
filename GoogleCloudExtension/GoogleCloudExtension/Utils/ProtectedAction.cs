@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.Utils
     /// This class wraps an <seealso cref="Action"/> with the <seealso cref="ErrorHandlerUtils.HandleExceptions(Action)"/>
     /// method to correclty handle all exceptions that escape the action.
     /// </summary>
-    public class ProtectedAction
+    public class ProtectedAction : IProtectedAction
     {
         private readonly Action _action;
 
