@@ -29,6 +29,7 @@ namespace GoogleCloudExtension.GcsUtils
         private readonly SynchronizationContext _context;
         private double _progress = 0;
         private bool _isError;
+        private bool _isCancelled;
 
         /// <summary>
         /// The current progress of the operation, between 0.0 (started) to 1.0 (completed).
@@ -36,7 +37,7 @@ namespace GoogleCloudExtension.GcsUtils
         public double Progress
         {
             get { return _progress; }
-            set { SetValueAndRaise(ref _progress, value); }
+            private set { SetValueAndRaise(ref _progress, value); }
         }
 
         /// <summary>
@@ -45,7 +46,13 @@ namespace GoogleCloudExtension.GcsUtils
         public bool IsError
         {
             get { return _isError; }
-            set { SetValueAndRaise(ref _isError, value); }
+            private set { SetValueAndRaise(ref _isError, value); }
+        }
+
+        public bool IsCancelled
+        {
+            get { return _isCancelled; }
+            private set { SetValueAndRaise(ref _isCancelled, value); }
         }
 
         /// <summary>
@@ -104,6 +111,11 @@ namespace GoogleCloudExtension.GcsUtils
         void IGcsFileOperationCallback.Cancelled()
         {
             Debug.WriteLine($"Operation or {Source} cancelled.");
+            _context.Send((x) =>
+            {
+                Progress = 0.0;
+                Completed?.Invoke(this, EventArgs.Empty);
+            }, null);
         }
 
         void IGcsFileOperationCallback.Error(DataSourceException ex)

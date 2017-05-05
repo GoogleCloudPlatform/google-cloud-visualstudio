@@ -44,6 +44,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         private readonly SelectionUtils _selectionUtils;
         private Bucket _bucket;
         private GcsDataSource _dataSource;
+        private FileCopyEngine _fileCopyEngine;
         private bool _isLoading;
         private IList<GcsRow> _selectedItems;
         private ContextMenu _contextMenu;
@@ -158,24 +159,18 @@ namespace GoogleCloudExtension.GcsFileBrowser
             // of the upload operation. Similar to what is done in the Windows explorer.
             ShellUtils.SetForegroundWindow();
 
-            IList<GcsFileOperation> uploadOperations = CreateUploadOperations(files).ToList();
-
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
-            foreach (var operation in uploadOperations)
-            {
-                _dataSource.StartFileUploadOperation(
-                    sourcePath: operation.Source,
-                    bucket: operation.Bucket,
-                    name: operation.Destination,
-                    operation: operation,
-                    token: tokenSource.Token);
-            }
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            var uploadOperations = _fileCopyEngine.StartUploadOperations(
+                files,
+                bucket: Bucket.Name,
+                bucketPath: _currentState.CurrentPath,
+                cancellationTokenSource: cancellationTokenSource);
 
             GcsFileProgressDialogWindow.PromptUser(
                 caption: Resources.GcsFileBrowserUploadingProgressCaption,
                 message: Resources.GcsFileBrowserUploadingProgressMessage,
                 operations: uploadOperations,
-                tokenSource: tokenSource);
+                cancellationTokenSource: cancellationTokenSource);
 
             UpdateCurrentState();
         }
@@ -189,55 +184,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
             UpdateContextMenu();
         }
-
-        /// <summary>
-        /// This method creates the <seealso cref="GcsFileOperation"/> instances that represent the upload
-        /// operations for the given paths of files. If the <paramref name="sources"/> entry represents a directory
-        /// then it will recurse into the directories to create the upload operations for those files as well.
-        /// </summary>
-        /// <param name="sources">
-        /// The path to the sources to upload. These can be either directories or files. It is better if these
-        /// are full file paths as the current directory in VS changes quite often.
-        /// </param>
-        /// <returns>The list of <seealso cref="GcsFileOperation"/> that represent the upload of the files.</returns>
-        private IEnumerable<GcsFileOperation> CreateUploadOperations(IEnumerable<string> sources)
-            => sources
-               .Select(src =>
-               {
-                   var info = new FileInfo(src);
-                   var isDirectory = (info.Attributes & FileAttributes.Directory) != 0;
-
-                   if (isDirectory)
-                   {
-                       return CreateUploadOperationsForDirectory(info.FullName, info.Name);
-                   }
-                   else
-                   {
-                       return new GcsFileOperation[]
-                          {
-                            new GcsFileOperation(
-                                source: info.FullName,
-                                bucket: Bucket.Name,
-                                destination: $"{CurrentState.CurrentPath}{info.Name}"),
-                          };
-                   }
-               })
-               .SelectMany(x => x);
-
-        /// <summary>
-        /// Creates the <seealso cref="GcsFileOperation"/> instances for all of the files in the given directory. The
-        /// target directory will be based on <paramref name="basePath"/>.
-        /// </summary>
-        private IEnumerable<GcsFileOperation> CreateUploadOperationsForDirectory(string dir, string basePath)
-            => Enumerable.Concat(
-                Directory.EnumerateFiles(dir)
-                    .Select(file => new GcsFileOperation(
-                        source: file,
-                        bucket: Bucket.Name,
-                        destination: $"{_currentState.CurrentPath}{basePath}/{Path.GetFileName(file)}")),
-                Directory.EnumerateDirectories(dir)
-                    .Select(subDir => CreateUploadOperationsForDirectory(subDir, $"{basePath}/{Path.GetFileName(subDir)}"))
-                    .SelectMany(x => x));
 
         private void UpdateContextMenu()
         {
@@ -356,7 +302,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 caption: Resources.GcsFileBrowserDownloadingProgressCaption,
                 message: Resources.GcsFileBrowserDownloadingProgressMessage,
                 operations: downloadOperations,
-                tokenSource: tokenSource);
+                cancellationTokenSource: tokenSource);
         }
 
         /// <summary>
@@ -428,7 +374,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 caption: Resources.GcsFileBrowserDeletingProgressCaption,
                 message: Resources.GcsFileBrowserDeletingProgressMessage,
                 operations: deleteOperations,
-                tokenSource: tokenSource);
+                cancellationTokenSource: tokenSource);
 
             // 4) refresh the window with the contents of the server.
             UpdateCurrentState();
@@ -505,6 +451,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
+            _fileCopyEngine = new FileCopyEngine(_dataSource);
             UpdateCurrentState("");
         }
 

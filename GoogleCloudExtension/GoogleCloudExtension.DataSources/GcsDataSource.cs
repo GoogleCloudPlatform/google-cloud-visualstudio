@@ -206,7 +206,7 @@ namespace GoogleCloudExtension.DataSources
             {
                 operation.Error(new DataSourceException(ex.Message, ex));
             }
-            catch (TaskCanceledException)
+            catch (TaskCanceledException ex)
             {
                 operation.Cancelled();
             }
