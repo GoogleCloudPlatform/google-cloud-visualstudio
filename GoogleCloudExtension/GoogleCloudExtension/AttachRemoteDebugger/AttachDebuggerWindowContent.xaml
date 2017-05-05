@@ -34,12 +34,10 @@
     <theming:CommonDialogWindowBaseContent HasBanner="True" >
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}"
-                                      Command="{Binding OKCommand}"
-                                      IsEnabled="{Binding CurrentStep.IsOKButtonEnabled}" />
+                                      Command="{Binding OKCommand}" />
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
                                       Command="{Binding CancelCommand}"
-                                      IsCancel="True" 
-                                      IsEnabled="{Binding CurrentStep.IsCancelButtonEnabled}" />
+                                      IsCancel="True" />
         </theming:CommonDialogWindowBaseContent.Buttons>
 
         <StackPanel IsEnabled="{Binding IsReady}">

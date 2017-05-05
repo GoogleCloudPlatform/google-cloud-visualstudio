@@ -44,7 +44,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
         /// <param name="gceInstance">A GCE windows VM <seealso cref="Instance"/> object.</param>
         public static void PromptUser(Instance gceInstance)
         {
-            if (!String.IsNullOrWhiteSpace(gceInstance.GetPublicIpAddress()))
+            if (String.IsNullOrWhiteSpace(gceInstance.GetPublicIpAddress()))
             {
                 UserPromptUtils.OkPrompt(
                     message: StringResources.AttachDebuggerAddPublicIpAddressMessage,
@@ -55,11 +55,5 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
             var dialog = new AttachDebuggerWindow(gceInstance);
             dialog.ShowModal();
         }
-
-        //protected override void OnContentRendered(EventArgs e)
-        //{
-        //    base.OnContentRendered(e);
-        //    ViewModel.Start();
-        //}
     }
 }
