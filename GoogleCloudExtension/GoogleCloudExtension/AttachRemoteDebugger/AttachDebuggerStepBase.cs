@@ -26,8 +26,8 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
     {
         private static readonly ContentControl _contentControl = new ContentControl();
 
-        private bool _showOKButton = true;
-        private bool _showCancelButton = true;
+        private bool _isOKButtonEnabled;
+        private bool _isCancelButtonEnabled;
 
         /// <summary>
         /// Define a global exit step object that implements <seealso cref="IAttachDebuggerStep"/> interface.
@@ -37,29 +37,29 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
         #region implement interface IAttachDebuggerStep
         public virtual bool IsCancelButtonEnabled
         {
-            get { return _showCancelButton; }
-            protected set { SetValueAndRaise(ref _showCancelButton, value); }
+            get { return _isCancelButtonEnabled; }
+            protected set { SetValueAndRaise(ref _isCancelButtonEnabled, value); }
         }
 
         public virtual ContentControl Content => _contentControl;
 
         public virtual bool IsOKButtonEnabled
         {
-            get { return _showOKButton; }
-            protected set { SetValueAndRaise(ref _showOKButton, value); }
+            get { return _isOKButtonEnabled; }
+            protected set { SetValueAndRaise(ref _isOKButtonEnabled, value); }
         }
 
-        public virtual IAttachDebuggerStep OnCancelCommand()
+        public virtual async Task<IAttachDebuggerStep> OnCancelCommand()
         {
             return ExitStep;
         }
 
-        public virtual Task<IAttachDebuggerStep> OnStart()
+        public virtual async Task<IAttachDebuggerStep> OnStart()
         {
             throw new NotImplementedException();
         }
 
-        public virtual Task<IAttachDebuggerStep> OnOKCommand()
+        public virtual async Task<IAttachDebuggerStep> OnOKCommand()
         {
             throw new NotImplementedException();
         }

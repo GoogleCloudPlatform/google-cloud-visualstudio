@@ -46,7 +46,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
         /// <returns>
         /// A reference to next step.
         /// </returns>
-        IAttachDebuggerStep OnCancelCommand();
+        Task<IAttachDebuggerStep> OnCancelCommand();
 
         /// <summary>
         /// Returns the content of the publish step.

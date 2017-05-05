@@ -21,7 +21,7 @@
                 <ResourceDictionary Source="../Controls/DotsProgressIndicatorResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <utils:VisibilityConverter x:Key="negatedVisibilityConverter" IsNegated="True" />
+            <utils:VisibilityConverter x:Key="visibilityConverter" />
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -35,11 +35,11 @@
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiOkButtonCaption}"
                                       Command="{Binding OKCommand}"
-                                      IsEnabled="{Binding IsOKButtonEnabled}" />
+                                      IsEnabled="{Binding CurrentStep.IsOKButtonEnabled}" />
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
                                       Command="{Binding CancelCommand}"
                                       IsCancel="True" 
-                                      IsEnabled="{Binding IsCancelButtonEnabled}" />
+                                      IsEnabled="{Binding CurrentStep.IsCancelButtonEnabled}" />
         </theming:CommonDialogWindowBaseContent.Buttons>
 
         <StackPanel IsEnabled="{Binding IsReady}">
@@ -49,7 +49,7 @@
                 Margin="0,12,0,6"
                 Width="86"
                 HorizontalAlignment="Left"
-                Visibility="{Binding IsReady, Converter={StaticResource negatedVisibilityConverter}}" />
+                Visibility="{Binding ShowProgressIndicator, Converter={StaticResource visibilityConverter}}" />
         </StackPanel>
 
     </theming:CommonDialogWindowBaseContent>

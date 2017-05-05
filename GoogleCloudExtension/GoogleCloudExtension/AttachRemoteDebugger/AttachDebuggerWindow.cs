@@ -12,8 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using StringResources = GoogleCloudExtension.Resources;
+
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.Utils;
+using StringResources = GoogleCloudExtension.Resources;
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Theming;
 using System;
@@ -42,14 +44,22 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
         /// <param name="gceInstance">A GCE windows VM <seealso cref="Instance"/> object.</param>
         public static void PromptUser(Instance gceInstance)
         {
+            if (!String.IsNullOrWhiteSpace(gceInstance.GetPublicIpAddress()))
+            {
+                UserPromptUtils.OkPrompt(
+                    message: StringResources.AttachDebuggerAddPublicIpAddressMessage,
+                    title: StringResources.uiDefaultPromptTitle);
+                return;
+            }
+
             var dialog = new AttachDebuggerWindow(gceInstance);
             dialog.ShowModal();
         }
 
-        protected override void OnContentRendered(EventArgs e)
-        {
-            base.OnContentRendered(e);
-            ViewModel.Start();
-        }
+        //protected override void OnContentRendered(EventArgs e)
+        //{
+        //    base.OnContentRendered(e);
+        //    ViewModel.Start();
+        //}
     }
 }
