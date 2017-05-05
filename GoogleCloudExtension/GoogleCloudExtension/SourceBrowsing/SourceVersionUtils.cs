@@ -208,22 +208,15 @@ namespace GoogleCloudExtension.SourceBrowsing
                 }
             }
 
-            if (!IsCurrentSolutionOpen())
+            IEnumerable<string> gitPaths = GitUtils.GitUtils.GetLocalRepositories(GoogleCloudExtensionPackage.VsVersion);
+            if (gitPaths != null)
             {
-                OpenProjectFromLocalRepositoryPrompt();
-            }
-            if (!IsCurrentSolutionOpen())
-            {
-                return null;    // Still no valid solution is open, give up.
-            }
-
-            var solution = SolutionHelper.CurrentSolution;
-            // Linq does not accept async lambda, use foreach
-            foreach (var project in solution.Projects) 
-            {
-                if (await SearchCommitAtPathAsync(project.ProjectRoot, sha))
+                foreach (var path in gitPaths)
                 {
-                    return await OpenGitFileAsync(s_localCache[sha], filePath);
+                    if (await SearchCommitAtPathAsync(path, sha))
+                    {
+                        return await OpenGitFileAsync(s_localCache[sha], filePath);
+                    }
                 }
             }
             return null;

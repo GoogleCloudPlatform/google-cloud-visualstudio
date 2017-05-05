@@ -75,7 +75,7 @@ namespace GoogleCloudExtension.SourceBrowsing
             {
                 // window.Caption can not be modified.
                 // Set the file name suffix same as original file name that the document window shows it.
-                var filePath = Path.Combine(_tmpFolder, $"tmp_{Path.GetFileName(relativePath)}");
+                var filePath = Path.Combine(_tmpFolder, $"tmp@{Path.GetFileName(relativePath)}");
                 await saveAction(filePath);
                 window = OpenDocument(filePath, key);
             }

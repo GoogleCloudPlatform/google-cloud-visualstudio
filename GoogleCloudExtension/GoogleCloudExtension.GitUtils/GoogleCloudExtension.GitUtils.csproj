@@ -48,7 +48,10 @@
   <ItemGroup>
     <Compile Include="GitRepository.cs" />
     <Compile Include="GitCommit.cs" />
+    <Compile Include="GitUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="VS14\RegistryHelper.cs" />
+    <Compile Include="VS15\RegistryHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GoogleCloudExtension.Utils\GoogleCloudExtension.Utils.csproj">
