@@ -17,7 +17,7 @@ namespace GoogleCloudExtension.DataSources
     /// <summary>
     /// This interface encapsulates all of the callbacks for an operation to display progress.
     /// </summary>
-    public interface IGcsFileOperation
+    public interface IGcsFileOperationCallback
     {
         /// <summary>
         /// Called to update of the progress so far of the operation.

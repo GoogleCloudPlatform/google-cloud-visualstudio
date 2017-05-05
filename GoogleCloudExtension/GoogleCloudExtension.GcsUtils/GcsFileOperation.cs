@@ -19,12 +19,12 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
-namespace GoogleCloudExtension.GcsFileProgressDialog
+namespace GoogleCloudExtension.GcsUtils
 {
     /// <summary>
     /// This class represents an operation in flight for the GCS file browser.
     /// </summary>
-    public class GcsFileOperation : Model, IGcsFileOperation
+    public class GcsFileOperation : Model, IGcsFileOperationCallback
     {
         private readonly SynchronizationContext _context;
         private double _progress = 0;
@@ -87,12 +87,12 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
 
         #region IGcsFileOperation implementation.
 
-        void IGcsFileOperation.Progress(double value)
+        void IGcsFileOperationCallback.Progress(double value)
         {
             _context.Send((x) => Progress = value, null);
         }
 
-        void IGcsFileOperation.Completed()
+        void IGcsFileOperationCallback.Completed()
         {
             _context.Send((x) =>
             {
@@ -101,12 +101,12 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
             }, null);
         }
 
-        void IGcsFileOperation.Cancelled()
+        void IGcsFileOperationCallback.Cancelled()
         {
             Debug.WriteLine($"Operation or {Source} cancelled.");
         }
 
-        void IGcsFileOperation.Error(DataSourceException ex)
+        void IGcsFileOperationCallback.Error(DataSourceException ex)
         {
             IsError = true;
         }

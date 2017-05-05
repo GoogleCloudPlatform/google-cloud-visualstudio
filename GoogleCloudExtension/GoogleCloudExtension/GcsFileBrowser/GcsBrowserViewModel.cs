@@ -16,6 +16,7 @@ using Google.Apis.Storage.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GcsFileProgressDialog;
+using GoogleCloudExtension.GcsUtils;
 using GoogleCloudExtension.NamePrompt;
 using GoogleCloudExtension.Utils;
 using System;

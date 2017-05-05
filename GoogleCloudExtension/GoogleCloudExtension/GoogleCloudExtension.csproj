@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <!-- This will make the tools use the v3 version of the .vsix format. Without this the extension won't load on VS 2017. -->
@@ -368,7 +368,6 @@
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTree.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TypeUtil.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
-    <Compile Include="GcsFileProgressDialog\GcsFileOperation.cs" />
     <Compile Include="GcsFileProgressDialog\GcsFileProgressDialogViewModel.cs" />
     <Compile Include="GcsFileProgressDialog\GcsFileProgressDialogWindow.cs" />
     <Compile Include="GcsFileProgressDialog\GcsFileProgressDialogWindowContent.xaml.cs">
@@ -990,6 +989,10 @@
     <ProjectReference Include="..\GoogleCloudExtension.GCloud\GoogleCloudExtension.GCloud.csproj">
       <Project>{95efac7e-4f6e-46f0-bcc8-90ee1487e1e1}</Project>
       <Name>GoogleCloudExtension.GCloud</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.GcsUtils\GoogleCloudExtension.GcsUtils.csproj">
+      <Project>{0c891356-ccd7-4a10-ba27-c4a4359ea825}</Project>
+      <Name>GoogleCloudExtension.GcsUtils</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.GitUtils\GoogleCloudExtension.GitUtils.csproj">
       <Project>{66b55aaf-8237-45cf-8462-6359318795ab}</Project>
