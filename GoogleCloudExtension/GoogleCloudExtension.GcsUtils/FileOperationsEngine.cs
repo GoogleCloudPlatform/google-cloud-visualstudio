@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtension.GcsUtils
 {
     /// <summary>
-    /// This class manages the operations necessary to copy files from/to GCS buckets.
+    /// This class manages the operations necessary to perform builk operations on GCS.
     /// </summary>
     public class FileOperationsEngine
     {
@@ -41,8 +41,8 @@ namespace GoogleCloudExtension.GcsUtils
         /// <param name="sources">The files, or directories, to upload.</param>
         /// <param name="bucket">The destination bucket.</param>
         /// <param name="bucketPath">The destination path in the bucket.</param>
-        /// <param name="cancellationTokenSource">The cancellation token source to use for the operations.</param>
-        /// <returns></returns>
+        /// <param name="cancellationToken">The cancellation token source to use for the operations.</param>
+        /// <returns>The list of operations started.</returns>
         public IList<GcsFileOperation> StartUploadOperations(
             IEnumerable<string> sources,
             string bucket,
@@ -69,7 +69,7 @@ namespace GoogleCloudExtension.GcsUtils
         /// <param name="sources">The list of files or directories to download.</param>
         /// <param name="destinationDir">Where to store the downloaded files.</param>
         /// <param name="cancellationToken">The cancellation token for the operation.</param>
-        /// <returns></returns>
+        /// <returns>The list of operations started.</returns>
         public async Task<IList<GcsFileOperation>> StartDownloadOperationsAsync(
             IEnumerable<GcsItemRef> sources,
             string destinationDir,
@@ -128,6 +128,12 @@ namespace GoogleCloudExtension.GcsUtils
             return downloadOperations;
         }
 
+        /// <summary>
+        /// Enumerates all of the files and directories and starts the operations to delete them.
+        /// </summary>
+        /// <param name="sources">The list of sources to delete.</param>
+        /// <param name="cancellationToken">The cancellation token to use for the operations.</param>
+        /// <returns>The list of operations started.</returns>
         public async Task<IList<GcsFileOperation>> StartDeleteOperationsAsync(
             IEnumerable<GcsItemRef> sources,
             CancellationToken cancellationToken)

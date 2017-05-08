@@ -20,14 +20,29 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GcsUtils
 {
+    /// <summary>
+    /// This class represents a reference to an file or directory on GCS.
+    /// </summary>
     public class GcsItemRef
     {
+        /// <summary>
+        /// The bucket that contains this item.
+        /// </summary>
         public string Bucket { get; }
 
+        /// <summary>
+        /// The name of the item within the bucket.
+        /// </summary>
         public string Name { get; }
 
+        /// <summary>
+        /// Wether this item is a directory.
+        /// </summary>
         public bool IsDirectory => String.IsNullOrEmpty(Name) || Name.Last() == '/';
 
+        /// <summary>
+        /// Whether this item is file.
+        /// </summary>
         public bool IsFile => !IsDirectory;
 
         public GcsItemRef(string bucket, string path)

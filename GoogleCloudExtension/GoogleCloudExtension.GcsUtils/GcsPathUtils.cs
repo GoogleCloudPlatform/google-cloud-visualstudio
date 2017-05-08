@@ -20,6 +20,9 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GcsUtils
 {
+    /// <summary>
+    /// This class contains utility methods to manipulate GCS paths.
+    /// </summary>
     public static class GcsPathUtils
     {
         /// <summary>
