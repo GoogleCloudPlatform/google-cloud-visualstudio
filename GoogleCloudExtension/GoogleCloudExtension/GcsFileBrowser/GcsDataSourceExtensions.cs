@@ -22,46 +22,10 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtension.GcsFileBrowser
 {
     /// <summary>
-    /// This class is a reference to a file stored in a GCS bucket.
-    /// </summary>
-    internal class GcsFileReference
-    {
-        /// <summary>
-        /// The name of the bucket.
-        /// </summary>
-        public string Bucket { get; }
-
-        /// <summary>
-        /// The name (or full path) of the file within the bucket.
-        /// </summary>
-        public string Name { get; }
-
-        /// <summary>
-        /// The relative name of the file under a given prefix. Useful for when downloading/uploading
-        /// files from/to the bucket.
-        /// </summary>
-        public string RelativeName { get; }
-
-        public GcsFileReference(string bucket, string name, string prefix)
-        {
-            Bucket = bucket;
-            Name = name;
-            RelativeName = GetRelativeName(name, prefix);
-        }
-
-        private static string GetRelativeName(string fullName, string prefix) =>
-            fullName.StartsWith(prefix) ? fullName.Substring(prefix.Length) : fullName;
-    }
-
-    /// <summary>
     /// Useful extensions for the <seealso cref="GcsDataSource"/> that are specific to the GCS file browser.
     /// </summary>
     internal static class GcsDataSourceExtensions
     {
-        
-
-        
-
         /// <summary>
         /// Create a directory placeholder blob with the given prefix.
         /// </summary>
