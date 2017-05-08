@@ -58,41 +58,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
     /// </summary>
     internal static class GcsDataSourceExtensions
     {
-        /// <summary>
-        /// Get all files that are descendants of the given <paramref name="prefix"/> in the given <paramref name="bucket"/>.
-        /// </summary>
-        /// <param name="self">The data source.</param>
-        /// <param name="bucket">The bucket that contains the files.</param>
-        /// <param name="prefix">The prefix (or directory) under which files are requiested.</param>
-        /// <returns>An <seealso cref="IEnumerable{GcsFileReference}"/> with all of the files found.</returns>
-        public static async Task<IEnumerable<GcsFileReference>> GetGcsFilesFromPrefixAsync(
-            this GcsDataSource self,
-            string bucket,
-            string prefix)
-        {
-            var files = await self.GetObjectLisAsync(bucket, prefix);
-            return files.Select(x => new GcsFileReference(bucket, x.Name, prefix)).ToList();
-        }
+        
 
-        /// <summary>
-        /// Utility method to get all of the files given the list of <paramref name="prefixes"/>.
-        /// </summary>
-        /// <param name="self">The data source.</param>
-        /// <param name="bucket">The bucket that contains the files.</param>
-        /// <param name="prefixes">The prefixes to query.</param>
-        /// <returns>A combined <seealso cref="IEnumerable{GcsFileReference}"/> with all of the files found.</returns>
-        public static async Task<IEnumerable<GcsFileReference>> GetGcsFilesFromPrefixesAsync(
-            this GcsDataSource self,
-            string bucket,
-            IEnumerable<string> prefixes)
-        {
-            var result = new List<GcsFileReference>();
-            foreach (var prefix in prefixes)
-            {
-                result.AddRange(await self.GetGcsFilesFromPrefixAsync(bucket, prefix));
-            }
-            return result;
-        }
+        
 
         /// <summary>
         /// Create a directory placeholder blob with the given prefix.
