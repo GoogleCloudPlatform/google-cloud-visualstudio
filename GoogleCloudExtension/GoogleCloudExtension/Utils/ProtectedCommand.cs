@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.Utils
         public ProtectedCommand(Action handler, bool canExecuteCommand = true)
         {
             _action = new ProtectedAction(handler);
-            this.CanExecuteCommand = canExecuteCommand;
+            CanExecuteCommand = canExecuteCommand;
         }
 
         #region ICommand implementation.
@@ -84,7 +84,7 @@ namespace GoogleCloudExtension.Utils
         public ProtectedCommand(Action<T> handler, bool canExecuteCommand = true)
         {
             _action = new ProtectedAction<T>(handler);
-            this.CanExecuteCommand = canExecuteCommand;
+            CanExecuteCommand = canExecuteCommand;
         }
 
         #region ICommand implementation.

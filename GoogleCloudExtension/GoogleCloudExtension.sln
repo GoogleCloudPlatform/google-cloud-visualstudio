@@ -51,6 +51,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleAspnetMvc", "ProjectT
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleAspnetWebApi", "ProjectTemplates\GoogleAspnetWebApi\GoogleAspnetWebApi.csproj", "{30CB8C77-59A5-4E6C-B122-F614135CE7DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.TemplateWizards", "GoogleCloudExtension.TemplateWizards\GoogleCloudExtension.TemplateWizards.csproj", "{43DF89C4-AF9A-4F61-AFD5-E167E28FC649}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.Interop", "GoogleCloudExtension.Interop\GoogleCloudExtension.Interop.csproj", "{856B9F2E-441F-405A-9D5C-AF5DC5653902}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -125,6 +129,14 @@ Global
 		{30CB8C77-59A5-4E6C-B122-F614135CE7DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{30CB8C77-59A5-4E6C-B122-F614135CE7DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{30CB8C77-59A5-4E6C-B122-F614135CE7DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43DF89C4-AF9A-4F61-AFD5-E167E28FC649}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43DF89C4-AF9A-4F61-AFD5-E167E28FC649}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43DF89C4-AF9A-4F61-AFD5-E167E28FC649}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43DF89C4-AF9A-4F61-AFD5-E167E28FC649}.Release|Any CPU.Build.0 = Release|Any CPU
+		{856B9F2E-441F-405A-9D5C-AF5DC5653902}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{856B9F2E-441F-405A-9D5C-AF5DC5653902}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{856B9F2E-441F-405A-9D5C-AF5DC5653902}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{856B9F2E-441F-405A-9D5C-AF5DC5653902}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

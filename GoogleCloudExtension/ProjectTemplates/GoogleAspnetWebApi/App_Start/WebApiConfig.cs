@@ -18,34 +18,27 @@ namespace $safeprojectname$
     {
         public static void Register(HttpConfiguration config)
         {
-	    // To enable Google Cloud Stackdrive Logging and Error Reporting
-	    // while running on your local machine edit Web.config and uncomment
-	    // the <projectId> value under the <log4net> section. Ensure that
-	    // the <projectId> is set to a valid Google Cloud Project Id.
+            // To enable Google Cloud Stackdrive Logging and Error Reporting
+            // while running on your local machine edit Web.config and uncomment
+            // the <projectId> value under the <log4net> section. Ensure that
+            // the <projectId> is set to a valid Google Cloud Project Id.
 
             // [START logging_and_error_reporting]
             // Check to ensure that projectId has been changed from placeholder value.
             var section = (XmlElement)ConfigurationManager.GetSection("log4net");
-            XmlElement element =
+            XmlElement projectIdElement =
                 (XmlElement)section.GetElementsByTagName("projectId").Item(0);
-            string projectId = element?.Attributes["value"].Value;
-            if (projectId == ("YOUR-PROJECT-ID"))
+            string projectId =
+                Google.Api.Gax.Platform.Instance().GceDetails?.ProjectId ??
+                projectIdElement?.Attributes["value"].Value;
+            if (string.IsNullOrEmpty(projectId))
             {
-                throw new Exception("Update Web.config and replace YOUR-PROJECT-ID"
-                   + " with your Google Cloud Project ID, and recompile.");
-            }
-            if (projectId == null)
-            {
-                projectId = Google.Api.Gax.Platform.Instance().GceDetails?.ProjectId;
-                if (projectId == null)
-                {
-                    throw new Exception("The logging and error reporting libraries need a project ID. "
-                        + "Update Web.config and add a <projectId> entry in the <log4net> section.");
-                }
+                throw new Exception("The logging and error reporting libraries need a project ID. "
+                    + "Update Web.config and add a <projectId> entry in the <log4net> section.");
             }
             // [START enable_error_reporting]
-	    var serviceName = ConfigurationManager.AppSettings["google_error_reporting:serviceName"];
-	    var version = ConfigurationManager.AppSettings["google_error_reporting:version"];
+            var serviceName = ConfigurationManager.AppSettings["google_error_reporting:serviceName"];
+            var version = ConfigurationManager.AppSettings["google_error_reporting:version"];
             // Add a catch all to log all uncaught exceptions to Stackdriver Error Reporting.
             config.Services.Add(typeof(IExceptionLogger),
                 ErrorReportingExceptionLogger.Create(projectId, serviceName, version));

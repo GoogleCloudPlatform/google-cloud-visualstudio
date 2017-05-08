@@ -1,0 +1,37 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:GoogleCloudExtension.Controls">
+    
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="ThemingResources.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    <Style TargetType="TextBlock" BasedOn="{StaticResource CommonTextStyle}">
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Padding" Value="1"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style TargetType="ListBox" BasedOn="{StaticResource CommonListBoxStyle}">
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="Padding" Value="2"/>
+    </Style>
+
+    <Style TargetType="TextBox" BasedOn="{StaticResource CommonTextBoxStyle}">
+        <Setter Property="Margin" Value="5"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+    
+    <Style TargetType="Button" BasedOn="{StaticResource CommonButtonStyle}">
+        <Setter Property="Margin" Value="2"/>
+        <Setter Property="Padding" Value="2"/>
+        <Setter Property="VerticalAlignment" Value="Center"/>
+    </Style>
+
+    <Style TargetType="controls:LabelWithHelp" BasedOn="{StaticResource {x:Type controls:LabelWithHelp}}">
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+    </Style>
+    
+</ResourceDictionary>

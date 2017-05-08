@@ -1,0 +1,112 @@
+﻿<UserControl x:Class="GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog.PickProjectIdWindowContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
+             xmlns:local="clr-namespace:GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+             xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance local:PickProjectIdViewModel}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../../Theming/DefaultStylesResource.xaml"/>
+                <ResourceDictionary Source="../../../Theming/CommonDataTemplates.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <UserControl.Style>
+        <Binding Source="{StaticResource CommonDialogStyleLarge}" />
+    </UserControl.Style>
+    
+    <theming:CommonDialogWindowBaseContent HasBanner="True">
+        <theming:CommonDialogWindowBaseContent.Buttons>
+            <theming:DialogButtonInfo
+                Caption="{x:Static ext:Resources.UiSkipButtonCaption}"
+                Command="{Binding SkipProjectInputCommand}"/>
+            <theming:DialogButtonInfo
+                Caption="{x:Static ext:Resources.UiOkButtonCaption}"
+                Command="{Binding SelectProjectCommand}"
+                IsDefault="True"/>
+            <theming:DialogButtonInfo
+                Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
+                IsCancel="True"/>
+        </theming:CommonDialogWindowBaseContent.Buttons>
+        <DockPanel>
+            <DockPanel DockPanel.Dock="Top">
+                <Button
+                    DockPanel.Dock="Right"
+                    Command="{Binding ChangeUserCommand}"
+                    Content="{x:Static ext:Resources.CloudExplorerSelectAccountMessage}"/>
+                <controls:LabelWithHelp
+                    Content="{x:Static ext:Resources.WizardPickProjectIdDescription}"
+                    HelpContent="{x:Static ext:Resources.WizardPickProjectIdHelpText}"/>
+            </DockPanel>
+            <DockPanel DockPanel.Dock="Bottom">
+                <Label
+                    DockPanel.Dock="Left"
+                    Content="{x:Static ext:Resources.WizardPickProjectIdTextLabel}"
+                    Target="{Binding ElementName=ProjectIdTextBox}"/>
+                <TextBox x:Name="ProjectIdTextBox" Text="{Binding ProjectId, UpdateSourceTrigger=PropertyChanged}"/>
+            </DockPanel>
+            <Border BorderThickness="1" BorderBrush="DarkGray">
+                <Grid>
+                    <TextBlock
+                        Text="{x:Static ext:Resources.WizardPickProjectIdLoadingProjects}"
+                        Visibility="{
+                            Binding LoadTask.IsCompleted, Converter={
+                                utils:BooleanConverter
+                                    TrueValue={x:Static Visibility.Collapsed}, FalseValue={x:Static Visibility.Visible}
+                            }
+                        }"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"/>
+                    <TextBlock
+                        Text="{Binding LoadTask.ErrorMessage}"
+                        Visibility="{
+                            Binding LoadTask.IsFaulted, Converter={
+                                utils:BooleanConverter
+                                    TrueValue={x:Static Visibility.Visible}, FalseValue={x:Static Visibility.Collapsed}
+                            }
+                        }"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"/>
+                    <TextBlock
+                        Text="{x:Static ext:Resources.WizardPickProjectIdCanceledTask}"
+                        Visibility="{
+                            Binding LoadTask.IsCanceled, Converter={
+                                utils:BooleanConverter
+                                    TrueValue={x:Static Visibility.Visible}, FalseValue={x:Static Visibility.Collapsed}
+                            }
+                        }"
+                        VerticalAlignment="Center"
+                        HorizontalAlignment="Center"/>
+                    <ScrollViewer
+                        VerticalScrollBarVisibility="Auto"
+                        Visibility="{
+                            Binding LoadTask.IsSuccess, Converter={
+                                utils:BooleanConverter
+                                    TrueValue={x:Static Visibility.Visible}, FalseValue={x:Static Visibility.Collapsed}
+                            }
+                        }">
+                    
+                        <ListBox
+                            SelectedItem="{Binding SelectedProject}"
+                            ItemsSource="{Binding Projects}">
+
+                            <ListBox.Template>
+                                <ControlTemplate>
+                                    <ItemsPresenter/>
+                                </ControlTemplate>
+                            </ListBox.Template>
+                        </ListBox>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+        </DockPanel>
+    </theming:CommonDialogWindowBaseContent>
+</UserControl>

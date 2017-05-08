@@ -41,7 +41,7 @@
     <IncludeDebugSymbolsInVSIXContainer>true</IncludeDebugSymbolsInVSIXContainer>
     <IncludeDebugSymbolsInLocalVSIXDeployment>true</IncludeDebugSymbolsInLocalVSIXDeployment>
     <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
-    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -130,6 +130,7 @@
     <Compile Include="CloudExplorerSources\PubSub\TopicItem.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBase.cs" />
+    <Compile Include="Utils\DataSourceUtils.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
@@ -351,6 +352,12 @@
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\LogEntryNode.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\ObjectNodeTree.cs" />
     <Compile Include="StackdriverLogsViewer\TreeViewConverters\TypeUtil.cs" />
+    <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\PickProjectIdViewModel.cs" />
+    <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\PickProjectIdWindow.cs" />
+    <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\PickProjectIdWindowContent.xaml.cs">
+      <DependentUpon>PickProjectIdWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="TemplateWizards\GoogleProjectTemplateWizard.cs" />
     <Compile Include="TerminalServer\TerminalServerManager.cs" />
     <Compile Include="Theming\CommonImageResources.cs" />
     <Compile Include="TitleBar\TitleBar.xaml.cs">
@@ -359,6 +366,7 @@
     <Compile Include="TitleBar\TitleBarViewModel.cs" />
     <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
+    <Compile Include="Utils\NotifyTaskCompletion.cs" />
     <Compile Include="Utils\PackageUtils.cs" />
     <Compile Include="Utils\GCloudWrapperUtils.cs" />
     <Compile Include="Utils\GcpPublishStepsUtils.cs" />
@@ -519,15 +527,15 @@
     <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon_stoped.png" />
     <Resource Include="CloudExplorerSources\Gce\Resources\instance_icon_transition.png" />
     <Content Include="License.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="logo_cloud_128.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
     <Content Include="logo_cloud_512.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
@@ -536,8 +544,10 @@
       <HintPath>..\packages\BouncyCastle.1.8.1\lib\BouncyCastle.Crypto.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <Reference Include="envdte, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\VSSDK.DTE.7.0.4\lib\net20\envdte.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="EnvDTE100, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <EmbedInteropTypes>False</EmbedInteropTypes>
@@ -679,6 +689,11 @@
       <HintPath>..\packages\Microsoft.VisualStudio.Shell.Interop.9.0.9.0.30729\lib\Microsoft.VisualStudio.Shell.Interop.9.0.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.TemplateWizardInterface, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\VSSDK.TemplateWizardInterface.12.0.4\lib\net20\Microsoft.VisualStudio.TemplateWizardInterface.dll</HintPath>
+      <Private>True</Private>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="Microsoft.VisualStudio.Text.Data, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Text.Logic, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.VisualStudio.Text.UI, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
@@ -692,7 +707,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Threading, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Threading.14.1.131\lib\net45\Microsoft.VisualStudio.Threading.dll</HintPath>
+      <HintPath>..\packages\Microsoft.VisualStudio.Threading.14.1.111\lib\net45\Microsoft.VisualStudio.Threading.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Utilities, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -707,11 +722,17 @@
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NuGet.VisualStudio, Version=4.0.0.2323, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\NuGet.VisualStudio.4.0.0\lib\net45\NuGet.VisualStudio.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.AeroLite" />
     <Reference Include="stdole, Version=7.0.3300.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
+      <HintPath>..\packages\VSSDK.DTE.7.0.4\lib\net20\stdole.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -878,6 +899,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="TemplateWizards\Dialogs\ProjectIdDialog\PickProjectIdWindowContent.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Theming\CommonDataTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Theming\DefaultStylesResource.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="TitleBar\TitleBar.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -930,9 +963,19 @@
       <Project>{66b55aaf-8237-45cf-8462-6359318795ab}</Project>
       <Name>GoogleCloudExtension.GitUtils</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.Interop\GoogleCloudExtension.Interop.csproj">
+      <Project>{856B9F2E-441F-405A-9D5C-AF5DC5653902}</Project>
+      <Name>GoogleCloudExtension.Interop</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.OAuth\GoogleCloudExtension.OAuth.csproj">
       <Project>{ad8b672d-7f0a-4c7f-9774-a9458a99a061}</Project>
       <Name>GoogleCloudExtension.OAuth</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.TemplateWizards\GoogleCloudExtension.TemplateWizards.csproj">
+      <Project>{43DF89C4-AF9A-4F61-AFD5-E167E28FC649}</Project>
+      <Name>GoogleCloudExtension.TemplateWizards</Name>
+      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
+      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.Utils\GoogleCloudExtension.Utils.csproj">
       <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>

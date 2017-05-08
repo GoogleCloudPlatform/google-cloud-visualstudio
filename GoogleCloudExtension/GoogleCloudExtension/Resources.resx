@@ -2111,4 +2111,32 @@
     <value>Versions don't match</value>
     <comment>Prompt title when the opened project version differs than the version information of the log entry.</comment>
   </data>
+  <data name="UiSkipButtonCaption" xml:space="preserve">
+    <value>_Skip</value>
+    <comment>Caption for a Skip button in a UI.</comment>
+  </data>
+  <data name="WizardPickProjectIdCanceledTask" xml:space="preserve">
+    <value>Task Canceled</value>
+    <comment>Text to diplay if a task was canceled.</comment>
+  </data>
+  <data name="WizardPickProjectIdDescription" xml:space="preserve">
+    <value>Input project ID or select an existing project:</value>
+    <comment>Description text for the PickProjectId window of the project template wizards.</comment>
+  </data>
+  <data name="WizardPickProjectIdHelpText" xml:space="preserve">
+    <value>This Project ID will be added to your configuration files and can be changed later.</value>
+    <comment>Help text for the PickProjectId window of the project template wizards.</comment>
+  </data>
+  <data name="WizardPickProjectIdLoadingProjects" xml:space="preserve">
+    <value>Loading Projects...</value>
+    <comment>Text to display while loading projects.</comment>
+  </data>
+  <data name="WizardPickProjectIdTextLabel" xml:space="preserve">
+    <value>_Enter Project ID:</value>
+    <comment>Label text for the ProjectId text box of the template wizard PickProjectId window.</comment>
+  </data>
+  <data name="WizardPickProjectIdTitle" xml:space="preserve">
+    <value>Select the Google Cloud Platform project that will run this project.</value>
+    <comment>The title of the PickProjecId window of the template wizards.</comment>
+  </data>
 </root>

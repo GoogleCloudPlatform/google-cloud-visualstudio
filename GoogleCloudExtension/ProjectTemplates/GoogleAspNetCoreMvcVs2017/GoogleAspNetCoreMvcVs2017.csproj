@@ -16,8 +16,8 @@
     <ProjectGuid>{0DA74332-2C0C-4E1D-8C56-B8DEEA9CC4CF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GoogleAspnetMvc2</RootNamespace>
-    <AssemblyName>GoogleAspnetMvc2</AssemblyName>
+    <RootNamespace>GoogleAspNetCoreMvcVs2017</RootNamespace>
+    <AssemblyName>GoogleAspNetCoreMvcVs2017</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
@@ -28,8 +28,8 @@
     <DeployExtension>false</DeployExtension>
     <DeployVSTemplates>false</DeployVSTemplates>
     <CopyVsixManifestToOutput>false</CopyVsixManifestToOutput>
-    <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
-    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
+    <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>

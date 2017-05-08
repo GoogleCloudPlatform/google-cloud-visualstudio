@@ -1,12 +1,9 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
     <OldToolsVersion>14.0</OldToolsVersion>
-    <UpgradeBackupLocation />
     <RestorePackages>false</RestorePackages>
     <ResolveNuGetPackages>false</ResolveNuGetPackages>
   </PropertyGroup>
@@ -18,8 +15,8 @@
     <ProjectGuid>{0363CEB2-EAAA-4531-898D-DCD36F00A6FC}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GoogleAspnetMvc2</RootNamespace>
-    <AssemblyName>GoogleAspnetMvc2</AssemblyName>
+    <RootNamespace>GoogleAspnetMvc</RootNamespace>
+    <AssemblyName>GoogleAspnetMvc</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <GeneratePkgDefFile>false</GeneratePkgDefFile>
@@ -30,11 +27,11 @@
     <DeployExtension>false</DeployExtension>
     <DeployVSTemplates>true</DeployVSTemplates>
     <CopyVsixManifestToOutput>false</CopyVsixManifestToOutput>
-    <CopyBuildOutputToOutputDirectory>false</CopyBuildOutputToOutputDirectory>
-    <CopyOutputSymbolsToOutputDirectory>false</CopyOutputSymbolsToOutputDirectory>
+    <CopyBuildOutputToOutputDirectory>true</CopyBuildOutputToOutputDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
+    <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
@@ -44,6 +41,7 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
+    <CopyOutputSymbolsToOutputDirectory>true</CopyOutputSymbolsToOutputDirectory>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
@@ -54,7 +52,7 @@
     <None Include="Controllers\HomeController.cs" />
     <None Include="Program.cs" />
     <None Include="Properties\launchSettings.json" />
-    <None Include="Startup.cs" />
+    <Content Include="Startup.cs" />
   </ItemGroup>
   <ItemGroup>
     <VSTemplate Include="GoogleAspNetCoreMvc.vstemplate">
@@ -122,6 +120,12 @@
     <None Include="wwwroot\lib\jquery-validation\LICENSE.md" />
     <None Include="wwwroot\lib\jquery\.bower.json" />
     <None Include="wwwroot\lib\jquery\dist\jquery.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Exclude.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />

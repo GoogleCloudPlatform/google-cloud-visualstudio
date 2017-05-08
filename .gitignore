@@ -11,4 +11,5 @@
 **/packages/*
 **/*.pyc
 *.DotSettings.user
-**/ProjectTemplates/**/*csproj.user
+*.user
+!**/GoogleCloudExtension.csproj.user

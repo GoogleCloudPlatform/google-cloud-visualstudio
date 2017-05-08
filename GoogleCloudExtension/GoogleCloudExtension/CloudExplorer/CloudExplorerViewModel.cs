@@ -215,7 +215,7 @@ namespace GoogleCloudExtension.CloudExplorer
                 new CloudConsoleSource(),
             };
 
-            var refreshButtonEnumerable = new ButtonDefinition[]
+            var refreshButtonEnumerable = new[]
             {
                 new ButtonDefinition
                 {
@@ -224,7 +224,7 @@ namespace GoogleCloudExtension.CloudExplorer
                     Command = new ProtectedCommand(OnRefreshCommand),
                 }
             };
-            Buttons = Enumerable.Concat(refreshButtonEnumerable, _sources.SelectMany(x => x.Buttons));
+            Buttons = refreshButtonEnumerable.Concat(_sources.SelectMany(x => x.Buttons));
 
             ManageAccountsCommand = new ProtectedCommand(OnManageAccountsCommand);
 
@@ -239,12 +239,6 @@ namespace GoogleCloudExtension.CloudExplorer
         {
             var currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
             return currentCredential != null ? new GPlusDataSource(currentCredential, GoogleCloudExtensionPackage.VersionedApplicationName) : null;
-        }
-
-        private static ResourceManagerDataSource CreateResourceManagerDataSource()
-        {
-            var currentCredential = CredentialsStore.Default.CurrentGoogleCredential;
-            return currentCredential != null ? new ResourceManagerDataSource(currentCredential, GoogleCloudExtensionPackage.VersionedApplicationName) : null;
         }
 
         private void UpdateUserProfile()
@@ -343,11 +337,9 @@ namespace GoogleCloudExtension.CloudExplorer
                 }
                 else
                 {
-                    var newCurrentProject = projects.FirstOrDefault(x => x.ProjectId == CredentialsStore.Default.CurrentProjectId);
-                    if (newCurrentProject == null)
-                    {
-                        newCurrentProject = projects.FirstOrDefault();
-                    }
+                    var newCurrentProject =
+                        projects.FirstOrDefault(x => x.ProjectId == CredentialsStore.Default.CurrentProjectId) ??
+                        projects.FirstOrDefault();
 
                     // Set the properties in the right order. This is needed because this in turn will
                     // set the properties in the list control in the right order to preserve the current
@@ -404,7 +396,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
         private void InvalidateAccountDependentDataSources()
         {
-            _resourceManagerDataSource = new Lazy<ResourceManagerDataSource>(CreateResourceManagerDataSource);
+            _resourceManagerDataSource = new Lazy<ResourceManagerDataSource>(DataSourceUtils.CreateResourceManagerDataSource);
             _plusDataSource = new Lazy<GPlusDataSource>(CreatePlusDataSource);
         }
 

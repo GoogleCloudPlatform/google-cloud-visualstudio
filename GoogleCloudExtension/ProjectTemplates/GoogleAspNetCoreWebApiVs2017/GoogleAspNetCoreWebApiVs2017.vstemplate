@@ -33,4 +33,8 @@
       <ProjectItem ReplaceParameters="true" TargetFileName="Project_Readme.html" OpenInWebBrowser="true">Project_Readme.html</ProjectItem>
     </Project>
   </TemplateContent>
+  <WizardExtension>
+    <Assembly>GoogleCloudExtension.TemplateWizards, Version=1.0.0.0, Culture=neutral, PublicKeyToken=919919421783e38f</Assembly>
+    <FullClassName>GoogleCloudExtension.TemplateWizards.GoogleProjectTemplateWizard</FullClassName>
+  </WizardExtension>
 </VSTemplate>

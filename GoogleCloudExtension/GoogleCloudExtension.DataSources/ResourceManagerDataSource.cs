@@ -22,11 +22,25 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.DataSources
 {
+    public interface IResourceManagerDataSource
+    {
+        /// <summary>
+        /// Returns the complete list of projects for the current credentials.
+        /// </summary>
+        Task<IList<Project>> GetProjectsListAsync();
+
+        /// <summary>
+        /// Returns the project given its <paramref name="projectId"/>.
+        /// </summary>
+        /// <param name="projectId">The project ID of the project to return.</param>
+        Task<Project> GetProjectAsync(string projectId);
+    }
+
     /// <summary>
     /// This class wraps the <seealso cref="Google.Apis.CloudResourceManager.v1.CloudResourceManagerService"/> class for
     /// a given set of credentials.
     /// </summary>
-    public class ResourceManagerDataSource : DataSourceBase<CloudResourceManagerService>
+    public class ResourceManagerDataSource : DataSourceBase<CloudResourceManagerService>, IResourceManagerDataSource
     {
         /// <summary>
         /// The constructor for the class.
