@@ -19,12 +19,12 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace GoogleCloudExtension.GcsFileBrowser
+namespace GoogleCloudExtension.GcsUtils
 {
     /// <summary>
     /// Useful extensions for the <seealso cref="GcsDataSource"/> that are specific to the GCS file browser.
     /// </summary>
-    internal static class GcsDataSourceExtensions
+    public static class GcsDataSourceExtensions
     {
         /// <summary>
         /// Create a directory placeholder blob with the given prefix.
@@ -39,20 +39,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 name: prefix,
                 stream: Stream.Null,
                 contentType: "application/x-www-form-urlencoded;charset=UTF-8");
-        }
-
-        /// <summary>
-        /// Parses a diretory name into its steps.
-        /// </summary>
-        /// <param name="name">The directory name.</param>
-        /// <returns>The <seealso cref="IEnumerable{String}"/> with the steps.</returns>
-        public static IEnumerable<string> ParseDiretoryPath(string name)
-        {
-            if (String.IsNullOrEmpty(name))
-            {
-                return Enumerable.Empty<string>();
-            }
-            return name.Substring(0, name.Length - 1).Split('/');
         }
     }
 }

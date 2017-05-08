@@ -48,5 +48,19 @@ namespace GoogleCloudExtension.GcsUtils
             result.Append(child);
             return result.ToString();
         }
+
+        /// <summary>
+        /// Parses a diretory name into its steps.
+        /// </summary>
+        /// <param name="name">The directory name.</param>
+        /// <returns>The <seealso cref="IEnumerable{String}"/> with the steps.</returns>
+        public static IEnumerable<string> Parse(string name)
+        {
+            if (String.IsNullOrEmpty(name))
+            {
+                return Enumerable.Empty<string>();
+            }
+            return name.Substring(0, name.Length - 1).Split('/');
+        }
     }
 }

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.GcsUtils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -83,7 +84,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             else
             {
                 Debug.Assert(name.Last() == '/');
-                var stepNames = GcsDataSourceExtensions.ParseDiretoryPath(name);
+                var stepNames = GcsPathUtils.Parse(name);
                 var steps = new List<PathStep>();
                 string currentPath = "";
                 foreach (var stepName in stepNames)

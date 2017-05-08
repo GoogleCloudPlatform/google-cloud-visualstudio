@@ -83,6 +83,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FileOperationsEngine.cs" />
+    <Compile Include="GcsDataSourceExtensions.cs" />
     <Compile Include="GcsFileOperation.cs" />
     <Compile Include="GcsItemRef.cs" />
     <Compile Include="GcsPathUtils.cs" />
