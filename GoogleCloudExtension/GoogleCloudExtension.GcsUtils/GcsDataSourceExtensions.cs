@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GcsUtils
@@ -39,6 +40,44 @@ namespace GoogleCloudExtension.GcsUtils
                 name: prefix,
                 stream: Stream.Null,
                 contentType: "application/x-www-form-urlencoded;charset=UTF-8");
+        }
+
+        internal static void StartFileUploadOperation(
+            this GcsDataSource self,
+            GcsFileOperation operation,
+            CancellationToken cancellationToken)
+        {
+            self.StartFileUploadOperation(
+                sourcePath: operation.LocalPath,
+                bucket: operation.GcsItem.Bucket,
+                name: operation.GcsItem.Name,
+                operation: operation,
+                token: cancellationToken);
+        }
+
+        internal static void StartFileDownloadOperation(
+            this GcsDataSource self,
+            GcsFileOperation operation,
+            CancellationToken cancellationToken)
+        {
+            self.StartFileDownloadOperation(
+                bucket: operation.GcsItem.Bucket,
+                name: operation.GcsItem.Name,
+                destPath: operation.LocalPath,
+                operation: operation,
+                token: cancellationToken);
+        }
+
+        internal static void StartDeleteOperation(
+            this GcsDataSource self,
+            GcsFileOperation operation,
+            CancellationToken cancellationToken)
+        {
+            self.StartDeleteOperation(
+                bucket: operation.GcsItem.Bucket,
+                name: operation.GcsItem.Name,
+                operation: operation,
+                token: cancellationToken);
         }
     }
 }

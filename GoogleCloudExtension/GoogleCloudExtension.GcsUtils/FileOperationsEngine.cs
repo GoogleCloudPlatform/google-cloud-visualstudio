@@ -52,12 +52,7 @@ namespace GoogleCloudExtension.GcsUtils
             var uploadOperations = CreateUploadOperations(sources, bucket: bucket, bucketPath: bucketPath);
             foreach (var operation in uploadOperations)
             {
-                _dataSource.StartFileUploadOperation(
-                    sourcePath: operation.Source,
-                    bucket: operation.Bucket,
-                    name: operation.Destination,
-                    operation: operation,
-                    token: cancellationToken);
+                _dataSource.StartFileUploadOperation(operation, cancellationToken);
             }
             return uploadOperations;
         }
@@ -80,9 +75,8 @@ namespace GoogleCloudExtension.GcsUtils
             downloadOperations.AddRange(sources
                 .Where(x => x.IsFile)
                 .Select(x => new GcsFileOperation(
-                    source: x.Name,
-                    bucket: x.Bucket,
-                    destination: Path.Combine(destinationDir, GcsPathUtils.GetFileName(x.Name)))));
+                    localPath: Path.Combine(destinationDir, GcsPathUtils.GetFileName(x.Name)),
+                    gcsItem: x)));
 
             // Collect all of the files from all of the directories to download, collects all of the
             // local file system directories that need to be created to mirror the source structure.
@@ -99,9 +93,8 @@ namespace GoogleCloudExtension.GcsUtils
 
                     // Create the file operation for this file.
                     downloadOperations.Add(new GcsFileOperation(
-                        source: file.Name,
-                        bucket: file.Bucket,
-                        destination: absoluteFilePath));
+                        localPath: absoluteFilePath,
+                        gcsItem: file));
 
                     // Collects the list of directories to create.
                     subDirs.Add(Path.GetDirectoryName(absoluteFilePath));
@@ -117,12 +110,7 @@ namespace GoogleCloudExtension.GcsUtils
             // Start all of the download operations.
             foreach (var operation in downloadOperations)
             {
-                _dataSource.StartFileDownloadOperation(
-                    bucket: operation.Bucket,
-                    name: operation.Source,
-                    destPath: operation.Destination,
-                    operation: operation,
-                    token: cancellationToken);
+                _dataSource.StartFileDownloadOperation(operation, cancellationToken);
             }
 
             return downloadOperations;
@@ -142,24 +130,17 @@ namespace GoogleCloudExtension.GcsUtils
 
             deleteOperations.AddRange(sources
                 .Where(x => x.IsFile)
-                .Select(x => new GcsFileOperation(
-                    source: x.Name,
-                    bucket: x.Bucket)));
+                .Select(x => new GcsFileOperation(x)));
 
             foreach (var dir in sources.Where(x => x.IsDirectory))
             {
                 var filesInPrefix = await GetGcsFilesFromPrefixAsync(dir.Bucket, dir.Name);
-                deleteOperations.AddRange(filesInPrefix
-                    .Select(x => new GcsFileOperation(source: x.Name, bucket: x.Bucket)));
+                deleteOperations.AddRange(filesInPrefix.Select(x => new GcsFileOperation(x)));
             }
 
             foreach (var operation in deleteOperations)
             {
-                _dataSource.StartDeleteOperation(
-                    bucket: operation.Bucket,
-                    name: operation.Source,
-                    operation: operation,
-                    token: cancellationToken);
+                _dataSource.StartDeleteOperation(operation, cancellationToken);
             }
 
             return deleteOperations;
@@ -191,9 +172,8 @@ namespace GoogleCloudExtension.GcsUtils
                        return new GcsFileOperation[]
                           {
                             new GcsFileOperation(
-                                source: info.FullName,
-                                bucket: bucket,
-                                destination: GcsPathUtils.Combine(bucketPath, info.Name)),
+                                localPath: info.FullName,
+                                gcsItem: new GcsItemRef(bucket: bucket, name: GcsPathUtils.Combine(bucketPath, info.Name)))
                           };
                    }
                })
@@ -216,9 +196,10 @@ namespace GoogleCloudExtension.GcsUtils
             return Enumerable.Concat(
                 Directory.EnumerateFiles(sourceDir)
                     .Select(file => new GcsFileOperation(
-                        source: file,
-                        bucket: bucket,
-                        destination: GcsPathUtils.Combine(baseGcsPath, Path.GetFileName(file)))),
+                        localPath: file,
+                        gcsItem: new GcsItemRef(
+                            bucket: bucket,
+                            name: GcsPathUtils.Combine(baseGcsPath, Path.GetFileName(file))))),
                 Directory.EnumerateDirectories(sourceDir)
                     .Select(subDir => CreateUploadOperationsForDirectory(
                         subDir,

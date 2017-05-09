@@ -45,10 +45,10 @@ namespace GoogleCloudExtension.GcsUtils
         /// </summary>
         public bool IsFile => !IsDirectory;
 
-        public GcsItemRef(string bucket, string path)
+        public GcsItemRef(string bucket, string name)
         {
             Bucket = bucket;
-            Name = path;
+            Name = name;
         }
     }
 }

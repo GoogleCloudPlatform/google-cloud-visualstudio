@@ -22,7 +22,8 @@ using System.Threading;
 namespace GoogleCloudExtension.GcsUtils
 {
     /// <summary>
-    /// This class represents an operation in flight for the GCS file browser.
+    /// This class represents an operation in flight to transfer data to/from the local
+    /// file system and GCS.
     /// </summary>
     public class GcsFileOperation : Model, IGcsFileOperationCallback
     {
@@ -58,22 +59,17 @@ namespace GoogleCloudExtension.GcsUtils
         /// <summary>
         /// The path to the source of the operation.
         /// </summary>
-        public string Source { get; }
+        public string LocalPath { get; }
 
         /// <summary>
-        /// The name of the source, usually last element in the path.
+        /// The local path for the operation.
         /// </summary>
-        public string SourceName => Path.GetFileName(Source);
+        public string LocalPathName => Path.GetFileName(LocalPath);
 
         /// <summary>
-        /// The name of the bucket where this operation applies.
+        ///  The GCS item for the operation.
         /// </summary>
-        public string Bucket { get; }
-
-        /// <summary>
-        /// The name of the destination for the operation.
-        /// </summary>
-        public string Destination { get; }
+        public GcsItemRef GcsItem { get; }
 
         /// <summary>
         /// Event raised when the operation completes.
@@ -81,16 +77,17 @@ namespace GoogleCloudExtension.GcsUtils
         public event EventHandler Completed;
 
         public GcsFileOperation(
-            string source,
-            string bucket,
-            string destination = null)
+            string localPath,
+            GcsItemRef gcsItem)
         {
             _context = SynchronizationContext.Current;
 
-            Source = source;
-            Bucket = bucket;
-            Destination = destination;
+            LocalPath = localPath;
+            GcsItem = gcsItem;
         }
+
+        public GcsFileOperation(GcsItemRef gcsItem): this(null, gcsItem)
+        { }
 
         #region IGcsFileOperation implementation.
 
@@ -110,7 +107,7 @@ namespace GoogleCloudExtension.GcsUtils
 
         void IGcsFileOperationCallback.Cancelled()
         {
-            Debug.WriteLine($"Operation or {Source} cancelled.");
+            Debug.WriteLine($"Operation for {LocalPath} cancelled.");
             _context.Send((x) =>
             {
                 Progress = 0.0;
