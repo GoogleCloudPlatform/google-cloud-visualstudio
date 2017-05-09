@@ -2271,4 +2271,12 @@
     <value>Failed to create folder {0}.</value>
     <comment>Message shown when there was a failure creating a GCS folder. {0} is the name of the folder.</comment>
   </data>
+  <data name="GcsFileProgressDialogFileHeader" xml:space="preserve">
+    <value>File</value>
+    <comment>Header used in the file name column in the data grid for the progress dialog.</comment>
+  </data>
+  <data name="GcsFileProgressDialogProgressHeader" xml:space="preserve">
+    <value>Progress</value>
+    <comment>Header used in the progress column in the data grid for the file progress dialog.</comment>
+  </data>
 </root>

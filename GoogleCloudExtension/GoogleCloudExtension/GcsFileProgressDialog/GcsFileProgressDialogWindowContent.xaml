@@ -43,18 +43,21 @@
                       ItemsSource="{Binding Operations}">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn SortMemberPath="GcsItem.FullPath"
-                                            Header="File"
+                                            Header="{x:Static ext:Resources.GcsFileProgressDialogFileHeader}"
                                             Width="2*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding GcsItem}"
+                                           Margin="5,0,0,0"
                                            Style="{StaticResource CommonTextStyle}"
                                            TextWrapping="NoWrap"
                                            TextTrimming="CharacterEllipsis" />
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Progress" SortMemberPath="Progress" Width="*">
+                    <DataGridTemplateColumn Header="{x:Static ext:Resources.GcsFileProgressDialogProgressHeader}"
+                                            SortMemberPath="Progress"
+                                            Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <ProgressBar Grid.Column="1"

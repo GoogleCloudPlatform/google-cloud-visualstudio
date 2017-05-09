@@ -2815,6 +2815,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to File.
+        /// </summary>
+        public static string GcsFileProgressDialogFileHeader {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogFileHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Progress.
+        /// </summary>
+        public static string GcsFileProgressDialogProgressHeader {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogProgressHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The file app.yaml was generated succesfully..
         /// </summary>
         public static string GenerateConfigurationAppYamlGeneratedMessage {
