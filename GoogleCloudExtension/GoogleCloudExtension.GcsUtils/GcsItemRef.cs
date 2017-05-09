@@ -41,6 +41,11 @@ namespace GoogleCloudExtension.GcsUtils
         public bool IsDirectory => String.IsNullOrEmpty(Name) || Name.Last() == '/';
 
         /// <summary>
+        /// Returns the full GCS path for the item.
+        /// </summary>
+        public string FullPath => $"gs://{Bucket}/{Name}";
+
+        /// <summary>
         /// Whether this item is file.
         /// </summary>
         public bool IsFile => !IsDirectory;
@@ -51,6 +56,9 @@ namespace GoogleCloudExtension.GcsUtils
             Name = name;
         }
 
-        public override string ToString() => $"gs://{Bucket}/{Name}";
+        /// <summary>
+        /// Returns the string representation of the item.
+        /// </summary>
+        public override string ToString() => FullPath;
     }
 }

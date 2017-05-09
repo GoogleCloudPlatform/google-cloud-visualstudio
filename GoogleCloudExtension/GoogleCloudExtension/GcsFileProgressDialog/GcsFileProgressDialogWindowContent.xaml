@@ -36,33 +36,35 @@
 
             <Label Content="{Binding Message}" Style="{StaticResource CommonLabelStyle}" />
 
-            <ListBox Grid.Row="1"
-                 ItemsSource="{Binding Operations}"
-                 HorizontalContentAlignment="Stretch"
-                 Style="{StaticResource CommonListBoxStyle}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid HorizontalAlignment="Stretch">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="300px" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
+            <DataGrid Grid.Row="1"
+                      IsReadOnly="True"
+                      AutoGenerateColumns="False"
+                      ItemsSource="{Binding Operations}">
+                <DataGrid.Columns>
+                    <DataGridTemplateColumn SortMemberPath="GcsItem.FullPath"
+                                            Header="File">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding GcsItem}"
+                                           Style="{StaticResource CommonTextStyle}"
+                                           TextWrapping="NoWrap"
+                                           TextTrimming="CharacterEllipsis" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                    <DataGridTemplateColumn Header="Progress" SortMemberPath="Progress">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <ProgressBar Grid.Column="1"
+                                             Minimum="0.0"
+                                             Maximum="1.0"
+                                             Value="{Binding Progress}" />
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+                </DataGrid.Columns>
 
-                            <TextBlock Text="{Binding GcsItem}"
-                                       TextWrapping="NoWrap"
-                                       TextTrimming="CharacterEllipsis" 
-                                       HorizontalAlignment="Left"
-                                       Style="{StaticResource CommonTextStyle}" />
-                            <ProgressBar Grid.Column="1"
-                                         Minimum="0.0"
-                                         Maximum="1.0"
-                                         Value="{Binding Progress}" />
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-
+            </DataGrid>
         </Grid>
-
     </theming:CommonDialogWindowBaseContent>
 </UserControl>
