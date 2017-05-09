@@ -38,8 +38,6 @@ namespace GoogleCloudExtension.SourceBrowsing
         // Use () => new GitTemporaryFiles() here, because the constructor is private.
         private static Lazy<OpenGitFile> s_instance = new Lazy<OpenGitFile>(() => new OpenGitFile());
 
-        private readonly string _tmpFolder;
-
         /// <summary>
         /// Key is git_sha/relative_path, value is the opened document window.
         /// </summary>
@@ -73,19 +71,30 @@ namespace GoogleCloudExtension.SourceBrowsing
             var key = $"{gitSha}/{relativePath}";
             if (!_fileRevisionWindowMap.TryGetValue(key, out window))
             {
+                string tmpFolder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
+                Directory.CreateDirectory(tmpFolder);
+
                 // window.Caption can not be modified.
                 // Set the file name suffix same as original file name that the document window shows it.
-                var filePath = Path.Combine(_tmpFolder, $"tmp@{Path.GetFileName(relativePath)}");
+                var filePath = Path.Combine(tmpFolder, $"tmp@{Path.GetFileName(relativePath)}");
                 await saveAction(filePath);
                 window = OpenDocument(filePath, key);
+
+                try
+                {
+                    File.Delete(filePath);
+                    Directory.Delete(tmpFolder);
+                }
+                catch (IOException)
+                {
+                    // Ignore I/O exception at deletion.
+                }
             }
             return window;
         }
 
         private OpenGitFile()
         {
-            _tmpFolder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
-            Directory.CreateDirectory(_tmpFolder);
             ShellUtils.RegisterWindowCloseEventHandler(OnWindowClose);
         }
 
@@ -93,7 +102,6 @@ namespace GoogleCloudExtension.SourceBrowsing
         {
             var window = ShellUtils.Open(filePath);
             window.Document.ReadOnly = true;
-            File.Delete(filePath);
             _fileRevisionWindowMap[key] = window;
             _documentWindows[window] = key;
             return window;
