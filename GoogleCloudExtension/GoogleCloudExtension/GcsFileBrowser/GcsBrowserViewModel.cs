@@ -160,17 +160,29 @@ namespace GoogleCloudExtension.GcsFileBrowser
             ShellUtils.SetForegroundWindow();
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            var uploadOperations = _fileOperationsEngine.StartUploadOperations(
-                files,
-                bucket: Bucket.Name,
-                bucketPath: _currentState.CurrentPath,
-                cancellationToken: cancellationTokenSource.Token);
+            IList<GcsFileOperation> uploadOperations;
+            try
+            {
+                uploadOperations = _fileOperationsEngine.StartUploadOperations(
+                    files,
+                    bucket: Bucket.Name,
+                    bucketPath: _currentState.CurrentPath,
+                    cancellationToken: cancellationTokenSource.Token);
+            }
+            catch (IOException)
+            {
+                UserPromptUtils.ErrorPrompt(
+                    message: "Failed to enumerate files to copy.",
+                    title: Resources.UiErrorCaption);
+                return;
+            }
 
             GcsFileProgressDialogWindow.PromptUser(
                 caption: Resources.GcsFileBrowserUploadingProgressCaption,
                 message: Resources.GcsFileBrowserUploadingProgressMessage,
                 operations: uploadOperations,
                 cancellationTokenSource: cancellationTokenSource);
+
 
             UpdateCurrentState();
         }

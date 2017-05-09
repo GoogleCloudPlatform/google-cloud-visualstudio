@@ -70,6 +70,11 @@
                                                  Value="{Binding Progress}" />
                                     
                                     <!-- This text will show on top of the progress bar in case of error or cancelled. -->
+                                    <TextBlock Text="Pending"
+                                               HorizontalAlignment="Center"
+                                               Visibility="{Binding IsPending, Converter={StaticResource commonVisibilityConverter}}"
+                                               Style="{StaticResource CommonTextStyle}"
+                                               Background="{x:Null}" />
                                     <TextBlock Text="Cancelled"
                                                HorizontalAlignment="Center"
                                                Visibility="{Binding IsCancelled, Converter={StaticResource commonVisibilityConverter}}"

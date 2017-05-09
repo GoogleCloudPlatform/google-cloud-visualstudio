@@ -31,6 +31,7 @@ namespace GoogleCloudExtension.GcsUtils
         private double _progress = 0;
         private bool _isError;
         private bool _isCancelled;
+        private bool _isPending = true;
 
         /// <summary>
         /// The current progress of the operation, between 0.0 (started) to 1.0 (completed).
@@ -57,6 +58,15 @@ namespace GoogleCloudExtension.GcsUtils
         {
             get { return _isCancelled; }
             private set { SetValueAndRaise(ref _isCancelled, value); }
+        }
+
+        /// <summary>
+        /// Whether this operation is still waiting in the queue or processing has started.
+        /// </summary>
+        public bool IsPending
+        {
+            get { return _isPending; }
+            private set { SetValueAndRaise(ref _isPending, value); }
         }
 
         /// <summary>
@@ -96,13 +106,21 @@ namespace GoogleCloudExtension.GcsUtils
 
         void IGcsFileOperationCallback.Progress(double value)
         {
-            _context.Send((x) => Progress = value, null);
+            _context.Send((x) =>
+            {
+                if (value > 0.0)
+                {
+                    IsPending = false;
+                }
+                Progress = value;
+            }, null);
         }
 
         void IGcsFileOperationCallback.Completed()
         {
             _context.Send((x) =>
             {
+                IsPending = false;
                 Progress = 1.0;
                 Completed?.Invoke(this, EventArgs.Empty);
             }, null);
@@ -114,6 +132,7 @@ namespace GoogleCloudExtension.GcsUtils
             _context.Send((x) =>
             {
                 IsCancelled = true;
+                IsPending = false;
                 Progress = 0.0;
                 Completed?.Invoke(this, EventArgs.Empty);
             }, null);
@@ -124,6 +143,7 @@ namespace GoogleCloudExtension.GcsUtils
             _context.Send((x) =>
             {
                 IsError = true;
+                IsPending = false;
                 Progress = 0.0;
                 Completed?.Invoke(this, EventArgs.Empty);
             }, null);
