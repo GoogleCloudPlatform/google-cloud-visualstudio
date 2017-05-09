@@ -1296,7 +1296,7 @@
     <comment>Error message shown when failed to load a directory.</comment>
   </data>
   <data name="GcsFileBrowserFailedToCreateDirMessage" xml:space="preserve">
-    <value>Failed to create directory {0}.</value>
+    <value>Failed to create directories for download.</value>
     <comment>Error message displayed when there's a failure creating a directory while downloading files.</comment>
   </data>
   <data name="GcsFileBrowserFolderSelectionMessage" xml:space="preserve">
@@ -2267,5 +2267,8 @@
     <value>Versions don't match</value>
     <comment>Prompt title when the opened project version differs than the version information of the log entry.</comment>
   </data>
+  <data name="GcsFileBrowserFailedToCreateRemoteFolder" xml:space="preserve">
+    <value>Failed to create folder {0}.</value>
+    <comment>Message shown when there was a failure creating a GCS folder. {0} is the name of the folder.</comment>
+  </data>
 </root>
-

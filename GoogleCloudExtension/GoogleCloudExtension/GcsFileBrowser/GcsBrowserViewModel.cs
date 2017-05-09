@@ -244,6 +244,13 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     downloadRoot,
                     cancellationTokenSource.Token);
             }
+            catch (IOException)
+            {
+                UserPromptUtils.ErrorPrompt(
+                    message: Resources.GcsFileBrowserFailedToCreateDirMessage,
+                    title: Resources.UiErrorCaption);
+                return;
+            }
             finally
             {
                 IsLoading = false;
@@ -322,6 +329,13 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 IsLoading = true;
 
                 await _dataSource.CreateDirectoryAsync(Bucket.Name, $"{CurrentState.CurrentPath}{name}/");
+            }
+            catch (DataSourceException)
+            {
+                UserPromptUtils.ErrorPrompt(
+                    message: String.Format(Resources.GcsFileBrowserFailedToCreateRemoteFolder, name),
+                    title: Resources.UiErrorCaption);
+                return;
             }
             finally
             {

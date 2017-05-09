@@ -48,7 +48,7 @@
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Text="{Binding Source}"
+                            <TextBlock Text="{Binding GcsItem}"
                                        TextWrapping="NoWrap"
                                        TextTrimming="CharacterEllipsis" 
                                        HorizontalAlignment="Left"

@@ -50,5 +50,7 @@ namespace GoogleCloudExtension.GcsUtils
             Bucket = bucket;
             Name = name;
         }
+
+        public override string ToString() => $"gs://{Bucket}/{Name}";
     }
 }
