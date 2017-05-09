@@ -176,7 +176,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         }
 
         /// <summary>
-        /// Method called whenever the selection changes to udpate the view model.
+        /// Method called whenever the selection changes to update the view model.
         /// </summary>
         public void InvalidateSelectedItems(IEnumerable<GcsRow> selectedRows)
         {
@@ -222,7 +222,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
         /// </summary>
         private async void OnDownloadCommand()
         {
-            // 1) The user is prompted for the download root where to store the downloaded files.
             FBD dialog = new FBD();
             dialog.Description = Resources.GcsFileBrowserFolderSelectionMessage;
             dialog.ShowNewFolderButton = true;
@@ -234,7 +233,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
             var downloadRoot = dialog.SelectedPath;
 
-            // 2) The files to be downloaded and directories to be created are collected.
             IList<GcsFileOperation> downloadOperations;
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             try
@@ -271,7 +269,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
         /// </summary>
         private async void OnDeleteCommand()
         {
-            // 1) The user is asked to confirm the deletion operation.
             if (!UserPromptUtils.ActionPrompt(
                 prompt: Resources.GcsFileBrowserDeletePromptMessage,
                 title: Resources.UiDeleteButtonCaption,
@@ -309,7 +306,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 operations: deleteOperations,
                 cancellationTokenSource: cancellationTokenSource);
 
-            // 4) refresh the window with the contents of the server.
             UpdateCurrentState();
         }
 
