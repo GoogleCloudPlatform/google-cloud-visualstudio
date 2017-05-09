@@ -30,6 +30,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         private readonly GcsFileProgressDialogWindow _owner;
         private readonly CancellationTokenSource _tokenSource;
         private int _completed = 0;
+        private string _progressMessage;
         private string _caption = Resources.UiCancelButtonCaption;
 
         /// <summary>
@@ -38,9 +39,27 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         public string Message { get; }
 
         /// <summary>
+        /// The message for the overall progres.
+        /// </summary>
+        public string ProgressMessage => String.Format(_progressMessage, $"{Completed}/{Operations.Count}");
+
+        /// <summary>
         /// The list of operations.
         /// </summary>
         public ObservableCollection<GcsFileOperation> Operations { get; }
+
+        /// <summary>
+        /// The count of completed operations.
+        /// </summary>
+        public int Completed
+        {
+            get { return _completed; }
+            private set
+            {
+                SetValueAndRaise(ref _completed, value);
+                RaisePropertyChanged(nameof(ProgressMessage));
+            }
+        }
 
         /// <summary>
         /// The caption for the dialog.
@@ -48,7 +67,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         public string Caption
         {
             get { return _caption; }
-            set { SetValueAndRaise(ref _caption, value); }
+            private set { SetValueAndRaise(ref _caption, value); }
         }
 
         /// <summary>
@@ -59,16 +78,18 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         /// <summary>
         /// Returns whether the operation is complete.
         /// </summary>
-        private bool IsComplete => _completed >= Operations.Count;
+        private bool IsComplete => Completed >= Operations.Count;
 
         public GcsFileProgressDialogViewModel(
             string message,
+            string progressMessage,
             GcsFileProgressDialogWindow owner,
             IEnumerable<GcsFileOperation> operations,
             CancellationTokenSource tokenSource)
         {
             _owner = owner;
             _tokenSource = tokenSource;
+            _progressMessage = progressMessage;
 
             Message = message;
             Operations = new ObservableCollection<GcsFileOperation>(operations);
@@ -82,7 +103,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
 
         private void OnOperationCompleted(object sender, EventArgs e)
         {
-            _completed += 1;
+            Completed++;
             if (IsComplete)
             {
                 Caption = Resources.UiCloseButtonCaption;

@@ -21,7 +21,7 @@
     </UserControl.Resources>
 
     <UserControl.Style>
-        <Binding Source="{StaticResource CommonDialogStyleDynamicLarge}" />
+        <Binding Source="{StaticResource CommonDialogStyleLarge}" />
     </UserControl.Style>
 
     <theming:CommonDialogWindowBaseContent HasBanner="True">
@@ -34,12 +34,23 @@
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <Label Content="{Binding Message}" Style="{StaticResource CommonLabelStyle}" />
+            <Label Content="{Binding ProgressMessage}" Style="{StaticResource CommonLabelStyle}" />
 
-            <DataGrid Grid.Row="1"
+            <ProgressBar Grid.Row="1"
+                         Margin="0,0,0,5"
+                         Minimum="0"
+                         Maximum="{Binding Operations.Count}"
+                         Value="{Binding Completed}"
+                         Style="{StaticResource CommonProgressBarStyle}"/>
+
+            <Label Grid.Row="2" Content="{Binding Message}" Style="{StaticResource CommonLabelStyle}" />
+
+            <DataGrid Grid.Row="3"
                       IsReadOnly="True"
                       AutoGenerateColumns="False"
                       HeadersVisibility="Column"
@@ -67,7 +78,8 @@
                                     <ProgressBar Grid.Column="1"
                                                  Minimum="0.0"
                                                  Maximum="1.0"
-                                                 Value="{Binding Progress}" />
+                                                 Value="{Binding Progress}"
+                                                 Style="{StaticResource CommonProgressBarStyle}"/>
                                     
                                     <!-- This text will show on top of the progress bar in case of error or cancelled. -->
                                     <TextBlock Text="{x:Static ext:Resources.GcsFileProgressDialogPendingState}"

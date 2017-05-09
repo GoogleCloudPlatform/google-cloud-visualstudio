@@ -27,10 +27,11 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         private GcsFileProgressDialogWindow(
             string caption,
             string message,
+            string progressMessage,
             IEnumerable<GcsFileOperation> operations,
             CancellationTokenSource tokenSource) : base(caption)
         {
-            var viewModel = new GcsFileProgressDialogViewModel(message, this, operations, tokenSource);
+            var viewModel = new GcsFileProgressDialogViewModel(message, progressMessage, this, operations, tokenSource);
             Content = new GcsFileProgressDialogWindowContent
             {
                 DataContext = viewModel
@@ -42,15 +43,17 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         /// </summary>
         /// <param name="caption">The caption to use for the dialog.</param>
         /// <param name="message">The message to use in the dialog.</param>
+        /// <param name="progressMessage">The progress message to show.</param>
         /// <param name="operations">The list of operations to track.</param>
         /// <param name="cancellationTokenSource">The <seealso cref="CancellationTokenSource"/> to be used to cancel the operations.</param>
         public static void PromptUser(
             string caption,
             string message,
+            string progressMessage,
             IEnumerable<GcsFileOperation> operations,
             CancellationTokenSource cancellationTokenSource)
         {
-            var dialog = new GcsFileProgressDialogWindow(caption, message, operations, cancellationTokenSource);
+            var dialog = new GcsFileProgressDialogWindow(caption, message, progressMessage, operations, cancellationTokenSource);
             dialog.ShowModal();
         }
     }
