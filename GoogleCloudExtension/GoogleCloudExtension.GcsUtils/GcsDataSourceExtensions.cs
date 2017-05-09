@@ -42,6 +42,12 @@ namespace GoogleCloudExtension.GcsUtils
                 contentType: "application/x-www-form-urlencoded;charset=UTF-8");
         }
 
+        /// <summary>
+        /// Starts the upload operation using the data from the given operation.
+        /// </summary>
+        /// <param name="self">The data source.</param>
+        /// <param name="operation">The operation to start.</param>
+        /// <param name="cancellationToken">The cancellation token for the operation.</param>
         internal static void StartFileUploadOperation(
             this GcsDataSource self,
             GcsFileOperation operation,
@@ -55,6 +61,12 @@ namespace GoogleCloudExtension.GcsUtils
                 token: cancellationToken);
         }
 
+        /// <summary>
+        /// Starts the download operation using the data from the given operation.
+        /// </summary>
+        /// <param name="self">The data source.</param>
+        /// <param name="operation">The operation to start.</param>
+        /// <param name="cancellationToken">The cancellation token for the operation.</param>
         internal static void StartFileDownloadOperation(
             this GcsDataSource self,
             GcsFileOperation operation,
@@ -68,6 +80,12 @@ namespace GoogleCloudExtension.GcsUtils
                 token: cancellationToken);
         }
 
+        /// <summary>
+        /// Starts the delete operation using the data from the given operation.
+        /// </summary>
+        /// <param name="self">The data source.</param>
+        /// <param name="operation">The operation to start.</param>
+        /// <param name="cancellationToken">The cancellation token for the operation.</param>
         internal static void StartDeleteOperation(
             this GcsDataSource self,
             GcsFileOperation operation,
