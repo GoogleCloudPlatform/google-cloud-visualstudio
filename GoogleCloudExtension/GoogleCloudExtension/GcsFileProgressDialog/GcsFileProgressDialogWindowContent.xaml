@@ -39,10 +39,12 @@
             <DataGrid Grid.Row="1"
                       IsReadOnly="True"
                       AutoGenerateColumns="False"
+                      HeadersVisibility="Column"
                       ItemsSource="{Binding Operations}">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn SortMemberPath="GcsItem.FullPath"
-                                            Header="File">
+                                            Header="File"
+                                            Width="2*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <TextBlock Text="{Binding GcsItem}"
@@ -52,7 +54,7 @@
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="Progress" SortMemberPath="Progress">
+                    <DataGridTemplateColumn Header="Progress" SortMemberPath="Progress" Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
                                 <ProgressBar Grid.Column="1"
