@@ -50,6 +50,9 @@ namespace GoogleCloudExtension.GcsUtils
             private set { SetValueAndRaise(ref _isError, value); }
         }
 
+        /// <summary>
+        /// Whether this operation is cancelled.
+        /// </summary>
         public bool IsCancelled
         {
             get { return _isCancelled; }
@@ -110,6 +113,7 @@ namespace GoogleCloudExtension.GcsUtils
             Debug.WriteLine($"Operation for {LocalPath} cancelled.");
             _context.Send((x) =>
             {
+                IsCancelled = true;
                 Progress = 0.0;
                 Completed?.Invoke(this, EventArgs.Empty);
             }, null);
@@ -117,7 +121,12 @@ namespace GoogleCloudExtension.GcsUtils
 
         void IGcsFileOperationCallback.Error(DataSourceException ex)
         {
-            IsError = true;
+            _context.Send((x) =>
+            {
+                IsError = true;
+                Progress = 0.0;
+                Completed?.Invoke(this, EventArgs.Empty);
+            }, null);
         }
 
         #endregion

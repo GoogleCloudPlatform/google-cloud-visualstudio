@@ -94,6 +94,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
             if (!IsComplete)
             {
                 _tokenSource.Cancel();
+                return;
             }
             _owner.Close();
         }

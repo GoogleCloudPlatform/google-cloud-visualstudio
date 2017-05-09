@@ -6,6 +6,7 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.GcsFileProgressDialog"
              xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type local:GcsFileProgressDialogViewModel}}">
 
@@ -14,6 +15,8 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
+
+            <utils:VisibilityConverter x:Key="commonVisibilityConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -60,10 +63,24 @@
                                             Width="*">
                         <DataGridTemplateColumn.CellTemplate>
                             <DataTemplate>
-                                <ProgressBar Grid.Column="1"
-                                             Minimum="0.0"
-                                             Maximum="1.0"
-                                             Value="{Binding Progress}" />
+                                <Grid>
+                                    <ProgressBar Grid.Column="1"
+                                                 Minimum="0.0"
+                                                 Maximum="1.0"
+                                                 Value="{Binding Progress}" />
+                                    
+                                    <!-- This text will show on top of the progress bar in case of error or cancelled. -->
+                                    <TextBlock Text="Cancelled"
+                                               HorizontalAlignment="Center"
+                                               Visibility="{Binding IsCancelled, Converter={StaticResource commonVisibilityConverter}}"
+                                               Style="{StaticResource CommonTextStyle}"
+                                               Background="{x:Null}" />
+                                    <TextBlock Text="Error"
+                                               HorizontalAlignment="Center"
+                                               Visibility="{Binding IsError, Converter={StaticResource commonVisibilityConverter}}"
+                                               Style="{StaticResource CommonTextStyle}"
+                                               Background="{x:Null}" />
+                                </Grid>
                             </DataTemplate>
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
