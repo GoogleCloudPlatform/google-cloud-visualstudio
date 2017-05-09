@@ -172,7 +172,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             catch (IOException)
             {
                 UserPromptUtils.ErrorPrompt(
-                    message: "Failed to enumerate files to copy.",
+                    message: Resources.GcsFileProgressDialogFailedToEnumerateFiles,
                     title: Resources.UiErrorCaption);
                 return;
             }

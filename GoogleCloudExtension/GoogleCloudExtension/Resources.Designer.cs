@@ -2815,11 +2815,47 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Cancelled.
+        /// </summary>
+        public static string GcsFileProgressDialogCancelledState {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogCancelledState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string GcsFileProgressDialogErrorState {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogErrorState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to enumerate files to copy..
+        /// </summary>
+        public static string GcsFileProgressDialogFailedToEnumerateFiles {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogFailedToEnumerateFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to File.
         /// </summary>
         public static string GcsFileProgressDialogFileHeader {
             get {
                 return ResourceManager.GetString("GcsFileProgressDialogFileHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pending.
+        /// </summary>
+        public static string GcsFileProgressDialogPendingState {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogPendingState", resourceCulture);
             }
         }
         

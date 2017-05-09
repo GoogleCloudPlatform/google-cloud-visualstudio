@@ -70,17 +70,17 @@
                                                  Value="{Binding Progress}" />
                                     
                                     <!-- This text will show on top of the progress bar in case of error or cancelled. -->
-                                    <TextBlock Text="Pending"
+                                    <TextBlock Text="{x:Static ext:Resources.GcsFileProgressDialogPendingState}"
                                                HorizontalAlignment="Center"
                                                Visibility="{Binding IsPending, Converter={StaticResource commonVisibilityConverter}}"
                                                Style="{StaticResource CommonTextStyle}"
                                                Background="{x:Null}" />
-                                    <TextBlock Text="Cancelled"
+                                    <TextBlock Text="{x:Static ext:Resources.GcsFileProgressDialogCancelledState}"
                                                HorizontalAlignment="Center"
                                                Visibility="{Binding IsCancelled, Converter={StaticResource commonVisibilityConverter}}"
                                                Style="{StaticResource CommonTextStyle}"
                                                Background="{x:Null}" />
-                                    <TextBlock Text="Error"
+                                    <TextBlock Text="{x:Static ext:Resources.GcsFileProgressDialogErrorState}"
                                                HorizontalAlignment="Center"
                                                Visibility="{Binding IsError, Converter={StaticResource commonVisibilityConverter}}"
                                                Style="{StaticResource CommonTextStyle}"
