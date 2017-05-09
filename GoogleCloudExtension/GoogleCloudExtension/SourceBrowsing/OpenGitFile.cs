@@ -74,9 +74,13 @@ namespace GoogleCloudExtension.SourceBrowsing
                 string tmpFolder = Path.Combine(Path.GetTempPath(), Path.GetRandomFileName());
                 Directory.CreateDirectory(tmpFolder);
 
-                // window.Caption can not be modified.
-                // Set the file name suffix same as original file name that the document window shows it.
-                var filePath = Path.Combine(tmpFolder, $"tmp@{Path.GetFileName(relativePath)}");
+                // window.Caption can not be modified, the file name is the caption of the window.
+                // Format the file name so that:
+                // (1) It clear it's not original file.
+                // (2) User still can figure out the original file name by looking at the new name.
+                // (3) Different git revision has different name.
+                var filePath = Path.Combine(tmpFolder, 
+                    $"tmp.{Path.GetFileNameWithoutExtension(relativePath)}.{gitSha.GetHashCode():x}{Path.GetExtension(relativePath)}");
                 await saveAction(filePath);
                 window = OpenDocument(filePath, key);
 
