@@ -13,14 +13,14 @@
 // limitations under the License.
 
 using Google.Apis.Compute.v1.Data;
-using static GoogleCloudExtension.AttachRemoteDebugger.AttachDebuggerStepBase;
-using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+
+using System.Windows.Threading;
 
 namespace GoogleCloudExtension.AttachRemoteDebugger
 {
@@ -30,9 +30,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
     /// </summary>
     public class AttachDebuggerWindowViewModel : ViewModelBase
     {
-        private readonly AttachDebuggerWindow _owner;
-
-        private Instance _gceInstance;
+        private readonly Instance _gceInstance;
         private IAttachDebuggerStep _currentStep;
 
         private ContentControl _content;
@@ -77,14 +75,12 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
             private set { SetValueAndRaise(ref _content, value); }
         }
 
-        public AttachDebuggerWindowViewModel(
-            AttachDebuggerWindow owner,
-            Instance gceInstance)
+        public AttachDebuggerWindowViewModel(Instance gceInstance)
         {
-            _owner = owner;
             _gceInstance = gceInstance;
             OKCommand = new ProtectedCommand(taskHandler: () => ExceuteAsync(OnOKCommand), canExecuteCommand: false);
             CancelCommand = new ProtectedCommand(taskHandler: () => ExceuteAsync(OnCancelCommand), canExecuteCommand: false);
+            GotoStep(null);     // Add initial step.
         }
 
         private async Task OnOKCommand()
@@ -95,7 +91,10 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
                 return;
             }
             IAttachDebuggerStep nextStep = await _currentStep.OnOKCommand();
-            GotoStep(nextStep);
+            if (nextStep != null)
+            {
+                GotoStep(nextStep);
+            }
         }
 
         private async Task OnCancelCommand()
@@ -106,7 +105,10 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
                 return;
             }
             var nextStep = await _currentStep.OnCancelCommand();
-            GotoStep(nextStep);
+            if (nextStep != null)
+            {
+                GotoStep(nextStep);
+            }
         }
 
         private void OnStepPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -141,26 +143,37 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
                 _currentStep.PropertyChanged -= OnStepPropertyChanged;
             }
 
-            if (step != null && step != ExitStep)
+            if (step != null)
             {
                 Content = step.Content;
                 step.PropertyChanged += OnStepPropertyChanged;
 
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-                Content.Loaded += (sender, _) 
-                    => ErrorHandlerUtils.HandleExceptionsAsync(
-                        () => ExceuteAsync(
-                            () => OnContentLoaded(sender)));
-#pragma warning restore CS4014
+                Content.Loaded += OnContentLoaded;
+
+                //                Content.Loaded += (sender, _) 
+                //                    => ErrorHandlerUtils.HandleExceptionsAsync(
+                //                        () => ExceuteAsync(
+                //                            () => OnContentLoaded(sender)));
             }
-            _currentStep = step;    // set _currentStep if step == ExitStep
+            _currentStep = step;
         }
 
-        private async Task OnContentLoaded(object sender)
+        private void OnContentLoaded(object sender, System.Windows.RoutedEventArgs e)
+        {
+#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
+            var action = new Action(() => ErrorHandlerUtils.HandleExceptionsAsync(
+                () => ExceuteAsync(() => OnStart(sender))));
+#pragma warning restore CS4014
+            Content.Dispatcher.BeginInvoke(
+                action,
+                DispatcherPriority.ContextIdle, null);
+        }
+
+        private async Task OnStart(object sender)
         {
             if (_currentStep?.Content != sender)
             {
-                Debug.WriteLine("OnContentLoaded, Unexpected error. Sender is not _currentStep.");
+                Debug.WriteLine("OnStart, Unexpected error. Sender is not _currentStep.");
                 return;
             }
 
@@ -180,37 +193,11 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
             {
                 await task();
             }
-            catch (Exception ex) when
-                (ex is DataSourceException ||
-                 ex is AttachDebuggerException)
-            {
-                // TODO: Add help page or generic error page
-                if (ex is AggregateException)
-                {
-                    UserPromptUtils.ErrorPrompt(
-                        title: Resources.ExceptionPromptTitle,
-                        message: String.Format(Resources.ExceptionPromptMessage, ex.InnerException.Message),
-                        errorDetails: ex.InnerException.ToString());
-                }
-                else
-                {
-                    UserPromptUtils.ErrorPrompt(
-                        title: Resources.ExceptionPromptTitle,
-                        message: String.Format(Resources.ExceptionPromptMessage, ex.Message),
-                        errorDetails: ex.ToString());
-                }
-                _currentStep = ExitStep;
-            }
             finally
             {
                 IsReady = true;
                 ShowProgressIndicator = false;
                 UpdateButtons();
-            }
-
-            if (_currentStep == ExitStep)
-            {
-                _owner.Close();
             }
         }
     }

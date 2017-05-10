@@ -22,17 +22,10 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
     /// <summary>
     /// Base class for attaching remote debugger step view models.
     /// </summary>
-    public class AttachDebuggerStepBase:  ViewModelBase, IAttachDebuggerStep
+    public abstract class AttachDebuggerStepBase : ViewModelBase, IAttachDebuggerStep
     {
-        private static readonly ContentControl _contentControl = new ContentControl();
-
         private bool _isOKButtonEnabled;
         private bool _isCancelButtonEnabled;
-
-        /// <summary>
-        /// Define a global exit step object that implements <seealso cref="IAttachDebuggerStep"/> interface.
-        /// </summary>
-        public static AttachDebuggerStepBase ExitStep { get; } = new AttachDebuggerStepBase();
 
         #region implement interface IAttachDebuggerStep
         public virtual bool IsCancelButtonEnabled
@@ -41,7 +34,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
             protected set { SetValueAndRaise(ref _isCancelButtonEnabled, value); }
         }
 
-        public virtual ContentControl Content => _contentControl;
+        public virtual ContentControl Content => null;
 
         public virtual bool IsOKButtonEnabled
         {
@@ -51,18 +44,12 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
 
         public virtual async Task<IAttachDebuggerStep> OnCancelCommand()
         {
-            return ExitStep;
+            return null;
         }
 
-        public virtual async Task<IAttachDebuggerStep> OnStart()
-        {
-            throw new NotImplementedException();
-        }
+        public abstract Task<IAttachDebuggerStep> OnStart();
 
-        public virtual async Task<IAttachDebuggerStep> OnOKCommand()
-        {
-            throw new NotImplementedException();
-        }
+        public abstract Task<IAttachDebuggerStep> OnOKCommand();
         #endregion
     }
 }
