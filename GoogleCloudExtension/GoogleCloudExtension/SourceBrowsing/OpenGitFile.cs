@@ -79,8 +79,9 @@ namespace GoogleCloudExtension.SourceBrowsing
                 // (1) It clear it's not original file.
                 // (2) User still can figure out the original file name by looking at the new name.
                 // (3) Different git revision has different name.
-                var filePath = Path.Combine(tmpFolder, 
-                    $"tmp.{Path.GetFileNameWithoutExtension(relativePath)}.{gitSha.GetHashCode():x}{Path.GetExtension(relativePath)}");
+                var name = Path.GetFileNameWithoutExtension(relativePath);
+                var extention = Path.GetExtension(relativePath);
+                var filePath = Path.Combine(tmpFolder, $"tmp.{name}.{gitSha.GetHashCode():x}{extention}");
                 await saveAction(filePath);
                 window = OpenDocument(filePath, key);
 

@@ -24,12 +24,12 @@ namespace GoogleCloudExtension.GitUtils
     /// <summary>
     /// Get or set Visual Studio git related data.
     /// </summary>
-    public static class VSGitData
+    public static class VsGitData
     {
         private const string VisualStudio2015Version = "14.0";
         private const string VisualStudio2017Version = "15.0";
-        private const string VS14GitKey = @"Software\Microsoft\VisualStudio\14.0\TeamFoundation\GitSourceControl";
-        private const string VS15GitKey = @"Software\Microsoft\VisualStudio\15.0\TeamFoundation\GitSourceControl";
+        private const string Vs14GitKey = @"Software\Microsoft\VisualStudio\14.0\TeamFoundation\GitSourceControl";
+        private const string Vs15GitKey = @"Software\Microsoft\VisualStudio\15.0\TeamFoundation\GitSourceControl";
 
         /// <summary>
         /// Get local repositories Visual Studio registry.
@@ -43,9 +43,9 @@ namespace GoogleCloudExtension.GitUtils
             switch (vsVersion)
             {
                 case VisualStudio2015Version:
-                    return RepositoryList(VS14GitKey);
+                    return RepositoryList(Vs14GitKey);
                 case VisualStudio2017Version:
-                    return RepositoryList(VS15GitKey);
+                    return RepositoryList(Vs15GitKey);
                 default:
                     throw new NotSupportedException($"Version {vsVersion} is not supported.");
             }

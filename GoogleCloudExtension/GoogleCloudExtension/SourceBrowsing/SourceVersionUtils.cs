@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                 if (logItem.Entry.Labels?.ContainsKey(SourceContextIdLabel) == true)
                 {
                     string sha = logItem.Entry.Labels[SourceContextIdLabel];
-                    window = await ProgressDialogWindow.PromptUser<EnvDTE.Window>(
+                    window = await ProgressDialogWindow.PromptUser(
                         SearchGitRepoAndOpenFileAsync(sha, logItem.SourceFilePath), 
                         s_gitOperationOption);
                 }
@@ -210,7 +210,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                 }
             }
 
-            IEnumerable<string> gitPaths = VSGitData.GetLocalRepositories(GoogleCloudExtensionPackage.VsVersion);
+            IEnumerable<string> gitPaths = VsGitData.GetLocalRepositories(GoogleCloudExtensionPackage.VsVersion);
             if (gitPaths != null)
             {
                 foreach (var path in gitPaths)
@@ -222,17 +222,6 @@ namespace GoogleCloudExtension.SourceBrowsing
                 }
             }
             return null;
-        }
-
-        private static void OpenProjectFromLocalRepositoryPrompt()
-        {
-            if (UserPromptUtils.ActionPrompt(
-                    prompt: String.Format(Resources.SourceVersionUtilsOpenProjectFromLocalRepoPrompt),
-                    title: Resources.uiDefaultPromptTitle,
-                    message: Resources.LogsViewerAskToOpenProjectMessage))
-            {
-                ShellUtils.OpenProject();
-            }
         }
 
         private static bool ContinueWhenVersionMismatch(ProjectHelper project, string assemblyVersion)
