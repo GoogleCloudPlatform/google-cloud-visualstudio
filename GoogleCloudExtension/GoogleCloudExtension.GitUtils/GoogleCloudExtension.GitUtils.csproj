@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="GitRepository.cs" />
     <Compile Include="GitCommit.cs" />
+    <Compile Include="VsGitData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

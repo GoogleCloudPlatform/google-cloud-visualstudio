@@ -62,7 +62,9 @@ namespace GoogleCloudExtension.SourceBrowsing
                 if (logItem.Entry.Labels?.ContainsKey(SourceContextIdLabel) == true)
                 {
                     string sha = logItem.Entry.Labels[SourceContextIdLabel];
-                    window = await SearchGitRepoAndOpenFileAsync(sha, logItem.SourceFilePath);
+                    window = await ProgressDialogWindow.PromptUser(
+                        SearchGitRepoAndOpenFileAsync(sha, logItem.SourceFilePath), 
+                        s_gitOperationOption);
                 }
                 else
                 {   // If the log item does not contain revision id, 
@@ -208,36 +210,18 @@ namespace GoogleCloudExtension.SourceBrowsing
                 }
             }
 
-            if (!IsCurrentSolutionOpen())
+            IEnumerable<string> gitPaths = VsGitData.GetLocalRepositories(GoogleCloudExtensionPackage.VsVersion);
+            if (gitPaths != null)
             {
-                OpenProjectFromLocalRepositoryPrompt();
-            }
-            if (!IsCurrentSolutionOpen())
-            {
-                return null;    // Still no valid solution is open, give up.
-            }
-
-            var solution = SolutionHelper.CurrentSolution;
-            // Linq does not accept async lambda, use foreach
-            foreach (var project in solution.Projects) 
-            {
-                if (await SearchCommitAtPathAsync(project.ProjectRoot, sha))
+                foreach (var path in gitPaths)
                 {
-                    return await OpenGitFileAsync(s_localCache[sha], filePath);
+                    if (await SearchCommitAtPathAsync(path, sha))
+                    {
+                        return await OpenGitFileAsync(s_localCache[sha], filePath);
+                    }
                 }
             }
             return null;
-        }
-
-        private static void OpenProjectFromLocalRepositoryPrompt()
-        {
-            if (UserPromptUtils.ActionPrompt(
-                    prompt: String.Format(Resources.SourceVersionUtilsOpenProjectFromLocalRepoPrompt),
-                    title: Resources.uiDefaultPromptTitle,
-                    message: Resources.LogsViewerAskToOpenProjectMessage))
-            {
-                ShellUtils.OpenProject();
-            }
         }
 
         private static bool ContinueWhenVersionMismatch(ProjectHelper project, string assemblyVersion)
@@ -265,9 +249,7 @@ namespace GoogleCloudExtension.SourceBrowsing
 
         private static async Task<bool> SearchCommitAtPathAsync(string filePath, string sha)
         {
-            GitCommit gitCommit = await ProgressDialogWindow.PromptUser<GitCommit>(
-                GitCommit.FindCommitAsync(filePath, sha),
-                s_gitOperationOption);
+            GitCommit gitCommit = await GitCommit.FindCommitAsync(filePath, sha);
             if (gitCommit != null)
             {
                 s_localCache[sha] = gitCommit;
@@ -276,14 +258,10 @@ namespace GoogleCloudExtension.SourceBrowsing
             return false;
         }
 
-        private static Task<EnvDTE.Window> OpenGitFileAsync(GitCommit commit, string filePath)
+        private static async Task<EnvDTE.Window> OpenGitFileAsync(GitCommit commit, string filePath)
         {
             string relativePath;
-            var task = ProgressDialogWindow.PromptUser<IEnumerable<string>>(
-                commit.FindMatchingEntryAsync(filePath),
-                s_gitOperationOption);
-            task.Wait();
-            var matchingFiles = task.Result;
+            var matchingFiles = await commit.FindMatchingEntryAsync(filePath);
             if (matchingFiles.Count() == 0)
             {
                 UserPromptUtils.ErrorPrompt(
@@ -313,15 +291,10 @@ namespace GoogleCloudExtension.SourceBrowsing
                 return null;
             }
 
-            return SourceBrowsing.OpenGitFile.Current.Open(
+            return await OpenGitFile.Current.Open(
                 commit.Sha,
                 relativePath,
-                async (tmpFile) => await SaveFileAsync(commit, tmpFile, relativePath));
+                async (tmpFile) => await commit.SaveTempFileAsync(tmpFile, relativePath));
         }
-
-        private static Task SaveFileAsync(GitCommit commit, string tempFile, string relativePath) =>            
-            ProgressDialogWindow.PromptUser(
-                commit.SaveTempFileAsync(tempFile, relativePath),
-                s_gitOperationOption);
     }
 }

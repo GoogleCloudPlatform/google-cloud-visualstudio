@@ -101,10 +101,10 @@ namespace GoogleCloudExtension.SourceBrowsing
             }
 
             ITextSnapshotLine textLine = _sourceBuffer.CurrentSnapshot.GetLineFromLineNumber((int)activeData.SourceLine - 1);
+            string text = textLine.GetText();
             SnapshotSpan span;
-            if (String.IsNullOrWhiteSpace(activeData.MethodName))
+            if (String.IsNullOrWhiteSpace(activeData.MethodName) || !text.Contains(activeData.MethodName))
             {
-                var text = textLine.GetText();
                 int begin = StringUtils.FirstNonSpaceIndex(text);
                 int end = StringUtils.LastNonSpaceIndex(text);
                 if (begin == -1 || end == -1)
@@ -115,7 +115,7 @@ namespace GoogleCloudExtension.SourceBrowsing
             }
             else
             {
-                int pos = textLine.GetText().IndexOf(activeData.MethodName);
+                int pos = text.IndexOf(activeData.MethodName);
                 if (pos < 0)
                 {
                     HideTooltip();
