@@ -31,6 +31,10 @@ namespace GoogleCloudExtension.GcsUtils
         /// <param name="name">The path within a bucket.</param>
         public static string GetFileName(string name)
         {
+            if (String.IsNullOrEmpty(name))
+            {
+                throw new ArgumentException(nameof(name));
+            }
             var cleanName = name.Last() == '/' ? name.Substring(0, name.Length - 1) : name;
             return cleanName.Split('/').Last();
         }

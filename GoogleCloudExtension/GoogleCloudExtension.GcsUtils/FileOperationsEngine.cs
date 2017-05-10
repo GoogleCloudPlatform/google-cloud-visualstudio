@@ -70,9 +70,8 @@ namespace GoogleCloudExtension.GcsUtils
             string destinationDir,
             CancellationToken cancellationToken)
         {
-            List<GcsFileOperation> downloadOperations = new List<GcsFileOperation>();
-
-            downloadOperations.AddRange(sources
+            List<GcsFileOperation> downloadOperations = new List<GcsFileOperation>(
+                sources
                 .Where(x => x.IsFile)
                 .Select(x => new GcsFileOperation(
                     localPath: Path.Combine(destinationDir, GcsPathUtils.GetFileName(x.Name)),
@@ -126,9 +125,7 @@ namespace GoogleCloudExtension.GcsUtils
             IEnumerable<GcsItemRef> sources,
             CancellationToken cancellationToken)
         {
-            List<GcsFileOperation> deleteOperations = new List<GcsFileOperation>();
-
-            deleteOperations.AddRange(sources
+            List<GcsFileOperation> deleteOperations = new List<GcsFileOperation>(sources
                 .Where(x => x.IsFile)
                 .Select(x => new GcsFileOperation(x)));
 
@@ -150,35 +147,39 @@ namespace GoogleCloudExtension.GcsUtils
         /// Creates the <seealso cref="GcsFileOperation"/> necessary to upload all of the sources from the local
         /// file system to GCS. The sources can be files or directories.
         /// </summary>
-        /// <param name="sources">The list of local files or directories to upload.</param>
-        /// <returns></returns>
-        static private IList<GcsFileOperation> CreateUploadOperations(IEnumerable<string> sources, string bucket, string bucketPath)
-        {
-            return sources
-               .Select(src =>
-               {
-                   var info = new FileInfo(src);
-                   var isDirectory = (info.Attributes & FileAttributes.Directory) != 0;
-
-                   if (isDirectory)
-                   {
-                       return CreateUploadOperationsForDirectory(
-                           sourceDir: info.FullName,
-                           bucket: bucket,
-                           baseGcsPath: GcsPathUtils.Combine(bucketPath, info.Name));
-                   }
-                   else
-                   {
-                       return new GcsFileOperation[]
-                          {
-                            new GcsFileOperation(
-                                localPath: info.FullName,
-                                gcsItem: new GcsItemRef(bucket: bucket, name: GcsPathUtils.Combine(bucketPath, info.Name)))
-                          };
-                   }
-               })
+        static private IList<GcsFileOperation> CreateUploadOperations(
+            IEnumerable<string> paths,
+            string bucket,
+            string bucketPath)
+            => paths
+               .Select(x => CreateUploadOPerationsForPath(bucket, bucketPath, x))
                .SelectMany(x => x)
                .ToList();
+
+        private static IEnumerable<GcsFileOperation> CreateUploadOPerationsForPath(
+            string bucket,
+            string bucketPath,
+            string src)
+        {
+            var info = new FileInfo(src);
+            var isDirectory = (info.Attributes & FileAttributes.Directory) != 0;
+
+            if (isDirectory)
+            {
+                return CreateUploadOperationsForDirectory(
+                    sourceDir: info.FullName,
+                    bucket: bucket,
+                    baseGcsPath: GcsPathUtils.Combine(bucketPath, info.Name));
+            }
+            else
+            {
+                return new GcsFileOperation[]
+                   {
+                        new GcsFileOperation(
+                            localPath: info.FullName,
+                            gcsItem: new GcsItemRef(bucket: bucket, name: GcsPathUtils.Combine(bucketPath, info.Name)))
+                   };
+            }
         }
 
         /// <summary>
@@ -193,19 +194,20 @@ namespace GoogleCloudExtension.GcsUtils
             string bucket,
             string baseGcsPath)
         {
-            return Enumerable.Concat(
-                Directory.EnumerateFiles(sourceDir)
-                    .Select(file => new GcsFileOperation(
-                        localPath: file,
-                        gcsItem: new GcsItemRef(
-                            bucket: bucket,
-                            name: GcsPathUtils.Combine(baseGcsPath, Path.GetFileName(file))))),
-                Directory.EnumerateDirectories(sourceDir)
-                    .Select(subDir => CreateUploadOperationsForDirectory(
-                        subDir,
+            var fileOperations = Directory.EnumerateFiles(sourceDir)
+                .Select(file => new GcsFileOperation(
+                    localPath: file,
+                    gcsItem: new GcsItemRef(
                         bucket: bucket,
-                        baseGcsPath: GcsPathUtils.Combine(baseGcsPath, Path.GetFileName(subDir))))
-                    .SelectMany(x => x));
+                        name: GcsPathUtils.Combine(baseGcsPath, Path.GetFileName(file)))));
+            var directoryOperations = Directory.EnumerateDirectories(sourceDir)
+                .Select(subDir => CreateUploadOperationsForDirectory(
+                    subDir,
+                    bucket: bucket,
+                    baseGcsPath: GcsPathUtils.Combine(baseGcsPath, Path.GetFileName(subDir))))
+                .SelectMany(x => x);
+
+            return Enumerable.Concat(fileOperations, directoryOperations);
         }
 
         /// <summary>
@@ -223,7 +225,6 @@ namespace GoogleCloudExtension.GcsUtils
         /// <summary>
         /// Utility method to get all of the files given the list of <paramref name="prefixes"/>.
         /// </summary>
-        /// <param name="self">The data source.</param>
         /// <param name="bucket">The bucket that contains the files.</param>
         /// <param name="prefixes">The prefixes to query.</param>
         /// <returns>A combined <seealso cref="IEnumerable{GcsFileReference}"/> with all of the files found.</returns>
@@ -231,12 +232,8 @@ namespace GoogleCloudExtension.GcsUtils
             string bucket,
             IEnumerable<string> prefixes)
         {
-            var result = new List<GcsItemRef>();
-            foreach (var prefix in prefixes)
-            {
-                result.AddRange(await GetGcsFilesFromPrefixAsync(bucket, prefix));
-            }
-            return result;
+            var filesInPrefixes = await Task.WhenAll(prefixes.Select(x => GetGcsFilesFromPrefixAsync(bucket, x)));
+            return filesInPrefixes.SelectMany(x => x);
         }
 
         /// <summary>
