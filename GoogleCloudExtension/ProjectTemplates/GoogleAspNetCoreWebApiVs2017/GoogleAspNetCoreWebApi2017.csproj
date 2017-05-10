@@ -14,7 +14,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.0.2" />
 
     <!-- Adds logging and diagnostics for Google Cloud Platform. -->
-    <PackageReference Include="Google.Cloud.Diagnostics.AspNetCore" Version="1.0.0-beta1" />
+    <PackageReference Include="Google.Cloud.Diagnostics.AspNetCore" Version="1.0.0-alpha08" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="1.0.1" />
