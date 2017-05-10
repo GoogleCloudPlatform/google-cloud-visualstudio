@@ -206,7 +206,7 @@ namespace GoogleCloudExtension.DataSources
             {
                 operation.Error(new DataSourceException(ex.Message, ex));
             }
-            catch (TaskCanceledException ex)
+            catch (TaskCanceledException)
             {
                 operation.Cancelled();
             }
@@ -267,7 +267,7 @@ namespace GoogleCloudExtension.DataSources
         {
             try
             {
-                var response = await Service.Objects.Delete(bucket, name).ExecuteAsync();
+                var response = await Service.Objects.Delete(bucket, name).ExecuteAsync(token);
                 operation.Completed();
             }
             catch (GoogleApiException ex)
