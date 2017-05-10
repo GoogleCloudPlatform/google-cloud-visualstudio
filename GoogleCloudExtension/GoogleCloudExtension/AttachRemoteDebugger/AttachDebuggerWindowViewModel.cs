@@ -149,11 +149,6 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
                 step.PropertyChanged += OnStepPropertyChanged;
 
                 Content.Loaded += OnContentLoaded;
-
-                //                Content.Loaded += (sender, _) 
-                //                    => ErrorHandlerUtils.HandleExceptionsAsync(
-                //                        () => ExceuteAsync(
-                //                            () => OnContentLoaded(sender)));
             }
             _currentStep = step;
         }
@@ -164,6 +159,8 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
             var action = new Action(() => ErrorHandlerUtils.HandleExceptionsAsync(
                 () => ExceuteAsync(() => OnStart(sender))));
 #pragma warning restore CS4014
+
+            // A tricky way to perform tasks after the user control is rendered.
             Content.Dispatcher.BeginInvoke(
                 action,
                 DispatcherPriority.ContextIdle, null);

@@ -58,7 +58,7 @@ namespace GoogleCloudExtension.Utils
 
         public void Execute(object parameter)
         {
-            _action?.Invoke();
+            _action.Invoke();
         }
 
         #endregion
