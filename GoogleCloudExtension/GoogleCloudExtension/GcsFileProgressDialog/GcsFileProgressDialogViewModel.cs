@@ -51,15 +51,15 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
             {
                 if (IsCancelling)
                 {
-                    return "Cancelling operation";
+                    return Resources.GcsFileProgressDialogCancellingOperationMessage;
                 }
                 else if (IsCancelled)
                 {
-                    return "Operation cancelled";
+                    return Resources.GcsFileProgressDialogCancelledOperationMessage;
                 }
                 else if (OperationsPending)
                 {
-                    return "Operation starting";
+                    return Resources.GcsFileProgressDialogStartingOperation;
                 }
                 else
                 {
@@ -122,7 +122,8 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
 
         public ICommand ExpandCollapseDetailsCommand { get; }
 
-        public string ExpandCollapseMessage => DetailsExpanded ? "Hide details" : "Show details";
+        public string ExpandCollapseMessage => DetailsExpanded ?
+            Resources.GcsFileProgressDialogHideDetailsCaption : Resources.GcsFileProgressDialogShowDetailsCaption;
 
         /// <summary>
         /// Returns whether the operation is complete.

@@ -2815,11 +2815,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Operation cancelled.
+        /// </summary>
+        public static string GcsFileProgressDialogCancelledOperationMessage {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogCancelledOperationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cancelled.
         /// </summary>
         public static string GcsFileProgressDialogCancelledState {
             get {
                 return ResourceManager.GetString("GcsFileProgressDialogCancelledState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancelling operation.
+        /// </summary>
+        public static string GcsFileProgressDialogCancellingOperationMessage {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogCancellingOperationMessage", resourceCulture);
             }
         }
         
@@ -2851,6 +2869,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Hide details.
+        /// </summary>
+        public static string GcsFileProgressDialogHideDetailsCaption {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogHideDetailsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Pending.
         /// </summary>
         public static string GcsFileProgressDialogPendingState {
@@ -2865,6 +2892,24 @@ namespace GoogleCloudExtension {
         public static string GcsFileProgressDialogProgressHeader {
             get {
                 return ResourceManager.GetString("GcsFileProgressDialogProgressHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show details.
+        /// </summary>
+        public static string GcsFileProgressDialogShowDetailsCaption {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogShowDetailsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation starting.
+        /// </summary>
+        public static string GcsFileProgressDialogStartingOperation {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogStartingOperation", resourceCulture);
             }
         }
         

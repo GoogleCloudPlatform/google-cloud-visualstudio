@@ -2295,4 +2295,24 @@
     <value>Progress</value>
     <comment>Header used in the progress column in the data grid for the file progress dialog.</comment>
   </data>
+  <data name="GcsFileProgressDialogCancelledOperationMessage" xml:space="preserve">
+    <value>Operation cancelled</value>
+    <comment>Message shown when the operation is cancelled.</comment>
+  </data>
+  <data name="GcsFileProgressDialogCancellingOperationMessage" xml:space="preserve">
+    <value>Cancelling operation</value>
+    <comment>Message shown while the operation is being cancelled.</comment>
+  </data>
+  <data name="GcsFileProgressDialogHideDetailsCaption" xml:space="preserve">
+    <value>Hide details</value>
+    <comment>Caption for the action hyperlink in the progress dialog.</comment>
+  </data>
+  <data name="GcsFileProgressDialogShowDetailsCaption" xml:space="preserve">
+    <value>Show details</value>
+    <comment>Caption for the action hyperlink in the progress dialog.</comment>
+  </data>
+  <data name="GcsFileProgressDialogStartingOperation" xml:space="preserve">
+    <value>Operation starting</value>
+    <comment>Message shown when the operation is started.</comment>
+  </data>
 </root>
