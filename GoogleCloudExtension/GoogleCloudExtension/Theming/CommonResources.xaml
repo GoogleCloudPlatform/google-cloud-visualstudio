@@ -87,6 +87,12 @@
         <Setter Property="MinHeight" Value="100px" />
     </Style>
 
+    <!-- Small wide dialog, fixed on the width but allows it to grow vertically. -->
+    <Style x:Key="CommonDialogStyleDynamicSmallWide" BasedOn="{StaticResource CommonDialogStyleBase}" TargetType="{x:Type UserControl}">
+        <Setter Property="Width" Value="400px" />
+        <Setter Property="MinHeight" Value="150px" />
+    </Style>
+
     <!-- Large dialog, fixed on the width but allows it to grow vertically. -->
     <Style x:Key="CommonDialogStyleDynamicLarge" BasedOn="{StaticResource CommonDialogStyleBase}" TargetType="{x:Type UserControl}">
         <Setter Property="Width" Value="500px" />

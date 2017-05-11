@@ -32,6 +32,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         private int _completed = 0;
         private string _progressMessage;
         private string _caption = Resources.UiCancelButtonCaption;
+        private bool _detailsExpanded = false;
 
         /// <summary>
         /// The message to display in the dialog.
@@ -75,6 +76,20 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         /// </summary>
         public ICommand ActionCommand { get; }
 
+        public bool DetailsExpanded
+        {
+            get { return _detailsExpanded; }
+            set
+            {
+                SetValueAndRaise(ref _detailsExpanded, value);
+                RaisePropertyChanged(nameof(ExpandCollapseMessage));
+            }
+        }
+
+        public ICommand ExpandCollapseDetailsCommand { get; }
+
+        public string ExpandCollapseMessage => DetailsExpanded ? "Hide details" : "Show details";
+
         /// <summary>
         /// Returns whether the operation is complete.
         /// </summary>
@@ -99,6 +114,12 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
             }
 
             ActionCommand = new ProtectedCommand(OnActionCommand);
+            ExpandCollapseDetailsCommand = new ProtectedCommand(OnExpandCollapseDetailsCommand);
+        }
+
+        private void OnExpandCollapseDetailsCommand()
+        {
+            DetailsExpanded = !DetailsExpanded;
         }
 
         private void OnOperationCompleted(object sender, EventArgs e)

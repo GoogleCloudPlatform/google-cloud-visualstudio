@@ -21,7 +21,7 @@
     </UserControl.Resources>
 
     <UserControl.Style>
-        <Binding Source="{StaticResource CommonDialogStyleLarge}" />
+        <Binding Source="{StaticResource CommonDialogStyleDynamicSmallWide}" />
     </UserControl.Style>
 
     <theming:CommonDialogWindowBaseContent HasBanner="True">
@@ -36,25 +36,33 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="auto" />
+                <RowDefinition Height="auto" />
             </Grid.RowDefinitions>
 
             <Label Content="{Binding ProgressMessage}" Style="{StaticResource CommonLabelStyle}" />
 
             <ProgressBar Grid.Row="1"
-                         Margin="0,0,0,5"
+                         Margin="0,0,0,10"
                          Minimum="0"
                          Maximum="{Binding Operations.Count}"
                          Value="{Binding Completed}"
                          Style="{StaticResource CommonProgressBarStyle}"/>
 
-            <Label Grid.Row="2" Content="{Binding Message}" Style="{StaticResource CommonLabelStyle}" />
+            <!-- Details for the copy operation. -->
+            <Label Grid.Row="2"
+                   Content="{Binding Message}"
+                   Visibility="{Binding DetailsExpanded, Converter={StaticResource commonVisibilityConverter}}"
+                   Style="{StaticResource CommonLabelStyle}" />
 
             <DataGrid Grid.Row="3"
                       IsReadOnly="True"
                       AutoGenerateColumns="False"
                       HeadersVisibility="Column"
-                      ItemsSource="{Binding Operations}">
+                      MaxHeight="300px"
+                      Visibility="{Binding DetailsExpanded, Converter={StaticResource commonVisibilityConverter}}"
+                      ItemsSource="{Binding Operations}"
+                      Margin="0,0,0,10">
                 <DataGrid.Columns>
                     <DataGridTemplateColumn SortMemberPath="GcsItem.FullPath"
                                             Header="{x:Static ext:Resources.GcsFileProgressDialogFileHeader}"
@@ -80,7 +88,7 @@
                                                  Maximum="1.0"
                                                  Value="{Binding Progress}"
                                                  Style="{StaticResource CommonProgressBarStyle}"/>
-                                    
+
                                     <!-- This text will show on top of the progress bar in case of error or cancelled. -->
                                     <TextBlock Text="{x:Static ext:Resources.GcsFileProgressDialogPendingState}"
                                                HorizontalAlignment="Center"
@@ -102,8 +110,13 @@
                         </DataGridTemplateColumn.CellTemplate>
                     </DataGridTemplateColumn>
                 </DataGrid.Columns>
-
             </DataGrid>
+
+            <TextBlock Grid.Row="4">
+                <Hyperlink Command="{Binding ExpandCollapseDetailsCommand}">
+                    <TextBlock Text="{Binding ExpandCollapseMessage}"/>
+                </Hyperlink>
+            </TextBlock>
         </Grid>
     </theming:CommonDialogWindowBaseContent>
 </UserControl>
