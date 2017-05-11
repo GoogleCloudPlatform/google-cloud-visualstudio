@@ -66,7 +66,15 @@ namespace GoogleCloudExtension.GcsUtils
         public bool IsPending
         {
             get { return _isPending; }
-            private set { SetValueAndRaise(ref _isPending, value); }
+            private set
+            {
+                var changed = value != _isPending;
+                SetValueAndRaise(ref _isPending, value);
+                if (changed && !_isPending)
+                {
+                    Started?.Invoke(this, EventArgs.Empty);
+                }
+            }
         }
 
         /// <summary>
@@ -88,6 +96,11 @@ namespace GoogleCloudExtension.GcsUtils
         /// Event raised when the operation completes.
         /// </summary>
         public event EventHandler Completed;
+
+        /// <summary>
+        /// Event raised when the operation is started.
+        /// </summary>
+        public event EventHandler Started;
 
         public GcsFileOperation(
             string localPath,

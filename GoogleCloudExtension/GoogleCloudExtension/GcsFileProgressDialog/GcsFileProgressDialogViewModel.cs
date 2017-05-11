@@ -32,6 +32,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         private readonly CancellationTokenSource _tokenSource;
         private int _completed = 0;
         private bool _hasCancellation;
+        private bool _operationsPending = true;
         private string _progressMessage;
         private string _caption = Resources.UiCancelButtonCaption;
         private bool _detailsExpanded = false;
@@ -56,6 +57,10 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
                 {
                     return "Operation cancelled";
                 }
+                else if (OperationsPending)
+                {
+                    return "Operation starting";
+                }
                 else
                 {
                     return String.Format(_progressMessage, Completed, Operations.Count);
@@ -63,6 +68,15 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
             }
         }
            
+        public bool OperationsPending
+        {
+            get { return _operationsPending; }
+            private set
+            {
+                SetValueAndRaise(ref _operationsPending, value);
+                RaisePropertyChanged(nameof(ProgressMessage));
+            }
+        }
 
         /// <summary>
         /// The list of operations.
@@ -141,6 +155,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
             foreach (var operation in Operations)
             {
                 operation.Completed += OnOperationCompleted;
+                operation.Started += OnOperationStarted;
             }
 
             ActionCommand = new ProtectedCommand(OnActionCommand);
@@ -162,6 +177,11 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
             {
                 Caption = Resources.UiCloseButtonCaption;
             }
+        }
+
+        private void OnOperationStarted(object sender, EventArgs e)
+        {
+            OperationsPending = false;
         }
 
         private void OnActionCommand()

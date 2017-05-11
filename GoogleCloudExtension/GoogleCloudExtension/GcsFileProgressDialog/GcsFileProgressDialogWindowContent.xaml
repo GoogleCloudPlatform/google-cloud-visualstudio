@@ -46,10 +46,12 @@
                          Minimum="0"
                          Maximum="{Binding Operations.Count}"
                          Value="{Binding Completed}"
+                         IsIndeterminate="{Binding OperationsPending}"
                          Style="{StaticResource CommonProgressBarStyle}"/>
 
             <TextBlock Grid.Row="2">
-                <Hyperlink Command="{Binding ExpandCollapseDetailsCommand}">
+                <Hyperlink Command="{Binding ExpandCollapseDetailsCommand}"
+                           Style="{StaticResource CommonHyperlinkStyle}">
                     <TextBlock Text="{Binding ExpandCollapseMessage}"/>
                 </Hyperlink>
             </TextBlock>
