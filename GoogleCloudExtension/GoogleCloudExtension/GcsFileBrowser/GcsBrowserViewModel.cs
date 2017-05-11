@@ -180,7 +180,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             GcsFileProgressDialogWindow.PromptUser(
                 caption: Resources.GcsFileBrowserUploadingProgressCaption,
                 message: Resources.GcsFileBrowserUploadingProgressMessage,
-                progressMessage: "Files copied {0}",
+                progressMessage: "Files copied {0}/{1}",
                 operations: uploadOperations,
                 cancellationTokenSource: cancellationTokenSource);
 
@@ -272,7 +272,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             GcsFileProgressDialogWindow.PromptUser(
                 caption: Resources.GcsFileBrowserDownloadingProgressCaption,
                 message: Resources.GcsFileBrowserDownloadingProgressMessage,
-                progressMessage: "Files copied {0}",
+                progressMessage: "Files copied {0}/{1}",
                 operations: downloadOperations,
                 cancellationTokenSource: cancellationTokenSource);
         }
@@ -324,7 +324,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             GcsFileProgressDialogWindow.PromptUser(
                 caption: Resources.GcsFileBrowserDeletingProgressCaption,
                 message: Resources.GcsFileBrowserDeletingProgressMessage,
-                progressMessage: "Files deleted {0}",
+                progressMessage: "Files deleted {0}/{1}",
                 operations: deleteOperations,
                 cancellationTokenSource: cancellationTokenSource);
 

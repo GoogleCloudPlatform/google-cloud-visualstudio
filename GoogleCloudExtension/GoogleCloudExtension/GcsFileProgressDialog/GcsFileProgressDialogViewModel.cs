@@ -31,10 +31,11 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         private readonly GcsFileProgressDialogWindow _owner;
         private readonly CancellationTokenSource _tokenSource;
         private int _completed = 0;
+        private bool _hasCancellation;
         private string _progressMessage;
         private string _caption = Resources.UiCancelButtonCaption;
         private bool _detailsExpanded = false;
-
+        
         /// <summary>
         /// The message to display in the dialog.
         /// </summary>
@@ -43,8 +44,25 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         /// <summary>
         /// The message for the overall progres.
         /// </summary>
-        public string ProgressMessage => IsCancelled ? "Operation cancelled" :
-            String.Format(_progressMessage, $"{Completed}/{Operations.Count}");
+        public string ProgressMessage
+        {
+            get
+            {
+                if (IsCancelling)
+                {
+                    return "Cancelling operation";
+                }
+                else if (IsCancelled)
+                {
+                    return "Operation cancelled";
+                }
+                else
+                {
+                    return String.Format(_progressMessage, Completed, Operations.Count);
+                }
+            }
+        }
+           
 
         /// <summary>
         /// The list of operations.
@@ -100,7 +118,12 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         /// <summary>
         /// Returns whether the operation was cancelled.
         /// </summary>
-        private bool IsCancelled => Operations.FirstOrDefault(x => x.IsCancelled) != null;
+        private bool IsCancelled => _hasCancellation && IsComplete;
+
+        /// <summary>
+        /// Whether the operations are being cancelled.
+        /// </summary>
+        private bool IsCancelling => _hasCancellation && !IsComplete;
 
         public GcsFileProgressDialogViewModel(
             string message,
@@ -131,6 +154,9 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
 
         private void OnOperationCompleted(object sender, EventArgs e)
         {
+            var operation = (GcsFileOperation)sender;
+
+            _hasCancellation = _hasCancellation || operation.IsCancelled;
             Completed++;
             if (IsComplete)
             {
