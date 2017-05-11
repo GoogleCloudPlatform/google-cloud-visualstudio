@@ -36,8 +36,7 @@
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
                 <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
-                <RowDefinition Height="auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
             <Label Content="{Binding ProgressMessage}" Style="{StaticResource CommonLabelStyle}" />
@@ -49,74 +48,72 @@
                          Value="{Binding Completed}"
                          Style="{StaticResource CommonProgressBarStyle}"/>
 
-            <!-- Details for the copy operation. -->
-            <Label Grid.Row="2"
-                   Content="{Binding Message}"
-                   Visibility="{Binding DetailsExpanded, Converter={StaticResource commonVisibilityConverter}}"
-                   Style="{StaticResource CommonLabelStyle}" />
-
-            <DataGrid Grid.Row="3"
-                      IsReadOnly="True"
-                      AutoGenerateColumns="False"
-                      HeadersVisibility="Column"
-                      MaxHeight="300px"
-                      Visibility="{Binding DetailsExpanded, Converter={StaticResource commonVisibilityConverter}}"
-                      ItemsSource="{Binding Operations}"
-                      Margin="0,0,0,10">
-                <DataGrid.Columns>
-                    <DataGridTemplateColumn SortMemberPath="GcsItem.FullPath"
-                                            Header="{x:Static ext:Resources.GcsFileProgressDialogFileHeader}"
-                                            Width="2*">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding GcsItem}"
-                                           Margin="5,0,0,0"
-                                           Style="{StaticResource CommonTextStyle}"
-                                           TextWrapping="NoWrap"
-                                           TextTrimming="CharacterEllipsis" />
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                    <DataGridTemplateColumn Header="{x:Static ext:Resources.GcsFileProgressDialogProgressHeader}"
-                                            SortMemberPath="Progress"
-                                            Width="*">
-                        <DataGridTemplateColumn.CellTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <ProgressBar Grid.Column="1"
-                                                 Minimum="0.0"
-                                                 Maximum="1.0"
-                                                 Value="{Binding Progress}"
-                                                 Style="{StaticResource CommonProgressBarStyle}"/>
-
-                                    <!-- This text will show on top of the progress bar in case of error or cancelled. -->
-                                    <TextBlock Text="{x:Static ext:Resources.GcsFileProgressDialogPendingState}"
-                                               HorizontalAlignment="Center"
-                                               Visibility="{Binding IsPending, Converter={StaticResource commonVisibilityConverter}}"
-                                               Style="{StaticResource CommonTextStyle}"
-                                               Background="{x:Null}" />
-                                    <TextBlock Text="{x:Static ext:Resources.GcsFileProgressDialogCancelledState}"
-                                               HorizontalAlignment="Center"
-                                               Visibility="{Binding IsCancelled, Converter={StaticResource commonVisibilityConverter}}"
-                                               Style="{StaticResource CommonTextStyle}"
-                                               Background="{x:Null}" />
-                                    <TextBlock Text="{x:Static ext:Resources.GcsFileProgressDialogErrorState}"
-                                               HorizontalAlignment="Center"
-                                               Visibility="{Binding IsError, Converter={StaticResource commonVisibilityConverter}}"
-                                               Style="{StaticResource CommonTextStyle}"
-                                               Background="{x:Null}" />
-                                </Grid>
-                            </DataTemplate>
-                        </DataGridTemplateColumn.CellTemplate>
-                    </DataGridTemplateColumn>
-                </DataGrid.Columns>
-            </DataGrid>
-
-            <TextBlock Grid.Row="4">
+            <TextBlock Grid.Row="2">
                 <Hyperlink Command="{Binding ExpandCollapseDetailsCommand}">
                     <TextBlock Text="{Binding ExpandCollapseMessage}"/>
                 </Hyperlink>
             </TextBlock>
+
+            <!-- Details for the copy operation. -->
+            <StackPanel Grid.Row="3"
+                        Margin="0,10,0,0"
+                        Visibility="{Binding DetailsExpanded, Converter={StaticResource commonVisibilityConverter}}">
+                <Label Content="{Binding Message}"
+                       Style="{StaticResource CommonLabelStyle}" />
+                <DataGrid IsReadOnly="True"
+                          AutoGenerateColumns="False"
+                          HeadersVisibility="Column"
+                          Height="200px"
+                          ItemsSource="{Binding Operations}">
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn SortMemberPath="GcsItem.FullPath"
+                                                Header="{x:Static ext:Resources.GcsFileProgressDialogFileHeader}"
+                                                Width="2*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding GcsItem}"
+                                               Margin="5,0,0,0"
+                                               Style="{StaticResource CommonTextStyle}"
+                                               TextWrapping="NoWrap"
+                                               TextTrimming="CharacterEllipsis" />
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <DataGridTemplateColumn Header="{x:Static ext:Resources.GcsFileProgressDialogProgressHeader}"
+                                                SortMemberPath="Progress"
+                                                Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <ProgressBar Grid.Column="1"
+                                                     Minimum="0.0"
+                                                     Maximum="1.0"
+                                                     Value="{Binding Progress}"
+                                                     Style="{StaticResource CommonProgressBarStyle}"/>
+
+                                        <!-- This text will show on top of the progress bar in case of error or cancelled. -->
+                                        <TextBlock Text="{x:Static ext:Resources.GcsFileProgressDialogPendingState}"
+                                                   HorizontalAlignment="Center"
+                                                   Visibility="{Binding IsPending, Converter={StaticResource commonVisibilityConverter}}"
+                                                   Style="{StaticResource CommonTextStyle}"
+                                                   Background="{x:Null}" />
+                                        <TextBlock Text="{x:Static ext:Resources.GcsFileProgressDialogCancelledState}"
+                                                   HorizontalAlignment="Center"
+                                                   Visibility="{Binding IsCancelled, Converter={StaticResource commonVisibilityConverter}}"
+                                                   Style="{StaticResource CommonTextStyle}"
+                                                   Background="{x:Null}" />
+                                        <TextBlock Text="{x:Static ext:Resources.GcsFileProgressDialogErrorState}"
+                                                   HorizontalAlignment="Center"
+                                                   Visibility="{Binding IsError, Converter={StaticResource commonVisibilityConverter}}"
+                                                   Style="{StaticResource CommonTextStyle}"
+                                                   Background="{x:Null}" />
+                                    </Grid>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
         </Grid>
     </theming:CommonDialogWindowBaseContent>
 </UserControl>
