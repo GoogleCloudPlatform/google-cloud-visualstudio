@@ -17,6 +17,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Windows.Input;
 
@@ -42,7 +43,8 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         /// <summary>
         /// The message for the overall progres.
         /// </summary>
-        public string ProgressMessage => String.Format(_progressMessage, $"{Completed}/{Operations.Count}");
+        public string ProgressMessage => IsCancelled ? "Operation cancelled" :
+            String.Format(_progressMessage, $"{Completed}/{Operations.Count}");
 
         /// <summary>
         /// The list of operations.
@@ -94,6 +96,11 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         /// Returns whether the operation is complete.
         /// </summary>
         private bool IsComplete => Completed >= Operations.Count;
+
+        /// <summary>
+        /// Returns whether the operation was cancelled.
+        /// </summary>
+        private bool IsCancelled => Operations.FirstOrDefault(x => x.IsCancelled) != null;
 
         public GcsFileProgressDialogViewModel(
             string message,
