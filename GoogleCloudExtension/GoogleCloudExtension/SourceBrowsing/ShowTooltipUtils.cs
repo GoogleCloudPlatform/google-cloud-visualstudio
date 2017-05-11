@@ -117,6 +117,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="line">The line number of the source file.</param>
         private static void GotoLine(Window window, int line)
         {
+            window.Visible = true;
             TextSelection selection = window.Document.Selection as TextSelection;
             TextPoint tp = selection.TopPoint;
             selection.GotoLine(line, Select: false);

@@ -342,6 +342,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         public void LoadNextPage()
         {
+            IsAutoReloadChecked = false;
             if (String.IsNullOrWhiteSpace(_nextPageToken) || String.IsNullOrWhiteSpace(Project))
             {
                 return;
@@ -356,6 +357,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="advancedSearchText">The advance filter in text format.</param>
         public void FilterLog(string advancedSearchText)
         {
+            IsAutoReloadChecked = false;
             if (String.IsNullOrWhiteSpace(advancedSearchText))
             {
                 return;
@@ -393,6 +395,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// </summary>
         private void FilterOnTreeNodeValue(ObjectNodeTree node)
         {
+            IsAutoReloadChecked = false;
+
             // Firstly compose a new filter line.
             StringBuilder newFilter = new StringBuilder();
             newFilter.Append($"{node.FilterLabel}=\"{node.FilterValue}\"");            
