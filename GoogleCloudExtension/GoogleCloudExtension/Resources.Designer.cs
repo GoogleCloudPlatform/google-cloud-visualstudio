@@ -2536,6 +2536,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Files deleted {0} of {1}.
+        /// </summary>
+        public static string GcsFileBrowserDeletingOverallProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDeletingOverallProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deleting Files.
         /// </summary>
         public static string GcsFileBrowserDeletingProgressCaption {
@@ -2595,6 +2604,15 @@ namespace GoogleCloudExtension {
         public static string GcsFileBrowserDonwloadHeader {
             get {
                 return ResourceManager.GetString("GcsFileBrowserDonwloadHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files downloaded {0} of {1}.
+        /// </summary>
+        public static string GcsFileBrowserDownloadingOverallProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDownloadingOverallProgressMessage", resourceCulture);
             }
         }
         
@@ -2793,6 +2811,15 @@ namespace GoogleCloudExtension {
         public static string GcsFileBrowserSizeHeader {
             get {
                 return ResourceManager.GetString("GcsFileBrowserSizeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files uploaded {0} of {1}.
+        /// </summary>
+        public static string GcsFileBrowserUploadingOverallProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserUploadingOverallProgressMessage", resourceCulture);
             }
         }
         

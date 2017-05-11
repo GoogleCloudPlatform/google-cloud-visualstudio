@@ -2295,6 +2295,18 @@
     <value>Progress</value>
     <comment>Header used in the progress column in the data grid for the file progress dialog.</comment>
   </data>
+  <data name="GcsFileBrowserDeletingOverallProgressMessage" xml:space="preserve">
+    <value>Files deleted {0} of {1}</value>
+    <comment>Message shown while delete files. {0} is the count of files deleted, {1} is the total of files.</comment>
+  </data>
+  <data name="GcsFileBrowserDownloadingOverallProgressMessage" xml:space="preserve">
+    <value>Files downloaded {0} of {1}</value>
+    <comment>Message shown while downloading files. {0} is the count of files downloaded, {1} is the total of files.</comment>
+  </data>
+  <data name="GcsFileBrowserUploadingOverallProgressMessage" xml:space="preserve">
+    <value>Files uploaded {0} of {1}</value>
+    <comment>Message shown while uploading files. {0} is the count of files uploaded, {1} is the total of files.</comment>
+  </data>
   <data name="GcsFileProgressDialogCancelledOperationMessage" xml:space="preserve">
     <value>Operation cancelled</value>
     <comment>Message shown when the operation is cancelled.</comment>
