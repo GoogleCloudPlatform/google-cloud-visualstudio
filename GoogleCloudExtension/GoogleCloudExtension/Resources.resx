@@ -2135,4 +2135,8 @@
     <value>Select the Google Cloud Platform project that will run this project.</value>
     <comment>The title of the PickProjecId window of the template wizards.</comment>
   </data>
+  <data name="DataTemplateGcpProjectFormat" xml:space="preserve">
+    <value>{0} ({1}:{2})</value>
+    <comment>String Format for the data template for Google.Apis.CloudResourceManager.v1.Project</comment>
+  </data>
 </root>

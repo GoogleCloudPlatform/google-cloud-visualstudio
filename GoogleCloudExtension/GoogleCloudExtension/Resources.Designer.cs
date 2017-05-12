@@ -1996,6 +1996,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}:{2}).
+        /// </summary>
+        public static string DataTemplateGcpProjectFormat {
+            get {
+                return ResourceManager.GetString("DataTemplateGcpProjectFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 1 day.
         /// </summary>
         public static string ErrorReporting1DayButtonCaption {

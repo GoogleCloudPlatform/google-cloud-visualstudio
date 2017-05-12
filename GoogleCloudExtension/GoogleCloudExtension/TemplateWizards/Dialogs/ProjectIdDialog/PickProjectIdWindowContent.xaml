@@ -27,10 +27,10 @@
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo
                 Caption="{x:Static ext:Resources.UiSkipButtonCaption}"
-                Command="{Binding SkipProjectInputCommand}"/>
+                Command="{Binding SkipCommand}"/>
             <theming:DialogButtonInfo
                 Caption="{x:Static ext:Resources.UiOkButtonCaption}"
-                Command="{Binding SelectProjectCommand}"
+                Command="{Binding OkCommand}"
                 IsDefault="True"/>
             <theming:DialogButtonInfo
                 Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
@@ -57,47 +57,60 @@
                 <Grid>
                     <TextBlock
                         Text="{x:Static ext:Resources.WizardPickProjectIdLoadingProjects}"
-                        Visibility="{
-                            Binding LoadTask.IsCompleted, Converter={
-                                utils:BooleanConverter
-                                    TrueValue={x:Static Visibility.Collapsed}, FalseValue={x:Static Visibility.Visible}
-                            }
-                        }"
                         VerticalAlignment="Center"
-                        HorizontalAlignment="Center"/>
+                        HorizontalAlignment="Center">
+                        
+                        <TextBlock.Visibility>
+                            <Binding Path="LoadTask.IsCompleted">
+                                <Binding.Converter>
+                                    <utils:BooleanConverter
+                                        TrueValue="{x:Static Visibility.Collapsed}"
+                                        FalseValue="{x:Static Visibility.Visible}" />
+                                </Binding.Converter>
+                            </Binding>
+                        </TextBlock.Visibility>
+                        </TextBlock>
                     <TextBlock
                         Text="{Binding LoadTask.ErrorMessage}"
-                        Visibility="{
-                            Binding LoadTask.IsFaulted, Converter={
-                                utils:BooleanConverter
-                                    TrueValue={x:Static Visibility.Visible}, FalseValue={x:Static Visibility.Collapsed}
-                            }
-                        }"
                         VerticalAlignment="Center"
-                        HorizontalAlignment="Center"/>
+                        HorizontalAlignment="Center">
+                        
+                        <TextBlock.Visibility>
+                            <Binding Path="LoadTask.IsError">
+                                <Binding.Converter>
+                                    <utils:BooleanConverter
+                                        TrueValue="{x:Static Visibility.Visible}"
+                                        FalseValue="{x:Static Visibility.Collapsed}" />
+                                </Binding.Converter>
+                            </Binding>
+                        </TextBlock.Visibility>
+                    </TextBlock>
                     <TextBlock
                         Text="{x:Static ext:Resources.WizardPickProjectIdCanceledTask}"
-                        Visibility="{
-                            Binding LoadTask.IsCanceled, Converter={
-                                utils:BooleanConverter
-                                    TrueValue={x:Static Visibility.Visible}, FalseValue={x:Static Visibility.Collapsed}
-                            }
-                        }"
                         VerticalAlignment="Center"
-                        HorizontalAlignment="Center"/>
-                    <ScrollViewer
-                        VerticalScrollBarVisibility="Auto"
-                        Visibility="{
-                            Binding LoadTask.IsSuccess, Converter={
-                                utils:BooleanConverter
-                                    TrueValue={x:Static Visibility.Visible}, FalseValue={x:Static Visibility.Collapsed}
-                            }
-                        }">
-                    
-                        <ListBox
-                            SelectedItem="{Binding SelectedProject}"
-                            ItemsSource="{Binding Projects}">
-
+                        HorizontalAlignment="Center">
+                        
+                        <TextBlock.Visibility>
+                            <Binding Path="LoadTask.IsCanceled">
+                                <Binding.Converter>
+                                    <utils:BooleanConverter
+                                        TrueValue="{x:Static Visibility.Visible}"
+                                        FalseValue="{x:Static Visibility.Collapsed}" />
+                                </Binding.Converter>
+                            </Binding>
+                        </TextBlock.Visibility>
+                    </TextBlock>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <ScrollViewer.Visibility>
+                            <Binding Path="LoadTask.IsSuccess">
+                                <Binding.Converter>
+                                    <utils:BooleanConverter
+                                        TrueValue="{x:Static Visibility.Visible}"
+                                        FalseValue="{x:Static Visibility.Collapsed}" />
+                                </Binding.Converter>
+                            </Binding>
+                        </ScrollViewer.Visibility>
+                        <ListBox SelectedItem="{Binding SelectedProject}" ItemsSource="{Binding Projects}">
                             <ListBox.Template>
                                 <ControlTemplate>
                                     <ItemsPresenter/>
@@ -110,3 +123,4 @@
         </DockPanel>
     </theming:CommonDialogWindowBaseContent>
 </UserControl>
+

@@ -11,16 +11,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
 {
     /// <summary>
-    /// Interaction logic for PickProjectIdWindowContent.xaml
+    /// For mocking in tests.
     /// </summary>
-    public partial class PickProjectIdWindowContent
+    public interface IPickProjectIdWindow
     {
-        public PickProjectIdWindowContent()
-        {
-            InitializeComponent();
-        }
+        void Close();
     }
 }

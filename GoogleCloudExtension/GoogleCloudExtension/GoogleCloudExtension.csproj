@@ -130,7 +130,8 @@
     <Compile Include="CloudExplorerSources\PubSub\TopicItem.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBase.cs" />
-    <Compile Include="Utils\DataSourceUtils.cs" />
+    <Compile Include="TemplateWizards\Dialogs\ProjectIdDialog\IPickProjectIdWindow.cs" />
+    <Compile Include="Utils\DataSourceFactories.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
@@ -366,7 +367,6 @@
     <Compile Include="TitleBar\TitleBarViewModel.cs" />
     <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
-    <Compile Include="Utils\NotifyTaskCompletion.cs" />
     <Compile Include="Utils\PackageUtils.cs" />
     <Compile Include="Utils\GCloudWrapperUtils.cs" />
     <Compile Include="Utils\GcpPublishStepsUtils.cs" />
@@ -707,7 +707,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Threading, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.VisualStudio.Threading.14.1.111\lib\net45\Microsoft.VisualStudio.Threading.dll</HintPath>
+      <HintPath>..\packages\Microsoft.VisualStudio.Threading.14.1.131\lib\net45\Microsoft.VisualStudio.Threading.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.Utilities, Version=14.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">

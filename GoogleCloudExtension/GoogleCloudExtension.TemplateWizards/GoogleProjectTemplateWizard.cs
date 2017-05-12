@@ -14,17 +14,19 @@
 
 using EnvDTE;
 using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.TemplateWizard;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
-using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
 namespace GoogleCloudExtension.TemplateWizards
 {
     /// <summary>
-    /// Wizard for a project template.
+    /// Wizard for a project template. Delegates to GoogleProjecTemplateWizard
+    /// in GoogleCloudExtension.dll. That class can not be used directly because
+    /// of problems loading wizards from MEF component assemblies.
     /// </summary>
     public class GoogleProjectTemplateWizard : IGoogleProjectTemplateWizard
     {

@@ -55,7 +55,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArgumentCheckUtils.cs" />
-    <Compile Include="AsyncPropertyValue.cs" />
+    <Compile Include="AsyncProperty.cs" />
     <Compile Include="BindableList.cs" />
     <Compile Include="BooleanConverter.cs" />
     <Compile Include="Disposable.cs" />
