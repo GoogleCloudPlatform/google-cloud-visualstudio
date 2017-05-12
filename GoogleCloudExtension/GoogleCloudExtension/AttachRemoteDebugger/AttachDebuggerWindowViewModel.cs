@@ -80,7 +80,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
             _gceInstance = gceInstance;
             OKCommand = new ProtectedCommand(taskHandler: () => ExceuteAsync(OnOKCommand), canExecuteCommand: false);
             CancelCommand = new ProtectedCommand(taskHandler: () => ExceuteAsync(OnCancelCommand), canExecuteCommand: false);
-            GotoStep(null);     // Add initial step.
+            GotoStep(null);     // TODO: Add initial step in following PRs
         }
 
         private async Task OnOKCommand()
@@ -91,10 +91,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
                 return;
             }
             IAttachDebuggerStep nextStep = await _currentStep.OnOKCommand();
-            if (nextStep != null)
-            {
-                GotoStep(nextStep);
-            }
+            await GotoStep(nextStep);
         }
 
         private async Task OnCancelCommand()
@@ -105,10 +102,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
                 return;
             }
             var nextStep = await _currentStep.OnCancelCommand();
-            if (nextStep != null)
-            {
-                GotoStep(nextStep);
-            }
+            await GotoStep(nextStep);
         }
 
         private void OnStepPropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -136,48 +130,19 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
             OKCommand.CanExecuteCommand = IsReady && _currentStep.IsOKButtonEnabled;
         }
 
-        private void GotoStep(IAttachDebuggerStep step)
+        private async Task GotoStep(IAttachDebuggerStep step)
         {
-            if (_currentStep != null)
+            while (step != null)
             {
-                _currentStep.PropertyChanged -= OnStepPropertyChanged;
-            }
-
-            if (step != null)
-            {
+                if (_currentStep != null)
+                {
+                    _currentStep.PropertyChanged -= OnStepPropertyChanged;
+                }
+                _currentStep = step;
+                UpdateButtons();
                 Content = step.Content;
                 step.PropertyChanged += OnStepPropertyChanged;
-
-                Content.Loaded += OnContentLoaded;
-            }
-            _currentStep = step;
-        }
-
-        private void OnContentLoaded(object sender, System.Windows.RoutedEventArgs e)
-        {
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-            var action = new Action(() => ErrorHandlerUtils.HandleExceptionsAsync(
-                () => ExceuteAsync(() => OnStart(sender))));
-#pragma warning restore CS4014
-
-            // A tricky way to perform tasks after the user control is rendered.
-            Content.Dispatcher.BeginInvoke(
-                action,
-                DispatcherPriority.ContextIdle, null);
-        }
-
-        private async Task OnStart(object sender)
-        {
-            if (_currentStep?.Content != sender)
-            {
-                Debug.WriteLine("OnStart, Unexpected error. Sender is not _currentStep.");
-                return;
-            }
-
-            var nextStep = await _currentStep.OnStart();
-            if (nextStep != null)
-            {
-                GotoStep(nextStep);
+                step = await step.OnStart();
             }
         }
 
