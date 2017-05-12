@@ -3418,6 +3418,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to More Information.
+        /// </summary>
+        public static string MoreInfoTitle {
+            get {
+                return ResourceManager.GetString("MoreInfoTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download and install the MySQL Installer which will guide you through installing the needed extensions. After they are installed restart Visual Studio..
         /// </summary>
         public static string MySqlInstallerWindowBottomMessage {
@@ -4588,7 +4597,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to This Project ID will be added to your configuration files and can be changed later..
+        ///   Looks up a localized string similar to This project ID will be added to your configuration files and can be changed later..
         /// </summary>
         public static string WizardPickProjectIdHelpText {
             get {
@@ -4606,7 +4615,16 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to _Enter Project ID:.
+        ///   Looks up a localized string similar to Error loading Projects.
+        /// </summary>
+        public static string WizardPickProjectIdLoadProjectsErrorMessage {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdLoadProjectsErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Enter project ID:.
         /// </summary>
         public static string WizardPickProjectIdTextLabel {
             get {

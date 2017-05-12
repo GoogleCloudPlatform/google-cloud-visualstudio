@@ -17,6 +17,7 @@ using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -134,7 +135,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
         private async Task LoadProjectsAsync()
         {
             Projects = await _resourceManagerDataSourceFactory().GetProjectsListAsync();
-            if (string.IsNullOrEmpty(ProjectId) || ProjectId.Equals(SelectedProject?.ProjectId))
+            if (string.IsNullOrEmpty(ProjectId) || ProjectId == SelectedProject?.ProjectId)
             {
                 // Updates ProjectId within the property.
                 SelectedProject =
@@ -143,7 +144,7 @@ namespace GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog
             }
             else
             {
-                SelectedProject = Projects.FirstOrDefault(p => p.ProjectId.Equals(ProjectId));
+                SelectedProject = Projects.FirstOrDefault(p => p.ProjectId == ProjectId);
             }
         }
 

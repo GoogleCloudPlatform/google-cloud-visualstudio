@@ -40,17 +40,22 @@ namespace GoogleCloudExtension.Utils
         public bool LoggingEnabled { get; set; }
 
         /// <summary>
-        /// The prefix string to use for the log messages, useful for finding the entries in the 
+        /// The prefix string to use for the log messages, useful for finding the entries in the
         /// Output window.
         /// </summary>
         public string LoggingPrefix { get; set; }
+
+        /// <summary>
+        /// When set to true, hides the element rather than collapsing it.
+        /// </summary>
+        public bool Hide { get; set; } = false;
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is bool)
             {
-                bool toConvert = IsNegated ^ (bool)value;
-                var result = toConvert ? Visibility.Visible : Visibility.Collapsed;
+                bool isVisible = IsNegated ^ (bool)value;
+                var result = isVisible ? Visibility.Visible : (Hide ? Visibility.Hidden : Visibility.Collapsed);
                 if (LoggingEnabled)
                 {
                     Debug.WriteLine($"{nameof(VisibilityConverter)}: {LoggingPrefix} converting {value} to {result}");

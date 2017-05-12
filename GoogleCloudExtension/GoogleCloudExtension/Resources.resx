@@ -2120,7 +2120,7 @@
     <comment>Description text for the PickProjectId window of the project template wizards.</comment>
   </data>
   <data name="WizardPickProjectIdHelpText" xml:space="preserve">
-    <value>This Project ID will be added to your configuration files and can be changed later.</value>
+    <value>This project ID will be added to your configuration files and can be changed later.</value>
     <comment>Help text for the PickProjectId window of the project template wizards.</comment>
   </data>
   <data name="WizardPickProjectIdLoadingProjects" xml:space="preserve">
@@ -2128,7 +2128,7 @@
     <comment>Text to display while loading projects.</comment>
   </data>
   <data name="WizardPickProjectIdTextLabel" xml:space="preserve">
-    <value>_Enter Project ID:</value>
+    <value>_Enter project ID:</value>
     <comment>Label text for the ProjectId text box of the template wizard PickProjectId window.</comment>
   </data>
   <data name="WizardPickProjectIdTitle" xml:space="preserve">
@@ -2138,5 +2138,13 @@
   <data name="DataTemplateGcpProjectFormat" xml:space="preserve">
     <value>{0} ({1}:{2})</value>
     <comment>String Format for the data template for Google.Apis.CloudResourceManager.v1.Project</comment>
+  </data>
+  <data name="MoreInfoTitle" xml:space="preserve">
+    <value>More Information</value>
+    <comment>Title for an expander containing more information.</comment>
+  </data>
+  <data name="WizardPickProjectIdLoadProjectsErrorMessage" xml:space="preserve">
+    <value>Error loading Projects</value>
+    <comment>Message displayed when the PickProjectId window encounters an error while loading projects.</comment>
   </data>
 </root>
