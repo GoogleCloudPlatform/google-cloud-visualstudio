@@ -45,8 +45,8 @@ namespace $safeprojectname$
             if (!env.IsDevelopment())
             {
                 app.UseGoogleExceptionLogging(projectId,
-                    Configuration["GoogleErrorReporting:ServiceName"],
-                    Configuration["GoogleErrorReporting:Version"]);
+                    Configuration["Google:ErrorReporting:ServiceName"],
+                    Configuration["Google:ErrorReporting:Version"]);
             }
 
             app.UseGoogleTrace();
@@ -60,7 +60,7 @@ namespace $safeprojectname$
             var projectId =
                 instance.GceDetails?.ProjectId ??
                 instance.GaeDetails?.ProjectId ??
-                Configuration["ProjectId"];
+                Configuration["Google:ProjectId"];
             if (string.IsNullOrEmpty(projectId))
             {
                 throw new Exception(

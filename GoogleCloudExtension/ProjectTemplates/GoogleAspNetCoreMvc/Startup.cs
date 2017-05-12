@@ -51,8 +51,8 @@ namespace $safeprojectname$
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseGoogleExceptionLogging(projectId,
-                    Configuration["GoogleErrorReporting:ServiceName"],
-                    Configuration["GoogleErrorReporting:Version"]);
+                    Configuration["Google:ErrorReporting:ServiceName"],
+                    Configuration["Google:ErrorReporting:Version"]);
             }
 
             app.UseStaticFiles();
@@ -72,7 +72,7 @@ namespace $safeprojectname$
             var projectId =
                 instance.GceDetails?.ProjectId ??
                 instance.GaeDetails?.ProjectId ??
-                Configuration["ProjectId"];
+                Configuration["Google:ProjectId"];
             if (string.IsNullOrEmpty(projectId))
             {
                 throw new Exception(
