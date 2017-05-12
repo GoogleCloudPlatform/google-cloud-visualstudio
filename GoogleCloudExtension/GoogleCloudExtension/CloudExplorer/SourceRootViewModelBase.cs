@@ -151,7 +151,7 @@ namespace GoogleCloudExtension.CloudExplorer
                     Children.Add(NoItemsPlaceholder);
                 }
             }
-            catch (CloudExplorerSourceException ex)
+            catch (CloudExplorerSourceException)
             {
                 Children.Clear();
                 Children.Add(ErrorPlaceholder);

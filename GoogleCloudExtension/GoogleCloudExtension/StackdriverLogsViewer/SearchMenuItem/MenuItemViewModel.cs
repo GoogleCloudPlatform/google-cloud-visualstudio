@@ -101,12 +101,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Inherited classes implement this to perform delay loading of sub menu items. 
         /// </summary>
-        protected virtual async Task LoadSubMenu() 
-        {   
-            return;
+        protected virtual Task LoadSubMenu() 
+        {
+            return Task.FromResult(0);
         }
 
-        private async Task AddItems()
+        private async void AddItems()
         {
             if (IsSubmenuPopulated || Loading)
             {
