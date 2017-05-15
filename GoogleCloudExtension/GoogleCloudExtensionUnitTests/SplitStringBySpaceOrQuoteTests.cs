@@ -13,8 +13,8 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 
 namespace UnitTestProject
 {

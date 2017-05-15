@@ -16,10 +16,10 @@ using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Clouderrorreporting.v1beta1;
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
-using TimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
-using EventTimeRange = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using EventTimeRange = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
+using TimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 
 namespace GoogleCloudExtension.DataSources
 {

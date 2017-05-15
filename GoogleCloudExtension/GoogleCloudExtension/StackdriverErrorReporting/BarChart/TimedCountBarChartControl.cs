@@ -13,13 +13,12 @@
 // limitations under the License.
 
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
-using EventGroupTimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using EventGroupTimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {

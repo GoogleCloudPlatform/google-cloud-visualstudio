@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Newtonsoft.Json.Linq;
-using System.Linq;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {

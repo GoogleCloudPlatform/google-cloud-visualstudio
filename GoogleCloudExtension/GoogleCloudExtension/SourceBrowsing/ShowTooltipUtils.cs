@@ -13,21 +13,21 @@
 // limitations under the License.
 
 using EnvDTE;
-using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.StackdriverErrorReporting;
-using ErrorReporting = GoogleCloudExtension.StackdriverErrorReporting;
 using GoogleCloudExtension.StackdriverLogsViewer;
-using static GoogleCloudExtension.SourceBrowsing.SourceVersionUtils;
-using static GoogleCloudExtension.StackdriverLogsViewer.LogWritterNameConstants;
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.TextManager.Interop;
 using System;
 using System.Linq;
+using static GoogleCloudExtension.SourceBrowsing.SourceVersionUtils;
+using static GoogleCloudExtension.StackdriverLogsViewer.LogWritterNameConstants;
+using ErrorReporting = GoogleCloudExtension.StackdriverErrorReporting;
 
 namespace GoogleCloudExtension.SourceBrowsing
 {

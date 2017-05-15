@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.SourceBrowsing;
 using GoogleCloudExtension.Utils;
-using System;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {

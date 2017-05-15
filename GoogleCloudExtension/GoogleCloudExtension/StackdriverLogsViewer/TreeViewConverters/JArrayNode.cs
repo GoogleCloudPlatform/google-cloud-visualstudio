@@ -14,7 +14,6 @@
 
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
