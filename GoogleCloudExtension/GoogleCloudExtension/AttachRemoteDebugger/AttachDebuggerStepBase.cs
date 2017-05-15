@@ -42,7 +42,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
             protected set { SetValueAndRaise(ref _isOKButtonEnabled, value); }
         }
 
-        public virtual async Task<IAttachDebuggerStep> OnCancelCommand()
+        public virtual Task<IAttachDebuggerStep> OnCancelCommand()
         {
             return null;
         }

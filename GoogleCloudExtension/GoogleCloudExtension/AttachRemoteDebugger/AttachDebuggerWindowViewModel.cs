@@ -80,7 +80,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
             _gceInstance = gceInstance;
             OKCommand = new ProtectedCommand(taskHandler: () => ExceuteAsync(OnOKCommand), canExecuteCommand: false);
             CancelCommand = new ProtectedCommand(taskHandler: () => ExceuteAsync(OnCancelCommand), canExecuteCommand: false);
-            GotoStep(null);     // TODO: Add initial step in following PRs
+            ErrorHandlerUtils.HandleAsyncExceptions(() => GotoStep(null));     // TODO: Add initial step in following PRs
         }
 
         private async Task OnOKCommand()
