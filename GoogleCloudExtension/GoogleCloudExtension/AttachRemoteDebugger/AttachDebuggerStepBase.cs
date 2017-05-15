@@ -24,8 +24,8 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
     /// </summary>
     public abstract class AttachDebuggerStepBase : ViewModelBase, IAttachDebuggerStep
     {
-        private bool _isOKButtonEnabled;
         private bool _isCancelButtonEnabled;
+        private bool _isOKButtonEnabled;
 
         #region implement interface IAttachDebuggerStep
         public virtual bool IsCancelButtonEnabled
