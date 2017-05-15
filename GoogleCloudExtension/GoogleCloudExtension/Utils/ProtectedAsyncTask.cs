@@ -36,8 +36,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         public void Invoke()
         {
-            #pragma warning disable 4014
-            ErrorHandlerUtils.HandleExceptionsAsync(_task);
+            ErrorHandlerUtils.HandleAsyncExceptions(_task);
         }
     }
 }

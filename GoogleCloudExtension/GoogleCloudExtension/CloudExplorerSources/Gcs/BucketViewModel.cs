@@ -40,7 +40,9 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
         private readonly Lazy<BucketItem> _item;
         private readonly ProtectedCommand _openOnCloudConsoleCommand;
 
-        public object Item
+        #region ICloudExplorerItemSource implmentation
+
+        object ICloudExplorerItemSource.Item
         {
             get
             {
@@ -48,7 +50,16 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
             }
         }
 
-        public event EventHandler ItemChanged;
+        /// <summary>
+        /// This event is never raised, as the item does not change.
+        /// </summary>
+        event EventHandler ICloudExplorerItemSource.ItemChanged
+        {
+            add { }
+            remove { }
+        }
+
+        #endregion
 
         public BucketViewModel(GcsSourceRootViewModel owner, Bucket bucket)
         {
@@ -70,7 +81,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gcs
 
         private void OnPropertiesCommand()
         {
-            _owner.Context.ShowPropertiesWindow(Item);
+            _owner.Context.ShowPropertiesWindow(_item.Value);
         }
 
         private void OnOpenOnCloudConsoleCommand()
