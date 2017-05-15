@@ -126,23 +126,50 @@
                                 </Grid>
                                 
                                 <!-- The name of the object. -->
-                                <TextBlock Text="{Binding LeafName}" Style="{StaticResource CommonTextStyle}" />
+                                <TextBlock Text="{Binding LeafName}"
+                                           TextTrimming="CharacterEllipsis"
+                                           TextWrapping="NoWrap"
+                                           Style="{StaticResource CommonTextStyle}" />
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Binding="{Binding FormattedSize}"
-                                    Width="*"
-                                    utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter Size}"
-                                    Header="{x:Static ext:Resources.GcsFileBrowserSizeHeader}" />
-                <DataGridTextColumn Binding="{Binding LastModified}"
-                                    Width="*"
-                                    utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter LastModified}"
-                                    Header="{x:Static ext:Resources.GcsFileBrowserLastModifiedHeader}" />
-                <DataGridTextColumn Binding="{Binding ContentType}"
-                                    Width="*"
-                                    utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter ContentType}"
-                                    Header="{x:Static ext:Resources.GcsFileBrowserContentTypeHeader}" />
+                <DataGridTemplateColumn Width="*"
+                                        utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter Size}"
+                                        Header="{x:Static ext:Resources.GcsFileBrowserSizeHeader}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding FormattedSize}"
+                                       TextTrimming="CharacterEllipsis"
+                                       TextWrapping="NoWrap"
+                                       Style="{StaticResource CommonTextStyle}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="*"
+                                        utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter LastModified}"
+                                        Header="{x:Static ext:Resources.GcsFileBrowserLastModifiedHeader}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding LastModified}"
+                                       TextTrimming="CharacterEllipsis"
+                                       TextWrapping="NoWrap"
+                                       Style="{StaticResource CommonTextStyle}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Width="*"
+                                        utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter ContentType}"
+                                        Header="{x:Static ext:Resources.GcsFileBrowserContentTypeHeader}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding ContentType}"
+                                       TextTrimming="CharacterEllipsis"
+                                       TextWrapping="NoWrap"
+                                       Style="{StaticResource CommonTextStyle}" />
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
