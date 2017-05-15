@@ -102,6 +102,7 @@
                   Grid.ColumnSpan="2"
                   IsReadOnly="True"
                   AutoGenerateColumns="False"
+                  HeadersVisibility="Column"
                   utils:DataGridBehaviors.HasCustomSort="True"
                   ContextMenu="{Binding ContextMenu}"
                   ItemsSource="{Binding Source={StaticResource cvs}}"
@@ -111,6 +112,7 @@
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{x:Static ext:Resources.GcsFileBrowserNameHeader}"
                                         SortMemberPath="LeafName"
+                                        Width="3*"
                                         utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter LeafName, SortDirectories=True}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -130,12 +132,15 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTextColumn Binding="{Binding Size}"
+                                    Width="*"
                                     utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter Size}"
                                     Header="{x:Static ext:Resources.GcsFileBrowserSizeHeader}" />
                 <DataGridTextColumn Binding="{Binding LastModified}"
+                                    Width="*"
                                     utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter LastModified}"
                                     Header="{x:Static ext:Resources.GcsFileBrowserLastModifiedHeader}" />
                 <DataGridTextColumn Binding="{Binding ContentType}"
+                                    Width="*"
                                     utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter ContentType}"
                                     Header="{x:Static ext:Resources.GcsFileBrowserContentTypeHeader}" />
             </DataGrid.Columns>

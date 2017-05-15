@@ -22,6 +22,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
     /// </summary>
     public class GcsRow
     {
+        private const string NoValuePlaceholder = "-";
+        private const string DefaultContentType = "application/octet-stream";
+
         /// <summary>
         /// The name of the bucket.
         /// </summary>
@@ -55,7 +58,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         /// <summary>
         /// The size of the item.
         /// </summary>
-        public ulong Size { get; private set; }
+        public string Size { get; private set; }
 
         /// <summary>
         /// The last modified date for the item.
@@ -86,6 +89,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 Bucket = bucket,
                 BlobName = name,
                 LeafName = GetLeafName(name),
+                Size = NoValuePlaceholder,
+                LastModified = NoValuePlaceholder,
+                ContentType = NoValuePlaceholder,
                 IsDirectory = true,
             };
 
@@ -100,10 +106,10 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 Bucket = obj.Bucket,
                 BlobName = obj.Name,
                 IsFile = true,
-                Size = obj.Size.HasValue ? obj.Size.Value : 0ul,
-                LastModified = obj.Updated?.ToString() ?? "Unknown",
+                Size = obj.Size.HasValue ? FormatSize(obj.Size.Value) : NoValuePlaceholder,
+                LastModified = obj.Updated?.ToString() ?? NoValuePlaceholder,
                 LeafName = GetLeafName(obj.Name),
-                ContentType = obj.ContentType ?? "application/octet-stream",
+                ContentType = obj.ContentType ?? DefaultContentType,
             };
 
         /// <summary>
@@ -122,6 +128,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
         {
             var cleanName = name.Last() == '/' ? name.Substring(0, name.Length - 1) : name;
             return cleanName.Split('/').Last();
+        }
+
+        private static string FormatSize(ulong size)
+        {
+            return size.ToString();
         }
     }
 }
