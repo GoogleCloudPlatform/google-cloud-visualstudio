@@ -2626,11 +2626,20 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to create directory {0}..
+        ///   Looks up a localized string similar to Failed to create directories for download..
         /// </summary>
         public static string GcsFileBrowserFailedToCreateDirMessage {
             get {
                 return ResourceManager.GetString("GcsFileBrowserFailedToCreateDirMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to create folder {0}..
+        /// </summary>
+        public static string GcsFileBrowserFailedToCreateRemoteFolder {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFailedToCreateRemoteFolder", resourceCulture);
             }
         }
         

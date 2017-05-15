@@ -12,33 +12,45 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GoogleCloudExtension.DataSources
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace GoogleCloudExtension.GcsUtils
 {
     /// <summary>
-    /// This interface encapsulates all of the callbacks for an operation to display progress.
+    /// This class represents a reference to an file or directory on GCS.
     /// </summary>
-    public interface IGcsFileOperation
+    public class GcsItemRef
     {
         /// <summary>
-        /// Called to update of the progress so far of the operation.
+        /// The bucket that contains this item.
         /// </summary>
-        /// <param name="value">A value between 0.0 to 1.0 representing the fraction of the operation finished.</param>
-        void Progress(double value);
+        public string Bucket { get; }
 
         /// <summary>
-        /// Called when the operation is completed.
+        /// The name of the item within the bucket.
         /// </summary>
-        void Completed();
+        public string Name { get; }
 
         /// <summary>
-        /// Called if the user cancelled the operation.
+        /// Wether this item is a directory.
         /// </summary>
-        void Cancelled();
+        public bool IsDirectory => String.IsNullOrEmpty(Name) || Name.Last() == '/';
 
         /// <summary>
-        /// Called when the operation failed.
+        /// Whether this item is file.
         /// </summary>
-        /// <param name="ex">The exception thrown when the operaiton failed.</param>
-        void Error(DataSourceException ex);
+        public bool IsFile => !IsDirectory;
+
+        public GcsItemRef(string bucket, string name)
+        {
+            Bucket = bucket;
+            Name = name;
+        }
+
+        public override string ToString() => $"gs://{Bucket}/{Name}";
     }
 }

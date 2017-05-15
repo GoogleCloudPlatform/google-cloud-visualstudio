@@ -19,16 +19,18 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
-namespace GoogleCloudExtension.GcsFileProgressDialog
+namespace GoogleCloudExtension.GcsUtils
 {
     /// <summary>
-    /// This class represents an operation in flight for the GCS file browser.
+    /// This class represents an operation in flight to transfer data to/from the local
+    /// file system and GCS.
     /// </summary>
-    public class GcsFileOperation : Model, IGcsFileOperation
+    public class GcsFileOperation : Model, IGcsFileOperationCallback
     {
         private readonly SynchronizationContext _context;
         private double _progress = 0;
         private bool _isError;
+        private bool _isCancelled;
 
         /// <summary>
         /// The current progress of the operation, between 0.0 (started) to 1.0 (completed).
@@ -36,7 +38,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         public double Progress
         {
             get { return _progress; }
-            set { SetValueAndRaise(ref _progress, value); }
+            private set { SetValueAndRaise(ref _progress, value); }
         }
 
         /// <summary>
@@ -45,28 +47,29 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         public bool IsError
         {
             get { return _isError; }
-            set { SetValueAndRaise(ref _isError, value); }
+            private set { SetValueAndRaise(ref _isError, value); }
+        }
+
+        public bool IsCancelled
+        {
+            get { return _isCancelled; }
+            private set { SetValueAndRaise(ref _isCancelled, value); }
         }
 
         /// <summary>
         /// The path to the source of the operation.
         /// </summary>
-        public string Source { get; }
+        public string LocalPath { get; }
 
         /// <summary>
-        /// The name of the source, usually last element in the path.
+        /// The local path for the operation.
         /// </summary>
-        public string SourceName => Path.GetFileName(Source);
+        public string LocalPathName => Path.GetFileName(LocalPath);
 
         /// <summary>
-        /// The name of the bucket where this operation applies.
+        ///  The GCS item for the operation.
         /// </summary>
-        public string Bucket { get; }
-
-        /// <summary>
-        /// The name of the destination for the operation.
-        /// </summary>
-        public string Destination { get; }
+        public GcsItemRef GcsItem { get; }
 
         /// <summary>
         /// Event raised when the operation completes.
@@ -74,25 +77,26 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         public event EventHandler Completed;
 
         public GcsFileOperation(
-            string source,
-            string bucket,
-            string destination = null)
+            string localPath,
+            GcsItemRef gcsItem)
         {
             _context = SynchronizationContext.Current;
 
-            Source = source;
-            Bucket = bucket;
-            Destination = destination;
+            LocalPath = localPath;
+            GcsItem = gcsItem;
         }
+
+        public GcsFileOperation(GcsItemRef gcsItem): this(null, gcsItem)
+        { }
 
         #region IGcsFileOperation implementation.
 
-        void IGcsFileOperation.Progress(double value)
+        void IGcsFileOperationCallback.Progress(double value)
         {
             _context.Send((x) => Progress = value, null);
         }
 
-        void IGcsFileOperation.Completed()
+        void IGcsFileOperationCallback.Completed()
         {
             _context.Send((x) =>
             {
@@ -101,12 +105,17 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
             }, null);
         }
 
-        void IGcsFileOperation.Cancelled()
+        void IGcsFileOperationCallback.Cancelled()
         {
-            Debug.WriteLine($"Operation or {Source} cancelled.");
+            Debug.WriteLine($"Operation for {LocalPath} cancelled.");
+            _context.Send((x) =>
+            {
+                Progress = 0.0;
+                Completed?.Invoke(this, EventArgs.Empty);
+            }, null);
         }
 
-        void IGcsFileOperation.Error(DataSourceException ex)
+        void IGcsFileOperationCallback.Error(DataSourceException ex)
         {
             IsError = true;
         }

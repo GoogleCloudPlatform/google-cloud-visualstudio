@@ -16,6 +16,7 @@ using Google.Apis.Storage.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GcsFileProgressDialog;
+using GoogleCloudExtension.GcsUtils;
 using GoogleCloudExtension.NamePrompt;
 using GoogleCloudExtension.Utils;
 using System;
@@ -43,6 +44,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         private readonly SelectionUtils _selectionUtils;
         private Bucket _bucket;
         private GcsDataSource _dataSource;
+        private FileOperationsEngine _fileOperationsEngine;
         private bool _isLoading;
         private IList<GcsRow> _selectedItems;
         private ContextMenu _contextMenu;
@@ -157,30 +159,24 @@ namespace GoogleCloudExtension.GcsFileBrowser
             // of the upload operation. Similar to what is done in the Windows explorer.
             ShellUtils.SetForegroundWindow();
 
-            IList<GcsFileOperation> uploadOperations = CreateUploadOperations(files).ToList();
-
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
-            foreach (var operation in uploadOperations)
-            {
-                _dataSource.StartFileUploadOperation(
-                    sourcePath: operation.Source,
-                    bucket: operation.Bucket,
-                    name: operation.Destination,
-                    operation: operation,
-                    token: tokenSource.Token);
-            }
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            var uploadOperations = _fileOperationsEngine.StartUploadOperations(
+                files,
+                bucket: Bucket.Name,
+                bucketPath: _currentState.CurrentPath,
+                cancellationToken: cancellationTokenSource.Token);
 
             GcsFileProgressDialogWindow.PromptUser(
                 caption: Resources.GcsFileBrowserUploadingProgressCaption,
                 message: Resources.GcsFileBrowserUploadingProgressMessage,
                 operations: uploadOperations,
-                tokenSource: tokenSource);
+                cancellationTokenSource: cancellationTokenSource);
 
             UpdateCurrentState();
         }
 
         /// <summary>
-        /// Method called whenever the selection changes to udpate the view model.
+        /// Method called whenever the selection changes to update the view model.
         /// </summary>
         public void InvalidateSelectedItems(IEnumerable<GcsRow> selectedRows)
         {
@@ -188,55 +184,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
             UpdateContextMenu();
         }
-
-        /// <summary>
-        /// This method creates the <seealso cref="GcsFileOperation"/> instances that represent the upload
-        /// operations for the given paths of files. If the <paramref name="sources"/> entry represents a directory
-        /// then it will recurse into the directories to create the upload operations for those files as well.
-        /// </summary>
-        /// <param name="sources">
-        /// The path to the sources to upload. These can be either directories or files. It is better if these
-        /// are full file paths as the current directory in VS changes quite often.
-        /// </param>
-        /// <returns>The list of <seealso cref="GcsFileOperation"/> that represent the upload of the files.</returns>
-        private IEnumerable<GcsFileOperation> CreateUploadOperations(IEnumerable<string> sources)
-            => sources
-               .Select(src =>
-               {
-                   var info = new FileInfo(src);
-                   var isDirectory = (info.Attributes & FileAttributes.Directory) != 0;
-
-                   if (isDirectory)
-                   {
-                       return CreateUploadOperationsForDirectory(info.FullName, info.Name);
-                   }
-                   else
-                   {
-                       return new GcsFileOperation[]
-                          {
-                            new GcsFileOperation(
-                                source: info.FullName,
-                                bucket: Bucket.Name,
-                                destination: $"{CurrentState.CurrentPath}{info.Name}"),
-                          };
-                   }
-               })
-               .SelectMany(x => x);
-
-        /// <summary>
-        /// Creates the <seealso cref="GcsFileOperation"/> instances for all of the files in the given directory. The
-        /// target directory will be based on <paramref name="basePath"/>.
-        /// </summary>
-        private IEnumerable<GcsFileOperation> CreateUploadOperationsForDirectory(string dir, string basePath)
-            => Enumerable.Concat(
-                Directory.EnumerateFiles(dir)
-                    .Select(file => new GcsFileOperation(
-                        source: file,
-                        bucket: Bucket.Name,
-                        destination: $"{_currentState.CurrentPath}{basePath}/{Path.GetFileName(file)}")),
-                Directory.EnumerateDirectories(dir)
-                    .Select(subDir => CreateUploadOperationsForDirectory(subDir, $"{basePath}/{Path.GetFileName(subDir)}"))
-                    .SelectMany(x => x));
 
         private void UpdateContextMenu()
         {
@@ -275,7 +222,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
         /// </summary>
         private async void OnDownloadCommand()
         {
-            // 1) The user is prompted for the download root where to store the downloaded files.
             FBD dialog = new FBD();
             dialog.Description = Resources.GcsFileBrowserFolderSelectionMessage;
             dialog.ShowNewFolderButton = true;
@@ -287,75 +233,34 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
             var downloadRoot = dialog.SelectedPath;
 
-            // 2) The files to be downloaded and directories to be created are collected.
-            var downloadOperations = new List<GcsFileOperation>();
+            IList<GcsFileOperation> downloadOperations;
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             try
             {
                 IsLoading = true;
 
-                downloadOperations.AddRange(SelectedItems
-                    .Where(x => x.IsFile)
-                    .Select(x => new GcsFileOperation(
-                        source: x.BlobName,
-                        bucket: Bucket.Name,
-                        destination: Path.Combine(downloadRoot, x.LeafName))));
-
-                var subDirs = new HashSet<string>();
-                foreach (var dir in SelectedItems.Where(x => x.IsDirectory))
-                {
-                    var files = await _dataSource.GetGcsFilesFromPrefixAsync(Bucket.Name, dir.BlobName);
-                    foreach (var file in files)
-                    {
-                        var relativeFilePath = Path.Combine(dir.LeafName, file.RelativeName.Replace('/', '\\'));
-                        var absoluteFilePath = Path.Combine(downloadRoot, relativeFilePath);
-
-                        // Create the file operation for this file.
-                        downloadOperations.Add(new GcsFileOperation(
-                            source: file.Name,
-                            bucket: Bucket.Name,
-                            destination: absoluteFilePath));
-
-                        // Collects the list of directories to create.
-                        subDirs.Add(Path.GetDirectoryName(absoluteFilePath));
-                    }
-                }
-
-                // 3) Create all of the subdirectories.
-                foreach (var dir in subDirs)
-                {
-                    try
-                    {
-                        Directory.CreateDirectory(dir);
-                    }
-                    catch (IOException)
-                    {
-                        UserPromptUtils.ErrorPrompt(
-                            message: String.Format(Resources.GcsFileBrowserFailedToCreateDirMessage, dir),
-                            title: Resources.UiErrorCaption);
-                    }
-                }
+                downloadOperations = await _fileOperationsEngine.StartDownloadOperationsAsync(
+                    SelectedItems.Select(x => new GcsUtils.GcsItemRef(x.Bucket, x.BlobName)),
+                    downloadRoot,
+                    cancellationTokenSource.Token);
+            }
+            catch (IOException)
+            {
+                UserPromptUtils.ErrorPrompt(
+                    message: Resources.GcsFileBrowserFailedToCreateDirMessage,
+                    title: Resources.UiErrorCaption);
+                return;
             }
             finally
             {
                 IsLoading = false;
             }
 
-            // 4) Start the download operations and open the progress dialog to show the progress to the user.
-            var tokenSource = new CancellationTokenSource();
-            foreach (var operation in downloadOperations)
-            {
-                _dataSource.StartFileDownloadOperation(
-                    bucket: Bucket.Name,
-                    name: operation.Source,
-                    destPath: operation.Destination,
-                    operation: operation,
-                    token: tokenSource.Token);
-            }
             GcsFileProgressDialogWindow.PromptUser(
                 caption: Resources.GcsFileBrowserDownloadingProgressCaption,
                 message: Resources.GcsFileBrowserDownloadingProgressMessage,
                 operations: downloadOperations,
-                tokenSource: tokenSource);
+                cancellationTokenSource: cancellationTokenSource);
         }
 
         /// <summary>
@@ -371,7 +276,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
         /// </summary>
         private async void OnDeleteCommand()
         {
-            // 1) The user is asked to confirm the deletion operation.
             if (!UserPromptUtils.ActionPrompt(
                 prompt: Resources.GcsFileBrowserDeletePromptMessage,
                 title: Resources.UiDeleteButtonCaption,
@@ -381,55 +285,34 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 return;
             }
 
-            var deleteOperations = new List<GcsFileOperation>();
+            IList<GcsFileOperation> deleteOperations;
+            var cancellationTokenSource = new CancellationTokenSource();
             try
             {
                 IsLoading = true;
 
-                // 2) Collect all of the files to be deleted and create the delete operations to track
-                //    the delete progress.
-                deleteOperations.AddRange(SelectedItems
-                   .Where(x => x.IsFile)
-                   .Select(x => new GcsFileOperation(
-                       source: x.BlobName,
-                       bucket: Bucket.Name,
-                       destination: null)));
-
-                var filesInSubdirectories = await _dataSource.GetGcsFilesFromPrefixesAsync(
-                    Bucket.Name,
-                    SelectedItems.Where(x => x.IsDirectory).Select(x => x.BlobName));
-                deleteOperations.AddRange(filesInSubdirectories.Select(x => new GcsFileOperation(
-                    source: x.Name,
-                    bucket: Bucket.Name)));
+                deleteOperations = await _fileOperationsEngine.StartDeleteOperationsAsync(
+                    SelectedItems.Select(x => new GcsItemRef(x.Bucket, x.BlobName)),
+                    cancellationTokenSource.Token);
             }
             catch (DataSourceException)
             {
                 UserPromptUtils.ErrorPrompt(
                     message: Resources.GcsFileBrowserDeleteListErrorMessage,
                     title: Resources.UiErrorCaption);
+                return;
             }
             finally
             {
                 IsLoading = false;
             }
 
-            // 3) start the deletion operations and open the progress dialog.
-            var tokenSource = new CancellationTokenSource();
-            foreach (var operation in deleteOperations)
-            {
-                _dataSource.StartDeleteOperation(
-                    bucket: Bucket.Name,
-                    name: operation.Source,
-                    operation: operation,
-                    token: tokenSource.Token);
-            }
             GcsFileProgressDialogWindow.PromptUser(
                 caption: Resources.GcsFileBrowserDeletingProgressCaption,
                 message: Resources.GcsFileBrowserDeletingProgressMessage,
                 operations: deleteOperations,
-                tokenSource: tokenSource);
+                cancellationTokenSource: cancellationTokenSource);
 
-            // 4) refresh the window with the contents of the server.
             UpdateCurrentState();
         }
 
@@ -446,6 +329,13 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 IsLoading = true;
 
                 await _dataSource.CreateDirectoryAsync(Bucket.Name, $"{CurrentState.CurrentPath}{name}/");
+            }
+            catch (DataSourceException)
+            {
+                UserPromptUtils.ErrorPrompt(
+                    message: String.Format(Resources.GcsFileBrowserFailedToCreateRemoteFolder, name),
+                    title: Resources.UiErrorCaption);
+                return;
             }
             finally
             {
@@ -504,6 +394,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 CredentialsStore.Default.CurrentProjectId,
                 CredentialsStore.Default.CurrentGoogleCredential,
                 GoogleCloudExtensionPackage.ApplicationName);
+            _fileOperationsEngine = new FileOperationsEngine(_dataSource);
             UpdateCurrentState("");
         }
 

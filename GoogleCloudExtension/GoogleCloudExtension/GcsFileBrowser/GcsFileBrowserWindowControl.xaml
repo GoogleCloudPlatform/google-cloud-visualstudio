@@ -111,7 +111,7 @@
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{x:Static ext:Resources.GcsFileBrowserNameHeader}"
                                         SortMemberPath="LeafName"
-                                        utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter FileName, SortDirectories=True}">
+                                        utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter LeafName, SortDirectories=True}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">

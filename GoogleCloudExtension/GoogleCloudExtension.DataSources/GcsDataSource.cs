@@ -176,7 +176,7 @@ namespace GoogleCloudExtension.DataSources
             string sourcePath,
             string bucket,
             string name,
-            IGcsFileOperation operation,
+            IGcsFileOperationCallback operation,
             CancellationToken token)
         {
             try
@@ -224,7 +224,7 @@ namespace GoogleCloudExtension.DataSources
             string bucket,
             string name,
             string destPath,
-            IGcsFileOperation operation,
+            IGcsFileOperationCallback operation,
             CancellationToken token)
         {
             try
@@ -263,11 +263,11 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="name">The name of the file.</param>
         /// <param name="operation">The operation that will recieve the status.</param>
         /// <param name="token">The cancellation token to cancel the operation.</param>
-        public async void StartDeleteOperation(string bucket, string name, IGcsFileOperation operation, CancellationToken token)
+        public async void StartDeleteOperation(string bucket, string name, IGcsFileOperationCallback operation, CancellationToken token)
         {
             try
             {
-                var response = await Service.Objects.Delete(bucket, name).ExecuteAsync();
+                var response = await Service.Objects.Delete(bucket, name).ExecuteAsync(token);
                 operation.Completed();
             }
             catch (GoogleApiException ex)
@@ -283,7 +283,7 @@ namespace GoogleCloudExtension.DataSources
         private void OnDownloadProgress(
             IDownloadProgress downloadProgress,
             ulong totalSize,
-            IGcsFileOperation operation)
+            IGcsFileOperationCallback operation)
         {
             operation.Progress((double)downloadProgress.BytesDownloaded / totalSize);
         }
@@ -291,7 +291,7 @@ namespace GoogleCloudExtension.DataSources
         private static void OnUploadProgress(
             IUploadProgress uploadProgress,
             ulong totalSize,
-            IGcsFileOperation operation)
+            IGcsFileOperationCallback operation)
         {
             operation.Progress((double)uploadProgress.BytesSent / totalSize);
         }
