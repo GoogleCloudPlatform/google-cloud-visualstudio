@@ -135,6 +135,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Width="*"
+                                        SortMemberPath="Size"
                                         utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter Size}"
                                         Header="{x:Static ext:Resources.GcsFileBrowserSizeHeader}">
                     <DataGridTemplateColumn.CellTemplate>
@@ -147,6 +148,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Width="*"
+                                        SortMemberPath="LasModified"
                                         utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter LastModified}"
                                         Header="{x:Static ext:Resources.GcsFileBrowserLastModifiedHeader}">
                     <DataGridTemplateColumn.CellTemplate>
@@ -159,6 +161,7 @@
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
                 <DataGridTemplateColumn Width="*"
+                                        SortMemberPath="ContentType"
                                         utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter ContentType}"
                                         Header="{x:Static ext:Resources.GcsFileBrowserContentTypeHeader}">
                     <DataGridTemplateColumn.CellTemplate>
