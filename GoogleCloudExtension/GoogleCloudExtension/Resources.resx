@@ -2111,4 +2111,16 @@
     <value>Versions don't match</value>
     <comment>Prompt title when the opened project version differs than the version information of the log entry.</comment>
   </data>
+  <data name="CloudExplorerGceAttachDebuggerMenuHeader" xml:space="preserve">
+    <value>Attach Debugger</value>
+    <comment>Header for the attach remote debugger menu item.</comment>
+  </data>
+  <data name="AttachDebuggerAddPublicIpAddressMessage" xml:space="preserve">
+    <value>No valid public IP addres. To enable remote debugging, add a public IP address to the VM.</value>
+    <comment>Message when the GCE virtual machine does not have valid public IP address.</comment>
+  </data>
+  <data name="AttachDebuggerWindowCaptionFormat" xml:space="preserve">
+    <value>Attach debugger to {0}: {1}</value>
+    <comment>The caption for attach debugger window. {0} is public ip addres, {1} is instance name.</comment>
+  </data>
 </root>
