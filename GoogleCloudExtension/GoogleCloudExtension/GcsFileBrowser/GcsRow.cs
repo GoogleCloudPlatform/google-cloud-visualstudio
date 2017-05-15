@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.Storage.v1.Data;
+using GoogleCloudExtension.Utils;
 using System.Linq;
 
 namespace GoogleCloudExtension.GcsFileBrowser
@@ -130,9 +131,13 @@ namespace GoogleCloudExtension.GcsFileBrowser
             return cleanName.Split('/').Last();
         }
 
+        /// <summary>
+        /// Takes in the <paramref name="size"/> and returns a human readable version of the size
+        /// with the KB, MB, etc... suffix.
+        /// </summary>
         private static string FormatSize(ulong size)
         {
-            return size.ToString();
+            return FileSizeUtils.FormatSize(size);
         }
     }
 }
