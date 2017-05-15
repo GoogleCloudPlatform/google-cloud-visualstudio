@@ -131,7 +131,7 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <DataGridTextColumn Binding="{Binding Size}"
+                <DataGridTextColumn Binding="{Binding FormattedSize}"
                                     Width="*"
                                     utils:DataGridBehaviors.CustomSort="{local:GcsColumnSorter Size}"
                                     Header="{x:Static ext:Resources.GcsFileBrowserSizeHeader}" />

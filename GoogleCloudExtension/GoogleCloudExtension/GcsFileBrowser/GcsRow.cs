@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.Storage.v1.Data;
+using GoogleCloudExtension.GcsUtils;
 using GoogleCloudExtension.Utils;
 using System.Linq;
 
@@ -59,7 +60,12 @@ namespace GoogleCloudExtension.GcsFileBrowser
         /// <summary>
         /// The size of the item.
         /// </summary>
-        public string Size { get; private set; }
+        public ulong Size { get; private set; }
+
+        /// <summary>
+        /// The size of the item.
+        /// </summary>
+        public string FormattedSize { get; private set; }
 
         /// <summary>
         /// The last modified date for the item.
@@ -89,8 +95,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
             {
                 Bucket = bucket,
                 BlobName = name,
-                LeafName = GetLeafName(name),
-                Size = NoValuePlaceholder,
+                LeafName = GcsPathUtils.GetFileName(name),
+                FormattedSize = NoValuePlaceholder,
                 LastModified = NoValuePlaceholder,
                 ContentType = NoValuePlaceholder,
                 IsDirectory = true,
@@ -107,9 +113,10 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 Bucket = obj.Bucket,
                 BlobName = obj.Name,
                 IsFile = true,
-                Size = obj.Size.HasValue ? FormatSize(obj.Size.Value) : NoValuePlaceholder,
+                Size = obj.Size.HasValue ? obj.Size.Value : 0l,
+                FormattedSize = obj.Size.HasValue ? FormatSize(obj.Size.Value) : NoValuePlaceholder,
                 LastModified = obj.Updated?.ToString() ?? NoValuePlaceholder,
-                LeafName = GetLeafName(obj.Name),
+                LeafName = GcsPathUtils.GetFileName(obj.Name),
                 ContentType = obj.ContentType ?? DefaultContentType,
             };
 
@@ -125,19 +132,13 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 IsError = true
             };
 
-        private static string GetLeafName(string name)
-        {
-            var cleanName = name.Last() == '/' ? name.Substring(0, name.Length - 1) : name;
-            return cleanName.Split('/').Last();
-        }
-
         /// <summary>
         /// Takes in the <paramref name="size"/> and returns a human readable version of the size
         /// with the KB, MB, etc... suffix.
         /// </summary>
         private static string FormatSize(ulong size)
         {
-            return FileSizeUtils.FormatSize(size);
+            return StringFormatUtils.FormatByteSize(size);
         }
     }
 }
