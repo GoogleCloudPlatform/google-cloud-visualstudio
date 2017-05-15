@@ -19,7 +19,7 @@ namespace GoogleCloudExtension.SourceBrowsing
     /// <summary>
     /// Throw when file or file revision is not found.
     /// </summary>
-    class FileNotFoundException : Exception
+    internal class FileNotFoundException : Exception
     {
         /// <summary>
         /// Gets the file path.

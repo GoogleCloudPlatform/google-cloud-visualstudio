@@ -105,9 +105,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             var allInstances = await dataSource.GetInstanceListAsync();
             // Left join instanceIds to allInstances on Id.  
             // Select instance name if id is found in allInstances.
-            var menuItems =  
+            var menuItems =
                 from id in instanceIds
-                join instance in allInstances 
+                join instance in allInstances
                     on id equals instance.Id?.ToString() into joined
                 from subInstance in joined.DefaultIfEmpty()
                 orderby subInstance?.Name descending

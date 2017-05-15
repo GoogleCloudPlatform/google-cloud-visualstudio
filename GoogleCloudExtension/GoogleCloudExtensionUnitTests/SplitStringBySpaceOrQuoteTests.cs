@@ -24,7 +24,7 @@ namespace UnitTestProject
         [TestMethod]
         public void General()
         {
-            Verify("\"This is a search string\"  And This  ", 
+            Verify("\"This is a search string\"  And This  ",
                 new string[]
                 {
                     "This is a search string",
@@ -76,7 +76,7 @@ namespace UnitTestProject
             Verify("\"  \"", new string[] { "  " });
             Verify("\"  \"   ", new string[] { "  " });
             Verify("  \"  \"   ", new string[] { "  " });
-            Verify("  \"\"   ",  null);
+            Verify("  \"\"   ", null);
         }
 
         [TestMethod]
@@ -89,7 +89,7 @@ namespace UnitTestProject
         [TestMethod]
         public void MoreQuotes()
         {
-            Verify("\"string 1\"   And  \"String 2\"   more   ", 
+            Verify("\"string 1\"   And  \"String 2\"   more   ",
                 new string[] {
                     "string 1",
                     "And",
@@ -139,7 +139,6 @@ namespace UnitTestProject
             var output = StringUtils.SplitStringBySpaceOrQuote(input);
             if (expected == null || expected.Count() == 0)
             {
-
                 if (output != null && output.Count() != 0)
                 {
                     Assert.Fail($"Fail on {input}");

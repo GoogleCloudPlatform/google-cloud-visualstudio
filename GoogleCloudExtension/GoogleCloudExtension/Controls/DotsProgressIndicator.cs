@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.Controls
     {
         private const int DotsCount = 5;
         private const int Duration = 800;     // in milliseconds
-        private List<Ellipse> _dots = new List<Ellipse>();
+        private readonly List<Ellipse> _dots = new List<Ellipse>();
         private UniformGrid _staticGrid;
         private UniformGrid _movingGrid;
 
@@ -85,7 +85,8 @@ namespace GoogleCloudExtension.Controls
             _movingGrid.Columns = DotsCount;
             for (int i = 0; i < DotsCount; ++i)
             {
-                var dot = new Ellipse {
+                var dot = new Ellipse
+                {
                     Style = (Style)TryFindResource("BlueDotStyle"),
                     Visibility = Visibility.Hidden
                 };

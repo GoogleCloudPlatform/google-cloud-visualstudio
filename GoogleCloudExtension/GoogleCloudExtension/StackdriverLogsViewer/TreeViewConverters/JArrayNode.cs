@@ -28,8 +28,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="name">The name to display for this <paramref name="jArrayObj"/>.</param>
         /// <param name="jArrayObj">A <seealso cref="JArray"/> object to parse.</param>
         /// <param name="parent">The parent object that owns <paramref name="jArrayObj"/>. </param>
-        public JArrayNode(string name, JArray jArrayObj, ObjectNodeTree parent) 
-            : base(name, jArrayObj, parent) { }
+        public JArrayNode(string name, JArray jArrayObj, ObjectNodeTree parent)
+            : base(name, jArrayObj, parent)
+        { }
 
         /// <summary>
         /// Override the <seealso cref="ObjectNodeTree.ParseObjectTree(object)"/>.

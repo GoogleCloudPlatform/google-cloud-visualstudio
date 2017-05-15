@@ -47,6 +47,6 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             OnBackToErrorReportingCommand = new ProtectedCommand(
                 () => ToolWindowCommandUtils.ShowToolWindow<ErrorReportingDetailToolWindow>());
             Error = errorItem;
-        }        
+        }
     }
 }

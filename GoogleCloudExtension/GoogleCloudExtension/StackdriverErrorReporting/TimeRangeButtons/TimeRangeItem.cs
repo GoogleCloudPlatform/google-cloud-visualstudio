@@ -59,9 +59,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// Initializes a instance of <seealso cref="TimeRangeItem"/> class.
         /// </summary>
         public TimeRangeItem(
-            string caption, 
-            string timedCountDuration, 
-            EventGroupTimeRangeEnum timeRange, 
+            string caption,
+            string timedCountDuration,
+            EventGroupTimeRangeEnum timeRange,
             EventTimeRangeEnum eventTimeRange)
         {
             Caption = caption;

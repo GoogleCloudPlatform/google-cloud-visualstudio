@@ -66,7 +66,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="errorGroupItem">The error group item that will be shown in the source code tooltip.</param>
         /// <param name="stackFrame">The stack frame that contains the source file and source line number.</param>
         public static void ErrorFrameToSourceLine(
-            ErrorGroupItem errorGroupItem, 
+            ErrorGroupItem errorGroupItem,
             ErrorReporting.StackFrame stackFrame)
         {
             if (errorGroupItem == null || stackFrame == null || !stackFrame.IsWellParsed)
@@ -145,8 +145,8 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="stackFrame">The stack frame that contains the source file and source line number.</param>
         /// <param name="window">The Visual Studio Document window that opens the source file.</param>
         public static void ShowToolTip(
-            ErrorGroupItem errorGroupItem, 
-            ErrorReporting.StackFrame stackFrame, 
+            ErrorGroupItem errorGroupItem,
+            ErrorReporting.StackFrame stackFrame,
             Window window)
         {
             GotoLine(window, (int)stackFrame.LineNumber);
@@ -173,7 +173,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="window">The Visual Studio doucment window of the source file.</param>
         public static void ShowToolTip(this LogItem logItem, Window window)
         {
-            GotoLine(window, (int)logItem.SourceLine);        
+            GotoLine(window, (int)logItem.SourceLine);
             IVsTextView textView = GetIVsTextView(window.Document.FullName);
             var wpfView = GetWpfTextView(textView);
             if (wpfView == null)

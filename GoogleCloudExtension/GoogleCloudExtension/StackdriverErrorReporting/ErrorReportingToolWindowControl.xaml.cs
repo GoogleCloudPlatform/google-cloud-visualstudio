@@ -29,4 +29,4 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             this.InitializeComponent();
         }
     }
-}    
+}

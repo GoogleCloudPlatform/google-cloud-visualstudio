@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// Base class for bar chart control on a collection of <seealso cref="TimedCount"/>
     /// </summary>
     [TemplatePart(Name = "PART_TimedCountItemsControl", Type = typeof(ItemsControl))]
-    [TemplatePart(Name = "PART_LineItemsControl", Type = typeof(ItemsControl))]    
+    [TemplatePart(Name = "PART_LineItemsControl", Type = typeof(ItemsControl))]
     public class TimedCountBarChartControl : Control
     {
         private const int RowNumber = 4;
@@ -156,19 +156,19 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             foreach (var counter in TimedCountList)
             {
                 // Time line is only shown on items of first, last-3, and optional other 2 items.
-                bool isTimeLineVisible = 
-                    (k == 0 
-                    || k == TimedCountList.Count - 3 
-                    || k == TimedCountList.Count / 3 
+                bool isTimeLineVisible =
+                    (k == 0
+                    || k == TimedCountList.Count - 3
+                    || k == TimedCountList.Count / 3
                     || k == TimedCountList.Count * 2 / 3);
                 DateTime startTime = (DateTime)counter.StartTime;
                 string timeLine = isTimeLineVisible ? startTime.ToString(timeLineFormat) : null;
 
                 timedCountItemList.Add(
                     new TimedCountItem(
-                        counter, 
-                        timeLine, 
-                        _heightMultiplier, 
+                        counter,
+                        timeLine,
+                        _heightMultiplier,
                         GroupTimeRange.TimeCountDuration()));
                 ++k;
             }

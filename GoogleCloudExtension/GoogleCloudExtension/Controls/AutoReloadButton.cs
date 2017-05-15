@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.Controls
         {
             // Override IsChecked property to add a handler when the state changes.
             ToggleButton.IsCheckedProperty.OverrideMetadata(
-                typeof(AutoReloadButton), 
+                typeof(AutoReloadButton),
                 new FrameworkPropertyMetadata(false, OnIsCheckedChanged));
         }
 

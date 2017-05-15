@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="appName">The name of the application.</param>
         public StackdriverErrorReportingDataSource(string projectId, GoogleCredential credential, string appName)
                 : base(projectId, credential, init => new ClouderrorreportingService(init), appName)
-        {}
+        { }
 
         /// <summary>
         /// Get a page of <seealso cref="ErrorGroupStats"/> for the given <paramref name="groupId"/>.
@@ -54,9 +54,9 @@ namespace GoogleCloudExtension.DataSources
         /// A task with <seealso cref="ListGroupStatsResponse"/> as result.
         /// </returns>
         public Task<ListGroupStatsResponse> GetPageOfGroupStatusAsync(
-            TimeRangeEnum timeRange, 
-            string timedCountDuration = null, 
-            string groupId = null, 
+            TimeRangeEnum timeRange,
+            string timedCountDuration = null,
+            string groupId = null,
             string nextPageToken = null)
         {
             var request = Service.Projects.GroupStats.List(ProjectResourceName);
