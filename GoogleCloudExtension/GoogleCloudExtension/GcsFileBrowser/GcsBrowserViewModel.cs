@@ -184,7 +184,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 operations: uploadOperations,
                 cancellationTokenSource: cancellationTokenSource);
 
-
             UpdateCurrentState();
         }
 
