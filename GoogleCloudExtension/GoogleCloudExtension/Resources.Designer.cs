@@ -4779,9 +4779,9 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to Google Cloud Tools.
         /// </summary>
-        public static string uiDefaultPromptTitle {
+        public static string UiDefaultPromptTitle {
             get {
-                return ResourceManager.GetString("uiDefaultPromptTitle", resourceCulture);
+                return ResourceManager.GetString("UiDefaultPromptTitle", resourceCulture);
             }
         }
         

@@ -1671,7 +1671,7 @@
     <value>The log entry was generated from assembly {0}, version {1}.\r\nOpen the project to navigate to the logger method location.</value>
     <comment>Prompt asking to open a project that is the log entry source project.  parameter {0} is assembly name, parameter {1} is assembly version.</comment>
   </data>
-  <data name="uiDefaultPromptTitle" xml:space="preserve">
+  <data name="UiDefaultPromptTitle" xml:space="preserve">
     <value>Google Cloud Tools</value>
     <comment>The prompt title for source version utils message boxes.</comment>
   </data>
