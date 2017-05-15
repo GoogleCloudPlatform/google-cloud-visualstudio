@@ -38,12 +38,14 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         private bool _detailsExpanded = false;
         
         /// <summary>
-        /// The message to display in the dialog.
+        /// The message to display in dialog for the list of operations.
         /// </summary>
         public string Message { get; }
 
         /// <summary>
-        /// The message for the overall progres.
+        /// The message for the overall progres. This string is expected to have two placehoders. Where
+        /// {0} is going to the count of completed operations and {1} is going to be the total number of
+        /// operations. This property will change depending on the progress state for the operations.
         /// </summary>
         public string ProgressMessage
         {
@@ -68,6 +70,9 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
             }
         }
            
+        /// <summary>
+        /// Returns true if no operation has started.
+        /// </summary>
         public bool OperationsPending
         {
             get { return _operationsPending; }
@@ -110,18 +115,27 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         /// </summary>
         public ICommand ActionCommand { get; }
 
+        /// <summary>
+        /// Whether the details are expanded or not.
+        /// </summary>
         public bool DetailsExpanded
         {
             get { return _detailsExpanded; }
-            set
+            private set
             {
                 SetValueAndRaise(ref _detailsExpanded, value);
                 RaisePropertyChanged(nameof(ExpandCollapseMessage));
             }
         }
 
+        /// <summary>
+        /// The command to execute when clicking on the expand hyperlink.
+        /// </summary>
         public ICommand ExpandCollapseDetailsCommand { get; }
 
+        /// <summary>
+        /// The message to show in the hyperlink message.
+        /// </summary>
         public string ExpandCollapseMessage => DetailsExpanded ?
             Resources.GcsFileProgressDialogHideDetailsCaption : Resources.GcsFileProgressDialogShowDetailsCaption;
 
