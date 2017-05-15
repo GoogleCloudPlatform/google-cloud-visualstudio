@@ -241,6 +241,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No valid public IP addres. To enable remote debugging, add a public IP address to the VM..
+        /// </summary>
+        public static string AttachDebuggerAddPublicIpAddressMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerAddPublicIpAddressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attach debugger to {0}: {1}.
+        /// </summary>
+        public static string AttachDebuggerWindowCaptionFormat {
+            get {
+                return ResourceManager.GetString("AttachDebuggerWindowCaptionFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Network.
         /// </summary>
         public static string AuthorizedNetworksNetworkHeader {
@@ -813,6 +831,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerGaeVersionUrlDisplayName {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeVersionUrlDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attach Debugger.
+        /// </summary>
+        public static string CloudExplorerGceAttachDebuggerMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceAttachDebuggerMenuHeader", resourceCulture);
             }
         }
         
