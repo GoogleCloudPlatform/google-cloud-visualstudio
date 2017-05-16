@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
                                  gceInstance.GetPublicIpAddress(),
                                  gceInstance.Name))
         {
-            ViewModel = new AttachDebuggerWindowViewModel(gceInstance);
+            ViewModel = new AttachDebuggerWindowViewModel(gceInstance, this);
             Content = new AttachDebuggerWindowContent { DataContext = ViewModel };
         }
 

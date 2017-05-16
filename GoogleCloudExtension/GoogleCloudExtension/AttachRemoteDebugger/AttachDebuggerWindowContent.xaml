@@ -10,9 +10,7 @@
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance {x:Type local:AttachDebuggerWindowViewModel}}"
-             d:DesignHeight="300" d:DesignWidth="100"
-             MinWidth="300px"
-             MinHeight="100px">
+             d:DesignHeight="200" d:DesignWidth="320" >
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -23,12 +21,18 @@
 
             <utils:VisibilityConverter x:Key="visibilityConverter" />
 
+            <!-- Small dialog, fixed on the width but allows it to grow vertically. -->
+            <Style x:Key="DebuggerDialogStyle" BasedOn="{StaticResource CommonDialogStyleBase}" TargetType="{x:Type UserControl}">
+                <Setter Property="MinWidth" Value="320px" />
+                <Setter Property="MinHeight" Value="200px" />
+            </Style>
+            
         </ResourceDictionary>
     </UserControl.Resources>
 
     <!-- Apply the style for the dialog. -->
     <UserControl.Style>
-        <Binding Source="{StaticResource CommonDialogStyleBase}" />
+        <Binding Source="{StaticResource DebuggerDialogStyle}" />
     </UserControl.Style>
 
     <theming:CommonDialogWindowBaseContent HasBanner="True" >

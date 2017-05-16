@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using Google.Apis.Compute.v1.Data;
+using GoogleCloudExtension.AttachRemoteDebugger;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System.Collections.Generic;
@@ -63,6 +64,8 @@ namespace GoogleCloudExtension.FirewallManagement
             new PortInfo("HTTPS", 443, description: Resources.PortManagerHttpsDescription),
             new PortInfo("RDP", 3389, description: Resources.PortManagerRdpDescription),
             new PortInfo("WebDeploy", 8172, description: Resources.PortManagerWebDeployDescription),
+            EnableDebuggerPortStepViewModel.s_DebuggerPortInfo,
+            EnablePowerShellPortStepViewModel.s_RemotePowerShellPortInfo,
         };
 
         private readonly PortManagerWindow _owner;

@@ -106,6 +106,7 @@
     <Compile Include="Analytics\Events\StopGceInstanceEvent.cs" />
     <Compile Include="Analytics\Events\UnhandledExceptionEvent.cs" />
     <Compile Include="Analytics\Events\UpgradeEvent.cs" />
+    <Compile Include="AttachRemoteDebugger\AttachDebuggerContext.cs" />
     <Compile Include="AttachRemoteDebugger\AttachDebuggerException.cs" />
     <Compile Include="AttachRemoteDebugger\AttachDebuggerStepBase.cs" />
     <Compile Include="AttachRemoteDebugger\AttachDebuggerWindow.cs" />
@@ -113,6 +114,12 @@
       <DependentUpon>AttachDebuggerWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="AttachRemoteDebugger\AttachDebuggerWindowViewModel.cs" />
+    <Compile Include="AttachRemoteDebugger\EnableDebuggerPortStepViewModel.cs" />
+    <Compile Include="AttachRemoteDebugger\EnablePortStepContent.xaml.cs">
+      <DependentUpon>EnablePortStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AttachRemoteDebugger\EnablePortStepViewModel.cs" />
+    <Compile Include="AttachRemoteDebugger\EnablePowerShellPortStepViewModel.cs" />
     <Compile Include="AttachRemoteDebugger\IAttachDebuggerStep.cs" />
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworkModel.cs" />
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksViewModel.cs" />
@@ -784,6 +791,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="AttachRemoteDebugger\AttachDebuggerWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AttachRemoteDebugger\EnablePortStepContent.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
