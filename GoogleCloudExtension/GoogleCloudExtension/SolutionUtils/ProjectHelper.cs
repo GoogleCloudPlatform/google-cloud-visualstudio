@@ -14,8 +14,8 @@
 
 using EnvDTE;
 using System;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
 
@@ -77,20 +77,20 @@ namespace GoogleCloudExtension.SolutionUtils
             try
             {
                 FullName = _project.FullName.ToLowerInvariant();
-                UniqueName = _project.UniqueName?.ToLowerInvariant();                
+                UniqueName = _project.UniqueName?.ToLowerInvariant();
                 if (FullName.EndsWith(UniqueName))
                 {
-                    int len = FullName.Length - UniqueName.Length; 
-                    if (len > 0 && FullName[len-1] == Path.DirectorySeparatorChar)
+                    int len = FullName.Length - UniqueName.Length;
+                    if (len > 0 && FullName[len - 1] == Path.DirectorySeparatorChar)
                     {
-                        ProjectRoot = FullName.Substring(0, len-1);
+                        ProjectRoot = FullName.Substring(0, len - 1);
                     }
                     else if (UniqueName[0] == Path.DirectorySeparatorChar)
                     {
                         ProjectRoot = FullName.Substring(0, len);
                     }
                 }
-                
+
                 // Fallback to project directory.
                 ProjectRoot = ProjectRoot ?? Path.GetDirectoryName(FullName);
 

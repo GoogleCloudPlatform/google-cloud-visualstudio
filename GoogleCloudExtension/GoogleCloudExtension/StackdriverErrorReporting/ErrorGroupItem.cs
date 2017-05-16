@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
-using EventGroupTimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -154,7 +153,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         {
             // Assign a value that is never used.
             // Otherwise compiler complains "used not initialized local variable". 
-            DateTime dt = DateTime.MinValue;    
+            DateTime dt = DateTime.MinValue;
             if (datetime is DateTime)
             {
                 dt = (DateTime)datetime;
@@ -177,7 +176,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private string FormatServiceContext(ServiceContext serviceContext)
         {
             StringBuilder builder = new StringBuilder();
-            builder.Append(serviceContext.Service);        
+            builder.Append(serviceContext.Service);
             if (!String.IsNullOrWhiteSpace(serviceContext.Version))
             {
                 builder.Append($":{serviceContext.Version}");
@@ -187,4 +186,3 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         }
     }
 }
-   

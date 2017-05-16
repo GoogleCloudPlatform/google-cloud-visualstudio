@@ -35,9 +35,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Example:  instance_id value is integer as string.  The display name is the instance name.
         /// </param>
         public ResourceValueItemViewModel(
-            string resourceKeyValue, 
-            MenuItemViewModel parent, 
-            string displayName = null) :  base(parent)
+            string resourceKeyValue,
+            MenuItemViewModel parent,
+            string displayName = null) : base(parent)
         {
             ResourceValue = resourceKeyValue;
             Header = displayName ?? ResourceValue;

@@ -18,7 +18,7 @@ namespace GoogleCloudExtension.Utils
 {
     public static class ArgumentCheckUtils
     {
-        public static string ThrowIfNullOrEmpty(this string arg,  string message)
+        public static string ThrowIfNullOrEmpty(this string arg, string message)
         {
             if (String.IsNullOrWhiteSpace(arg))
             {

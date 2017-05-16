@@ -44,7 +44,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <summary>
         /// A map of git sha to <seealso cref="GitCommit"/> object.
         /// </summary>
-        private static readonly Dictionary<string, GitCommit> s_localCache = 
+        private static readonly Dictionary<string, GitCommit> s_localCache =
             new Dictionary<string, GitCommit>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace GoogleCloudExtension.SourceBrowsing
                 {
                     string sha = logItem.Entry.Labels[SourceContextIdLabel];
                     window = await ProgressDialogWindow.PromptUser(
-                        SearchGitRepoAndOpenFileAsync(sha, logItem.SourceFilePath), 
+                        SearchGitRepoAndOpenFileAsync(sha, logItem.SourceFilePath),
                         s_gitOperationOption);
                 }
                 else
@@ -135,7 +135,7 @@ namespace GoogleCloudExtension.SourceBrowsing
 
             if (!IsCurrentSolutionOpen())
             {
-                OpenCurrentVersionProjectPrompt(logItem.AssemblyName, logItem.AssemblyVersion);                
+                OpenCurrentVersionProjectPrompt(logItem.AssemblyName, logItem.AssemblyVersion);
             }
 
             ProjectHelper project = null;
@@ -205,7 +205,7 @@ namespace GoogleCloudExtension.SourceBrowsing
             {
                 // There is a chance the file is built from local git repo root.
                 if (await SearchCommitAtPathAsync(Path.GetDirectoryName(filePath), sha))
-                { 
+                {
                     return await OpenGitFileAsync(s_localCache[sha], filePath);
                 }
             }

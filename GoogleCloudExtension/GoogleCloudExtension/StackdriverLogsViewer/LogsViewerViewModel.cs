@@ -399,8 +399,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             // Firstly compose a new filter line.
             StringBuilder newFilter = new StringBuilder();
-            newFilter.Append($"{node.FilterLabel}=\"{node.FilterValue}\"");            
-            while ((node = node.Parent).Parent != null)     
+            newFilter.Append($"{node.FilterLabel}=\"{node.FilterValue}\"");
+            while ((node = node.Parent).Parent != null)
             {
                 if (!string.IsNullOrWhiteSpace(node.FilterLabel))
                 {
@@ -411,8 +411,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             // Append the new filter line to existing filter text.
             // Or to the composed filter if it is currently showing simple filters.
             if (ShowAdvancedFilter)
-            {   
-                newFilter.Insert(0, Environment.NewLine); 
+            {
+                newFilter.Insert(0, Environment.NewLine);
                 newFilter.Insert(0, AdvancedFilterText);
             }
             else
@@ -562,7 +562,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             if (_logs.Count >= MaxLogEntriesCount)
             {
                 UserPromptUtils.ErrorPrompt(
-                    message: Resources.LogViewerResultSetTooLargeMessage, 
+                    message: Resources.LogViewerResultSetTooLargeMessage,
                     title: Resources.uiDefaultPromptTitle);
                 _cancellationTokenSource?.Cancel();
                 return;

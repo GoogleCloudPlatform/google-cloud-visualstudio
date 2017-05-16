@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.GitUtils
     {
         private const string GitExecutable = "git.exe";
 
-        private static Lazy<string> s_gitPathLazy = new Lazy<string>(GetGitPath);
+        private static readonly Lazy<string> s_gitPathLazy = new Lazy<string>(GetGitPath);
 
         /// <summary>
         /// Git repository local root path.

@@ -218,7 +218,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 OnNavigateToSourceCommand = new ProtectedCommand(
                     () => SourceVersionUtils.NavigateToSourceLineCommandAsync(this).Wait());
                 SourceLinkCaption = String.Format(
-                    Resources.LogsViewerSourceLinkCaptionFormat, 
+                    Resources.LogsViewerSourceLinkCaptionFormat,
                     System.IO.Path.GetFileName(SourceFilePath),
                     SourceLine);
             }

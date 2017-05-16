@@ -60,9 +60,9 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// The <paramref name="timedCount"/> is the sum of all errors in this time range.   
         /// </param>
         public TimedCountItem(
-            TimedCount timedCount, 
-            string timeLine, 
-            double heightMultiplier, 
+            TimedCount timedCount,
+            string timeLine,
+            double heightMultiplier,
             string timeRangeLabel)
         {
             _timedCount = timedCount;
