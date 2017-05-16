@@ -2,11 +2,11 @@
     x:Class="GoogleCloudExtension.PubSubWindows.NewTopicWindowContent"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
     xmlns:ext="clr-namespace:GoogleCloudExtension"
     xmlns:local="clr-namespace:GoogleCloudExtension.PubSubWindows"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance Type=local:NewTopicViewModel}"
     FocusManager.FocusedElement="{Binding ElementName=TopicName}">
@@ -31,7 +31,7 @@
         <Binding Source="{StaticResource CommonDialogStyleDynamicSmall}"/>
     </UserControl.Style>
 
-    <theming:CommonDialogWindowBaseContent ValidationResults="{Binding AllValidationResultsDelayed}">
+    <theming:CommonDialogWindowBaseContent>
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo
                 Command="{Binding CreateCommand}"

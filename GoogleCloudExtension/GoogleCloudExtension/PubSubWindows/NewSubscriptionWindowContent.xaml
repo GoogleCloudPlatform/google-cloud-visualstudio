@@ -2,9 +2,15 @@
     x:Class="GoogleCloudExtension.PubSubWindows.NewSubscriptionWindowContent"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
     xmlns:ext="clr-namespace:GoogleCloudExtension"
+    xmlns:local="clr-namespace:GoogleCloudExtension.PubSubWindows"
+    xmlns:theming="clr-namespace:GoogleCloudExtension.Theming"
     xmlns:controls="clr-namespace:GoogleCloudExtension.Controls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
+    mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance Type=local:NewSubscriptionViewModel}"
     FocusManager.FocusedElement="{Binding ElementName=SubscriptionName}">
 
     <UserControl.Resources>
@@ -24,7 +30,7 @@
                 x:Key="MyLabelWithHelp"
                 BasedOn="{StaticResource {x:Type controls:LabelWithHelp}}"
                 TargetType="{x:Type controls:LabelWithHelp}">
-                
+
                 <Setter Property="VerticalAlignment" Value="Center"/>
                 <Setter Property="Margin" Value="3"/>
             </Style>
@@ -36,7 +42,7 @@
                 x:Key="MyRadioButton"
                 BasedOn="{StaticResource LabeledRadioButtonStyle}"
                 TargetType="{x:Type RadioButton}">
-                
+
                 <Style.Resources>
                     <Style BasedOn="{StaticResource MyLabel}" TargetType="{x:Type Label}"/>
                 </Style.Resources>
@@ -51,11 +57,12 @@
         <Binding Source="{StaticResource CommonDialogStyleLarge}"/>
     </UserControl.Style>
 
-    <theming:CommonDialogWindowBaseContent HasBanner="True" ValidationResults="{Binding AllValidationResultsDelayed}">
+    <theming:CommonDialogWindowBaseContent HasBanner="True">
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo
                 Caption="{x:Static ext:Resources.UiOkButtonCaption}"
                 Command="{Binding CreateCommand}"
+                IsEnabled="{Binding HasErrors, Converter={utils:BooleanConverter TrueValue=False, FalseValue=True}}"
                 IsDefault="True"/>
             <theming:DialogButtonInfo
                 Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
@@ -65,7 +72,7 @@
         <StackPanel
             HorizontalAlignment="Stretch"
             VerticalAlignment="Top">
-            
+
             <DockPanel>
                 <Label
                     DockPanel.Dock="Left"
@@ -73,9 +80,13 @@
                     Content="{x:Static ext:Resources.NewSubscriptionWindowNameLabel}"
                     Style="{StaticResource MyLabel}"/>
                 <TextBox
-                    Name="SubscriptionName"
+                    x:Name="SubscriptionName"
                     Style="{StaticResource MyTextBox}"
-                    Text="{Binding Path=SubscriptionName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"/>
+                    Text="{
+                        Binding Path=SubscriptionName,
+                        UpdateSourceTrigger=PropertyChanged,
+                        ValidatesOnNotifyDataErrors=True
+                    }"/>
             </DockPanel>
             <TextBlock
                 Text="{x:Static ext:Resources.NewSubscriptionWindowDeliveryType}"
@@ -88,13 +99,11 @@
             <DockPanel>
                 <RadioButton
                     DockPanel.Dock="Left"
-                    Name="PushRadioButton"
                     GroupName="PushPull"
                     IsChecked="{Binding Push}"
                     Content="{x:Static ext:Resources.NewSubscriptionWindowPushLabel}"
                     Style="{StaticResource MyRadioButton}"/>
                 <TextBox
-                    Name="PushUrlBox"
                     Text="{Binding PushConfig.PushEndpoint, UpdateSourceTrigger=PropertyChanged}"
                     IsEnabled="{Binding Push}"
                     Style="{StaticResource MyTextBox}"/>
@@ -107,10 +116,12 @@
                     HelpContent="{x:Static ext:Resources.NewSubscriptionWindowAckDeadlineTooltip}"
                     Style="{StaticResource MyLabelWithHelp}"/>
                 <TextBox
-                    Name ="Deadline"
-                    Text="{Binding Subscription.AckDeadlineSeconds,
-                           TargetNullValue=60,
-                           UpdateSourceTrigger=PropertyChanged}"
+                    x:Name ="Deadline"
+                    Text="{
+                        Binding Subscription.AckDeadlineSeconds,
+                        TargetNullValue=60,
+                        UpdateSourceTrigger=PropertyChanged
+                    }"
                     Style="{StaticResource MyTextBox}"/>
             </DockPanel>
         </StackPanel>

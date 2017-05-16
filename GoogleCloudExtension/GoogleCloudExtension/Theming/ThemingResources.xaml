@@ -1,8 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:local="clr-namespace:GoogleCloudExtension.Theming;assembly=GoogleCloudExtension"
-                    xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"
-                    xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions;assembly=GoogleCloudExtension">
+                    xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils">
 
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary Source="CommonResources.xaml" />
@@ -27,7 +26,7 @@
     <Thickness x:Key="DialogButtonMargin">6,0,0,0</Thickness>
 
     <!-- Template to display the button using the wide size in the button bar. -->
-    <DataTemplate x:Key="DialogButtonTemplateWide">
+    <DataTemplate x:Key="DialogButtonTemplateWide" DataType="{x:Type local:DialogButtonInfo}">
         <Button Style="{StaticResource CommonButtonWideStyle}"
                 Margin="{StaticResource DialogButtonMargin}"
                 Command="{Binding Command}"
@@ -39,7 +38,7 @@
     </DataTemplate>
 
     <!-- Template to display the button in the standard size in the button bar. -->
-    <DataTemplate x:Key="DialogButtonTemplateStandard">
+    <DataTemplate x:Key="DialogButtonTemplateStandard" DataType="{x:Type local:DialogButtonInfo}">
         <Button Style="{StaticResource CommonButtonStandardStyle}"
                 Margin="{StaticResource DialogButtonMargin}"
                 Command="{Binding Command}"
@@ -49,47 +48,6 @@
                 Visibility="{Binding Visibility}"
                 ToolTip="{Binding ToolTip}"/>
     </DataTemplate>
-
-    <!-- Syle for items control that displays validation errors. -->
-    <Style x:Key="ValidationItemsControl" TargetType="ItemsControl">
-        <Style.Resources>
-            <Style x:Key="ValidationBorderStyle" TargetType="Border">
-                <Setter Property="Background" Value="{DynamicResource CommonTextBox.Disabled.Background}" />
-                <Setter Property="BorderBrush" Value="{DynamicResource CommonTextBox.Disabled.Border}" />
-                <Setter Property="BorderThickness" Value="1"/>
-                <Setter Property="Margin" Value="3"/>
-                <Setter Property="Padding" Value="2"/>
-            </Style>
-
-            <ControlTemplate x:Key="ValidationControlTemplate">
-                <Border Style="{StaticResource ValidationBorderStyle}">
-                    <ItemsPresenter/>
-                </Border>
-            </ControlTemplate>
-
-            <ItemsPanelTemplate x:Key="ValidationPanelTemplate">
-                <StackPanel Style="{StaticResource ValidationPanelStyle}" />
-            </ItemsPanelTemplate>
-
-            <SolidColorBrush x:Key="ValidationErrorTextBlock.Foreground" Color="Red"/>
-
-            <Style x:Key="ValidationErrorStyle" TargetType="TextBlock">
-                <Setter Property="HorizontalAlignment" Value="Left"/>
-                <Setter Property="Foreground" Value="{DynamicResource ValidationErrorTextBlock.Foreground}"/>
-                <Setter Property="Background" Value="{DynamicResource CommonTextBox.Disabled.Background}"/>
-            </Style>
-
-            <DataTemplate x:Key="ValidationErrorTemplateStandard">
-                <TextBlock
-                    Text="{Binding ErrorContent}"
-                    Style="{StaticResource ValidationErrorStyle}"
-                    ToolTip="{Binding ErrorContent}"/>
-            </DataTemplate>
-        </Style.Resources>
-        <Setter Property="Template" Value="{StaticResource ValidationControlTemplate}"/>
-        <Setter Property="ItemsPanel" Value="{StaticResource ValidationPanelTemplate}"/>
-        <Setter Property="ItemTemplate" Value="{StaticResource ValidationErrorTemplateStandard}"/>
-    </Style>
 
     <!-- Common visuals for the dialogs. -->
 
@@ -145,16 +103,6 @@
                                         </local:ButtonsList>
                                     </StackPanel>
                                 </Border>
-
-                                <!-- The validation content. -->
-                                <ItemsControl
-                                    Grid.Row="2"
-                                    Visibility="{Binding ValidationResults,
-                                        RelativeSource={RelativeSource TemplatedParent},
-                                        Converter={utils:ValidationVisibilityConverter}}"
-                                    ItemsSource="{Binding ValidationResults,
-                                        RelativeSource={RelativeSource TemplatedParent}}"
-                                    Style="{StaticResource ValidationItemsControl}"/>
                             </Grid>
                         </Border>
                     </Grid>

@@ -24,30 +24,19 @@ using System.Windows.Controls;
 
 namespace GoogleCloudExtension.Utils.Validation
 {
-    public abstract class ValidatingViewModelBase : ViewModelBase, IDelayedNotifyDataErrorInfo
+    public abstract class ValidatingViewModelBase : ViewModelBase, INotifyDataErrorInfo
     {
         protected int MillisecondsDelay = 500;
 
         private readonly Dictionary<string, IList<ValidationResult>> _validationsMap =
             new Dictionary<string, IList<ValidationResult>>();
 
-        private IList<ValidationResult> _newValidationResults;
-        private IList<ValidationResult> _allValidationResultsDelayed;
+        private readonly Dictionary<string, IList<ValidationResult>> _pendingResultsMap =
+            new Dictionary<string, IList<ValidationResult>>();
 
-        public bool HasErrors => _validationsMap.Values.SelectMany(results => results).Any(v => !v.IsValid);
-
-        public IList<ValidationResult> AllValidationResultsDelayed
-        {
-            get { return _allValidationResultsDelayed; }
-            set { SetValueAndRaise(ref _allValidationResultsDelayed, value); }
-        }
+        public bool HasErrors => _pendingResultsMap.Values.SelectMany(results => results).Any(v => !v.IsValid);
 
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
-
-        protected ValidatingViewModelBase()
-        {
-            ErrorsChanged += async (sender, args) => await StartDelayedResultsUpdate();
-        }
 
         public IList<ValidationResult> GetErrors(string propertyName)
         {
@@ -61,27 +50,23 @@ namespace GoogleCloudExtension.Utils.Validation
             }
         }
 
-        private async Task StartDelayedResultsUpdate()
+        protected async void SetValidationResults(
+            IEnumerable<ValidationResult> validations,
+            [CallerMemberName] string property = "")
         {
-            var validationResults = _validationsMap.Values.SelectMany(results => results).ToList();
-            _newValidationResults = validationResults;
-            if (_newValidationResults.Any(r => !r.IsValid))
+            property.ThrowIfNullOrEmpty(nameof(property));
+            var validationResults = validations.ToList();
+            _pendingResultsMap[property] = validationResults;
+            RaisePropertyChanged(nameof(HasErrors));
+            if (validationResults.Any(r => !r.IsValid))
             {
                 await Task.Delay(MillisecondsDelay);
             }
-            if (ReferenceEquals(_newValidationResults, validationResults))
+            if (validationResults.Equals(_pendingResultsMap[property]))
             {
-                AllValidationResultsDelayed = _newValidationResults;
+                _validationsMap[property] = _pendingResultsMap[property];
+                ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(property));
             }
-        }
-
-        protected void SetValidationResults(
-            IEnumerable<ValidationResult> validations,
-            [CallerMemberName] string property = null)
-        {
-            string key = property.ThrowIfNull(nameof(property));
-            _validationsMap[key] = validations.ToList();
-            ErrorsChanged?.Invoke(this, new DataErrorsChangedEventArgs(property));
         }
 
         IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)

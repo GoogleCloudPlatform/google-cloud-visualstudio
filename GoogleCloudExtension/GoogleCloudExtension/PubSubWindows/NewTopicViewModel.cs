@@ -60,6 +60,13 @@ namespace GoogleCloudExtension.PubSubWindows
             _owner = owner;
             Project = project;
             CreateCommand = new ProtectedCommand(OnCreateCommand);
+            PropertyChanged += (sender, args) =>
+            {
+                if (args.PropertyName == nameof(HasErrors))
+                {
+                    CreateCommand.CanExecuteCommand = !HasErrors;
+                }
+            };
         }
 
         /// <summary>
