@@ -2878,7 +2878,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to enumerate files to copy..
+        ///   Looks up a localized string similar to Failed to enumerate files..
         /// </summary>
         public static string GcsFileProgressDialogFailedToEnumerateFiles {
             get {

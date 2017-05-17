@@ -2280,7 +2280,7 @@
     <comment>Message shown when an operation is in the error state.</comment>
   </data>
   <data name="GcsFileProgressDialogFailedToEnumerateFiles" xml:space="preserve">
-    <value>Failed to enumerate files to copy.</value>
+    <value>Failed to enumerate files.</value>
     <comment>Error message shown when failed to enumerate files while uploading them.</comment>
   </data>
   <data name="GcsFileProgressDialogFileHeader" xml:space="preserve">
