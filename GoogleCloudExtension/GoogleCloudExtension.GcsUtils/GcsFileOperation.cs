@@ -31,6 +31,7 @@ namespace GoogleCloudExtension.GcsUtils
         private double _progress = 0;
         private bool _isError;
         private bool _isCancelled;
+        private bool _isPending = true;
 
         /// <summary>
         /// The current progress of the operation, between 0.0 (started) to 1.0 (completed).
@@ -50,10 +51,30 @@ namespace GoogleCloudExtension.GcsUtils
             private set { SetValueAndRaise(ref _isError, value); }
         }
 
+        /// <summary>
+        /// Whether this operation is cancelled.
+        /// </summary>
         public bool IsCancelled
         {
             get { return _isCancelled; }
             private set { SetValueAndRaise(ref _isCancelled, value); }
+        }
+
+        /// <summary>
+        /// Whether this operation is still waiting in the queue or processing has started.
+        /// </summary>
+        public bool IsPending
+        {
+            get { return _isPending; }
+            private set
+            {
+                var changed = value != _isPending;
+                SetValueAndRaise(ref _isPending, value);
+                if (changed && !_isPending)
+                {
+                    Started?.Invoke(this, EventArgs.Empty);
+                }
+            }
         }
 
         /// <summary>
@@ -76,6 +97,11 @@ namespace GoogleCloudExtension.GcsUtils
         /// </summary>
         public event EventHandler Completed;
 
+        /// <summary>
+        /// Event raised when the operation is started.
+        /// </summary>
+        public event EventHandler Started;
+
         public GcsFileOperation(
             string localPath,
             GcsItemRef gcsItem)
@@ -93,13 +119,21 @@ namespace GoogleCloudExtension.GcsUtils
 
         void IGcsFileOperationCallback.Progress(double value)
         {
-            _context.Send((x) => Progress = value, null);
+            _context.Send((x) =>
+            {
+                if (value > 0.0)
+                {
+                    IsPending = false;
+                }
+                Progress = value;
+            }, null);
         }
 
         void IGcsFileOperationCallback.Completed()
         {
             _context.Send((x) =>
             {
+                IsPending = false;
                 Progress = 1.0;
                 Completed?.Invoke(this, EventArgs.Empty);
             }, null);
@@ -110,6 +144,8 @@ namespace GoogleCloudExtension.GcsUtils
             Debug.WriteLine($"Operation for {LocalPath} cancelled.");
             _context.Send((x) =>
             {
+                IsCancelled = true;
+                IsPending = false;
                 Progress = 0.0;
                 Completed?.Invoke(this, EventArgs.Empty);
             }, null);
@@ -117,7 +153,13 @@ namespace GoogleCloudExtension.GcsUtils
 
         void IGcsFileOperationCallback.Error(DataSourceException ex)
         {
-            IsError = true;
+            _context.Send((x) =>
+            {
+                IsError = true;
+                IsPending = false;
+                Progress = 0.0;
+                Completed?.Invoke(this, EventArgs.Empty);
+            }, null);
         }
 
         #endregion

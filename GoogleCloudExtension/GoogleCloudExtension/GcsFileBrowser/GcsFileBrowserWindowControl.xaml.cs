@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Utils;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,28 +34,37 @@ namespace GoogleCloudExtension.GcsFileBrowser
             this.InitializeComponent();
         }
 
-        private void UserControl_Drop(object sender, DragEventArgs e)
+        private void OnDrop(object sender, DragEventArgs e)
         {
-            if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+            ErrorHandlerUtils.HandleExceptions(() =>
             {
-                return;
-            }
+                if (!e.Data.GetDataPresent(DataFormats.FileDrop))
+                {
+                    return;
+                }
 
-            var files = (string[])e.Data.GetData(DataFormats.FileDrop, autoConvert: false);
-            ViewModel.StartDroppedFilesUpload(files);
+                var files = (string[])e.Data.GetData(DataFormats.FileDrop, autoConvert: false);
+                ViewModel.StartDroppedFilesUpload(files);
 
-            e.Handled = true;
+                e.Handled = true;
+            });
         }
 
-        private void UserControl_DragOver(object sender, DragEventArgs e)
+        private void OnDragOver(object sender, DragEventArgs e)
         {
-            e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+            ErrorHandlerUtils.HandleExceptions(() =>
+            {
+                e.Effects = e.Data.GetDataPresent(DataFormats.FileDrop) ? DragDropEffects.Copy : DragDropEffects.None;
+            });
         }
 
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OnDataGridSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var self = (DataGrid)e.Source;
-            ViewModel.InvalidateSelectedItems(self.SelectedItems.Cast<GcsRow>());
+            ErrorHandlerUtils.HandleExceptions(() =>
+            {
+                var self = (DataGrid)e.Source;
+                ViewModel.InvalidateSelectedItems(self.SelectedItems.Cast<GcsRow>());
+            });
         }
     }
 }

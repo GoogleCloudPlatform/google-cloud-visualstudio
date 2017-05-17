@@ -1671,7 +1671,7 @@
     <value>The log entry was generated from assembly {0}, version {1}.\r\nOpen the project to navigate to the logger method location.</value>
     <comment>Prompt asking to open a project that is the log entry source project.  parameter {0} is assembly name, parameter {1} is assembly version.</comment>
   </data>
-  <data name="uiDefaultPromptTitle" xml:space="preserve">
+  <data name="UiDefaultPromptTitle" xml:space="preserve">
     <value>Google Cloud Tools</value>
     <comment>The prompt title for source version utils message boxes.</comment>
   </data>
@@ -2270,5 +2270,61 @@
   <data name="GcsFileBrowserFailedToCreateRemoteFolder" xml:space="preserve">
     <value>Failed to create folder {0}.</value>
     <comment>Message shown when there was a failure creating a GCS folder. {0} is the name of the folder.</comment>
+  </data>
+  <data name="GcsFileProgressDialogCancelledState" xml:space="preserve">
+    <value>Cancelled</value>
+    <comment>Message shown when an operation is in the cancelled state.</comment>
+  </data>
+  <data name="GcsFileProgressDialogErrorState" xml:space="preserve">
+    <value>Error</value>
+    <comment>Message shown when an operation is in the error state.</comment>
+  </data>
+  <data name="GcsFileProgressDialogFailedToEnumerateFiles" xml:space="preserve">
+    <value>Failed to enumerate files.</value>
+    <comment>Error message shown when failed to enumerate files while uploading them.</comment>
+  </data>
+  <data name="GcsFileProgressDialogFileHeader" xml:space="preserve">
+    <value>File</value>
+    <comment>Header used in the file name column in the data grid for the progress dialog.</comment>
+  </data>
+  <data name="GcsFileProgressDialogPendingState" xml:space="preserve">
+    <value>Pending</value>
+    <comment>Message shown when an operation is still in the pending state.</comment>
+  </data>
+  <data name="GcsFileProgressDialogProgressHeader" xml:space="preserve">
+    <value>Progress</value>
+    <comment>Header used in the progress column in the data grid for the file progress dialog.</comment>
+  </data>
+  <data name="GcsFileBrowserDeletingOverallProgressMessage" xml:space="preserve">
+    <value>Files deleted {0} of {1}</value>
+    <comment>Message shown while delete files. {0} is the count of files deleted, {1} is the total of files.</comment>
+  </data>
+  <data name="GcsFileBrowserDownloadingOverallProgressMessage" xml:space="preserve">
+    <value>Files downloaded {0} of {1}</value>
+    <comment>Message shown while downloading files. {0} is the count of files downloaded, {1} is the total of files.</comment>
+  </data>
+  <data name="GcsFileBrowserUploadingOverallProgressMessage" xml:space="preserve">
+    <value>Files uploaded {0} of {1}</value>
+    <comment>Message shown while uploading files. {0} is the count of files uploaded, {1} is the total of files.</comment>
+  </data>
+  <data name="GcsFileProgressDialogCancelledOperationMessage" xml:space="preserve">
+    <value>Operation cancelled</value>
+    <comment>Message shown when the operation is cancelled.</comment>
+  </data>
+  <data name="GcsFileProgressDialogCancellingOperationMessage" xml:space="preserve">
+    <value>Cancelling operation</value>
+    <comment>Message shown while the operation is being cancelled.</comment>
+  </data>
+  <data name="GcsFileProgressDialogHideDetailsCaption" xml:space="preserve">
+    <value>Hide details</value>
+    <comment>Caption for the action hyperlink in the progress dialog.</comment>
+  </data>
+  <data name="GcsFileProgressDialogShowDetailsCaption" xml:space="preserve">
+    <value>Show details</value>
+    <comment>Caption for the action hyperlink in the progress dialog.</comment>
+  </data>
+  <data name="GcsFileProgressDialogStartingOperation" xml:space="preserve">
+    <value>Operation starting</value>
+    <comment>Message shown when the operation is started.</comment>
   </data>
 </root>

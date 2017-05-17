@@ -12,8 +12,8 @@
              Foreground="{DynamicResource VsBrush.WindowText}"
              Padding="5"
              AllowDrop="True"
-             Drop="UserControl_Drop"
-             DragOver="UserControl_DragOver"
+             Drop="OnDrop"
+             DragOver="OnDragOver"
              mc:Ignorable="d"
              d:DataContext="{d:DesignInstance {x:Type local:GcsBrowserViewModel}}"
              d:DesignHeight="500" d:DesignWidth="500">
@@ -108,7 +108,7 @@
                   ItemsSource="{Binding Source={StaticResource cvs}}"
                   utils:ControlBehaviors.DoubleClickCommand="{Binding DoubleClickCommand}"
                   utils:ControlBehaviors.DoubleClickCommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Self}}"
-                  SelectionChanged="DataGrid_SelectionChanged">
+                  SelectionChanged="OnDataGridSelectionChanged">
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{x:Static ext:Resources.GcsFileBrowserNameHeader}"
                                         SortMemberPath="LeafName"
