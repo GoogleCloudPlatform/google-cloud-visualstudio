@@ -63,7 +63,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         public ulong Size { get; private set; }
 
         /// <summary>
-        /// The size of the item.
+        /// The size of the item formatted to be easy to read, 10KB, 100MB, etc...
         /// </summary>
         public string FormattedSize { get; private set; }
 
