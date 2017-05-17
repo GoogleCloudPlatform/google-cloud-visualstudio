@@ -108,6 +108,14 @@
     <Compile Include="Analytics\Events\StopGceInstanceEvent.cs" />
     <Compile Include="Analytics\Events\UnhandledExceptionEvent.cs" />
     <Compile Include="Analytics\Events\UpgradeEvent.cs" />
+    <Compile Include="AttachRemoteDebugger\AttachDebuggerException.cs" />
+    <Compile Include="AttachRemoteDebugger\AttachDebuggerStepBase.cs" />
+    <Compile Include="AttachRemoteDebugger\AttachDebuggerWindow.cs" />
+    <Compile Include="AttachRemoteDebugger\AttachDebuggerWindowContent.xaml.cs">
+      <DependentUpon>AttachDebuggerWindowContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AttachRemoteDebugger\AttachDebuggerWindowViewModel.cs" />
+    <Compile Include="AttachRemoteDebugger\IAttachDebuggerStep.cs" />
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworkModel.cs" />
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksViewModel.cs" />
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksWindow.cs" />
@@ -120,6 +128,7 @@
     <Compile Include="CloudExplorerSources\Gae\ServiceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gae\VersionItem.cs" />
     <Compile Include="CloudExplorerSources\Gae\VersionViewModel.cs" />
+    <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gcs\BucketLocationViewModel.cs" />
     <Compile Include="CloudExplorerSources\PubSub\ITopicItem.cs" />
     <Compile Include="CloudExplorerSources\PubSub\OrphanedSubscriptionsItem.cs" />
@@ -133,7 +142,6 @@
     <Compile Include="CloudExplorerSources\PubSub\TopicViewModelBase.cs" />
     <Compile Include="CloudExplorer\DisabledApiWarning.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceGaeInstanceItem.cs" />
-    <Compile Include="CloudExplorerSources\Gce\GceInstanceViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceSourceRootViewModel.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceSource.cs" />
     <Compile Include="CloudExplorerSources\Gce\GceInstanceItem.cs" />
@@ -360,10 +368,13 @@
     <Compile Include="TitleBar\TitleBarViewModel.cs" />
     <Compile Include="Utils\DataGridUtils.cs" />
     <Compile Include="Utils\GaeUtils.cs" />
+    <Compile Include="Utils\IProtectedAction.cs" />
     <Compile Include="Utils\PackageUtils.cs" />
     <Compile Include="Utils\GCloudWrapperUtils.cs" />
     <Compile Include="Utils\GcpPublishStepsUtils.cs" />
     <Compile Include="Utils\ProgressBarHelper.cs" />
+    <Compile Include="Utils\ProtectedAsyncTask.cs" />
+    <Compile Include="Utils\ProtectedCommand.cs" />
     <Compile Include="Utils\ShellUtils.cs" />
     <Compile Include="Utils\StatusbarHelper.cs" />
     <Compile Include="Theming\ButtonsList.cs" />
@@ -376,7 +387,6 @@
     <Compile Include="UserPrompt\UserPromptWindowViewModel.cs" />
     <Compile Include="Utils\ErrorHandlerUtils.cs" />
     <Compile Include="Utils\ProtectedAction.cs" />
-    <Compile Include="Utils\ProtectedCommand.cs" />
     <Compile Include="Utils\StringUtils.cs" />
     <Compile Include="Utils\ToolWindowCommandUtils.cs" />
     <Compile Include="VsVersion\VS14\ToolsPathProvider.cs" />
@@ -774,6 +784,10 @@
     <Page Include="AddTrafficSplit\AddTrafficSplitWindowContent.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AttachRemoteDebugger\AttachDebuggerWindowContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="AuthorizedNetworkManagement\AuthorizedNetworksWindowContent.xaml">
       <SubType>Designer</SubType>
