@@ -30,13 +30,12 @@ namespace Google.Apis.Logging.v2.Extensions
         private const string Resource = "logs";
 
         /// <summary>The service which this resource belongs to.</summary>
-        private readonly Google.Apis.Services.IClientService service;
+        private readonly Google.Apis.Services.IClientService _service;
 
         /// <summary>Constructs a new resource.</summary>
         public LogsResource(Google.Apis.Services.IClientService service)
         {
-            this.service = service;
-
+            _service = service;
         }
 
         /// <summary>Lists the logs in projects or organizations. Only logs that have entries are listed.</summary>
@@ -44,7 +43,7 @@ namespace Google.Apis.Logging.v2.Extensions
         /// "organizations/[ORGANIZATION_ID]" </param>
         public virtual ListRequest List(string parent)
         {
-            return new ListRequest(service, parent);
+            return new ListRequest(_service, parent);
         }
 
         /// <summary>Lists the logs in projects or organizations. Only logs that have entries are listed.</summary>
@@ -177,7 +176,6 @@ namespace Google.Apis.Logging.v2.Extensions
                         Pattern = null,
                     });
             }
-
         }
     }
 
@@ -187,13 +185,12 @@ namespace Google.Apis.Logging.v2.Extensions
         private const string Resource = "resourceKeys";
 
         /// <summary>The service which this resource belongs to.</summary>
-        private readonly Google.Apis.Services.IClientService service;
+        private readonly Google.Apis.Services.IClientService _service;
 
         /// <summary>Constructs a new resource.</summary>
         public ResourceKeysResource(Google.Apis.Services.IClientService service)
         {
-            this.service = service;
-
+            _service = service;
         }
 
 
@@ -201,7 +198,7 @@ namespace Google.Apis.Logging.v2.Extensions
         /// <param name="parent">The resource name of the entity whose resource keys are to be listed.</param>
         public virtual ListRequest List(string parent)
         {
-            return new ListRequest(service, parent);
+            return new ListRequest(_service, parent);
         }
 
         /// <summary>Lists the resource keys that have log entries in this project.</summary>
@@ -284,7 +281,6 @@ namespace Google.Apis.Logging.v2.Extensions
                         Pattern = null,
                     });
             }
-
         }
     }
 
@@ -294,22 +290,21 @@ namespace Google.Apis.Logging.v2.Extensions
         private const string Resource = "resourceTypes";
 
         /// <summary>The service which this resource belongs to.</summary>
-        private readonly Google.Apis.Services.IClientService service;
+        private readonly Google.Apis.Services.IClientService _service;
 
         /// <summary>Constructs a new resource.</summary>
         public ResourceTypesResource(Google.Apis.Services.IClientService service)
         {
-            this.service = service;
-            values = new ValuesResource(service);
-
+            _service = service;
+            _values = new ValuesResource(service);
         }
 
-        private readonly ValuesResource values;
+        private readonly ValuesResource _values;
 
         /// <summary>Gets the Values resource.</summary>
         public virtual ValuesResource Values
         {
-            get { return values; }
+            get { return _values; }
         }
 
         /// <summary>The "values" collection of methods.</summary>
@@ -318,13 +313,12 @@ namespace Google.Apis.Logging.v2.Extensions
             private const string Resource = "values";
 
             /// <summary>The service which this resource belongs to.</summary>
-            private readonly Google.Apis.Services.IClientService service;
+            private readonly Google.Apis.Services.IClientService _service;
 
             /// <summary>Constructs a new resource.</summary>
             public ValuesResource(Google.Apis.Services.IClientService service)
             {
-                this.service = service;
-
+                _service = service;
             }
 
 
@@ -334,7 +328,7 @@ namespace Google.Apis.Logging.v2.Extensions
             /// gce_instance. For a complete list, see Monitored resource types.</param>
             public virtual ListRequest List(string parent)
             {
-                return new ListRequest(service, parent);
+                return new ListRequest(_service, parent);
             }
 
             /// <summary>Lists the current index values for a log resource type.</summary>
@@ -470,11 +464,9 @@ namespace Google.Apis.Logging.v2.Extensions
                             Pattern = null,
                         });
                 }
-
             }
         }
     }
-
 }
 
 namespace Google.Apis.Logging.v2.Data.Extensions

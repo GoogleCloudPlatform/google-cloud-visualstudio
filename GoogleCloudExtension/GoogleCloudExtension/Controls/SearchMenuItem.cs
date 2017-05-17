@@ -30,24 +30,24 @@ namespace GoogleCloudExtension.Controls
     {
         private TextBox _searchBox;
 
-        public static DependencyProperty OnSubmenuOpenCommandProperty = 
+        public static DependencyProperty OnSubmenuOpenCommandProperty =
             DependencyProperty.Register(
-                nameof(OnSubmenuOpenCommand), 
-                typeof(ICommand), 
+                nameof(OnSubmenuOpenCommand),
+                typeof(ICommand),
                 typeof(SearchMenuItem));
 
-        public static DependencyProperty IsSubmenuPopulatedProperty = 
+        public static DependencyProperty IsSubmenuPopulatedProperty =
             DependencyProperty.Register(
-                nameof(IsSubmenuPopulated), 
-                typeof(bool), 
-                typeof(SearchMenuItem), 
+                nameof(IsSubmenuPopulated),
+                typeof(bool),
+                typeof(SearchMenuItem),
                 new FrameworkPropertyMetadata(true));
 
-        public static DependencyProperty ChooseAllHeaderProperty = 
+        public static DependencyProperty ChooseAllHeaderProperty =
             DependencyProperty.Register(
-                nameof(ChooseAllHeader), 
-                typeof(string), 
-                typeof(SearchMenuItem), 
+                nameof(ChooseAllHeader),
+                typeof(string),
+                typeof(SearchMenuItem),
                 new FrameworkPropertyMetadata(GoogleCloudExtension.Resources.UiChooseAllMenuHeader));
 
         /// <summary>
