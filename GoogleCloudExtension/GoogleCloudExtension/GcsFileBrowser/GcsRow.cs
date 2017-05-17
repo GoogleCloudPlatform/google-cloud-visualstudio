@@ -113,7 +113,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 Bucket = obj.Bucket,
                 BlobName = obj.Name,
                 IsFile = true,
-                Size = obj.Size.HasValue ? obj.Size.Value : 0l,
+                Size = obj.Size.HasValue ? obj.Size.Value : 0L,
                 FormattedSize = obj.Size.HasValue ? FormatSize(obj.Size.Value) : NoValuePlaceholder,
                 LastModified = obj.Updated?.ToString() ?? NoValuePlaceholder,
                 LeafName = GcsPathUtils.GetFileName(obj.Name),
