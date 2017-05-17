@@ -160,10 +160,10 @@ namespace GoogleCloudExtension.GcsFileBrowser
             ShellUtils.SetForegroundWindow();
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            IList<GcsFileOperation> uploadOperations;
+            OperationsQueue uploadOperationsQueue;
             try
             {
-                uploadOperations = _fileOperationsEngine.StartUploadOperations(
+                uploadOperationsQueue = _fileOperationsEngine.StartUploadOperations(
                     files,
                     bucket: Bucket.Name,
                     bucketPath: _currentState.CurrentPath,
@@ -181,7 +181,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 caption: Resources.GcsFileBrowserUploadingProgressCaption,
                 message: Resources.GcsFileBrowserUploadingProgressMessage,
                 progressMessage: Resources.GcsFileBrowserUploadingOverallProgressMessage,
-                operations: uploadOperations,
+                operations: uploadOperationsQueue.Operations,
                 cancellationTokenSource: cancellationTokenSource);
 
             UpdateCurrentState();
@@ -237,13 +237,13 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
             var downloadRoot = dialog.SelectedPath;
 
-            IList<GcsFileOperation> downloadOperations;
+            OperationsQueue downloadOperationsQueue;
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             try
             {
                 IsLoading = true;
 
-                downloadOperations = await _fileOperationsEngine.StartDownloadOperationsAsync(
+                downloadOperationsQueue = await _fileOperationsEngine.StartDownloadOperationsAsync(
                     SelectedItems.Select(x => new GcsUtils.GcsItemRef(x.Bucket, x.BlobName)),
                     downloadRoot,
                     cancellationTokenSource.Token);
@@ -264,7 +264,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 caption: Resources.GcsFileBrowserDownloadingProgressCaption,
                 message: Resources.GcsFileBrowserDownloadingProgressMessage,
                 progressMessage: Resources.GcsFileBrowserDownloadingOverallProgressMessage,
-                operations: downloadOperations,
+                operations: downloadOperationsQueue.Operations,
                 cancellationTokenSource: cancellationTokenSource);
         }
 
@@ -279,13 +279,13 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 return;
             }
 
-            IList<GcsFileOperation> deleteOperations;
+            OperationsQueue deleteOperationsQueue;
             var cancellationTokenSource = new CancellationTokenSource();
             try
             {
                 IsLoading = true;
 
-                deleteOperations = await _fileOperationsEngine.StartDeleteOperationsAsync(
+                deleteOperationsQueue = await _fileOperationsEngine.StartDeleteOperationsAsync(
                     SelectedItems.Select(x => new GcsItemRef(x.Bucket, x.BlobName)),
                     cancellationTokenSource.Token);
             }
@@ -305,7 +305,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 caption: Resources.GcsFileBrowserDeletingProgressCaption,
                 message: Resources.GcsFileBrowserDeletingProgressMessage,
                 progressMessage: Resources.GcsFileBrowserDeletingOverallProgressMessage,
-                operations: deleteOperations,
+                operations: deleteOperationsQueue.Operations,
                 cancellationTokenSource: cancellationTokenSource);
 
             UpdateCurrentState();

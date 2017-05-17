@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GcsUtils
 {
@@ -163,5 +164,12 @@ namespace GoogleCloudExtension.GcsUtils
         }
 
         #endregion
+
+        internal Task AwaitOperationAsync()
+        {
+            var taskCompletion = new TaskCompletionSource<int>();
+            this.Completed += (o, e) => taskCompletion.SetResult(0);
+            return taskCompletion.Task;
+        }
     }
 }
