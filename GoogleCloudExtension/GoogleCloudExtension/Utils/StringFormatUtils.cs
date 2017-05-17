@@ -12,7 +12,9 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public static class StringFormatUtils
     {
-        private const int MaxStringSize = 20;
+        // This constant determines the maximum size of a size (in bytes) formatted for human
+        // consumption.
+        private const int MaxByteFormatStringSize = 20;
 
         /// <summary>
         /// Formats a size in bytes into a human readable format.
@@ -21,11 +23,11 @@ namespace GoogleCloudExtension.Utils
         /// <returns>The human readable string, for example 3KB, 45 bytes, etc...</returns>
         public static string FormatByteSize(ulong size)
         {
-            StringBuilder sb = new StringBuilder(MaxStringSize);
+            StringBuilder sb = new StringBuilder(MaxByteFormatStringSize);
             var result = StrFormatByteSize(size, sb, sb.Capacity);
             if (result == IntPtr.Zero)
             {
-                throw new InvalidOperationException($"Failed to convert value: {size}");
+                throw new ArgumentOutOfRangeException(nameof(size));
             }
             return sb.ToString();
         }
