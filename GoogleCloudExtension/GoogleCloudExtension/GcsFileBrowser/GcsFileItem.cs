@@ -43,7 +43,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         [LocalizedCategory(nameof(Resources.GcsFileBrowserFileCategory))]
         [LocalizedDisplayName(nameof(Resources.GcsFileBrowserFileSizeDisplayName))]
         [LocalizedDescription(nameof(Resources.GcsFileBrowserFileSizeDescription))]
-        public string Size => _file.Size.ToString();
+        public string FormattedSize => _file.FormattedSize;
 
         /// <summary>
         /// The last modified date for the file.

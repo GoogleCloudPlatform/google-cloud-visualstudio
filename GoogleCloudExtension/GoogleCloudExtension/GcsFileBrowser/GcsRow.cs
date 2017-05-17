@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using Google.Apis.Storage.v1.Data;
+using GoogleCloudExtension.GcsUtils;
+using GoogleCloudExtension.Utils;
 using System.Linq;
 
 namespace GoogleCloudExtension.GcsFileBrowser
@@ -22,6 +24,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
     /// </summary>
     public class GcsRow
     {
+        private const string NoValuePlaceholder = "-";
+        private const string DefaultContentType = "application/octet-stream";
+
         /// <summary>
         /// The name of the bucket.
         /// </summary>
@@ -58,6 +63,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
         public ulong Size { get; private set; }
 
         /// <summary>
+        /// The size of the item formatted to be easy to read, 10KB, 100MB, etc...
+        /// </summary>
+        public string FormattedSize { get; private set; }
+
+        /// <summary>
         /// The last modified date for the item.
         /// </summary>
         public string LastModified { get; private set; }
@@ -85,7 +95,10 @@ namespace GoogleCloudExtension.GcsFileBrowser
             {
                 Bucket = bucket,
                 BlobName = name,
-                LeafName = GetLeafName(name),
+                LeafName = GcsPathUtils.GetFileName(name),
+                FormattedSize = NoValuePlaceholder,
+                LastModified = NoValuePlaceholder,
+                ContentType = NoValuePlaceholder,
                 IsDirectory = true,
             };
 
@@ -100,10 +113,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 Bucket = obj.Bucket,
                 BlobName = obj.Name,
                 IsFile = true,
-                Size = obj.Size.HasValue ? obj.Size.Value : 0ul,
-                LastModified = obj.Updated?.ToString() ?? "Unknown",
-                LeafName = GetLeafName(obj.Name),
-                ContentType = obj.ContentType ?? "application/octet-stream",
+                Size = obj.Size.HasValue ? obj.Size.Value : 0L,
+                FormattedSize = obj.Size.HasValue ? FormatSize(obj.Size.Value) : NoValuePlaceholder,
+                LastModified = obj.Updated?.ToString() ?? NoValuePlaceholder,
+                LeafName = GcsPathUtils.GetFileName(obj.Name),
+                ContentType = obj.ContentType ?? DefaultContentType,
             };
 
         /// <summary>
@@ -118,10 +132,13 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 IsError = true
             };
 
-        private static string GetLeafName(string name)
+        /// <summary>
+        /// Takes in the <paramref name="size"/> and returns a human readable version of the size
+        /// with the KB, MB, etc... suffix.
+        /// </summary>
+        private static string FormatSize(ulong size)
         {
-            var cleanName = name.Last() == '/' ? name.Substring(0, name.Length - 1) : name;
-            return cleanName.Split('/').Last();
+            return StringFormatUtils.FormatByteSize(size);
         }
     }
 }
