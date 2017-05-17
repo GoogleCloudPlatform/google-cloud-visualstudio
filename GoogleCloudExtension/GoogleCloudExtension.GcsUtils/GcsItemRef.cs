@@ -43,7 +43,7 @@ namespace GoogleCloudExtension.GcsUtils
         /// <summary>
         /// Returns the full GCS path for the item.
         /// </summary>
-        public string FullPath => $"gs://{Bucket}/{Name}";
+        public string FullPath { get; }
 
         /// <summary>
         /// Whether this item is file.
@@ -54,6 +54,7 @@ namespace GoogleCloudExtension.GcsUtils
         {
             Bucket = bucket;
             Name = name;
+            FullPath = $"gs://{bucket}/{name}";
         }
 
         /// <summary>

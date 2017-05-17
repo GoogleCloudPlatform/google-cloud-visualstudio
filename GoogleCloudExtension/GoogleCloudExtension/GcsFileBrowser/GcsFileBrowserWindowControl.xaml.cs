@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             this.InitializeComponent();
         }
 
-        private void UserControl_Drop(object sender, DragEventArgs e)
+        private void OnDrop(object sender, DragEventArgs e)
         {
             ErrorHandlerUtils.HandleExceptions(() =>
             {
@@ -50,7 +50,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             });
         }
 
-        private void UserControl_DragOver(object sender, DragEventArgs e)
+        private void OnDragOver(object sender, DragEventArgs e)
         {
             ErrorHandlerUtils.HandleExceptions(() =>
             {
@@ -58,7 +58,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             });
         }
 
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void OnDataGridSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ErrorHandlerUtils.HandleExceptions(() =>
             {
