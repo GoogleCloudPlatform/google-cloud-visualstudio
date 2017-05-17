@@ -20,7 +20,7 @@ using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Theming;
 using System;
 
-namespace GoogleCloudExtension.AttachRemoteDebugger
+namespace GoogleCloudExtension.AttachDebuggerDialog
 {
     /// <summary>
     /// This class implements the window that hosts attaching remote debugger steps.

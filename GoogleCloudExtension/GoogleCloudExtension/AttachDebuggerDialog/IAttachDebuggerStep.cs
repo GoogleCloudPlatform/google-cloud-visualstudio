@@ -16,7 +16,7 @@ using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.AttachRemoteDebugger
+namespace GoogleCloudExtension.AttachDebuggerDialog
 {
     /// <summary>
     /// Interface that defines common methods/properties for attaching remote debugger steps.
@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
         /// <returns>
         /// A reference to next step.
         /// </returns>
-        Task<IAttachDebuggerStep> OnOKCommand();
+        Task<IAttachDebuggerStep> OnOkCommand();
 
         /// <summary>
         /// Responds to Cancel button click event.

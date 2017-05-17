@@ -12,38 +12,41 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.FirewallManagement;
 using System.Threading.Tasks;
-using System.Windows.Controls;
-using static GoogleCloudExtension.AttachRemoteDebugger.AttachDebuggerContext;
-using static GoogleCloudExtension.VsVersion.VsVersionUtils;
 
-namespace GoogleCloudExtension.AttachRemoteDebugger
+namespace GoogleCloudExtension.AttachDebuggerDialog
 {
+    /// <summary>
+    /// This step check if the Visual Studio Remote Debugger tool port is added to GCE firewall.
+    /// If not, ask for confirmation and add the rule.
+    /// </summary>
     public class EnableDebuggerPortStepViewModel : EnablePortStepViewModel
     {
-        /// <summary>
-        /// The <seealso cref="PortInfo"/> for Visual Studio Remote Debugger tool port.
-        /// </summary>
-        public static readonly PortInfo s_DebuggerPortInfo =
-            new PortInfo("VSRemoteDebugger", RemoteDebuggerPort, Resources.PortManagerRemoteDebuggerDescription);
-
-        public EnableDebuggerPortStepViewModel(UserControl content)
-            : base(content, s_DebuggerPortInfo)
+        public EnableDebuggerPortStepViewModel(EnablePortStepContent content, AttachDebuggerContext context)
+            : base(content, context.DebuggerPort, context)
         { }
 
         /// <summary>
         /// Create the the step that enables Visual Studio remote debugging tool port.
         /// </summary>
-        public static IAttachDebuggerStep CreateStep() => 
-            Context.CreateStep<EnableDebuggerPortStepViewModel, EnablePortStepContent>();
+        public static EnableDebuggerPortStepViewModel CreateStep(AttachDebuggerContext context)
+        {
+            var content = new EnablePortStepContent();
+            var step = new EnableDebuggerPortStepViewModel(content, context);
+            content.DataContext = step;
+            return step;
+        }
 
+        /// <summary>
+        /// If it connects to remote debugger tool successfully, go to ListProcess step.
+        /// Otherwise go to enalbe remote powershell port step that later it goes to install, start remote tool step.
+        /// </summary>
         protected override async Task<IAttachDebuggerStep> GetNextStep()
         {
             SetStage(Stage.CheckingConnectivity);
-            if (!(await Context.ConnectivityTest(RemoteDebuggerPort)))
+            if (!(await Context.DebuggerPort.ConnectivityTest()))
             {
-                return EnablePowerShellPortStepViewModel.CreateStep();
+                return EnablePowerShellPortStepViewModel.CreateStep(Context);
             }
             else
             {

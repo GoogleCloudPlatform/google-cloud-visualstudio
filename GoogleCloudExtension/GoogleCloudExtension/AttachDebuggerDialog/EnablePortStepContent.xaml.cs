@@ -14,14 +14,14 @@
 
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.AttachRemoteDebugger
+namespace GoogleCloudExtension.AttachDebuggerDialog
 {
     /// <summary>
-    /// Interaction logic for AttachDebuggerWindowContent.xaml
+    /// Interaction logic for EnablePortStepContent.xaml
     /// </summary>
-    public partial class AttachDebuggerWindowContent : UserControl
+    public partial class EnablePortStepContent : UserControl
     {
-        public AttachDebuggerWindowContent()
+        public EnablePortStepContent()
         {
             InitializeComponent();
         }

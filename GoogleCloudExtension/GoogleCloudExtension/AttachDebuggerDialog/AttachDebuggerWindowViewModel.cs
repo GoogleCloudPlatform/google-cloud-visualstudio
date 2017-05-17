@@ -22,7 +22,7 @@ using System.Windows.Controls;
 
 using System.Windows.Threading;
 
-namespace GoogleCloudExtension.AttachRemoteDebugger
+namespace GoogleCloudExtension.AttachDebuggerDialog
 {
     /// <summary>
     /// View model to <seealso cref="AttachDebuggerWindowContent"/> user content.
@@ -76,10 +76,11 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
 
         public AttachDebuggerWindowViewModel(Instance gceInstance, AttachDebuggerWindow dialogWindow)
         {
-            AttachDebuggerContext.CreateContext(gceInstance, dialogWindow);
             OKCommand = new ProtectedCommand(taskHandler: () => ExceuteAsync(OnOKCommand), canExecuteCommand: false);
             CancelCommand = new ProtectedCommand(taskHandler: () => ExceuteAsync(OnCancelCommand), canExecuteCommand: false);
-            var firstStep = EnableDebuggerPortStepViewModel.CreateStep();
+
+            var context = new AttachDebuggerContext(gceInstance, dialogWindow);
+            var firstStep = EnableDebuggerPortStepViewModel.CreateStep(context);
             ErrorHandlerUtils.HandleAsyncExceptions(() => ExceuteAsync(() => GotoStep(firstStep)));
         }
 
@@ -90,7 +91,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
                 Debug.WriteLine("OnOKCommand, Unexpected error. _currentStep is null.");
                 return;
             }
-            IAttachDebuggerStep nextStep = await _currentStep.OnOKCommand();
+            IAttachDebuggerStep nextStep = await _currentStep.OnOkCommand();
             await GotoStep(nextStep);
         }
 

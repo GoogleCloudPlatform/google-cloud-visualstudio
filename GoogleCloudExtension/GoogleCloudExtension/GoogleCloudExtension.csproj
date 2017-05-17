@@ -106,21 +106,22 @@
     <Compile Include="Analytics\Events\StopGceInstanceEvent.cs" />
     <Compile Include="Analytics\Events\UnhandledExceptionEvent.cs" />
     <Compile Include="Analytics\Events\UpgradeEvent.cs" />
-    <Compile Include="AttachRemoteDebugger\AttachDebuggerContext.cs" />
-    <Compile Include="AttachRemoteDebugger\AttachDebuggerException.cs" />
-    <Compile Include="AttachRemoteDebugger\AttachDebuggerStepBase.cs" />
-    <Compile Include="AttachRemoteDebugger\AttachDebuggerWindow.cs" />
-    <Compile Include="AttachRemoteDebugger\AttachDebuggerWindowContent.xaml.cs">
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerContext.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerException.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerStepBase.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerWindow.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerWindowContent.xaml.cs">
       <DependentUpon>AttachDebuggerWindowContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AttachRemoteDebugger\AttachDebuggerWindowViewModel.cs" />
-    <Compile Include="AttachRemoteDebugger\EnableDebuggerPortStepViewModel.cs" />
-    <Compile Include="AttachRemoteDebugger\EnablePortStepContent.xaml.cs">
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerWindowViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\EnableDebuggerPortStepViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\EnablePortStepContent.xaml.cs">
       <DependentUpon>EnablePortStepContent.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AttachRemoteDebugger\EnablePortStepViewModel.cs" />
-    <Compile Include="AttachRemoteDebugger\EnablePowerShellPortStepViewModel.cs" />
-    <Compile Include="AttachRemoteDebugger\IAttachDebuggerStep.cs" />
+    <Compile Include="AttachDebuggerDialog\EnablePortStepViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\EnablePowerShellPortStepViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerFirewallPort.cs" />
+    <Compile Include="AttachDebuggerDialog\IAttachDebuggerStep.cs" />
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworkModel.cs" />
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksViewModel.cs" />
     <Compile Include="AuthorizedNetworkManagement\AuthorizedNetworksWindow.cs" />
@@ -790,11 +791,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="AttachRemoteDebugger\AttachDebuggerWindowContent.xaml">
+    <Page Include="AttachDebuggerDialog\AttachDebuggerWindowContent.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="AttachRemoteDebugger\EnablePortStepContent.xaml">
+    <Page Include="AttachDebuggerDialog\EnablePortStepContent.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

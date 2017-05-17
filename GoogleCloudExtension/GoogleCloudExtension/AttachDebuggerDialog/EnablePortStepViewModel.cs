@@ -12,16 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.FirewallManagement;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using static GoogleCloudExtension.AttachRemoteDebugger.AttachDebuggerContext;
 
-namespace GoogleCloudExtension.AttachRemoteDebugger
+namespace GoogleCloudExtension.AttachDebuggerDialog
 {
     /// <summary>
     /// Enable debugger port by adding a GCE firewall rule.
@@ -35,13 +32,13 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
         private string _progressMessage;
         private bool _askingToConfirm;
         private bool _askingToTestConnectivityLater;
-        private PortInfo _portInfo;
-        private Stage _stage;
+        private AttachDebuggerFirewallPort _port;
 
         /// <summary>
         /// Show the message if the port is not enabled.
         /// </summary>
-        public string PortDisabledMessage => string.Format(Resources.AttachDebuggerPortDisabledMessageFormat, _portInfo.Port);
+        public string PortDisabledMessage => string.Format(
+            Resources.AttachDebuggerPortDisabledMessageFormat, _port.PortInfo.Port);
 
         /// <summary>
         /// The command to open the enable port help hyperlink.
@@ -54,7 +51,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
         public bool IsAskingToConfirm
         {
             get { return _askingToConfirm; }
-            protected set { SetValueAndRaise(ref _askingToConfirm, value); }
+            private set { SetValueAndRaise(ref _askingToConfirm, value); }
         }
 
         /// <summary>
@@ -63,7 +60,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
         public bool IsAskingToTestConnectivityLater
         {
             get { return _askingToTestConnectivityLater; }
-            protected set { SetValueAndRaise(ref _askingToTestConnectivityLater, value); }
+            private set { SetValueAndRaise(ref _askingToTestConnectivityLater, value); }
         }
 
         /// <summary>
@@ -72,18 +69,23 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
         public string ProgressMessage
         {
             get { return _progressMessage; }
-            set { SetValueAndRaise(ref _progressMessage, value); }
+            private set { SetValueAndRaise(ref _progressMessage, value); }
         }
 
         /// <summary>
-        /// Initializes the <seealso cref="EnableDebuggerPortViewModel"/>
+        /// Initializes an instance of the <seealso cref="EnablePortStepViewModel"/> class.
         /// </summary>
         /// <param name="content">The associated user control.</param>
-        /// <param name="portInfo">The port to open.</param>
-        public EnablePortStepViewModel(UserControl content, PortInfo portInfo)
+        /// <param name="port">The port to open.</param>
+        /// <param name="context">The <seealso cref="AttachDebuggerContext"/> object.</param>
+        public EnablePortStepViewModel(
+            EnablePortStepContent content,
+            AttachDebuggerFirewallPort port,
+            AttachDebuggerContext context)
+            : base(context)
         {
             Content = content;
-            _portInfo = portInfo;
+            _port = port;
             SetStage(Stage.Init);
             EnablePortHelpLinkCommand = new ProtectedCommand(() => Process.Start(EnablePortHelpLink));
         }
@@ -96,7 +98,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
         public override async Task<IAttachDebuggerStep> OnStart()
         {
             SetStage(Stage.CheckingFirewallRule);
-            if (await IsPortEnabled(_portInfo))
+            if (await _port.IsPortEnabled())
             {
                 return await GetNextStep();
             }
@@ -113,13 +115,15 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
             return Task.FromResult<IAttachDebuggerStep>(null);    // TODO:  return help page as next step.
         }
 
-        public override async Task<IAttachDebuggerStep> OnOKCommand()
+        public override async Task<IAttachDebuggerStep> OnOkCommand()
         {
             SetStage(Stage.AddingFirewallRule);
             if (!_portEnabled)
             {
                 SetStage(Stage.AddingFirewallRule);
-                await Context.EnablePort(_portInfo);
+                await _port.EnablePort();
+                // This is a necessary step for the GceInstance object to get a refreshed list of firewall rules.
+                await Context.RefreshInstance();
                 _portEnabled = true;
             }
             return await GetNextStep();
@@ -153,7 +157,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
                     break;
                 case Stage.CheckingConnectivity:
                     ProgressMessage = String.Format(
-                        Resources.AttachDebuggerTestConnectPortMessageFormat, Context.PublicIp, _portInfo.Port);
+                        Resources.AttachDebuggerTestConnectPortMessageFormat, Context.PublicIp, _port.PortInfo.Port);
                     IsCancelButtonEnabled = true;
                     break;
                 case Stage.AskToCheckConnectivityLater:
@@ -164,48 +168,41 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
             }
         }
 
+        /// <summary>
+        /// Define operation stages inside this class. 
+        /// This is to help properly display progress message.
+        /// </summary>
         protected enum Stage
         {
-            Init = -1,
+            /// <summary>
+            /// Init state
+            /// </summary>
+            Init = 0,
+
+            /// <summary>
+            /// Check if there is firewall rule for the port.
+            /// </summary>
             CheckingFirewallRule,
+
+            /// <summary>
+            /// Asking user to confirm to open the port.
+            /// </summary>
             AskingPermitToAddRule,
+
+            /// <summary>
+            /// Adding firewall rule.
+            /// </summary>
             AddingFirewallRule,
+
+            /// <summary>
+            /// Test if this machine can "telnet" to the remote ip:port.
+            /// </summary>
             CheckingConnectivity,
+
+            /// <summary>
+            /// If firewall is just added, ask user to retry testing connectivity.
+            /// </summary>
             AskToCheckConnectivityLater,
-        }
-
-        /// <summary>
-        /// Check if GCE firewall rules include a rule that enables the port to target GCE VM.
-        /// A firewall rule contains tag, 
-        /// if the GCE instance also has the tag, the rule is applied to the GCE instance.
-        /// </summary>
-        /// <param name="portInfo">A <seealso cref="PortInfo"/> object that represents the port.</param>
-        /// <param name="gceInstance">GCE Instance</param>
-        private async Task<bool> IsPortEnabled(PortInfo portInfo)
-        {
-            string portTag = portInfo.GetTag(Context.GceInstance);
-
-            // If the instance does not contain the tag, the firewall rule is not set.
-            if (Context.GceInstance.Tags?.Items?.Contains(portTag) == true)
-            {
-                var rules = await Context.DataSource.GetFirewallListAsync();
-                foreach (var rule in rules)
-                {
-                    // Left oprand is nullable bool.  null == false is false. null == true is false.
-                    if (!(rule.TargetTags?.Contains(portTag) == true))
-                    {
-                        continue;   // Skip, rules does not contain the tag.
-                    }
-                    foreach (var allowed in rule.Allowed)
-                    {
-                        if (allowed.IPProtocol == "tcp" && allowed.Ports.Any(y => y == portInfo.Port.ToString()))
-                        {
-                            return true;
-                        }
-                    }
-                }
-            }
-            return false;
         }
     }
 }

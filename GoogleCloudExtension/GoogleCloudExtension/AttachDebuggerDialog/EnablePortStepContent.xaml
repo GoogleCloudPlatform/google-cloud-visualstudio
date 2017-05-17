@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="GoogleCloudExtension.AttachRemoteDebugger.EnablePortStepContent"
+﻿<UserControl x:Class="GoogleCloudExtension.AttachDebuggerDialog.EnablePortStepContent"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:GoogleCloudExtension.AttachRemoteDebugger"
+             xmlns:local="clr-namespace:GoogleCloudExtension.AttachDebuggerDialog"
              xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"                          
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
@@ -17,8 +17,8 @@
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <utils:VisibilityConverter x:Key="visibilityConverter" />
-            <utils:NullEmptyInvisibleConverter x:Key="nullInvisibleConverter" />
+            <utils:VisibilityConverter x:Key="VisibilityConverter" />
+            <utils:NullEmptyInvisibleConverter x:Key="NullInvisibleConverter" />
 
         </ResourceDictionary>
     </UserControl.Resources>
@@ -27,8 +27,8 @@
         <TextBlock 
             Margin="0,6,0,6"
             Text="{Binding ProgressMessage}"
-            Visibility="{Binding ProgressMessage, Converter={StaticResource nullInvisibleConverter} }" />
-        <StackPanel Visibility="{Binding IsAskingToConfirm, Converter={StaticResource visibilityConverter}}">
+            Visibility="{Binding ProgressMessage, Converter={StaticResource NullInvisibleConverter} }" />
+        <StackPanel Visibility="{Binding IsAskingToConfirm, Converter={StaticResource VisibilityConverter}}">
             <TextBlock                     
                 Margin="0,6,0,6"
                 Text="{Binding PortDisabledMessage}"
@@ -46,6 +46,6 @@
             Margin="0,6,0,6"
             Text="{x:Static ext:Resources.AttachDebuggerAskToTestConnectivityLaterMessage}"
             TextWrapping="Wrap"
-            Visibility="{Binding IsAskingToTestConnectivityLater, Converter={StaticResource visibilityConverter} }" />
+            Visibility="{Binding IsAskingToTestConnectivityLater, Converter={StaticResource VisibilityConverter} }" />
     </Grid>
 </UserControl>
