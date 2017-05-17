@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Theming;
-using System;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
@@ -151,7 +150,7 @@ namespace GoogleCloudExtension.CloudExplorer
                     Children.Add(NoItemsPlaceholder);
                 }
             }
-            catch (CloudExplorerSourceException ex)
+            catch (CloudExplorerSourceException)
             {
                 Children.Clear();
                 Children.Add(ErrorPlaceholder);

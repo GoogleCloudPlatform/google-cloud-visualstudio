@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.GitUtils
         /// The local repository root.
         /// </summary>
         public string Root => _repo.Root;
-        
+
         internal GitCommit(GitRepository gitCommand, string sha)
         {
             _repo = gitCommand.ThrowIfNull(nameof(gitCommand));
@@ -65,7 +65,7 @@ namespace GoogleCloudExtension.GitUtils
             {
                 return null;
             }
-            return (await gitCommand.ContainsCommitAsync(sha))? new GitCommit(gitCommand, sha) : null;
+            return (await gitCommand.ContainsCommitAsync(sha)) ? new GitCommit(gitCommand, sha) : null;
         }
 
         /// <summary>
@@ -81,7 +81,8 @@ namespace GoogleCloudExtension.GitUtils
         {
             Dictionary<string, string> fileTree = await _fileTree.Value;
             return SubPaths(filePath)
-                .Select(x => {
+                .Select(x =>
+                {
                     string y;
                     fileTree.TryGetValue(x, out y);
                     return y;
@@ -118,7 +119,7 @@ namespace GoogleCloudExtension.GitUtils
             filePath.ThrowIfNullOrEmpty(nameof(filePath));
 
             int index = filePath.IndexOf(Path.DirectorySeparatorChar);
-            for (; index >= 0; index = filePath.IndexOf(Path.DirectorySeparatorChar, index+1))
+            for (; index >= 0; index = filePath.IndexOf(Path.DirectorySeparatorChar, index + 1))
             {
                 yield return filePath.Substring(index + 1);
             }

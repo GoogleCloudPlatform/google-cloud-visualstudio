@@ -33,9 +33,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
         private readonly GceSourceRootViewModel _owner;
         private readonly Zone _zone;
 
-        public event EventHandler ItemChanged;
+        #region ICloudExplorerItemSource implementation
 
-        public object Item => new ZoneItem(_zone);
+        event EventHandler ICloudExplorerItemSource.ItemChanged
+        {
+            add { }
+            remove { }
+        }
+
+        object ICloudExplorerItemSource.Item => GetItem();
+
+        #endregion
 
         internal ZoneViewModel(GceSourceRootViewModel owner, Zone zone, IEnumerable<GceInstanceViewModel> instances)
         {
@@ -60,7 +68,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private void OnPropertiesCommand()
         {
-            _owner.Context.ShowPropertiesWindow(Item);
+            _owner.Context.ShowPropertiesWindow(GetItem());
         }
 
         private void OnNewInstanceCommand()
@@ -68,5 +76,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             var url = $"https://console.cloud.google.com/compute/instancesAdd?project={_owner.Context.CurrentProject.ProjectId}&zone={_zone.Name}";
             Process.Start(url);
         }
+
+        private object GetItem() => new ZoneItem(_zone);
     }
 }

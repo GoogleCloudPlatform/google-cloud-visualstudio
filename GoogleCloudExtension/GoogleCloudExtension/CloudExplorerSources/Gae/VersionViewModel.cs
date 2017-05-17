@@ -61,9 +61,17 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         /// </summary>
         private bool CanDeleteVersion => !_isLastVersion && !HasTrafficAllocation;
 
-        public event EventHandler ItemChanged;
+        #region ICloudExplorerItemSource implementation
 
-        public object Item => new VersionItem(_version);
+        event EventHandler ICloudExplorerItemSource.ItemChanged
+        {
+            add { }
+            remove { }
+        }
+
+        object ICloudExplorerItemSource.Item => GetItem();
+
+        #endregion
 
         public VersionViewModel(
             GaeSourceRootViewModel owner,
@@ -139,7 +147,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                 IsLoading = true;
                 Caption = String.Format(Resources.CloudExplorerGaeMigratingAllTrafficCaption, _version.Id);
 
-                var split = new TrafficSplit { Allocations = new Dictionary<string, double?> {[_version.Id] = 1.0 } };
+                var split = new TrafficSplit { Allocations = new Dictionary<string, double?> { [_version.Id] = 1.0 } };
                 var operation = await _owner.DataSource.UpdateServiceTrafficSplitAsync(split, _service.Id);
                 await _owner.DataSource.AwaitOperationAsync(operation);
                 _owner.InvalidateService(_service.Id);
@@ -187,7 +195,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
 
         private void OnPropertiesWindowCommand()
         {
-            _owner.Context.ShowPropertiesWindow(Item);
+            _owner.Context.ShowPropertiesWindow(GetItem());
         }
 
         private void OnOpenVersion()
@@ -306,5 +314,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
                     break;
             }
         }
+
+        private VersionItem GetItem() => new VersionItem(_version);
     }
 }

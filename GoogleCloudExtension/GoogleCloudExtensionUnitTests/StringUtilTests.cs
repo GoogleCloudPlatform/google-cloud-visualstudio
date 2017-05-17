@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using static GoogleCloudExtension.Utils.StringUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using static GoogleCloudExtension.Utils.StringUtils;
 
 namespace GoogleCloudExtensionUnitTests
 {
@@ -58,6 +58,5 @@ namespace GoogleCloudExtensionUnitTests
             Assert.AreEqual(-1, LastNonSpaceIndex(null));
             Assert.AreEqual(8, LastNonSpaceIndex("   uu  pp  "));
         }
-
     }
 }

@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension {
-    using System;
-    
-    
+namespace GoogleCloudExtension
+{
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -4566,15 +4566,6 @@ namespace GoogleCloudExtension {
         public static string SourceVersionUtilsFileNotFoundMessage {
             get {
                 return ResourceManager.GetString("SourceVersionUtilsFileNotFoundMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Open the solution from a local git repository.
-        /// </summary>
-        public static string SourceVersionUtilsOpenProjectFromLocalRepoPrompt {
-            get {
-                return ResourceManager.GetString("SourceVersionUtilsOpenProjectFromLocalRepoPrompt", resourceCulture);
             }
         }
         

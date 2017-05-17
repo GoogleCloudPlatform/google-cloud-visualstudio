@@ -86,7 +86,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             filter.AppendLine($"{SourceLocationQueryName}.{nameof(LogEntrySourceLocation.File)}=\"{log.SourceFilePath.Replace(@"\", @"\\")}\"");
             filter.AppendLine($"{SourceLocationQueryName}.{nameof(LogEntrySourceLocation.Function)}=\"{log.Function}\"");
             filter.AppendLine($"{SourceLocationQueryName}.{nameof(LogEntrySourceLocation.Line)}=\"{log.SourceLine}\"");
-            window.ViewModel.FilterLog(filter.ToString());            
+            window.ViewModel.FilterLog(filter.ToString());
         }
     }
 }
