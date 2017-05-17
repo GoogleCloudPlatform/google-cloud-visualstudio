@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     /// </summary>
     public class AttachDebuggerFirewallPort
     {
-        private static readonly TimeSpan ConnectivityTestTimeout = TimeSpan.FromSeconds(5000);
+        private static readonly TimeSpan ConnectivityTestTimeout = TimeSpan.FromSeconds(5);
         private static readonly TimeSpan FirewallRuleWaitMaxTime = TimeSpan.FromMinutes(5);
         private readonly Lazy<GceDataSource> _lazyDataSource;
         private Instance _gceInstance;
