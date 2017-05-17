@@ -206,7 +206,7 @@ namespace GoogleCloudExtension.DataSources
             {
                 operation.Error(new DataSourceException(ex.Message, ex));
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 operation.Cancelled();
             }
@@ -250,7 +250,7 @@ namespace GoogleCloudExtension.DataSources
             {
                 operation.Error(new DataSourceException(ex.Message, ex));
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 operation.Cancelled();
             }
@@ -274,7 +274,7 @@ namespace GoogleCloudExtension.DataSources
             {
                 operation.Error(new DataSourceException(ex.Message, ex));
             }
-            catch (TaskCanceledException)
+            catch (OperationCanceledException)
             {
                 operation.Cancelled();
             }

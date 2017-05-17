@@ -521,7 +521,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 _nextPageToken = null;
 
-                if (ex is TaskCanceledException && _cancellationTokenSource.IsCancellationRequested)
+                if (ex is OperationCanceledException && _cancellationTokenSource.IsCancellationRequested)
                 {
                     // Expected cancellation. Log and continue.
                     Debug.WriteLine("Request was cancelled");
@@ -883,7 +883,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 _nextPageToken = null;
 
-                if (ex is TaskCanceledException && _cancellationTokenSource.IsCancellationRequested)
+                if (ex is OperationCanceledException && _cancellationTokenSource.IsCancellationRequested)
                 {
                     // Expected cancellation. Log and continue.
                     Debug.WriteLine("Request was cancelled");
