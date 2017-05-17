@@ -2536,6 +2536,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Files deleted {0} of {1}.
+        /// </summary>
+        public static string GcsFileBrowserDeletingOverallProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDeletingOverallProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deleting Files.
         /// </summary>
         public static string GcsFileBrowserDeletingProgressCaption {
@@ -2595,6 +2604,15 @@ namespace GoogleCloudExtension {
         public static string GcsFileBrowserDonwloadHeader {
             get {
                 return ResourceManager.GetString("GcsFileBrowserDonwloadHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files downloaded {0} of {1}.
+        /// </summary>
+        public static string GcsFileBrowserDownloadingOverallProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserDownloadingOverallProgressMessage", resourceCulture);
             }
         }
         
@@ -2797,6 +2815,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Files uploaded {0} of {1}.
+        /// </summary>
+        public static string GcsFileBrowserUploadingOverallProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserUploadingOverallProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Uploading Files.
         /// </summary>
         public static string GcsFileBrowserUploadingProgressCaption {
@@ -2811,6 +2838,105 @@ namespace GoogleCloudExtension {
         public static string GcsFileBrowserUploadingProgressMessage {
             get {
                 return ResourceManager.GetString("GcsFileBrowserUploadingProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation cancelled.
+        /// </summary>
+        public static string GcsFileProgressDialogCancelledOperationMessage {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogCancelledOperationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancelled.
+        /// </summary>
+        public static string GcsFileProgressDialogCancelledState {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogCancelledState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Cancelling operation.
+        /// </summary>
+        public static string GcsFileProgressDialogCancellingOperationMessage {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogCancellingOperationMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error.
+        /// </summary>
+        public static string GcsFileProgressDialogErrorState {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogErrorState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to enumerate files..
+        /// </summary>
+        public static string GcsFileProgressDialogFailedToEnumerateFiles {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogFailedToEnumerateFiles", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to File.
+        /// </summary>
+        public static string GcsFileProgressDialogFileHeader {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogFileHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Hide details.
+        /// </summary>
+        public static string GcsFileProgressDialogHideDetailsCaption {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogHideDetailsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Pending.
+        /// </summary>
+        public static string GcsFileProgressDialogPendingState {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogPendingState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Progress.
+        /// </summary>
+        public static string GcsFileProgressDialogProgressHeader {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogProgressHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Show details.
+        /// </summary>
+        public static string GcsFileProgressDialogShowDetailsCaption {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogShowDetailsCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Operation starting.
+        /// </summary>
+        public static string GcsFileProgressDialogStartingOperation {
+            get {
+                return ResourceManager.GetString("GcsFileProgressDialogStartingOperation", resourceCulture);
             }
         }
         
@@ -4653,9 +4779,9 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to Google Cloud Tools.
         /// </summary>
-        public static string uiDefaultPromptTitle {
+        public static string UiDefaultPromptTitle {
             get {
-                return ResourceManager.GetString("uiDefaultPromptTitle", resourceCulture);
+                return ResourceManager.GetString("UiDefaultPromptTitle", resourceCulture);
             }
         }
         

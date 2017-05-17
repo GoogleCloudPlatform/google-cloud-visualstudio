@@ -17,6 +17,7 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading;
 using System.Windows.Input;
 
@@ -30,12 +31,57 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         private readonly GcsFileProgressDialogWindow _owner;
         private readonly CancellationTokenSource _tokenSource;
         private int _completed = 0;
+        private bool _hasCancellation;
+        private bool _operationsPending = true;
+        private string _progressMessage;
         private string _caption = Resources.UiCancelButtonCaption;
-
+        private bool _detailsExpanded = false;
+        
         /// <summary>
-        /// The message to display in the dialog.
+        /// The message to display in dialog for the list of operations.
         /// </summary>
         public string Message { get; }
+
+        /// <summary>
+        /// The message for the overall progres. This string is expected to have two placehoders. Where
+        /// {0} is going to the count of completed operations and {1} is going to be the total number of
+        /// operations. This property will change depending on the progress state for the operations.
+        /// </summary>
+        public string ProgressMessage
+        {
+            get
+            {
+                if (IsCancelling)
+                {
+                    return Resources.GcsFileProgressDialogCancellingOperationMessage;
+                }
+                else if (IsCancelled)
+                {
+                    return Resources.GcsFileProgressDialogCancelledOperationMessage;
+                }
+                else if (OperationsPending)
+                {
+                    return Resources.GcsFileProgressDialogStartingOperation;
+                }
+                else
+                {
+                    return String.Format(_progressMessage, Completed, Operations.Count);
+                }
+            }
+        }
+           
+        /// <summary>
+        /// Returns true if no operation has started.
+        /// </summary>
+        public bool OperationsPending
+        {
+            get { return _operationsPending; }
+            private set
+            {
+                SetValueAndRaise(ref _operationsPending, value);
+                RaisePropertyChanged(nameof(ProgressMessage));
+            }
+        }
 
         /// <summary>
         /// The list of operations.
@@ -43,12 +89,25 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         public ObservableCollection<GcsFileOperation> Operations { get; }
 
         /// <summary>
+        /// The count of completed operations.
+        /// </summary>
+        public int Completed
+        {
+            get { return _completed; }
+            private set
+            {
+                SetValueAndRaise(ref _completed, value);
+                RaisePropertyChanged(nameof(ProgressMessage));
+            }
+        }
+
+        /// <summary>
         /// The caption for the dialog.
         /// </summary>
         public string Caption
         {
             get { return _caption; }
-            set { SetValueAndRaise(ref _caption, value); }
+            private set { SetValueAndRaise(ref _caption, value); }
         }
 
         /// <summary>
@@ -57,36 +116,87 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         public ICommand ActionCommand { get; }
 
         /// <summary>
+        /// Whether the details are expanded or not.
+        /// </summary>
+        public bool DetailsExpanded
+        {
+            get { return _detailsExpanded; }
+            private set
+            {
+                SetValueAndRaise(ref _detailsExpanded, value);
+                RaisePropertyChanged(nameof(ExpandCollapseMessage));
+            }
+        }
+
+        /// <summary>
+        /// The command to execute when clicking on the expand hyperlink.
+        /// </summary>
+        public ICommand ExpandCollapseDetailsCommand { get; }
+
+        /// <summary>
+        /// The message to show in the hyperlink message.
+        /// </summary>
+        public string ExpandCollapseMessage => DetailsExpanded ?
+            Resources.GcsFileProgressDialogHideDetailsCaption : Resources.GcsFileProgressDialogShowDetailsCaption;
+
+        /// <summary>
         /// Returns whether the operation is complete.
         /// </summary>
-        private bool IsComplete => _completed >= Operations.Count;
+        private bool IsComplete => Completed >= Operations.Count;
+
+        /// <summary>
+        /// Returns whether the operation was cancelled.
+        /// </summary>
+        private bool IsCancelled => _hasCancellation && IsComplete;
+
+        /// <summary>
+        /// Whether the operations are being cancelled.
+        /// </summary>
+        private bool IsCancelling => _hasCancellation && !IsComplete;
 
         public GcsFileProgressDialogViewModel(
             string message,
+            string progressMessage,
             GcsFileProgressDialogWindow owner,
             IEnumerable<GcsFileOperation> operations,
             CancellationTokenSource tokenSource)
         {
             _owner = owner;
             _tokenSource = tokenSource;
+            _progressMessage = progressMessage;
 
             Message = message;
             Operations = new ObservableCollection<GcsFileOperation>(operations);
             foreach (var operation in Operations)
             {
                 operation.Completed += OnOperationCompleted;
+                operation.Started += OnOperationStarted;
             }
 
             ActionCommand = new ProtectedCommand(OnActionCommand);
+            ExpandCollapseDetailsCommand = new ProtectedCommand(OnExpandCollapseDetailsCommand);
+        }
+
+        private void OnExpandCollapseDetailsCommand()
+        {
+            DetailsExpanded = !DetailsExpanded;
         }
 
         private void OnOperationCompleted(object sender, EventArgs e)
         {
-            _completed += 1;
+            var operation = (GcsFileOperation)sender;
+
+            _hasCancellation = _hasCancellation || operation.IsCancelled;
+            Completed++;
             if (IsComplete)
             {
                 Caption = Resources.UiCloseButtonCaption;
             }
+        }
+
+        private void OnOperationStarted(object sender, EventArgs e)
+        {
+            OperationsPending = false;
         }
 
         private void OnActionCommand()
@@ -94,6 +204,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
             if (!IsComplete)
             {
                 _tokenSource.Cancel();
+                return;
             }
             _owner.Close();
         }

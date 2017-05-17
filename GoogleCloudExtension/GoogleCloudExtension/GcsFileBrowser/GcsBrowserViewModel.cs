@@ -160,15 +160,27 @@ namespace GoogleCloudExtension.GcsFileBrowser
             ShellUtils.SetForegroundWindow();
 
             CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            var uploadOperations = _fileOperationsEngine.StartUploadOperations(
-                files,
-                bucket: Bucket.Name,
-                bucketPath: _currentState.CurrentPath,
-                cancellationToken: cancellationTokenSource.Token);
+            IList<GcsFileOperation> uploadOperations;
+            try
+            {
+                uploadOperations = _fileOperationsEngine.StartUploadOperations(
+                    files,
+                    bucket: Bucket.Name,
+                    bucketPath: _currentState.CurrentPath,
+                    cancellationToken: cancellationTokenSource.Token);
+            }
+            catch (IOException)
+            {
+                UserPromptUtils.ErrorPrompt(
+                    message: Resources.GcsFileProgressDialogFailedToEnumerateFiles,
+                    title: Resources.UiErrorCaption);
+                return;
+            }
 
             GcsFileProgressDialogWindow.PromptUser(
                 caption: Resources.GcsFileBrowserUploadingProgressCaption,
                 message: Resources.GcsFileBrowserUploadingProgressMessage,
+                progressMessage: Resources.GcsFileBrowserUploadingOverallProgressMessage,
                 operations: uploadOperations,
                 cancellationTokenSource: cancellationTokenSource);
 
@@ -212,14 +224,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
         }
 
-        /// <summary>
-        /// The download command is implemented with the following steps:
-        /// 1) The user is prompted for the directory that will serve as the root of all of the downloads.
-        /// 2) The list of files to be downloaded, including subdirectories is collected.
-        /// 3) The subdirectories that will receive downloads are created under the download root.
-        /// 4) The file operations are started and the progress dialog is shown to the user. The same <seealso cref="CancellationToken"/>
-        ///    is used for all of the operations so the progress dialog can be used to cancel all operations.
-        /// </summary>
         private async void OnDownloadCommand()
         {
             FBD dialog = new FBD();
@@ -259,26 +263,16 @@ namespace GoogleCloudExtension.GcsFileBrowser
             GcsFileProgressDialogWindow.PromptUser(
                 caption: Resources.GcsFileBrowserDownloadingProgressCaption,
                 message: Resources.GcsFileBrowserDownloadingProgressMessage,
+                progressMessage: Resources.GcsFileBrowserDownloadingOverallProgressMessage,
                 operations: downloadOperations,
                 cancellationTokenSource: cancellationTokenSource);
         }
 
-        /// <summary>
-        /// The delete command is implemented with the following steps:
-        /// 1) The user is asked to confirm the operation.
-        /// 2) The files to be deleted are collected, this involves listing requests sent to the server for
-        ///    the subdirectories being deleted. For each file to be deleted a <seealso cref="GcsFileOperation"/> instance
-        ///    is created to track the progress of the operation. Each delete operation is independent.
-        /// 3) The operations are started and the progress dialog that tracks the progress of all of the operations is opened. All of
-        ///    operations use the same <seealso cref="CancellationToken"/> and the <seealso cref="CancellationTokenSource"/> is
-        ///    passed to the progress dialog so the user can cancel the operations.
-        /// 4) The listing of objects is invalidated and the window refreshed.  
-        /// </summary>
         private async void OnDeleteCommand()
         {
             if (!UserPromptUtils.ActionPrompt(
                 prompt: Resources.GcsFileBrowserDeletePromptMessage,
-                title: Resources.UiDeleteButtonCaption,
+                title: Resources.UiDefaultPromptTitle,
                 actionCaption: Resources.UiDeleteButtonCaption,
                 cancelCaption: Resources.UiCancelButtonCaption))
             {
@@ -310,6 +304,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             GcsFileProgressDialogWindow.PromptUser(
                 caption: Resources.GcsFileBrowserDeletingProgressCaption,
                 message: Resources.GcsFileBrowserDeletingProgressMessage,
+                progressMessage: Resources.GcsFileBrowserDeletingOverallProgressMessage,
                 operations: deleteOperations,
                 cancellationTokenSource: cancellationTokenSource);
 
