@@ -12,6 +12,8 @@ namespace GoogleCloudExtension.Utils
     /// </summary>
     public static class StringFormatUtils
     {
+        // This constant determines the maximum size of a size (in bytes) formatted for human
+        // consumption.
         private const int MaxByteFormatStringSize = 20;
 
         /// <summary>
