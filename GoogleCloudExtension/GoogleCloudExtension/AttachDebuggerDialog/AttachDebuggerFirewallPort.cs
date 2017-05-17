@@ -31,10 +31,10 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     /// </summary>
     public class AttachDebuggerFirewallPort
     {
-        private static readonly TimeSpan ConnectivityTestTimeout = TimeSpan.FromSeconds(5);
+        private static readonly TimeSpan ConnectivityTestTimeout = TimeSpan.FromSeconds(5000);
         private static readonly TimeSpan FirewallRuleWaitMaxTime = TimeSpan.FromMinutes(5);
-        private readonly Instance _gceInstance;
         private readonly Lazy<GceDataSource> _lazyDataSource;
+        private Instance _gceInstance;
         private GceDataSource _dataSource => _lazyDataSource.Value;
         private DateTime _portEnabledTime = DateTime.MinValue;
 
@@ -55,6 +55,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// </summary>
         public async Task EnablePort()
         {
+            // Get a refreshed list of firewall rules. 
+            // If not refreshed, UpdateInstancePorts may fail. 
+            _gceInstance = await _dataSource.RefreshInstance(_gceInstance);
             string portTag = PortInfo.GetTag(_gceInstance);
 
             List<FirewallPort> toEnable = new List<FirewallPort>() { new FirewallPort(portTag, PortInfo.Port) };
@@ -119,44 +122,32 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         {
             using (TcpClient client = new TcpClient())
             {
-                Exception exception = null;
-                Func<Task<bool>> connectAsync = async () =>
+                try
                 {
-                    try
+                    var connectTask = client.ConnectAsync(_gceInstance.GetPublicIpAddress(), PortInfo.Port);
+                    if (connectTask == await Task.WhenAny(connectTask, Task.Delay(ConnectivityTestTimeout)))
                     {
-                        await client.ConnectAsync(_gceInstance.GetPublicIpAddress(), PortInfo.Port);
+                        await connectTask;
                         Debug.WriteLine("ConnectivityTest, Succeeded");
                         return true;
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        var socketError = ex as SocketException;
-                        Debug.WriteLine($"ConnectivityTest {socketError?.ErrorCode}, {ex}");
-                        if (socketError?.SocketErrorCode == SocketError.ConnectionRefused 
-                            || socketError?.SocketErrorCode == SocketError.TimedOut)
-                        {
-                            return false;
-                        }
-                        exception = ex;
+                        Debug.WriteLine("ConnectivityTest, timed out");
                         return false;
                     }
-                };
-
-                var connectTask = connectAsync();
-                // Please note, when it times out before connect operation completes, 
-                // this exits the using clause defined above, and the TcpClient is closed.
-                var retTask = await Task.WhenAny(connectTask, Task.Delay(ConnectivityTestTimeout));
-                if (retTask != connectTask)
-                {
-                    Debug.WriteLine("ConnectivityTest, timed out");
-                    return false;
                 }
-
-                if (exception != null)
+                catch (SocketException ex)
                 {
-                    throw exception;
+                    var socketError = ex as SocketException;
+                    Debug.WriteLine($"ConnectivityTest {socketError?.ErrorCode}, {ex}");
+                    if (socketError?.SocketErrorCode == SocketError.ConnectionRefused
+                        || socketError?.SocketErrorCode == SocketError.TimedOut)
+                    {
+                        return false;
+                    }
+                    throw;
                 }
-                return connectTask.IsCompleted && connectTask.Result;
             }
         }
     }

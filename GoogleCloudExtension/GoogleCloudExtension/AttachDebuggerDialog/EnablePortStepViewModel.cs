@@ -122,8 +122,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             {
                 SetStage(Stage.AddingFirewallRule);
                 await _port.EnablePort();
-                // This is a necessary step for the GceInstance object to get a refreshed list of firewall rules.
-                await Context.RefreshInstance();
                 _portEnabled = true;
             }
             return await GetNextStep();

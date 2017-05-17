@@ -94,14 +94,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             RemotePowerShellPort = new AttachDebuggerFirewallPort(RemotePowerShellPortInfo, gceInstance, _lazyDataSource);
         }
 
-        /// <summary>
-        /// Refresh GCE instance. 
-        /// </summary>
-        public async Task RefreshInstance()
-        {
-            GceInstance = await DataSource.RefreshInstance(GceInstance);
-        }
-
         private static GceDataSource CreateDataSource()
         {
             if (CredentialsStore.Default.CurrentProjectId != null)
