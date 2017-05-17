@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.GitUtils
     {
         private const string GitExecutable = "git.exe";
 
-        private static Lazy<string> s_gitPathLazy = new Lazy<string>(GetGitPath);
+        private static readonly Lazy<string> s_gitPathLazy = new Lazy<string>(GetGitPath);
 
         /// <summary>
         /// Git repository local root path.
@@ -54,8 +54,8 @@ namespace GoogleCloudExtension.GitUtils
         {
             if (await IsGitRepositoryAsync(dir))
             {
-                var root = (await RunGitCommandAsync("rev-parse --show-toplevel", dir)).FirstOrDefault()?.Replace('/', '\\');
-                return new GitRepository(root);
+                var root = (await RunGitCommandAsync("rev-parse --show-toplevel", dir))?.FirstOrDefault()?.Replace('/', '\\');
+                return root != null ? new GitRepository(root) : null;
             }
             return null;
         }
@@ -70,7 +70,7 @@ namespace GoogleCloudExtension.GitUtils
         /// Returns true if the git repository contains the git SHA revision.
         /// </summary>
         /// <param name="sha">The Git SHA.</param>
-        public async Task<bool> ContainsCommitAsync(string sha) => (await ExecCommandAsync($"cat-file -t {sha}")).FirstOrDefault() == "commit";
+        public async Task<bool> ContainsCommitAsync(string sha) => (await ExecCommandAsync($"cat-file -t {sha}"))?.FirstOrDefault() == "commit";
 
         /// <summary>
         /// Returns the items tree of a given git SHA revision.

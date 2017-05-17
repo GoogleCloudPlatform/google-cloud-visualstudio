@@ -31,7 +31,7 @@ namespace GoogleCloudExtension.SourceBrowsing
     [ContentType("CSharp")]
     internal class LoggerTaggerProvider : IViewTaggerProvider
     {
-        private static Lazy<ConcurrentDictionary<ITextView, StackdriverTagger>> _taggers = new Lazy<ConcurrentDictionary<ITextView, StackdriverTagger>>();
+        private static Lazy<ConcurrentDictionary<ITextView, StackdriverTagger>> s_taggers = new Lazy<ConcurrentDictionary<ITextView, StackdriverTagger>>();
 
         /// <summary>
         /// Gets text view to taggers map.
@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// VS may call it at any thread.
         /// Using concurrent dictionary so as to syncronize access to the map from different threads.
         /// </summary>
-        public static ConcurrentDictionary<ITextView, StackdriverTagger> AllLoggerTaggers => _taggers.Value;
+        public static ConcurrentDictionary<ITextView, StackdriverTagger> AllLoggerTaggers => s_taggers.Value;
 
         /// <summary>
         /// Import <seealso cref="IToolTipProviderFactory"/>.

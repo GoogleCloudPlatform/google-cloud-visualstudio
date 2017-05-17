@@ -13,21 +13,21 @@
 // limitations under the License.
 
 using EnvDTE;
-using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.StackdriverErrorReporting;
-using ErrorReporting = GoogleCloudExtension.StackdriverErrorReporting;
 using GoogleCloudExtension.StackdriverLogsViewer;
-using static GoogleCloudExtension.SourceBrowsing.SourceVersionUtils;
-using static GoogleCloudExtension.StackdriverLogsViewer.LogWritterNameConstants;
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
-using Microsoft.VisualStudio.TextManager.Interop;
-using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Text.Editor;
+using Microsoft.VisualStudio.TextManager.Interop;
 using System;
 using System.Linq;
+using static GoogleCloudExtension.SourceBrowsing.SourceVersionUtils;
+using static GoogleCloudExtension.StackdriverLogsViewer.LogWritterNameConstants;
+using ErrorReporting = GoogleCloudExtension.StackdriverErrorReporting;
 
 namespace GoogleCloudExtension.SourceBrowsing
 {
@@ -66,7 +66,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="errorGroupItem">The error group item that will be shown in the source code tooltip.</param>
         /// <param name="stackFrame">The stack frame that contains the source file and source line number.</param>
         public static void ErrorFrameToSourceLine(
-            ErrorGroupItem errorGroupItem, 
+            ErrorGroupItem errorGroupItem,
             ErrorReporting.StackFrame stackFrame)
         {
             if (errorGroupItem == null || stackFrame == null || !stackFrame.IsWellParsed)
@@ -117,6 +117,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="line">The line number of the source file.</param>
         private static void GotoLine(Window window, int line)
         {
+            window.Visible = true;
             TextSelection selection = window.Document.Selection as TextSelection;
             TextPoint tp = selection.TopPoint;
             selection.GotoLine(line, Select: false);
@@ -144,8 +145,8 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="stackFrame">The stack frame that contains the source file and source line number.</param>
         /// <param name="window">The Visual Studio Document window that opens the source file.</param>
         public static void ShowToolTip(
-            ErrorGroupItem errorGroupItem, 
-            ErrorReporting.StackFrame stackFrame, 
+            ErrorGroupItem errorGroupItem,
+            ErrorReporting.StackFrame stackFrame,
             Window window)
         {
             GotoLine(window, (int)stackFrame.LineNumber);
@@ -172,7 +173,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <param name="window">The Visual Studio doucment window of the source file.</param>
         public static void ShowToolTip(this LogItem logItem, Window window)
         {
-            GotoLine(window, (int)logItem.SourceLine);        
+            GotoLine(window, (int)logItem.SourceLine);
             IVsTextView textView = GetIVsTextView(window.Document.FullName);
             var wpfView = GetWpfTextView(textView);
             if (wpfView == null)
