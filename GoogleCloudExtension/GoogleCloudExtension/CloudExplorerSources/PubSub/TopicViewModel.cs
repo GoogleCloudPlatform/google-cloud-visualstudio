@@ -69,7 +69,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             IsLoading = true;
             try
             {
-
                 try
                 {
                     Subscription subscription = NewSubscriptionWindow.PromptUser(TopicItem.FullName);

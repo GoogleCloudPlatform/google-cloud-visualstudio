@@ -76,7 +76,7 @@ namespace GoogleCloudExtension.Utils
         /// error dialog to the user. If the exception is critical, as determiend by <seealso cref="ErrorHandler.IsCriticalException(Exception)"/>
         /// then it is re-thrown as this could be that the process is not in a good state to continue executing.
         /// </summary>
-        public static async Task HandleExceptionsAsync(Func<Task> task)
+        public static async void HandleAsyncExceptions(Func<Task> task)
         {
             try
             {

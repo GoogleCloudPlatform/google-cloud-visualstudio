@@ -36,6 +36,5 @@ namespace GoogleCloudExtension.PubSubWindows
             dialog.ShowModal();
             return dialog.ViewModel.Result;
         }
-
     }
 }

@@ -123,7 +123,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 
                 EventsReporterWrapper.ReportEvent(ManageCloudSqlAuthorizedNetworkEvent.Create(CommandStatus.Failure));
             }
-            catch (TimeoutException ex)
+            catch (TimeoutException)
             {
                 IsError = true;
                 UserPromptUtils.ErrorPrompt(
@@ -132,7 +132,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.CloudSQL
 
                 EventsReporterWrapper.ReportEvent(ManageCloudSqlAuthorizedNetworkEvent.Create(CommandStatus.Failure));
             }
-            catch (OperationCanceledException ex)
+            catch (OperationCanceledException)
             {
                 IsError = true;
                 UserPromptUtils.ErrorPrompt(

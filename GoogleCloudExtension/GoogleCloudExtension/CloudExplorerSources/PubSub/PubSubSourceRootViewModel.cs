@@ -122,7 +122,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 {
                     Children.Add(new OrphanedSubscriptionsViewModel(this, subscriptions));
                 }
-
             }
             catch (DataSourceException e)
             {

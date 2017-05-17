@@ -16,10 +16,10 @@ using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Clouderrorreporting.v1beta1;
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
-using TimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
-using EventTimeRange = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using EventTimeRange = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.EventsResource.ListRequest.TimeRangePeriodEnum;
+using TimeRangeEnum = Google.Apis.Clouderrorreporting.v1beta1.ProjectsResource.GroupStatsResource.ListRequest.TimeRangePeriodEnum;
 
 namespace GoogleCloudExtension.DataSources
 {
@@ -36,7 +36,7 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="appName">The name of the application.</param>
         public StackdriverErrorReportingDataSource(string projectId, GoogleCredential credential, string appName)
                 : base(projectId, credential, init => new ClouderrorreportingService(init), appName)
-        {}
+        { }
 
         /// <summary>
         /// Get a page of <seealso cref="ErrorGroupStats"/> for the given <paramref name="groupId"/>.
@@ -54,9 +54,9 @@ namespace GoogleCloudExtension.DataSources
         /// A task with <seealso cref="ListGroupStatsResponse"/> as result.
         /// </returns>
         public Task<ListGroupStatsResponse> GetPageOfGroupStatusAsync(
-            TimeRangeEnum timeRange, 
-            string timedCountDuration = null, 
-            string groupId = null, 
+            TimeRangeEnum timeRange,
+            string timedCountDuration = null,
+            string groupId = null,
             string nextPageToken = null)
         {
             var request = Service.Projects.GroupStats.List(ProjectResourceName);
