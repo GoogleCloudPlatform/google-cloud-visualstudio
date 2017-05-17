@@ -10,14 +10,34 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GcsUtils
 {
+    /// <summary>
+    /// This class represents a queue of operaations that are to be completed. This class will
+    /// ensure that that the right concurrency level is maintained and no more than the specified
+    /// number of operations are started at any given time. If the overall operation is cancelled any
+    /// non started operations will be cancelled as well.
+    /// </summary>
     public class OperationsQueue
     {
+        /// <summary>
+        /// Each entry in the queue connects the operation to be started with the code to start it.
+        /// </summary>
         private class OperationQueueEntry
         {
+            /// <summary>
+            /// The operation to be started.
+            /// </summary>
             public GcsFileOperation Operation { get; set; }
 
+            /// <summary>
+            /// The action to use to start the operation.
+            /// </summary>
             public Action<GcsFileOperation, CancellationToken> Action { get; set; }
 
+            /// <summary>
+            /// Helper method that starts the operation.
+            /// </summary>
+            /// <param name="cancellationToken">The cancellation token for the operation.</param>
+            /// <returns>Returns a task that will be completed once the operation completes.</returns>
             public Task StartOperationAsync(CancellationToken cancellationToken)
             {
                 Action(Operation, cancellationToken);
@@ -32,6 +52,9 @@ namespace GoogleCloudExtension.GcsUtils
         private readonly List<Task> _operationsInFlight = new List<Task>();
         private bool _schedulerActive = false;
 
+        /// <summary>
+        /// Returns the list of operations contained in the queue.
+        /// </summary>
         public IReadOnlyList<GcsFileOperation> Operations => _operations;
 
         public OperationsQueue(CancellationToken cancellationToken)
@@ -44,6 +67,11 @@ namespace GoogleCloudExtension.GcsUtils
             _cancellationToken = cancellationToken;
         }
 
+        /// <summary>
+        /// Queue the given list of <paramref name="operations"/> but does not start them yet.
+        /// </summary>
+        /// <param name="operations">The operations to start.</param>
+        /// <param name="queueAction">The action to use to start the operaitons.</param>
         public void QueueOperations(
             IEnumerable<GcsFileOperation> operations,
             Action<GcsFileOperation, CancellationToken> queueAction)
@@ -55,6 +83,9 @@ namespace GoogleCloudExtension.GcsUtils
             }
         }
 
+        /// <summary>
+        /// Starts the processing of the queue.
+        /// </summary>
         public void StartOperations()
         {
             RunOperationScheduler();

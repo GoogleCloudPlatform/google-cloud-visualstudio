@@ -165,6 +165,10 @@ namespace GoogleCloudExtension.GcsUtils
 
         #endregion
 
+        /// <summary>
+        /// Returns a task that will completed once the operation is completed. The error state will not be
+        /// sent to this task.
+        /// </summary>
         internal Task AwaitOperationAsync()
         {
             var taskCompletion = new TaskCompletionSource<int>();
