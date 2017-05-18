@@ -43,7 +43,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         public virtual ContentControl Content => null;
 
-        public virtual bool IsOkButtonEnabled
+        public virtual bool IsOKButtonEnabled
         {
             get { return _isOKButtonEnabled; }
             protected set { SetValueAndRaise(ref _isOKButtonEnabled, value); }

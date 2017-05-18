@@ -133,7 +133,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             ProgressMessage = null;
             IsAskingToConfirm = false;
             IsAskingToTestConnectivityLater = false;
-            IsOkButtonEnabled = false;
+            IsOKButtonEnabled = false;
             IsCancelButtonEnabled = false;
             switch (newStage)
             {
@@ -145,12 +145,12 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                     break;
                 case Stage.AskingPermitToAddRule:
                     IsAskingToConfirm = true;
-                    IsOkButtonEnabled = true;
+                    IsOKButtonEnabled = true;
                     IsCancelButtonEnabled = true;
                     break;
                 case Stage.AddingFirewallRule:
                     ProgressMessage = Resources.AttachDebuggerAddingFirewallRuleMessage;
-                    IsOkButtonEnabled = true;
+                    IsOKButtonEnabled = true;
                     IsCancelButtonEnabled = true;
                     break;
                 case Stage.CheckingConnectivity:
@@ -160,7 +160,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                     break;
                 case Stage.AskToCheckConnectivityLater:
                     IsCancelButtonEnabled = true;
-                    IsOkButtonEnabled = true;
+                    IsOKButtonEnabled = true;
                     IsAskingToTestConnectivityLater = true;
                     break;
             }

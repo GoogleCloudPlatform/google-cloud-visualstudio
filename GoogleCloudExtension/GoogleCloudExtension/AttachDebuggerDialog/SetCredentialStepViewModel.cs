@@ -73,7 +73,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             {
                 ManageWindowsCredentialsWindow.PromptUser(context.GceInstance);
                 UpdateCredentials();
-                IsOkButtonEnabled = Credentials.Count() > 0;
+                IsOKButtonEnabled = Credentials.Count() > 0;
             });
         }
 
@@ -108,7 +108,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
             ShowSelection = true;
             IsCancelButtonEnabled = true;
-            IsOkButtonEnabled = Credentials.Count() > 0;
+            IsOKButtonEnabled = Credentials.Count() > 0;
             return Task.FromResult<IAttachDebuggerStep>(null);
         }
 

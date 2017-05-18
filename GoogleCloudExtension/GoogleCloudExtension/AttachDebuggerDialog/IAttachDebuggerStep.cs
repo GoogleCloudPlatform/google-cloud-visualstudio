@@ -61,6 +61,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <summary>
         /// Returns if OK button should be enabled.
         /// </summary>
-        bool IsOkButtonEnabled { get; }
+        bool IsOKButtonEnabled { get; }
     }
 }

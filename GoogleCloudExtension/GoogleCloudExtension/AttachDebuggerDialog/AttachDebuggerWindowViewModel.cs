@@ -119,8 +119,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 case nameof(IAttachDebuggerStep.IsCancelButtonEnabled):
                     CancelCommand.CanExecuteCommand = _currentStep.IsCancelButtonEnabled;
                     break;
-                case nameof(IAttachDebuggerStep.IsOkButtonEnabled):
-                    OKCommand.CanExecuteCommand = IsReady && _currentStep.IsOkButtonEnabled;
+                case nameof(IAttachDebuggerStep.IsOKButtonEnabled):
+                    OKCommand.CanExecuteCommand = IsReady && _currentStep.IsOKButtonEnabled;
                     break;
             }
         }
@@ -128,7 +128,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         private void UpdateButtons()
         {
             CancelCommand.CanExecuteCommand = _currentStep?.IsCancelButtonEnabled == true;
-            OKCommand.CanExecuteCommand = IsReady && _currentStep?.IsOkButtonEnabled == true;
+            OKCommand.CanExecuteCommand = IsReady && _currentStep?.IsOKButtonEnabled == true;
         }
 
         private async Task GotoStep(IAttachDebuggerStep step)
