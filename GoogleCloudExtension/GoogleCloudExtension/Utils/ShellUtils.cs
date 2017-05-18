@@ -99,14 +99,15 @@ namespace GoogleCloudExtension.Utils
         }
 
         /// <summary>
-        /// Opens a project item in Visual Studio.
+        /// Opens a source file in Visual Studio.
         /// </summary>
-        /// <param name="projectItem"><seealso cref="ProjectItem"/></param>
+        /// <param name="sourceFile">Source file path</param>
         /// <returns>The Window that displays the project item.</returns>
-        public static Window Open(ProjectItem projectItem)
+        public static Window Open(string sourceFile)
         {
-            var window = projectItem.Open(EnvDTE.Constants.vsViewKindPrimary);
-            if (null != window)
+            var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
+            Window window = dte.ItemOperations.OpenFile(sourceFile);
+            if (window != null)
             {
                 window.Visible = true;
             }
@@ -130,6 +131,16 @@ namespace GoogleCloudExtension.Utils
         {
             var dte = Package.GetGlobalService(typeof(DTE)) as DTE;
             dte.ExecuteCommand("File.SaveAll");
+        }
+
+        /// <summary>
+        /// Register a Visual Studio Window close event handler.
+        /// </summary>
+        /// <param name="onWindowCloseEventHandler">The event handler.</param>
+        public static void RegisterWindowCloseEventHandler(Action<Window> onWindowCloseEventHandler)
+        {
+            var dte2 = Package.GetGlobalService(typeof(DTE)) as DTE2;
+            dte2.Events.WindowEvents.WindowClosing += (window) => onWindowCloseEventHandler(window);
         }
 
         private static void SetShellNormal()

@@ -23,6 +23,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.Projects;
 
 namespace GoogleCloudExtension.SolutionUtils
 {
@@ -54,11 +56,6 @@ namespace GoogleCloudExtension.SolutionUtils
         }
 
         /// <summary>
-        /// Gets <seealso cref="EnvDTE.Solution"/> reference.
-        /// </summary>
-        public Solution solution => _solution;
-
-        /// <summary>
         /// Returns the path to the root of the solution.
         /// </summary>
         public string SolutionDirectory => Path.GetDirectoryName(_solution.FullName);
@@ -66,12 +63,12 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <summary>
         /// Returns the startup project for the current solution.
         /// </summary>
-        public ISolutionProject StartupProject => GetStartupProject();
+        public IParsedProject StartupProject => GetStartupProject();
 
         /// <summary>
         /// Returns the selected project in the Solution Explorer.
         /// </summary>
-        public ISolutionProject SelectedProject => GetSelectedProject();
+        public IParsedProject SelectedProject => GetSelectedProject();
 
         /// <summary>
         /// Get a list of <seealso cref="ProjectHelper"/> objects under current solution.
@@ -94,7 +91,7 @@ namespace GoogleCloudExtension.SolutionUtils
             return query.ToList<ProjectSourceFile>();
         }
 
-        private ISolutionProject GetSelectedProject()
+        private IParsedProject GetSelectedProject()
         {
             var selectedProjectDirectory = GetSelectedProjectDirectory();
             if (selectedProjectDirectory == null)
@@ -102,27 +99,21 @@ namespace GoogleCloudExtension.SolutionUtils
                 return null;
             }
 
-            // .NET Core projects are not fully supported, only exist as a project.json file in a directory, check
-            // if the file exists.
-            var possibleProjectJson = Path.Combine(selectedProjectDirectory, ProjectJsonName);
-            if (File.Exists(possibleProjectJson))
-            {
-                return new NetCoreProject(possibleProjectJson);
-            }
-
-            // The project is probably a full VS project, look it up.
+            // Fetch the project that lives in that directory and parse it.
             foreach (Project p in _solution.Projects)
             {
                 var projectDirectory = Path.GetDirectoryName(p.FullName);
                 if (projectDirectory.Equals(selectedProjectDirectory, StringComparison.OrdinalIgnoreCase))
                 {
-                    return new VsProject(p);
+                    return ProjectParser.ParseProject(p);
                 }
             }
 
             // Failed to determine the project.
+            Debug.WriteLine($"Could not find a project in {selectedProjectDirectory}");
             return null;
         }
+
 
         /// <summary>
         /// Uses COM interop to find out what is the selected node in the Solution Explorer and from that what
@@ -177,7 +168,7 @@ namespace GoogleCloudExtension.SolutionUtils
             }
         }
 
-        private ISolutionProject GetStartupProject()
+        private IParsedProject GetStartupProject()
         {
             var sb = SolutionBuild;
             if (sb == null)
@@ -197,34 +188,17 @@ namespace GoogleCloudExtension.SolutionUtils
                 return null;
             }
 
-            // For .NET Core the file will have an .xproj extension.
-            if (Path.GetExtension(startupProjectFilePath) == ".xproj")
-            {
-                var projectDirectory = Path.Combine(SolutionDirectory, Path.GetDirectoryName(startupProjectFilePath));
-                var projectJsonPath = Path.Combine(projectDirectory, ProjectJsonName);
-                if (File.Exists(projectJsonPath))
-                {
-                    return new NetCoreProject(projectJsonPath);
-                }
-                else
-                {
-                    // We have an invalid project.
-                    Debug.WriteLine($"Invalid project found, no project.json exists: {startupProjectFilePath}");
-                    return null;
-                }
-            }
-
-            // Other extensions are VS projects.
             string projectName = Path.GetFileNameWithoutExtension(startupProjectFilePath);
             foreach (Project p in _solution.Projects)
             {
                 if (p.Name == projectName)
                 {
-                    return new VsProject(p);
+                    return ProjectParser.ParseProject(p);
                 }
             }
 
             // The project could not be found.
+            Debug.WriteLine($"Could not find project {startupProjectFilePath}");
             return null;
         }
 

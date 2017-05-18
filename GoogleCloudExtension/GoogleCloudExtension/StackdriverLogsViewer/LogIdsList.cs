@@ -65,13 +65,12 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public LogIdsList(IList<string> logIds)
         {
             LogIDs = new List<string>();
+            LogIDs.Add(Resources.LogViewerLogIdSelectAllLabel);
+            _selectedLogIDShortName = Resources.LogViewerLogIdSelectAllLabel;
             foreach (var id in logIds)
             {
                 AddLogId(id);
             }
-
-            LogIDs.Add(Resources.LogViewerLogIdSelectAllLabel);
-            _selectedLogIDShortName = Resources.LogViewerLogIdSelectAllLabel;
         }
 
         private void AddLogId(string logId)

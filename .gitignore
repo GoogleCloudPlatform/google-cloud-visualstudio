@@ -10,5 +10,4 @@
 .DS_Store
 **/packages/*
 **/*.pyc
-/GoogleCloudExtension/GoogleCloudExtension.sln.DotSettings.user
-/GoogleCloudExtension/GoogleCloudExtension.Utils/GoogleCloudExtension.Utils.csproj.user
+*.DotSettings.user

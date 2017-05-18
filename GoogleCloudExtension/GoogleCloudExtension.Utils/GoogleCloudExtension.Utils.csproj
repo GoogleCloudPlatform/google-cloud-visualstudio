@@ -54,6 +54,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ArgumentCheckUtils.cs" />
     <Compile Include="AsyncPropertyValue.cs" />
     <Compile Include="BindableList.cs" />
     <Compile Include="BooleanConverter.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="JsonOutputException.cs" />
     <Compile Include="Model.cs" />
     <Compile Include="NullEmptyInvisibleConverter.cs" />
+    <Compile Include="PathUtils.cs" />
     <Compile Include="PlaceholderMessage.cs" />
     <Compile Include="ProcessUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

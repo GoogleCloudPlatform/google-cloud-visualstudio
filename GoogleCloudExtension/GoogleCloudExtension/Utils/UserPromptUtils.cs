@@ -108,15 +108,14 @@ namespace GoogleCloudExtension.Utils
             {
                 var aggExecption = (AggregateException)ex;
                 ErrorPrompt(
-                    string.Format(Resources.ExceptionPromptMessage, "\n") +
-                        string.Join("\n", aggExecption.InnerExceptions.Select(e => e.Message)),
-                    Resources.ExceptionPromptTitle);
+                    title: Resources.ExceptionPromptTitle,
+                    message: String.Format(Resources.ExceptionPromptMessage, ex.InnerException.Message));
             }
             else
             {
                 ErrorPrompt(
-                    string.Format(Resources.ExceptionPromptMessage, ex.Message),
-                    Resources.ExceptionPromptTitle);
+                    title: Resources.ExceptionPromptTitle,
+                    message: String.Format(Resources.ExceptionPromptMessage, ex.Message));
             }
         }
     }

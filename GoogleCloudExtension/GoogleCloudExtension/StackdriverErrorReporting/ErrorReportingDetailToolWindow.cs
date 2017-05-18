@@ -51,5 +51,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             ViewModel = new ErrorReportingDetailViewModel();
             (this.Content as ErrorReportingDetailToolWindowControl).DataContext = ViewModel;
         }
+
+        protected override void OnClose()
+        {
+            base.OnClose();
+            ViewModel?.Dispose();
+        }
     }
 }

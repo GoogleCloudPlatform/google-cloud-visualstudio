@@ -12,22 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Controls;
 
-namespace GoogleCloudExtension.Utils
+namespace GoogleCloudExtension.PickFileDialog
 {
     /// <summary>
-    /// Helper functions for <seealso cref="DateTime"/>.
+    /// Interaction logic for PickFileWindowContent.xaml
     /// </summary>
-    public static class DateTimeUtils
+    public partial class PickFileWindowContent : UserControl
     {
-        /// <summary>
-        /// Return the larger DateTime from two DateTime values.
-        /// </summary>
-        public static DateTime Max(DateTime x, DateTime y) => (x.ToUniversalTime() > y.ToUniversalTime()) ? x : y;
+        public PickFileWindowContent()
+        {
+            InitializeComponent();
+        }
     }
 }

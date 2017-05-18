@@ -46,10 +46,7 @@ namespace GoogleCloudExtension.GCloud
         /// variable until it finds it. With this we assume that in order to run the extension gcloud.cmd is
         /// in the PATH.
         /// </summary>
-        public static string GetGCloudPath() =>
-            Environment.GetEnvironmentVariable("PATH")
-                .Split(';')
-                .FirstOrDefault(x => File.Exists(Path.Combine(x, "gcloud.cmd")));
+        public static string GetGCloudPath() => PathUtils.GetCommandPathFromPATH("gcloud.cmd");
 
         /// <summary>
         /// Resets, or creates, the password for the given <paramref name="userName"/> in the given instance.
@@ -185,6 +182,27 @@ namespace GoogleCloudExtension.GCloud
                 isCloudSdkUpdated: true,
                 isRequiredComponentInstalled: true,
                 cloudSdkVersion: cloudSdkVersion);
+        }
+
+        /// <summary>
+        /// Generates the source context information for the repo stored in <paramref name="sourcePath"/> and stores it
+        /// in <paramref name="outputPath"/>. If the <paramref name="sourcePath"/> does not refer to a supported CVS (currently git) then
+        /// nothing will be done.
+        /// </summary>
+        /// <param name="sourcePath">The directory for which to generate the source contenxt.</param>
+        /// <param name="outputPath">Where to store the source context files.</param>
+        /// <returns>The task to be completed when the operation finishes.</returns>
+        public static async Task GenerateSourceContext(
+            string sourcePath,
+            string outputPath)
+        {
+            var result = await RunCommandAsync(
+                $"debug source gen-repo-info-file --output-directory=\"{outputPath}\" --source-directory=\"{sourcePath}\"",
+                outputAction: x => Debug.WriteLine(x));
+            if (!result)
+            {
+                Debug.WriteLine($"Could not find git repo at {sourcePath}");
+            }
         }
 
         private static async Task<IList<string>> GetInstalledComponentsAsync()
