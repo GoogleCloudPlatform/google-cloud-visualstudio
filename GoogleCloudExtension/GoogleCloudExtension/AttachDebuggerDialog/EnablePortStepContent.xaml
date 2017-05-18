@@ -1,0 +1,51 @@
+﻿<UserControl x:Class="GoogleCloudExtension.AttachDebuggerDialog.EnablePortStepContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.AttachDebuggerDialog"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"                          
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance {x:Type local:EnableDebuggerPortStepViewModel}}"             
+             d:DesignHeight="150" d:DesignWidth="320"
+             Width="320">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <utils:VisibilityConverter x:Key="VisibilityConverter" />
+            <utils:NullEmptyInvisibleConverter x:Key="NullInvisibleConverter" />
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+    
+    <Grid>
+        <TextBlock 
+            Margin="0,6,0,6"
+            Text="{Binding ProgressMessage}"
+            Visibility="{Binding ProgressMessage, Converter={StaticResource NullInvisibleConverter} }" />
+        <StackPanel Visibility="{Binding IsAskingToConfirm, Converter={StaticResource VisibilityConverter}}">
+            <TextBlock                     
+                Margin="0,6,0,6"
+                Text="{Binding PortDisabledMessage}"
+                TextWrapping="Wrap"                
+                />
+            <TextBlock Margin="0,6,0,6">
+                <Hyperlink 
+                    Command="{Binding EnablePortHelpLinkCommand}" 
+                    Style="{StaticResource CommonHyperlinkStyle}">
+                    <TextBlock Text="{x:Static ext:Resources.AttachDebuggerOpenPortHelpLinkCaption}" />
+                </Hyperlink>
+            </TextBlock>
+        </StackPanel>
+        <TextBlock 
+            Margin="0,6,0,6"
+            Text="{x:Static ext:Resources.AttachDebuggerAskToTestConnectivityLaterMessage}"
+            TextWrapping="Wrap"
+            Visibility="{Binding IsAskingToTestConnectivityLater, Converter={StaticResource VisibilityConverter} }" />
+    </Grid>
+</UserControl>
