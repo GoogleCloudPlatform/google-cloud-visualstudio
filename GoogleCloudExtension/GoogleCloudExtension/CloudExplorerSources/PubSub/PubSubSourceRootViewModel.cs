@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.CloudExplorer;
@@ -121,7 +122,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 {
                     Children.Add(new OrphanedSubscriptionsViewModel(this, subscriptions));
                 }
-
             }
             catch (DataSourceException e)
             {

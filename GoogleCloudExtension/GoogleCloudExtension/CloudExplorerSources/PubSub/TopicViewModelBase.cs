@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
@@ -22,7 +23,6 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.CloudExplorerSources.PubSub
 {
-
     /// <summary>
     /// Base class for Topic like view models.
     /// </summary>

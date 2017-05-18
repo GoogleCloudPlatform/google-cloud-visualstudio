@@ -281,7 +281,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 try
                 {
                     var events = await _datasource.Value?.GetPageOfEventsAsync(
-                        GroupItem.ErrorGroup, 
+                        GroupItem.ErrorGroup,
                         SelectedTimeRangeItem.EventTimeRange);
                     if (events?.ErrorEvents != null)
                     {

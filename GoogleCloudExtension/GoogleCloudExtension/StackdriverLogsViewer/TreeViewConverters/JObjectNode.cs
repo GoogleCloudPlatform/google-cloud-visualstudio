@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Newtonsoft.Json.Linq;
-using System.Linq;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -28,8 +27,9 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <param name="name">The name to display for this object.</param>
         /// <param name="jObj">A <seealso cref="JObjectNode"/> object to parse.</param>
         /// <param name="parent">The parent object that owns <paramref name="jObj"/>.</param>
-        public JObjectNode(string name, JObject jObj, ObjectNodeTree parent) 
-            : base(name, jObj, parent) { }
+        public JObjectNode(string name, JObject jObj, ObjectNodeTree parent)
+            : base(name, jObj, parent)
+        { }
 
         /// <summary>
         /// Override the <seealso cref="ObjectNodeTree.ParseObjectTree(object)"/>.

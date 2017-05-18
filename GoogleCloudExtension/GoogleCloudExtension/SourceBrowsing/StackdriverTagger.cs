@@ -184,9 +184,9 @@ namespace GoogleCloudExtension.SourceBrowsing
                 return;
             }
             activeData.TooltipControl.Width = _view.ViewportWidth;
-            this._toolTipProvider.ShowToolTip(
+            _toolTipProvider.ShowToolTip(
                 span.Snapshot.CreateTrackingSpan(span, SpanTrackingMode.EdgeExclusive),
-                activeData.TooltipControl, 
+                activeData.TooltipControl,
                 PopupStyles.PositionClosest);
         }
     }

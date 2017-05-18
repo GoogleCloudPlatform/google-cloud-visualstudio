@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.GitUtils
         private static IEnumerable<string> RepositoryList(string gitKeyPath)
         {
             try
-            { 
+            {
                 using (var key = OpenGitKey(gitKeyPath, "Repositories"))
                 {
                     return key.GetSubKeyNames()

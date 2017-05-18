@@ -95,13 +95,13 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// Child menu item calls parent's bubbling handler when it is clicked.
         /// </summary>
         /// <param name="originalSource">The original menu item that fires the selected event.</param>
-        protected virtual void CommandBubblingHandler(MenuItemViewModel originalSource) 
+        protected virtual void CommandBubblingHandler(MenuItemViewModel originalSource)
             => MenuItemParent?.CommandBubblingHandler(originalSource);
 
         /// <summary>
         /// Inherited classes implement this to perform delay loading of sub menu items. 
         /// </summary>
-        protected virtual Task LoadSubMenu() 
+        protected virtual Task LoadSubMenu()
         {
             return Task.FromResult(0);
         }
