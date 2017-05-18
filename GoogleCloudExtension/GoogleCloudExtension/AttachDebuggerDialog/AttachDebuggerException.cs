@@ -12,18 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Windows.Controls;
+using System;
 
-namespace GoogleCloudExtension.AttachRemoteDebugger
+namespace GoogleCloudExtension.AttachDebuggerDialog
 {
     /// <summary>
-    /// Interaction logic for AttachDebuggerWindowContent.xaml
+    /// Define exception for attach debugger feature 
     /// </summary>
-    public partial class AttachDebuggerWindowContent : UserControl
+    public class AttachDebuggerException: Exception
     {
-        public AttachDebuggerWindowContent()
-        {
-            InitializeComponent();
-        }
+        public AttachDebuggerException(string msg) : base(msg) { }
     }
 }

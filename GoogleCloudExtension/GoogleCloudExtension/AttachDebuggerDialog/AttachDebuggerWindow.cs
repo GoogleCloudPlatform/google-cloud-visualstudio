@@ -20,7 +20,7 @@ using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Theming;
 using System;
 
-namespace GoogleCloudExtension.AttachRemoteDebugger
+namespace GoogleCloudExtension.AttachDebuggerDialog
 {
     /// <summary>
     /// This class implements the window that hosts attaching remote debugger steps.
@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
                                  gceInstance.GetPublicIpAddress(),
                                  gceInstance.Name))
         {
-            ViewModel = new AttachDebuggerWindowViewModel(gceInstance);
+            ViewModel = new AttachDebuggerWindowViewModel(gceInstance, this);
             Content = new AttachDebuggerWindowContent { DataContext = ViewModel };
         }
 

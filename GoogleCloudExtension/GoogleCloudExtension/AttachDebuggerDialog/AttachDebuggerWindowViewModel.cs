@@ -22,7 +22,7 @@ using System.Windows.Controls;
 
 using System.Windows.Threading;
 
-namespace GoogleCloudExtension.AttachRemoteDebugger
+namespace GoogleCloudExtension.AttachDebuggerDialog
 {
     /// <summary>
     /// View model to <seealso cref="AttachDebuggerWindowContent"/> user content.
@@ -30,7 +30,6 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
     /// </summary>
     public class AttachDebuggerWindowViewModel : ViewModelBase
     {
-        private readonly Instance _gceInstance;
         private IAttachDebuggerStep _currentStep;
 
         private ContentControl _content;
@@ -75,12 +74,14 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
             private set { SetValueAndRaise(ref _content, value); }
         }
 
-        public AttachDebuggerWindowViewModel(Instance gceInstance)
+        public AttachDebuggerWindowViewModel(Instance gceInstance, AttachDebuggerWindow dialogWindow)
         {
-            _gceInstance = gceInstance;
             OKCommand = new ProtectedCommand(taskHandler: () => ExceuteAsync(OnOKCommand), canExecuteCommand: false);
             CancelCommand = new ProtectedCommand(taskHandler: () => ExceuteAsync(OnCancelCommand), canExecuteCommand: false);
-            ErrorHandlerUtils.HandleAsyncExceptions(() => GotoStep(null));     // TODO: Add initial step in following PRs
+
+            var context = new AttachDebuggerContext(gceInstance, dialogWindow);
+            var firstStep = EnableDebuggerPortStepViewModel.CreateStep(context);
+            ErrorHandlerUtils.HandleAsyncExceptions(() => ExceuteAsync(() => GotoStep(firstStep)));
         }
 
         private async Task OnOKCommand()
@@ -90,7 +91,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
                 Debug.WriteLine("OnOKCommand, Unexpected error. _currentStep is null.");
                 return;
             }
-            IAttachDebuggerStep nextStep = await _currentStep.OnOKCommand();
+            IAttachDebuggerStep nextStep = await _currentStep.OnOkCommand();
             await GotoStep(nextStep);
         }
 
@@ -126,8 +127,8 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
 
         private void UpdateButtons()
         {
-            CancelCommand.CanExecuteCommand = _currentStep.IsCancelButtonEnabled;
-            OKCommand.CanExecuteCommand = IsReady && _currentStep.IsOKButtonEnabled;
+            CancelCommand.CanExecuteCommand = _currentStep?.IsCancelButtonEnabled == true;
+            OKCommand.CanExecuteCommand = IsReady && _currentStep?.IsOKButtonEnabled == true;
         }
 
         private async Task GotoStep(IAttachDebuggerStep step)

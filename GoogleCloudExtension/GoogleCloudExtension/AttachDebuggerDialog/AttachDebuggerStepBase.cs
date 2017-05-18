@@ -17,7 +17,7 @@ using System;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace GoogleCloudExtension.AttachRemoteDebugger
+namespace GoogleCloudExtension.AttachDebuggerDialog
 {
     /// <summary>
     /// Base class for attaching remote debugger step view models.
@@ -26,6 +26,13 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
     {
         private bool _isCancelButtonEnabled;
         private bool _isOKButtonEnabled;
+
+        protected AttachDebuggerContext Context { get; }
+
+        public AttachDebuggerStepBase(AttachDebuggerContext context)
+        {
+            Context = context;
+        }
 
         #region implement interface IAttachDebuggerStep
         public virtual bool IsCancelButtonEnabled
@@ -49,7 +56,7 @@ namespace GoogleCloudExtension.AttachRemoteDebugger
 
         public abstract Task<IAttachDebuggerStep> OnStart();
 
-        public abstract Task<IAttachDebuggerStep> OnOKCommand();
+        public abstract Task<IAttachDebuggerStep> OnOkCommand();
         #endregion
     }
 }
