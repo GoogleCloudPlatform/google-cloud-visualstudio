@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -237,6 +237,87 @@ namespace GoogleCloudExtension
         public static string AnalyticsPromptTitle {
             get {
                 return ResourceManager.GetString("AnalyticsPromptTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose or create an account.
+        /// </summary>
+        public static string AttachDebuggerAccountSelectionLabel {
+            get {
+                return ResourceManager.GetString("AttachDebuggerAccountSelectionLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adding firewall rule.
+        /// </summary>
+        public static string AttachDebuggerAddingFirewallRuleMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerAddingFirewallRuleMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No valid public IP addres. To enable remote debugging, add a public IP address to the VM..
+        /// </summary>
+        public static string AttachDebuggerAddPublicIpAddressMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerAddPublicIpAddressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Firewall rule may take a few minutes to become effective, click OK to test again..
+        /// </summary>
+        public static string AttachDebuggerAskToTestConnectivityLaterMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerAskToTestConnectivityLaterMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Checking debugger port firewall rule.
+        /// </summary>
+        public static string AttachDebuggerCheckFirewallRuleMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerCheckFirewallRuleMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to See more help.
+        /// </summary>
+        public static string AttachDebuggerOpenPortHelpLinkCaption {
+            get {
+                return ResourceManager.GetString("AttachDebuggerOpenPortHelpLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Google Cloud GCE firewall rule blocks port {0}. Click OK to add GCE firewall rule that allows traffic to the port..
+        /// </summary>
+        public static string AttachDebuggerPortDisabledMessageFormat {
+            get {
+                return ResourceManager.GetString("AttachDebuggerPortDisabledMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test connecting to {0}:{1}.
+        /// </summary>
+        public static string AttachDebuggerTestConnectPortMessageFormat {
+            get {
+                return ResourceManager.GetString("AttachDebuggerTestConnectPortMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attach debugger to {0}: {1}.
+        /// </summary>
+        public static string AttachDebuggerWindowCaptionFormat {
+            get {
+                return ResourceManager.GetString("AttachDebuggerWindowCaptionFormat", resourceCulture);
             }
         }
         
@@ -813,6 +894,15 @@ namespace GoogleCloudExtension
         public static string CloudExplorerGaeVersionUrlDisplayName {
             get {
                 return ResourceManager.GetString("CloudExplorerGaeVersionUrlDisplayName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attach Debugger.
+        /// </summary>
+        public static string CloudExplorerGceAttachDebuggerMenuHeader {
+            get {
+                return ResourceManager.GetString("CloudExplorerGceAttachDebuggerMenuHeader", resourceCulture);
             }
         }
         
@@ -3567,6 +3657,24 @@ namespace GoogleCloudExtension
         public static string PortManagerRdpDescription {
             get {
                 return ResourceManager.GetString("PortManagerRdpDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow Visual Studio remote debugger port.
+        /// </summary>
+        public static string PortManagerRemoteDebuggerDescription {
+            get {
+                return ResourceManager.GetString("PortManagerRemoteDebuggerDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allow traffic to remote PowerShell HTTPs port.
+        /// </summary>
+        public static string PortManagerRemotePowershellDescription {
+            get {
+                return ResourceManager.GetString("PortManagerRemotePowershellDescription", resourceCulture);
             }
         }
         

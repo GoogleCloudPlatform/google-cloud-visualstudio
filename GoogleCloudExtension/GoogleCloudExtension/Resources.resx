@@ -2107,4 +2107,52 @@
     <value>Versions don't match</value>
     <comment>Prompt title when the opened project version differs than the version information of the log entry.</comment>
   </data>
+  <data name="CloudExplorerGceAttachDebuggerMenuHeader" xml:space="preserve">
+    <value>Attach Debugger</value>
+    <comment>Header for the attach remote debugger menu item.</comment>
+  </data>
+  <data name="AttachDebuggerAddPublicIpAddressMessage" xml:space="preserve">
+    <value>No valid public IP addres. To enable remote debugging, add a public IP address to the VM.</value>
+    <comment>Message when the GCE virtual machine does not have valid public IP address.</comment>
+  </data>
+  <data name="AttachDebuggerWindowCaptionFormat" xml:space="preserve">
+    <value>Attach debugger to {0}: {1}</value>
+    <comment>The caption for attach debugger window. {0} is public ip addres, {1} is instance name.</comment>
+  </data>
+  <data name="AttachDebuggerAddingFirewallRuleMessage" xml:space="preserve">
+    <value>Adding firewall rule</value>
+    <comment>The message that indicates adding firewall rule is in progress.</comment>
+  </data>
+  <data name="AttachDebuggerAskToTestConnectivityLaterMessage" xml:space="preserve">
+    <value>Firewall rule may take a few minutes to become effective, click OK to test again.</value>
+    <comment>Ask user to retry testing connectivity if the user just enabled the firewwall rule.</comment>
+  </data>
+  <data name="AttachDebuggerCheckFirewallRuleMessage" xml:space="preserve">
+    <value>Checking debugger port firewall rule</value>
+    <comment>The message that indicates checking firewall rule is in progress.</comment>
+  </data>
+  <data name="AttachDebuggerOpenPortHelpLinkCaption" xml:space="preserve">
+    <value>See more help</value>
+    <comment>Caption to the help link for openning a port. The page will help user to recognize security risk and tell the user how to disable the port.</comment>
+  </data>
+  <data name="AttachDebuggerPortDisabledMessageFormat" xml:space="preserve">
+    <value>Google Cloud GCE firewall rule blocks port {0}. Click OK to add GCE firewall rule that allows traffic to the port.</value>
+    <comment>Message displayed if firewall blocks the port. {0} is the port number.</comment>
+  </data>
+  <data name="AttachDebuggerTestConnectPortMessageFormat" xml:space="preserve">
+    <value>Test connecting to {0}:{1}</value>
+    <comment>The message that indicates the test of connecting to remote port is in progress. {0} is ip address, {1} is port number.</comment>
+  </data>
+  <data name="PortManagerRemoteDebuggerDescription" xml:space="preserve">
+    <value>Allow Visual Studio remote debugger port</value>
+    <comment>Description for the VSRemoteDebugger port.</comment>
+  </data>
+  <data name="PortManagerRemotePowershellDescription" xml:space="preserve">
+    <value>Allow traffic to remote PowerShell HTTPs port</value>
+    <comment>Description for the RemotePowerShellHttps port.</comment>
+  </data>
+  <data name="AttachDebuggerAccountSelectionLabel" xml:space="preserve">
+    <value>Choose or create an account</value>
+    <comment>Message for choosing or creating a user as remote debugger credential.</comment>
+  </data>
 </root>
