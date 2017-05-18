@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PubSubWindows;
@@ -68,7 +69,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             IsLoading = true;
             try
             {
-
                 try
                 {
                     Subscription subscription = NewSubscriptionWindow.PromptUser(TopicItem.FullName);

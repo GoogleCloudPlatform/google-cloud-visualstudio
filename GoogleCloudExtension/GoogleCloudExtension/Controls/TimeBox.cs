@@ -215,7 +215,7 @@ namespace GoogleCloudExtension.Controls
         /// Without doing so, OnTimePartPropertyChanged and OnTimePropertyChanged may call to each other indefinitely. 
         /// </summary>
         private void SetTimeParts(TimeSpan time)
-        { 
+        {
             if (Hour != time.Hours)
             {
                 Hour = time.Hours;
@@ -361,5 +361,4 @@ namespace GoogleCloudExtension.Controls
             return time.TotalDays < 1;
         }
     }
-
 }

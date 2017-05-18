@@ -60,7 +60,6 @@ namespace GoogleCloudExtension.Utils
         {
             return this;
         }
-
     }
 }
 

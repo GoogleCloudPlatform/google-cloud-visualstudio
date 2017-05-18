@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using Microsoft.VisualStudio.Text.Editor;
-using System;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.SourceBrowsing

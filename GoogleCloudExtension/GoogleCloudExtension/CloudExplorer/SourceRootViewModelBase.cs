@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Theming;
-using System;
 using System.Threading.Tasks;
 using System.Windows.Media;
 

@@ -14,8 +14,8 @@
 
 using System;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace GoogleCloudExtension.Controls
@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.Controls
         {
             // Override IsChecked property to add a handler when the state changes.
             ToggleButton.IsCheckedProperty.OverrideMetadata(
-                typeof(AutoReloadButton), 
+                typeof(AutoReloadButton),
                 new FrameworkPropertyMetadata(false, OnIsCheckedChanged));
         }
 
