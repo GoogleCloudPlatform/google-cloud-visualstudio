@@ -278,21 +278,24 @@
 
     <!-- Colors for the focused state. -->
     <SolidColorBrush x:Key="CommonTextBox.Focus.Border" Color="#FFB5CFE7"/>
+    
+    <SolidColorBrush x:Key="Validation.Border.Brush" Color="Red"/>
+    <SolidColorBrush x:Key="Validation.Background.Brush" Color="#FFDDEE"/>
 
     <!-- Validation styles and tempaltes -->
     <Style x:Key="ValidationPanelStyle" TargetType="StackPanel">
         <Setter Property="Orientation" Value="Vertical" />
         <Setter Property="HorizontalAlignment" Value="Left"/>
-        <Setter Property="Background" Value="White"/>
+        <Setter Property="Background" Value="{StaticResource Validation.Background.Brush}"/>
     </Style>
 
-    <Style x:Key="ValidationTextStyle" TargetType="TextBlock" BasedOn="{StaticResource CommonTextStyle}">
-        <Setter Property="Foreground" Value="DarkRed"/>
-    </Style>
+    <Style x:Key="ValidationTextStyle" TargetType="TextBlock" BasedOn="{StaticResource CommonTextStyle}"/>
 
     <Style x:Key="ValidationBorderStyle" TargetType="Border">
-        <Setter Property="BorderBrush" Value="LightGray"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Validation.Border.Brush}"/>
         <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="Background" Value="{StaticResource Validation.Background.Brush}"/>
+        <Setter Property="Padding" Value="4"/>
     </Style>
 
     <Style x:Key="ValidationPopupStyle" TargetType="Popup" BasedOn="{StaticResource CommonPopupStyle}">
@@ -317,7 +320,7 @@
 
     <ControlTemplate x:Key="ValidationErrorAdornerTemplate" TargetType="Control">
         <Canvas>
-            <Border BorderBrush="Red" BorderThickness="1" IsHitTestVisible="False">
+            <Border BorderBrush="{StaticResource Validation.Border.Brush}" BorderThickness="1" IsHitTestVisible="False">
                 <AdornedElementPlaceholder x:Name="Placeholder"/>
             </Border>
             <Popup
@@ -325,7 +328,7 @@
                 PlacementTarget="{Binding}"
                 IsOpen="{Binding IsKeyboardFocusWithin, Mode=OneWay}"
                 Style="{StaticResource ValidationPopupStyle}">
-                
+
                 <ItemsControl
                     ItemsSource="{Binding (Validation.Errors)}"
                     ItemsPanel="{StaticResource ValidationPanelTemplate}"

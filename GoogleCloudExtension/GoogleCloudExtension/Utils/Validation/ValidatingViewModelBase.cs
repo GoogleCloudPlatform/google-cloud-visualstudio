@@ -57,7 +57,6 @@ namespace GoogleCloudExtension.Utils.Validation
             property.ThrowIfNullOrEmpty(nameof(property));
             var validationResults = validations.ToList();
             _pendingResultsMap[property] = validationResults;
-            RaisePropertyChanged(nameof(HasErrors));
             if (validationResults.Any(r => !r.IsValid))
             {
                 await Task.Delay(MillisecondsDelay);
