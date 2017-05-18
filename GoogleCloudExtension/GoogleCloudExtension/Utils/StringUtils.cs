@@ -180,7 +180,7 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="labeledString">A string that is displayed by a WPF Label control.</param>
         /// <returns>A new string that is missing underscores(_) and colons(:).</returns>
-        public static string UnLabel(this string labeledString)
+        public static string Unlabel(this string labeledString)
         {
             return labeledString.Replace("_", "").Replace(":", "");
         }

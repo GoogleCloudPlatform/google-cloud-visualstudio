@@ -28,6 +28,7 @@ namespace GoogleCloudExtension.PubSubWindows
     public class NewSubscriptionViewModel : ValidatingViewModelBase
     {
         private readonly CommonDialogWindowBase _owner;
+        private static readonly string s_unlabeledSubscriptionName = Resources.NewSubscriptionWindowNameLabel.Unlabel();
 
         /// <summary>
         /// The name of the topic the subscription belongs to.
@@ -69,7 +70,7 @@ namespace GoogleCloudExtension.PubSubWindows
             {
                 Subscription.Name = value;
                 RaisePropertyChanged(nameof(SubscriptionName));
-                SetValidationResults(PubSubNameValidationRule.Validate(value));
+                SetValidationResults(PubSubNameValidationRule.Validate(value, s_unlabeledSubscriptionName));
             }
         }
 
@@ -93,6 +94,13 @@ namespace GoogleCloudExtension.PubSubWindows
             _owner = owner;
             Subscription = subscription;
             CreateCommand = new ProtectedCommand(OnCreateCommand);
+            PropertyChanged += (sender, args) =>
+            {
+                if (args.PropertyName == nameof(HasErrors))
+                {
+                    CreateCommand.CanExecuteCommand = !HasErrors;
+                }
+            };
             PushConfig = subscription.PushConfig ?? new PushConfig();
         }
 
@@ -114,7 +122,7 @@ namespace GoogleCloudExtension.PubSubWindows
         /// <returns>True if the data is valid, false if the user was prompted about invalid data.</returns>
         private bool ValidateInput()
         {
-            var results = PubSubNameValidationRule.Validate(Subscription.Name);
+            var results = PubSubNameValidationRule.Validate(Subscription.Name, s_unlabeledSubscriptionName);
             var details = string.Join("\n", results.Select(result => result.Message));
             if (!string.IsNullOrEmpty(details))
             {

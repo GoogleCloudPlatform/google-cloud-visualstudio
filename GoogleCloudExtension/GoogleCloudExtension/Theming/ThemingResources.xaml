@@ -83,7 +83,6 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="*"/>
                                     <RowDefinition Height="auto" />
-                                    <RowDefinition Height="auto" />
                                 </Grid.RowDefinitions>
 
                                 <!-- The actual content displayed in the dialog. -->

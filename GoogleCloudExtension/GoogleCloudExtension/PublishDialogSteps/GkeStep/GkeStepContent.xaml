@@ -18,10 +18,10 @@
 
     <StackPanel>
         <Label Content="{x:Static ext:Resources.GkePublishClusterMessage}"
-               Target="{Binding ElementName=Clusters}"
+               Target="{Binding ElementName=_clusters}"
                Style="{StaticResource CommonLabelStyle}"/>
 
-        <ComboBox x:Name="Clusters"
+        <ComboBox x:Name="_clusters"
                   ItemsSource="{Binding Clusters.Value}"
                   SelectedItem="{Binding SelectedCluster, Mode=OneWayToSource}"
                   DisplayMemberPath="Name"
@@ -49,9 +49,9 @@
         </StackPanel>
 
         <Label Content="{x:Static ext:Resources.GkePublishDeploymentNameMessage}"
-               Target="{Binding ElementName=DeploymentName}"
+               Target="{Binding ElementName=_deploymentName}"
                Style="{StaticResource CommonLabelStyle}" />
-        <TextBox x:Name="DeploymentName"
+        <TextBox x:Name="_deploymentName"
                  Text="{Binding DeploymentName, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                  Margin="0,0,0,15"
                  Style="{StaticResource CommonTextBoxStyle}" />
@@ -70,9 +70,9 @@
             <Label Grid.Row="0"
                    Grid.Column="0"
                    Content="{x:Static ext:Resources.GkePublishDeploymentVersionMessage}"
-                   Target="{Binding ElementName=DeploymentVersion}"
+                   Target="{Binding ElementName=_deploymentVersion}"
                    Style="{StaticResource CommonLabelStyle}" />
-            <TextBox x:Name="DeploymentVersion"
+            <TextBox x:Name="_deploymentVersion"
                      Grid.Row="1"
                      Grid.Column="0"
                      Text="{Binding DeploymentVersion,
@@ -84,10 +84,10 @@
             <Label Grid.Row="0"
                    Grid.Column="1"
                    Content="{x:Static ext:Resources.GkePublishReplicasCaption}"
-                   Target="{Binding ElementName=Replicas}"
+                   Target="{Binding ElementName=_replicas}"
                    Margin="5,0,0,0"
                    Style="{StaticResource CommonLabelStyle}" />
-            <TextBox x:Name="Replicas"
+            <TextBox x:Name="_replicas"
                      Grid.Row="1"
                      Grid.Column="1"
                      Text="{Binding Replicas, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"

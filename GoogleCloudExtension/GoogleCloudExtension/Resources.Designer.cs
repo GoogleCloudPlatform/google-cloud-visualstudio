@@ -4498,16 +4498,25 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can not have more than 255 characters..
+        ///   Looks up a localized string similar to {0} can not be empty..
         /// </summary>
-        public static string Validation255CharactersMessage {
+        public static string ValdiationNotEmptyMessage {
             get {
-                return ResourceManager.GetString("Validation255CharactersMessage", resourceCulture);
+                return ResourceManager.GetString("ValdiationNotEmptyMessage", resourceCulture);
             }
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can not start with &quot;goog&quot;..
+        ///   Looks up a localized string similar to {0} can only contain letters, numbers, and dashes(-)..
+        /// </summary>
+        public static string ValidationAllLetterNumberOrDashMessage {
+            get {
+                return ResourceManager.GetString("ValidationAllLetterNumberOrDashMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} can not start with &quot;goog&quot;..
         /// </summary>
         public static string ValidationDisallowStartGoogMessage {
             get {
@@ -4516,7 +4525,25 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Can only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) and percent signs (%)..
+        ///   Looks up a localized string similar to {0} must be an integer..
+        /// </summary>
+        public static string ValidationIntegerMessage {
+            get {
+                return ResourceManager.GetString("ValidationIntegerMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} must be less than {1} characters long..
+        /// </summary>
+        public static string ValidationNumberCharactersMessage {
+            get {
+                return ResourceManager.GetString("ValidationNumberCharactersMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} can only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) and percent signs (%)..
         /// </summary>
         public static string ValidationPubSubNameCharacterClassMessage {
             get {
@@ -4525,7 +4552,16 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Must start with a letter..
+        ///   Looks up a localized string similar to {0} must start with a letter or number..
+        /// </summary>
+        public static string ValidationStartLetterOrNumberMessage {
+            get {
+                return ResourceManager.GetString("ValidationStartLetterOrNumberMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} must start with a letter..
         /// </summary>
         public static string ValidationStartWithLetterMessage {
             get {
@@ -4534,7 +4570,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Must have at least 3 characters..
+        ///   Looks up a localized string similar to {0} must have at least 3 characters..
         /// </summary>
         public static string ValidationThreeCharactersMessage {
             get {

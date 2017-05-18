@@ -54,22 +54,25 @@ namespace GoogleCloudExtension.Utils
         {
             if (string.IsNullOrEmpty(name))
             {
-                yield return new StringValidationResult($"{fieldName} can not be empty.");
+                yield return new StringValidationResult(string.Format(Resources.ValdiationNotEmptyMessage, fieldName));
                 yield break;
             }
             if (!Regex.IsMatch(name, @"^[a-z\d]"))
             {
-                yield return new StringValidationResult($"{fieldName} must start with a letter or number.");
+                yield return new StringValidationResult(
+                    string.Format(Resources.ValidationStartLetterOrNumberMessage, fieldName));
             }
             if (Regex.IsMatch(name, @"[^a-z\d\-]"))
             {
-                yield return new StringValidationResult($"{fieldName} can only contain letters, numbers, and dashes(-).");
+                yield return new StringValidationResult(
+                    string.Format(Resources.ValidationAllLetterNumberOrDashMessage, fieldName));
             }
 
             if (name.Length > 100)
             {
                 yield return new StringValidationResult(
-                    $"{fieldName} must be less than 100 characters long.");
+                    string.Format(
+                        Resources.ValidationNumberCharactersMessage, fieldName, 100.ToString(Resources.Culture)));
             }
         }
 
@@ -78,7 +81,7 @@ namespace GoogleCloudExtension.Utils
             int unused;
             if (!int.TryParse(value, out unused))
             {
-                yield return new StringValidationResult($"{fieldName} must be an integer.");
+                yield return new StringValidationResult(string.Format(Resources.ValidationIntegerMessage, fieldName));
             }
         }
     }

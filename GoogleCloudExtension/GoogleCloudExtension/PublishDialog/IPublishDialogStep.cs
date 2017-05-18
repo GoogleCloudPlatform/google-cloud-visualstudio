@@ -21,7 +21,7 @@ namespace GoogleCloudExtension.PublishDialog
     /// <summary>
     /// Interface that defines the services offered by a publish dialog step.
     /// </summary>
-    public interface IPublishDialogStep : INotifyDataErrorInfo
+    public interface IPublishDialogStep : INotifyDataErrorInfo, INotifyPropertyChanged
     {
         /// <summary>
         /// Returns whether the step can go to a next step.

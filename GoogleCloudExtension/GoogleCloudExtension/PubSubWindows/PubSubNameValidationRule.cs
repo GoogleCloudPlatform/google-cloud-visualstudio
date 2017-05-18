@@ -14,29 +14,16 @@
 
 using GoogleCloudExtension.Utils.Validation;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Windows.Controls;
 
 namespace GoogleCloudExtension.PubSubWindows
 {
     /// <summary>
     /// A validation rule that checks that a name fits the common google naming rules.
     /// </summary>
-    public class PubSubNameValidationRule : ValidationRule
+    public static class PubSubNameValidationRule
     {
-        /// <summary>
-        /// Override for validation rule. Exists if WPF binding validation becomes usable.
-        /// </summary>
-        /// <param name="value">The name to validate.</param>
-        /// <param name="cultureInfo">Unused.</param>
-        /// <returns></returns>
-        public override ValidationResult Validate(object value, CultureInfo cultureInfo)
-        {
-            return Validate(value).FirstOrDefault() ?? ValidationResult.ValidResult;
-        }
-
         /// <summary>
         /// From the pub sub api documentation,
         /// both subscription names and topic names must follow these rules:
@@ -46,33 +33,39 @@ namespace GoogleCloudExtension.PubSubWindows
         /// It must be between 3 and 255 characters in length.
         /// It must not start with `"goog"`.
         /// </summary>
-        public static IEnumerable<StringValidationResult> Validate(object value)
+        public static IEnumerable<StringValidationResult> Validate(object value, string fieldName)
         {
             string name = value?.ToString();
             if (name == null)
             {
-                yield return new StringValidationResult(Resources.ValidationThreeCharactersMessage);
+                yield return new StringValidationResult(string.Format(Resources.ValdiationNotEmptyMessage, fieldName));
                 yield break;
             }
             if (name.Length < 3)
             {
-                yield return new StringValidationResult(Resources.ValidationThreeCharactersMessage);
+                yield return new StringValidationResult(
+                    string.Format(Resources.ValidationThreeCharactersMessage, fieldName));
             }
             if (name.Length > 255)
             {
-                yield return new StringValidationResult(Resources.Validation255CharactersMessage);
+                yield return new StringValidationResult(
+                    string.Format(
+                        Resources.ValidationNumberCharactersMessage, fieldName, 255.ToString(Resources.Culture)));
             }
             if (!char.IsLetter(name.FirstOrDefault()))
             {
-                yield return new StringValidationResult(Resources.ValidationStartWithLetterMessage);
+                yield return new StringValidationResult(
+                    string.Format(Resources.ValidationStartWithLetterMessage, fieldName));
             }
             if (Regex.IsMatch(name, "[^A-Za-z0-9_\\.~+%\\-]"))
             {
-                yield return new StringValidationResult(Resources.ValidationPubSubNameCharacterClassMessage);
+                yield return new StringValidationResult(
+                    string.Format(Resources.ValidationPubSubNameCharacterClassMessage, fieldName));
             }
             if (name.StartsWith("goog"))
             {
-                yield return new StringValidationResult(Resources.ValidationDisallowStartGoogMessage);
+                yield return new StringValidationResult(
+                    string.Format(Resources.ValidationDisallowStartGoogMessage, fieldName));
             }
         }
     }

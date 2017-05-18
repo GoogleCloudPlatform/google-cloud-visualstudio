@@ -19,9 +19,9 @@ using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.VsVersion;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.VsVersion;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -53,10 +53,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private string _replicas = "3";
 
         private static readonly string s_unlabeldDeploymentName =
-            Resources.GkePublishDeploymentNameMessage.UnLabel();
+            Resources.GkePublishDeploymentNameMessage.Unlabel();
         private static readonly string s_unlabeldDeploymentVersion =
-            Resources.GkePublishDeploymentVersionMessage.UnLabel();
-        private static readonly string s_unlabeledReplicas = Resources.GkePublishReplicasCaption.UnLabel();
+            Resources.GkePublishDeploymentVersionMessage.Unlabel();
+        private static readonly string s_unlabeledReplicas = Resources.GkePublishReplicasCaption.Unlabel();
 
         /// <summary>
         /// The list of clusters that serve as the target for deployment.
@@ -76,7 +76,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             set
             {
                 SetValueAndRaise(ref _selectedCluster, value);
-                CanPublish = value != null && value != s_placeholderCluster;
             }
         }
 
@@ -177,6 +176,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             Clusters = new AsyncPropertyValue<IList<Cluster>>(GetAllClustersAsync());
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand);
             RefreshClustersListCommand = new ProtectedCommand(OnRefreshClustersListCommand);
+            PropertyChanged += (sender, args) =>
+            {
+                CanPublish = SelectedCluster != null && SelectedCluster != s_placeholderCluster && !HasErrors;
+            };
         }
 
         private void OnRefreshClustersListCommand()
