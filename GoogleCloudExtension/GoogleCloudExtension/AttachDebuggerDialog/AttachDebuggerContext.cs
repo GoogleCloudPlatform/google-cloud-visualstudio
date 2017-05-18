@@ -18,11 +18,6 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.FirewallManagement;
 using GoogleCloudExtension.Utils;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Net.Sockets;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 using static GoogleCloudExtension.Utils.ArgumentCheckUtils;
 using static GoogleCloudExtension.VsVersion.VsVersionUtils;
 
@@ -49,6 +44,23 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// </summary>
         public static readonly PortInfo DebuggerPortInfo =
             new PortInfo("VSRemoteDebugger", RemoteDebuggerPort, Resources.PortManagerRemoteDebuggerDescription);
+
+        /// <summary>
+        /// The <seealso cref="AttachDebuggerOptionsPage"/> object that persists user preferences
+        /// for the attach remote debugger feature.
+        /// </summary>
+        public static AttachDebuggerOptionsPage Options { get; } =
+            GoogleCloudExtensionPackage.Instance.AttachDebuggerOptions;
+
+        /// <summary>
+        /// The username chosen for the GCE instance.
+        /// </summary>
+        public string Username { get; set; }
+
+        /// <summary>
+        /// The password chosen for the GCE instance.
+        /// </summary>
+        public string Password { get; set; }
 
         /// <summary>
         /// Gets the <seealso cref="DataSource"/> object.

@@ -16,6 +16,7 @@ using EnvDTE;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.AttachDebuggerDialog;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.GenerateConfigurationCommand;
 using GoogleCloudExtension.ManageAccounts;
@@ -246,6 +247,7 @@ namespace GoogleCloudExtension
         #region User Settings
 
         public AnalyticsOptionsPage AnalyticsSettings => (AnalyticsOptionsPage)GetDialogPage(typeof(AnalyticsOptionsPage));
+        public AttachDebuggerOptionsPage AttachDebuggerOptions => (AttachDebuggerOptionsPage)GetDialogPage(typeof(AttachDebuggerOptionsPage));
 
         #endregion
 
@@ -294,6 +296,7 @@ namespace GoogleCloudExtension
             // Update the stored settings with the current version.
             settings.InstalledVersion = ApplicationVersion;
             settings.SaveSettingsToStorage();
+            AttachDebuggerOptions.DeserializeDefaultUsersList();
         }
     }
 }

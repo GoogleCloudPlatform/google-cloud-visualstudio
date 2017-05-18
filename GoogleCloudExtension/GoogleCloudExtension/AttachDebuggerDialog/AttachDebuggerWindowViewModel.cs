@@ -80,7 +80,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             CancelCommand = new ProtectedCommand(taskHandler: () => ExceuteAsync(OnCancelCommand), canExecuteCommand: false);
 
             var context = new AttachDebuggerContext(gceInstance, dialogWindow);
-            var firstStep = EnableDebuggerPortStepViewModel.CreateStep(context);
+            var firstStep = SetCredentialStepViewModel.CreateStep(context);
             ErrorHandlerUtils.HandleAsyncExceptions(() => ExceuteAsync(() => GotoStep(firstStep)));
         }
 
@@ -119,8 +119,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 case nameof(IAttachDebuggerStep.IsCancelButtonEnabled):
                     CancelCommand.CanExecuteCommand = _currentStep.IsCancelButtonEnabled;
                     break;
-                case nameof(IAttachDebuggerStep.IsOKButtonEnabled):
-                    OKCommand.CanExecuteCommand = IsReady && _currentStep.IsOKButtonEnabled;
+                case nameof(IAttachDebuggerStep.IsOkButtonEnabled):
+                    OKCommand.CanExecuteCommand = IsReady && _currentStep.IsOkButtonEnabled;
                     break;
             }
         }
@@ -128,7 +128,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         private void UpdateButtons()
         {
             CancelCommand.CanExecuteCommand = _currentStep?.IsCancelButtonEnabled == true;
-            OKCommand.CanExecuteCommand = IsReady && _currentStep?.IsOKButtonEnabled == true;
+            OKCommand.CanExecuteCommand = IsReady && _currentStep?.IsOkButtonEnabled == true;
         }
 
         private async Task GotoStep(IAttachDebuggerStep step)

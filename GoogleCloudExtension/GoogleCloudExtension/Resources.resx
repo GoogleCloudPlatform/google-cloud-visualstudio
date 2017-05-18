@@ -2151,4 +2151,8 @@
     <value>Allow traffic to remote PowerShell HTTPs port</value>
     <comment>Description for the RemotePowerShellHttps port.</comment>
   </data>
+  <data name="AttachDebuggerAccountSelectionLabel" xml:space="preserve">
+    <value>Choose or create an account</value>
+    <comment>Message for choosing or creating a user as remote debugger credential.</comment>
+  </data>
 </root>

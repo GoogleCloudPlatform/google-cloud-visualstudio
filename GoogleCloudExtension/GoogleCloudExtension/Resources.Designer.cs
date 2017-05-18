@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -237,6 +237,15 @@ namespace GoogleCloudExtension
         public static string AnalyticsPromptTitle {
             get {
                 return ResourceManager.GetString("AnalyticsPromptTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose or create an account.
+        /// </summary>
+        public static string AttachDebuggerAccountSelectionLabel {
+            get {
+                return ResourceManager.GetString("AttachDebuggerAccountSelectionLabel", resourceCulture);
             }
         }
         

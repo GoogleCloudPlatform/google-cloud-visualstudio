@@ -43,7 +43,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         public virtual ContentControl Content => null;
 
-        public virtual bool IsOKButtonEnabled
+        public virtual bool IsOkButtonEnabled
         {
             get { return _isOKButtonEnabled; }
             protected set { SetValueAndRaise(ref _isOKButtonEnabled, value); }
@@ -51,7 +51,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         public virtual Task<IAttachDebuggerStep> OnCancelCommand()
         {
-            return null;
+            Context.DialogWindow.Close();
+            return Task.FromResult<IAttachDebuggerStep>(null);
         }
 
         public abstract Task<IAttachDebuggerStep> OnStart();
