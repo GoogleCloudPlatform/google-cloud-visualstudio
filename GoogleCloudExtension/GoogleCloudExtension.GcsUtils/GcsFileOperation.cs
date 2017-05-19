@@ -113,7 +113,7 @@ namespace GoogleCloudExtension.GcsUtils
             GcsItem = gcsItem;
         }
 
-        public GcsFileOperation(GcsItemRef gcsItem): this(null, gcsItem)
+        public GcsFileOperation(GcsItemRef gcsItem) : this(null, gcsItem)
         { }
 
         #region IGcsFileOperation implementation.
