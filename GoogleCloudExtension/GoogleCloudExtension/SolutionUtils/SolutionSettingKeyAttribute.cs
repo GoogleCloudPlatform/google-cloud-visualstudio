@@ -20,6 +20,7 @@ namespace GoogleCloudExtension.SolutionUtils
     /// Define attribute that indicates a property is intended to be saved into Visual Studio .suo file.
     /// Refer <seealso cref="SolutionUserOptions"/> class for how it is used.
     /// </summary>
+    [AttributeUsage(validOn: AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
     public class SolutionSettingKeyAttribute : Attribute
     {
         /// <summary>
