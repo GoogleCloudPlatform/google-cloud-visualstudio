@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -77,19 +78,42 @@ namespace GoogleCloudExtension.Utils.Validation
             }
         }
 
+        protected void SetAndRaiseWithValidation<T>(
+            out T storage,
+            T value,
+            IEnumerable<ValidationResult> validations,
+            [CallerMemberName] string propertyName = "")
+        {
+            SetValueAndRaise(out storage, value, propertyName);
+            SetValidationResults(validations, propertyName);
+        }
+
         /// <summary>
         /// Schedules validation results for a given property.
         /// </summary>
         /// <param name="validations">The validation results to set for the property.</param>
         /// <param name="property">The name of the property to set. Defaults to the caller member name.</param>
-        protected async void SetValidationResults(
+        protected void SetValidationResults(
             IEnumerable<ValidationResult> validations,
             [CallerMemberName] string property = "")
         {
             property.ThrowIfNullOrEmpty(nameof(property));
-            var validationResults = validations.ToList();
+            List<ValidationResult> validationResults;
+            if (validations == null)
+            {
+                validationResults = new List<ValidationResult>();
+            }
+            else
+            {
+                validationResults = validations.ToList();
+            }
             _pendingResultsMap[property] = validationResults;
             HasErrorsChangedInternal();
+            ScheduleUpdateErrors(property, validationResults);
+        }
+
+        private async void ScheduleUpdateErrors(string property, List<ValidationResult> validationResults)
+        {
             if (validationResults.Any(r => !r.IsValid))
             {
                 await Task.Delay(MillisecondsDelay);

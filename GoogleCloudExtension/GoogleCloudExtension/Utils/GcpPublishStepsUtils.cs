@@ -72,7 +72,7 @@ namespace GoogleCloudExtension.Utils
             if (name.Length > 100)
             {
                 yield return StringValidationResult.FromResource(
-                    nameof(Resources.ValidationNumberCharactersMessage), fieldName, 100);
+                    nameof(Resources.ValidationMaxCharactersMessage), fieldName, 100);
             }
         }
 

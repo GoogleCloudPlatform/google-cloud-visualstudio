@@ -4545,9 +4545,18 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to {0} must be less than {1} characters long..
         /// </summary>
-        public static string ValidationNumberCharactersMessage {
+        public static string ValidationMaxCharactersMessage {
             get {
-                return ResourceManager.GetString("ValidationNumberCharactersMessage", resourceCulture);
+                return ResourceManager.GetString("ValidationMaxCharactersMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} must have at least {1} characters..
+        /// </summary>
+        public static string ValidationMinCharactersMessage {
+            get {
+                return ResourceManager.GetString("ValidationMinCharactersMessage", resourceCulture);
             }
         }
         
@@ -4575,15 +4584,6 @@ namespace GoogleCloudExtension {
         public static string ValidationStartWithLetterMessage {
             get {
                 return ResourceManager.GetString("ValidationStartWithLetterMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to {0} must have at least 3 characters..
-        /// </summary>
-        public static string ValidationThreeCharactersMessage {
-            get {
-                return ResourceManager.GetString("ValidationThreeCharactersMessage", resourceCulture);
             }
         }
         

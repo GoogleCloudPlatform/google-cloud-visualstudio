@@ -64,6 +64,9 @@ namespace GoogleCloudExtension.PubSubWindows
         /// </summary>
         public Subscription Subscription { get; }
 
+        /// <summary>
+        /// The name of the new subscription.
+        /// </summary>
         public string SubscriptionName
         {
             get { return Subscription.Name; }

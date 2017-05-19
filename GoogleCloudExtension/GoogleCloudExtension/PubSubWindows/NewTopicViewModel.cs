@@ -16,6 +16,7 @@ using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GoogleCloudExtension.PubSubWindows
@@ -42,8 +43,9 @@ namespace GoogleCloudExtension.PubSubWindows
             get { return _topicName; }
             set
             {
-                SetValueAndRaise(ref _topicName, value);
-                SetValidationResults(PubSubNameValidationRule.Validate(value, s_unlabeledTopicName));
+                IEnumerable<StringValidationResult> validations =
+                    PubSubNameValidationRule.Validate(value, s_unlabeledTopicName);
+                SetAndRaiseWithValidation(out _topicName, value, validations);
             }
         }
 

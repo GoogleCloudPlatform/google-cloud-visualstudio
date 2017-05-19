@@ -49,7 +49,7 @@ namespace GoogleCloudExtension.ShowPassword
         public bool ShowCopyFeedback
         {
             get { return _showCopyFeedback; }
-            set { SetValueAndRaise(ref _showCopyFeedback, value); }
+            set { SetValueAndRaise(out _showCopyFeedback, value); }
         }
 
         public ShowPasswordViewModel(ShowPasswordWindow.Options options)

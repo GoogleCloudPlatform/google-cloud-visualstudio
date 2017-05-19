@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
-using System.Linq;
-using System.Reflection;
 using GoogleCloudExtension;
 using GoogleCloudExtension.Utils.Validation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Linq;
+using System.Reflection;
 
 namespace GoogleCloudExtensionUnitTests.Utils.Validation
 {
@@ -55,9 +55,9 @@ namespace GoogleCloudExtensionUnitTests.Utils.Validation
         {
             const string fieldName = "Field name";
             string expectedMessage = String.Format(
-                Resources.Culture, Resources.ValidationNumberCharactersMessage, fieldName, 10);
+                Resources.Culture, Resources.ValidationMaxCharactersMessage, fieldName, 10);
             var result = StringValidationResult.FromResource(
-                nameof(Resources.ValidationNumberCharactersMessage), fieldName, 10);
+                nameof(Resources.ValidationMaxCharactersMessage), fieldName, 10);
 
             Assert.AreEqual(expectedMessage, result.Message);
             Assert.AreEqual(expectedMessage, result.ErrorContent);

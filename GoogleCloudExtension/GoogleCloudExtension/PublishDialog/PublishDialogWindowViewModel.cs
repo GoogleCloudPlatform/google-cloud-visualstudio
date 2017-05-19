@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.PublishDialog
         public FrameworkElement Content
         {
             get { return _content; }
-            set { SetValueAndRaise(ref _content, value); }
+            set { SetValueAndRaise(out _content, value); }
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace GoogleCloudExtension.PublishDialog
         public bool IsReady
         {
             get { return _isReady; }
-            set { SetValueAndRaise(ref _isReady, value); }
+            set { SetValueAndRaise(out _isReady, value); }
         }
 
         /// <summary>
@@ -157,6 +157,11 @@ namespace GoogleCloudExtension.PublishDialog
             NextCommand.CanExecuteCommand = CurrentStep.CanGoNext;
         }
 
+        private void OnErrorsChanged(object sender, DataErrorsChangedEventArgs e)
+        {
+            ErrorsChanged?.Invoke(sender, e);
+        }
+
         #region IPublishDialog
 
         async void IPublishDialog.TrackTask(Task task)
@@ -196,18 +201,20 @@ namespace GoogleCloudExtension.PublishDialog
 
         #endregion
 
+        #region INotifyDataErrorInfo
+
+        /// <inheritdoc />
         IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)
         {
             return CurrentStep.GetErrors(propertyName);
         }
 
+        /// <inheritdoc />
         bool INotifyDataErrorInfo.HasErrors => CurrentStep.HasErrors;
 
+        /// <inheritdoc />
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
-        private void OnErrorsChanged(object sender, DataErrorsChangedEventArgs e)
-        {
-            ErrorsChanged?.Invoke(sender, e);
-        }
+        #endregion
     }
 }

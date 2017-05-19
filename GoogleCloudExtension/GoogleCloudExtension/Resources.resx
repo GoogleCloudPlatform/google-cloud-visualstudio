@@ -1969,19 +1969,19 @@
   </data>
   <data name="ValidationDisallowStartGoogMessage" xml:space="preserve">
     <value>{0} can not start with "goog".</value>
-    <comment>Message displayed by validator disallowing input that starts with "goog".</comment>
+    <comment>Message displayed by a validator disallowing input that starts with "goog". Takes the display name of the field.</comment>
   </data>
   <data name="ValidationPubSubNameCharacterClassMessage" xml:space="preserve">
     <value>{0} can only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) and percent signs (%).</value>
-    <comment>Message displayed by validator limiting characters allowed in pub sub names.</comment>
+    <comment>Message displayed by validator limiting characters allowed in pub sub names. Takes the display name of the field being validated.</comment>
   </data>
   <data name="ValidationStartWithLetterMessage" xml:space="preserve">
     <value>{0} must start with a letter.</value>
-    <comment>Message displayed by validator requiring input to start with a letter.</comment>
+    <comment>{Field} must start with a letter validation message.</comment>
   </data>
-  <data name="ValidationThreeCharactersMessage" xml:space="preserve">
-    <value>{0} must have at least 3 characters.</value>
-    <comment>Message displayed by validator requiring 3 characters.</comment>
+  <data name="ValidationMinCharactersMessage" xml:space="preserve">
+    <value>{0} must have at least {1} characters.</value>
+    <comment>{Field} must have at least {N} characters validation message.</comment>
   </data>
   <data name="NewSubscriptionWindowAckDeadlineLabel" xml:space="preserve">
     <value>_Acknowledgement deadline (seconds):</value>
@@ -2119,7 +2119,7 @@
     <value>{0} must be an integer.</value>
     <comment>{Field} must be an integer validation message.</comment>
   </data>
-  <data name="ValidationNumberCharactersMessage" xml:space="preserve">
+  <data name="ValidationMaxCharactersMessage" xml:space="preserve">
     <value>{0} must be less than {1} characters long.</value>
     <comment>{Field} must be less than {N} characters long validation message.</comment>
   </data>

@@ -45,12 +45,12 @@ namespace GoogleCloudExtension.PubSubWindows
             if (name.Length < 3)
             {
                 yield return StringValidationResult.FromResource(
-                    nameof(Resources.ValidationThreeCharactersMessage), fieldName);
+                    nameof(Resources.ValidationMinCharactersMessage), fieldName, 3);
             }
             if (name.Length > 255)
             {
                 yield return StringValidationResult.FromResource(
-                    nameof(Resources.ValidationNumberCharactersMessage), fieldName, 255);
+                    nameof(Resources.ValidationMaxCharactersMessage), fieldName, 255);
             }
             if (!char.IsLetter(name.FirstOrDefault()))
             {

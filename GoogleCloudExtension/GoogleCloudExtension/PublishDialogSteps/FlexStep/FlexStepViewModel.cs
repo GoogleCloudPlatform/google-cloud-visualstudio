@@ -21,8 +21,10 @@ using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.VsVersion;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 {
@@ -45,9 +47,9 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             get { return _version; }
             set
             {
-                SetValueAndRaise(ref _version, value);
-                SetValidationResults(
-                    GcpPublishStepsUtils.ValidateName(value, Resources.PublishDialogFlexVersionNameCaption.Unlabel()));
+                IEnumerable<ValidationResult> validations =
+                    GcpPublishStepsUtils.ValidateName(value, Resources.PublishDialogFlexVersionNameCaption.Unlabel());
+                SetAndRaiseWithValidation(out _version, value, validations);
             }
         }
 
@@ -57,7 +59,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         public bool Promote
         {
             get { return _promote; }
-            set { SetValueAndRaise(ref _promote, value); }
+            set { SetValueAndRaise(out _promote, value); }
         }
 
         /// <summary>
@@ -66,7 +68,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         public bool OpenWebsite
         {
             get { return _openWebsite; }
-            set { SetValueAndRaise(ref _openWebsite, value); }
+            set { SetValueAndRaise(out _openWebsite, value); }
         }
 
         private FlexStepViewModel(FlexStepContent content)

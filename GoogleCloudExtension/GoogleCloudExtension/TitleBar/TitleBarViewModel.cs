@@ -47,7 +47,7 @@ namespace GoogleCloudExtension.TitleBar
         public bool ShowAccountManagementLink
         {
             get { return _showAccountManagementLink; }
-            set { SetValueAndRaise(ref _showAccountManagementLink, value); }
+            set { SetValueAndRaise(out _showAccountManagementLink, value); }
         }
 
         /// <summary>
