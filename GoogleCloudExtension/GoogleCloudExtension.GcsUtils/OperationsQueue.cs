@@ -86,7 +86,7 @@ namespace GoogleCloudExtension.GcsUtils
         /// </summary>
         /// <param name="operations">The operations to start.</param>
         /// <param name="queueAction">The action to use to start the operaitons.</param>
-        public void QueueOperations(
+        public void EnqueueOperations(
             IEnumerable<GcsFileOperation> operations,
             Action<GcsFileOperation, CancellationToken> queueAction)
         {

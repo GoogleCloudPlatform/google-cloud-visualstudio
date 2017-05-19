@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.GcsUtils
         {
             var uploadOperations = CreateUploadOperations(sources, bucket: bucket, bucketPath: bucketPath);
             var operationsQueue = new OperationsQueue(cancellationToken);
-            operationsQueue.QueueOperations(uploadOperations, _dataSource.StartFileUploadOperation);
+            operationsQueue.EnqueueOperations(uploadOperations, _dataSource.StartFileUploadOperation);
             operationsQueue.StartOperations();
             return operationsQueue;
         }
@@ -107,7 +107,7 @@ namespace GoogleCloudExtension.GcsUtils
             }
 
             var operationsQueue = new OperationsQueue(cancellationToken);
-            operationsQueue.QueueOperations(downloadOperations, _dataSource.StartFileDownloadOperation);
+            operationsQueue.EnqueueOperations(downloadOperations, _dataSource.StartFileDownloadOperation);
             operationsQueue.StartOperations();
             return operationsQueue;
         }
@@ -133,7 +133,7 @@ namespace GoogleCloudExtension.GcsUtils
             }
 
             var operationsQueue = new OperationsQueue(cancellationToken);
-            operationsQueue.QueueOperations(deleteOperations, _dataSource.StartDeleteOperation);
+            operationsQueue.EnqueueOperations(deleteOperations, _dataSource.StartDeleteOperation);
             operationsQueue.StartOperations();
             return operationsQueue;
         }
