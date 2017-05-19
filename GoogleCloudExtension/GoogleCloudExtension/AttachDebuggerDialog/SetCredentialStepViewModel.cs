@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using static GoogleCloudExtension.AttachDebuggerDialog.AttachDebuggerContext;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
 {
@@ -29,7 +28,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     /// </summary>
     public class SetCredentialStepViewModel : AttachDebuggerStepBase
     {
-        private IEnumerable<WindowsInstanceCredentials> _credentials;
+        private List<WindowsInstanceCredentials> _credentials;
         private WindowsInstanceCredentials _selectedCredentials;
         private bool _showSelection;
 
@@ -43,9 +42,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         }
 
         /// <summary>
-        /// The list of credentials available for the selected <seealso cref="Instance"/>.
+        /// The list of credentials available for the selected <seealso cref="Google.Apis.Compute.v1.Data.Instance"/>.
         /// </summary>
-        public IEnumerable<WindowsInstanceCredentials> Credentials
+        public List<WindowsInstanceCredentials> Credentials
         {
             get { return _credentials; }
             private set { SetValueAndRaise(ref _credentials, value); }
@@ -80,14 +79,14 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         #region Implement interface IAttachDebuggerStep
         public override ContentControl Content { get; }
 
-        public override Task<IAttachDebuggerStep> OnStart()
+        public override Task<IAttachDebuggerStep> OnStartAsync()
         {
             IsCancelButtonEnabled = false;
 
-            string user = Options.GetInstanceDefaultUser(Context.GceInstance);
+            string user = AttachDebuggerSettings.Current.GetInstanceDefaultUser(Context.GceInstance);
             if (user != null)
             {
-                Credentials = WindowsCredentialsStore.Default.GetCredentialsForInstance(Context.GceInstance);
+                Credentials = WindowsCredentialsStore.Default.GetCredentialsForInstance(Context.GceInstance).ToList();
                 WindowsInstanceCredentials credential = Credentials.FirstOrDefault(x => x.User == user);
                 if (credential != null)
                 {
@@ -112,7 +111,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             return Task.FromResult<IAttachDebuggerStep>(null);
         }
 
-        public override Task<IAttachDebuggerStep> OnOkCommand()
+        public override Task<IAttachDebuggerStep> OnOkCommandAsync()
         {
             SetDefaultCredential();
             return Task.FromResult(DefaultNextStep);
@@ -134,14 +133,14 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         private void SetDefaultCredential()
         {
-            Options.SetInstanceDefaultUser(Context.GceInstance, SelectedCredentials.User);
+            AttachDebuggerSettings.Current.SetInstanceDefaultUser(Context.GceInstance, SelectedCredentials.User);
             Context.Password = SelectedCredentials.Password;
             Context.Username = SelectedCredentials.User;
         }
 
         private void UpdateCredentials()
         {
-            Credentials = WindowsCredentialsStore.Default.GetCredentialsForInstance(Context.GceInstance);
+            Credentials = WindowsCredentialsStore.Default.GetCredentialsForInstance(Context.GceInstance).ToList();
             SelectedCredentials = Credentials.FirstOrDefault();
         }
     }

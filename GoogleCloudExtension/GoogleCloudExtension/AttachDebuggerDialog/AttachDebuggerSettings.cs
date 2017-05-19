@@ -13,11 +13,11 @@
 // limitations under the License.
 
 using Google.Apis.Compute.v1.Data;
-using Microsoft.VisualStudio.Shell;
+using GoogleCloudExtension.SolutionUtils;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.ComponentModel;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
 {
@@ -29,78 +29,79 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <summary>
         /// The GCE instance zone
         /// </summary>
-        [JsonProperty("zone")]
-        public string Zone { get; set; }
+        [JsonProperty("instanceZone")]
+        public string InstanceZone { get; set; }
 
         /// <summary>
         /// The GCE instance name
         /// </summary>
-        [JsonProperty("name")]
-        public string Name { get; set; }
+        [JsonProperty("instanceName")]
+        public string InstanceName { get; set; }
 
         /// <summary>
         /// The chosen username
         /// </summary>
         [JsonProperty("user")]
-        public string DefaultUser { get; set; }
+        public string User { get; set; }
 
         /// <summary>
-        /// A helper function to compare to <paramref name="gceInstance"/>
+        /// A helper function to check if it matches to <paramref name="gceInstance"/>
         /// </summary>
         /// <param name="gceInstance">The GCE Instance object.</param>
         /// <returns></returns>
-        public bool InstanceEqual(Instance gceInstance) =>
-                Zone == gceInstance.Zone &&
-                Name == gceInstance.Name;            
+        public bool InstanceMatches(Instance gceInstance) =>
+            InstanceZone == gceInstance.Zone && InstanceName == gceInstance.Name;
     }
 
     /// <summary>
     /// Save user preferences for attach remote debugger feature.
     /// </summary>
-    public class AttachDebuggerOptionsPage : DialogPage
+    public class AttachDebuggerSettings
     {
         private const int InstancesDefaultUserMaxLength = 10;
-
+        private static readonly Lazy<AttachDebuggerSettings> s_instance = new Lazy<AttachDebuggerSettings>();
         private List<InstanceDefaultUser> _defaultUsers;
+
+        /// <summary>
+        /// Singleton instance.
+        /// </summary>
+        public static AttachDebuggerSettings Current => s_instance.Value;
 
         /// <summary>
         /// Saves the list of instance default username as string.
         /// List of objects can not be saved into storage. 
         /// Serialize/Deserialize the list of <seealso cref="_defaultUsers"/> into string.
         /// </summary>
-        [Browsable(false)]
-        public string DefaultUsersString { get; set; }
-
-        /// <summary>
-        /// Natvie, Managed, Script etc.
-        /// </summary>
-        public string DefaultDebuggerEngineType { get; set; }
-
-        /// <summary>
-        /// Read the list of default users from store.
-        /// List of objects can not be saved into storage. 
-        /// Serialize/Deserialize the list of <seealso cref="_defaultUsers"/> into string.
-        /// </summary>
-        public List<InstanceDefaultUser> DeserializeDefaultUsersList()
+        [SolutionSettingKey("google_debugger_users")]
+        public string DefaultUsersString
         {
-            if (_defaultUsers == null && DefaultUsersString != null)
+            get { return JsonConvert.SerializeObject(_defaultUsers); }
+            set
             {
                 try
                 {
-                    _defaultUsers = JsonConvert.DeserializeObject<List<InstanceDefaultUser>>(DefaultUsersString);
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        _defaultUsers = JsonConvert.DeserializeObject<List<InstanceDefaultUser>>(value);
+                    }
                 }
                 catch (JsonSerializationException)
                 { }
             }
-            return _defaultUsers;
         }
+
+        /// <summary>
+        /// Visual Studio debugger engine type. Natvie, Managed, Script etc.
+        /// </summary>
+        [SolutionSettingKey("google_debugger_engine_type")]
+        public string DefaultDebuggerEngineType { get; set; }
 
         /// <summary>
         /// Get the default username for a given GCE instance.
         /// </summary>
         /// <param name="gceInstance">The GCE instance object.</param>
         public string GetInstanceDefaultUser(Instance gceInstance) =>
-            _defaultUsers?.FirstOrDefault(x => x.InstanceEqual(gceInstance))?.DefaultUser;
+            _defaultUsers?.FirstOrDefault(x => x.InstanceMatches(gceInstance))?.User;
 
         /// <summary>
         /// Save instance default username.
@@ -113,7 +114,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             {
                 _defaultUsers = new List<InstanceDefaultUser>();
             }
-            _defaultUsers.RemoveAll(x => x.InstanceEqual(gceInstance));
+            _defaultUsers.RemoveAll(x => x.InstanceMatches(gceInstance));
 
             // Limit the list size so that it does not grow indefinitely.
             if (_defaultUsers.Count >= InstancesDefaultUserMaxLength)
@@ -124,24 +125,10 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             _defaultUsers.Add(
                 new InstanceDefaultUser
                 {
-                    Zone = gceInstance.Zone,
-                    Name = gceInstance.Name,
-                    DefaultUser = user
+                    InstanceZone = gceInstance.Zone,
+                    InstanceName = gceInstance.Name,
+                    User = user
                 });
-
-            SaveSettingsToStorage();
-        }
-
-        /// <summary>
-        /// Save settings
-        /// </summary>
-        public override void SaveSettingsToStorage()
-        {
-            if (_defaultUsers != null)
-            {
-                DefaultUsersString = JsonConvert.SerializeObject(_defaultUsers);
-            }
-            base.SaveSettingsToStorage();
         }
     }
 }

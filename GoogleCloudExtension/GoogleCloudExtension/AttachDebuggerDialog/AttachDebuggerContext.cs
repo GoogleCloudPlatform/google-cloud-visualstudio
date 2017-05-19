@@ -46,13 +46,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             new PortInfo("VSRemoteDebugger", RemoteDebuggerPort, Resources.PortManagerRemoteDebuggerDescription);
 
         /// <summary>
-        /// The <seealso cref="AttachDebuggerOptionsPage"/> object that persists user preferences
-        /// for the attach remote debugger feature.
-        /// </summary>
-        public static AttachDebuggerOptionsPage Options { get; } =
-            GoogleCloudExtensionPackage.Instance.AttachDebuggerOptions;
-
-        /// <summary>
         /// The username chosen for the GCE instance.
         /// </summary>
         public string Username { get; set; }

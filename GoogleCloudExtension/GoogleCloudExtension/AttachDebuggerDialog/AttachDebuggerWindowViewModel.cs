@@ -91,7 +91,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 Debug.WriteLine("OnOKCommand, Unexpected error. _currentStep is null.");
                 return;
             }
-            IAttachDebuggerStep nextStep = await _currentStep.OnOkCommand();
+            IAttachDebuggerStep nextStep = await _currentStep.OnOkCommandAsync();
             await GotoStep(nextStep);
         }
 
@@ -102,7 +102,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 Debug.WriteLine("OnCancelCommand, Unexpected error. _currentStep is null.");
                 return;
             }
-            var nextStep = await _currentStep.OnCancelCommand();
+            var nextStep = _currentStep.OnCancelCommand();
             await GotoStep(nextStep);
         }
 
@@ -143,7 +143,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 UpdateButtons();
                 Content = step.Content;
                 step.PropertyChanged += OnStepPropertyChanged;
-                step = await step.OnStart();
+                step = await step.OnStartAsync();
             }
         }
 

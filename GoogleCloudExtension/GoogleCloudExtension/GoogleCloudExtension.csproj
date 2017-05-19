@@ -110,7 +110,7 @@
     <Compile Include="Analytics\Events\UpgradeEvent.cs" />
     <Compile Include="AttachDebuggerDialog\AttachDebuggerContext.cs" />
     <Compile Include="AttachDebuggerDialog\AttachDebuggerException.cs" />
-    <Compile Include="AttachDebuggerDialog\AttachDebuggerOptionsPage.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerSettings.cs" />
     <Compile Include="AttachDebuggerDialog\AttachDebuggerStepBase.cs" />
     <Compile Include="AttachDebuggerDialog\AttachDebuggerWindow.cs" />
     <Compile Include="AttachDebuggerDialog\AttachDebuggerWindowContent.xaml.cs">
@@ -290,8 +290,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Accounts\CurrentAccountProjectSettings.cs" />
+    <Compile Include="SolutionUtils\SolutionUserOptions.cs" />
     <Compile Include="SolutionUtils\ProjectHelper.cs" />
     <Compile Include="SolutionUtils\ProjectSourceFile.cs" />
+    <Compile Include="SolutionUtils\SolutionSettingKeyAttribute.cs" />
     <Compile Include="SolutionUtils\SolutionHelper.cs" />
     <Compile Include="SourceBrowsing\FileNotFoundException.cs" />
     <Compile Include="SourceBrowsing\OpenGitFile.cs" />
