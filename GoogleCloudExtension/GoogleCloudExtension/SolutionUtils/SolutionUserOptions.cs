@@ -28,6 +28,12 @@ namespace GoogleCloudExtension.SolutionUtils
         private object _settingObject;
         private Dictionary<string, PropertyInfo> _properties = new Dictionary<string, PropertyInfo>();
 
+        /// <summary>
+        /// Initializes an instance of <seealso cref="SolutionUserOptions"/> object.
+        /// </summary>
+        /// <param name="settingObjcect">
+        /// An object that contains public instance properties marked by <seealso cref="SolutionSettingKeyAttribute"/>.
+        /// </param>
         public SolutionUserOptions(object settingObjcect)
         {
             _settingObject = settingObjcect;
@@ -63,8 +69,8 @@ namespace GoogleCloudExtension.SolutionUtils
         /// Set option value of the key.
         /// This is called when Visual Studio reads settings from .suo file.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
+        /// <param name="key">The option key.</param>
+        /// <param name="value">The option value.</param>
         public void Set(string key, string value)
         {
             PropertyInfo propertyInfo;
@@ -76,7 +82,7 @@ namespace GoogleCloudExtension.SolutionUtils
 
         private void GetSettingProperties()
         {
-            // This queries string type instance properties (not static etc) with both public Get, Set methods.
+            // This queries for instance properties (not static etc) of string type with both public Get, Set methods.
             var props = _settingObject.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
                 .Where(prop => Attribute.IsDefined(prop, typeof(SolutionSettingKeyAttribute)) &&
                     prop.CanRead && prop.CanWrite &&
