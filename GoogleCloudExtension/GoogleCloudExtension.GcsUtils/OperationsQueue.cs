@@ -45,7 +45,7 @@ namespace GoogleCloudExtension.GcsUtils
             /// <summary>
             /// The action to use to start the operation.
             /// </summary>
-            public Action<GcsFileOperation, CancellationToken> Action { get; set; }
+            public Action<GcsFileOperation, CancellationToken> StartOperationAction { get; set; }
 
             /// <summary>
             /// Helper method that starts the operation.
@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.GcsUtils
             /// <returns>Returns a task that will be completed once the operation completes.</returns>
             public Task StartOperationAsync(CancellationToken cancellationToken)
             {
-                Action(Operation, cancellationToken);
+                StartOperationAction(Operation, cancellationToken);
                 return Operation.AwaitOperationAsync();
             }
         }
@@ -85,15 +85,19 @@ namespace GoogleCloudExtension.GcsUtils
         /// Queue the given list of <paramref name="operations"/> but does not start them yet.
         /// </summary>
         /// <param name="operations">The operations to start.</param>
-        /// <param name="queueAction">The action to use to start the operaitons.</param>
+        /// <param name="startOperationAction">The action to use to start the operaitons.</param>
         public void EnqueueOperations(
             IEnumerable<GcsFileOperation> operations,
-            Action<GcsFileOperation, CancellationToken> queueAction)
+            Action<GcsFileOperation, CancellationToken> startOperationAction)
         {
             _operations.AddRange(operations);
             foreach (var operation in operations)
             {
-                _pendingOperations.Enqueue(new OperationQueueEntry { Action = queueAction, Operation = operation });
+                _pendingOperations.Enqueue(new OperationQueueEntry
+                {
+                    StartOperationAction = startOperationAction,
+                    Operation = operation
+                });
             }
         }
 
