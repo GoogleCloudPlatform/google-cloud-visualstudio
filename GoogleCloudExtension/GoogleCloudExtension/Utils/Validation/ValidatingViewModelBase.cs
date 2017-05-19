@@ -23,32 +23,65 @@ using System.Windows.Controls;
 
 namespace GoogleCloudExtension.Utils.Validation
 {
+    /// <summary>
+    /// This class helps with validation. It provides a default implementation of the INotifyDataErrorInfo.
+    /// </summary>
     public abstract class ValidatingViewModelBase : ViewModelBase, INotifyDataErrorInfo
     {
+        /// <summary>
+        /// The delay between detecting a validation error and displaying it.
+        /// This delay will be reset as the user continues to change the input.
+        /// </summary>
         protected int MillisecondsDelay = 500;
 
+        /// <summary>
+        /// The map of validation errors that continue to exist after the delay.
+        /// </summary>
         private readonly Dictionary<string, IList<ValidationResult>> _validationsMap =
             new Dictionary<string, IList<ValidationResult>>();
 
+        /// <summary>
+        /// The map of validation errors.
+        /// </summary>
         private readonly Dictionary<string, IList<ValidationResult>> _pendingResultsMap =
             new Dictionary<string, IList<ValidationResult>>();
 
+        /// <summary>
+        /// True if any of the pending validations are not valid.
+        /// </summary>
         public bool HasErrors => _pendingResultsMap.Values.SelectMany(results => results).Any(v => !v.IsValid);
 
+        /// <summary>
+        /// Triggered when validations change after the delay.
+        /// </summary>
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
-        public IList<ValidationResult> GetErrors(string propertyName)
+        /// <summary>
+        /// Gets the validation errors for the given property that have passed the delay.
+        /// </summary>
+        /// <param name="propertyName">The name of the property to get the validation errors for.</param>
+        /// <returns>A readonly list of validation error for the property.</returns>
+        public IEnumerable<ValidationResult> GetErrors(string propertyName)
         {
-            if (_validationsMap.ContainsKey(propertyName))
+            if (propertyName == null)
+            {
+                return _validationsMap.Values.SelectMany(r => r);
+            }
+            else if (_validationsMap.ContainsKey(propertyName))
             {
                 return new ReadOnlyCollection<ValidationResult>(_validationsMap[propertyName]);
             }
             else
             {
-                return null;
+                return Enumerable.Empty<ValidationResult>();
             }
         }
 
+        /// <summary>
+        /// Schedules validation results for a given property.
+        /// </summary>
+        /// <param name="validations">The validation results to set for the property.</param>
+        /// <param name="property">The name of the property to set. Defaults to the caller member name.</param>
         protected async void SetValidationResults(
             IEnumerable<ValidationResult> validations,
             [CallerMemberName] string property = "")
@@ -56,7 +89,7 @@ namespace GoogleCloudExtension.Utils.Validation
             property.ThrowIfNullOrEmpty(nameof(property));
             var validationResults = validations.ToList();
             _pendingResultsMap[property] = validationResults;
-            RaisePropertyChanged(nameof(HasErrors));
+            HasErrorsChangedInternal();
             if (validationResults.Any(r => !r.IsValid))
             {
                 await Task.Delay(MillisecondsDelay);
@@ -68,6 +101,18 @@ namespace GoogleCloudExtension.Utils.Validation
             }
         }
 
+        private void HasErrorsChangedInternal()
+        {
+            RaisePropertyChanged(nameof(HasErrors));
+            HasErrorsChanged();
+        }
+
+        /// <summary>
+        /// Callback function for when HasErrors may have changed.
+        /// </summary>
+        protected virtual void HasErrorsChanged() { }
+
+        /// <inheritdoc />
         IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)
         {
             return GetErrors(propertyName);

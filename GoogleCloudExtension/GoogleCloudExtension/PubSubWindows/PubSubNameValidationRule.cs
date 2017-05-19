@@ -38,34 +38,34 @@ namespace GoogleCloudExtension.PubSubWindows
             string name = value?.ToString();
             if (name == null)
             {
-                yield return new StringValidationResult(string.Format(Resources.ValdiationNotEmptyMessage, fieldName));
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValdiationNotEmptyMessage), fieldName);
                 yield break;
             }
             if (name.Length < 3)
             {
-                yield return new StringValidationResult(
-                    string.Format(Resources.ValidationThreeCharactersMessage, fieldName));
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationThreeCharactersMessage), fieldName);
             }
             if (name.Length > 255)
             {
-                yield return new StringValidationResult(
-                    string.Format(
-                        Resources.ValidationNumberCharactersMessage, fieldName, 255.ToString(Resources.Culture)));
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationNumberCharactersMessage), fieldName, 255);
             }
             if (!char.IsLetter(name.FirstOrDefault()))
             {
-                yield return new StringValidationResult(
-                    string.Format(Resources.ValidationStartWithLetterMessage, fieldName));
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationStartWithLetterMessage), fieldName);
             }
             if (Regex.IsMatch(name, "[^A-Za-z0-9_\\.~+%\\-]"))
             {
-                yield return new StringValidationResult(
-                    string.Format(Resources.ValidationPubSubNameCharacterClassMessage, fieldName));
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationPubSubNameCharacterClassMessage), fieldName);
             }
             if (name.StartsWith("goog"))
             {
-                yield return new StringValidationResult(
-                    string.Format(Resources.ValidationDisallowStartGoogMessage, fieldName));
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationDisallowStartGoogMessage), fieldName);
             }
         }
     }

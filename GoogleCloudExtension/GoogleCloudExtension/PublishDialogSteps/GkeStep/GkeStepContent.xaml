@@ -75,10 +75,14 @@
             <TextBox x:Name="_deploymentVersion"
                      Grid.Row="1"
                      Grid.Column="0"
-                     Text="{Binding DeploymentVersion,
-                            UpdateSourceTrigger=PropertyChanged,
-                            ValidatesOnNotifyDataErrors=True}"
-                     Style="{StaticResource CommonTextBoxStyle}" />
+                     Style="{StaticResource CommonTextBoxStyle}">
+                <TextBox.Text>
+                    <Binding
+                        Path="DeploymentVersion"
+                        UpdateSourceTrigger="PropertyChanged"
+                        ValidatesOnNotifyDataErrors="True"/>
+                </TextBox.Text>
+            </TextBox>
 
             <!-- TODO: Use an up/down textbox control. -->
             <Label Grid.Row="0"

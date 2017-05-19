@@ -14,7 +14,6 @@
 
 using GoogleCloudExtension.UserPrompt;
 using System;
-using System.Linq;
 using System.Windows.Media;
 
 namespace GoogleCloudExtension.Utils
@@ -106,7 +105,6 @@ namespace GoogleCloudExtension.Utils
         {
             if (ex is AggregateException)
             {
-                var aggExecption = (AggregateException)ex;
                 ErrorPrompt(
                     title: Resources.ExceptionPromptTitle,
                     message: String.Format(Resources.ExceptionPromptMessage, ex.InnerException.Message));

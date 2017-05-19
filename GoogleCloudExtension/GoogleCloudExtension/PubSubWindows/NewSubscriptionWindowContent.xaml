@@ -81,12 +81,14 @@
                     Style="{StaticResource MyLabel}"/>
                 <TextBox
                     x:Name="SubscriptionName"
-                    Style="{StaticResource MyTextBox}"
-                    Text="{
-                        Binding Path=SubscriptionName,
-                        UpdateSourceTrigger=PropertyChanged,
-                        ValidatesOnNotifyDataErrors=True
-                    }"/>
+                    Style="{StaticResource MyTextBox}">
+                    <TextBox.Text>
+                        <Binding
+                            Path="SubscriptionName"
+                            UpdateSourceTrigger="PropertyChanged"
+                            ValidatesOnNotifyDataErrors="True" />
+                    </TextBox.Text>
+                </TextBox>
             </DockPanel>
             <TextBlock
                 Text="{x:Static ext:Resources.NewSubscriptionWindowDeliveryType}"
@@ -117,12 +119,14 @@
                     Style="{StaticResource MyLabelWithHelp}"/>
                 <TextBox
                     x:Name ="Deadline"
-                    Text="{
-                        Binding Subscription.AckDeadlineSeconds,
-                        TargetNullValue=60,
-                        UpdateSourceTrigger=PropertyChanged
-                    }"
-                    Style="{StaticResource MyTextBox}"/>
+                    Style="{StaticResource MyTextBox}">
+                    <TextBox.Text>
+                        <Binding
+                            Path="Subscription.AckDeadlineSeconds"
+                            TargetNullValue="60"
+                            UpdateSourceTrigger="PropertyChanged" />
+                    </TextBox.Text>
+                </TextBox>
             </DockPanel>
         </StackPanel>
     </theming:CommonDialogWindowBaseContent>

@@ -86,7 +86,7 @@
                                 </Grid.RowDefinitions>
 
                                 <!-- The actual content displayed in the dialog. -->
-                                <ContentPresenter Grid.Row="0" Content="{TemplateBinding Content}" />
+                                <ContentPresenter Content="{TemplateBinding Content}" />
 
                                 <!-- The row of buttons. -->
                                 <Border Grid.Row="1" Style="{StaticResource DialogButtonBar}">

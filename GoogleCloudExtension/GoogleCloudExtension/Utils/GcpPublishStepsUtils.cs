@@ -48,31 +48,31 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         /// <param name="name">The name to check.</param>
         /// <returns>True if the name is valid, false otherwise.</returns>
-        public static bool IsValidName(string name) => !string.IsNullOrEmpty(name) && s_validNamePattern.IsMatch(name);
+        public static bool IsValidName(string name) => !String.IsNullOrEmpty(name) && s_validNamePattern.IsMatch(name);
 
         public static IEnumerable<ValidationResult> ValidateName(string name, string fieldName)
         {
-            if (string.IsNullOrEmpty(name))
+            if (String.IsNullOrEmpty(name))
             {
-                yield return new StringValidationResult(string.Format(Resources.ValdiationNotEmptyMessage, fieldName));
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValdiationNotEmptyMessage), fieldName);
                 yield break;
             }
             if (!Regex.IsMatch(name, @"^[a-z\d]"))
             {
-                yield return new StringValidationResult(
-                    string.Format(Resources.ValidationStartLetterOrNumberMessage, fieldName));
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationStartLetterOrNumberMessage), fieldName);
             }
             if (Regex.IsMatch(name, @"[^a-z\d\-]"))
             {
-                yield return new StringValidationResult(
-                    string.Format(Resources.ValidationAllLetterNumberOrDashMessage, fieldName));
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationAllLetterNumberOrDashMessage), fieldName);
             }
 
             if (name.Length > 100)
             {
-                yield return new StringValidationResult(
-                    string.Format(
-                        Resources.ValidationNumberCharactersMessage, fieldName, 100.ToString(Resources.Culture)));
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationNumberCharactersMessage), fieldName, 100);
             }
         }
 
@@ -81,7 +81,8 @@ namespace GoogleCloudExtension.Utils
             int unused;
             if (!int.TryParse(value, out unused))
             {
-                yield return new StringValidationResult(string.Format(Resources.ValidationIntegerMessage, fieldName));
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.ValidationIntegerMessage), fieldName);
             }
         }
     }

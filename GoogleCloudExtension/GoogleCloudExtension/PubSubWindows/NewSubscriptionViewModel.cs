@@ -17,6 +17,7 @@ using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Utils.Validation;
+using System;
 using System.Linq;
 
 namespace GoogleCloudExtension.PubSubWindows
@@ -94,14 +95,12 @@ namespace GoogleCloudExtension.PubSubWindows
             _owner = owner;
             Subscription = subscription;
             CreateCommand = new ProtectedCommand(OnCreateCommand);
-            PropertyChanged += (sender, args) =>
-            {
-                if (args.PropertyName == nameof(HasErrors))
-                {
-                    CreateCommand.CanExecuteCommand = !HasErrors;
-                }
-            };
             PushConfig = subscription.PushConfig ?? new PushConfig();
+        }
+
+        protected override void HasErrorsChanged()
+        {
+            CreateCommand.CanExecuteCommand = !HasErrors;
         }
 
         /// <summary>
@@ -123,10 +122,10 @@ namespace GoogleCloudExtension.PubSubWindows
         private bool ValidateInput()
         {
             var results = PubSubNameValidationRule.Validate(Subscription.Name, s_unlabeledSubscriptionName);
-            var details = string.Join("\n", results.Select(result => result.Message));
-            if (!string.IsNullOrEmpty(details))
+            var details = String.Join("\n", results.Select(result => result.Message));
+            if (!String.IsNullOrEmpty(details))
             {
-                string message = string.Format(Resources.PubSubNewSubscriptionNameInvalidMessage, Subscription.Name);
+                string message = String.Format(Resources.PubSubNewSubscriptionNameInvalidMessage, Subscription.Name);
                 UserPromptUtils.ErrorPrompt(message, Resources.PubSubNewSubscriptionNameInvalidTitle, details);
                 return false;
             }

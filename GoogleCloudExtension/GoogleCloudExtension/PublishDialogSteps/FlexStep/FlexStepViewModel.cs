@@ -47,8 +47,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             {
                 SetValueAndRaise(ref _version, value);
                 SetValidationResults(
-                    GcpPublishStepsUtils.ValidateName(
-                        _version, Resources.PublishDialogFlexVersionNameCaption.Unlabel()));
+                    GcpPublishStepsUtils.ValidateName(value, Resources.PublishDialogFlexVersionNameCaption.Unlabel()));
             }
         }
 
@@ -73,15 +72,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         private FlexStepViewModel(FlexStepContent content)
         {
             _content = content;
-
             CanPublish = true;
-            PropertyChanged += (sender, args) =>
-            {
-                if (args.PropertyName == nameof(HasErrors))
-                {
-                    CanPublish = !HasErrors;
-                }
-            };
+        }
+
+        protected override void HasErrorsChanged()
+        {
+            CanPublish = !HasErrors;
         }
 
         #region IPublishDialogStep
@@ -130,7 +126,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
                 GcpOutputWindow.Activate();
                 GcpOutputWindow.Clear();
-                GcpOutputWindow.OutputLine(string.Format(Resources.GcePublishStepStartMessage, project.Name));
+                GcpOutputWindow.OutputLine(String.Format(Resources.GcePublishStepStartMessage, project.Name));
 
                 _publishDialog.FinishFlow();
 
@@ -139,7 +135,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 using (StatusbarHelper.Freeze())
                 using (StatusbarHelper.ShowDeployAnimation())
                 using (var progress = StatusbarHelper.ShowProgressBar(Resources.FlexPublishProgressMessage))
-                using (ShellUtils.SetShellUIBusy()) {
+                using (ShellUtils.SetShellUIBusy())
+                {
                     var startDeploymentTime = DateTime.Now;
                     result = await AppEngineFlexDeployment.PublishProjectAsync(
                         project,
@@ -152,11 +149,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
                 if (result != null)
                 {
-                    GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishSuccessMessage, project.Name));
+                    GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishSuccessMessage, project.Name));
                     StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
 
                     var url = result.GetDeploymentUrl();
-                    GcpOutputWindow.OutputLine(string.Format(Resources.PublishUrlMessage, url));
+                    GcpOutputWindow.OutputLine(String.Format(Resources.PublishUrlMessage, url));
                     if (OpenWebsite)
                     {
                         Process.Start(url);
@@ -166,7 +163,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
                 }
                 else
                 {
-                    GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishFailedMessage, project.Name));
+                    GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishFailedMessage, project.Name));
                     StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
 
                     EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Failure));
@@ -174,7 +171,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             }
             catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
             {
-                GcpOutputWindow.OutputLine(string.Format(Resources.FlexPublishFailedMessage, project.Name));
+                GcpOutputWindow.OutputLine(String.Format(Resources.FlexPublishFailedMessage, project.Name));
                 StatusbarHelper.SetText(Resources.PublishFailureStatusMessage);
 
                 EventsReporterWrapper.ReportEvent(GaeDeployedEvent.Create(CommandStatus.Failure));
@@ -183,7 +180,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
 
         private bool ValidateInput()
         {
-            if (string.IsNullOrEmpty(Version))
+            if (String.IsNullOrEmpty(Version))
             {
                 UserPromptUtils.ErrorPrompt(Resources.FlexPublishEmptyVersionMessage, Resources.UiInvalidValueTitle);
                 return false;
@@ -191,7 +188,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             if (!GcpPublishStepsUtils.IsValidName(Version))
             {
                 UserPromptUtils.ErrorPrompt(
-                    string.Format(Resources.FlexPublishInvalidVersionMessage, Version),
+                    String.Format(Resources.FlexPublishInvalidVersionMessage, Version),
                     Resources.UiInvalidValueTitle);
                 return false;
             }

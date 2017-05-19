@@ -196,9 +196,12 @@ namespace GoogleCloudExtension.PublishDialog
 
         #endregion
 
-        public IEnumerable GetErrors(string propertyName) => CurrentStep.GetErrors(propertyName);
+        IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)
+        {
+            return CurrentStep.GetErrors(propertyName);
+        }
 
-        public bool HasErrors => CurrentStep.HasErrors;
+        bool INotifyDataErrorInfo.HasErrors => CurrentStep.HasErrors;
 
         public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 

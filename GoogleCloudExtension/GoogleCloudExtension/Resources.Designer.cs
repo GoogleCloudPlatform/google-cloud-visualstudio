@@ -2356,6 +2356,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The resource {0} was not found..
+        /// </summary>
+        public static string ExceptionResourceNotFoundMessage {
+            get {
+                return ResourceManager.GetString("ExceptionResourceNotFoundMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The version name cannot be empty..
         /// </summary>
         public static string FlexPublishEmptyVersionMessage {
