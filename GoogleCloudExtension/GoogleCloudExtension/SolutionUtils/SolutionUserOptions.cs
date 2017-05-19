@@ -34,6 +34,9 @@ namespace GoogleCloudExtension.SolutionUtils
             GetSettingProperties();
         }
 
+        /// <summary>
+        /// Get all option keys.
+        /// </summary>
         public IEnumerable<string> Keys => _properties.Keys;
 
         /// <summary>
