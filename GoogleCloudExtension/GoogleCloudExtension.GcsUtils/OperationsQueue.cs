@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.GcsUtils
             /// </summary>
             /// <param name="cancellationToken">The cancellation token for the operation.</param>
             /// <returns>Returns a task that will be completed once the operation completes.</returns>
-            public Task StartOperationAsync(CancellationToken cancellationToken)
+            public Task ExecuteOperationAsync(CancellationToken cancellationToken)
             {
                 StartOperationAction(Operation, cancellationToken);
                 return Operation.AwaitOperationAsync();
@@ -142,7 +142,7 @@ namespace GoogleCloudExtension.GcsUtils
                     // Starts the next operation in the queue.
                     Debug.WriteLine("Queueing next operation.");
                     var nextOperation = _pendingOperations.Dequeue();
-                    _operationsInFlight.Add(nextOperation.StartOperationAsync(_cancellationToken));
+                    _operationsInFlight.Add(nextOperation.ExecuteOperationAsync(_cancellationToken));
                 }
                 Debug.WriteLine("Ending operations scheduler.");
             }
