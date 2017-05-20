@@ -24,6 +24,7 @@ namespace GoogleCloudExtension.PowerShellUtils
     /// </summary>
     public class RemoteToolInstaller
     {
+        private const string InstallerPsFilePath = "GoogleCloudExtension.PowerShellUtils.Resources.InstallRemoteTool.ps1";
         private const string CredentialVariablename = "credential";
         private const string RemoteToolSourcePath = "debuggerSourcePath";
 
@@ -55,13 +56,12 @@ namespace GoogleCloudExtension.PowerShellUtils
 
         private void AddInstallCommands(PowerShell powerShell)
         {
-            var setupScript = PsUtils.GetScript("GoogleCloudExtension.RemotePowerShell.Resources.InstallRemoteTool.ps1");
+            var setupScript = PsUtils.GetScript(InstallerPsFilePath);
 
             powerShell.AddVarialbe("credential", _credential);
             powerShell.AddVarialbe("debuggerSourcePath", _debuggerToolLocalPath);
             powerShell.AddScript(@"$sessionOptions = New-PSSessionOption –SkipCACheck –SkipCNCheck –SkipRevocationCheck");
             powerShell.AddScript($@"$session = New-PSSession {_computerName} -UseSSL -Credential $credential -SessionOption $sessionOptions");
-
             powerShell.AddScript(setupScript);
             powerShell.AddScript(@"Remove-PSSession -Session $session");
         }

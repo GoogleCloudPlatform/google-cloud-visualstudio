@@ -62,14 +62,14 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// <param name="cancelToken">
         /// Long execution can be terminated by the cancelToken. 
         /// </param>
-        public Task<bool> ExecuteAsync(
+        public async Task<bool> ExecuteAsync(
             Action<PowerShell> addCommndsCallback,
             CancellationToken cancelToken)
         {
             using (PowerShell powerShell = PowerShell.Create())
             {
                 addCommndsCallback(powerShell);
-                return Task.Run(() => WaitComplete(powerShell, cancelToken));
+                return await Task.Run(() => WaitComplete(powerShell, cancelToken));
             }
         }
 
@@ -124,19 +124,20 @@ namespace GoogleCloudExtension.PowerShellUtils
 
         private bool WaitComplete(PowerShell powerShell, CancellationToken cancelToken)
         {
-            PSDataCollection<PSObject> outputCollection = new PSDataCollection<PSObject>();
-            outputCollection.DataAdded += OnDataAdded;
-            powerShell.Streams.Error.DataAdded += OnErrorAdded;
-
-            var iAsyncResult = powerShell.BeginInvoke<PSObject, PSObject>(input: null, output: outputCollection);
+            var iAsyncResult = powerShell.BeginInvoke();
             int returnid = WaitHandle.WaitAny(new[] { iAsyncResult.AsyncWaitHandle, cancelToken.WaitHandle });
             Debug.WriteLine($"Execution has stopped. The pipeline state: {powerShell.InvocationStateInfo.State}");
             if (cancelToken.IsCancellationRequested || returnid != 0 || !iAsyncResult.IsCompleted)
             {
                 return false;
             }
-            powerShell.EndInvoke(iAsyncResult);
+            var outputCollection = powerShell.EndInvoke(iAsyncResult);
+            PrintOutput(outputCollection);
+            return (powerShell.Streams.Error?.Count).GetValueOrDefault() == 0;
+        }
 
+        private void PrintOutput(PSDataCollection<PSObject> outputCollection)
+        {
             // TODO: Write to Output window
             StringBuilder stringBuilder = new StringBuilder();
             foreach (PSObject psObject in outputCollection)
@@ -144,34 +145,6 @@ namespace GoogleCloudExtension.PowerShellUtils
                 stringBuilder.AppendLine(psObject.ToString());
             }
             Debug.WriteLine(stringBuilder.ToString());
-
-            return (powerShell.Streams.Error?.Count).GetValueOrDefault() == 0;
-        }
-
-        /// <summary>
-        /// Event handler for when data is added to the output stream.
-        /// </summary>
-        /// <param name="sender">PSDataCollection of all output items.</param>
-        /// <param name="e">Contains the index ID of the added collection item 
-        /// and the ID of the PowerShell instance this event belongs to.</param>
-        private static void OnDataAdded(object sender, DataAddedEventArgs e)
-        {
-            // TODO: print data in Output window
-            Debug.WriteLine("Object added to output.");
-        }
-
-        /// <summary>
-        /// Event handler for when Data is added to the Error stream.
-        /// </summary>
-        /// <param name="sender">PSDataCollection of all error output items.</param>
-        /// <param name="e">
-        /// Contains the index ID of the added collection item 
-        /// and the ID of the PowerShell instance this event belongs to.
-        /// </param>
-        private static void OnErrorAdded(object sender, DataAddedEventArgs e)
-        {
-            // TODO: print data in Output window
-            Debug.WriteLine("An error was written to the Error stream!");
         }
     }
 }

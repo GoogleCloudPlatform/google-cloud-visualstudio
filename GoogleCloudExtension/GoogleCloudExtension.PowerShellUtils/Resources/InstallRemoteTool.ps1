@@ -16,8 +16,9 @@ $ErrorActionPreference = "Stop"
 
 #$debuggerSourcePath = "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Remote Debugger\x64\*"
 if (!$debuggerSourcePath) {
-	raise "$debuggerSourcePath is not set"
+	Write-Error "$debuggerSourcePath is not set"
 }
+Write-Output $debuggerSourcePath
 
 Invoke-Command -Session $session -ScriptBlock { $destinationPath = "..\RemoteDebugger" }
 Invoke-Command -Session $session -ScriptBlock { $copyComplete = "copy-msvsmon-complete" }
@@ -27,6 +28,8 @@ Invoke-Command -Session $session -ScriptBlock {if (!(Test-Path $destinationPath)
 Invoke-Command -Session $session -ScriptBlock {cd $destinationPath}
 
 $destinationFullPath = Invoke-Command -Session $session -ScriptBlock { Get-Location } | select Path
+$destinationFullPath = $destinationFullPath.Path
+Write-Output $destinationFullPathWrite-Output $destinationFullPath
 
 function Install()
 {
@@ -49,5 +52,5 @@ if (!(Invoke-Command -Session $session -ScriptBlock { Test-Path $setupComplete }
 }
 
 if (!(Invoke-Command -Session $session -ScriptBlock { Test-Path $setupComplete })) {
-	raise "not installed"
+	Write-Error "not installed"
 }

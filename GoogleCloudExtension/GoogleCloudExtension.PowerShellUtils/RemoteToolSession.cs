@@ -25,6 +25,7 @@ namespace GoogleCloudExtension.PowerShellUtils
     /// </summary>
     public class RemoteToolSession
     {
+        private const string StartPsFilePath = "GoogleCloudExtension.PowerShellUtils.Resources.StartRemoteTool.ps1";
         private readonly RemoteTarget _target;
         private readonly CancellationTokenSource _cancelTokenSource = new CancellationTokenSource();
         private readonly Task _powerShellTask;
@@ -49,7 +50,7 @@ namespace GoogleCloudExtension.PowerShellUtils
             Action<EventHandler> unsubscribe )
         {
             _target = new RemoteTarget(computerName, username, password);
-            string script = PsUtils.GetScript("GoogleCloudExtension.RemotePowerShell.Resources.StartRemoteTool.ps1");
+            string script = PsUtils.GetScript(StartPsFilePath);
             _handler = (se, e) => Stop();
             subscribe(_handler);
             _powerShellTask = Task.Run(() =>

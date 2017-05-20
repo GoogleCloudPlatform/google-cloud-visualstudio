@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.VsVersion.VS14
             // TODO: add x86 support later
             var result = Path.Combine(programFilesPath, @"Microsoft Visual Studio 14.0\Common7\IDE\Remote Debugger\x64\*");
             GcpOutputWindow.OutputDebugLine($"Program Files: {programFilesPath}");
-            GcpOutputWindow.OutputDebugLine($"Debugger remote tools V15 path: {result}");
+            GcpOutputWindow.OutputDebugLine($"Debugger remote tools V14 path: {result}");
             return result;
         }
     }

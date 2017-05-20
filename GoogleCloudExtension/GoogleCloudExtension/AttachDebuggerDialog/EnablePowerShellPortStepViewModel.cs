@@ -50,7 +50,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             SetStage(Stage.CheckingConnectivity);
             if (await Context.RemotePowerShellPort.ConnectivityTest())
             {
-                return null;    // TODO: I'll add install debugger tool step.
+                return InstallStartRemoteToolStepViewModel.CreateStep(Context);
             }
             else
             {
