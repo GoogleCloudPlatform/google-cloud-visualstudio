@@ -172,7 +172,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 return;
             }
 
-            ErrorHandlerUtils.HandleExceptionsAsync(LoadAsync);
+            ErrorHandlerUtils.HandleAsyncExceptions(LoadAsync);
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         {
             _groupStatsCollection.Clear();
             _nextPageToken = null;
-            ErrorHandlerUtils.HandleExceptionsAsync(LoadAsync);
+            ErrorHandlerUtils.HandleAsyncExceptions(LoadAsync);
         }
 
         /// <summary>

@@ -115,7 +115,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 SetValueAndRaise(out _isDropDownOpen, value);
 
                 Debug.WriteLine($"Set IsDropDownOpen {value}");
-                if (_isDropDownOpen)  
+                if (_isDropDownOpen)
                 {
                     UpdateViewData();
                 }
@@ -189,6 +189,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         private DateTime Now
         {
             get { return TimeZoneInfo.ConvertTime(DateTime.UtcNow, _timeZone); }
-        } 
+        }
     }
 }

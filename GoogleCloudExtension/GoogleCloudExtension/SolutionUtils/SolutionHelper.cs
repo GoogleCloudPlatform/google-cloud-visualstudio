@@ -14,17 +14,17 @@
 
 using EnvDTE;
 using EnvDTE80;
+using GoogleCloudExtension.Deployment;
+using GoogleCloudExtension.Projects;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using GoogleCloudExtension.Deployment;
-using GoogleCloudExtension.Projects;
 
 namespace GoogleCloudExtension.SolutionUtils
 {

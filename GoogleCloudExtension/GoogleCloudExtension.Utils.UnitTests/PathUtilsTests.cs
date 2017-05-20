@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using static GoogleCloudExtension.Utils.PathUtils;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using static GoogleCloudExtension.Utils.PathUtils;
 
 namespace GoogleCloudExtension.Utils.UnitTests
 {
