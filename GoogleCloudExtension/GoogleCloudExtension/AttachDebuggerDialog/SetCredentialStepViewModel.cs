@@ -17,6 +17,7 @@ using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.Utils;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -86,6 +87,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             string user = AttachDebuggerSettings.Current.GetInstanceDefaultUser(Context.GceInstance);
             if (user != null)
             {
+                Debug.WriteLine($"Get default user from setting. {user}");
                 Credentials = WindowsCredentialsStore.Default.GetCredentialsForInstance(Context.GceInstance).ToList();
                 WindowsInstanceCredentials credential = Credentials.FirstOrDefault(x => x.User == user);
                 if (credential != null)
@@ -121,7 +123,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <summary>
         /// Create the step that set credential
         /// </summary>
-        public static IAttachDebuggerStep CreateStep(AttachDebuggerContext context)
+        public static SetCredentialStepViewModel CreateStep(AttachDebuggerContext context)
         {
             var content = new SetCredentialStepContent();
             var step = new SetCredentialStepViewModel(content, context);
