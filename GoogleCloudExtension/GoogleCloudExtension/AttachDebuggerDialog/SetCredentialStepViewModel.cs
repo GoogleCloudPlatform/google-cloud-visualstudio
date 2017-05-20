@@ -18,6 +18,7 @@ using GoogleCloudExtension.ManageWindowsCredentials;
 using GoogleCloudExtension.PowerShellUtils;
 using GoogleCloudExtension.Utils;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -57,7 +58,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public WindowsInstanceCredentials SelectedCredentials
         {
             get { return _selectedCredentials; }
-            set{ SetValueAndRaise(ref _selectedCredentials, value); }
+            set { SetValueAndRaise(ref _selectedCredentials, value); }
         }
 
         /// <summary>
@@ -73,7 +74,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             {
                 ManageWindowsCredentialsWindow.PromptUser(context.GceInstance);
                 UpdateCredentials();
-                IsOKButtonEnabled = Credentials.Count() > 0;
+                IsOKButtonEnabled = Credentials.Any();
             });
         }
 
@@ -87,6 +88,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             string user = AttachDebuggerSettings.Current.GetInstanceDefaultUser(Context.GceInstance);
             if (user != null)
             {
+                Debug.WriteLine($"Get default user from setting. {user}");
                 Credentials = WindowsCredentialsStore.Default.GetCredentialsForInstance(Context.GceInstance).ToList();
                 WindowsInstanceCredentials credential = Credentials.FirstOrDefault(x => x.User == user);
                 if (credential != null)
@@ -99,7 +101,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             }
 
             UpdateCredentials();
-            if (Credentials.Count() == 1)
+            if (Credentials.Count == 1)
             {
                 // Pick first user as default.
                 SetDefaultCredential();
@@ -108,7 +110,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
             ShowSelection = true;
             IsCancelButtonEnabled = true;
-            IsOKButtonEnabled = Credentials.Count() > 0;
+            IsOKButtonEnabled = Credentials.Any();
             return Task.FromResult<IAttachDebuggerStep>(null);
         }
 

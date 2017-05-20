@@ -155,19 +155,16 @@ namespace GoogleCloudExtension
         #region Persistence of solution options
 
         private void RegisterSolutionOptions()
-        {            
-            s_userSettings.ForEach((userSettings) =>
+        {
+            foreach (var key in s_userSettings.SelectMany(setting => setting.Keys))
             {
-                foreach (var key in userSettings.Keys)
-                {
-                    AddOptionKey(key);
-                }
-            });
+                AddOptionKey(key);
+            }
         }
 
         protected override void OnLoadOptions(string key, Stream stream)
         {
-            SolutionUserOptions userSettings = s_userSettings.Where(x => x.Contains(key)).FirstOrDefault();
+            SolutionUserOptions userSettings = s_userSettings.FirstOrDefault(x => x.Contains(key));
             if (userSettings != null)
             {
                 userSettings.Set(key, ReadOptionStream(stream));
@@ -180,7 +177,7 @@ namespace GoogleCloudExtension
 
         protected override void OnSaveOptions(string key, Stream stream)
         {
-            SolutionUserOptions userSettings = s_userSettings.Where(x => x.Contains(key)).FirstOrDefault();
+            SolutionUserOptions userSettings = s_userSettings.FirstOrDefault(x => x.Contains(key));
             if (userSettings == null)
             {
                 return;
