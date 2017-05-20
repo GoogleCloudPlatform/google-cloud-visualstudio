@@ -2155,4 +2155,11 @@
     <value>Choose or create an account</value>
     <comment>Message for choosing or creating a user as remote debugger credential.</comment>
   </data>
+  <data name="Attach" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AttachDebuggerInstallSetupProgressMessage" xml:space="preserve">
+    <value>Install debugger remote tools</value>
+    <comment>The message indicates it is installing debugger remote tools.</comment>
+  </data>
 </root>

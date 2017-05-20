@@ -241,6 +241,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Attach {
+            get {
+                return ResourceManager.GetString("Attach", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Choose or create an account.
         /// </summary>
         public static string AttachDebuggerAccountSelectionLabel {
@@ -282,6 +291,15 @@ namespace GoogleCloudExtension {
         public static string AttachDebuggerCheckFirewallRuleMessage {
             get {
                 return ResourceManager.GetString("AttachDebuggerCheckFirewallRuleMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Install debugger remote tools.
+        /// </summary>
+        public static string AttachDebuggerInstallSetupProgressMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerInstallSetupProgressMessage", resourceCulture);
             }
         }
         

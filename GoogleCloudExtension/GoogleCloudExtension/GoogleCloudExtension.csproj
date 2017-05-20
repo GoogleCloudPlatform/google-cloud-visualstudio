@@ -125,6 +125,10 @@
     <Compile Include="AttachDebuggerDialog\EnablePowerShellPortStepViewModel.cs" />
     <Compile Include="AttachDebuggerDialog\AttachDebuggerFirewallPort.cs" />
     <Compile Include="AttachDebuggerDialog\IAttachDebuggerStep.cs" />
+    <Compile Include="AttachDebuggerDialog\InstallStartRemoteToolStepContent.xaml.cs">
+      <DependentUpon>InstallStartRemoteToolStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AttachDebuggerDialog\InstallStartRemoteToolStepViewModel.cs" />
     <Compile Include="AttachDebuggerDialog\SetCredentialStepContent.xaml.cs">
       <DependentUpon>SetCredentialStepContent.xaml</DependentUpon>
     </Compile>
@@ -809,6 +813,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="AttachDebuggerDialog\InstallStartRemoteToolStepContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="AttachDebuggerDialog\SetCredentialStepContent.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -1000,6 +1008,10 @@
     <ProjectReference Include="..\GoogleCloudExtension.OAuth\GoogleCloudExtension.OAuth.csproj">
       <Project>{ad8b672d-7f0a-4c7f-9774-a9458a99a061}</Project>
       <Name>GoogleCloudExtension.OAuth</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GoogleCloudExtension.PowerShell\GoogleCloudExtension.PowerShell.csproj">
+      <Project>{d94a10b2-5adc-4708-ae7b-49b70381ab91}</Project>
+      <Name>GoogleCloudExtension.PowerShell</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.Utils\GoogleCloudExtension.Utils.csproj">
       <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>

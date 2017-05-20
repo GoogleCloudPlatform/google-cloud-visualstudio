@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.GitUti
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.Utils.UnitTests", "GoogleCloudExtension.Utils.UnitTests\GoogleCloudExtension.Utils.UnitTests.csproj", "{8F5877B1-4E7C-4427-A37F-C037A5D08B64}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.PowerShell", "GoogleCloudExtension.PowerShell\GoogleCloudExtension.PowerShell.csproj", "{D94A10B2-5ADC-4708-AE7B-49B70381AB91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -87,6 +89,10 @@ Global
 		{8F5877B1-4E7C-4427-A37F-C037A5D08B64}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F5877B1-4E7C-4427-A37F-C037A5D08B64}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F5877B1-4E7C-4427-A37F-C037A5D08B64}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D94A10B2-5ADC-4708-AE7B-49B70381AB91}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D94A10B2-5ADC-4708-AE7B-49B70381AB91}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D94A10B2-5ADC-4708-AE7B-49B70381AB91}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D94A10B2-5ADC-4708-AE7B-49B70381AB91}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

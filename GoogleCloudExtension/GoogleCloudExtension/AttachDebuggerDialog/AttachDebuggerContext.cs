@@ -18,6 +18,7 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.FirewallManagement;
 using GoogleCloudExtension.Utils;
 using System;
+using System.Security;
 using static GoogleCloudExtension.Utils.ArgumentCheckUtils;
 using static GoogleCloudExtension.VsVersion.VsVersionUtils;
 
@@ -53,7 +54,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <summary>
         /// The password chosen for the GCE instance.
         /// </summary>
-        public string Password { get; set; }
+        public SecureString Password { get; set; }
 
         /// <summary>
         /// Gets the <seealso cref="DataSource"/> object.
