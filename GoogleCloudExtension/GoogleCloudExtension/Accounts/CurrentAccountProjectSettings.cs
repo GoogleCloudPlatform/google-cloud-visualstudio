@@ -21,7 +21,7 @@ namespace GoogleCloudExtension.SolutionUtils
     /// <summary>
     /// This class get/set current account, project from/to solution .suo file.
     /// </summary>
-    public class CurrentAccountProjectSettings 
+    public class CurrentAccountProjectSettings
     {
         private const string CurrentGcpProjectKey = "google_current_gcp_project";
         private const string CurrentGcpAccountKey = "google_current_gcp_credentials";
@@ -34,7 +34,7 @@ namespace GoogleCloudExtension.SolutionUtils
         /// <summary>
         /// The singleton instance.
         /// </summary>
-        public static CurrentAccountProjectSettings Current = s_instance.Value;
+        public static CurrentAccountProjectSettings Current => s_instance.Value;
 
         /// <summary>
         /// Gets/sets current GCP project id

@@ -56,7 +56,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public WindowsInstanceCredentials SelectedCredentials
         {
             get { return _selectedCredentials; }
-            set{ SetValueAndRaise(ref _selectedCredentials, value); }
+            set { SetValueAndRaise(ref _selectedCredentials, value); }
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             {
                 ManageWindowsCredentialsWindow.PromptUser(context.GceInstance);
                 UpdateCredentials();
-                IsOKButtonEnabled = Credentials.Count() > 0;
+                IsOKButtonEnabled = Credentials.Any();
             });
         }
 
@@ -98,7 +98,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             }
 
             UpdateCredentials();
-            if (Credentials.Count() == 1)
+            if (Credentials.Count == 1)
             {
                 // Pick first user as default.
                 SetDefaultCredential();
@@ -107,7 +107,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
             ShowSelection = true;
             IsCancelButtonEnabled = true;
-            IsOKButtonEnabled = Credentials.Count() > 0;
+            IsOKButtonEnabled = Credentials.Any();
             return Task.FromResult<IAttachDebuggerStep>(null);
         }
 

@@ -20,7 +20,7 @@ namespace GoogleCloudExtension.SolutionUtils
     /// Define attribute that indicates a property is intended to be saved into Visual Studio .suo file.
     /// Refer <seealso cref="SolutionUserOptions"/> class for how it is used.
     /// </summary>
-    [AttributeUsage(validOn: AttributeTargets.Property, AllowMultiple = false, Inherited = false)]
+    [AttributeUsage(AttributeTargets.Property)]
     public class SolutionSettingKeyAttribute : Attribute
     {
         /// <summary>
@@ -30,9 +30,9 @@ namespace GoogleCloudExtension.SolutionUtils
         /// </summary>
         public string KeyName { get; }
 
-        public SolutionSettingKeyAttribute(string uniqueKeyName)
+        public SolutionSettingKeyAttribute(string keyName)
         {
-            KeyName = uniqueKeyName;
+            KeyName = keyName;
         }
     }
 }
