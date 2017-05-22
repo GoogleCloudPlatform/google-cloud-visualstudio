@@ -172,7 +172,7 @@ namespace GoogleCloudExtension.GcsUtils
         internal Task AwaitOperationAsync()
         {
             var taskCompletion = new TaskCompletionSource<int>();
-            this.Completed += (o, e) => taskCompletion.SetResult(0);
+            Completed += (o, e) => taskCompletion.SetResult(0);
             return taskCompletion.Task;
         }
     }

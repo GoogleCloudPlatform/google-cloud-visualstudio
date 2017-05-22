@@ -16,6 +16,7 @@ using GoogleCloudExtension.DataSources;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -88,8 +89,9 @@ namespace GoogleCloudExtension.GcsUtils
             IEnumerable<GcsFileOperation> operations,
             Action<GcsFileOperation, CancellationToken> startOperationAction)
         {
-            _operations.AddRange(operations);
-            foreach (var operation in operations)
+            var operationsSnapshot = operations.ToList();
+            _operations.AddRange(operationsSnapshot);
+            foreach (var operation in operationsSnapshot)
             {
                 _pendingOperations.Enqueue(new OperationQueueEntry
                 {
