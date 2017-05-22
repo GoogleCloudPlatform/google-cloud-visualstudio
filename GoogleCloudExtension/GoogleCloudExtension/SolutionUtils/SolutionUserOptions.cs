@@ -82,16 +82,24 @@ namespace GoogleCloudExtension.SolutionUtils
 
         private void GetSettingProperties()
         {
-            // This queries for instance properties (not static etc) of string type with both public Get, Set methods.
+            // This queries for instance properties (not static etc)
+            // that has SolutionSettingKeyAttribute attached to it
             var props = _settingObject.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
-                .Where(prop => Attribute.IsDefined(prop, typeof(SolutionSettingKeyAttribute)) &&
-                    prop.CanRead && prop.CanWrite &&
-                    prop.GetGetMethod(nonPublic: false) != null &&
-                    prop.GetSetMethod(nonPublic: false) != null &&
-                    prop.PropertyType == typeof(string));
+                .Where(prop => Attribute.IsDefined(prop, typeof(SolutionSettingKeyAttribute)));
 
             foreach (PropertyInfo prop in props)
             {
+                if (prop.GetGetMethod(nonPublic: false) == null ||
+                    prop.GetSetMethod(nonPublic: false) == null ||
+                    prop.PropertyType != typeof(string))
+                {
+                    // This exception will shown when developer test/debug the code. Won't be shown to end user.
+                    throw new InvalidCastException(
+                        $@"{prop.Name} is not correctly defined. 
+Currently, only string type is supported for SolutionSettingKey. 
+And you must define both public get and public set on it.");
+                }
+
                 var optionAttribute = prop.GetCustomAttribute<SolutionSettingKeyAttribute>();
                 _properties.Add(optionAttribute.KeyName, prop);
             }
