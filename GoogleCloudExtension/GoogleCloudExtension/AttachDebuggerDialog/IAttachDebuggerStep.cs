@@ -30,7 +30,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// A reference to next step, indicates current step task is complete.
         /// null : Stay on current step, do not transite to next step.
         /// </returns>
-        Task<IAttachDebuggerStep> OnStart();
+        Task<IAttachDebuggerStep> OnStartAsync();
 
         /// <summary>
         /// Responds to OK button click event.
@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <returns>
         /// A reference to next step.
         /// </returns>
-        Task<IAttachDebuggerStep> OnOkCommand();
+        Task<IAttachDebuggerStep> OnOkCommandAsync();
 
         /// <summary>
         /// Responds to Cancel button click event.
@@ -46,7 +46,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <returns>
         /// A reference to next step.
         /// </returns>
-        Task<IAttachDebuggerStep> OnCancelCommand();
+        IAttachDebuggerStep OnCancelCommand();
 
         /// <summary>
         /// Returns the content of the publish step.

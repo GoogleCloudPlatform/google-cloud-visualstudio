@@ -95,7 +95,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         #region Implement interface IAttachDebuggerStep
         public override ContentControl Content { get; }
 
-        public override async Task<IAttachDebuggerStep> OnStart()
+        public override async Task<IAttachDebuggerStep> OnStartAsync()
         {
             SetStage(Stage.CheckingFirewallRule);
             if (await _port.IsPortEnabled())
@@ -109,13 +109,13 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             }
         }
 
-        public override Task<IAttachDebuggerStep> OnCancelCommand()
+        public override IAttachDebuggerStep OnCancelCommand()
         {
             Context.DialogWindow.Close();
-            return Task.FromResult<IAttachDebuggerStep>(null);    // TODO:  return help page as next step.
+            return null;
         }
 
-        public override async Task<IAttachDebuggerStep> OnOkCommand()
+        public override async Task<IAttachDebuggerStep> OnOkCommandAsync()
         {
             SetStage(Stage.AddingFirewallRule);
             if (!_portEnabled)
