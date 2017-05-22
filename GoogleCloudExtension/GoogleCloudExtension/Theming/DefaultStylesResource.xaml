@@ -29,9 +29,4 @@
         <Setter Property="Padding" Value="2"/>
         <Setter Property="VerticalAlignment" Value="Center"/>
     </Style>
-
-    <Style TargetType="controls:LabelWithHelp" BasedOn="{StaticResource {x:Type controls:LabelWithHelp}}">
-        <Setter Property="VerticalContentAlignment" Value="Center"/>
-    </Style>
-    
 </ResourceDictionary>

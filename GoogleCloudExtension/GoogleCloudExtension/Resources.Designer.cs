@@ -1825,7 +1825,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select account....
+        ///   Looks up a localized string similar to Select _account....
         /// </summary>
         public static string CloudExplorerSelectAccountMessage {
             get {

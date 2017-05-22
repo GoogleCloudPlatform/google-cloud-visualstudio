@@ -490,7 +490,7 @@
     <comment>The tooltip for the refresh button.</comment>
   </data>
   <data name="CloudExplorerSelectAccountMessage" xml:space="preserve">
-    <value>Select account...</value>
+    <value>Select _account...</value>
     <comment>General select account message.</comment>
   </data>
   <data name="CloudExplorerSqlBackendTypeDisplayName" xml:space="preserve">

@@ -45,17 +45,12 @@ namespace GoogleCloudExtension.Utils
         /// </summary>
         public string LoggingPrefix { get; set; }
 
-        /// <summary>
-        /// When set to true, hides the element rather than collapsing it.
-        /// </summary>
-        public bool Hide { get; set; } = false;
-
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             if (value is bool)
             {
                 bool isVisible = IsNegated ^ (bool)value;
-                var result = isVisible ? Visibility.Visible : (Hide ? Visibility.Hidden : Visibility.Collapsed);
+                var result = isVisible ? Visibility.Visible : Visibility.Collapsed;
                 if (LoggingEnabled)
                 {
                     Debug.WriteLine($"{nameof(VisibilityConverter)}: {LoggingPrefix} converting {value} to {result}");

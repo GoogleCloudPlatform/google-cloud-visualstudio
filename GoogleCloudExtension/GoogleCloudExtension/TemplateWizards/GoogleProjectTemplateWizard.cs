@@ -36,9 +36,14 @@ namespace GoogleCloudExtension.TemplateWizards
             object[] customParams)
         {
             string projectId = PickProjectIdWindow.PromptUser();
-            //            projectId = CredentialsStore.Default?.CurrentProjectId;
             if (projectId == null)
             {
+                Directory.Delete(replacementsDictionary["$destinationdirectory$"], true);
+                bool isExclusive;
+                if (bool.TryParse(replacementsDictionary["$exclusiveproject$"], out isExclusive) && isExclusive)
+                {
+                    Directory.Delete(replacementsDictionary["$solutiondirectory$"], true);
+                }
                 throw new WizardBackoutException();
             }
             replacementsDictionary.Add("$gcpprojectid$", projectId);

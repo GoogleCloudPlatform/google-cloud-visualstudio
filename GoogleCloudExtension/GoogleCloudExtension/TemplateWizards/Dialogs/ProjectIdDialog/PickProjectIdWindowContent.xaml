@@ -22,7 +22,7 @@
     <UserControl.Style>
         <Binding Source="{StaticResource CommonDialogStyleLarge}" />
     </UserControl.Style>
-    
+
     <theming:CommonDialogWindowBaseContent HasBanner="True">
         <theming:CommonDialogWindowBaseContent.Buttons>
             <theming:DialogButtonInfo
@@ -41,10 +41,13 @@
                 <Button
                     DockPanel.Dock="Right"
                     Command="{Binding ChangeUserCommand}"
-                    Content="{x:Static ext:Resources.CloudExplorerSelectAccountMessage}"/>
+                    Content="{x:Static ext:Resources.CloudExplorerSelectAccountMessage}"
+                    Style="{StaticResource CommonButtonWideStyle}"/>
                 <controls:LabelWithHelp
                     Content="{x:Static ext:Resources.WizardPickProjectIdDescription}"
-                    HelpContent="{x:Static ext:Resources.WizardPickProjectIdHelpText}"/>
+                    HelpContent="{x:Static ext:Resources.WizardPickProjectIdHelpText}"
+                    VerticalAlignment="Center"
+                    VerticalContentAlignment="Center"/>
             </DockPanel>
             <DockPanel DockPanel.Dock="Bottom">
                 <Label
@@ -53,44 +56,41 @@
                     Target="{Binding ElementName=ProjectIdTextBox}"/>
                 <TextBox x:Name="ProjectIdTextBox" Text="{Binding ProjectId, UpdateSourceTrigger=PropertyChanged}"/>
             </DockPanel>
-            <Border BorderThickness="1" BorderBrush="DarkGray">
-                <Grid>
+            <Grid>
+                <Grid.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="BorderBrush" Value="DarkGray"/>
+                        <Setter Property="Margin" Value="5"/>
+                        <Setter Property="Padding" Value="2"/>
+                    </Style>
+                </Grid.Resources>
+                <Border Visibility="{Binding LoadTask.IsPending, Converter={utils:VisibilityConverter}}">
                     <TextBlock
                         Text="{x:Static ext:Resources.WizardPickProjectIdLoadingProjects}"
                         VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        Visibility="{Binding LoadTask.IsPending, Converter={utils:VisibilityConverter}}"/>
-                    <StackPanel
-                        VerticalAlignment="Top"
-                        HorizontalAlignment="Left"
-                        Visibility="{Binding LoadTask.IsError, Converter={utils:VisibilityConverter}}">
-                        
+                        HorizontalAlignment="Center"/>
+                </Border>
+                <Border Visibility="{Binding LoadTask.IsError, Converter={utils:VisibilityConverter}}">
+                    <StackPanel VerticalAlignment="Top" HorizontalAlignment="Left">
                         <TextBlock Text="{x:Static ext:Resources.WizardPickProjectIdLoadProjectsErrorMessage}"/>
                         <Expander Header="{x:Static ext:Resources.MoreInfoTitle}">
                             <TextBlock Text="{Binding LoadTask.ErrorMessage}"/>
                         </Expander>
                     </StackPanel>
-
+                </Border>
+                <Border Visibility="{Binding LoadTask.IsCanceled, Converter={utils:VisibilityConverter}}">
                     <TextBlock
                         Text="{x:Static ext:Resources.WizardPickProjectIdCanceledTask}"
                         VerticalAlignment="Center"
-                        HorizontalAlignment="Center"
-                        Visibility="{Binding LoadTask.IsCanceled, Converter={utils:VisibilityConverter}}"/>
-                    <ScrollViewer
-                        VerticalScrollBarVisibility="Auto"
-                        Visibility="{Binding LoadTask.IsSuccess, Converter={utils:VisibilityConverter Hide=True}}">
-                        
-                        <ListBox SelectedItem="{Binding SelectedProject}" ItemsSource="{Binding Projects}">
-                            <ListBox.Template>
-                                <ControlTemplate>
-                                    <ItemsPresenter/>
-                                </ControlTemplate>
-                            </ListBox.Template>
-                        </ListBox>
-                    </ScrollViewer>
-                </Grid>
-            </Border>
+                        HorizontalAlignment="Center"/>
+                </Border>
+                <ListBox
+                    SelectedItem="{Binding SelectedProject}"
+                    ItemsSource="{Binding Projects}"
+                    ScrollViewer.VerticalScrollBarVisibility="Auto"
+                    Visibility="{Binding LoadTask.IsSuccess, Converter={utils:VisibilityConverter}}"/>
+            </Grid>
         </DockPanel>
     </theming:CommonDialogWindowBaseContent>
 </UserControl>
-
