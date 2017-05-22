@@ -53,12 +53,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private bool _openWebsite = false;
         private string _replicas = "3";
 
-        private static readonly string s_unlabeledDeploymentName =
-            Resources.GkePublishDeploymentNameMessage.Unlabel();
-        private static readonly string s_unlabeledDeploymentVersion =
-            Resources.GkePublishDeploymentVersionMessage.Unlabel();
-        private static readonly string s_unlabeledReplicas = Resources.GkePublishReplicasCaption.Unlabel();
-
         /// <summary>
         /// The list of clusters that serve as the target for deployment.
         /// </summary>
@@ -90,7 +84,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             set
             {
                 IEnumerable<ValidationResult> validations =
-                    GcpPublishStepsUtils.ValidateName(value, s_unlabeledDeploymentName);
+                    GcpPublishStepsUtils.ValidateName(value, Resources.GkePublishDeploymentNameFieldName);
                 SetAndRaiseWithValidation(out _deploymentName, value, validations);
             }
         }
@@ -105,7 +99,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             set
             {
                 IEnumerable<ValidationResult> validations =
-                    GcpPublishStepsUtils.ValidateName(value, s_unlabeledDeploymentVersion);
+                    GcpPublishStepsUtils.ValidateName(value, Resources.GkePublishDeploymentVersionFieldName);
                 SetAndRaiseWithValidation(out _deploymentVersion, value, validations);
             }
         }
@@ -119,7 +113,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             set
             {
                 IEnumerable<ValidationResult> validations =
-                    GcpPublishStepsUtils.ValidateInteger(value, s_unlabeledReplicas);
+                    GcpPublishStepsUtils.ValidateInteger(value, Resources.GkePublishReplicasFieldName);
                 SetAndRaiseWithValidation(out _replicas, value, validations);
             }
         }

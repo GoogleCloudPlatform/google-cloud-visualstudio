@@ -2127,4 +2127,28 @@
     <value>The resource {0} was not found.</value>
     <comment>Message to an argument exception when a resource was not found.</comment>
   </data>
+  <data name="GkePublishDeploymentNameFieldName" xml:space="preserve">
+    <value>Deployment name</value>
+    <comment>Field display name for deployment name textbox. Shoud match GkePublishDeploymentNameMessage.</comment>
+  </data>
+  <data name="GkePublishDeploymentVersionFieldName" xml:space="preserve">
+    <value>Deployment version</value>
+    <comment>Field display name of the depoyment version textbox. Should match GkePublishDeploymentVersionMessage.</comment>
+  </data>
+  <data name="GkePublishReplicasFieldName" xml:space="preserve">
+    <value>Replicas</value>
+    <comment>Field display name of the replicas control. Should match GkePublishReplicasCaption.</comment>
+  </data>
+  <data name="NewSubscriptionWindowNameFieldName" xml:space="preserve">
+    <value>Name</value>
+    <comment>The field display name of the name textbox in the new pub/sub subscription window. Shoud match NewSubscriptionWindowNameLabel.</comment>
+  </data>
+  <data name="NewTopicWindowNameFieldName" xml:space="preserve">
+    <value>Topic name</value>
+    <comment>Field display name for the topic name text box in the new pub/sub topic window. Should match NewTopicWindowNameLabel.</comment>
+  </data>
+  <data name="PublishDialogFlexVersionNameFieldName" xml:space="preserve">
+    <value>Version name</value>
+    <comment>Field display name for the version name textbox. Should match PublishDialogFlexVersionNameCaption.</comment>
+  </data>
 </root>

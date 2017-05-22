@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             set
             {
                 IEnumerable<ValidationResult> validations =
-                    GcpPublishStepsUtils.ValidateName(value, Resources.PublishDialogFlexVersionNameCaption.Unlabel());
+                    GcpPublishStepsUtils.ValidateName(value, Resources.PublishDialogFlexVersionNameFieldName);
                 SetAndRaiseWithValidation(out _version, value, validations);
             }
         }

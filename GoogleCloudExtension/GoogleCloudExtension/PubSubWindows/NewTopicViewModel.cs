@@ -28,7 +28,6 @@ namespace GoogleCloudExtension.PubSubWindows
     {
         private readonly CommonDialogWindowBase _owner;
         private string _topicName;
-        private static readonly string s_unlabeledTopicName = Resources.NewTopicWindowNameLabel.Unlabel();
 
         /// <summary>
         /// The id of the project that will own the new topic.
@@ -44,7 +43,7 @@ namespace GoogleCloudExtension.PubSubWindows
             set
             {
                 IEnumerable<StringValidationResult> validations =
-                    PubSubNameValidationRule.Validate(value, s_unlabeledTopicName);
+                    PubSubNameValidationRule.Validate(value, Resources.NewTopicWindowNameFieldName);
                 SetAndRaiseWithValidation(out _topicName, value, validations);
             }
         }
@@ -89,7 +88,7 @@ namespace GoogleCloudExtension.PubSubWindows
         /// <returns>Returns true if validation succeded, false if the user had to be prompted</returns>
         private bool ValidateInput()
         {
-            var results = PubSubNameValidationRule.Validate(TopicName, s_unlabeledTopicName);
+            var results = PubSubNameValidationRule.Validate(TopicName, Resources.NewTopicWindowNameFieldName);
             var details = String.Join("\n", results.Select(result => result.Message));
             if (!String.IsNullOrEmpty(details))
             {
