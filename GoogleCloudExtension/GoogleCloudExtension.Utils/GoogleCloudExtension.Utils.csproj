@@ -55,7 +55,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArgumentCheckUtils.cs" />
-    <Compile Include="AsyncPropertyValue.cs" />
+    <Compile Include="Async\AsyncProperty.cs" />
+    <Compile Include="Async\AsyncPropertyBase.cs" />
+    <Compile Include="Async\AsyncPropertyUtils.cs" />
     <Compile Include="BindableList.cs" />
     <Compile Include="BooleanConverter.cs" />
     <Compile Include="Disposable.cs" />
@@ -72,6 +74,7 @@
     <None Include="Key.snk" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

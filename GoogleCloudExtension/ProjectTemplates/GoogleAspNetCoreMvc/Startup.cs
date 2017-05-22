@@ -51,8 +51,8 @@ namespace $safeprojectname$
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseGoogleExceptionLogging(projectId,
-                    Configuration["GoogleErrorReporting:ServiceName"],
-                    Configuration["GoogleErrorReporting:Version"]);
+                    Configuration["Google:ErrorReporting:ServiceName"],
+                    Configuration["Google:ErrorReporting:Version"]);
             }
 
             app.UseStaticFiles();
@@ -68,22 +68,17 @@ namespace $safeprojectname$
 
         private string GetProjectId()
         {
-            string projectId = Configuration["ProjectId"];
-            if (projectId == ("YOUR-PROJECT-ID"))
+            var instance = Google.Api.Gax.Platform.Instance();
+            var projectId =
+                instance.GceDetails?.ProjectId ??
+                instance.GaeDetails?.ProjectId ??
+                Configuration["Google:ProjectId"];
+            if (string.IsNullOrEmpty(projectId))
             {
-                throw new Exception("Update appsettings.json and replace YOUR-PROJECT-ID"
-                    + " with your Google Cloud Project ID, and recompile.");
-            }
-            if (projectId == null)
-            {
-                var instance = Google.Api.Gax.Platform.Instance();
-                projectId = instance.GceDetails?.ProjectId ?? instance.GaeDetails?.ProjectId;
-                if (projectId == null)
-                {
-                    throw new Exception("The logging, tracing and error reporting libraries need a project ID. "
-                        + "Update appsettings.json and replace YOUR-PROJECT-ID with your "
-                        + "Google Cloud Project ID, and recompile.");
-                }
+                throw new Exception(
+                    "The logging, tracing and error reporting libraries need a project ID. " +
+                    "Update appsettings.json by setting the ProjectId property with your " +
+                    "Google Cloud Project ID, then recompile.");
             }
             return projectId;
         }

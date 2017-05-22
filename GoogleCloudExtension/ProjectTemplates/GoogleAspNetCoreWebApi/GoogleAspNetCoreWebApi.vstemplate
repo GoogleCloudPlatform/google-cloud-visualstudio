@@ -13,9 +13,10 @@
     <Icon>__TemplateIcon.png</Icon>
     <CreateInPlace>true</CreateInPlace>
     <PromptForSaveOnCreation>true</PromptForSaveOnCreation>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
   </TemplateData>
   <TemplateContent>
-    <Project File="WebApplication3.xproj" ReplaceParameters="true">
+    <Project File="Project.xproj" ReplaceParameters="true">
       <Folder Name="Properties" TargetFolderName="Properties">
         <ProjectItem ReplaceParameters="true" TargetFileName="launchSettings.json">launchSettings.json</ProjectItem>
       </Folder>
@@ -31,4 +32,8 @@
       <ProjectItem ReplaceParameters="true" TargetFileName="web.config">web.config</ProjectItem>
     </Project>
   </TemplateContent>
+  <WizardExtension>
+    <Assembly>GoogleCloudExtension.TemplateWizards, Version=1.0.0.0, Culture=neutral, PublicKeyToken=919919421783e38f</Assembly>
+    <FullClassName>GoogleCloudExtension.TemplateWizards.GoogleProjectTemplateWizard</FullClassName>
+  </WizardExtension>
 </VSTemplate>

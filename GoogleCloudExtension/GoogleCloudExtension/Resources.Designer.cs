@@ -1825,7 +1825,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Select account....
+        ///   Looks up a localized string similar to Select _account....
         /// </summary>
         public static string CloudExplorerSelectAccountMessage {
             get {
@@ -1992,6 +1992,15 @@ namespace GoogleCloudExtension {
         public static string CloudExplorerToolWindowCaptionNoAccount {
             get {
                 return ResourceManager.GetString("CloudExplorerToolWindowCaptionNoAccount", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} ({1}:{2}).
+        /// </summary>
+        public static string DataTemplateGcpProjectFormat {
+            get {
+                return ResourceManager.GetString("DataTemplateGcpProjectFormat", resourceCulture);
             }
         }
         
@@ -3409,6 +3418,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to More Information.
+        /// </summary>
+        public static string MoreInfoTitle {
+            get {
+                return ResourceManager.GetString("MoreInfoTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Download and install the MySQL Installer which will guide you through installing the needed extensions. After they are installed restart Visual Studio..
         /// </summary>
         public static string MySqlInstallerWindowBottomMessage {
@@ -4435,6 +4453,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Skip.
+        /// </summary>
+        public static string UiSkipButtonCaption {
+            get {
+                return ResourceManager.GetString("UiSkipButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Skip file.
         /// </summary>
         public static string UiSkipFileButtonCaption {
@@ -4548,6 +4575,69 @@ namespace GoogleCloudExtension {
         public static string WindowsCredentialsChooserNoCredentialsFoundMessage {
             get {
                 return ResourceManager.GetString("WindowsCredentialsChooserNoCredentialsFoundMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Task Canceled.
+        /// </summary>
+        public static string WizardPickProjectIdCanceledTask {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdCanceledTask", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Input project ID or select an existing project:.
+        /// </summary>
+        public static string WizardPickProjectIdDescription {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This project ID will be added to your configuration files and can be changed later..
+        /// </summary>
+        public static string WizardPickProjectIdHelpText {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdHelpText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Loading Projects....
+        /// </summary>
+        public static string WizardPickProjectIdLoadingProjects {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdLoadingProjects", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error loading Projects.
+        /// </summary>
+        public static string WizardPickProjectIdLoadProjectsErrorMessage {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdLoadProjectsErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Enter project ID:.
+        /// </summary>
+        public static string WizardPickProjectIdTextLabel {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdTextLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select the Google Cloud Platform project that will run this project..
+        /// </summary>
+        public static string WizardPickProjectIdTitle {
+            get {
+                return ResourceManager.GetString("WizardPickProjectIdTitle", resourceCulture);
             }
         }
     }

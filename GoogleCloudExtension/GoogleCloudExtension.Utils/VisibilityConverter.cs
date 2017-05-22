@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.Utils
         public bool LoggingEnabled { get; set; }
 
         /// <summary>
-        /// The prefix string to use for the log messages, useful for finding the entries in the 
+        /// The prefix string to use for the log messages, useful for finding the entries in the
         /// Output window.
         /// </summary>
         public string LoggingPrefix { get; set; }
@@ -49,8 +49,8 @@ namespace GoogleCloudExtension.Utils
         {
             if (value is bool)
             {
-                bool toConvert = IsNegated ^ (bool)value;
-                var result = toConvert ? Visibility.Visible : Visibility.Collapsed;
+                bool isVisible = IsNegated ^ (bool)value;
+                var result = isVisible ? Visibility.Visible : Visibility.Collapsed;
                 if (LoggingEnabled)
                 {
                     Debug.WriteLine($"{nameof(VisibilityConverter)}: {LoggingPrefix} converting {value} to {result}");

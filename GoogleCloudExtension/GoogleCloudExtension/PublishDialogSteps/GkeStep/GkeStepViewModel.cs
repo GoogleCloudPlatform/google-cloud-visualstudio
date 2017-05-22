@@ -19,9 +19,10 @@ using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.GCloud;
-using GoogleCloudExtension.VsVersion;
 using GoogleCloudExtension.PublishDialog;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Async;
+using GoogleCloudExtension.VsVersion;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -42,7 +43,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private readonly GkeStepContent _content;
         private IPublishDialog _publishDialog;
-        private AsyncPropertyValue<IList<Cluster>> _clusters;
+        private AsyncProperty<IList<Cluster>> _clusters;
         private Cluster _selectedCluster;
         private string _deploymentName;
         private string _deploymentVersion;
@@ -55,7 +56,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         /// <summary>
         /// The list of clusters that serve as the target for deployment.
         /// </summary>
-        public AsyncPropertyValue<IList<Cluster>> Clusters
+        public AsyncProperty<IList<Cluster>> Clusters
         {
             get { return _clusters; }
             private set { SetValueAndRaise(ref _clusters, value); }
@@ -156,7 +157,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         {
             _content = content;
 
-            Clusters = new AsyncPropertyValue<IList<Cluster>>(GetAllClustersAsync());
+            Clusters = new AsyncProperty<IList<Cluster>>(GetAllClustersAsync());
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand);
             RefreshClustersListCommand = new ProtectedCommand(OnRefreshClustersListCommand);
         }
@@ -164,7 +165,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         private void OnRefreshClustersListCommand()
         {
             var refreshTask = GetAllClustersAsync();
-            Clusters = new AsyncPropertyValue<IList<Cluster>>(refreshTask);
+            Clusters = new AsyncProperty<IList<Cluster>>(refreshTask);
             _publishDialog.TrackTask(refreshTask);
         }
 

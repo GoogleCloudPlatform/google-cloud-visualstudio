@@ -12,9 +12,10 @@
     <LocationField>Enabled</LocationField>
     <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
     <Icon>__TemplateIcon.png</Icon>
+    <NumberOfParentCategoriesToRollUp>1</NumberOfParentCategoriesToRollUp>
   </TemplateData>
   <TemplateContent>
-    <Project TargetFileName="WebApplication1.csproj" File="WebApplication1.csproj" ReplaceParameters="true">
+    <Project TargetFileName="Project.csproj" File="Project.csproj" ReplaceParameters="true">
       <Folder Name="App_Data" TargetFolderName="App_Data" />
       <Folder Name="App_Start" TargetFolderName="App_Start">
         <ProjectItem ReplaceParameters="true" TargetFileName="BundleConfig.cs">BundleConfig.cs</ProjectItem>
@@ -112,4 +113,8 @@
       <ProjectItem ReplaceParameters="true" TargetFileName="Web.Release.config">Web.Release.config</ProjectItem>
     </Project>
   </TemplateContent>
+  <WizardExtension>
+    <Assembly>GoogleCloudExtension.TemplateWizards, Version=1.0.0.0, Culture=neutral, PublicKeyToken=919919421783e38f</Assembly>
+    <FullClassName>GoogleCloudExtension.TemplateWizards.GoogleProjectTemplateWizard</FullClassName>
+  </WizardExtension>
 </VSTemplate>

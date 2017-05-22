@@ -490,7 +490,7 @@
     <comment>The tooltip for the refresh button.</comment>
   </data>
   <data name="CloudExplorerSelectAccountMessage" xml:space="preserve">
-    <value>Select account...</value>
+    <value>Select _account...</value>
     <comment>General select account message.</comment>
   </data>
   <data name="CloudExplorerSqlBackendTypeDisplayName" xml:space="preserve">
@@ -2106,5 +2106,45 @@
   <data name="SourceVersionUtilsVersionMismatchTitle" xml:space="preserve">
     <value>Versions don't match</value>
     <comment>Prompt title when the opened project version differs than the version information of the log entry.</comment>
+  </data>
+  <data name="UiSkipButtonCaption" xml:space="preserve">
+    <value>_Skip</value>
+    <comment>Caption for a Skip button in a UI.</comment>
+  </data>
+  <data name="WizardPickProjectIdCanceledTask" xml:space="preserve">
+    <value>Task Canceled</value>
+    <comment>Text to diplay if a task was canceled.</comment>
+  </data>
+  <data name="WizardPickProjectIdDescription" xml:space="preserve">
+    <value>Input project ID or select an existing project:</value>
+    <comment>Description text for the PickProjectId window of the project template wizards.</comment>
+  </data>
+  <data name="WizardPickProjectIdHelpText" xml:space="preserve">
+    <value>This project ID will be added to your configuration files and can be changed later.</value>
+    <comment>Help text for the PickProjectId window of the project template wizards.</comment>
+  </data>
+  <data name="WizardPickProjectIdLoadingProjects" xml:space="preserve">
+    <value>Loading Projects...</value>
+    <comment>Text to display while loading projects.</comment>
+  </data>
+  <data name="WizardPickProjectIdTextLabel" xml:space="preserve">
+    <value>_Enter project ID:</value>
+    <comment>Label text for the ProjectId text box of the template wizard PickProjectId window.</comment>
+  </data>
+  <data name="WizardPickProjectIdTitle" xml:space="preserve">
+    <value>Select the Google Cloud Platform project that will run this project.</value>
+    <comment>The title of the PickProjecId window of the template wizards.</comment>
+  </data>
+  <data name="DataTemplateGcpProjectFormat" xml:space="preserve">
+    <value>{0} ({1}:{2})</value>
+    <comment>String Format for the data template for Google.Apis.CloudResourceManager.v1.Project</comment>
+  </data>
+  <data name="MoreInfoTitle" xml:space="preserve">
+    <value>More Information</value>
+    <comment>Title for an expander containing more information.</comment>
+  </data>
+  <data name="WizardPickProjectIdLoadProjectsErrorMessage" xml:space="preserve">
+    <value>Error loading Projects</value>
+    <comment>Message displayed when the PickProjectId window encounters an error while loading projects.</comment>
   </data>
 </root>
