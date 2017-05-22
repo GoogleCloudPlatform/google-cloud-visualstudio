@@ -109,6 +109,7 @@
     <Compile Include="Analytics\Events\UnhandledExceptionEvent.cs" />
     <Compile Include="Analytics\Events\UpgradeEvent.cs" />
     <Compile Include="AttachDebuggerDialog\AttachDebuggerContext.cs" />
+    <Compile Include="AttachDebuggerDialog\AttachDebuggerSettingsStore.cs" />
     <Compile Include="AttachDebuggerDialog\AttachDebuggerException.cs" />
     <Compile Include="AttachDebuggerDialog\AttachDebuggerSettings.cs" />
     <Compile Include="AttachDebuggerDialog\AttachDebuggerStepBase.cs" />
