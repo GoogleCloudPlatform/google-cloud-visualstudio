@@ -15,7 +15,6 @@
 using Google.Apis.Storage.v1.Data;
 using GoogleCloudExtension.GcsUtils;
 using GoogleCloudExtension.Utils;
-using System.Linq;
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
