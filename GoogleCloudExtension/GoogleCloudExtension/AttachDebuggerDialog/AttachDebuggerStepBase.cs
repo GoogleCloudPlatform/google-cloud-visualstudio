@@ -49,14 +49,15 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             protected set { SetValueAndRaise(ref _isOKButtonEnabled, value); }
         }
 
-        public virtual Task<IAttachDebuggerStep> OnCancelCommand()
+        public virtual IAttachDebuggerStep OnCancelCommand()
         {
+            Context.DialogWindow.Close();
             return null;
         }
 
-        public abstract Task<IAttachDebuggerStep> OnStart();
+        public abstract Task<IAttachDebuggerStep> OnStartAsync();
 
-        public abstract Task<IAttachDebuggerStep> OnOkCommand();
+        public abstract Task<IAttachDebuggerStep> OnOkCommandAsync();
         #endregion
     }
 }

@@ -16,10 +16,12 @@ using EnvDTE;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Analytics;
 using GoogleCloudExtension.Analytics.Events;
+using GoogleCloudExtension.AttachDebuggerDialog;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.GenerateConfigurationCommand;
 using GoogleCloudExtension.ManageAccounts;
 using GoogleCloudExtension.PublishDialog;
+using GoogleCloudExtension.SolutionUtils;
 using GoogleCloudExtension.StackdriverErrorReporting;
 using GoogleCloudExtension.StackdriverLogsViewer;
 using GoogleCloudExtension.Utils;
@@ -76,19 +78,16 @@ namespace GoogleCloudExtension
         /// <summary>
         /// Option keys for the extension options.
         /// </summary>
-        private const string CurrentGcpProjectKey = "google_current_gcp_project";
-        private const string CurrentGcpAccountKey = "google_current_gcp_credentials";
         private const string NoneValue = "/none";
 
         // The properties that are stored in the .suo file.
-        private static readonly Dictionary<string, Func<string>> s_propertySources = new Dictionary<string, Func<string>>
+        private static List<SolutionUserOptions> s_userSettings = new List<SolutionUserOptions>()
         {
-            { CurrentGcpProjectKey, () => CredentialsStore.Default.CurrentProjectId },
-            { CurrentGcpAccountKey, () => CredentialsStore.Default.CurrentAccount?.AccountName },
+            new SolutionUserOptions(CurrentAccountProjectSettings.Current),
+            new SolutionUserOptions(AttachDebuggerSettings.Current),
         };
 
         private DTE _dteInstance;
-        private Dictionary<string, string> _properties;
 
         /// <summary>
         /// The application name to use everywhere one is needed. Analytics, data sources, etc...
@@ -118,19 +117,25 @@ namespace GoogleCloudExtension
         public GoogleCloudExtensionPackage()
         {
             // Register all of the properties.
-            foreach (var key in s_propertySources.Keys)
+            RegisterSolutionOptions();
+        }
+
+        #region Persistence of solution options
+
+        private void RegisterSolutionOptions()
+        {
+            foreach (var key in s_userSettings.SelectMany(setting => setting.Keys))
             {
                 AddOptionKey(key);
             }
         }
 
-        #region Persistence of solution options
-
         protected override void OnLoadOptions(string key, Stream stream)
         {
-            if (s_propertySources.Keys.Contains(key))
+            SolutionUserOptions userSettings = s_userSettings.FirstOrDefault(x => x.Contains(key));
+            if (userSettings != null)
             {
-                StoreLoadedProperty(key, stream);
+                userSettings.Set(key, ReadOptionStream(stream));
             }
             else
             {
@@ -140,46 +145,14 @@ namespace GoogleCloudExtension
 
         protected override void OnSaveOptions(string key, Stream stream)
         {
-            Func<string> valueSource;
-            if (!s_propertySources.TryGetValue(key, out valueSource))
+            SolutionUserOptions userSettings = s_userSettings.FirstOrDefault(x => x.Contains(key));
+            if (userSettings == null)
             {
                 return;
             }
 
-            var value = valueSource();
+            var value = userSettings.Read(key);
             WriteOptionStream(stream, value ?? NoneValue);
-        }
-
-        private void StoreLoadedProperty(string key, Stream stream)
-        {
-            if (_properties == null)
-            {
-                _properties = new Dictionary<string, string>();
-            }
-            _properties[key] = ReadOptionStream(stream);
-
-
-            if (_properties.Count == s_propertySources.Count)
-            {
-                // All of the properties have been loaded, commit them.
-                CommitProperties();
-                _properties = null;
-            }
-        }
-
-        private void CommitProperties()
-        {
-            if (_properties[CurrentGcpAccountKey] != null)
-            {
-                Debug.WriteLine("Setting the user and project.");
-                CredentialsStore.Default.ResetCredentials(
-                    accountName: _properties[CurrentGcpAccountKey],
-                    projectId: _properties[CurrentGcpProjectKey]);
-            }
-            else
-            {
-                Debug.WriteLine("No user loaded.");
-            }
         }
 
         private void WriteOptionStream(Stream stream, string value)

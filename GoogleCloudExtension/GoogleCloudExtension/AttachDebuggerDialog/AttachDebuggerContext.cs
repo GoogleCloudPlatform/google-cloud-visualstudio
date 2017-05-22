@@ -16,13 +16,9 @@ using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.FirewallManagement;
+using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Net.Sockets;
-using System.Threading.Tasks;
-using System.Windows.Controls;
 using static GoogleCloudExtension.Utils.ArgumentCheckUtils;
 using static GoogleCloudExtension.VsVersion.VsVersionUtils;
 
@@ -49,6 +45,11 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// </summary>
         public static readonly PortInfo DebuggerPortInfo =
             new PortInfo("VSRemoteDebugger", RemoteDebuggerPort, Resources.PortManagerRemoteDebuggerDescription);
+
+        /// <summary>
+        /// The credential to use for attaching debugger, creating remote PowerShell session.
+        /// </summary>
+        public WindowsInstanceCredentials Credential { get; set; }
 
         /// <summary>
         /// Gets the <seealso cref="DataSource"/> object.
