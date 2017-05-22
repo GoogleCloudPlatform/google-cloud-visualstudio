@@ -93,7 +93,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 WindowsInstanceCredentials credential = Credentials.FirstOrDefault(x => x.User == user);
                 if (credential != null)
                 {
-                    Context.Password = PsUtils.ConvertToSecureString(credential.Password);
+                    Context.Password = StringUtils.ConvertToSecureString(credential.Password);
                     Context.Username = credential.User;
 
                     return Task.FromResult(DefaultNextStep);
@@ -137,7 +137,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         private void SetDefaultCredential()
         {
             AttachDebuggerSettings.Current.SetInstanceDefaultUser(Context.GceInstance, SelectedCredentials.User);
-            Context.Password = PsUtils.ConvertToSecureString(SelectedCredentials.Password);
+            Context.Password = StringUtils.ConvertToSecureString(SelectedCredentials.Password);
             Context.Username = SelectedCredentials.User;
         }
 

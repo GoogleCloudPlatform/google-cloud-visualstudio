@@ -286,11 +286,47 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Attaching to {0}.
+        /// </summary>
+        public static string AttachDebuggerAttachingProcessMessageFormat {
+            get {
+                return ResourceManager.GetString("AttachDebuggerAttachingProcessMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Automatically detect.
+        /// </summary>
+        public static string AttachDebuggerAutomaticallyDetectEngineTypeItemName {
+            get {
+                return ResourceManager.GetString("AttachDebuggerAutomaticallyDetectEngineTypeItemName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Checking debugger port firewall rule.
         /// </summary>
         public static string AttachDebuggerCheckFirewallRuleMessage {
             get {
                 return ResourceManager.GetString("AttachDebuggerCheckFirewallRuleMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debugger engine type.
+        /// </summary>
+        public static string AttachDebuggerChooseEngineTypeLable {
+            get {
+                return ResourceManager.GetString("AttachDebuggerChooseEngineTypeLable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connecting to debugger remote tool.
+        /// </summary>
+        public static string AttachDebuggerConnectingProgressMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerConnectingProgressMessage", resourceCulture);
             }
         }
         
@@ -304,6 +340,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Did not find any processes due to unkown error.
+        /// </summary>
+        public static string AttachDebuggerListProcessEmptyResultErrorMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerListProcessEmptyResultErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save selection as default preference, do not show the dialog next time.
+        /// </summary>
+        public static string AttachDebuggerListProcessSaveDefaultLabel {
+            get {
+                return ResourceManager.GetString("AttachDebuggerListProcessSaveDefaultLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to See more help.
         /// </summary>
         public static string AttachDebuggerOpenPortHelpLinkCaption {
@@ -313,11 +367,47 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Pick a process to attach to.
+        /// </summary>
+        public static string AttachDebuggerPickingProcessMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerPickingProcessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Google Cloud GCE firewall rule blocks port {0}. Click OK to add GCE firewall rule that allows traffic to the port..
         /// </summary>
         public static string AttachDebuggerPortDisabledMessageFormat {
             get {
                 return ResourceManager.GetString("AttachDebuggerPortDisabledMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to PID.
+        /// </summary>
+        public static string AttachDebuggerProcessIdHeader {
+            get {
+                return ResourceManager.GetString("AttachDebuggerProcessIdHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string AttachDebuggerProcessNameHeader {
+            get {
+                return ResourceManager.GetString("AttachDebuggerProcessNameHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username.
+        /// </summary>
+        public static string AttachDebuggerProcessUsernameHeader {
+            get {
+                return ResourceManager.GetString("AttachDebuggerProcessUsernameHeader", resourceCulture);
             }
         }
         

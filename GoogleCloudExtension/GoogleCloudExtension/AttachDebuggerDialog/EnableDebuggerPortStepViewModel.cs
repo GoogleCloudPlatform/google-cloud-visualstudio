@@ -50,7 +50,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             }
             else
             {
-                return null;    // TODO: I'll add ListProcess step.
+                return ListProcessStepViewModel.CreateStep(Context);
             }
         }
     }

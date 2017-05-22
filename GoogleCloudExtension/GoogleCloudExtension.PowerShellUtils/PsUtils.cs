@@ -52,30 +52,11 @@ namespace GoogleCloudExtension.PowerShellUtils
         }
 
         /// <summary>
-        /// Create <seealso cref="PSCredential"/> object from username and password.
-        /// </summary>
-        public static PSCredential CreatePSCredential(string user, string password)
-        {
-            return new PSCredential(user, ConvertToSecureString(password));
-        }
-
-        /// <summary>
         /// Create <seealso cref="PSCredential"/> object from username and secured password.
         /// </summary>
         public static PSCredential CreatePSCredential(string user, SecureString securePassword)
         {
             return new PSCredential(user, securePassword);
-        }
-
-        /// <summary>
-        /// Convert string to secure string.
-        /// </summary>
-        public static SecureString ConvertToSecureString(string input)
-        {
-            // TODO: validate input not null empty.
-            SecureString output = new SecureString();
-            input?.ToCharArray().ToList().ForEach(p => output.AppendChar(p));
-            return output;
         }
 
         /// <summary>

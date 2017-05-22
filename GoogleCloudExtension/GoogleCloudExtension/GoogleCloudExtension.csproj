@@ -129,6 +129,11 @@
       <DependentUpon>InstallStartRemoteToolStepContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="AttachDebuggerDialog\InstallStartRemoteToolStepViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\ListProcessStepContent.xaml.cs">
+      <DependentUpon>ListProcessStepContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AttachDebuggerDialog\ListProcessStepViewModel.cs" />
+    <Compile Include="AttachDebuggerDialog\ProcessItem.cs" />
     <Compile Include="AttachDebuggerDialog\SetCredentialStepContent.xaml.cs">
       <DependentUpon>SetCredentialStepContent.xaml</DependentUpon>
     </Compile>
@@ -814,6 +819,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="AttachDebuggerDialog\InstallStartRemoteToolStepContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AttachDebuggerDialog\ListProcessStepContent.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

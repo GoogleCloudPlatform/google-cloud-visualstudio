@@ -2162,4 +2162,44 @@
     <value>Install debugger remote tools</value>
     <comment>The message indicates it is installing debugger remote tools.</comment>
   </data>
+  <data name="AttachDebuggerAttachingProcessMessageFormat" xml:space="preserve">
+    <value>Attaching to {0}</value>
+    <comment>A message that indicates debugger is attaching to a process. {0} is the process name.</comment>
+  </data>
+  <data name="AttachDebuggerAutomaticallyDetectEngineTypeItemName" xml:space="preserve">
+    <value>Automatically detect</value>
+    <comment>When asking to pick a debugger engine type, add an item for automatically detect engine type.</comment>
+  </data>
+  <data name="AttachDebuggerChooseEngineTypeLable" xml:space="preserve">
+    <value>Debugger engine type</value>
+    <comment>Label to select debugger engine type combobox.</comment>
+  </data>
+  <data name="AttachDebuggerConnectingProgressMessage" xml:space="preserve">
+    <value>Connecting to debugger remote tool</value>
+    <comment>A message that indicates it is connecting to debugger remote tool.</comment>
+  </data>
+  <data name="AttachDebuggerListProcessEmptyResultErrorMessage" xml:space="preserve">
+    <value>Did not find any processes due to unkown error</value>
+    <comment>Error message shown when there is no any processes found. We don't indeed expect this error.</comment>
+  </data>
+  <data name="AttachDebuggerListProcessSaveDefaultLabel" xml:space="preserve">
+    <value>Save selection as default preference, do not show the dialog next time</value>
+    <comment>The label to check box of saving the selections as default in list processes step.</comment>
+  </data>
+  <data name="AttachDebuggerPickingProcessMessage" xml:space="preserve">
+    <value>Pick a process to attach to</value>
+    <comment>The message to show on top of the remote machine processes list. It asks user to pick one as debuggee.</comment>
+  </data>
+  <data name="AttachDebuggerProcessIdHeader" xml:space="preserve">
+    <value>PID</value>
+    <comment>The process id header for attaching debugger dialog processes list.</comment>
+  </data>
+  <data name="AttachDebuggerProcessNameHeader" xml:space="preserve">
+    <value>Name</value>
+    <comment>The process name header for attaching debugger dialog processes list.</comment>
+  </data>
+  <data name="AttachDebuggerProcessUsernameHeader" xml:space="preserve">
+    <value>Username</value>
+    <comment>The process id header for attaching debugger dialog processes list.</comment>
+  </data>
 </root>
