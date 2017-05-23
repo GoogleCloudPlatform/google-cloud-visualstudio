@@ -32,7 +32,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public bool IsCurrentSelection
         {
             get { return _isSelected; }
-            set { SetValueAndRaise(ref _isSelected, value); }
+            set { SetValueAndRaise(out _isSelected, value); }
         }
 
         /// <summary>

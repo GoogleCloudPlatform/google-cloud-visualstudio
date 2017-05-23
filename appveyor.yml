@@ -25,3 +25,4 @@ artifacts:
 test:
   assemblies:
   - GoogleAnalyticsUtilsTests.dll
+  - GoogleCloudExtensionUnitTests.dll

@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.CloudExplorer
         public string ToolTip
         {
             get { return _toolTip; }
-            set { SetValueAndRaise(ref _toolTip, value); }
+            set { SetValueAndRaise(out _toolTip, value); }
         }
 
         /// <summary>
@@ -44,7 +44,7 @@ namespace GoogleCloudExtension.CloudExplorer
         public ImageSource Icon
         {
             get { return _icon; }
-            set { SetValueAndRaise(ref _icon, value); }
+            set { SetValueAndRaise(out _icon, value); }
         }
 
         /// <summary>
@@ -53,7 +53,7 @@ namespace GoogleCloudExtension.CloudExplorer
         public ICommand Command
         {
             get { return _command; }
-            set { SetValueAndRaise(ref _command, value); }
+            set { SetValueAndRaise(out _command, value); }
         }
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace GoogleCloudExtension.CloudExplorer
         public bool IsChecked
         {
             get { return _isChecked; }
-            set { SetValueAndRaise(ref _isChecked, value); }
+            set { SetValueAndRaise(out _isChecked, value); }
         }
 
         /// <summary>
@@ -72,7 +72,7 @@ namespace GoogleCloudExtension.CloudExplorer
         public bool IsEnabled
         {
             get { return _isEnabled; }
-            set { SetValueAndRaise(ref _isEnabled, value); }
+            set { SetValueAndRaise(out _isEnabled, value); }
         }
     }
 }

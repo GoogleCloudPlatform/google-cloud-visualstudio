@@ -72,7 +72,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
         public string NetworkName
         {
             get { return _networkName; }
-            set { SetValueAndRaise(ref _networkName, value); }
+            set { SetValueAndRaise(out _networkName, value); }
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
         public string NetworkValue
         {
             get { return _networkValue; }
-            set { SetValueAndRaise(ref _networkValue, value); }
+            set { SetValueAndRaise(out _networkValue, value); }
         }
 
         /// <summary>

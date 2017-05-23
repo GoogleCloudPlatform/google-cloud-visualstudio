@@ -45,7 +45,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
             get { return _userName; }
             set
             {
-                SetValueAndRaise(ref _userName, value);
+                SetValueAndRaise(out _userName, value);
                 RaisePropertyChanged(nameof(HasUserName));
             }
         }
@@ -58,7 +58,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
             get { return _password; }
             set
             {
-                SetValueAndRaise(ref _password, value);
+                SetValueAndRaise(out _password, value);
                 RaisePropertyChanged(nameof(HasPassword));
             }
         }
@@ -71,7 +71,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
             get { return _generatePassword; }
             set
             {
-                SetValueAndRaise(ref _generatePassword, value);
+                SetValueAndRaise(out _generatePassword, value);
             }
         }
 
@@ -83,7 +83,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
             get { return _manualPassword; }
             set
             {
-                SetValueAndRaise(ref _manualPassword, value);
+                SetValueAndRaise(out _manualPassword, value);
             }
         }
 

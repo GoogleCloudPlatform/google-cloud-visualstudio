@@ -49,7 +49,7 @@ namespace GoogleCloudExtension.Controls
                 typeof(IconButton),
                 new PropertyMetadata(new SolidColorBrush(Color.FromRgb(224, 224, 224))));
 
-        public static readonly DependencyProperty MouseOverForegroudProperty =
+        public static readonly DependencyProperty MouseOverForegroundProperty =
             DependencyProperty.Register(
                 nameof(MouseOverForeground),
                 typeof(Brush),
@@ -97,8 +97,8 @@ namespace GoogleCloudExtension.Controls
         /// </summary>
         public Brush MouseOverForeground
         {
-            get { return (Brush)GetValue(MouseOverForegroudProperty); }
-            set { SetValue(MouseOverForegroudProperty, value); }
+            get { return (Brush)GetValue(MouseOverForegroundProperty); }
+            set { SetValue(MouseOverForegroundProperty, value); }
         }
     }
 }

@@ -34,13 +34,13 @@ namespace GoogleCloudExtension.ManageAccounts
         public IEnumerable<UserAccountViewModel> UserAccountsList
         {
             get { return _userAccountsList; }
-            set { SetValueAndRaise(ref _userAccountsList, value); }
+            set { SetValueAndRaise(out _userAccountsList, value); }
         }
 
         public string CurrentAccountName
         {
             get { return _currentAccountName; }
-            set { SetValueAndRaise(ref _currentAccountName, value); }
+            set { SetValueAndRaise(out _currentAccountName, value); }
         }
 
         public UserAccountViewModel CurrentUserAccount
@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.ManageAccounts
             get { return _currentUserAccount; }
             set
             {
-                SetValueAndRaise(ref _currentUserAccount, value);
+                SetValueAndRaise(out _currentUserAccount, value);
 
                 if (CredentialsStore.Default.CurrentAccount == null)
                 {

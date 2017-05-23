@@ -14,6 +14,9 @@
 
 using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Validation;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GoogleCloudExtension.PubSubWindows
@@ -21,7 +24,7 @@ namespace GoogleCloudExtension.PubSubWindows
     /// <summary>
     /// Data object that backs the new topic window. Contains necessicary data for creating a new topic.
     /// </summary>
-    public class NewTopicViewModel : ViewModelBase
+    public class NewTopicViewModel : ValidatingViewModelBase
     {
         private readonly CommonDialogWindowBase _owner;
         private string _topicName;
@@ -37,7 +40,12 @@ namespace GoogleCloudExtension.PubSubWindows
         public string TopicName
         {
             get { return _topicName; }
-            set { SetValueAndRaise(ref _topicName, value); }
+            set
+            {
+                IEnumerable<StringValidationResult> validations =
+                    PubSubNameValidationRule.Validate(value, Resources.NewTopicWindowNameFieldName);
+                SetAndRaiseWithValidation(out _topicName, value, validations);
+            }
         }
 
         /// <summary>
@@ -55,6 +63,11 @@ namespace GoogleCloudExtension.PubSubWindows
             _owner = owner;
             Project = project;
             CreateCommand = new ProtectedCommand(OnCreateCommand);
+        }
+
+        protected override void HasErrorsChanged()
+        {
+            CreateCommand.CanExecuteCommand = !HasErrors;
         }
 
         /// <summary>
@@ -75,11 +88,11 @@ namespace GoogleCloudExtension.PubSubWindows
         /// <returns>Returns true if validation succeded, false if the user had to be prompted</returns>
         private bool ValidateInput()
         {
-            var results = PubSubNameValidationRule.Validate(TopicName);
-            var details = string.Join("\n", results.Select(result => result.Message));
-            if (!string.IsNullOrEmpty(details))
+            var results = PubSubNameValidationRule.Validate(TopicName, Resources.NewTopicWindowNameFieldName);
+            var details = String.Join("\n", results.Select(result => result.Message));
+            if (!String.IsNullOrEmpty(details))
             {
-                string message = string.Format(Resources.PubSubNewTopicNameInvalidMessage, TopicName);
+                string message = String.Format(Resources.PubSubNewTopicNameInvalidMessage, TopicName);
                 UserPromptUtils.ErrorPrompt(message, Resources.PubSubNewTopicNameInvalidTitle, details);
                 return false;
             }
