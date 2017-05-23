@@ -10,7 +10,7 @@ source in the NuGet Package Manager.
 ## Support for Visual Studio 2017
 To support Visual Studio 2017 and Visual Studio 2015 we are going to buid the extension on Visual Studio 2015.
 
-### Build tools
+### Build tools 
 To support VS 2017 we're going to use the
  [Microsoft.VisualStudio.Sdk.BuildTasks.14.0](https://www.nuget.org/packages/Microsoft.VisualStudio.Sdk.BuildTasks.14.0/14.0.23-pre) package, instead of the current package being used [Microsoft.VSSDK.BuildTools](https://www.nuget.org/packages/Microsoft.VSSDK.BuildTools/). The reason is
 that the new package supports producing the new VSIX 3 format, which is the format supported by VS 2017.
