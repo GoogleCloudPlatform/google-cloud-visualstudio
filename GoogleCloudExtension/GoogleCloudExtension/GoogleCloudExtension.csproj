@@ -986,23 +986,9 @@
       <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>
       <Name>GoogleCloudExtension.Utils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ProjectTemplates\GoogleAspNetCoreMvcVs2017\GoogleAspNetCoreMvcVs2017.csproj">
-      <Project>{0da74332-2c0c-4e1d-8c56-b8deea9cc4cf}</Project>
-      <Name>GoogleAspNetCoreMvcVs2017</Name>
-      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-    </ProjectReference>
     <ProjectReference Include="..\ProjectTemplates\GoogleAspNetCoreMvc\GoogleAspNetCoreMvc.csproj">
       <Project>{0363CEB2-EAAA-4531-898D-DCD36F00A6FC}</Project>
       <Name>GoogleAspNetCoreMvc</Name>
-      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-    </ProjectReference>
-    <ProjectReference Include="..\ProjectTemplates\GoogleAspNetCoreWebApiVs2017\GoogleAspNetCoreWebApiVs2017.csproj">
-      <Project>{7ea11d3d-3163-40fd-86a6-8805092398a9}</Project>
-      <Name>GoogleAspNetCoreWebApiVs2017</Name>
       <VSIXSubPath>ProjectTemplates</VSIXSubPath>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
