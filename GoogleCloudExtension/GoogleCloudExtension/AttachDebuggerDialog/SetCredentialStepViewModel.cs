@@ -15,7 +15,6 @@
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.ManageWindowsCredentials;
-using GoogleCloudExtension.PowerShellUtils;
 using GoogleCloudExtension.Utils;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -93,9 +92,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 WindowsInstanceCredentials credential = Credentials.FirstOrDefault(x => x.User == user);
                 if (credential != null)
                 {
-                    Context.Password = PsUtils.ConvertToSecureString(credential.Password);
-                    Context.Username = credential.User;
-
+                    Context.Credential = credential;
                     return Task.FromResult(DefaultNextStep);
                 }
             }
@@ -137,8 +134,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         private void SetDefaultCredential()
         {
             AttachDebuggerSettings.Current.SetInstanceDefaultUser(Context.GceInstance, SelectedCredentials.User);
-            Context.Password = PsUtils.ConvertToSecureString(SelectedCredentials.Password);
-            Context.Username = SelectedCredentials.User;
+            Context.Credential = SelectedCredentials;
         }
 
         private void UpdateCredentials()
