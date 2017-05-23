@@ -42,7 +42,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             set { SetValueAndRaise(ref _progressMessage, value); }
         }
 
-
         public InstallStartRemoteToolStepViewModel(
             InstallStartRemoteToolStepContent content,
             AttachDebuggerContext context)
@@ -57,10 +56,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public override IAttachDebuggerStep OnCancelCommand()
         {
             _installerCancellationSource?.Cancel();
-
-            // TODO: show help
-            Context.DialogWindow.Close();
-            return null;    
+            return null;
         }
 
         public override Task<IAttachDebuggerStep> OnOkCommandAsync()
