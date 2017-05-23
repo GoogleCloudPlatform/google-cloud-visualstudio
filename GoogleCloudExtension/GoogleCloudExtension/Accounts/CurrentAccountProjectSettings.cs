@@ -14,9 +14,9 @@
 
 using System;
 using System.Diagnostics;
-using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.SolutionUtils;
 
-namespace GoogleCloudExtension.SolutionUtils
+namespace GoogleCloudExtension.Accounts
 {
     /// <summary>
     /// This class get/set current account, project from/to solution .suo file.
