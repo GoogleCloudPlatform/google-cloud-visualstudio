@@ -29,7 +29,6 @@ namespace GoogleCloudExtension.PowerShellUtils
         private readonly RemoteTarget _target;
         private readonly CancellationTokenSource _cancelTokenSource = new CancellationTokenSource();
         private readonly Task _powerShellTask;
-        private EventHandler _handler;
 
         /// <summary>
         /// Check if the powershell task is stopped.
@@ -45,34 +44,16 @@ namespace GoogleCloudExtension.PowerShellUtils
         public RemoteToolSession(
             string computerName, 
             string username, 
-            string password, 
-            Action<EventHandler> subscribe,
-            Action<EventHandler> unsubscribe )
+            string password)
         {
             _target = new RemoteTarget(computerName, username, PsUtils.ConvertToSecureString(password));
             string script = PsUtils.GetScript(StartPsFilePath);
-            _handler = (se, e) => Stop();
-            subscribe(_handler);
+
+            // TODO: Stop the session before solution exits.
             _powerShellTask = Task.Run(() =>
             {
                 _target.EnterSessionExecute(script, _cancelTokenSource.Token);
-                unsubscribe(_handler);
             });
-        }
-
-        /// <summary>
-        /// Stop the session at VS shutting down event.
-        /// </summary>
-        public void Stop()
-        {
-            if (!IsStopped)
-            {
-                Debug.WriteLine($"_cancelTokenSource.Cancel() ");
-                _cancelTokenSource.Cancel();
-            }
-            Debug.WriteLine($"_powerShellTask.Wait() ");
-            _powerShellTask.Wait();
-            Debug.WriteLine($"_powerShellTask.Wait() complete.");
         }
     }
 }
