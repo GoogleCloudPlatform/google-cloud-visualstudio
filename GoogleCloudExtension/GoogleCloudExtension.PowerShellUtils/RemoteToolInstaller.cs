@@ -13,7 +13,6 @@
 // limitations under the License.
 
 using System.Management.Automation;
-using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -21,6 +20,9 @@ namespace GoogleCloudExtension.PowerShellUtils
 {
     /// <summary>
     /// Installs Visual Studio Remote Debugger Tool.
+    /// The remote tools currently is part of Visual Studio installation.
+    /// This class opens remote PowerShell session to copy the tools to target machine.
+    /// For more detail, please also refer to file Resources.InstallRemoteTool.ps1.
     /// </summary>
     public class RemoteToolInstaller
     {
@@ -33,13 +35,26 @@ namespace GoogleCloudExtension.PowerShellUtils
         private readonly PSCredential _credential;
         private readonly string _computerName;
 
+        /// <summary>
+        /// Initializes a new instance of class <seealso cref="RemoteToolInstaller"/>
+        /// </summary>
+        /// <param name="computerName">
+        /// The remote computer name. It can be a public ip address too.
+        /// </param>
+        /// <param name="username">Credential user name.</param>
+        /// <param name="password">Credential password.</param>
+        /// <param name="debuggerToolLocalPath">
+        /// The path to Visual Studio remote debugging tools.
+        /// It is located under Visual Studio installation path.
+        /// </param>
         public RemoteToolInstaller(
             string computerName,
             string username,
-            SecureString securePassword,
+            string password,
             string debuggerToolLocalPath)
         {
             _debuggerToolLocalPath = debuggerToolLocalPath;
+            var securePassword = PsUtils.ConvertToSecureString(password);
             _remoteTarget = new RemoteTarget(computerName, username, securePassword);
             _credential = PsUtils.CreatePSCredential(username, securePassword);
             _computerName = computerName;

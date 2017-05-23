@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PowerShellUtils;
 using System;
 using System.Diagnostics;
@@ -78,15 +77,15 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             _installerCancellationSource = new CancellationTokenSource();
             _installer = new RemoteToolInstaller(
                 Context.PublicIp,
-                Context.Username,
-                Context.Password,
+                Context.Credential.User,
+                Context.Credential.Password,
                 ToolsPathProvider.GetRemoteDebuggerToolsPath());
             if (await _installer.Install(_installerCancellationSource.Token))
             {
                 var session = new RemoteToolSession(
                     Context.PublicIp,
-                    Context.Username,
-                    Context.Password,
+                    Context.Credential.User,
+                    Context.Credential.Password,
                     GoogleCloudExtensionPackage.Instance.SubscribeClosingNotification,
                     GoogleCloudExtensionPackage.Instance.UnsubscribeClosingNotification);
 

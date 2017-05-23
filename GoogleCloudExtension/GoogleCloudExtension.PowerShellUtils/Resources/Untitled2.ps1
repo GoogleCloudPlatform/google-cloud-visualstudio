@@ -21,4 +21,7 @@ cd $destinationPath
 do {
     Start-Sleep -Seconds 5  # wait for a few seconds so that the processes are started.
 	$msvsmon = Get-Process | where ProcessName -eq msvsmon
+	if ($msvsmon) {
+		Write-Output "msvsmon is running"
+	}
 } while ($msvsmon)  # Exit if the process is stopped

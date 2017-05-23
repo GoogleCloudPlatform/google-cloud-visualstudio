@@ -14,7 +14,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,6 +21,7 @@ namespace GoogleCloudExtension.PowerShellUtils
 {
     /// <summary>
     /// Open a session to a remote target and starts msvsmon.exe.
+    /// For more detail, please also refer to file Resources.StartRemoteTool.ps1.
     /// </summary>
     public class RemoteToolSession
     {
@@ -41,15 +41,15 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// </summary>
         /// <param name="computerName">The ipaddress of debugging target machine.</param>
         /// <param name="username">The username for authentication.</param>
-        /// <param name="password">The secure password for authentication.</param>
+        /// <param name="password">The password for authentication.</param>
         public RemoteToolSession(
             string computerName, 
             string username, 
-            SecureString password, 
+            string password, 
             Action<EventHandler> subscribe,
             Action<EventHandler> unsubscribe )
         {
-            _target = new RemoteTarget(computerName, username, password);
+            _target = new RemoteTarget(computerName, username, PsUtils.ConvertToSecureString(password));
             string script = PsUtils.GetScript(StartPsFilePath);
             _handler = (se, e) => Stop();
             subscribe(_handler);

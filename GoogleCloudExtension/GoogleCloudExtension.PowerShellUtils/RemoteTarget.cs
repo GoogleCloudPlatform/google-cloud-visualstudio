@@ -15,7 +15,6 @@
 using System;
 using System.Diagnostics;
 using System.Management.Automation;
-using System.Management.Automation.Remoting;
 using System.Management.Automation.Runspaces;
 using System.Security;
 using System.Text;
@@ -125,9 +124,9 @@ namespace GoogleCloudExtension.PowerShellUtils
         private bool WaitComplete(PowerShell powerShell, CancellationToken cancelToken)
         {
             var iAsyncResult = powerShell.BeginInvoke();
-            int returnid = WaitHandle.WaitAny(new[] { iAsyncResult.AsyncWaitHandle, cancelToken.WaitHandle });
+            int returnIndex = WaitHandle.WaitAny(new[] { iAsyncResult.AsyncWaitHandle, cancelToken.WaitHandle });
             Debug.WriteLine($"Execution has stopped. The pipeline state: {powerShell.InvocationStateInfo.State}");
-            if (cancelToken.IsCancellationRequested || returnid != 0 || !iAsyncResult.IsCompleted)
+            if (cancelToken.IsCancellationRequested || returnIndex != 0 || !iAsyncResult.IsCompleted)
             {
                 return false;
             }
