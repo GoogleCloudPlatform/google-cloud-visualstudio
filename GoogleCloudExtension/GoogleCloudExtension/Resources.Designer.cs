@@ -241,15 +241,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string Attach {
-            get {
-                return ResourceManager.GetString("Attach", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Choose or create an account.
         /// </summary>
         public static string AttachDebuggerAccountSelectionLabel {
