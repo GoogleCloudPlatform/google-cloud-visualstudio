@@ -14,6 +14,7 @@
 
 using EnvDTE;
 using GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog;
+using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TemplateWizard;
 using System;
 using System.Collections.Generic;
@@ -47,10 +48,10 @@ namespace GoogleCloudExtension.TemplateWizards
                 throw new WizardBackoutException();
             }
             replacementsDictionary.Add("$gcpprojectid$", projectId);
-            var solutionDir = new Uri(replacementsDictionary["$solutiondirectory$"]);
+            var solutionDir = new Uri(StringUtils.EnsureEndSeparator(replacementsDictionary["$solutiondirectory$"]));
             var packageDir = new Uri(solutionDir, "packages/");
-            var projectDir = new Uri(replacementsDictionary["$destinationdirectory$"] + "/");
-            var packagesPath = projectDir.MakeRelativeUri(packageDir).ToString();
+            var projectDir = new Uri(StringUtils.EnsureEndSeparator(replacementsDictionary["$destinationdirectory$"]));
+            string packagesPath = projectDir.MakeRelativeUri(packageDir).ToString();
             replacementsDictionary.Add("$packagespath$", packagesPath.Replace('/', Path.DirectorySeparatorChar));
         }
 

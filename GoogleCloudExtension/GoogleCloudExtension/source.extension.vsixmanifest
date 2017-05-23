@@ -6,7 +6,7 @@
     accurate metrics.
     -->
     <Identity Id="GoogleAppEngine.Google.d3d3eeb8-3710-4bd9-97ba-1401bf2acd22" Version="1.2.3.0" Language="en-US" Publisher="Google Inc." />
-    <DisplayName>ct-vs</DisplayName>
+    <DisplayName>Google Cloud Tools for Visual Studio</DisplayName>
     <Description xml:space="preserve">Tools to develop applications for Google Cloud Platform.</Description>
     <MoreInfo>https://cloud.google.com/visual-studio/</MoreInfo>
     <License>License.txt</License>
