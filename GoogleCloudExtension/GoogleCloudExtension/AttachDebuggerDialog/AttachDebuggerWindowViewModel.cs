@@ -42,7 +42,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public bool IsReady
         {
             get { return _isReady; }
-            private set { SetValueAndRaise(ref _isReady, value); }
+            private set { SetValueAndRaise(out _isReady, value); }
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public bool ShowProgressIndicator
         {
             get { return _showProgress; }
-            private set { SetValueAndRaise(ref _showProgress, value); }
+            private set { SetValueAndRaise(out _showProgress, value); }
         }
 
         /// <summary>
@@ -71,7 +71,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public ContentControl Content
         {
             get { return _content; }
-            private set { SetValueAndRaise(ref _content, value); }
+            private set { SetValueAndRaise(out _content, value); }
         }
 
         public AttachDebuggerWindowViewModel(Instance gceInstance, AttachDebuggerWindow dialogWindow)

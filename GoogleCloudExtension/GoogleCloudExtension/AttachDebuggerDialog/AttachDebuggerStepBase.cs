@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public virtual bool IsCancelButtonEnabled
         {
             get { return _isCancelButtonEnabled; }
-            protected set { SetValueAndRaise(ref _isCancelButtonEnabled, value); }
+            protected set { SetValueAndRaise(out _isCancelButtonEnabled, value); }
         }
 
         public virtual ContentControl Content => null;
@@ -46,7 +46,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public virtual bool IsOKButtonEnabled
         {
             get { return _isOKButtonEnabled; }
-            protected set { SetValueAndRaise(ref _isOKButtonEnabled, value); }
+            protected set { SetValueAndRaise(out _isOKButtonEnabled, value); }
         }
 
         public virtual IAttachDebuggerStep OnCancelCommand()
