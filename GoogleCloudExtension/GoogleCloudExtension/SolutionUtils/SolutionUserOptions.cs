@@ -94,7 +94,7 @@ namespace GoogleCloudExtension.SolutionUtils
                     prop.PropertyType != typeof(string))
                 {
                     // This exception will shown when developer test/debug the code. Won't be shown to end user.
-                    throw new InvalidCastException(
+                    throw new NotSupportedException(
                         $@"{prop.Name} is not correctly defined. 
 Currently, only string type is supported for SolutionSettingKey. 
 And you must define both public get and public set on it.");

@@ -58,6 +58,7 @@
     <Compile Include="SplitStringBySpaceOrQuoteTests.cs" />
     <Compile Include="StringUtilTests.cs" />
     <Compile Include="StackframeParserTests.cs" />
+    <Compile Include="SolutionUserOptionsTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GoogleCloudExtension\GoogleCloudExtension.csproj">
