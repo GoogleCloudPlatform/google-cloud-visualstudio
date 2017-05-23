@@ -18,6 +18,7 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GcsUtils
 {
@@ -112,7 +113,7 @@ namespace GoogleCloudExtension.GcsUtils
             GcsItem = gcsItem;
         }
 
-        public GcsFileOperation(GcsItemRef gcsItem): this(null, gcsItem)
+        public GcsFileOperation(GcsItemRef gcsItem) : this(null, gcsItem)
         { }
 
         #region IGcsFileOperation implementation.
@@ -163,5 +164,16 @@ namespace GoogleCloudExtension.GcsUtils
         }
 
         #endregion
+
+        /// <summary>
+        /// Returns a task that will completed once the operation is completed. The error state will not be
+        /// sent to this task.
+        /// </summary>
+        internal Task AwaitOperationAsync()
+        {
+            var taskCompletion = new TaskCompletionSource<int>();
+            Completed += (o, e) => taskCompletion.SetResult(0);
+            return taskCompletion.Task;
+        }
     }
 }

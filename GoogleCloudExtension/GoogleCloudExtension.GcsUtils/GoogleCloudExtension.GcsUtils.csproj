@@ -87,6 +87,7 @@
     <Compile Include="GcsFileOperation.cs" />
     <Compile Include="GcsItemRef.cs" />
     <Compile Include="GcsPathUtils.cs" />
+    <Compile Include="OperationsQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

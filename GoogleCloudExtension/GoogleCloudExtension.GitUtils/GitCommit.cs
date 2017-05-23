@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.GitUtils
     {
         private readonly GitRepository _repo;
 
-        private Lazy<Task<Dictionary<string, string>>> _fileTree;
+        private readonly Lazy<Task<Dictionary<string, string>>> _fileTree;
 
         /// <summary>
         /// The git sha.

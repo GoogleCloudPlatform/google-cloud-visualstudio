@@ -31,6 +31,7 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -80,6 +81,10 @@ namespace GoogleCloudExtension
         private const string CurrentGcpProjectKey = "google_current_gcp_project";
         private const string CurrentGcpAccountKey = "google_current_gcp_credentials";
         private const string NoneValue = "/none";
+
+        // This value is used to change the maximum concurrent connections of the HttpClient instances created
+        // in the VS process, including the ones used by GCP API services.
+        private const int MaximumConcurrentConnections = 10;
 
         // The properties that are stored in the .suo file.
         private static readonly Dictionary<string, Func<string>> s_propertySources = new Dictionary<string, Func<string>>
@@ -238,6 +243,11 @@ namespace GoogleCloudExtension
             // Ensure the commands UI state is updated when the GCP project changes.
             CredentialsStore.Default.Reset += (o, e) => ShellUtils.InvalidateCommandsState();
             CredentialsStore.Default.CurrentProjectIdChanged += (o, e) => ShellUtils.InvalidateCommandsState();
+
+            // With this setting we allow more concurrent connections from each HttpClient instance created
+            // in the process. This will allow all GCP API services to have more concurrent connections with
+            // GCP servers. The first benefit of this is that we can upload more concurrent files to GCS.
+            ServicePointManager.DefaultConnectionLimit = MaximumConcurrentConnections;
         }
 
         public static GoogleCloudExtensionPackage Instance { get; private set; }

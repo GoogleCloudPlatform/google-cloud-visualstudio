@@ -13,11 +13,9 @@
 // limitations under the License.
 
 using GoogleCloudExtension.DataSources;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -43,18 +41,17 @@ namespace GoogleCloudExtension.GcsUtils
         /// <param name="bucketPath">The destination path in the bucket.</param>
         /// <param name="cancellationToken">The cancellation token source to use for the operations.</param>
         /// <returns>The list of operations started.</returns>
-        public IList<GcsFileOperation> StartUploadOperations(
+        public OperationsQueue StartUploadOperations(
             IEnumerable<string> sources,
             string bucket,
             string bucketPath,
             CancellationToken cancellationToken)
         {
             var uploadOperations = CreateUploadOperations(sources, bucket: bucket, bucketPath: bucketPath);
-            foreach (var operation in uploadOperations)
-            {
-                _dataSource.StartFileUploadOperation(operation, cancellationToken);
-            }
-            return uploadOperations;
+            var operationsQueue = new OperationsQueue(cancellationToken);
+            operationsQueue.EnqueueOperations(uploadOperations, _dataSource.StartFileUploadOperation);
+            operationsQueue.StartOperations();
+            return operationsQueue;
         }
 
         /// <summary>
@@ -65,7 +62,7 @@ namespace GoogleCloudExtension.GcsUtils
         /// <param name="destinationDir">Where to store the downloaded files.</param>
         /// <param name="cancellationToken">The cancellation token for the operation.</param>
         /// <returns>The list of operations started.</returns>
-        public async Task<IList<GcsFileOperation>> StartDownloadOperationsAsync(
+        public async Task<OperationsQueue> StartDownloadOperationsAsync(
             IEnumerable<GcsItemRef> sources,
             string destinationDir,
             CancellationToken cancellationToken)
@@ -106,13 +103,10 @@ namespace GoogleCloudExtension.GcsUtils
                 Directory.CreateDirectory(dir);
             }
 
-            // Start all of the download operations.
-            foreach (var operation in downloadOperations)
-            {
-                _dataSource.StartFileDownloadOperation(operation, cancellationToken);
-            }
-
-            return downloadOperations;
+            var operationsQueue = new OperationsQueue(cancellationToken);
+            operationsQueue.EnqueueOperations(downloadOperations, _dataSource.StartFileDownloadOperation);
+            operationsQueue.StartOperations();
+            return operationsQueue;
         }
 
         /// <summary>
@@ -121,7 +115,7 @@ namespace GoogleCloudExtension.GcsUtils
         /// <param name="sources">The list of sources to delete.</param>
         /// <param name="cancellationToken">The cancellation token to use for the operations.</param>
         /// <returns>The list of operations started.</returns>
-        public async Task<IList<GcsFileOperation>> StartDeleteOperationsAsync(
+        public async Task<OperationsQueue> StartDeleteOperationsAsync(
             IEnumerable<GcsItemRef> sources,
             CancellationToken cancellationToken)
         {
@@ -135,12 +129,10 @@ namespace GoogleCloudExtension.GcsUtils
                 deleteOperations.AddRange(filesInPrefix.Select(x => new GcsFileOperation(x)));
             }
 
-            foreach (var operation in deleteOperations)
-            {
-                _dataSource.StartDeleteOperation(operation, cancellationToken);
-            }
-
-            return deleteOperations;
+            var operationsQueue = new OperationsQueue(cancellationToken);
+            operationsQueue.EnqueueOperations(deleteOperations, _dataSource.StartDeleteOperation);
+            operationsQueue.StartOperations();
+            return operationsQueue;
         }
 
         /// <summary>

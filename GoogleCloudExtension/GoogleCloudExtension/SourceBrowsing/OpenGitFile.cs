@@ -36,18 +36,18 @@ namespace GoogleCloudExtension.SourceBrowsing
     internal class OpenGitFile
     {
         // Use () => new GitTemporaryFiles() here, because the constructor is private.
-        private static Lazy<OpenGitFile> s_instance = new Lazy<OpenGitFile>(() => new OpenGitFile());
+        private static readonly Lazy<OpenGitFile> s_instance = new Lazy<OpenGitFile>(() => new OpenGitFile());
 
         /// <summary>
         /// Key is git_sha/relative_path, value is the opened document window.
         /// </summary>
-        private Dictionary<string, Window> _fileRevisionWindowMap =
+        private readonly Dictionary<string, Window> _fileRevisionWindowMap =
             new Dictionary<string, Window>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// Key is the opened document window, value is the git_sha/relative_path.
         /// </summary>
-        private Dictionary<Window, string> _documentWindows = new Dictionary<Window, string>();
+        private readonly Dictionary<Window, string> _documentWindows = new Dictionary<Window, string>();
 
         /// <summary>
         /// Returns the singleton of the <seealso cref="OpenGitFile"/> class.

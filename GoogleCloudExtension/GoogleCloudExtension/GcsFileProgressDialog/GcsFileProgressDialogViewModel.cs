@@ -17,7 +17,6 @@ using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
 using System.Threading;
 using System.Windows.Input;
 
@@ -36,7 +35,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         private string _progressMessage;
         private string _caption = Resources.UiCancelButtonCaption;
         private bool _detailsExpanded = false;
-        
+
         /// <summary>
         /// The message to display in dialog for the list of operations.
         /// </summary>
@@ -69,7 +68,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
                 }
             }
         }
-           
+
         /// <summary>
         /// Returns true if no operation has started.
         /// </summary>
