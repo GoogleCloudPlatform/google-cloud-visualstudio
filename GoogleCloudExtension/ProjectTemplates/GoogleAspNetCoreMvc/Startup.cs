@@ -51,7 +51,9 @@ namespace $safeprojectname$
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseGoogleExceptionLogging(projectId,
+                    // An identifier of the service. See https://cloud.google.com/error-reporting/docs/formatting-error-messages#FIELDS.service.
                     Configuration["Google:ErrorReporting:ServiceName"],
+                    // The source version of the service.See https://cloud.google.com/error-reporting/docs/formatting-error-messages#FIELDS.version.
                     Configuration["Google:ErrorReporting:Version"]);
             }
 
