@@ -18,6 +18,7 @@
 # Second step, it calls .\msvsmon.exe /prepcomputer /public to configure the tool.
 # If this step succeeds, add a markup file setup-msvsmon-complete
 
+# This setting will let the execution of the script stops when any error occurs
 $ErrorActionPreference = "Stop"
 
 # i.e "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Remote Debugger\x64\*"
@@ -26,17 +27,20 @@ if (!$debuggerSourcePath) {
 }
 Write-Output $debuggerSourcePath
 
+# Init variables
 Invoke-Command -Session $session -ScriptBlock { $destinationPath = Join-Path "$env:programfiles" "VisualStudioRemoteTools" }
 Invoke-Command -Session $session -ScriptBlock { $copyComplete = "copy-msvsmon-complete" }
 Invoke-Command -Session $session -ScriptBlock { $setupComplete = "setup-msvsmon-complete" }
 
+# The $session enters the installation path.
 Invoke-Command -Session $session -ScriptBlock {if (!(Test-Path $destinationPath)) {mkdir $destinationPath}}
 Invoke-Command -Session $session -ScriptBlock {cd $destinationPath}
 
 $destinationFullPath = Invoke-Command -Session $session -ScriptBlock { Get-Location } | select Path
 $destinationFullPath = $destinationFullPath.Path
-Write-Output $destinationFullPathWrite-Output $destinationFullPath
+Write-Output $destinationFullPath
 
+# Copy files recursively from local source path to destination path at remote machine.
 function Install()
 {
     Copy-Item -Path $debuggerSourcePath -Destination $destinationFullPath -ToSession $session -Recurse -Force 
@@ -45,6 +49,7 @@ function Install()
 
 function Setup-Msvsmon
 {
+	# This command adds local Windows Firewall rule to enable debugging port.
     Invoke-Command -Session $session -ScriptBlock { .\msvsmon.exe /prepcomputer /public  }
     Invoke-Command -Session $session -ScriptBlock {New-Item $setupComplete -type file}
 }

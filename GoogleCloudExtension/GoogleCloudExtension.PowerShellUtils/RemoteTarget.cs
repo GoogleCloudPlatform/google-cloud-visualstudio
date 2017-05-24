@@ -28,13 +28,22 @@ namespace GoogleCloudExtension.PowerShellUtils
     /// </summary>
     public class RemoteTarget
     {
+        /// <summary>
+        /// Remote powershell HTTPs port id.
+        /// </summary>
         private const int RemotePort = 5986;
-        private const string ShellURI = @"http://schemas.microsoft.com/powershell/Microsoft.PowerShell";
+
+        /// <summary>
+        /// Used for WSManConnectionInfo shellUri to create remote PowerShell session.
+        /// </summary>
+        private const string ShellUri = @"http://schemas.microsoft.com/powershell/Microsoft.PowerShell";
+
+        /// <summary>
+        /// Used for WSManConnectionInfo appName argument to create remote PowerShell session.
+        /// </summary>
         private const string AppName = @"/wsman";
 
         private readonly string _computerName;
-        private readonly string _username;
-        private readonly SecureString _password;
         private readonly PSCredential _credential;
 
         /// <summary>
@@ -44,37 +53,38 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// The remote machine name. In the case name resolution does not work, 
         /// use public ip address.
         /// </param>
-        /// <param name="username">The username of the credential to access the target machine.</param>
-        /// <param name="securePassword">The password of the credential to to access the target machine.</param>
-        public RemoteTarget(string computerName, string username, SecureString securePassword)
+        /// <param name="credential">The credential for authentication to the remote target.</param>
+        public RemoteTarget(string computerName, PSCredential credential)
         {
             _computerName = computerName;
-            _username = username;
-            _password = securePassword;
-            _credential = PsUtils.CreatePSCredential(username, securePassword);
+            _credential = credential;
         }
 
         /// <summary>
         /// Executes a PowerShell script asynchronously.
         /// </summary>
-        /// <param name="addCommndsCallback">Callback to add the powershell commands.</param>
+        /// <param name="addCommandsCallback">Callback to add the powershell commands.</param>
         /// <param name="cancelToken">
         /// Long execution can be terminated by the cancelToken. 
         /// </param>
+        /// <returns>
+        /// True: successfully completed the script execution.
+        /// False: Received some error in script execution or the execution is cancelled.
+        /// </returns>
         public async Task<bool> ExecuteAsync(
-            Action<PowerShell> addCommndsCallback,
+            Action<PowerShell> addCommandsCallback,
             CancellationToken cancelToken)
         {
             using (PowerShell powerShell = PowerShell.Create())
             {
-                addCommndsCallback(powerShell);
+                addCommandsCallback(powerShell);
                 return await Task.Run(() => WaitComplete(powerShell, cancelToken));
             }
         }
 
         /// <summary>
-        /// This method firstly establish a session to the remote target.
-        /// Then execute the <paramref name="script"/>. 
+        /// This method firstly establishes a session to the remote target.
+        /// Then executes the <paramref name="script"/>. 
         /// When execution is done, the session is closed.
         /// </summary>
         /// <param name="script">
@@ -98,9 +108,11 @@ namespace GoogleCloudExtension.PowerShellUtils
                 computerName: _computerName,
                 port: RemotePort,
                 appName: AppName,
-                shellUri: ShellURI,
+                shellUri: ShellUri,
                 credential: _credential);
             connectionInfo.AuthenticationMechanism = auth;
+            // GCE VM uses an GCP internal certificate, the root is not by default trusted.
+            // We know we are connecting to GCP VM, it is safe to skip these certificate validation.
             connectionInfo.SkipCACheck = true;
             connectionInfo.SkipCNCheck = true;
             connectionInfo.SkipRevocationCheck = true;
@@ -110,7 +122,7 @@ namespace GoogleCloudExtension.PowerShellUtils
                 var psh = runSpace.CreatePipeline();
                 runSpace.Open();
 
-                Debug.WriteLine($"Connected to {_computerName} as {_username}");
+                Debug.WriteLine($"Connected to {_computerName} as {_credential.UserName}");
 
                 using (PowerShell powerShell = PowerShell.Create())
                 {
@@ -121,6 +133,16 @@ namespace GoogleCloudExtension.PowerShellUtils
             }
         }
 
+        /// <summary>
+        /// Executes the PowerShell commands and wait till it is complete or
+        /// cancelled by <paramref name="cancelToken"/>.
+        /// </summary>
+        /// <param name="powerShell">The <seealso cref="PowerShell"/> object.</param>
+        /// <param name="cancelToken">Cancel a long running command.</param>
+        /// <returns>
+        /// True: successfully completed the script execution.
+        /// False: Received some error in script execution or the execution is cancelled.
+        /// </returns>
         private bool WaitComplete(PowerShell powerShell, CancellationToken cancelToken)
         {
             var iAsyncResult = powerShell.BeginInvoke();

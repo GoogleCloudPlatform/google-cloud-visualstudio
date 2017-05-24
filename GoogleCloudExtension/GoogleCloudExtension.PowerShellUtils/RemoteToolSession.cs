@@ -25,7 +25,11 @@ namespace GoogleCloudExtension.PowerShellUtils
     /// </summary>
     public class RemoteToolSession
     {
+        /// <summary>
+        /// The resource name to get embedded script file Resources.StartRemoteTools.ps1.
+        /// </summary>
         private const string StartPsFilePath = "GoogleCloudExtension.PowerShellUtils.Resources.StartRemoteTool.ps1";
+
         private readonly RemoteTarget _target;
         private readonly CancellationTokenSource _cancelTokenSource = new CancellationTokenSource();
         private readonly Task _powerShellTask;
@@ -37,17 +41,18 @@ namespace GoogleCloudExtension.PowerShellUtils
 
         /// <summary>
         /// Start the session and start the remote tool.
+        /// This starts a backgroud task and leave it running till it is cancelled or stopped. 
         /// </summary>
         /// <param name="computerName">The ipaddress of debugging target machine.</param>
         /// <param name="username">The username for authentication.</param>
         /// <param name="password">The password for authentication.</param>
         public RemoteToolSession(
-            string computerName, 
-            string username, 
+            string computerName,
+            string username,
             string password)
         {
-            _target = new RemoteTarget(computerName, username, PsUtils.ConvertToSecureString(password));
-            string script = PsUtils.GetScript(StartPsFilePath);
+            _target = new RemoteTarget(computerName, RemotePowerShellUtils.CreatePSCredential(username, password));
+            string script = RemotePowerShellUtils.GetEmbeddedFile(StartPsFilePath);
 
             // TODO: Stop the session before solution exits.
             _powerShellTask = Task.Run(() =>

@@ -26,8 +26,20 @@ namespace GoogleCloudExtension.PowerShellUtils
     /// </summary>
     public class RemoteToolInstaller
     {
+        /// <summary>
+        /// The resource name for embedded script file Resources\InstallRemoteTool.ps1
+        /// </summary>
         private const string InstallerPsFilePath = "GoogleCloudExtension.PowerShellUtils.Resources.InstallRemoteTool.ps1";
+
+        /// <summary>
+        /// The credential variable name used at <seealso cref="AddInstallCommands"/>.
+        /// </summary>
         private const string CredentialVariablename = "credential";
+
+        /// <summary>
+        /// The debugger source path variable name used at <seealso cref="AddInstallCommands"/>.
+        /// The path is set from code and passed to the script file Resources\InstallRemoteTool.ps1
+        /// </summary>
         private const string RemoteToolSourcePath = "debuggerSourcePath";
 
         private readonly string _debuggerToolLocalPath;
@@ -54,27 +66,23 @@ namespace GoogleCloudExtension.PowerShellUtils
             string debuggerToolLocalPath)
         {
             _debuggerToolLocalPath = debuggerToolLocalPath;
-            var securePassword = PsUtils.ConvertToSecureString(password);
-            _remoteTarget = new RemoteTarget(computerName, username, securePassword);
-            _credential = PsUtils.CreatePSCredential(username, securePassword);
+            _credential = RemotePowerShellUtils.CreatePSCredential(username, password);
+            _remoteTarget = new RemoteTarget(computerName, _credential);
             _computerName = computerName;
         }
 
         /// <summary>
         /// Execute remote PowerShell command to copy/setup debugger remote tools.
         /// </summary>
-        /// <returns></returns>
-        public async Task<bool> Install(CancellationToken cancelToken)
-        {
-            return await _remoteTarget.ExecuteAsync(AddInstallCommands, cancelToken);
-        }
+        public Task<bool> Install(CancellationToken cancelToken) 
+            => _remoteTarget.ExecuteAsync(AddInstallCommands, cancelToken);
 
         private void AddInstallCommands(PowerShell powerShell)
         {
-            var setupScript = PsUtils.GetScript(InstallerPsFilePath);
+            var setupScript = RemotePowerShellUtils.GetEmbeddedFile(InstallerPsFilePath);
 
-            powerShell.AddVarialbe("credential", _credential);
-            powerShell.AddVarialbe("debuggerSourcePath", _debuggerToolLocalPath);
+            powerShell.AddVariable("credential", _credential);
+            powerShell.AddVariable("debuggerSourcePath", _debuggerToolLocalPath);
             powerShell.AddScript(@"$sessionOptions = New-PSSessionOption –SkipCACheck –SkipCNCheck –SkipRevocationCheck");
             powerShell.AddScript($@"$session = New-PSSession {_computerName} -UseSSL -Credential $credential -SessionOption $sessionOptions");
             powerShell.AddScript(setupScript);

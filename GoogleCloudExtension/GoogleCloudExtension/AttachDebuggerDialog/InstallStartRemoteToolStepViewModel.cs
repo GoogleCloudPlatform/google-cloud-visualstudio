@@ -59,11 +59,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             return null;
         }
 
-        public override Task<IAttachDebuggerStep> OnOkCommandAsync()
-        {
-            // Should never be reached.
-            return Task.FromResult<IAttachDebuggerStep>(null);
-        }
+        // Okay button is not enabled at this step.
+        // This method should never be called for this step.
+        public override Task<IAttachDebuggerStep> OnOkCommandAsync() => Task.FromResult<IAttachDebuggerStep>(null);
 
         public override async Task<IAttachDebuggerStep> OnStartAsync()
         {
@@ -107,9 +105,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         #endregion
 
         /// <summary>
-        /// Creates the install , start debugger remote tool step.
+        /// Creates the step that installs and starts debugger remote tool.
         /// </summary>
-        /// <returns></returns>
         public static InstallStartRemoteToolStepViewModel CreateStep(AttachDebuggerContext context)
         {
             var content = new InstallStartRemoteToolStepContent();

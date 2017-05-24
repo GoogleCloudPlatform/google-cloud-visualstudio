@@ -44,7 +44,6 @@ namespace GoogleCloudExtension.Deployment
         /// <summary>
         /// Returns the path to Visual Studio Remote Debugger tools path.
         /// </summary>
-        /// <returns></returns>
         string GetRemoteDebuggerToolsPath();
     }
 }
