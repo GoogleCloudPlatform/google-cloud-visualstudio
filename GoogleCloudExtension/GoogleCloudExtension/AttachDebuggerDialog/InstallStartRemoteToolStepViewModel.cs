@@ -79,7 +79,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 var session = new RemoteToolSession(
                     Context.PublicIp,
                     Context.Credential.User,
-                    Context.Credential.Password);
+                    Context.Credential.Password,
+                    GoogleCloudExtensionPackage.Instance.SubscribeClosingEvent,
+                    GoogleCloudExtensionPackage.Instance.UnsubscribeClosingEvent);
 
                 Stopwatch watch = Stopwatch.StartNew();
                 ProgressMessage = String.Format(
