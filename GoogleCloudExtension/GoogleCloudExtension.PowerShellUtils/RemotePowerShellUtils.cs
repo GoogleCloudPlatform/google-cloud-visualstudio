@@ -52,30 +52,10 @@ namespace GoogleCloudExtension.PowerShellUtils
         }
 
         /// <summary>
-        /// Create <seealso cref="PSCredential"/> object from username and secured password.
-        /// </summary>
-        public static PSCredential CreatePSCredential(string user, SecureString securePassword) 
-            => new PSCredential(user, securePassword);
-
-        /// <summary>
         /// Create <seealso cref="PSCredential"/> object from username and password.
         /// </summary>
         public static PSCredential CreatePSCredential(string user, string password)
             => new PSCredential(user, ConvertToSecureString(password));
-
-        /// <summary>
-        /// Convert string to secure string.
-        /// </summary>
-        public static SecureString ConvertToSecureString(string input)
-        {
-            if (String.IsNullOrWhiteSpace(input))
-            {
-                throw new ArgumentException(nameof(input));
-            }
-            SecureString output = new SecureString();
-            input?.ToCharArray().ToList().ForEach(p => output.AppendChar(p));
-            return output;
-        }
 
         /// <summary>
         /// Add a variable to the PowerShell session.
@@ -88,6 +68,20 @@ namespace GoogleCloudExtension.PowerShellUtils
             powerShell.AddCommand("Set-Variable");
             powerShell.AddParameter("Name", name);
             powerShell.AddParameter("Value", value);
+        }
+
+        /// <summary>
+        /// Convert string to secure string.
+        /// </summary>
+        private static SecureString ConvertToSecureString(string input)
+        {
+            if (String.IsNullOrWhiteSpace(input))
+            {
+                throw new ArgumentException(nameof(input));
+            }
+            SecureString output = new SecureString();
+            input?.ToCharArray().ToList().ForEach(p => output.AppendChar(p));
+            return output;
         }
     }
 }

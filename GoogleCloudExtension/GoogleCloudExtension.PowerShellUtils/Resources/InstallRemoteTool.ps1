@@ -23,7 +23,7 @@ $ErrorActionPreference = "Stop"
 
 # i.e "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\IDE\Remote Debugger\x64\*"
 if (!$debuggerSourcePath) {
-	Write-Error "$debuggerSourcePath is not set"
+    Write-Error "$debuggerSourcePath is not set"
 }
 Write-Output $debuggerSourcePath
 
@@ -49,7 +49,7 @@ function Install()
 
 function Setup-Msvsmon
 {
-	# This command adds local Windows Firewall rule to enable debugging port.
+    # This command adds local Windows Firewall rule to enable debugging port.
     Invoke-Command -Session $session -ScriptBlock { .\msvsmon.exe /prepcomputer /public  }
     Invoke-Command -Session $session -ScriptBlock {New-Item $setupComplete -type file}
 }
@@ -63,5 +63,5 @@ if (!(Invoke-Command -Session $session -ScriptBlock { Test-Path $setupComplete }
 }
 
 if (!(Invoke-Command -Session $session -ScriptBlock { Test-Path $setupComplete })) {
-	Write-Error "not installed"
+    Write-Error "not installed"
 }
