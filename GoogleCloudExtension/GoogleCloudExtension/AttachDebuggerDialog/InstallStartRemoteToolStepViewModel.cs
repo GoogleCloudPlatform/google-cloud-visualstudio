@@ -60,23 +60,19 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             IsCancelButtonEnabled = true;
             ProgressMessage = Resources.AttachDebuggerInstallSetupProgressMessage;
 
-            _installer = new RemoteToolInstaller(
-                Context.PublicIp,
-                Context.Credential.User,
-                Context.Credential.Password,
-                ToolsPathProvider.GetRemoteDebuggerToolsPath());
             if (await _installer.Install(_installerCancellationSource.Token))
             {
                 IsCancelButtonEnabled = false;
-                ProgressMessage = String.Format(
-                    Resources.AttachDebuggerTestConnectPortMessageFormat,
-                    Context.PublicIp,
-                    Context.DebuggerPort.PortInfo.Port);
 
                 var session = new RemoteToolSession(
                     Context.PublicIp,
                     Context.Credential.User,
                     Context.Credential.Password);
+
+                ProgressMessage = String.Format(
+                    Resources.AttachDebuggerTestConnectPortMessageFormat,
+                    Context.PublicIp,
+                    Context.DebuggerPort.PortInfo.Port);
 
                 Stopwatch watch = Stopwatch.StartNew();
                 while (!_installerCancellationSource.IsCancellationRequested &&
@@ -113,6 +109,11 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             AttachDebuggerContext context)
             : base(context)
         {
+            _installer = new RemoteToolInstaller(
+                Context.PublicIp,
+                Context.Credential.User,
+                Context.Credential.Password,
+                ToolsPathProvider.GetRemoteDebuggerToolsPath());
             Content = content;
         }
     }
