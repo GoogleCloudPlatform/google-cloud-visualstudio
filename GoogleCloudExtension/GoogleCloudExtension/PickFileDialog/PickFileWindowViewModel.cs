@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.PickFileDialog
         public int SelectedIndex
         {
             get { return _selectedIndex; }
-            set { SetValueAndRaise(ref _selectedIndex, value); }
+            set { SetValueAndRaise(out _selectedIndex, value); }
         }
 
         /// <summary>

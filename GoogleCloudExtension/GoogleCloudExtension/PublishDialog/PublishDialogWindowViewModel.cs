@@ -15,7 +15,9 @@
 using GoogleCloudExtension.Deployment;
 using GoogleCloudExtension.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -25,7 +27,7 @@ namespace GoogleCloudExtension.PublishDialog
     /// The view model for the <seealso cref="PublishDialogWindowContent"/> control. Implements all of the interaction
     /// logic for the UI.
     /// </summary>
-    public class PublishDialogWindowViewModel : ViewModelBase, IPublishDialog
+    public class PublishDialogWindowViewModel : ViewModelBase, IPublishDialog, INotifyDataErrorInfo
     {
         private readonly PublishDialogWindow _owner;
         private readonly IParsedProject _project;
@@ -39,7 +41,7 @@ namespace GoogleCloudExtension.PublishDialog
         public FrameworkElement Content
         {
             get { return _content; }
-            set { SetValueAndRaise(ref _content, value); }
+            set { SetValueAndRaise(out _content, value); }
         }
 
         /// <summary>
@@ -63,7 +65,7 @@ namespace GoogleCloudExtension.PublishDialog
         public bool IsReady
         {
             get { return _isReady; }
-            set { SetValueAndRaise(ref _isReady, value); }
+            set { SetValueAndRaise(out _isReady, value); }
         }
 
         /// <summary>
@@ -114,6 +116,7 @@ namespace GoogleCloudExtension.PublishDialog
             var top = _stack.Peek();
             top.CanGoNextChanged += OnCanGoNextChanged;
             top.CanPublishChanged += OnCanPublishChanged;
+            top.ErrorsChanged += OnErrorsChanged;
         }
 
         private void RemoveStepEvents()
@@ -123,6 +126,7 @@ namespace GoogleCloudExtension.PublishDialog
                 var top = _stack.Peek();
                 top.CanGoNextChanged -= OnCanGoNextChanged;
                 top.CanPublishChanged -= OnCanPublishChanged;
+                top.ErrorsChanged -= OnErrorsChanged;
             }
         }
 
@@ -151,6 +155,11 @@ namespace GoogleCloudExtension.PublishDialog
         private void OnCanGoNextChanged(object sender, EventArgs e)
         {
             NextCommand.CanExecuteCommand = CurrentStep.CanGoNext;
+        }
+
+        private void OnErrorsChanged(object sender, DataErrorsChangedEventArgs e)
+        {
+            ErrorsChanged?.Invoke(sender, e);
         }
 
         #region IPublishDialog
@@ -189,6 +198,22 @@ namespace GoogleCloudExtension.PublishDialog
         {
             _owner.Close();
         }
+
+        #endregion
+
+        #region INotifyDataErrorInfo
+
+        /// <inheritdoc />
+        IEnumerable INotifyDataErrorInfo.GetErrors(string propertyName)
+        {
+            return CurrentStep.GetErrors(propertyName);
+        }
+
+        /// <inheritdoc />
+        bool INotifyDataErrorInfo.HasErrors => CurrentStep.HasErrors;
+
+        /// <inheritdoc />
+        public event EventHandler<DataErrorsChangedEventArgs> ErrorsChanged;
 
         #endregion
     }

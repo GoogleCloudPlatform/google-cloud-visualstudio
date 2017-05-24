@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Windows;
 
@@ -22,7 +22,7 @@ namespace GoogleCloudExtension.PublishDialog
     /// This is the base class for all step implementation, providing default implementations
     /// for the <seealso cref="IPublishDialogStep"/> interface.
     /// </summary>
-    public abstract class PublishDialogStepBase : ViewModelBase, IPublishDialogStep
+    public abstract class PublishDialogStepBase : ValidatingViewModelBase, IPublishDialogStep
     {
         private bool _canGoNext;
         private bool _canPublish;

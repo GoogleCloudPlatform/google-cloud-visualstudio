@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public bool IsAskingToConfirm
         {
             get { return _askingToConfirm; }
-            private set { SetValueAndRaise(ref _askingToConfirm, value); }
+            private set { SetValueAndRaise(out _askingToConfirm, value); }
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public bool IsAskingToTestConnectivityLater
         {
             get { return _askingToTestConnectivityLater; }
-            private set { SetValueAndRaise(ref _askingToTestConnectivityLater, value); }
+            private set { SetValueAndRaise(out _askingToTestConnectivityLater, value); }
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public string ProgressMessage
         {
             get { return _progressMessage; }
-            private set { SetValueAndRaise(ref _progressMessage, value); }
+            private set { SetValueAndRaise(out _progressMessage, value); }
         }
 
         /// <summary>

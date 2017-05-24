@@ -58,7 +58,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             get { return _selectedInstance; }
             set
             {
-                SetValueAndRaise(ref _selectedInstance, value);
+                SetValueAndRaise(out _selectedInstance, value);
                 UpdateCredentials();
                 ManageCredentialsCommand.CanExecuteCommand = value != null;
             }
@@ -70,7 +70,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         public IEnumerable<WindowsInstanceCredentials> Credentials
         {
             get { return _credentials; }
-            private set { SetValueAndRaise(ref _credentials, value); }
+            private set { SetValueAndRaise(out _credentials, value); }
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             get { return _selectedCredentials; }
             set
             {
-                SetValueAndRaise(ref _selectedCredentials, value);
+                SetValueAndRaise(out _selectedCredentials, value);
                 RaisePropertyChanged(nameof(HasSelectedCredentials));
                 CanPublish = value != null;
             }
@@ -103,7 +103,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         public bool OpenWebsite
         {
             get { return _openWebsite; }
-            set { SetValueAndRaise(ref _openWebsite, value); }
+            set { SetValueAndRaise(out _openWebsite, value); }
         }
 
         private GceStepViewModel(GceStepContent content)

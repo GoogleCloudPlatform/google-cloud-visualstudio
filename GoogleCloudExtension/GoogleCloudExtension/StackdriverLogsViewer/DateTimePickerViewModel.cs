@@ -74,7 +74,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public TimeSpan UiElementTime
         {
             get { return _uiElementTime; }
-            set { SetValueAndRaise(ref _uiElementTime, value); }
+            set { SetValueAndRaise(out _uiElementTime, value); }
         }
 
         /// <summary>
@@ -96,7 +96,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public int SelectedOrderIndex
         {
             get { return _uiSelectedOrderIndex; }
-            set { SetValueAndRaise(ref _uiSelectedOrderIndex, value); }
+            set { SetValueAndRaise(out _uiSelectedOrderIndex, value); }
         }
 
         /// <summary>
@@ -112,7 +112,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             get { return _isDropDownOpen; }
             set
             {
-                SetValueAndRaise(ref _isDropDownOpen, value);
+                SetValueAndRaise(out _isDropDownOpen, value);
 
                 Debug.WriteLine($"Set IsDropDownOpen {value}");
                 if (_isDropDownOpen)

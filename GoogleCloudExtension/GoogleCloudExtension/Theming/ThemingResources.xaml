@@ -21,12 +21,12 @@
     </Style>
 
     <!-- Button templates. -->
-    
+
     <!-- Margin for the buttons inside of the button bar. -->
     <Thickness x:Key="DialogButtonMargin">6,0,0,0</Thickness>
 
     <!-- Template to display the button using the wide size in the button bar. -->
-    <DataTemplate x:Key="DialogButtonTemplateWide">
+    <DataTemplate x:Key="DialogButtonTemplateWide" DataType="{x:Type local:DialogButtonInfo}">
         <Button Style="{StaticResource CommonButtonWideStyle}"
                 Margin="{StaticResource DialogButtonMargin}"
                 Command="{Binding Command}"
@@ -38,7 +38,7 @@
     </DataTemplate>
 
     <!-- Template to display the button in the standard size in the button bar. -->
-    <DataTemplate x:Key="DialogButtonTemplateStandard">
+    <DataTemplate x:Key="DialogButtonTemplateStandard" DataType="{x:Type local:DialogButtonInfo}">
         <Button Style="{StaticResource CommonButtonStandardStyle}"
                 Margin="{StaticResource DialogButtonMargin}"
                 Command="{Binding Command}"
@@ -50,7 +50,7 @@
     </DataTemplate>
 
     <!-- Common visuals for the dialogs. -->
-    
+
     <!-- The template selector to decide what button style to apply. -->
     <local:ButtonTemplateSelector x:Key="DialogButtonTemplateSelector" />
 
@@ -102,14 +102,11 @@
                                         </local:ButtonsList>
                                     </StackPanel>
                                 </Border>
-
                             </Grid>
                         </Border>
-
                     </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
     </Style>
-
 </ResourceDictionary>

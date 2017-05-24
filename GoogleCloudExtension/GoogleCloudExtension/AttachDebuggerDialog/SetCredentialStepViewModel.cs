@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public bool ShowSelection
         {
             get { return _showSelection; }
-            private set { SetValueAndRaise(ref _showSelection, value); }
+            private set { SetValueAndRaise(out _showSelection, value); }
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public List<WindowsInstanceCredentials> Credentials
         {
             get { return _credentials; }
-            private set { SetValueAndRaise(ref _credentials, value); }
+            private set { SetValueAndRaise(out _credentials, value); }
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public WindowsInstanceCredentials SelectedCredentials
         {
             get { return _selectedCredentials; }
-            set { SetValueAndRaise(ref _selectedCredentials, value); }
+            set { SetValueAndRaise(out _selectedCredentials, value); }
         }
 
         /// <summary>

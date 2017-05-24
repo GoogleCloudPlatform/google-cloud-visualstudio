@@ -87,7 +87,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public LogIdsList LogIdList
         {
             get { return _logIdList; }
-            private set { SetValueAndRaise(ref _logIdList, value); }
+            private set { SetValueAndRaise(out _logIdList, value); }
         }
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public string AdvancedFilterText
         {
             get { return _advacedFilterText; }
-            set { SetValueAndRaise(ref _advacedFilterText, value); }
+            set { SetValueAndRaise(out _advacedFilterText, value); }
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public bool ShowAdvancedFilter
         {
             get { return _showAdvancedFilter; }
-            private set { SetValueAndRaise(ref _showAdvancedFilter, value); }
+            private set { SetValueAndRaise(out _showAdvancedFilter, value); }
         }
 
         /// <summary>
@@ -144,7 +144,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public string SimpleSearchText
         {
             get { return _simpleSearchText; }
-            set { SetValueAndRaise(ref _simpleSearchText, value); }
+            set { SetValueAndRaise(out _simpleSearchText, value); }
         }
 
         /// <summary>
@@ -163,7 +163,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public LogSeverityItem SelectedLogSeverity
         {
             get { return _selectedLogSeverity; }
-            set { SetValueAndRaise(ref _selectedLogSeverity, value); }
+            set { SetValueAndRaise(out _selectedLogSeverity, value); }
         }
 
         /// <summary>
@@ -177,7 +177,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public TimeZoneInfo SelectedTimeZone
         {
             get { return _selectedTimeZone; }
-            set { SetValueAndRaise(ref _selectedTimeZone, value); }
+            set { SetValueAndRaise(out _selectedTimeZone, value); }
         }
 
         /// <summary>
@@ -203,7 +203,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             get { return _toggleExpandAllExpanded; }
             set
             {
-                SetValueAndRaise(ref _toggleExpandAllExpanded, value);
+                SetValueAndRaise(out _toggleExpandAllExpanded, value);
                 RaisePropertyChanged(nameof(ToggleExapandAllToolTip));
             }
         }
@@ -230,7 +230,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public bool ShowCancelRequestButton
         {
             get { return _showCancelRequestButton; }
-            private set { SetValueAndRaise(ref _showCancelRequestButton, value); }
+            private set { SetValueAndRaise(out _showCancelRequestButton, value); }
         }
 
         /// <summary>
@@ -239,7 +239,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public bool ShowRequestErrorMessage
         {
             get { return _showRequestErrorMessage; }
-            private set { SetValueAndRaise(ref _showRequestErrorMessage, value); }
+            private set { SetValueAndRaise(out _showRequestErrorMessage, value); }
         }
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public string RequestErrorMessage
         {
             get { return _requestErrorMessage; }
-            private set { SetValueAndRaise(ref _requestErrorMessage, value); }
+            private set { SetValueAndRaise(out _requestErrorMessage, value); }
         }
 
         /// <summary>
@@ -257,7 +257,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public string RequestStatusText
         {
             get { return _requestStatusText; }
-            private set { SetValueAndRaise(ref _requestStatusText, value); }
+            private set { SetValueAndRaise(out _requestStatusText, value); }
         }
 
         /// <summary>
@@ -267,7 +267,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public bool ShowRequestStatus
         {
             get { return _showRequestStatus; }
-            private set { SetValueAndRaise(ref _showRequestStatus, value); }
+            private set { SetValueAndRaise(out _showRequestStatus, value); }
         }
 
         /// <summary>
@@ -276,7 +276,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public bool IsControlEnabled
         {
             get { return _isControlEnabled; }
-            private set { SetValueAndRaise(ref _isControlEnabled, value); }
+            private set { SetValueAndRaise(out _isControlEnabled, value); }
         }
 
         /// <summary>
@@ -290,7 +290,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public bool IsAutoReloadChecked
         {
             get { return _isAutoReloadChecked; }
-            set { SetValueAndRaise(ref _isAutoReloadChecked, value); }
+            set { SetValueAndRaise(out _isAutoReloadChecked, value); }
         }
 
         /// <summary>

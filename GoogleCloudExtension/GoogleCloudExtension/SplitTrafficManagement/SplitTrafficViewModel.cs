@@ -66,7 +66,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         public bool IsIpChecked
         {
             get { return _isIpChecked; }
-            set { SetValueAndRaise(ref _isIpChecked, value); }
+            set { SetValueAndRaise(out _isIpChecked, value); }
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         public bool IsCookieChecked
         {
             get { return _isCookieChecked; }
-            set { SetValueAndRaise(ref _isCookieChecked, value); }
+            set { SetValueAndRaise(out _isCookieChecked, value); }
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
             get { return _selectedSplit; }
             set
             {
-                SetValueAndRaise(ref _selectedSplit, value);
+                SetValueAndRaise(out _selectedSplit, value);
                 UpdateCommands();
             }
         }
