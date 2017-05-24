@@ -25,10 +25,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     /// </summary>
     public class EnablePowerShellPortStepViewModel : EnablePortStepViewModel
     {
-        public EnablePowerShellPortStepViewModel(EnablePortStepContent content, AttachDebuggerContext context)
-            : base(content, context.RemotePowerShellPort, context)
-        { }
-
         /// <summary>
         /// Create the the step that enables Visual Studio remote debugging tool port.
         /// </summary>
@@ -50,7 +46,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             SetStage(Stage.CheckingConnectivity);
             if (await Context.RemotePowerShellPort.ConnectivityTest())
             {
-                return null;    // TODO: I'll add install debugger tool step.
+                return InstallStartRemoteToolStepViewModel.CreateStep(Context);
             }
             else
             {
@@ -66,5 +62,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 }
             }
         }
+
+        private EnablePowerShellPortStepViewModel(EnablePortStepContent content, AttachDebuggerContext context)
+            : base(content, context.RemotePowerShellPort, context)
+        { }
     }
 }

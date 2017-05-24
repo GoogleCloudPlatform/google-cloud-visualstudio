@@ -334,6 +334,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Install debugger remote tools.
+        /// </summary>
+        public static string AttachDebuggerInstallSetupProgressMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerInstallSetupProgressMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to See more help.
         /// </summary>
         public static string AttachDebuggerOpenPortHelpLinkCaption {

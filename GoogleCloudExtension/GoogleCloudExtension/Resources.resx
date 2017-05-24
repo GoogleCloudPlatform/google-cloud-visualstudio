@@ -2199,4 +2199,8 @@
     <value>Version name</value>
     <comment>Field display name for the version name textbox. Should match PublishDialogFlexVersionNameCaption.</comment>
   </data>
+  <data name="AttachDebuggerInstallSetupProgressMessage" xml:space="preserve">
+    <value>Install debugger remote tools</value>
+    <comment>The message indicates it is installing debugger remote tools.</comment>
+  </data>
 </root>
