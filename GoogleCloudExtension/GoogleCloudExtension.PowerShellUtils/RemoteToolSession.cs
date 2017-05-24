@@ -30,7 +30,6 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// </summary>
         private const string StartPsFilePath = "GoogleCloudExtension.PowerShellUtils.Resources.StartRemoteTool.ps1";
 
-        private readonly RemoteTarget _target;
         private readonly CancellationTokenSource _cancelTokenSource = new CancellationTokenSource();
         private readonly Task _powerShellTask;
 
@@ -51,13 +50,13 @@ namespace GoogleCloudExtension.PowerShellUtils
             string username,
             string password)
         {
-            _target = new RemoteTarget(computerName, RemotePowerShellUtils.CreatePSCredential(username, password));
+            var target = new RemoteTarget(computerName, RemotePowerShellUtils.CreatePSCredential(username, password));
             string script = RemotePowerShellUtils.GetEmbeddedFile(StartPsFilePath);
 
             // TODO: Stop the session before solution exits.
             _powerShellTask = Task.Run(() =>
             {
-                _target.EnterSessionExecute(script, _cancelTokenSource.Token);
+                target.EnterSessionExecute(script, _cancelTokenSource.Token);
             });
         }
     }
