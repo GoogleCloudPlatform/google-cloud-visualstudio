@@ -197,8 +197,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 AttachDebuggerSettings.Current.DefaultDebuggeeProcessName = "";
                 AttachDebuggerSettings.Current.DefaultDebuggerEngineType = s_detectEngineTypeItemName;
             }
-            Context.DialogWindow.Close();
-            return null;    // TODO: goto a help page.
+
+            return HelpStepViewModel.CreateStep(Context);
         }
 
         /// <summary>
