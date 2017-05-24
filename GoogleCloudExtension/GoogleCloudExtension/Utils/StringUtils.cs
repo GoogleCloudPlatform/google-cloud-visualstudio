@@ -176,27 +176,5 @@ namespace GoogleCloudExtension.Utils
 
             return -1;
         }
-
-        /// <summary>
-        /// Convert string to secure string.
-        /// </summary>
-        public static SecureString ConvertToSecureString(string input)
-        {
-            // TODO: validate input not null empty.
-            SecureString output = new SecureString();
-            input?.ToCharArray().ToList().ForEach(p => output.AppendChar(p));
-            return output;
-        }
-
-        /// <summary>
-        /// Convert <seealso cref="SecureString"/> back to normal string.
-        /// </summary>
-        public static string SecureStringToString(SecureString input)
-        {
-            IntPtr passwordIntPtr = Marshal.SecureStringToGlobalAllocUnicode(input);
-            string password = Marshal.PtrToStringAuto(passwordIntPtr);
-            Marshal.FreeCoTaskMem(passwordIntPtr);
-            return password;
-        }
     }
 }
