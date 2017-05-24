@@ -207,7 +207,54 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 new MenuItem { Header = Resources.UiDeleteButtonCaption, Command = new ProtectedCommand(OnDeleteCommand, canExecuteCommand: hasItems) },
             };
 
+            if (SelectedItems != null && SelectedItems.Count == 1)
+            {
+                var row = (GcsRow)SelectedItem;
+                if (row.IsFile)
+                {
+                    menuItems.Add(new MenuItem
+                    {
+                        Header = "Rename...",
+                        Command = new ProtectedCommand(OnRenameFileCommand)
+                    });
+                }
+            }
+
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private async void OnRenameFileCommand()
+        {
+            var row = (GcsRow)SelectedItem;
+            var choosenName = NamePromptWindow.PromptUser();
+            if (choosenName == null)
+            {
+                return;
+            }
+
+            try
+            {
+                IsLoading = true;
+
+                var newName = GcsPathUtils.Combine(CurrentState.CurrentPath, choosenName);
+                Debug.WriteLine($"Renaming {row.BlobName} to {newName}");
+                await _dataSource.RenameFileAsync(
+                    bucket: Bucket.Name,
+                    sourceName: row.BlobName,
+                    destName: newName);
+
+                UpdateCurrentState();
+            }
+            catch (DataSourceException)
+            {
+                UserPromptUtils.ErrorPrompt(
+                    message: $"Failed to rename file {row.LeafName}",
+                    title: Resources.UiErrorCaption);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         #region Command handlers
