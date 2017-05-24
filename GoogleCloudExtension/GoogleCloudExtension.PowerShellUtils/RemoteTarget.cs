@@ -16,7 +16,6 @@ using System;
 using System.Diagnostics;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
-using System.Security;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -119,7 +118,6 @@ namespace GoogleCloudExtension.PowerShellUtils
 
             using (var runSpace = RunspaceFactory.CreateRunspace(connectionInfo))
             {
-                var psh = runSpace.CreatePipeline();
                 runSpace.Open();
 
                 Debug.WriteLine($"Connected to {_computerName} as {_credential.UserName}");
@@ -145,6 +143,7 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// </returns>
         private bool WaitComplete(PowerShell powerShell, CancellationToken cancelToken)
         {
+            cancelToken.Register(powerShell.Stop);
             var iAsyncResult = powerShell.BeginInvoke();
             int returnIndex = WaitHandle.WaitAny(new[] { iAsyncResult.AsyncWaitHandle, cancelToken.WaitHandle });
             Debug.WriteLine($"Execution has stopped. The pipeline state: {powerShell.InvocationStateInfo.State}");
@@ -154,7 +153,7 @@ namespace GoogleCloudExtension.PowerShellUtils
             }
             var outputCollection = powerShell.EndInvoke(iAsyncResult);
             PrintOutput(outputCollection);
-            return (powerShell.Streams.Error?.Count).GetValueOrDefault() == 0;
+            return !powerShell.HadErrors;
         }
 
         private void PrintOutput(PSDataCollection<PSObject> outputCollection)
