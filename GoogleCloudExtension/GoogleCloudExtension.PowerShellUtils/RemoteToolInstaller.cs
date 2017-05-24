@@ -43,7 +43,6 @@ namespace GoogleCloudExtension.PowerShellUtils
         private const string RemoteToolSourcePath = "debuggerSourcePath";
 
         private readonly string _debuggerToolLocalPath;
-        private readonly RemoteTarget _remoteTarget;
         private readonly PSCredential _credential;
         private readonly string _computerName;
 
@@ -67,7 +66,6 @@ namespace GoogleCloudExtension.PowerShellUtils
         {
             _debuggerToolLocalPath = debuggerToolLocalPath;
             _credential = RemotePowerShellUtils.CreatePSCredential(username, password);
-            _remoteTarget = new RemoteTarget(computerName, _credential);
             _computerName = computerName;
         }
 
@@ -75,14 +73,14 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// Execute remote PowerShell command to copy/setup debugger remote tools.
         /// </summary>
         public Task<bool> Install(CancellationToken cancelToken) 
-            => _remoteTarget.ExecuteAsync(AddInstallCommands, cancelToken);
+            => (new RemoteTarget(_computerName, _credential)).ExecuteAsync(AddInstallCommands, cancelToken);
 
         private void AddInstallCommands(PowerShell powerShell)
         {
             var setupScript = RemotePowerShellUtils.GetEmbeddedFile(InstallerPsFilePath);
 
-            powerShell.AddVariable("credential", _credential);
-            powerShell.AddVariable("debuggerSourcePath", _debuggerToolLocalPath);
+            powerShell.AddVariable(CredentialVariablename, _credential);
+            powerShell.AddVariable(RemoteToolSourcePath, _debuggerToolLocalPath);
             powerShell.AddScript(@"$sessionOptions = New-PSSessionOption –SkipCACheck –SkipCNCheck –SkipRevocationCheck");
             powerShell.AddScript($@"$session = New-PSSession {_computerName} -UseSSL -Credential $credential -SessionOption $sessionOptions");
             powerShell.AddScript(setupScript);
