@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.PowerShellUtils
     public class RemoteTarget
     {
         /// <summary>
-        /// Remote powershell HTTPs port id.
+        /// Remote powershell HTTPS port id.
         /// </summary>
         private const int RemotePort = 5986;
 
@@ -134,8 +134,8 @@ namespace GoogleCloudExtension.PowerShellUtils
         }
 
         /// <summary>
-        /// Executes the PowerShell commands and wait till it is complete or
-        /// cancelled by <paramref name="cancelToken"/>.
+        /// Executes the PowerShell commands and waits utill it is complete 
+        /// or cancelled by <paramref name="cancelToken"/>.
         /// </summary>
         /// <param name="powerShell">The <seealso cref="PowerShell"/> object.</param>
         /// <param name="cancelToken">Cancel a long running command.</param>
