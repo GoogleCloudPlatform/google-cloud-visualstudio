@@ -23,9 +23,9 @@ namespace GoogleCloudExtension.NamePrompt
     {
         private NamePromptViewModel ViewModel { get; }
 
-        private NamePromptWindow() : base(GoogleCloudExtension.Resources.NamePromptCaption)
+        private NamePromptWindow(string initialName) : base(GoogleCloudExtension.Resources.NamePromptCaption)
         {
-            ViewModel = new NamePromptViewModel(this);
+            ViewModel = new NamePromptViewModel(this, initialName);
             Content = new NamePromptContent
             {
                 DataContext = ViewModel
@@ -36,9 +36,9 @@ namespace GoogleCloudExtension.NamePrompt
         /// Prompts the user for a name.
         /// </summary>
         /// <returns>The name chosen by the user.</returns>
-        public static string PromptUser()
+        public static string PromptUser(string initialName = "")
         {
-            var dialog = new NamePromptWindow();
+            var dialog = new NamePromptWindow(initialName);
             dialog.ShowModal();
             return dialog.ViewModel.Name;
         }

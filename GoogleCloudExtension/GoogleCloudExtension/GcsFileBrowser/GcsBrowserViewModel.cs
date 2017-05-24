@@ -18,6 +18,7 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GcsFileProgressDialog;
 using GoogleCloudExtension.GcsUtils;
 using GoogleCloudExtension.NamePrompt;
+using GoogleCloudExtension.ProgressDialog;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -226,7 +227,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         private async void OnRenameFileCommand()
         {
             var row = (GcsRow)SelectedItem;
-            var choosenName = NamePromptWindow.PromptUser();
+            var choosenName = NamePromptWindow.PromptUser(row.LeafName);
             if (choosenName == null)
             {
                 return;
@@ -238,10 +239,17 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
                 var newName = GcsPathUtils.Combine(CurrentState.CurrentPath, choosenName);
                 Debug.WriteLine($"Renaming {row.BlobName} to {newName}");
-                await _dataSource.RenameFileAsync(
-                    bucket: Bucket.Name,
-                    sourceName: row.BlobName,
-                    destName: newName);
+                await ProgressDialogWindow.PromptUser(
+                    _dataSource.RenameFileAsync(
+                        bucket: Bucket.Name,
+                        sourceName: row.BlobName,
+                        destName: newName),
+                    new ProgressDialogWindow.Options
+                    {
+                        Message = "Renaming file",
+                        Title = Resources.UiDefaultPromptTitle,
+                        IsCancellable = false
+                    });
 
                 UpdateCurrentState();
             }
