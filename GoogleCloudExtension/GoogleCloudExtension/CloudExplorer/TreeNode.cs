@@ -55,7 +55,7 @@ namespace GoogleCloudExtension.CloudExplorer
             get { return _isLoading; }
             set
             {
-                SetValueAndRaise(ref _isLoading, value);
+                SetValueAndRaise(out _isLoading, value);
                 RaisePropertyChanged(nameof(IconIsVisible));
             }
         }
@@ -68,7 +68,7 @@ namespace GoogleCloudExtension.CloudExplorer
             get { return _isError; }
             set
             {
-                SetValueAndRaise(ref _isError, value);
+                SetValueAndRaise(out _isError, value);
                 RaisePropertyChanged(nameof(IconIsVisible));
             }
         }
@@ -81,7 +81,7 @@ namespace GoogleCloudExtension.CloudExplorer
             get { return _isWarning; }
             set
             {
-                SetValueAndRaise(ref _isWarning, value);
+                SetValueAndRaise(out _isWarning, value);
                 RaisePropertyChanged(nameof(IconIsVisible));
             }
         }
@@ -97,7 +97,7 @@ namespace GoogleCloudExtension.CloudExplorer
         public ImageSource Icon
         {
             get { return _icon; }
-            set { SetValueAndRaise(ref _icon, value); }
+            set { SetValueAndRaise(out _icon, value); }
         }
 
         /// <summary>
@@ -106,7 +106,7 @@ namespace GoogleCloudExtension.CloudExplorer
         public string Caption
         {
             get { return _caption; }
-            set { SetValueAndRaise(ref _caption, value); }
+            set { SetValueAndRaise(out _caption, value); }
         }
 
         /// <summary>
@@ -115,7 +115,7 @@ namespace GoogleCloudExtension.CloudExplorer
         public ContextMenu ContextMenu
         {
             get { return _contextMenu; }
-            set { SetValueAndRaise(ref _contextMenu, value); }
+            set { SetValueAndRaise(out _contextMenu, value); }
         }
 
         /// <summary>

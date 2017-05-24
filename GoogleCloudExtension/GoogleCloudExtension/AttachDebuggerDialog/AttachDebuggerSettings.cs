@@ -60,35 +60,14 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     {
         private const int InstancesDefaultUserMaxLength = 10;
         private static readonly Lazy<AttachDebuggerSettings> s_instance = new Lazy<AttachDebuggerSettings>();
-        private List<InstanceDefaultUser> _defaultUsers;
+        private static readonly Lazy<List<InstanceDefaultUser>> _lazyDefaultUsersList = 
+            new Lazy<List<InstanceDefaultUser>>(AttachDebuggerSettingsStore.ReadGceInstanceDefaultUsers);
+        private static List<InstanceDefaultUser> _defaultUsersList => _lazyDefaultUsersList.Value;
 
         /// <summary>
         /// Singleton instance.
         /// </summary>
         public static AttachDebuggerSettings Current => s_instance.Value;
-
-        /// <summary>
-        /// Saves the list of instance default username as string.
-        /// List of objects can not be saved into storage. 
-        /// Serialize/Deserialize the list of <seealso cref="_defaultUsers"/> into string.
-        /// </summary>
-        [SolutionSettingKey("google_debugger_users")]
-        public string DefaultUsersString
-        {
-            get { return JsonConvert.SerializeObject(_defaultUsers); }
-            set
-            {
-                try
-                {
-                    if (!string.IsNullOrWhiteSpace(value))
-                    {
-                        _defaultUsers = JsonConvert.DeserializeObject<List<InstanceDefaultUser>>(value);
-                    }
-                }
-                catch (JsonSerializationException)
-                { }
-            }
-        }
 
         /// <summary>
         /// Visual Studio debugger engine type. Natvie, Managed, Script etc.
@@ -107,7 +86,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// </summary>
         /// <param name="gceInstance">The GCE instance object.</param>
         public string GetInstanceDefaultUser(Instance gceInstance) =>
-            _defaultUsers?.FirstOrDefault(x => x.InstanceMatches(gceInstance))?.User;
+            _defaultUsersList.FirstOrDefault(x => x.InstanceMatches(gceInstance))?.User;
 
         /// <summary>
         /// Save instance default username.
@@ -116,25 +95,22 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <param name="user">The chosen username.</param>
         public void SetInstanceDefaultUser(Instance gceInstance, string user)
         {
-            if (_defaultUsers == null)
-            {
-                _defaultUsers = new List<InstanceDefaultUser>();
-            }
-            _defaultUsers.RemoveAll(x => x.InstanceMatches(gceInstance));
+            _defaultUsersList.RemoveAll(x => x.InstanceMatches(gceInstance));
 
             // Limit the list size so that it does not grow indefinitely.
-            if (_defaultUsers.Count >= InstancesDefaultUserMaxLength)
+            if (_defaultUsersList.Count >= InstancesDefaultUserMaxLength)
             {
-                _defaultUsers.RemoveAt(0);
+                _defaultUsersList.RemoveAt(0);
             }
 
-            _defaultUsers.Add(
+            _defaultUsersList.Add(
                 new InstanceDefaultUser
                 {
                     InstanceZone = gceInstance.Zone,
                     InstanceName = gceInstance.Name,
                     User = user
                 });
+            AttachDebuggerSettingsStore.PersistGceInstanceDefaultUsers(_defaultUsersList);
         }
     }
 }

@@ -14,7 +14,6 @@
 
 using System;
 using System.Diagnostics;
-using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -22,14 +21,18 @@ namespace GoogleCloudExtension.PowerShellUtils
 {
     /// <summary>
     /// Open a session to a remote target and starts msvsmon.exe.
+    /// For more detail, please also refer to file Resources.StartRemoteTool.ps1.
     /// </summary>
     public class RemoteToolSession
     {
+        /// <summary>
+        /// The resource name to get embedded script file Resources.StartRemoteTools.ps1.
+        /// </summary>
         private const string StartPsFilePath = "GoogleCloudExtension.PowerShellUtils.Resources.StartRemoteTool.ps1";
+
         private readonly RemoteTarget _target;
         private readonly CancellationTokenSource _cancelTokenSource = new CancellationTokenSource();
         private readonly Task _powerShellTask;
-        private EventHandler _handler;
 
         /// <summary>
         /// Check if the powershell task is stopped.
@@ -38,41 +41,24 @@ namespace GoogleCloudExtension.PowerShellUtils
 
         /// <summary>
         /// Start the session and start the remote tool.
+        /// This starts a backgroud task and leave it running till it is cancelled or stopped. 
         /// </summary>
         /// <param name="computerName">The ipaddress of debugging target machine.</param>
         /// <param name="username">The username for authentication.</param>
-        /// <param name="password">The secure password for authentication.</param>
+        /// <param name="password">The password for authentication.</param>
         public RemoteToolSession(
-            string computerName, 
-            string username, 
-            SecureString password, 
-            Action<EventHandler> subscribe,
-            Action<EventHandler> unsubscribe )
+            string computerName,
+            string username,
+            string password)
         {
-            _target = new RemoteTarget(computerName, username, password);
-            string script = PsUtils.GetScript(StartPsFilePath);
-            _handler = (se, e) => Stop();
-            subscribe(_handler);
+            _target = new RemoteTarget(computerName, RemotePowerShellUtils.CreatePSCredential(username, password));
+            string script = RemotePowerShellUtils.GetEmbeddedFile(StartPsFilePath);
+
+            // TODO: Stop the session before solution exits.
             _powerShellTask = Task.Run(() =>
             {
                 _target.EnterSessionExecute(script, _cancelTokenSource.Token);
-                unsubscribe(_handler);
             });
-        }
-
-        /// <summary>
-        /// Stop the session at VS shutting down event.
-        /// </summary>
-        public void Stop()
-        {
-            if (!IsStopped)
-            {
-                Debug.WriteLine($"_cancelTokenSource.Cancel() ");
-                _cancelTokenSource.Cancel();
-            }
-            Debug.WriteLine($"_powerShellTask.Wait() ");
-            _powerShellTask.Wait();
-            Debug.WriteLine($"_powerShellTask.Wait() complete.");
         }
     }
 }

@@ -16,9 +16,9 @@ using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.FirewallManagement;
+using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.Utils;
 using System;
-using System.Security;
 using static GoogleCloudExtension.Utils.ArgumentCheckUtils;
 using static GoogleCloudExtension.VsVersion.VsVersionUtils;
 
@@ -47,14 +47,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             new PortInfo("VSRemoteDebugger", RemoteDebuggerPort, Resources.PortManagerRemoteDebuggerDescription);
 
         /// <summary>
-        /// The username chosen for the GCE instance.
+        /// The credential to use for attaching debugger, creating remote PowerShell session.
         /// </summary>
-        public string Username { get; set; }
-
-        /// <summary>
-        /// The password chosen for the GCE instance.
-        /// </summary>
-        public SecureString Password { get; set; }
+        public WindowsInstanceCredentials Credential { get; set; }
 
         /// <summary>
         /// Gets the <seealso cref="DataSource"/> object.

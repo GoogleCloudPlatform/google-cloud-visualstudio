@@ -24,20 +24,20 @@ namespace GoogleCloudExtension.PowerShellUtils
     /// <summary>
     /// Utilities for remote powershell operations.
     /// </summary>
-    public static class PsUtils
+    public static class RemotePowerShellUtils
     {
         /// <summary>
-        /// Gets the embedded resource text content.
+        /// Gets the embedded resource text file.
         /// </summary>
         /// <param name="resourceName">
+        /// Script file is embeded as resource. To extract the file, use resource name.
         /// i.e GoogleCloudExtension.RemotePowershell.Resources.EmbededScript.ps1
         /// </param>
         /// <returns>The text content of the embeded resource file</returns>
         /// <exception cref="FileNotFoundException">The file of <paramref name="resourceName"/> is not found.</exception>
-        public static string GetScript(string resourceName)
+        public static string GetEmbeddedFile(string resourceName)
         {
             var assembly = Assembly.GetExecutingAssembly();
-            Console.WriteLine(String.Join(";", assembly.GetManifestResourceNames()));
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             {
                 if (stream == null)
@@ -54,9 +54,27 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// <summary>
         /// Create <seealso cref="PSCredential"/> object from username and secured password.
         /// </summary>
-        public static PSCredential CreatePSCredential(string user, SecureString securePassword)
+        public static PSCredential CreatePSCredential(string user, SecureString securePassword) 
+            => new PSCredential(user, securePassword);
+
+        /// <summary>
+        /// Create <seealso cref="PSCredential"/> object from username and password.
+        /// </summary>
+        public static PSCredential CreatePSCredential(string user, string password)
+            => new PSCredential(user, ConvertToSecureString(password));
+
+        /// <summary>
+        /// Convert string to secure string.
+        /// </summary>
+        public static SecureString ConvertToSecureString(string input)
         {
-            return new PSCredential(user, securePassword);
+            if (String.IsNullOrWhiteSpace(input))
+            {
+                throw new ArgumentException(nameof(input));
+            }
+            SecureString output = new SecureString();
+            input?.ToCharArray().ToList().ForEach(p => output.AppendChar(p));
+            return output;
         }
 
         /// <summary>
@@ -65,7 +83,7 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// <param name="powerShell">The <seealso cref="PowerShell"/> object.</param>
         /// <param name="name">Variable name.</param>
         /// <param name="value">Variable value.</param>
-        public static void AddVarialbe(this PowerShell powerShell, string name, object value)
+        public static void AddVariable(this PowerShell powerShell, string name, object value)
         {
             powerShell.AddCommand("Set-Variable");
             powerShell.AddParameter("Name", name);

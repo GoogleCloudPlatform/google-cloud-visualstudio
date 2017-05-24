@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PowerShellUtils;
 using System;
 using System.Diagnostics;
@@ -40,9 +39,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public string ProgressMessage
         {
             get { return _progressMessage; }
-            set { SetValueAndRaise(ref _progressMessage, value); }
+            set { SetValueAndRaise(out _progressMessage, value); }
         }
-
 
         public InstallStartRemoteToolStepViewModel(
             InstallStartRemoteToolStepContent content,
@@ -58,17 +56,12 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public override IAttachDebuggerStep OnCancelCommand()
         {
             _installerCancellationSource?.Cancel();
-
-            // TODO: show help
-            Context.DialogWindow.Close();
-            return null;    
+            return null;
         }
 
-        public override Task<IAttachDebuggerStep> OnOkCommandAsync()
-        {
-            // Should never be reached.
-            return Task.FromResult<IAttachDebuggerStep>(null);
-        }
+        // Okay button is not enabled at this step.
+        // This method should never be called for this step.
+        public override Task<IAttachDebuggerStep> OnOkCommandAsync() => Task.FromResult<IAttachDebuggerStep>(null);
 
         public override async Task<IAttachDebuggerStep> OnStartAsync()
         {
@@ -78,17 +71,15 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             _installerCancellationSource = new CancellationTokenSource();
             _installer = new RemoteToolInstaller(
                 Context.PublicIp,
-                Context.Username,
-                Context.Password,
+                Context.Credential.User,
+                Context.Credential.Password,
                 ToolsPathProvider.GetRemoteDebuggerToolsPath());
             if (await _installer.Install(_installerCancellationSource.Token))
             {
                 var session = new RemoteToolSession(
                     Context.PublicIp,
-                    Context.Username,
-                    Context.Password,
-                    GoogleCloudExtensionPackage.Instance.SubscribeClosingNotification,
-                    GoogleCloudExtensionPackage.Instance.UnsubscribeClosingNotification);
+                    Context.Credential.User,
+                    Context.Credential.Password);
 
                 Stopwatch watch = Stopwatch.StartNew();
                 ProgressMessage = String.Format(
@@ -114,9 +105,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         #endregion
 
         /// <summary>
-        /// Creates the install , start debugger remote tool step.
+        /// Creates the step that installs and starts debugger remote tool.
         /// </summary>
-        /// <returns></returns>
         public static InstallStartRemoteToolStepViewModel CreateStep(AttachDebuggerContext context)
         {
             var content = new InstallStartRemoteToolStepContent();

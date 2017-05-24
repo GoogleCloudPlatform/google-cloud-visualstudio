@@ -12,8 +12,12 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+$destinationPath = Join-Path "$env:programfiles" "VisualStudioRemoteTools"
+Write-Output $destinationPath 
+cd $destinationPath
+
 # The process stops in 10 minutes if there is no debugger attached.
-..\RemoteDebugger\msvsmon.exe /silent /timeout 600
+.\msvsmon.exe /silent /timeout 600
 do {
     Start-Sleep -Seconds 5  # wait for a few seconds so that the processes are started.
 	$msvsmon = Get-Process | where ProcessName -eq msvsmon

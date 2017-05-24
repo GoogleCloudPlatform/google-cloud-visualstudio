@@ -54,7 +54,7 @@
     <Compile Include="RemoteTarget.cs" />
     <Compile Include="RemoteToolInstaller.cs" />
     <Compile Include="RemoteToolSession.cs" />
-    <Compile Include="PsUtils.cs" />
+    <Compile Include="RemotePowerShellUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

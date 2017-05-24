@@ -15,7 +15,6 @@
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.GCloud;
 using GoogleCloudExtension.ManageWindowsCredentials;
-using GoogleCloudExtension.PowerShellUtils;
 using GoogleCloudExtension.Utils;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -40,7 +39,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public bool ShowSelection
         {
             get { return _showSelection; }
-            private set { SetValueAndRaise(ref _showSelection, value); }
+            private set { SetValueAndRaise(out _showSelection, value); }
         }
 
         /// <summary>
@@ -49,7 +48,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public List<WindowsInstanceCredentials> Credentials
         {
             get { return _credentials; }
-            private set { SetValueAndRaise(ref _credentials, value); }
+            private set { SetValueAndRaise(out _credentials, value); }
         }
 
         /// <summary>
@@ -58,7 +57,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public WindowsInstanceCredentials SelectedCredentials
         {
             get { return _selectedCredentials; }
-            set { SetValueAndRaise(ref _selectedCredentials, value); }
+            set { SetValueAndRaise(out _selectedCredentials, value); }
         }
 
         /// <summary>
@@ -93,9 +92,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 WindowsInstanceCredentials credential = Credentials.FirstOrDefault(x => x.User == user);
                 if (credential != null)
                 {
-                    Context.Password = StringUtils.ConvertToSecureString(credential.Password);
-                    Context.Username = credential.User;
-
+                    Context.Credential = credential;
                     return Task.FromResult(DefaultNextStep);
                 }
             }
@@ -137,8 +134,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         private void SetDefaultCredential()
         {
             AttachDebuggerSettings.Current.SetInstanceDefaultUser(Context.GceInstance, SelectedCredentials.User);
-            Context.Password = StringUtils.ConvertToSecureString(SelectedCredentials.Password);
-            Context.Username = SelectedCredentials.User;
+            Context.Credential = SelectedCredentials;
         }
 
         private void UpdateCredentials()
