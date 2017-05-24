@@ -35,6 +35,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using SystemTasks = System.Threading.Tasks;
 
 namespace GoogleCloudExtension
 {
@@ -88,6 +89,7 @@ namespace GoogleCloudExtension
         };
 
         private DTE _dteInstance;
+        private event EventHandler _closingEvent;
 
         /// <summary>
         /// The application name to use everywhere one is needed. Analytics, data sources, etc...
@@ -118,6 +120,38 @@ namespace GoogleCloudExtension
         {
             // Register all of the properties.
             RegisterSolutionOptions();
+        }
+
+        /// <summary>
+        /// Subscribe to the solution/package closing event.
+        /// </summary>
+        public void SubscribeClosingEvent(EventHandler handler)
+        {
+            _closingEvent += handler;
+        }
+
+        /// <summary>
+        /// Unsubscribe to the solution/package closing event.
+        /// </summary>
+        public void UnsubscribeClosingEvent(EventHandler handler)
+        {
+            _closingEvent -= handler;
+        }
+
+        protected override int QueryClose(out bool canClose)
+        {
+            _closingEvent?.Invoke(this, EventArgs.Empty);
+            if (_closingEvent != null)
+            {
+                var tasks = new List<SystemTasks.Task>();
+                foreach(var handler in _closingEvent.GetInvocationList().OfType<EventHandler>())
+                {
+                    tasks.Add(SystemTasks.Task.Run(() => handler(this, EventArgs.Empty)));
+                };
+ 
+                SystemTasks.Task.WaitAll(tasks.ToArray(), TimeSpan.FromMilliseconds(1000));
+            }
+            return base.QueryClose(out canClose);
         }
 
         #region Persistence of solution options
