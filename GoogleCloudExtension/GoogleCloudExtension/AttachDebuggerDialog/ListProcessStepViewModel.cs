@@ -146,8 +146,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             }
             if (!await ListProcesses(Context.PublicIp))
             {
-                Context.DialogWindow.Close();
-                return null;    // TODO: add a help page step.
+                return HelpStepViewModel.CreateStep(Context);
             }
             else if (Processes.Count() == 1)
             {
@@ -156,7 +155,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             else
             {
                 EnableSelection();
-                return null;    // return null to stay on the step UI;
+                return null;    // return null to stay on the step;
             }
         }
 

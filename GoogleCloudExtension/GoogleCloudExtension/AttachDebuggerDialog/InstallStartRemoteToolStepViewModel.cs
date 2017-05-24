@@ -101,8 +101,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 }
             }
 
-            Context.DialogWindow.Close();
-            return null; // TODO : go to help page
+            return HelpStepViewModel.CreateStep(Context);
         }
         #endregion
 

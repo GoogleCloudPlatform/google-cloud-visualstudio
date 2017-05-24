@@ -322,6 +322,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Unable to attach debugger to the remote machine. Read.
+        /// </summary>
+        public static string AttachDebuggerHelpFirstPartMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerHelpFirstPartMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to to set up the debugging tool properly.
+        /// </summary>
+        public static string AttachDebuggerHelpLastPartMessage {
+            get {
+                return ResourceManager.GetString("AttachDebuggerHelpLastPartMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to the documentation.
+        /// </summary>
+        public static string AttachDebuggerHelpStepLinkCpation {
+            get {
+                return ResourceManager.GetString("AttachDebuggerHelpStepLinkCpation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Install debugger remote tools.
         /// </summary>
         public static string AttachDebuggerInstallSetupProgressMessage {
