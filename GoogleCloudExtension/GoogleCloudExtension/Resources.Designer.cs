@@ -22,224 +22,272 @@ namespace GoogleCloudExtension {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public class Resources {
-        
+    public class Resources
+    {
+
         private static global::System.Resources.ResourceManager resourceMan;
-        
+
         private static global::System.Globalization.CultureInfo resourceCulture;
-        
+
         [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
-        internal Resources() {
+        internal Resources()
+        {
         }
-        
+
         /// <summary>
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Resources.ResourceManager ResourceManager {
-            get {
-                if (object.ReferenceEquals(resourceMan, null)) {
+        public static global::System.Resources.ResourceManager ResourceManager
+        {
+            get
+            {
+                if (object.ReferenceEquals(resourceMan, null))
+                {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("GoogleCloudExtension.Resources", typeof(Resources).Assembly);
                     resourceMan = temp;
                 }
                 return resourceMan;
             }
         }
-        
+
         /// <summary>
         ///   Overrides the current thread's CurrentUICulture property for all
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        public static global::System.Globalization.CultureInfo Culture {
-            get {
+        public static global::System.Globalization.CultureInfo Culture
+        {
+            get
+            {
                 return resourceCulture;
             }
-            set {
+            set
+            {
                 resourceCulture = value;
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid value for allocation, must be a number: {0}.
         /// </summary>
-        public static string AddGaeTrafficSplitInvalidValueMessage {
-            get {
+        public static string AddGaeTrafficSplitInvalidValueMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("AddGaeTrafficSplitInvalidValueMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid Value.
         /// </summary>
-        public static string AddGaeTrafficSplitInvalidValueTitle {
-            get {
+        public static string AddGaeTrafficSplitInvalidValueTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("AddGaeTrafficSplitInvalidValueTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add Traffic Split.
         /// </summary>
-        public static string AddGaeTrafficSplitTitle {
-            get {
+        public static string AddGaeTrafficSplitTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("AddGaeTrafficSplitTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid allocation value, must be between 0 to 100: {0}.
         /// </summary>
-        public static string AddGaeTrafficSplitValueOutOfRangeMessage {
-            get {
+        public static string AddGaeTrafficSplitValueOutOfRangeMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("AddGaeTrafficSplitValueOutOfRangeMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Create a password for me.
         /// </summary>
-        public static string AddWindowsCredentialGeneratePasswordMessage {
-            get {
+        public static string AddWindowsCredentialGeneratePasswordMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("AddWindowsCredentialGeneratePasswordMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to I have a password for this user.
         /// </summary>
-        public static string AddWindowsCredentialHavePasswordMessage {
-            get {
+        public static string AddWindowsCredentialHavePasswordMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("AddWindowsCredentialHavePasswordMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Password.
         /// </summary>
-        public static string AddWindowsCredentialPasswordGroupHeader {
-            get {
+        public static string AddWindowsCredentialPasswordGroupHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("AddWindowsCredentialPasswordGroupHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Type password:.
         /// </summary>
-        public static string AddWindowsCredentialPasswordLabel {
-            get {
+        public static string AddWindowsCredentialPasswordLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("AddWindowsCredentialPasswordLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add Windows Credential.
         /// </summary>
-        public static string AddWindowsCredentialTitle {
-            get {
+        public static string AddWindowsCredentialTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("AddWindowsCredentialTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enter a user name. If the user name already exists as an account on the Windows instance, then you can reset the password or enter the current one..
         /// </summary>
-        public static string AddWindowsCredentialToolTip {
-            get {
+        public static string AddWindowsCredentialToolTip
+        {
+            get
+            {
                 return ResourceManager.GetString("AddWindowsCredentialToolTip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _User name:.
         /// </summary>
-        public static string AddWindowsCredentialUserNameCaption {
-            get {
+        public static string AddWindowsCredentialUserNameCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("AddWindowsCredentialUserNameCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The password field cannot be empty..
         /// </summary>
-        public static string AddWindowsCredentialValidationEmptyPassword {
-            get {
+        public static string AddWindowsCredentialValidationEmptyPassword
+        {
+            get
+            {
                 return ResourceManager.GetString("AddWindowsCredentialValidationEmptyPassword", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The username cannot be empty..
         /// </summary>
-        public static string AddWindowsCredentialValidationEmptyUser {
-            get {
+        public static string AddWindowsCredentialValidationEmptyUser
+        {
+            get
+            {
                 return ResourceManager.GetString("AddWindowsCredentialValidationEmptyUser", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add Windows Credential.
         /// </summary>
-        public static string AddWindowsCredentialValidationErrorTtitle {
-            get {
+        public static string AddWindowsCredentialValidationErrorTtitle
+        {
+            get
+            {
                 return ResourceManager.GetString("AddWindowsCredentialValidationErrorTtitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The user name contains invalid characters {0}.
         /// </summary>
-        public static string AddWindowsCredentialValidationInvalidChars {
-            get {
+        public static string AddWindowsCredentialValidationInvalidChars
+        {
+            get
+            {
                 return ResourceManager.GetString("AddWindowsCredentialValidationInvalidChars", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Usage Report.
         /// </summary>
-        public static string AnalyticsOptionsCategory {
-            get {
+        public static string AnalyticsOptionsCategory
+        {
+            get
+            {
                 return ResourceManager.GetString("AnalyticsOptionsCategory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Whether to report usage statistics to Google.
         /// </summary>
-        public static string AnalyticsOptionsOptInDescription {
-            get {
+        public static string AnalyticsOptionsOptInDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("AnalyticsOptionsOptInDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Report Usage Statistics Enabled.
         /// </summary>
-        public static string AnalyticsOptionsOptInDisplayName {
-            get {
+        public static string AnalyticsOptionsOptInDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("AnalyticsOptionsOptInDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Do you want to help Google by reporting usage statics?.
         /// </summary>
-        public static string AnalyticsPromptMessage {
-            get {
+        public static string AnalyticsPromptMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("AnalyticsPromptMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Usage Statistics.
         /// </summary>
-        public static string AnalyticsPromptTitle {
-            get {
+        public static string AnalyticsPromptTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("AnalyticsPromptTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Choose or create an account.
         /// </summary>
@@ -333,579 +381,707 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to Network.
         /// </summary>
-        public static string AuthorizedNetworksNetworkHeader {
-            get {
+        public static string AuthorizedNetworksNetworkHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("AuthorizedNetworksNetworkHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add Authorized Network.
         /// </summary>
-        public static string AuthorizedNetworksWindowAddNetworkButton {
-            get {
+        public static string AuthorizedNetworksWindowAddNetworkButton
+        {
+            get
+            {
                 return ResourceManager.GetString("AuthorizedNetworksWindowAddNetworkButton", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Manage Authorized Networks.
         /// </summary>
-        public static string AuthorizedNetworksWindowCaption {
-            get {
+        public static string AuthorizedNetworksWindowCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("AuthorizedNetworksWindowCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enter IPv4 in CIDR notation (e.g. 192.168.2.0/24)..
         /// </summary>
-        public static string AuthorizedNetworksWindowInvalidCidrFormatErrorMessage {
-            get {
+        public static string AuthorizedNetworksWindowInvalidCidrFormatErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("AuthorizedNetworksWindowInvalidCidrFormatErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid Subnet..
         /// </summary>
-        public static string AuthorizedNetworksWindowInvalidCidrFormatErrorTitle {
-            get {
+        public static string AuthorizedNetworksWindowInvalidCidrFormatErrorTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("AuthorizedNetworksWindowInvalidCidrFormatErrorTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Manage authorized networks that can connect to your instance..
         /// </summary>
-        public static string AuthorizedNetworksWindowMessage {
-            get {
+        public static string AuthorizedNetworksWindowMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("AuthorizedNetworksWindowMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Name (Optional):.
         /// </summary>
-        public static string AuthorizedNetworksWindowNameTextBoxTitle {
-            get {
+        public static string AuthorizedNetworksWindowNameTextBoxTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("AuthorizedNetworksWindowNameTextBoxTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Network (CIDR Notation):.
         /// </summary>
-        public static string AuthorizedNetworksWindowValueTextBoxTitle {
-            get {
+        public static string AuthorizedNetworksWindowValueTextBoxTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("AuthorizedNetworksWindowValueTextBoxTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Enable API.
         /// </summary>
-        public static string CloudExploreDisabledApiEnableApiMenuHeader {
-            get {
+        public static string CloudExploreDisabledApiEnableApiMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExploreDisabledApiEnableApiMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to To create a project, go to the Cloud Platform Console..
         /// </summary>
-        public static string CloudExploreNoProjectMessage {
-            get {
+        public static string CloudExploreNoProjectMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExploreNoProjectMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The operation was canceled..
         /// </summary>
-        public static string CloudExploreOperationCanceledMessage {
-            get {
+        public static string CloudExploreOperationCanceledMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExploreOperationCanceledMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The operation took too long to complete and timed out..
         /// </summary>
-        public static string CloudExploreOperationTimeoutMessage {
-            get {
+        public static string CloudExploreOperationTimeoutMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExploreOperationTimeoutMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open Cloud Platform Console for other services.
         /// </summary>
-        public static string CloudExplorerConsoleLinkCaption {
-            get {
+        public static string CloudExplorerConsoleLinkCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerConsoleLinkCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Delete Service.
         /// </summary>
-        public static string CloudExplorerGaeDeleteService {
-            get {
+        public static string CloudExplorerGaeDeleteService
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeDeleteService", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete service {0}?.
         /// </summary>
-        public static string CloudExplorerGaeDeleteServiceConfirmationPromptMessage {
-            get {
+        public static string CloudExplorerGaeDeleteServiceConfirmationPromptMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeDeleteServiceConfirmationPromptMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to delete service..
         /// </summary>
-        public static string CloudExplorerGaeDeleteServiceErrorMessage {
-            get {
+        public static string CloudExplorerGaeDeleteServiceErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeDeleteServiceErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Delete Version.
         /// </summary>
-        public static string CloudExplorerGaeDeleteVersion {
-            get {
+        public static string CloudExplorerGaeDeleteVersion
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeDeleteVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete {0}&apos;s version {1}?.
         /// </summary>
-        public static string CloudExplorerGaeDeleteVersionConfirmationPromptMessage {
-            get {
+        public static string CloudExplorerGaeDeleteVersionConfirmationPromptMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeDeleteVersionConfirmationPromptMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to delete version..
         /// </summary>
-        public static string CloudExplorerGaeDeleteVersionErrorMessage {
-            get {
+        public static string CloudExplorerGaeDeleteVersionErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeDeleteVersionErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to load the list of Google Cloud App Engine services.
         /// </summary>
-        public static string CloudExplorerGaeFailedServicesMessage {
-            get {
+        public static string CloudExplorerGaeFailedServicesMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeFailedServicesMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to load services..
         /// </summary>
-        public static string CloudExplorerGaeFailedToLoadServicesCaption {
-            get {
+        public static string CloudExplorerGaeFailedToLoadServicesCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeFailedToLoadServicesCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to migrate all traffic to {0}, please try again..
         /// </summary>
-        public static string CloudExplorerGaeFailedToMigrateAllTrafficCaption {
-            get {
+        public static string CloudExplorerGaeFailedToMigrateAllTrafficCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeFailedToMigrateAllTrafficCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Loading services....
         /// </summary>
-        public static string CloudExplorerGaeLoadingServicesCaption {
-            get {
+        public static string CloudExplorerGaeLoadingServicesCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeLoadingServicesCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Migrate all traffic.
         /// </summary>
-        public static string CloudExplorerGaeMigrateAllTrafficHeader {
-            get {
+        public static string CloudExplorerGaeMigrateAllTrafficHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeMigrateAllTrafficHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Migrating all traffic to {0}.
         /// </summary>
-        public static string CloudExplorerGaeMigratingAllTrafficCaption {
-            get {
+        public static string CloudExplorerGaeMigratingAllTrafficCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeMigratingAllTrafficCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No services found..
         /// </summary>
-        public static string CloudExplorerGaeNoServicesFoundCaption {
-            get {
+        public static string CloudExplorerGaeNoServicesFoundCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeNoServicesFoundCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No versions found..
         /// </summary>
-        public static string CloudExplorerGaeNoVersionsFoundCaption {
-            get {
+        public static string CloudExplorerGaeNoVersionsFoundCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeNoVersionsFoundCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Google App Engine.
         /// </summary>
-        public static string CloudExplorerGaeRootNodeCaption {
-            get {
+        public static string CloudExplorerGaeRootNodeCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeRootNodeCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Service Properties.
         /// </summary>
-        public static string CloudExplorerGaeServiceCategory {
-            get {
+        public static string CloudExplorerGaeServiceCategory
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeServiceCategory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Deleting service {0}....
         /// </summary>
-        public static string CloudExplorerGaeServiceDeleteMessage {
-            get {
+        public static string CloudExplorerGaeServiceDeleteMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeServiceDeleteMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Relative name of the service within the application..
         /// </summary>
-        public static string CloudExplorerGaeServiceIdDescription {
-            get {
+        public static string CloudExplorerGaeServiceIdDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeServiceIdDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Full path to the service resource in the API..
         /// </summary>
-        public static string CloudExplorerGaeServiceNameDescription {
-            get {
+        public static string CloudExplorerGaeServiceNameDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeServiceNameDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open Running Service.
         /// </summary>
-        public static string CloudExplorerGaeServiceOpen {
-            get {
+        public static string CloudExplorerGaeServiceOpen
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeServiceOpen", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show All Runtimes.
         /// </summary>
-        public static string CloudExplorerGaeShowAllRuntimes {
-            get {
+        public static string CloudExplorerGaeShowAllRuntimes
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeShowAllRuntimes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Only .NET Runtimes.
         /// </summary>
-        public static string CloudExplorerGaeShowDotNetRuntimes {
-            get {
+        public static string CloudExplorerGaeShowDotNetRuntimes
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeShowDotNetRuntimes", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Flexible and Standard Versions.
         /// </summary>
-        public static string CloudExplorerGaeShowFlexAndStandardVersions {
-            get {
+        public static string CloudExplorerGaeShowFlexAndStandardVersions
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeShowFlexAndStandardVersions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Only Flexible Versions.
         /// </summary>
-        public static string CloudExplorerGaeShowFlexVersions {
-            get {
+        public static string CloudExplorerGaeShowFlexVersions
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeShowFlexVersions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Only Versions with Traffic.
         /// </summary>
-        public static string CloudExplorerGaeShowVersionsWithTraffic {
-            get {
+        public static string CloudExplorerGaeShowVersionsWithTraffic
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeShowVersionsWithTraffic", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Versions with and without Traffic.
         /// </summary>
-        public static string CloudExplorerGaeShowWithAndWithoutTraffic {
-            get {
+        public static string CloudExplorerGaeShowWithAndWithoutTraffic
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeShowWithAndWithoutTraffic", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Split Traffic.
         /// </summary>
-        public static string CloudExplorerGaeSplitTraffic {
-            get {
+        public static string CloudExplorerGaeSplitTraffic
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeSplitTraffic", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Start Version.
         /// </summary>
-        public static string CloudExplorerGaeStartVersion {
-            get {
+        public static string CloudExplorerGaeStartVersion
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeStartVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Stop Version.
         /// </summary>
-        public static string CloudExplorerGaeStopVersion {
-            get {
+        public static string CloudExplorerGaeStopVersion
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeStopVersion", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to updated the serving status..
         /// </summary>
-        public static string CloudExplorerGaeUpdateServingStatusErrorMessage {
-            get {
+        public static string CloudExplorerGaeUpdateServingStatusErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeUpdateServingStatusErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to update traffic split..
         /// </summary>
-        public static string CloudExplorerGaeUpdateTrafficSplitErrorMessage {
-            get {
+        public static string CloudExplorerGaeUpdateTrafficSplitErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeUpdateTrafficSplitErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Updating traffic split....
         /// </summary>
-        public static string CloudExplorerGaeUpdateTrafficSplitMessage {
-            get {
+        public static string CloudExplorerGaeUpdateTrafficSplitMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeUpdateTrafficSplitMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Version Properties.
         /// </summary>
-        public static string CloudExplorerGaeVersionCategory {
-            get {
+        public static string CloudExplorerGaeVersionCategory
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionCategory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Email address of the user who created this version..
         /// </summary>
-        public static string CloudExplorerGaeVersionCreatedByDescription {
-            get {
+        public static string CloudExplorerGaeVersionCreatedByDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionCreatedByDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Created By.
         /// </summary>
-        public static string CloudExplorerGaeVersionCreatedByDisplayName {
-            get {
+        public static string CloudExplorerGaeVersionCreatedByDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionCreatedByDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Time that this version was created..
         /// </summary>
-        public static string CloudExplorerGaeVersionCreateTimeDescription {
-            get {
+        public static string CloudExplorerGaeVersionCreateTimeDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionCreateTimeDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Creation Time.
         /// </summary>
-        public static string CloudExplorerGaeVersionCreationTimeDisplayName {
-            get {
+        public static string CloudExplorerGaeVersionCreationTimeDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionCreationTimeDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Deleting version....
         /// </summary>
-        public static string CloudExplorerGaeVersionDeleteMessage {
-            get {
+        public static string CloudExplorerGaeVersionDeleteMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionDeleteMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to App Engine execution environment for this version..
         /// </summary>
-        public static string CloudExplorerGaeVersionEnvironmentDescription {
-            get {
+        public static string CloudExplorerGaeVersionEnvironmentDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionEnvironmentDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Environment.
         /// </summary>
-        public static string CloudExplorerGaeVersionEnvironmentDisplayName {
-            get {
+        public static string CloudExplorerGaeVersionEnvironmentDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionEnvironmentDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Relative name of the version within the service..
         /// </summary>
-        public static string CloudExplorerGaeVersionIdDescription {
-            get {
+        public static string CloudExplorerGaeVersionIdDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionIdDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Full path to the Version resource in the API..
         /// </summary>
-        public static string CloudExplorerGaeVersionNameDescription {
-            get {
+        public static string CloudExplorerGaeVersionNameDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionNameDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open Running Version.
         /// </summary>
-        public static string CloudExplorerGaeVersionOpen {
-            get {
+        public static string CloudExplorerGaeVersionOpen
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionOpen", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The desired runtime for this version..
         /// </summary>
-        public static string CloudExplorerGaeVersionRuntimeDescription {
-            get {
+        public static string CloudExplorerGaeVersionRuntimeDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionRuntimeDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Desired Runtime.
         /// </summary>
-        public static string CloudExplorerGaeVersionRuntimeDisplayName {
-            get {
+        public static string CloudExplorerGaeVersionRuntimeDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionRuntimeDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Current serving status of this version..
         /// </summary>
-        public static string CloudExplorerGaeVersionServingStatusDescription {
-            get {
+        public static string CloudExplorerGaeVersionServingStatusDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionServingStatusDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Serving Status.
         /// </summary>
-        public static string CloudExplorerGaeVersionServingStatusDisplayName {
-            get {
+        public static string CloudExplorerGaeVersionServingStatusDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionServingStatusDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Starting version....
         /// </summary>
-        public static string CloudExplorerGaeVersionStartServingMessage {
-            get {
+        public static string CloudExplorerGaeVersionStartServingMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionStartServingMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Stopping version....
         /// </summary>
-        public static string CloudExplorerGaeVersionStopServingMessage {
-            get {
+        public static string CloudExplorerGaeVersionStopServingMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionStopServingMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The address for this version..
         /// </summary>
-        public static string CloudExplorerGaeVersionUrlDescription {
-            get {
+        public static string CloudExplorerGaeVersionUrlDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionUrlDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Address.
         /// </summary>
-        public static string CloudExplorerGaeVersionUrlDisplayName {
-            get {
+        public static string CloudExplorerGaeVersionUrlDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGaeVersionUrlDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Attach Debugger.
         /// </summary>
@@ -918,2757 +1094,3435 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to Credentials Error.
         /// </summary>
-        public static string CloudExplorerGceFailedToGetOauthCredentialsCaption {
-            get {
+        public static string CloudExplorerGceFailedToGetOauthCredentialsCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceFailedToGetOauthCredentialsCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to fetch OAUTH credentials for account {0}, please login again..
         /// </summary>
-        public static string CloudExplorerGceFailedToGetOauthCredentialsMessage {
-            get {
+        public static string CloudExplorerGceFailedToGetOauthCredentialsMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceFailedToGetOauthCredentialsMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to start instance {0}. {1}.
         /// </summary>
-        public static string CloudExplorerGceFailedToStartInstanceMessage {
-            get {
+        public static string CloudExplorerGceFailedToStartInstanceMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceFailedToStartInstanceMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to stop instance {0}. {1}.
         /// </summary>
-        public static string CloudExplorerGceFailedToStopInstanceMessage {
-            get {
+        public static string CloudExplorerGceFailedToStopInstanceMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceFailedToStopInstanceMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error Updating Firewall.
         /// </summary>
-        public static string CloudExplorerGceFailedToUpdateFirewallCaption {
-            get {
+        public static string CloudExplorerGceFailedToUpdateFirewallCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceFailedToUpdateFirewallCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to update Firewall rules for instance..
         /// </summary>
-        public static string CloudExplorerGceFailedToUpdateFirewallMessage {
-            get {
+        public static string CloudExplorerGceFailedToUpdateFirewallMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceFailedToUpdateFirewallMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to App Engine Properties.
         /// </summary>
-        public static string CloudExplorerGceInstanceAppEngineCategory {
-            get {
+        public static string CloudExplorerGceInstanceAppEngineCategory
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceAppEngineCategory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Instance Properties.
         /// </summary>
-        public static string CloudExplorerGceInstanceCategory {
-            get {
+        public static string CloudExplorerGceInstanceCategory
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceCategory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The internal IP address of the instance.
         /// </summary>
-        public static string CloudExplorerGceInstanceInternalIpDescription {
-            get {
+        public static string CloudExplorerGceInstanceInternalIpDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceInternalIpDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Internal IP Address.
         /// </summary>
-        public static string CloudExplorerGceInstanceInternalIpDisplayName {
-            get {
+        public static string CloudExplorerGceInstanceInternalIpDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceInternalIpDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The machine type for the instance.
         /// </summary>
-        public static string CloudExplorerGceInstanceMachineTypeDescription {
-            get {
+        public static string CloudExplorerGceInstanceMachineTypeDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceMachineTypeDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Machine Type.
         /// </summary>
-        public static string CloudExplorerGceInstanceMachineTypeDisplayName {
-            get {
+        public static string CloudExplorerGceInstanceMachineTypeDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceMachineTypeDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The App Engine module for the instance..
         /// </summary>
-        public static string CloudExplorerGceInstanceModuleDescription {
-            get {
+        public static string CloudExplorerGceInstanceModuleDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceModuleDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The name of the instance.
         /// </summary>
-        public static string CloudExplorerGceInstanceNameDescription {
-            get {
+        public static string CloudExplorerGceInstanceNameDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceNameDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The public IP address of the instance.
         /// </summary>
-        public static string CloudExplorerGceInstancePublicIpDescription {
-            get {
+        public static string CloudExplorerGceInstancePublicIpDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstancePublicIpDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to External IP Address.
         /// </summary>
-        public static string CloudExplorerGceInstancePublicIpDisplayName {
-            get {
+        public static string CloudExplorerGceInstancePublicIpDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstancePublicIpDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Setting tags for {0}.
         /// </summary>
-        public static string CloudExplorerGceInstanceSettingTagsCaption {
-            get {
+        public static string CloudExplorerGceInstanceSettingTagsCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceSettingTagsCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Starting {0}.
         /// </summary>
-        public static string CloudExplorerGceInstanceStartingCaption {
-            get {
+        public static string CloudExplorerGceInstanceStartingCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceStartingCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The current status of the instance.
         /// </summary>
-        public static string CloudExplorerGceInstanceStatusDescription {
-            get {
+        public static string CloudExplorerGceInstanceStatusDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceStatusDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Stopping {0}.
         /// </summary>
-        public static string CloudExplorerGceInstanceStoppingCaption {
-            get {
+        public static string CloudExplorerGceInstanceStoppingCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceStoppingCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The tags for the instance..
         /// </summary>
-        public static string CloudExplorerGceInstanceTagsDescription {
-            get {
+        public static string CloudExplorerGceInstanceTagsDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceTagsDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Updating firewall for {0}.
         /// </summary>
-        public static string CloudExplorerGceInstanceUpdatingFirewallCaption {
-            get {
+        public static string CloudExplorerGceInstanceUpdatingFirewallCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceUpdatingFirewallCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The version of the module for the instance..
         /// </summary>
-        public static string CloudExplorerGceInstanceVersionDescription {
-            get {
+        public static string CloudExplorerGceInstanceVersionDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceVersionDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Windows Properties.
         /// </summary>
-        public static string CloudExplorerGceInstanceWindowsCategory {
-            get {
+        public static string CloudExplorerGceInstanceWindowsCategory
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceWindowsCategory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The version of Windows installed on the instance..
         /// </summary>
-        public static string CloudExplorerGceInstanceWindowsVersionDescription {
-            get {
+        public static string CloudExplorerGceInstanceWindowsVersionDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceWindowsVersionDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Windows Version.
         /// </summary>
-        public static string CloudExplorerGceInstanceWindowsVersionDisplayName {
-            get {
+        public static string CloudExplorerGceInstanceWindowsVersionDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceWindowsVersionDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The zone of the instance.
         /// </summary>
-        public static string CloudExplorerGceInstanceZoneDescription {
-            get {
+        public static string CloudExplorerGceInstanceZoneDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceInstanceZoneDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Firewall options....
         /// </summary>
-        public static string CloudExplorerGceManageFirewallPortsMenuHeader {
-            get {
+        public static string CloudExplorerGceManageFirewallPortsMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceManageFirewallPortsMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Manage Windows credentials....
         /// </summary>
-        public static string CloudExplorerGceManageWindowsCredentialsMenuHeader {
-            get {
+        public static string CloudExplorerGceManageWindowsCredentialsMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceManageWindowsCredentialsMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New ASP.NET Instance.
         /// </summary>
-        public static string CloudExplorerGceNewAspNetInstanceMenuHeader {
-            get {
+        public static string CloudExplorerGceNewAspNetInstanceMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceNewAspNetInstanceMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New Instance.
         /// </summary>
-        public static string CloudExplorerGceNewInstanceMenuHeader {
-            get {
+        public static string CloudExplorerGceNewInstanceMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceNewInstanceMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show only Windows instances.
         /// </summary>
-        public static string CloudExplorerGceOnlyWindowsButtonToolTip {
-            get {
+        public static string CloudExplorerGceOnlyWindowsButtonToolTip
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceOnlyWindowsButtonToolTip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open Remote Desktop session....
         /// </summary>
-        public static string CloudExplorerGceOpenTerminalSessionMenuHeader {
-            get {
+        public static string CloudExplorerGceOpenTerminalSessionMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceOpenTerminalSessionMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open website.
         /// </summary>
-        public static string CloudExplorerGceOpenWebSiteMenuHeader {
-            get {
+        public static string CloudExplorerGceOpenWebSiteMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceOpenWebSiteMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Publish settings saved to {0}.
         /// </summary>
-        public static string CloudExplorerGcePublishingSettingsSavedMessage {
-            get {
+        public static string CloudExplorerGcePublishingSettingsSavedMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcePublishingSettingsSavedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Google Compute Engine.
         /// </summary>
-        public static string CloudExplorerGceRootNodeCaption {
-            get {
+        public static string CloudExplorerGceRootNodeCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceRootNodeCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Save Publish Settings.
         /// </summary>
-        public static string CloudExplorerGceSavePublishSettingsDialogCaption {
-            get {
+        public static string CloudExplorerGceSavePublishSettingsDialogCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceSavePublishSettingsDialogCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Publish settings file (*.publishsettings)|*.publishsettings.
         /// </summary>
-        public static string CloudExplorerGceSavePublishSettingsExtensions {
-            get {
+        public static string CloudExplorerGceSavePublishSettingsExtensions
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceSavePublishSettingsExtensions", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Save publishing settings....
         /// </summary>
-        public static string CloudExplorerGceSavePublishSettingsMenuHeader {
-            get {
+        public static string CloudExplorerGceSavePublishSettingsMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceSavePublishSettingsMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Choose credentials for publish settings:.
         /// </summary>
-        public static string CloudExplorerGceSavePubSettingsCredentialsMessage {
-            get {
+        public static string CloudExplorerGceSavePubSettingsCredentialsMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceSavePubSettingsCredentialsMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Choose credentials.
         /// </summary>
-        public static string CloudExplorerGceSavePubSettingsCredentialsTitle {
-            get {
+        public static string CloudExplorerGceSavePubSettingsCredentialsTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceSavePubSettingsCredentialsTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show All OS Instances.
         /// </summary>
-        public static string CloudExplorerGceShowAllOsInstancesCommand {
-            get {
+        public static string CloudExplorerGceShowAllOsInstancesCommand
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceShowAllOsInstancesCommand", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Instances.
         /// </summary>
-        public static string CloudExplorerGceShowInstancesCommand {
-            get {
+        public static string CloudExplorerGceShowInstancesCommand
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceShowInstancesCommand", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Only Windows Instances.
         /// </summary>
-        public static string CloudExplorerGceShowWindowsOnlyInstancesCommand {
-            get {
+        public static string CloudExplorerGceShowWindowsOnlyInstancesCommand
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceShowWindowsOnlyInstancesCommand", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Zones.
         /// </summary>
-        public static string CloudExplorerGceShowZonesCommand {
-            get {
+        public static string CloudExplorerGceShowZonesCommand
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceShowZonesCommand", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The Google Compute Engine API is not enabled for this project..
         /// </summary>
-        public static string CloudExplorerGceSourceApiDisabledMessage {
-            get {
+        public static string CloudExplorerGceSourceApiDisabledMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceSourceApiDisabledMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to load instances data..
         /// </summary>
-        public static string CloudExplorerGceSourceFailedLoadingZonesCaption {
-            get {
+        public static string CloudExplorerGceSourceFailedLoadingZonesCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceSourceFailedLoadingZonesCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Loading instances data....
         /// </summary>
-        public static string CloudExplorerGceSourceLoadingZonesCaption {
-            get {
+        public static string CloudExplorerGceSourceLoadingZonesCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceSourceLoadingZonesCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No instances found..
         /// </summary>
-        public static string CloudExplorerGceSourceNoInstancesCaption {
-            get {
+        public static string CloudExplorerGceSourceNoInstancesCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceSourceNoInstancesCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to start {0}?.
         /// </summary>
-        public static string CloudExplorerGceStartInstanceConfirmationPrompt {
-            get {
+        public static string CloudExplorerGceStartInstanceConfirmationPrompt
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceStartInstanceConfirmationPrompt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Start {0}.
         /// </summary>
-        public static string CloudExplorerGceStartInstanceConfirmationPromptCaption {
-            get {
+        public static string CloudExplorerGceStartInstanceConfirmationPromptCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceStartInstanceConfirmationPromptCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Start instance.
         /// </summary>
-        public static string CloudExplorerGceStartInstanceMenuHeader {
-            get {
+        public static string CloudExplorerGceStartInstanceMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceStartInstanceMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Start instance operation for {0} failed. {1}.
         /// </summary>
-        public static string CloudExplorerGceStartOperationFailedMessage {
-            get {
+        public static string CloudExplorerGceStartOperationFailedMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceStartOperationFailedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to stop {0}?.
         /// </summary>
-        public static string CloudExplorerGceStopInstanceConfirmationPrompt {
-            get {
+        public static string CloudExplorerGceStopInstanceConfirmationPrompt
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceStopInstanceConfirmationPrompt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Stop {0}.
         /// </summary>
-        public static string CloudExplorerGceStopInstanceConfirmationPromptCaption {
-            get {
+        public static string CloudExplorerGceStopInstanceConfirmationPromptCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceStopInstanceConfirmationPromptCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Stop instance.
         /// </summary>
-        public static string CloudExplorerGceStopInstanceMenuHeader {
-            get {
+        public static string CloudExplorerGceStopInstanceMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceStopInstanceMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Stop instance operation for {0} failed. {1}.
         /// </summary>
-        public static string CloudExplorerGceStopOperationFailedMessage {
-            get {
+        public static string CloudExplorerGceStopOperationFailedMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceStopOperationFailedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}).
         /// </summary>
-        public static string CloudExplorerGceZoneCaption {
-            get {
+        public static string CloudExplorerGceZoneCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceZoneCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Zone Properties.
         /// </summary>
-        public static string CloudExplorerGceZoneCategory {
-            get {
+        public static string CloudExplorerGceZoneCategory
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceZoneCategory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The description of the zone..
         /// </summary>
-        public static string CloudExplorerGceZoneDescriptionDescription {
-            get {
+        public static string CloudExplorerGceZoneDescriptionDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceZoneDescriptionDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The name of the zone..
         /// </summary>
-        public static string CloudExplorerGceZoneNameDescription {
-            get {
+        public static string CloudExplorerGceZoneNameDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceZoneNameDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The region for the zone..
         /// </summary>
-        public static string CloudExplorerGceZoneRegionDescription {
-            get {
+        public static string CloudExplorerGceZoneRegionDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceZoneRegionDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The status of the zone..
         /// </summary>
-        public static string CloudExplorerGceZoneStatusDescription {
-            get {
+        public static string CloudExplorerGceZoneStatusDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGceZoneStatusDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Bucket Properties.
         /// </summary>
-        public static string CloudExplorerGcsBucketCategory {
-            get {
+        public static string CloudExplorerGcsBucketCategory
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcsBucketCategory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The creation time stamp for the bucket.
         /// </summary>
-        public static string CloudExplorerGcsBucketCreatedDescription {
-            get {
+        public static string CloudExplorerGcsBucketCreatedDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcsBucketCreatedDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}).
         /// </summary>
-        public static string CloudExplorerGcsBucketLocationCaption {
-            get {
+        public static string CloudExplorerGcsBucketLocationCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcsBucketLocationCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The location where the bucket resides..
         /// </summary>
-        public static string CloudExplorerGcsBucketLocationDescription {
-            get {
+        public static string CloudExplorerGcsBucketLocationDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcsBucketLocationDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Location.
         /// </summary>
-        public static string CloudExplorerGcsBucketLocationDisplayName {
-            get {
+        public static string CloudExplorerGcsBucketLocationDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcsBucketLocationDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The modification time stamp for the bucket.
         /// </summary>
-        public static string CloudExplorerGcsBucketModifiedDescription {
-            get {
+        public static string CloudExplorerGcsBucketModifiedDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcsBucketModifiedDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The name of the bucket.
         /// </summary>
-        public static string CloudExplorerGcsBucketNameDescription {
-            get {
+        public static string CloudExplorerGcsBucketNameDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcsBucketNameDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The storage class for the bucket.
         /// </summary>
-        public static string CloudExplorerGcsBucketStorageClassDescription {
-            get {
+        public static string CloudExplorerGcsBucketStorageClassDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcsBucketStorageClassDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Storage Class.
         /// </summary>
-        public static string CloudExplorerGcsBucketStorageClassDisplayName {
-            get {
+        public static string CloudExplorerGcsBucketStorageClassDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcsBucketStorageClassDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Whether versioning is enabled for the bucket.
         /// </summary>
-        public static string CloudExplorerGcsBucketVersioningEnabledDescription {
-            get {
+        public static string CloudExplorerGcsBucketVersioningEnabledDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcsBucketVersioningEnabledDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Is Versioning Enabled.
         /// </summary>
-        public static string CloudExplorerGcsBucketVersioningEnabledDisplayName {
-            get {
+        public static string CloudExplorerGcsBucketVersioningEnabledDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcsBucketVersioningEnabledDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to list buckets..
         /// </summary>
-        public static string CloudExplorerGcsFailedToListBucketsCaption {
-            get {
+        public static string CloudExplorerGcsFailedToListBucketsCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcsFailedToListBucketsCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Loading buckets....
         /// </summary>
-        public static string CloudExplorerGcsLoadingBucketsCaption {
-            get {
+        public static string CloudExplorerGcsLoadingBucketsCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcsLoadingBucketsCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No buckets found..
         /// </summary>
-        public static string CloudExplorerGcsNoBucketsFoundCaption {
-            get {
+        public static string CloudExplorerGcsNoBucketsFoundCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcsNoBucketsFoundCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Google Cloud Storage.
         /// </summary>
-        public static string CloudExplorerGcsRootNodeCaption {
-            get {
+        public static string CloudExplorerGcsRootNodeCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcsRootNodeCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Buckets.
         /// </summary>
-        public static string CloudExplorerGcsShowBucketsCommand {
-            get {
+        public static string CloudExplorerGcsShowBucketsCommand
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcsShowBucketsCommand", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Show Locations.
         /// </summary>
-        public static string CloudExplorerGcsShowLocationsCommand {
-            get {
+        public static string CloudExplorerGcsShowLocationsCommand
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcsShowLocationsCommand", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The Google Cloud Storage API is not enabled for this project..
         /// </summary>
-        public static string CloudExplorerGcsSourceApiDisabledMessage {
-            get {
+        public static string CloudExplorerGcsSourceApiDisabledMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerGcsSourceApiDisabledMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Browse Stackdriver Logs.
         /// </summary>
-        public static string CloudExplorerLaunchLogsViewerMenuHeader {
-            get {
+        public static string CloudExplorerLaunchLogsViewerMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerLaunchLogsViewerMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Loading....
         /// </summary>
-        public static string CloudExplorerLoadingMessage {
-            get {
+        public static string CloudExplorerLoadingMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerLoadingMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select or create account.
         /// </summary>
-        public static string CloudExplorerNoAccountButtonCaption {
-            get {
+        public static string CloudExplorerNoAccountButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerNoAccountButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add a new account or select and existing one..
         /// </summary>
-        public static string CloudExplorerNoAccountMessage {
-            get {
+        public static string CloudExplorerNoAccountMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerNoAccountMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No credentials, please login..
         /// </summary>
-        public static string CloudExplorerNoLoggedInMessage {
-            get {
+        public static string CloudExplorerNoLoggedInMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerNoLoggedInMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Go to the Cloud Platform Console.
         /// </summary>
-        public static string CloudExplorerNoProjectButtonCaption {
-            get {
+        public static string CloudExplorerNoProjectButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerNoProjectButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No project selected..
         /// </summary>
-        public static string CloudExplorerNoProjectSelectedMessage {
-            get {
+        public static string CloudExplorerNoProjectSelectedMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerNoProjectSelectedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No projects found.
         /// </summary>
-        public static string CloudExplorerNoProjectsFoundPlaceholderMessage {
-            get {
+        public static string CloudExplorerNoProjectsFoundPlaceholderMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerNoProjectsFoundPlaceholderMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Delete Subscription.
         /// </summary>
-        public static string CloudExplorerPubSubDeleteSubscriptionMenuHeader {
-            get {
+        public static string CloudExplorerPubSubDeleteSubscriptionMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubDeleteSubscriptionMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Delete Topic.
         /// </summary>
-        public static string CloudExplorerPubSubDeleteTopicMenuHeader {
-            get {
+        public static string CloudExplorerPubSubDeleteTopicMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubDeleteTopicMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to load Subscriptions.
         /// </summary>
-        public static string CloudExplorerPubSubListSubscriptionsErrorCaption {
-            get {
+        public static string CloudExplorerPubSubListSubscriptionsErrorCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubListSubscriptionsErrorCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to load Topics.
         /// </summary>
-        public static string CloudExplorerPubSubListTopicsErrorCaption {
-            get {
+        public static string CloudExplorerPubSubListTopicsErrorCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubListTopicsErrorCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Loading Subscriptions....
         /// </summary>
-        public static string CloudExplorerPubSubLoadingSubscriptionsCaption {
-            get {
+        public static string CloudExplorerPubSubLoadingSubscriptionsCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubLoadingSubscriptionsCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Loading Topics....
         /// </summary>
-        public static string CloudExplorerPubSubLoadingTopicsCaption {
-            get {
+        public static string CloudExplorerPubSubLoadingTopicsCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubLoadingTopicsCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New Subscription.
         /// </summary>
-        public static string CloudExplorerPubSubNewSubscriptionMenuHeader {
-            get {
+        public static string CloudExplorerPubSubNewSubscriptionMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubNewSubscriptionMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New Topic.
         /// </summary>
-        public static string CloudExplorerPubSubNewTopicMenuHeader {
-            get {
+        public static string CloudExplorerPubSubNewTopicMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubNewTopicMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No Topics Found.
         /// </summary>
-        public static string CloudExplorerPubSubNoTopicsFoundCaption {
-            get {
+        public static string CloudExplorerPubSubNoTopicsFoundCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubNoTopicsFoundCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Google Cloud Pub/Sub.
         /// </summary>
-        public static string CloudExplorerPubSubRootCaption {
-            get {
+        public static string CloudExplorerPubSubRootCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubRootCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Subscription Properties.
         /// </summary>
-        public static string CloudExplorerPubSubSubscriptionCategory {
-            get {
+        public static string CloudExplorerPubSubSubscriptionCategory
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubSubscriptionCategory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The Full Name of the Subscription.
         /// </summary>
-        public static string CloudExplorerPubSubSubscriptionFullNameDescription {
-            get {
+        public static string CloudExplorerPubSubSubscriptionFullNameDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubSubscriptionFullNameDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Full Name.
         /// </summary>
-        public static string CloudExplorerPubSubSubscriptionFullNameDisplayName {
-            get {
+        public static string CloudExplorerPubSubSubscriptionFullNameDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubSubscriptionFullNameDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The Name of the Subscription.
         /// </summary>
-        public static string CloudExplorerPubSubSubscriptionNameDescription {
-            get {
+        public static string CloudExplorerPubSubSubscriptionNameDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubSubscriptionNameDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
-        public static string CloudExplorerPubSubSubscriptionNameDisplayName {
-            get {
+        public static string CloudExplorerPubSubSubscriptionNameDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubSubscriptionNameDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The Topic the Subscription reads from.
         /// </summary>
-        public static string CloudExplorerPubSubSubscriptionTopicDescription {
-            get {
+        public static string CloudExplorerPubSubSubscriptionTopicDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubSubscriptionTopicDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Topic.
         /// </summary>
-        public static string CloudExplorerPubSubSubscriptionTopicDisplayName {
-            get {
+        public static string CloudExplorerPubSubSubscriptionTopicDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubSubscriptionTopicDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Topic Properties.
         /// </summary>
-        public static string CloudExplorerPubSubTopicCategory {
-            get {
+        public static string CloudExplorerPubSubTopicCategory
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubTopicCategory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The Full Name of the Topic.
         /// </summary>
-        public static string CloudExplorerPubSubTopicFullNameDescription {
-            get {
+        public static string CloudExplorerPubSubTopicFullNameDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubTopicFullNameDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Full Name.
         /// </summary>
-        public static string CloudExplorerPubSubTopicFullNameDisplayName {
-            get {
+        public static string CloudExplorerPubSubTopicFullNameDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubTopicFullNameDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The Name of the Topic.
         /// </summary>
-        public static string CloudExplorerPubSubTopicNameDescription {
-            get {
+        public static string CloudExplorerPubSubTopicNameDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubTopicNameDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
-        public static string CloudExplorerPubSubTopicNameDisplayName {
-            get {
+        public static string CloudExplorerPubSubTopicNameDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerPubSubTopicNameDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Refresh.
         /// </summary>
-        public static string CloudExplorerRefreshButtonToolTip {
-            get {
+        public static string CloudExplorerRefreshButtonToolTip
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerRefreshButtonToolTip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select account....
         /// </summary>
-        public static string CloudExplorerSelectAccountMessage {
-            get {
+        public static string CloudExplorerSelectAccountMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerSelectAccountMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Backend Type.
         /// </summary>
-        public static string CloudExplorerSqlBackendTypeDisplayName {
-            get {
+        public static string CloudExplorerSqlBackendTypeDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerSqlBackendTypeDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Database Version.
         /// </summary>
-        public static string CloudExplorerSqlDatabaseVersionDisplayName {
-            get {
+        public static string CloudExplorerSqlDatabaseVersionDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerSqlDatabaseVersionDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to load the list of Google Cloud SQL instances..
         /// </summary>
-        public static string CloudExplorerSqlFailedMessage {
-            get {
+        public static string CloudExplorerSqlFailedMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerSqlFailedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to list instances..
         /// </summary>
-        public static string CloudExplorerSqlFailedToLoadInstancesCaption {
-            get {
+        public static string CloudExplorerSqlFailedToLoadInstancesCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerSqlFailedToLoadInstancesCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Instance Properties.
         /// </summary>
-        public static string CloudExplorerSqlInstanceCategory {
-            get {
+        public static string CloudExplorerSqlInstanceCategory
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerSqlInstanceCategory", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to IPv6 Address (First Gen).
         /// </summary>
-        public static string CloudExplorerSqlInstanceIp6AddressDisplayName {
-            get {
+        public static string CloudExplorerSqlInstanceIp6AddressDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerSqlInstanceIp6AddressDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to IP Address.
         /// </summary>
-        public static string CloudExplorerSqlInstanceIpAddressDisplayName {
-            get {
+        public static string CloudExplorerSqlInstanceIpAddressDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerSqlInstanceIpAddressDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Instance Type.
         /// </summary>
-        public static string CloudExplorerSqlInstanceTypeDisplayName {
-            get {
+        public static string CloudExplorerSqlInstanceTypeDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerSqlInstanceTypeDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Loading instances....
         /// </summary>
-        public static string CloudExplorerSqlLoadingInstancesCaption {
-            get {
+        public static string CloudExplorerSqlLoadingInstancesCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerSqlLoadingInstancesCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Manage authorized networks....
         /// </summary>
-        public static string CloudExplorerSqlManageAuthorizedNetworksMenuHeader {
-            get {
+        public static string CloudExplorerSqlManageAuthorizedNetworksMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerSqlManageAuthorizedNetworksMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No instances found..
         /// </summary>
-        public static string CloudExplorerSqlNoInstancesFoundCaption {
-            get {
+        public static string CloudExplorerSqlNoInstancesFoundCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerSqlNoInstancesFoundCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Add Data Connection....
         /// </summary>
-        public static string CloudExplorerSqlOpenAddDataConnectionMenuHeader {
-            get {
+        public static string CloudExplorerSqlOpenAddDataConnectionMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerSqlOpenAddDataConnectionMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Google Cloud SQL.
         /// </summary>
-        public static string CloudExplorerSqlRootNodeCaption {
-            get {
+        public static string CloudExplorerSqlRootNodeCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerSqlRootNodeCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to updated authorized networks..
         /// </summary>
-        public static string CloudExplorerSqlUpdateAthorizedNetworksErrorMessage {
-            get {
+        public static string CloudExplorerSqlUpdateAthorizedNetworksErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerSqlUpdateAthorizedNetworksErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Updating authorized networks....
         /// </summary>
-        public static string CloudExplorerSqlUpdatedAthorizedNetworksCaption {
-            get {
+        public static string CloudExplorerSqlUpdatedAthorizedNetworksCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerSqlUpdatedAthorizedNetworksCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Status.
         /// </summary>
-        public static string CloudExplorerStatusMenuHeader {
-            get {
+        public static string CloudExplorerStatusMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerStatusMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Google Cloud Explorer ({0}).
         /// </summary>
-        public static string CloudExplorerToolWindowCaption {
-            get {
+        public static string CloudExplorerToolWindowCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerToolWindowCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Google Cloud Explorer (select account).
         /// </summary>
-        public static string CloudExplorerToolWindowCaptionNoAccount {
-            get {
+        public static string CloudExplorerToolWindowCaptionNoAccount
+        {
+            get
+            {
                 return ResourceManager.GetString("CloudExplorerToolWindowCaptionNoAccount", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 1 day.
         /// </summary>
-        public static string ErrorReporting1DayButtonCaption {
-            get {
+        public static string ErrorReporting1DayButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReporting1DayButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 48 minutes.
         /// </summary>
-        public static string ErrorReporting1DayRangeTimeCountDurationLabel {
-            get {
+        public static string ErrorReporting1DayRangeTimeCountDurationLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReporting1DayRangeTimeCountDurationLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 1 hour.
         /// </summary>
-        public static string ErrorReporting1HourButtonCaption {
-            get {
+        public static string ErrorReporting1HourButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReporting1HourButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 2 minutes.
         /// </summary>
-        public static string ErrorReporting1HourRangeTimeCountDurationLabel {
-            get {
+        public static string ErrorReporting1HourRangeTimeCountDurationLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReporting1HourRangeTimeCountDurationLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 30 days.
         /// </summary>
-        public static string ErrorReporting30DaysButtonCaption {
-            get {
+        public static string ErrorReporting30DaysButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReporting30DaysButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 1 day.
         /// </summary>
-        public static string ErrorReporting30DaysRangeTimeCountDurationLabel {
-            get {
+        public static string ErrorReporting30DaysRangeTimeCountDurationLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReporting30DaysRangeTimeCountDurationLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 6 hours.
         /// </summary>
-        public static string ErrorReporting6HoursButtonCaption {
-            get {
+        public static string ErrorReporting6HoursButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReporting6HoursButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 12 minutes.
         /// </summary>
-        public static string ErrorReporting6HoursRangeTimeCountDurationLabel {
-            get {
+        public static string ErrorReporting6HoursRangeTimeCountDurationLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReporting6HoursRangeTimeCountDurationLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 5.6 hours.
         /// </summary>
-        public static string ErrorReporting7DayRangeTimeCountDurationLabel {
-            get {
+        public static string ErrorReporting7DayRangeTimeCountDurationLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReporting7DayRangeTimeCountDurationLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to 7 days.
         /// </summary>
-        public static string ErrorReporting7DaysButtonCaption {
-            get {
+        public static string ErrorReporting7DaysButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReporting7DaysButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Users.
         /// </summary>
-        public static string ErrorReportingAffectedUsersHeader {
-            get {
+        public static string ErrorReportingAffectedUsersHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingAffectedUsersHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Users affected.
         /// </summary>
-        public static string ErrorReportingAffectedUsersLongerHeader {
-            get {
+        public static string ErrorReportingAffectedUsersLongerHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingAffectedUsersLongerHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to There is no data to show.
         /// </summary>
-        public static string ErrorReportingBarChartNoDataMesssage {
-            get {
+        public static string ErrorReportingBarChartNoDataMesssage
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingBarChartNoDataMesssage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error occurred {0} time in {1} {2} starting on {3}.
         /// </summary>
-        public static string ErrorReportingBarchartTooltipFormat {
-            get {
+        public static string ErrorReportingBarchartTooltipFormat
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingBarchartTooltipFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error occurred {0} times in {1} {2} starting on {3}.
         /// </summary>
-        public static string ErrorReportingBarchartTooltipPluralFormat {
-            get {
+        public static string ErrorReportingBarchartTooltipPluralFormat
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingBarchartTooltipPluralFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Errors in the last {0}.
         /// </summary>
-        public static string ErrorReportingCurrentGroupTimePeriodLabelFormat {
-            get {
+        public static string ErrorReportingCurrentGroupTimePeriodLabelFormat
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingCurrentGroupTimePeriodLabelFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to retrieve data from cloud server. Please try later.
         /// </summary>
-        public static string ErrorReportingDataSourceGenericErrorMessage {
-            get {
+        public static string ErrorReportingDataSourceGenericErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingDataSourceGenericErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MMM d.
         /// </summary>
-        public static string ErrorReportingDayTimeLineFormat {
-            get {
+        public static string ErrorReportingDayTimeLineFormat
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingDayTimeLineFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MMM d HH:mm.
         /// </summary>
-        public static string ErrorReportingDefaultTimeLineFormat {
-            get {
+        public static string ErrorReportingDefaultTimeLineFormat
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingDefaultTimeLineFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Detail View - Stackdriver Error Reporting.
         /// </summary>
-        public static string ErrorReportingDetailToolWindowCaption {
-            get {
+        public static string ErrorReportingDetailToolWindowCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingDetailToolWindowCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Seen in.
         /// </summary>
-        public static string ErrorReportingErrorAppHeader {
-            get {
+        public static string ErrorReportingErrorAppHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingErrorAppHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Occurrences.
         /// </summary>
-        public static string ErrorReportingErrorCountHeader {
-            get {
+        public static string ErrorReportingErrorCountHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingErrorCountHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error.
         /// </summary>
-        public static string ErrorReportingErrorMessageHeader {
-            get {
+        public static string ErrorReportingErrorMessageHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingErrorMessageHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to First seen.
         /// </summary>
-        public static string ErrorReportingFirstErrorTimeHeader {
-            get {
+        public static string ErrorReportingFirstErrorTimeHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingFirstErrorTimeHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error Reporting.
         /// </summary>
-        public static string ErrorReportingGobacktoErrorReportingLinkCaption {
-            get {
+        public static string ErrorReportingGobacktoErrorReportingLinkCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingGobacktoErrorReportingLinkCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unkown internal error. Please report the issue and/or retry later..
         /// </summary>
-        public static string ErrorReportingInternalCodeErrorGenericMessage {
-            get {
+        public static string ErrorReportingInternalCodeErrorGenericMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingInternalCodeErrorGenericMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Last seen.
         /// </summary>
-        public static string ErrorReportingLastErrorTimeHeader {
-            get {
+        public static string ErrorReportingLastErrorTimeHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingLastErrorTimeHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No error group selected. Go to the overview window and select an error group..
         /// </summary>
-        public static string ErrorReportingNoErrorGroupSelectedMessage {
-            get {
+        public static string ErrorReportingNoErrorGroupSelectedMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingNoErrorGroupSelectedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Parsed stack.
         /// </summary>
-        public static string ErrorReportingParsedStackTabHeader {
-            get {
+        public static string ErrorReportingParsedStackTabHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingParsedStackTabHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Raw stack.
         /// </summary>
-        public static string ErrorReportingRawStackTabHeader {
-            get {
+        public static string ErrorReportingRawStackTabHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingRawStackTabHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Recent samples.
         /// </summary>
-        public static string ErrorReportingRecentSampleLabel {
-            get {
+        public static string ErrorReportingRecentSampleLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingRecentSampleLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Status.
         /// </summary>
-        public static string ErrorReportingServiceContextStatusCodeHeader {
-            get {
+        public static string ErrorReportingServiceContextStatusCodeHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingServiceContextStatusCodeHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to in the last.
         /// </summary>
-        public static string ErrorReportingSourceTooltipTimeRangeLabel {
-            get {
+        public static string ErrorReportingSourceTooltipTimeRangeLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingSourceTooltipTimeRangeLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to hh:mm tt.
         /// </summary>
-        public static string ErrorReportingTimeTimeLineFormat {
-            get {
+        public static string ErrorReportingTimeTimeLineFormat
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingTimeTimeLineFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Stack trace sample.
         /// </summary>
-        public static string ErrorReportingToggleStackSampleButtonCaption {
-            get {
+        public static string ErrorReportingToggleStackSampleButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingToggleStackSampleButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Stackdriver Error Reporting.
         /// </summary>
-        public static string ErrorReportingToolWindowCaption {
-            get {
+        public static string ErrorReportingToolWindowCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingToolWindowCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to To overview window.
         /// </summary>
-        public static string ErrorReportingToOverviewButtonCaption {
-            get {
+        public static string ErrorReportingToOverviewButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingToOverviewButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unexpected time range.
         /// </summary>
-        public static string ErrorReportingUnexpectedEventGroupTimeRangeErrorMessage {
-            get {
+        public static string ErrorReportingUnexpectedEventGroupTimeRangeErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ErrorReportingUnexpectedEventGroupTimeRangeErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to perform the operation: {0}.
         /// </summary>
-        public static string ExceptionPromptMessage {
-            get {
+        public static string ExceptionPromptMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ExceptionPromptMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Operation failed.
         /// </summary>
-        public static string ExceptionPromptTitle {
-            get {
+        public static string ExceptionPromptTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("ExceptionPromptTitle", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to The resource {0} was not found..
+        /// </summary>
+        public static string ExceptionResourceNotFoundMessage
+        {
+            get
+            {
+                return ResourceManager.GetString("ExceptionResourceNotFoundMessage", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to The version name cannot be empty..
         /// </summary>
-        public static string FlexPublishEmptyVersionMessage {
-            get {
+        public static string FlexPublishEmptyVersionMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("FlexPublishEmptyVersionMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to deploy project {0} to App Engine Flex..
         /// </summary>
-        public static string FlexPublishFailedMessage {
-            get {
+        public static string FlexPublishFailedMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("FlexPublishFailedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid version {0}. The version must only use lowercase letters, digits and the - character..
         /// </summary>
-        public static string FlexPublishInvalidVersionMessage {
-            get {
+        public static string FlexPublishInvalidVersionMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("FlexPublishInvalidVersionMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Deploying to App Engine Flex....
         /// </summary>
-        public static string FlexPublishProgressMessage {
-            get {
+        public static string FlexPublishProgressMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("FlexPublishProgressMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Project {0} deployed to App Engine Flex..
         /// </summary>
-        public static string FlexPublishSuccessMessage {
-            get {
+        public static string FlexPublishSuccessMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("FlexPublishSuccessMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to publish project {0}..
         /// </summary>
-        public static string GcePublishFailedMessage {
-            get {
+        public static string GcePublishFailedMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GcePublishFailedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Deploying to {0}....
         /// </summary>
-        public static string GcePublishProgressMessage {
-            get {
+        public static string GcePublishProgressMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GcePublishProgressMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Publishing {0} to Compute Engine..
         /// </summary>
-        public static string GcePublishStepStartMessage {
-            get {
+        public static string GcePublishStepStartMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GcePublishStepStartMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Project {0} succesfully published to Compute Engine instance {1}..
         /// </summary>
-        public static string GcePublishSuccessMessage {
-            get {
+        public static string GcePublishSuccessMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GcePublishSuccessMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Install Google Cloud SDK.
         /// </summary>
-        public static string GcloudInstallLinkCaption {
-            get {
+        public static string GcloudInstallLinkCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("GcloudInstallLinkCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to To use this feature you need to have the Google Cloud SDK installed and available in the path. You also need the &quot;beta&quot; component installed for some features to be available. Please restart Visual Studio after the Google Cloud SDK has finished installing. You can install the Google Cloud SDK by following this link..
         /// </summary>
-        public static string GcloudMissingCloudSdkErrorMessage {
-            get {
+        public static string GcloudMissingCloudSdkErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GcloudMissingCloudSdkErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to To use this feature you need to have the &quot;{0}&quot; component of the Google Cloud SDK installed. Please do so by running the command: gcloud components install {0}..
         /// </summary>
-        public static string GcloudMissingComponentErrorMessage {
-            get {
+        public static string GcloudMissingComponentErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GcloudMissingComponentErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Missing Google Cloud SDK Component.
         /// </summary>
-        public static string GcloudMissingComponentTitle {
-            get {
+        public static string GcloudMissingComponentTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("GcloudMissingComponentTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Missing Google Cloud SDK.
         /// </summary>
-        public static string GcloudMissingGcloudErrorTitle {
-            get {
+        public static string GcloudMissingGcloudErrorTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("GcloudMissingGcloudErrorTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The version {0} of Cloud SDK installed is too old. Please update your Cloud SDK installation to version {1} or later by using the command: gcloud components update.
         /// </summary>
-        public static string GCloudWrapperUtilsOldCloudSdkMessage {
-            get {
+        public static string GCloudWrapperUtilsOldCloudSdkMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GCloudWrapperUtilsOldCloudSdkMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Google Cloud SDK too old.
         /// </summary>
-        public static string GCloudWrapperUtilsOldCloudSdkTitle {
-            get {
+        public static string GCloudWrapperUtilsOldCloudSdkTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("GCloudWrapperUtilsOldCloudSdkTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The file app.yaml was generated succesfully..
         /// </summary>
-        public static string GenerateConfigurationAppYamlGeneratedMessage {
-            get {
+        public static string GenerateConfigurationAppYamlGeneratedMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GenerateConfigurationAppYamlGeneratedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The file app.yaml already exists in your project. Are you sure you want to overwrite it?.
         /// </summary>
-        public static string GenerateConfigurationAppYamlOverwriteMessage {
-            get {
+        public static string GenerateConfigurationAppYamlOverwriteMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GenerateConfigurationAppYamlOverwriteMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The file Dockerfile was generated succesfully..
         /// </summary>
-        public static string GenerateConfigurationDockerfileGeneratedMessage {
-            get {
+        public static string GenerateConfigurationDockerfileGeneratedMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GenerateConfigurationDockerfileGeneratedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The file Dockerfile already exists in your project. Are you sure you want to overwrite it?.
         /// </summary>
-        public static string GenerateConfigurationDockerfileOverwriteMessage {
-            get {
+        public static string GenerateConfigurationDockerfileOverwriteMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GenerateConfigurationDockerfileOverwriteMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to generate file.
         /// </summary>
-        public static string GenerateConfigurationFileGeneratinErrorTitle {
-            get {
+        public static string GenerateConfigurationFileGeneratinErrorTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("GenerateConfigurationFileGeneratinErrorTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to generate file {0}..
         /// </summary>
-        public static string GenerateConfigurationFileGenerationErrorMessage {
-            get {
+        public static string GenerateConfigurationFileGenerationErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GenerateConfigurationFileGenerationErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Configuration files already exist.
         /// </summary>
-        public static string GenerateConfigurationOverwritePromptTitle {
-            get {
+        public static string GenerateConfigurationOverwritePromptTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("GenerateConfigurationOverwritePromptTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Clusters:.
         /// </summary>
-        public static string GkePublishClusterMessage {
-            get {
+        public static string GkePublishClusterMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishClusterMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Deploying {0} to Container Engine.
         /// </summary>
-        public static string GkePublishDeployingToGkeMessage {
-            get {
+        public static string GkePublishDeployingToGkeMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishDeployingToGkeMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Deployment {0} already exists, do you want to update it?.
         /// </summary>
-        public static string GkePublishDeploymentAlreadyExistsMessage {
-            get {
+        public static string GkePublishDeploymentAlreadyExistsMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishDeploymentAlreadyExistsMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Update exising deployment.
         /// </summary>
-        public static string GkePublishDeploymentAlreadyExistsTitle {
-            get {
+        public static string GkePublishDeploymentAlreadyExistsTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishDeploymentAlreadyExistsTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to deploy {0} to Container Engine.
         /// </summary>
-        public static string GkePublishDeploymentFailureMessage {
-            get {
+        public static string GkePublishDeploymentFailureMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishDeploymentFailureMessage", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Deployment name.
+        /// </summary>
+        public static string GkePublishDeploymentNameFieldName
+        {
+            get
+            {
+                return ResourceManager.GetString("GkePublishDeploymentNameFieldName", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to _Deployment name:.
         /// </summary>
-        public static string GkePublishDeploymentNameMessage {
-            get {
+        public static string GkePublishDeploymentNameMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishDeploymentNameMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Deployment {0} was scaled to {1} replicas..
         /// </summary>
-        public static string GkePublishDeploymentScaledMessage {
-            get {
+        public static string GkePublishDeploymentScaledMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishDeploymentScaledMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Deploying to Container Engine.
         /// </summary>
-        public static string GkePublishDeploymentStatusMessage {
-            get {
+        public static string GkePublishDeploymentStatusMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishDeploymentStatusMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Project {0} deployed to Container Engine.
         /// </summary>
-        public static string GkePublishDeploymentSuccessMessage {
-            get {
+        public static string GkePublishDeploymentSuccessMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishDeploymentSuccessMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Deployment {0} was updated..
         /// </summary>
-        public static string GkePublishDeploymentUpdatedMessage {
-            get {
+        public static string GkePublishDeploymentUpdatedMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishDeploymentUpdatedMessage", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Deployment version.
+        /// </summary>
+        public static string GkePublishDeploymentVersionFieldName
+        {
+            get
+            {
+                return ResourceManager.GetString("GkePublishDeploymentVersionFieldName", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Deployment _version:.
         /// </summary>
-        public static string GkePublishDeploymentVersionMessage {
-            get {
+        public static string GkePublishDeploymentVersionMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishDeploymentVersionMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Don&apos;t expose a service.
         /// </summary>
-        public static string GkePublishDontExposeServiceCaption {
-            get {
+        public static string GkePublishDontExposeServiceCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishDontExposeServiceCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The deployment name cannot be empty..
         /// </summary>
-        public static string GkePublishEmptyDeploymentNameMessage {
-            get {
+        public static string GkePublishEmptyDeploymentNameMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishEmptyDeploymentNameMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The deployment version cannot be empty..
         /// </summary>
-        public static string GkePublishEmptyDeploymentVersionMessage {
-            get {
+        public static string GkePublishEmptyDeploymentVersionMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishEmptyDeploymentVersionMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Expose a service.
         /// </summary>
-        public static string GkePublishExposeServiceCaption {
-            get {
+        public static string GkePublishExposeServiceCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishExposeServiceCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid deployment name {0}. The name must only user lowercase letters, digits and the - character..
         /// </summary>
-        public static string GkePublishInvalidDeploymentNameMessage {
-            get {
+        public static string GkePublishInvalidDeploymentNameMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishInvalidDeploymentNameMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid deployment version {0}. The version must only use lowercase letters, digits and the - character..
         /// </summary>
-        public static string GkePublishInvalidDeploymentVersionMessage {
-            get {
+        public static string GkePublishInvalidDeploymentVersionMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishInvalidDeploymentVersionMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid value for replicas, must be a number..
         /// </summary>
-        public static string GkePublishInvalidReplicasMessage {
-            get {
+        public static string GkePublishInvalidReplicasMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishInvalidReplicasMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Make service public.
         /// </summary>
-        public static string GkePublishMakeServicePublicCaption {
-            get {
+        public static string GkePublishMakeServicePublicCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishMakeServicePublicCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Create new cluster.
         /// </summary>
-        public static string GkePublishNewClusterCaption {
-            get {
+        public static string GkePublishNewClusterCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishNewClusterCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No clusters found....
         /// </summary>
-        public static string GkePublishNoClustersPlaceholder {
-            get {
+        public static string GkePublishNoClustersPlaceholder
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishNoClustersPlaceholder", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Refresh clusters.
         /// </summary>
-        public static string GkePublishRefreshClustersCaption {
-            get {
+        public static string GkePublishRefreshClustersCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishRefreshClustersCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Replic_as:.
         /// </summary>
-        public static string GkePublishReplicasCaption {
-            get {
+        public static string GkePublishReplicasCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishReplicasCaption", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Replicas.
+        /// </summary>
+        public static string GkePublishReplicasFieldName
+        {
+            get
+            {
+                return ResourceManager.GetString("GkePublishReplicasFieldName", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Service {0} cluster IP address {1}..
         /// </summary>
-        public static string GkePublishServiceClusterIpMessage {
-            get {
+        public static string GkePublishServiceClusterIpMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishServiceClusterIpMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Service {0} was deleted..
         /// </summary>
-        public static string GkePublishServiceDeletedMessage {
-            get {
+        public static string GkePublishServiceDeletedMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishServiceDeletedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Service.
         /// </summary>
-        public static string GkePublishServiceGroupHeader {
-            get {
+        public static string GkePublishServiceGroupHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishServiceGroupHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Service {0} ip address {1}.
         /// </summary>
-        public static string GkePublishServiceIpMessage {
-            get {
+        public static string GkePublishServiceIpMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishServiceIpMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Time out waiting for service ip address..
         /// </summary>
-        public static string GkePublishServiceIpTimeoutMessage {
-            get {
+        public static string GkePublishServiceIpTimeoutMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishServiceIpTimeoutMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Service {0} was updated..
         /// </summary>
-        public static string GkePublishServiceUpdatedMessage {
-            get {
+        public static string GkePublishServiceUpdatedMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishServiceUpdatedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Waiting for service IP address....
         /// </summary>
-        public static string GkePublishWaitingForServiceIpMessage {
-            get {
+        public static string GkePublishWaitingForServiceIpMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("GkePublishWaitingForServiceIpMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Continue to open the project?.
         /// </summary>
-        public static string LogsViewerAskToOpenProjectMessage {
-            get {
+        public static string LogsViewerAskToOpenProjectMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("LogsViewerAskToOpenProjectMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to All {0}.
         /// </summary>
-        public static string LogsViewerChooseAllMenuHeaderFormat {
-            get {
+        public static string LogsViewerChooseAllMenuHeaderFormat
+        {
+            get
+            {
                 return ResourceManager.GetString("LogsViewerChooseAllMenuHeaderFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The log entry was generated from assembly {0}, version {1}.\r\nOpen the project to navigate to the logger method location..
         /// </summary>
-        public static string LogsViewerPleaseOpenProjectPrompt {
-            get {
+        public static string LogsViewerPleaseOpenProjectPrompt
+        {
+            get
+            {
                 return ResourceManager.GetString("LogsViewerPleaseOpenProjectPrompt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Only show logs generated by this source line.
         /// </summary>
-        public static string LogsViewerSourceFilterCheckboxTitle {
-            get {
+        public static string LogsViewerSourceFilterCheckboxTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("LogsViewerSourceFilterCheckboxTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ({0}:{1}).
         /// </summary>
-        public static string LogsViewerSourceLinkCaptionFormat {
-            get {
+        public static string LogsViewerSourceLinkCaptionFormat
+        {
+            get
+            {
                 return ResourceManager.GetString("LogsViewerSourceLinkCaptionFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Stackdriver Logs Viewer.
         /// </summary>
-        public static string LogsViewerTooltipBackButtonCaption {
-            get {
+        public static string LogsViewerTooltipBackButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("LogsViewerTooltipBackButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Click to show matching entries.
         /// </summary>
-        public static string LogsViewerTreeNodeFilterTooltip {
-            get {
+        public static string LogsViewerTreeNodeFilterTooltip
+        {
+            get
+            {
                 return ResourceManager.GetString("LogsViewerTreeNodeFilterTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The log entry does not contain valid assembly name and/or assembly version.
         /// </summary>
-        public static string LogsViewerVersionInfoMissingMessage {
-            get {
+        public static string LogsViewerVersionInfoMissingMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("LogsViewerVersionInfoMissingMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The current project {0} assembly version is {1},\r\nOpen the project of assembly version {2} to properly locate the logging writer location..
         /// </summary>
-        public static string LogsViewerVersionMismatchPrompt {
-            get {
+        public static string LogsViewerVersionMismatchPrompt
+        {
+            get
+            {
                 return ResourceManager.GetString("LogsViewerVersionMismatchPrompt", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Do you want to continue with the current assembly version?.
         /// </summary>
-        public static string LogsViewerVersionMissmatchAskIgnoreMessage {
-            get {
+        public static string LogsViewerVersionMissmatchAskIgnoreMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("LogsViewerVersionMissmatchAskIgnoreMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Advanced filter help.
         /// </summary>
-        public static string LogViewerAdvancedFilterHelpLinkCaption {
-            get {
+        public static string LogViewerAdvancedFilterHelpLinkCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerAdvancedFilterHelpLinkCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Any.
         /// </summary>
-        public static string LogViewerAnyOtherSeverityLevelTip {
-            get {
+        public static string LogViewerAnyOtherSeverityLevelTip
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerAnyOtherSeverityLevelTip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Auto load log stream.
         /// </summary>
-        public static string LogViewerAutoReloadButtonCaption {
-            get {
+        public static string LogViewerAutoReloadButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerAutoReloadButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Click to hide all log item details.
         /// </summary>
-        public static string LogViewerCollapseAllTip {
-            get {
+        public static string LogViewerCollapseAllTip
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerCollapseAllTip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error displaying the entry.
         /// </summary>
-        public static string LogViewerDataConversionGenericError {
-            get {
+        public static string LogViewerDataConversionGenericError
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerDataConversionGenericError", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Jump to time.
         /// </summary>
-        public static string LogViewerDateTimePickerLabel {
-            get {
+        public static string LogViewerDateTimePickerLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerDateTimePickerLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to [{0}].
         /// </summary>
-        public static string LogViewerDetailTreeViewArrayIndexFormat {
-            get {
+        public static string LogViewerDetailTreeViewArrayIndexFormat
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerDetailTreeViewArrayIndexFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} :.
         /// </summary>
-        public static string LogViewerDetailTreeViewNameLabelFormat {
-            get {
+        public static string LogViewerDetailTreeViewNameLabelFormat
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerDetailTreeViewNameLabelFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0}: {1}  .
         /// </summary>
-        public static string LogViewerDictionaryPayloadFormatString {
-            get {
+        public static string LogViewerDictionaryPayloadFormatString
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerDictionaryPayloadFormatString", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Click to see all log item details.
         /// </summary>
-        public static string LogViewerExpandAllTip {
-            get {
+        public static string LogViewerExpandAllTip
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerExpandAllTip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to All logs.
         /// </summary>
-        public static string LogViewerLogIdSelectAllLabel {
-            get {
+        public static string LogViewerLogIdSelectAllLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerLogIdSelectAllLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MM-dd-yyyy.
         /// </summary>
-        public static string LogViewerLogItemDateFormat {
-            get {
+        public static string LogViewerLogItemDateFormat
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerLogItemDateFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to MM-dd-yyyy HH:mm:ss.fff.
         /// </summary>
-        public static string LogViewerLogItemDateTimeFormat {
-            get {
+        public static string LogViewerLogItemDateTimeFormat
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerLogItemDateTimeFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to HH:mm:ss.fff.
         /// </summary>
-        public static string LogViewerLogItemTimeFormat {
-            get {
+        public static string LogViewerLogItemTimeFormat
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerLogItemTimeFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to All log levels.
         /// </summary>
-        public static string LogViewerLogLevelAllLabel {
-            get {
+        public static string LogViewerLogLevelAllLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerLogLevelAllLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to CRITICAL.
         /// </summary>
-        public static string LogViewerLogLevelCriticalLabel {
-            get {
+        public static string LogViewerLogLevelCriticalLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerLogLevelCriticalLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to DEBUG.
         /// </summary>
-        public static string LogViewerLogLevelDebugLabel {
-            get {
+        public static string LogViewerLogLevelDebugLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerLogLevelDebugLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to EMERGENCY.
         /// </summary>
-        public static string LogViewerLogLevelEmergencyLabel {
-            get {
+        public static string LogViewerLogLevelEmergencyLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerLogLevelEmergencyLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to ERROR.
         /// </summary>
-        public static string LogViewerLogLevelErrorLabel {
-            get {
+        public static string LogViewerLogLevelErrorLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerLogLevelErrorLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to INFO.
         /// </summary>
-        public static string LogViewerLogLevelInfoLabel {
-            get {
+        public static string LogViewerLogLevelInfoLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerLogLevelInfoLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to WARNING.
         /// </summary>
-        public static string LogViewerLogLevelWarningLabel {
-            get {
+        public static string LogViewerLogLevelWarningLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerLogLevelWarningLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Get newest log (in descending order).
         /// </summary>
-        public static string LogViewerRefreshButtonToolTip {
-            get {
+        public static string LogViewerRefreshButtonToolTip
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerRefreshButtonToolTip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cancelling.
         /// </summary>
-        public static string LogViewerRequestCancellingMessage {
-            get {
+        public static string LogViewerRequestCancellingMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerRequestCancellingMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Loading.
         /// </summary>
-        public static string LogViewerRequestProgressMessage {
-            get {
+        public static string LogViewerRequestProgressMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerRequestProgressMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Too many log items are loaded, please narrow down your search filter and try again.
         /// </summary>
-        public static string LogViewerResultSetTooLargeMessage {
-            get {
+        public static string LogViewerResultSetTooLargeMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerResultSetTooLargeMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Filter by label or text search.
         /// </summary>
-        public static string LogViewerSimpleTextSearchIconButtonToolTip {
-            get {
+        public static string LogViewerSimpleTextSearchIconButtonToolTip
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerSimpleTextSearchIconButtonToolTip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Submit Filters.
         /// </summary>
-        public static string LogViewerSubmitAdvancedFilterCaption {
-            get {
+        public static string LogViewerSubmitAdvancedFilterCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerSubmitAdvancedFilterCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to To Advanced Filter.
         /// </summary>
-        public static string LogViewerSwitchToAdvancedFilterCaption {
-            get {
+        public static string LogViewerSwitchToAdvancedFilterCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerSwitchToAdvancedFilterCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to View simple filters.
         /// </summary>
-        public static string LogViewerSwitchToSimpleFilterCaption {
-            get {
+        public static string LogViewerSwitchToSimpleFilterCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerSwitchToSimpleFilterCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to after.
         /// </summary>
-        public static string LogViewerTimeOrderPickAsceSelection {
-            get {
+        public static string LogViewerTimeOrderPickAsceSelection
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerTimeOrderPickAsceSelection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to before.
         /// </summary>
-        public static string LogViewerTimeOrderPickDescSelection {
-            get {
+        public static string LogViewerTimeOrderPickDescSelection
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerTimeOrderPickDescSelection", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Get log.
         /// </summary>
-        public static string LogViewerTimeOrderPickLabelHead {
-            get {
+        public static string LogViewerTimeOrderPickLabelHead
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerTimeOrderPickLabelHead", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to this timestamp..
         /// </summary>
-        public static string LogViewerTimeOrderPickLabelTail {
-            get {
+        public static string LogViewerTimeOrderPickLabelTail
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerTimeOrderPickLabelTail", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Click to select different timezone.
         /// </summary>
-        public static string LogViewerTimeZoneSelectionToolTip {
-            get {
+        public static string LogViewerTimeZoneSelectionToolTip
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerTimeZoneSelectionToolTip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Google Stackdriver Logging.
         /// </summary>
-        public static string LogViewerToolWindowCaption {
-            get {
+        public static string LogViewerToolWindowCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerToolWindowCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Clear filters and return to basic mode.
         /// </summary>
-        public static string LogViewerToSimpleSearchButtonTooltip {
-            get {
+        public static string LogViewerToSimpleSearchButtonTooltip
+        {
+            get
+            {
                 return ResourceManager.GetString("LogViewerToSimpleSearchButtonTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The user account {0} already exists..
         /// </summary>
-        public static string ManageAccountsAccountAlreadyExistsPromptMessage {
-            get {
+        public static string ManageAccountsAccountAlreadyExistsPromptMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ManageAccountsAccountAlreadyExistsPromptMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Duplicate Account.
         /// </summary>
-        public static string ManageAccountsAccountAlreadyExistsPromptTitle {
-            get {
+        public static string ManageAccountsAccountAlreadyExistsPromptTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("ManageAccountsAccountAlreadyExistsPromptTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Add account.
         /// </summary>
-        public static string ManageAccountsAddAccountButtonCaption {
-            get {
+        public static string ManageAccountsAddAccountButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("ManageAccountsAddAccountButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Choose account:.
         /// </summary>
-        public static string ManageAccountsChooseAccountMessage {
-            get {
+        public static string ManageAccountsChooseAccountMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ManageAccountsChooseAccountMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Current Account.
         /// </summary>
-        public static string ManageAccountsCurrentAccountMessage {
-            get {
+        public static string ManageAccountsCurrentAccountMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ManageAccountsCurrentAccountMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you want to delete the account {0}?.
         /// </summary>
-        public static string ManageAccountsDeleteAccountPromptMessage {
-            get {
+        public static string ManageAccountsDeleteAccountPromptMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ManageAccountsDeleteAccountPromptMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Delete Account.
         /// </summary>
-        public static string ManageAccountsDeleteAccountPromptTitle {
-            get {
+        public static string ManageAccountsDeleteAccountPromptTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("ManageAccountsDeleteAccountPromptTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1}).
         /// </summary>
-        public static string ManageAccountsDisplayStringFormat {
-            get {
+        public static string ManageAccountsDisplayStringFormat
+        {
+            get
+            {
                 return ResourceManager.GetString("ManageAccountsDisplayStringFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Set current.
         /// </summary>
-        public static string ManageAccountsSetAsCurrentAccountButtonCaption {
-            get {
+        public static string ManageAccountsSetAsCurrentAccountButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("ManageAccountsSetAsCurrentAccountButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Manage Accounts.
         /// </summary>
-        public static string ManageAccountsWindowTitle {
-            get {
+        public static string ManageAccountsWindowTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("ManageAccountsWindowTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Add credentials.
         /// </summary>
-        public static string ManageWindowsCredentialsAddCredentialsCaption {
-            get {
+        public static string ManageWindowsCredentialsAddCredentialsCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("ManageWindowsCredentialsAddCredentialsCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Delete credentials.
         /// </summary>
-        public static string ManageWindowsCredentialsDeleteCredentialsCaption {
-            get {
+        public static string ManageWindowsCredentialsDeleteCredentialsCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("ManageWindowsCredentialsDeleteCredentialsCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Delete user name {0} from this computer? The credentials will still exist on the Windows instance..
         /// </summary>
-        public static string ManageWindowsCredentialsDeleteCredentialsPromptMessage {
-            get {
+        public static string ManageWindowsCredentialsDeleteCredentialsPromptMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ManageWindowsCredentialsDeleteCredentialsPromptMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Delete Credential.
         /// </summary>
-        public static string ManageWindowsCredentialsDeleteCredentialsPromptTitle {
-            get {
+        public static string ManageWindowsCredentialsDeleteCredentialsPromptTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("ManageWindowsCredentialsDeleteCredentialsPromptTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Show password.
         /// </summary>
-        public static string ManageWindowsCredentialsShowCredentialsCaption {
-            get {
+        public static string ManageWindowsCredentialsShowCredentialsCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("ManageWindowsCredentialsShowCredentialsCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Windows credentials are used to log in to a Windows machine instance..
         /// </summary>
-        public static string ManageWindowsCredentialsToolTip {
-            get {
+        public static string ManageWindowsCredentialsToolTip
+        {
+            get
+            {
                 return ResourceManager.GetString("ManageWindowsCredentialsToolTip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Credentials for {0}: .
         /// </summary>
-        public static string ManageWindowsCredentialsWindowMessage {
-            get {
+        public static string ManageWindowsCredentialsWindowMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ManageWindowsCredentialsWindowMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Windows Credentials.
         /// </summary>
-        public static string ManageWindowsCredentialsWindowTitle {
-            get {
+        public static string ManageWindowsCredentialsWindowTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("ManageWindowsCredentialsWindowTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Download and install the MySQL Installer which will guide you through installing the needed extensions. After they are installed restart Visual Studio..
         /// </summary>
-        public static string MySqlInstallerWindowBottomMessage {
-            get {
+        public static string MySqlInstallerWindowBottomMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("MySqlInstallerWindowBottomMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Download MySQL for Visual Studio.
         /// </summary>
-        public static string MySqlInstallerWindowTitle {
-            get {
+        public static string MySqlInstallerWindowTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("MySqlInstallerWindowTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to To add a Google Cloud SQL database as a Data Connection &quot;MySQL for Visual Studio&quot; must be installed. It is highly recommended that the &quot;MySQL Connector/Net&quot; also be installed to be able to properly interact with the database..
         /// </summary>
-        public static string MySqlInstallerWindowTopMessage {
-            get {
+        public static string MySqlInstallerWindowTopMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("MySqlInstallerWindowTopMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Acknowledgement deadline (seconds):.
         /// </summary>
-        public static string NewSubscriptionWindowAckDeadlineLabel {
-            get {
+        public static string NewSubscriptionWindowAckDeadlineLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("NewSubscriptionWindowAckDeadlineLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to How long Pub/Sub waits for the subscriber to acknowledge receipt before resending the message.
         /// </summary>
-        public static string NewSubscriptionWindowAckDeadlineTooltip {
-            get {
+        public static string NewSubscriptionWindowAckDeadlineTooltip
+        {
+            get
+            {
                 return ResourceManager.GetString("NewSubscriptionWindowAckDeadlineTooltip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Delivery type:.
         /// </summary>
-        public static string NewSubscriptionWindowDeliveryType {
-            get {
+        public static string NewSubscriptionWindowDeliveryType
+        {
+            get
+            {
                 return ResourceManager.GetString("NewSubscriptionWindowDeliveryType", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New Subscription for Topic {0}.
         /// </summary>
-        public static string NewSubscriptionWindowHeader {
-            get {
+        public static string NewSubscriptionWindowHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("NewSubscriptionWindowHeader", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string NewSubscriptionWindowNameFieldName
+        {
+            get
+            {
+                return ResourceManager.GetString("NewSubscriptionWindowNameFieldName", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to _Name:.
         /// </summary>
-        public static string NewSubscriptionWindowNameLabel {
-            get {
+        public static string NewSubscriptionWindowNameLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("NewSubscriptionWindowNameLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Pu_ll.
         /// </summary>
-        public static string NewSubscriptionWindowPullLabel {
-            get {
+        public static string NewSubscriptionWindowPullLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("NewSubscriptionWindowPullLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Push to _URL:.
         /// </summary>
-        public static string NewSubscriptionWindowPushLabel {
-            get {
+        public static string NewSubscriptionWindowPushLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("NewSubscriptionWindowPushLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to New Topic in Project {0}.
         /// </summary>
-        public static string NewTopicWindowHeader {
-            get {
+        public static string NewTopicWindowHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("NewTopicWindowHeader", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Topic name.
+        /// </summary>
+        public static string NewTopicWindowNameFieldName
+        {
+            get
+            {
+                return ResourceManager.GetString("NewTopicWindowNameFieldName", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Topic _name:.
         /// </summary>
-        public static string NewTopicWindowNameLabel {
-            get {
+        public static string NewTopicWindowNameLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("NewTopicWindowNameLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to A browser window has been open to login into your account. To cancel this operation close the browser window and press Cancel to close this window. When the login finishes this window will close automatically..
         /// </summary>
-        public static string OAuthFlowWindowMessage {
-            get {
+        public static string OAuthFlowWindowMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("OAuthFlowWindowMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Provide Account.
         /// </summary>
-        public static string OAuthFlowWindowTitle {
-            get {
+        public static string OAuthFlowWindowTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("OAuthFlowWindowTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} ({1} {2}).
         /// </summary>
-        public static string PortManagerDisplayStringFormat {
-            get {
+        public static string PortManagerDisplayStringFormat
+        {
+            get
+            {
                 return ResourceManager.GetString("PortManagerDisplayStringFormat", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Allow HTTP traffic to the instance.
         /// </summary>
-        public static string PortManagerHttpDescription {
-            get {
+        public static string PortManagerHttpDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("PortManagerHttpDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Allow HTTPS traffic to the instance.
         /// </summary>
-        public static string PortManagerHttpsDescription {
-            get {
+        public static string PortManagerHttpsDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("PortManagerHttpsDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Allow Remote Desktop connections to the instance.
         /// </summary>
-        public static string PortManagerRdpDescription {
-            get {
+        public static string PortManagerRdpDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("PortManagerRdpDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Allow Visual Studio remote debugger port.
         /// </summary>
@@ -3690,980 +4544,1253 @@ namespace GoogleCloudExtension {
         /// <summary>
         ///   Looks up a localized string similar to Allow publishing with WebDeploy to the instance.
         /// </summary>
-        public static string PortManagerWebDeployDescription {
-            get {
+        public static string PortManagerWebDeployDescription
+        {
+            get
+            {
                 return ResourceManager.GetString("PortManagerWebDeployDescription", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Firewall Options.
         /// </summary>
-        public static string PortManagerWindowCaption {
-            get {
+        public static string PortManagerWindowCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("PortManagerWindowCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Firewall rules:.
         /// </summary>
-        public static string PortManagerWindowMessage {
-            get {
+        public static string PortManagerWindowMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("PortManagerWindowMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Id.
         /// </summary>
-        public static string PropertyWindowItemIdDisplayName {
-            get {
+        public static string PropertyWindowItemIdDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("PropertyWindowItemIdDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Name.
         /// </summary>
-        public static string PropertyWindowItemNameDisplayName {
-            get {
+        public static string PropertyWindowItemNameDisplayName
+        {
+            get
+            {
                 return ResourceManager.GetString("PropertyWindowItemNameDisplayName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Publish {0}.
         /// </summary>
-        public static string PublishDialogCaption {
-            get {
+        public static string PublishDialogCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishDialogCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _App Engine Flex.
         /// </summary>
-        public static string PublishDialogChoiceStepAppEngineFlexName {
-            get {
+        public static string PublishDialogChoiceStepAppEngineFlexName
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishDialogChoiceStepAppEngineFlexName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Deploy to App Engine Flex.
         /// </summary>
-        public static string PublishDialogChoiceStepAppEngineToolTip {
-            get {
+        public static string PublishDialogChoiceStepAppEngineToolTip
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishDialogChoiceStepAppEngineToolTip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Compute Engine.
         /// </summary>
-        public static string PublishDialogChoiceStepGceName {
-            get {
+        public static string PublishDialogChoiceStepGceName
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishDialogChoiceStepGceName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Deploy to Compute Engine.
         /// </summary>
-        public static string PublishDialogChoiceStepGceToolTip {
-            get {
+        public static string PublishDialogChoiceStepGceToolTip
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishDialogChoiceStepGceToolTip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to C_ontainer Engine.
         /// </summary>
-        public static string PublishDialogChoiceStepGkeName {
-            get {
+        public static string PublishDialogChoiceStepGkeName
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishDialogChoiceStepGkeName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Deploy as a service to Container Engine.
         /// </summary>
-        public static string PublishDialogChoiceStepGkeToolTip {
-            get {
+        public static string PublishDialogChoiceStepGkeToolTip
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishDialogChoiceStepGkeToolTip", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Choose a product to publish to:.
         /// </summary>
-        public static string PublishDialogChoiceStepMessage {
-            get {
+        public static string PublishDialogChoiceStepMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishDialogChoiceStepMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to P_romote version.
         /// </summary>
-        public static string PublishDialogFlexPromoteVersionCaption {
-            get {
+        public static string PublishDialogFlexPromoteVersionCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishDialogFlexPromoteVersionCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Version name:.
         /// </summary>
-        public static string PublishDialogFlexVersionNameCaption {
-            get {
+        public static string PublishDialogFlexVersionNameCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishDialogFlexVersionNameCaption", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Version name.
+        /// </summary>
+        public static string PublishDialogFlexVersionNameFieldName
+        {
+            get
+            {
+                return ResourceManager.GetString("PublishDialogFlexVersionNameFieldName", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to _Account:.
         /// </summary>
-        public static string PublishDialogGceStepSelectCredentialsMessage {
-            get {
+        public static string PublishDialogGceStepSelectCredentialsMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishDialogGceStepSelectCredentialsMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _VM instance:.
         /// </summary>
-        public static string PublishDialogGceStepSelectInstanceMessage {
-            get {
+        public static string PublishDialogGceStepSelectInstanceMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishDialogGceStepSelectInstanceMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Publish project to Google Cloud....
         /// </summary>
-        public static string PublishDialogGenericMenuHeader {
-            get {
+        public static string PublishDialogGenericMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishDialogGenericMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Next.
         /// </summary>
-        public static string PublishDialogNextButtonCaption {
-            get {
+        public static string PublishDialogNextButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishDialogNextButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Open site after publishing.
         /// </summary>
-        public static string PublishDialogOpenWebsiteCaption {
-            get {
+        public static string PublishDialogOpenWebsiteCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishDialogOpenWebsiteCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Prev.
         /// </summary>
-        public static string PublishDialogPrevButtonCaption {
-            get {
+        public static string PublishDialogPrevButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishDialogPrevButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Publish {0} to Google Cloud....
         /// </summary>
-        public static string PublishDialogProjectMenuHeader {
-            get {
+        public static string PublishDialogProjectMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishDialogProjectMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to P_ublish.
         /// </summary>
-        public static string PublishDialogPublishButtonCaption {
-            get {
+        public static string PublishDialogPublishButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishDialogPublishButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Deployment failed.
         /// </summary>
-        public static string PublishFailureStatusMessage {
-            get {
+        public static string PublishFailureStatusMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishFailureStatusMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Deployment succeeded.
         /// </summary>
-        public static string PublishSuccessStatusMessage {
-            get {
+        public static string PublishSuccessStatusMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishSuccessStatusMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to App deployed to {0}.
         /// </summary>
-        public static string PublishUrlMessage {
-            get {
+        public static string PublishUrlMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("PublishUrlMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error in delete subscription.
         /// </summary>
-        public static string PubSubDeleteSubscriptionErrorHeader {
-            get {
+        public static string PubSubDeleteSubscriptionErrorHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("PubSubDeleteSubscriptionErrorHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error deleting subscription.
         /// </summary>
-        public static string PubSubDeleteSubscriptionErrorMessage {
-            get {
+        public static string PubSubDeleteSubscriptionErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("PubSubDeleteSubscriptionErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Delete Subscription.
         /// </summary>
-        public static string PubSubDeleteSubscriptionWindowHeader {
-            get {
+        public static string PubSubDeleteSubscriptionWindowHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("PubSubDeleteSubscriptionWindowHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you wish to delete subscription {0}?.
         /// </summary>
-        public static string PubSubDeleteSubscriptionWindowMessage {
-            get {
+        public static string PubSubDeleteSubscriptionWindowMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("PubSubDeleteSubscriptionWindowMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error in delete topic.
         /// </summary>
-        public static string PubSubDeleteTopicErrorHeader {
-            get {
+        public static string PubSubDeleteTopicErrorHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("PubSubDeleteTopicErrorHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error deleting topic..
         /// </summary>
-        public static string PubSubDeleteTopicErrorMessage {
-            get {
+        public static string PubSubDeleteTopicErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("PubSubDeleteTopicErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Delete Topic.
         /// </summary>
-        public static string PubSubDeleteTopicWindowHeader {
-            get {
+        public static string PubSubDeleteTopicWindowHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("PubSubDeleteTopicWindowHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Are you sure you wish to delete topic {0}?.
         /// </summary>
-        public static string PubSubDeleteTopicWindowMessage {
-            get {
+        public static string PubSubDeleteTopicWindowMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("PubSubDeleteTopicWindowMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error in new subscription.
         /// </summary>
-        public static string PubSubNewSubscriptionErrorHeader {
-            get {
+        public static string PubSubNewSubscriptionErrorHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("PubSubNewSubscriptionErrorHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error creating new subscription..
         /// </summary>
-        public static string PubSubNewSubscriptionErrorMessage {
-            get {
+        public static string PubSubNewSubscriptionErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("PubSubNewSubscriptionErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} is not a valid subscription name.
         /// </summary>
-        public static string PubSubNewSubscriptionNameInvalidMessage {
-            get {
+        public static string PubSubNewSubscriptionNameInvalidMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("PubSubNewSubscriptionNameInvalidMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid Subscription Name.
         /// </summary>
-        public static string PubSubNewSubscriptionNameInvalidTitle {
-            get {
+        public static string PubSubNewSubscriptionNameInvalidTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("PubSubNewSubscriptionNameInvalidTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error in new topic.
         /// </summary>
-        public static string PubSubNewTopicErrorHeader {
-            get {
+        public static string PubSubNewTopicErrorHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("PubSubNewTopicErrorHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Error creating new topic..
         /// </summary>
-        public static string PubSubNewTopicErrorMessage {
-            get {
+        public static string PubSubNewTopicErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("PubSubNewTopicErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} is not a valid topic name.
         /// </summary>
-        public static string PubSubNewTopicNameInvalidMessage {
-            get {
+        public static string PubSubNewTopicNameInvalidMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("PubSubNewTopicNameInvalidMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid Topic Name.
         /// </summary>
-        public static string PubSubNewTopicNameInvalidTitle {
-            get {
+        public static string PubSubNewTopicNameInvalidTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("PubSubNewTopicNameInvalidTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Orphaned Subscriptions.
         /// </summary>
-        public static string PubSubOrphanedSubscriptionsItemName {
-            get {
+        public static string PubSubOrphanedSubscriptionsItemName
+        {
+            get
+            {
                 return ResourceManager.GetString("PubSubOrphanedSubscriptionsItemName", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Reset the password for {0} on instance {1}?.
         /// </summary>
-        public static string ResetPasswordConfirmationPromptMessage {
-            get {
+        public static string ResetPasswordConfirmationPromptMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ResetPasswordConfirmationPromptMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Reset Password.
         /// </summary>
-        public static string ResetPasswordConfirmationPromptTitle {
-            get {
+        public static string ResetPasswordConfirmationPromptTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("ResetPasswordConfirmationPromptTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to reset password for {0}. .
         /// </summary>
-        public static string ResetPasswordFailedPromptMessage {
-            get {
+        public static string ResetPasswordFailedPromptMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ResetPasswordFailedPromptMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Resetting password for {0}.
         /// </summary>
-        public static string ResetPasswordProgressMessage {
-            get {
+        public static string ResetPasswordProgressMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ResetPasswordProgressMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Resetting Password.
         /// </summary>
-        public static string ResetPasswordProgressTitle {
-            get {
+        public static string ResetPasswordProgressTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("ResetPasswordProgressTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Password copied to clipboard..
         /// </summary>
-        public static string ShowPasswordCopiedMessage {
-            get {
+        public static string ShowPasswordCopiedMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ShowPasswordCopiedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The copy operation failed, this might happen if another program has the Windows Clipboard open, such as a virtual machine agent..
         /// </summary>
-        public static string ShowPasswordCopyFailedMessage {
-            get {
+        public static string ShowPasswordCopyFailedMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ShowPasswordCopyFailedMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Copy Failed.
         /// </summary>
-        public static string ShowPasswordCopyFailedTitle {
-            get {
+        public static string ShowPasswordCopyFailedTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("ShowPasswordCopyFailedTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to {0} password:.
         /// </summary>
-        public static string ShowPasswordMessage {
-            get {
+        public static string ShowPasswordMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ShowPasswordMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The password for {0} has been set:.
         /// </summary>
-        public static string ShowPasswordNewPasswordMessage {
-            get {
+        public static string ShowPasswordNewPasswordMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ShowPasswordNewPasswordMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Password for {0}.
         /// </summary>
-        public static string ShowPasswordWindowTitle {
-            get {
+        public static string ShowPasswordWindowTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("ShowPasswordWindowTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Select File.
         /// </summary>
-        public static string SourceVersionPickFileDialogCaption {
-            get {
+        public static string SourceVersionPickFileDialogCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("SourceVersionPickFileDialogCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open file.
         /// </summary>
-        public static string SourceVersionProgressDialogMessage {
-            get {
+        public static string SourceVersionProgressDialogMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("SourceVersionProgressDialogMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Failed to open the source file.\r\n{0}.
         /// </summary>
-        public static string SourceVersionUtilsFailedOpenFileMessage {
-            get {
+        public static string SourceVersionUtilsFailedOpenFileMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("SourceVersionUtilsFailedOpenFileMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unable to locate file {0} of commit sha {1} at local repo {2} .
         /// </summary>
-        public static string SourceVersionUtilsFailedToLocateFileInRepoMessage {
-            get {
+        public static string SourceVersionUtilsFailedToLocateFileInRepoMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("SourceVersionUtilsFailedToLocateFileInRepoMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Source file {0} not found in this solution. Select another solution..
         /// </summary>
-        public static string SourceVersionUtilsFileNotFoundMessage {
-            get {
+        public static string SourceVersionUtilsFileNotFoundMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("SourceVersionUtilsFileNotFoundMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Unable to find source file.
         /// </summary>
-        public static string SourceVersionUtilsUnalbeFindFileTitle {
-            get {
+        public static string SourceVersionUtilsUnalbeFindFileTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("SourceVersionUtilsUnalbeFindFileTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Versions don&apos;t match.
         /// </summary>
-        public static string SourceVersionUtilsVersionMismatchTitle {
-            get {
+        public static string SourceVersionUtilsVersionMismatchTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("SourceVersionUtilsVersionMismatchTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Allocations:.
         /// </summary>
-        public static string SplitTrafficWindowAllocationsLabel {
-            get {
+        public static string SplitTrafficWindowAllocationsLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("SplitTrafficWindowAllocationsLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cookie.
         /// </summary>
-        public static string SplitTrafficWindowCookieLabel {
-            get {
+        public static string SplitTrafficWindowCookieLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("SplitTrafficWindowCookieLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid traffic allocation {0}. Each traffic allocation must be greater than or equal to 1% and less than or equal to 100%.
         /// </summary>
-        public static string SplitTrafficWindowInvalidPercentRangeErrorMessage {
-            get {
+        public static string SplitTrafficWindowInvalidPercentRangeErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("SplitTrafficWindowInvalidPercentRangeErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to The sum of traffic allocations must be 100% of all traffic..
         /// </summary>
-        public static string SplitTrafficWindowInvalidPercentSumErrorMessage {
-            get {
+        public static string SplitTrafficWindowInvalidPercentSumErrorMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("SplitTrafficWindowInvalidPercentSumErrorMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid Percent.
         /// </summary>
-        public static string SplitTrafficWindowInvalidPercentTitle {
-            get {
+        public static string SplitTrafficWindowInvalidPercentTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("SplitTrafficWindowInvalidPercentTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to IP Address.
         /// </summary>
-        public static string SplitTrafficWindowIpAddressLabel {
-            get {
+        public static string SplitTrafficWindowIpAddressLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("SplitTrafficWindowIpAddressLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Manage traffic splitting of versions by:.
         /// </summary>
-        public static string SplitTrafficWindowSplitByMessage {
-            get {
+        public static string SplitTrafficWindowSplitByMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("SplitTrafficWindowSplitByMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Traffic Split Allocations.
         /// </summary>
-        public static string SplitTrafficWindowTitle {
-            get {
+        public static string SplitTrafficWindowTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("SplitTrafficWindowTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Traffic Allocation.
         /// </summary>
-        public static string SplitTrafficWindowTrafficAllocationLabel {
-            get {
+        public static string SplitTrafficWindowTrafficAllocationLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("SplitTrafficWindowTrafficAllocationLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Version.
         /// </summary>
-        public static string SplitTrafficWindowVersionLabel {
-            get {
+        public static string SplitTrafficWindowVersionLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("SplitTrafficWindowVersionLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Choose credentials to use:.
         /// </summary>
-        public static string TerminalServerManagerWindowMessage {
-            get {
+        public static string TerminalServerManagerWindowMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("TerminalServerManagerWindowMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Start Remote Desktop Session.
         /// </summary>
-        public static string TerminalServerManagerWindowTitle {
-            get {
+        public static string TerminalServerManagerWindowTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("TerminalServerManagerWindowTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Account.
         /// </summary>
-        public static string TitleBarAccountLabel {
-            get {
+        public static string TitleBarAccountLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("TitleBarAccountLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Project.
         /// </summary>
-        public static string TitleBarProjectIdLabel {
-            get {
+        public static string TitleBarProjectIdLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("TitleBarProjectIdLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to AUTO RELOAD.
         /// </summary>
-        public static string UiAutoReloadButtonCaption {
-            get {
+        public static string UiAutoReloadButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiAutoReloadButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Cancel.
         /// </summary>
-        public static string UiCancelButtonCaption {
-            get {
+        public static string UiCancelButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiCancelButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to All.
         /// </summary>
-        public static string UiChooseAllMenuHeader {
-            get {
+        public static string UiChooseAllMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("UiChooseAllMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Close.
         /// </summary>
-        public static string UiCloseButtonCaption {
-            get {
+        public static string UiCloseButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiCloseButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Date.
         /// </summary>
-        public static string UiDateLabel {
-            get {
+        public static string UiDateLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("UiDateLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Google Cloud Tools.
         /// </summary>
-        public static string uiDefaultPromptTitle {
-            get {
+        public static string uiDefaultPromptTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("uiDefaultPromptTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Delete.
         /// </summary>
-        public static string UiDeleteButtonCaption {
-            get {
+        public static string UiDeleteButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiDeleteButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Download.
         /// </summary>
-        public static string UiDownloadButtonCaption {
-            get {
+        public static string UiDownloadButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiDownloadButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Go.
         /// </summary>
-        public static string UiGoButtonCaption {
-            get {
+        public static string UiGoButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiGoButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Invalid value.
         /// </summary>
-        public static string UiInvalidValueTitle {
-            get {
+        public static string UiInvalidValueTitle
+        {
+            get
+            {
                 return ResourceManager.GetString("UiInvalidValueTitle", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Manage Windows credentials.
         /// </summary>
-        public static string UiManageWindowsCredentialsCaption {
-            get {
+        public static string UiManageWindowsCredentialsCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiManageWindowsCredentialsCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _No.
         /// </summary>
-        public static string UiNoButtonCaption {
-            get {
+        public static string UiNoButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiNoButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to OK.
         /// </summary>
-        public static string UiOkButtonCaption {
-            get {
+        public static string UiOkButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiOkButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Open.
         /// </summary>
-        public static string UiOpenButtonCaption {
-            get {
+        public static string UiOpenButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiOpenButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Open on Cloud Platform Console.
         /// </summary>
-        public static string UiOpenOnCloudConsoleMenuHeader {
-            get {
+        public static string UiOpenOnCloudConsoleMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("UiOpenOnCloudConsoleMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to You can&apos;t undo this later..
         /// </summary>
-        public static string UiOperationCannotBeUndone {
-            get {
+        public static string UiOperationCannotBeUndone
+        {
+            get
+            {
                 return ResourceManager.GetString("UiOperationCannotBeUndone", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Overwrite.
         /// </summary>
-        public static string UiOverwriteButtonCaption {
-            get {
+        public static string UiOverwriteButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiOverwriteButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Properties.
         /// </summary>
-        public static string UiPropertiesMenuHeader {
-            get {
+        public static string UiPropertiesMenuHeader
+        {
+            get
+            {
                 return ResourceManager.GetString("UiPropertiesMenuHeader", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Reset.
         /// </summary>
-        public static string UiResetButtonCaption {
-            get {
+        public static string UiResetButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiResetButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Save.
         /// </summary>
-        public static string UiSaveButtonCaption {
-            get {
+        public static string UiSaveButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiSaveButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Search by prefix.
         /// </summary>
-        public static string UiSearchMenuSearchBoxLabel {
-            get {
+        public static string UiSearchMenuSearchBoxLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("UiSearchMenuSearchBoxLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Skip file.
         /// </summary>
-        public static string UiSkipFileButtonCaption {
-            get {
+        public static string UiSkipFileButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiSkipFileButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Start.
         /// </summary>
-        public static string UiStartButtonCaption {
-            get {
+        public static string UiStartButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiStartButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Stop.
         /// </summary>
-        public static string UiStopButtonCaption {
-            get {
+        public static string UiStopButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiStopButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Time.
         /// </summary>
-        public static string UiTimeLabel {
-            get {
+        public static string UiTimeLabel
+        {
+            get
+            {
                 return ResourceManager.GetString("UiTimeLabel", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Undo.
         /// </summary>
-        public static string UiUndoButtonCaption {
-            get {
+        public static string UiUndoButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiUndoButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to Update.
         /// </summary>
-        public static string UiUpdateButtonCaption {
-            get {
+        public static string UiUpdateButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiUpdateButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to _Yes.
         /// </summary>
-        public static string UiYesButtonCaption {
-            get {
+        public static string UiYesButtonCaption
+        {
+            get
+            {
                 return ResourceManager.GetString("UiYesButtonCaption", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to Can not have more than 255 characters..
+        ///   Looks up a localized string similar to {0} can not be empty..
         /// </summary>
-        public static string Validation255CharactersMessage {
-            get {
-                return ResourceManager.GetString("Validation255CharactersMessage", resourceCulture);
+        public static string ValdiationNotEmptyMessage
+        {
+            get
+            {
+                return ResourceManager.GetString("ValdiationNotEmptyMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to Can not start with &quot;goog&quot;..
+        ///   Looks up a localized string similar to {0} can only contain letters, numbers, and dashes(-)..
         /// </summary>
-        public static string ValidationDisallowStartGoogMessage {
-            get {
+        public static string ValidationAllLetterNumberOrDashMessage
+        {
+            get
+            {
+                return ResourceManager.GetString("ValidationAllLetterNumberOrDashMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} can not start with &quot;goog&quot;..
+        /// </summary>
+        public static string ValidationDisallowStartGoogMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ValidationDisallowStartGoogMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to Can only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) and percent signs (%)..
+        ///   Looks up a localized string similar to {0} must be an integer..
         /// </summary>
-        public static string ValidationPubSubNameCharacterClassMessage {
-            get {
+        public static string ValidationIntegerMessage
+        {
+            get
+            {
+                return ResourceManager.GetString("ValidationIntegerMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} must be less than {1} characters long..
+        /// </summary>
+        public static string ValidationMaxCharactersMessage
+        {
+            get
+            {
+                return ResourceManager.GetString("ValidationMaxCharactersMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} must have at least {1} characters..
+        /// </summary>
+        public static string ValidationMinCharactersMessage
+        {
+            get
+            {
+                return ResourceManager.GetString("ValidationMinCharactersMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} can only contain letters ([A-Za-z]), numbers ([0-9]), dashes (-), underscores (_), periods (.), tildes (~), plus (+) and percent signs (%)..
+        /// </summary>
+        public static string ValidationPubSubNameCharacterClassMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ValidationPubSubNameCharacterClassMessage", resourceCulture);
             }
         }
-        
+
         /// <summary>
-        ///   Looks up a localized string similar to Must start with a letter..
+        ///   Looks up a localized string similar to {0} must start with a letter or number..
         /// </summary>
-        public static string ValidationStartWithLetterMessage {
-            get {
+        public static string ValidationStartLetterOrNumberMessage
+        {
+            get
+            {
+                return ResourceManager.GetString("ValidationStartLetterOrNumberMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} must start with a letter..
+        /// </summary>
+        public static string ValidationStartWithLetterMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("ValidationStartWithLetterMessage", resourceCulture);
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Must have at least 3 characters..
-        /// </summary>
-        public static string ValidationThreeCharactersMessage {
-            get {
-                return ResourceManager.GetString("ValidationThreeCharactersMessage", resourceCulture);
-            }
-        }
-        
+
         /// <summary>
         ///   Looks up a localized string similar to No credentials found....
         /// </summary>
-        public static string WindowsCredentialsChooserNoCredentialsFoundMessage {
-            get {
+        public static string WindowsCredentialsChooserNoCredentialsFoundMessage
+        {
+            get
+            {
                 return ResourceManager.GetString("WindowsCredentialsChooserNoCredentialsFoundMessage", resourceCulture);
             }
         }

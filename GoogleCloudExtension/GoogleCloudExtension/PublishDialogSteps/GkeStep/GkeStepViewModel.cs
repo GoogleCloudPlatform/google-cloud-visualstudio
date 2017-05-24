@@ -28,6 +28,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
@@ -58,7 +59,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public AsyncPropertyValue<IList<Cluster>> Clusters
         {
             get { return _clusters; }
-            private set { SetValueAndRaise(ref _clusters, value); }
+            private set { SetValueAndRaise(out _clusters, value); }
         }
 
         /// <summary>
@@ -69,8 +70,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             get { return _selectedCluster; }
             set
             {
-                SetValueAndRaise(ref _selectedCluster, value);
-                CanPublish = value != null && value != s_placeholderCluster;
+                SetValueAndRaise(out _selectedCluster, value);
+                UpdateCanPublish();
             }
         }
 
@@ -80,17 +81,27 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public string DeploymentName
         {
             get { return _deploymentName; }
-            set { SetValueAndRaise(ref _deploymentName, value); }
+            set
+            {
+                IEnumerable<ValidationResult> validations =
+                    GcpPublishStepsUtils.ValidateName(value, Resources.GkePublishDeploymentNameFieldName);
+                SetAndRaiseWithValidation(out _deploymentName, value, validations);
+            }
         }
 
         /// <summary>
-        /// The version to use for the deployment, by default the date in a similar way to what gcloud uses for 
+        /// The version to use for the deployment, by default the date in a similar way to what gcloud uses for
         /// app engine.
         /// </summary>
         public string DeploymentVersion
         {
             get { return _deploymentVersion; }
-            set { SetValueAndRaise(ref _deploymentVersion, value); }
+            set
+            {
+                IEnumerable<ValidationResult> validations =
+                    GcpPublishStepsUtils.ValidateName(value, Resources.GkePublishDeploymentVersionFieldName);
+                SetAndRaiseWithValidation(out _deploymentVersion, value, validations);
+            }
         }
 
         /// <summary>
@@ -99,7 +110,12 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public string Replicas
         {
             get { return _replicas; }
-            set { SetValueAndRaise(ref _replicas, value); }
+            set
+            {
+                IEnumerable<ValidationResult> validations =
+                    GcpPublishStepsUtils.ValidateInteger(value, Resources.GkePublishReplicasFieldName);
+                SetAndRaiseWithValidation(out _replicas, value, validations);
+            }
         }
 
         /// <summary>
@@ -108,7 +124,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public bool DontExposeService
         {
             get { return _dontExposeService; }
-            set { SetValueAndRaise(ref _dontExposeService, value); }
+            set { SetValueAndRaise(out _dontExposeService, value); }
         }
 
         /// <summary>
@@ -119,7 +135,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             get { return _exposeService; }
             set
             {
-                SetValueAndRaise(ref _exposeService, value);
+                SetValueAndRaise(out _exposeService, value);
                 InvalidateExposeService();
             }
         }
@@ -130,7 +146,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public bool ExposePublicService
         {
             get { return _exposePublicService; }
-            set { SetValueAndRaise(ref _exposePublicService, value); }
+            set { SetValueAndRaise(out _exposePublicService, value); }
         }
 
         /// <summary>
@@ -139,7 +155,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public bool OpenWebsite
         {
             get { return _openWebsite; }
-            set { SetValueAndRaise(ref _openWebsite, value); }
+            set { SetValueAndRaise(out _openWebsite, value); }
         }
 
         /// <summary>
@@ -159,6 +175,16 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             Clusters = new AsyncPropertyValue<IList<Cluster>>(GetAllClustersAsync());
             CreateClusterCommand = new ProtectedCommand(OnCreateClusterCommand);
             RefreshClustersListCommand = new ProtectedCommand(OnRefreshClustersListCommand);
+        }
+
+        private void UpdateCanPublish()
+        {
+            CanPublish = SelectedCluster != null && SelectedCluster != s_placeholderCluster && !HasErrors;
+        }
+
+        protected override void HasErrorsChanged()
+        {
+            UpdateCanPublish();
         }
 
         private void OnRefreshClustersListCommand()
@@ -263,10 +289,10 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
                     TimeSpan deploymentDuration;
                     GkeDeploymentResult result;
-                    using (var frozen = StatusbarHelper.Freeze())
-                    using (var animationShown = StatusbarHelper.ShowDeployAnimation())
+                    using (StatusbarHelper.Freeze())
+                    using (StatusbarHelper.ShowDeployAnimation())
                     using (var progress = StatusbarHelper.ShowProgressBar(Resources.GkePublishDeploymentStatusMessage))
-                    using (var deployingOperation = ShellUtils.SetShellUIBusy())
+                    using (ShellUtils.SetShellUIBusy())
                     {
                         var deploymentStartTime = DateTime.Now;
                         result = await GkeDeployment.PublishProjectAsync(
@@ -280,43 +306,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
                     if (result != null)
                     {
-                        GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentSuccessMessage, project.Name));
-                        if (result.DeploymentUpdated)
-                        {
-                            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentUpdatedMessage, options.DeploymentName));
-                        }
-                        if (result.DeploymentScaled)
-                        {
-                            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentScaledMessage, options.DeploymentName, options.Replicas));
-                        }
-
-                        if (result.ServiceUpdated)
-                        {
-                            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishServiceUpdatedMessage, options.DeploymentName));
-                        }
-                        if (result.ServiceExposed)
-                        {
-                            if (result.PublicServiceIpAddress != null)
-                            {
-                                GcpOutputWindow.OutputLine(
-                                    String.Format(Resources.GkePublishServiceIpMessage, DeploymentName, result.PublicServiceIpAddress));
-                            }
-                            else
-                            {
-                                if (ExposePublicService)
-                                {
-                                    GcpOutputWindow.OutputLine(Resources.GkePublishServiceIpTimeoutMessage);
-                                }
-                                else
-                                {
-                                    GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishServiceClusterIpMessage, DeploymentName, result.ClusterServiceIpAddress));
-                                }
-                            }
-                        }
-                        if (result.ServiceDeleted)
-                        {
-                            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishServiceDeletedMessage, DeploymentName));
-                        }
+                        OutputResultData(result, options);
 
                         StatusbarHelper.SetText(Resources.PublishSuccessStatusMessage);
 
@@ -346,6 +336,50 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             }
         }
 
+        private void OutputResultData(GkeDeploymentResult result, GkeDeployment.DeploymentOptions options)
+        {
+            GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentSuccessMessage, _publishDialog.Project.Name));
+            if (result.DeploymentUpdated)
+            {
+                GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishDeploymentUpdatedMessage, options.DeploymentName));
+            }
+            if (result.DeploymentScaled)
+            {
+                GcpOutputWindow.OutputLine(
+                    String.Format(Resources.GkePublishDeploymentScaledMessage, options.DeploymentName, options.Replicas));
+            }
+
+            if (result.ServiceUpdated)
+            {
+                GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishServiceUpdatedMessage, options.DeploymentName));
+            }
+            if (result.ServiceExposed)
+            {
+                if (result.PublicServiceIpAddress != null)
+                {
+                    GcpOutputWindow.OutputLine(
+                        String.Format(Resources.GkePublishServiceIpMessage, DeploymentName, result.PublicServiceIpAddress));
+                }
+                else
+                {
+                    if (ExposePublicService)
+                    {
+                        GcpOutputWindow.OutputLine(Resources.GkePublishServiceIpTimeoutMessage);
+                    }
+                    else
+                    {
+                        GcpOutputWindow.OutputLine(
+                            String.Format(
+                                Resources.GkePublishServiceClusterIpMessage, DeploymentName, result.ClusterServiceIpAddress));
+                    }
+                }
+            }
+            if (result.ServiceDeleted)
+            {
+                GcpOutputWindow.OutputLine(String.Format(Resources.GkePublishServiceDeletedMessage, DeploymentName));
+            }
+        }
+
         #endregion
 
         private void InvalidateExposeService()
@@ -359,7 +393,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
 
         private bool ValidateInput()
         {
-            int replicas = 0;
+            int replicas;
             if (!int.TryParse(Replicas, out replicas))
             {
                 UserPromptUtils.ErrorPrompt(Resources.GkePublishInvalidReplicasMessage, Resources.UiInvalidValueTitle);
@@ -371,17 +405,17 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 UserPromptUtils.ErrorPrompt(Resources.GkePublishEmptyDeploymentNameMessage, Resources.UiInvalidValueTitle);
                 return false;
             }
-            if (String.IsNullOrEmpty(DeploymentVersion))
-            {
-                UserPromptUtils.ErrorPrompt(Resources.GkePublishEmptyDeploymentVersionMessage, Resources.UiInvalidValueTitle);
-                return false;
-            }
 
             if (!GcpPublishStepsUtils.IsValidName(DeploymentName))
             {
                 UserPromptUtils.ErrorPrompt(
                     String.Format(Resources.GkePublishInvalidDeploymentNameMessage, DeploymentName),
                     Resources.UiInvalidValueTitle);
+                return false;
+            }
+            if (String.IsNullOrEmpty(DeploymentVersion))
+            {
+                UserPromptUtils.ErrorPrompt(Resources.GkePublishEmptyDeploymentVersionMessage, Resources.UiInvalidValueTitle);
                 return false;
             }
             if (!GcpPublishStepsUtils.IsValidName(DeploymentVersion))
@@ -403,7 +437,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
                 GoogleCloudExtensionPackage.ApplicationName);
             var clusters = await dataSource.GetClusterListAsync();
 
-            var result = clusters?.OrderBy(x => x.Name)?.ToList();
+            var result = clusters?.OrderBy(x => x.Name).ToList();
             if (result == null || result.Count == 0)
             {
                 return s_placeholderList;

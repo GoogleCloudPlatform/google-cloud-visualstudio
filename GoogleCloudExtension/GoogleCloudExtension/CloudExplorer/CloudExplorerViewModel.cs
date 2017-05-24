@@ -65,7 +65,7 @@ namespace GoogleCloudExtension.CloudExplorer
             get { return _isBusy; }
             private set
             {
-                SetValueAndRaise(ref _isBusy, value);
+                SetValueAndRaise(out _isBusy, value);
                 RaisePropertyChanged(nameof(IsReady));
                 RaisePropertyChanged(nameof(IsEmptyState));
             }
@@ -98,7 +98,7 @@ namespace GoogleCloudExtension.CloudExplorer
         public AsyncPropertyValue<string> ProfilePictureAsync
         {
             get { return _profilePictureAsync; }
-            private set { SetValueAndRaise(ref _profilePictureAsync, value); }
+            private set { SetValueAndRaise(out _profilePictureAsync, value); }
         }
 
         /// <summary>
@@ -107,7 +107,7 @@ namespace GoogleCloudExtension.CloudExplorer
         public AsyncPropertyValue<string> ProfileNameAsync
         {
             get { return _profileNameAsync; }
-            private set { SetValueAndRaise(ref _profileNameAsync, value); }
+            private set { SetValueAndRaise(out _profileNameAsync, value); }
         }
 
         /// <summary>
@@ -128,7 +128,7 @@ namespace GoogleCloudExtension.CloudExplorer
             get { return _currentProject; }
             set
             {
-                SetValueAndRaise(ref _currentProject, value);
+                SetValueAndRaise(out _currentProject, value);
                 if (value == null || value is Project)
                 {
                     var project = (Project)value;
@@ -158,19 +158,19 @@ namespace GoogleCloudExtension.CloudExplorer
         public string EmptyStateMessage
         {
             get { return _emptyStateMessage; }
-            set { SetValueAndRaise(ref _emptyStateMessage, value); }
+            set { SetValueAndRaise(out _emptyStateMessage, value); }
         }
 
         public string EmptyStateButtonCaption
         {
             get { return _emptyStateButtonCaption; }
-            set { SetValueAndRaise(ref _emptyStateButtonCaption, value); }
+            set { SetValueAndRaise(out _emptyStateButtonCaption, value); }
         }
 
         public ICommand EmptyStateCommand
         {
             get { return _emptyStateCommand; }
-            set { SetValueAndRaise(ref _emptyStateCommand, value); }
+            set { SetValueAndRaise(out _emptyStateCommand, value); }
         }
 
         #region ICloudSourceContext implementation.

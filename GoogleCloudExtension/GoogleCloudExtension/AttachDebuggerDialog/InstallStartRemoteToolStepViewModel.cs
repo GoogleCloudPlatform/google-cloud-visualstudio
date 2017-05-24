@@ -39,7 +39,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public string ProgressMessage
         {
             get { return _progressMessage; }
-            set { SetValueAndRaise(ref _progressMessage, value); }
+            set { SetValueAndRaise(out _progressMessage, value); }
         }
 
         public InstallStartRemoteToolStepViewModel(

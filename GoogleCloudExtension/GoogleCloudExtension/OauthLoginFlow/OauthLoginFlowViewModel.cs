@@ -25,7 +25,7 @@ namespace GoogleCloudExtension.OauthLoginFlow
         public string Message
         {
             get { return _message; }
-            set { SetValueAndRaise(ref _message, value); }
+            set { SetValueAndRaise(out _message, value); }
         }
 
         public ICommand CloseCommand { get; }

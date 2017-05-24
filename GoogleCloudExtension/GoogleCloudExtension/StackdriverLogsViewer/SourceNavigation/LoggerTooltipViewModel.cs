@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public bool FilterLogsOfSourceLine
         {
             get { return _filterLogsOfSourceLine; }
-            set { SetValueAndRaise(ref _filterLogsOfSourceLine, value); }
+            set { SetValueAndRaise(out _filterLogsOfSourceLine, value); }
         }
 
         /// <summary>
