@@ -2224,7 +2224,7 @@
     <comment>Error message shown when there is no any processes found. We don't indeed expect this error.</comment>
   </data>
   <data name="AttachDebuggerListProcessSaveDefaultLabel" xml:space="preserve">
-    <value>Save selection as default preference, do not show the dialog next time</value>
+    <value>Save as preference, do not show the dialog next time</value>
     <comment>The label to check box of saving the selections as default in list processes step.</comment>
   </data>
   <data name="AttachDebuggerPickingProcessMessage" xml:space="preserve">
@@ -2242,5 +2242,9 @@
   <data name="AttachDebuggerProcessUsernameHeader" xml:space="preserve">
     <value>Username</value>
     <comment>The process id header for attaching debugger dialog processes list.</comment>
+  </data>
+  <data name="UiRefreshButtonCaption" xml:space="preserve">
+    <value>Refresh</value>
+    <comment>Caption for Refresh buttons.</comment>
   </data>
 </root>

@@ -46,7 +46,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         private List<string> _engineTypes;
         private string _selectedEngine;
-        private bool _saveSelection;
+        private bool _saveSelection = true;
 
         /// <summary>
         /// The progress message to display.
