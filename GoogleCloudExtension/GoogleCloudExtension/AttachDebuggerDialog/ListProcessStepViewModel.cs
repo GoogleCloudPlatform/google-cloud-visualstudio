@@ -135,7 +135,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             ProgressMessage = Resources.AttachDebuggerConnectingProgressMessage;
             IsCancelButtonEnabled = false;
 
-            //await WindowsCredentialManager.SetCredential(Context.PublicIp, Context.Username, Context.Password);
             if (!WindowsCredentialManager.Write(
                 Context.PublicIp,
                 Context.Credential.User,
