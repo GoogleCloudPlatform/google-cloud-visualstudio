@@ -63,7 +63,6 @@ namespace GoogleCloudExtension.PowerShellUtils
         public static PSCredential CreatePSCredential(string user, string password)
             => new PSCredential(user, ConvertToSecureString(password));
 
-
         /// <summary>
         /// Convert string to secure string.
         /// </summary>
