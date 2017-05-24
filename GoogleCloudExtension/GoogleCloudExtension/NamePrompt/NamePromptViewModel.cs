@@ -46,9 +46,11 @@ namespace GoogleCloudExtension.NamePrompt
         /// </summary>
         public ICommand CancelCommand { get; }
 
-        public NamePromptViewModel(NamePromptWindow owner)
+        public NamePromptViewModel(NamePromptWindow owner, string initialName)
         {
             _owner = owner;
+
+            Name = initialName;
 
             OkCommand = new ProtectedCommand(OnOkCommand);
             CancelCommand = new ProtectedCommand(OnCancelCommand);
