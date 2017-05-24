@@ -215,7 +215,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 {
                     menuItems.Add(new MenuItem
                     {
-                        Header = "Rename...",
+                        Header = Resources.GcsFileBrowserRenameFileHeader,
                         Command = new ProtectedCommand(OnRenameFileCommand)
                     });
                 }
@@ -246,7 +246,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                         destName: newName),
                     new ProgressDialogWindow.Options
                     {
-                        Message = "Renaming file",
+                        Message = Resources.GcsFileBrowserRenamingProgressMessage,
                         Title = Resources.UiDefaultPromptTitle,
                         IsCancellable = false
                     });
@@ -256,7 +256,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             catch (DataSourceException)
             {
                 UserPromptUtils.ErrorPrompt(
-                    message: $"Failed to rename file {row.LeafName}",
+                    message: string.Format(Resources.GcsFileBrowserRenameFailedMessage, row.LeafName),
                     title: Resources.UiErrorCaption);
             }
             finally

@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2802,6 +2802,33 @@ namespace GoogleCloudExtension
         public static string GcsFileBrowserNewFolderHeader {
             get {
                 return ResourceManager.GetString("GcsFileBrowserNewFolderHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to rename file {0}..
+        /// </summary>
+        public static string GcsFileBrowserRenameFailedMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenameFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename file....
+        /// </summary>
+        public static string GcsFileBrowserRenameFileHeader {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenameFileHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Renaming file..
+        /// </summary>
+        public static string GcsFileBrowserRenamingProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenamingProgressMessage", resourceCulture);
             }
         }
         
