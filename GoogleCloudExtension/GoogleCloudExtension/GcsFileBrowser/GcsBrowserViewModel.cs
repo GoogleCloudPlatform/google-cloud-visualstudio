@@ -18,6 +18,7 @@ using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.GcsFileProgressDialog;
 using GoogleCloudExtension.GcsUtils;
 using GoogleCloudExtension.NamePrompt;
+using GoogleCloudExtension.ProgressDialog;
 using GoogleCloudExtension.Utils;
 using System;
 using System.Collections.Generic;
@@ -207,7 +208,60 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 new MenuItem { Header = Resources.UiDeleteButtonCaption, Command = new ProtectedCommand(OnDeleteCommand, canExecuteCommand: hasItems) },
             };
 
+            if (SelectedItems != null && SelectedItems.Count == 1)
+            {
+                if (SelectedItem.IsFile)
+                {
+                    menuItems.Add(new MenuItem
+                    {
+                        Header = Resources.GcsFileBrowserRenameFileHeader,
+                        Command = new ProtectedCommand(OnRenameFileCommand)
+                    });
+                }
+            }
+
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        private async void OnRenameFileCommand()
+        {
+            var choosenName = NamePromptWindow.PromptUser(SelectedItem.LeafName);
+            if (choosenName == null)
+            {
+                return;
+            }
+
+            try
+            {
+                IsLoading = true;
+
+                var newName = GcsPathUtils.Combine(CurrentState.CurrentPath, choosenName);
+                Debug.WriteLine($"Renaming {SelectedItem.BlobName} to {newName}");
+                await ProgressDialogWindow.PromptUser(
+                    _dataSource.RenameFileAsync(
+                        bucket: Bucket.Name,
+                        sourceName: SelectedItem.BlobName,
+                        destName: newName),
+                    new ProgressDialogWindow.Options
+                    {
+                        Message = Resources.GcsFileBrowserRenamingProgressMessage,
+                        Title = Resources.UiDefaultPromptTitle,
+                        IsCancellable = false
+                    });
+
+                UpdateCurrentState();
+            }
+            catch (DataSourceException ex)
+            {
+                UserPromptUtils.ErrorPrompt(
+                    message: string.Format(Resources.GcsFileBrowserRenameFailedMessage, SelectedItem.LeafName),
+                    title: Resources.UiErrorCaption,
+                    errorDetails: ex.Message);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
         }
 
         #region Command handlers

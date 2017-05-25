@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.NamePrompt
@@ -26,6 +28,19 @@ namespace GoogleCloudExtension.NamePrompt
             InitializeComponent();
 
             _nameBox.Focus();
+
+            Loaded += OnLoaded;
+        }
+
+        /// <summary>
+        /// This method selects all the current text stored in the textbox. The Task.Yield method is
+        /// used to ensure that the code runs on the **next** tick of the UI. This way the SelectAll() call
+        /// will happen **after** the bindings are evaluated.
+        /// </summary>
+        private async void OnLoaded(object sender, RoutedEventArgs e)
+        {
+            await Task.Yield();
+            _nameBox.SelectAll();
         }
     }
 }

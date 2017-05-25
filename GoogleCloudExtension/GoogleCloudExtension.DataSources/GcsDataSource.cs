@@ -165,6 +165,66 @@ namespace GoogleCloudExtension.DataSources
         }
 
         /// <summary>
+        /// Renames a file in a given <paramref name="bucket"/>. Renaming consists of copying the file
+        /// to the destination and then deleting the source, in this order. This will prevent loss of data.
+        /// </summary>
+        /// <param name="bucket">The bucket where the files reside.</param>
+        /// <param name="sourceName">The source file to rename.</param>
+        /// <param name="destName">The name to rename to.</param>
+        /// <returns>A <seealso cref="Task"/> instance that will be completed once the rename operation is finished.</returns>
+        public async Task RenameFileAsync(string bucket, string sourceName, string destName)
+        {
+            try
+            {
+                await CopyFileAsync(bucket, sourceName, destName);
+                await DeleteFileAsync(bucket, sourceName);
+            }
+            catch (GoogleApiException ex)
+            {
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Copies a file within a bucket.
+        /// </summary>
+        /// <param name="bucket">The bucket that owns the files.</param>
+        /// <param name="sourceName">The source file name to copy.</param>
+        /// <param name="destName">The new file name.</param>
+        /// <returns>A <seealso cref="Task"/> instance that will be completed once the copy operation is completed.</returns>
+        public async Task CopyFileAsync(string bucket, string sourceName, string destName)
+        {
+            try
+            {
+                var request = Service.Objects.Copy(null, bucket, sourceName, bucket, destName);
+                await request.ExecuteAsync();
+            }
+            catch (GoogleApiException ex)
+            {
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
+        /// Deletes a file in a bucket.
+        /// </summary>
+        /// <param name="bucket">The bucket that owns the files.</param>
+        /// <param name="name">The name of the file.</param>
+        /// <returns>A <seealso cref="Task"/> instance that will be completed once the delete operation is completed.</returns>
+        public async Task DeleteFileAsync(string bucket, string name)
+        {
+            try
+            {
+                var request = Service.Objects.Delete(bucket, name);
+                await request.ExecuteAsync();
+            }
+            catch (GoogleApiException ex)
+            {
+                throw new DataSourceException(ex.Message, ex);
+            }
+        }
+
+        /// <summary>
         /// Starts a file upload operation reporting the status and progress to the given <paramref name="operation"/>.
         /// </summary>
         /// <param name="sourcePath">The path to the file to open, should be a full path.</param>

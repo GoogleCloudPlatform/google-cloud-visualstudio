@@ -2323,4 +2323,16 @@
     <value>Operation starting</value>
     <comment>Message shown when the operation is started.</comment>
   </data>
+  <data name="GcsFileBrowserRenameFailedMessage" xml:space="preserve">
+    <value>Failed to rename file {0}.</value>
+    <comment>Message shown when the rename operation fails. {0} is the name of the file.</comment>
+  </data>
+  <data name="GcsFileBrowserRenameFileHeader" xml:space="preserve">
+    <value>Rename file...</value>
+    <comment>Header for the Rename File menu entry.</comment>
+  </data>
+  <data name="GcsFileBrowserRenamingProgressMessage" xml:space="preserve">
+    <value>Renaming file.</value>
+    <comment>Message shown while the rename operation is in flight.</comment>
+  </data>
 </root>
