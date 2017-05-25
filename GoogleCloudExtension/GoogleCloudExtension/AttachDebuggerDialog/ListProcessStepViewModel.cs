@@ -126,8 +126,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             ProgressMessage = Resources.AttachDebuggerConnectingProgressMessage;
             IsCancelButtonEnabled = false;
 
-            UpdateUI();
-
             if (!WindowsCredentialManager.Write(
                 Context.PublicIp,
                 Context.Credential.User,
@@ -148,7 +146,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             else
             {
                 EnableSelection();
-                return Task.FromResult<IAttachDebuggerStep>(null);    // return null to stay on the step UI;
+                return Task.FromResult<IAttachDebuggerStep>(null);
             }
         }
 
@@ -157,7 +155,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             if (SelectedProcess == null || SelectedEngine == null)
             {
                 Debug.WriteLine($"ListProcessStep, OnOkCommandAsync, unexpected error. SelectedProcess or SelectedEngine is null.");
-                // The code won't be reached. To be safe, just return null.
+                // The code won't be reached. Just to be safe, return null.
                 return Task.FromResult<IAttachDebuggerStep>(null);
             }
 
@@ -177,7 +175,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             ProgressMessage = String.Format(
                 Resources.AttachDebuggerAttachingProcessMessageFormat,
                 SelectedProcess.Name);
-            UpdateUI();
             try
             {
                 if (SelectedEngine == s_detectEngineTypeItemName)
@@ -189,16 +186,17 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                     SelectedProcess.Process.Attach2(SelectedEngine);
                 }
             }
-            catch (Exception)
+            catch (COMException)
             {
                 UserPromptUtils.ErrorPrompt(
                     message: String.Format(Resources.AttachDebuggerAttachErrorMessageFormat, SelectedProcess.Name),
                     title: Resources.uiDefaultPromptTitle);
                 AttachDebuggerSettings.Current.DefaultDebuggeeProcessName = "";
                 AttachDebuggerSettings.Current.DefaultDebuggerEngineType = s_detectEngineTypeItemName;
+                return null;    // TODO: goto help page
             }
             Context.DialogWindow.Close();
-            return null;    // TODO: goto a help page.
+            return null; 
         }
 
         /// <summary>
@@ -210,11 +208,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             var step = new ListProcessStepViewModel(content, context);
             content.DataContext = step;
             return step;
-        }
-
-        // TODO: Find a good way to force UI refresh
-        private void UpdateUI()
-        {
         }
 
         /// <summary>
