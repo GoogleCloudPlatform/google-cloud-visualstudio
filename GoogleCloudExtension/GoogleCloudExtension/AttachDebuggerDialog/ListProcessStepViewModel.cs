@@ -121,13 +121,12 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         public override ContentControl Content { get; }
 
-        public override async Task<IAttachDebuggerStep> OnStartAsync()
+        public override Task<IAttachDebuggerStep> OnStartAsync()
         {
             ProgressMessage = Resources.AttachDebuggerConnectingProgressMessage;
             IsCancelButtonEnabled = false;
 
-            Context.DialogWindow.UpdateLayout();
-            await Task.Yield();
+            UpdateUI();
 
             if (!WindowsCredentialManager.Write(
                 Context.PublicIp,
@@ -144,12 +143,12 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             }
             else if (Processes.Count() == 1)
             {
-                return Attach();
+                return Task.FromResult(Attach());
             }
             else
             {
                 EnableSelection();
-                return null;    // return null to stay on the step UI;
+                return Task.FromResult<IAttachDebuggerStep>(null);    // return null to stay on the step UI;
             }
         }
 
@@ -178,6 +177,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             ProgressMessage = String.Format(
                 Resources.AttachDebuggerAttachingProcessMessageFormat,
                 SelectedProcess.Name);
+            UpdateUI();
             try
             {
                 if (SelectedEngine == s_detectEngineTypeItemName)
@@ -212,6 +212,11 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             return step;
         }
         
+        private void UpdateUI()
+        {
+            Context.DialogWindow.UpdateLayout();
+        }
+
         /// <summary>
         /// Helper method that set the dialog content to show picking a process controls.
         /// </summary>
