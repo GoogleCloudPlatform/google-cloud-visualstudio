@@ -270,7 +270,11 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             {
                 var matching = _allProcesses
                     .Where(x => x.Name.ToLowerInvariant() == AttachDebuggerSettings.Current.DefaultDebuggeeProcessName.ToLowerInvariant());
-                if (matching.Count() == 1)
+                if (!matching.Any())
+                {
+                    ResetDefaultSelection();
+                }
+                else if (matching.Count() == 1)
                 {
                     Processes = matching;
                     SelectedProcess = matching.First();
@@ -291,6 +295,12 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         {
             Content = content;
             RefreshCommand = new ProtectedCommand(() => GetAllProcessesList());
+        }
+
+        private void ResetDefaultSelection()
+        {
+            AttachDebuggerSettings.Current.DefaultDebuggeeProcessName = "";
+            AttachDebuggerSettings.Current.DefaultDebuggerEngineType = "";
         }
     }
 }

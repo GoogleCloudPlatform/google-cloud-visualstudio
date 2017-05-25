@@ -143,7 +143,6 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// </returns>
         private bool WaitComplete(PowerShell powerShell, CancellationToken cancelToken)
         {
-            cancelToken.Register(powerShell.Stop);
             var iAsyncResult = powerShell.BeginInvoke();
             int returnIndex = WaitHandle.WaitAny(new[] { iAsyncResult.AsyncWaitHandle, cancelToken.WaitHandle });
             Debug.WriteLine($"Execution has stopped. The pipeline state: {powerShell.InvocationStateInfo.State}");
