@@ -181,11 +181,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 if (SelectedEngine == s_detectEngineTypeItemName)
                 {
                     await StartTaskWaitAsync(SelectedProcess.Process.Attach);
-                    //process.Process.Attach();
                 }
                 else
                 {
-                    //process.Process.Attach2(engine);
                     await StartTaskWaitAsync(() => SelectedProcess.Process.Attach2(SelectedEngine));
                 }
             }
@@ -196,9 +194,10 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                     title: Resources.uiDefaultPromptTitle);
                 AttachDebuggerSettings.Current.DefaultDebuggeeProcessName = "";
                 AttachDebuggerSettings.Current.DefaultDebuggerEngineType = s_detectEngineTypeItemName;
+                return HelpStepViewModel.CreateStep(Context);
             }
-
-            return HelpStepViewModel.CreateStep(Context);
+            Context.DialogWindow.Close();
+            return null;
         }
 
         /// <summary>
