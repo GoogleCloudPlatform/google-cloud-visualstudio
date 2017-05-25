@@ -13,18 +13,14 @@
 // limitations under the License.
 
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Runtime.InteropServices;
-using System.Security;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Utils
 {
     /// <summary>
     /// A C# wrapper for CredWrite Windows API.
-    /// User can optionally manage the list of credentials at "Control Panel\User Accounts\Credential Manager"
+    /// The API manages credentials for "Control Panel\User Accounts\Credential Manager"
     /// </summary>
     public static class WindowsCredentialManager
     {
@@ -54,7 +50,7 @@ namespace GoogleCloudExtension.Utils
             credential.Comment = IntPtr.Zero;
             credential.TargetAlias = IntPtr.Zero;
             credential.Type = CredentialType.DomainPassword;
-            credential.Persist = (uint)CredentialPersistence.Enterprise;
+            credential.Persist = (uint)CredentialPersistence.Session;
             credential.CredentialBlobSize = (uint)(byteArray == null ? 0 : byteArray.Length);
             credential.TargetName = Marshal.StringToCoTaskMemUni(targetName);
             credential.CredentialBlob = Marshal.StringToCoTaskMemUni(password);
@@ -100,7 +96,7 @@ namespace GoogleCloudExtension.Utils
             public IntPtr UserName;
         }
 
-        public enum CredentialType
+        private enum CredentialType
         {
             Generic = 1,
             DomainPassword,

@@ -14,17 +14,13 @@
 
 using EnvDTE;
 using EnvDTE80;
-using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.DataSources;
 using Shell = Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
@@ -58,7 +54,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         }
 
         /// <summary>
-        /// Gets Whether to show processes list.
+        /// Controls whether to show processes list.
         /// </summary>
         public bool IsListVisible
         {
@@ -169,6 +165,17 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         #endregion
 
+        /// <summary>
+        /// Create the step that get remote machine processes list and attach to one of the processes.
+        /// </summary>
+        public static ListProcessStepViewModel CreateStep(AttachDebuggerContext context)
+        {
+            var content = new ListProcessStepContent();
+            var step = new ListProcessStepViewModel(content, context);
+            content.DataContext = step;
+            return step;
+        }
+
         private IAttachDebuggerStep Attach()
         {
             IsListVisible = false;
@@ -191,23 +198,11 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 UserPromptUtils.ErrorPrompt(
                     message: String.Format(Resources.AttachDebuggerAttachErrorMessageFormat, SelectedProcess.Name),
                     title: Resources.uiDefaultPromptTitle);
-                AttachDebuggerSettings.Current.DefaultDebuggeeProcessName = "";
-                AttachDebuggerSettings.Current.DefaultDebuggerEngineType = s_detectEngineTypeItemName;
+                ResetDefaultSelection();
                 return null;    // TODO: goto help page
             }
             Context.DialogWindow.Close();
-            return null; 
-        }
-
-        /// <summary>
-        /// Create the step that get remote machine processes list and attach to one of the processes.
-        /// </summary>
-        public static ListProcessStepViewModel CreateStep(AttachDebuggerContext context)
-        {
-            var content = new ListProcessStepContent();
-            var step = new ListProcessStepViewModel(content, context);
-            content.DataContext = step;
-            return step;
+            return null;
         }
 
         /// <summary>
@@ -247,7 +242,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             foreach (var process in processes)      // Linq does not work on COM list
             {
                 var pro2 = process as Process2;
-                Debug.WriteLine($"name {pro2.Name}");
                 _allProcesses.Add(new ProcessItem(pro2));
             }
 
