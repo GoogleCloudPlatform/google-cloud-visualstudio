@@ -32,6 +32,7 @@ namespace GoogleCloudExtension.PowerShellUtils
 
         private readonly CancellationTokenSource _cancelTokenSource = new CancellationTokenSource();
         private readonly Task _powerShellTask;
+        private readonly EventHandler _closingEventHandler;
 
         /// <summary>
         /// Check if the powershell task is stopped.
@@ -45,19 +46,45 @@ namespace GoogleCloudExtension.PowerShellUtils
         /// <param name="computerName">The ipaddress of debugging target machine.</param>
         /// <param name="username">The username for authentication.</param>
         /// <param name="password">The password for authentication.</param>
+        /// <param name="subscribeClosingEvent">The method to subscribe to solution closing event.</param>
+        /// <param name="unsubscribeClosingEvent">The method to unsubscribe solution closing event.</param>
         public RemoteToolSession(
             string computerName,
             string username,
-            string password)
+            string password,
+            Action<EventHandler> subscribeClosingEvent,
+            Action<EventHandler> unsubscribeClosingEvent)
         {
             var target = new RemoteTarget(computerName, RemotePowerShellUtils.CreatePSCredential(username, password));
             string script = RemotePowerShellUtils.GetEmbeddedFile(StartPsFilePath);
-
-            // TODO: Stop the session before solution exits.
+            _closingEventHandler = (se, e) => Stop();
+            subscribeClosingEvent(_closingEventHandler);
             _powerShellTask = Task.Run(() =>
             {
-                target.EnterSessionExecute(script, _cancelTokenSource.Token);
+                try
+                {
+                    target.EnterSessionExecute(script, _cancelTokenSource.Token);
+                }
+                finally
+                {
+                    unsubscribeClosingEvent(_closingEventHandler);
+                }
             });
+        }
+
+        /// <summary>
+        /// Stop the session at VS shutting down event.
+        /// </summary>
+        public void Stop()
+        {
+            if (!IsStopped)
+            {
+                Debug.WriteLine($"_cancelTokenSource.Cancel() ");
+                _cancelTokenSource.Cancel();
+            }
+            Debug.WriteLine($"_powerShellTask.Wait() ");
+            _powerShellTask.Wait();
+            Debug.WriteLine($"_powerShellTask.Wait() complete.");
         }
     }
 }
