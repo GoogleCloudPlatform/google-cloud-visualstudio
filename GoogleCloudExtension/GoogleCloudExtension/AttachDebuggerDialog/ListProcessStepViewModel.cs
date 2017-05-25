@@ -211,10 +211,10 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             content.DataContext = step;
             return step;
         }
-        
+
+        // TODO: Find a good way to force UI refresh
         private void UpdateUI()
         {
-            Context.DialogWindow.UpdateLayout();
         }
 
         /// <summary>
