@@ -210,8 +210,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
             if (SelectedItems != null && SelectedItems.Count == 1)
             {
-                var row = (GcsRow)SelectedItem;
-                if (row.IsFile)
+                if (SelectedItem.IsFile)
                 {
                     menuItems.Add(new MenuItem
                     {
@@ -226,8 +225,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         private async void OnRenameFileCommand()
         {
-            var row = (GcsRow)SelectedItem;
-            var choosenName = NamePromptWindow.PromptUser(row.LeafName);
+            var choosenName = NamePromptWindow.PromptUser(SelectedItem.LeafName);
             if (choosenName == null)
             {
                 return;
@@ -238,11 +236,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 IsLoading = true;
 
                 var newName = GcsPathUtils.Combine(CurrentState.CurrentPath, choosenName);
-                Debug.WriteLine($"Renaming {row.BlobName} to {newName}");
+                Debug.WriteLine($"Renaming {SelectedItem.BlobName} to {newName}");
                 await ProgressDialogWindow.PromptUser(
                     _dataSource.RenameFileAsync(
                         bucket: Bucket.Name,
-                        sourceName: row.BlobName,
+                        sourceName: SelectedItem.BlobName,
                         destName: newName),
                     new ProgressDialogWindow.Options
                     {
@@ -253,11 +251,12 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
                 UpdateCurrentState();
             }
-            catch (DataSourceException)
+            catch (DataSourceException ex)
             {
                 UserPromptUtils.ErrorPrompt(
-                    message: string.Format(Resources.GcsFileBrowserRenameFailedMessage, row.LeafName),
-                    title: Resources.UiErrorCaption);
+                    message: string.Format(Resources.GcsFileBrowserRenameFailedMessage, SelectedItem.LeafName),
+                    title: Resources.UiErrorCaption,
+                    errorDetails: ex.Message);
             }
             finally
             {

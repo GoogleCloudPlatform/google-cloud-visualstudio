@@ -28,10 +28,7 @@ namespace GoogleCloudExtension.NamePrompt
             InitializeComponent();
 
             _nameBox.Focus();
-        }
 
-        public void SelectAll()
-        {
             Loaded += OnLoaded;
         }
 

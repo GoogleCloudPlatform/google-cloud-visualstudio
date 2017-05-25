@@ -26,16 +26,10 @@ namespace GoogleCloudExtension.NamePrompt
         private NamePromptWindow(string initialName) : base(GoogleCloudExtension.Resources.NamePromptCaption)
         {
             ViewModel = new NamePromptViewModel(this, initialName);
-            var namePromptContent = new NamePromptContent
+            Content = new NamePromptContent()
             {
                 DataContext = ViewModel
             };
-            Content = namePromptContent;
-
-            if (!string.IsNullOrEmpty(initialName))
-            {
-                namePromptContent.SelectAll();
-            }
         }
 
         /// <summary>

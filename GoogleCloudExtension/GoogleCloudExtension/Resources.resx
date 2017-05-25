@@ -2325,7 +2325,7 @@
   </data>
   <data name="GcsFileBrowserRenameFailedMessage" xml:space="preserve">
     <value>Failed to rename file {0}.</value>
-    <comment>Message shown when the rename operation fails.</comment>
+    <comment>Message shown when the rename operation fails. {0} is the name of the file.</comment>
   </data>
   <data name="GcsFileBrowserRenameFileHeader" xml:space="preserve">
     <value>Rename file...</value>
