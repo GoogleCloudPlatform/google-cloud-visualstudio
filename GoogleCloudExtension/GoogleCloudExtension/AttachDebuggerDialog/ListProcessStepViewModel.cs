@@ -117,15 +117,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// </summary>
         public ProtectedCommand RefreshCommand { get; }
 
-        public ListProcessStepViewModel(
-            ListProcessStepContent content,
-            AttachDebuggerContext context)
-            : base(context)
-        {
-            Content = content;
-            RefreshCommand = new ProtectedCommand(() => GetAllProcessesList());
-        }
-
         #region Implement interface IAttachDebuggerStep
 
         public override ContentControl Content { get; }
@@ -309,6 +300,15 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             Processes = _allProcesses;
             SelectedProcess = Processes.FirstOrDefault();
             return true;
+        }
+
+        private ListProcessStepViewModel(
+            ListProcessStepContent content,
+            AttachDebuggerContext context)
+            : base(context)
+        {
+            Content = content;
+            RefreshCommand = new ProtectedCommand(() => GetAllProcessesList());
         }
 
         private async Task StartTaskWaitAsync(Action action)
