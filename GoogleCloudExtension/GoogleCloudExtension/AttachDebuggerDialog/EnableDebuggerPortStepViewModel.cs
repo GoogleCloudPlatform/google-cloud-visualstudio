@@ -22,10 +22,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     /// </summary>
     public class EnableDebuggerPortStepViewModel : EnablePortStepViewModel
     {
-        public EnableDebuggerPortStepViewModel(EnablePortStepContent content, AttachDebuggerContext context)
-            : base(content, context.DebuggerPort, context)
-        { }
-
         /// <summary>
         /// Create the the step that enables Visual Studio remote debugging tool port.
         /// </summary>
@@ -53,5 +49,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 return ListProcessStepViewModel.CreateStep(Context);
             }
         }
+
+        private EnableDebuggerPortStepViewModel(EnablePortStepContent content, AttachDebuggerContext context)
+            : base(content, context.DebuggerPort, context)
+        { }
     }
 }

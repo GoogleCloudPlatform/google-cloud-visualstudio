@@ -28,9 +28,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     /// </summary>
     public class InstallStartRemoteToolStepViewModel : AttachDebuggerStepBase
     {
-        private static readonly TimeSpan WaitConnectionTimeout = TimeSpan.FromMinutes(3);
+        private static readonly TimeSpan s_waitConnectionTimeout = TimeSpan.FromMinutes(3);
         private RemoteToolInstaller _installer;
-        private CancellationTokenSource _installerCancellationSource;
+        private CancellationTokenSource _installerCancellationSource = new CancellationTokenSource();
         private string _progressMessage;
 
         /// <summary>
@@ -42,20 +42,12 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             set { SetValueAndRaise(out _progressMessage, value); }
         }
 
-        public InstallStartRemoteToolStepViewModel(
-            InstallStartRemoteToolStepContent content,
-            AttachDebuggerContext context)
-            : base(context)
-        {
-            Content = content;
-        }
-
         #region Implement interface IAttachDebuggerStep
         public override ContentControl Content { get; }
 
         public override IAttachDebuggerStep OnCancelCommand()
         {
-            _installerCancellationSource?.Cancel();
+            _installerCancellationSource.Cancel();
             return null;
         }
 
@@ -68,34 +60,29 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             IsCancelButtonEnabled = true;
             ProgressMessage = Resources.AttachDebuggerInstallSetupProgressMessage;
 
-            _installerCancellationSource = new CancellationTokenSource();
-            _installer = new RemoteToolInstaller(
-                Context.PublicIp,
-                Context.Credential.User,
-                Context.Credential.Password,
-                ToolsPathProvider.GetRemoteDebuggerToolsPath());
             if (await _installer.Install(_installerCancellationSource.Token))
             {
+                IsCancelButtonEnabled = false;
+
                 var session = new RemoteToolSession(
                     Context.PublicIp,
                     Context.Credential.User,
-                    Context.Credential.Password,
-                    GoogleCloudExtensionPackage.Instance.SubscribeClosingEvent,
-                    GoogleCloudExtensionPackage.Instance.UnsubscribeClosingEvent);
+                    Context.Credential.Password);
 
-                Stopwatch watch = Stopwatch.StartNew();
                 ProgressMessage = String.Format(
                     Resources.AttachDebuggerTestConnectPortMessageFormat,
                     Context.PublicIp,
                     Context.DebuggerPort.PortInfo.Port);
+
+                Stopwatch watch = Stopwatch.StartNew();
                 while (!_installerCancellationSource.IsCancellationRequested &&
-                       watch.Elapsed < WaitConnectionTimeout &&
+                       watch.Elapsed < s_waitConnectionTimeout &&
                        !session.IsStopped)
                 {
                     if (await Context.DebuggerPort.ConnectivityTest())
                     {
                         Debug.WriteLine("Connected to debuggee!");
-                        return ListProcessStepViewModel.CreateStep(Context);
+                        return null;    // TODO: got ListProcess step.
                     }
                     await Task.Delay(500);
                 }
@@ -115,6 +102,19 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             var step = new InstallStartRemoteToolStepViewModel(content, context);
             content.DataContext = step;
             return step;
+        }
+
+        private InstallStartRemoteToolStepViewModel(
+            InstallStartRemoteToolStepContent content,
+            AttachDebuggerContext context)
+            : base(context)
+        {
+            _installer = new RemoteToolInstaller(
+                Context.PublicIp,
+                Context.Credential.User,
+                Context.Credential.Password,
+                ToolsPathProvider.GetRemoteDebuggerToolsPath());
+            Content = content;
         }
     }
 }

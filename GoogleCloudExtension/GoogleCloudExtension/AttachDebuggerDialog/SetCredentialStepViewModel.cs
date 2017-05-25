@@ -65,18 +65,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// </summary>
         public ProtectedCommand ManageCredentialsCommand { get; }
 
-        public SetCredentialStepViewModel(SetCredentialStepContent content, AttachDebuggerContext context)
-            : base(context)
-        {
-            Content = content;
-            ManageCredentialsCommand = new ProtectedCommand(() =>
-            {
-                ManageWindowsCredentialsWindow.PromptUser(context.GceInstance);
-                UpdateCredentials();
-                IsOKButtonEnabled = Credentials.Any();
-            });
-        }
-
         #region Implement interface IAttachDebuggerStep
         public override ContentControl Content { get; }
 
@@ -127,6 +115,18 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             var step = new SetCredentialStepViewModel(content, context);
             content.DataContext = step;
             return step;
+        }
+
+        private SetCredentialStepViewModel(SetCredentialStepContent content, AttachDebuggerContext context)
+            : base(context)
+        {
+            Content = content;
+            ManageCredentialsCommand = new ProtectedCommand(() =>
+            {
+                ManageWindowsCredentialsWindow.PromptUser(context.GceInstance);
+                UpdateCredentials();
+                IsOKButtonEnabled = Credentials.Any();
+            });
         }
 
         private IAttachDebuggerStep DefaultNextStep => EnableDebuggerPortStepViewModel.CreateStep(Context);
