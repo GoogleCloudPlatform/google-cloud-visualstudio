@@ -126,6 +126,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             ProgressMessage = Resources.AttachDebuggerConnectingProgressMessage;
             IsCancelButtonEnabled = false;
 
+            Context.DialogWindow.UpdateLayout();
+            await Task.Yield();
+
             if (!WindowsCredentialManager.Write(
                 Context.PublicIp,
                 Context.Credential.User,
@@ -134,14 +137,14 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 Debug.WriteLine($"Failed to save credential for {Context.PublicIp}, last error is {Marshal.GetLastWin32Error()}");
                 // It's OKay to continue, the Debugger2 will prompt UI to ask for credential. 
             }
-            if (!await ListProcesses(Context.PublicIp))
+            if (!GetAllProcessesList())
             {
                 Context.DialogWindow.Close();
                 return null;    // TODO: add a help page step.
             }
             else if (Processes.Count() == 1)
             {
-                return await Attach();
+                return Attach();
             }
             else
             {
@@ -150,19 +153,26 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             }
         }
 
-        public override async Task<IAttachDebuggerStep> OnOkCommandAsync()
+        public override Task<IAttachDebuggerStep> OnOkCommandAsync()
         {
+            if (SelectedProcess == null || SelectedEngine == null)
+            {
+                Debug.WriteLine($"ListProcessStep, OnOkCommandAsync, unexpected error. SelectedProcess or SelectedEngine is null.");
+                // The code won't be reached. To be safe, just return null.
+                return Task.FromResult<IAttachDebuggerStep>(null);
+            }
+
             if (SaveSelection)
             {
                 AttachDebuggerSettings.Current.DefaultDebuggeeProcessName = SelectedProcess.Name;
                 AttachDebuggerSettings.Current.DefaultDebuggerEngineType = SelectedEngine;
             }
-            return await Attach();
+            return Task.FromResult(Attach());
         }
 
         #endregion
 
-        private async Task<IAttachDebuggerStep> Attach()
+        private IAttachDebuggerStep Attach()
         {
             IsListVisible = false;
             ProgressMessage = String.Format(
@@ -172,19 +182,17 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             {
                 if (SelectedEngine == s_detectEngineTypeItemName)
                 {
-                    await StartTaskWaitAsync(SelectedProcess.Process.Attach);
-                    //process.Process.Attach();
+                    SelectedProcess.Process.Attach();
                 }
                 else
                 {
-                    //process.Process.Attach2(engine);
-                    await StartTaskWaitAsync(() => SelectedProcess.Process.Attach2(SelectedEngine));
+                    SelectedProcess.Process.Attach2(SelectedEngine);
                 }
             }
             catch (Exception)
             {
                 UserPromptUtils.ErrorPrompt(
-                    message: $"Failed to attach to {SelectedProcess.Name}",
+                    message: String.Format(Resources.AttachDebuggerAttachErrorMessageFormat, SelectedProcess.Name),
                     title: Resources.uiDefaultPromptTitle);
                 AttachDebuggerSettings.Current.DefaultDebuggeeProcessName = "";
                 AttachDebuggerSettings.Current.DefaultDebuggerEngineType = s_detectEngineTypeItemName;
@@ -213,37 +221,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             IsOKButtonEnabled = true;
             ProgressMessage = Resources.AttachDebuggerPickingProcessMessage;
             IsListVisible = true;
-        }
-
-        private async Task<bool> ListProcesses(string publicIp)
-        {
-            SemaphoreSlim signal = new SemaphoreSlim(0);
-            Exception workerException = null;
-            bool result = false;
-            var t = new System.Threading.Thread(() =>
-            {
-                try
-                {
-                    result = GetAllProcessesList();
-                }
-                catch (Exception ex)
-                {
-                    workerException = ex;
-                }
-                signal.Release();
-            });
-            Context.DialogWindow.UpdateLayout();
-            await Context.DialogWindow.Dispatcher.BeginInvoke(
-                (Action)t.Start,
-                System.Windows.Threading.DispatcherPriority.ContextIdle);
-
-            await signal.WaitAsync(200 * 1000);
-            if (workerException != null)
-            {
-                throw workerException;
-            }
-
-            return result;
         }
 
         private bool GetAllProcessesList()
@@ -309,36 +286,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         {
             Content = content;
             RefreshCommand = new ProtectedCommand(() => GetAllProcessesList());
-        }
-
-        private async Task StartTaskWaitAsync(Action action)
-        {
-            SemaphoreSlim signal = new SemaphoreSlim(0);
-            Exception workerException = null;
-            var t = new System.Threading.Thread(() =>
-            {
-                try
-                {
-                    Debug.WriteLine("StartTaskWaitAsync, action()");
-                    action();
-                }
-                catch (Exception ex)
-                {
-                    workerException = ex;
-                }
-                // waitForCompletion.Cancel();
-                signal.Release();
-            });
-            Context.DialogWindow.UpdateLayout();
-            await Context.DialogWindow.Dispatcher.BeginInvoke(
-                (Action)t.Start,
-                System.Windows.Threading.DispatcherPriority.ContextIdle);
-            await signal.WaitAsync(200 * 1000);
-            Debug.WriteLine("WaitAsync complete");
-            if (workerException != null)
-            {
-                throw workerException;
-            }
         }
     }
 }

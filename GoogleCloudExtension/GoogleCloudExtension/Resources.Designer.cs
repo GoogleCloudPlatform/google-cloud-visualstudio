@@ -277,6 +277,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to attach to {0}.
+        /// </summary>
+        public static string AttachDebuggerAttachErrorMessageFormat {
+            get {
+                return ResourceManager.GetString("AttachDebuggerAttachErrorMessageFormat", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Attaching to {0}.
         /// </summary>
         public static string AttachDebuggerAttachingProcessMessageFormat {
