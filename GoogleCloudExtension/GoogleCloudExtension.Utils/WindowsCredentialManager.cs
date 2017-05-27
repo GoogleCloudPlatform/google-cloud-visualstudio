@@ -39,6 +39,7 @@ namespace GoogleCloudExtension.Utils
             targetName.ThrowIfNullOrEmpty(nameof(targetName));
 
             byte[] byteArray = Encoding.Unicode.GetBytes(password);
+            // 512 * 5 is the password lengh limit enforced by CredWrite API. Verify it here.
             if (byteArray.Length > 512 * 5)
             {
                 throw new ArgumentOutOfRangeException(nameof(password), "The password has exceeded 2560 bytes.");

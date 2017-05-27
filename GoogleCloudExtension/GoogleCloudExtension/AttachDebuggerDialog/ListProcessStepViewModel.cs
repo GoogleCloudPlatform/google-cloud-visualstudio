@@ -27,7 +27,7 @@ using System.Windows.Controls;
 namespace GoogleCloudExtension.AttachDebuggerDialog
 {
     /// <summary>
-    /// This step get a list of processes from remote machine.
+    /// This step gets a list of processes from a remote machine.
     /// User chooses the process and attach to it.
     /// </summary>
     public class ListProcessStepViewModel : AttachDebuggerStepBase
@@ -63,7 +63,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         }
 
         /// <summary>
-        /// The list of processes shown to user to pick one.
+        /// The list of processes shown to user to pick from.
         /// </summary>
         public IEnumerable<ProcessItem> Processes
         {
@@ -81,7 +81,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         }
 
         /// <summary>
-        /// The debugger engine type lists that user can pick one.
+        /// The debugger engine type lists that user can pick from.
         /// </summary>
         public List<string> EngineTypes
         {
@@ -99,8 +99,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         }
 
         /// <summary>
-        /// Indicates if user wants to save current selection as preference
-        /// so that user does not need to come back to see the dialog again.
+        /// Indicates if user wants to save the current selection preference 
+        /// so that user does not need to see the dialog again.
         /// </summary>
         public bool SaveSelection
         {
@@ -142,6 +142,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             else
             {
                 EnableSelection();
+                // Returns null so that the user stays on the step to pick a process.
                 return Task.FromResult<IAttachDebuggerStep>(null);
             }
         }
@@ -166,7 +167,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         #endregion
 
         /// <summary>
-        /// Create the step that get remote machine processes list and attach to one of the processes.
+        /// Create the step that gets the remote machine processes list and attach to one of the processes.
         /// </summary>
         public static ListProcessStepViewModel CreateStep(AttachDebuggerContext context)
         {
