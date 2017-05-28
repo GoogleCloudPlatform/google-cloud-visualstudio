@@ -66,6 +66,10 @@
       <HintPath>..\packages\Google.Apis.CloudResourceManager.v1.1.26.2.872\lib\net45\Google.Apis.CloudResourceManager.v1.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Google.Apis.CloudSourceRepositories.v1, Version=1.26.2.852, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
+      <HintPath>..\packages\Google.Apis.CloudSourceRepositories.v1.1.26.2.852\lib\net45\Google.Apis.CloudSourceRepositories.v1.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Google.Apis.Compute.v1, Version=1.26.2.865, Culture=neutral, PublicKeyToken=4b01fa6e34db77ab, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.Apis.Compute.v1.1.26.2.865\lib\net45\Google.Apis.Compute.v1.dll</HintPath>
       <Private>True</Private>
@@ -125,6 +129,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CloudSQLDataSource.cs" />
+    <Compile Include="CsrDataSource.cs" />
     <Compile Include="DatabaseInstanceExtensions.cs" />
     <Compile Include="DataSourceBase.cs" />
     <Compile Include="DataSourceException.cs" />
