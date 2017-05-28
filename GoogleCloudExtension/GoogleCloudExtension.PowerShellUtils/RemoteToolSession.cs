@@ -32,8 +32,7 @@ namespace GoogleCloudExtension.PowerShellUtils
 
         private readonly CancellationTokenSource _cancelTokenSource = new CancellationTokenSource();
         private readonly Task _powerShellTask;
-
-        private EventHandler ClosingEventHandler { get; }
+        private readonly EventHandler _closingEventHandler;
 
         /// <summary>
         /// Check if the powershell task is stopped.
@@ -58,8 +57,8 @@ namespace GoogleCloudExtension.PowerShellUtils
         {
             var target = new RemoteTarget(computerName, RemotePowerShellUtils.CreatePSCredential(username, password));
             string script = RemotePowerShellUtils.GetEmbeddedFile(StartPsFilePath);
-            ClosingEventHandler = (se, e) => Stop();
-            subscribeClosingEvent(ClosingEventHandler);
+            _closingEventHandler = (se, e) => Stop();
+            subscribeClosingEvent(_closingEventHandler);
             _powerShellTask = Task.Run(() =>
             {
                 try
@@ -68,7 +67,7 @@ namespace GoogleCloudExtension.PowerShellUtils
                 }
                 finally
                 {
-                    unsubscribeClosingEvent(ClosingEventHandler);
+                    unsubscribeClosingEvent(_closingEventHandler);
                 }
             });
         }

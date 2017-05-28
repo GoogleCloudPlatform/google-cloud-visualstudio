@@ -2259,4 +2259,8 @@
     <value>Refresh</value>
     <comment>Caption for Refresh buttons.</comment>
   </data>
+  <data name="AttachDebuggerAttachErrorMessageFormat" xml:space="preserve">
+    <value>Failed to attach to {0}</value>
+    <comment>The error message format when attaching to a remote process fails. {0} is the process name.</comment>
+  </data>
 </root>

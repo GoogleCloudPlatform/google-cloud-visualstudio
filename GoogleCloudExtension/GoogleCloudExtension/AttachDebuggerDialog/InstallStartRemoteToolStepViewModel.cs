@@ -83,7 +83,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 {
                     if (await Context.DebuggerPort.ConnectivityTest())
                     {
-                        Debug.WriteLine("Connected to debuggee!");
                         return ListProcessStepViewModel.CreateStep(Context);
                     }
                     await Task.Delay(500);

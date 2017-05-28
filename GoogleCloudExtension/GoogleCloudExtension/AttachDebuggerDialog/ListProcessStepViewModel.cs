@@ -14,24 +14,20 @@
 
 using EnvDTE;
 using EnvDTE80;
-using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Utils;
-using GoogleCloudExtension.DataSources;
 using Shell = Microsoft.VisualStudio.Shell;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.IO;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
 {
     /// <summary>
-    /// This step get a list of processes from remote machine.
+    /// This step gets a list of processes from a remote machine.
     /// User chooses the process and attach to it.
     /// </summary>
     public class ListProcessStepViewModel : AttachDebuggerStepBase
@@ -58,7 +54,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         }
 
         /// <summary>
-        /// Gets Whether to show processes list.
+        /// Controls whether to show processes list.
         /// </summary>
         public bool IsListVisible
         {
@@ -67,7 +63,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         }
 
         /// <summary>
-        /// The list of processes shown to user to pick one.
+        /// The list of processes shown to user to pick from.
         /// </summary>
         public IEnumerable<ProcessItem> Processes
         {
@@ -85,7 +81,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         }
 
         /// <summary>
-        /// The debugger engine type lists that user can pick one.
+        /// The debugger engine type lists that user can pick from.
         /// </summary>
         public List<string> EngineTypes
         {
@@ -103,8 +99,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         }
 
         /// <summary>
-        /// Indicates if user wants to save current selection as preference
-        /// so that user does not need to come back to see the dialog again.
+        /// Indicates if user wants to save the current selection preference 
+        /// so that user does not need to see the dialog again.
         /// </summary>
         public bool SaveSelection
         {
@@ -117,20 +113,11 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// </summary>
         public ProtectedCommand RefreshCommand { get; }
 
-        public ListProcessStepViewModel(
-            ListProcessStepContent content,
-            AttachDebuggerContext context)
-            : base(context)
-        {
-            Content = content;
-            RefreshCommand = new ProtectedCommand(() => GetAllProcessesList());
-        }
-
         #region Implement interface IAttachDebuggerStep
 
         public override ContentControl Content { get; }
 
-        public override async Task<IAttachDebuggerStep> OnStartAsync()
+        public override Task<IAttachDebuggerStep> OnStartAsync()
         {
             ProgressMessage = Resources.AttachDebuggerConnectingProgressMessage;
             IsCancelButtonEnabled = false;
@@ -143,34 +130,53 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 Debug.WriteLine($"Failed to save credential for {Context.PublicIp}, last error is {Marshal.GetLastWin32Error()}");
                 // It's OKay to continue, the Debugger2 will prompt UI to ask for credential. 
             }
-            if (!await ListProcesses(Context.PublicIp))
+            if (!GetAllProcessesList())
             {
-                return HelpStepViewModel.CreateStep(Context);
+                return Task.FromResult<IAttachDebuggerStep>(HelpStepViewModel.CreateStep(Context));
             }
             else if (Processes.Count() == 1)
             {
-                return await Attach();
+                return Task.FromResult(Attach());
             }
             else
             {
                 EnableSelection();
-                return null;    // return null to stay on the step;
+                // Returns null so that the user stays on the step to pick a process.
+                return Task.FromResult<IAttachDebuggerStep>(null);
             }
         }
 
-        public override async Task<IAttachDebuggerStep> OnOkCommandAsync()
+        public override Task<IAttachDebuggerStep> OnOkCommandAsync()
         {
+            if (SelectedProcess == null || SelectedEngine == null)
+            {
+                Debug.WriteLine($"ListProcessStep, OnOkCommandAsync, unexpected error. SelectedProcess or SelectedEngine is null.");
+                // The code won't be reached. Just to be safe, return null.
+                return Task.FromResult<IAttachDebuggerStep>(null);
+            }
+
             if (SaveSelection)
             {
                 AttachDebuggerSettings.Current.DefaultDebuggeeProcessName = SelectedProcess.Name;
                 AttachDebuggerSettings.Current.DefaultDebuggerEngineType = SelectedEngine;
             }
-            return await Attach();
+            return Task.FromResult(Attach());
         }
 
         #endregion
 
-        private async Task<IAttachDebuggerStep> Attach()
+        /// <summary>
+        /// Create the step that gets the remote machine processes list and attach to one of the processes.
+        /// </summary>
+        public static ListProcessStepViewModel CreateStep(AttachDebuggerContext context)
+        {
+            var content = new ListProcessStepContent();
+            var step = new ListProcessStepViewModel(content, context);
+            content.DataContext = step;
+            return step;
+        }
+
+        private IAttachDebuggerStep Attach()
         {
             IsListVisible = false;
             ProgressMessage = String.Format(
@@ -180,37 +186,25 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             {
                 if (SelectedEngine == s_detectEngineTypeItemName)
                 {
-                    await StartTaskWaitAsync(SelectedProcess.Process.Attach);
+                    SelectedProcess.Process.Attach();
                 }
                 else
                 {
-                    await StartTaskWaitAsync(() => SelectedProcess.Process.Attach2(SelectedEngine));
+                    SelectedProcess.Process.Attach2(SelectedEngine);
                 }
             }
-            catch (Exception)
+            catch (COMException)
             {
                 UserPromptUtils.ErrorPrompt(
-                    message: $"Failed to attach to {SelectedProcess.Name}",
+                    message: String.Format(Resources.AttachDebuggerAttachErrorMessageFormat, SelectedProcess.Name),
                     title: Resources.uiDefaultPromptTitle);
-                AttachDebuggerSettings.Current.DefaultDebuggeeProcessName = "";
-                AttachDebuggerSettings.Current.DefaultDebuggerEngineType = s_detectEngineTypeItemName;
+                ResetDefaultSelection();
                 return HelpStepViewModel.CreateStep(Context);
             }
             Context.DialogWindow.Close();
             return null;
         }
 
-        /// <summary>
-        /// Create the step that get remote machine processes list and attach to one of the processes.
-        /// </summary>
-        public static ListProcessStepViewModel CreateStep(AttachDebuggerContext context)
-        {
-            var content = new ListProcessStepContent();
-            var step = new ListProcessStepViewModel(content, context);
-            content.DataContext = step;
-            return step;
-        }
-        
         /// <summary>
         /// Helper method that set the dialog content to show picking a process controls.
         /// </summary>
@@ -220,37 +214,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             IsOKButtonEnabled = true;
             ProgressMessage = Resources.AttachDebuggerPickingProcessMessage;
             IsListVisible = true;
-        }
-
-        private async Task<bool> ListProcesses(string publicIp)
-        {
-            SemaphoreSlim signal = new SemaphoreSlim(0);
-            Exception workerException = null;
-            bool result = false;
-            var t = new System.Threading.Thread(() =>
-            {
-                try
-                {
-                    result = GetAllProcessesList();
-                }
-                catch (Exception ex)
-                {
-                    workerException = ex;
-                }
-                signal.Release();
-            });
-            Context.DialogWindow.UpdateLayout();
-            await Context.DialogWindow.Dispatcher.BeginInvoke(
-                (Action)t.Start,
-                System.Windows.Threading.DispatcherPriority.ContextIdle);
-
-            await signal.WaitAsync(200 * 1000);
-            if (workerException != null)
-            {
-                throw workerException;
-            }
-
-            return result;
         }
 
         private bool GetAllProcessesList()
@@ -279,7 +242,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             foreach (var process in processes)      // Linq does not work on COM list
             {
                 var pro2 = process as Process2;
-                Debug.WriteLine($"name {pro2.Name}");
                 _allProcesses.Add(new ProcessItem(pro2));
             }
 
@@ -295,7 +257,11 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             {
                 var matching = _allProcesses
                     .Where(x => x.Name.ToLowerInvariant() == AttachDebuggerSettings.Current.DefaultDebuggeeProcessName.ToLowerInvariant());
-                if (matching.Count() == 1)
+                if (!matching.Any())
+                {
+                    ResetDefaultSelection();
+                }
+                else if (matching.Count() == 1)
                 {
                     Processes = matching;
                     SelectedProcess = matching.First();
@@ -309,34 +275,19 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             return true;
         }
 
-        private async Task StartTaskWaitAsync(Action action)
+        private ListProcessStepViewModel(
+            ListProcessStepContent content,
+            AttachDebuggerContext context)
+            : base(context)
         {
-            SemaphoreSlim signal = new SemaphoreSlim(0);
-            Exception workerException = null;
-            var t = new System.Threading.Thread(() =>
-            {
-                try
-                {
-                    Debug.WriteLine("StartTaskWaitAsync, action()");
-                    action();
-                }
-                catch (Exception ex)
-                {
-                    workerException = ex;
-                }
-                // waitForCompletion.Cancel();
-                signal.Release();
-            });
-            Context.DialogWindow.UpdateLayout();
-            await Context.DialogWindow.Dispatcher.BeginInvoke(
-                (Action)t.Start,
-                System.Windows.Threading.DispatcherPriority.ContextIdle);
-            await signal.WaitAsync(200 * 1000);
-            Debug.WriteLine("WaitAsync complete");
-            if (workerException != null)
-            {
-                throw workerException;
-            }
+            Content = content;
+            RefreshCommand = new ProtectedCommand(() => GetAllProcessesList());
+        }
+
+        private void ResetDefaultSelection()
+        {
+            AttachDebuggerSettings.Current.DefaultDebuggeeProcessName = "";
+            AttachDebuggerSettings.Current.DefaultDebuggerEngineType = "";
         }
     }
 }
