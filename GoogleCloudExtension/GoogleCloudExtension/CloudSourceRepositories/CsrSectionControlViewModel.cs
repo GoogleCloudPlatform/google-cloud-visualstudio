@@ -41,6 +41,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public CsrSectionControlViewModel()
         { }
 
+        /// <summary>
+        /// Implement <seealso cref="ISectionViewModel.Refresh"/>
+        /// </summary>
         public void Refresh()
         {
             WriteLine("CsrSectionControlViewModel.Refresh");

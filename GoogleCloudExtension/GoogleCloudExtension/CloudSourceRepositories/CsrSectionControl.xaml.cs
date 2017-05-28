@@ -26,6 +26,9 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public partial class CsrSectionControl : UserControl, ISectionView
     {
+        /// <summary>
+        /// Implement <seealso cref="ISectionView.ViewModel"/>
+        /// </summary>
         public ISectionViewModel ViewModel { get; }
 
         [ImportingConstructor]

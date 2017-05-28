@@ -12,16 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Windows.Input;
+
 namespace GoogleCloudExtension.Team
 {
     /// <summary>
-    /// Define interface as Team Explorer connect panel section view interface.
-    /// </summary>
-    public interface ISectionView
+    /// Define interfaces for methods, properties that both VS2015 and VS2017 team explorer exposes.
+    interface ITeamExplorer
     {
         /// <summary>
-        /// Gets the view model object that controls the view behaviour
+        /// Show a message on top of the Team Explorer 
         /// </summary>
-        ISectionViewModel ViewModel { get; }
+        /// <param name="message">The message to display.</param>
+        /// <param name="command">The command that can be executed when clicking at the message.</param>
+        void ShowMessage(string message, ICommand command);
+
+        /// <summary>
+        /// Returns current active repository.
+        /// </summary>
+        string GetActiveRepository();
+
+        /// <summary>
+        /// Navigate to home section of Team Explorer
+        /// </summary>
+        void ShowHomeSection();
     }
 }
