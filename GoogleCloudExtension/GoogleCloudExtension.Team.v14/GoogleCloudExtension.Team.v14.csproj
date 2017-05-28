@@ -44,7 +44,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libs\Microsoft.TeamFoundation.Git.Provider.dll</HintPath>
     </Reference>
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
@@ -57,7 +56,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Section.cs" />
-    <Compile Include="ISectionViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -81,6 +79,10 @@
     <None Include="Key.snk" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\GoogleCloudExtension.Team\GoogleCloudExtension.Team.csproj">
+      <Project>{6faf35a5-0ff6-4f72-b8ee-02a948a6c563}</Project>
+      <Name>GoogleCloudExtension.Team</Name>
+    </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.Utils\GoogleCloudExtension.Utils.csproj">
       <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>
       <Name>GoogleCloudExtension.Utils</Name>

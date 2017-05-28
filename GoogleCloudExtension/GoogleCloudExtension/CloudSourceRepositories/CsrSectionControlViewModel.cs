@@ -12,15 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Team;
 using GoogleCloudExtension.Utils;
+using System.ComponentModel.Composition;
 using System.Windows.Controls;
+using static System.Diagnostics.Debug;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
     /// <summary>
     /// View model to <seealso cref="CsrSectionControl"/>.
     /// </summary>
-    public class CsrSectionControlViewModel : ViewModelBase
+    [Export(typeof(ISectionViewModel))]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    public class CsrSectionControlViewModel : ViewModelBase, ISectionViewModel
     {
         private ContentControl _content;
 
@@ -30,10 +35,15 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public ContentControl Content
         {
             get { return _content; }
-            set { SetValueAndRaise(out _content, value); }
+            private set { SetValueAndRaise(out _content, value); }
         }
 
         public CsrSectionControlViewModel()
         { }
+
+        public void Refresh()
+        {
+            WriteLine("CsrSectionControlViewModel.Refresh");
+        }
     }
 }

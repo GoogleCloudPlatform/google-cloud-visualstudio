@@ -12,9 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.Windows.Controls;
-
-namespace GoogleCloudExtension.Team.v14
+namespace GoogleCloudExtension.Team
 {
     /// <summary>
     /// Define interfance for Team Explorer section view model.
@@ -25,10 +23,5 @@ namespace GoogleCloudExtension.Team.v14
         /// Responds to refresh event.
         /// </summary>
         void Refresh();
-
-        /// <summary>
-        /// Returns the user control for the section.
-        /// </summary>
-        UserControl Content { get; }
     }
 }

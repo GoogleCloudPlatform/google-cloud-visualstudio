@@ -12,6 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Team;
+using GoogleCloudExtension.Utils;
+using System.ComponentModel.Composition;
 using System.Windows.Controls;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
@@ -19,11 +22,18 @@ namespace GoogleCloudExtension.CloudSourceRepositories
     /// <summary>
     /// Interaction logic for CsrSectionControl.xaml
     /// </summary>
-    public partial class CsrSectionControl : UserControl
+    [Export(typeof(ISectionView))]
+    [PartCreationPolicy(CreationPolicy.NonShared)]
+    public partial class CsrSectionControl : UserControl, ISectionView
     {
-        public CsrSectionControl()
+        public ISectionViewModel ViewModel { get; }
+
+        [ImportingConstructor]
+        public CsrSectionControl(ISectionViewModel viewModel)
         {
-            this.InitializeComponent();
+            InitializeComponent();
+            ViewModel = viewModel.ThrowIfNull(nameof(viewModel));
+            DataContext = viewModel;
         }
     }
 }

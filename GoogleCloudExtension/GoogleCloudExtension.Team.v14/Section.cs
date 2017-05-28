@@ -15,7 +15,6 @@
 using GoogleCloudExtension.Utils;
 using Microsoft.TeamFoundation.Controls;
 using System;
-using System.Windows.Controls;
 using System.ComponentModel.Composition;
 using static System.Diagnostics.Debug;
 
@@ -35,9 +34,10 @@ namespace GoogleCloudExtension.Team.v14
         private object _sectionContent;
 
         [ImportingConstructor]
-        public Section(ISectionViewModel sectionView)
+        public Section(ISectionView sectionView)
         {
-            SectionContent = sectionView.Content;
+            SectionContent = sectionView.ThrowIfNull(nameof(sectionView));
+            _viewModel = sectionView.ViewModel.ThrowIfNull(nameof(sectionView.ViewModel));
         }
 
         #region implement interface ITeamExplorerSection

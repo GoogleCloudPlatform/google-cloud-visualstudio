@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{CE5A8FDE-6B69-475F-8C2F-3C2AF45BC6EF}</ProjectGuid>
+    <ProjectGuid>{6FAF35A5-0FF6-4F72-B8EE-02A948A6C563}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GoogleCloudExtensions.Team.v15</RootNamespace>
-    <AssemblyName>GoogleCloudExtensions.Team.v15</AssemblyName>
+    <RootNamespace>GoogleCloudExtension.Team</RootNamespace>
+    <AssemblyName>GoogleCloudExtension.Team</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -36,16 +36,8 @@
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.TeamFoundation.Controls, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libs\Microsoft.TeamFoundation.Controls.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.TeamFoundation.Git.Provider, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libs\Microsoft.TeamFoundation.Git.Provider.dll</HintPath>
-    </Reference>
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -55,31 +47,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\GoogleCloudExtension.Team.v14\Section.cs">
-      <Link>Section.cs</Link>
-    </Compile>
+    <Compile Include="ISectionView.cs" />
+    <Compile Include="ISectionViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Libs\Microsoft.TeamFoundation.Client.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.Common.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.Controls.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.Git.Client.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.Git.Controls.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.Git.Provider.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Key.snk" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\GoogleCloudExtension.Team\GoogleCloudExtension.Team.csproj">
-      <Project>{6faf35a5-0ff6-4f72-b8ee-02a948a6c563}</Project>
-      <Name>GoogleCloudExtension.Team</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\GoogleCloudExtension.Utils\GoogleCloudExtension.Utils.csproj">
-      <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>
-      <Name>GoogleCloudExtension.Utils</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
