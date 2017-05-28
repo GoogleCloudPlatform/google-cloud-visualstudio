@@ -202,6 +202,10 @@
     <Compile Include="CloudExplorer\TreeLeaf.cs" />
     <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
+    <Compile Include="CloudSourceRepositories\CsrSectionControl.xaml.cs">
+      <DependentUpon>CsrSectionControl.xaml</DependentUpon> 
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrSectionControlViewModel.cs" />
     <Compile Include="Controls\AutoReloadButton.cs" />
     <Compile Include="Controls\DotsProgressIndicator.cs" />
     <Compile Include="Controls\IconButton.cs" />
@@ -848,6 +852,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CloudExplorer\CloudExplorerToolWindowControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrSectionControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
