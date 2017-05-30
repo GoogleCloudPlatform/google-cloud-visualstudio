@@ -42,23 +42,21 @@
             </Hyperlink>
         </TextBlock>
 
-        <StackPanel Orientation="Horizontal">
-            <CheckBox Margin="0,8,0,0"
-                      Content="Debug Build"
-                      IsChecked="{Binding UseDebugBuild, Mode=TwoWay}"
-                      Style="{StaticResource CommonTextStyleBase}" />
-
-            <CheckBox Margin="8,8,0,0"
-                      Content="Attach Remote Debugger"
-                      IsChecked="{Binding LaunchRemoteDebugger, Mode=TwoWay}"
-                      Style="{StaticResource CommonTextStyleBase}"
-                      IsEnabled="{Binding UseDebugBuild}" />
-        </StackPanel>
+        <CheckBox Margin="0,8,0,0"
+                    Content="Debug Build"
+                    IsChecked="{Binding UseDebugBuild, Mode=TwoWay}"
+                    Style="{StaticResource CommonTextStyleBase}" />
 
         <CheckBox Margin="0,8,0,0"
                   Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
                   IsChecked="{Binding OpenWebsite, Mode=TwoWay}"
                   Style="{StaticResource CommonTextStyleBase}"/>
+
+        <CheckBox Margin="0,8,0,0"
+                    Content="{x:Static ext:Resources.GcePublishAttachDebuggerCaption}"
+                    IsChecked="{Binding LaunchRemoteDebugger, Mode=TwoWay}"
+                    Style="{StaticResource CommonTextStyleBase}"
+                    IsEnabled="{Binding UseDebugBuild}" />
 
     </StackPanel>
 </UserControl>
