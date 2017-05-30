@@ -43,6 +43,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         private IEnumerable<WindowsInstanceCredentials> _credentials;
         private WindowsInstanceCredentials _selectedCredentials;
         private bool _openWebsite = true;
+        private bool _useDebugBuild;
+        private bool _launchRemoteDebugger;
 
         /// <summary>
         /// The asynchrnous value that will resolve to the list of instances in the current GCP Project, and that are
@@ -106,6 +108,24 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
             set { SetValueAndRaise(out _openWebsite, value); }
         }
 
+        /// <summary>
+        /// Whether to publish debug build.
+        /// </summary>
+        public bool UseDebugBuild
+        {
+            get { return _useDebugBuild; }
+            set { SetValueAndRaise(out _useDebugBuild, value); }
+        }
+
+        /// <summary>
+        /// Whether to attach debugger after publising.
+        /// </summary>
+        public bool LaunchRemoteDebugger
+        {
+            get { return _launchRemoteDebugger; }
+            set { SetValueAndRaise(out _launchRemoteDebugger, value); }
+        }
+
         private GceStepViewModel(GceStepContent content)
         {
             _content = content;
@@ -161,6 +181,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                         project,
                         SelectedInstance,
                         SelectedCredentials,
+                        UseDebugBuild,
                         progress,
                         VsVersionUtils.ToolsPathProvider,
                         GcpOutputWindow.OutputLine);
@@ -180,6 +201,11 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                     }
 
                     EventsReporterWrapper.ReportEvent(GceDeployedEvent.Create(CommandStatus.Success, deploymentDuration));
+
+                    if (LaunchRemoteDebugger)
+                    {
+                        AttachDebuggerDialog.AttachDebuggerWindow.PromptUser(SelectedInstance);
+                    }
                 }
                 else
                 {

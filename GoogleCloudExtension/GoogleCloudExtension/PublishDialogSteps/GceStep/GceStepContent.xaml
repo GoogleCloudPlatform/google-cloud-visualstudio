@@ -35,12 +35,25 @@
                   IsSynchronizedWithCurrentItem="True"
                   DisplayMemberPath="User"
                   SelectedItem="{Binding SelectedCredentials, Mode=TwoWay}" />
-        
+
         <TextBlock Margin="0,5,0,0" Style="{StaticResource CommonTextStyle}">
             <Hyperlink Command="{Binding ManageCredentialsCommand}" Style="{StaticResource CommonHyperlinkStyle}">
                 <TextBlock Text="{x:Static ext:Resources.UiManageWindowsCredentialsCaption}" />
             </Hyperlink>
         </TextBlock>
+
+        <StackPanel Orientation="Horizontal">
+            <CheckBox Margin="0,8,0,0"
+                      Content="Debug Build"
+                      IsChecked="{Binding UseDebugBuild, Mode=TwoWay}"
+                      Style="{StaticResource CommonTextStyleBase}" />
+
+            <CheckBox Margin="8,8,0,0"
+                      Content="Attach Remote Debugger"
+                      IsChecked="{Binding LaunchRemoteDebugger, Mode=TwoWay}"
+                      Style="{StaticResource CommonTextStyleBase}"
+                      IsEnabled="{Binding UseDebugBuild}" />
+        </StackPanel>
 
         <CheckBox Margin="0,8,0,0"
                   Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
