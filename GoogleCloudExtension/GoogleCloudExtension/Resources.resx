@@ -2220,11 +2220,11 @@
     <comment>A message that indicates it is connecting to debugger remote tool.</comment>
   </data>
   <data name="AttachDebuggerListProcessEmptyResultErrorMessage" xml:space="preserve">
-    <value>Did not find any processes due to unkown error</value>
+    <value>Did not find any processes due to unknown error</value>
     <comment>Error message shown when there is no any processes found. We don't indeed expect this error.</comment>
   </data>
   <data name="AttachDebuggerListProcessSaveDefaultLabel" xml:space="preserve">
-    <value>Save as preference, do not show the dialog next time</value>
+    <value>Save as preference, do not show the dialog again</value>
     <comment>The label to check box of saving the selections as default in list processes step.</comment>
   </data>
   <data name="AttachDebuggerPickingProcessMessage" xml:space="preserve">

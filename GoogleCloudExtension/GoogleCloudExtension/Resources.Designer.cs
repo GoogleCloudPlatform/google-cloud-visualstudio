@@ -376,7 +376,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save as preference, do not show the dialog next time.
+        ///   Looks up a localized string similar to Save as preference, do not show the dialog again.
         /// </summary>
         public static string AttachDebuggerListProcessSaveDefaultLabel {
             get {
@@ -2446,7 +2446,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unkown internal error. Please report the issue and/or retry later..
+        ///   Looks up a localized string similar to Unknown internal error. Please report the issue and/or retry later..
         /// </summary>
         public static string ErrorReportingInternalCodeErrorGenericMessage {
             get {
