@@ -2608,6 +2608,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Attach remote debugger after publishing.
+        /// </summary>
+        public static string GcePublishAttachDebuggerCaption {
+            get {
+                return ResourceManager.GetString("GcePublishAttachDebuggerCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to publish project {0}..
         /// </summary>
         public static string GcePublishFailedMessage {

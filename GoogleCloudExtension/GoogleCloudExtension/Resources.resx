@@ -2251,4 +2251,8 @@
     <value>Failed to attach to {0}</value>
     <comment>The error message format when attaching to a remote process fails. {0} is the process name.</comment>
   </data>
+  <data name="GcePublishAttachDebuggerCaption" xml:space="preserve">
+    <value>Attach remote debugger after publishing</value>
+    <comment>The caption of checkbox that asks to attach debugger after publishing</comment>
+  </data>
 </root>
