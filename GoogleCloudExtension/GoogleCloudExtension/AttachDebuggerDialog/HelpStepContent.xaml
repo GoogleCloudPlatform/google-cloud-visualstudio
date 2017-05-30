@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="GoogleCloudExtension.AttachDebuggerDialog.HelpStepContent"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GoogleCloudExtension.AttachDebuggerDialog"
+             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"                          
+             xmlns:ext="clr-namespace:GoogleCloudExtension"
+             mc:Ignorable="d" 
+             d:DataContext="{d:DesignInstance IsDesignTimeCreatable=False  {x:Type local:HelpStepContent}}"             
+             d:DesignHeight="150" d:DesignWidth="320"
+             MaxWidth="320">
+
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../Theming/CommonResources.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+
+            <utils:NullEmptyInvisibleConverter x:Key="NullInvisibleConverter" />
+
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <TextBlock TextWrapping="Wrap"
+                Style="{StaticResource CommonTextStyle}">
+        <Run Text="{x:Static ext:Resources.AttachDebuggerHelpFirstPartMessage}"/>            
+        <Hyperlink Command="{Binding HelpLinkCommand}" 
+                    Style="{StaticResource CommonHyperlinkStyle}">
+            <TextBlock Text="{x:Static ext:Resources.AttachDebuggerHelpStepLinkCpation}" />
+        </Hyperlink>
+        <Run Text="{x:Static ext:Resources.AttachDebuggerHelpLastPartMessage}"/>            
+    </TextBlock>
+
+</UserControl>
