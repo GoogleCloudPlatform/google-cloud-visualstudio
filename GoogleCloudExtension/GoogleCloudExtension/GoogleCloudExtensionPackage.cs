@@ -35,6 +35,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using SystemTasks = System.Threading.Tasks;
 
 namespace GoogleCloudExtension
 {
@@ -140,6 +141,16 @@ namespace GoogleCloudExtension
         protected override int QueryClose(out bool canClose)
         {
             _closingEvent?.Invoke(this, EventArgs.Empty);
+            if (_closingEvent != null)
+            {
+                var tasks = new List<SystemTasks.Task>();
+                foreach(var handler in _closingEvent.GetInvocationList().OfType<EventHandler>())
+                {
+                    tasks.Add(SystemTasks.Task.Run(() => handler(this, EventArgs.Empty)));
+                };
+ 
+                SystemTasks.Task.WaitAll(tasks.ToArray(), TimeSpan.FromMilliseconds(1000));
+            }
             return base.QueryClose(out canClose);
         }
 

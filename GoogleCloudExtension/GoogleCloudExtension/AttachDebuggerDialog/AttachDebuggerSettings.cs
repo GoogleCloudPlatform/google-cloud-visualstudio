@@ -76,6 +76,12 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public string DefaultDebuggerEngineType { get; set; }
 
         /// <summary>
+        /// Choose a default process name to attach to.
+        /// </summary>
+        [SolutionSettingKey("google_debugger_process_name")]
+        public string DefaultDebuggeeProcessName { get; set; }
+
+        /// <summary>
         /// Get the default username for a given GCE instance.
         /// </summary>
         /// <param name="gceInstance">The GCE instance object.</param>
