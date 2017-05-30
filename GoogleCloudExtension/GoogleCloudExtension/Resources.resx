@@ -2243,6 +2243,18 @@
     <value>Username</value>
     <comment>The process id header for attaching debugger dialog processes list.</comment>
   </data>
+  <data name="AttachDebuggerHelpFirstPartMessage" xml:space="preserve">
+    <value>Unable to attach debugger to the remote machine. Read</value>
+    <comment>The attach debugger help message first part.  The message is divided to 3 parts --  [first part] [link caption] [last part].</comment>
+  </data>
+  <data name="AttachDebuggerHelpLastPartMessage" xml:space="preserve">
+    <value>to set up the debugging tool properly</value>
+    <comment>The attach debugger help message last part.  The message is divided to 3 parts --  [first part] [link caption] [last part].</comment>
+  </data>
+  <data name="AttachDebuggerHelpStepLinkCpation" xml:space="preserve">
+    <value>the documentation</value>
+    <comment>The attach debugger help step link caption</comment>
+  </data>
   <data name="UiRefreshButtonCaption" xml:space="preserve">
     <value>Refresh</value>
     <comment>Caption for Refresh buttons.</comment>
