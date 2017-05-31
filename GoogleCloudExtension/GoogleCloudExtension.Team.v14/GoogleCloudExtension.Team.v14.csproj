@@ -61,21 +61,8 @@
     <Compile Include="TeamExplorerUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Libs\Microsoft.TeamFoundation.Client.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.Common.dll" />
     <Content Include="Libs\Microsoft.TeamFoundation.Controls.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.Git.Client.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.Git.Controls.dll" />
     <Content Include="Libs\Microsoft.TeamFoundation.Git.Provider.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.VersionControl.Client.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.VersionControl.Controls.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.WorkItemTracking.Client.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.WorkItemTracking.Controls.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.WorkItemTracking.Proxy.dll" />
-    <Content Include="Libs\Microsoft.VisualStudio.Services.Common.dll" />
-    <Content Include="Libs\Microsoft.VisualStudio.TeamFoundation.Client.dll" />
-    <Content Include="Libs\Microsoft.VisualStudio.TeamFoundation.VersionControl.dll" />
-    <Content Include="Libs\Microsoft.VisualStudio.TeamFoundation.WorkItemTracking.dll" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

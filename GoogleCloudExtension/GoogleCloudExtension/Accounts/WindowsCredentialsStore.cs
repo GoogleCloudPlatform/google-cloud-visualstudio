@@ -166,3 +166,4 @@ namespace GoogleCloudExtension.Accounts
         private static string GetUserName(string path) => Path.GetFileNameWithoutExtension(path);
     }
 }
+

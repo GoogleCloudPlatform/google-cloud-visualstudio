@@ -65,11 +65,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Libs\Microsoft.TeamFoundation.Client.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.Common.dll" />
     <Content Include="Libs\Microsoft.TeamFoundation.Controls.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.Git.Client.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.Git.Controls.dll" />
     <Content Include="Libs\Microsoft.TeamFoundation.Git.Provider.dll" />
   </ItemGroup>
   <ItemGroup>
