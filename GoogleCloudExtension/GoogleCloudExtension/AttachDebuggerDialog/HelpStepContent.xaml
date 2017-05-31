@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:GoogleCloudExtension.AttachDebuggerDialog"
-             xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils"                          
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
              d:DataContext="{d:DesignInstance IsDesignTimeCreatable=False  {x:Type local:HelpStepContent}}"             
@@ -16,9 +15,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../Theming/CommonResources.xaml" />
             </ResourceDictionary.MergedDictionaries>
-
-            <utils:NullEmptyInvisibleConverter x:Key="NullInvisibleConverter" />
-
         </ResourceDictionary>
     </UserControl.Resources>
 

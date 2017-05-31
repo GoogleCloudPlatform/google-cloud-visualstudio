@@ -95,7 +95,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         public override void OnMenuItemOpen()
         {
-            _attachDebuggerCommand.CanExecuteCommand = !ShellUtils.IsBusy();
+            // In current code, _attachDebuggerCommand won't be null
+            // To be safe and in case the constructor/initiailzation code could be modified in the future.
+            if (_attachDebuggerCommand != null)
+            {
+                _attachDebuggerCommand.CanExecuteCommand = !ShellUtils.IsBusy();
+            }
             base.OnMenuItemOpen();
         }
 

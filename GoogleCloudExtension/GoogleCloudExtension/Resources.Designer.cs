@@ -367,7 +367,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Did not find any processes due to unkown error.
+        ///   Looks up a localized string similar to Did not find any processes due to unknown error.
         /// </summary>
         public static string AttachDebuggerListProcessEmptyResultErrorMessage {
             get {
@@ -376,7 +376,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save as preference, do not show the dialog next time.
+        ///   Looks up a localized string similar to Save as preference, do not show the dialog again.
         /// </summary>
         public static string AttachDebuggerListProcessSaveDefaultLabel {
             get {
@@ -2631,6 +2631,24 @@ namespace GoogleCloudExtension {
         public static string FlexPublishSuccessMessage {
             get {
                 return ResourceManager.GetString("FlexPublishSuccessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Attach remote debugger after publishing.
+        /// </summary>
+        public static string GcePublishAttachDebuggerCaption {
+            get {
+                return ResourceManager.GetString("GcePublishAttachDebuggerCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debug Build.
+        /// </summary>
+        public static string GcePublishDebugBuildCaption {
+            get {
+                return ResourceManager.GetString("GcePublishDebugBuildCaption", resourceCulture);
             }
         }
         

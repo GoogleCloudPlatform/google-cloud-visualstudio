@@ -35,7 +35,9 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="targetInstance">The instance to deploy.</param>
         /// <param name="credentials">The Windows credentials to use to deploy to the <paramref name="targetInstance"/>.</param>
         /// <param name="progress">The progress indicator.</param>
-        /// <param name="useDebugBuild">Use debug build or release build.</param>
+        /// <param name="useDebugBuild">
+        /// True: Publish debug build.
+        /// False: Publish release build.</param>
         /// <param name="outputAction">The action to call with lines of output.</param>
         public static async Task<bool> PublishProjectAsync(
             IParsedProject project,
@@ -124,8 +126,8 @@ namespace GoogleCloudExtension.Deployment
         /// present in all Web projects. It publishes to the staging directory by using the FileSystem method.
         /// </summary>
         private static async Task<bool> CreateAppBundleAsync(
-            IParsedProject project, 
-            string stageDirectory, 
+            IParsedProject project,
+            string stageDirectory,
             bool useDebugBuild,
             IToolsPathProvider toolsPathProvider,
             Action<string> outputAction)

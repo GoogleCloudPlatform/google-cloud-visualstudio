@@ -29,7 +29,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         private const string HelpLink = "https://cloud.google.com/tools/visual-studio/docs/how-to";
 
         /// <summary>
-        /// The command to open the enable port help hyperlink.
+        /// The command to open the attaching remote debugger feature help web page.
         /// </summary>
         public ProtectedCommand HelpLinkCommand { get; }
 
@@ -43,8 +43,12 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         }
 
         #region Implement interface IAttachDebuggerStep
+
         public override ContentControl Content { get; }
 
+        /// <summary>
+        /// This is the last step. OK button and Cancel button both simply closes the window.
+        /// </summary>
         public override Task<IAttachDebuggerStep> OnOkCommandAsync() => Task.FromResult(base.OnCancelCommand());
 
         public override Task<IAttachDebuggerStep> OnStartAsync()
@@ -53,10 +57,11 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             IsOKButtonEnabled = true;
             return Task.FromResult<IAttachDebuggerStep>(null);
         }
+
         #endregion
 
         /// <summary>
-        /// Creates the step that installs and starts debugger remote tool.
+        /// Creates the step that asks user to open online documentation.
         /// </summary>
         public static HelpStepViewModel CreateStep(AttachDebuggerContext context)
         {
