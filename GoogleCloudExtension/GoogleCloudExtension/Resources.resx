@@ -2267,8 +2267,4 @@
     <value>Attach remote debugger after publishing</value>
     <comment>The caption of checkbox that asks to attach debugger after publishing</comment>
   </data>
-  <data name="GcePublishDebugBuildCaption" xml:space="preserve">
-    <value>Debug Build</value>
-    <comment>The caption of the checkbox that asks to use debug build.</comment>
-  </data>
 </root>

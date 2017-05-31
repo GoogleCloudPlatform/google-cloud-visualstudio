@@ -2644,15 +2644,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Debug Build.
-        /// </summary>
-        public static string GcePublishDebugBuildCaption {
-            get {
-                return ResourceManager.GetString("GcePublishDebugBuildCaption", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to publish project {0}..
         /// </summary>
         public static string GcePublishFailedMessage {

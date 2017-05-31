@@ -43,7 +43,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         private IEnumerable<WindowsInstanceCredentials> _credentials;
         private WindowsInstanceCredentials _selectedCredentials;
         private bool _openWebsite = true;
-        private bool _useDebugBuild;
         private bool _launchRemoteDebugger;
 
         /// <summary>
@@ -106,15 +105,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         {
             get { return _openWebsite; }
             set { SetValueAndRaise(out _openWebsite, value); }
-        }
-
-        /// <summary>
-        /// Whether to publish debug build.
-        /// </summary>
-        public bool UseDebugBuild
-        {
-            get { return _useDebugBuild; }
-            set { SetValueAndRaise(out _useDebugBuild, value); }
         }
 
         /// <summary>
@@ -181,7 +171,6 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
                         project,
                         SelectedInstance,
                         SelectedCredentials,
-                        UseDebugBuild,
                         progress,
                         VsVersionUtils.ToolsPathProvider,
                         GcpOutputWindow.OutputLine);

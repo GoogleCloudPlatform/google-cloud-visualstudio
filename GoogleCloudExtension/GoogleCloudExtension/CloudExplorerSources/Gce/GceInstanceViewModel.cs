@@ -99,7 +99,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             // To be safe and in case the constructor/initiailzation code could be modified in the future.
             if (_attachDebuggerCommand != null)
             {
-                _attachDebuggerCommand.CanExecuteCommand = !ShellUtils.IsBusy();
+                _attachDebuggerCommand.CanExecuteCommand = 
+                    Instance.IsWindowsInstance() && Instance.IsRunning() && !ShellUtils.IsBusy();
             }
             base.OnMenuItemOpen();
         }
@@ -231,7 +232,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             var stopInstanceCommand = new ProtectedCommand(OnStopInstanceCommand);
             var manageFirewallPorts = new ProtectedCommand(OnManageFirewallPortsCommand);
             var manageWindowsCredentials = new ProtectedCommand(OnManageWindowsCredentialsCommand, canExecuteCommand: Instance.IsWindowsInstance());
-            _attachDebuggerCommand = new ProtectedCommand(OnAttachDebugger, canExecuteCommand: Instance.IsWindowsInstance() && Instance.IsRunning());
+            _attachDebuggerCommand = new ProtectedCommand(OnAttachDebugger);
 
             var menuItems = new List<MenuItem>
             {
