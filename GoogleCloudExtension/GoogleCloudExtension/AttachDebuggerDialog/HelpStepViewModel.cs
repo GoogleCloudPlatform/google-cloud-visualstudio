@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public override ContentControl Content { get; }
 
         /// <summary>
-        /// This is the last step. OK button and Cancel button both simply closes the window.
+        /// This is the last step. OK button simply closes the window.
         /// </summary>
         public override Task<IAttachDebuggerStep> OnOkCommandAsync() => Task.FromResult(OnCancelCommand());
 
