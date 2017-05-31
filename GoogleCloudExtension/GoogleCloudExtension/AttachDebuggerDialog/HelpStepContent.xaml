@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.AttachDebuggerDialog"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
-             d:DataContext="{d:DesignInstance IsDesignTimeCreatable=False  {x:Type local:HelpStepContent}}"             
+             d:DataContext="{d:DesignInstance local:HelpStepContent,IsDesignTimeCreatable=False}"             
              d:DesignHeight="150" d:DesignWidth="320"
              MaxWidth="320">
 
@@ -18,12 +18,11 @@
         </ResourceDictionary>
     </UserControl.Resources>
 
-    <TextBlock TextWrapping="Wrap"
-                Style="{StaticResource CommonTextStyle}">
+    <TextBlock Style="{StaticResource CommonTextStyle}">
         <Run Text="{x:Static ext:Resources.AttachDebuggerHelpFirstPartMessage}"/>            
         <Hyperlink Command="{Binding HelpLinkCommand}" 
-                    Style="{StaticResource CommonHyperlinkStyle}">
-            <TextBlock Text="{x:Static ext:Resources.AttachDebuggerHelpStepLinkCpation}" />
+                   Style="{StaticResource CommonHyperlinkStyle}">
+            <Run Text="{x:Static ext:Resources.AttachDebuggerHelpStepLinkCpation}" />
         </Hyperlink>
         <Run Text="{x:Static ext:Resources.AttachDebuggerHelpLastPartMessage}"/>            
     </TextBlock>

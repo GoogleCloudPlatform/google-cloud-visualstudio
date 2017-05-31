@@ -340,7 +340,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to to set up the debugging tool properly.
+        ///   Looks up a localized string similar to to set up the debugging tool properly..
         /// </summary>
         public static string AttachDebuggerHelpLastPartMessage {
             get {

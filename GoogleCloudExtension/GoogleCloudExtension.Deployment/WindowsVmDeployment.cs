@@ -37,7 +37,8 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="progress">The progress indicator.</param>
         /// <param name="useDebugBuild">
         /// True: Publish debug build.
-        /// False: Publish release build.</param>
+        /// False: Publish release build.
+        /// </param>
         /// <param name="outputAction">The action to call with lines of output.</param>
         public static async Task<bool> PublishProjectAsync(
             IParsedProject project,

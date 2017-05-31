@@ -35,6 +35,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         private ContentControl _content;
         private bool _isReady;
         private bool _showProgress;
+        private bool _showCancelButton = true;
 
         /// <summary>
         /// Whether the dialog is ready to process user input or not.
@@ -62,6 +63,15 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         {
             get { return _showProgress; }
             private set { SetValueAndRaise(out _showProgress, value); }
+        }
+
+        /// <summary>
+        /// Show or hide cancel button
+        /// </summary>
+        public bool ShowCancelButton
+        {
+            get { return _showCancelButton; }
+            private set { SetValueAndRaise(out _showCancelButton, value); }
         }
 
         /// <summary>
@@ -116,6 +126,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
             switch (e.PropertyName)
             {
+                case nameof(IAttachDebuggerStep.IsCancelButtonVisible):
+                    ShowCancelButton = _currentStep.IsCancelButtonVisible;
+                    break;
                 case nameof(IAttachDebuggerStep.IsCancelButtonEnabled):
                     CancelCommand.CanExecuteCommand = _currentStep.IsCancelButtonEnabled;
                     break;
@@ -127,8 +140,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         private void UpdateButtons()
         {
-            CancelCommand.CanExecuteCommand = _currentStep?.IsCancelButtonEnabled == true;
-            OKCommand.CanExecuteCommand = IsReady && _currentStep?.IsOKButtonEnabled == true;
+            CancelCommand.CanExecuteCommand = _currentStep?.IsCancelButtonEnabled ?? false;
+            OKCommand.CanExecuteCommand = IsReady && (_currentStep?.IsOKButtonEnabled ?? false);
+            ShowCancelButton = _currentStep?.IsCancelButtonVisible ?? false;
         }
 
         private async Task GotoStep(IAttachDebuggerStep step)

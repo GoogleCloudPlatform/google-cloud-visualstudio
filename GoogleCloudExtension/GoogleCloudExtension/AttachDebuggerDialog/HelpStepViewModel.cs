@@ -33,15 +33,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// </summary>
         public ProtectedCommand HelpLinkCommand { get; }
 
-        public HelpStepViewModel(
-            HelpStepContent content,
-            AttachDebuggerContext context)
-            : base(context)
-        {
-            Content = content;
-            HelpLinkCommand = new ProtectedCommand(() => Process.Start(HelpLink));
-        }
-
         #region Implement interface IAttachDebuggerStep
 
         public override ContentControl Content { get; }
@@ -49,11 +40,11 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <summary>
         /// This is the last step. OK button and Cancel button both simply closes the window.
         /// </summary>
-        public override Task<IAttachDebuggerStep> OnOkCommandAsync() => Task.FromResult(base.OnCancelCommand());
+        public override Task<IAttachDebuggerStep> OnOkCommandAsync() => Task.FromResult(OnCancelCommand());
 
         public override Task<IAttachDebuggerStep> OnStartAsync()
         {
-            IsCancelButtonEnabled = true;
+            IsCancelButtonVisible = false;
             IsOKButtonEnabled = true;
             return Task.FromResult<IAttachDebuggerStep>(null);
         }
@@ -69,6 +60,15 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             var step = new HelpStepViewModel(content, context);
             content.DataContext = step;
             return step;
+        }
+
+        private HelpStepViewModel(
+            HelpStepContent content,
+            AttachDebuggerContext context)
+            : base(context)
+        {
+            Content = content;
+            HelpLinkCommand = new ProtectedCommand(() => Process.Start(HelpLink));
         }
     }
 }
