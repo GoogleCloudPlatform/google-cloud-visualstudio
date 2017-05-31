@@ -39,6 +39,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.Utils.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.PowerShellUtils", "GoogleCloudExtension.PowerShellUtils\GoogleCloudExtension.PowerShellUtils.csproj", "{D94A10B2-5ADC-4708-AE7B-49B70381AB91}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.Team.v14", "GoogleCloudExtension.Team.v14\GoogleCloudExtension.Team.v14.csproj", "{3FEBB10A-ADAF-4807-B741-030B1F722D35}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.Team.v15", "GoogleCloudExtensions.Team.v15\GoogleCloudExtension.Team.v15.csproj", "{CE5A8FDE-6B69-475F-8C2F-3C2AF45BC6EF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoogleCloudExtension.Team", "GoogleCloudExtension.Team\GoogleCloudExtension.Team.csproj", "{6FAF35A5-0FF6-4F72-B8EE-02A948A6C563}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,6 +99,18 @@ Global
 		{D94A10B2-5ADC-4708-AE7B-49B70381AB91}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D94A10B2-5ADC-4708-AE7B-49B70381AB91}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D94A10B2-5ADC-4708-AE7B-49B70381AB91}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FEBB10A-ADAF-4807-B741-030B1F722D35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FEBB10A-ADAF-4807-B741-030B1F722D35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FEBB10A-ADAF-4807-B741-030B1F722D35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FEBB10A-ADAF-4807-B741-030B1F722D35}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CE5A8FDE-6B69-475F-8C2F-3C2AF45BC6EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE5A8FDE-6B69-475F-8C2F-3C2AF45BC6EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE5A8FDE-6B69-475F-8C2F-3C2AF45BC6EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE5A8FDE-6B69-475F-8C2F-3C2AF45BC6EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6FAF35A5-0FF6-4F72-B8EE-02A948A6C563}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6FAF35A5-0FF6-4F72-B8EE-02A948A6C563}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6FAF35A5-0FF6-4F72-B8EE-02A948A6C563}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6FAF35A5-0FF6-4F72-B8EE-02A948A6C563}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
