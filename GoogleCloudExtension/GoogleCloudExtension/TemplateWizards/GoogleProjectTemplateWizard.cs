@@ -30,6 +30,8 @@ namespace GoogleCloudExtension.TemplateWizards
     [Export(typeof(IGoogleProjectTemplateWizard))]
     public class GoogleProjectTemplateWizard : IGoogleProjectTemplateWizard
     {
+        private const string GlobalJsonFileName = "global.json";
+
         ///<inheritdoc />
         public void RunStarted(
             object automationObject,
@@ -59,7 +61,7 @@ namespace GoogleCloudExtension.TemplateWizards
         ///<inheritdoc />
         public bool ShouldAddProjectItem(string filePath)
         {
-            if ("global.json".Equals(Path.GetFileName(filePath), StringComparison.OrdinalIgnoreCase))
+            if (GlobalJsonFileName == Path.GetFileName(filePath))
             {
                 return GoogleCloudExtensionPackage.VsVersion == VsVersionUtils.VisualStudio2015Version;
             }

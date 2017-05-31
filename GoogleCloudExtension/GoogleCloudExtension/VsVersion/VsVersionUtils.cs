@@ -23,7 +23,7 @@ namespace GoogleCloudExtension.VsVersion
     internal static class VsVersionUtils
     {
         public const string VisualStudio2015Version = "14.0";
-        private const string VisualStudio2017Version = "15.0";
+        public const string VisualStudio2017Version = "15.0";
 
         private static readonly Lazy<IToolsPathProvider> s_toolsPathProvider = new Lazy<IToolsPathProvider>(GetTooslPathProvider);
 
