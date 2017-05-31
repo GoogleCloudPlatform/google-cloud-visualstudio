@@ -15,6 +15,7 @@
 using EnvDTE;
 using GoogleCloudExtension.TemplateWizards.Dialogs.ProjectIdDialog;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.VsVersion;
 using Microsoft.VisualStudio.TemplateWizard;
 using System;
 using System.Collections.Generic;
@@ -58,7 +59,14 @@ namespace GoogleCloudExtension.TemplateWizards
         ///<inheritdoc />
         public bool ShouldAddProjectItem(string filePath)
         {
-            return true;
+            if ("global.json".Equals(Path.GetFileName(filePath), StringComparison.OrdinalIgnoreCase))
+            {
+                return GoogleCloudExtensionPackage.VsVersion == VsVersionUtils.VisualStudio2015Version;
+            }
+            else
+            {
+                return true;
+            }
         }
 
         ///<inheritdoc />

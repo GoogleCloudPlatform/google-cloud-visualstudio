@@ -50,6 +50,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="Controllers\HomeController.cs" />
+    <None Include="global.json" />
     <None Include="Program.cs" />
     <None Include="Properties\launchSettings.json" />
     <Content Include="Startup.cs" />

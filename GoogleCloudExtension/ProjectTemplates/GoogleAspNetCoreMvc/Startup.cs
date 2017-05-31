@@ -28,9 +28,14 @@ namespace $safeprojectname$
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Add framework services.
+            var projectId = GetProjectId();
+            // Add framework services.Microsoft.VisualStudio.ExtensionManager.ExtensionManagerService
             services.AddMvc();
-            services.AddGoogleTrace(GetProjectId());
+            services.AddGoogleTrace(projectId);
+            services.AddGoogleExceptionLogging(
+                projectId,
+                Configuration["Google:ErrorReporting:ServiceName"],
+                Configuration["Google:ErrorReporting:Version"]);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -50,9 +55,7 @@ namespace $safeprojectname$
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                app.UseGoogleExceptionLogging(projectId,
-                    Configuration["Google:ErrorReporting:ServiceName"],
-                    Configuration["Google:ErrorReporting:Version"]);
+                app.UseGoogleExceptionLogging();
             }
 
             app.UseStaticFiles();
