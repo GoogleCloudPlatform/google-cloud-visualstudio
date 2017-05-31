@@ -57,8 +57,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 }
                 else
                 {
-                    Context.DialogWindow.Close();
-                    return null;    // TODO: I'll add a help page later.
+                    return HelpStepViewModel.CreateStep(Context);
                 }
             }
         }
