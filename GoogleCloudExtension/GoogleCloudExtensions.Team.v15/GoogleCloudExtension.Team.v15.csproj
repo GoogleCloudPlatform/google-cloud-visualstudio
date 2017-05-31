@@ -59,6 +59,9 @@
     <Compile Include="..\GoogleCloudExtension.Team.v14\Section.cs">
       <Link>Section.cs</Link>
     </Compile>
+    <Compile Include="..\GoogleCloudExtension.Team.v14\TeamExplorerUtils.cs">
+      <Link>TeamExplorerUtils.cs</Link>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

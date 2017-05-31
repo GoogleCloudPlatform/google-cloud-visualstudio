@@ -23,5 +23,19 @@ namespace GoogleCloudExtension.Team
         /// Responds to refresh event.
         /// </summary>
         void Refresh();
+
+        /// <summary>
+        /// Initializes the view model with <paramref name="teamExplorerService"/> input.
+        /// </summary>
+        void Initialize(ITeamExplorerUtils teamExplorerService);
+
+        /// <summary>
+        /// Notifies the current active repository changes
+        /// </summary>
+        /// <param name="newRepoLocalPath">
+        /// The new active repository local path.
+        /// When the value is null, there is no active repository.
+        /// </param>
+        void UpdateActiveRepo(string newRepoLocalPath);
     }
 }

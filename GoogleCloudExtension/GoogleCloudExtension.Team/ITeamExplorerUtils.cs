@@ -18,7 +18,7 @@ namespace GoogleCloudExtension.Team
 {
     /// <summary>
     /// Define interfaces for methods, properties that both VS2015 and VS2017 team explorer exposes.
-    interface ITeamExplorer
+    public interface ITeamExplorerUtils
     {
         /// <summary>
         /// Show a message on top of the Team Explorer 

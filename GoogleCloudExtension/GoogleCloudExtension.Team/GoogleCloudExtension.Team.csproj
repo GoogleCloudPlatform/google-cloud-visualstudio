@@ -50,7 +50,7 @@
   <ItemGroup>
     <Compile Include="ISectionView.cs" />
     <Compile Include="ISectionViewModel.cs" />
-    <Compile Include="ITeamExplorer.cs" />
+    <Compile Include="ITeamExplorerUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
