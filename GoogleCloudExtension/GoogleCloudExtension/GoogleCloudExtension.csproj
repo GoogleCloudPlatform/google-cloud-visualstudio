@@ -126,9 +126,13 @@
     <Compile Include="AttachDebuggerDialog\EnablePowerShellPortStepViewModel.cs" />
     <Compile Include="AttachDebuggerDialog\AttachDebuggerFirewallPort.cs" />
     <Compile Include="AttachDebuggerDialog\IAttachDebuggerStep.cs" />
+    <Compile Include="AttachDebuggerDialog\HelpStepContent.xaml.cs">
+      <DependentUpon>HelpStepContent.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AttachDebuggerDialog\InstallStartRemoteToolStepContent.xaml.cs">
       <DependentUpon>InstallStartRemoteToolStepContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AttachDebuggerDialog\HelpStepViewModel.cs" />
     <Compile Include="AttachDebuggerDialog\InstallStartRemoteToolStepViewModel.cs" />
     <Compile Include="AttachDebuggerDialog\ListProcessStepContent.xaml.cs">
       <DependentUpon>ListProcessStepContent.xaml</DependentUpon>
@@ -819,6 +823,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="AttachDebuggerDialog\EnablePortStepContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="AttachDebuggerDialog\HelpStepContent.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

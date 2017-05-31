@@ -2243,6 +2243,18 @@
     <value>Username</value>
     <comment>The process id header for attaching debugger dialog processes list.</comment>
   </data>
+  <data name="AttachDebuggerHelpFirstPartMessage" xml:space="preserve">
+    <value>Unable to attach debugger to the remote machine. Read</value>
+    <comment>The attach debugger help message first part.  The message is divided to 3 parts --  [first part] [link caption] [last part].</comment>
+  </data>
+  <data name="AttachDebuggerHelpLastPartMessage" xml:space="preserve">
+    <value>to set up the debugging tool properly</value>
+    <comment>The attach debugger help message last part.  The message is divided to 3 parts --  [first part] [link caption] [last part].</comment>
+  </data>
+  <data name="AttachDebuggerHelpStepLinkCpation" xml:space="preserve">
+    <value>the documentation</value>
+    <comment>The attach debugger help step link caption</comment>
+  </data>
   <data name="UiRefreshButtonCaption" xml:space="preserve">
     <value>Refresh</value>
     <comment>Caption for Refresh buttons.</comment>
@@ -2250,5 +2262,13 @@
   <data name="AttachDebuggerAttachErrorMessageFormat" xml:space="preserve">
     <value>Failed to attach to {0}</value>
     <comment>The error message format when attaching to a remote process fails. {0} is the process name.</comment>
+  </data>
+  <data name="GcePublishAttachDebuggerCaption" xml:space="preserve">
+    <value>Attach remote debugger after publishing</value>
+    <comment>The caption of checkbox that asks to attach debugger after publishing</comment>
+  </data>
+  <data name="GcePublishDebugBuildCaption" xml:space="preserve">
+    <value>Debug Build</value>
+    <comment>The caption of the checkbox that asks to use debug build.</comment>
   </data>
 </root>
