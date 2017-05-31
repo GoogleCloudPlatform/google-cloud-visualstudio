@@ -1015,6 +1015,5 @@
     <Error Condition="!Exists('..\packages\MSBuilder.VsixInstaller.0.2.16\build\MSBuilder.VsixInstaller.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuilder.VsixInstaller.0.2.16\build\MSBuilder.VsixInstaller.targets'))" />
   </Target>
   <Import Condition="$(VisualStudioVersion) == '14.0' and Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets')" Project="..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets" />
-  <Import Project="..\packages\MSBuilder.VsixInstaller.0.2.16\build\MSBuilder.VsixInstaller.targets" Condition="Exists('..\packages\MSBuilder.VsixInstaller.0.2.16\build\MSBuilder.VsixInstaller.targets')" />
   <Import Project="TargetOverrides.targets" />
 </Project>

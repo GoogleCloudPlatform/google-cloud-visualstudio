@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  
+  <PropertyGroup>
+    <UseCompiledTasks>true</UseCompiledTasks>
+  </PropertyGroup>
+  <Import Project="..\packages\MSBuilder.VsixInstaller.0.2.16\build\MSBuilder.VsixInstaller.targets" Condition="Exists('..\packages\MSBuilder.VsixInstaller.0.2.16\build\MSBuilder.VsixInstaller.targets')" />
   <Target Name="DeployVsixExtensionFiles" Condition="'$(DeployExtension)'=='true' and '$(CreateVsixContainer)'=='true'" DependsOnTargets="$(DeployVsixExtensionFilesDependsOn)">
     <UninstallExtension Condition="'$(ExistingDeploymentPath)' != '' AND '$(AllUsersExtension)' != 'true'" VsixIdentifier="$(VsixID)" RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" FailIfNotInstalled="false" />
-    
-    <Message Condition="Exists($(ExistingDeploymentPath))" Text="ExistingDeploymentPath exists: $(ExistingDeploymentPath)"/>
-    <Message Condition="!Exists($(ExistingDeploymentPath))" Text="ExistingDeploymentPath does not exist: $(ExistingDeploymentPath)"/>
 
     <RemoveDir Condition="'$(ExistingDeploymentPath)' != '' AND '$(AllUsersExtension)' != 'true'" Directories="$([System.IO.Path]::GetDirectoryName($(ExistingDeploymentPath)))">
       <Output TaskParameter="RemovedDirectories" PropertyName="RemovedDirectories"/>
     </RemoveDir>
     
-    <Message Text="Removed $(RemovedDirectories)"/>
     <Message Text="VsixID = $(VsixID)" />
     <Message Text="VsixVersion = $(VsixVersion)" />
-    <Message Condition="Exists($(ExistingDeploymentPath))" Text="ExistingDeploymentPath exists: $(ExistingDeploymentPath)"/>
-    <Message Condition="!Exists($(ExistingDeploymentPath))" Text="ExistingDeploymentPath does not exist: $(ExistingDeploymentPath)"/>
 
     <InstallVsix VisualStudioVersion="$(VisualStudioVersion)" VsInstallRoot="$(VsInstallRoot)" VsixPath="$(TargetVsixContainer)" PerMachine="$(PerMachine)" RootSuffix="$(RootSuffix)" MessageImportance="$(MessageImportance)" />
     <!--Check if the user is an administrator and the user profile hasn't been setup for the target instance. -->
