@@ -43,7 +43,7 @@
         </TextBlock>
 
         <CheckBox Margin="0,8,0,0"
-                    Content="Debug Build"
+                    Content="{x:Static ext:Resources.GcePublishDebugBuildCaption}"
                     IsChecked="{Binding UseDebugBuild, Mode=TwoWay}"
                     Style="{StaticResource CommonTextStyleBase}" />
 

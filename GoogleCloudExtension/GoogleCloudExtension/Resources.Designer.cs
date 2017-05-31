@@ -367,7 +367,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Did not find any processes due to unkown error.
+        ///   Looks up a localized string similar to Did not find any processes due to unknown error.
         /// </summary>
         public static string AttachDebuggerListProcessEmptyResultErrorMessage {
             get {
@@ -2446,7 +2446,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unknown internal error. Please report the issue and/or retry later..
+        ///   Looks up a localized string similar to Unkown internal error. Please report the issue and/or retry later..
         /// </summary>
         public static string ErrorReportingInternalCodeErrorGenericMessage {
             get {
@@ -2640,6 +2640,15 @@ namespace GoogleCloudExtension {
         public static string GcePublishAttachDebuggerCaption {
             get {
                 return ResourceManager.GetString("GcePublishAttachDebuggerCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Debug Build.
+        /// </summary>
+        public static string GcePublishDebugBuildCaption {
+            get {
+                return ResourceManager.GetString("GcePublishDebugBuildCaption", resourceCulture);
             }
         }
         
