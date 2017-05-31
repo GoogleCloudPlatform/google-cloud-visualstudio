@@ -2,8 +2,9 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <MinimumVisualStudioVersion Condition="$(VisualStudioVersion) == '15.0'">15.0</MinimumVisualStudioVersion>
+    <OldToolsVersion Condition="$(VisualStudioVersion) == '15.0'">14.0</OldToolsVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <OldToolsVersion>14.0</OldToolsVersion>
     <RestorePackages>false</RestorePackages>
     <ResolveNuGetPackages>false</ResolveNuGetPackages>
   </PropertyGroup>
