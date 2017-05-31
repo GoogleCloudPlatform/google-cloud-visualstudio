@@ -51,6 +51,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         private readonly GceSourceRootViewModel _owner;
         private Instance _instance;
+        private ProtectedCommand _attachDebuggerCommand;
 
         private Instance Instance
         {
@@ -90,6 +91,18 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             Instance = instance;
 
             UpdateInstanceState();
+        }
+
+        public override void OnMenuItemOpen()
+        {
+            // In current code, _attachDebuggerCommand won't be null
+            // To be safe and in case the constructor/initiailzation code could be modified in the future.
+            if (_attachDebuggerCommand != null)
+            {
+                _attachDebuggerCommand.CanExecuteCommand = 
+                    Instance.IsWindowsInstance() && Instance.IsRunning() && !ShellUtils.IsBusy();
+            }
+            base.OnMenuItemOpen();
         }
 
         /// <summary>
@@ -219,7 +232,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             var stopInstanceCommand = new ProtectedCommand(OnStopInstanceCommand);
             var manageFirewallPorts = new ProtectedCommand(OnManageFirewallPortsCommand);
             var manageWindowsCredentials = new ProtectedCommand(OnManageWindowsCredentialsCommand, canExecuteCommand: Instance.IsWindowsInstance());
-            var attachDebugger = new ProtectedCommand(OnAttachDebugger, canExecuteCommand: Instance.IsWindowsInstance() && Instance.IsRunning());
+            _attachDebuggerCommand = new ProtectedCommand(OnAttachDebugger);
 
             var menuItems = new List<MenuItem>
             {
@@ -228,7 +241,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
                 new MenuItem { Header = Resources.CloudExplorerGceOpenWebSiteMenuHeader, Command = openWebSite },
                 new MenuItem { Header = Resources.CloudExplorerGceManageFirewallPortsMenuHeader, Command = manageFirewallPorts },
                 new MenuItem { Header = Resources.CloudExplorerGceManageWindowsCredentialsMenuHeader, Command = manageWindowsCredentials },
-                new MenuItem { Header = Resources.CloudExplorerGceAttachDebuggerMenuHeader, Command = attachDebugger }
+                new MenuItem { Header = Resources.CloudExplorerGceAttachDebuggerMenuHeader, Command = _attachDebuggerCommand }
             };
 
             if (Instance.Id.HasValue)

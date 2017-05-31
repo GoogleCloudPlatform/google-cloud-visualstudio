@@ -132,8 +132,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             }
             if (!GetAllProcessesList())
             {
-                Context.DialogWindow.Close();
-                return null;    // TODO: add a help page step.
+                return Task.FromResult<IAttachDebuggerStep>(HelpStepViewModel.CreateStep(Context));
             }
             else if (Processes.Count() == 1)
             {
@@ -200,7 +199,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                     message: String.Format(Resources.AttachDebuggerAttachErrorMessageFormat, SelectedProcess.Name),
                     title: Resources.uiDefaultPromptTitle);
                 ResetDefaultSelection();
-                return null;    // TODO: goto help page
+                return HelpStepViewModel.CreateStep(Context);
             }
             Context.DialogWindow.Close();
             return null;

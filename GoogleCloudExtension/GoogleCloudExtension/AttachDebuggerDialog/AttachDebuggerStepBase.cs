@@ -26,6 +26,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     {
         private bool _isCancelButtonEnabled;
         private bool _isOKButtonEnabled;
+        private bool _isCancelButtonVisible = true;
 
         protected AttachDebuggerContext Context { get; }
 
@@ -35,6 +36,13 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         }
 
         #region implement interface IAttachDebuggerStep
+
+        public virtual bool IsCancelButtonVisible
+        {
+            get { return _isCancelButtonVisible; }
+            protected set { SetValueAndRaise(out _isCancelButtonVisible, value); }
+        }
+
         public virtual bool IsCancelButtonEnabled
         {
             get { return _isCancelButtonEnabled; }
@@ -58,6 +66,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public abstract Task<IAttachDebuggerStep> OnStartAsync();
 
         public abstract Task<IAttachDebuggerStep> OnOkCommandAsync();
+
         #endregion
     }
 }
