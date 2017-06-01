@@ -75,8 +75,15 @@
                             <TextBox x:Name="_networkValue"
                                      Grid.Column="1"
                                      Margin="0,0,0,5"
-                                     Text="{Binding NetworkValue, Mode=TwoWay}"
-                                     Style="{StaticResource CommonTextBoxStyle}" />
+                                     Style="{StaticResource CommonTextBoxStyle}">
+                                <TextBox.Text>
+                                    <Binding
+                                        Path="NetworkValue"
+                                        Mode="TwoWay"
+                                        ValidatesOnNotifyDataErrors="True"
+                                        UpdateSourceTrigger="PropertyChanged" />
+                                </TextBox.Text>
+                            </TextBox>
 
                         </Grid>
 
