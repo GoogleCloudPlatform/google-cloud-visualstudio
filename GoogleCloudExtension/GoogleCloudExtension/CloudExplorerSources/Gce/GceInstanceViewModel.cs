@@ -95,7 +95,13 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
 
         public override void OnMenuItemOpen()
         {
-            _attachDebuggerCommand.CanExecuteCommand = !ShellUtils.IsBusy();
+            // In current code, _attachDebuggerCommand won't be null
+            // To be safe and in case the constructor/initiailzation code could be modified in the future.
+            if (_attachDebuggerCommand != null)
+            {
+                _attachDebuggerCommand.CanExecuteCommand = 
+                    Instance.IsWindowsInstance() && Instance.IsRunning() && !ShellUtils.IsBusy();
+            }
             base.OnMenuItemOpen();
         }
 
@@ -226,7 +232,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gce
             var stopInstanceCommand = new ProtectedCommand(OnStopInstanceCommand);
             var manageFirewallPorts = new ProtectedCommand(OnManageFirewallPortsCommand);
             var manageWindowsCredentials = new ProtectedCommand(OnManageWindowsCredentialsCommand, canExecuteCommand: Instance.IsWindowsInstance());
-            _attachDebuggerCommand = new ProtectedCommand(OnAttachDebugger, canExecuteCommand: Instance.IsWindowsInstance() && Instance.IsRunning());
+            _attachDebuggerCommand = new ProtectedCommand(OnAttachDebugger);
 
             var menuItems = new List<MenuItem>
             {

@@ -55,7 +55,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public int PID => Process.ProcessID;
 
         /// <summary>
-        /// The username that starts the process.
+        /// The username that started the process.
         /// </summary>
         public string User => Process.UserName;
 

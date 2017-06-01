@@ -29,34 +29,30 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         private const string HelpLink = "https://cloud.google.com/tools/visual-studio/docs/how-to";
 
         /// <summary>
-        /// The command to open the enable port help hyperlink.
+        /// The command to open the attaching remote debugger feature help web page.
         /// </summary>
         public ProtectedCommand HelpLinkCommand { get; }
 
-        public HelpStepViewModel(
-            HelpStepContent content,
-            AttachDebuggerContext context)
-            : base(context)
-        {
-            Content = content;
-            HelpLinkCommand = new ProtectedCommand(() => Process.Start(HelpLink));
-        }
-
         #region Implement interface IAttachDebuggerStep
+
         public override ContentControl Content { get; }
 
-        public override Task<IAttachDebuggerStep> OnOkCommandAsync() => Task.FromResult(base.OnCancelCommand());
+        /// <summary>
+        /// This is the last step. OK button simply closes the window.
+        /// </summary>
+        public override Task<IAttachDebuggerStep> OnOkCommandAsync() => Task.FromResult(OnCancelCommand());
 
         public override Task<IAttachDebuggerStep> OnStartAsync()
         {
-            IsCancelButtonEnabled = true;
+            IsCancelButtonVisible = false;
             IsOKButtonEnabled = true;
             return Task.FromResult<IAttachDebuggerStep>(null);
         }
+
         #endregion
 
         /// <summary>
-        /// Creates the step that installs and starts debugger remote tool.
+        /// Creates the step that asks user to open online documentation.
         /// </summary>
         public static HelpStepViewModel CreateStep(AttachDebuggerContext context)
         {
@@ -64,6 +60,15 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             var step = new HelpStepViewModel(content, context);
             content.DataContext = step;
             return step;
+        }
+
+        private HelpStepViewModel(
+            HelpStepContent content,
+            AttachDebuggerContext context)
+            : base(context)
+        {
+            Content = content;
+            HelpLinkCommand = new ProtectedCommand(() => Process.Start(HelpLink));
         }
     }
 }

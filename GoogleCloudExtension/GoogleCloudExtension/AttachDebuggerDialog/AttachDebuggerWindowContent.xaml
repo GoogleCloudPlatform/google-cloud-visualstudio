@@ -41,7 +41,8 @@
                                       Command="{Binding OKCommand}" />
             <theming:DialogButtonInfo Caption="{x:Static ext:Resources.UiCancelButtonCaption}"
                                       Command="{Binding CancelCommand}"
-                                      IsCancel="True" />
+                                      IsCancel="True"
+                                      Visibility="{Binding ShowCancelButton, Converter={StaticResource visibilityConverter}}"/>
         </theming:CommonDialogWindowBaseContent.Buttons>
 
         <StackPanel IsEnabled="{Binding IsReady}">

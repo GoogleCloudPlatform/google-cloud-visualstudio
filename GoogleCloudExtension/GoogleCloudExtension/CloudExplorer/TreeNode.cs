@@ -120,7 +120,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
         /// <summary>
         /// Some context menu item needs to be enabled/disabled dynamically.
-        /// Override this method to update menu item stated.
+        /// Override this method to update menu item state.
         /// </summary>
         public virtual void OnMenuItemOpen()
         { }
