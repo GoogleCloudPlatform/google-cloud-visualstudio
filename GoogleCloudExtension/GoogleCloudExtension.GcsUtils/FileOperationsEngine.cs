@@ -119,14 +119,14 @@ namespace GoogleCloudExtension.GcsUtils
             IEnumerable<GcsItemRef> sources,
             CancellationToken cancellationToken)
         {
-            List<GcsFileTransferOperation> deleteOperations = new List<GcsFileTransferOperation>(sources
+            var deleteOperations = new List<GcsDeleteFileOperation>(sources
                 .Where(x => x.IsFile)
-                .Select(x => new GcsFileTransferOperation(x)));
+                .Select(x => new GcsDeleteFileOperation(x)));
 
             foreach (var dir in sources.Where(x => x.IsDirectory))
             {
                 var filesInPrefix = await GetGcsFilesFromPrefixAsync(dir.Bucket, dir.Name);
-                deleteOperations.AddRange(filesInPrefix.Select(x => new GcsFileTransferOperation(x)));
+                deleteOperations.AddRange(filesInPrefix.Select(x => new GcsDeleteFileOperation(x)));
             }
 
             var operationsQueue = new OperationsQueue(cancellationToken);

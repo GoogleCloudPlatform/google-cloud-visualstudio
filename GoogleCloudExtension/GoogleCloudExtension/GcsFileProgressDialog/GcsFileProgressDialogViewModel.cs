@@ -183,7 +183,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
 
         private void OnOperationCompleted(object sender, EventArgs e)
         {
-            var operation = (GcsFileTransferOperation)sender;
+            var operation = (GcsOperation)sender;
 
             _hasCancellation = _hasCancellation || operation.IsCancelled;
             Completed++;

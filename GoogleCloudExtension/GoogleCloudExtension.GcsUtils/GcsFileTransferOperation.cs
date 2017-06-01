@@ -33,16 +33,15 @@ namespace GoogleCloudExtension.GcsUtils
         /// </summary>
         public string LocalPath { get; }
 
+        /// <summary>
+        /// The GCS file top be transferred.
+        /// </summary>
         public override GcsItemRef GcsItem { get; }
-
 
         public GcsFileTransferOperation(string localPath, GcsItemRef gcsItem)
         {
             LocalPath = localPath;
             GcsItem = gcsItem;
         }
-
-        public GcsFileTransferOperation(GcsItemRef gcsItem) : this(null, gcsItem)
-        { }
     }
 }

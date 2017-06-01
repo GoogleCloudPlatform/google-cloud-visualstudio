@@ -84,6 +84,7 @@
   <ItemGroup>
     <Compile Include="FileOperationsEngine.cs" />
     <Compile Include="GcsDataSourceExtensions.cs" />
+    <Compile Include="GcsDeleteFileOperation.cs" />
     <Compile Include="GcsFileTransferOperation.cs" />
     <Compile Include="GcsItemRef.cs" />
     <Compile Include="GcsMoveOperation.cs" />

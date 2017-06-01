@@ -85,7 +85,7 @@ namespace GoogleCloudExtension.GcsUtils
         /// <param name="cancellationToken">The cancellation token for the operation.</param>
         internal static void StartDeleteOperation(
             this GcsDataSource self,
-            GcsFileTransferOperation operation,
+            GcsDeleteFileOperation operation,
             CancellationToken cancellationToken)
         {
             self.StartDeleteOperation(
