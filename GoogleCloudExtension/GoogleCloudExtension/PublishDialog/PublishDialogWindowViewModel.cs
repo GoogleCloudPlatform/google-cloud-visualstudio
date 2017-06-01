@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.PublishDialog
         public FrameworkElement Content
         {
             get { return _content; }
-            set { SetValueAndRaise(out _content, value); }
+            set { SetValueAndRaise(ref _content, value); }
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace GoogleCloudExtension.PublishDialog
         public bool IsReady
         {
             get { return _isReady; }
-            set { SetValueAndRaise(out _isReady, value); }
+            set { SetValueAndRaise(ref _isReady, value); }
         }
 
         /// <summary>

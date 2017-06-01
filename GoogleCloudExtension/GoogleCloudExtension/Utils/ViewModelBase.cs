@@ -28,13 +28,13 @@ namespace GoogleCloudExtension.Utils
         public bool Loading
         {
             get { return _loading; }
-            set { SetValueAndRaise(out _loading, value); }
+            set { SetValueAndRaise(ref _loading, value); }
         }
 
         public string LoadingMessage
         {
             get { return _loadingMessage; }
-            set { SetValueAndRaise(out _loadingMessage, value); }
+            set { SetValueAndRaise(ref _loadingMessage, value); }
         }
     }
 }

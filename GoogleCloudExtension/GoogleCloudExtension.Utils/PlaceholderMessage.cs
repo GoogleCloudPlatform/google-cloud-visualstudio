@@ -21,7 +21,7 @@ namespace GoogleCloudExtension.Utils
         public string Message
         {
             get { return _message; }
-            set { SetValueAndRaise(out _message, value); }
+            set { SetValueAndRaise(ref _message, value); }
         }
     }
 }

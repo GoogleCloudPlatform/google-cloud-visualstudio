@@ -42,7 +42,7 @@ namespace GoogleCloudExtension.FirewallManagement
         public bool IsEnabled
         {
             get { return _isEnabled; }
-            set { SetValueAndRaise(out _isEnabled, value); }
+            set { SetValueAndRaise(ref _isEnabled, value); }
         }
 
         /// <summary>

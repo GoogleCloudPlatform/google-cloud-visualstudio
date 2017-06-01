@@ -56,7 +56,7 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
         public IEnumerable<WindowsInstanceCredentials> InstanceCredentials
         {
             get { return _instanceCredentials; }
-            set { SetValueAndRaise(out _instanceCredentials, value); }
+            set { SetValueAndRaise(ref _instanceCredentials, value); }
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
         public WindowsInstanceCredentials CurrentCredentials
         {
             get { return _currentCredentials; }
-            set { SetValueAndRaise(out _currentCredentials, value); }
+            set { SetValueAndRaise(ref _currentCredentials, value); }
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace GoogleCloudExtension.WindowsCredentialsChooser
         public bool HasCredentials
         {
             get { return _hasCredentials; }
-            set { SetValueAndRaise(out _hasCredentials, value); }
+            set { SetValueAndRaise(ref _hasCredentials, value); }
         }
 
         /// <summary>

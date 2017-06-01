@@ -50,7 +50,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
         public IEnumerable<Choice> Choices
         {
             get { return _choices; }
-            set { SetValueAndRaise(out _choices, value); }
+            set { SetValueAndRaise(ref _choices, value); }
         }
 
         private ChoiceStepViewModel(ChoiceStepContent content)

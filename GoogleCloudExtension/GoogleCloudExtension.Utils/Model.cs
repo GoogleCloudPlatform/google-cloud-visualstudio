@@ -33,7 +33,7 @@ namespace GoogleCloudExtension.Utils
         /// <param name="storage">Typically a ref to a field where the value is stored.</param>
         /// <param name="value">The new value.</param>
         /// <param name="propertyName">The name of the property that is changing, do not specify let the compiler determine it.</param>
-        protected void SetValueAndRaise<T>(out T storage, T value, [CallerMemberName] string propertyName = "")
+        protected void SetValueAndRaise<T>(ref T storage, T value, [CallerMemberName] string propertyName = "")
         {
             storage = value;
             RaisePropertyChanged(propertyName);
