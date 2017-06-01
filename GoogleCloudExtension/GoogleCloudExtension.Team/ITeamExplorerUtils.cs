@@ -17,7 +17,7 @@ using System.Windows.Input;
 namespace GoogleCloudExtension.Team
 {
     /// <summary>
-    /// Define interfaces for methods, properties that both VS2015 and VS2017 team explorer exposes.
+    /// Define interfaces for methods, properties that VS2015 and VS2017 team explorer exposes.
     public interface ITeamExplorerUtils
     {
         /// <summary>

@@ -30,11 +30,11 @@ namespace GoogleCloudExtension.Team
         void Initialize(ITeamExplorerUtils teamExplorerService);
 
         /// <summary>
-        /// Notifies the current active repository changes
+        /// Notifies that the current active repository changed
         /// </summary>
         /// <param name="newRepoLocalPath">
         /// The new active repository local path.
-        /// When the value is null, there is no active repository.
+        /// When the value is null, it means currently there is no active repository.
         /// </param>
         void UpdateActiveRepo(string newRepoLocalPath);
     }

@@ -75,7 +75,6 @@ namespace GoogleCloudExtension.Accounts
                 result = Directory.EnumerateFiles(instanceStoragePath)
                     .Where(x => Path.GetExtension(x) == PasswordFileExtension)
                     .Select(x => LoadEncryptedCredentials(x))
-                    .Where(x => x != null)
                     .OrderBy(x => x.User);
             }
             _credentialsForInstance[instancePath] = result;
@@ -128,19 +127,11 @@ namespace GoogleCloudExtension.Accounts
 
         private WindowsInstanceCredentials LoadEncryptedCredentials(string path)
         {
-            try
-            {
-                var userName = GetUserName(path);
-                var encryptedPassword = File.ReadAllBytes(path);
-                var passwordBytes = ProtectedData.Unprotect(encryptedPassword, null, DataProtectionScope.CurrentUser);
+            var userName = GetUserName(path);
+            var encryptedPassword = File.ReadAllBytes(path);
+            var passwordBytes = ProtectedData.Unprotect(encryptedPassword, null, DataProtectionScope.CurrentUser);
 
-                return new WindowsInstanceCredentials { User = userName, Password = Encoding.UTF8.GetString(passwordBytes) };
-            }
-            catch (CryptographicException ex)
-            {
-                System.Diagnostics.Debug.WriteLine(ex.ToString());
-                return null;
-            }
+            return new WindowsInstanceCredentials { User = userName, Password = Encoding.UTF8.GetString(passwordBytes) };
         }
 
         private void SaveEncryptedCredentials(string path, WindowsInstanceCredentials credentials)

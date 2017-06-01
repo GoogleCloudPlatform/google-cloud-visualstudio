@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 namespace GoogleCloudExtension.DataSources
 {
     /// <summary>
-    /// Data source that lists or creates Google Cloud Source Repositories.
+    /// Data source class that lists or creates Google Cloud Source Repositories.
     /// </summary>
     public class CsrDataSource : DataSourceBase<CloudSourceRepositoriesService>
     {

@@ -21,6 +21,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 {
     /// <summary>
     /// Interaction logic for CsrSectionControl.xaml
+    /// Export ISectionView that MEF will create instances of the class.
     /// </summary>
     [Export(typeof(ISectionView))]
     [PartCreationPolicy(CreationPolicy.NonShared)]
@@ -31,6 +32,15 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// </summary>
         public ISectionViewModel ViewModel { get; }
 
+        /// <summary>
+        /// Add <seealso cref="ImportingConstructorAttribute"/>.
+        /// This is to tell MEF to use this as default constructor instead of
+        /// the parameterless one.
+        /// </summary>
+        /// <param name="viewModel">
+        /// MEF will create a <seealso cref="ISectionViewModel"/> object
+        /// and pass in here to create an instance of <seealso cref="ISectionView"/> object.
+        /// </param>
         [ImportingConstructor]
         public CsrSectionControl(ISectionViewModel viewModel)
         {

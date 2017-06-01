@@ -20,6 +20,10 @@ using static System.Diagnostics.Debug;
 
 namespace GoogleCloudExtension.Team
 {
+    /// <summary>
+    /// Expose a <seealso cref="ITeamExplorerSection"/> for Team Explorer Connect tab.
+    /// MEF will create instances of this class.
+    /// </summary>
     [TeamExplorerSection(Guid, TeamExplorerPageIds.Connect, 5)]
     [PartCreationPolicy(CreationPolicy.NonShared)]
     public class Section : Model, ITeamExplorerSection
@@ -35,6 +39,15 @@ namespace GoogleCloudExtension.Team
         private object _sectionContent;
         private string _activeRepo;
 
+        /// <summary>
+        /// <seealso cref="ImportingConstructorAttribute"/> tells the MEF framework to 
+        /// use this as default constructor.
+        /// </summary>
+        /// <param name="sectionView">
+        /// An <seealso cref="ISectionView"/> infercace.
+        /// This asks MEF to create an object of ISectionView type and  use it to 
+        /// create an instance of Section class.
+        /// </param>
         [ImportingConstructor]
         public Section(ISectionView sectionView)
         {

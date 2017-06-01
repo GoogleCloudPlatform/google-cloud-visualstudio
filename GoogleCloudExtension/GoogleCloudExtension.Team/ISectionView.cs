@@ -15,12 +15,13 @@
 namespace GoogleCloudExtension.Team
 {
     /// <summary>
-    /// Define interface as Team Explorer connect panel section view interface.
+    /// Define interface as Team Explorer connect panel section content.
+    /// The real content will be WPF XAML user control.
     /// </summary>
     public interface ISectionView
     {
         /// <summary>
-        /// Gets the view model object that controls the view behaviour
+        /// Gets the view model object that controls the view.
         /// </summary>
         ISectionViewModel ViewModel { get; }
     }
