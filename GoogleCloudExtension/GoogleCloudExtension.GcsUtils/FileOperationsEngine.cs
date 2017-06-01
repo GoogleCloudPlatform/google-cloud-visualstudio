@@ -67,10 +67,10 @@ namespace GoogleCloudExtension.GcsUtils
             string destinationDir,
             CancellationToken cancellationToken)
         {
-            List<GcsFileOperation> downloadOperations = new List<GcsFileOperation>(
+            List<GcsFileTransferOperation> downloadOperations = new List<GcsFileTransferOperation>(
                 sources
                 .Where(x => x.IsFile)
-                .Select(x => new GcsFileOperation(
+                .Select(x => new GcsFileTransferOperation(
                     localPath: Path.Combine(destinationDir, GcsPathUtils.GetFileName(x.Name)),
                     gcsItem: x)));
 
@@ -88,7 +88,7 @@ namespace GoogleCloudExtension.GcsUtils
                     var absoluteFilePath = Path.Combine(destinationDir, relativeFilePath);
 
                     // Create the file operation for this file.
-                    downloadOperations.Add(new GcsFileOperation(
+                    downloadOperations.Add(new GcsFileTransferOperation(
                         localPath: absoluteFilePath,
                         gcsItem: file));
 
@@ -119,14 +119,14 @@ namespace GoogleCloudExtension.GcsUtils
             IEnumerable<GcsItemRef> sources,
             CancellationToken cancellationToken)
         {
-            List<GcsFileOperation> deleteOperations = new List<GcsFileOperation>(sources
+            List<GcsFileTransferOperation> deleteOperations = new List<GcsFileTransferOperation>(sources
                 .Where(x => x.IsFile)
-                .Select(x => new GcsFileOperation(x)));
+                .Select(x => new GcsFileTransferOperation(x)));
 
             foreach (var dir in sources.Where(x => x.IsDirectory))
             {
                 var filesInPrefix = await GetGcsFilesFromPrefixAsync(dir.Bucket, dir.Name);
-                deleteOperations.AddRange(filesInPrefix.Select(x => new GcsFileOperation(x)));
+                deleteOperations.AddRange(filesInPrefix.Select(x => new GcsFileTransferOperation(x)));
             }
 
             var operationsQueue = new OperationsQueue(cancellationToken);
@@ -136,10 +136,10 @@ namespace GoogleCloudExtension.GcsUtils
         }
 
         /// <summary>
-        /// Creates the <seealso cref="GcsFileOperation"/> necessary to upload all of the sources from the local
+        /// Creates the <seealso cref="GcsFileTransferOperation"/> necessary to upload all of the sources from the local
         /// file system to GCS. The sources can be files or directories.
         /// </summary>
-        static private IList<GcsFileOperation> CreateUploadOperations(
+        static private IList<GcsFileTransferOperation> CreateUploadOperations(
             IEnumerable<string> paths,
             string bucket,
             string bucketPath)
@@ -148,7 +148,7 @@ namespace GoogleCloudExtension.GcsUtils
                .SelectMany(x => x)
                .ToList();
 
-        private static IEnumerable<GcsFileOperation> CreateUploadOPerationsForPath(
+        private static IEnumerable<GcsFileTransferOperation> CreateUploadOPerationsForPath(
             string bucket,
             string bucketPath,
             string src)
@@ -165,9 +165,9 @@ namespace GoogleCloudExtension.GcsUtils
             }
             else
             {
-                return new GcsFileOperation[]
+                return new GcsFileTransferOperation[]
                    {
-                        new GcsFileOperation(
+                        new GcsFileTransferOperation(
                             localPath: info.FullName,
                             gcsItem: new GcsItemRef(bucket: bucket, name: GcsPathUtils.Combine(bucketPath, info.Name)))
                    };
@@ -175,19 +175,19 @@ namespace GoogleCloudExtension.GcsUtils
         }
 
         /// <summary>
-        /// Creates the <seealso cref="GcsFileOperation"/> instances for all of the files in the given directory. The
+        /// Creates the <seealso cref="GcsFileTransferOperation"/> instances for all of the files in the given directory. The
         /// target directory will be based on <paramref name="baseGcsPath"/>.
         /// </summary>
         /// <param name="sourceDir">The local dir to process.</param>
         /// <param name="bucket">The name of the bucket.</param>
         /// <param name="baseGcsPath">The base gcs path where to copy the files.</param>
-        static private IEnumerable<GcsFileOperation> CreateUploadOperationsForDirectory(
+        static private IEnumerable<GcsFileTransferOperation> CreateUploadOperationsForDirectory(
             string sourceDir,
             string bucket,
             string baseGcsPath)
         {
             var fileOperations = Directory.EnumerateFiles(sourceDir)
-                .Select(file => new GcsFileOperation(
+                .Select(file => new GcsFileTransferOperation(
                     localPath: file,
                     gcsItem: new GcsItemRef(
                         bucket: bucket,

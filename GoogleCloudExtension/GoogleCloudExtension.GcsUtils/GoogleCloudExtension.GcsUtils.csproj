@@ -84,9 +84,12 @@
   <ItemGroup>
     <Compile Include="FileOperationsEngine.cs" />
     <Compile Include="GcsDataSourceExtensions.cs" />
-    <Compile Include="GcsFileOperation.cs" />
+    <Compile Include="GcsFileTransferOperation.cs" />
     <Compile Include="GcsItemRef.cs" />
+    <Compile Include="GcsMoveOperation.cs" />
+    <Compile Include="GcsOperation.cs" />
     <Compile Include="GcsPathUtils.cs" />
+    <Compile Include="OperationQueueEntry.cs" />
     <Compile Include="OperationsQueue.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

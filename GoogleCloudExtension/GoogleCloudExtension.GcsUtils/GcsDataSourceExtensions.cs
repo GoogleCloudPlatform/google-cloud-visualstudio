@@ -47,7 +47,7 @@ namespace GoogleCloudExtension.GcsUtils
         /// <param name="cancellationToken">The cancellation token for the operation.</param>
         internal static void StartFileUploadOperation(
             this GcsDataSource self,
-            GcsFileOperation operation,
+            GcsFileTransferOperation operation,
             CancellationToken cancellationToken)
         {
             self.StartFileUploadOperation(
@@ -66,7 +66,7 @@ namespace GoogleCloudExtension.GcsUtils
         /// <param name="cancellationToken">The cancellation token for the operation.</param>
         internal static void StartFileDownloadOperation(
             this GcsDataSource self,
-            GcsFileOperation operation,
+            GcsFileTransferOperation operation,
             CancellationToken cancellationToken)
         {
             self.StartFileDownloadOperation(
@@ -85,7 +85,7 @@ namespace GoogleCloudExtension.GcsUtils
         /// <param name="cancellationToken">The cancellation token for the operation.</param>
         internal static void StartDeleteOperation(
             this GcsDataSource self,
-            GcsFileOperation operation,
+            GcsFileTransferOperation operation,
             CancellationToken cancellationToken)
         {
             self.StartDeleteOperation(

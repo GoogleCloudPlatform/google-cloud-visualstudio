@@ -28,7 +28,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
             string caption,
             string message,
             string progressMessage,
-            IEnumerable<GcsFileOperation> operations,
+            IEnumerable<GcsOperation> operations,
             CancellationTokenSource tokenSource) : base(caption)
         {
             var viewModel = new GcsFileProgressDialogViewModel(message, progressMessage, this, operations, tokenSource);
@@ -50,7 +50,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
             string caption,
             string message,
             string progressMessage,
-            IEnumerable<GcsFileOperation> operations,
+            IEnumerable<GcsOperation> operations,
             CancellationTokenSource cancellationTokenSource)
         {
             var dialog = new GcsFileProgressDialogWindow(caption, message, progressMessage, operations, cancellationTokenSource);
