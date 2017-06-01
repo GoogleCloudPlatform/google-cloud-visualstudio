@@ -35,13 +35,11 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="targetInstance">The instance to deploy.</param>
         /// <param name="credentials">The Windows credentials to use to deploy to the <paramref name="targetInstance"/>.</param>
         /// <param name="progress">The progress indicator.</param>
-        /// <param name="useDebugBuild">Use debug build or release build.</param>
         /// <param name="outputAction">The action to call with lines of output.</param>
         public static async Task<bool> PublishProjectAsync(
             IParsedProject project,
             Instance targetInstance,
             WindowsInstanceCredentials credentials,
-            bool useDebugBuild,
             IProgress<double> progress,
             IToolsPathProvider toolsPathProvider,
             Action<string> outputAction)
@@ -58,7 +56,7 @@ namespace GoogleCloudExtension.Deployment
             {
                 // Wait for the bundle operation to finish and update the progress in the mean time to show progress.
                 if (!await ProgressHelper.UpdateProgress(
-                        CreateAppBundleAsync(project, stagingDirectory, useDebugBuild, toolsPathProvider, outputAction),
+                        CreateAppBundleAsync(project, stagingDirectory, toolsPathProvider, outputAction),
                         progress,
                         from: 0.1, to: 0.5))
                 {
@@ -124,15 +122,13 @@ namespace GoogleCloudExtension.Deployment
         /// present in all Web projects. It publishes to the staging directory by using the FileSystem method.
         /// </summary>
         private static async Task<bool> CreateAppBundleAsync(
-            IParsedProject project, 
-            string stageDirectory, 
-            bool useDebugBuild,
+            IParsedProject project,
+            string stageDirectory,
             IToolsPathProvider toolsPathProvider,
             Action<string> outputAction)
         {
-            var config = useDebugBuild ? "Debug" : "Release";
             var arguments = $@"""{project.FullPath}""" + " " +
-                $"/p:Configuration={config} " +
+                "/p:Configuration=Release " +
                 "/p:Platform=AnyCPU " +
                 "/t:WebPublish " +
                 "/p:WebPublishMethod=FileSystem " +

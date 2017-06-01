@@ -41,11 +41,6 @@
       <HintPath>Libs\Microsoft.TeamFoundation.Controls.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.TeamFoundation.Git.Provider, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>Libs\Microsoft.TeamFoundation.Git.Provider.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
@@ -60,15 +55,14 @@
     <Compile Include="..\GoogleCloudExtension.Team.v14\Section.cs">
       <Link>Section.cs</Link>
     </Compile>
+    <Compile Include="..\GoogleCloudExtension.Team.v14\TeamExplorerUtils.cs">
+      <Link>TeamExplorerUtils.cs</Link>
+    </Compile>
+    <Compile Include="GitExtentionWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Libs\Microsoft.TeamFoundation.Client.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.Common.dll" />
     <Content Include="Libs\Microsoft.TeamFoundation.Controls.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.Git.Client.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.Git.Controls.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.Git.Provider.dll" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

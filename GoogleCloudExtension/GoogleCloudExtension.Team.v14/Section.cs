@@ -18,7 +18,7 @@ using System;
 using System.ComponentModel.Composition;
 using static System.Diagnostics.Debug;
 
-namespace GoogleCloudExtension.Team.v14
+namespace GoogleCloudExtension.Team
 {
     [TeamExplorerSection(Guid, TeamExplorerPageIds.Connect, 5)]
     [PartCreationPolicy(CreationPolicy.NonShared)]
@@ -28,10 +28,12 @@ namespace GoogleCloudExtension.Team.v14
 
         private ISectionViewModel _viewModel;
         private IServiceProvider _serviceProvider;
+        private TeamExplorerUtils _teamExploerServices;
         private bool _isBusy;
         private bool _isExpanded = true;
         private bool _isVisible = true;
         private object _sectionContent;
+        private string _activeRepo;
 
         [ImportingConstructor]
         public Section(ISectionView sectionView)
@@ -44,7 +46,10 @@ namespace GoogleCloudExtension.Team.v14
 
         public void Initialize(object sender, SectionInitializeEventArgs e)
         {
+            WriteLine($"CsrTeamExplorerSection.Initialize");
             _serviceProvider = e.ServiceProvider;
+            _teamExploerServices = new TeamExplorerUtils(_serviceProvider);
+            _viewModel.Initialize(_teamExploerServices);
         }
 
         public void Cancel()
@@ -120,7 +125,15 @@ namespace GoogleCloudExtension.Team.v14
         {
             get
             {
+                // When this get_SectionContent is called, Team Explorer is trying to refresh the section content.
+                // This is the chance to update the section view with new active repo.
                 WriteLine($"CsrTeamExplorerSection.SectionContent");
+                string newActive = _teamExploerServices?.GetActiveRepository();
+                if (String.Compare(newActive, _activeRepo, StringComparison.OrdinalIgnoreCase) != 0)
+                {
+                    _viewModel.UpdateActiveRepo(newActive);
+                    _activeRepo = newActive;
+                }
                 return _sectionContent;
             }
             private set { SetValueAndRaise(out _sectionContent, value); }

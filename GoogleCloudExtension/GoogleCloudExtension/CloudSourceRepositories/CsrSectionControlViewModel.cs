@@ -41,12 +41,24 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public CsrSectionControlViewModel()
         { }
 
-        /// <summary>
-        /// Implement <seealso cref="ISectionViewModel.Refresh"/>
-        /// </summary>
-        public void Refresh()
+
+        #region implement interface ISectionViewModel
+
+        void ISectionViewModel.Refresh()
         {
             WriteLine("CsrSectionControlViewModel.Refresh");
         }
+
+        void ISectionViewModel.Initialize(ITeamExplorerUtils teamExplorerService)
+        {
+            WriteLine("CsrSectionControlViewModel.Initialize");
+        }
+
+        void ISectionViewModel.UpdateActiveRepo(string newRepoLocalPath)
+        {
+            WriteLine("CsrSectionControlViewModel.UpdateActiveRepo");
+        }
+
+        #endregion
     }
 }

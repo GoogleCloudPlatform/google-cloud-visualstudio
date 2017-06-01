@@ -12,30 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+using System.Linq;
+using static System.Diagnostics.Debug;
+
 namespace GoogleCloudExtension.Team
 {
     /// <summary>
-    /// Define interfance for Team Explorer section view model.
+    /// A wrapper to Microsoft.TeamFoundation.Git.Provider.dll.
+    /// In VS2017, Microsoft.TeamFoundation.Git.Provider.dll is dependent on .Net 4.6.1
+    /// Before we upgrade all projects to .NET 4.6.1, VS2017 version won't have this feature.
     /// </summary>
-    public interface ISectionViewModel
+    public class GitExtentionWrapper
     {
-        /// <summary>
-        /// Responds to refresh event.
-        /// </summary>
-        void Refresh();
+        public GitExtentionWrapper(IServiceProvider serviceProvider)
+        { }
 
         /// <summary>
-        /// Initializes the view model with <paramref name="teamExplorerService"/> input.
+        /// Simply returns null for now. Will support it when all projects upgrade to .NET 4.6.1
         /// </summary>
-        void Initialize(ITeamExplorerUtils teamExplorerService);
-
-        /// <summary>
-        /// Notifies the current active repository changes
-        /// </summary>
-        /// <param name="newRepoLocalPath">
-        /// The new active repository local path.
-        /// When the value is null, there is no active repository.
-        /// </param>
-        void UpdateActiveRepo(string newRepoLocalPath);
+        public string GetActiveRepository() => null;
     }
 }
