@@ -14,9 +14,12 @@
 
 using Google.Apis.Compute.v1.Data;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Validation;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace GoogleCloudExtension.AddWindowsCredential
@@ -24,7 +27,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
     /// <summary>
     /// Viewmodel for the AddWindowsCredential dialog.
     /// </summary>
-    public class AddWindowsCredentialViewModel : ViewModelBase
+    public class AddWindowsCredentialViewModel : ValidatingViewModelBase
     {
         // These are the chars that must not be present in a Windows username.
         // This list was obtained from https://technet.microsoft.com/en-us/library/bb726984.aspx
@@ -45,7 +48,7 @@ namespace GoogleCloudExtension.AddWindowsCredential
             get { return _userName; }
             set
             {
-                SetValueAndRaise(out _userName, value);
+                SetAndRaiseWithValidation(out _userName, value, ValidateUserName(value));
                 RaisePropertyChanged(nameof(HasUserName));
             }
         }
@@ -132,6 +135,23 @@ namespace GoogleCloudExtension.AddWindowsCredential
 
             _owner.Close();
             return;
+        }
+
+        private IEnumerable<ValidationResult> ValidateUserName(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                yield return StringValidationResult.FromResource(nameof(Resources.AddWindowsCredentialValidationEmptyUser));
+            }
+            else
+            {
+                List<char> invalidChars = value.Intersect(UserNameInvalidChars).ToList();
+                if (invalidChars.Count != 0)
+                {
+                    yield return StringValidationResult.FromResource(
+                        nameof(Resources.AddWindowsCredentialValidationInvalidChars), string.Concat(invalidChars));
+                }
+            }
         }
 
         private bool Validate()

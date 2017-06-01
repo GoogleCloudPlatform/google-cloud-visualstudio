@@ -62,8 +62,14 @@
                        Style="{StaticResource CommonLabelStyle}"/>
                 <TextBox x:Name="_trafficAllocation"
                          Grid.Column="1"
-                         Text="{Binding Allocation, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          Style="{StaticResource CommonTextBoxStyle}">
+                    <TextBox.Text>
+                        <Binding
+                            Path="Allocation"
+                            Mode="TwoWay"
+                            UpdateSourceTrigger="PropertyChanged"
+                            ValidatesOnNotifyDataErrors="True" />
+                    </TextBox.Text>
                 </TextBox>
 
             </Grid>
