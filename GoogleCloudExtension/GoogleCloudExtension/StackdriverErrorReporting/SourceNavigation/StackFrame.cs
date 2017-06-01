@@ -26,8 +26,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// For non-C# language stack, it remain not parsed.
     /// 
     /// The Regex is defined as:
-    /// stack_frame = at <method>(<arguments>) [in <source_location>]]
-    /// source_location = <file_name>:line <number>
+    /// stack_frame = at &lt;method&gt;(&lt;arguments&gt;) [in &lt;source_location&gt;]]
+    /// source_location = &lt;file_name&gt;:line &lt;number&gt;
     /// 
     /// Below is an example:
     ///  at GoogleCloudExtensionUnitTests.StackframeParserTests.SelfLoop(Int32 count) in C:\\git\\wind\\GoogleCloudExtension\\GoogleCloudExtensionUnitTests\\StackframeParserTests.cs:line 46

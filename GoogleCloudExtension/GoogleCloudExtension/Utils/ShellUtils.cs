@@ -73,8 +73,8 @@ namespace GoogleCloudExtension.Utils
         /// Updates the UI state of all commands in the VS shell. This is useful when the state that determines
         /// if a command is enabled/disabled (or visible/invisiable) changes and the commands in the menus need
         /// to be updated.
-        /// In essence this method will cause the <seealso cref="OnBeforeQueryStatus"/> method in all commands to be
-        /// called again.
+        /// In essence this method will cause the <seealso cref="OleMenuCommand.BeforeQueryStatus"/> event in all commands to be
+        /// triggered again.
         /// </summary>
         public static void InvalidateCommandsState()
         {

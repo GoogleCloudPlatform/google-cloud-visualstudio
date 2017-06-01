@@ -25,6 +25,7 @@ namespace GoogleAnalyticsUtils
     /// 
     /// For more information, see:
     /// https://developers.google.com/analytics/devguides/collection/protocol/v1/
+    /// </summary>
     internal class HitSender : IHitSender
     {
         private const string ProductionServerUrl = "https://www.google-analytics.com/internal/collect";
@@ -59,6 +60,7 @@ namespace GoogleAnalyticsUtils
         /// Debugging utility that will print out to the output window the result of the hit request.
         /// </summary>
         /// <param name="resultTask">The task resulting from the request.</param>
+        /// <param name="hitData">The hit data to be sent.</param>
         [Conditional("DEBUG")]
         private async void DebugPrintAnalyticsOutput(Task<string> resultTask, Dictionary<string, string> hitData)
         {
