@@ -13,9 +13,11 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Validation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace GoogleCloudExtension.AddTrafficSplit
@@ -23,7 +25,7 @@ namespace GoogleCloudExtension.AddTrafficSplit
     /// <summary>
     /// The view model for the <seealso cref="AddTrafficSplitWindow"/> dialog.
     /// </summary>
-    public class AddTrafficSplitViewModel : ViewModelBase
+    public class AddTrafficSplitViewModel : ValidatingViewModelBase
     {
         private readonly AddTrafficSplitWindow _owner;
         private string _selectedVersion;
@@ -49,7 +51,7 @@ namespace GoogleCloudExtension.AddTrafficSplit
         public string Allocation
         {
             get { return _allocation; }
-            set { SetValueAndRaise(out _allocation, value); }
+            set { SetAndRaiseWithValidation(out _allocation, value, ValidateAllocation(value)); }
         }
 
         /// <summary>
@@ -84,9 +86,22 @@ namespace GoogleCloudExtension.AddTrafficSplit
             _owner.Close();
         }
 
+        private IEnumerable<ValidationResult> ValidateAllocation(string value)
+        {
+            int allocationValue;
+            if (!int.TryParse(value, out allocationValue))
+            {
+                yield return StringValidationResult.FromResource(nameof(Resources.AddGaeTrafficSplitInvalidValueMessage), value);
+            }
+            else if (allocationValue > 100 || allocationValue < 0)
+            {
+                yield return StringValidationResult.FromResource(nameof(Resources.AddGaeTrafficSplitValueOutOfRangeMessage), value);
+            }
+        }
+
         private bool Validate()
         {
-            int allocationValue = 0;
+            int allocationValue;
             if (!Int32.TryParse(Allocation, out allocationValue))
             {
                 UserPromptUtils.ErrorPrompt(
