@@ -94,5 +94,19 @@ namespace GoogleCloudExtension.GcsUtils
                 operation: operation,
                 token: cancellationToken);
         }
+
+        /// <summary>
+        /// Starts the move operation using the data from the given operation.
+        /// </summary>
+        /// <param name="self">The data source.</param>
+        /// <param name="operation">The operation to start.</param>
+        /// <param name="cancellationToken">The cancellation token for the operation.</param>
+        internal static void StartMoveOperation(
+            this GcsDataSource self,
+            GcsMoveFileOperation operation,
+            CancellationToken cancellationToken)
+        {
+
+        }
     }
 }

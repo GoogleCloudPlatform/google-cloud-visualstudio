@@ -87,7 +87,7 @@
     <Compile Include="GcsDeleteFileOperation.cs" />
     <Compile Include="GcsFileTransferOperation.cs" />
     <Compile Include="GcsItemRef.cs" />
-    <Compile Include="GcsMoveOperation.cs" />
+    <Compile Include="GcsMoveFileOperation.cs" />
     <Compile Include="GcsOperation.cs" />
     <Compile Include="GcsPathUtils.cs" />
     <Compile Include="OperationQueueEntry.cs" />

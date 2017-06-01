@@ -238,7 +238,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 var newName = GcsPathUtils.Combine(CurrentState.CurrentPath, choosenName);
                 Debug.WriteLine($"Renaming {SelectedItem.BlobName} to {newName}");
                 await ProgressDialogWindow.PromptUser(
-                    _dataSource.RenameFileAsync(
+                    _dataSource.MoveFileAsync(
                         bucket: Bucket.Name,
                         sourceName: SelectedItem.BlobName,
                         destName: newName),
