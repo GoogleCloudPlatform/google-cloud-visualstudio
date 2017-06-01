@@ -56,7 +56,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
 
         void ISectionViewModel.UpdateActiveRepo(string newRepoLocalPath)
         {
-            WriteLine("CsrSectionControlViewModel.UpdateActiveRepo");
+            WriteLine($"CsrSectionControlViewModel.UpdateActiveRepo {newRepoLocalPath}");
         }
 
         #endregion
