@@ -14,11 +14,13 @@
 
 using Google.Apis.SQLAdmin.v1beta4.Data;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Validation;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace GoogleCloudExtension.AuthorizedNetworkManagement
@@ -52,7 +54,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
     /// <summary>
     /// This class is the view model for the <seealso cref="AuthorizedNetworksWindow"/> dialog.
     /// </summary>
-    internal class AuthorizedNetworksViewModel : ViewModelBase
+    internal class AuthorizedNetworksViewModel : ValidatingViewModelBase
     {
         private readonly AuthorizedNetworksWindow _owner;
 
@@ -82,7 +84,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
         public string NetworkValue
         {
             get { return _networkValue; }
-            set { SetValueAndRaise(out _networkValue, value); }
+            set { SetAndRaiseWithValidation(out _networkValue, value, ValidateNetwork(value)); }
         }
 
         /// <summary>
@@ -126,7 +128,15 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
             return new ObservableCollection<AuthorizedNetworkModel>(acls.Select((x) => new AuthorizedNetworkModel(x)));
         }
 
-
+        private IEnumerable<ValidationResult> ValidateNetwork(string value)
+        {
+            IPAddress address;
+            if (!IPAddress.TryParse(value, out address) || address.AddressFamily != AddressFamily.InterNetwork)
+            {
+                yield return StringValidationResult.FromResource(
+                    nameof(Resources.AuthorizedNetworksWindowInvalidCidrFormatErrorMessage));
+            }
+        }
         /// <summary>
         /// Called when the user clicks the Add Authorized Network button.  This ensures that the
         /// IP address entred is valid and an IPv4 address.  It then adds the network to the
