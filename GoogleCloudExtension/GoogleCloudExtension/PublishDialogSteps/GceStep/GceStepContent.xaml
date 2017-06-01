@@ -41,7 +41,7 @@
                 <TextBlock Text="{x:Static ext:Resources.UiManageWindowsCredentialsCaption}" />
             </Hyperlink>
         </TextBlock>
-        
+
         <CheckBox Margin="0,8,0,0"
                   Content="{x:Static ext:Resources.PublishDialogOpenWebsiteCaption}"
                   IsChecked="{Binding OpenWebsite, Mode=TwoWay}"
