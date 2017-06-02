@@ -7,9 +7,7 @@
   <Target Name="DeployVsixExtensionFiles" Condition="'$(DeployExtension)'=='true' and '$(CreateVsixContainer)'=='true'" DependsOnTargets="$(DeployVsixExtensionFilesDependsOn)">
     <UninstallExtension Condition="'$(ExistingDeploymentPath)' != '' AND '$(AllUsersExtension)' != 'true'" VsixIdentifier="$(VsixID)" RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" FailIfNotInstalled="false" />
 
-    <RemoveDir Condition="'$(ExistingDeploymentPath)' != '' AND '$(AllUsersExtension)' != 'true'" Directories="$([System.IO.Path]::GetDirectoryName($(ExistingDeploymentPath)))">
-      <Output TaskParameter="RemovedDirectories" PropertyName="RemovedDirectories"/>
-    </RemoveDir>
+    <RemoveDir Condition="'$(ExistingDeploymentPath)' != '' AND '$(AllUsersExtension)' != 'true'" Directories="$([System.IO.Path]::GetDirectoryName($(ExistingDeploymentPath)))"/>
     
     <Message Text="VsixID = $(VsixID)" />
     <Message Text="VsixVersion = $(VsixVersion)" />
@@ -26,7 +24,7 @@
     <!--Enable always loading extensions from LocalAppData -->
     <EnableLoadingAllExtensions RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" />
     <!--Enable this extension via Extension Manager-->
-    <EnableExtension Condition="$(VisualStudioVersion) == '15.0'" VsixIdentifier="$(VsixID)" RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" FailIfNotInstalled="true" VsixVersion="$(VsixVersion)"/>
-    <EnableExtension Condition="$(VisualStudioVersion) != '15.0'" VsixIdentifier="$(VsixID)" RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" FailIfNotInstalled="true"/>
+    <!--<EnableExtension Condition="$(VisualStudioVersion) == '15.0'" VsixIdentifier="$(VsixID)" RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" FailIfNotInstalled="true" VsixVersion="$(VsixVersion)"/>-->
+    <EnableExtension VsixIdentifier="$(VsixID)" RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" FailIfNotInstalled="true"/>
   </Target>
 </Project>

@@ -1,12 +1,13 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Condition="$(VisualStudioVersion) == '14.0' and Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props')" Project="..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props" />
+  <Import Project="..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props"
+          Condition="Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <!-- This will make the tools use the v3 version of the .vsix format. Without this the extension won't load on VS 2017. -->
     <VsixType>v3</VsixType>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
-    <MinimumVisualStudioVersion Condition="$(VisualStudioVersion) == '15.0'">15.0</MinimumVisualStudioVersion>
+    <!--<MinimumVisualStudioVersion Condition="$(VisualStudioVersion) == '15.0'">15.0</MinimumVisualStudioVersion>-->
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <UseCodebase>true</UseCodebase>
     <SignAssembly>true</SignAssembly>
@@ -1014,6 +1015,6 @@
     <Error Condition="$(VisualStudioVersion) == '14.0' and !Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets'))" />
     <Error Condition="!Exists('..\packages\MSBuilder.VsixInstaller.0.2.16\build\MSBuilder.VsixInstaller.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuilder.VsixInstaller.0.2.16\build\MSBuilder.VsixInstaller.targets'))" />
   </Target>
-  <Import Condition="$(VisualStudioVersion) == '14.0' and Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets')" Project="..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets" />
+  <Import Condition="Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets')" Project="..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets" />
   <Import Project="TargetOverrides.targets" />
 </Project>
