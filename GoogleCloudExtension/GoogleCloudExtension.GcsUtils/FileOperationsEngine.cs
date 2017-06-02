@@ -142,15 +142,15 @@ namespace GoogleCloudExtension.GcsUtils
             string newLeafName,
             CancellationToken cancellationToken)
         {
-            var oldNamePrefix = GcsPathUtils.Combine(parentName, oldLeafName);
-            var newNamePrefix = GcsPathUtils.Combine(parentName, newLeafName);
+            var oldNamePrefix = GcsPathUtils.Combine(parentName, oldLeafName) + "/";
+            var newNamePrefix = GcsPathUtils.Combine(parentName, newLeafName) + "/";
 
             var filesToMove = await GetGcsFilesFromPrefixAsync(bucket, oldNamePrefix);
 
             var moveOperations = new List<GcsMoveFileOperation>();
             foreach (var file in filesToMove)
             {
-                var movedName = file.Name.Replace(oldNamePrefix, newNamePrefix);
+                var movedName = newNamePrefix + file.Name.Substring(oldNamePrefix.Length);
                 var movedItem = new GcsItemRef(bucket, movedName);
                 moveOperations.Add(new GcsMoveFileOperation(file, movedItem));
             }

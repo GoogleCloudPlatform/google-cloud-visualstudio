@@ -250,8 +250,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 renameDiretoryOperations = await _fileOperationsEngine.StartDirectoryRenameOperationsAsync(
                     bucket: Bucket.Name,
                     parentName: CurrentState.CurrentPath,
-                    oldLeafName: SelectedItem.BlobName,
-                    newLeafName: newLeafName + "/",
+                    oldLeafName: SelectedItem.LeafName,
+                    newLeafName: newLeafName,
                     cancellationToken: cancellationTokenSource.Token);
             }
             finally
