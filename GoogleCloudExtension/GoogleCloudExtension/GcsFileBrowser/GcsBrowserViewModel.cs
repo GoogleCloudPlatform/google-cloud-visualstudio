@@ -254,15 +254,22 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     newLeafName: newLeafName,
                     cancellationToken: cancellationTokenSource.Token);
             }
+            catch (DataSourceException ex)
+            {
+                UserPromptUtils.ErrorPrompt(
+                    message: string.Format(Resources.GcsFileBrowserRenameFailedMessage, SelectedItem.LeafName),
+                    title: Resources.UiErrorCaption,
+                    errorDetails: ex.Message);
+            }
             finally
             {
                 IsLoading = false;
             }
 
             GcsFileProgressDialogWindow.PromptUser(
-                caption: "Renaming files",
-                message: "Files being renamed",
-                progressMessage: "Files renamed {0} of {1}",
+                caption: Resources.GcsFileBrowserRenamingFilesCaption,
+                message: Resources.GcsFileBrowserRenamingFilesMessage,
+                progressMessage: Resources.GcsFileBrowserRenamingFilesProgressMessage,
                 operations: renameDiretoryOperations.Operations,
                 cancellationTokenSource: cancellationTokenSource);
 

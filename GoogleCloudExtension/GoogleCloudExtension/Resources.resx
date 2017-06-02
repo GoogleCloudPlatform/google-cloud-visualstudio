@@ -2324,8 +2324,8 @@
     <comment>Message shown when the operation is started.</comment>
   </data>
   <data name="GcsFileBrowserRenameFailedMessage" xml:space="preserve">
-    <value>Failed to rename file {0}.</value>
-    <comment>Message shown when the rename operation fails. {0} is the name of the file.</comment>
+    <value>Failed to rename {0}.</value>
+    <comment>Message shown when the rename operation fails. {0} is the name of the file or directory.</comment>
   </data>
   <data name="GcsFileBrowserRenameFileHeader" xml:space="preserve">
     <value>Rename file...</value>
@@ -2334,5 +2334,17 @@
   <data name="GcsFileBrowserRenamingProgressMessage" xml:space="preserve">
     <value>Renaming file.</value>
     <comment>Message shown while the rename operation is in flight.</comment>
+  </data>
+  <data name="GcsFileBrowserRenamingFilesCaption" xml:space="preserve">
+    <value>Renaming files</value>
+    <comment>Caption for the progress dialog when renaming multiple files.</comment>
+  </data>
+  <data name="GcsFileBrowserRenamingFilesMessage" xml:space="preserve">
+    <value>Files being renamed</value>
+    <comment>Message displayed when renaming multiple files.</comment>
+  </data>
+  <data name="GcsFileBrowserRenamingFilesProgressMessage" xml:space="preserve">
+    <value>Files renamed {0} of {1}</value>
+    <comment>Message displayed to show the progress of renaming multiple files. {0} is the current count of completed operations, {1} is the total count of operations</comment>
   </data>
 </root>
