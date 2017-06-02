@@ -81,6 +81,23 @@ namespace $safeprojectname$
                     "Google Cloud Project ID, then recompile.");
             }
             return projectId;
-        }
     }
+
+        private string GetServiceName()
+        {
+            var instance = Google.Api.Gax.Platform.Instance();
+            var ServiceName =
+                instance.GceDetails?.ProjectId ??
+                instance.GaeDetails?.ProjectId ??
+                Configuration["Google:ErrorReporting:ServiceName"];
+            if (string.IsNullOrEmpty(projectId))
+            {
+                throw new Exception(
+                    "The logging, tracing and error reporting libraries need a project ID. " +
+                    "Update appsettings.json by setting the ProjectId property with your " +
+                    "Google Cloud Project ID, then recompile.");
+            }
+            return projectId;
+        }
+}
 }
