@@ -19,14 +19,14 @@ namespace GoogleCloudExtension.SourceBrowsing
 {
     /// <summary>
     /// Define the source line tooltip data sources.
-    /// This is singleton so that there is at most one tooltip shown globally at any time. 
-    /// This approach simplifies the overall design for <seealso cref="StackdriverTagger"/>. 
+    /// This is singleton so that there is at most one tooltip shown globally at any time.
+    /// This approach simplifies the overall design for <seealso cref="StackdriverTagger"/>.
     /// </summary>
     internal class ActiveTagData
     {
         /// <summary>
         /// The associated <seealso cref="IWpfTextView"/> interface 
-        /// to the source file that generates the <seealso cref="LogData"/>.
+        /// to the source file that generates the <seealso cref="StackdriverLogsViewer.LogItem"/>.
         /// </summary>
         public IWpfTextView TextView { get; private set; }
 

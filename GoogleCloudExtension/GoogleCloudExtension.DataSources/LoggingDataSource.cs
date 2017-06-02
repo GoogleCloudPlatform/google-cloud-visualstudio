@@ -48,6 +48,7 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="projectId">The Google Cloud Platform project id of the current user account .</param>
         /// <param name="credential">The credentials to use for the call.</param>
+        /// <param name="appName">The name of the application.</param>
         public LoggingDataSource(string projectId, GoogleCredential credential, string appName)
             : base(projectId, credential, init => new LoggingService(init), appName)
         {

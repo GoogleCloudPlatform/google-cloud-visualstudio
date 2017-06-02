@@ -103,7 +103,7 @@ namespace GoogleCloudExtension.Deployment
         /// <summary>
         /// Generates the Dockerfile for this .NET Core project.
         /// </summary>
-        /// <param name="projectPath">The project.</param>
+        /// <param name="project">The project.</param>
         internal static void GenerateDockerfile(IParsedProject project)
         {
             var targetDockerfile = Path.Combine(project.DirectoryPath, DockerfileName);

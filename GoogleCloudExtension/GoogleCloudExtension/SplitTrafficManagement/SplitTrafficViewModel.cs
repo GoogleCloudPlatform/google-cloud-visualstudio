@@ -190,9 +190,9 @@ namespace GoogleCloudExtension.SplitTrafficManagement
 
         /// <summary>
         /// Called when the user clicks the Delete button.  This will remove the
-        /// given version (<seealso cref="VersionId"/>>) from the list of
+        /// given version (<seealso cref="SplitTrafficModel.VersionId"/>>) from the list of
         /// <seealso cref="Allocations"/> and adds the version to the the list
-        /// of <seealso cref="AvailableVersions"/>.
+        /// of <seealso cref="_availableVersions"/>.
         /// </summary>
         private void OnDeleteCommand()
         {

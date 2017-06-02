@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Initializes a new instance of <seealso cref="LoggerTooltipViewModel"/> class.
         /// </summary>
-        /// <param name="log">The log item the tooltip shows.</param>
+        /// <param name="logItem">The log item the tooltip shows.</param>
         public LoggerTooltipViewModel(LogItem logItem)
         {
             OnCloseButtonCommand = new ProtectedCommand(ShowTooltipUtils.HideTooltip);
