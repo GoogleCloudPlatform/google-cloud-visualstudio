@@ -19,13 +19,29 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GcsUtils
 {
+    /// <summary>
+    /// Interface for a queue entry.
+    /// </summary>
     internal interface IOperationQueueEntry
     {
+        /// <summary>
+        /// The callback to use for the operation.
+        /// </summary>
         IGcsFileOperationCallback OperationCallback { get; }
 
+        /// <summary>
+        /// Starts the operation, returns the task that will completed when the operation is completed.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token for the operation.</param>
+        /// <returns>A task that will be completed when the operation is finished. No error will be reported
+        /// through this task.</returns>
         Task ExecuteOperationAsync(CancellationToken cancellationToken);
     }
 
+    /// <summary>
+    /// A concrete operation entry for the given <typeparamref name="TOperation"/> type.
+    /// </summary>
+    /// <typeparam name="TOperation">The ype of operation queued, must derive from <seealso cref="GcsOperation"/></typeparam>
     internal class OperationQueueEntry<TOperation> : IOperationQueueEntry where TOperation : GcsOperation
     {
         /// <summary>

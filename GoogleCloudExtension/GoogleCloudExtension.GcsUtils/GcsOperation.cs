@@ -20,6 +20,10 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GcsUtils
 {
+    /// <summary>
+    /// Base class for all GCS operations, serves as a model that can be used in UI to represent
+    /// the progress and state of the operation.
+    /// </summary>
     public abstract class GcsOperation : Model, IGcsFileOperationCallback
     {
         private readonly SynchronizationContext _context;

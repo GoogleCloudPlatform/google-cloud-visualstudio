@@ -135,6 +135,17 @@ namespace GoogleCloudExtension.GcsUtils
             return operationsQueue;
         }
 
+        /// <summary>
+        /// Starts all of the necessary operations to rename the directory <paramref name="oldLeafName"/> to 
+        /// the <paramref name="newLeafName"/> name. This includes renaming the directory and all subdirectories and files
+        /// under the directory being renamed.
+        /// </summary>
+        /// <param name="bucket">The bucket where the directory to rename resides.</param>
+        /// <param name="parentName">The parent directory of the directory being renamed.</param>
+        /// <param name="oldLeafName">The old (current) name of the directory.</param>
+        /// <param name="newLeafName">The new name for the directory.</param>
+        /// <param name="cancellationToken">The cancellation token for the operaitons.</param>
+        /// <returns></returns>
         public async Task<OperationsQueue> StartDirectoryRenameOperationsAsync(
             string bucket,
             string parentName,

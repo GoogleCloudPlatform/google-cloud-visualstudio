@@ -12,8 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
+
 namespace GoogleCloudExtension.GcsUtils
 {
+    /// <summary>
+    /// This class represents an operation to move (or rename) a GCS file within the same bucket.
+    /// </summary>
     public class GcsMoveFileOperation : GcsOperation
     {
         /// <summary>
@@ -28,6 +33,11 @@ namespace GoogleCloudExtension.GcsUtils
 
         public GcsMoveFileOperation(GcsItemRef fromItem, GcsItemRef toItem)
         {
+            if (fromItem.Bucket != toItem.Bucket)
+            {
+                throw new InvalidOperationException("Can only move items within the same bucket.");
+            }
+
             GcsItem = fromItem;
             ToItem = toItem;
         }

@@ -27,7 +27,7 @@ namespace GoogleCloudExtension.GcsUtils
         public string LocalPath { get; }
 
         /// <summary>
-        /// The GCS file top be transferred.
+        /// The GCS file to be transferred.
         /// </summary>
         public override GcsItemRef GcsItem { get; }
 
