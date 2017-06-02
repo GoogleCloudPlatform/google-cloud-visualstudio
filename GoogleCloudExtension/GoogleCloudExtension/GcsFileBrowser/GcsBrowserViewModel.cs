@@ -222,7 +222,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 {
                     menuItems.Add(new MenuItem
                     {
-                        Header = "Rename directory...",
+                        Header = Resources.GcsFileBrowserRenameDirectoryHeader,
                         Command = new ProtectedCommand(OnRenameDirectoryCommand)
                     });
                 }

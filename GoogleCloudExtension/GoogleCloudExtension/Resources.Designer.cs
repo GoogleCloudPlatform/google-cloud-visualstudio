@@ -2806,6 +2806,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Rename directory....
+        /// </summary>
+        public static string GcsFileBrowserRenameDirectoryHeader {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenameDirectoryHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to rename {0}..
         /// </summary>
         public static string GcsFileBrowserRenameFailedMessage {

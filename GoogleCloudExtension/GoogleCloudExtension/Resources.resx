@@ -2335,6 +2335,10 @@
     <value>Renaming file.</value>
     <comment>Message shown while the rename operation is in flight.</comment>
   </data>
+  <data name="GcsFileBrowserRenameDirectoryHeader" xml:space="preserve">
+    <value>Rename directory...</value>
+    <comment>Header used for the rename directory menu option.</comment>
+  </data>
   <data name="GcsFileBrowserRenamingFilesCaption" xml:space="preserve">
     <value>Renaming files</value>
     <comment>Caption for the progress dialog when renaming multiple files.</comment>
