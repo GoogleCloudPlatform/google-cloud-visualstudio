@@ -218,9 +218,55 @@ namespace GoogleCloudExtension.GcsFileBrowser
                         Command = new ProtectedCommand(OnRenameFileCommand)
                     });
                 }
+                else if (SelectedItem.IsDirectory)
+                {
+                    menuItems.Add(new MenuItem
+                    {
+                        Header = "Rename directory...",
+                        Command = new ProtectedCommand(OnRenameDirectoryCommand)
+                    });
+                }
             }
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        #region Command handlers
+
+        private async void OnRenameDirectoryCommand()
+        {
+            var newLeafName = NamePromptWindow.PromptUser(SelectedItem.LeafName);
+            if (newLeafName == null)
+            {
+                return;
+            }
+
+            OperationsQueue renameDiretoryOperations = null;
+            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+            try
+            {
+                IsLoading = true;
+
+                renameDiretoryOperations = await _fileOperationsEngine.StartDirectoryRenameOperationsAsync(
+                    bucket: Bucket.Name,
+                    parentName: CurrentState.CurrentPath,
+                    oldLeafName: SelectedItem.BlobName,
+                    newLeafName: newLeafName + "/",
+                    cancellationToken: cancellationTokenSource.Token);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+
+            GcsFileProgressDialogWindow.PromptUser(
+                caption: "Renaming files",
+                message: "Files being renamed",
+                progressMessage: "Files renamed {0} of {1}",
+                operations: renameDiretoryOperations.Operations,
+                cancellationTokenSource: cancellationTokenSource);
+
+            UpdateCurrentState();
         }
 
         private async void OnRenameFileCommand()
@@ -263,8 +309,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 IsLoading = false;
             }
         }
-
-        #region Command handlers
 
         private void OnDoubleClickCommand(GcsRow row)
         {

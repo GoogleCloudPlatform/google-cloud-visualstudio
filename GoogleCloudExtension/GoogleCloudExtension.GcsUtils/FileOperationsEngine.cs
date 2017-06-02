@@ -135,6 +135,32 @@ namespace GoogleCloudExtension.GcsUtils
             return operationsQueue;
         }
 
+        public async Task<OperationsQueue> StartDirectoryRenameOperationsAsync(
+            string bucket,
+            string parentName,
+            string oldLeafName,
+            string newLeafName,
+            CancellationToken cancellationToken)
+        {
+            var oldNamePrefix = GcsPathUtils.Combine(parentName, oldLeafName);
+            var newNamePrefix = GcsPathUtils.Combine(parentName, newLeafName);
+
+            var filesToMove = await GetGcsFilesFromPrefixAsync(bucket, oldNamePrefix);
+
+            var moveOperations = new List<GcsMoveFileOperation>();
+            foreach (var file in filesToMove)
+            {
+                var movedName = file.Name.Replace(oldNamePrefix, newNamePrefix);
+                var movedItem = new GcsItemRef(bucket, movedName);
+                moveOperations.Add(new GcsMoveFileOperation(file, movedItem));
+            }
+
+            var operationsQueue = new OperationsQueue(cancellationToken);
+            operationsQueue.EnqueueOperations(moveOperations, _dataSource.StartMoveOperation);
+            operationsQueue.StartOperations();
+            return operationsQueue;
+        }
+
         /// <summary>
         /// Creates the <seealso cref="GcsFileTransferOperation"/> necessary to upload all of the sources from the local
         /// file system to GCS. The sources can be files or directories.

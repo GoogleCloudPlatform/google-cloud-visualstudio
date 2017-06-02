@@ -106,7 +106,12 @@ namespace GoogleCloudExtension.GcsUtils
             GcsMoveFileOperation operation,
             CancellationToken cancellationToken)
         {
-
+            self.StartMoveOperation(
+                bucket: operation.GcsItem.Bucket,
+                fromName: operation.GcsItem.Name,
+                toName: operation.ToItem.Name,
+                operation: operation,
+                cancellationToken: cancellationToken);
         }
     }
 }
