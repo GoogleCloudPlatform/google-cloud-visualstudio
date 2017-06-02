@@ -14,7 +14,6 @@ namespace GoogleCloudExtension.GcsUtils
 
     internal class OperationQueueEntry<TOperation> : IOperationQueueEntry where TOperation : GcsOperation
     {
-
         /// <summary>
         /// The action to use to start the operation.
         /// </summary>
@@ -23,7 +22,7 @@ namespace GoogleCloudExtension.GcsUtils
         /// <summary>
         /// The action to use to start the operation.
         /// </summary>
-        public Action<TOperation, CancellationToken> StartOperationAction { get; set;  }
+        public Action<TOperation, CancellationToken> StartOperationAction { get; set; }
 
         /// <summary>
         /// The callback for the operation.

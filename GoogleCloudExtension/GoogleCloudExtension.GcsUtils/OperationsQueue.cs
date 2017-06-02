@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.GcsUtils
         /// <param name="startOperationAction">The action to use to start the operaitons.</param>
         public void EnqueueOperations<TOperation>(
             IEnumerable<TOperation> operations,
-            Action<TOperation, CancellationToken> startOperationAction) where TOperation: GcsOperation
+            Action<TOperation, CancellationToken> startOperationAction) where TOperation : GcsOperation
         {
             var operationsSnapshot = operations.ToList();
             _operations.AddRange(operationsSnapshot);

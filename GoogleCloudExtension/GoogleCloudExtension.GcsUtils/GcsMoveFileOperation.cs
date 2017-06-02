@@ -1,4 +1,5 @@
-﻿namespace GoogleCloudExtension.GcsUtils
+﻿
+namespace GoogleCloudExtension.GcsUtils
 {
     public class GcsMoveFileOperation : GcsOperation
     {
