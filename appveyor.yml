@@ -31,7 +31,7 @@ test_script:
   - ps: $openCoverVersion = ls ~/.nuget/packages/OpenCover
   - ps: $openCoverTool = "~/.nuget/packages/OpenCover/$openCoverVersion/tools/OpenCover.Console.exe"
   - ps: $testContainerArgs = ($testDlls.FullName | % { "/testcontainer:$_" }) -join " "
-  - ps: & $openCoverTool -register:user -target:$msTestPath -targetargs:$testContainerArgs -output:codecoverage.xml
+  - ps: "& $openCoverTool -register:user -target:$msTestPath -targetargs:$testContainerArgs -output:codecoverage.xml"
 
 # Upload to codecov.io
 after_test:
