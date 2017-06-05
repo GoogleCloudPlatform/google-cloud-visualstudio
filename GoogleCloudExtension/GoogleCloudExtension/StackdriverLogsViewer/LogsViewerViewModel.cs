@@ -693,7 +693,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             }
             catch (DataSourceException ex)
             {
-                /// If it fails, show a tip, let refresh button retry it.
+                // If it fails, show a tip, let refresh button retry it.
                 RequestErrorMessage = ex.Message;
                 ShowRequestErrorMessage = true;
                 return;
@@ -780,7 +780,6 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Aggregate all selections into filter string.
         /// </summary>
-        /// <param name="ignoreTimeStamp">If the value is true,  does not add the timestamp clause.</param>
         private string ComposeSimpleFilters()
         {
             Debug.WriteLine("Entering ComposeSimpleFilters()");
