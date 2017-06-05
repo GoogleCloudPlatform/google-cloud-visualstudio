@@ -42,11 +42,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
         public string LeafName { get; private set; }
 
         /// <summary>
-        /// Whether this is an error message.
-        /// </summary>
-        public bool IsError { get; private set; }
-
-        /// <summary>
         /// Whether this row represents a file.
         /// </summary>
         public bool IsFile { get; private set; }
@@ -117,18 +112,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 LastModified = obj.Updated?.ToString() ?? NoValuePlaceholder,
                 LeafName = GcsPathUtils.GetFileName(obj.Name),
                 ContentType = obj.ContentType ?? DefaultContentType,
-            };
-
-        /// <summary>
-        /// Creates a row that represents an error.
-        /// </summary>
-        /// <param name="message">The error message.</param>
-        /// <returns>The newly created <seealso cref="GcsRow"/>.</returns>
-        public static GcsRow CreateErrorRow(string message) =>
-            new GcsRow
-            {
-                LeafName = message,
-                IsError = true
             };
 
         /// <summary>
