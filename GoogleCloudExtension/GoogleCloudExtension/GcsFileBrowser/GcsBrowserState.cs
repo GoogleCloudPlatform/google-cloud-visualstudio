@@ -54,14 +54,14 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         public string ErrorMessage { get; }
 
-        public bool IsEmpty => Items == null || Items.Count == 0;
+        public bool IsEmpty => !IsError && Items?.Count == 0;
 
         public bool IsError => ErrorMessage != null;
 
         /// <summary>
         /// The pathsteps to get this state.
         /// </summary>
-        public IEnumerable<PathStep> PathSteps { get; }
+        public IEnumerable<PathStep> PathSteps { get; private set; }
 
         /// <summary>
         /// The current path within the bucket.
@@ -82,7 +82,17 @@ namespace GoogleCloudExtension.GcsFileBrowser
         public GcsBrowserState(IEnumerable<GcsRow> items, string name)
         {
             Items = items.ToList();
+            ParsePathSteps(name);
+        }
 
+        public GcsBrowserState(string errorMessage, string name)
+        {
+            ErrorMessage = errorMessage;
+            ParsePathSteps(name);
+        }
+
+        private void ParsePathSteps(string name)
+        {
             if (String.IsNullOrEmpty(name))
             {
                 PathSteps = Enumerable.Empty<PathStep>();
@@ -100,11 +110,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 }
                 PathSteps = steps;
             }
-        }
-
-        public GcsBrowserState(string errorMessage)
-        {
-            ErrorMessage = errorMessage;
         }
     }
 }

@@ -541,7 +541,16 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
         }
 
-        private static GcsBrowserState CreateErrorState(string name) =>
-            new GcsBrowserState(String.Format(Resources.GcsFileBrowserFailedDirectoryLoadMessage, name));
+        private static GcsBrowserState CreateErrorState(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return new GcsBrowserState(Resources.GcsFileBrowserFailedLoadRootDirectoryMessage, name);
+            }
+            else
+            {
+                return new GcsBrowserState(String.Format(Resources.GcsFileBrowserFailedDirectoryLoadMessage, name), name);
+            }
+        }
     }
 }

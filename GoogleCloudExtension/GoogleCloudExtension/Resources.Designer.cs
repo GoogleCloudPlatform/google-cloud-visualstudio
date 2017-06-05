@@ -2644,6 +2644,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to load directory..
+        /// </summary>
+        public static string GcsFileBrowserFailedLoadRootDirectoryMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFailedLoadRootDirectoryMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to create directories for download..
         /// </summary>
         public static string GcsFileBrowserFailedToCreateDirMessage {
@@ -4962,6 +4971,15 @@ namespace GoogleCloudExtension {
         public static string UiPropertiesMenuHeader {
             get {
                 return ResourceManager.GetString("UiPropertiesMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string UiRefreshButtonCaption {
+            get {
+                return ResourceManager.GetString("UiRefreshButtonCaption", resourceCulture);
             }
         }
         
