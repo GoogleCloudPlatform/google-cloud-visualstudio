@@ -28,9 +28,16 @@ namespace $safeprojectname$
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string projectId = GetProjectId();
             // Add framework services.
             services.AddMvc();
-            services.AddGoogleTrace(GetProjectId());
+            services.AddGoogleTrace(projectId);
+            services.AddGoogleExceptionLogging(
+                projectId,
+                // An identifier of the service. See https://cloud.google.com/error-reporting/docs/formatting-error-messages#FIELDS.service.
+                Configuration["Google:ErrorReporting:ServiceName"],
+                // The source version of the service.See https://cloud.google.com/error-reporting/docs/formatting-error-messages#FIELDS.version.
+                Configuration["Google:ErrorReporting:Version"]);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -44,11 +51,7 @@ namespace $safeprojectname$
 
             if (!env.IsDevelopment())
             {
-                app.UseGoogleExceptionLogging(projectId,
-                    // An identifier of the service. See https://cloud.google.com/error-reporting/docs/formatting-error-messages#FIELDS.service.
-                    Configuration["Google:ErrorReporting:ServiceName"],
-                    // The source version of the service.See https://cloud.google.com/error-reporting/docs/formatting-error-messages#FIELDS.version.
-                    Configuration["Google:ErrorReporting:Version"]);
+                app.UseGoogleExceptionLogging();
             }
 
             app.UseGoogleTrace();

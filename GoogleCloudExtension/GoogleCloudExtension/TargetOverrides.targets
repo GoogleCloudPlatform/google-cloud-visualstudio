@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <UseCompiledTasks>true</UseCompiledTasks>
+  </PropertyGroup>
+  <Import Project="..\packages\MSBuilder.VsixInstaller.0.2.16\build\MSBuilder.VsixInstaller.targets" Condition="Exists('..\packages\MSBuilder.VsixInstaller.0.2.16\build\MSBuilder.VsixInstaller.targets')" />
+  <Target Name="DeployVsixExtensionFiles" Condition="'$(DeployExtension)'=='true' and '$(CreateVsixContainer)'=='true'" DependsOnTargets="$(DeployVsixExtensionFilesDependsOn)">
+    <UninstallExtension Condition="'$(ExistingDeploymentPath)' != '' AND '$(AllUsersExtension)' != 'true'" VsixIdentifier="$(VsixID)" RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" FailIfNotInstalled="false" />
+
+    <RemoveDir Condition="'$(ExistingDeploymentPath)' != '' AND '$(AllUsersExtension)' != 'true'" Directories="$([System.IO.Path]::GetDirectoryName($(ExistingDeploymentPath)))"/>
+    
+    <Message Text="VsixID = $(VsixID)" />
+    <Message Text="VsixVersion = $(VsixVersion)" />
+
+    <InstallVsix VisualStudioVersion="$(VisualStudioVersion)" VsInstallRoot="$(VsInstallRoot)" VsixPath="$(TargetVsixContainer)" PerMachine="$(PerMachine)" RootSuffix="$(RootSuffix)" MessageImportance="$(MessageImportance)" />
+    <!--Check if the user is an administrator and the user profile hasn't been setup for the target instance. -->
+    <CheckProfileSetup RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)">
+      <Output TaskParameter="IsAdministrator" PropertyName="IsCurrentUserAdministrator" />
+      <Output TaskParameter="IsProfileSetup" PropertyName="IsTargetProfileSetup" />
+    </CheckProfileSetup>
+    <!--Run devenv to setup the target profile if necessary -->
+    <Message Condition="'$(IsCurrentUserAdministrator)'=='True' And '$(IsTargetProfileSetup)'=='False'" Importance="High" Text="Setting up Visual Studio for debugging extensions. This one-time operation may take a minute or more."/>
+    <Devenv Condition="'$(IsCurrentUserAdministrator)'=='True' And '$(IsTargetProfileSetup)'=='False'" RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" ResetSettingProfile="General.vssettings" IsEmbedded="true" />
+    <!--Enable always loading extensions from LocalAppData -->
+    <EnableLoadingAllExtensions RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" />
+    <!--Enable this extension via Extension Manager-->
+    <!--<EnableExtension Condition="$(VisualStudioVersion) == '15.0'" VsixIdentifier="$(VsixID)" RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" FailIfNotInstalled="true" VsixVersion="$(VsixVersion)"/>-->
+    <EnableExtension VsixIdentifier="$(VsixID)" RootSuffix="$(VSSDKTargetPlatformRegRootSuffix)" FailIfNotInstalled="true"/>
+  </Target>
+</Project>
