@@ -9,6 +9,8 @@ image: Visual Studio 2015
 before_build:
   - choco install OpenCover
   - choco install codecov
+  - ps: $openCoverTool = (ls / -include OpenCover.Console.exe -Recurse).FullName
+  - ps: $openCoverTool
 
 # Perform the build.
 build_script:
@@ -28,7 +30,6 @@ test_script:
   - ps: $testDllNames = "GoogleAnalyticsUtilsTests.dll", "GoogleCloudExtensionUnitTests.dll", "GoogleCloudExtension.Utils.UnitTests.dll"
   - ps: $testDlls = ls -r -include $testDllNames | ? FullName -Like *\bin\*
   - ps: $vsTestPath = (Get-Command vstest.console).Source
-  - ps: $openCoverVersion = ls ~/.nuget/packages/OpenCover
   - ps: $openCoverTool = (ls / -include OpenCover.Console.exe -Recurse).FullName
   - ps: $openCoverTool
   - ps: $testContainerArgs = $testDlls.FullName -join " "
