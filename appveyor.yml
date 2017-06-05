@@ -27,11 +27,13 @@ artifacts:
 test_script:
   - ps: $testDllNames = "GoogleAnalyticsUtilsTests.dll", "GoogleCloudExtensionUnitTests.dll", "GoogleCloudExtension.Utils.UnitTests.dll"
   - ps: $testDlls = ls -r -include $testDllNames | ? FullName -Like *\bin\*
-  - ps: $msTestPath = (Get-Command mstest).Source
+  - ps: $vsTestPath = (Get-Command vstest.console).Source
   - ps: $openCoverVersion = ls ~/.nuget/packages/OpenCover
-  - ps: $openCoverTool = "~/.nuget/packages/OpenCover/$openCoverVersion/tools/OpenCover.Console.exe"
-  - ps: $testContainerArgs = ($testDlls.FullName | % { "/testcontainer:$_" }) -join " "
-  - ps: "& $openCoverTool -register:user -target:$msTestPath -targetargs:$testContainerArgs -output:codecoverage.xml"
+  - ps: $openCoverTool = (ls / -include OpenCover.Console.exe -Recurse).FullName
+  - ps: $openCoverTool
+  - ps: $testContainerArgs = $testDlls.FullName -join " "
+  - ps: $testArgs = "/logger:Appveyor $testContainerArgs"
+  - ps: "& $openCoverTool -register:user -target:$vsTestPath -targetargs:$testContainerArgs -output:codecoverage.xml"
 
 # Upload to codecov.io
 after_test:
