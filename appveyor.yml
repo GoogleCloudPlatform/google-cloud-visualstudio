@@ -6,8 +6,11 @@ version: 1.0.{build}-{branch}
 # We're using Visual Studio 2015
 image: Visual Studio 2015
 
+before_build:
+  - choco install OpenCover
+  - choco install codecov
+
 # Perform the build.
-# TODO: Fetch the output of the build and publish it.
 build_script:
   - bash -c ./tools/ensure_strings_extracted.sh
   - bash -c ./tools/ensure_no_unused_strings.sh
@@ -18,11 +21,18 @@ build_script:
 # Defines the artifacts to be saved.
 artifacts:
   - path: GoogleCloudExtension\GoogleCloudExtension\bin\Release\GoogleCloudExtension.vsix
-
   - path: GoogleCloudExtension\GoogleCloudExtension\bin\Debug\GoogleCloudExtension.vsix
 
-# Run the analytics tests.
-test:
-  assemblies:
-  - GoogleAnalyticsUtilsTests.dll
-  - GoogleCloudExtensionUnitTests.dll
+# Run the analytics tests with code coverage report.
+test_script:
+  - ps: $testDllNames = "GoogleAnalyticsUtilsTests.dll", "GoogleCloudExtensionUnitTests.dll", "GoogleCloudExtension.Utils.UnitTests.dll"
+  - ps: $testDlls = ls -r -include $testDllNames | ? FullName -Like *\bin\*
+  - ps: $msTestPath = (Get-Command mstest).Source
+  - ps: $openCoverVersion = ls ~/.nuget/packages/OpenCover
+  - ps: $openCoverTool = "~/.nuget/packages/OpenCover/$openCoverVersion/tools/OpenCover.Console.exe"
+  - ps: $testContainerArgs = ($testDlls.FullName | % { "/testcontainer:$_" }) -join " "
+  - ps: & $openCoverTool -register:user -target:$msTestPath -targetargs:$testContainerArgs -output:codecoverage.xml
+
+# Upload to codecov.io
+after_test:
+  - codecov -f codecoverage.xml
