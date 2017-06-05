@@ -96,7 +96,6 @@
             <Image Source="{mb:ImageResource GcsFileBrowser/Resources/refresh.png}" />
         </Button>
 
-
         <!-- The main area for the data. -->
         <DataGrid Grid.Row="2"
                   Grid.ColumnSpan="2"
@@ -175,5 +174,25 @@
                 </DataGridTemplateColumn>
             </DataGrid.Columns>
         </DataGrid>
+
+        <!-- The message area -->
+        
+        <!-- Empty directory message -->
+        <TextBlock Grid.Row="2"
+                   Grid.ColumnSpan="2"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Text="{x:Static ext:Resources.GcsFileBrowserNoFilesMessage}"
+                   Visibility="{Binding CurrentState.IsEmpty, Converter={StaticResource commonVisibilityConverter}}"
+                   Style="{StaticResource CommonTextStyle}"/>
+        
+        <!-- Error message. -->
+        <TextBlock Grid.Row="2"
+                   Grid.ColumnSpan="2"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Text="{Binding CurrentState.ErrorMessage}"
+                   Visibility="{Binding CurrentState.IsError, Converter={StaticResource commonVisibilityConverter}}"
+                   Style="{StaticResource CommonTextStyle}"/>
     </Grid>
 </UserControl>

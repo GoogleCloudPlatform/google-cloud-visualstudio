@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2802,6 +2802,15 @@ namespace GoogleCloudExtension
         public static string GcsFileBrowserNewFolderHeader {
             get {
                 return ResourceManager.GetString("GcsFileBrowserNewFolderHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no files in this directory, you can upload files by selecting them in Windows Explorer and dragging them here..
+        /// </summary>
+        public static string GcsFileBrowserNoFilesMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserNoFilesMessage", resourceCulture);
             }
         }
         

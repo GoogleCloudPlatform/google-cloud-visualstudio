@@ -52,6 +52,12 @@ namespace GoogleCloudExtension.GcsFileBrowser
         /// </summary>
         public IList<GcsRow> Items { get; }
 
+        public string ErrorMessage { get; }
+
+        public bool IsEmpty => Items == null || Items.Count == 0;
+
+        public bool IsError => ErrorMessage != null;
+
         /// <summary>
         /// The pathsteps to get this state.
         /// </summary>
@@ -94,6 +100,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 }
                 PathSteps = steps;
             }
+        }
+
+        public GcsBrowserState(string errorMessage)
+        {
+            ErrorMessage = errorMessage;
         }
     }
 }
