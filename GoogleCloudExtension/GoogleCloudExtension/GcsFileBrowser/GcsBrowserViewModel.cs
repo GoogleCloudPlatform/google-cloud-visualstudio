@@ -124,6 +124,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
         public ICommand RefreshCommand { get; }
 
         /// <summary>
+        /// Command to execute when creating a new folder.
+        /// </summary>
+        public ICommand NewFolderCommand { get; }
+
+        /// <summary>
         /// The command to execute when a double click happens.
         /// </summary>
         public ICommand DoubleClickCommand { get; }
@@ -137,6 +142,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             NavigateToRootCommand = new ProtectedCommand(OnNavigateToRootCommand);
             NavigateToCommand = new ProtectedCommand<PathStep>(OnNavigateToCommand);
             RefreshCommand = new ProtectedCommand(OnRefreshCommand);
+            NewFolderCommand = new ProtectedCommand(OnNewFolderCommand);
             DoubleClickCommand = new ProtectedCommand<GcsRow>(OnDoubleClickCommand);
         }
 
@@ -189,7 +195,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         {
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = Resources.GcsFileBrowserNewFolderHeader, Command = new ProtectedCommand(OnNewFolderCommand) },
+                new MenuItem { Header = Resources.GcsFileBrowserNewFolderHeader, Command = NewFolderCommand },
                 new MenuItem { Header = Resources.UiSelectAllHeader, Command = new ProtectedCommand(OnSelectAllCommand, canExecuteCommand: !CurrentState.IsEmpty) }
             };
 
