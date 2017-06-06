@@ -17,6 +17,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System;
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
@@ -122,6 +123,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 _dataGrid.SelectedItems.Clear();
                 row.IsSelected = true;
             });
+        }
+
+        internal void SelectAllRows()
+        {
+            _dataGrid.SelectAll();
         }
     }
 }

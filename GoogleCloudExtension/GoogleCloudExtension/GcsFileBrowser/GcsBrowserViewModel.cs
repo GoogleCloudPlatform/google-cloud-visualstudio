@@ -189,7 +189,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
         {
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = Resources.GcsFileBrowserNewFolderHeader, Command=new ProtectedCommand(OnNewFolderCommand) }
+                new MenuItem { Header = Resources.GcsFileBrowserNewFolderHeader, Command = new ProtectedCommand(OnNewFolderCommand) },
+                new MenuItem { Header = Resources.UiSelectAllHeader, Command = new ProtectedCommand(OnSelectAllCommand, canExecuteCommand: !CurrentState.IsEmpty) }
             };
 
             return new ContextMenu { ItemsSource = menuItems };
@@ -227,6 +228,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
         }
 
         #region Command handlers
+
+        private void OnSelectAllCommand()
+        {
+            _owner.SelectAllRows();
+        }
 
         private async void OnRenameDirectoryCommand()
         {

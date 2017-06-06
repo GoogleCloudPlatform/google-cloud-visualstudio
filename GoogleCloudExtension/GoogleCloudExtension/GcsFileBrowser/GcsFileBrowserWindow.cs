@@ -39,6 +39,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         private GcsBrowserViewModel ViewModel { get; }
 
+        private GcsFileBrowserWindowControl BrowserContent => (GcsFileBrowserWindowControl)Content;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="GcsFileBrowserWindow"/> class.
         /// </summary>
@@ -49,7 +51,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             // This is the user control hosted by the tool window; Note that, even if this class implements IDisposable,
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
-            this.Content = new GcsFileBrowserWindowControl { DataContext = ViewModel };
+            Content = new GcsFileBrowserWindowControl { DataContext = ViewModel };
         }
 
         public static void BrowseBucket(Bucket bucket)
@@ -85,6 +87,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
             IVsWindowFrame windowFrame = (IVsWindowFrame)window.Frame;
             windowFrame.Show();
+        }
+
+        internal void SelectAllRows()
+        {
+            BrowserContent.SelectAllRows();
         }
 
         private void UpdateBucket(Bucket bucket)

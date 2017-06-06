@@ -2363,4 +2363,8 @@
     <value>Refresh</value>
     <comment>Caption for refresh buttons.</comment>
   </data>
+  <data name="UiSelectAllHeader" xml:space="preserve">
+    <value>Select all</value>
+    <comment>Header to be used in menus for select all operations.</comment>
+  </data>
 </root>
