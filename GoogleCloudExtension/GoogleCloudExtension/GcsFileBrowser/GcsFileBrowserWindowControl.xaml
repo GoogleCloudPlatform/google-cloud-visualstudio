@@ -99,6 +99,7 @@
         <!-- The main area for the data. -->
         <DataGrid Grid.Row="2"
                   Grid.ColumnSpan="2"
+                  x:Name="_dataGrid"
                   IsReadOnly="True"
                   AutoGenerateColumns="False"
                   HeadersVisibility="Column"
@@ -112,6 +113,7 @@
             <DataGrid.RowStyle>
                 <Style TargetType="{x:Type DataGridRow}">
                     <EventSetter Event="DataGridRow.ContextMenuOpening" Handler="DataGrid_RowContextMenuOpening" />
+                    <EventSetter Event="DataGridRow.PreviewMouseRightButtonDown" Handler="DataGrid_RowRightClickPreview" />
                 </Style>
             </DataGrid.RowStyle>            
             

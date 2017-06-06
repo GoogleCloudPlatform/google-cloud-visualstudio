@@ -16,6 +16,7 @@ using GoogleCloudExtension.Utils;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
@@ -98,6 +99,28 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 e.Handled = true;
                 fe.ContextMenu = ViewModel.GetItemsContextMenu();
                 fe.ContextMenu.IsOpen = true;
+            });
+        }
+
+        private void DataGrid_RowRightClickPreview(object sender, MouseEventArgs e)
+        {
+            ErrorHandlerUtils.HandleExceptions(() =>
+            {
+                var row = sender as DataGridRow;
+                if (row == null)
+                {
+                    return;
+                }
+
+                // If the row is already selected nothing to do.
+                if (row.IsSelected)
+                {
+                    return;
+                }
+
+                // Ensure that only this item is selected.
+                _dataGrid.SelectedItems.Clear();
+                row.IsSelected = true;
             });
         }
     }
