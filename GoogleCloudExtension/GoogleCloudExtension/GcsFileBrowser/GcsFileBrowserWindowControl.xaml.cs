@@ -66,5 +66,15 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 ViewModel.InvalidateSelectedItems(self.SelectedItems.Cast<GcsRow>());
             });
         }
+
+        private void DataGrid_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            var self = sender;
+        }
+
+        private void DataGrid_RowContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            var self = sender;
+        }
     }
 }

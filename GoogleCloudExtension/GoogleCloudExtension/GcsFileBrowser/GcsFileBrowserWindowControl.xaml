@@ -104,10 +104,17 @@
                   HeadersVisibility="Column"
                   utils:DataGridBehaviors.HasCustomSort="True"
                   ContextMenu="{Binding ContextMenu}"
+                  ContextMenuOpening="DataGrid_ContextMenuOpening"
                   ItemsSource="{Binding Source={StaticResource cvs}}"
                   utils:ControlBehaviors.DoubleClickCommand="{Binding DoubleClickCommand}"
                   utils:ControlBehaviors.DoubleClickCommandParameter="{Binding SelectedItem, RelativeSource={RelativeSource Self}}"
                   SelectionChanged="OnDataGridSelectionChanged">
+            <DataGrid.RowStyle>
+                <Style TargetType="{x:Type DataGridRow}">
+                    <EventSetter Event="DataGridRow.ContextMenuOpening" Handler="DataGrid_RowContextMenuOpening" />
+                </Style>
+            </DataGrid.RowStyle>            
+            
             <DataGrid.Columns>
                 <DataGridTemplateColumn Header="{x:Static ext:Resources.GcsFileBrowserNameHeader}"
                                         SortMemberPath="LeafName"
