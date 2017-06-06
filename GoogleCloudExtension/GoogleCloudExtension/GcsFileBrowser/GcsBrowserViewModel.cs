@@ -175,7 +175,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
                     progressMessage: Resources.GcsFileBrowserUploadingOverallProgressMessage,
                     operations: uploadOperationsQueue.Operations,
                     cancellationTokenSource: cancellationTokenSource);
-
             }
             catch (IOException ex)
             {

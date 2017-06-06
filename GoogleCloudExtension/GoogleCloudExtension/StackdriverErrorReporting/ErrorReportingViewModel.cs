@@ -39,8 +39,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private bool _isLoadingNextPage;
         private bool _showException;
         private string _exceptionString;
-        private ObservableCollection<ErrorGroupItem> _groupStatsCollection;
-        private Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
+        private readonly ObservableCollection<ErrorGroupItem> _groupStatsCollection;
+        private readonly Lazy<List<TimeRangeItem>> _timeRangeItemList = new Lazy<List<TimeRangeItem>>(TimeRangeItem.CreateTimeRanges);
         private TimeRangeItem _selectedTimeRange;
 
         /// <summary>
