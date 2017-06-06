@@ -224,8 +224,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 {
                     menuItems.Add(new MenuItem
                     {
-                        Header = Resources.GcsFileBrowserRenameDirectoryHeader,
-                        Command = new ProtectedCommand(OnRenameDirectoryCommand)
+                        Header = Resources.GcsFileBrowserRenameFolderHeader,
+                        Command = new ProtectedCommand(OnRenameFolderCommand)
                     });
                 }
             }
@@ -240,9 +240,13 @@ namespace GoogleCloudExtension.GcsFileBrowser
             _owner.SelectAllRows();
         }
 
-        private async void OnRenameDirectoryCommand()
+        private async void OnRenameFolderCommand()
         {
-            var newLeafName = NamePromptWindow.PromptUser(SelectedItem.LeafName);
+            var newLeafName = NamePromptWindow.PromptUser(new NamePromptWindow.Options
+            {
+                InitialName = SelectedItem.LeafName,
+                Title = Resources.GcsFileBrowserRenameFolderTitle
+            });
             if (newLeafName == null)
             {
                 return;
@@ -284,7 +288,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         private async void OnRenameFileCommand()
         {
-            var choosenName = NamePromptWindow.PromptUser(SelectedItem.LeafName);
+            var choosenName = NamePromptWindow.PromptUser(new NamePromptWindow.Options
+            {
+                InitialName = SelectedItem.LeafName,
+                Title = Resources.GcsFileBrowserRenameFileTitle
+            });
             if (choosenName == null)
             {
                 return;
@@ -424,7 +432,10 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         private async void OnNewFolderCommand()
         {
-            var name = NamePromptWindow.PromptUser();
+            var name = NamePromptWindow.PromptUser(new NamePromptWindow.Options
+            {
+                Title = Resources.GcsFileBrowserNewFolderTitle
+            });
             if (name == null)
             {
                 return;

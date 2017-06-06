@@ -2335,8 +2335,8 @@
     <value>Renaming file.</value>
     <comment>Message shown while the rename operation is in flight.</comment>
   </data>
-  <data name="GcsFileBrowserRenameDirectoryHeader" xml:space="preserve">
-    <value>Rename directory...</value>
+  <data name="GcsFileBrowserRenameFolderHeader" xml:space="preserve">
+    <value>Rename folder...</value>
     <comment>Header used for the rename directory menu option.</comment>
   </data>
   <data name="GcsFileBrowserRenamingFilesCaption" xml:space="preserve">
@@ -2367,6 +2367,10 @@
     <value>Select all</value>
     <comment>Header to be used in menus for select all operations.</comment>
   </data>
+  <data name="GcsFileBrowserNewFolderTitle" xml:space="preserve">
+    <value>New folder</value>
+    <comment>Title for the new folder dialog.</comment>
+  </data>
   <data name="GcsFileBrowserNewFolderTooltip" xml:space="preserve">
     <value>New folder</value>
     <comment>Tooltip to be shown in the new folder button.</comment>
@@ -2374,5 +2378,13 @@
   <data name="GcsFileBrowserRefreshFolderTooltip" xml:space="preserve">
     <value>Refresh folder</value>
     <comment>Tooltip to be shown in the refresh folder button.</comment>
+  </data>
+  <data name="GcsFileBrowserRenameFileTitle" xml:space="preserve">
+    <value>Rename file</value>
+    <comment>Title for the rename file dialog.</comment>
+  </data>
+  <data name="GcsFileBrowserRenameFolderTitle" xml:space="preserve">
+    <value>Rename folder</value>
+    <comment>Title for the rename folder dialog.</comment>
   </data>
 </root>

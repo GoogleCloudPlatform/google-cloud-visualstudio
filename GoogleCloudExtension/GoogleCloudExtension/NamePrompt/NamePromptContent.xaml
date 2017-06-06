@@ -32,7 +32,7 @@
         </theming:CommonDialogWindowBaseContent.Buttons>
         
         <StackPanel>
-            <Label Content="{x:Static ext:Resources.EnterNameDialogNameMessage}"
+            <Label Content="{Binding Message}"
                    Target="{Binding ElementName=_nameBox}"
                    Style="{StaticResource CommonLabelStyle}" />
             <TextBox x:Name="_nameBox"
