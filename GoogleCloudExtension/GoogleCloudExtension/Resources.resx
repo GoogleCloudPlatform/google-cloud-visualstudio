@@ -2375,10 +2375,6 @@
     <value>New folder</value>
     <comment>Tooltip to be shown in the new folder button.</comment>
   </data>
-  <data name="GcsFileBrowserRefreshFolderTooltip" xml:space="preserve">
-    <value>Refresh folder</value>
-    <comment>Tooltip to be shown in the refresh folder button.</comment>
-  </data>
   <data name="GcsFileBrowserRenameFileTitle" xml:space="preserve">
     <value>Rename file</value>
     <comment>Title for the rename file dialog.</comment>

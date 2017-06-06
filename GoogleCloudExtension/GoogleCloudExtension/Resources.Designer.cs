@@ -2842,15 +2842,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Refresh folder.
-        /// </summary>
-        public static string GcsFileBrowserRefreshFolderTooltip {
-            get {
-                return ResourceManager.GetString("GcsFileBrowserRefreshFolderTooltip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Failed to rename {0}..
         /// </summary>
         public static string GcsFileBrowserRenameFailedMessage {
