@@ -54,6 +54,8 @@ namespace GoogleCloudExtension.GcsUtils
         /// </summary>
         public Action<TOperation, CancellationToken> StartOperationAction { get; set; }
 
+        #region IOperationQueueEntry implementation.
+
         /// <summary>
         /// The callback for the operation.
         /// </summary>
@@ -69,5 +71,7 @@ namespace GoogleCloudExtension.GcsUtils
             StartOperationAction(Operation, cancellationToken);
             return Operation.AwaitOperationAsync();
         }
+
+        #endregion
     }
 }
