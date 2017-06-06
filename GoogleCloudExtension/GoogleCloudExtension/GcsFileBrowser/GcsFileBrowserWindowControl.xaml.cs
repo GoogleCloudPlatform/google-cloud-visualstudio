@@ -69,12 +69,36 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         private void DataGrid_ContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            var self = sender;
+            ErrorHandlerUtils.HandleExceptions(() =>
+            {
+                var fe = sender as FrameworkElement;
+                if (fe == null)
+                {
+                    return;
+                }
+
+                // Stop showing whatever context menu is set, show this context menu.
+                e.Handled = true;
+                fe.ContextMenu = ViewModel.GetGridContextMenu();
+                fe.ContextMenu.IsOpen = true;
+            });
         }
 
         private void DataGrid_RowContextMenuOpening(object sender, ContextMenuEventArgs e)
         {
-            var self = sender;
+            ErrorHandlerUtils.HandleExceptions(() =>
+            {
+                var fe = sender as FrameworkElement;
+                if (fe == null)
+                {
+                    return;
+                }
+
+                // Stop showing whatever ContextMenu is set, show this context menu.
+                e.Handled = true;
+                fe.ContextMenu = ViewModel.GetItemsContextMenu();
+                fe.ContextMenu.IsOpen = true;
+            });
         }
     }
 }

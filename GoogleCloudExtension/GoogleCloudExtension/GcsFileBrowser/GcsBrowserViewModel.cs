@@ -48,7 +48,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
         private FileOperationsEngine _fileOperationsEngine;
         private bool _isLoading;
         private IList<GcsRow> _selectedItems;
-        private ContextMenu _contextMenu;
         private GcsBrowserState _currentState;
 
         /// <summary>
@@ -102,15 +101,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 SetValueAndRaise(ref _selectedItems, value);
                 InvalidateSelectedItem();
             }
-        }
-
-        /// <summary>
-        /// The context menu to show.
-        /// </summary>
-        public ContextMenu ContextMenu
-        {
-            get { return _contextMenu; }
-            private set { SetValueAndRaise(ref _contextMenu, value); }
         }
 
         /// <summary>
@@ -190,24 +180,30 @@ namespace GoogleCloudExtension.GcsFileBrowser
         /// <summary>
         /// Method called whenever the selection changes to update the view model.
         /// </summary>
-        public void InvalidateSelectedItems(IEnumerable<GcsRow> selectedRows)
+        internal void InvalidateSelectedItems(IEnumerable<GcsRow> selectedRows)
         {
             SelectedItems = selectedRows.ToList();
-
-            UpdateContextMenu();
         }
 
-        private void UpdateContextMenu()
+        internal ContextMenu GetGridContextMenu()
         {
-            var hasItems = SelectedItems != null && SelectedItems.Count > 0;
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = Resources.GcsFileBrowserNewFolderHeader, Command=new ProtectedCommand(OnNewFolderCommand) },
-                new MenuItem { Header = Resources.GcsFileBrowserDonwloadHeader, Command=new ProtectedCommand(OnDownloadCommand, canExecuteCommand: hasItems) },
-                new MenuItem { Header = Resources.UiDeleteButtonCaption, Command = new ProtectedCommand(OnDeleteCommand, canExecuteCommand: hasItems) },
+                new MenuItem { Header = Resources.GcsFileBrowserNewFolderHeader, Command=new ProtectedCommand(OnNewFolderCommand) }
             };
 
-            if (SelectedItems != null && SelectedItems.Count == 1)
+            return new ContextMenu { ItemsSource = menuItems };
+        }
+
+        internal ContextMenu GetItemsContextMenu()
+        {
+            var menuItems = new List<MenuItem>
+            {
+                new MenuItem { Header = Resources.GcsFileBrowserDonwloadHeader, Command=new ProtectedCommand(OnDownloadCommand) },
+                new MenuItem { Header = Resources.UiDeleteButtonCaption, Command = new ProtectedCommand(OnDeleteCommand) },
+            };
+
+            if (SelectedItems.Count == 1)
             {
                 if (SelectedItem.IsFile)
                 {
@@ -227,7 +223,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 }
             }
 
-            ContextMenu = new ContextMenu { ItemsSource = menuItems };
+            return new ContextMenu { ItemsSource = menuItems };
         }
 
         #region Command handlers
