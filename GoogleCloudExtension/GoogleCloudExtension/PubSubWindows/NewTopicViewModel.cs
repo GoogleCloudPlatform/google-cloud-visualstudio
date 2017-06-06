@@ -44,7 +44,7 @@ namespace GoogleCloudExtension.PubSubWindows
             {
                 IEnumerable<StringValidationResult> validations =
                     PubSubNameValidationRule.Validate(value, Resources.NewTopicWindowNameFieldName);
-                SetAndRaiseWithValidation(out _topicName, value, validations);
+                SetAndRaiseWithValidation(ref _topicName, value, validations);
             }
         }
 
