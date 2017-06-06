@@ -2367,4 +2367,12 @@
     <value>Select all</value>
     <comment>Header to be used in menus for select all operations.</comment>
   </data>
+  <data name="GcsFileBrowserNewFolderTooltip" xml:space="preserve">
+    <value>New folder</value>
+    <comment>Tooltip to be shown in the new folder button.</comment>
+  </data>
+  <data name="GcsFileBrowserRefreshFolderTooltip" xml:space="preserve">
+    <value>Refresh folder</value>
+    <comment>Tooltip to be shown in the refresh folder button.</comment>
+  </data>
 </root>

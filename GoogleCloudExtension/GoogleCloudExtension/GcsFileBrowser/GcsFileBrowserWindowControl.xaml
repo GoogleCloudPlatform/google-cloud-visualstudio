@@ -93,6 +93,10 @@
             <!-- The create new folder button. -->
             <Button Command="{Binding NewFolderCommand}"
                     Style="{StaticResource CommonButtonDynamicStyle}">
+                <Button.ToolTip>
+                    <ToolTip Content="{x:Static ext:Resources.GcsFileBrowserNewFolderTooltip}"
+                             Style="{StaticResource CommonTooltipStyle}" />
+                </Button.ToolTip>
                 <Image Source="{mb:ImageResource GcsFileBrowser/Resources/create_new_folder.png}" />
             </Button>
             
@@ -100,6 +104,10 @@
             <Button Command="{Binding RefreshCommand}"
                     Margin="10,0,0,0"
                     Style="{StaticResource CommonButtonDynamicStyle}">
+                <Button.ToolTip>
+                    <ToolTip Content="{x:Static ext:Resources.CloudExplorerRefreshButtonToolTip}"
+                             Style="{StaticResource CommonTooltipStyle}" />
+                </Button.ToolTip>
                 <Image Source="{mb:ImageResource GcsFileBrowser/Resources/refresh.png}" />
             </Button>
         </StackPanel>

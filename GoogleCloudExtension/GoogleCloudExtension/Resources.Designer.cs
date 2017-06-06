@@ -2815,11 +2815,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New folder.
+        /// </summary>
+        public static string GcsFileBrowserNewFolderTooltip {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserNewFolderTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There are no files in this directory, you can upload files by selecting them in Windows Explorer and dragging them here..
         /// </summary>
         public static string GcsFileBrowserNoFilesMessage {
             get {
                 return ResourceManager.GetString("GcsFileBrowserNoFilesMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh folder.
+        /// </summary>
+        public static string GcsFileBrowserRefreshFolderTooltip {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRefreshFolderTooltip", resourceCulture);
             }
         }
         
