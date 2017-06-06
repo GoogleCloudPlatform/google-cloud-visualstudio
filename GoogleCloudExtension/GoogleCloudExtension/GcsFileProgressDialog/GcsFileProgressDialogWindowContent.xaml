@@ -49,12 +49,25 @@
                          IsIndeterminate="{Binding OperationsPending}"
                          Style="{StaticResource CommonProgressBarStyle}"/>
 
+
             <TextBlock Grid.Row="2">
                 <Hyperlink Command="{Binding ExpandCollapseDetailsCommand}"
                            Style="{StaticResource CommonHyperlinkStyle}">
                     <TextBlock Text="{Binding ExpandCollapseMessage}"/>
+                    
+                    <!-- Show the arrow down to expand the details. -->
+                    <TextBlock Text="&#xE0A0;"
+                               FontFamily="Segoe UI Symbol"
+                               Visibility="{Binding DetailsExpanded, Converter={utils:VisibilityConverter}}" />
+                    
+                    <!-- Show the arrow up to collapse the details. -->
+                    <TextBlock Text="&#xE0A1;"
+                               FontFamily="Segoe UI Symbol"
+                               Visibility="{Binding DetailsExpanded, Converter={utils:VisibilityConverter IsNegated=True}}" />
                 </Hyperlink>
             </TextBlock>
+
+           
 
             <!-- Details for the copy operation. -->
             <StackPanel Grid.Row="3"
