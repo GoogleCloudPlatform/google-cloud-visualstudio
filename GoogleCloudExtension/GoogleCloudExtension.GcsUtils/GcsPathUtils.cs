@@ -68,10 +68,5 @@ namespace GoogleCloudExtension.GcsUtils
             }
             return name.Substring(0, name.Length - 1).Split('/');
         }
-
-        public static string GetParentDir(string name)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

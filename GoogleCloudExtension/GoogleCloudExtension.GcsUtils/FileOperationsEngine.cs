@@ -176,7 +176,7 @@ namespace GoogleCloudExtension.GcsUtils
         /// Creates the <seealso cref="GcsFileTransferOperation"/> necessary to upload all of the sources from the local
         /// file system to GCS. The sources can be files or directories.
         /// </summary>
-        static private IList<GcsFileTransferOperation> CreateUploadOperations(
+        private static IList<GcsFileTransferOperation> CreateUploadOperations(
             IEnumerable<string> paths,
             string bucket,
             string bucketPath)
@@ -218,7 +218,7 @@ namespace GoogleCloudExtension.GcsUtils
         /// <param name="sourceDir">The local dir to process.</param>
         /// <param name="bucket">The name of the bucket.</param>
         /// <param name="baseGcsPath">The base gcs path where to copy the files.</param>
-        static private IEnumerable<GcsFileTransferOperation> CreateUploadOperationsForDirectory(
+        private static IEnumerable<GcsFileTransferOperation> CreateUploadOperationsForDirectory(
             string sourceDir,
             string bucket,
             string baseGcsPath)
