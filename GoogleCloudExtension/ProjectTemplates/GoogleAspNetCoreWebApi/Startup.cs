@@ -71,9 +71,9 @@ namespace $safeprojectname$
         private string GetServiceName()
         {
             var instance = Google.Api.Gax.Platform.Instance();
+            // An identifier of the service. See https://cloud.google.com/error-reporting/docs/formatting-error-messages#FIELDS.service.
             var serviceName =
                 instance?.GaeDetails?.ServiceId ??
-                // An identifier of the service. See https://cloud.google.com/error-reporting/docs/formatting-error-messages#FIELDS.service.
                 Configuration["Google:ErrorReporting:ServiceName"];
             if (string.IsNullOrEmpty(serviceName))
             {
@@ -88,9 +88,9 @@ namespace $safeprojectname$
         private string GetVersion()
         {
             var instance = Google.Api.Gax.Platform.Instance();
+            // The source version of the service. See https://cloud.google.com/error-reporting/docs/formatting-error-messages#FIELDS.version.
             var versionId =
                 instance?.GaeDetails?.VersionId ??
-                // The source version of the service.See https://cloud.google.com/error-reporting/docs/formatting-error-messages#FIELDS.version.
                 Configuration["Google:ErrorReporting:Version"];
             if (string.IsNullOrEmpty(versionId))
             {
