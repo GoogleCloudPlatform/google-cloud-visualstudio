@@ -97,7 +97,7 @@
         </Button>
 
         <!-- The main area for the data. -->
-        <DataGrid Grid.Row="2"
+        <DataGrid Grid.Row="1"
                   Grid.ColumnSpan="2"
                   IsReadOnly="True"
                   AutoGenerateColumns="False"
@@ -178,7 +178,7 @@
         <!-- The message area -->
 
         <!-- Empty directory message -->
-        <TextBlock Grid.Row="2"
+        <TextBlock Grid.Row="1"
                    Grid.ColumnSpan="2"
                    HorizontalAlignment="Center"
                    VerticalAlignment="Center"
@@ -187,7 +187,7 @@
                    Style="{StaticResource CommonTextStyle}"/>
 
         <!-- Error message. -->
-        <StackPanel Grid.Row="2"
+        <StackPanel Grid.Row="1"
                     Grid.ColumnSpan="2"
                     HorizontalAlignment="Center"
                     Visibility="{Binding CurrentState.IsError, Converter={StaticResource commonVisibilityConverter}}"
@@ -198,8 +198,7 @@
                        Margin="0,0,5,0"
                        Width="24px"
                        Height="24px" />
-                <TextBlock Grid.Column="1"
-                           HorizontalAlignment="Center"
+                <TextBlock HorizontalAlignment="Center"
                            VerticalAlignment="Center"
                            Text="{Binding CurrentState.ErrorMessage}" 
                            Style="{StaticResource CommonTextStyle}" />
