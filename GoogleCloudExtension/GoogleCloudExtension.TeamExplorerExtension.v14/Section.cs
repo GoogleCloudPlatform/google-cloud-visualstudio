@@ -39,43 +39,27 @@ namespace GoogleCloudExtension.TeamExplorerExtension
         private object _sectionContent;
         private string _activeRepo;
 
-        /// <summary>
-        /// <seealso cref="ImportingConstructorAttribute"/> tells the MEF framework to 
-        /// use this as default constructor.
-        /// </summary>
-        /// <param name="sectionView">
-        /// An <seealso cref="ISectionView"/> interface.
-        /// This asks MEF to create an object of ISectionView type and  use it to 
-        /// create an instance of Section class.
-        /// </param>
-        [ImportingConstructor]
-        public Section(ISectionView sectionView)
-        {
-            SectionContent = sectionView.ThrowIfNull(nameof(sectionView));
-            _viewModel = sectionView.ViewModel.ThrowIfNull(nameof(sectionView.ViewModel));
-            Title = sectionView.Title;
-        }
-
         #region implement interface ITeamExplorerSection
 
-        public void Initialize(object sender, SectionInitializeEventArgs e)
+        public object SectionContent
         {
-            Debug.WriteLine($"CsrTeamExplorerSection.Initialize");
-            _serviceProvider = e.ServiceProvider;
-            _teamExploerServices = new TeamExplorerUtils(_serviceProvider);
-            _viewModel.Initialize(_teamExploerServices);
+            get
+            {
+                // When this get_SectionContent is called, Team Explorer is trying to refresh the section content.
+                // This is the chance to update the section view with new active repo.
+                Debug.WriteLine($"CsrTeamExplorerSection.SectionContent");
+                string newActive = _teamExploerServices?.GetActiveRepository();
+                if (String.Compare(newActive, _activeRepo, StringComparison.OrdinalIgnoreCase) != 0)
+                {
+                    _viewModel.UpdateActiveRepo(newActive);
+                    _activeRepo = newActive;
+                }
+                return _sectionContent;
+            }
+            private set { SetValueAndRaise(out _sectionContent, value); }
         }
 
-        public void Cancel()
-        {
-            Debug.WriteLine($"CsrTeamExplorerSection.Cancel");
-        }
-
-        public object GetExtensibilityService(Type serviceType)
-        {
-            Debug.WriteLine($"CsrTeamExplorerSection.GetExtensibilityService");
-            return null;
-        }
+        public string Title { get; }
 
         public bool IsBusy
         {
@@ -119,9 +103,49 @@ namespace GoogleCloudExtension.TeamExplorerExtension
             }
         }
 
+        #endregion
+
+        /// <summary>
+        /// <seealso cref="ImportingConstructorAttribute"/> tells the MEF framework to 
+        /// use this as default constructor.
+        /// </summary>
+        /// <param name="sectionView">
+        /// An <seealso cref="ISectionView"/> interface.
+        /// This asks MEF to create an object of ISectionView type and  use it to 
+        /// create an instance of Section class.
+        /// </param>
+        [ImportingConstructor]
+        public Section(ISectionView sectionView)
+        {
+            SectionContent = sectionView.ThrowIfNull(nameof(sectionView));
+            _viewModel = sectionView.ViewModel.ThrowIfNull(nameof(sectionView.ViewModel));
+            Title = sectionView.Title;
+        }
+
+        #region implement interface ITeamExplorerSection
+
         public void Loaded(object sender, SectionLoadedEventArgs e)
         {
             Debug.WriteLine($"CsrTeamExplorerSection.Loaded {sender.GetType().Name} {sender.ToString()}, {e}");
+        }
+
+        public void Initialize(object sender, SectionInitializeEventArgs e)
+        {
+            Debug.WriteLine($"CsrTeamExplorerSection.Initialize");
+            _serviceProvider = e.ServiceProvider;
+            _teamExploerServices = new TeamExplorerUtils(_serviceProvider);
+            _viewModel.Initialize(_teamExploerServices);
+        }
+
+        public void Cancel()
+        {
+            Debug.WriteLine($"CsrTeamExplorerSection.Cancel");
+        }
+
+        public object GetExtensibilityService(Type serviceType)
+        {
+            Debug.WriteLine($"CsrTeamExplorerSection.GetExtensibilityService");
+            return null;
         }
 
         public void Refresh()
@@ -134,26 +158,6 @@ namespace GoogleCloudExtension.TeamExplorerExtension
         {
             Debug.WriteLine($"CsrTeamExplorerSection.SaveContext {sender.GetType().Name} {sender.ToString()}, {e}");
         }
-
-        public object SectionContent
-        {
-            get
-            {
-                // When this get_SectionContent is called, Team Explorer is trying to refresh the section content.
-                // This is the chance to update the section view with new active repo.
-                Debug.WriteLine($"CsrTeamExplorerSection.SectionContent");
-                string newActive = _teamExploerServices?.GetActiveRepository();
-                if (String.Compare(newActive, _activeRepo, StringComparison.OrdinalIgnoreCase) != 0)
-                {
-                    _viewModel.UpdateActiveRepo(newActive);
-                    _activeRepo = newActive;
-                }
-                return _sectionContent;
-            }
-            private set { SetValueAndRaise(out _sectionContent, value); }
-        }
-
-        public string Title { get; }
 
         public void Dispose()
         { }
