@@ -16,6 +16,8 @@ using GoogleCloudExtension.Utils;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System;
 
 namespace GoogleCloudExtension.GcsFileBrowser
 {
@@ -65,6 +67,67 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 var self = (DataGrid)e.Source;
                 ViewModel.InvalidateSelectedItems(self.SelectedItems.Cast<GcsRow>());
             });
+        }
+
+        private void DataGrid_ContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            ErrorHandlerUtils.HandleExceptions(() =>
+            {
+                var fe = sender as FrameworkElement;
+                if (fe == null)
+                {
+                    return;
+                }
+
+                // Stop showing whatever context menu is set, show this context menu.
+                e.Handled = true;
+                fe.ContextMenu = ViewModel.GetGridContextMenu();
+                fe.ContextMenu.IsOpen = true;
+            });
+        }
+
+        private void DataGrid_RowContextMenuOpening(object sender, ContextMenuEventArgs e)
+        {
+            ErrorHandlerUtils.HandleExceptions(() =>
+            {
+                var fe = sender as FrameworkElement;
+                if (fe == null)
+                {
+                    return;
+                }
+
+                // Stop showing whatever ContextMenu is set, show this context menu.
+                e.Handled = true;
+                fe.ContextMenu = ViewModel.GetItemsContextMenu();
+                fe.ContextMenu.IsOpen = true;
+            });
+        }
+
+        private void DataGrid_RowRightClickPreview(object sender, MouseEventArgs e)
+        {
+            ErrorHandlerUtils.HandleExceptions(() =>
+            {
+                var row = sender as DataGridRow;
+                if (row == null)
+                {
+                    return;
+                }
+
+                // If the row is already selected nothing to do.
+                if (row.IsSelected)
+                {
+                    return;
+                }
+
+                // Ensure that only this item is selected.
+                _dataGrid.SelectedItems.Clear();
+                row.IsSelected = true;
+            });
+        }
+
+        internal void SelectAllRows()
+        {
+            _dataGrid.SelectAll();
         }
     }
 }

@@ -5011,6 +5011,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Select all.
+        /// </summary>
+        public static string UiSelectAllHeader {
+            get {
+                return ResourceManager.GetString("UiSelectAllHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Skip file.
         /// </summary>
         public static string UiSkipFileButtonCaption {
