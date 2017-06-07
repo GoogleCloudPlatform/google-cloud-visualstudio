@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Team;
+using GoogleCloudExtension.TeamExplorerExtension;
 using GoogleCloudExtension.Utils;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
@@ -31,6 +31,11 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// Implement <seealso cref="ISectionView.ViewModel"/>
         /// </summary>
         public ISectionViewModel ViewModel { get; }
+
+        /// <summary>
+        /// Implement <seealso cref="ISectionView.Title"/>
+        /// </summary>
+        public string Title { get; } = GoogleCloudExtension.Resources.CsrConnectSectionTitle;
 
         /// <summary>
         /// Add <seealso cref="ImportingConstructorAttribute"/>.

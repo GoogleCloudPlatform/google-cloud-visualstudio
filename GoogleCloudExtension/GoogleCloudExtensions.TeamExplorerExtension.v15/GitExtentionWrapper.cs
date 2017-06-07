@@ -16,12 +16,19 @@ using System;
 using System.Linq;
 using static System.Diagnostics.Debug;
 
-namespace GoogleCloudExtension.Team
+namespace GoogleCloudExtension.TeamExplorerExtension
 {
     /// <summary>
     /// A wrapper to Microsoft.TeamFoundation.Git.Provider.dll.
+    /// The <seealso cref="TeamExplorerUtils"/> class depends on methods exposed by the dll. 
+    /// In VS2015, we can use the interface. 
     /// In VS2017, Microsoft.TeamFoundation.Git.Provider.dll is dependent on .Net 4.6.1
-    /// Before we upgrade all projects to .NET 4.6.1, VS2017 version won't have this feature.
+    /// Before we upgrade all projects to .NET 4.6.1, in VS2017 version, 
+    /// we won't be able to use the interface of Microsoft.TeamFoundation.Git.Provider.dll
+    /// 
+    /// We add this empty class here so that the <seealso cref="TeamExplorerUtils"/> class can compile
+    /// for both VS2015 and VS2017 versions. 
+    /// And once we upgrade to .NET 4.6.1, we'll be able to add real code to make VS2017 version work too.
     /// </summary>
     public class GitExtentionWrapper
     {

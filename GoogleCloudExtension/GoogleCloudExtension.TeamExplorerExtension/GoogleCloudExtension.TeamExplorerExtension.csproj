@@ -7,8 +7,8 @@
     <ProjectGuid>{6FAF35A5-0FF6-4F72-B8EE-02A948A6C563}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GoogleCloudExtension.Team</RootNamespace>
-    <AssemblyName>GoogleCloudExtension.Team</AssemblyName>
+    <RootNamespace>GoogleCloudExtension.TeamExplorerExtension</RootNamespace>
+    <AssemblyName>GoogleCloudExtension.TeamExplorerExtension</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

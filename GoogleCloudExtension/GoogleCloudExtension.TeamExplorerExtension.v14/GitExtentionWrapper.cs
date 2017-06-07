@@ -15,11 +15,10 @@
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.TeamFoundation.Git.Extensibility;
 using System;
+using System.Diagnostics;
 using System.Linq;
-using static System.Diagnostics.Debug;
 
-
-namespace GoogleCloudExtension.Team
+namespace GoogleCloudExtension.TeamExplorerExtension
 {
     /// <summary>
     /// A wrapper to Microsoft.TeamFoundation.Git.Provider.dll.
@@ -29,6 +28,8 @@ namespace GoogleCloudExtension.Team
     {
         private readonly IServiceProvider _serviceProvider;
 
+        private IGitExt GitExtention => _serviceProvider.GetService(typeof(IGitExt)) as IGitExt;
+
         public GitExtentionWrapper(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider.ThrowIfNull(nameof(serviceProvider));
@@ -37,13 +38,15 @@ namespace GoogleCloudExtension.Team
         /// <summary>
         /// Returns current active git repository local root path.
         /// </summary>
+        /// <returns>
+        /// Currently active repository local root that is set by Visual Studio.
+        /// Or null if there is no active repository.
+        /// </returns>
         public string GetActiveRepository()
         {
             IGitRepositoryInfo activeRepoInfo = GitExtention?.ActiveRepositories?.FirstOrDefault();
-            WriteLine($"GetActiveRepo {activeRepoInfo} {activeRepoInfo?.RepositoryPath} {activeRepoInfo?.CurrentBranch}");
+            Debug.WriteLine($"GetActiveRepo {activeRepoInfo} {activeRepoInfo?.RepositoryPath} {activeRepoInfo?.CurrentBranch}");
             return activeRepoInfo?.RepositoryPath;
         }
-
-        private IGitExt GitExtention => _serviceProvider.GetService(typeof(IGitExt)) as IGitExt;
     }
 }

@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Team;
+using GoogleCloudExtension.TeamExplorerExtension;
 using GoogleCloudExtension.Utils;
+using System.Diagnostics;
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
-using static System.Diagnostics.Debug;
 
 namespace GoogleCloudExtension.CloudSourceRepositories
 {
@@ -41,22 +41,21 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public CsrSectionControlViewModel()
         { }
 
-
         #region implement interface ISectionViewModel
 
         void ISectionViewModel.Refresh()
         {
-            WriteLine("CsrSectionControlViewModel.Refresh");
+            Debug.WriteLine("CsrSectionControlViewModel.Refresh");
         }
 
         void ISectionViewModel.Initialize(ITeamExplorerUtils teamExplorerService)
         {
-            WriteLine("CsrSectionControlViewModel.Initialize");
+            Debug.WriteLine("CsrSectionControlViewModel.Initialize");
         }
 
         void ISectionViewModel.UpdateActiveRepo(string newRepoLocalPath)
         {
-            WriteLine($"CsrSectionControlViewModel.UpdateActiveRepo {newRepoLocalPath}");
+            Debug.WriteLine($"CsrSectionControlViewModel.UpdateActiveRepo {newRepoLocalPath}");
         }
 
         #endregion

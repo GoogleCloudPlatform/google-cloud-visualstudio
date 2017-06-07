@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GoogleCloudExtension.Team
+namespace GoogleCloudExtension.TeamExplorerExtension
 {
     /// <summary>
     /// Define interfance for Team Explorer section view model.

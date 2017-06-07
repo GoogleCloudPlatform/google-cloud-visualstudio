@@ -14,10 +14,11 @@
 
 using System.Windows.Input;
 
-namespace GoogleCloudExtension.Team
+namespace GoogleCloudExtension.TeamExplorerExtension
 {
     /// <summary>
     /// Define interfaces for methods, properties that VS2015 and VS2017 team explorer exposes.
+    /// </summary>
     public interface ITeamExplorerUtils
     {
         /// <summary>

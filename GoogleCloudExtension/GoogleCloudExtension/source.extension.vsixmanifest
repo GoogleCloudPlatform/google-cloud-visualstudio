@@ -25,8 +25,8 @@
     <Asset Type="Microsoft.VisualStudio.VsPackage" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%;PkgdefProjectOutputGroup|" />
     <Asset Type="Microsoft.VisualStudio.ProjectTemplate" d:Source="File" Path="ProjectTemplates" />
     <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%" Path="|%CurrentProject%|" />
-    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%.Team.v15" Path="|GoogleCloudExtension.Team.v15|" />
-    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%.Team.v14" Path="|GoogleCloudExtension.Team.v14|" />
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%.TeamExplorerExtension.v14" Path="|GoogleCloudExtension.TeamExplorerExtension.v14|" />
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="%CurrentProject%.TeamExplorerExtension.v15" Path="|GoogleCloudExtension.TeamExplorerExtension.v15|" />
   </Assets>
   <Prerequisites>
     <Prerequisite Id="Microsoft.Net.Core.Component.SDK" Version="[15.0.26208.0,16.0)" DisplayName=".NET Core 1.0.1 development tools" />

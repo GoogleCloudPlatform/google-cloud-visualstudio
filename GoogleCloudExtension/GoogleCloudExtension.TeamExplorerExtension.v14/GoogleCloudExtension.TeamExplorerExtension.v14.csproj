@@ -7,8 +7,8 @@
     <ProjectGuid>{3FEBB10A-ADAF-4807-B741-030B1F722D35}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GoogleCloudExtension.Team.v14</RootNamespace>
-    <AssemblyName>GoogleCloudExtension.Team.v14</AssemblyName>
+    <RootNamespace>GoogleCloudExtension.TeamExplorerExtension</RootNamespace>
+    <AssemblyName>GoogleCloudExtension.TeamExplorerExtension.v14</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -70,9 +70,9 @@
     <None Include="Key.snk" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GoogleCloudExtension.Team\GoogleCloudExtension.Team.csproj">
+    <ProjectReference Include="..\GoogleCloudExtension.TeamExplorerExtension\GoogleCloudExtension.TeamExplorerExtension.csproj">
       <Project>{6faf35a5-0ff6-4f72-b8ee-02a948a6c563}</Project>
-      <Name>GoogleCloudExtension.Team</Name>
+      <Name>GoogleCloudExtension.TeamExplorerExtension</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.Utils\GoogleCloudExtension.Utils.csproj">
       <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>

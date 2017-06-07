@@ -7,7 +7,9 @@
              xmlns:tb="clr-namespace:GoogleCloudExtension.TitleBar"             
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{d:DesignInstance IsDesignTimeCreatable=False, Type=local:CsrSectionControlViewModel}" >             
+             d:DataContext="{d:DesignInstance IsDesignTimeCreatable=False, Type=local:CsrSectionControlViewModel}" >
 
-    <ContentControl Content="{Binding Content}" />
+    <UserControl.Content>
+        <Binding Path="Content"/>
+    </UserControl.Content>
 </UserControl>

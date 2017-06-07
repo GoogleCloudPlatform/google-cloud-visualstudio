@@ -17,17 +17,31 @@ using Microsoft.TeamFoundation.Controls;
 using System;
 using System.Windows.Input;
 
-namespace GoogleCloudExtension.Team
+namespace GoogleCloudExtension.TeamExplorerExtension
 {
     /// <summary>
     /// Implement interface <seealso cref="ITeamExplorerUtils"/>. 
-    /// These methods has dependencies on Microsoft.TeamFoundation.Controls etc.
-    /// This must be built for VS2015 and VS2017 respectively.
+    /// These methods has dependencies on Microsoft.TeamFoundation.Controls.dll.
+    /// VS2015 and VS2017 have different versions of Microsoft.TeamFoundation.Controls.dll.
+    /// This source code will be compiled into two separate assemblies. 
+    /// One is with VS2015 version of Microsoft.TeamFoundation.Controls.dll, 
+    /// The other one is with VS2017 version of Microsoft.TeamFoundation.Controls.dll.
     /// </summary>
     internal class TeamExplorerUtils : ITeamExplorerUtils
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly GitExtentionWrapper _gitExtension;
+
+        /// <summary>
+        /// Returns ITeamExplorer interface, return value can be null.
+        /// </summary>
+        private ITeamExplorer TeamExplorer => _serviceProvider.GetService(typeof(ITeamExplorer)) as ITeamExplorer;
+
+        /// <summary>
+        /// Returns ITeamExplorerNotificationManager interface, return value can be null.
+        /// </summary>
+        private ITeamExplorerNotificationManager NotificationManager =>
+            TeamExplorer as ITeamExplorerNotificationManager;
 
         /// <summary>
         /// Initializes an instance of class <seealso cref="ITeamExplorerUtils"/>
@@ -56,13 +70,5 @@ namespace GoogleCloudExtension.Team
                 default(Guid));
 
         #endregion
-
-        private ITeamExplorer TeamExplorer => GetService<ITeamExplorer>();
-
-        private ITeamExplorerNotificationManager NotificationManager => 
-            TeamExplorer as ITeamExplorerNotificationManager;
-
-        private TService GetService<TService>() where TService : class => 
-            _serviceProvider.GetService(typeof(TService)) as TService;
     }
 }

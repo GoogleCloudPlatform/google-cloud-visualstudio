@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace GoogleCloudExtension.Team
+namespace GoogleCloudExtension.TeamExplorerExtension
 {
     /// <summary>
     /// Define interface as Team Explorer connect panel section content.
@@ -24,5 +24,10 @@ namespace GoogleCloudExtension.Team
         /// Gets the view model object that controls the view.
         /// </summary>
         ISectionViewModel ViewModel { get; }
+
+        /// <summary>
+        /// Gets the title for the section.
+        /// </summary>
+        string Title { get; }
     }
 }

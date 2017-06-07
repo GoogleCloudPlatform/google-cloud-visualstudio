@@ -1045,25 +1045,23 @@
       <Project>{d94a10b2-5adc-4708-ae7b-49b70381ab91}</Project>
       <Name>GoogleCloudExtension.PowerShellUtils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GoogleCloudExtension.Team.v14\GoogleCloudExtension.Team.v14.csproj">
+    <ProjectReference Include="..\GoogleCloudExtension.TeamExplorerExtension.v14\GoogleCloudExtension.TeamExplorerExtension.v14.csproj">
       <Project>{3febb10a-adaf-4807-b741-030b1f722d35}</Project>
-      <Name>GoogleCloudExtension.Team.v14</Name>
+      <Name>GoogleCloudExtension.TeamExplorerExtension.v14</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>
-    <ProjectReference Include="..\GoogleCloudExtension.Team\GoogleCloudExtension.Team.csproj">
+    <ProjectReference Include="..\GoogleCloudExtension.TeamExplorerExtension\GoogleCloudExtension.TeamExplorerExtension.csproj">
       <Project>{6faf35a5-0ff6-4f72-b8ee-02a948a6c563}</Project>
-      <Name>GoogleCloudExtension.Team</Name>
-      <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-      <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
+      <Name>GoogleCloudExtension.TeamExplorerExtension</Name>
     </ProjectReference>
     <ProjectReference Include="..\GoogleCloudExtension.Utils\GoogleCloudExtension.Utils.csproj">
       <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>
       <Name>GoogleCloudExtension.Utils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\GoogleCloudExtensions.Team.v15\GoogleCloudExtension.Team.v15.csproj">
+    <ProjectReference Include="..\GoogleCloudExtensions.TeamExplorerExtension.v15\GoogleCloudExtension.TeamExplorerExtension.v15.csproj">
       <Project>{ce5a8fde-6b69-475f-8c2f-3c2af45bc6ef}</Project>
-      <Name>GoogleCloudExtension.Team.v15</Name>
+      <Name>GoogleCloudExtension.TeamExplorerExtension.v15</Name>
       <IncludeOutputGroupsInVSIX>BuiltProjectOutputGroup%3bBuiltProjectOutputGroupDependencies%3bGetCopyToOutputDirectoryItems%3bSatelliteDllsProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
       <IncludeOutputGroupsInVSIXLocalOnly>DebugSymbolsProjectOutputGroup%3b</IncludeOutputGroupsInVSIXLocalOnly>
     </ProjectReference>

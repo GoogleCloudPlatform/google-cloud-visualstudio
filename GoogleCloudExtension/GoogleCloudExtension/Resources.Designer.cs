@@ -2221,6 +2221,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Google Cloud Source Repositories.
+        /// </summary>
+        public static string CsrConnectSectionTitle {
+            get {
+                return ResourceManager.GetString("CsrConnectSectionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to 1 day.
         /// </summary>
         public static string ErrorReporting1DayButtonCaption {
