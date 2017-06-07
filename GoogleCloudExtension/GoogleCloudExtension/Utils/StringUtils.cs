@@ -14,6 +14,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -131,7 +132,7 @@ namespace GoogleCloudExtension.Utils
         /// return false if it is null.
         /// Empty string is valid so it returns true.
         /// </summary>
-        public static bool IsDigitsOnly(string text) => text == null ? false : text.All(char.IsDigit);
+        public static bool IsDigitsOnly(string text) => text == null ? false : text.All(Char.IsDigit);
 
         /// <summary>
         /// Gets the index of first non space character.
@@ -173,6 +174,24 @@ namespace GoogleCloudExtension.Utils
             }
 
             return -1;
+        }
+
+        /// <summary>
+        /// Adds a trailing slash if the directory is missing it.
+        /// </summary>
+        /// <param name="directoryString">The directory path string.</param>
+        /// <returns>The path to the directory with a trailing separator character.</returns>
+        public static string EnsureEndSeparator(string directoryString)
+        {
+            directoryString.ThrowIfNull(nameof(directoryString));
+            if (!directoryString.EndsWith(Path.DirectorySeparatorChar.ToString()) || !directoryString.EndsWith("/"))
+            {
+                return directoryString + Path.DirectorySeparatorChar;
+            }
+            else
+            {
+                return directoryString;
+            }
         }
     }
 }

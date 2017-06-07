@@ -1,30 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props"
+          Condition="Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <!-- This will make the tools use the v3 version of the .vsix format. Without this the extension won't load on VS 2017. -->
     <VsixType>v3</VsixType>
-  </PropertyGroup>
-  
-  <Import Project="..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.23-pre\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props"
-          Condition="Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.23-pre\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props') and '$(Platform)' != 'VS2017'" />
-  <PropertyGroup Condition="$(Platform) == 'VS2017'">
-    <VsSDKVersion>15.0</VsSDKVersion>
-  </PropertyGroup>
-  <PropertyGroup>
     <MinimumVisualStudioVersion>14.0</MinimumVisualStudioVersion>
+    <!--<MinimumVisualStudioVersion Condition="$(VisualStudioVersion) == '15.0'">15.0</MinimumVisualStudioVersion>-->
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
     <UseCodebase>true</UseCodebase>
-  </PropertyGroup>
-  <PropertyGroup>
     <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
     <AssemblyOriginatorKeyFile>Key.snk</AssemblyOriginatorKeyFile>
-  </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <SchemaVersion>2.0</SchemaVersion>
@@ -430,6 +417,9 @@
     <Compile Include="Utils\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="TargetOverrides.targets">
+      <SubType>Designer</SubType>
+    </None>
     <Resource Include="StackdriverErrorReporting\Resources\back_icon.png" />
     <Resource Include="StackdriverErrorReporting\Resources\back_icon_12.png" />
     <Resource Include="StackdriverErrorReporting\Resources\eReport_menu_icon.png" />
@@ -986,23 +976,9 @@
       <Project>{21501704-9d0c-442f-ad39-292b3da4bc57}</Project>
       <Name>GoogleCloudExtension.Utils</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ProjectTemplates\GoogleAspNetCoreMvcVs2017\GoogleAspNetCoreMvcVs2017.csproj">
-      <Project>{0da74332-2c0c-4e1d-8c56-b8deea9cc4cf}</Project>
-      <Name>GoogleAspNetCoreMvcVs2017</Name>
-      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-    </ProjectReference>
     <ProjectReference Include="..\ProjectTemplates\GoogleAspNetCoreMvc\GoogleAspNetCoreMvc.csproj">
       <Project>{0363CEB2-EAAA-4531-898D-DCD36F00A6FC}</Project>
       <Name>GoogleAspNetCoreMvc</Name>
-      <VSIXSubPath>ProjectTemplates</VSIXSubPath>
-      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-      <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
-    </ProjectReference>
-    <ProjectReference Include="..\ProjectTemplates\GoogleAspNetCoreWebApiVs2017\GoogleAspNetCoreWebApiVs2017.csproj">
-      <Project>{7ea11d3d-3163-40fd-86a6-8805092398a9}</Project>
-      <Name>GoogleAspNetCoreWebApiVs2017</Name>
       <VSIXSubPath>ProjectTemplates</VSIXSubPath>
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
       <IncludeOutputGroupsInVSIX>TemplateProjectOutputGroup%3b</IncludeOutputGroupsInVSIX>
@@ -1031,14 +1007,14 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
-
-  <Import Project="..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.23-pre\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets"
-          Condition="Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.23-pre\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets') and '$(Platform)' != 'VS2017'" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets'))" />
+    <Error Condition="!Exists('..\packages\MSBuilder.VsixInstaller.0.2.16\build\MSBuilder.VsixInstaller.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MSBuilder.VsixInstaller.0.2.16\build\MSBuilder.VsixInstaller.targets'))" />
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <Import Condition="Exists('..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets')" Project="..\packages\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.14.0.156\build\Microsoft.VisualStudio.Sdk.BuildTasks.14.0.targets" />
+  <Import Project="TargetOverrides.targets" />
 </Project>
