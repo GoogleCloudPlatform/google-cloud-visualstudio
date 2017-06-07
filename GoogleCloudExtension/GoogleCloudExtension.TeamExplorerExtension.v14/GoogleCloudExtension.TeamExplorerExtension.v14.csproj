@@ -63,8 +63,8 @@
     <Compile Include="TeamExplorerUtils.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Libs\Microsoft.TeamFoundation.Controls.dll" />
-    <Content Include="Libs\Microsoft.TeamFoundation.Git.Provider.dll" />
+    <None Include="Libs\Microsoft.TeamFoundation.Controls.dll" />
+    <None Include="Libs\Microsoft.TeamFoundation.Git.Provider.dll" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />
