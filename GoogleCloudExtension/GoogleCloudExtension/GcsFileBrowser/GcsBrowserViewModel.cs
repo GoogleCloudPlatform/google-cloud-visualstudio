@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         public GcsBrowserState CurrentState
         {
             get { return _currentState; }
-            set { SetValueAndRaise(ref _currentState, value); }
+            private set { SetValueAndRaise(ref _currentState, value); }
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         public Bucket Bucket
         {
             get { return _bucket; }
-            set
+            internal set
             {
                 SetValueAndRaise(ref _bucket, value);
                 InvalidateBucket();
@@ -470,6 +470,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             GcsBrowserState newState;
             try
             {
+                // Reset the error and empty state while loading.
                 IsLoading = true;
                 newState = await LoadStateForDirectoryAsync(newPath);
             }
@@ -538,12 +539,16 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
         }
 
-        private static GcsBrowserState CreateErrorState(string name) =>
-            new GcsBrowserState(
-                new List<GcsRow>
-                {
-                    GcsRow.CreateErrorRow(String.Format(Resources.GcsFileBrowserFailedDirectoryLoadMessage, name))
-                },
-                name);
+        private static GcsBrowserState CreateErrorState(string name)
+        {
+            if (string.IsNullOrEmpty(name))
+            {
+                return new GcsBrowserState(Resources.GcsFileBrowserFailedLoadRootDirectoryMessage, name);
+            }
+            else
+            {
+                return new GcsBrowserState(String.Format(Resources.GcsFileBrowserFailedDirectoryLoadMessage, name), name);
+            }
+        }
     }
 }

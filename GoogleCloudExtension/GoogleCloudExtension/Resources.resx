@@ -2351,4 +2351,16 @@
     <value>Files renamed {0} of {1}</value>
     <comment>Message displayed to show the progress of renaming multiple files. {0} is the current count of completed operations, {1} is the total count of operations</comment>
   </data>
+  <data name="GcsFileBrowserFailedLoadRootDirectoryMessage" xml:space="preserve">
+    <value>Failed to load directory.</value>
+    <comment>Message shown when there's a failure loading the root directory.</comment>
+  </data>
+  <data name="GcsFileBrowserNoFilesMessage" xml:space="preserve">
+    <value>There are no files in this directory, you can upload files by selecting them in Windows Explorer and dragging them here.</value>
+    <comment>Message shown in the GCS browser when there are no files in a directory.</comment>
+  </data>
+  <data name="UiRefreshButtonCaption" xml:space="preserve">
+    <value>Refresh</value>
+    <comment>Caption for refresh buttons.</comment>
+  </data>
 </root>

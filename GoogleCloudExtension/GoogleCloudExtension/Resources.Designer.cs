@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension
-{
-
-
+namespace GoogleCloudExtension {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2644,6 +2644,15 @@ namespace GoogleCloudExtension
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to load directory..
+        /// </summary>
+        public static string GcsFileBrowserFailedLoadRootDirectoryMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserFailedLoadRootDirectoryMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Failed to create directories for download..
         /// </summary>
         public static string GcsFileBrowserFailedToCreateDirMessage {
@@ -2802,6 +2811,15 @@ namespace GoogleCloudExtension
         public static string GcsFileBrowserNewFolderHeader {
             get {
                 return ResourceManager.GetString("GcsFileBrowserNewFolderHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to There are no files in this directory, you can upload files by selecting them in Windows Explorer and dragging them here..
+        /// </summary>
+        public static string GcsFileBrowserNoFilesMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserNoFilesMessage", resourceCulture);
             }
         }
         
@@ -4953,6 +4971,15 @@ namespace GoogleCloudExtension
         public static string UiPropertiesMenuHeader {
             get {
                 return ResourceManager.GetString("UiPropertiesMenuHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh.
+        /// </summary>
+        public static string UiRefreshButtonCaption {
+            get {
+                return ResourceManager.GetString("UiRefreshButtonCaption", resourceCulture);
             }
         }
         
