@@ -191,6 +191,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
             SelectedItems = selectedRows.ToList();
         }
 
+        /// <summary>
+        /// Calculates the context menu for the grid itself.
+        /// </summary>
         internal ContextMenu GetGridContextMenu()
         {
             var menuItems = new List<MenuItem>
@@ -202,6 +205,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
             return new ContextMenu { ItemsSource = menuItems };
         }
 
+        /// <summary>
+        /// Calculate the context menu for the selected items.
+        /// </summary>
         internal ContextMenu GetItemsContextMenu()
         {
             var menuItems = new List<MenuItem>
