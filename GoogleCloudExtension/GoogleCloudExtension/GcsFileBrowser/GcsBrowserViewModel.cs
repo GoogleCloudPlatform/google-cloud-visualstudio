@@ -124,6 +124,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
         public ICommand RefreshCommand { get; }
 
         /// <summary>
+        /// Command to execute when creating a new folder.
+        /// </summary>
+        public ICommand NewFolderCommand { get; }
+
+        /// <summary>
         /// The command to execute when a double click happens.
         /// </summary>
         public ICommand DoubleClickCommand { get; }
@@ -137,6 +142,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             NavigateToRootCommand = new ProtectedCommand(OnNavigateToRootCommand);
             NavigateToCommand = new ProtectedCommand<PathStep>(OnNavigateToCommand);
             RefreshCommand = new ProtectedCommand(OnRefreshCommand);
+            NewFolderCommand = new ProtectedCommand(OnNewFolderCommand);
             DoubleClickCommand = new ProtectedCommand<GcsRow>(OnDoubleClickCommand);
         }
 
@@ -192,7 +198,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         {
             var menuItems = new List<MenuItem>
             {
-                new MenuItem { Header = Resources.GcsFileBrowserNewFolderHeader, Command = new ProtectedCommand(OnNewFolderCommand) },
+                new MenuItem { Header = Resources.GcsFileBrowserNewFolderHeader, Command = NewFolderCommand },
                 new MenuItem { Header = Resources.UiSelectAllHeader, Command = new ProtectedCommand(OnSelectAllCommand, canExecuteCommand: !CurrentState.IsEmpty) }
             };
 
@@ -224,8 +230,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 {
                     menuItems.Add(new MenuItem
                     {
-                        Header = Resources.GcsFileBrowserRenameDirectoryHeader,
-                        Command = new ProtectedCommand(OnRenameDirectoryCommand)
+                        Header = Resources.GcsFileBrowserRenameFolderHeader,
+                        Command = new ProtectedCommand(OnRenameFolderCommand)
                     });
                 }
             }
@@ -240,9 +246,13 @@ namespace GoogleCloudExtension.GcsFileBrowser
             _owner.SelectAllRows();
         }
 
-        private async void OnRenameDirectoryCommand()
+        private async void OnRenameFolderCommand()
         {
-            var newLeafName = NamePromptWindow.PromptUser(SelectedItem.LeafName);
+            var newLeafName = NamePromptWindow.PromptUser(new NamePromptWindow.Options
+            {
+                InitialName = SelectedItem.LeafName,
+                Title = Resources.GcsFileBrowserRenameFolderTitle
+            });
             if (newLeafName == null)
             {
                 return;
@@ -284,7 +294,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         private async void OnRenameFileCommand()
         {
-            var choosenName = NamePromptWindow.PromptUser(SelectedItem.LeafName);
+            var choosenName = NamePromptWindow.PromptUser(new NamePromptWindow.Options
+            {
+                InitialName = SelectedItem.LeafName,
+                Title = Resources.GcsFileBrowserRenameFileTitle
+            });
             if (choosenName == null)
             {
                 return;
@@ -424,7 +438,10 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         private async void OnNewFolderCommand()
         {
-            var name = NamePromptWindow.PromptUser();
+            var name = NamePromptWindow.PromptUser(new NamePromptWindow.Options
+            {
+                Title = Resources.GcsFileBrowserNewFolderTitle
+            });
             if (name == null)
             {
                 return;

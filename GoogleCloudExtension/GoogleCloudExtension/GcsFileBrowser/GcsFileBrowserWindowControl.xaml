@@ -87,14 +87,30 @@
             </ItemsControl>
         </StackPanel>
 
-        <!-- The refresh button. -->
-        <Button Grid.Column="1"
-                HorizontalAlignment="Right"
-                Style="{StaticResource CommonButtonDynamicStyle}"
-                Command="{Binding RefreshCommand}"
-                Margin="10,0,0,0">
-            <Image Source="{mb:ImageResource GcsFileBrowser/Resources/refresh.png}" />
-        </Button>
+        <StackPanel Grid.Column="1"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+            <!-- The create new folder button. -->
+            <Button Command="{Binding NewFolderCommand}"
+                    Style="{StaticResource CommonButtonDynamicStyle}">
+                <Button.ToolTip>
+                    <ToolTip Content="{x:Static ext:Resources.GcsFileBrowserNewFolderTooltip}"
+                             Style="{StaticResource CommonTooltipStyle}" />
+                </Button.ToolTip>
+                <Image Source="{mb:ImageResource GcsFileBrowser/Resources/create_new_folder.png}" />
+            </Button>
+            
+            <!-- The refresh button. -->
+            <Button Command="{Binding RefreshCommand}"
+                    Margin="10,0,0,0"
+                    Style="{StaticResource CommonButtonDynamicStyle}">
+                <Button.ToolTip>
+                    <ToolTip Content="{x:Static ext:Resources.CloudExplorerRefreshButtonToolTip}"
+                             Style="{StaticResource CommonTooltipStyle}" />
+                </Button.ToolTip>
+                <Image Source="{mb:ImageResource GcsFileBrowser/Resources/refresh.png}" />
+            </Button>
+        </StackPanel>
 
         <!-- The main area for the data. -->
         <DataGrid Grid.Row="1"

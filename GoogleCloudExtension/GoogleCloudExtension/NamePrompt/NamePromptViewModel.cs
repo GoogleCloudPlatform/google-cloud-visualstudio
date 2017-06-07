@@ -36,6 +36,8 @@ namespace GoogleCloudExtension.NamePrompt
             set { SetValueAndRaise(ref _name, value); }
         }
 
+        public string Message { get; }
+
         /// <summary>
         /// The command for the ok button.
         /// </summary>
@@ -46,11 +48,12 @@ namespace GoogleCloudExtension.NamePrompt
         /// </summary>
         public ICommand CancelCommand { get; }
 
-        public NamePromptViewModel(NamePromptWindow owner, string initialName)
+        public NamePromptViewModel(NamePromptWindow owner, NamePromptWindow.Options options)
         {
             _owner = owner;
 
-            Name = initialName;
+            Name = options?.InitialName;
+            Message = options?.Message ?? Resources.EnterNameDialogNameMessage;
 
             OkCommand = new ProtectedCommand(OnOkCommand);
             CancelCommand = new ProtectedCommand(OnCancelCommand);

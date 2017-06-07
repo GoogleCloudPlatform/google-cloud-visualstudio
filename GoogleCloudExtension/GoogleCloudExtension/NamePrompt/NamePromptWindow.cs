@@ -21,11 +21,32 @@ namespace GoogleCloudExtension.NamePrompt
     /// </summary>
     public class NamePromptWindow : CommonDialogWindowBase
     {
+        /// <summary>
+        /// Options for the dialog.
+        /// </summary>
+        public class Options
+        {
+            /// <summary>
+            /// The initial name to use in the dialog.
+            /// </summary>
+            public string InitialName { get; set; }
+
+            /// <summary>
+            /// The title to use for the dialog.
+            /// </summary>
+            public string Title { get; set; }
+
+            /// <summary>
+            /// The message to show in the dialog.
+            /// </summary>
+            public string Message { get; set; }
+        }
+
         private NamePromptViewModel ViewModel { get; }
 
-        private NamePromptWindow(string initialName) : base(GoogleCloudExtension.Resources.NamePromptCaption)
+        private NamePromptWindow(Options options) : base(options?.Title ?? GoogleCloudExtension.Resources.NamePromptCaption)
         {
-            ViewModel = new NamePromptViewModel(this, initialName);
+            ViewModel = new NamePromptViewModel(this, options);
             Content = new NamePromptContent()
             {
                 DataContext = ViewModel
@@ -36,9 +57,9 @@ namespace GoogleCloudExtension.NamePrompt
         /// Prompts the user for a name.
         /// </summary>
         /// <returns>The name chosen by the user.</returns>
-        public static string PromptUser(string initialName = "")
+        public static string PromptUser(Options options = null)
         {
-            var dialog = new NamePromptWindow(initialName);
+            var dialog = new NamePromptWindow(options);
             dialog.ShowModal();
             return dialog.ViewModel.Name;
         }

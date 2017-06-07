@@ -2815,20 +2815,29 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to New folder.
+        /// </summary>
+        public static string GcsFileBrowserNewFolderTitle {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserNewFolderTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to New folder.
+        /// </summary>
+        public static string GcsFileBrowserNewFolderTooltip {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserNewFolderTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to There are no files in this directory, you can upload files by selecting them in Windows Explorer and dragging them here..
         /// </summary>
         public static string GcsFileBrowserNoFilesMessage {
             get {
                 return ResourceManager.GetString("GcsFileBrowserNoFilesMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Rename directory....
-        /// </summary>
-        public static string GcsFileBrowserRenameDirectoryHeader {
-            get {
-                return ResourceManager.GetString("GcsFileBrowserRenameDirectoryHeader", resourceCulture);
             }
         }
         
@@ -2847,6 +2856,33 @@ namespace GoogleCloudExtension {
         public static string GcsFileBrowserRenameFileHeader {
             get {
                 return ResourceManager.GetString("GcsFileBrowserRenameFileHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename file.
+        /// </summary>
+        public static string GcsFileBrowserRenameFileTitle {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenameFileTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename folder....
+        /// </summary>
+        public static string GcsFileBrowserRenameFolderHeader {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenameFolderHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Rename folder.
+        /// </summary>
+        public static string GcsFileBrowserRenameFolderTitle {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenameFolderTitle", resourceCulture);
             }
         }
         

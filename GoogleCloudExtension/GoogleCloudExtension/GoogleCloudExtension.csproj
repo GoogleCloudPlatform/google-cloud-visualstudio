@@ -511,6 +511,7 @@
     <Resource Include="CloudExplorerSources\PubSub\Resources\topic_icon.png" />
     <Resource Include="CloudExplorerSources\PubSub\Resources\subscription_icon.png" />
     <Resource Include="CloudExplorerSources\PubSub\Resources\orphaned_subscriptions_icon.png" />
+    <Resource Include="GcsFileBrowser\Resources\create_new_folder.png" />
     <Content Include="Licenses.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
