@@ -62,7 +62,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Libs\Microsoft.TeamFoundation.Controls.dll" />
+    <None Include="Libs\Microsoft.TeamFoundation.Controls.dll" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />
