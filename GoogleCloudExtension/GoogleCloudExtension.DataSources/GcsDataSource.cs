@@ -172,7 +172,7 @@ namespace GoogleCloudExtension.DataSources
         /// <param name="sourceName">The source file to rename.</param>
         /// <param name="destName">The name to rename to.</param>
         /// <returns>A <seealso cref="Task"/> instance that will be completed once the rename operation is finished.</returns>
-        public async Task RenameFileAsync(string bucket, string sourceName, string destName)
+        public async Task MoveFileAsync(string bucket, string sourceName, string destName)
         {
             try
             {
@@ -321,13 +321,43 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="bucket">The bucket that owns the file.</param>
         /// <param name="name">The name of the file.</param>
-        /// <param name="operation">The operation that will recieve the status.</param>
+        /// <param name="operation">The operation that will receive the status and progress notifications.</param>
         /// <param name="token">The cancellation token to cancel the operation.</param>
         public async void StartDeleteOperation(string bucket, string name, IGcsFileOperationCallback operation, CancellationToken token)
         {
             try
             {
                 var response = await Service.Objects.Delete(bucket, name).ExecuteAsync(token);
+                operation.Completed();
+            }
+            catch (GoogleApiException ex)
+            {
+                operation.Error(new DataSourceException(ex.Message, ex));
+            }
+            catch (OperationCanceledException)
+            {
+                operation.Cancelled();
+            }
+        }
+        /// <summary>
+        /// Starts a move operation, sending the notifications to the given <paramref name="operation"/>.
+        /// </summary>
+        /// <param name="bucket">The bucket where the files reside.</param>
+        /// <param name="fromName">The file to move.</param>
+        /// <param name="toName">The new file name.</param>
+        /// <param name="operation">The operation to callback.</param>
+        /// <param name="cancellationToken">The cancellation token for the operation.</param>
+        public async void StartMoveOperation(
+            string bucket,
+            string fromName,
+            string toName,
+            IGcsFileOperationCallback operation,
+            CancellationToken cancellationToken)
+        {
+            try
+            {
+                await Service.Objects.Copy(null, bucket, fromName, bucket, toName).ExecuteAsync(cancellationToken);
+                await Service.Objects.Delete(bucket, fromName).ExecuteAsync(cancellationToken);
                 operation.Completed();
             }
             catch (GoogleApiException ex)

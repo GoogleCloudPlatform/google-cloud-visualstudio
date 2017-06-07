@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.DataSources;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -31,44 +30,17 @@ namespace GoogleCloudExtension.GcsUtils
     /// </summary>
     public class OperationsQueue
     {
-        /// <summary>
-        /// Each entry in the queue connects the operation to be started with the code to start it.
-        /// </summary>
-        private class OperationQueueEntry
-        {
-            /// <summary>
-            /// The operation to be started.
-            /// </summary>
-            public GcsFileOperation Operation { get; set; }
-
-            /// <summary>
-            /// The action to use to start the operation.
-            /// </summary>
-            public Action<GcsFileOperation, CancellationToken> StartOperationAction { get; set; }
-
-            /// <summary>
-            /// Helper method that starts the operation.
-            /// </summary>
-            /// <param name="cancellationToken">The cancellation token for the operation.</param>
-            /// <returns>Returns a task that will be completed once the operation completes.</returns>
-            public Task ExecuteOperationAsync(CancellationToken cancellationToken)
-            {
-                StartOperationAction(Operation, cancellationToken);
-                return Operation.AwaitOperationAsync();
-            }
-        }
-
         private readonly int _maxConcurrentOperations;
-        private readonly List<GcsFileOperation> _operations = new List<GcsFileOperation>();
+        private readonly List<GcsOperation> _operations = new List<GcsOperation>();
         private readonly CancellationToken _cancellationToken;
-        private readonly Queue<OperationQueueEntry> _pendingOperations = new Queue<OperationQueueEntry>();
+        private readonly Queue<IOperationQueueEntry> _pendingOperations = new Queue<IOperationQueueEntry>();
         private readonly List<Task> _operationsInFlight = new List<Task>();
         private bool _schedulerActive = false;
 
         /// <summary>
         /// Returns the list of operations contained in the queue.
         /// </summary>
-        public IReadOnlyList<GcsFileOperation> Operations => _operations;
+        public IReadOnlyList<GcsOperation> Operations => _operations;
 
         public OperationsQueue(CancellationToken cancellationToken)
             : this(cancellationToken, ServicePointManager.DefaultConnectionLimit)
@@ -85,18 +57,18 @@ namespace GoogleCloudExtension.GcsUtils
         /// </summary>
         /// <param name="operations">The operations to start.</param>
         /// <param name="startOperationAction">The action to use to start the operaitons.</param>
-        public void EnqueueOperations(
-            IEnumerable<GcsFileOperation> operations,
-            Action<GcsFileOperation, CancellationToken> startOperationAction)
+        public void EnqueueOperations<TOperation>(
+            IEnumerable<TOperation> operations,
+            Action<TOperation, CancellationToken> startOperationAction) where TOperation : GcsOperation
         {
             var operationsSnapshot = operations.ToList();
             _operations.AddRange(operationsSnapshot);
             foreach (var operation in operationsSnapshot)
             {
-                _pendingOperations.Enqueue(new OperationQueueEntry
+                _pendingOperations.Enqueue(new OperationQueueEntry<TOperation>
                 {
-                    StartOperationAction = startOperationAction,
-                    Operation = operation
+                    Operation = operation,
+                    StartOperationAction = startOperationAction
                 });
             }
         }
@@ -156,8 +128,7 @@ namespace GoogleCloudExtension.GcsUtils
         {
             foreach (var entry in _pendingOperations)
             {
-                var callback = entry.Operation as IGcsFileOperationCallback;
-                callback.Cancelled();
+                entry.OperationCallback.Cancelled();
             }
         }
     }

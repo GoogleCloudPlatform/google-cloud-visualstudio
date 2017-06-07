@@ -8,10 +8,10 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace GoogleCloudExtension {
-    using System;
-    
-    
+namespace GoogleCloudExtension
+{
+
+
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -2806,7 +2806,16 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Failed to rename file {0}..
+        ///   Looks up a localized string similar to Rename directory....
+        /// </summary>
+        public static string GcsFileBrowserRenameDirectoryHeader {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenameDirectoryHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Failed to rename {0}..
         /// </summary>
         public static string GcsFileBrowserRenameFailedMessage {
             get {
@@ -2820,6 +2829,33 @@ namespace GoogleCloudExtension {
         public static string GcsFileBrowserRenameFileHeader {
             get {
                 return ResourceManager.GetString("GcsFileBrowserRenameFileHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Renaming files.
+        /// </summary>
+        public static string GcsFileBrowserRenamingFilesCaption {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenamingFilesCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files being renamed.
+        /// </summary>
+        public static string GcsFileBrowserRenamingFilesMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenamingFilesMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Files renamed {0} of {1}.
+        /// </summary>
+        public static string GcsFileBrowserRenamingFilesProgressMessage {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserRenamingFilesProgressMessage", resourceCulture);
             }
         }
         

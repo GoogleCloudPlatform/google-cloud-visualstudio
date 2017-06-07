@@ -85,7 +85,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
         /// <summary>
         /// The list of operations.
         /// </summary>
-        public ObservableCollection<GcsFileOperation> Operations { get; }
+        public ObservableCollection<GcsOperation> Operations { get; }
 
         /// <summary>
         /// The count of completed operations.
@@ -157,7 +157,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
             string message,
             string progressMessage,
             GcsFileProgressDialogWindow owner,
-            IEnumerable<GcsFileOperation> operations,
+            IEnumerable<GcsOperation> operations,
             CancellationTokenSource tokenSource)
         {
             _owner = owner;
@@ -165,7 +165,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
             _progressMessage = progressMessage;
 
             Message = message;
-            Operations = new ObservableCollection<GcsFileOperation>(operations);
+            Operations = new ObservableCollection<GcsOperation>(operations);
             foreach (var operation in Operations)
             {
                 operation.Completed += OnOperationCompleted;
@@ -183,7 +183,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
 
         private void OnOperationCompleted(object sender, EventArgs e)
         {
-            var operation = (GcsFileOperation)sender;
+            var operation = (GcsOperation)sender;
 
             _hasCancellation = _hasCancellation || operation.IsCancelled;
             Completed++;

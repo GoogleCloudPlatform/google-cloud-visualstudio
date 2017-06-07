@@ -160,30 +160,29 @@ namespace GoogleCloudExtension.GcsFileBrowser
             // of the upload operation. Similar to what is done in the Windows explorer.
             ShellUtils.SetForegroundWindow();
 
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-            OperationsQueue uploadOperationsQueue;
             try
             {
-                uploadOperationsQueue = _fileOperationsEngine.StartUploadOperations(
+                CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+                var uploadOperationsQueue = _fileOperationsEngine.StartUploadOperations(
                     files,
                     bucket: Bucket.Name,
                     bucketPath: _currentState.CurrentPath,
                     cancellationToken: cancellationTokenSource.Token);
+
+                GcsFileProgressDialogWindow.PromptUser(
+                    caption: Resources.GcsFileBrowserUploadingProgressCaption,
+                    message: Resources.GcsFileBrowserUploadingProgressMessage,
+                    progressMessage: Resources.GcsFileBrowserUploadingOverallProgressMessage,
+                    operations: uploadOperationsQueue.Operations,
+                    cancellationTokenSource: cancellationTokenSource);
             }
-            catch (IOException)
+            catch (IOException ex)
             {
                 UserPromptUtils.ErrorPrompt(
                     message: Resources.GcsFileProgressDialogFailedToEnumerateFiles,
-                    title: Resources.UiErrorCaption);
-                return;
+                    title: Resources.UiErrorCaption,
+                    errorDetails: ex.Message);
             }
-
-            GcsFileProgressDialogWindow.PromptUser(
-                caption: Resources.GcsFileBrowserUploadingProgressCaption,
-                message: Resources.GcsFileBrowserUploadingProgressMessage,
-                progressMessage: Resources.GcsFileBrowserUploadingOverallProgressMessage,
-                operations: uploadOperationsQueue.Operations,
-                cancellationTokenSource: cancellationTokenSource);
 
             UpdateCurrentState();
         }
@@ -218,9 +217,61 @@ namespace GoogleCloudExtension.GcsFileBrowser
                         Command = new ProtectedCommand(OnRenameFileCommand)
                     });
                 }
+                else if (SelectedItem.IsDirectory)
+                {
+                    menuItems.Add(new MenuItem
+                    {
+                        Header = Resources.GcsFileBrowserRenameDirectoryHeader,
+                        Command = new ProtectedCommand(OnRenameDirectoryCommand)
+                    });
+                }
             }
 
             ContextMenu = new ContextMenu { ItemsSource = menuItems };
+        }
+
+        #region Command handlers
+
+        private async void OnRenameDirectoryCommand()
+        {
+            var newLeafName = NamePromptWindow.PromptUser(SelectedItem.LeafName);
+            if (newLeafName == null)
+            {
+                return;
+            }
+
+            try
+            {
+                IsLoading = true;
+
+                CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+                var renameDirectoryOperations = await _fileOperationsEngine.StartDirectoryRenameOperationsAsync(
+                    bucket: Bucket.Name,
+                    parentName: CurrentState.CurrentPath,
+                    oldLeafName: SelectedItem.LeafName,
+                    newLeafName: newLeafName,
+                    cancellationToken: cancellationTokenSource.Token);
+
+                GcsFileProgressDialogWindow.PromptUser(
+                    caption: Resources.GcsFileBrowserRenamingFilesCaption,
+                    message: Resources.GcsFileBrowserRenamingFilesMessage,
+                    progressMessage: Resources.GcsFileBrowserRenamingFilesProgressMessage,
+                    operations: renameDirectoryOperations.Operations,
+                    cancellationTokenSource: cancellationTokenSource);
+            }
+            catch (DataSourceException ex)
+            {
+                UserPromptUtils.ErrorPrompt(
+                    message: string.Format(Resources.GcsFileBrowserRenameFailedMessage, SelectedItem.LeafName),
+                    title: Resources.UiErrorCaption,
+                    errorDetails: ex.Message);
+            }
+            finally
+            {
+                IsLoading = false;
+            }
+
+            UpdateCurrentState();
         }
 
         private async void OnRenameFileCommand()
@@ -238,7 +289,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 var newName = GcsPathUtils.Combine(CurrentState.CurrentPath, choosenName);
                 Debug.WriteLine($"Renaming {SelectedItem.BlobName} to {newName}");
                 await ProgressDialogWindow.PromptUser(
-                    _dataSource.RenameFileAsync(
+                    _dataSource.MoveFileAsync(
                         bucket: Bucket.Name,
                         sourceName: SelectedItem.BlobName,
                         destName: newName),
@@ -248,8 +299,6 @@ namespace GoogleCloudExtension.GcsFileBrowser
                         Title = Resources.UiDefaultPromptTitle,
                         IsCancellable = false
                     });
-
-                UpdateCurrentState();
             }
             catch (DataSourceException ex)
             {
@@ -262,9 +311,9 @@ namespace GoogleCloudExtension.GcsFileBrowser
             {
                 IsLoading = false;
             }
-        }
 
-        #region Command handlers
+            UpdateCurrentState();
+        }
 
         private void OnDoubleClickCommand(GcsRow row)
         {
@@ -291,35 +340,35 @@ namespace GoogleCloudExtension.GcsFileBrowser
             }
             var downloadRoot = dialog.SelectedPath;
 
-            OperationsQueue downloadOperationsQueue;
-            CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
             try
             {
                 IsLoading = true;
 
-                downloadOperationsQueue = await _fileOperationsEngine.StartDownloadOperationsAsync(
+                CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+                var downloadOperationsQueue = await _fileOperationsEngine.StartDownloadOperationsAsync(
                     SelectedItems.Select(x => new GcsUtils.GcsItemRef(x.Bucket, x.BlobName)),
                     downloadRoot,
                     cancellationTokenSource.Token);
+
+                GcsFileProgressDialogWindow.PromptUser(
+                    caption: Resources.GcsFileBrowserDownloadingProgressCaption,
+                    message: Resources.GcsFileBrowserDownloadingProgressMessage,
+                    progressMessage: Resources.GcsFileBrowserDownloadingOverallProgressMessage,
+                    operations: downloadOperationsQueue.Operations,
+                    cancellationTokenSource: cancellationTokenSource);
             }
-            catch (IOException)
+            catch (IOException ex)
             {
                 UserPromptUtils.ErrorPrompt(
                     message: Resources.GcsFileBrowserFailedToCreateDirMessage,
-                    title: Resources.UiErrorCaption);
+                    title: Resources.UiErrorCaption,
+                    errorDetails: ex.Message);
                 return;
             }
             finally
             {
                 IsLoading = false;
             }
-
-            GcsFileProgressDialogWindow.PromptUser(
-                caption: Resources.GcsFileBrowserDownloadingProgressCaption,
-                message: Resources.GcsFileBrowserDownloadingProgressMessage,
-                progressMessage: Resources.GcsFileBrowserDownloadingOverallProgressMessage,
-                operations: downloadOperationsQueue.Operations,
-                cancellationTokenSource: cancellationTokenSource);
         }
 
         private async void OnDeleteCommand()
@@ -333,34 +382,34 @@ namespace GoogleCloudExtension.GcsFileBrowser
                 return;
             }
 
-            OperationsQueue deleteOperationsQueue;
-            var cancellationTokenSource = new CancellationTokenSource();
             try
             {
                 IsLoading = true;
 
-                deleteOperationsQueue = await _fileOperationsEngine.StartDeleteOperationsAsync(
+
+                var cancellationTokenSource = new CancellationTokenSource();
+                var deleteOperationsQueue = await _fileOperationsEngine.StartDeleteOperationsAsync(
                     SelectedItems.Select(x => new GcsItemRef(x.Bucket, x.BlobName)),
                     cancellationTokenSource.Token);
+
+                GcsFileProgressDialogWindow.PromptUser(
+                    caption: Resources.GcsFileBrowserDeletingProgressCaption,
+                    message: Resources.GcsFileBrowserDeletingProgressMessage,
+                    progressMessage: Resources.GcsFileBrowserDeletingOverallProgressMessage,
+                    operations: deleteOperationsQueue.Operations,
+                    cancellationTokenSource: cancellationTokenSource);
             }
-            catch (DataSourceException)
+            catch (DataSourceException ex)
             {
                 UserPromptUtils.ErrorPrompt(
                     message: Resources.GcsFileBrowserDeleteListErrorMessage,
-                    title: Resources.UiErrorCaption);
-                return;
+                    title: Resources.UiErrorCaption,
+                    errorDetails: ex.Message);
             }
             finally
             {
                 IsLoading = false;
             }
-
-            GcsFileProgressDialogWindow.PromptUser(
-                caption: Resources.GcsFileBrowserDeletingProgressCaption,
-                message: Resources.GcsFileBrowserDeletingProgressMessage,
-                progressMessage: Resources.GcsFileBrowserDeletingOverallProgressMessage,
-                operations: deleteOperationsQueue.Operations,
-                cancellationTokenSource: cancellationTokenSource);
 
             UpdateCurrentState();
         }
@@ -379,12 +428,12 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
                 await _dataSource.CreateDirectoryAsync(Bucket.Name, $"{CurrentState.CurrentPath}{name}/");
             }
-            catch (DataSourceException)
+            catch (DataSourceException ex)
             {
                 UserPromptUtils.ErrorPrompt(
                     message: String.Format(Resources.GcsFileBrowserFailedToCreateRemoteFolder, name),
-                    title: Resources.UiErrorCaption);
-                return;
+                    title: Resources.UiErrorCaption,
+                    errorDetails: ex.Message);
             }
             finally
             {

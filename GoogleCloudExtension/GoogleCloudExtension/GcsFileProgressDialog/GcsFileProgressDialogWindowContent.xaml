@@ -103,7 +103,7 @@
                                         <ProgressBar Grid.Column="1"
                                                      Minimum="0.0"
                                                      Maximum="1.0"
-                                                     Value="{Binding Progress}"
+                                                     Value="{Binding Progress, Mode=OneWay}"
                                                      Style="{StaticResource CommonProgressBarStyle}"/>
 
                                         <!-- This text will show on top of the progress bar in case of error or cancelled. -->

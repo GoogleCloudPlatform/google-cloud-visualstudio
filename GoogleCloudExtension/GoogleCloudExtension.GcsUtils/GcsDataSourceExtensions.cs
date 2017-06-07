@@ -47,7 +47,7 @@ namespace GoogleCloudExtension.GcsUtils
         /// <param name="cancellationToken">The cancellation token for the operation.</param>
         internal static void StartFileUploadOperation(
             this GcsDataSource self,
-            GcsFileOperation operation,
+            GcsFileTransferOperation operation,
             CancellationToken cancellationToken)
         {
             self.StartFileUploadOperation(
@@ -66,7 +66,7 @@ namespace GoogleCloudExtension.GcsUtils
         /// <param name="cancellationToken">The cancellation token for the operation.</param>
         internal static void StartFileDownloadOperation(
             this GcsDataSource self,
-            GcsFileOperation operation,
+            GcsFileTransferOperation operation,
             CancellationToken cancellationToken)
         {
             self.StartFileDownloadOperation(
@@ -85,7 +85,7 @@ namespace GoogleCloudExtension.GcsUtils
         /// <param name="cancellationToken">The cancellation token for the operation.</param>
         internal static void StartDeleteOperation(
             this GcsDataSource self,
-            GcsFileOperation operation,
+            GcsDeleteFileOperation operation,
             CancellationToken cancellationToken)
         {
             self.StartDeleteOperation(
@@ -93,6 +93,25 @@ namespace GoogleCloudExtension.GcsUtils
                 name: operation.GcsItem.Name,
                 operation: operation,
                 token: cancellationToken);
+        }
+
+        /// <summary>
+        /// Starts the move operation using the data from the given operation.
+        /// </summary>
+        /// <param name="self">The data source.</param>
+        /// <param name="operation">The operation to start.</param>
+        /// <param name="cancellationToken">The cancellation token for the operation.</param>
+        internal static void StartMoveOperation(
+            this GcsDataSource self,
+            GcsMoveFileOperation operation,
+            CancellationToken cancellationToken)
+        {
+            self.StartMoveOperation(
+                bucket: operation.GcsItem.Bucket,
+                fromName: operation.GcsItem.Name,
+                toName: operation.ToItem.Name,
+                operation: operation,
+                cancellationToken: cancellationToken);
         }
     }
 }

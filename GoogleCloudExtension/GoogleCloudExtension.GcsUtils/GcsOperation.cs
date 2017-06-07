@@ -15,18 +15,16 @@
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
-using System.Diagnostics;
-using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.GcsUtils
 {
     /// <summary>
-    /// This class represents an operation in flight to transfer data to/from the local
-    /// file system and GCS.
+    /// Base class for all GCS operations, serves as a model that can be used in UI to represent
+    /// the progress and state of the operation.
     /// </summary>
-    public class GcsFileOperation : Model, IGcsFileOperationCallback
+    public abstract class GcsOperation : Model, IGcsFileOperationCallback
     {
         private readonly SynchronizationContext _context;
         private double _progress = 0;
@@ -79,19 +77,9 @@ namespace GoogleCloudExtension.GcsUtils
         }
 
         /// <summary>
-        /// The path to the source of the operation.
+        ///  The main GCS item for the operation.
         /// </summary>
-        public string LocalPath { get; }
-
-        /// <summary>
-        /// The local path for the operation.
-        /// </summary>
-        public string LocalPathName => Path.GetFileName(LocalPath);
-
-        /// <summary>
-        ///  The GCS item for the operation.
-        /// </summary>
-        public GcsItemRef GcsItem { get; }
+        public abstract GcsItemRef GcsItem { get; }
 
         /// <summary>
         /// Event raised when the operation completes.
@@ -103,30 +91,21 @@ namespace GoogleCloudExtension.GcsUtils
         /// </summary>
         public event EventHandler Started;
 
-        public GcsFileOperation(
-            string localPath,
-            GcsItemRef gcsItem)
+        protected GcsOperation()
         {
             _context = SynchronizationContext.Current;
-
-            LocalPath = localPath;
-            GcsItem = gcsItem;
         }
 
-        public GcsFileOperation(GcsItemRef gcsItem) : this(null, gcsItem)
-        { }
+        #region IGcsFileOperationCallback implementation.
 
-        #region IGcsFileOperation implementation.
-
-        void IGcsFileOperationCallback.Progress(double value)
+        void IGcsFileOperationCallback.Cancelled()
         {
             _context.Send((x) =>
             {
-                if (value > 0.0)
-                {
-                    IsPending = false;
-                }
-                Progress = value;
+                IsCancelled = true;
+                IsPending = false;
+                Progress = 0.0;
+                Completed?.Invoke(this, EventArgs.Empty);
             }, null);
         }
 
@@ -140,18 +119,6 @@ namespace GoogleCloudExtension.GcsUtils
             }, null);
         }
 
-        void IGcsFileOperationCallback.Cancelled()
-        {
-            Debug.WriteLine($"Operation for {LocalPath} cancelled.");
-            _context.Send((x) =>
-            {
-                IsCancelled = true;
-                IsPending = false;
-                Progress = 0.0;
-                Completed?.Invoke(this, EventArgs.Empty);
-            }, null);
-        }
-
         void IGcsFileOperationCallback.Error(DataSourceException ex)
         {
             _context.Send((x) =>
@@ -160,6 +127,18 @@ namespace GoogleCloudExtension.GcsUtils
                 IsPending = false;
                 Progress = 0.0;
                 Completed?.Invoke(this, EventArgs.Empty);
+            }, null);
+        }
+
+        void IGcsFileOperationCallback.Progress(double value)
+        {
+            _context.Send((x) =>
+            {
+                if (value > 0.0)
+                {
+                    IsPending = false;
+                }
+                Progress = value;
             }, null);
         }
 
