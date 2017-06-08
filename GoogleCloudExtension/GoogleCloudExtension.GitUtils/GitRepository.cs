@@ -41,6 +41,8 @@ namespace GoogleCloudExtension.GitUtils
         /// </summary>
         public static string GitPath => s_gitPathLazy.Value;
 
+        public static string GetGitPath() => PathUtils.GetCommandPathFromPATH(GitExecutable);
+
         /// <summary>
         /// Returns a <seealso cref="GitRepository"/> object 
         /// if the <paramref name="dir"/> is a valid locat Git repository path.
@@ -92,8 +94,6 @@ namespace GoogleCloudExtension.GitUtils
         {
             Root = gitLocalRoot;
         }
-
-        private static string GetGitPath() => PathUtils.GetCommandPathFromPATH(GitExecutable);
 
         /// <summary>
         /// Run a git command and return the output or error output.
