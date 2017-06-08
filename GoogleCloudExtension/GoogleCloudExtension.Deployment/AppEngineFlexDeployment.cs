@@ -172,7 +172,7 @@ namespace GoogleCloudExtension.Deployment
         /// <summary>
         /// Checks the project configuration files to see if they exist.
         /// </summary>
-        /// <param name="projectPath">The project.</param>
+        /// <param name="project">The project.</param>
         /// <returns>An instance of <seealso cref="ProjectConfigurationStatus"/> with the status of the config.</returns>
         public static ProjectConfigurationStatus CheckProjectConfiguration(IParsedProject project)
         {

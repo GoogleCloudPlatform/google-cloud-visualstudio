@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.ManageAccounts
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="CloudExplorerCommand"/> class.
+        /// Initializes a new instance of the <see cref="CloudExplorer.CloudExplorerCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>
