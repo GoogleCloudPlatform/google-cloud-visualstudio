@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         protected override async Task<IAttachDebuggerStep> GetNextStep()
         {
             SetStage(Stage.CheckingConnectivity);
-            if (!(await Context.DebuggerPort.ConnectivityTest()))
+            if (!(await Context.DebuggerPort.ConnectivityTest(_cancellationTokenSource.Token)))
             {
                 return EnablePowerShellPortStepViewModel.CreateStep(Context);
             }

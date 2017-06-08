@@ -15,6 +15,7 @@
 using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
@@ -34,11 +35,15 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         private bool _askingToTestConnectivityLater;
         private AttachDebuggerFirewallPort _port;
 
+        protected readonly CancellationTokenSource _cancellationTokenSource;
+
         /// <summary>
         /// Show the message if the port is not enabled.
         /// </summary>
         public string PortDisabledMessage => string.Format(
-            Resources.AttachDebuggerPortDisabledMessageFormat, _port.PortInfo.Port);
+            Resources.AttachDebuggerPortDisabledMessageFormat,
+            _port.PortInfo.Port,
+            _port.Description);
 
         /// <summary>
         /// The command to open the enable port help hyperlink.
@@ -86,6 +91,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         {
             Content = content;
             _port = port;
+            _cancellationTokenSource = new CancellationTokenSource();
             SetStage(Stage.Init);
             EnablePortHelpLinkCommand = new ProtectedCommand(() => Process.Start(EnablePortHelpLink));
         }
@@ -94,6 +100,12 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         #region Implement interface IAttachDebuggerStep
         public override ContentControl Content { get; }
+
+        public override void OnCancelCommand()
+        {
+            _cancellationTokenSource.Cancel();
+            base.OnCancelCommand();
+        }
 
         public override async Task<IAttachDebuggerStep> OnStartAsync()
         {
@@ -149,7 +161,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                     break;
                 case Stage.CheckingConnectivity:
                     ProgressMessage = String.Format(
-                        Resources.AttachDebuggerTestConnectPortMessageFormat, Context.PublicIp, _port.PortInfo.Port);
+                        Resources.AttachDebuggerTestConnectPortMessageFormat,
+                        _port.Description, Context.PublicIp, _port.PortInfo.Port);
                     IsCancelButtonEnabled = true;
                     break;
                 case Stage.AskToCheckConnectivityLater:

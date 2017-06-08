@@ -2180,12 +2180,12 @@
     <comment>Caption to the help link for openning a port. The page will help user to recognize security risk and tell the user how to disable the port.</comment>
   </data>
   <data name="AttachDebuggerPortDisabledMessageFormat" xml:space="preserve">
-    <value>Google Cloud GCE firewall rule blocks port {0}. Click OK to add GCE firewall rule that allows traffic to the port.</value>
-    <comment>Message displayed if firewall blocks the port. {0} is the port number.</comment>
+    <value>Google Cloud GCE firewall rule blocks port {0} for {1}. Click OK to add GCE firewall rule that allows traffic to the port.</value>
+    <comment>Message displayed if firewall blocks the port.  {0} is the port number. {1} is the port description. </comment>
   </data>
   <data name="AttachDebuggerTestConnectPortMessageFormat" xml:space="preserve">
-    <value>Test connecting to {0}:{1}</value>
-    <comment>The message that indicates the test of connecting to remote port is in progress. {0} is ip address, {1} is port number.</comment>
+    <value>Test connecting to {0} at {1}:{2}</value>
+    <comment>The message that indicates the test of connecting to remote port is in progress. {0} is the port descriptio, Debugger Remote Tool or Remote PowerShell.  {1} is ip address, {2} is port number.</comment>
   </data>
   <data name="PortManagerRemoteDebuggerDescription" xml:space="preserve">
     <value>Allow Visual Studio remote debugger port</value>
@@ -2200,8 +2200,8 @@
     <comment>Message for choosing or creating a user as remote debugger credential.</comment>
   </data>
   <data name="AttachDebuggerInstallSetupProgressMessage" xml:space="preserve">
-    <value>Install debugger remote tools</value>
-    <comment>The message indicates it is installing debugger remote tools.</comment>
+    <value>Install, launch debugger remote tools</value>
+    <comment>The message indicates it is installing or launching debugger remote tools.</comment>
   </data>
   <data name="AttachDebuggerAttachingProcessMessageFormat" xml:space="preserve">
     <value>Attaching to {0}</value>
@@ -2266,5 +2266,13 @@
   <data name="GcePublishAttachDebuggerCaption" xml:space="preserve">
     <value>Attach remote debugger after publishing</value>
     <comment>The caption of checkbox that asks to attach debugger after publishing</comment>
+  </data>
+  <data name="AttachDebuggerRemotePowerShellPortDescription" xml:space="preserve">
+    <value>Remote PowerShell</value>
+    <comment>The remote powershell port description</comment>
+  </data>
+  <data name="AttachDebuggerRemoteToolsPortDescription" xml:space="preserve">
+    <value>Debugger Remote Tool</value>
+    <comment>The Visual Studio Remote debugging tools description</comment>
   </data>
 </root>

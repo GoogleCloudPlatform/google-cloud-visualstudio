@@ -32,7 +32,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     public class AttachDebuggerFirewallPort
     {
         private static readonly TimeSpan ConnectivityTestTimeout = TimeSpan.FromSeconds(5);
-        private static readonly TimeSpan FirewallRuleWaitMaxTime = TimeSpan.FromMinutes(5);
+        private const int ConnectivityTestTimeoutInSeconds = 5;
+        private static readonly TimeSpan s_firewallRuleWaitMaxTime = TimeSpan.FromMinutes(5);
         private readonly Lazy<GceDataSource> _lazyDataSource;
         private Instance _gceInstance;
         private GceDataSource _dataSource => _lazyDataSource.Value;
@@ -43,8 +44,26 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// </summary>
         public PortInfo PortInfo { get; }
 
-        public AttachDebuggerFirewallPort(PortInfo portInfo, Instance gceInstance, Lazy<GceDataSource> lazyDataSource)
+        /// <summary>
+        /// Description to the port.
+        /// Debugger Remote Tool or Remote PowerShell.
+        /// </summary>
+        public string Description { get; }
+
+        /// <summary>
+        /// Initializes the <seealso cref="AttachDebuggerFirewallPort"/> object.
+        /// </summary>
+        /// <param name="portInfo">A <seealso cref="PortInfo"/> object that specifies the port.</param>
+        /// <param name="description">A description shown at testing connectivity step.</param>
+        /// <param name="gceInstance">The GCP Windows VM instance.</param>
+        /// <param name="lazyDataSource">The data source object.</param>
+        public AttachDebuggerFirewallPort(
+            PortInfo portInfo,
+            string description,
+            Instance gceInstance,
+            Lazy<GceDataSource> lazyDataSource)
         {
+            Description = description.ThrowIfNullOrEmpty(nameof(description));
             PortInfo = portInfo.ThrowIfNull(nameof(portInfo));
             _gceInstance = gceInstance.ThrowIfNull(nameof(gceInstance));
             _lazyDataSource = lazyDataSource.ThrowIfNull(nameof(lazyDataSource));
@@ -71,10 +90,10 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         }
 
         /// <summary>
-        /// Test if we should continue to wait for firewall rule to take effect.
+        /// Gets how longer to wait for firewall rule to take effect.
         /// </summary>
-        public bool ShouldWaitForFirewallRule()
-            => (DateTime.UtcNow - _portEnabledTime) < FirewallRuleWaitMaxTime;
+        public int WaitForFirewallRuleTimeInSeconds()
+            => (int)(s_firewallRuleWaitMaxTime - (DateTime.UtcNow - _portEnabledTime)).TotalSeconds;
 
         /// <summary>
         /// Check if GCE firewall rules include a rule that enables the port to target GCE VM.
@@ -114,18 +133,19 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         ///   (a) The network is connected (i.e no firewall blocks it),
         ///   (b) The target application is started and listening at the TCP port.
         /// </summary>
+        /// <param name="cancelToken">The cancellation token</param>
         /// <returns>
         /// True: Local machine is able to connect to the target GCE VM at the port number.
         /// False: Failed to connect.
         /// </returns>
-        public async Task<bool> ConnectivityTest()
+        public async Task<bool> ConnectivityTest(CancellationToken cancelToken)
         {
             using (TcpClient client = new TcpClient())
             {
                 try
                 {
                     var connectTask = client.ConnectAsync(_gceInstance.GetPublicIpAddress(), PortInfo.Port);
-                    if (connectTask == await Task.WhenAny(connectTask, Task.Delay(ConnectivityTestTimeout)))
+                    if (connectTask == await Task.WhenAny(connectTask, Task.Delay(ConnectivityTestTimeout, cancelToken)))
                     {
                         await connectTask;
                         Debug.WriteLine("ConnectivityTest, Succeeded");
