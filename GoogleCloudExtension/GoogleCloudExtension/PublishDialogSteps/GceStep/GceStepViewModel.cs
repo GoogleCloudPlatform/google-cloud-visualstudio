@@ -113,7 +113,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GceStep
         public bool LaunchRemoteDebugger
         {
             get { return _launchRemoteDebugger; }
-            set { SetValueAndRaise(out _launchRemoteDebugger, value); }
+            set { SetValueAndRaise(ref _launchRemoteDebugger, value); }
         }
 
         private GceStepViewModel(GceStepContent content)
