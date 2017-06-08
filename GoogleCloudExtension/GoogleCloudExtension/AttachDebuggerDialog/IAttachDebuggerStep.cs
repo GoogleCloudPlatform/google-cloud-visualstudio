@@ -43,10 +43,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <summary>
         /// Responds to Cancel button click event.
         /// </summary>
-        /// <returns>
-        /// A reference to next step.
-        /// </returns>
-        IAttachDebuggerStep OnCancelCommand();
+        void OnCancelCommand();
 
         /// <summary>
         /// Returns the content of the publish step.
