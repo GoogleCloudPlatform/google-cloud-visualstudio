@@ -37,7 +37,7 @@ namespace GoogleCloudExtensionUnitTests
         private const string ExpectedAssemblyName = "google-cloud-visualstudio";
         private const string VsixManifestFileName = "source.extension.vsixmanifest";
 
-        private static Guid _iidIUnknown = (Guid)Assembly.GetAssembly(typeof(VSConstants))
+        private static Guid s_iidIUnknown = (Guid)Assembly.GetAssembly(typeof(VSConstants))
             .GetType("Microsoft.VisualStudio.NativeMethods")
             .GetField("IID_IUnknown").GetValue(null);
 
@@ -49,7 +49,6 @@ namespace GoogleCloudExtensionUnitTests
             InitPackageMock(
                 dteMock =>
                 {
-
                     dteMock.Setup(dte => dte.Version).Returns(mockedVersion);
                     dteMock.Setup(dte => dte.Edition).Returns(mockedEdition);
                 });
@@ -70,7 +69,7 @@ namespace GoogleCloudExtensionUnitTests
             Assert.IsFalse(GoogleCloudExtensionPackage.Instance.AnalyticsSettings.OptIn);
         }
 
-        private string GetVsixManifestVersion()
+        private static string GetVsixManifestVersion()
         {
             XDocument vsixManifest = XDocument.Load(VsixManifestFileName);
             XNamespace ns = vsixManifest.Root?.Name.Namespace ?? XNamespace.None;
@@ -90,19 +89,22 @@ namespace GoogleCloudExtensionUnitTests
             dteSetupAction(dteMock);
             SetupService<DTE, DTE>(serviceProviderMock, dteMock);
             SetupService<SVsActivityLog, IVsActivityLog>(serviceProviderMock, activityLogMock);
+            // This sets the ServiceProvider.GlobalProvider
+            // and causes it to use the mocked IServiceProvider.
             ServiceProvider.CreateFromSetSite(serviceProviderMock.Object);
+            // This runs the Initialize() method.
             ((IVsPackage)new GoogleCloudExtensionPackage()).SetSite(serviceProviderMock.Object);
         }
 
         private static void SetupService<ServiceType, InterfaceType>(
             Mock<IServiceProvider> serviceProviderMock,
-            Mock<InterfaceType> mockObj) where InterfaceType : class
+            IMock<InterfaceType> mockObj) where InterfaceType : class
         {
             var serviceGuid = typeof(ServiceType).GUID;
             // ReSharper disable once RedundantAssignment
             IntPtr interfacePtr = Marshal.GetIUnknownForObject(mockObj.Object);
             serviceProviderMock
-                .Setup(x => x.QueryService(ref serviceGuid, ref _iidIUnknown, out interfacePtr))
+                .Setup(x => x.QueryService(ref serviceGuid, ref s_iidIUnknown, out interfacePtr))
                 .Returns(0);
         }
     }
