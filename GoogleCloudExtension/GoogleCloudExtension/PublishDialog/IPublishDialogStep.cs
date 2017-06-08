@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System;
+using System.ComponentModel;
 using System.Windows;
 
 namespace GoogleCloudExtension.PublishDialog
@@ -20,7 +21,7 @@ namespace GoogleCloudExtension.PublishDialog
     /// <summary>
     /// Interface that defines the services offered by a publish dialog step.
     /// </summary>
-    public interface IPublishDialogStep
+    public interface IPublishDialogStep : INotifyDataErrorInfo, INotifyPropertyChanged
     {
         /// <summary>
         /// Returns whether the step can go to a next step.

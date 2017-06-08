@@ -7,7 +7,7 @@
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300"
-             d:DataContext="{x:Type local:FlexStepViewModel}">
+             d:DataContext="{d:DesignInstance local:FlexStepViewModel}">
 
     <UserControl.Resources>
         <ResourceDictionary>
@@ -22,7 +22,7 @@
                Target="{Binding ElementName=_version}"
                Style="{StaticResource CommonLabelStyle}"/>
         <TextBox x:Name="_version"
-                 Text="{Binding Version, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                 Text="{Binding Version, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnNotifyDataErrors=True}"
                  Style="{StaticResource CommonTextBoxStyle}"/>
 
         <CheckBox IsChecked="{Binding Promote, Mode=TwoWay}"

@@ -46,7 +46,6 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Clears the selection, making the property window empty.
         /// </summary>
-        /// <param name="provider">The <seealso cref="IServiceProvider"/> to use to get services.</param>
         public void ClearSelection()
         {
             var selectionContainer = new SelectionContainer();
@@ -59,7 +58,6 @@ namespace GoogleCloudExtension.Utils
         /// <summary>
         /// Selects the given item, showing it in the properties window.
         /// </summary>
-        /// <param name="provider">The <seealso cref="IServiceProvider"/> to use to get services.</param>
         /// <param name="item">The item to be selected.</param>
         public void SelectItem(object item)
         {

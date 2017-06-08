@@ -60,8 +60,15 @@ namespace GoogleCloudExtension.OAuth
         /// <summary>
         /// Returns the URL to use to start the OAUTH login flow.
         /// </summary>
-        /// <param name="credentials"></param>
-        /// <param name="scopes"></param>
+        /// <param name="credentials">The oauth credentials.</param>
+        /// <param name="redirectUrl">
+        ///  Determines how Google's authorization server sends a response to your app.
+        ///  <see href="https://developers.google.com/identity/protocols/OAuth2InstalledApp#request-parameter-redirect_uri"/>
+        /// </param>
+        /// <param name="scopes">
+        ///  A list of scopes that identify the resources that your application could access on the user's behalf.
+        ///  <see href="https://developers.google.com/identity/protocols/OAuth2InstalledApp#request-parameter-scope"/>
+        /// </param>
         public static string GetInitialOAuthUrl(OAuthCredentials credentials, string redirectUrl, IEnumerable<string> scopes)
         {
             var form = new Dictionary<string, string>
@@ -78,6 +85,10 @@ namespace GoogleCloudExtension.OAuth
         /// Returns the refresh code given the <paramref name="credentials"/> and the <paramref name="accessCode"/>.
         /// </summary>
         /// <param name="credentials">The oauth credentials.</param>
+        /// <param name="redirectUrl">
+        ///  Determines how Google's authorization server sends a response to your app.
+        ///  <see href="https://developers.google.com/identity/protocols/OAuth2InstalledApp#request-parameter-redirect_uri"/>
+        /// </param>
         /// <param name="accessCode">The access code returned from the login flow.</param>
         public static async Task<string> EndOAuthFlow(OAuthCredentials credentials, string redirectUrl, string accessCode)
         {

@@ -51,9 +51,6 @@ namespace GoogleCloudExtension.GCloud
         /// <summary>
         /// Resets, or creates, the password for the given <paramref name="userName"/> in the given instance.
         /// </summary>
-        /// <param name="instanceName"></param>
-        /// <param name="zoneName"></param>
-        /// <param name="userName"></param>
         public static Task<WindowsInstanceCredentials> ResetWindowsCredentialsAsync(
             string instanceName,
             string zoneName,
@@ -70,7 +67,6 @@ namespace GoogleCloudExtension.GCloud
         /// <param name="version">The version to use, if no version is used gcloud will decide the version name.</param>
         /// <param name="promote">Whether to promote the app or not.</param>
         /// <param name="outputAction">The action to call with output from the command.</param>
-        /// <param name="useRuntimeBuilder">Whether to enable runtime builders or not.</param>
         /// <param name="context">The context under which the command is executed.</param>
         public static Task<bool> DeployAppAsync(
             string appYaml,
@@ -140,6 +136,7 @@ namespace GoogleCloudExtension.GCloud
         /// </summary>
         /// <param name="buildFilePath">The path to the cloudbuild.yaml file.</param>
         /// <param name="contentsPath">The contents of the container.</param>
+        /// <param name="outputAction">The action to perform on each line of output.</param>
         /// <param name="context">The context under which the command is executed.</param>
         public static Task<bool> BuildContainerAsync(string buildFilePath, string contentsPath, Action<string> outputAction, GCloudContext context)
         {

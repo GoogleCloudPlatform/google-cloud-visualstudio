@@ -16,6 +16,8 @@ using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.Theming;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtension.Utils.Validation;
+using System;
 using System.Linq;
 
 namespace GoogleCloudExtension.PubSubWindows
@@ -24,7 +26,7 @@ namespace GoogleCloudExtension.PubSubWindows
     /// Data objet that backs the new subscription window. It contains the information needed to create a new
     /// subscription.
     /// </summary>
-    public class NewSubscriptionViewModel : ViewModelBase
+    public class NewSubscriptionViewModel : ValidatingViewModelBase
     {
         private readonly CommonDialogWindowBase _owner;
 
@@ -62,6 +64,21 @@ namespace GoogleCloudExtension.PubSubWindows
         public Subscription Subscription { get; }
 
         /// <summary>
+        /// The name of the new subscription.
+        /// </summary>
+        public string SubscriptionName
+        {
+            get { return Subscription.Name; }
+            set
+            {
+                Subscription.Name = value;
+                RaisePropertyChanged(nameof(SubscriptionName));
+                SetValidationResults(
+                    PubSubNameValidationRule.Validate(value, Resources.NewSubscriptionWindowNameFieldName));
+            }
+        }
+
+        /// <summary>
         /// The command called to actually create the subscription.
         /// </summary>
         public ProtectedCommand CreateCommand { get; }
@@ -84,6 +101,11 @@ namespace GoogleCloudExtension.PubSubWindows
             PushConfig = subscription.PushConfig ?? new PushConfig();
         }
 
+        protected override void HasErrorsChanged()
+        {
+            CreateCommand.CanExecuteCommand = !HasErrors;
+        }
+
         /// <summary>
         /// The execution of the CreateCommand.
         /// </summary>
@@ -102,11 +124,12 @@ namespace GoogleCloudExtension.PubSubWindows
         /// <returns>True if the data is valid, false if the user was prompted about invalid data.</returns>
         private bool ValidateInput()
         {
-            var results = PubSubNameValidationRule.Validate(Subscription.Name);
-            var details = string.Join("\n", results.Select(result => result.Message));
-            if (!string.IsNullOrEmpty(details))
+            var results = PubSubNameValidationRule.Validate(
+                Subscription.Name, Resources.NewSubscriptionWindowNameFieldName);
+            var details = String.Join("\n", results.Select(result => result.Message));
+            if (!String.IsNullOrEmpty(details))
             {
-                string message = string.Format(Resources.PubSubNewSubscriptionNameInvalidMessage, Subscription.Name);
+                string message = String.Format(Resources.PubSubNewSubscriptionNameInvalidMessage, Subscription.Name);
                 UserPromptUtils.ErrorPrompt(message, Resources.PubSubNewSubscriptionNameInvalidTitle, details);
                 return false;
             }

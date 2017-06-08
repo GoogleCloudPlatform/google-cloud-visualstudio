@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.Gae
         [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionCategory))]
         [LocalizedDisplayName(nameof(Resources.CloudExplorerGaeVersionCreationTimeDisplayName))]
         [LocalizedDescription(nameof(Resources.CloudExplorerGaeVersionCreateTimeDescription))]
-        public string CreateTime => _version.CreateTime;
+        public string CreateTime => _version.CreateTime.ToString();
 
         [LocalizedCategory(nameof(Resources.CloudExplorerGaeVersionCategory))]
         [LocalizedDisplayName(nameof(Resources.CloudExplorerGaeVersionUrlDisplayName))]
