@@ -264,11 +264,6 @@
       <DependentUpon>NewTopicWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="PubSubWindows\PubSubNameValidationRule.cs" />
-    <Compile Include="Resources1.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Utils\ValidateGitDependencyHelper.cs" />
     <Compile Include="Utils\Validation\StringValidationResult.cs" />
     <Compile Include="Utils\Validation\ValidatingViewModelBase.cs" />
