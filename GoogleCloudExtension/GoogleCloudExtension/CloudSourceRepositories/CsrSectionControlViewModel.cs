@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         public ContentControl Content
         {
             get { return _content; }
-            private set { SetValueAndRaise(out _content, value); }
+            private set { SetValueAndRaise(ref _content, value); }
         }
 
         public CsrSectionControlViewModel()

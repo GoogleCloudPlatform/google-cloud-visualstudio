@@ -56,7 +56,7 @@ namespace GoogleCloudExtension.TeamExplorerExtension
                 }
                 return _sectionContent;
             }
-            private set { SetValueAndRaise(out _sectionContent, value); }
+            private set { SetValueAndRaise(ref _sectionContent, value); }
         }
 
         public string Title { get; }
@@ -71,7 +71,7 @@ namespace GoogleCloudExtension.TeamExplorerExtension
             private set
             {
                 Debug.WriteLine($"CsrTeamExplorerSection.IsBusy set");
-                SetValueAndRaise(out _isBusy, value);
+                SetValueAndRaise(ref _isBusy, value);
             }
         }
 
@@ -85,7 +85,7 @@ namespace GoogleCloudExtension.TeamExplorerExtension
             set
             {
                 Debug.WriteLine($"CsrTeamExplorerSection.IsExpanded set");
-                SetValueAndRaise(out _isExpanded, value);
+                SetValueAndRaise(ref _isExpanded, value);
             }
         }
 
@@ -99,7 +99,7 @@ namespace GoogleCloudExtension.TeamExplorerExtension
             set
             {
                 Debug.WriteLine($"CsrTeamExplorerSection.IsVisible set");
-                SetValueAndRaise(out _isVisible, value);
+                SetValueAndRaise(ref _isVisible, value);
             }
         }
 
