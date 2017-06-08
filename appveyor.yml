@@ -6,8 +6,11 @@ version: 1.0.{build}-{branch}
 # We're using Visual Studio 2015
 image: Visual Studio 2015
 
+before_build:
+  - choco install opencover.portable
+  - choco install codecov
+
 # Perform the build.
-# TODO: Fetch the output of the build and publish it.
 build_script:
   - bash -c ./tools/ensure_strings_extracted.sh
   - bash -c ./tools/ensure_no_unused_strings.sh
@@ -18,11 +21,17 @@ build_script:
 # Defines the artifacts to be saved.
 artifacts:
   - path: GoogleCloudExtension\GoogleCloudExtension\bin\Release\GoogleCloudExtension.vsix
-
   - path: GoogleCloudExtension\GoogleCloudExtension\bin\Debug\GoogleCloudExtension.vsix
 
-# Run the analytics tests.
-test:
-  assemblies:
-  - GoogleAnalyticsUtilsTests.dll
-  - GoogleCloudExtensionUnitTests.dll
+# Run the analytics tests with code coverage report.
+test_script:
+  - ps: $testDllNames = "GoogleAnalyticsUtilsTests.dll", "GoogleCloudExtensionUnitTests.dll", "GoogleCloudExtension.Utils.UnitTests.dll"
+  - ps: $testDlls = ls -r -include $testDllNames | ? FullName -Like *\bin\*
+  - ps: $vsTestPath = (Get-Command vstest.console).Source
+  - ps: $testContainerArgs = $testDlls.FullName -join " "
+  - ps: $testArgs = "/logger:Appveyor $testContainerArgs"
+  - ps: OpenCover.Console.exe -register:user -target:$vsTestPath -targetargs:$testContainerArgs -output:codecoverage.xml
+
+# Upload to codecov.io
+after_test:
+  - codecov -f codecoverage.xml

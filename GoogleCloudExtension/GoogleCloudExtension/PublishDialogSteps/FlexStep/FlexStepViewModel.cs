@@ -49,7 +49,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
             {
                 IEnumerable<ValidationResult> validations =
                     GcpPublishStepsUtils.ValidateName(value, Resources.PublishDialogFlexVersionNameFieldName);
-                SetAndRaiseWithValidation(out _version, value, validations);
+                SetAndRaiseWithValidation(ref _version, value, validations);
             }
         }
 
@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         public bool Promote
         {
             get { return _promote; }
-            set { SetValueAndRaise(out _promote, value); }
+            set { SetValueAndRaise(ref _promote, value); }
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.FlexStep
         public bool OpenWebsite
         {
             get { return _openWebsite; }
-            set { SetValueAndRaise(out _openWebsite, value); }
+            set { SetValueAndRaise(ref _openWebsite, value); }
         }
 
         private FlexStepViewModel(FlexStepContent content)

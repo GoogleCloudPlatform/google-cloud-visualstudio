@@ -34,6 +34,7 @@ namespace GoogleCloudExtension.GCloud
         /// </summary>
         /// <param name="name">The name of the deployemnt to be created.</param>
         /// <param name="imageTag">The Docker image tag to use for the deployment.</param>
+        /// <param name="replicas">The number of replicas in the deploymnet.</param>
         /// <param name="outputAction">The output callback to be called with output from the command.</param>
         /// <param name="context">The context for invoking kubectl.</param>
         /// <returns>True if the operation succeeded false otherwise.</returns>

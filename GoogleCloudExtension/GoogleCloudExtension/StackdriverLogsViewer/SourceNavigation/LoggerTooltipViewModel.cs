@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public bool FilterLogsOfSourceLine
         {
             get { return _filterLogsOfSourceLine; }
-            set { SetValueAndRaise(out _filterLogsOfSourceLine, value); }
+            set { SetValueAndRaise(ref _filterLogsOfSourceLine, value); }
         }
 
         /// <summary>
@@ -52,7 +52,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         /// <summary>
         /// Initializes a new instance of <seealso cref="LoggerTooltipViewModel"/> class.
         /// </summary>
-        /// <param name="log">The log item the tooltip shows.</param>
+        /// <param name="logItem">The log item the tooltip shows.</param>
         public LoggerTooltipViewModel(LogItem logItem)
         {
             OnCloseButtonCommand = new ProtectedCommand(ShowTooltipUtils.HideTooltip);

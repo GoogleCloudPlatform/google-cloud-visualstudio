@@ -47,7 +47,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public bool IsAccountChanged
         {
             get { return _isAccountChanged; }
-            set { SetValueAndRaise(out _isAccountChanged, value); }
+            set { SetValueAndRaise(ref _isAccountChanged, value); }
         }
 
         /// <summary>
@@ -56,7 +56,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public string ErrorString
         {
             get { return _errorString; }
-            set { SetValueAndRaise(out _errorString, value); }
+            set { SetValueAndRaise(ref _errorString, value); }
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public bool ShowError
         {
             get { return _showError; }
-            set { SetValueAndRaise(out _showError, value); }
+            set { SetValueAndRaise(ref _showError, value); }
         }
 
         /// <summary>
@@ -74,7 +74,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public bool IsControlEnabled
         {
             get { return _isControlEnabled; }
-            set { SetValueAndRaise(out _isControlEnabled, value); }
+            set { SetValueAndRaise(ref _isControlEnabled, value); }
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public bool IsGroupLoading
         {
             get { return _isGroupLoading; }
-            set { SetValueAndRaise(out _isGroupLoading, value); }
+            set { SetValueAndRaise(ref _isGroupLoading, value); }
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public bool IsEventLoading
         {
             get { return _isEventLoading; }
-            set { SetValueAndRaise(out _isEventLoading, value); }
+            set { SetValueAndRaise(ref _isEventLoading, value); }
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public ErrorGroupItem GroupItem
         {
             get { return _groupItem; }
-            private set { SetValueAndRaise(out _groupItem, value); }
+            private set { SetValueAndRaise(ref _groupItem, value); }
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public CollectionView EventItemCollection
         {
             get { return _eventItemCollection; }
-            private set { SetValueAndRaise(out _eventItemCollection, value); }
+            private set { SetValueAndRaise(ref _eventItemCollection, value); }
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             get { return _selectedTimeRange; }
             set
             {
-                SetValueAndRaise(out _selectedTimeRange, value);
+                SetValueAndRaise(ref _selectedTimeRange, value);
                 if (value != null)
                 {
                     ErrorHandlerUtils.HandleAsyncExceptions(UpdateGroupAndEventAsync);

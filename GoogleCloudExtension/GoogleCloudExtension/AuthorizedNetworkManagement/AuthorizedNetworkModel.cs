@@ -57,7 +57,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
             get { return _toBeDeleted; }
             set
             {
-                SetValueAndRaise(out _toBeDeleted, value);
+                SetValueAndRaise(ref _toBeDeleted, value);
                 RaisePropertyChanged(nameof(NotDeleted));
                 RaisePropertyChanged(nameof(NewOrUpdated));
             }

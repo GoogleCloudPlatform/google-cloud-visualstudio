@@ -48,7 +48,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public string Header
         {
             get { return _header; }
-            set { SetValueAndRaise(out _header, value); }
+            set { SetValueAndRaise(ref _header, value); }
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public bool IsSubmenuPopulated
         {
             get { return _isSubmenuPopulated; }
-            set { SetValueAndRaise(out _isSubmenuPopulated, value); }
+            set { SetValueAndRaise(ref _isSubmenuPopulated, value); }
         }
 
         /// <summary>
