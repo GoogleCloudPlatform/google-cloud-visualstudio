@@ -8,27 +8,34 @@ namespace $safeprojectname$.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly ILogger _logger;
+
+        public HomeController(ILogger<HomeController> logger)
         {
+            _logger = logger;
+        }
+
+         public IActionResult Index()
+        {
+            _logger.LogDebug("Home page hit!");
             return View();
         }
 
         public IActionResult About()
         {
             ViewData["Message"] = "Your application description page.";
-
             return View();
         }
 
         public IActionResult Contact()
         {
             ViewData["Message"] = "Your contact page.";
-
             return View();
         }
 
         public IActionResult Error()
         {
+            _logger.LogWarning("Error page hit!");
             return View();
         }
     }
