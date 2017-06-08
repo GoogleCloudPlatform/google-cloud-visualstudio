@@ -98,6 +98,7 @@ namespace GoogleCloudExtension.Deployment
         /// <param name="project">The project.</param>
         /// <param name="options">The options to use for the deployment.</param>
         /// <param name="progress">The progress interface for progress notifications.</param>
+        /// <param name="toolsPathProvider">Provides the path to the publish tools.</param>
         /// <param name="outputAction">The output callback to invoke for output from the process.</param>
         /// <returns>Returns a <seealso cref="GkeDeploymentResult"/> if the deployment succeeded null otherwise.</returns>
         public static async Task<GkeDeploymentResult> PublishProjectAsync(

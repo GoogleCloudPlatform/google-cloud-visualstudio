@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.CloudExplorer
             {
                 if (value != _isExpanded)
                 {
-                    SetValueAndRaise(out _isExpanded, value);
+                    SetValueAndRaise(ref _isExpanded, value);
                     OnIsExpandedChanged(value);
                 }
             }

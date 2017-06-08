@@ -79,12 +79,12 @@ namespace GoogleCloudExtension.Utils.Validation
         }
 
         protected void SetAndRaiseWithValidation<T>(
-            out T storage,
+            ref T storage,
             T value,
             IEnumerable<ValidationResult> validations,
             [CallerMemberName] string propertyName = "")
         {
-            SetValueAndRaise(out storage, value, propertyName);
+            SetValueAndRaise(ref storage, value, propertyName);
             SetValidationResults(validations, propertyName);
         }
 

@@ -18,7 +18,7 @@ namespace GoogleCloudExtension.Theming
 {
     /// <summary>
     /// This class was created to be able to force the <seealso cref="ItemsControl"/> to apply the
-    /// data templates, and template selector, to the items even if they are <seealso cref="FrameworkElement"/>
+    /// data templates, and template selector, to the items even if they are <seealso cref="System.Windows.FrameworkElement"/>
     /// instances.
     /// </summary>
     public class ButtonsList : ItemsControl

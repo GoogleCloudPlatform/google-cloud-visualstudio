@@ -18,7 +18,7 @@ using GoogleCloudExtension.Utils;
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
     /// <summary>
-    /// View model to <seealso cref="TooltipControl"/>.
+    /// View model to <seealso cref="ErrorFrameTooltipControl"/>.
     /// </summary>
     internal class ErrorFrameTooltipViewModel : ViewModelBase
     {
@@ -40,7 +40,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         /// <summary>
         /// Initializes a new instance of <seealso cref="ErrorFrameTooltipViewModel"/> class.
         /// </summary>
-        /// <param name="log">The log item the tooltip shows.</param>
+        /// <param name="errorItem">The error item the tooltip shows.</param>
         public ErrorFrameTooltipViewModel(ErrorGroupItem errorItem)
         {
             OnCloseButtonCommand = new ProtectedCommand(ShowTooltipUtils.HideTooltip);

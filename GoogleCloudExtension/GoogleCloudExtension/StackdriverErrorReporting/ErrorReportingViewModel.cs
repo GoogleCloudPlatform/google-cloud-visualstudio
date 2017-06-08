@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public string ErrorString
         {
             get { return _exceptionString; }
-            set { SetValueAndRaise(out _exceptionString, value); }
+            set { SetValueAndRaise(ref _exceptionString, value); }
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public bool ShowError
         {
             get { return _showException; }
-            set { SetValueAndRaise(out _showException, value); }
+            set { SetValueAndRaise(ref _showException, value); }
         }
 
         /// <summary>
@@ -69,7 +69,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public bool IsLoadingComplete
         {
             get { return !_isLoading; }
-            set { SetValueAndRaise(out _isLoading, !value); }
+            set { SetValueAndRaise(ref _isLoading, !value); }
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public bool IsRefreshing
         {
             get { return _isRefreshing; }
-            set { SetValueAndRaise(out _isRefreshing, value); }
+            set { SetValueAndRaise(ref _isRefreshing, value); }
         }
 
         /// <summary>
@@ -87,7 +87,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         public bool IsLoadingNextPage
         {
             get { return _isLoadingNextPage; }
-            set { SetValueAndRaise(out _isLoadingNextPage, value); }
+            set { SetValueAndRaise(ref _isLoadingNextPage, value); }
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             get { return _selectedTimeRange; }
             set
             {
-                SetValueAndRaise(out _selectedTimeRange, value);
+                SetValueAndRaise(ref _selectedTimeRange, value);
                 if (_selectedTimeRange != null)
                 {
                     Reload();

@@ -56,7 +56,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public string SelectedLogId
         {
             get { return _selectedLogIDShortName; }
-            set { SetValueAndRaise(out _selectedLogIDShortName, value); }
+            set { SetValueAndRaise(ref _selectedLogIDShortName, value); }
         }
 
         /// <summary>

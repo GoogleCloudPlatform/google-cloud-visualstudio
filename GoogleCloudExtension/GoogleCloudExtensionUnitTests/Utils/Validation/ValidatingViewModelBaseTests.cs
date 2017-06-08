@@ -249,7 +249,7 @@ namespace GoogleCloudExtensionUnitTests.Utils.Validation
             public int SomeIntProperty
             {
                 get { return _someIntProperty; }
-                set { SetAndRaiseWithValidation(out _someIntProperty, value, s_setTestValidations); }
+                set { SetAndRaiseWithValidation(ref _someIntProperty, value, s_setTestValidations); }
             }
 
             public int HasErrorChangedCount { get; private set; } = 0;

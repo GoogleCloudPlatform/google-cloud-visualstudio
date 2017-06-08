@@ -51,6 +51,7 @@ namespace GoogleCloudExtension.Controls
 
             /// <summary>
             /// Initializes the object.
+            /// </summary>
             public TextBoxDependencyPropertyPair(TextBox box, DependencyProperty property)
             {
                 TextBox = box;

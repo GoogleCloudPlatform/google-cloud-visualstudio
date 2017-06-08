@@ -74,7 +74,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
         public string NetworkName
         {
             get { return _networkName; }
-            set { SetValueAndRaise(out _networkName, value); }
+            set { SetValueAndRaise(ref _networkName, value); }
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace GoogleCloudExtension.AuthorizedNetworkManagement
         public string NetworkValue
         {
             get { return _networkValue; }
-            set { SetAndRaiseWithValidation(out _networkValue, value, ValidateNetwork(value)); }
+            set { SetAndRaiseWithValidation(ref _networkValue, value, ValidateNetwork(value)); }
         }
 
         /// <summary>

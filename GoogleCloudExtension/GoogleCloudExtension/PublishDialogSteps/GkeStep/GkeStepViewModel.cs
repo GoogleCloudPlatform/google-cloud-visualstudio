@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public AsyncPropertyValue<IList<Cluster>> Clusters
         {
             get { return _clusters; }
-            private set { SetValueAndRaise(out _clusters, value); }
+            private set { SetValueAndRaise(ref _clusters, value); }
         }
 
         /// <summary>
@@ -70,7 +70,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             get { return _selectedCluster; }
             set
             {
-                SetValueAndRaise(out _selectedCluster, value);
+                SetValueAndRaise(ref _selectedCluster, value);
                 UpdateCanPublish();
             }
         }
@@ -85,7 +85,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             {
                 IEnumerable<ValidationResult> validations =
                     GcpPublishStepsUtils.ValidateName(value, Resources.GkePublishDeploymentNameFieldName);
-                SetAndRaiseWithValidation(out _deploymentName, value, validations);
+                SetAndRaiseWithValidation(ref _deploymentName, value, validations);
             }
         }
 
@@ -100,7 +100,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             {
                 IEnumerable<ValidationResult> validations =
                     GcpPublishStepsUtils.ValidateName(value, Resources.GkePublishDeploymentVersionFieldName);
-                SetAndRaiseWithValidation(out _deploymentVersion, value, validations);
+                SetAndRaiseWithValidation(ref _deploymentVersion, value, validations);
             }
         }
 
@@ -114,7 +114,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             {
                 IEnumerable<ValidationResult> validations =
                     GcpPublishStepsUtils.ValidateInteger(value, Resources.GkePublishReplicasFieldName);
-                SetAndRaiseWithValidation(out _replicas, value, validations);
+                SetAndRaiseWithValidation(ref _replicas, value, validations);
             }
         }
 
@@ -124,7 +124,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public bool DontExposeService
         {
             get { return _dontExposeService; }
-            set { SetValueAndRaise(out _dontExposeService, value); }
+            set { SetValueAndRaise(ref _dontExposeService, value); }
         }
 
         /// <summary>
@@ -135,7 +135,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
             get { return _exposeService; }
             set
             {
-                SetValueAndRaise(out _exposeService, value);
+                SetValueAndRaise(ref _exposeService, value);
                 InvalidateExposeService();
             }
         }
@@ -146,7 +146,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public bool ExposePublicService
         {
             get { return _exposePublicService; }
-            set { SetValueAndRaise(out _exposePublicService, value); }
+            set { SetValueAndRaise(ref _exposePublicService, value); }
         }
 
         /// <summary>
@@ -155,7 +155,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.GkeStep
         public bool OpenWebsite
         {
             get { return _openWebsite; }
-            set { SetValueAndRaise(out _openWebsite, value); }
+            set { SetValueAndRaise(ref _openWebsite, value); }
         }
 
         /// <summary>

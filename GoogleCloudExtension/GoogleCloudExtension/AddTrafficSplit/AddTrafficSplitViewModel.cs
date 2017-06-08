@@ -37,7 +37,7 @@ namespace GoogleCloudExtension.AddTrafficSplit
         public string SelectedVersion
         {
             get { return _selectedVersion; }
-            set { SetValueAndRaise(out _selectedVersion, value); }
+            set { SetValueAndRaise(ref _selectedVersion, value); }
         }
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace GoogleCloudExtension.AddTrafficSplit
         public string Allocation
         {
             get { return _allocation; }
-            set { SetAndRaiseWithValidation(out _allocation, value, ValidateAllocation(value)); }
+            set { SetAndRaiseWithValidation(ref _allocation, value, ValidateAllocation(value)); }
         }
 
         /// <summary>
