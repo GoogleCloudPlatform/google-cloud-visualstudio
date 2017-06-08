@@ -109,12 +109,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             }
         }
 
-        public override IAttachDebuggerStep OnCancelCommand()
-        {
-            Context.DialogWindow.Close();
-            return null;
-        }
-
         public override async Task<IAttachDebuggerStep> OnOkCommandAsync()
         {
             SetStage(Stage.AddingFirewallRule);

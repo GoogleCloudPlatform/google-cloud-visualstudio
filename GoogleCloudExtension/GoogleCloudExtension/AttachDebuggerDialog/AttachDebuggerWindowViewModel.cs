@@ -87,7 +87,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public AttachDebuggerWindowViewModel(Instance gceInstance, AttachDebuggerWindow dialogWindow)
         {
             OKCommand = new ProtectedCommand(taskHandler: () => ExceuteAsync(OnOKCommand), canExecuteCommand: false);
-            CancelCommand = new ProtectedCommand(taskHandler: () => ExceuteAsync(OnCancelCommand), canExecuteCommand: false);
+            CancelCommand = new ProtectedCommand(OnCancelCommand, canExecuteCommand: false);
 
             var context = new AttachDebuggerContext(gceInstance, dialogWindow);
             var firstStep = SetCredentialStepViewModel.CreateStep(context);
@@ -105,15 +105,14 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             await GotoStep(nextStep);
         }
 
-        private async Task OnCancelCommand()
+        private void OnCancelCommand()
         {
             if (_currentStep == null)
             {
                 Debug.WriteLine("OnCancelCommand, Unexpected error. _currentStep is null.");
                 return;
             }
-            var nextStep = _currentStep.OnCancelCommand();
-            await GotoStep(nextStep);
+            _currentStep.OnCancelCommand();
         }
 
         private void OnStepPropertyChanged(object sender, PropertyChangedEventArgs e)

@@ -45,10 +45,10 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         #region Implement interface IAttachDebuggerStep
         public override ContentControl Content { get; }
 
-        public override IAttachDebuggerStep OnCancelCommand()
+        public override void OnCancelCommand()
         {
             _installerCancellationSource.Cancel();
-            return null;
+            Context.DialogWindow.Close();
         }
 
         // Okay button is not enabled at this step.
