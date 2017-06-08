@@ -50,7 +50,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public string ProgressMessage
         {
             get { return _message; }
-            private set { SetValueAndRaise(out _message, value); }
+            private set { SetValueAndRaise(ref _message, value); }
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public bool IsListVisible
         {
             get { return _showList; }
-            private set { SetValueAndRaise(out _showList, value); }
+            private set { SetValueAndRaise(ref _showList, value); }
         }
 
         /// <summary>
@@ -68,7 +68,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public IEnumerable<ProcessItem> Processes
         {
             get { return _processesToChoose; }
-            private set { SetValueAndRaise(out _processesToChoose, value); }
+            private set { SetValueAndRaise(ref _processesToChoose, value); }
         }
 
         /// <summary>
@@ -77,7 +77,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public ProcessItem SelectedProcess
         {
             get { return _selectedProcess; }
-            set { SetValueAndRaise(out _selectedProcess, value); }
+            set { SetValueAndRaise(ref _selectedProcess, value); }
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public List<string> EngineTypes
         {
             get { return _engineTypes; }
-            private set { SetValueAndRaise(out _engineTypes, value); }
+            private set { SetValueAndRaise(ref _engineTypes, value); }
         }
 
         /// <summary>
@@ -95,7 +95,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public string SelectedEngine
         {
             get { return _selectedEngine; }
-            set { SetValueAndRaise(out _selectedEngine, value); }
+            set { SetValueAndRaise(ref _selectedEngine, value); }
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public bool SaveSelection
         {
             get { return _saveSelection; }
-            set { SetValueAndRaise(out _saveSelection, value); }
+            set { SetValueAndRaise(ref _saveSelection, value); }
         }
 
         /// <summary>

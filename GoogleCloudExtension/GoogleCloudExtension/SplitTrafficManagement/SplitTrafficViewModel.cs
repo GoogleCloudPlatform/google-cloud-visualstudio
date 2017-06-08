@@ -66,7 +66,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         public bool IsIpChecked
         {
             get { return _isIpChecked; }
-            set { SetValueAndRaise(out _isIpChecked, value); }
+            set { SetValueAndRaise(ref _isIpChecked, value); }
         }
 
         /// <summary>
@@ -76,7 +76,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
         public bool IsCookieChecked
         {
             get { return _isCookieChecked; }
-            set { SetValueAndRaise(out _isCookieChecked, value); }
+            set { SetValueAndRaise(ref _isCookieChecked, value); }
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace GoogleCloudExtension.SplitTrafficManagement
             get { return _selectedSplit; }
             set
             {
-                SetValueAndRaise(out _selectedSplit, value);
+                SetValueAndRaise(ref _selectedSplit, value);
                 UpdateCommands();
             }
         }
@@ -190,9 +190,9 @@ namespace GoogleCloudExtension.SplitTrafficManagement
 
         /// <summary>
         /// Called when the user clicks the Delete button.  This will remove the
-        /// given version (<seealso cref="VersionId"/>>) from the list of
+        /// given version (<seealso cref="SplitTrafficModel.VersionId"/>>) from the list of
         /// <seealso cref="Allocations"/> and adds the version to the the list
-        /// of <seealso cref="AvailableVersions"/>.
+        /// of <seealso cref="_availableVersions"/>.
         /// </summary>
         private void OnDeleteCommand()
         {

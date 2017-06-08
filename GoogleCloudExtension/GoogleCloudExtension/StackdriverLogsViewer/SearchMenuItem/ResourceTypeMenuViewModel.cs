@@ -62,7 +62,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
         public MenuItemViewModel SelectedMenuItem
         {
             get { return _selectedMenuItem; }
-            set { SetValueAndRaise(out _selectedMenuItem, value); }
+            set { SetValueAndRaise(ref _selectedMenuItem, value); }
         }
 
         /// <summary>

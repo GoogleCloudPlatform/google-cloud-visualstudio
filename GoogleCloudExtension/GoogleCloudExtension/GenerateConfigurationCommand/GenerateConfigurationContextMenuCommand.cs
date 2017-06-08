@@ -36,7 +36,6 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
         /// <summary>
         /// Command menu group (command set GUID).
         /// </summary>
-        /// <Guid("")>
         public static readonly Guid CommandSet = new Guid("a7435138-27e2-410c-9d28-dffc5aa3fe80");
 
         /// <summary>
@@ -45,7 +44,7 @@ namespace GoogleCloudExtension.GenerateConfigurationCommand
         private readonly Package _package;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PublishProjectMainMenuCommand"/> class.
+        /// Initializes a new instance of the <see cref="GoogleCloudExtension.PublishDialog.PublishProjectMainMenuCommand"/> class.
         /// Adds our command handlers for menu (commands must exist in the command table file)
         /// </summary>
         /// <param name="package">Owner package, not null.</param>

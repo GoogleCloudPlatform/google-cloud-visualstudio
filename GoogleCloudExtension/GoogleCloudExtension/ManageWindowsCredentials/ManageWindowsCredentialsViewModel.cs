@@ -68,7 +68,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
             get { return _selectedCredentials; }
             set
             {
-                SetValueAndRaise(out _selectedCredentials, value);
+                SetValueAndRaise(ref _selectedCredentials, value);
                 UpdateCommands();
             }
         }
@@ -79,7 +79,7 @@ namespace GoogleCloudExtension.ManageWindowsCredentials
         public IEnumerable<WindowsInstanceCredentials> CredentialsList
         {
             get { return _credentials; }
-            set { SetValueAndRaise(out _credentials, value); }
+            set { SetValueAndRaise(ref _credentials, value); }
         }
 
         public ManageWindowsCredentialsViewModel(Instance instance, ManageWindowsCredentialsWindow owner)
