@@ -12,10 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.FirewallManagement;
-using static GoogleCloudExtension.AttachDebuggerDialog.AttachDebuggerContext;
+using System.Diagnostics;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 
 namespace GoogleCloudExtension.AttachDebuggerDialog
 {
@@ -25,6 +23,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     /// </summary>
     public class EnablePowerShellPortStepViewModel : EnablePortStepViewModel
     {
+        private bool _askedToCheckConnectivityLater = false;
+
         /// <summary>
         /// Create the the step that enables Visual Studio remote debugging tool port.
         /// </summary>
@@ -44,22 +44,40 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         protected override async Task<IAttachDebuggerStep> GetNextStep()
         {
             SetStage(Stage.CheckingConnectivity);
-            if (await Context.RemotePowerShellPort.ConnectivityTest())
+            int waitTime = Context.RemotePowerShellPort.WaitForFirewallRuleTimeInSeconds();
+            bool connected = waitTime > 0 && _askedToCheckConnectivityLater ?
+                await ConnectivityTestTillTimeout(waitTime) :
+                await Context.RemotePowerShellPort.ConnectivityTest(_cancellationTokenSource.Token);
+            if (connected)
             {
                 return InstallStartRemoteToolStepViewModel.CreateStep(Context);
             }
+
+            // If not connected ...
+            if (Context.RemotePowerShellPort.WaitForFirewallRuleTimeInSeconds() > 0)
+            {
+                SetStage(Stage.AskToCheckConnectivityLater);
+                _askedToCheckConnectivityLater = true;
+                return null;
+            }
             else
             {
-                if (Context.RemotePowerShellPort.ShouldWaitForFirewallRule())
+                return HelpStepViewModel.CreateStep(Context);
+            }
+        }
+
+        private async Task<bool> ConnectivityTestTillTimeout(int waitTime)
+        {
+            Stopwatch watch = Stopwatch.StartNew();
+            int remainTime = (int)(waitTime - watch.Elapsed.TotalSeconds) * 1000;
+            while (remainTime > 0 && !_cancellationTokenSource.Token.IsCancellationRequested)
+            {
+                if (await Context.RemotePowerShellPort.ConnectivityTest(_cancellationTokenSource.Token))
                 {
-                    SetStage(Stage.AskToCheckConnectivityLater);
-                    return null;
-                }
-                else
-                {
-                    return HelpStepViewModel.CreateStep(Context);
+                    return true;
                 }
             }
+            return false;
         }
 
         private EnablePowerShellPortStepViewModel(EnablePortStepContent content, AttachDebuggerContext context)

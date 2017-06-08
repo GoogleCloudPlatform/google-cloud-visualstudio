@@ -28,6 +28,7 @@
 
         <Grid 
             Height="380" Width="500"
+            HorizontalAlignment="Left"
             Visibility="{Binding IsListVisible, Converter={StaticResource VisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -46,11 +47,12 @@
                        VerticalAlignment="Center"
                        Margin="0,6,8,6"/>
 
-                <controls:FixBackgroundComboBox 
+                <ComboBox 
                     Grid.Column="1"
                     x:Name="Engines"
                     Margin="0,6,0,6"
                     HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
                     ItemsSource="{Binding EngineTypes}"
                     SelectedItem="{Binding SelectedEngine, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
                     Style="{StaticResource CommonComboBoxStyle}" />
