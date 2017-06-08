@@ -41,6 +41,12 @@ namespace GoogleCloudExtension.GitUtils
         /// </summary>
         public static string GitPath => s_gitPathLazy.Value;
 
+        /// <summary>
+        /// Get Git.exe path by searching under PATH environment variable.
+        /// </summary>
+        /// <returns>
+        /// The full path or NULL if not found.
+        /// </returns>
         public static string GetGitPath() => PathUtils.GetCommandPathFromPATH(GitExecutable);
 
         /// <summary>
