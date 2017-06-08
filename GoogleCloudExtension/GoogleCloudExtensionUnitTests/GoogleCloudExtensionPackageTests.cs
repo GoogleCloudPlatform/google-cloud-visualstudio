@@ -54,7 +54,13 @@ namespace GoogleCloudExtension
         {
             string mockedVersion = "MockVsVersion";
             string mockedEdition = "MockedEdition";
-            InitPackageMock(mockedVersion, mockedEdition);
+            InitPackageMock(
+                dteMock =>
+                {
+
+                    dteMock.Setup(dte => dte.Version).Returns(mockedVersion);
+                    dteMock.Setup(dte => dte.Edition).Returns(mockedEdition);
+                });
 
             Assert.AreEqual(mockedVersion, GoogleCloudExtensionPackage.VsVersion);
             Assert.AreEqual(mockedEdition, GoogleCloudExtensionPackage.VsEdition);
@@ -72,16 +78,14 @@ namespace GoogleCloudExtension
             Assert.IsFalse(GoogleCloudExtensionPackage.Instance.AnalyticsSettings.OptIn);
         }
 
-        private static void InitPackageMock(string mockedVersion, string mockedEdition)
+        private static void InitPackageMock(Action<Mock<DTE>> dteSetupAction)
         {
             var serviceProviderMock = new Mock<IServiceProvider>();
             var dteMock = new Mock<DTE>();
             var activityLogMock = new Mock<IVsActivityLog>();
             activityLogMock.Setup(al => al.LogEntry(It.IsAny<uint>(), It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(VSConstants.S_OK);
-
-            dteMock.Setup(dte => dte.Version).Returns(mockedVersion);
-            dteMock.Setup(dte => dte.Edition).Returns(mockedEdition);
+            dteSetupAction(dteMock);
             SetupService<DTE, DTE>(serviceProviderMock, dteMock);
             SetupService<SVsActivityLog, IVsActivityLog>(serviceProviderMock, activityLogMock);
             ServiceProvider.CreateFromSetSite(serviceProviderMock.Object);
@@ -92,10 +96,10 @@ namespace GoogleCloudExtension
             Mock<IServiceProvider> serviceProviderMock,
             Mock<InterfaceType> mockObj) where InterfaceType : class
         {
-            var dteGuid = typeof(ServiceType).GUID;
+            var serviceGuid = typeof(ServiceType).GUID;
             // ReSharper disable once RedundantAssignment
-            IntPtr dtePtr = Marshal.GetIUnknownForObject(mockObj.Object);
-            serviceProviderMock.Setup(x => x.QueryService(ref dteGuid, ref _iidIUnknown, out dtePtr)).Returns(0);
+            IntPtr interfacePtr = Marshal.GetIUnknownForObject(mockObj.Object);
+            serviceProviderMock.Setup(x => x.QueryService(ref serviceGuid, ref _iidIUnknown, out interfacePtr)).Returns(0);
         }
     }
 }
