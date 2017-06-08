@@ -40,7 +40,11 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// <summary>
         /// This is the last step. OK button simply closes the window.
         /// </summary>
-        public override Task<IAttachDebuggerStep> OnOkCommandAsync() => Task.FromResult(OnCancelCommand());
+        public override Task<IAttachDebuggerStep> OnOkCommandAsync()
+        {
+            Context.DialogWindow.Close();
+            return Task.FromResult<IAttachDebuggerStep>(null);
+        }
 
         public override Task<IAttachDebuggerStep> OnStartAsync()
         {
