@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
@@ -35,5 +34,5 @@ using System.Runtime.InteropServices;
 
 // This version number matches the version in the .vsixmanifest. Please update both versions at the
 // same time.
-[assembly: AssemblyVersion(GoogleCloudExtensionPackage.AssemblyVersion)]
+[assembly: AssemblyVersion("1.2.3.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]

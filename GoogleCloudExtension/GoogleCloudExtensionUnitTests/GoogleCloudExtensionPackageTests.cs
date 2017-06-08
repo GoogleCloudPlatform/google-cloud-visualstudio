@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using EnvDTE;
+using GoogleCloudExtension;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
@@ -21,36 +22,27 @@ using Moq;
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Xml.Linq;
 using IServiceProvider = Microsoft.VisualStudio.OLE.Interop.IServiceProvider;
 
-namespace GoogleCloudExtension
+namespace GoogleCloudExtensionUnitTests
 {
     /// <summary>
-    /// This is the class that implements the package exposed by this assembly.
+    /// Tests for the GoogleCloudExtensionPackage class.
     /// </summary>
-    /// <remarks>
-    /// <para>
-    /// The minimum requirement for a class to be considered a valid package for Visual Studio
-    /// is to implement the IVsPackage interface and register itself with the shell.
-    /// This package uses the helper classes defined inside the Managed Package Framework (MPF)
-    /// to do it: it derives from the Package class that provides the implementation of the
-    /// IVsPackage interface and uses the registration attributes defined in the framework to
-    /// register itself and its components with the shell. These attributes tell the pkgdef creation
-    /// utility what data to put into .pkgdef file.
-    /// </para>
-    /// <para>
-    /// To get loaded into VS, the package must be referred by &lt;Asset Type="Microsoft.VisualStudio.VsPackage" ...&gt; in .vsixmanifest file.
-    /// </para>
-    /// </remarks>
     [TestClass]
+    [DeploymentItem(VsixManifestFileName)]
     public class GoogleCloudExtensionPackageTests
     {
+        private const string ExpectedAssemblyName = "google-cloud-visualstudio";
+        private const string VsixManifestFileName = "source.extension.vsixmanifest";
+
         private static Guid _iidIUnknown = (Guid)Assembly.GetAssembly(typeof(VSConstants))
             .GetType("Microsoft.VisualStudio.NativeMethods")
             .GetField("IID_IUnknown").GetValue(null);
 
         [TestMethod]
-        public void TestVsVersion()
+        public void TestPackageValues()
         {
             string mockedVersion = "MockVsVersion";
             string mockedEdition = "MockedEdition";
@@ -61,14 +53,14 @@ namespace GoogleCloudExtension
                     dteMock.Setup(dte => dte.Version).Returns(mockedVersion);
                     dteMock.Setup(dte => dte.Edition).Returns(mockedEdition);
                 });
+            string expectedAssemblyVersion = GetVsixManifestVersion();
 
             Assert.AreEqual(mockedVersion, GoogleCloudExtensionPackage.VsVersion);
             Assert.AreEqual(mockedEdition, GoogleCloudExtensionPackage.VsEdition);
-            Assert.AreEqual("google-cloud-visualstudio", GoogleCloudExtensionPackage.ApplicationName);
+            Assert.AreEqual(ExpectedAssemblyName, GoogleCloudExtensionPackage.ApplicationName);
+            Assert.AreEqual(expectedAssemblyVersion, GoogleCloudExtensionPackage.ApplicationVersion);
             Assert.AreEqual(
-                GoogleCloudExtensionPackage.AssemblyVersion, GoogleCloudExtensionPackage.ApplicationVersion);
-            Assert.AreEqual(
-                $"google-cloud-visualstudio/{GoogleCloudExtensionPackage.AssemblyVersion}",
+                $"{ExpectedAssemblyName}/{expectedAssemblyVersion}",
                 GoogleCloudExtensionPackage.VersionedApplicationName);
             Assert.AreEqual(
                 GoogleCloudExtensionPackage.ApplicationVersion,
@@ -76,6 +68,16 @@ namespace GoogleCloudExtension
             Assert.IsNull(GoogleCloudExtensionPackage.Instance.AnalyticsSettings.ClientId);
             Assert.IsFalse(GoogleCloudExtensionPackage.Instance.AnalyticsSettings.DialogShown);
             Assert.IsFalse(GoogleCloudExtensionPackage.Instance.AnalyticsSettings.OptIn);
+        }
+
+        private string GetVsixManifestVersion()
+        {
+            XDocument vsixManifest = XDocument.Load(VsixManifestFileName);
+            XNamespace ns = vsixManifest.Root?.Name.Namespace ?? XNamespace.None;
+            XElement manifestRoot = vsixManifest.Element(ns.GetName("PackageManifest"));
+            XElement metadata = manifestRoot?.Element(ns.GetName("Metadata"));
+            XElement identity = metadata?.Element(ns.GetName("Identity"));
+            return identity?.Attribute("Version")?.Value;
         }
 
         private static void InitPackageMock(Action<Mock<DTE>> dteSetupAction)
@@ -99,7 +101,9 @@ namespace GoogleCloudExtension
             var serviceGuid = typeof(ServiceType).GUID;
             // ReSharper disable once RedundantAssignment
             IntPtr interfacePtr = Marshal.GetIUnknownForObject(mockObj.Object);
-            serviceProviderMock.Setup(x => x.QueryService(ref serviceGuid, ref _iidIUnknown, out interfacePtr)).Returns(0);
+            serviceProviderMock
+                .Setup(x => x.QueryService(ref serviceGuid, ref _iidIUnknown, out interfacePtr))
+                .Returns(0);
         }
     }
 }

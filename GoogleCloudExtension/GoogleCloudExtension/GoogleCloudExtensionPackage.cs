@@ -73,10 +73,6 @@ namespace GoogleCloudExtension
         /// </summary>
         public const string PackageGuidString = "3784fd98-7fcc-40fc-be3b-b68334735af2";
 
-        // This version number matches the version in the .vsixmanifest. Please update both versions at the
-        // same time.
-        public const string AssemblyVersion = "1.2.3.0";
-
         /// <summary>
         /// Option keys for the extension options.
         /// </summary>
