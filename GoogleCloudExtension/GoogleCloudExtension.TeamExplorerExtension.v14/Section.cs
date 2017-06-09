@@ -68,7 +68,7 @@ namespace GoogleCloudExtension.TeamExplorerExtension
         public string Title { get; }
 
         /// <summary>
-        /// Using implicit declaration for Title is assigned at constructor. 
+        /// Using implicit declaration for IsBusy has private setter.
         /// </summary>
         public bool IsBusy
         {
