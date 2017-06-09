@@ -172,6 +172,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
                 operation.Started += OnOperationStarted;
             }
 
+            _owner.IsCloseButtonEnabled = false;
             Caption = Resources.UiStopButtonCaption;
             ActionCommand = new ProtectedCommand(OnActionCommand);
             ExpandCollapseDetailsCommand = new ProtectedCommand(OnExpandCollapseDetailsCommand);
@@ -190,6 +191,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
             Completed++;
             if (IsComplete)
             {
+                _owner.IsCloseButtonEnabled = true;
                 Caption = Resources.UiCloseButtonCaption;
             }
         }
