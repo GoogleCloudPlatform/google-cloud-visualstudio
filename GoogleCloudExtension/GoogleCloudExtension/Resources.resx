@@ -2267,4 +2267,8 @@
     <value>Attach remote debugger after publishing</value>
     <comment>The caption of checkbox that asks to attach debugger after publishing</comment>
   </data>
+  <data name="CsrConnectSectionTitle" xml:space="preserve">
+    <value>Google Cloud Source Repositories</value>
+    <comment>The title of connect section of Cloud Source Repositories at Visual Studio Team Explorer.</comment>
+  </data>
 </root>
