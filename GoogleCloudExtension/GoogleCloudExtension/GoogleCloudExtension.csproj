@@ -264,6 +264,7 @@
       <DependentUpon>NewTopicWindowContent.xaml</DependentUpon>
     </Compile>
     <Compile Include="PubSubWindows\PubSubNameValidationRule.cs" />
+    <Compile Include="Utils\ValidateGitDependencyHelper.cs" />
     <Compile Include="Utils\Validation\StringValidationResult.cs" />
     <Compile Include="Utils\Validation\ValidatingViewModelBase.cs" />
     <Compile Include="Resources.Designer.cs">
