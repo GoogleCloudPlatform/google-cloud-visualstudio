@@ -67,13 +67,17 @@ namespace GoogleCloudExtension.TeamExplorerExtension
         /// </summary>
         public string Title { get; }
 
-        bool ITeamExplorerSection.IsBusy
+        /// <summary>
+        /// Using implicit declaration for Title is assigned at constructor. 
+        /// </summary>
+        public bool IsBusy
         {
             get
             {
                 Debug.WriteLine($"CsrTeamExplorerSection.IsBusy get");
                 return _isBusy;
             }
+            private set { SetValueAndRaise(ref _isBusy, value); }
         }
 
         bool ITeamExplorerSection.IsExpanded
