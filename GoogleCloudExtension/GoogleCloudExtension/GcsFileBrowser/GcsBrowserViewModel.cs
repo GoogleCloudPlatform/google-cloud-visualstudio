@@ -340,8 +340,10 @@ namespace GoogleCloudExtension.GcsFileBrowser
 
         private void OnUploadFilesCommand()
         {
-            var dialog = new System.Windows.Forms.OpenFileDialog();
-            dialog.Multiselect = true;
+            var dialog = new System.Windows.Forms.OpenFileDialog
+            {
+                Multiselect = true
+            };
 
             var result = dialog.ShowDialog();
             if (result == System.Windows.Forms.DialogResult.Cancel)
