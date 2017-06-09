@@ -46,7 +46,8 @@ namespace GoogleCloudExtension.DataSources.UnitTests
             IEnumerable<object> parameterValues,
             IEnumerable<ResponseType> responses)
             where S : BaseClientService
-            where P1 : class where P2 : class
+            where P1 : class
+            where P2 : class
             where RequestType : ClientServiceRequest<ResponseType>
         {
             var clientServiceMock = new Mock<IClientService>();
