@@ -2248,7 +2248,7 @@
     <comment>The attach debugger help message first part.  The message is divided to 3 parts --  [first part] [link caption] [last part].</comment>
   </data>
   <data name="AttachDebuggerHelpLastPartMessage" xml:space="preserve">
-    <value>to set up the debugging tool properly.</value>
+    <value>to set up the debugger remote tools properly.</value>
     <comment>The attach debugger help message last part.  The message is divided to 3 parts --  [first part] [link caption] [last part].</comment>
   </data>
   <data name="AttachDebuggerHelpStepLinkCpation" xml:space="preserve">

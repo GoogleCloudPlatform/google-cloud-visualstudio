@@ -89,8 +89,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         }
 
         /// <summary>
-        /// Gets how much longer to wait for firewall rule to take effect.
-        /// If the return value is 0 or less than 0, it indicates not to wait any more.
+        /// Gets how longer to wait for firewall rule to take effect.
         /// </summary>
         public int WaitForFirewallRuleTimeInSeconds()
             => (int)(s_firewallRuleWaitMaxTime - (DateTime.UtcNow - _portEnabledTime)).TotalSeconds;
