@@ -90,8 +90,19 @@
         <StackPanel Grid.Column="1"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
+            <!-- The upload files button. -->
+            <Button Command="{Binding UploadFilesCommand}"
+                    Style="{StaticResource CommonButtonDynamicStyle}">
+                <Button.ToolTip>
+                    <ToolTip Content="{x:Static ext:Resources.GcsFileBrowserUploadFilesToolTip}"
+                             Style="{StaticResource CommonTooltipStyle}" />
+                </Button.ToolTip>
+                <Image Source="{mb:ImageResource GcsFileBrowser/Resources/file_upload.png}" />
+            </Button>
+            
             <!-- The create new folder button. -->
             <Button Command="{Binding NewFolderCommand}"
+                    Margin="10,0,0,0"
                     Style="{StaticResource CommonButtonDynamicStyle}">
                 <Button.ToolTip>
                     <ToolTip Content="{x:Static ext:Resources.GcsFileBrowserNewFolderTooltip}"

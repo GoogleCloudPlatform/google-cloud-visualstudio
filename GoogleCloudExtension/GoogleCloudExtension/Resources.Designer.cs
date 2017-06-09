@@ -2941,6 +2941,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Upload files.
+        /// </summary>
+        public static string GcsFileBrowserUploadFilesToolTip {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserUploadFilesToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Files uploaded {0} of {1}.
         /// </summary>
         public static string GcsFileBrowserUploadingOverallProgressMessage {

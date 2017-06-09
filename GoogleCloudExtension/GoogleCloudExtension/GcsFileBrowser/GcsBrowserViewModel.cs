@@ -134,6 +134,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
         public ProtectedCommand DeleteSelectedCommand { get; }
 
         /// <summary>
+        /// Command to execute when uploading files.
+        /// </summary>
+        public ICommand UploadFilesCommand { get; }
+
+        /// <summary>
         /// The command to execute when a double click happens.
         /// </summary>
         public ICommand DoubleClickCommand { get; }
@@ -149,6 +154,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             RefreshCommand = new ProtectedCommand(OnRefreshCommand);
             NewFolderCommand = new ProtectedCommand(OnNewFolderCommand);
             DeleteSelectedCommand = new ProtectedCommand(OnDeleteCommand, canExecuteCommand: false);
+            UploadFilesCommand = new ProtectedCommand(OnUploadFilesCommand);
             DoubleClickCommand = new ProtectedCommand<GcsRow>(OnDoubleClickCommand);
         }
 
@@ -162,31 +168,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             // of the upload operation. Similar to what is done in the Windows explorer.
             ShellUtils.SetForegroundWindow();
 
-            try
-            {
-                CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-                var uploadOperationsQueue = _fileOperationsEngine.StartUploadOperations(
-                    files,
-                    bucket: Bucket.Name,
-                    bucketPath: _currentState.CurrentPath,
-                    cancellationToken: cancellationTokenSource.Token);
-
-                GcsFileProgressDialogWindow.PromptUser(
-                    caption: Resources.GcsFileBrowserUploadingProgressCaption,
-                    message: Resources.GcsFileBrowserUploadingProgressMessage,
-                    progressMessage: Resources.GcsFileBrowserUploadingOverallProgressMessage,
-                    operations: uploadOperationsQueue.Operations,
-                    cancellationTokenSource: cancellationTokenSource);
-            }
-            catch (IOException ex)
-            {
-                UserPromptUtils.ErrorPrompt(
-                    message: Resources.GcsFileProgressDialogFailedToEnumerateFiles,
-                    title: Resources.UiErrorCaption,
-                    errorDetails: ex.Message);
-            }
-
-            UpdateCurrentState();
+            UploadFiles(files);
         }
 
         /// <summary>
@@ -354,6 +336,49 @@ namespace GoogleCloudExtension.GcsFileBrowser
             {
                 // TODO: Show the file.
             }
+        }
+
+        private void OnUploadFilesCommand()
+        {
+            var dialog = new System.Windows.Forms.OpenFileDialog();
+            dialog.Multiselect = true;
+
+            var result = dialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.Cancel)
+            {
+                return;
+            }
+
+            UploadFiles(dialog.FileNames);
+        }
+
+        private void UploadFiles(IEnumerable<string> files)
+        {
+            try
+            {
+                CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+                var uploadOperationsQueue = _fileOperationsEngine.StartUploadOperations(
+                    files,
+                    bucket: Bucket.Name,
+                    bucketPath: _currentState.CurrentPath,
+                    cancellationToken: cancellationTokenSource.Token);
+
+                GcsFileProgressDialogWindow.PromptUser(
+                    caption: Resources.GcsFileBrowserUploadingProgressCaption,
+                    message: Resources.GcsFileBrowserUploadingProgressMessage,
+                    progressMessage: Resources.GcsFileBrowserUploadingOverallProgressMessage,
+                    operations: uploadOperationsQueue.Operations,
+                    cancellationTokenSource: cancellationTokenSource);
+            }
+            catch (IOException ex)
+            {
+                UserPromptUtils.ErrorPrompt(
+                    message: Resources.GcsFileProgressDialogFailedToEnumerateFiles,
+                    title: Resources.UiErrorCaption,
+                    errorDetails: ex.Message);
+            }
+
+            UpdateCurrentState();
         }
 
         private async void OnDownloadCommand()

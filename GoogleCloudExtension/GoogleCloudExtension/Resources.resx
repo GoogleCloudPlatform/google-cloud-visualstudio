@@ -2427,6 +2427,10 @@
     <value>Version name</value>
     <comment>Field display name for the version name textbox. Should match PublishDialogFlexVersionNameCaption.</comment>
   </data>
+  <data name="GcsFileBrowserUploadFilesToolTip" xml:space="preserve">
+    <value>Upload files</value>
+    <comment>Toolstip shown on the upload files button.</comment>
+  </data>
   <data name="UiDeleteToolTip" xml:space="preserve">
     <value>Delete</value>
     <comment>Tooltip show on delete buttons.</comment>
