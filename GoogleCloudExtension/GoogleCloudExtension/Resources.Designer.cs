@@ -2995,15 +2995,6 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Cancelled.
-        /// </summary>
-        public static string GcsFileProgressDialogCancelledState {
-            get {
-                return ResourceManager.GetString("GcsFileProgressDialogCancelledState", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Cancelling operation.
         /// </summary>
         public static string GcsFileProgressDialogCancellingOperationMessage {

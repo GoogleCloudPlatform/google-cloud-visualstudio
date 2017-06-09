@@ -2263,10 +2263,6 @@
     <value>Failed to create folder {0}.</value>
     <comment>Message shown when there was a failure creating a GCS folder. {0} is the name of the folder.</comment>
   </data>
-  <data name="GcsFileProgressDialogCancelledState" xml:space="preserve">
-    <value>Cancelled</value>
-    <comment>Message shown when an operation is in the cancelled state.</comment>
-  </data>
   <data name="GcsFileProgressDialogErrorState" xml:space="preserve">
     <value>Error</value>
     <comment>Message shown when an operation is in the error state.</comment>
