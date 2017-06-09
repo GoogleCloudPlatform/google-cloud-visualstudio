@@ -172,6 +172,7 @@ namespace GoogleCloudExtension.GcsFileProgressDialog
                 operation.Started += OnOperationStarted;
             }
 
+            Caption = Resources.UiStopButtonCaption;
             ActionCommand = new ProtectedCommand(OnActionCommand);
             ExpandCollapseDetailsCommand = new ProtectedCommand(OnExpandCollapseDetailsCommand);
         }
