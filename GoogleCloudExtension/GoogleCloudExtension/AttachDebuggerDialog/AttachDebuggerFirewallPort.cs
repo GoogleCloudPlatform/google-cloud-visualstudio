@@ -32,7 +32,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     public class AttachDebuggerFirewallPort
     {
         private static readonly TimeSpan ConnectivityTestTimeout = TimeSpan.FromSeconds(5);
-        private const int ConnectivityTestTimeoutInSeconds = 5;
         private static readonly TimeSpan s_firewallRuleWaitMaxTime = TimeSpan.FromMinutes(5);
         private readonly Lazy<GceDataSource> _lazyDataSource;
         private Instance _gceInstance;
@@ -90,7 +89,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         }
 
         /// <summary>
-        /// Gets how longer to wait for firewall rule to take effect.
+        /// Gets how much longer to wait for firewall rule to take effect.
+        /// If the return value is 0 or less than 0, it indicates not to wait any more.
         /// </summary>
         public int WaitForFirewallRuleTimeInSeconds()
             => (int)(s_firewallRuleWaitMaxTime - (DateTime.UtcNow - _portEnabledTime)).TotalSeconds;

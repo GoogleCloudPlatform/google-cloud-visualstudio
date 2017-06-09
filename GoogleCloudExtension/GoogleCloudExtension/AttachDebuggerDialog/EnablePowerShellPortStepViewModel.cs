@@ -69,8 +69,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         private async Task<bool> ConnectivityTestTillTimeout(int waitTime)
         {
             Stopwatch watch = Stopwatch.StartNew();
-            int remainTime = (int)(waitTime - watch.Elapsed.TotalSeconds) * 1000;
-            while (remainTime > 0 && !_cancellationTokenSource.Token.IsCancellationRequested)
+            while (watch.Elapsed.TotalSeconds < waitTime && !_cancellationTokenSource.Token.IsCancellationRequested)
             {
                 if (await Context.RemotePowerShellPort.ConnectivityTest(_cancellationTokenSource.Token))
                 {

@@ -27,10 +27,6 @@ if (!$debuggerSourcePath) {
 }
 Write-Output $debuggerSourcePath
 
-if (!$session) {
-    throw "Failed to create Remote PowerShell session"
-}
-
 # Init variables
 Invoke-Command -Session $session -ScriptBlock { $destinationPath = Join-Path "$env:programfiles" "VisualStudioRemoteTools" }
 Invoke-Command -Session $session -ScriptBlock { $copyComplete = "copy-msvsmon-complete" }
