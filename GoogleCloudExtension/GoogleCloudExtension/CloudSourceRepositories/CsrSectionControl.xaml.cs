@@ -35,7 +35,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
         /// <summary>
         /// Implement <seealso cref="ISectionView.Title"/>
         /// </summary>
-        public string Title { get; } = GoogleCloudExtension.Resources.CsrConnectSectionTitle;
+        string ISectionView.Title { get; } = GoogleCloudExtension.Resources.CsrConnectSectionTitle;
 
         /// <summary>
         /// Add <seealso cref="ImportingConstructorAttribute"/>.

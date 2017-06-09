@@ -65,6 +65,7 @@
   <ItemGroup>
     <None Include="Libs\Microsoft.TeamFoundation.Controls.dll" />
     <None Include="Libs\Microsoft.TeamFoundation.Git.Provider.dll" />
+    <None Include="Readme.md" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Key.snk" />

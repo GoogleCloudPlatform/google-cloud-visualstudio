@@ -41,6 +41,9 @@ namespace GoogleCloudExtension.TeamExplorerExtension
 
         #region implement interface ITeamExplorerSection
 
+        /// <summary>
+        /// Using implicit declaration for SectionContent is assigned at constructor. 
+        /// </summary>
         public object SectionContent
         {
             get
@@ -59,23 +62,21 @@ namespace GoogleCloudExtension.TeamExplorerExtension
             private set { SetValueAndRaise(ref _sectionContent, value); }
         }
 
+        /// <summary>
+        /// Using implicit declaration for Title is assigned at constructor. 
+        /// </summary>
         public string Title { get; }
 
-        public bool IsBusy
+        bool ITeamExplorerSection.IsBusy
         {
             get
             {
                 Debug.WriteLine($"CsrTeamExplorerSection.IsBusy get");
                 return _isBusy;
             }
-            private set
-            {
-                Debug.WriteLine($"CsrTeamExplorerSection.IsBusy set");
-                SetValueAndRaise(ref _isBusy, value);
-            }
         }
 
-        public bool IsExpanded
+        bool ITeamExplorerSection.IsExpanded
         {
             get
             {
@@ -89,7 +90,7 @@ namespace GoogleCloudExtension.TeamExplorerExtension
             }
         }
 
-        public bool IsVisible
+        bool ITeamExplorerSection.IsVisible
         {
             get
             {
@@ -124,12 +125,12 @@ namespace GoogleCloudExtension.TeamExplorerExtension
 
         #region implement interface ITeamExplorerSection
 
-        public void Loaded(object sender, SectionLoadedEventArgs e)
+        void ITeamExplorerSection.Loaded(object sender, SectionLoadedEventArgs e)
         {
             Debug.WriteLine($"CsrTeamExplorerSection.Loaded {sender.GetType().Name} {sender.ToString()}, {e}");
         }
 
-        public void Initialize(object sender, SectionInitializeEventArgs e)
+        void ITeamExplorerSection.Initialize(object sender, SectionInitializeEventArgs e)
         {
             Debug.WriteLine($"CsrTeamExplorerSection.Initialize");
             _serviceProvider = e.ServiceProvider;
@@ -137,29 +138,29 @@ namespace GoogleCloudExtension.TeamExplorerExtension
             _viewModel.Initialize(_teamExploerServices);
         }
 
-        public void Cancel()
+        void ITeamExplorerSection.Cancel()
         {
             Debug.WriteLine($"CsrTeamExplorerSection.Cancel");
         }
 
-        public object GetExtensibilityService(Type serviceType)
+        object ITeamExplorerSection.GetExtensibilityService(Type serviceType)
         {
             Debug.WriteLine($"CsrTeamExplorerSection.GetExtensibilityService");
             return null;
         }
 
-        public void Refresh()
+        void ITeamExplorerSection.Refresh()
         {
             Debug.WriteLine($"CsrTeamExplorerSection.Refresh");
             _viewModel.Refresh();
         }
 
-        public void SaveContext(object sender, SectionSaveContextEventArgs e)
+        void ITeamExplorerSection.SaveContext(object sender, SectionSaveContextEventArgs e)
         {
             Debug.WriteLine($"CsrTeamExplorerSection.SaveContext {sender.GetType().Name} {sender.ToString()}, {e}");
         }
 
-        public void Dispose()
+        void IDisposable.Dispose()
         { }
 
         #endregion
