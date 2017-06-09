@@ -29,19 +29,28 @@ namespace GoogleCloudExtension.Deployment
     {
         internal const string DockerfileName = "Dockerfile";
 
+        private static readonly Dictionary<KnownProjectTypes, string> s_knownRuntimeImages = new Dictionary<KnownProjectTypes, string>
+        {
+            [ KnownProjectTypes.NetCoreWebApplication1_0 ] = "gcr.io/google-appengine/aspnetcore:1.0",
+            [ KnownProjectTypes.NetCoreWebApplication1_1 ] = "gcr.io/google-appengine/aspnetcore:1.1"
+        };
+
         /// <summary>
         /// This template is the smallest possible Dockerfile needed to deploy an ASP.NET Core app to
-        /// App Engine Flex environment. It invokes the entry point .dll given by {0}, sets up the environment
+        /// App Engine Flex environment. It invokes the entry point .dll given by {1}, sets up the environment
         /// so the app listens on port 8080.
         /// All of the files composing the app are copied to the /app path, then it is set as the working directory.
+        /// The parameters into the string are:
+        ///   {0}, the base image for the app's Docker image.
+        ///   {1}, the entrypoint .dll for the app.
         /// </summary>
         private const string DockerfileDefaultContent =
-            "FROM gcr.io/google-appengine/aspnetcore:1.0\n" +
+            "FROM {0}\n" +
             "COPY . /app\n" +
             "WORKDIR /app\n" +
             "EXPOSE 8080\n" +
             "ENV ASPNETCORE_URLS=http://*:8080\n" +
-            "ENTRYPOINT [\"dotnet\", \"{0}.dll\"]\n";
+            "ENTRYPOINT [\"dotnet\", \"{1}.dll\"]\n";
 
         /// <summary>
         /// Creates an app bundle by publishing it to the given directory. It only publishes the release configuration.
@@ -88,6 +97,8 @@ namespace GoogleCloudExtension.Deployment
         {
             var sourceDockerfile = Path.Combine(project.DirectoryPath, DockerfileName);
             var targetDockerfile = Path.Combine(stageDirectory, DockerfileName);
+            var entryPointName = CommonUtils.GetEntrypointName(stageDirectory) ?? project.Name;
+            var baseImage = s_knownRuntimeImages[project.ProjectType];
 
             if (File.Exists(sourceDockerfile))
             {
@@ -95,7 +106,7 @@ namespace GoogleCloudExtension.Deployment
             }
             else
             {
-                var content = String.Format(DockerfileDefaultContent, project.Name);
+                var content = String.Format(DockerfileDefaultContent, baseImage, entryPointName);
                 File.WriteAllText(targetDockerfile, content);
             }
         }
@@ -107,7 +118,8 @@ namespace GoogleCloudExtension.Deployment
         internal static void GenerateDockerfile(IParsedProject project)
         {
             var targetDockerfile = Path.Combine(project.DirectoryPath, DockerfileName);
-            var content = String.Format(DockerfileDefaultContent, project.Name);
+            var baseImage = s_knownRuntimeImages[project.ProjectType];
+            var content = String.Format(DockerfileDefaultContent, baseImage, project.Name);
             File.WriteAllText(targetDockerfile, content);
         }
 
