@@ -129,6 +129,11 @@ namespace GoogleCloudExtension.GcsFileBrowser
         public ICommand NewFolderCommand { get; }
 
         /// <summary>
+        /// Command to execute when deleting the selected items.
+        /// </summary>
+        public ProtectedCommand DeleteSelectedCommand { get; }
+
+        /// <summary>
         /// The command to execute when a double click happens.
         /// </summary>
         public ICommand DoubleClickCommand { get; }
@@ -143,6 +148,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             NavigateToCommand = new ProtectedCommand<PathStep>(OnNavigateToCommand);
             RefreshCommand = new ProtectedCommand(OnRefreshCommand);
             NewFolderCommand = new ProtectedCommand(OnNewFolderCommand);
+            DeleteSelectedCommand = new ProtectedCommand(OnDeleteCommand, canExecuteCommand: false);
             DoubleClickCommand = new ProtectedCommand<GcsRow>(OnDoubleClickCommand);
         }
 
@@ -189,6 +195,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         internal void InvalidateSelectedItems(IEnumerable<GcsRow> selectedRows)
         {
             SelectedItems = selectedRows.ToList();
+            DeleteSelectedCommand.CanExecuteCommand = SelectedItems.Count > 0;
         }
 
         /// <summary>
@@ -213,7 +220,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = Resources.GcsFileBrowserDonwloadHeader, Command=new ProtectedCommand(OnDownloadCommand) },
-                new MenuItem { Header = Resources.UiDeleteButtonCaption, Command = new ProtectedCommand(OnDeleteCommand) },
+                new MenuItem { Header = Resources.UiDeleteButtonCaption, Command = DeleteSelectedCommand },
             };
 
             if (SelectedItems.Count == 1)

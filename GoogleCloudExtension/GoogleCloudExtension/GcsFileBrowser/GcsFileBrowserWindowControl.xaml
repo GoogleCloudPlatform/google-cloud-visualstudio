@@ -99,7 +99,18 @@
                 </Button.ToolTip>
                 <Image Source="{mb:ImageResource GcsFileBrowser/Resources/create_new_folder.png}" />
             </Button>
-            
+
+            <!-- Delete selected files. -->
+            <Button Command="{Binding DeleteSelectedCommand}"
+                    Margin="10,0,0,0"
+                    Style="{StaticResource CommonButtonDynamicStyle}">
+                <Button.ToolTip>
+                    <ToolTip Content="{x:Static ext:Resources.UiDeleteToolTip}"
+                             Style="{StaticResource CommonTooltipStyle}" />
+                </Button.ToolTip>
+                <Image Source="{mb:ImageResource GcsFileBrowser/Resources/delete_forever.png}" />
+            </Button>
+
             <!-- The refresh button. -->
             <Button Command="{Binding RefreshCommand}"
                     Margin="10,0,0,0"

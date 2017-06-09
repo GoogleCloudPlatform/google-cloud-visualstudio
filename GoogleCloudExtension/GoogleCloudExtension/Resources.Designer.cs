@@ -4966,6 +4966,15 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string UiDeleteToolTip {
+            get {
+                return ResourceManager.GetString("UiDeleteToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Download.
         /// </summary>
         public static string UiDownloadButtonCaption {
