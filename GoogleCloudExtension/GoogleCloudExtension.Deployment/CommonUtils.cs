@@ -33,7 +33,8 @@ namespace GoogleCloudExtension.Deployment
         private const string DepsFileExtension = ".deps.json";
 
         /// <summary>
-        /// Returns the entrypoint .dll for the .NET Core project given it's stage directory.
+        /// Returns the name of the entrypoint assembly for the .NET Core project given it's stage directory. The name
+        /// is determined by looking for the .deps.json that defines the app's structure.
         /// </summary>
         /// <param name="stageDirectory">The directory where the app is being staged.</param>
         /// <returns></returns>

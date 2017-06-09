@@ -29,6 +29,7 @@ namespace GoogleCloudExtension.Deployment
     {
         internal const string DockerfileName = "Dockerfile";
 
+        // The mapping of supported .NET Core versions to the base images to use for the Docker image.
         private static readonly Dictionary<KnownProjectTypes, string> s_knownRuntimeImages = new Dictionary<KnownProjectTypes, string>
         {
             [ KnownProjectTypes.NetCoreWebApplication1_0 ] = "gcr.io/google-appengine/aspnetcore:1.0",
