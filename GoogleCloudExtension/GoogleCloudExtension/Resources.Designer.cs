@@ -2842,7 +2842,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are no files in this directory, you can upload files by selecting them in Windows Explorer and dragging them here..
+        ///   Looks up a localized string similar to There are no files in this directory, you can upload files by clicking the upload files button or by selecting them in Windows Explorer and dragging them here..
         /// </summary>
         public static string GcsFileBrowserNoFilesMessage {
             get {
@@ -2937,6 +2937,15 @@ namespace GoogleCloudExtension {
         public static string GcsFileBrowserSizeHeader {
             get {
                 return ResourceManager.GetString("GcsFileBrowserSizeHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to _Upload files.
+        /// </summary>
+        public static string GcsFileBrowserUploadFilesButtonCaption {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserUploadFilesButtonCaption", resourceCulture);
             }
         }
         
