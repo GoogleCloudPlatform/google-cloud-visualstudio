@@ -43,17 +43,16 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         public async Task<IList<Repo>> ListReposAsync()
         {
-            var request = Service.Projects.Repos.List(ProjectResourceName);
-            try
-            {
-                return (await request.ExecuteAsync()).Repos;
-            }
-            catch (GoogleApiException ex)
-            {
-                Debug.WriteLine($"Failed to get CSR entries: {ex.Message}");
-                throw new DataSourceException(ex.Message, ex);
-            }
-        }
+            return await LoadPagedListAsync(
+                (token) =>
+                {
+                    var request = Service.Projects.Repos.List(ProjectResourceName);
+                    request.PageToken = token;
+                    return request.ExecuteAsync();
+                },
+                x => x.Repos,
+                x => x.NextPageToken);
+        }           
 
         /// <summary>
         /// Creates a cloud source repository.
