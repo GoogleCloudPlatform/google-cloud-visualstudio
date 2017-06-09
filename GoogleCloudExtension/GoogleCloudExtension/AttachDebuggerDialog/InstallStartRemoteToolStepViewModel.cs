@@ -29,8 +29,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     public class InstallStartRemoteToolStepViewModel : AttachDebuggerStepBase
     {
         private static readonly TimeSpan s_waitConnectionTimeout = TimeSpan.FromMinutes(3);
+
         private RemoteToolInstaller _installer;
-        private CancellationTokenSource _cancellationSource = new CancellationTokenSource();
         private string _progressMessage;
 
         /// <summary>
@@ -45,12 +45,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         #region Implement interface IAttachDebuggerStep
         public override ContentControl Content { get; }
 
-        public override void OnCancelCommand()
-        {
-            _cancellationSource.Cancel();
-            Context.DialogWindow.Close();
-        }
-
         // Okay button is not enabled at this step.
         // This method should never be called for this step.
         public override Task<IAttachDebuggerStep> OnOkCommandAsync() => Task.FromResult<IAttachDebuggerStep>(null);
@@ -60,7 +54,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             IsCancelButtonEnabled = true;
             ProgressMessage = Resources.AttachDebuggerInstallSetupProgressMessage;
 
-            if (await _installer.Install(_cancellationSource.Token))
+            if (await _installer.Install(CancelToken))
             {
                 var session = new RemoteToolSession(
                     Context.PublicIp,
@@ -76,11 +70,11 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                     Context.DebuggerPort.PortInfo.Port);
 
                 Stopwatch watch = Stopwatch.StartNew();
-                while (!_cancellationSource.IsCancellationRequested &&
+                while (!CancelToken.IsCancellationRequested &&
                        watch.Elapsed < s_waitConnectionTimeout &&
                        !session.IsStopped)
                 {
-                    if (await Context.DebuggerPort.ConnectivityTest(_cancellationSource.Token))
+                    if (await Context.DebuggerPort.ConnectivityTest(CancelToken))
                     {
                         return ListProcessStepViewModel.CreateStep(Context);
                     }

@@ -35,8 +35,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         private bool _askingToTestConnectivityLater;
         private AttachDebuggerFirewallPort _port;
 
-        protected readonly CancellationTokenSource _cancellationTokenSource;
-
         /// <summary>
         /// Show the message if the port is not enabled.
         /// </summary>
@@ -91,7 +89,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         {
             Content = content;
             _port = port;
-            _cancellationTokenSource = new CancellationTokenSource();
             SetStage(Stage.Init);
             EnablePortHelpLinkCommand = new ProtectedCommand(() => Process.Start(EnablePortHelpLink));
         }
@@ -100,12 +97,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         #region Implement interface IAttachDebuggerStep
         public override ContentControl Content { get; }
-
-        public override void OnCancelCommand()
-        {
-            _cancellationTokenSource.Cancel();
-            base.OnCancelCommand();
-        }
 
         public override async Task<IAttachDebuggerStep> OnStartAsync()
         {

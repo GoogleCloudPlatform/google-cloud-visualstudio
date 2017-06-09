@@ -44,8 +44,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         public PortInfo PortInfo { get; }
 
         /// <summary>
-        /// Description to the port.
-        /// Debugger Remote Tool or Remote PowerShell.
+        /// Description of the port.
+        /// Can be either Debugger Remote Tool or Remote PowerShell.
         /// </summary>
         public string Description { get; }
 
@@ -53,7 +53,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// Initializes the <seealso cref="AttachDebuggerFirewallPort"/> object.
         /// </summary>
         /// <param name="portInfo">A <seealso cref="PortInfo"/> object that specifies the port.</param>
-        /// <param name="description">A description shown at testing connectivity step.</param>
+        /// <param name="description">A description shown during testing connectivity step.</param>
         /// <param name="gceInstance">The GCP Windows VM instance.</param>
         /// <param name="lazyDataSource">The data source object.</param>
         public AttachDebuggerFirewallPort(
@@ -62,8 +62,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             Instance gceInstance,
             Lazy<GceDataSource> lazyDataSource)
         {
-            Description = description.ThrowIfNullOrEmpty(nameof(description));
             PortInfo = portInfo.ThrowIfNull(nameof(portInfo));
+            Description = description.ThrowIfNullOrEmpty(nameof(description));
             _gceInstance = gceInstance.ThrowIfNull(nameof(gceInstance));
             _lazyDataSource = lazyDataSource.ThrowIfNull(nameof(lazyDataSource));
         }
@@ -89,7 +89,13 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         }
 
         /// <summary>
-        /// Gets how longer to wait for firewall rule to take effect.
+        /// Gets how long to wait for firewall rule to take effect.
+        /// There are several cases here. 
+        /// 1) Firewall was already enabled, we did not enable it. Then we don't wait.
+        /// 2) Need to wait for some time.
+        /// 3) Waited for too long, stop waiting. 
+        /// Case 1) and 3) , it returns value less than or equal to 0.
+        /// case 2, it returns positive value.
         /// </summary>
         public int WaitForFirewallRuleTimeInSeconds()
             => (int)(s_firewallRuleWaitMaxTime - (DateTime.UtcNow - _portEnabledTime)).TotalSeconds;

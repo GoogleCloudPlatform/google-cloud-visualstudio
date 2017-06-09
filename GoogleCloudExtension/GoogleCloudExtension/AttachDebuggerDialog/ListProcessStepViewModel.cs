@@ -195,7 +195,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             }
             catch (COMException ex)
             {
-                Console.WriteLine($"Attach debugger got exception. {ex}");
+                Debug.WriteLine($"Attach debugger got exception. {ex}");
                 UserPromptUtils.ErrorPrompt(
                     message: String.Format(Resources.AttachDebuggerAttachErrorMessageFormat, SelectedProcess.Name),
                     title: Resources.uiDefaultPromptTitle);

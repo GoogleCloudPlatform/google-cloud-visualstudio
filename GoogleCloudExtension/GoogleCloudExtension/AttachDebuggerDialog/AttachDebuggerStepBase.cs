@@ -13,7 +13,7 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils;
-using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
@@ -24,14 +24,19 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     /// </summary>
     public abstract class AttachDebuggerStepBase : ViewModelBase, IAttachDebuggerStep
     {
+        private CancellationTokenSource _cancellationTokenSource;
         private bool _isCancelButtonEnabled;
         private bool _isOKButtonEnabled;
         private bool _isCancelButtonVisible = true;
+
+        protected CancellationToken CancelToken { get; }
 
         protected AttachDebuggerContext Context { get; }
 
         public AttachDebuggerStepBase(AttachDebuggerContext context)
         {
+            _cancellationTokenSource = new CancellationTokenSource();
+            CancelToken = _cancellationTokenSource.Token;
             Context = context;
         }
 
@@ -59,6 +64,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         public virtual void OnCancelCommand()
         {
+            _cancellationTokenSource.Cancel();
             Context.DialogWindow.Close();
         }
 

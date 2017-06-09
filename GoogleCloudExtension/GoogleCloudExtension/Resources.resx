@@ -2185,7 +2185,7 @@
   </data>
   <data name="AttachDebuggerTestConnectPortMessageFormat" xml:space="preserve">
     <value>Test connecting to {0} at {1}:{2}</value>
-    <comment>The message that indicates the test of connecting to remote port is in progress. {0} is the port descriptio, Debugger Remote Tool or Remote PowerShell.  {1} is ip address, {2} is port number.</comment>
+    <comment>The message that indicates the test of connecting to remote port is in progress. {0} is the port description, Debugger Remote Tool or Remote PowerShell.  {1} is ip address, {2} is port number.</comment>
   </data>
   <data name="PortManagerRemoteDebuggerDescription" xml:space="preserve">
     <value>Allow Visual Studio remote debugger port</value>
