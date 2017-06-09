@@ -69,7 +69,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
                     Name = Resources.PublishDialogChoiceStepAppEngineFlexName,
                     Command = new ProtectedCommand(
                         OnAppEngineChoiceCommand,
-                        canExecuteCommand: projectType == KnownProjectTypes.NetCoreWebApplication1_0),
+                        canExecuteCommand: IsSupportedNetCoreProject(_dialog.Project)),
                     Icon = s_appEngineIcon.Value,
                     ToolTip = Resources.PublishDialogChoiceStepAppEngineToolTip
                 },
@@ -78,7 +78,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
                     Name = Resources.PublishDialogChoiceStepGkeName,
                     Command = new ProtectedCommand(
                         OnGkeChoiceCommand,
-                        canExecuteCommand: projectType == KnownProjectTypes.NetCoreWebApplication1_0),
+                        canExecuteCommand:IsSupportedNetCoreProject(_dialog.Project)),
                     Icon = s_gkeIcon.Value,
                     ToolTip = Resources.PublishDialogChoiceStepGkeToolTip
                 },
@@ -133,5 +133,8 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
 
             return viewModel;
         }
+
+        private static bool IsSupportedNetCoreProject(IParsedProject project)
+            => project.ProjectType == KnownProjectTypes.NetCoreWebApplication1_0 || project.ProjectType == KnownProjectTypes.NetCoreWebApplication1_1;
     }
 }
