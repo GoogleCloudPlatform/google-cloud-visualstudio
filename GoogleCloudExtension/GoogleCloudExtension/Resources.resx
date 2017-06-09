@@ -2263,10 +2263,6 @@
     <value>Failed to create folder {0}.</value>
     <comment>Message shown when there was a failure creating a GCS folder. {0} is the name of the folder.</comment>
   </data>
-  <data name="GcsFileProgressDialogCancelledState" xml:space="preserve">
-    <value>Cancelled</value>
-    <comment>Message shown when an operation is in the cancelled state.</comment>
-  </data>
   <data name="GcsFileProgressDialogErrorState" xml:space="preserve">
     <value>Error</value>
     <comment>Message shown when an operation is in the error state.</comment>
@@ -2352,7 +2348,7 @@
     <comment>Message shown when there's a failure loading the root directory.</comment>
   </data>
   <data name="GcsFileBrowserNoFilesMessage" xml:space="preserve">
-    <value>There are no files in this directory, you can upload files by selecting them in Windows Explorer and dragging them here.</value>
+    <value>There are no files in this directory, you can upload files by clicking the upload files button or by selecting them in Windows Explorer and dragging them here.</value>
     <comment>Message shown in the GCS browser when there are no files in a directory.</comment>
   </data>
   <data name="UiRefreshButtonCaption" xml:space="preserve">
@@ -2427,5 +2423,16 @@
     <value>Version name</value>
     <comment>Field display name for the version name textbox. Should match PublishDialogFlexVersionNameCaption.</comment>
   </data>
+  <data name="GcsFileBrowserUploadFilesButtonCaption" xml:space="preserve">
+    <value>_Upload files</value>
+    <comment>Caption for the upload button.</comment>
+  </data>
+  <data name="GcsFileBrowserUploadFilesToolTip" xml:space="preserve">
+    <value>Upload files</value>
+    <comment>Toolstip shown on the upload files button.</comment>
+  </data>
+  <data name="UiDeleteToolTip" xml:space="preserve">
+    <value>Delete</value>
+    <comment>Tooltip show on delete buttons.</comment>
+  </data>
 </root>
-

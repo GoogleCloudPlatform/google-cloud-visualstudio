@@ -90,8 +90,19 @@
         <StackPanel Grid.Column="1"
                     Orientation="Horizontal"
                     HorizontalAlignment="Right">
+            <!-- The upload files button. -->
+            <Button Command="{Binding UploadFilesCommand}"
+                    Style="{StaticResource CommonButtonDynamicStyle}">
+                <Button.ToolTip>
+                    <ToolTip Content="{x:Static ext:Resources.GcsFileBrowserUploadFilesToolTip}"
+                             Style="{StaticResource CommonTooltipStyle}" />
+                </Button.ToolTip>
+                <Image Source="{mb:ImageResource GcsFileBrowser/Resources/file_upload.png}" />
+            </Button>
+            
             <!-- The create new folder button. -->
             <Button Command="{Binding NewFolderCommand}"
+                    Margin="10,0,0,0"
                     Style="{StaticResource CommonButtonDynamicStyle}">
                 <Button.ToolTip>
                     <ToolTip Content="{x:Static ext:Resources.GcsFileBrowserNewFolderTooltip}"
@@ -99,7 +110,18 @@
                 </Button.ToolTip>
                 <Image Source="{mb:ImageResource GcsFileBrowser/Resources/create_new_folder.png}" />
             </Button>
-            
+
+            <!-- Delete selected files. -->
+            <Button Command="{Binding DeleteSelectedCommand}"
+                    Margin="10,0,0,0"
+                    Style="{StaticResource CommonButtonDynamicStyle}">
+                <Button.ToolTip>
+                    <ToolTip Content="{x:Static ext:Resources.UiDeleteToolTip}"
+                             Style="{StaticResource CommonTooltipStyle}" />
+                </Button.ToolTip>
+                <Image Source="{mb:ImageResource GcsFileBrowser/Resources/delete_forever.png}" />
+            </Button>
+
             <!-- The refresh button. -->
             <Button Command="{Binding RefreshCommand}"
                     Margin="10,0,0,0"
@@ -203,14 +225,20 @@
         <!-- The message area -->
 
         <!-- Empty directory message -->
-        <TextBlock Grid.Row="1"
-                   Grid.ColumnSpan="2"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   Text="{x:Static ext:Resources.GcsFileBrowserNoFilesMessage}"
-                   IsHitTestVisible="False"
-                   Visibility="{Binding CurrentState.IsEmpty, Converter={StaticResource commonVisibilityConverter}}"
-                   Style="{StaticResource CommonTextStyle}"/>
+        <StackPanel Grid.Row="1"
+                    Grid.ColumnSpan="2"
+                    Visibility="{Binding CurrentState.IsEmpty, Converter={StaticResource commonVisibilityConverter}}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+            <TextBlock Text="{x:Static ext:Resources.GcsFileBrowserNoFilesMessage}"
+                       IsHitTestVisible="False"
+                       Style="{StaticResource CommonTextStyle}"/>
+            <Button Content="{x:Static ext:Resources.GcsFileBrowserUploadFilesButtonCaption}"
+                    HorizontalAlignment="Center"
+                    Margin="0,10,0,0"
+                    Command="{Binding UploadFilesCommand}"
+                    Style="{StaticResource CommonButtonStyle}" />
+        </StackPanel>
 
         <!-- Error message. -->
         <StackPanel Grid.Row="1"

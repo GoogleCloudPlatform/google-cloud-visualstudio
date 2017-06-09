@@ -2842,7 +2842,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to There are no files in this directory, you can upload files by selecting them in Windows Explorer and dragging them here..
+        ///   Looks up a localized string similar to There are no files in this directory, you can upload files by clicking the upload files button or by selecting them in Windows Explorer and dragging them here..
         /// </summary>
         public static string GcsFileBrowserNoFilesMessage {
             get {
@@ -2941,6 +2941,24 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to _Upload files.
+        /// </summary>
+        public static string GcsFileBrowserUploadFilesButtonCaption {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserUploadFilesButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Upload files.
+        /// </summary>
+        public static string GcsFileBrowserUploadFilesToolTip {
+            get {
+                return ResourceManager.GetString("GcsFileBrowserUploadFilesToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Files uploaded {0} of {1}.
         /// </summary>
         public static string GcsFileBrowserUploadingOverallProgressMessage {
@@ -2973,15 +2991,6 @@ namespace GoogleCloudExtension {
         public static string GcsFileProgressDialogCancelledOperationMessage {
             get {
                 return ResourceManager.GetString("GcsFileProgressDialogCancelledOperationMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Cancelled.
-        /// </summary>
-        public static string GcsFileProgressDialogCancelledState {
-            get {
-                return ResourceManager.GetString("GcsFileProgressDialogCancelledState", resourceCulture);
             }
         }
         
@@ -4962,6 +4971,15 @@ namespace GoogleCloudExtension {
         public static string UiDeleteButtonCaption {
             get {
                 return ResourceManager.GetString("UiDeleteButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Delete.
+        /// </summary>
+        public static string UiDeleteToolTip {
+            get {
+                return ResourceManager.GetString("UiDeleteToolTip", resourceCulture);
             }
         }
         

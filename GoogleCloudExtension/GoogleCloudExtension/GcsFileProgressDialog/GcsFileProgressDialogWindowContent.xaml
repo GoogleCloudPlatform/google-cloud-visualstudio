@@ -112,11 +112,6 @@
                                                    Visibility="{Binding IsPending, Converter={StaticResource commonVisibilityConverter}}"
                                                    Style="{StaticResource CommonTextStyle}"
                                                    Background="{x:Null}" />
-                                        <TextBlock Text="{x:Static ext:Resources.GcsFileProgressDialogCancelledState}"
-                                                   HorizontalAlignment="Center"
-                                                   Visibility="{Binding IsCancelled, Converter={StaticResource commonVisibilityConverter}}"
-                                                   Style="{StaticResource CommonTextStyle}"
-                                                   Background="{x:Null}" />
                                         <TextBlock Text="{x:Static ext:Resources.GcsFileProgressDialogErrorState}"
                                                    HorizontalAlignment="Center"
                                                    Visibility="{Binding IsError, Converter={StaticResource commonVisibilityConverter}}"

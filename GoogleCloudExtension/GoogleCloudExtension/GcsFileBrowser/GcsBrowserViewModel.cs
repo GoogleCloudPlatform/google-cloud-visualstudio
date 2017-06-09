@@ -129,6 +129,16 @@ namespace GoogleCloudExtension.GcsFileBrowser
         public ICommand NewFolderCommand { get; }
 
         /// <summary>
+        /// Command to execute when deleting the selected items.
+        /// </summary>
+        public ProtectedCommand DeleteSelectedCommand { get; }
+
+        /// <summary>
+        /// Command to execute when uploading files.
+        /// </summary>
+        public ICommand UploadFilesCommand { get; }
+
+        /// <summary>
         /// The command to execute when a double click happens.
         /// </summary>
         public ICommand DoubleClickCommand { get; }
@@ -143,6 +153,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
             NavigateToCommand = new ProtectedCommand<PathStep>(OnNavigateToCommand);
             RefreshCommand = new ProtectedCommand(OnRefreshCommand);
             NewFolderCommand = new ProtectedCommand(OnNewFolderCommand);
+            DeleteSelectedCommand = new ProtectedCommand(OnDeleteCommand, canExecuteCommand: false);
+            UploadFilesCommand = new ProtectedCommand(OnUploadFilesCommand);
             DoubleClickCommand = new ProtectedCommand<GcsRow>(OnDoubleClickCommand);
         }
 
@@ -156,31 +168,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             // of the upload operation. Similar to what is done in the Windows explorer.
             ShellUtils.SetForegroundWindow();
 
-            try
-            {
-                CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
-                var uploadOperationsQueue = _fileOperationsEngine.StartUploadOperations(
-                    files,
-                    bucket: Bucket.Name,
-                    bucketPath: _currentState.CurrentPath,
-                    cancellationToken: cancellationTokenSource.Token);
-
-                GcsFileProgressDialogWindow.PromptUser(
-                    caption: Resources.GcsFileBrowserUploadingProgressCaption,
-                    message: Resources.GcsFileBrowserUploadingProgressMessage,
-                    progressMessage: Resources.GcsFileBrowserUploadingOverallProgressMessage,
-                    operations: uploadOperationsQueue.Operations,
-                    cancellationTokenSource: cancellationTokenSource);
-            }
-            catch (IOException ex)
-            {
-                UserPromptUtils.ErrorPrompt(
-                    message: Resources.GcsFileProgressDialogFailedToEnumerateFiles,
-                    title: Resources.UiErrorCaption,
-                    errorDetails: ex.Message);
-            }
-
-            UpdateCurrentState();
+            UploadFiles(files);
         }
 
         /// <summary>
@@ -189,6 +177,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
         internal void InvalidateSelectedItems(IEnumerable<GcsRow> selectedRows)
         {
             SelectedItems = selectedRows.ToList();
+            DeleteSelectedCommand.CanExecuteCommand = SelectedItems.Count > 0;
         }
 
         /// <summary>
@@ -213,7 +202,7 @@ namespace GoogleCloudExtension.GcsFileBrowser
             var menuItems = new List<MenuItem>
             {
                 new MenuItem { Header = Resources.GcsFileBrowserDonwloadHeader, Command=new ProtectedCommand(OnDownloadCommand) },
-                new MenuItem { Header = Resources.UiDeleteButtonCaption, Command = new ProtectedCommand(OnDeleteCommand) },
+                new MenuItem { Header = Resources.UiDeleteButtonCaption, Command = DeleteSelectedCommand },
             };
 
             if (SelectedItems.Count == 1)
@@ -347,6 +336,51 @@ namespace GoogleCloudExtension.GcsFileBrowser
             {
                 // TODO: Show the file.
             }
+        }
+
+        private void OnUploadFilesCommand()
+        {
+            var dialog = new System.Windows.Forms.OpenFileDialog
+            {
+                Multiselect = true
+            };
+
+            var result = dialog.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.Cancel)
+            {
+                return;
+            }
+
+            UploadFiles(dialog.FileNames);
+        }
+
+        private void UploadFiles(IEnumerable<string> files)
+        {
+            try
+            {
+                CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+                var uploadOperationsQueue = _fileOperationsEngine.StartUploadOperations(
+                    files,
+                    bucket: Bucket.Name,
+                    bucketPath: _currentState.CurrentPath,
+                    cancellationToken: cancellationTokenSource.Token);
+
+                GcsFileProgressDialogWindow.PromptUser(
+                    caption: Resources.GcsFileBrowserUploadingProgressCaption,
+                    message: Resources.GcsFileBrowserUploadingProgressMessage,
+                    progressMessage: Resources.GcsFileBrowserUploadingOverallProgressMessage,
+                    operations: uploadOperationsQueue.Operations,
+                    cancellationTokenSource: cancellationTokenSource);
+            }
+            catch (IOException ex)
+            {
+                UserPromptUtils.ErrorPrompt(
+                    message: Resources.GcsFileProgressDialogFailedToEnumerateFiles,
+                    title: Resources.UiErrorCaption,
+                    errorDetails: ex.Message);
+            }
+
+            UpdateCurrentState();
         }
 
         private async void OnDownloadCommand()
