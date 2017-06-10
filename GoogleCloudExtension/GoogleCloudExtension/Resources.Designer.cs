@@ -2824,6 +2824,33 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Install Git for Windows.
+        /// </summary>
+        public static string GitUtilsGitInstallLinkCaption {
+            get {
+                return ResourceManager.GetString("GitUtilsGitInstallLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please follow the link to install Git for Windows properly.
+        /// </summary>
+        public static string GitUtilsMissingGitErrorMessage {
+            get {
+                return ResourceManager.GetString("GitUtilsMissingGitErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Git for Windows is not found.
+        /// </summary>
+        public static string GitUtilsMissingGitErrorTitle {
+            get {
+                return ResourceManager.GetString("GitUtilsMissingGitErrorTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to _Clusters:.
         /// </summary>
         public static string GkePublishClusterMessage {
