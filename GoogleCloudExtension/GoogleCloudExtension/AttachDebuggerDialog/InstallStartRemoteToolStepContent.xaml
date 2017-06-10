@@ -26,6 +26,7 @@
         <TextBlock 
             Margin="0,6,0,6"
             Text="{Binding ProgressMessage}"
+            Style="{StaticResource CommonTextStyle}"
             Visibility="{Binding ProgressMessage, Converter={StaticResource NullInvisibleConverter} }" />
     </Grid>
 </UserControl>

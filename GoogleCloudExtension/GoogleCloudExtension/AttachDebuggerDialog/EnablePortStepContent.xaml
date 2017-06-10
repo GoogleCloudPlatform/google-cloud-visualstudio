@@ -26,13 +26,14 @@
     <Grid>
         <TextBlock 
             Margin="0,6,0,6"
-            Text="{Binding ProgressMessage}"
+            Text="{Binding ProgressMessage}"      
+            Style="{StaticResource CommonTextStyle}"
             Visibility="{Binding ProgressMessage, Converter={StaticResource NullInvisibleConverter} }" />
         <StackPanel Visibility="{Binding IsAskingToConfirm, Converter={StaticResource VisibilityConverter}}">
             <TextBlock                     
                 Margin="0,6,0,6"
                 Text="{Binding PortDisabledMessage}"
-                TextWrapping="Wrap"                
+                Style="{StaticResource CommonTextStyle}"              
                 />
             <TextBlock Margin="0,6,0,6">
                 <Hyperlink 
