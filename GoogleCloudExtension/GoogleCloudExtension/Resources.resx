@@ -2156,7 +2156,7 @@
     <comment>Header for the attach remote debugger menu item.</comment>
   </data>
   <data name="AttachDebuggerAddPublicIpAddressMessage" xml:space="preserve">
-    <value>No valid public IP addres. To enable remote debugging, add a public IP address to the VM.</value>
+    <value>No valid public IP address. To enable remote debugging, add a public IP address to the VM.</value>
     <comment>Message when the GCE virtual machine does not have valid public IP address.</comment>
   </data>
   <data name="AttachDebuggerWindowCaptionFormat" xml:space="preserve">

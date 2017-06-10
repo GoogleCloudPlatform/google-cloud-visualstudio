@@ -259,7 +259,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No valid public IP addres. To enable remote debugging, add a public IP address to the VM..
+        ///   Looks up a localized string similar to No valid public IP address. To enable remote debugging, add a public IP address to the VM..
         /// </summary>
         public static string AttachDebuggerAddPublicIpAddressMessage {
             get {
