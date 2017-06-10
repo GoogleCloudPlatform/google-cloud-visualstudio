@@ -91,8 +91,16 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             GceInstance = gceInstance.ThrowIfNull(nameof(gceInstance));
             DialogWindow = dialogWindow.ThrowIfNull(nameof(dialogWindow));
             PublicIp = gceInstance.GetPublicIpAddress();
-            DebuggerPort = new AttachDebuggerFirewallPort(DebuggerPortInfo, gceInstance, _lazyDataSource);
-            RemotePowerShellPort = new AttachDebuggerFirewallPort(RemotePowerShellPortInfo, gceInstance, _lazyDataSource);
+            DebuggerPort = new AttachDebuggerFirewallPort(
+                DebuggerPortInfo,
+                Resources.AttachDebuggerRemoteToolsPortDescription,
+                gceInstance,
+                _lazyDataSource);
+            RemotePowerShellPort = new AttachDebuggerFirewallPort(
+                RemotePowerShellPortInfo,
+                Resources.AttachDebuggerRemotePowerShellPortDescription,
+                gceInstance,
+                _lazyDataSource);
         }
 
         private static GceDataSource CreateDataSource()

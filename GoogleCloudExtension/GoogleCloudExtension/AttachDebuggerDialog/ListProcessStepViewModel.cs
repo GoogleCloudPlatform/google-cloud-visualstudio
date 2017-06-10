@@ -42,7 +42,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
         private List<string> _engineTypes;
         private string _selectedEngine;
-        private bool _saveSelection = true;
+        private bool _saveSelection;
 
         /// <summary>
         /// The progress message to display.
@@ -193,8 +193,9 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                     SelectedProcess.Process.Attach2(SelectedEngine);
                 }
             }
-            catch (COMException)
+            catch (COMException ex)
             {
+                Debug.WriteLine($"Attach debugger got exception. {ex}");
                 UserPromptUtils.ErrorPrompt(
                     message: String.Format(Resources.AttachDebuggerAttachErrorMessageFormat, SelectedProcess.Name),
                     title: Resources.uiDefaultPromptTitle);

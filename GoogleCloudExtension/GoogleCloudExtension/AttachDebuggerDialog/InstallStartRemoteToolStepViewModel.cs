@@ -29,8 +29,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     public class InstallStartRemoteToolStepViewModel : AttachDebuggerStepBase
     {
         private static readonly TimeSpan s_waitConnectionTimeout = TimeSpan.FromMinutes(3);
+
         private RemoteToolInstaller _installer;
-        private CancellationTokenSource _installerCancellationSource = new CancellationTokenSource();
         private string _progressMessage;
 
         /// <summary>
@@ -45,12 +45,6 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         #region Implement interface IAttachDebuggerStep
         public override ContentControl Content { get; }
 
-        public override void OnCancelCommand()
-        {
-            _installerCancellationSource.Cancel();
-            Context.DialogWindow.Close();
-        }
-
         // Okay button is not enabled at this step.
         // This method should never be called for this step.
         public override Task<IAttachDebuggerStep> OnOkCommandAsync() => Task.FromResult<IAttachDebuggerStep>(null);
@@ -60,10 +54,8 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             IsCancelButtonEnabled = true;
             ProgressMessage = Resources.AttachDebuggerInstallSetupProgressMessage;
 
-            if (await _installer.Install(_installerCancellationSource.Token))
+            if (await _installer.Install(CancelToken))
             {
-                IsCancelButtonEnabled = false;
-
                 var session = new RemoteToolSession(
                     Context.PublicIp,
                     Context.Credential.User,
@@ -73,15 +65,16 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
 
                 ProgressMessage = String.Format(
                     Resources.AttachDebuggerTestConnectPortMessageFormat,
+                    Context.DebuggerPort.Description,
                     Context.PublicIp,
                     Context.DebuggerPort.PortInfo.Port);
 
                 Stopwatch watch = Stopwatch.StartNew();
-                while (!_installerCancellationSource.IsCancellationRequested &&
+                while (!CancelToken.IsCancellationRequested &&
                        watch.Elapsed < s_waitConnectionTimeout &&
                        !session.IsStopped)
                 {
-                    if (await Context.DebuggerPort.ConnectivityTest())
+                    if (await Context.DebuggerPort.ConnectivityTest(CancelToken))
                     {
                         return ListProcessStepViewModel.CreateStep(Context);
                     }
