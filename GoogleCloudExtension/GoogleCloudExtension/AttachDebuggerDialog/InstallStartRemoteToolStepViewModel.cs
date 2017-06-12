@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.PowerShellUtils;
+using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using static GoogleCloudExtension.VsVersion.VsVersionUtils;
@@ -54,14 +56,57 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             IsCancelButtonEnabled = true;
             ProgressMessage = Resources.AttachDebuggerInstallSetupProgressMessage;
 
-            if (await _installer.Install(CancelToken))
+
+            bool installed = false;
+
+            var startTimestamp = DateTime.Now;
+
+            // The following try catch is for adding Analytics in failure case.
+            try
             {
-                var session = new RemoteToolSession(
-                    Context.PublicIp,
-                    Context.Credential.User,
-                    Context.Credential.Password,
-                    GoogleCloudExtensionPackage.Instance.SubscribeClosingEvent,
-                    GoogleCloudExtensionPackage.Instance.UnsubscribeClosingEvent);
+                installed = await _installer.Install(CancelToken);
+            }
+            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
+            {
+                EventsReporterWrapper.ReportEvent(
+                    RemoteDebuggerRemoteToolsInstalledEvent.Create(CommandStatus.Failure));
+                throw;
+            }
+
+            if (installed)
+            {
+                EventsReporterWrapper.ReportEvent(RemoteDebuggerRemoteToolsInstalledEvent.Create(
+                    CommandStatus.Success, DateTime.Now - startTimestamp));
+            }
+            else if (!CancelToken.IsCancellationRequested)
+            {
+                EventsReporterWrapper.ReportEvent(
+                    RemoteDebuggerRemoteToolsInstalledEvent.Create(CommandStatus.Failure));
+            }
+
+            if (installed)
+            {
+                // Reset start time to measure performance of starting remote tools
+                startTimestamp = DateTime.Now;
+
+                RemoteToolSession session;
+
+                // The following try catch is for adding analytics where there is exception
+                try
+                {
+                    session = new RemoteToolSession(
+                        Context.PublicIp,
+                        Context.Credential.User,
+                        Context.Credential.Password,
+                        GoogleCloudExtensionPackage.Instance.SubscribeClosingEvent,
+                        GoogleCloudExtensionPackage.Instance.UnsubscribeClosingEvent);
+                }
+                catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
+                {
+                    EventsReporterWrapper.ReportEvent(
+                        RemoteDebuggerRemoteToolsStartedEvent.Create(CommandStatus.Failure));
+                    throw;
+                }
 
                 ProgressMessage = String.Format(
                     Resources.AttachDebuggerTestConnectPortMessageFormat,
@@ -76,10 +121,15 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
                 {
                     if (await Context.DebuggerPort.ConnectivityTest(CancelToken))
                     {
+                        EventsReporterWrapper.ReportEvent(RemoteDebuggerRemoteToolsStartedEvent.Create(
+                            CommandStatus.Success, DateTime.Now - startTimestamp));
                         return ListProcessStepViewModel.CreateStep(Context);
                     }
                     await Task.Delay(500);
                 }
+
+                EventsReporterWrapper.ReportEvent(
+                    RemoteDebuggerRemoteToolsStartedEvent.Create(CommandStatus.Failure));
             }
 
             return HelpStepViewModel.CreateStep(Context);
