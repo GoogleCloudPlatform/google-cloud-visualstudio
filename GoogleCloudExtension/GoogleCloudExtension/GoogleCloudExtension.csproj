@@ -83,6 +83,8 @@
     <Compile Include="Analytics\Events\ChangedFirewallPortsEvent.cs" />
     <Compile Include="Analytics\Events\CloudExplorerInteractionEvent.cs" />
     <Compile Include="Analytics\Events\CloudSQLInstancesLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\ErrorsViewerErrorsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\ErrorsViewerNavigateToDetailWindowEvent.cs" />
     <Compile Include="Analytics\Events\ErrorsViewerOpenEvent.cs" />
     <Compile Include="Analytics\Events\GaeDeployedEvent.cs" />
     <Compile Include="Analytics\Events\GaeInstancesLoadedEvent.cs" />

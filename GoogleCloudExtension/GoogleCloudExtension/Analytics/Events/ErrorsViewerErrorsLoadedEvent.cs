@@ -6,15 +6,15 @@ using System.Threading.Tasks;
 
 namespace GoogleCloudExtension.Analytics.Events
 {
-    internal static class LogsViewerLogsLoadedEvent
+    internal static class ErrorsViewerErrorsLoadedEvent
     {
-        private const string LogsViewerLogsLoadedEventName = "logsViewerLogsLoaded";
+        private const string ErrorsViewerErrorsLoadedEventName = "errorsViewerErrorsLoaded";
         private const string DeploymentDurationProperty = "duration";
 
         public static AnalyticsEvent Create(CommandStatus status, TimeSpan duration = default(TimeSpan))
         {
             return new AnalyticsEvent(
-                LogsViewerLogsLoadedEventName,
+                ErrorsViewerErrorsLoadedEventName,
                 CommandStatusUtils.StatusProperty, CommandStatusUtils.GetStatusString(status),
                 DeploymentDurationProperty, duration.TotalSeconds.ToString());
         }
