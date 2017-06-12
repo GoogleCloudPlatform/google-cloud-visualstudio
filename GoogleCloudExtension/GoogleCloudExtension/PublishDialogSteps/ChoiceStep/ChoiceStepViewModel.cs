@@ -135,6 +135,7 @@ namespace GoogleCloudExtension.PublishDialogSteps.ChoiceStep
         }
 
         private static bool IsSupportedNetCoreProject(IParsedProject project)
-            => project.ProjectType == KnownProjectTypes.NetCoreWebApplication1_0 || project.ProjectType == KnownProjectTypes.NetCoreWebApplication1_1;
+            => project.ProjectType == KnownProjectTypes.NetCoreWebApplication1_0 ||
+               project.ProjectType == KnownProjectTypes.NetCoreWebApplication1_1;
     }
 }

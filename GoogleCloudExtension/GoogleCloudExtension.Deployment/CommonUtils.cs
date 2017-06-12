@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.Deployment
     /// </summary>
     internal static class CommonUtils
     {
-        // This pattern is to be used to find al of  the .deps.json in the stage directory.
+        // This pattern is to be used to find all of  the .deps.json in the stage directory.
         private const string DepsFilePattern = "*.deps.json";
 
         // This is the extension for the .deps.json file that determines the name of the entrypoint assembly.
@@ -37,7 +37,6 @@ namespace GoogleCloudExtension.Deployment
         /// is determined by looking for the .deps.json that defines the app's structure.
         /// </summary>
         /// <param name="stageDirectory">The directory where the app is being staged.</param>
-        /// <returns></returns>
         internal static string GetEntrypointName(string stageDirectory)
         {
             var depsFile = Directory.GetFiles(stageDirectory, DepsFilePattern).FirstOrDefault();
