@@ -83,6 +83,7 @@
     <Compile Include="Analytics\Events\ChangedFirewallPortsEvent.cs" />
     <Compile Include="Analytics\Events\CloudExplorerInteractionEvent.cs" />
     <Compile Include="Analytics\Events\CloudSQLInstancesLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\ErrorsViewerOpenEvent.cs" />
     <Compile Include="Analytics\Events\GaeDeployedEvent.cs" />
     <Compile Include="Analytics\Events\GaeInstancesLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GaeServiceDeletedEvent.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Analytics\Events\GceVMsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GcsBucketsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GkeDeployedEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerOpenEvent.cs" />
     <Compile Include="Analytics\Events\ManageCloudSqlAuthorizedNetworkEvent.cs" />
     <Compile Include="Analytics\Events\NewInstallEvent.cs" />
     <Compile Include="Analytics\Events\NewLoginEvent.cs" />
