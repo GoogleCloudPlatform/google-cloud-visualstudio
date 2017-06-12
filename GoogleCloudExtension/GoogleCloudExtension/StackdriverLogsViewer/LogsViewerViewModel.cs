@@ -310,9 +310,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             LogItemCollection = new ListCollectionView(_logs);
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
             CancelRequestCommand = new ProtectedCommand(CancelRequest);
-            SimpleTextSearchCommand = new ProtectedCommand(() => ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync));
+            SimpleTextSearchCommand = new ProtectedCommand(() =>
+            {
+                EventsReporterWrapper.ReportEvent(LogsViewerSimpleTextSearchEvent.Create());
+                ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
+            });
             FilterSwitchCommand = new ProtectedCommand(SwapFilter);
-            SubmitAdvancedFilterCommand = new ProtectedCommand(() => ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync));
+            SubmitAdvancedFilterCommand = new ProtectedCommand(() =>
+            {
+                EventsReporterWrapper.ReportEvent(LogsViewerAdvancedFilterEvent.Create());
+                ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
+            });
             AdvancedFilterHelpCommand = new ProtectedCommand(ShowAdvancedFilterHelp);
             DateTimePickerModel = new DateTimePickerViewModel(
                 TimeZoneInfo.Local, DateTime.UtcNow, isDescendingOrder: true);
@@ -476,6 +484,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             RequestStatusText = Resources.LogViewerRequestCancellingMessage;
             ShowCancelRequestButton = false;
             _cancellationTokenSource?.Cancel();
+
+            EventsReporterWrapper.ReportEvent(LogsViewerCancelRequestEvent.Create());
         }
 
         /// <summary>
@@ -665,6 +675,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private void ShowAdvancedFilterHelp()
         {
+            EventsReporterWrapper.ReportEvent(LogsViewerShowAdvancedFilterHelpEvent.Create());
             Process.Start(AdvancedHelpLink);
         }
 
