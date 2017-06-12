@@ -96,6 +96,7 @@
     <Compile Include="Analytics\Events\GceVMsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GcsBucketsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GkeDeployedEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerLogsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\LogsViewerOpenEvent.cs" />
     <Compile Include="Analytics\Events\ManageCloudSqlAuthorizedNetworkEvent.cs" />
     <Compile Include="Analytics\Events\NewInstallEvent.cs" />
