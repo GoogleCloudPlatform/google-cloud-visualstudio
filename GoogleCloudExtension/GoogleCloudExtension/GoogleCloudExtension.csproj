@@ -106,7 +106,6 @@
     <Compile Include="Analytics\Events\OpenGcsBucketOnCloudConsoleEvent.cs" />
     <Compile Include="Analytics\Events\PubSubSubscriptionCreatedEvent.cs" />
     <Compile Include="Analytics\Events\PubSubSubscriptionDeletedEvent.cs" />
-    <Compile Include="Analytics\Events\PubSubSubscriptionsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\PubSubTopicCreatedEvent.cs" />
     <Compile Include="Analytics\Events\PubSubTopicDeletedEvent.cs" />
     <Compile Include="Analytics\Events\PubSubTopicsLoadedEvent.cs" />
