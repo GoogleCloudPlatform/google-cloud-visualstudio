@@ -9,10 +9,21 @@ namespace $safeprojectname$.Controllers
     [Route("api/[controller]")]
     public class ValuesController : Controller
     {
+        private readonly ILogger _logger;
+
+        public ValuesController(ILogger<ValuesController> logger)
+        {
+            _logger = logger;
+        }
+
         // GET api/values
         [HttpGet]
         public IEnumerable<string> Get()
         {
+            // Sends a message to configured loggers, including the Stackdriver logger.
+            // The Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker logger will log all controller actions with
+            // log level information. This log is for additional information.
+            _logger.LogDebug("Values retrieved!");
             return new string[] { "value1", "value2" };
         }
 
@@ -27,6 +38,7 @@ namespace $safeprojectname$.Controllers
         [HttpPost]
         public void Post([FromBody]string value)
         {
+            _logger.LogInformation("Value added");
         }
 
         // PUT api/values/5
