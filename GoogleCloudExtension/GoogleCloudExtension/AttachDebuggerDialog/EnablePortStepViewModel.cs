@@ -15,7 +15,6 @@
 using GoogleCloudExtension.Utils;
 using System;
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
@@ -26,8 +25,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
     /// </summary>
     public abstract class EnablePortStepViewModel : AttachDebuggerStepBase
     {
-        // TODO: update the link when we have the doc ready.
-        private const string EnablePortHelpLink = "https://cloud.google.com/tools/visual-studio/docs/how-to";
+        private const string EnablePortHelpLink = "https://cloud.google.com/tools/visual-studio/docs/remote-debugging#open_firewall_port";
 
         private bool _portEnabled;
         private string _progressMessage;
