@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace GoogleCloudExtension.Deployment
 {
@@ -25,33 +26,28 @@ namespace GoogleCloudExtension.Deployment
     /// </summary>
     internal static class CommonUtils
     {
+        // This pattern is to be used to find all of  the .deps.json in the stage directory.
+        private const string DepsFilePattern = "*.deps.json";
+
+        // This is the extension for the .deps.json file that determines the name of the entrypoint assembly.
+        private const string DepsFileExtension = ".deps.json";
+
         /// <summary>
-        /// Returns the project name given the path to the project.json. If the project.json file defines a
-        /// "name" property then it is used as the name for the final assembly, otherwise the name of the directory
-        /// is used as the name of the final assembly.
+        /// Returns the name of the entrypoint assembly for the .NET Core project given it's stage directory. The name
+        /// is determined by looking for the .deps.json that defines the app's structure.
         /// </summary>
-        /// <param name="projectPath">The full path to the project.json of the project.</param>
-        internal static string GetProjectName(string projectPath)
+        /// <param name="stageDirectory">The directory where the app is being staged.</param>
+        internal static string GetEntrypointName(string stageDirectory)
         {
-            try
+            var depsFile = Directory.GetFiles(stageDirectory, DepsFilePattern).FirstOrDefault();
+            if (depsFile == null)
             {
-                var contents = File.ReadAllText(projectPath);
-                var parsed = JsonConvert.DeserializeObject<Dictionary<string, object>>(contents);
-                object name = null;
-                if (parsed.TryGetValue("name", out name))
-                {
-                    return (string)name;
-                }
-                else
-                {
-                    var directory = Path.GetDirectoryName(projectPath);
-                    return Path.GetFileName(directory);
-                }
+                Debug.WriteLine($"Cannot find .deps.file in {stageDirectory}");
+                return null;
             }
-            catch (Exception ex) when (ex is IOException || ex is JsonException)
-            {
-                throw new DeploymentException(ex.Message, ex);
-            }
+
+            var name = Path.GetFileName(depsFile);
+            return name.Substring(0, name.Length - DepsFileExtension.Length);
         }
 
         /// <summary>
