@@ -20,6 +20,9 @@ namespace $safeprojectname$.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
+            // Sends a message to configured loggers, including the Stackdriver logger.
+            // The Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker logger will log all controller actions with
+            // log level information. This log is for additional information.
             _logger.LogDebug("Values retrieved!");
             return new string[] { "value1", "value2" };
         }

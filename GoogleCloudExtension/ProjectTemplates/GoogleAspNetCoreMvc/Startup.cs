@@ -31,7 +31,9 @@ namespace $safeprojectname$
             var projectId = GetProjectId();
             // Add framework services.Microsoft.VisualStudio.ExtensionManager.ExtensionManagerService
             services.AddMvc();
+            // Enables Stackdriver Trace.
             services.AddGoogleTrace(projectId);
+            // Sends Exceptions to Stackdriver Error Reporting.
             services.AddGoogleExceptionLogging(projectId, GetServiceName(), GetVersion());
         }
 
@@ -40,9 +42,11 @@ namespace $safeprojectname$
         {
             var projectId = GetProjectId();
 
+            // Only use Console and Debug logging during development.
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddGoogle(projectId);
             loggerFactory.AddDebug();
+            // Send logs to Stackdriver Logging.
+            loggerFactory.AddGoogle(projectId);
 
             if (env.IsDevelopment())
             {

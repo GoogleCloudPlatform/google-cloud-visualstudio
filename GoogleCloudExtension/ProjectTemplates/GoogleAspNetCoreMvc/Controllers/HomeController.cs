@@ -17,7 +17,10 @@ namespace $safeprojectname$.Controllers
 
          public IActionResult Index()
         {
-            _logger.LogDebug("Home page hit!");
+            // Sends a message to configured loggers, including the Stackdriver logger.
+            // The Microsoft.AspNetCore.Mvc.Internal.ControllerActionInvoker logger will log all controller actions with
+            // log level information. This log is for additional information.
+            _logger.LogInfo("Home page hit!");
             return View();
         }
 
@@ -35,7 +38,8 @@ namespace $safeprojectname$.Controllers
 
         public IActionResult Error()
         {
-            _logger.LogWarning("Error page hit!");
+            // Log messages with different log levels.
+            _logger.LogError("Error page hit!");
             return View();
         }
     }
