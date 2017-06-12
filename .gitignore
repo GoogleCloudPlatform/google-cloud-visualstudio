@@ -11,3 +11,4 @@
 **/packages/*
 **/*.pyc
 *.DotSettings.user
+*.user
