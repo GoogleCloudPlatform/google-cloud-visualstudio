@@ -105,7 +105,7 @@
     <Compile Include="Analytics\Events\RemoteDebuggerAttachedEvent.cs" />
     <Compile Include="Analytics\Events\RemoteDebuggerRemoteToolsInstalledEvent.cs" />
     <Compile Include="Analytics\Events\RemoteDebuggerRemoteToolsStartedEvent.cs" />
-    <Compile Include="Analytics\Events\RemoteDebuggerWindowLaunchedEvent.cs" />
+    <Compile Include="Analytics\Events\RemoteDebuggerWindowOpenEvent.cs" />
     <Compile Include="Analytics\Events\SavePublishSettingsEvent.cs" />
     <Compile Include="Analytics\Events\StartGceInstanceEvent.cs" />
     <Compile Include="Analytics\Events\StartRemoteDesktopSessionEvent.cs" />

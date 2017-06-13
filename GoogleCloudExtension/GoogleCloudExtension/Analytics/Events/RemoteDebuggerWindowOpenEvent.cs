@@ -14,13 +14,13 @@
 
 namespace GoogleCloudExtension.Analytics.Events
 {
-    internal static class RemoteDebuggerWindowLaunchedEvent
+    internal static class RemoteDebuggerWindowOpenEvent
     {
-        private const string RemoteDebuggerWindowLaunchedEventName = "remoteDebuggerWindowLaunched";
+        private const string RemoteDebuggerWindowOpenEventName = "remoteDebuggerWindowOpen";
 
         public static AnalyticsEvent Create()
         {
-            return new AnalyticsEvent(RemoteDebuggerWindowLaunchedEventName);
+            return new AnalyticsEvent(RemoteDebuggerWindowOpenEventName);
         }
     }
 }

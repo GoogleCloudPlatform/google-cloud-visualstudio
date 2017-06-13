@@ -54,7 +54,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
             }
 
             var dialog = new AttachDebuggerWindow(gceInstance);
-            EventsReporterWrapper.ReportEvent(RemoteDebuggerWindowLaunchedEvent.Create());
+            EventsReporterWrapper.ReportEvent(RemoteDebuggerWindowOpenEvent.Create());
             dialog.ShowModal();
         }
     }
