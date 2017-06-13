@@ -26,7 +26,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
     /// <summary>
     /// Data source that returns information about Pubsub resources.
     /// </summary>
-    public class PubsubDataSource : DataSourceBase<PubsubService>
+    public class PubsubDataSource : DataSourceBase<PubsubService>, IPubsubDataSource
     {
         /// <summary>s
         /// Initializes a new data source that connects to Google Cloud Pub/Sub.
