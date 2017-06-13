@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using Google.Apis.Storage.v1.Data;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using System;
@@ -52,6 +54,8 @@ namespace GoogleCloudExtension.GcsFileBrowser
             // we are not calling Dispose on this object. This is because ToolWindowPane calls Dispose on
             // the object returned by the Content property.
             Content = new GcsFileBrowserWindowControl { DataContext = ViewModel };
+
+            EventsReporterWrapper.ReportEvent(GcsFileBrowserOpenEvent.Create());
         }
 
         public static void BrowseBucket(Bucket bucket)

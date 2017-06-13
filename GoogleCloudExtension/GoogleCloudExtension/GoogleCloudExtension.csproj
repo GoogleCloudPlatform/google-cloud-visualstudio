@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <!-- This will make the tools use the v3 version of the .vsix format. Without this the extension won't load on VS 2017. -->
@@ -97,6 +97,16 @@
     <Compile Include="Analytics\Events\GceDeployedEvent.cs" />
     <Compile Include="Analytics\Events\GceVMsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GcsBucketsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserDirectoryLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserFilesDroppedEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserOpenDirectoryEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserRenameFileEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserStartDeleteEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserStartDownloadEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserNewFolderEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserOpenEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserStartRenameDirectoryEvent.cs" />
+    <Compile Include="Analytics\Events\GcsFileBrowserStartUploadEvent.cs" />
     <Compile Include="Analytics\Events\GkeDeployedEvent.cs" />
     <Compile Include="Analytics\Events\LogsViewerAdvancedFilterEvent.cs" />
     <Compile Include="Analytics\Events\LogsViewerCancelRequestEvent.cs" />
