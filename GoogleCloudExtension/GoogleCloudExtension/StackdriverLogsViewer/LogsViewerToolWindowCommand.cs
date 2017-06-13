@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Analytics;
-using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Utils;
 using Microsoft.VisualStudio.Shell;
 using System;
@@ -60,12 +58,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
                 var menuItem = new OleMenuCommand(
-                    (sender, e) =>
-                    {
-                        ToolWindowCommandUtils.ShowToolWindow<LogsViewerToolWindow>();
-                        EventsReporterWrapper.ReportEvent(LogsViewerOpenEvent.Create());
-                    },
-                    menuCommandID);
+                    (sender, e) => ToolWindowCommandUtils.ShowToolWindow<LogsViewerToolWindow>(),  menuCommandID);
                 menuItem.BeforeQueryStatus += ToolWindowCommandUtils.EnableMenuItemOnValidProjectId;
                 commandService.AddCommand(menuItem);
             }
