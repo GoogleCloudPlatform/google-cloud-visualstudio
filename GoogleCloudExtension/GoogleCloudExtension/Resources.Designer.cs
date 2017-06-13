@@ -2221,11 +2221,83 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Clone.
+        /// </summary>
+        public static string CsrCloneLinkButtonCaption {
+            get {
+                return ResourceManager.GetString("CsrCloneLinkButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Connect....
+        /// </summary>
+        public static string CsrConnectLinkButtonCaption {
+            get {
+                return ResourceManager.GetString("CsrConnectLinkButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Google Cloud Source Repositories.
         /// </summary>
         public static string CsrConnectSectionTitle {
             get {
                 return ResourceManager.GetString("CsrConnectSectionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Create.
+        /// </summary>
+        public static string CsrCreateLinkButtonCaption {
+            get {
+                return ResourceManager.GetString("CsrCreateLinkButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Fully-featured private Git repositories hosted on Cloud Platform on highly-replicated backend storage systems distributed geographically across multiple data centers and run on infrastructure proven for reliability..
+        /// </summary>
+        public static string CsrDescription {
+            get {
+                return ResourceManager.GetString("CsrDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Disconnect.
+        /// </summary>
+        public static string CsrDisconnectLinkButtonCaption {
+            get {
+                return ResourceManager.GetString("CsrDisconnectLinkButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Local Path.
+        /// </summary>
+        public static string CsrRepoLocalPathLabel {
+            get {
+                return ResourceManager.GetString("CsrRepoLocalPathLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Repo Name.
+        /// </summary>
+        public static string CsrRepoNameLabel {
+            get {
+                return ResourceManager.GetString("CsrRepoNameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to View the repository on web.
+        /// </summary>
+        public static string CsrVisitUrlMenuHeader {
+            get {
+                return ResourceManager.GetString("CsrVisitUrlMenuHeader", resourceCulture);
             }
         }
         

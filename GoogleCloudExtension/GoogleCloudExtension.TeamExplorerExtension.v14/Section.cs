@@ -80,7 +80,10 @@ namespace GoogleCloudExtension.TeamExplorerExtension
             private set { SetValueAndRaise(ref _isBusy, value); }
         }
 
-        bool ITeamExplorerSection.IsExpanded
+        /// <summary>
+        ///  Somehow Team Explorer can not get the properties if it is excplicit implementation
+        /// </summary>
+        public bool IsExpanded
         {
             get
             {
@@ -94,7 +97,10 @@ namespace GoogleCloudExtension.TeamExplorerExtension
             }
         }
 
-        bool ITeamExplorerSection.IsVisible
+        /// <summary>
+        /// Somehow Team Explorer can not get the properties if it is excplicit implementation
+        /// </summary>
+        public bool IsVisible
         {
             get
             {
@@ -165,7 +171,9 @@ namespace GoogleCloudExtension.TeamExplorerExtension
         }
 
         void IDisposable.Dispose()
-        { }
+        {
+            _viewModel?.Dispose();
+        }
 
         #endregion
     }

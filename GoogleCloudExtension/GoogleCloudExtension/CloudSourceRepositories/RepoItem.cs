@@ -12,32 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using GoogleCloudExtension.Utils;
 
-namespace GoogleCloudExtension.TeamExplorerExtension
+namespace GoogleCloudExtension.CloudSourceRepositories
 {
     /// <summary>
-    /// Define interfance for Team Explorer section view model.
+    /// A repository object binding to list view item
     /// </summary>
-    public interface ISectionViewModel : IDisposable
+    public class RepoItem : Model
     {
-        /// <summary>
-        /// Responds to refresh event.
-        /// </summary>
-        void Refresh();
+        private bool _isActiveRepo;
 
         /// <summary>
-        /// Initializes the view model with <paramref name="teamExplorerService"/> input.
+        /// Gets the repository name.
         /// </summary>
-        void Initialize(ITeamExplorerUtils teamExplorerService);
+        public string Name { get; }
 
         /// <summary>
-        /// Notifies that the current active repository changed
+        /// Gets the repository local path.
         /// </summary>
-        /// <param name="newRepoLocalPath">
-        /// The new active repository local path.
-        /// When the value is null, it means currently there is no active repository.
-        /// </param>
-        void UpdateActiveRepo(string newRepoLocalPath);
+        public string LocalPath { get; }
+
+        /// <summary>
+        /// Gets if the repository is currently active one.
+        /// </summary>
+        public bool IsActiveRepo
+        {
+            get { return _isActiveRepo; }
+            set { SetValueAndRaise(ref _isActiveRepo, value); }
+        }
+
+        public RepoItem()
+        { }
     }
 }
