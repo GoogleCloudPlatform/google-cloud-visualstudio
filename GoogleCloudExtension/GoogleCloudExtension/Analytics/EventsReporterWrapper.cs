@@ -23,7 +23,7 @@ namespace GoogleCloudExtension.Analytics
     /// <summary>
     /// Helper class to deal with analytics events.
     /// </summary>
-    internal abstract class EventsReporterWrapper
+    internal static class EventsReporterWrapper
     {
         public const string ExtensionEventType = "visualstudio";
         public const string ExtensionEventSource = "virtual.visualstudio";
@@ -31,6 +31,14 @@ namespace GoogleCloudExtension.Analytics
         private const string PropertyId = "UA-36037335-1";
 
         private static Lazy<IEventsReporter> s_reporter = new Lazy<IEventsReporter>(CreateReporter);
+
+        /// <summary>
+        /// Used by unit test to prevent analytics from running.
+        /// </summary>
+        public static void DisableReporting()
+        {
+            s_reporter = new Lazy<IEventsReporter>(() => null);
+        }
 
         /// <summary>
         /// Ensures that the opt-in dialog is shown to the user.

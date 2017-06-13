@@ -68,7 +68,6 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         // Mockable static methods for testing.
         private readonly Func<IPubsubDataSource> _dataSourceFactory;
         internal Func<string, string> NewTopicUserPrompt = NewTopicWindow.PromptUser;
-        internal Action<string, string, string> ErrorPrompt = UserPromptUtils.ErrorPrompt;
         internal Func<string, Process> StartProcess = Process.Start;
 
         public IPubsubDataSource DataSource => _dataSource.Value;
@@ -226,7 +225,7 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             catch (DataSourceException e)
             {
                 Debug.Write(e.Message, "New Topic");
-                ErrorPrompt(
+                UserPromptUtils.ErrorPrompt(
                     Resources.PubSubNewTopicErrorMessage, Resources.PubSubNewTopicErrorHeader, e.Message);
 
                 EventsReporterWrapper.ReportEvent(PubSubTopicCreatedEvent.Create(CommandStatus.Failure));

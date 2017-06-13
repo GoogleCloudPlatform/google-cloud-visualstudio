@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
-namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
+namespace GoogleCloudExtensionUnitTests.CloudExplorer
 {
     [TestClass]
     public class SourceRootViewModelBaseTests
@@ -44,7 +44,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         private TestableSourceRootviewModelBase _objectUnderTest;
 
         [TestInitialize]
-        public void MyTestInitialize()
+        public void Initialize()
         {
             _contextMock = new Mock<ICloudSourceContext>();
             _contextMock.Setup(c => c.CurrentProject.ProjectId).Returns(MockProjectId);
@@ -54,6 +54,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         [TestMethod]
         public void TestInitialConditions()
         {
+            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideHitCount);
             Assert.IsNull(_objectUnderTest.Context);
             Assert.IsNull(_objectUnderTest.Icon);
             Assert.IsNull(_objectUnderTest.Caption);
@@ -70,6 +71,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         {
             _objectUnderTest.Initialize(_contextMock.Object);
 
+            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideHitCount);
             Assert.AreEqual(_contextMock.Object, _objectUnderTest.Context);
             Assert.AreEqual(_objectUnderTest.RootIcon, _objectUnderTest.Icon);
             Assert.AreEqual(_objectUnderTest.RootCaption, _objectUnderTest.Caption);
@@ -83,6 +85,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             _objectUnderTest.RunOnIsExpandedChanged(false);
             await _objectUnderTest.LoadingTask;
 
+            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideHitCount);
             Assert.IsFalse(_objectUnderTest.IsLoading);
             Assert.IsFalse(_objectUnderTest.IsLoadingState);
             Assert.IsFalse(_objectUnderTest.IsLoadedState);
@@ -98,6 +101,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 
             _objectUnderTest.RunOnIsExpandedChanged(true);
 
+            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideHitCount);
             Assert.IsTrue(_objectUnderTest.LoadingTask.IsCompleted);
             Assert.AreNotSame(originalLoadingTask, _objectUnderTest.LoadingTask);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
@@ -118,6 +122,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             _objectUnderTest.RunOnIsExpandedChanged(true);
             await _objectUnderTest.LoadingTask;
 
+            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideHitCount);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
             var child = _objectUnderTest.Children[0] as TreeLeaf;
             Assert.IsNotNull(child);
@@ -136,6 +141,25 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             _objectUnderTest.Initialize(_contextMock.Object);
             _objectUnderTest.RunOnIsExpandedChanged(true);
 
+            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideHitCount);
+            Assert.IsFalse(_objectUnderTest.LoadingTask.IsCompleted);
+            Assert.IsTrue(_objectUnderTest.IsLoadingState);
+            Assert.IsFalse(_objectUnderTest.IsLoadedState);
+            Assert.AreEqual(1, _objectUnderTest.Children.Count);
+            Assert.AreEqual(_objectUnderTest.LoadingPlaceholder, _objectUnderTest.Children[0]);
+        }
+
+        [TestMethod]
+        public void TestLoadingAgain()
+        {
+            CredentialsStore.Default.UpdateCurrentProject(_project);
+            CredentialsStore.Default.CurrentAccount = _userAccount;
+
+            _objectUnderTest.Initialize(_contextMock.Object);
+            _objectUnderTest.RunOnIsExpandedChanged(true);
+            _objectUnderTest.RunOnIsExpandedChanged(true);
+
+            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideHitCount);
             Assert.IsFalse(_objectUnderTest.LoadingTask.IsCompleted);
             Assert.IsTrue(_objectUnderTest.IsLoadingState);
             Assert.IsFalse(_objectUnderTest.IsLoadedState);
@@ -153,6 +177,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             _objectUnderTest.LoadSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
             await _objectUnderTest.LoadingTask;
 
+            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideHitCount);
             Assert.IsFalse(_objectUnderTest.IsLoadingState);
             Assert.IsTrue(_objectUnderTest.IsLoadedState);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
@@ -169,6 +194,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             _objectUnderTest.LoadSource.SetResult(new List<TreeNode>());
             await _objectUnderTest.LoadingTask;
 
+            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideHitCount);
             Assert.IsFalse(_objectUnderTest.IsLoadingState);
             Assert.IsTrue(_objectUnderTest.IsLoadedState);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
@@ -185,6 +211,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             _objectUnderTest.LoadSource.SetResult(new List<TreeNode> { _childNode });
             await _objectUnderTest.LoadingTask;
 
+            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideHitCount);
             Assert.IsFalse(_objectUnderTest.IsLoadingState);
             Assert.IsTrue(_objectUnderTest.IsLoadedState);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
@@ -197,6 +224,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             _objectUnderTest.Refresh();
             await _objectUnderTest.LoadingTask;
 
+            Assert.AreEqual(0, _objectUnderTest.LoadDataOverrideHitCount);
             Assert.IsFalse(_objectUnderTest.IsLoadingState);
             Assert.IsFalse(_objectUnderTest.IsLoadedState);
             Assert.AreEqual(0, _objectUnderTest.Children.Count);
@@ -213,6 +241,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             var expandLoadTask = _objectUnderTest.LoadingTask;
             _objectUnderTest.Refresh();
 
+            Assert.AreEqual(1, _objectUnderTest.LoadDataOverrideHitCount);
             Assert.AreEqual(expandLoadTask, _objectUnderTest.LoadingTask);
             Assert.IsTrue(_objectUnderTest.IsLoadingState);
             Assert.IsFalse(_objectUnderTest.IsLoadedState);
@@ -231,6 +260,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             await _objectUnderTest.LoadingTask;
             _objectUnderTest.Refresh();
 
+            Assert.AreEqual(2, _objectUnderTest.LoadDataOverrideHitCount);
             Assert.IsTrue(_objectUnderTest.IsLoadingState);
             Assert.IsFalse(_objectUnderTest.IsLoadedState);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
@@ -250,6 +280,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             _objectUnderTest.LoadSource.SetException(new CloudExplorerSourceException(MockExceptionMessage));
             await _objectUnderTest.LoadingTask;
 
+            Assert.AreEqual(2, _objectUnderTest.LoadDataOverrideHitCount);
             Assert.IsFalse(_objectUnderTest.IsLoadingState);
             Assert.IsTrue(_objectUnderTest.IsLoadedState);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
@@ -269,6 +300,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             _objectUnderTest.LoadSource.SetResult(new List<TreeNode>());
             await _objectUnderTest.LoadingTask;
 
+            Assert.AreEqual(2, _objectUnderTest.LoadDataOverrideHitCount);
             Assert.IsFalse(_objectUnderTest.IsLoadingState);
             Assert.IsTrue(_objectUnderTest.IsLoadedState);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
@@ -288,6 +320,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
             _objectUnderTest.LoadSource.SetResult(new List<TreeNode> { _childNode });
             await _objectUnderTest.LoadingTask;
 
+            Assert.AreEqual(2, _objectUnderTest.LoadDataOverrideHitCount);
             Assert.IsFalse(_objectUnderTest.IsLoadingState);
             Assert.IsTrue(_objectUnderTest.IsLoadedState);
             Assert.AreEqual(1, _objectUnderTest.Children.Count);
@@ -325,6 +358,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
 
             protected override async Task LoadDataOverride()
             {
+                LoadDataOverrideHitCount++;
                 IList<TreeNode> childNodes;
                 try
                 {
@@ -340,6 +374,8 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
                     Children.Add(child);
                 }
             }
+
+            public int LoadDataOverrideHitCount { get; private set; } = 0;
 
             internal void RunOnIsExpandedChanged(bool newValue)
             {

@@ -176,8 +176,9 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
+    <Compile Include="AssemblyInitialize.cs" />
     <Compile Include="CloudExplorerSources\PubSub\PubSubSourceRootViewModelTests.cs" />
-    <Compile Include="CloudExplorerSources\PubSub\SourceRootViewModelBaseTests.cs" />
+    <Compile Include="CloudExplorer\SourceRootViewModelBaseTests.cs" />
     <Compile Include="GoogleCloudExtensionPackageTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SplitStringBySpaceOrQuoteTests.cs" />

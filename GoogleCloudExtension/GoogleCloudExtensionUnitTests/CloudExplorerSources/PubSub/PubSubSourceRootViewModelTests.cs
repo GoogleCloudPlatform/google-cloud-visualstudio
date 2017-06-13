@@ -17,7 +17,9 @@ using GoogleCloudExtension;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.CloudExplorerSources.PubSub;
 using GoogleCloudExtension.DataSources;
+using GoogleCloudExtension.UserPrompt;
 using GoogleCloudExtension.Utils;
+using GoogleCloudExtensionUnitTests.CloudExplorer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -70,7 +72,7 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         private TestablePubsubSourceRootViewModel _objectUnderTest;
 
         [TestInitialize]
-        public void MyTestInitialize()
+        public void Initialize()
         {
             _dataSourceMock = new Mock<IPubsubDataSource>();
             _contextMock = new Mock<ICloudSourceContext>();
@@ -126,6 +128,9 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
         [TestMethod]
         public void TestDataSource()
         {
+            _factoryMock.Verify(x => x(), Times.Never);
+            Assert.IsNotNull(_objectUnderTest.DataSource);
+            _factoryMock.Verify(x => x(), Times.Once);
             Assert.IsNotNull(_objectUnderTest.DataSource);
             _factoryMock.Verify(x => x(), Times.Once);
         }
@@ -268,9 +273,10 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
                 projectIdParam = projectId;
                 return null;
             };
-            _objectUnderTest.ErrorPrompt = (message, header, errorDetails) =>
+            UserPromptWindow.PromptUserFunction = options =>
             {
-                details = errorDetails;
+                details = options.ErrorDetails;
+                return true;
             };
 
             _objectUnderTest.OnNewTopicCommand();
@@ -294,9 +300,10 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
                 projectIdParam = projectId;
                 return MockTopicName;
             };
-            _objectUnderTest.ErrorPrompt = (message, header, errorDetails) =>
+            UserPromptWindow.PromptUserFunction = options =>
             {
-                details = errorDetails;
+                details = options.ErrorDetails;
+                return true;
             };
 
             _objectUnderTest.OnNewTopicCommand();
@@ -320,9 +327,10 @@ namespace GoogleCloudExtensionUnitTests.CloudExplorerSources.PubSub
                 projectIdParam = projectId;
                 return MockTopicName;
             };
-            _objectUnderTest.ErrorPrompt = (message, header, errorDetails) =>
+            UserPromptWindow.PromptUserFunction = options =>
             {
-                details = errorDetails;
+                details = options.ErrorDetails;
+                return true;
             };
 
             _objectUnderTest.OnNewTopicCommand();
