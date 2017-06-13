@@ -268,7 +268,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Firewall rule take effect within a few minutes. Click OK to test again..
+        ///   Looks up a localized string similar to Firewall rules take effect within a few minutes. Click OK to test again..
         /// </summary>
         public static string AttachDebuggerAskToTestConnectivityLaterMessage {
             get {
@@ -3913,7 +3913,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allow traffic to Visual Studio Remote Debugger port.
+        ///   Looks up a localized string similar to Allow Visual Studio Remote Debugger traffic to the instance.
         /// </summary>
         public static string PortManagerRemoteDebuggerDescription {
             get {
@@ -3922,7 +3922,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allow traffic to remote PowerShell HTTPs port.
+        ///   Looks up a localized string similar to Allow remote PowerShell HTTPs traffic to the instance.
         /// </summary>
         public static string PortManagerRemotePowershellDescription {
             get {

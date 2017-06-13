@@ -38,7 +38,7 @@ namespace GoogleCloudExtension.AttachDebuggerDialog
         /// The <seealso cref="PortInfo"/> for remote PowerShell HTTPs port.
         /// </summary>
         public static PortInfo RemotePowerShellPortInfo { get; } =
-            new PortInfo("HTTPSRemotePowerShell", 5986, description: Resources.PortManagerRemotePowershellDescription);
+            new PortInfo("HTTPSRemotePS", 5986, description: Resources.PortManagerRemotePowershellDescription);
 
         /// <summary>
         /// The <seealso cref="PortInfo"/> for Visual Studio Remote Debugger tool port.

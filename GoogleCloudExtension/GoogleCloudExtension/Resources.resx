@@ -2180,7 +2180,7 @@
     <comment>The message that indicates adding firewall rule is in progress.</comment>
   </data>
   <data name="AttachDebuggerAskToTestConnectivityLaterMessage" xml:space="preserve">
-    <value>Firewall rule take effect within a few minutes. Click OK to test again.</value>
+    <value>Firewall rules take effect within a few minutes. Click OK to test again.</value>
     <comment>Ask user to retry testing connectivity if the user just enabled the firewwall rule.</comment>
   </data>
   <data name="AttachDebuggerCheckFirewallRuleMessage" xml:space="preserve">
@@ -2200,11 +2200,11 @@
     <comment>The message that indicates the test of connecting to remote port is in progress. {0} is the port description, Debugger Remote Tool or Remote PowerShell.  {1} is ip address, {2} is port number.</comment>
   </data>
   <data name="PortManagerRemoteDebuggerDescription" xml:space="preserve">
-    <value>Allow traffic to Visual Studio Remote Debugger port</value>
+    <value>Allow Visual Studio Debugger connections to the instance</value>
     <comment>Description for the VSRemoteDebugger port.</comment>
   </data>
   <data name="PortManagerRemotePowershellDescription" xml:space="preserve">
-    <value>Allow traffic to remote PowerShell HTTPs port</value>
+    <value>Allow Remote PowerShell HTTPS traffic to the instance</value>
     <comment>Description for the RemotePowerShellHttps port.</comment>
   </data>
   <data name="AttachDebuggerAccountSelectionLabel" xml:space="preserve">
