@@ -39,6 +39,11 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
         { }
 
         /// <summary>
+        /// For Testing.
+        /// </summary>
+        internal PubsubDataSource(PubsubService service, string projectId) : base(projectId, null, init => service, null) { }
+
+        /// <summary>
         /// Gets all of the topics of the current project.
         /// </summary>
         public async Task<IList<Topic>> GetTopicListAsync()

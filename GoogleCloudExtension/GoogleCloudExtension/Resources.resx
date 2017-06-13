@@ -2435,4 +2435,16 @@
     <value>Delete</value>
     <comment>Tooltip show on delete buttons.</comment>
   </data>
+  <data name="GitUtilsGitInstallLinkCaption" xml:space="preserve">
+    <value>Install Git for Windows</value>
+    <comment>Caption for the installation link</comment>
+  </data>
+  <data name="GitUtilsMissingGitErrorMessage" xml:space="preserve">
+    <value>Please follow the link to install Git for Windows</value>
+    <comment>The error message that asks to install Git for Windows</comment>
+  </data>
+  <data name="GitUtilsMissingGitErrorTitle" xml:space="preserve">
+    <value>Git for Windows is not found</value>
+    <comment>Title of the dialog asking user to install git for Windows</comment>
+  </data>
 </root>

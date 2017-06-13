@@ -13,6 +13,8 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
@@ -52,6 +54,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
             CredentialsStore.Default.CurrentProjectIdChanged += (sender, e) => CreateNewViewModel();
             CredentialsStore.Default.Reset += (sender, e) => CreateNewViewModel();
+
+            EventsReporterWrapper.ReportEvent(LogsViewerOpenEvent.Create());
         }
 
         /// <summary>
