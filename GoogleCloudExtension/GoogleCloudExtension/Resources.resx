@@ -2287,8 +2287,8 @@
     <value>Remote Debugger</value>
     <comment>The Visual Studio Remote debugging tools description</comment>
   </data>
-  <data name="AttachDebuggerCreateAccountLinkCaption" xml:space="preserve">
-    <value>Create an account</value>
-    <comment>The caption to create a new account link</comment>
+  <data name="AttachDebuggerCreateManageAccountLinkCaption" xml:space="preserve">
+    <value>Create or manage accounts...</value>
+    <comment>The caption to create a new account or mange accounts link</comment>
   </data>
 </root>

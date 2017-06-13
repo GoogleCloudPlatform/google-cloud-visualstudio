@@ -331,11 +331,11 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Create an account.
+        ///   Looks up a localized string similar to Create or manage accounts....
         /// </summary>
-        public static string AttachDebuggerCreateAccountLinkCaption {
+        public static string AttachDebuggerCreateManageAccountLinkCaption {
             get {
-                return ResourceManager.GetString("AttachDebuggerCreateAccountLinkCaption", resourceCulture);
+                return ResourceManager.GetString("AttachDebuggerCreateManageAccountLinkCaption", resourceCulture);
             }
         }
         

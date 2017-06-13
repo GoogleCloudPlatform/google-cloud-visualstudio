@@ -17,7 +17,11 @@
             </ResourceDictionary.MergedDictionaries>
             
             <utils:VisibilityConverter x:Key="VisibilityConverter" />
-            
+
+            <Style TargetType="{x:Type GridViewColumnHeader}">
+                <Setter Property="HorizontalContentAlignment" Value="Left" />
+            </Style>
+
         </ResourceDictionary>
     </UserControl.Resources>
     
