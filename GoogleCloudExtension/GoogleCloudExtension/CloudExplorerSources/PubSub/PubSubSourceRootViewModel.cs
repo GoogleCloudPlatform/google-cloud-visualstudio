@@ -14,6 +14,8 @@
 
 using Google.Apis.Pubsub.v1.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.CloudExplorer;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PubSubWindows;
@@ -122,9 +124,12 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 {
                     Children.Add(new OrphanedSubscriptionsViewModel(this, subscriptions));
                 }
+
+                EventsReporterWrapper.ReportEvent(PubSubTopicsLoadedEvent.Create(CommandStatus.Success));
             }
             catch (DataSourceException e)
             {
+                EventsReporterWrapper.ReportEvent(PubSubTopicsLoadedEvent.Create(CommandStatus.Failure));
                 throw new CloudExplorerSourceException(e.Message, e);
             }
         }
@@ -192,6 +197,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 {
                     await DataSource.NewTopicAsync(topicName);
                     Refresh();
+
+                    EventsReporterWrapper.ReportEvent(PubSubTopicCreatedEvent.Create(CommandStatus.Success));
                 }
             }
             catch (DataSourceException e)
@@ -199,6 +206,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                 Debug.Write(e.Message, "New Topic");
                 UserPromptUtils.ErrorPrompt(
                     Resources.PubSubNewTopicErrorMessage, Resources.PubSubNewTopicErrorHeader);
+
+                EventsReporterWrapper.ReportEvent(PubSubTopicCreatedEvent.Create(CommandStatus.Failure));
             }
         }
     }

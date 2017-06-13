@@ -62,6 +62,10 @@ namespace GoogleCloudExtension.SourceBrowsing
                 if (logItem.Entry.Labels?.ContainsKey(SourceContextIdLabel) == true)
                 {
                     string sha = logItem.Entry.Labels[SourceContextIdLabel];
+                    if (!ValidateGitDependencyHelper.ValidateGitForWindowsInstalled())
+                    {
+                        return;
+                    }
                     window = await ProgressDialogWindow.PromptUser(
                         SearchGitRepoAndOpenFileAsync(sha, logItem.SourceFilePath),
                         s_gitOperationOption);
