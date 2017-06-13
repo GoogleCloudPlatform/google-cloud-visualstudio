@@ -2180,7 +2180,7 @@
     <comment>The message that indicates adding firewall rule is in progress.</comment>
   </data>
   <data name="AttachDebuggerAskToTestConnectivityLaterMessage" xml:space="preserve">
-    <value>Firewall rule may take a few minutes to become effective, click OK to test again.</value>
+    <value>Firewall rule take effect within a few minutes. Click OK to test again.</value>
     <comment>Ask user to retry testing connectivity if the user just enabled the firewwall rule.</comment>
   </data>
   <data name="AttachDebuggerCheckFirewallRuleMessage" xml:space="preserve">
@@ -2188,11 +2188,11 @@
     <comment>The message that indicates checking firewall rule is in progress.</comment>
   </data>
   <data name="AttachDebuggerOpenPortHelpLinkCaption" xml:space="preserve">
-    <value>See more help</value>
+    <value>Learn more</value>
     <comment>Caption to the help link for openning a port. The page will help user to recognize security risk and tell the user how to disable the port.</comment>
   </data>
   <data name="AttachDebuggerPortDisabledMessageFormat" xml:space="preserve">
-    <value>Google Cloud GCE firewall rule blocks port {0} for {1}. Click OK to add GCE firewall rule that allows traffic to the port.</value>
+    <value>Google Compute Engine firewall rule blocks port {0} for {1}. Click OK to add a firewall rule that allows traffic to the port.</value>
     <comment>Message displayed if firewall blocks the port.  {0} is the port number. {1} is the port description. </comment>
   </data>
   <data name="AttachDebuggerTestConnectPortMessageFormat" xml:space="preserve">
@@ -2200,7 +2200,7 @@
     <comment>The message that indicates the test of connecting to remote port is in progress. {0} is the port description, Debugger Remote Tool or Remote PowerShell.  {1} is ip address, {2} is port number.</comment>
   </data>
   <data name="PortManagerRemoteDebuggerDescription" xml:space="preserve">
-    <value>Allow Visual Studio remote debugger port</value>
+    <value>Allow traffic to Visual Studio Remote Debugger port</value>
     <comment>Description for the VSRemoteDebugger port.</comment>
   </data>
   <data name="PortManagerRemotePowershellDescription" xml:space="preserve">
@@ -2208,11 +2208,11 @@
     <comment>Description for the RemotePowerShellHttps port.</comment>
   </data>
   <data name="AttachDebuggerAccountSelectionLabel" xml:space="preserve">
-    <value>Choose or create an account</value>
+    <value>Select an account</value>
     <comment>Message for choosing or creating a user as remote debugger credential.</comment>
   </data>
   <data name="AttachDebuggerInstallSetupProgressMessage" xml:space="preserve">
-    <value>Install, launch debugger remote tools</value>
+    <value>Installing, launching Remote Debugger</value>
     <comment>The message indicates it is installing or launching debugger remote tools.</comment>
   </data>
   <data name="AttachDebuggerAttachingProcessMessageFormat" xml:space="preserve">
@@ -2236,11 +2236,11 @@
     <comment>Error message shown when there is no any processes found. We don't indeed expect this error.</comment>
   </data>
   <data name="AttachDebuggerListProcessSaveDefaultLabel" xml:space="preserve">
-    <value>Save as preference, do not show the dialog again</value>
+    <value>Save this choice and don't show the dialog again</value>
     <comment>The label to check box of saving the selections as default in list processes step.</comment>
   </data>
   <data name="AttachDebuggerPickingProcessMessage" xml:space="preserve">
-    <value>Pick a process to attach to</value>
+    <value>Select a process to attach to:</value>
     <comment>The message to show on top of the remote machine processes list. It asks user to pick one as debuggee.</comment>
   </data>
   <data name="AttachDebuggerProcessIdHeader" xml:space="preserve">
@@ -2256,15 +2256,15 @@
     <comment>The process id header for attaching debugger dialog processes list.</comment>
   </data>
   <data name="AttachDebuggerHelpFirstPartMessage" xml:space="preserve">
-    <value>Unable to attach debugger to the remote machine. Read</value>
+    <value>Unable to attach debugger to the selected machine.</value>
     <comment>The attach debugger help message first part.  The message is divided to 3 parts --  [first part] [link caption] [last part].</comment>
   </data>
   <data name="AttachDebuggerHelpLastPartMessage" xml:space="preserve">
-    <value>to set up the debugger remote tools properly.</value>
+    <value>setting up the debugger remote tools.</value>
     <comment>The attach debugger help message last part.  The message is divided to 3 parts --  [first part] [link caption] [last part].</comment>
   </data>
   <data name="AttachDebuggerHelpStepLinkCpation" xml:space="preserve">
-    <value>the documentation</value>
+    <value>Learn more about</value>
     <comment>The attach debugger help step link caption</comment>
   </data>
   <data name="UiRefreshButtonCaption" xml:space="preserve">
@@ -2276,7 +2276,7 @@
     <comment>The error message format when attaching to a remote process fails. {0} is the process name.</comment>
   </data>
   <data name="GcePublishAttachDebuggerCaption" xml:space="preserve">
-    <value>Attach remote debugger after publishing</value>
+    <value>Attach Debugger after publishing</value>
     <comment>The caption of checkbox that asks to attach debugger after publishing</comment>
   </data>
   <data name="AttachDebuggerRemotePowerShellPortDescription" xml:space="preserve">
@@ -2284,7 +2284,11 @@
     <comment>The remote powershell port description</comment>
   </data>
   <data name="AttachDebuggerRemoteToolsPortDescription" xml:space="preserve">
-    <value>Debugger Remote Tool</value>
+    <value>Remote Debugger</value>
     <comment>The Visual Studio Remote debugging tools description</comment>
+  </data>
+  <data name="AttachDebuggerCreateAccountLinkCaption" xml:space="preserve">
+    <value>Create an account</value>
+    <comment>The caption to create a new account link</comment>
   </data>
 </root>

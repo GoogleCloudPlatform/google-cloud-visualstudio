@@ -35,28 +35,17 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-
+            <StackPanel>
                 <Label Content="{x:Static ext:Resources.AttachDebuggerChooseEngineTypeLable}"
                        Target="{Binding ElementName=Engines}"
-                       Style="{StaticResource CommonLabelStyle}"
-                       VerticalAlignment="Center"
-                       Margin="0,6,8,6"/>
+                       Style="{StaticResource CommonLabelStyle}" />
 
                 <ComboBox 
-                    Grid.Column="1"
                     x:Name="Engines"
-                    Margin="0,6,0,6"
                     HorizontalAlignment="Stretch"
-                    VerticalAlignment="Center"
                     ItemsSource="{Binding EngineTypes}"
-                    SelectedItem="{Binding SelectedEngine, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" 
-                    Style="{StaticResource CommonComboBoxStyle}" />
-            </Grid>
+                    SelectedItem="{Binding SelectedEngine, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+            </StackPanel>
 
             <ListView 
                 Grid.Row="1"
