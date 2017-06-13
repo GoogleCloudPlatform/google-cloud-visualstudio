@@ -14,6 +14,8 @@
 
 using Google.Apis.Logging.v2.Data;
 using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.Utils;
 using System;
@@ -308,9 +310,17 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             LogItemCollection = new ListCollectionView(_logs);
             LogItemCollection.GroupDescriptions.Add(new PropertyGroupDescription(nameof(LogItem.Date)));
             CancelRequestCommand = new ProtectedCommand(CancelRequest);
-            SimpleTextSearchCommand = new ProtectedCommand(() => ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync));
+            SimpleTextSearchCommand = new ProtectedCommand(() =>
+            {
+                EventsReporterWrapper.ReportEvent(LogsViewerSimpleTextSearchEvent.Create());
+                ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
+            });
             FilterSwitchCommand = new ProtectedCommand(SwapFilter);
-            SubmitAdvancedFilterCommand = new ProtectedCommand(() => ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync));
+            SubmitAdvancedFilterCommand = new ProtectedCommand(() =>
+            {
+                EventsReporterWrapper.ReportEvent(LogsViewerAdvancedFilterEvent.Create());
+                ErrorHandlerUtils.HandleAsyncExceptions(ReloadAsync);
+            });
             AdvancedFilterHelpCommand = new ProtectedCommand(ShowAdvancedFilterHelp);
             DateTimePickerModel = new DateTimePickerViewModel(
                 TimeZoneInfo.Local, DateTime.UtcNow, isDescendingOrder: true);
@@ -474,6 +484,8 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             RequestStatusText = Resources.LogViewerRequestCancellingMessage;
             ShowCancelRequestButton = false;
             _cancellationTokenSource?.Cancel();
+
+            EventsReporterWrapper.ReportEvent(LogsViewerCancelRequestEvent.Create());
         }
 
         /// <summary>
@@ -568,28 +580,40 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
                 return;
             }
 
-            var order = DateTimePickerModel.IsDescendingOrder ? "timestamp desc" : "timestamp asc";
-            int count = 0;
-            while (count < DefaultPageSize && !cancellationToken.IsCancellationRequested)
+            try
             {
-                Debug.WriteLine($"LoadLogs, count={count}, firstPage={_nextPageToken == null}");
+                var startTimestamp = DateTime.Now;
 
-                // Here, it does not do pageSize: _defaultPageSize - count, 
-                // Because this is requried to use same page size for getting next page. 
-                var results = await _dataSource.Value.ListLogEntriesAsync(_filter, order,
-                    pageSize: DefaultPageSize, nextPageToken: _nextPageToken, cancelToken: cancellationToken);
-                _nextPageToken = results.NextPageToken;
-                if (results?.LogEntries != null)
+                var order = DateTimePickerModel.IsDescendingOrder ? "timestamp desc" : "timestamp asc";
+                int count = 0;
+                while (count < DefaultPageSize && !cancellationToken.IsCancellationRequested)
                 {
-                    count += results.LogEntries.Count;
-                    AddLogs(results.LogEntries, autoReload);
+                    Debug.WriteLine($"LoadLogs, count={count}, firstPage={_nextPageToken == null}");
+
+                    // Here, it does not do pageSize: _defaultPageSize - count, 
+                    // Because this is requried to use same page size for getting next page. 
+                    var results = await _dataSource.Value.ListLogEntriesAsync(_filter, order,
+                        pageSize: DefaultPageSize, nextPageToken: _nextPageToken, cancelToken: cancellationToken);
+                    _nextPageToken = results.NextPageToken;
+                    if (results?.LogEntries != null)
+                    {
+                        count += results.LogEntries.Count;
+                        AddLogs(results.LogEntries, autoReload);
+                    }
+
+                    if (String.IsNullOrWhiteSpace(_nextPageToken))
+                    {
+                        _nextPageToken = null;
+                        break;
+                    }
                 }
 
-                if (String.IsNullOrWhiteSpace(_nextPageToken))
-                {
-                    _nextPageToken = null;
-                    break;
-                }
+                EventsReporterWrapper.ReportEvent(LogsViewerLogsLoadedEvent.Create(CommandStatus.Success, DateTime.Now - startTimestamp));
+            }
+            catch (Exception ex) when (!ErrorHandlerUtils.IsCriticalException(ex))
+            {
+                EventsReporterWrapper.ReportEvent(LogsViewerLogsLoadedEvent.Create(CommandStatus.Failure));
+                throw;
             }
         }
 
@@ -651,6 +675,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
 
         private void ShowAdvancedFilterHelp()
         {
+            EventsReporterWrapper.ReportEvent(LogsViewerShowAdvancedFilterHelpEvent.Create());
             Process.Start(AdvancedHelpLink);
         }
 
