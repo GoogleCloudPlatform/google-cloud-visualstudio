@@ -160,7 +160,7 @@ namespace GoogleCloudExtension.CloudSourceRepositories
             {
                 return;
             }
-            (this as ISectionViewModel).Refresh();
+            Refresh();
         }
     }
 }
