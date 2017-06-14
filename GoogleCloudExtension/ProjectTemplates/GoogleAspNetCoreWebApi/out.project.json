@@ -2,7 +2,7 @@
   "dependencies": {
     "Google.Cloud.Diagnostics.AspNetCore": "1.0.0-beta10",
     "Microsoft.NETCore.App": {
-      "version": "1.0.0",
+      "version": "1.0.3",
       "type": "platform"
     },
     "Microsoft.AspNetCore.Mvc": "1.0.4",

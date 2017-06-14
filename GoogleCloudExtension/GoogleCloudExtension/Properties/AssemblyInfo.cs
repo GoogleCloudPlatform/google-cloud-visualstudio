@@ -37,11 +37,10 @@ using System.Runtime.InteropServices;
 // same time.
 [assembly: AssemblyVersion("1.2.3.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
-
-// Allow unit tests to test internal functions.
 [assembly: InternalsVisibleTo(
     "GoogleCloudExtensionUnitTests," +
-    "PublicKey=" +
-        "002400000480000094000000060200000024000052534131000400000100010061a5994252c8d2dceeccde12a21f6360f310d3236a7" +
-        "a806c1fc88b485b9860be0aa152a985cab94a6d89b7d9294d9594dbc37201c4e3771d83d3f1d7b7c5ecc343675c5dcd8380d20fb645" +
-        "8a6efe2dbf72ac01413409d8a846092f565845134010f99b8d06a705141490da9679f1185614f3ce50d7dae2f655966f5cd757739e")]
+    "PublicKey=0024000004800000940000000602000000240000525341310004000001000" +
+    "10043207bd13a1e2cbaef14c23664d17eada579bc4111e2f6acea01f6f704a96ae01cff" +
+    "cbf06ee1c8a5c75192ec03378225422f4ceda32499dd8c35d1cc726beac43f7d231bdf5" +
+    "5df8fe3806bf1cabd004a1c3c378da811fb1a237be8896456942bdd33f94d9f6a0f70ba" +
+    "3f864993cb9639627cd6763b7fd2d2781a164331264dc9")]

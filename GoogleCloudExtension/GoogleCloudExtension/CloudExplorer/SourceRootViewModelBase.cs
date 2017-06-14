@@ -82,6 +82,11 @@ namespace GoogleCloudExtension.CloudExplorer
         /// </summary>
         public ICloudSourceContext Context { get; private set; }
 
+        /// <summary>
+        /// The task that tracks the loading from the data source.
+        /// </summary>
+        internal Task LoadingTask { get; private set; } = Task.FromResult(false);
+
         public virtual void Initialize(ICloudSourceContext context)
         {
             Context = context;
@@ -91,7 +96,7 @@ namespace GoogleCloudExtension.CloudExplorer
             Children.Add(LoadingPlaceholder);
         }
 
-        public virtual async void Refresh()
+        public virtual void Refresh()
         {
             if (!IsLoadedState)
             {
@@ -99,13 +104,13 @@ namespace GoogleCloudExtension.CloudExplorer
             }
 
             IsLoadedState = false;
-            await LoadDataWrapper();
+            LoadingTask = LoadDataWrapper();
         }
 
         public virtual void InvalidateProjectOrAccount()
         { }
 
-        protected override async void OnIsExpandedChanged(bool newValue)
+        protected override void OnIsExpandedChanged(bool newValue)
         {
             if (IsLoadingState)
             {
@@ -114,7 +119,7 @@ namespace GoogleCloudExtension.CloudExplorer
 
             if (newValue && !IsLoadedState)
             {
-                await LoadDataWrapper();
+                LoadingTask = LoadDataWrapper();
             }
         }
 
