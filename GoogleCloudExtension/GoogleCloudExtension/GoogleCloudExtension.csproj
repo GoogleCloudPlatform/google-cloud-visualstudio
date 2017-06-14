@@ -202,10 +202,19 @@
     <Compile Include="CloudExplorer\TreeLeaf.cs" />
     <Compile Include="CloudExplorer\TreeLeafLink.cs" />
     <Compile Include="CloudExplorer\TreeNode.cs" />
+    <Compile Include="CloudSourceRepositories\CsrReposContent.xaml.cs">
+      <DependentUpon>CsrReposContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrReposViewModel.cs" />
     <Compile Include="CloudSourceRepositories\CsrSectionControl.xaml.cs">
       <DependentUpon>CsrSectionControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="CloudSourceRepositories\CsrSectionControlViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\CsrUnconnectedContent.xaml.cs">
+      <DependentUpon>CsrUnconnectedContent.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CloudSourceRepositories\CsrUnconnectedViewModel.cs" />
+    <Compile Include="CloudSourceRepositories\RepoItemViewModel.cs" />
     <Compile Include="Controls\AutoReloadButton.cs" />
     <Compile Include="Controls\DotsProgressIndicator.cs" />
     <Compile Include="Controls\IconButton.cs" />
@@ -533,6 +542,7 @@
     <Resource Include="CloudExplorerSources\PubSub\Resources\topic_icon.png" />
     <Resource Include="CloudExplorerSources\PubSub\Resources\subscription_icon.png" />
     <Resource Include="CloudExplorerSources\PubSub\Resources\orphaned_subscriptions_icon.png" />
+    <Resource Include="CloudSourceRepositories\Resources\cloud-source-repositories.png" />
     <Content Include="Licenses.txt">
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
@@ -855,9 +865,21 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CloudSourceRepositories\CsrReposContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="CloudSourceRepositories\CsrSectionControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrSectionStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CloudSourceRepositories\CsrUnconnectedContent.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\DotsProgressIndicatorResources.xaml">
       <Generator>MSBuild:Compile</Generator>

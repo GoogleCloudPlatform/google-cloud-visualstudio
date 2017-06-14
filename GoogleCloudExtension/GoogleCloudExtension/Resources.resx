@@ -2271,4 +2271,36 @@
     <value>Google Cloud Source Repositories</value>
     <comment>The title of connect section of Cloud Source Repositories at Visual Studio Team Explorer.</comment>
   </data>
+  <data name="CsrCloneLinkButtonCaption" xml:space="preserve">
+    <value>Clone</value>
+    <comment>The clone link button caption</comment>
+  </data>
+  <data name="CsrConnectLinkButtonCaption" xml:space="preserve">
+    <value>Connect...</value>
+    <comment>The connect link button caption</comment>
+  </data>
+  <data name="CsrCreateLinkButtonCaption" xml:space="preserve">
+    <value>Create</value>
+    <comment>The create link button caption</comment>
+  </data>
+  <data name="CsrDescription" xml:space="preserve">
+    <value>Fully-featured private Git repositories hosted on Cloud Platform on highly-replicated backend storage systems distributed geographically across multiple data centers and run on infrastructure proven for reliability.</value>
+    <comment>Description of CSR. Intend to be attractive text.</comment>
+  </data>
+  <data name="CsrDisconnectLinkButtonCaption" xml:space="preserve">
+    <value>Disconnect</value>
+    <comment>The Disconnect link button caption</comment>
+  </data>
+  <data name="CsrRepoLocalPathLabel" xml:space="preserve">
+    <value>Local Path</value>
+    <comment>Repository local path label</comment>
+  </data>
+  <data name="CsrRepoNameLabel" xml:space="preserve">
+    <value>Repo Name</value>
+    <comment>Repository name label</comment>
+  </data>
+  <data name="CsrVisitUrlMenuHeader" xml:space="preserve">
+    <value>View the repository on web</value>
+    <comment>The menu header for visiting souce repository on web page</comment>
+  </data>
 </root>

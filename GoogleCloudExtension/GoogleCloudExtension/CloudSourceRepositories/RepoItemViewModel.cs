@@ -12,37 +12,44 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System;
+using GoogleCloudExtension.Utils;
 
-namespace GoogleCloudExtension.TeamExplorerExtension
+namespace GoogleCloudExtension.CloudSourceRepositories
 {
     /// <summary>
-    /// Define interfance for Team Explorer section view model.
+    /// A repository object binding to list view item
     /// </summary>
-    public interface ISectionViewModel
+    public class RepoItemViewModel : Model
     {
-        /// <summary>
-        /// Responds to refresh event.
-        /// </summary>
-        void Refresh();
+        private bool _isActiveRepo;
 
         /// <summary>
-        /// Initializes the view model with <paramref name="teamExplorerService"/> input.
+        /// Gets the repository name.
         /// </summary>
-        void Initialize(ITeamExplorerUtils teamExplorerService);
+        public string Name { get; }
 
         /// <summary>
-        /// Notifies that the current active repository changed
+        /// Gets the repository local path.
         /// </summary>
-        /// <param name="newRepoLocalPath">
-        /// The new active repository local path.
-        /// When the value is null, it means currently there is no active repository.
-        /// </param>
-        void UpdateActiveRepo(string newRepoLocalPath);
+        public string LocalPath { get; }
 
         /// <summary>
-        /// Called by ITeamExplorerSection to do final resource clean up.
+        /// Gets the repository full name.
         /// </summary>
-        void Cleanup();
+        public string RepoFullName { get; }
+
+        /// <summary>
+        /// Gets if the repository is currently active one.
+        /// </summary>
+        public bool IsActiveRepo
+        {
+            get { return _isActiveRepo; }
+            set { SetValueAndRaise(ref _isActiveRepo, value); }
+        }
+
+        /// <summary>
+        /// The command that opens repository url.
+        /// </summary>
+        public ProtectedCommand VisitUrlCommand { get; }
     }
 }
