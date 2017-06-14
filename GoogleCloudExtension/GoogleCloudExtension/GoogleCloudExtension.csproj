@@ -83,6 +83,9 @@
     <Compile Include="Analytics\Events\ChangedFirewallPortsEvent.cs" />
     <Compile Include="Analytics\Events\CloudExplorerInteractionEvent.cs" />
     <Compile Include="Analytics\Events\CloudSQLInstancesLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\ErrorsViewerErrorsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\ErrorsViewerNavigateToDetailWindowEvent.cs" />
+    <Compile Include="Analytics\Events\ErrorsViewerOpenEvent.cs" />
     <Compile Include="Analytics\Events\GaeDeployedEvent.cs" />
     <Compile Include="Analytics\Events\GaeInstancesLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GaeServiceDeletedEvent.cs" />
@@ -95,6 +98,12 @@
     <Compile Include="Analytics\Events\GceVMsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GcsBucketsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\GkeDeployedEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerAdvancedFilterEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerCancelRequestEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerLogsLoadedEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerOpenEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerShowAdvancedFilterHelpEvent.cs" />
+    <Compile Include="Analytics\Events\LogsViewerSimpleTextSearchEvent.cs" />
     <Compile Include="Analytics\Events\ManageCloudSqlAuthorizedNetworkEvent.cs" />
     <Compile Include="Analytics\Events\NewInstallEvent.cs" />
     <Compile Include="Analytics\Events\NewLoginEvent.cs" />
@@ -106,6 +115,11 @@
     <Compile Include="Analytics\Events\RemoteDebuggerRemoteToolsInstalledEvent.cs" />
     <Compile Include="Analytics\Events\RemoteDebuggerRemoteToolsStartedEvent.cs" />
     <Compile Include="Analytics\Events\RemoteDebuggerWindowOpenEvent.cs" />
+    <Compile Include="Analytics\Events\PubSubSubscriptionCreatedEvent.cs" />
+    <Compile Include="Analytics\Events\PubSubSubscriptionDeletedEvent.cs" />
+    <Compile Include="Analytics\Events\PubSubTopicCreatedEvent.cs" />
+    <Compile Include="Analytics\Events\PubSubTopicDeletedEvent.cs" />
+    <Compile Include="Analytics\Events\PubSubTopicsLoadedEvent.cs" />
     <Compile Include="Analytics\Events\SavePublishSettingsEvent.cs" />
     <Compile Include="Analytics\Events\StartGceInstanceEvent.cs" />
     <Compile Include="Analytics\Events\StartRemoteDesktopSessionEvent.cs" />
