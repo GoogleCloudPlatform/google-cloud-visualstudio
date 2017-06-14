@@ -24,7 +24,8 @@ namespace GoogleCloudExtension.CloudExplorer
     {
         /// <summary>
         /// The object to display in the properties window. This object is expected to be annotated
-        /// with the <seealso cref="CategoryAttribute"/> and <seealso cref="DescriptionAttribute"/>.
+        /// with the <seealso cref="System.ComponentModel.CategoryAttribute"/>
+        /// and <seealso cref="System.ComponentModel.DescriptionAttribute"/>.
         /// </summary>
         object Item { get; }
 

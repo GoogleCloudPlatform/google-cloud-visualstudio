@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -47,3 +48,11 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 [assembly: AssemblyVersion("1.0.0.0")]
 [assembly: AssemblyFileVersion("1.0.0.0")]
+[assembly: InternalsVisibleTo(
+    "GoogleCloudExtension.DataSources.UnitTests," +
+    "PublicKey=" +
+    "0024000004800000940000000602000000240000525341310004000001000100b1e7f4" +
+    "004a3e018e45213f2c32c0403a56153a50f8858bec94514a42ef37f807604501bcc358" +
+    "28162afcb1f4d398429774cf1d5da38559f6d5c71e024894642b62c893d54d7ab0f8c8" +
+    "2036135c744001f3941957c5ef89b43f01d39553db3b449c5fa5f4aacd49ce655887be" +
+    "4ded0e1cbc953029f0db193fc662e481c47b3ab0")]

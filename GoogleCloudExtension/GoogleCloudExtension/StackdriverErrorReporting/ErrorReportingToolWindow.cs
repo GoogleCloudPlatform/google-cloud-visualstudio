@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Accounts;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.Runtime.InteropServices;
-using Microsoft.VisualStudio.Shell;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {

@@ -11,7 +11,10 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+
 using Google.Apis.Pubsub.v1.Data;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.DataSources;
 using GoogleCloudExtension.PubSubWindows;
 using GoogleCloudExtension.Utils;
@@ -68,13 +71,14 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
             IsLoading = true;
             try
             {
-
                 try
                 {
                     Subscription subscription = NewSubscriptionWindow.PromptUser(TopicItem.FullName);
                     if (subscription != null)
                     {
                         await DataSource.NewSubscriptionAsync(subscription);
+
+                        EventsReporterWrapper.ReportEvent(PubSubSubscriptionCreatedEvent.Create(CommandStatus.Success));
                     }
                 }
                 catch (DataSourceException e)
@@ -82,6 +86,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                     Debug.Write(e.Message, "New Subscription");
                     UserPromptUtils.ErrorPrompt(
                         Resources.PubSubNewSubscriptionErrorMessage, Resources.PubSubNewSubscriptionErrorHeader);
+
+                    EventsReporterWrapper.ReportEvent(PubSubSubscriptionCreatedEvent.Create(CommandStatus.Failure));
                 }
                 await Refresh();
             }
@@ -108,6 +114,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                     if (doDelete)
                     {
                         await DataSource.DeleteTopicAsync(TopicItem.FullName);
+
+                        EventsReporterWrapper.ReportEvent(PubSubTopicDeletedEvent.Create(CommandStatus.Success));
                     }
                 }
                 catch (DataSourceException e)
@@ -115,6 +123,8 @@ namespace GoogleCloudExtension.CloudExplorerSources.PubSub
                     Debug.Write(e.Message, "Delete Topic");
                     UserPromptUtils.ErrorPrompt(
                         Resources.PubSubDeleteTopicErrorMessage, Resources.PubSubDeleteTopicErrorHeader);
+
+                    EventsReporterWrapper.ReportEvent(PubSubTopicDeletedEvent.Create(CommandStatus.Failure));
                 }
                 Owner.Refresh();
             }

@@ -12,13 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
-using System.Diagnostics;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 
 namespace GoogleCloudExtension.StackdriverLogsViewer
 {
@@ -61,8 +58,7 @@ namespace GoogleCloudExtension.StackdriverLogsViewer
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
                 var menuItem = new OleMenuCommand(
-                    (sender, e) => ToolWindowCommandUtils.ShowToolWindow<LogsViewerToolWindow>(),
-                    menuCommandID);
+                    (sender, e) => ToolWindowCommandUtils.ShowToolWindow<LogsViewerToolWindow>(),  menuCommandID);
                 menuItem.BeforeQueryStatus += ToolWindowCommandUtils.EnableMenuItemOnValidProjectId;
                 commandService.AddCommand(menuItem);
             }

@@ -14,7 +14,6 @@
 
 using EnvDTE;
 using GoogleCloudExtension.Deployment;
-using GoogleCloudExtension.Projects.DotNet4;
 using GoogleCloudExtension.Projects.DotNetCore;
 using GoogleCloudExtension.Utils;
 using System;

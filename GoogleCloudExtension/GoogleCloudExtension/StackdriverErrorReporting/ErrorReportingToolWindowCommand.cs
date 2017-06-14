@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Accounts;
+using GoogleCloudExtension.Analytics;
+using GoogleCloudExtension.Analytics.Events;
 using GoogleCloudExtension.Utils;
+using Microsoft.VisualStudio.Shell;
 using System;
 using System.ComponentModel.Design;
-using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {
@@ -60,7 +60,11 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
             {
                 var menuCommandID = new CommandID(CommandSet, CommandId);
                 var menuItem = new OleMenuCommand(
-                    (sender, e) => ToolWindowCommandUtils.ShowToolWindow<ErrorReportingToolWindow>(),
+                    (sender, e) =>
+                    {
+                        ToolWindowCommandUtils.ShowToolWindow<ErrorReportingToolWindow>();
+                        EventsReporterWrapper.ReportEvent(ErrorsViewerOpenEvent.Create());
+                    },
                     menuCommandID);
                 menuItem.BeforeQueryStatus += ToolWindowCommandUtils.EnableMenuItemOnValidProjectId;
                 commandService.AddCommand(menuItem);

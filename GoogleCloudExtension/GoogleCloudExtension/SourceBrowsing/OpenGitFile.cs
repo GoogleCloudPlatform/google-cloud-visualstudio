@@ -41,7 +41,7 @@ namespace GoogleCloudExtension.SourceBrowsing
         /// <summary>
         /// Key is git_sha/relative_path, value is the opened document window.
         /// </summary>
-        private Dictionary<string, Window> _fileRevisionWindowMap = 
+        private Dictionary<string, Window> _fileRevisionWindowMap =
             new Dictionary<string, Window>(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>

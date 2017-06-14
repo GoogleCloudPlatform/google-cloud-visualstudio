@@ -1,11 +1,11 @@
 ﻿// Copyright 2017 Google Inc. All Rights Reserved.
-//
+// 
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
 // You may obtain a copy of the License at
-//
+// 
 //     http://www.apache.org/licenses/LICENSE-2.0
-//
+// 
 // Unless required by applicable law or agreed to in writing, software
 // distributed under the License is distributed on an "AS IS" BASIS,
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -13,8 +13,8 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Utils;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System.Linq;
 
 namespace UnitTestProject
 {
@@ -24,7 +24,7 @@ namespace UnitTestProject
         [TestMethod]
         public void General()
         {
-            Verify("\"This is a search string\"  And This  ", 
+            Verify("\"This is a search string\"  And This  ",
                 new string[]
                 {
                     "This is a search string",
@@ -76,7 +76,7 @@ namespace UnitTestProject
             Verify("\"  \"", new string[] { "  " });
             Verify("\"  \"   ", new string[] { "  " });
             Verify("  \"  \"   ", new string[] { "  " });
-            Verify("  \"\"   ",  null);
+            Verify("  \"\"   ", null);
         }
 
         [TestMethod]
@@ -89,7 +89,7 @@ namespace UnitTestProject
         [TestMethod]
         public void MoreQuotes()
         {
-            Verify("\"string 1\"   And  \"String 2\"   more   ", 
+            Verify("\"string 1\"   And  \"String 2\"   more   ",
                 new string[] {
                     "string 1",
                     "And",
@@ -139,7 +139,6 @@ namespace UnitTestProject
             var output = StringUtils.SplitStringBySpaceOrQuote(input);
             if (expected == null || expected.Count() == 0)
             {
-
                 if (output != null && output.Count() != 0)
                 {
                     Assert.Fail($"Fail on {input}");

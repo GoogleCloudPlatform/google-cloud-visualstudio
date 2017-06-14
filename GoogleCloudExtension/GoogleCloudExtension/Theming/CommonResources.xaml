@@ -2,8 +2,8 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:controls="clr-namespace:GoogleCloudExtension.Controls;assembly=GoogleCloudExtension"
-                    xmlns:vsshell="clr-namespace:Microsoft.VisualStudio.Shell;assembly=Microsoft.VisualStudio.Shell.14.0"
-                    xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions;assembly=GoogleCloudExtension">
+                    xmlns:mp="clr-namespace:GoogleCloudExtension.Extensions;assembly=GoogleCloudExtension"
+                    xmlns:utils="clr-namespace:GoogleCloudExtension.Utils;assembly=GoogleCloudExtension.Utils">
 
     <!-- Common size for all font text. -->
     <Style x:Key="CommonTextStyleBase">
@@ -248,6 +248,22 @@
     <!-- Common separator for radio buttons. -->
     <Thickness x:Key="CommonRadioButtonMargin">0,0,0,9</Thickness>
 
+    <!-- Common style for popups. -->
+    <Style x:Key="CommonPopupStyle" TargetType="{x:Type Popup}">
+        <Setter Property="AllowsTransparency" Value="True"/>
+        <Setter Property="PopupAnimation" Value="Fade"/>
+    </Style>
+
+    <!-- Common border style for popups. -->
+    <SolidColorBrush x:Key="CommonBorderColors.Background" Color="LightYellow" />
+    <SolidColorBrush x:Key="CommonBorderColors.Border" Color="Yellow" />
+
+    <Style x:Key="CommonPopupBorderStyle" TargetType="{x:Type Border}">
+        <Setter Property="Background" Value="{StaticResource CommonBorderColors.Background}" />
+        <Setter Property="BorderBrush" Value="{StaticResource CommonBorderColors.Border}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
     <!-- Common text box style. -->
 
     <!-- Colors for the TextBox -->
@@ -262,6 +278,65 @@
 
     <!-- Colors for the focused state. -->
     <SolidColorBrush x:Key="CommonTextBox.Focus.Border" Color="#FFB5CFE7"/>
+    
+    <SolidColorBrush x:Key="Validation.Border.Brush" Color="Red"/>
+    <SolidColorBrush x:Key="Validation.Background.Brush" Color="#FFDDEE"/>
+
+    <!-- Validation styles and tempaltes -->
+    <Style x:Key="ValidationPanelStyle" TargetType="StackPanel">
+        <Setter Property="Orientation" Value="Vertical" />
+        <Setter Property="HorizontalAlignment" Value="Left"/>
+        <Setter Property="Background" Value="{StaticResource Validation.Background.Brush}"/>
+    </Style>
+
+    <Style x:Key="ValidationTextStyle" TargetType="TextBlock" BasedOn="{StaticResource CommonTextStyle}"/>
+
+    <Style x:Key="ValidationBorderStyle" TargetType="Border">
+        <Setter Property="BorderBrush" Value="{StaticResource Validation.Border.Brush}"/>
+        <Setter Property="BorderThickness" Value="2"/>
+        <Setter Property="Background" Value="{StaticResource Validation.Background.Brush}"/>
+        <Setter Property="Padding" Value="4"/>
+    </Style>
+
+    <Style x:Key="ValidationPopupStyle" TargetType="Popup" BasedOn="{StaticResource CommonPopupStyle}">
+        <Setter Property="VerticalOffset" Value="-3"/>
+        <Setter Property="Placement" Value="Top"/>
+        <Setter Property="StaysOpen" Value="True"/>
+    </Style>
+
+    <ItemsPanelTemplate x:Key="ValidationPanelTemplate">
+        <StackPanel Style="{StaticResource ValidationPanelStyle}"/>
+    </ItemsPanelTemplate>
+
+    <DataTemplate x:Key="ValidationItemTemplate" DataType="ValidationResult">
+        <TextBlock Text="{Binding ErrorContent}" Style="{StaticResource ValidationTextStyle}"/>
+    </DataTemplate>
+
+    <ControlTemplate x:Key="ValidationItemsControlTemplate" TargetType="ItemsControl">
+        <Border Style="{StaticResource ValidationBorderStyle}">
+            <ItemsPresenter/>
+        </Border>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="ValidationErrorAdornerTemplate" TargetType="Control">
+        <Canvas>
+            <Border BorderBrush="{StaticResource Validation.Border.Brush}" BorderThickness="1" IsHitTestVisible="False">
+                <AdornedElementPlaceholder x:Name="Placeholder"/>
+            </Border>
+            <Popup
+                DataContext="{Binding ElementName=Placeholder, Path=AdornedElement}"
+                PlacementTarget="{Binding}"
+                IsOpen="{Binding IsKeyboardFocusWithin, Mode=OneWay}"
+                Style="{StaticResource ValidationPopupStyle}">
+
+                <ItemsControl
+                    ItemsSource="{Binding (Validation.Errors)}"
+                    ItemsPanel="{StaticResource ValidationPanelTemplate}"
+                    ItemTemplate="{StaticResource ValidationItemTemplate}"
+                    Template="{StaticResource ValidationItemsControlTemplate}"/>
+            </Popup>
+        </Canvas>
+    </ControlTemplate>
 
     <!-- Template for the TextBox -->
     <Style x:Key="CommonTextBoxStyle" TargetType="{x:Type TextBox}">
@@ -285,10 +360,10 @@
                             Padding="8,5,8,5"
                             SnapsToDevicePixels="True">
                         <ScrollViewer x:Name="PART_ContentHost"
-                                      Focusable="false"
-                                      HorizontalScrollBarVisibility="Hidden"
-                                      VerticalScrollBarVisibility="Hidden"
-                                      Style="{StaticResource CommonTextStyleBase}"/>
+                                    Focusable="false"
+                                    HorizontalScrollBarVisibility="Hidden"
+                                    VerticalScrollBarVisibility="Hidden"
+                                    Style="{StaticResource CommonTextStyleBase}"/>
                     </Border>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsEnabled" Value="false">
@@ -302,6 +377,7 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
+        <Setter Property="Validation.ErrorTemplate" Value="{StaticResource ValidationErrorAdornerTemplate}"/>
         <Style.Triggers>
             <MultiTrigger>
                 <MultiTrigger.Conditions>
@@ -601,14 +677,16 @@
                             </Grid.ColumnDefinitions>
 
                             <!-- Display the password box or textbox, by default we do not show the password. -->
-                            <TextBox x:Name="PART_TextBox"
+                            <TextBox Grid.Column="0"
+                                     x:Name="PART_TextBox"
                                      Margin="0,5,0,5"
                                      BorderBrush="Transparent"
                                      Background="Transparent"
                                      Visibility="Collapsed"
                                      Text="{TemplateBinding Password}"
                                      Style="{StaticResource PasswordPartTextBoxStyle}" />
-                            <PasswordBox x:Name="PART_PasswordBox"
+                            <PasswordBox Grid.Column="0"
+                                         x:Name="PART_PasswordBox"
                                          Margin="0,5,0,5"
                                          BorderBrush="Transparent"
                                          Background="Transparent"
@@ -640,22 +718,6 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </Style>
-
-    <!-- Common style for popups. -->
-    <Style x:Key="CommonPopupStyle" TargetType="{x:Type Popup}">
-        <Setter Property="AllowsTransparency" Value="True" />
-        <Setter Property="PopupAnimation" Value="Fade" />
-    </Style>
-
-    <!-- Common border style for popups. -->
-    <SolidColorBrush x:Key="CommonBorderColors.Background" Color="LightYellow" />
-    <SolidColorBrush x:Key="CommonBorderColors.Border" Color="Yellow" />
-
-    <Style x:Key="CommonPopupBorderStyle" TargetType="{x:Type Border}">
-        <Setter Property="Background" Value="{StaticResource CommonBorderColors.Background}" />
-        <Setter Property="BorderBrush" Value="{StaticResource CommonBorderColors.Border}" />
-        <Setter Property="BorderThickness" Value="1" />
     </Style>
 
     <!-- Common buttons. -->
@@ -935,3 +997,4 @@
 
 
 </ResourceDictionary>
+ 

@@ -16,8 +16,8 @@ using Google;
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Logging.v2;
 using Google.Apis.Logging.v2.Data;
-using Google.Apis.Logging.v2.Extensions;
 using Google.Apis.Logging.v2.Data.Extensions;
+using Google.Apis.Logging.v2.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -48,6 +48,7 @@ namespace GoogleCloudExtension.DataSources
         /// </summary>
         /// <param name="projectId">The Google Cloud Platform project id of the current user account .</param>
         /// <param name="credential">The credentials to use for the call.</param>
+        /// <param name="appName">The name of the application.</param>
         public LoggingDataSource(string projectId, GoogleCredential credential, string appName)
             : base(projectId, credential, init => new LoggingService(init), appName)
         {

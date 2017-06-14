@@ -26,8 +26,8 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
     /// For non-C# language stack, it remain not parsed.
     /// 
     /// The Regex is defined as:
-    /// stack_frame = at <method>(<arguments>) [in <source_location>]]
-    /// source_location = <file_name>:line <number>
+    /// stack_frame = at &lt;method&gt;(&lt;arguments&gt;) [in &lt;source_location&gt;]]
+    /// source_location = &lt;file_name&gt;:line &lt;number&gt;
     /// 
     /// Below is an example:
     ///  at GoogleCloudExtensionUnitTests.StackframeParserTests.SelfLoop(Int32 count) in C:\\git\\wind\\GoogleCloudExtension\\GoogleCloudExtensionUnitTests\\StackframeParserTests.cs:line 46
@@ -40,10 +40,10 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
         private const string AtToken = "   at ";
         private const string InToken = " in ";
         private const string ArgumentPattern = @"\(.*\)";
-        private static readonly string QualifiedNamePattern = $@"(?<{MethodGroup}>[a-zA-Z_<>][a-zA-Z0-9_<>,`\[\]\+\.]*)";
-        private static readonly string PathLineNumberPattern = $@"(?<{FileNameGroup}>.*):line (?<{LineNumberGroup}>[0-9]*)";
-        private static readonly string FrameParserPattern = $@"^{AtToken}{QualifiedNamePattern}{ArgumentPattern}{InToken}{PathLineNumberPattern}$";
-        private static readonly Regex s_stackFrameRegex = new Regex(FrameParserPattern);
+        private static readonly string s_qualifiedNamePattern = $@"(?<{MethodGroup}>[a-zA-Z_<>][a-zA-Z0-9_<>,`\[\]\+\.]*)";
+        private static readonly string s_pathLineNumberPattern = $@"(?<{FileNameGroup}>.*):line (?<{LineNumberGroup}>[0-9]*)";
+        private static readonly string s_frameParserPattern = $@"^{AtToken}{s_qualifiedNamePattern}{ArgumentPattern}{InToken}{s_pathLineNumberPattern}$";
+        private static readonly Regex s_stackFrameRegex = new Regex(s_frameParserPattern);
 
         /// <summary>
         /// Gets the function name of the stack frame.
@@ -107,7 +107,7 @@ namespace GoogleCloudExtension.StackdriverErrorReporting
                 {
                     LineNumber = tmp;
                     IsWellParsed = true;
-                }                    
+                }
             }
         }
     }

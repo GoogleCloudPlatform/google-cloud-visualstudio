@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:GoogleCloudExtension.PublishDialogSteps.GceStep"
              xmlns:ext="clr-namespace:GoogleCloudExtension"
              mc:Ignorable="d" 
-             d:DataContext="{x:Type local:GceStepViewModel}">
+             d:DataContext="{d:DesignInstance local:GceStepViewModel}">
 
     <UserControl.Resources>
         <ResourceDictionary>

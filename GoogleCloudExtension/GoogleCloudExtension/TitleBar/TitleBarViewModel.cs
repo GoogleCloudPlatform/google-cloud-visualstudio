@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using GoogleCloudExtension.Utils;
 using GoogleCloudExtension.Accounts;
 using GoogleCloudExtension.ManageAccounts;
-using System;
+using GoogleCloudExtension.Utils;
 
 namespace GoogleCloudExtension.TitleBar
 {

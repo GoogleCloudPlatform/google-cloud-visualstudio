@@ -14,8 +14,6 @@
 
 using Google.Apis.Clouderrorreporting.v1beta1.Data;
 using GoogleCloudExtension.Utils;
-using System;
-using System.Linq;
 
 namespace GoogleCloudExtension.StackdriverErrorReporting
 {

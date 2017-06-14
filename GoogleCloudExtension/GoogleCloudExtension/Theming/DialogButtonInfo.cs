@@ -59,7 +59,7 @@ namespace GoogleCloudExtension.Theming
         /// </summary>
         public string Caption
         {
-            get { return (string)GetValue(CaptionProperty); ; }
+            get { return (string)GetValue(CaptionProperty); }
             set { SetValue(CaptionProperty, value); }
         }
 

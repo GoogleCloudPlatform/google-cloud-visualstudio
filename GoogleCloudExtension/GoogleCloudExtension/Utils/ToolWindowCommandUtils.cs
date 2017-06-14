@@ -13,10 +13,10 @@
 // limitations under the License.
 
 using GoogleCloudExtension.Accounts;
-using System;
-using System.Diagnostics;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using System;
+using System.Diagnostics;
 
 namespace GoogleCloudExtension.Utils
 {
