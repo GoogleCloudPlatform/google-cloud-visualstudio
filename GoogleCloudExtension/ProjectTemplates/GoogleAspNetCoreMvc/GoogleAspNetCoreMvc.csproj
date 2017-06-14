@@ -51,7 +51,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include=".nuget\Nuget.Config" />
-    <None Include="app.config" />
     <None Include="Controllers\HomeController.cs" />
     <None Include="global.json" />
     <None Include="Program.cs" />
