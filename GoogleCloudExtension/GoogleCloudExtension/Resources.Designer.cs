@@ -241,7 +241,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Choose or create an account.
+        ///   Looks up a localized string similar to Select an account.
         /// </summary>
         public static string AttachDebuggerAccountSelectionLabel {
             get {
@@ -268,7 +268,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Firewall rule may take a few minutes to become effective, click OK to test again..
+        ///   Looks up a localized string similar to Firewall rules take effect within a few minutes. Click OK to test again..
         /// </summary>
         public static string AttachDebuggerAskToTestConnectivityLaterMessage {
             get {
@@ -331,7 +331,16 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Unable to attach debugger to the remote machine. Read.
+        ///   Looks up a localized string similar to Create or manage accounts....
+        /// </summary>
+        public static string AttachDebuggerCreateManageAccountLinkCaption {
+            get {
+                return ResourceManager.GetString("AttachDebuggerCreateManageAccountLinkCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Unable to attach debugger to the selected machine..
         /// </summary>
         public static string AttachDebuggerHelpFirstPartMessage {
             get {
@@ -340,7 +349,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to to set up the debugger remote tools properly..
+        ///   Looks up a localized string similar to setting up the debugger remote tools..
         /// </summary>
         public static string AttachDebuggerHelpLastPartMessage {
             get {
@@ -349,7 +358,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to the documentation.
+        ///   Looks up a localized string similar to Learn more about.
         /// </summary>
         public static string AttachDebuggerHelpStepLinkCpation {
             get {
@@ -358,7 +367,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Install, launch debugger remote tools.
+        ///   Looks up a localized string similar to Installing, launching Remote Debugger.
         /// </summary>
         public static string AttachDebuggerInstallSetupProgressMessage {
             get {
@@ -376,7 +385,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Save as preference, do not show the dialog again.
+        ///   Looks up a localized string similar to Save this choice and don&apos;t show the dialog again.
         /// </summary>
         public static string AttachDebuggerListProcessSaveDefaultLabel {
             get {
@@ -385,7 +394,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to See more help.
+        ///   Looks up a localized string similar to Learn more.
         /// </summary>
         public static string AttachDebuggerOpenPortHelpLinkCaption {
             get {
@@ -394,7 +403,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Pick a process to attach to.
+        ///   Looks up a localized string similar to Select a process to attach to:.
         /// </summary>
         public static string AttachDebuggerPickingProcessMessage {
             get {
@@ -403,7 +412,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Google Cloud GCE firewall rule blocks port {0} for {1}. Click OK to add GCE firewall rule that allows traffic to the port..
+        ///   Looks up a localized string similar to Google Compute Engine firewall rule blocks port {0} for {1}. Click OK to add a firewall rule that allows traffic to the port..
         /// </summary>
         public static string AttachDebuggerPortDisabledMessageFormat {
             get {
@@ -448,7 +457,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Debugger Remote Tool.
+        ///   Looks up a localized string similar to Remote Debugger.
         /// </summary>
         public static string AttachDebuggerRemoteToolsPortDescription {
             get {
@@ -2653,7 +2662,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Attach remote debugger after publishing.
+        ///   Looks up a localized string similar to Attach Debugger after publishing.
         /// </summary>
         public static string GcePublishAttachDebuggerCaption {
             get {
@@ -2833,7 +2842,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please follow the link to install Git for Windows properly.
+        ///   Looks up a localized string similar to Please follow the link to install Git for Windows.
         /// </summary>
         public static string GitUtilsMissingGitErrorMessage {
             get {
@@ -3904,7 +3913,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allow Visual Studio remote debugger port.
+        ///   Looks up a localized string similar to Allow Visual Studio Remote Debugger traffic to the instance.
         /// </summary>
         public static string PortManagerRemoteDebuggerDescription {
             get {
@@ -3913,7 +3922,7 @@ namespace GoogleCloudExtension {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Allow traffic to remote PowerShell HTTPs port.
+        ///   Looks up a localized string similar to Allow remote PowerShell HTTPs traffic to the instance.
         /// </summary>
         public static string PortManagerRemotePowershellDescription {
             get {
